@@ -124,33 +124,48 @@ var collectionDict = {
   
 }
 
+
 var NFSLCMS = ee.ImageCollection(collectionDict[studyAreaName][1])
               .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0,0,0]))})
               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01,0.01,0.01])).float()})
               .select([0,1,2,3,4,5,6],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability','Slow Decline Probability','Fast Decline Probability']);
-print('length');
-print(NFSLCMS.size().getInfo());
+var NFSLCMSold = ee.ImageCollection(collectionDict[studyAreaName][1])
+              .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast').not())
+              .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+              .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0]))})
+              .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
+              .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
+
 var NFSLC =  NFSLCMS.select([0]);
 var NFSLU =  NFSLCMS.select([1]);
 var NFSCP =  NFSLCMS.select([2]);
 
 var NFSDND = NFSLCMS.select([3]);
+
+var NFSDNDold = NFSLCMSold.select([3]);
+
 var NFSRNR = NFSLCMS.select([4]);
 
 var NFSDNDSlow = NFSLCMS.select([5]);
 var NFSDNDFast = NFSLCMS.select([6]);
 
-var dndThresh = thresholdChange(NFSDND,lowerThresholdDecline,upperThresholdDecline, 1)
-var rnrThresh = thresholdChange(NFSRNR,lowerThresholdRecovery, upperThresholdRecovery, 1)
+var dndThresh = thresholdChange(NFSDND,lowerThresholdDecline,upperThresholdDecline, 1);
 
-var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdDecline,upperThresholdDecline, 1)
-var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdDecline,upperThresholdDecline, 1)
+var dndThreshOld = thresholdChange(NFSDNDold,lowerThresholdDecline,upperThresholdDecline, 1)
+
+var rnrThresh = thresholdChange(NFSRNR,lowerThresholdRecovery, upperThresholdRecovery, 1);
+
+var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdDecline,upperThresholdDecline, 1);
+var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdDecline,upperThresholdDecline, 1);
 
 
 if(summaryMethod === 'year'){
   var dndThreshOut = dndThresh.qualityMosaic('Decline Probability_change_year');//.qualityMosaic('Decline_change');
+  var dndThreshOutOld = dndThreshOld.qualityMosaic('Decline Probability_change_year');//.qualityMosaic('Decline_change');
+  
+
   var rnrThreshOut = rnrThresh.qualityMosaic('Recovery Probability_change_year');//.qualityMosaic('Recovery_change');
   
   var dndSlowThreshOut = dndSlowThresh.qualityMosaic('Slow Decline Probability_change_year');//.qualityMosaic('Decline_change');
@@ -162,6 +177,10 @@ if(summaryMethod === 'year'){
 }
 else{
   var dndThreshOut = dndThresh.qualityMosaic('Decline Probability');//.qualityMosaic('Decline_change');
+  
+  var dndThreshOutOld = dndThreshOld.qualityMosaic('Decline Probability');//.qualityMosaic('Decline_change');
+  
+
   var rnrThreshOut = rnrThresh.qualityMosaic('Recovery Probability');//.qualityMosaic('Recovery_change');
   
   var dndSlowThreshOut = dndSlowThresh.qualityMosaic('Slow Decline Probability');//.qualityMosaic('Decline_change');
@@ -241,13 +260,37 @@ if(analysisMode === 'advanced'){
   Map2.addLayer(NFSLU.mode().multiply(10),{'palette':luPalette,'min':1,'max':6,addToLegend:false}, luLayerName,false); 
 }
 
+if(viewCONUS === 'yes'){
+ var conusChange = ee.ImageCollection('projects/glri-phase3/science-team-outputs/conus-lcms-2018')
+    .filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+  var conusChangeOut = conusChange;
+  conusChangeOut = conusChangeOut.map(function(img){
+    var m = img.mask();
+    var out = img.mask(ee.Image(1));
+    out = out.where(m.not(),0);
+    return out});
+conusChange = conusChange.map(function(img){
+    var yr = ee.Date(img.get('system:time_start')).get('year');
+    var change = img.divide(100).gt(lowerThresholdDecline);
+    var conusChangeYr = ee.Image(yr).updateMask(change).rename(['change']).int16();
+    return img.mask(ee.Image(1)).addBands(conusChangeYr);
+  }); 
+Map2.addLayer(conusChange.select(['change']).max(),{'min':startYear,'max':endYear,'palette':declineYearPalette },'CONUS LCMS Most Recent Year of Change',false);
+ 
+
+}
+
 
 
 // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
 // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
 
 Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
+// Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
+
+
 Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
+// Map2.addLayer(dndThreshOutOld.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Old Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
 
 
 
@@ -379,8 +422,16 @@ if(analysisMode !== 'advanced' && viewBeta === 'no'){
   NFSLCMS =  NFSLCMS.select(['Decline Probability','Recovery Probability']);
 
 }
-if(analysisMode !== 'advanced' && viewBeta === 'yes'){
+else if(analysisMode !== 'advanced' && viewBeta === 'yes'){
   NFSLCMS =  NFSLCMS.select(['Decline Probability','Recovery Probability','Slow Decline Probability','Fast Decline Probability']);
+
+}
+else if(analysisMode == 'advanced' && viewBeta === 'no'){
+  NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Decline Probability','Recovery Probability']);
+
+}
+else{
+  NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Decline Probability','Recovery Probability','Slow Decline Probability','Fast Decline Probability']);
 
 }
 forCharting = joinCollections(forCharting,NFSLCMS, false);

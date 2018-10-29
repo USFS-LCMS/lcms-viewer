@@ -18,7 +18,14 @@ var mapDiv = document.getElementById('map');
 var groundOverlayOn = false;
 tableConverter = function(dataTableT){
 
-  
+  // var x = [dataTableT[0]]
+  // x[0][0] = 'Year'
+  // dataTableT.slice(1).map(function(i){
+    
+  //   i[0] = (i[0].getYear()+1900).toString()
+  //   x.push(i)
+  // })
+  // dataTableT   = x
 var lcDict = {
   '0': 'No data',
 '1': 'Barren',
@@ -57,7 +64,7 @@ var cpDict = {
     var isFirst = true;
     dataTableT = dataTableT.map(function(i){if(isFirst === false){i[4] = luDict[parseInt(i[4]*10)]};isFirst = false;return i});
     var isFirst = true;
-    dataTableT = dataTableT.map(function(i){if(isFirst === false){i[5] = cpDict[parseInt(i[5]*10)]};isFirst = false;return i});
+    // dataTableT = dataTableT.map(function(i){if(isFirst === false){i[5] = cpDict[parseInt(i[5]*10)]};isFirst = false;return i});
 //       dataTableT = dataTableT.map(function(i){i[2] = cdlDict[i[2]];return i})
   }
   

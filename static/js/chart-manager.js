@@ -102,13 +102,13 @@ function Chart(){
 	          pointSize: 3,
 	          legend: { position: 'bottom',textStyle:{color: chartTextColor,fontSize:'12'} },
 	          dataOpacity: 1,
-	         hAxis:{title:'Time',
+	         hAxis:{title:'Year',
 	         				titleTextStyle:{color: chartTextColor},
 	     				textStyle:{color: chartTextColor}
 	     			},
 	     	vAxis:{textStyle:{color: '#FFF'},titleTextStyle:{color: chartTextColor}},
-	           width: 1000, 
-	           height:300,
+	           width: 1400, 
+	           height:400,
 	           bar: {groupWidth: "100%"},
 	           explorer: { },
 	           backgroundColor: { fill: "#888" }
@@ -166,6 +166,7 @@ function Chart(){
 			$('#curve_chart').append('<br><br>')
  	       	if(chartType != 'Table'){$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
  	       	$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
+ 	       	// $('#curve_chart').append('<p></p>')
  	       	if(chartTypeOptions){
  	       		chartTypes.map(function(ct){
  	       			$("#curve_chart").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this);" >')
@@ -221,9 +222,11 @@ function chartIt(){
 	
 	if(chartIncludeDate){
 	values = values.map(function(v){
-			  var d = [new Date(v[0])];
-			  v.slice(1).map(function(vt){d.push(vt)})
-			  return d})
+			  // var d = [new Date(v[0])];
+			  // v.slice(1).map(function(vt){d.push(vt)})
+			  v[0] = (new Date(v[0]).getYear()+1900).toString();
+			  return v;
+			})
 	}
 
 	var forChart = [header];

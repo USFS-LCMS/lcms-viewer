@@ -746,7 +746,7 @@ function ShapesMap(_map, _deleteButton, _clearButton,_processButton,_exportButto
         }
         else{
             // alert('Must create vectors before processing can be started');
-            showMessage('NO VECTORS FOUND','Must create vectors before processing can be started')
+            showMessage('NO EXPORT AREA SELECTION FOUND','Must select areas for download using drawing tools on left side of screen')
             console.log(_shapes);
             return false}
         // processFeatures(fc,allowExport);

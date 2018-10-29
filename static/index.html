@@ -92,9 +92,9 @@
         $("#legend").draggable();
         // $("#export-list").draggable();
         
-        $("#distance-area-measurement").draggable({
-        cancel: false
-    });;
+    //     $("#distance-area-measurement").draggable({
+    //     cancel: false
+    // });;
         
         
         $('#popup').resizable()
@@ -255,8 +255,9 @@
     <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
                <variable-radio var = 'analysisMode' title2 = 'Easy or Advanced:' name2 = 'Advanced' name1 = 'Easy' value2 = 'advanced' value1 = 'easy' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS outputs"></variable-radio>
               <br><br> 
-              <variable-radio var = 'viewBeta' title2 = 'View Beta Outputs:' name2 = 'Yes' name1 = 'No' value2 = 'yes' value1 = 'no' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-              <br><br> 
+              <!-- <variable-radio var = 'viewBeta' title2 = 'View Beta Outputs:' name2 = 'Yes' name1 = 'No' value2 = 'yes' value1 = 'no' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
+              <br><br>  -->
+              <script type="text/javascript">var viewBeta = 'no';var viewCONUS = 'no';</script>
               <variable-radio var = 'studyAreaName' title2 = 'Name of study area:' name2 = 'BT' name1 = 'FNF' value2 = 'BT' value1 = 'FNF' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which forest to display LCMS products for"></variable-radio>
               <br><br>
             
@@ -313,7 +314,7 @@
         
   
   <div id="basic-tools-tab" class="tab-pane fade">
-        
+        <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
         <input style='display:inline-block;' id="box1" name='cb' value='none' type="radio" checked=t rue onclick="toggleRadio(this.value);" />
         <label for="box1" style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff'>None</label>
         
@@ -331,6 +332,9 @@
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Measure area (sq m/hectares or sq ft/acres). Click distance indicator to toggle metric/imperial.  Double click to start new polygon. Press 'd' or 'Delete' button to clear. Press 'u' to undo last vertex placement"
         >Area Measuring</label>
         <br>
+        <button id = 'distance-area-measurement' class = 'button'  onclick = 'toggleDistanceAreaUnits(this.value)' style = 'display:none;height:100;width:300px;'
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"
+        ></button>
         <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
        
         
@@ -708,13 +712,11 @@
     </a>
     
     </div>
-     <button id = 'distance-area-measurement' class = 'button'  onclick = 'toggleDistanceAreaUnits(this.value)' style = 'position:absolute;left:40%;bottom:20%;display:none;width:150px;height:75;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"
-        ></button>
+     
     
     <!-- <div id = "resizable" style = "position: absolute;background:#FFF">hello -->
     <!-- <div id = 'curve_chart'style="visible :false; position: absolute;width: 60%; height: 45%;top: 20%"></div> -->
-    <div id="curve_chart" style="display: none; position: absolute;top: 10%;left:10%;border-radius: 10px;background: #888;">
+    <div id="curve_chart" style="display: none; position: absolute;top: 10%;left:5%;border-radius: 10px;background: #888">
 
       
     </div>

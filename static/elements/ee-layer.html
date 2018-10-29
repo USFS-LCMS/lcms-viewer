@@ -10,6 +10,7 @@
 <polymer-element name="ee-layer" attributes="name">
     <template>
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+       
         <style>
 
 
@@ -55,7 +56,7 @@
                 clear:both;
                 /*padding-bottom:6px;*/
                 color: #FFFFFF;
-                font-size: 0.8em;
+                font-size: 1.1em;
             }
             #viz:hover{width:50px;}
             li:hover{color: #9aa9b3;-webkit-transition: color  0.5s;}
@@ -68,7 +69,7 @@
             .range{float:right;}
             #opacity{margin-left:1Spx;}
         </style>
-        <li style = 'height:5px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
+        <li style = 'height:10px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
 
             <div class="container" style="margin-bottom:  10px ;border-radius:10px;height:3px;background-image: -webkit-linear-gradient(left, #999, #FFF {{percent}}%, transparent {{percent}}%, transparent 100%)"><i class="fa fa-spinner fa-spin {{ {deactivated:layer != null}| tokenList }}"></i><input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> {{name}}</div> 
             <!-- <input type="text" style = 'width:150px;' var = 'viz' value="{{viz}}" spellcheck="false" on-change="{{onVizChange}}"  > -->
@@ -820,7 +821,7 @@
             #opacity{margin-left:1Spx;}
         </style>
         <div class = 'container' style = "width:100%;">
-        <li style = 'height:5px;margin-bottom:10px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
+        <li style = 'height:10px;margin-bottom:10px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
             <input  id="enabled" type="checkbox" on-change="{{onChange}}" checked={{Export}}
             href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= 'Whether or not to export image: {{name}}' >
              <input type="text"  id = 'name' value="{{name}}"style = 'height:5px;color:#FFF;border-radius:5px;width:80%;padding:5px;background-color:#576066;' spellcheck="false" on-change="{{onNameChange}}" on-click="{{onNameChange}}" on-keyup = "{{onNameChange}}"

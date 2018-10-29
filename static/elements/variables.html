@@ -1,7 +1,7 @@
 <link rel="import" href="../components/polymer/polymer.html">
 
 
-<dom-element name="ee-variable" noscript>
+<!-- <dom-element name="ee-variable" noscript>
 	<template>
 		<style>
 			:host{
@@ -17,7 +17,7 @@
 
 		</style>
 	</template>
-</dom-element>
+</dom-element> -->
 
 <polymer-element name="variable-number" attributes="name default var min max step" extends="ee-variable">
 	<template>
@@ -233,6 +233,7 @@
 
 
 <polymer-element name="variable-radio" attributes="var name1 name2 value1 value2 type title2" extends="ee-variable">
+	
 	<template>
 		
 		{{title2}}&nbsp&nbsp&nbsp&nbsp<input type="radio" name="browser" on-change="{{checkIt1}}" value="1" checked>{{name1}}
