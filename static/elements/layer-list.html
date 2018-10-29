@@ -1,0 +1,326 @@
+<link rel="import" href="../components/polymer/polymer.html">
+
+<polymer-element name="base-list" noscript attributes="listName">
+	<template>
+		<style>
+			:host{				
+				margin-left:2px;
+				margin-right: 2px;
+				background:rgba(100,100,100,0.9);
+				border-radius: 15px;
+				padding:5px;
+				padding-top:3px;
+				display:block;
+				margin-bottom:4px;
+			}
+			div {
+				/*font-family:"Courier New", Courier, monospace;*/
+				/*font-weight:bold;*/
+				font-size: font-size:18pt;
+				/*text-decoration:overline;				*/
+				text-align:center;				
+				margin-bottom:2px;
+				color: #FFFFFF;
+			}
+		</style>
+		<div>{{listName}}</div>
+		<content></content>
+	</template>
+</polymer-element>
+
+<polymer-element name="layer-list" noscript>
+	<template>
+		<!-- <base-list listName="LCMS Layers"> -->
+			<content></content>
+		</base-list>
+	</template>
+</polymer-element>
+<polymer-element name="reference-layer-list" noscript>
+	<template>
+		<!-- <base-list listName="Reference Layers"> -->
+			<content></content>
+		</base-list>
+	</template>
+</polymer-element>
+<polymer-element name="export-layer-list" noscript>
+	<template>
+		<base-list listName="LCMS Export Layers">
+			<content></content>
+		</base-list>
+	</template>
+</polymer-element>
+
+
+
+<polymer-element name="legend-list" noscript>
+	<template>
+		
+		<!-- <a href="../images/nwi_legend.png" target="_blank">
+		<img style = 'width:100%;'src="../images/nwi_legend.png">
+		</a>
+
+		<a href="../images/NLCD_Colour_Classification_Update.jpg" target="_blank">
+		<img style = 'width:100%;'src="../images/NLCD_Colour_Classification_Update.jpg">
+		</a>
+		 -->
+		
+		 <base-list>
+			<content></content>
+
+		
+<div class='my-legend'>
+
+<div class='legend-scale'>
+  <ul class='legend-labels'>
+  <div class='legend-title'>Land Cover Classes</div>
+    
+  	<li><span style='background:#b67430;'></span>Barren (0.1 in chart)</li>
+	<li><span style='background:#78db53;'></span>Grass/forb/herb (0.2 in chart)</li>
+	<li><span style='background:#F0F;'></span>Impervious (0.3 in chart)</li>
+	<li><span style='background:#ffb88c;'></span>Shrubs (0.4 in chart)</li>
+	<li><span style='background:#8cfffc;'></span>Snow/ice (0.5 in chart)</li>
+	<li><span style='background:#32681e;'></span>Trees (0.6 in chart)</li>
+	<li><span style='background:#2a74b8;'></span>Water (0.7 in chart)</li>
+	<!-- <br>
+	<li><span style='background-image: linear-gradient(to right, yellow, red);'></span>Decline Year (1985-2018)</li>
+	<li><span style='background-image: linear-gradient(to right, #900, #090);'></span>Recovery count (2-7 yrs)</li> -->
+  </ul>
+</div>
+</div>
+
+<div class='my-legend'>
+<div class='legend-scale'>
+  <ul class='legend-labels'>
+  <div class='legend-title'>Land Use Classes</div>
+    <script type="text/javascript">//["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a"]</script>
+  	<li><span style='background:#efff6b;'></span>Agriculture (0.1 in chart)</li>
+	<li><span style='background:#ff2ff8;'></span>Developed (0.2 in chart)</li>
+	<li><span style='background:#1b9d0c;'></span>Forest (0.3 in chart)</li>
+	<li><span style='background:#97ffff;'></span>Non-forest Wetland (0.4 in chart)</li>
+	<li><span style='background:#a1a1a1;'></span>Other (0.5 in chart)</li>
+	<li><span style='background:#c2b34a;'></span>Rangeland (0.6 in chart)</li>
+	
+	<!-- <br>
+	<li><span style='background-image: linear-gradient(to right, yellow, red);'></span>Decline Year (1985-2018)</li>
+	<li><span style='background-image: linear-gradient(to right, #900, #090);'></span>Recovery count (2-7 yrs)</li> -->
+  </ul>
+</div>
+</div>
+
+<div class='my-legend'>
+<div class='legend-scale'>
+  <ul class='legend-labels'>
+  <div class='legend-title'>MTBS Severity Classes</div>
+    <script type="text/javascript">//'006400,7fffd4,ffff00,ff0000,7fff00,ffffff'</script>
+  	<li><span style='background:#006400;'></span>Unburned to Low</li>
+	<li><span style='background:#7fffd4;'></span>Low</li>
+	<li><span style='background:#ffff00;'></span>Moderate</li>
+	<li><span style='background:#ff0000;'></span>High</li>
+	<li><span style='background:#7fff00;'></span>Increased Greenness</li>
+	<li><span style='background:#ffffff;'></span>Non-Processing Area Mask</li>
+	
+	<!-- <br>
+	<li><span style='background-image: linear-gradient(to right, yellow, red);'></span>Decline Year (1985-2018)</li>
+	<li><span style='background-image: linear-gradient(to right, #900, #090);'></span>Recovery count (2-7 yrs)</li> -->
+  </ul>
+</div>
+
+<div class='my-legend'>
+<div class='legend-scale'>
+  <ul class='legend-labels'>
+  <div class='legend-title'>VMAP Lifeform</div>
+    <script type="text/javascript">//'006400,7fffd4,ffff00,ff0000,7fff00,ffffff'</script>
+  	<li><span style='background:#ffffbe;'></span>HERB</li>
+	<li><span style='background:#ffbee8;'></span>SHRUB</li>
+	<li><span style='background:#4c7300;'></span>TREE</li>
+	<li><span style='background:#002673;'></span>WATER</li>
+	<li><span style='background:#828282;'></span>SPVEG</li>
+	<li><span style='background:#000000;'></span>URBAN</li>
+	
+	<!-- <br>
+	<li><span style='background-image: linear-gradient(to right, yellow, red);'></span>Decline Year (1985-2018)</li>
+	<li><span style='background-image: linear-gradient(to right, #900, #090);'></span>Recovery count (2-7 yrs)</li> -->
+  </ul>
+</div>
+
+<div class='my-legend'>
+<div class='legend-scale'>
+  <ul class='legend-labels'>
+  <div class='legend-title'>VMAP Canopy</div>
+    <script type="text/javascript">//'006400,7fffd4,ffff00,ff0000,7fff00,ffffff'</script>
+  	<li><span style='background:#ffffbe;'></span>HERB</li>
+	<li><span style='background:#ffbee8;'></span>SHRUB</li>
+	<li><span style='background:#ffff00;'></span>CTR 10-24.9%</li>
+	<li><span style='background:#aaff00;'></span>CTR 25-39.9%</li>
+	<li><span style='background:#4c7300;'></span>CTR 40-59.9%</li>
+	<li><span style='background:#734c00;'></span>CTR >= 60%</li>
+	<li><span style='background:#002673;'></span>WATER</li>
+	<li><span style='background:#828282;'></span>SPVEG</li>
+	<li><span style='background:#000000;'></span>URBAN</li>
+	<li><span style='background:#ff73df;'></span>DTR 10-39.9%</li>
+	<li><span style='background:#ff00c5;'></span>DTR >= 40%</li>
+
+	
+	<!-- <br>
+	<li><span style='background-image: linear-gradient(to right, yellow, red);'></span>Decline Year (1985-2018)</li>
+	<li><span style='background-image: linear-gradient(to right, #900, #090);'></span>Recovery count (2-7 yrs)</li> -->
+  </ul>
+</div>
+
+<style type='text/css'>
+  .my-legend .legend-title {
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 90%;
+    color:#FFF;
+    }
+  .my-legend .legend-scale ul {
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 0;
+    float: left;
+    list-style: none;
+    color: #FFF;
+    }
+  .my-legend .legend-scale ul li {
+    font-size: 80%;
+    list-style: none;
+    margin-left: 0;
+    line-height: 18px;
+    margin-bottom: 2px;
+    }
+  .my-legend ul.legend-labels li span {
+    display: block;
+    float: left;
+    height: 16px;
+    width: 30px;
+    margin-right: 5px;
+    margin-left: 0;
+    border: 1px solid #999;
+    
+
+    }
+  .my-legend .legend-source {
+    font-size: 70%;
+    color: #999;
+    clear: both;
+    
+    }
+  .my-legend a {
+    color: #777;
+    border: 1px solid
+    }
+</style>
+
+	<!-- 	<a href="../images/mtbs_legend.jpg" target="_blank">
+		<img style = 'width:100%;'src="../images/mtbs_legend.jpg">
+		</a> -->
+
+		<!-- <a href="../images/Legende_globale_Globcover.png" target="_blank">
+		<img style = 'width:100%;'src="../images/Legende_globale_Globcover.png">
+		</a>
+		<a href="../images/FIA_Forest_Types_Lookup.jpg" target="_blank">
+		<img style = 'width:100%;'src="../images/FIA_Forest_Types_Lookup.jpg">
+		</a>
+		<a href="../images/CDL_legend.png" target="_blank">
+		<img style = 'width:100%;'src="../images/CDL_legend.png">
+		</a>
+		<a href="../images/digital-globe-most-recent-image-vintage.png" target="_blank">
+		<img style = 'width:100%;'src="../images/digital-globe-most-recent-image-vintage.png">
+		</a> -->
+		
+		</base-list>
+	</template>
+</polymer-element>
+
+<polymer-element name="pt-project-list" noscript>
+	<template>
+		
+		<base-list style = 'width:90%;' listName= "Plot Projects" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click on buttons to select project plots">
+			<content></content>
+		</base-list>
+		
+	</template>
+</polymer-element>
+
+<polymer-element name="pt-list" noscript>
+	<template>
+		
+		<base-list style = 'width:90%;' listName="Plots" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click on buttons below to fly to plot">
+			<content></content>
+		</base-list>
+		
+	</template>
+</polymer-element>
+
+<polymer-element name="variable-list" noscript>
+	<template>
+		<base-list listName="Parameters">
+			<content></content>
+		</base-list>
+	</template>	
+</polymer-element>
+
+<polymer-element name="export-list" noscript>
+	<template>
+	<style type="text/css">
+
+.button {
+  display: inline-block;
+  background: #576066;
+  background-image: -webkit-linear-gradient(top, #576066, #9aa9b3);
+  background-image: -moz-linear-gradient(top, #576066, #9aa9b3);
+  background-image: -ms-linear-gradient(top, #576066, #9aa9b3);
+  background-image: -o-linear-gradient(top, #576066, #9aa9b3);
+  background-image: linear-gradient(to bottom, #576066, #9aa9b3);
+  -webkit-border-radius: 13;
+  -moz-border-radius: 13;
+  border-radius: 5px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 4px 7px 4px 7px;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: #aebbc2;
+  background-image: -webkit-linear-gradient(top, #aebbc2, #cad3d9);
+  background-image: -moz-linear-gradient(top, #aebbc2, #cad3d9);
+  background-image: -ms-linear-gradient(top, #aebbc2, #cad3d9);
+  background-image: -o-linear-gradient(top, #aebbc2, #cad3d9);
+  background-image: linear-gradient(to bottom, #aebbc2, #cad3d9);
+  text-decoration: none;}
+
+.button:active {
+  background-color: #FFFFFF;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+	</style>
+		<div style = 'background-color:#666;border-radius:5px;width:100%;'>
+		<base-list listName="Export Image List" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Check any images you would like to export, change any necessary parameters, and then submit image for export">
+		<div style='width:90%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+			<content>
+				
+
+			</content>
+
+			
+       
+		</base-list>
+		 <div style='width:90%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+		<!-- <input onclick="closePopup();" type=button class='button' value="x" style='border-radius:5px;position:absolute;right:1px;top:1px;'
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel"> -->
+        <variable-text id="export-crs" name="Export crs" var="exportCRS" default="EPSG:26911"  style='display:inline-block'
+       href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="EPSG format export projection specification. UTM WGS 84: 326 + zone number, UTM NAD83: 269 + zone number, USGS Albers: 5070, Web Mercator: 4326"></variable-text>
+       <br>
+        <div style='width:90%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+       <input onclick="exportImages();" type=button class='button' value="Submit" style='display:inline;margin-left:5px;margin-bottom:5px;'
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Submit selected images for exporting">
+        <input onclick="closePopup();" type=button class='button' value="Cancel" style='display:inline'
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Exit without submitting any images for export">
+		</div>
+	</template>	
+</polymer-element>
