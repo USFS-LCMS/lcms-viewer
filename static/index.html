@@ -204,9 +204,15 @@
 
     
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <div id="parameters-tools-layers" style = "color:#FFF;" disabled="disabled">
-  <ul class="nav nav-tabs  nav-stacked"  >
+      <!-- <button data-toggle="collapse" data-target="#collapse-menu" style = 'color:#000;left:50%;'>Collapsible</button> -->
+      <button data-toggle="collapse" class="btn" data-target="#collapse-menu"  style = 'color:#000;width:100%;'
+      data-toggle="tooltip" data-placement="top" title="Show or hide LCMS map controls"><i class="fa fa-bars"></i></button>
+
+<div id="collapse-menu" class="collapse fade in active">
+<ul class="nav nav-tabs  nav-stacked"  >
   <li><a data-toggle="tab" href="#help-tab">About</a>
 
   </li>
@@ -274,9 +280,9 @@
           <div id = 'date-range-value1'class = 'dual-range-slider-value'> </div>
              </div >
           <script type="text/javascript">
-            var startYear = 1984;
+            var startYear = 1985;
             var endYear = 2018;
-            setUpRangeSlider('startYear','endYear',1984,2018,startYear,endYear,1,'slider1','date-range-value1','null')
+            setUpRangeSlider('startYear','endYear',1985,2018,startYear,endYear,1,'slider1','date-range-value1','null')
           </script>
          <br>
 
@@ -413,7 +419,8 @@
         <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style = 'display:inline-block;' 
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
         <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download metadata" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Download metadata for exports">
+       
       <!--   <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div> -->
         <!-- <export-layer-list id="export-layers"></export-layer-list>  -->
           <!-- <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
@@ -439,6 +446,8 @@
     <legend-list id="legend" ></legend-list>
  
 </div>
+</div>
+  
 
 </div>
 

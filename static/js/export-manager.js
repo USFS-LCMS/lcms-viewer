@@ -97,7 +97,7 @@ cancelAllTasks = function(){
 }
 downloadMetadata = function(){
     console.log('downloading metadta');
-    var url='images/lcms_beta_metadata.txt';    
+    var url='images/lcms_metadata_beta.pdf';    
     var link=document.createElement('a');
     link.href = url;
     link.download = url.substr(url.lastIndexOf('/') + 1);

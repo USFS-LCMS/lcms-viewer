@@ -22,7 +22,12 @@ handlers:
   mime_type: application/x-chrome-extension
   static_files: static/\1
   upload: static/(.*\.crx)
-
+  
+- url: /(.*\.pdf)
+  mime_type: application/pdf
+  static_files: static/\1
+  upload: static/(.*\.pdf)
+  
 - url: /(.*\.css)
   mime_type: text/css
   static_files: static/\1
