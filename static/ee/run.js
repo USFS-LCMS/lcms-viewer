@@ -22,6 +22,7 @@
 
   
 // }
+var warningShown = false;
 function run(){
 
 function multBands(img,distDir,by){
@@ -110,21 +111,23 @@ var PALETTE = 'b67430,78db53,F0F,ffb88c,8cfffc,32681e,2a74b8'
 var collectionDict = {
   'FNF': ['projects/USFS/LCMS-NFS/R1/FNF/Composites/FNF-Composite-Collection',
   // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Change/Landcover-Change-Collection',
-  'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+  'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-R1',
   'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/LANDTRENDR-Collection',
   'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/Harmonic-Coefficients',
-  fnfStudyAreas
+  fnfStudyAreas,
+  'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table'
   ],
 
   'BT':['projects/USFS/LCMS-NFS/R4/BT/Composites/BT-Composite-Collection',
-  'projects/USFS/LCMS-NFS/R4/BT/Change/BT-Change-Collection',
+  'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
   'projects/USFS/LCMS-NFS/R4/BT/Base-Learners/LANDTRENDR-Collection',
   'projects/USFS/LCMS-NFS/R4/BT/Base-Learners/Harmonic-Coefficients',
-  btStudyAreas]
+  btStudyAreas,
+  'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table']
   
 }
 
-
+var ts = ee.ImageCollection(collectionDict[studyAreaName][5]);
 var NFSLCMS = ee.ImageCollection(collectionDict[studyAreaName][1])
               .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
@@ -260,25 +263,7 @@ if(analysisMode === 'advanced'){
   Map2.addLayer(NFSLU.mode().multiply(10),{'palette':luPalette,'min':1,'max':6,addToLegend:false}, luLayerName,false); 
 }
 
-if(viewCONUS === 'yes'){
- var conusChange = ee.ImageCollection('projects/glri-phase3/science-team-outputs/conus-lcms-2018')
-    .filter(ee.Filter.calendarRange(startYear,endYear,'year'));
-  var conusChangeOut = conusChange;
-  conusChangeOut = conusChangeOut.map(function(img){
-    var m = img.mask();
-    var out = img.mask(ee.Image(1));
-    out = out.where(m.not(),0);
-    return out});
-conusChange = conusChange.map(function(img){
-    var yr = ee.Date(img.get('system:time_start')).get('year');
-    var change = img.divide(100).gt(lowerThresholdDecline);
-    var conusChangeYr = ee.Image(yr).updateMask(change).rename(['change']).int16();
-    return img.mask(ee.Image(1)).addBands(conusChangeYr);
-  }); 
-Map2.addLayer(conusChange.select(['change']).max(),{'min':startYear,'max':endYear,'palette':declineYearPalette },'CONUS LCMS Most Recent Year of Change',false);
- 
 
-}
 
 
 
@@ -323,7 +308,8 @@ var hansen = ee.Image('UMD/hansen/global_forest_change_2016_v1_4').select(['loss
 hansen = hansen.updateMask(hansen.neq(2000).and(hansen.gte(startYear)).and(hansen.lte(endYear)));
 Map2.addLayer(hansen,{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Decline Year',false,null,null,'Hansen Global Forest Change year of change','reference-layer-list');
 
-var vmap = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/FNF_VMap')//.limit(100000);
+if(studyAreaName === 'FNF'){
+ var vmap = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/FNF_VMap')//.limit(100000);
 var lfCodes  = [3100,3300,4000,5000,7000,7100];
 var cCodes = [3100,3300,4001,4002,4003,4004,5000,7000,7100,8601,8602];
 
@@ -348,6 +334,11 @@ var wb = ee.Image('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/IRPSV102_WHITEBARK');
 wb = wb.updateMask(wb)
 Map2.addLayer(wb,{min:1,max:1,palette:'080',addToLegend:false},'Whitebark Pine',false,null,null,'Extent of potential Whitebark Pine','reference-layer-list')
 
+var gnpHUC = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/GNP_Huc12');
+Map2.addLayer(gnpHUC,{palette:'0088FF',addToLegend:false},'GNP HUC 12',false,null,null,null,'reference-layer-list')
+
+}
+
 
 var mtbs = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/MTBS')
           .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
@@ -369,7 +360,7 @@ Map2.addLayer(mtbsYear,{min:startYear,max:endYear,palette:declineYearPalette},'M
 
 var studyAreas = collectionDict[studyAreaName][4];
 studyAreas.map(function(studyArea){
-  Map2.addLayer(studyArea[1],{palette:'d9d9d9',addToLegend:false},studyArea[0],true,null,null,null,'reference-layer-list')
+  Map2.addLayer(studyArea[1],{palette:'d9d9d9',addToLegend:false},studyArea[0],false,null,null,null,'reference-layer-list')
 // 
 })
 
@@ -436,5 +427,7 @@ else{
 }
 forCharting = joinCollections(forCharting,NFSLCMS, false);
 chartCollection =forCharting;
+
+if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 };

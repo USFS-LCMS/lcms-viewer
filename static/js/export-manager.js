@@ -1,6 +1,7 @@
 var exportOuputName; var submitOutputName;var taskId;
 var cancelAllTasks = function(){console.log('yay')};//showMessage('Completed','Tasks cancelled: 0');};
 var downloadMetadata = function(){console.log('yay')};
+var downloadTraining = function(){console.log('yay')};
 var list = [];
 var bucketName = 'test-bucket-housman2';//Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
 var eID = 1;
@@ -103,6 +104,14 @@ downloadMetadata = function(){
     link.download = url.substr(url.lastIndexOf('/') + 1);
     link.click(); 
 
+}
+downloadTraining = function(){
+   console.log('downloading training');
+    var url='images/LCMS_Data_Explorer_exercise1.pdf';    
+    var link=document.createElement('a');
+    link.href = url;
+    link.download = url.substr(url.lastIndexOf('/') + 1);
+    link.click();  
 }
 ////////////////////////////////////////////////
 function trackExports(){

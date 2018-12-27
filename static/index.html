@@ -251,6 +251,9 @@
       <div  style=" overflow-wrap: break-word;max-width: 300px;" >
       
     This website is designed to provide a visualiztion of LCMS landcover change products, related geospatial data, and a portal to download the data
+    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+    <input onclick="downloadTraining();" type=button class='button' id="download-training-button" value="Download Training Tutorial" style = 'display:inline-block;width:100%;margin-top:3px;' 
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download training tutorial pdf">
 
     </div>
     </div>
@@ -281,7 +284,7 @@
              </div >
           <script type="text/javascript">
             var startYear = 1985;
-            var endYear = 2018;
+            var endYear = 2017;
             setUpRangeSlider('startYear','endYear',1985,2018,startYear,endYear,1,'slider1','date-range-value1','null')
           </script>
          <br>
@@ -418,8 +421,8 @@
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Export images within drawn polygons">
         <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style = 'display:inline-block;' 
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
-        <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download metadata" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Download metadata for exports">
+        <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download Metadata" style = 'display:inline-block;' 
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download metadata for exports">
        
       <!--   <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div> -->
         <!-- <export-layer-list id="export-layers"></export-layer-list>  -->

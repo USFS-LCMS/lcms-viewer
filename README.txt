@@ -13,6 +13,20 @@ Start the App Engine launcher
 Add the project to the App Engine
 Run the project
 Deploy it
+
+Updated method:
+Run local dev server:
+Run cmd in directory where project yaml is
+Run: dev_appserver.py app.yaml
+Go to: localhost:8080
+
+
+To deploy:
+
+Run cmd in directory where project yaml is
+Select project with: gcloud init
+gcloud --project projectName app deploy
+gcloud app browse
 *********************************************************************************
 *********************************************************************************
 Any server-side EE object/method works as it would in the Playground.  The only client-side method in the Playground that behaves roughly the same is Map.addLayer.  
