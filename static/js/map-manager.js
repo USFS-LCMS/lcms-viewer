@@ -565,8 +565,8 @@ function getGroundOverlay(baseUrl,minZoom){
 
   var bounds = map.getBounds();
 
-  var ulxy = [bounds.j.j,bounds.l.j];
-  var lrxy = [bounds.j.l,bounds.l.l];
+  var ulxy = [bounds.fa.j,bounds.ma.j];
+  var lrxy = [bounds.fa.l,bounds.ma.l];
   var ulxyMercator = llToNAD83(ulxy[0],ulxy[1]);
   var lrxyMercator = llToNAD83(lrxy[0],lrxy[1]);
   
@@ -1477,7 +1477,7 @@ function initialize() {
           map.fitBounds(bounds);
           console.log(bounds);
           var bounds = map.getBounds();
-          eeBoundsPoly = ee.Geometry.Rectangle([bounds.j.j,bounds.l.j,bounds.j.l,bounds.l.l]);
+          eeBoundsPoly = ee.Geometry.Rectangle([bounds.fa.j,bounds.ma.j,bounds.fa.l,bounds.ma.l]);
           reRun();
         });
         if(helpBox){
@@ -1639,7 +1639,7 @@ function initialize() {
         zoom = map.getZoom();
         console.log('bounds changed');
        var bounds = map.getBounds();
-        eeBoundsPoly = ee.Geometry.Rectangle([bounds.j.j,bounds.l.j,bounds.j.l,bounds.l.l]);
+        eeBoundsPoly = ee.Geometry.Rectangle([bounds.fa.j,bounds.ma.j,bounds.fa.l,bounds.ma.l]);
 
         if(typeof(Storage) == "undefined") return;
         localStorage.setItem("settings",JSON.stringify({center:{lat:map.getCenter().lat(),lng:map.getCenter().lng()},zoom:map.getZoom()}));
