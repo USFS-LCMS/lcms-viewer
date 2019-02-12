@@ -563,13 +563,17 @@ function getGroundOverlay(baseUrl,minZoom){
   var mapHeight = $('#map').height();
   var mapWidth = $('#map').width();
 
-  var bounds = map.getBounds();
+   var bounds = map.getBounds();
+  var keys = Object.keys(bounds);
+  var keysX = Object.keys(bounds[keys[0]]);
+  var keysY = Object.keys(bounds[keys[1]]);
+       console.log('b');console.log(bounds);
+        eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
 
-  var ulxy = [bounds.fa.j,bounds.ma.j];
-  var lrxy = [bounds.fa.l,bounds.ma.l];
+  var ulxy = [bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]]];
+  var lrxy = [bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]];
   var ulxyMercator = llToNAD83(ulxy[0],ulxy[1]);
   var lrxyMercator = llToNAD83(lrxy[0],lrxy[1]);
-  
   
   var url = baseUrl+
   
@@ -719,6 +723,16 @@ function reRun(){
         overlayIndex++
 
 	}
+  map.overlayMapTypes.j.slice(0,map.overlayMapTypes.j.length-layerCount).forEach(function(element,index){
+                    
+                    if(element !== undefined && element !== null){
+                        console.log('remooooooving');
+                    console.log(index);
+                    console.log(element)
+                    map.overlayMapTypes.setAt(index,null);
+                };
+                    
+                });
   // while(exportLayers.firstChild){
         
   //   exportLayers.removeChild(exportLayers.firstChild);
@@ -771,9 +785,10 @@ function reRun(){
       map.overlayMapTypes.j.slice(0,map.overlayMapTypes.j.length-layerCount).forEach(function(element,index){
                     
                     if(element !== undefined && element !== null){
-                        console.log('removing');
+                        console.log('remooooooving');
                     console.log(index);
-                    map.overlayMapTypes.setAt(index,null);
+                    console.log(element)
+                    // map.overlayMapTypes.setAt(index,null);
                 };
                     
                 });  
@@ -1477,7 +1492,12 @@ function initialize() {
           map.fitBounds(bounds);
           console.log(bounds);
           var bounds = map.getBounds();
-          eeBoundsPoly = ee.Geometry.Rectangle([bounds.fa.j,bounds.ma.j,bounds.fa.l,bounds.ma.l]);
+         var keys = Object.keys(bounds);
+         var keysX = Object.keys(bounds[keys[0]]);
+         var keysY = Object.keys(bounds[keys[1]]);
+         console.log('b');console.log(bounds);
+          eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+
           reRun();
         });
         if(helpBox){
@@ -1636,10 +1656,14 @@ function initialize() {
         })
 
     google.maps.event.addListener(map,'bounds_changed',function(){
-        zoom = map.getZoom();
-        console.log('bounds changed');
-       var bounds = map.getBounds();
-        eeBoundsPoly = ee.Geometry.Rectangle([bounds.fa.j,bounds.ma.j,bounds.fa.l,bounds.ma.l]);
+      zoom = map.getZoom();
+      console.log('bounds changed');
+      var bounds = map.getBounds();
+      var keys = Object.keys(bounds);
+      var keysX = Object.keys(bounds[keys[0]]);
+      var keysY = Object.keys(bounds[keys[1]]);
+      // console.log('b');console.log(bounds);
+      eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
 
         if(typeof(Storage) == "undefined") return;
         localStorage.setItem("settings",JSON.stringify({center:{lat:map.getCenter().lat(),lng:map.getCenter().lng()},zoom:map.getZoom()}));

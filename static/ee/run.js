@@ -112,16 +112,16 @@ var collectionDict = {
   'FNF': ['projects/USFS/LCMS-NFS/R1/FNF/Composites/FNF-Composite-Collection',
   // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Change/Landcover-Change-Collection',
   'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-R1',
-  'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/LANDTRENDR-Collection',
-  'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/Harmonic-Coefficients',
+  'projects/USFS/LCMS-NFS/R1/Base-Learners/LANDTRENDR-Collection',
+  'projects/USFS/LCMS-NFS/R1/Base-Learners/Harmonic-Coefficients',
   fnfStudyAreas,
   'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table'
   ],
 
   'BT':['projects/USFS/LCMS-NFS/R4/BT/Composites/BT-Composite-Collection',
   'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
-  'projects/USFS/LCMS-NFS/R4/BT/Base-Learners/LANDTRENDR-Collection',
-  'projects/USFS/LCMS-NFS/R4/BT/Base-Learners/Harmonic-Coefficients',
+  'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+  'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
   btStudyAreas,
   'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table']
   
@@ -275,6 +275,7 @@ Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':
 
 
 Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
+
 // Map2.addLayer(dndThreshOutOld.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Old Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
 
 
@@ -426,6 +427,7 @@ else{
 
 }
 forCharting = joinCollections(forCharting,NFSLCMS, false);
+
 chartCollection =forCharting;
 
 if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
