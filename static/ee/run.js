@@ -450,42 +450,42 @@ Map2.addExport(lcForExport,studyAreaName +' LCMS Beta Land Cover mode '+ startYe
 Map2.addExport(luForExport,studyAreaName +' LCMS Beta Land Use mode '+ startYear.toString() + '-'+ endYear.toString() ,30,10,120,10,false,{'palette':luPalette,'min':1,'max':6});
 }
 
-Map2.addExport(dndYearForExport,studyAreaName +' LCMS Beta Decline Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':declineYearPalette});
-Map2.addExport(dndSevForExport,studyAreaName +' LCMS Beta Decline Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdDecline*100,'max':upperThresholdDecline*100,'palette':declineProbPalette});
+Map2.addExport(dndYearForExport,studyAreaName +' LCMS Beta Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':declineYearPalette});
+Map2.addExport(dndSevForExport,studyAreaName +' LCMS Beta Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdDecline*100,'max':upperThresholdDecline*100,'palette':declineProbPalette});
 
 if(analysisMode === 'advanced'){
-Map2.addExport(dndCountForExport,studyAreaName +' LCMS Beta Decline Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':declineDurPalette});
+Map2.addExport(dndCountForExport,studyAreaName +' LCMS Beta Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':declineDurPalette});
 
 }
 
-Map2.addExport(rnrYearForExport,studyAreaName +' LCMS Beta Recovery Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':recoveryYearPalette});
-Map2.addExport(rnrSevForExport,studyAreaName +' LCMS Beta Recovery Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdRecovery*100,'max':upperThresholdRecovery*100,'palette':recoveryProbPalette});
+Map2.addExport(rnrYearForExport,studyAreaName +' LCMS Beta Gain Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':recoveryYearPalette});
+Map2.addExport(rnrSevForExport,studyAreaName +' LCMS Beta Gain Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdRecovery*100,'max':upperThresholdRecovery*100,'palette':recoveryProbPalette});
 
 if(analysisMode === 'advanced'){
-Map2.addExport(rnrCountForExport,studyAreaName +' LCMS Beta Recovery Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':recoveryDurPalette});
+Map2.addExport(rnrCountForExport,studyAreaName +' LCMS Beta Gain Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':recoveryDurPalette});
 
 }
 //Set up charting
 var forCharting = joinCollections(composites.select([whichIndex]),fittedAsset, false);
 
 if(analysisMode !== 'advanced' && viewBeta === 'no'){
-  NFSLCMS =  NFSLCMS.select(['Decline Probability','Recovery Probability']);
+  NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability']);
 
 }
 else if(analysisMode !== 'advanced' && viewBeta === 'yes'){
-  NFSLCMS =  NFSLCMS.select(['Decline Probability','Recovery Probability','Slow Decline Probability','Fast Decline Probability']);
+  NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
 
 }
 else if(analysisMode == 'advanced' && viewBeta === 'no'){
-  NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Decline Probability','Recovery Probability']);
+  NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability']);
 
 }
 else{
-  NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Decline Probability','Recovery Probability','Slow Decline Probability','Fast Decline Probability']);
+  NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
 
 }
 forCharting = joinCollections(forCharting,NFSLCMS, false);
-
+console.log('charting');console.log(forCharting.getInfo());
 chartCollection =forCharting;
 
 if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}

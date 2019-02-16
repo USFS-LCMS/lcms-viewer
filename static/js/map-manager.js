@@ -837,14 +837,14 @@ function reRun(){
       map.overlayMapTypes.j.slice(0,map.overlayMapTypes.j.length-layerCount).forEach(function(element,index){
                     
                     // if(element !== undefined && element !== null){
-                        console.log('remooooooving');
-                    console.log(index);
-                    console.log(element)
+                    //     console.log('remooooooving');
+                    // console.log(index);
+                    // console.log(element)
                     map.overlayMapTypes.setAt(index,null);
                 // };
                     
                 });  
-  },5000,20)
+  },5000,3)
     
 //     whileCount++;
 // }
