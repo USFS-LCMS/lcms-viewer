@@ -426,7 +426,12 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     //   layer.min = viz.min;
     // }
     // else{layer.min = 0;}
-    if(viz != null && viz.bands == null && viz.addToLegend != false){
+    if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
+        var legendBreak = document.createElement("legend-break");
+     
+       var legendList = document.querySelector("legend-list");
+      legendList.insertBefore(legendBreak,legendList.firstChild);
+
         var legend = document.createElement("ee-legend");
         legend.name = name;
         legend.helpBoxMessage = helpBox
@@ -460,11 +465,40 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     
     if(fontColor != null){legend.fontColor = "color:#" +fontColor + ";" }
         else{legend.fontColor    = "color:#808080;"}
-    
+     
     var legendList = document.querySelector("legend-list");
     legendList.insertBefore(legend,legendList.firstChild);
-    }
+
     
+    }
+
+    else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
+      var legendBreak = document.createElement("legend-break");
+     
+       var legendList = document.querySelector("legend-list");
+      legendList.insertBefore(legendBreak,legendList.firstChild);
+
+      var legendKeys = Object.keys(viz.classLegendDict).reverse();
+      legendKeys.map(function(lk){
+
+        var legend = document.createElement("ee-class-legend");
+        legend.name = name;
+        legend.helpBoxMessage = helpBox
+
+        legend.classColor = viz.classLegendDict[lk];
+        legend.className = lk;
+
+        var legendList = document.querySelector("legend-list");
+        legendList.insertBefore(legend,legendList.firstChild);
+      })
+
+      var title = document.createElement("ee-class-legend-title");
+      title.name = name;
+      var legendList = document.querySelector("legend-list");
+      legendList.insertBefore(title,legendList.firstChild);
+     
+    }
+
    
     layer.visible = visible;
     layer.item = item;
@@ -699,6 +733,22 @@ function stringToBoolean(string){
 // function refreshLayerToMap()
 function reRun(){
   layerChildID = 0;
+  if(analysisMode === 'advanced'){
+    document.getElementById('threshold-container').style.display = 'inline-block';
+    document.getElementById('advanced-radio-container').style.display = 'inline';
+    
+  }
+  else{
+    document.getElementById('threshold-container').style.display = 'none';
+    document.getElementById('advanced-radio-container').style.display = 'none';
+    viewBeta = 'no';
+    lowerThresholdDecline = 0.35;
+    upperThresholdDecline = 1;
+    lowerThresholdRecovery = 0.35;
+    upperThresholdRecovery = 1;
+    summaryMethod = 'year';
+  }
+
 	var layers = document.getElementById("layers");
   var referenceLayers = document.getElementById("reference-layers");
   var exportLayers = document.getElementById("export-layers");
@@ -723,14 +773,16 @@ function reRun(){
         overlayIndex++
 
 	}
-  map.overlayMapTypes.j.slice(0,map.overlayMapTypes.j.length-layerCount).forEach(function(element,index){
+  map.overlayMapTypes.j.forEach(function(element,index){
                     
-                    if(element !== undefined && element !== null){
-                        console.log('remooooooving');
-                    console.log(index);
-                    console.log(element)
+                    // if(element !== undefined && element !== null){
+                        // console.log('remooooooving');
+                    // console.log(index);
+                    // console.log(element)
                     map.overlayMapTypes.setAt(index,null);
-                };
+                    // map.overlayMapTypes.removeAt(index);
+
+                // };
                     
                 });
   // while(exportLayers.firstChild){
@@ -784,15 +836,15 @@ function reRun(){
     interval2(function(){
       map.overlayMapTypes.j.slice(0,map.overlayMapTypes.j.length-layerCount).forEach(function(element,index){
                     
-                    if(element !== undefined && element !== null){
+                    // if(element !== undefined && element !== null){
                         console.log('remooooooving');
                     console.log(index);
                     console.log(element)
-                    // map.overlayMapTypes.setAt(index,null);
-                };
+                    map.overlayMapTypes.setAt(index,null);
+                // };
                     
                 });  
-  },2000,20)
+  },5000,20)
     
 //     whileCount++;
 // }
@@ -1379,6 +1431,7 @@ function initialize() {
     streetViewControlOptions:{position: google.maps.ControlPosition.LEFT_TOP},
     zoomControlOptions:{position: google.maps.ControlPosition.LEFT_TOP},
     tilt:0,
+    controlSize: 25,
     // mapTypeId: "OSM",
     // mapTypeControlOptions: {
     //                 mapTypeIds: mapTypeIds,

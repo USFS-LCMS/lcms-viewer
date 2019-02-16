@@ -263,21 +263,41 @@
   </div>
   <div id="parameters-tab" class="tab-pane fade">
     <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-               <variable-radio var = 'analysisMode' title2 = 'Easy or Advanced:' name2 = 'Advanced' name1 = 'Easy' value2 = 'advanced' value1 = 'easy' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS outputs"></variable-radio>
-              <br><br> 
-              <!-- <variable-radio var = 'viewBeta' title2 = 'View Beta Outputs:' name2 = 'Yes' name1 = 'No' value2 = 'yes' value1 = 'no' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-              <br><br>  -->
-              <script type="text/javascript">var viewBeta = 'no';var viewCONUS = 'no';</script>
+    <br>
+               <variable-radio var = 'analysisMode' title2 = 'Standard or Advanced:' name2 = 'Advanced' name1 = 'Standard' value2 = 'advanced' value1 = 'easy' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS parameters and outputs"></variable-radio>
+              <br><br>
+            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+            <br>
+              <script type="text/javascript">
+                      // var viewBeta = 'no';
+                      var viewCONUS = 'no';
+                    </script>
+
               <variable-radio var = 'studyAreaName' title2 = 'Name of study area:' name2 = 'FNF' name1 = 'BT' value2 = 'FNF' value1 = 'BT' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which forest to display LCMS products for"></variable-radio>
+              
+ <!--              <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Study Area
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <button class="dropdown-item" type="button">Action</button>
+    <button class="dropdown-item" type="button">Another action</button>
+    <button class="dropdown-item" type="button">Something else here</button>
+  </div>
+</div> -->
+            <div id = 'advanced-radio-container' style = "display: none;">
+              <br><br>
+            <variable-radio var = 'viewBeta' title2 = 'View Beta Outputs:' name2 = 'Yes' name1 = 'No' value2 = 'yes' value1 = 'no' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
               <br><br>
             
-            
-            <variable-radio var = 'summaryMethod' title2 = 'Summary method:' name2 = 'Highest probability' name1 = 'Most recent year' value2 = 'prob' value1 = 'year' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for decline and recovery to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-            <br>
+            <variable-radio var = 'summaryMethod' title2 = 'Summary method:' name2 = 'Highest probability' name1 = 'Most recent year' value2 = 'prob' value1 = 'year' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
+            </div>
+
+            <br><br>
             <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
             <br>
 
-            <div href="#" class= 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,decline, and recovery">
+            <div href="#" class= 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
                <div class = 'dual-range-slider-name' >Analysis Years:</div>
           <div id= "slider1" class = 'dual-range-slider-slider'  ></div>
 
@@ -290,14 +310,15 @@
           </script>
          <br>
 
-          <div href="#" class ='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting decline.  Any decline probability within the specified window will be flagged as decline ">
-               <div class = 'dual-range-slider-name' >Decline Threshold:</div>
+        <div id = 'threshold-container' style = "display: none;">
+          <div href="#" class ='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
+               <div class = 'dual-range-slider-name' >Loss Threshold:</div>
           <div id= "slider2" class = 'dual-range-slider-slider'  ></div>
 
           <div id = 'declineThreshold'class = 'dual-range-slider-value'> </div>
              </div >
           <script type="text/javascript">
-            var lowerThresholdDecline = 0.2;
+            var lowerThresholdDecline = 0.3;
             var upperThresholdDecline = 1;
             setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
           </script>
@@ -309,13 +330,13 @@
           <div id = 'recoveryThreshold'class = 'dual-range-slider-value'> </div>
              </div >
           <script type="text/javascript">
-            var lowerThresholdRecovery = 0.2;
+            var lowerThresholdRecovery = 0.35;
             var upperThresholdRecovery = 1;
             setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
           </script>
 
           <br>
-
+          </div>
        <!--  <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
 
         <input  onclick="reRun();" type=button class='button' value="REFRESH Map" style='display: inline-block;width:100%;float: center;margin: 2px 2px 2px 2px;'
@@ -418,8 +439,8 @@
       <p style='text-align:center;text-vertical-align:top;margin:1px 1px 10px 1px;color:#fff;font-size:15pt;'href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export">Data Export Tools</p>
         <input type="button" type=button class='button' id="process-button" value="Display Export Image" style = 'display:none;' 
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Display images within drawn polygons that can be exported">
-        <input type="button" type=button class='button' id="export-button" value="Export Images" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Export images within drawn polygons">
+        <input type="button" type=button class='button' id="export-button" value="Export Data" style = 'display:inline-block;' 
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Export data within drawn polygons">
         <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style = 'display:inline-block;' 
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
         <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download Metadata" style = 'display:inline-block;' 
