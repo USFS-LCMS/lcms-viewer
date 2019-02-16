@@ -485,7 +485,7 @@ else{
 
 }
 forCharting = joinCollections(forCharting,NFSLCMS, false);
-console.log('charting');console.log(forCharting.getInfo());
+
 chartCollection =forCharting;
 
 if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
