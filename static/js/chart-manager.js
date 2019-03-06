@@ -23,6 +23,52 @@ function downloadURI() {
 	    delete link;
 }
 }
+var  getQueryImages = function(lng,lat){
+	var lngLat = [lng, lat];
+	var outDict = {};
+	Object.keys(queryObj).map(function(k){
+		var q = queryObj[k]
+		if(q[0]){
+			var img = ee.Image(q[1]);
+			var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).getInfo()
+			if(value != null){
+				value = value['properties']
+			};
+			outDict[k] = value;
+
+		}
+	})
+	print(outDict)
+	$('#query-container').text(null);
+	$('#query-container').text(JSON.stringify(outDict));
+	
+}
+function startQuery(){
+	google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
+			print('Map was double clicked');
+			var x =e.clientX;
+        	var y = e.clientY;console.log(x);
+        	center =point2LatLng(x,y);
+
+			// center = e.latLng;
+			marker.setMap(null);
+			marker=new google.maps.Circle({
+  				center:{lat:center.lat(),lng:center.lng()},
+  				radius:plotRadius,
+  				strokeColor: '#FF0',
+  				fillOpacity:0
+  				});
+
+			marker.setMap(map);
+			getQueryImages(center.lng(),center.lat())
+		})
+	document.getElementById('query-container').style.display = 'block';
+}
+function stopQuery(){
+	google.maps.event.clearListeners(mapDiv, 'dblclick');
+	map.setOptions({draggableCursor:'hand'});
+	document.getElementById('query-container').style.display = 'none';
+}
 function getImageCollectionValuesForCharting(pt){
 	
 	// var timeSeries = years.map(function(yr){

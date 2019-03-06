@@ -130,13 +130,13 @@ var collectionDict = {
   'projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k'
   ],
 
-  'BT':['projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
-  'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+  'BTNF':['projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+  'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-TRA',
   'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
   'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
   btStudyAreas,
   'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
-  'projects/USFS/LCMS-NFS/R4/BT/BT_LCMS_ProjectArea_5km'
+  'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
   ]
   
 }
@@ -146,6 +146,7 @@ var boundary = ee.FeatureCollection(collectionDict[studyAreaName][6]);
 var NFSLCMS = ee.ImageCollection(collectionDict[studyAreaName][1])
               .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+              .select(['LC','LU','CP','DND','RNR','DND_Slow','DND_Fast'])
               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0,0,0])).clip(boundary)})
               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01,0.01,0.01])).float()})
               .select([0,1,2,3,4,5,6],['Land Cover Class','Land Use Class','Change Process','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
@@ -185,7 +186,7 @@ var hansen = ee.Image('UMD/hansen/global_forest_change_2017_v1_5');
 var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
 var hansenGain = hansen.select(['gain']);
 hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));
-Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Decline Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
+Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
 Map2.addLayer(hansenGain.updateMask(hansenGain),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
 
 if(studyAreaName === 'FNF'){
@@ -230,7 +231,57 @@ var gnpHUC = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/GNP_H
 Map2.addLayer(gnpHUC,{palette:'0088FF',addToLegend:false},'GNP HUC 12',false,null,null,null,'reference-layer-list')
 
 }
+if(studyAreaName === 'BTNF'){
+  
+var wbp = ee.Image('projects/USFS/LCMS-NFS/R4/BT/Ancillary/gya_absdmg_wbp_th');
+var wbpPalette = 'D40AFA,1168F5,00FA00,FAFA00,FA0000';
+var wbpClassDict = {'No canopy damage':'D40AFA',
+                    'Low canopy damage':'1168F5',
+                    'Low/Moderate canopy damage':'00FA00',
+                    'Moderate canopy damage':'FAFA00',
+                    'High canopy damage':'FA0000'}
+var wbpViz = {'min':1,'max':5,'palette':wbpPalette,addToClassLegend: true,classLegendDict:wbpClassDict}
 
+Map2.addLayer(wbp.updateMask(wbp.neq(0)),wbpViz,'GYA Whitebark Pine Mortality',false,null,null,'Mortality from two date change detection over Whitebark Pine areas of the Greater Yellowstone Area','reference-layer-list');
+
+
+var canopyCover = ee.Image('projects/USFS/LCMS-NFS/R4/BT/Ancillary/BT_VegExistingMidLevel_CanopyCover_2018');
+var treeSize = ee.Image('projects/USFS/LCMS-NFS/R4/BT/Ancillary/BT_VegExistingMidLevel_TreeSize_2018');
+var vegType = ee.Image('projects/USFS/LCMS-NFS/R4/BT/Ancillary/BT_VegExistingMidLevel_VegType_2018');
+
+var canopyCoverClassDict = {"Tree Canopy 1 (10-19%)": "f400f4", "Tree Canopy 2 (20-29%)": "9311e2", "Tree Canopy 3 (30-39%)": "0000f4", "Tree Canopy 4 (40-49%)": "00f400", "Tree Canopy 5 (50-59%)": "f4f400", "Tree Canopy 6 (60-69%)": "f49900", "Tree Canopy 7 (70-100%)": "f40000", "Shrub Canopy 1 (10-24%)": "e8e8d1", "Shrub Canopy 2 (25-100%)": "c4a57f", "No Canopy Cover": "b2b2b2"};
+var canopyCoverPalette = 'f400f4,9311e2,0000f4,00f400,f4f400,f49900,f40000,e8e8d1,c4a57f,b2b2b2';
+var canopyCoverViz = {min:1,max:10,palette:canopyCoverPalette,addToClassLegend: true,classLegendDict:canopyCoverClassDict};
+
+var treeSizeClassDict = {"Tree Size 2  (< 5 dbh)": "0000f9", "Tree Size 3  (5 - 9.9 dbh)": "00f900", "Tree Size 4 (10 - 19.9  dbh)": "f9f900", "Tree Size 5  (20 - 29.9 dbh)": "f99e00", "Tree Size 6  (30.0+  dbh)": "f90000", "Non-Forest": "666666"};
+var treeSizePalette = '0000f9,00f900,f9f900,f99e00,f90000,666666';
+var treeSizeViz = {min:2,max:7,palette:treeSizePalette,addToClassLegend: true,classLegendDict:treeSizeClassDict};
+
+var vegTypeClassDict = {"Urban/Developed": "6b6b6b", "Water": "0000b5", "Snow/Ice": "a5a5a5", "Barren/Rock": "0c0c0c", "Sparse Vegetation": "d3bf9b", "Alpine Vegetation": "f26df2", "Tall Forbland": "0054c1", "Riparian Herbland": "d81919", "Agriculture": "3d0030", "Grassland/Forbland": "dddd00", "Low/Alkali Sagebrush": "e26b00", "Sagebrush/Bitterbrush Mix": "a33d00", "Mountain Big Sagebrush": "f49b00", "Spiked Big Sagebrush": "f43a00", "Mountain Mahogany": "4f997c", "Mountain Shrubland": "9314e2", "Silver Sagebrush/Shrubby Cinquef": "aa8200", "Willow": "bf0000", "Cottonwood": "930000", "Aspen": "00f9f9", "Aspen/Conifer Mix": "00bfbf", "Rocky Mountain Juniper": "6b00f7", "Limber Pine": "47ad47", "Douglas-fir Mix": "16ed16", "Lodgepole Pine Mix": "7c633d", "Spruce/Subalpine Fir Mix": "005b00", "White Bark Pine": "600000", "White Bark Pine Mix": "280000"};
+var vegTypePalette = '6b6b6b,0000b5,a5a5a5,0c0c0c,d3bf9b,f26df2,0054c1,d81919,3d0030,dddd00,e26b00,a33d00,f49b00,f43a00,4f997c,9314e2,aa8200,bf0000,930000,00f9f9,00bfbf,6b00f7,47ad47,16ed16,7c633d,005b00,600000,280000';
+var vegTypeViz = {min:1,max:28,palette:vegTypePalette,addToClassLegend: true,classLegendDict:vegTypeClassDict};
+
+Map2.addLayer(canopyCover.updateMask(canopyCover.neq(0)),canopyCoverViz,'VCMQ 2018 Canopy Cover',false,null,null,'Mortality from two date change detection over Whitebark Pine areas of the Greater Yellowstone Area','reference-layer-list');
+Map2.addLayer(treeSize.updateMask(treeSize.neq(0)),treeSizeViz,'VCMQ 2018 Tree Size',false,null,null,'Mortality from two date change detection over Whitebark Pine areas of the Greater Yellowstone Area','reference-layer-list');
+Map2.addLayer(vegType.updateMask(vegType.neq(0)),vegTypeViz,'VCMQ 2018 Veg Type',false,null,null,'Mortality from two date change detection over Whitebark Pine areas of the Greater Yellowstone Area','reference-layer-list');
+
+
+}
+
+var idsStartYear = 1997;
+  var idsEndYear = 2015
+  var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
+
+var mortCollection = idsYears.map(function(yr){
+  var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
+  mort = mort.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+  var yrBand = ee.Image(yr).updateMask(mort.mask()).rename(['year']).int16();
+  return mort.rename(['mort_code']).addBands(yrBand);
+});
+mortCollection = ee.ImageCollection(mortCollection);
+
+Map2.addLayer(mortCollection.select([0]).count(),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey','reference-layer-list');
+Map2.addLayer(mortCollection.select([1]).max(),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey','reference-layer-list');
 
 var mtbs = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/MTBS')
           .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
@@ -278,7 +329,7 @@ if(summaryMethod === 'year'){
   
 
   var threshYearNameEnd = 'Most recent year of ';
-  var threshProbNameEnd = 'Probability on most recent year of ';
+  var threshProbNameEnd = 'Probability of most recent year of ';
 }
 else{
   var dndThreshOut = dndThresh.qualityMosaic('Loss Probability');//.qualityMosaic('Decline_change');
@@ -345,10 +396,10 @@ var recoveryNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') 
 
 
 
-var lcLayerName = studyAreaName + ' Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
+var lcLayerName =  'Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
 
 var luPalette = "efff6b,ff2ff8,1b9d0c,97ffff,a1a1a1,c2b34a";
-var luLayerName = studyAreaName + ' Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
+var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
 
 var landcoverClassLegendDict = {'Barren (0.1 in chart)':'b67430',
                         'Grass/forb/herb (0.2 in chart)':'78db53',
@@ -390,7 +441,7 @@ if(analysisMode === 'advanced'){
 // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
 // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
 
-Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
 // Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
 
 
@@ -400,25 +451,25 @@ Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':
 
 
 if(analysisMode === 'advanced'){
-Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
+Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
 
-Map2.addLayer(dndCount,{'min':1,'max':5,'palette':declineDurPalette},studyAreaName +' Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
+Map2.addLayer(dndCount,{'min':1,'max':5,'palette':declineDurPalette},'Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
 }
 if(viewBeta === 'yes'){
-Map2.addLayer(dndSlowThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Slow Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-Map2.addLayer(dndSlowThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Slow Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
-Map2.addLayer(dndSlowCount,{'min':1,'max':5,'palette':declineDurPalette},studyAreaName +' Slow Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
+Map2.addLayer(dndSlowThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+Map2.addLayer(dndSlowThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
+Map2.addLayer(dndSlowCount,{'min':1,'max':5,'palette':declineDurPalette},'Slow Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
 
-Map2.addLayer(dndFastThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Fast Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-Map2.addLayer(dndFastThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Fast Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
-Map2.addLayer(dndFastCount,{'min':1,'max':5,'palette':declineDurPalette},studyAreaName +' Fast Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
+Map2.addLayer(dndFastThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Fast Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+Map2.addLayer(dndFastThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Fast Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
+Map2.addLayer(dndFastCount,{'min':1,'max':5,'palette':declineDurPalette},'Fast Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
 
 }
 
-Map2.addLayer(rnrThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},studyAreaName +' Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
+Map2.addLayer(rnrThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
 if(analysisMode === 'advanced'){
-  Map2.addLayer(rnrThreshOut.select([0]),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},studyAreaName +' Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
-  Map2.addLayer(rnrCount,{'min':1,'max':5,'palette':recoveryDurPalette},studyAreaName +' Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);
+  Map2.addLayer(rnrThreshOut.select([0]),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
+  Map2.addLayer(rnrCount,{'min':1,'max':5,'palette':recoveryDurPalette},'Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);
 }
 
 
@@ -451,18 +502,20 @@ Map2.addExport(luForExport,studyAreaName +' LCMS Beta Land Use mode '+ startYear
 }
 
 Map2.addExport(dndYearForExport,studyAreaName +' LCMS Beta Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':declineYearPalette});
-Map2.addExport(dndSevForExport,studyAreaName +' LCMS Beta Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdDecline*100,'max':upperThresholdDecline*100,'palette':declineProbPalette});
 
 if(analysisMode === 'advanced'){
+Map2.addExport(dndSevForExport,studyAreaName +' LCMS Beta Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdDecline*100,'max':upperThresholdDecline*100,'palette':declineProbPalette});
+
 Map2.addExport(dndCountForExport,studyAreaName +' LCMS Beta Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':declineDurPalette});
 
 }
 
 Map2.addExport(rnrYearForExport,studyAreaName +' LCMS Beta Gain Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':recoveryYearPalette});
-Map2.addExport(rnrSevForExport,studyAreaName +' LCMS Beta Gain Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdRecovery*100,'max':upperThresholdRecovery*100,'palette':recoveryProbPalette});
 
 if(analysisMode === 'advanced'){
-Map2.addExport(rnrCountForExport,studyAreaName +' LCMS Beta Gain Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':recoveryDurPalette});
+  Map2.addExport(rnrSevForExport,studyAreaName +' LCMS Beta Gain Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdRecovery*100,'max':upperThresholdRecovery*100,'palette':recoveryProbPalette});
+
+  Map2.addExport(rnrCountForExport,studyAreaName +' LCMS Beta Gain Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':recoveryDurPalette});
 
 }
 //Set up charting

@@ -58,7 +58,7 @@ var cpDict = {
 
   // if(dataTableT[0].length > 5){
   if(analysisMode === 'advanced'){
-    console.log('convertinggggggg tabbbbbbbble' );
+    // console.log('convertinggggggg tabbbbbbbble' );
     var isFirst = true;
     dataTableT = dataTableT.map(function(i){if(isFirst === false){i[3] = lcDict[parseInt(i[3]*10)]};isFirst = false;return i});
     var isFirst = true;
@@ -68,82 +68,6 @@ var cpDict = {
 //       dataTableT = dataTableT.map(function(i){i[2] = cdlDict[i[2]];return i})
   }
   
-// var mtbsDict = {'burnSeverity':'burnSeverity',null:'Unmapped','0':'Unburned','1':'Unburned','2':'Low','3':'Moderate','4':'High','5':'Increased Greenness', '6':'Non-Processing Area Mask'};
-//       var cdlDict = {'cdl':'cdl','216': 'Peppers (216)', '217': 'Pomegranates (217)', '214': 'Broccoli (214)', '212': 'Oranges (212)', '213': 'Honeydew Melons (213)', '210': 'Prunes (210)', '211': 'Olives (211)', '218': 'Nectarines (218)', '219': 'Greens (219)', '131': 'Barren (131)', '24': 'Winter Wheat (24)', '25': 'Other Small Grains (25)', '26': 'Dbl Crop WinWht/Soybeans (26)', '27': 'Rye (27)', '21': 'Barley (21)', '22': 'Durum Wheat (22)', '23': 'Spring Wheat (23)', '223': 'Apricots (223)', '28': 'Oats (28)', '29': 'Millet (29)', '0': 'Background (0)', '4': 'Sorghum (4)', '121': 'Developed/Open Space (121)', '122': 'Developed/Low Intensity (122)', '123': 'Developed/Med Intensity (123)', '124': 'Developed/High Intensity (124)', '69': 'Grapes (69)', '59': 'Sod/Grass Seed (59)', '58': 'Clover/Wildflowers (58)', '55': 'Caneberries (55)', '54': 'Tomatoes (54)', '57': 'Herbs (57)', '56': 'Hops (56)', '51': 'Chick Peas (51)', '50': 'Cucumbers (50)', '53': 'Peas (53)', '52': 'Lentils (52)', '195': 'Herbaceous Wetlands (195)', '190': 'Woody Wetlands (190)', '252': ' (252)', '88': 'Nonag/Undefined (88)', '111': 'Open Water (111)', '112': 'Perennial Ice/Snow (112)', '82': 'Developed (82)', '83': 'Water (83)', '81': 'Clouds/No Data (81)', '87': 'Wetlands (87)', '204': 'Pistachios (204)', '206': 'Carrots (206)', '3': 'Rice (3)', '245': 'Celery (245)', '244': 'Cauliflower (244)', '247': 'Turnips (247)', '246': 'Radishes (246)', '241': 'Dbl Crop Corn/Soybeans (241)', '240': 'Dbl Crop Soybeans/Oats (240)', '243': 'Cabbage (243)', '242': 'Blueberries (242)', '249': 'Gourds (249)', '248': 'Eggplants (248)', '39': 'Buckwheat (39)', '38': 'Camelina (38)', '33': 'Safflower (33)', '32': 'Flaxseed (32)', '31': 'Canola (31)', '30': 'Speltz (30)', '37': 'Other Hay/Non Alfalfa (37)', '36': 'Alfalfa (36)', '35': 'Mustard (35)', '34': 'Rape Seed (34)', '60': 'Switchgrass (60)', '61': 'Fallow/Idle Cropland (61)', '63': 'Forest (63)', '64': 'Shrubland (64)', '65': 'Barren (65)', '66': 'Cherries (66)', '67': 'Peaches (67)', '68': 'Apples (68)', '176': 'Grassland/Pasture (176)', '250': 'Cranberries (250)', '251': ' (251)', '253': ' (253)', '254': 'Dbl Crop Barley/Soybeans (254)', '2': 'Cotton (2)', '6': 'Sunflower (6)', '229': 'Pumpkins (229)', '227': 'Lettuce (227)', '226': 'Dbl Crop Oats/Corn (226)', '225': 'Dbl Crop WinWht/Corn (225)', '92': 'Aquaculture (92)', '205': 'Triticale (205)', '222': 'Squash (222)', '221': 'Strawberries (221)', '220': 'Plums (220)', '11': 'Tobacco (11)', '10': 'Peanuts (10)', '13': 'Pop or Orn Corn (13)', '12': 'Sweet Corn (12)', '14': 'Mint (14)', '224': 'Vetch (224)', '152': 'Shrubland (152)', '238': 'Dbl Crop WinWht/Cotton (238)', '239': 'Dbl Crop Soybeans/Cotton (239)', '234': 'Dbl Crop Durum Wht/Sorghum (234)', '235': 'Dbl Crop Barley/Sorghum (235)', '236': 'Dbl Crop WinWht/Sorghum (236)', '237': 'Dbl Crop Barley/Corn (237)', '230': 'Dbl Crop Lettuce/Durum Wht (230)', '231': 'Dbl Crop Lettuce/Cantaloupe (231)', '232': 'Dbl Crop Lettuce/Cotton (232)', '233': 'Dbl Crop Lettuce/Barley (233)', '48': 'Watermelons (48)', '49': 'Onions (49)', '46': 'Sweet Potatoes (46)', '47': 'Misc Vegs &amp; Fruits (47)', '44': 'Other Crops (44)', '45': 'Sugarcane (45)', '42': 'Dry Beans (42)', '43': 'Potatoes (43)', '41': 'Sugarbeets (41)', '1': 'Corn (1)', '5': 'Soybeans (5)', '142': 'Evergreen Forest (142)', '143': 'Mixed Forest (143)', '207': 'Asparagus (207)', '141': 'Deciduous Forest (141)', '209': 'Cantaloupes (209)', '208': 'Garlic (208)', '77': 'Pears (77)', '76': 'Walnuts (76)', '75': 'Almonds (75)', '74': 'Pecans (74)', '72': 'Citrus (72)', '71': 'Other Tree Crops (71)', '70': 'Christmas Trees (70)'}
-//       var nlcdDict = {'landcover':'landcover','11': 'Open Water (11)', '24': 'Developed High Intensity (24)', '12': 'Perennial Ice/Snow (12)', '81': 'Pasture/Hay (81)', '21': 'Developed, Open Space (21)', '22': 'Developed, Low Intensity (22)', '23': 'Developed, Medium Intensity  (23)', '51': 'Dwarf Scrub (51)', '31': 'Barren Land (Rock/Sand/Clay)  (31)', '42': 'Evergreen Forest (42)', '43': 'Mixed Forest (43)', '41': 'Deciduous Forest (41)', '74': 'Moss (74)', '73': 'Lichens (73)', '72': 'Sedge/Herbaceous (72)', '71': 'Grassland/Herbaceous (71)', '82': 'Cultivated Crops  (82)', '90': 'Woody Wetlands (90)', '52': 'Shrub/Scrub (52)', '95': 'Emergent Herbaceous Wetlands (95)'}
-//       var globCoverDict ={'GlobCover':'GlobCover','150': 'Sparse (>15%) vegetation (woody vegetation, shrubs, grassland)  (150)', '210': 'Water bodies  (210)', '190': 'Artificial surfaces and associated areas (urban areas >50%) GLOBCOVER 2009  (190)', '60': 'Open (15-40%) broadleaved deciduous forest (>5m)  (60)', '130': 'Closed to open (>15%) shrubland (<5m)  (130)', '110': 'Mosaic Forest/Shrubland (50-70%) / Grassland (20-50%) (110)', '230': 'Unclassified (230)', '170': 'Closed (>40%) broadleaved semi-deciduous and/or evergreen forest regularly flooded - Saline water  (170)', '20': 'Mosaic Cropland (50-70%) / Vegetation (grassland, shrubland, forest) (20-50%)  (20)', '40': 'Closed to open (>15%) broadleaved evergreen and/or semi-deciduous forest (>5m)  (40)', '180': 'Closed to open (>15%) vegetation (grassland, shrubland, woody vegetation) on regularly flooded or waterlogged soil - Fresh, brackish or saline water (180)', '200': 'Bare areas  (200)', '140': 'Closed to open (>15%) grassland  (140)', '120': 'Mosaic Grassland (50-70%) / Forest/Shrubland (20-50%) (120)', '70': 'Closed (>40%) needleleaved evergreen forest (>5m)  (70)', '90': 'Open (15-40%) needleleaved deciduous or evergreen forest (>5m) (90)', '100': 'Closed to open (>15%) mixed broadleaved and needleleaved forest (>5m) (100)', '160': 'Closed (>40%) broadleaved forest regularly flooded - Fresh water (160)', '220': 'Permanent snow and ice (220)', '11': 'Post-flooding or irrigated croplands (11)', '14': 'Rainfed croplands (14)', '30': 'Mosaic Vegetation (grassland, shrubland, forest) (50-70%) / Cropland (20-50%)    (30)', '50': 'Closed (>40%) broadleaved deciduous forest (>5m) (50)'}
-//       var fiaDict = {'FIA Forest Type':'FIA Frst Type','126': 'Tamarack (126)', '127': 'Northern white-cedar (127)', '224': 'Sugar pine (224)', '161': 'Loblolly pine (161)', '407': 'Slash pine / hardwood (407)', '406': 'Loblolly pine / hardwood (406)', '405': 'Virginia pine / southern red oak (405)', '404': 'Shortleaf pine / oak (404)', '403': 'Longleaf pine / oak (403)', '402': 'Eastern redcedar / hardwood (402)', '342': 'Giant sequoia (342)', '281': 'Lodgepole pine (281)', '932': 'Canyon live oak / interior live oak (932)', '931': 'Coast live oak (931)', '409': 'Other pine / hardwood (409)', '995': 'Other exotic hardwoods (995)', '991': 'Paulownia (991)', '993': 'Eucalyptus (993)', '992': 'Melaluca (992)', '263': 'Noble fir (263)', '121': 'Balsam fir (121)', '122': 'White spruce (122)', '123': 'Red spruce (123)', '267': 'Grand fir (267)', '125': 'Black spruce (125)', '265': 'Engelmann spruce (265)', '264': 'Pacific silver fir (264)', '269': 'Blue spruce (269)', '268': 'Subalpine fir (268)', '911': 'Red alder (911)', '371': 'California mixed conifer (371)', '921': 'Gray pine (921)', '922': 'California black oak (922)', '912': 'Bigleaf maple (912)', '924': 'Blue oak (924)', '925': 'Deciduous oak woodland (925)', '926': 'Evergreen oak woodland (926)', '989': 'Other tropical (989)', '708': 'Red maple / lowland (708)', '709': 'Cottonwood / willow (709)', '704': 'Willow (704)', '705': 'Sycamore / pecan / American elm (705)', '706': 'Sugarberry / hackberry / elm / green ash (706)', '707': 'Silver maple / American elm (707)', '701': 'Black ash / American elm / red maple (701)', '702': 'River birch / sycamore (702)', '703': 'Cottonwood (703)', '270': 'Mountain hemlock (270)', '271': 'Alaska-yellow-cedar (271)', '520': 'Mixed upland hardwoods (520)', '368': 'Misc. western softwoods (368)', '366': 'Limber pine (366)', '367': 'Whitebark pine (367)', '364': 'Monterey pine (364)', '365': 'Foxtail pine / bristlecone pine (365)', '362': 'Southwest white pine (362)', '363': 'Bishop pine (363)', '361': 'Knobcone pine (361)', '301': 'Western hemlock (301)', '304': 'Western redcedar (304)', '305': 'Sitka spruce (305)', '381': 'Scotch pine (381)', '382': 'Australian pine (382)', '383': 'Other exotic softwoods (383)', '384': 'Norway Spruce (384)', '385': 'Introduced larch (385)', '102': 'Red pine (102)', '103': 'Eastern white pine (103)', '101': 'Jack pine (101)', '104': 'Eastern White pine / Eastern hemlock (104)', '105': 'Eastern hemlock (105)', '902': 'Paper birch (902)', '901': 'Aspen (901)', '904': 'Balsam poplar (904)', '519': 'Red maple / oak (519)', '241': 'Western white pine (241)', '511': 'Yellow-poplar (511)', '510': 'Scarlet oak (510)', '513': 'Black locust (513)', '512': 'Black walnut (512)', '515': 'Chestnut oak / black oak / scarlet oak (515)', '514': 'Southern scrub oak (514)', '182': 'Rocky Mountain juniper (182)', '183': 'Western juniper (183)', '181': 'Eastern redcedar (181)', '162': 'Shortleaf pine (162)', '508': 'Sweetgum / yellow-poplar (508)', '185': 'Pinyon juniper woodland (185)', '506': 'Yellow-poplar / white oak / N. red oak (506)', '507': 'Sassafras / persimmon (507)', '504': 'White oak (504)', '505': 'Northern red oak (505)', '502': 'Chestnut oak (502)', '503': 'White oak / red oak / hickory (503)', '341': 'Redwood (341)', '981': 'Sabal palm (981)', '184': 'Juniper woodland (184)', '509': 'Bur oak (509)', '168': 'Spruce pine (168)', '164': 'Sand pine (164)', '165': 'Table-mountain pine (165)', '166': 'Pond pine (166)', '167': 'Pitch pine (167)', '223': 'Jeffrey pine / Coulter pine / bigcone Douglas-fir (223)', '222': 'Incense cedar (222)', '221': 'Ponderosa pine (221)', '163': 'Virginia pine (163)', '401': 'Eastern white pine / N. red oak / white ash (401)', '722': 'Oregon ash (722)', '501': 'Post oak / blackjack oak (501)', '605': 'Overcup oak / water hickory (605)', '607': 'Baldcypress / water tupelo (607)', '606': 'Atlantic white-cedar (606)', '601': 'Swamp chestnut oak / cherrybark oak (601)', '602': 'Sweetgum / Nuttall oak / willow oak (602)', '608': 'Sweetbay / swamp tupelo / red maple (608)', '943': 'Giant chinkapin (943)', '951': 'Pacific madrone (951)', '953': 'Cercocarpus woodland (953)', '952': 'Mesquite Woodland (952)', '955': 'Misc. western hardwood woodlands (955)', '954': 'Intermountain maple woodland (954)', '321': 'Western larch (321)', '201': 'Douglas-fir (201)', '202': 'Port-Orford-cedar (202)', '142': 'Slash pine (142)', '141': 'Longleaf pine (141)', '923': 'Oregon white oak (923)', '802': 'Black cherry (802)', '262': 'Red fir (262)', '982': 'Mangrove (982)', '942': 'Califonia laurel (942)', '261': 'White fir (261)', '941': 'Tanoak (941)', '809': 'Red maple / upland (809)', '803': 'Cherry / ash / yellow-poplar (803)', '124': 'Red spruce / balsam fir (124)', '801': 'Sugar maple / beech / yellow birch (801)', '807': 'Elm / ash / locust (807)', '805': 'Hard maple / basswood (805)', '266': 'Engelmann spruce / subalpine fir (266)'}
-//       var idsSeverityDict = {'-1':'Very High','0':'High','1':'Moderate','2':'Low','3':'Low','4':'Very Low','11':'Very Low'};
-//       var idsDamDict = {
-//           '1':'Defoliation- % Unknown',
-//           '2':  'Mortality',
-//         '3' :'Crown Discoloration',
-//         '4' :'Crown Dieback',
-//         '5' :'Topkill',
-//         '6' :'Branch Breakage',
-//         '7' :'Main stem Broken or Uprooted',
-//         '8' :'Branch flagging',
-//         '9' :'No damage',
-//         '11': 'Mortality - Previously Undocumented',
-//         '12': 'Defoliation < 50% of leaves defoliated',
-//         '13': 'Defoliation 50-75% of leaves defoliated',
-//         '14': 'Defoliation > 75% of leaves defoliated',
-//         '15': '15',
-//         '16': '16',
-//         '17': '17',
-//         '18': 'Other Damage (known)',
-//         '19': 'Unknown Damage'
-//         };
-//       var idsDCADict = {
-//   '10':'General Insects',
-//   '11':'Bark Beetles',
-//   '12':'Defoliators',
-//   '13': 'Chewing Insects',
-//   '14':'Sap Feeding Insects',
-//   '15': 'Boring Insects',
-//   '16': 'Seed/Cone/Flower/Fruit Insects',
-//   '17': 'Gallmaker Insects',
-//   '18': 'Insect Predators',
-//   '19': 'General Diseases',
-//   '20': 'Biotic Damage',
-//   '21': 'Root/Butt Diseases',
-//   '22': 'Stem Decays/Cankers',
-//   '23': 'Parsitic/Epiphytic Plants',
-//   '24': 'Decline Complexes/Dieback/Wilts',
-//   '25': 'Foliage Diseases',
-//   '26': 'Stem Rusts',
-//   '27': 'Broom Rusts',
-//   '28': 'Terminal, Shoot, and Twig Insects',
-//   '29': 'Root Insects',
-//   '30': 'Fire',
-//   '40': 'Wild Animals',
-//   '50': 'Abiotic Damage',
-//   '60': 'Competition',
-//   '70': 'Human Activities',
-//   '80': 'Multi-Damage (Insect/Disease)',
-//   '85': 'Plants',
-//   '90': 'Other Damages and Symptoms',
-//   '99': 'No Damage'
-// };
-// var idsMortDamDict = idsDamDict;
-// idsMortDamDict['mort_damage'] = 'IDS Mort Dam'
-// var idsDefolDamDict = idsDamDict;
-// idsDefolDamDict['defol_damage'] = 'IDS Defol Dam'
-
-// var idsMortDCADict = idsDCADict;
-// idsMortDCADict['mort_dca'] = 'IDS Mort DCA'
-// var idsDefolDCADict = idsDCADict;
-// idsDefolDCADict['defol_dca'] = 'IDS Defol DCA'
-
-//       dataTableT = dataTableT.map(function(i){i[1] = mtbsDict[i[1]];return i})
-//       dataTableT = dataTableT.map(function(i){i[2] = cdlDict[i[2]];return i})
-//       dataTableT = dataTableT.map(function(i){i[3] = nlcdDict[i[3]];return i})
-//       dataTableT = dataTableT.map(function(i){i[6] = globCoverDict[i[6]];return i})
-//       dataTableT = dataTableT.map(function(i){i[7] = fiaDict[i[7]];return i})
-//       dataTableT = dataTableT.map(function(i){i[8] = idsDefolDamDict[i[8]];return i})
-//       dataTableT = dataTableT.map(function(i){i[9] = idsDefolDCADict[i[9]];return i})
-//       dataTableT = dataTableT.map(function(i){i[10] = idsMortDamDict[i[10]];return i})
-//       dataTableT = dataTableT.map(function(i){i[11] = idsMortDCADict[i[11]];return i})
 
       return dataTableT
     };
@@ -407,12 +331,25 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     if(visible == null){
         visible = true;
     }
+    if(viz.opacity == null){
+      viz.opacity = 1;
+    }
+    
+    var layerObjKeys = Object.keys(layerObj);
+    var nameIndex = layerObjKeys.indexOf(name);
+    if(nameIndex   != -1){
+      visible = layerObj[name][0];
+      viz.opacity = layerObj[name][1];
+    }
+
     if(helpBox == null){helpBox = ''};
     var layer = document.createElement("ee-layer");
     layer.ID = NEXT_LAYER_ID;
     layer.layerChildID = layerChildID;
     layerChildID++
     layer.name = name ;
+    layer.opacity = viz.opacity;
+    viz.opacity = 1;
     layer.map = map;
     layer.helpBoxMessage = helpBox;
     layer.visible = visible;
@@ -503,14 +440,14 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     layer.visible = visible;
     layer.item = item;
     layer.name = name;
-    
+    layer.addToLayerObj(name,visible,item);
     var layerList = document.querySelector(whichLayerList);
     
     
     layerList.insertBefore(layer,layerList.firstChild);
     layerCount ++;
     item.getMap(viz,function(eeLayer){
-        layer.setLayer(eeLayer);
+        layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
     });
 }
 
@@ -733,14 +670,17 @@ function stringToBoolean(string){
 // function refreshLayerToMap()
 function reRun(){
   layerChildID = 0;
+  
   if(analysisMode === 'advanced'){
     document.getElementById('threshold-container').style.display = 'inline-block';
     document.getElementById('advanced-radio-container').style.display = 'inline';
+    document.getElementById('charting-container').style.display = 'inline-block';
     
   }
   else{
     document.getElementById('threshold-container').style.display = 'none';
     document.getElementById('advanced-radio-container').style.display = 'none';
+    document.getElementById('charting-container').style.display = 'none';
     viewBeta = 'no';
     lowerThresholdDecline = 0.35;
     upperThresholdDecline = 1;
@@ -1390,15 +1330,37 @@ layer2.setMap(map);
     
     }
 
+var layerObj = null;
+var queryObj = {};
+var cachedStudyAreaName = null;
+var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08]],
+                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1]]};
+   
+var resetStudyArea = function(whichOne){
+    localStorage.setItem("cachedStudyAreaName",whichOne)
+    $('.status').text(whichOne);
+    $('#study-area-label').text(whichOne);
+    var coords = studyAreaDict[whichOne][1];
+    studyAreaName = studyAreaDict[whichOne][0];
+    // centerMap(coords[1],coords[0],8);
+    // reRun();
 
+}
+  
 function initialize() {
     var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
     var zoom = initialZoomLevel;//8;
 
     var settings = null;
+
+
     // var randomID = null;
     if(typeof(Storage) !== "undefined"){
         settings = JSON.parse(localStorage.getItem("settings"));
+
+        layerObj =  null;//JSON.parse(localStorage.getItem("layerObj"));
+
+        cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
         // randomID = JSON.parse(localStorage.getItem("randomID"));
     }
 
@@ -1406,7 +1368,11 @@ function initialize() {
         center = settings.center;
         zoom  = settings.zoom;
     }
-
+    if(layerObj === null){
+        layerObj = {};
+    }
+    
+ 
   // var mapTypeIds = [];
   //           for(var type in google.maps.MapTypeId) {
   //               mapTypeIds.push(google.maps.MapTypeId[type]);
@@ -1735,7 +1701,10 @@ function initialize() {
     ee.initialize("https://rcr-ee-proxy.herokuapp.com/api","https://earthengine.googleapis.com/map",function(){
     
     // ee.initialize("http://localhost:8080/api","https://earthengine.googleapis.com/map",function(){
-  run();
+      if(cachedStudyAreaName != null){
+      resetStudyArea(cachedStudyAreaName)
+    }
+  run()
 	plotPlots()
 	});
 

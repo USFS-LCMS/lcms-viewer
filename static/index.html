@@ -204,50 +204,51 @@
     </div>
 
     
-
+ <div id = 'study-area-label' style = 'background-color: #555;color:#FFF;padding:5px;font-size: 15pt;border-radius: 5px;text-align: center;position:absolute;left:40%;'> Bridger Teton National Forest </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+
+
     <div id="parameters-tools-layers" style = "color:#FFF;" disabled="disabled">
+
       <!-- <button data-toggle="collapse" data-target="#collapse-menu" style = 'color:#000;left:50%;'>Collapsible</button> -->
-      <button data-toggle="collapse" class="btn" data-target="#collapse-menu"  style = 'color:#000;width:100%;'
+      <button data-toggle="collapse" class="button" data-target="#collapse-menu"  style = 'color:#FFF;width:100%;'
       data-toggle="tooltip" data-placement="top" title="Show or hide LCMS map controls"><i class="fa fa-bars"></i></button>
+ 
+
 
 <div id="collapse-menu" class="collapse fade in active">
 <ul class="nav nav-tabs  nav-stacked"  >
-  <li><a data-toggle="tab" href="#help-tab">About</a>
-
-  </li>
   
-  <li><a data-toggle="tab" href="#parameters-tab" 
+
+ <!--  <li><a data-toggle="tab" href="#help-tab">About</a>
+
+  </li> -->
+  
+ <!--  <li><a data-toggle="tab" href="#parameters-tab" 
      rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">Parameters</a>
-   </li>
+   </li> -->
   
-  <li><a data-toggle="tab" href="#basic-tools-tab"
+<!--   <li><a data-toggle="tab" href="#basic-tools-tab"
     rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available tools">
-    Tools</a></li>
+    Tools</a></li> -->
   
-  <li><a data-toggle="tab" href="#reference-layers-tab"
+  <!-- <li><a data-toggle="tab" href="#reference-layers-tab"
     rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
-    Reference Layers</a></li>
+    Reference Layers</a></li> -->
 
-  <li class="active"><a data-toggle="tab" href="#layers-tab"
+  <!-- <li class="active"><a data-toggle="tab" href="#layers-tab"
     rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
-    LCMS Layers</a></li>
+    LCMS Layers</a></li> -->
 
-
-  
-<!--   <li><a data-toggle="tab" href="#legend-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view the legend of available LCMS and reference layers">
-    Legend</a></li> -->
-
-  <li><a data-toggle="tab" href="#exports-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view controls for downloading data.  Use drawing tools on left side of screen to select areas for download.  Use buttons within this tab control drawn polygons and start export processes.">
-  Download Data</a></li>
-</ul>
-
-
-<div class="tab-content">
-  <div id="help-tab" class="tab-pane fade">
+<!-- <p> -->
+  <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+ <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;;" type="button" data-toggle="collapse" data-target="#help-tab" 
+  >
+    About
+  </button>
+<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+   <div id="help-tab" class="collapse">
     <div>
       <div  style=" overflow-wrap: break-word;max-width: 300px;" >
       
@@ -261,20 +262,52 @@
     
    
   </div>
-  <div id="parameters-tab" class="tab-pane fade">
+<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+  <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#parameters-tab" 
+  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">
+    Parameters
+  </button>
+<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+<div id="parameters-tab" class="collapse">
+ 
+                                  
+  
+
     <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
     <br>
                <variable-radio var = 'analysisMode' title2 = 'Standard or Advanced:' name2 = 'Advanced' name1 = 'Standard' value2 = 'advanced' value1 = 'easy' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS parameters and outputs"></variable-radio>
               <br><br>
             <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
             <br>
+
               <script type="text/javascript">
                       // var viewBeta = 'no';
                       var viewCONUS = 'no';
                     </script>
 
-              <variable-radio var = 'studyAreaName' title2 = 'Name of study area:' name2 = 'FNF' name1 = 'BT' value2 = 'FNF' value1 = 'BT' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which forest to display LCMS products for"></variable-radio>
-              
+             <script type="text/javascript">var studyAreaName = 'BTNF'</script>
+
+              <div class="dropdown" data-toggle="dropdown" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Choose which study area to display outputs for">Study Area: 
+    <button class="button dropdown-toggle status"  data-toggle="dropdown" >Bridger-Teton National Forest
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu dropdown-inverse">
+      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a></li>
+      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a></li>
+    </ul>
+  </div>
+
+<script type="text/javascript">
+ $('.dropdown-inverse li > a').click(function(e){
+   localStorage.setItem("cachedStudyAreaName",this.innerHTML)
+    $('.status').text(this.innerHTML);
+    $('#study-area-label').text(this.innerHTML);
+    var coords = studyAreaDict[this.innerHTML][1];
+    studyAreaName = studyAreaDict[this.innerHTML][0];
+    centerMap(coords[1],coords[0],8);
+    reRun();
+
+});
+</script>
  <!--              <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Study Area
@@ -286,14 +319,16 @@
   </div>
 </div> -->
             <div id = 'advanced-radio-container' style = "display: none;">
-              <br><br>
+              <br>
+              <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+              <br>
             <variable-radio var = 'viewBeta' title2 = 'View Beta Outputs:' name2 = 'Yes' name1 = 'No' value2 = 'yes' value1 = 'no' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
               <br><br>
             
             <variable-radio var = 'summaryMethod' title2 = 'Summary method:' name2 = 'Highest probability' name1 = 'Most recent year' value2 = 'prob' value1 = 'year' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
             </div>
 
-            <br><br>
+            <br>
             <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
             <br>
 
@@ -342,9 +377,15 @@
         <input  onclick="reRun();" type=button class='button' value="REFRESH Map" style='display: inline-block;width:100%;float: center;margin: 2px 2px 2px 2px;'
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="If auto-update fails after changing parameters, click this to refresh map layers"> -->
       </div>
-        
-  
-  <div id="basic-tools-tab" class="tab-pane fade">
+
+
+<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+ <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#basic-tools-tab" 
+  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
+    Tools
+  </button>
+
+  <div id="basic-tools-tab" class="collapse">
         <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
         <input style='display:inline-block;' id="box1" name='cb' value='none' type="radio" checked=t rue onclick="toggleRadio(this.value);" />
         <label for="box1" style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff'>None</label>
@@ -367,8 +408,13 @@
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"
         ></button>
         <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-       
         
+        <input style='display:inline-block;' name='cb' value='query' type="radio" onclick="toggleRadio(this.value);" />
+        <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff'
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to query values of layers that .  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
+        >Double-Click Query</label>
+        <div id = 'query-container' style = 'display:none;' >test</div> 
+        <div id = 'charting-container' style = 'display: none;'>
         <input   id="charting-radio" style='font:#fff;' name='cb' value='charting' type="radio" onclick="toggleRadio(this.value);" />
         <label  id = 'charting-label' style='position:relative;display: none;float: center;margin: 1px 0 2px 2px;color:#fff'
          href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to chart data series.  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
@@ -407,21 +453,39 @@
         </div>
       </div> 
         </div>
-        
+</div>
+    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> 
+     <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;"  data-toggle="collapse" data-target="#layers-tab" 
+  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
+    LCMS Layers
+  </button>
 
-
-
-
-  <div id="layers-tab" class="tab-pane fade in active">
+  <!-- <a class="button" style = "width: 100%;text-align:center;" data-toggle="collapse" href="#layers-tab" role="button"  
+  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
+    LCMS Layers
+  </a> -->
+<div id="layers-tab" class="collapse in">
     <layer-list id="layers"></layer-list>
   </div>
-<div id="reference-layers-tab" class="tab-pane fade">
+<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>   
+  <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#reference-layers-tab" 
+  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
+    Reference Layers
+  </button>
+
+<div id="reference-layers-tab" class="collapse in">
     <reference-layer-list id="reference-layers"></reference-layer-list>
   </div>
+<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+ 
+<button class="button" style= "width:100%;color:#FFF;border-radius: 5px;"  data-toggle="collapse" data-target="#exports-tab" 
+  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view controls for downloading data.  Use drawing tools on left side of screen to select areas for download.  Use buttons within this tab control drawn polygons and start export processes.">
+    Download Data
+  </button>
+  
 
 
-
-<div id="exports-tab" class="tab-pane fade">
+<div id="exports-tab" class="collapse">
      <div id = 'shape-edit-container' style = 'display:none;width:100%;'>
         <p style='text-align:center;text-vertical-align:top;margin:1px 1px 10px 1px;color:#fff;font-size:15pt;' href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export">Data Export Selection Tools</p>
 
@@ -455,14 +519,45 @@
         
           
   </div>
+<!--   <li><a data-toggle="tab" href="#legend-tab"
+    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view the legend of available LCMS and reference layers">
+    Legend</a></li> -->
+
+  <!-- <li><a data-toggle="tab" href="#exports-tab"
+    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view controls for downloading data.  Use drawing tools on left side of screen to select areas for download.  Use buttons within this tab control drawn polygons and start export processes.">
+  Download Data</a></li>
+</ul> -->
+
+
+<div class="tab-content">
+ 
+  
+        
+  
+
+
+
+
+  <!-- <div id="layers-tab" class="tab-pane fade in active">
+    <layer-list id="layers"></layer-list>
+  </div>
+<div id="reference-layers-tab" class="tab-pane fade">
+    <reference-layer-list id="reference-layers"></reference-layer-list>
+  </div> -->
+
+
+
 
 </div>
 
-<div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+
   
-  <button  style= "background: #576066;
-  background-image: -webkit-linear-gradient(top, #FFF, #FFF);
-  background-image: -moz-linear-gradient(top, #FFF, #FFF);width:100%;color:#000;border-radius: 2px;" type="button" data-toggle="collapse" data-target="#legendCollapse" aria-expanded="false" aria-controls="collapseExample">
+  
+</div>
+  <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+  
+
+<button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#legendCollapse" aria-expanded="false" aria-controls="collapseExample">
     Show Legend
   </button>
 
@@ -471,9 +566,6 @@
     <legend-list id="legend" ></legend-list>
  
 </div>
-</div>
-  
-
 </div>
 
        <!--  <div id = 'parameters-tools-only'>
@@ -821,6 +913,7 @@
       var drawing = false;
       var plotsOn = true;
       var helpOn = false;
+      var queryOn = false;
       function toggleHelp(){
         if (helpOn) {
           $("#help-window").slideUp();
@@ -919,7 +1012,15 @@
           areaOn = true;
         }
       }
-
+      function toggleQuery(){
+        if(queryOn){
+          queryOn = false;
+          stopQuery();
+        }else{
+          queryOn = true;
+          startQuery();
+        }
+      }
       function toggleDrawing() {
         if (drawing) {
           // shapesMap = undefined;
@@ -955,6 +1056,9 @@
           if (drawing) {
             toggleDrawing()
           };
+          if (queryOn) {
+            toggleQuery()
+          };
           if (!chartingOn) {
             toggleCharting()
           };
@@ -968,10 +1072,30 @@
           if (drawing) {
             toggleDrawing()
           };
+          if (queryOn) {
+            toggleQuery()
+          };
           if (!distanceOn) {
             toggleDistance()
           };
-        } else if (thisValue == 'drawing') {
+        } 
+        else if (thisValue == 'query') {
+          if (areaOn) {
+            toggleArea()
+          };
+          if (chartingOn) {
+            toggleCharting()
+          };
+          if (drawing) {
+            toggleDrawing()
+          };
+          if (distanceOn) {
+            toggleDistance()
+          };
+          if (!queryOn) {
+            toggleQuery()
+          };
+        }else if (thisValue == 'drawing') {
           if (areaOn) {
             toggleArea()
           };
@@ -980,6 +1104,9 @@
           };
           if (distanceOn) {
             toggleDistance()
+          };
+          if (queryOn) {
+            toggleQuery()
           };
           if (!drawing) {
             toggleDrawing()
@@ -994,6 +1121,9 @@
           if (distanceOn) {
             toggleDistance()
           };
+          if (queryOn) {
+            toggleQuery()
+          };
           if (!areaOn) {
             toggleArea()
           };
@@ -1006,6 +1136,9 @@
           };
           if (drawing) {
             toggleDrawing()
+          };
+          if (queryOn) {
+            toggleQuery()
           };
           if (distanceOn) {
             toggleDistance()
