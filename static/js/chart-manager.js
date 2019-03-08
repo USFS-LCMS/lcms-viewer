@@ -26,25 +26,69 @@ function downloadURI() {
 var  getQueryImages = function(lng,lat){
 	var lngLat = [lng, lat];
 	var outDict = {};
-	Object.keys(queryObj).map(function(k){
-		var q = queryObj[k]
+	$('#query-container').text('');
+	$('#query-container').append('Queried values for lng: '+lng.toFixed(3).toString() + ' lat: '+lat.toFixed(3).toString());
+	var keys = Object.keys(queryObj);
+	var keysToShow = [];
+	keys.map(function(k){
+		var q = queryObj[k];
+		if(q[0]){keysToShow.push(k);}
+	})
+
+	var lastKey = keysToShow[keysToShow.length-1];
+
+	keysToShow.map(function(k){
+		var q = queryObj[k];
+	
+
 		if(q[0]){
 			var img = ee.Image(q[1]);
-			var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).getInfo()
-			if(value != null){
-				value = value['properties']
+			var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).evaluate(function(value){
+				if(value != null){
+				value = value['properties'];
+
+				// if(Object.keys(value).length > 1){value = null;show = false;}
+				// else{value = Object.values(value)[0];}
+				
 			};
-			outDict[k] = value;
+			
+				if(value === null){
+				$('#query-container').append("<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>" +k+ ': null <br>');
+				}
+				else if(Object.keys(value).length === 1 ){
+				$('#query-container').append("<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>");
+				}
+				else{
+					$('#query-container').append("<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>" +k+ ':<br>');
+					Object.keys(value).map(function(kt){
+						var v = value[kt].toFixed(2).toString();
+						$('#query-container').append( kt+ ': '+v + "<br>");
+					})
+				}
+
+			
+			print(k + lastKey);
+			if(k == lastKey){
+				map.setOptions({draggableCursor:'help'});
+ 			map.setOptions({cursor:'help'});
+			}
+			})
+			
+			// outDict[k] = value;
 
 		}
 	})
-	print(outDict)
-	$('#query-container').text(null);
-	$('#query-container').text(JSON.stringify(outDict));
+	
+	
+	
 	
 }
 function startQuery(){
+	map.setOptions({draggableCursor:'help'});
+ 			map.setOptions({cursor:'help'});
 	google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
+			map.setOptions({draggableCursor:'progress'});
+			map.setOptions({cursor:'progress'});
 			print('Map was double clicked');
 			var x =e.clientX;
         	var y = e.clientY;console.log(x);
@@ -60,13 +104,18 @@ function startQuery(){
   				});
 
 			marker.setMap(map);
-			getQueryImages(center.lng(),center.lat())
+			getQueryImages(center.lng(),center.lat());
+
 		})
 	document.getElementById('query-container').style.display = 'block';
 }
 function stopQuery(){
-	google.maps.event.clearListeners(mapDiv, 'dblclick');
+	print('stopping');
 	map.setOptions({draggableCursor:'hand'});
+	map.setOptions({cursor:'hand'});
+	$('#query-container').text('');
+	google.maps.event.clearListeners(mapDiv, 'dblclick');
+	map.setOptions({cursor:'hand'});
 	document.getElementById('query-container').style.display = 'none';
 }
 function getImageCollectionValuesForCharting(pt){
@@ -82,7 +131,7 @@ function getImageCollectionValuesForCharting(pt){
 	try{var allValues = icT.getRegion(pt.buffer(plotRadius+1),plotScale).evaluate();
 		print(allValues)
 		return allValues}
-	catch(err){showMessage('Charting error',err)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
+	catch(err){showMessage('Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
 	
 
 }
@@ -136,11 +185,21 @@ function changeChartType(newType){
 }
 
 function Chart(){
+	document.getElementById('curve_chart').style.display = 'none';
+
 	// updateProgress(75);
 	var chartTextColor = '#FFF';
-
+	var cssClassNames = {
+    'headerRow': 'googleChartTable',
+    'tableRow': 'googleChartTable',
+    'oddTableRow': 'googleChartTable',
+    'selectedTableRow': 'googleChartTable',
+    'hoverTableRow': 'googleChartTable',
+    'headerCell': 'googleChartTable',
+    'tableCell': 'googleChartTable',
+    'rowNumberCell': 'googleChartTable'};
 	
-	chartOptions = {
+	var chartOptions = {
 	          title: uriName,
 	          titleTextStyle: {
         		color: chartTextColor
@@ -152,19 +211,26 @@ function Chart(){
 	         				titleTextStyle:{color: chartTextColor},
 	     				textStyle:{color: chartTextColor}
 	     			},
-	     	vAxis:{textStyle:{color: '#FFF'},titleTextStyle:{color: chartTextColor}},
-	           width: 1400, 
-	           height:400,
+	     	vAxis:{textStyle:{color: chartTextColor},titleTextStyle:{color: chartTextColor}},
+	     	legend: {
+			        textStyle: {
+			            color: chartTextColor
+			        }
+			    },
+
+	           width: 800, 
+	           height:350,
 	           bar: {groupWidth: "100%"},
-	           explorer: { },
+	           explorer: {  actions: [] },
+	            chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
+	            legendArea:{width:'20%'},
 	           backgroundColor: { fill: "#888" }
-	         
-	   //         histogram: {
-      
-    //   maxNumBuckets: 5,
-    //   bucketSize: 0.05,
-    // }
+
 	        };
+	        var tableOptions = {width: 800, 
+	           height:350,
+	            'allowHtml': true,
+	            'cssClassNames': cssClassNames}
 			var chartOptionsT;
 			// chartType = 'Table'
 			setTimeout(function(){updateProgress(80);},0);
@@ -183,9 +249,10 @@ function Chart(){
 			chartOptionsT = chartOptions;
 			if(chartType === 'Histogram'){chartOptionsT.hAxis.title = 'Value'}
 				else if(chartType === 'ScatterChart'){chartOptionsT.hAxis.title = dataTableT[0][0];chartOptionsT.opacity = 0.1}
+				else if(chartType === 'Table'){chartOptionsT = tableOptions}
 				else{chartOptionsT.hAxis.title = 'Time'};
 			
-			print(chartOptionsT.hAxis.title,dataTableT)
+			
 			var data = google.visualization.arrayToDataTable(dataTableT);
 	       	console.log('data');
 	       	console.log(dataTableT);
@@ -208,8 +275,9 @@ function Chart(){
 	       setTimeout(function(){updateProgress(90);},0);
 	        chart.draw(data, chartOptionsT);
 	        setTimeout(function(){updateProgress(100);},0);
-			$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:absolute;vertical-align:top;right:0%;top:0%">X')
+			
 			$('#curve_chart').append('<br><br>')
+
  	       	if(chartType != 'Table'){$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
  	       	$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
  	       	// $('#curve_chart').append('<p></p>')
@@ -225,8 +293,10 @@ function Chart(){
  	       		// 					<input class="button" type="button"  value = "ColumnChart" onclick = "changeChartType(this);">')
  	       
  	       	}
+ 	       	$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart')
  	       	
  			map.setOptions({draggableCursor:'help'});
+ 			map.setOptions({cursor:'help'});
 			// $("#curve_chart").append('<variable-range id = "graphControls" name="Chart plot radius (m)" var="plotRadius" default="15" min="30" max="300" step = "30"></variable-range>');
  	       	// $("input[name='gender']").change(function(){this.checked = true;changeChartType(this);})
  	       	// $("#curve_chart").append('<label class="radio-inline"><input type="radio" name="chartTypeR">Option 2</label>')
@@ -299,7 +369,7 @@ function chartIt(){
 	}
 	
 	
-		catch(err){showMessage('Charting error',err)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
+		catch(err){showMessage('Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
 	
 
 		// dataTable = getDataTable(pt);
@@ -328,6 +398,7 @@ function drawChart() {
 
 		 map.setOptions({draggableCursor:'help'});
 		google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
+			closeChart();
 			print('Map was double clicked');
 			var x =e.clientX;
         	var y = e.clientY;console.log(x);

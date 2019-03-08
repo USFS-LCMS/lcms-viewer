@@ -209,9 +209,23 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
     
     eeImage = eeImage.clip(fc);
     var imageJson = ee.Serializer.toJSON(eeImage);
-
+    $('#export-message-container').text("Exporting:" + exportOutputName);
     outputURL = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+exportOutputName +'.tif'//Currently cannot handle multiple tile exports for very large exports
-    var region = JSON.stringify(fc.bounds().getInfo());
+    print('exporting')
+    try{
+       var region = JSON.stringify(fc.bounds().getInfo()); 
+    }
+    catch(error){
+        if(error.message.indexOf('LinearRing requires at least 3 points.') > -1){
+            showMessage('Invalid Export Area Polygons','Press "Clear All Shapes" button and redraw export areas<br>ensuring each drawn polygon has at least 3 points')
+        }
+        else{
+           showMessage('Something Went Wrong',error.message) 
+        }
+        
+    
+    }
+   
     //Set up parameter object
     var params = {
         json:imageJson,
@@ -231,9 +245,9 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
     return {'id':taskId,'params':params}
 }
 function exportImages(){
-    closePopup();
+    // closePopup();
     console.log(exportImageDict);
-    console.log('yay');
+    // console.log('yay');
     var now = Date().split(' ');
     var nowSuffix = '_'+now[2]+'_'+now[1]+'_'+now[3]+'_'+now[4];
 
@@ -250,8 +264,8 @@ function exportImages(){
 }
 function processFeatures2(fc,shoudExport){
     exportFC = fc;
-    print('yay');
-    showPopup();
+    // print('yay');
+    // showPopup();
 
 }
 

@@ -772,6 +772,8 @@ function ShapesMap(_map, _deleteButton, _clearButton,_processButton,_exportButto
         if(fc !== false){processFeatures2(fc,true)};
         canAddToMap = true;
         canExport = false;
+        print('exporting');
+        exportImages()
     }
     function onStopDrawingButtonClicked(){
         console.log('drawing stopped')

@@ -98,13 +98,20 @@ function setNoData(image,noDataValue){
 
 
 var gnp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/GNP_Admin_Bndy');
-var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
-var bt = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/BT_LCMS_ProjectArea_5km');
+// var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
+var bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/BT_LCMS_ProjectArea_5km');
+var fnf_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k');
+var b = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
 
-var fnfStudyAreas = [['Glacier NP',gnp],
-                    ['Flathead  NF',fnf]]
+var btnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Bridger-Teton National Forest')).first());
+var fnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Flathead National Forest')).first());
 
-var btStudyAreas = [['Bridger Teton NF',bt]]
+var fnfStudyAreas = [['Glacier NP',gnp,'Boundary of Glacier National Park'],
+                    ['Flathead  NF',fnf,'Boundary of Flathead National Forest'],
+                    ['Flathead LCMS Study Area',fnf_study_area,'Outline over which LCMS model calibration data were collected and applied'],]
+
+var btStudyAreas = [['Bridger-Teton NF',btnf,'Boundary of Bridger-Teton National Forest'],
+                    ['Bridger-Teton LCMS Study Area',bt_study_area,'Outline over which LCMS model calibration data were collected and applied']]
 
 var PALETTE = 'b67430,78db53,F0F,ffb88c,8cfffc,32681e,2a74b8'
 
@@ -127,7 +134,7 @@ var collectionDict = {
   'projects/USFS/LCMS-NFS/R1/Base-Learners/Harmonic-Coefficients',
   fnfStudyAreas,
   'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table',
-  'projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k'
+  fnf_study_area
   ],
 
   'BTNF':['projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
@@ -136,7 +143,8 @@ var collectionDict = {
   'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
   btStudyAreas,
   'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
-  'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+  // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+  bt_study_area
   ]
   
 }
@@ -312,7 +320,7 @@ Map2.addLayer(mtbsYear,{min:startYear,max:endYear,palette:declineYearPalette},'M
 
 var studyAreas = collectionDict[studyAreaName][4];
 studyAreas.map(function(studyArea){
-  Map2.addLayer(studyArea[1],{palette:'d9d9d9',addToLegend:false},studyArea[0],false,null,null,null,'reference-layer-list')
+  Map2.addLayer(studyArea[1],{palette:'d9d9d9',addToLegend:false},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
 // 
 })
 
@@ -330,6 +338,7 @@ if(summaryMethod === 'year'){
 
   var threshYearNameEnd = 'Most recent year of ';
   var threshProbNameEnd = 'Probability of most recent year of ';
+  var exportSummaryMethodNameEnd = 'Most Recent';
 }
 else{
   var dndThreshOut = dndThresh.qualityMosaic('Loss Probability');//.qualityMosaic('Decline_change');
@@ -345,6 +354,7 @@ else{
 
   var threshYearNameEnd = 'Year of highest probability of ';
   var threshProbNameEnd = 'Highest probability of ';
+  var exportSummaryMethodNameEnd = 'Highest Probablity';
 }
 
 
@@ -361,6 +371,7 @@ var composites = ee.ImageCollection(collectionDict[studyAreaName][0])
         // .filter(ee.Filter.equals('cloudcloudShadowMaskingMethod','fmask'))
         .map(function(img){return multBands(img,1,0.0001)})
         .map(simpleAddIndices)
+        .select(['blue','green','red','nir','swir1','swir2','NDVI','NBR']);
         // .map(getImageLib.getTasseledCap)
         // .map(getImageLib.simpleAddTCAngles)
         // .select(['NBR']);
@@ -497,25 +508,25 @@ var rnrCountForExport = rnrCount.byte();
 
 
 if(analysisMode === 'advanced'){
-Map2.addExport(lcForExport,studyAreaName +' LCMS Beta Land Cover mode '+ startYear.toString() + '-'+ endYear.toString() ,30,10,120,10,false,{'palette':PALETTE,'min':1,'max':7});
-Map2.addExport(luForExport,studyAreaName +' LCMS Beta Land Use mode '+ startYear.toString() + '-'+ endYear.toString() ,30,10,120,10,false,{'palette':luPalette,'min':1,'max':6});
+Map2.addExport(lcForExport,studyAreaName +' LCMS Beta Land Cover MODE '+ startYear.toString() + '-'+ endYear.toString() ,30,10,120,10,false);
+Map2.addExport(luForExport,studyAreaName +' LCMS Beta Land Use MODE '+ startYear.toString() + '-'+ endYear.toString() ,30,10,120,10,false);
 }
 
-Map2.addExport(dndYearForExport,studyAreaName +' LCMS Beta Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':declineYearPalette});
+Map2.addExport(dndYearForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false);
 
 if(analysisMode === 'advanced'){
-Map2.addExport(dndSevForExport,studyAreaName +' LCMS Beta Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdDecline*100,'max':upperThresholdDecline*100,'palette':declineProbPalette});
+Map2.addExport(dndSevForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false);
 
-Map2.addExport(dndCountForExport,studyAreaName +' LCMS Beta Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':declineDurPalette});
+Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' v2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false);
 
 }
 
-Map2.addExport(rnrYearForExport,studyAreaName +' LCMS Beta Gain Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':startYear-1970,'max':endYear-1970,'palette':recoveryYearPalette});
+Map2.addExport(rnrYearForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Gain Year '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false);
 
 if(analysisMode === 'advanced'){
-  Map2.addExport(rnrSevForExport,studyAreaName +' LCMS Beta Gain Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':lowerThresholdRecovery*100,'max':upperThresholdRecovery*100,'palette':recoveryProbPalette});
+  Map2.addExport(rnrSevForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Gain Probability '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false);
 
-  Map2.addExport(rnrCountForExport,studyAreaName +' LCMS Beta Gain Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false,{'min':1,'max':5,'palette':recoveryDurPalette});
+  Map2.addExport(rnrCountForExport,'LCMS ' +studyAreaName +' v2019-1 Gain Duration '+ startYear.toString() + '-'+ endYear.toString(),30,10,120,10,false);
 
 }
 //Set up charting

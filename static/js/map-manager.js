@@ -420,7 +420,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
 
         var legend = document.createElement("ee-class-legend");
         legend.name = name;
-        legend.helpBoxMessage = helpBox
+        legend.helpBoxMessage = helpBox;
 
         legend.classColor = viz.classLegendDict[lk];
         legend.className = lk;
@@ -431,6 +431,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
 
       var title = document.createElement("ee-class-legend-title");
       title.name = name;
+      title.helpBoxMessage = helpBox;
       var legendList = document.querySelector("legend-list");
       legendList.insertBefore(title,legendList.firstChild);
      
@@ -670,7 +671,7 @@ function stringToBoolean(string){
 // function refreshLayerToMap()
 function reRun(){
   layerChildID = 0;
-  
+  queryObj = {};
   if(analysisMode === 'advanced'){
     document.getElementById('threshold-container').style.display = 'inline-block';
     document.getElementById('advanced-radio-container').style.display = 'inline';

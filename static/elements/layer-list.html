@@ -134,8 +134,8 @@
 }
 	</style>
 		<div style = 'background-color:#666;border-radius:5px;width:100%;'>
-		<base-list listName="Export Image List" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Check any images you would like to export, change any necessary parameters, and then submit image for export">
-		<div style='width:90%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+		<base-list listName="Download Image List" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export.  Then check any images you would like to download, and then click  'Export Data' image for export">
+		<div style='width:99%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
 			<content>
 				
 
@@ -144,17 +144,14 @@
 			
        
 		</base-list>
-		 <div style='width:90%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+		 <div style='width:99%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
 		<!-- <input onclick="closePopup();" type=button class='button' value="x" style='border-radius:5px;position:absolute;right:1px;top:1px;'
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel"> -->
         <variable-text id="export-crs" name="Export crs" var="exportCRS" default="EPSG:26911"  style='display:inline-block'
        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="EPSG format export projection specification. UTM WGS 84: 326 + zone number, UTM NAD83: 269 + zone number, USGS Albers: 5070, Web Mercator: 4326"></variable-text>
        <br>
-        <div style='width:90%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
-       <input onclick="exportImages();" type=button class='button' value="Submit" style='display:inline;margin-left:5px;margin-bottom:5px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Submit selected images for exporting">
-        <input onclick="closePopup();" type=button class='button' value="Cancel" style='display:inline'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Exit without submitting any images for export">
+        <div style='width:99%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+
 		</div>
 	</template>	
 </polymer-element>

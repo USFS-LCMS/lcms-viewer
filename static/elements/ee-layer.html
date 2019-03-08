@@ -1,4 +1,4 @@
-<link rel="import" href="../components/polymer/polymer.html">
+<!-- <link rel="import" href="../components/polymer/polymer.html"> -->
 <!-- <link rel="stylesheet" href="main.css"> -->
 <script type="text/javascript">
     var exportImageDict = {};
@@ -9,7 +9,7 @@
 
 <polymer-element name="ee-layer" attributes="name">
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
        
         <style>
 
@@ -209,7 +209,7 @@
     
 
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
 
 
@@ -400,7 +400,7 @@
     
 
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
 
 
@@ -587,7 +587,7 @@
 
 <polymer-element name="ee-legend" attributes="colorRamp,min,max,fontColor">
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
             .leftLabel{float:left;text-shadow:1px 1px 0 #000,
                 -1px -1px 0 #000,
@@ -641,7 +641,7 @@
 
 <polymer-element name="ee-class-legend" >
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
             
 
@@ -738,7 +738,7 @@
 
 <polymer-element name="ee-class-legend-title" >
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
             
 
@@ -1001,7 +1001,7 @@
 
 <polymer-element name="ee-export" attributes="eeImage,name,res,min,max,step,Export">
     <template>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
 
 
@@ -1054,23 +1054,32 @@
             .leftLabel{float:left;}
             .rightLabel{float:right;}
             .deactivated{display:none;}
-            .container{margin-bottom:15px;}
+            .container{margin-bottom:15px;float:left;display: inline-block;
+    vertical-align: top;}
             /*.legend{color: #000;font-weight: bold;float:right;height:10;width:200px;margin: 0 0 10px 10px;}*/
             .range{float:right;}
             #opacity{margin-left:1Spx;}
         </style>
-        <div class = 'container' style = "width:100%;">
+        
         <li style = 'height:10px;margin-bottom:10px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
-            <input  id="enabled" type="checkbox" on-change="{{onChange}}" checked={{Export}}
+            <div class = 'container' style = "width:100%;">
+            <input  style = 'float:left;' id="enabled" type="checkbox" on-change="{{onChange}}" checked={{Export}}
             href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= 'Whether or not to export image: {{name}}' >
-             <input type="text"  id = 'name' value="{{name}}"style = 'height:5px;color:#FFF;border-radius:5px;width:80%;padding:5px;background-color:#576066;' spellcheck="false" on-change="{{onNameChange}}" on-click="{{onNameChange}}" on-keyup = "{{onNameChange}}"
+             <input type="text"  id = 'name' value="{{name}}"style = 'float:right;height:5px;color:#FFF;border-radius:5px;width:90%;padding:5px;background-color:#576066;' spellcheck="false" on-change="{{onNameChange}}" on-click="{{onNameChange}}" on-keyup = "{{onNameChange}}"
               href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= 'Name of output export image.  Change if needed.'>
      
             <!-- <input type="text" style = 'width:150px;' var = 'viz' value="{{viz}}" spellcheck="false" on-change="{{onVizChange}}"  > -->
             <!-- <input id="res" type="range" value='{{res}}' step = '{{step}}'min = '{{min}}' max = '{{max}}'style = 'float:center !important;display:inline-block !important;margin-top:12px;min-width:30%;' on-input="{{onRangeChange}}"
             href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= 'Resolution (m) of image: {{name}}'>{{res}} (m) -->
-        </li>
         </div>
+        </li>
+        
+
+
+     
+   
+        </li>
+
     </template>
     <script>
         // var exportID = 0;
