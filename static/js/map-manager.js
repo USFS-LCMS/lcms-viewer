@@ -278,24 +278,16 @@ String.prototype.replaceAll = function(str1, str2, ignore)
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 } 
 /////////////////////////////////////
-function addExport(eeImage,name,res,resMin,resMax,resStep,Export,vizParams){
+function addExport(eeImage,name,res,Export,metadataParams){
+
   var exportElement = document.createElement("ee-export");
-  
-  if(resMin === null || resMin === undefined){
-    resMin = 0;
-  }
-  if(resMax === null || resMax === undefined){
-    resMax = 1000;
-  }
-  if(resStep === null || resStep === undefined){
-    resStep = 15;
+  if(metadataParams === null || metadataParams === undefined){
+    metadataParams = {'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
   }
   if(Export === null || Export === undefined){
     Export = true;
   }
-   if(vizParams === null || vizParams === undefined){
-    vizParams = {};
-  }
+  
   var now = Date().split(' ');
   var nowSuffix = '_'+now[2]+'_'+now[1]+'_'+now[3]+'_'+now[4]
 
@@ -305,14 +297,13 @@ function addExport(eeImage,name,res,resMin,resMax,resStep,Export,vizParams){
   name = name.replaceAll(')','_')
   exportElement.res = res;
   exportElement.name = name;
-  exportElement.min = resMin;
-  exportElement.max = resMax;
+ 
   exportElement.eeImage = eeImage;
-  exportElement.step = resStep;
+
   exportElement.Export = Export;
   exportElement.ID = exportID;
   
-  exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'vizParams':vizParams}
+  exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'metadataParams':metadataParams}
   var exportList = document.querySelector("export-list");
     exportList.insertBefore(exportElement,exportList.firstChild);
   exportID ++;
@@ -1457,69 +1448,73 @@ function initialize() {
                 placeholderID  ++;
             }
               
-        var input = document.getElementById('pac-input');
-        var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-        // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
-          searchBox.setBounds(map.getBounds());
-        });
 
-        var markers = [];
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function() {
-          var places = searchBox.getPlaces();
 
-          if (places.length == 0) {
-            return;
-          }
 
-          // Clear out the old markers.
-          markers.forEach(function(marker) {
-            marker.setMap(null);
-          });
-          markers = [];
+        // var input = document.getElementById('pac-input');
+        // var searchBox = new google.maps.places.SearchBox(input);
+        // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-          // For each place, get the icon, name and location.
-          var bounds = new google.maps.LatLngBounds();
-          places.forEach(function(place) {
-            var icon = {
-              url: place.icon,
-              size: new google.maps.Size(71, 71),
-              origin: new google.maps.Point(0, 0),
-              anchor: new google.maps.Point(17, 34),
-              scaledSize: new google.maps.Size(25, 25)
-            };
+        // // Bias the SearchBox results towards current map's viewport.
+        // map.addListener('bounds_changed', function() {
+        //   searchBox.setBounds(map.getBounds());
+        // });
 
-            // Create a marker for each place.
-            markers.push(new google.maps.Marker({
-              map: map,
-              icon: icon,
-              title: place.name,
-              position: place.geometry.location
-            }));
+        // var markers = [];
+        // // Listen for the event fired when the user selects a prediction and retrieve
+        // // more details for that place.
+        // searchBox.addListener('places_changed', function() {
+        //   var places = searchBox.getPlaces();
 
-            if (place.geometry.viewport) {
-              // Only geocodes have viewport.
-              bounds.union(place.geometry.viewport);
-            } else {
-              bounds.extend(place.geometry.location);
-            }
-          });
+        //   if (places.length == 0) {
+        //     return;
+        //   }
+
+          // // Clear out the old markers.
+          // markers.forEach(function(marker) {
+          //   marker.setMap(null);
+          // });
+          // markers = [];
+
+          // // For each place, get the icon, name and location.
+          // var bounds = new google.maps.LatLngBounds();
+          // places.forEach(function(place) {
+          //   var icon = {
+          //     url: place.icon,
+          //     size: new google.maps.Size(71, 71),
+          //     origin: new google.maps.Point(0, 0),
+          //     anchor: new google.maps.Point(17, 34),
+          //     scaledSize: new google.maps.Size(25, 25)
+          //   };
+
+          //   // Create a marker for each place.
+          //   markers.push(new google.maps.Marker({
+          //     map: map,
+          //     icon: icon,
+          //     title: place.name,
+          //     position: place.geometry.location
+          //   }));
+
+        //     if (place.geometry.viewport) {
+        //       // Only geocodes have viewport.
+        //       bounds.union(place.geometry.viewport);
+        //     } else {
+        //       bounds.extend(place.geometry.location);
+        //     }
+        //   });
           
-          map.fitBounds(bounds);
-          console.log(bounds);
-          var bounds = map.getBounds();
-         var keys = Object.keys(bounds);
-         var keysX = Object.keys(bounds[keys[0]]);
-         var keysY = Object.keys(bounds[keys[1]]);
-         console.log('b');console.log(bounds);
-          eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+        //   map.fitBounds(bounds);
+        //   console.log(bounds);
+        //   var bounds = map.getBounds();
+        //  var keys = Object.keys(bounds);
+        //  var keysX = Object.keys(bounds[keys[0]]);
+        //  var keysY = Object.keys(bounds[keys[1]]);
+        //  console.log('b');console.log(bounds);
+        //   eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
 
-          reRun();
-        });
+        //   reRun();
+        // });
         if(helpBox){
           // document.getElementById('helpBoxButton').style.display = 'inline-block';
         }
@@ -1706,7 +1701,7 @@ function initialize() {
       resetStudyArea(cachedStudyAreaName)
     }
   run()
-	plotPlots()
+	// plotPlots()
 	});
 
 }

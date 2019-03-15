@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>LCMS_STUDYAREA_VERSION_SUMMARYMETHOD_GAINORLOSS_Probability_STARTYEAR-ENDYEAR</title>
+  <title>FILENAME_TITLE</title>
   <link rel="schema.dc" href="http://purl.org/metadata/dublin_core"/>
-  <meta name="dc.title" content="LCMS STUDYAREA VERSION GAINORLOSS Probability Metadata "/>
+  <meta name="dc.title" content="LCMS STUDYAREA VERSION Land LCORLU Metadata "/>
   <meta name="dc.subject" content=" Landscape Change Monitoring Disturbance Forest "/>
   <meta name="dc.description" content="The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover change across the United States. The objective of LCMS is to develop a consistent approach using the latest technology and advancements in change detection to produce a “best available” map of landscape change. LCMS data are designed to advance and modernize our intra- and inter-agency monitoring capabilities using reference data and a series of change detection algorithms. Because no algorithm performs best in all situations, LCMS uses an ensemble model to improve map accuracy across a range of ecosystems and disturbance processes. Reference data are collected using TimeSync, a web-based tool that helps analysts visualize and interpret the Landsat data record from 1984-present. The LCMS ensemble model yields a “best available” map highlighting a multitude of change processes and land cover types.  "/>
   <meta name="dc.contributor" content="USDA Forest Service Geospatial Technology and Applications Center "/>
@@ -13,7 +13,7 @@
   <meta name="dc.rights" content="Access constraints: None; Use constraints: There are no restrictions on use, except for reasonable and proper acknowledgement of information sources."/>
 </head>
 <body>
-<h1>LCMS_STUDYAREA_VERSION_SUMMARYMETHOD_GAINORLOSS_Probability_STARTYEAR-ENDYEAR</h1>
+<h1>FILENAME_TITLE</h1>
 <p>
 <h1>Metadata:</h1>
 <ul>
@@ -38,7 +38,30 @@
 <dt><em>Originator:</em>  USDA Forest Service </dt>
 <dt><em>Title:</em>  Landscape Change Monitoring System, STUDYAREA_LONGNAME </dt>
 <dt><em>Edition:</em>  VERSION </dt>
+<dt><em>Publication Date:</em>20190315</dt>
 <dt><em>Geospatial_Data_Presentation_Form:</em>  raster digital data</dt>
+<dt><em>Other_Citation_Details:</em>  
+<dd>
+
+References:<br>
+(1) Breiman, L. 2001. Random forests. Machine Learning 45:15–32.
+<br>
+(2) W.B. Cohen, Y. Zhiqiang, R.E. Kennedy, Detecting trends in forest disturbance and recovery using yearly Landsat time series: 2. TimeSync — Tools for calibration and validation,Remote Sensing of Environment, 114 (2010), pp. 2911-2924
+<br>
+(3)  Cohen, Warren B.; Yang, Zhiqiang ; Healey, Sean P.; Kennedy, Robert E.; Gorelick, Noel . 2018. A LandTrendr multispectral ensemble for forest disturbance detection.
+<br>
+(4) Gorelick, N.; Hancher, M.; Dixon, M.; Ilyushchenko, S.; Thau, D.; Moore, R. Google Earth Engine: Planetary-scale geospatial analysis for everyone. Remote Sens. Environ. 2017, 202, 18–27.
+<br>
+(5)  Healey, Sean P.; Cohen, Warren B.; Yang, Zhiqiang ; Brewer, C. Kenneth; Brooks, Evan B.; Gorelick, Noel ; Hernandez, Alexander J.; Huang, Chengquan ; Hughes, M. Joseph; Kennedy, Robert E.; Loveland, Thomas R.; Moisen, Gretchen G.; Schroeder, Todd A.; Stehman, Stephen V; Vogelmann, James E.; Woodcock, Curtis E.; Yang, Limin ; Zhu, Zhe . 2018.
+<br>
+(6) M. Hughes, S. Kaylor, D. Hayes, Patch-based forest change detection from Landsat time series, Forests, 8 (2017), p. 166
+<br>
+(8) Kennedy, R.E., Yang, Z., Gorelick, N., Braaten, J., Cavalcante, L., Cohen, W.B., Healey, S. (2018). Implementation of the LandTrendr Algorithm on Google Earth Engine. Remote Sensing. 10, 691.
+<br>
+(9) Zhu, Z.; Woodcock, C.E. 2012. Object-based cloud and cloud shadow detection in Landsat imagery. Remote Sensing of Environment. 118(2012): 83–94.
+<br>
+<br>
+</dd>
 <dt><em>Online_Linkage:</em>  <a href="STUDYAREA_URL">&lt;STUDYAREA_URL&gt;</a></dt>
 </dl>
 </dd>
@@ -50,7 +73,10 @@
 <dt><em>Abstract:</em>  
 <dd>
 
-The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover change across the United States. The objective of LCMS is to develop a consistent approach using the latest technology and advancements in change detection to produce a “best available” map of landscape change. LCMS data are designed to advance and modernize our intra- and inter-agency monitoring capabilities using reference data and a series of change detection algorithms. Because no algorithm performs best in all situations, LCMS uses an ensemble model to improve map accuracy across a range of ecosystems and disturbance processes. Reference data are collected using TimeSync, a web-based tool that helps analysts visualize and interpret the Landsat data record from 1984-present. The LCMS ensemble model yields a “best available” map highlighting a multitude of change processes and land cover types.
+The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover change across the United States. The objective of LCMS is to develop a consistent approach using the latest technology and advancements in change detection to produce a “best available” map of landscape change. LCMS data are designed to advance and modernize our intra- and inter-agency monitoring capabilities using reference data and a series of change detection algorithms. Because no algorithm performs best in all situations, LCMS uses an ensemble model to improve map accuracy across a range of ecosystems and disturbance processes. Reference data are collected using TimeSync, a web-based tool that helps analysts visualize and interpret the Landsat data record from 1984-present. The LCMS ensemble model yields a “best available” map highlighting a multitude of change processes and land cover types (Healey et al 2018).
+<br>
+<br>
+Landsat 5, 7, and 8 surface reflectance data are accessed in Google Earth Engine (Gorelick et al 2017). All data have the cFmask cloud and cloud shadow masking algorithm applied to them (Zhu and Woodcock 2012). The annual medoid is then computed to summarize each year into a single composite.  Composites are then run through the LANDTRENDR (Kennedy et al 2018; Cohen et al 2018) and VERDET (Hughes et al 2017) temporal segmentation algorithms. The raw composite values and fitted values from LANDTRENDR and VERDET along with the respective pair-wise differences are then used as independent predictor variables in a Random Forest (Breiman 2001) model. Model calibration data are manually interpretted by analysts using the TimeSync Landsat visualization tool (Cohen et al 2010). Predicted values include: loss, gain, landcover, and landuse. These values are predicted for each year of the Landsat time series. These serve as the foundational products for LCMS.
 
 </dd>
 </dl>
@@ -200,7 +226,7 @@ Google Earth Engine
 <dt><em>Entity_and_Attribute_Information:</em></dt>  
 <dd>
 <dl>
-<dt><em>GAINORLOSS_Description:</em>  
+<dt><em>STUDYAREA_LONGNAME VERSION WHICHONE STARTYEAR-ENDYEAR Description:</em>  
 <dd>
 
 DETAILED_PARAGRAPH_DESCRIPTION
@@ -212,16 +238,16 @@ DETAILED_PARAGRAPH_DESCRIPTION
 <dt><em>Entity_Type:</em>  
 <dd>
 <dl>
-<dt><em>Entity_Type_Label:</em>  LCMS_STUDYAREA_VERSION_SUMMARYMETHOD_GAINORLOSS_Probability_STARTYEAR-ENDYEAR</dt>
-<dt><em>Entity_Type_Definition:</em>  LCMS STUDYAREA Layer</dt>
+<dt><em>Entity_Type_Label:</em>  LCMS_STUDYAREA_LONGNAME_VERSION_WHICHONE_STARTYEAR-ENDYEAR</dt>
+<dt><em>Entity_Type_Definition:</em>  LCMS STUDYAREA_LONGNAME WHICHONE</dt>
 <dt><em>Entity_Type_Definition_Source:</em>  Landscape Change Monitoring System</dt>
 </dl>
 </dd>
 <dt><em>Attribute:</em>  
 <dd>
 <dl>
-<dt><em>Attribute_Label:</em>  GAINORLOSS Probability</dt>
-<dt><em>Attribute_Definition:</em>  The raw proportion of "GAINORLOSS" votes from the LCMS model, multiplied by 100. Can also be interpreted as the probability that this pixel would be correctly classified as GAINORLOSS. E.g., Pixel Value = Probability * 100, or 67% = 0.67*100.</dt>
+<dt><em>Attribute_Label:</em>  WHICHONE</dt>
+<dt><em>Attribute_Definition:</em>  DETAILED_PARAGRAPH_DESCRIPTION </dt>
 </dl>
 </dd>
 <dd>
@@ -229,7 +255,7 @@ DETAILED_PARAGRAPH_DESCRIPTION
 <dt><em>Attribute_Domain_Values:</em></dt>
 <dd>
 <dl>
-<dt><em>Summary_Method:</em> SUMMARYMETHOD</dt>
+<dt><em>Summary_Method:</em> SUMMARY_METHOD</dt>
 </dl>
 </dd>
 <dd>
@@ -237,9 +263,9 @@ DETAILED_PARAGRAPH_DESCRIPTION
 <dt><em>Range_Domain:</em></dt>
 <dd>
 <dl>
-<dt><em>Range_Domain_Minimum:</em> 1</dt>
-<dt><em>Range_Domain_Maximum:</em> 100</dt>
-<dt><em>Attribute_Units_of_Measure:</em> Percent</dt>
+<dt><em>Range_Domain_Minimum:</em> CLASS_MIN</dt>
+<dt><em>Range_Domain_Maximum:</em> CLASS_MAX</dt>
+<dt><em>Attribute_Units_of_Measure:</em> Number representing WHICHONE class.</dt>
 </dl>
 </dd>
 </dl>
@@ -263,7 +289,7 @@ CONFUSIONMATRIX
 </dd>
 <dt><em>Overall_Accuracy:</em> OOB_ACCURACY </dt>
 <dt><em>Kappa:</em> OOB_KAPPA </dt>
-<dt><em>Attribute_Value_Accuracy_Explanation:</em> Out-of-bag accuracy evaluated over 76185 training samples with the default GAINORLOSS classification threshold of GAINORLOSS_THRESHOLD applied. </dt>
+<dt><em>Attribute_Value_Accuracy_Explanation:</em> Out-of-bag accuracy evaluated over 76185 training samples. </dt>
 </dl>
 </dd>  
 </dl>
@@ -280,7 +306,7 @@ CONFUSIONMATRIX
 <dt><em>Metadata_Reference_Information:</em>  
 <dd>
 <dl>
-<dt><em>Metadata_Date:</em>  20190307</dt>
+<dt><em>Metadata_Date:</em>  20190315</dt>
 <dt><em>Metadata_Standard_Name:</em>  FGDC Content Standard for Digital Geospatial Metadata</dt>
 <dt><em>Metadata_Standard_Version:</em>  FGDC-STD-001-1998</dt>
 <dt><em>Metadata_Time_Convention:</em>  local time</dt>

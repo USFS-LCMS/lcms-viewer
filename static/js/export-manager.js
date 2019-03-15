@@ -105,6 +105,51 @@ downloadMetadata = function(){
     link.click(); 
 
 }
+// var dur_meta = 'metadata/lcms_v2019-1_metadata_template_duration.html';
+// var lu_meta = 'metadata/lcms_v2019-1_metadata_template_landcover_landuse.html';
+// var prob_meta = 'metadata/lcms_v2019-1_metadata_template_probability.html';
+// var year_meta = 'metadata/lcms_v2019-1_metadata_template_year.html';
+var meta_template = 'metadata/lcms_v2019-1_metadata_template.html';
+var dur_meta_str;var lu_meta_str;var prob_meta_str;var year_meta_str;var meta_template_str;
+
+$(document).ready(function(){
+    $.get(meta_template, function(html_string){meta_template_str = html_string;},'html');
+  // $.get(dur_meta, function(html_string){dur_meta_str = html_string;},'html');
+  // $.get(lu_meta, function(html_string){lu_meta_str = html_string;},'html');
+  // $.get(prob_meta, function(html_string){prob_meta_str = html_string;},'html');   
+  // $.get(year_meta, function(html_string){year_meta_str = html_string;},'html');  
+  
+});
+function exportMetadata(filename, html_string) {
+        
+        var blob = new Blob([html_string], { type: 'text/html;charset=utf-8;' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            var link = document.createElement("a");
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+function downloadExport(url,output){
+                var link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", output);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                sleep(1000);
+                document.body.removeChild(link);
+                sleep(1000);
+            }
 downloadTraining = function(){
    console.log('downloading training');
     var url='images/LCMS_Data_Explorer_exercise1.pdf';    
@@ -145,8 +190,15 @@ function trackExports(){
         else if(t.state === 'COMPLETED'  && cachedEEExport.downloaded === false ){
             
             var tOutputName = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+cachedEEExports[t.id].outputName +'.tif'
+            downloadExport(tOutputName,cachedEEExports[t.id].outputName +'.tif')
+            exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
+            
+            
+            
+            
+            
             showMessage('SUCCESS!',
-                 '<p style = "margin:5px;">'+ cachedEEExports[t.id].outputName + ' has successfully exported! </p><p style = "margin:3px;">Download link below:</p> <a target="_blank" href="'+tOutputName+'">'+cachedEEExports[t.id].outputName+'</a>'
+                 '<p style = "margin:5px;">'+ cachedEEExports[t.id].outputName + ' has successfully exported! </p><p style = "margin:3px;">'
                  )  
              // sleep(2000);
               // window.open(tOutputName);
@@ -186,8 +238,8 @@ function trackExports(){
     // console.log('just ran export checker');
     updateSpinner();
 }
-function cacheExport(id,outputName){
-    cachedEEExports[id] = {'status': 'submitted', 'downloaded': false,'start-time':Date.parse(new Date()),'outputName':outputName}
+function cacheExport(id,outputName,metadata){
+    cachedEEExports[id] = {'status': 'submitted', 'downloaded': false,'start-time':Date.parse(new Date()),'outputName':outputName,'metadata':metadata}
     localStorage.setItem("cachedEEExports",JSON.stringify(cachedEEExports));
     trackExports();
 }
@@ -244,6 +296,7 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
     taskId = ee.data.newTaskId(1)
     return {'id':taskId,'params':params}
 }
+
 function exportImages(){
     // closePopup();
     console.log(exportImageDict);
@@ -257,7 +310,32 @@ function exportImages(){
             var IDAndParams = getIDAndParams(exportObject['eeImage'],exportObject['name']+nowSuffix,exportCRS,exportObject['res'],fc);
             //Start processing
             ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
-            cacheExport(IDAndParams['id'],exportObject['name']+nowSuffix);
+            
+
+            var metadataParams = exportObject['metadataParams']
+            meta_template_strT = meta_template_str;
+
+           
+            meta_template_strT = meta_template_strT.replaceAll('FILENAME_TITLE',exportObject['name']+nowSuffix + '.tif');
+            meta_template_strT = meta_template_strT.replaceAll('EXPORT_CRS',exportCRS);
+            meta_template_strT = meta_template_strT.replaceAll('STARTYEAR',metadataParams.startYear);
+            meta_template_strT = meta_template_strT.replaceAll('ENDYEAR',metadataParams.endYear);
+            meta_template_strT = meta_template_strT.replaceAll('VERSION',metadataParams.version);
+            
+            meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_LONGNAME',metadata_parser_dict.STUDYAREA_LONGNAME[metadataParams.studyAreaName]);
+            meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_URL','https://lcms-data-explorer.appspot.com/');
+            meta_template_strT = meta_template_strT.replaceAll('WHICHONE',metadataParams.whichOne);
+            meta_template_strT = meta_template_strT.replaceAll('DETAILED_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description']);
+            meta_template_strT = meta_template_strT.replaceAll('SUMMARY_METHOD',metadata_parser_dict.SUMMARYMETHOD[metadataParams.summaryMethod]);
+
+            meta_template_strT = meta_template_strT.replaceAll('CLASS_MIN',metadataParams.min);
+            meta_template_strT = meta_template_strT.replaceAll('CLASS_MAX',metadataParams.max);
+
+            meta_template_strT = meta_template_strT.replaceAll('OOB_ACCURACY',metadata_parser_dict[metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_ACCURACY']);
+            meta_template_strT = meta_template_strT.replaceAll('OOB_KAPPA',metadata_parser_dict[metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_KAPPA']);
+            meta_template_strT = meta_template_strT.replaceAll('CONFUSIONMATRIX',metadata_parser_dict[metadataParams.whichOne.split(' ')[0] + '_CONFUSIONMATRIX']);
+            cacheExport(IDAndParams['id'],exportObject['name']+nowSuffix,meta_template_strT);
+            // exportMetadata(exportObject['name']+nowSuffix + '_metadata.html', meta_template_strT)
     // }
         }
     })

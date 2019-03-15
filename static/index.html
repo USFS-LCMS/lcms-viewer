@@ -21,14 +21,14 @@
     <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
   <head>
       <!-- Global site tag (gtag.js) - Google Analytics -->
-     <!--  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128044829-1"></script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128044829-1"></script>
       <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
         gtag('config', 'UA-128044829-1');
-      </script> -->
+      </script>
 
 
     <!-- <title>Climate Viz</title> -->
@@ -46,7 +46,7 @@
     <!-- <link rel="stylesheet" href="css/iThing.css" type="text/css" /> -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script  src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing,places"></script>
+    <script  async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
     <script type="text/javascript" src="js/ee_api_js.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -56,6 +56,12 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+
+
     <!--<script src="jquery/jquery-ui.custom.js"></script>-->
     <!--<script src="jquery/jQDateRangeSlider-min.js"></script>-->
 
@@ -184,6 +190,7 @@
 
     <!-- <script type="text/javascript">loadScript("ee/EE-main-run-code-lcms.js")</script> -->
     <script type="text/javascript" src="ee/run.js"></script><!--Module for general EE code- place all EE code here to run on refresh-->
+    <script type="text/javascript" src="metadata/metadata-parser.js"></script><!--For parsing metadata-->
     <script type="text/javascript" src="js/chart-manager.js"></script><!--Module for charting-->
     <script type="text/javascript" src="js/export-manager.js"></script><!--Module for creating EE images for exporting- Place all EE code here for exporting EE objects-->
      
@@ -206,7 +213,7 @@
 
     
  <div id = 'study-area-label' style = 'background-color: #555;color:#FFF;padding:5px;font-size: 15pt;border-radius: 5px;text-align: center;position:absolute;left:40%;'> Bridger Teton National Forest </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
 
 
@@ -354,7 +361,7 @@
           <div id = 'declineThreshold'class = 'dual-range-slider-value'> </div>
              </div >
           <script type="text/javascript">
-            var lowerThresholdDecline = 0.3;
+            var lowerThresholdDecline = 0.35;
             var upperThresholdDecline = 1;
             setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
           </script>
@@ -611,6 +618,7 @@
                       top: 50%;
                       left: 30%;
                       width:500px;
+                      max-height:500px;
                       overflow-y:auto;
                       overflow-x:auto;
                       margin: -100px 0 0 -150px;background-color:rgba(150,150,150,0.95)'>
@@ -910,12 +918,12 @@
 //       }
      // toggleWidgets();
     </script>
- <script type="text/javascript" src="js/pt-parser.js"></script>
-<script type="text/javascript" src="js/plot-parser.js"></script>
+ <!-- <script type="text/javascript" src="js/pt-parser.js"></script> -->
+<!-- <script type="text/javascript" src="js/plot-parser.js"></script> -->
 <!-- <script type="text/javascript">toggleWidgets();toggleWidgets();toggleWidgets()</script> -->
-<div id = 'loading-window' style= 'top:0%;left:0%;opacity:0.8;height:100%;width:100%;background-color:#333;position:absolute;display:none;'> 
-<!-- <img src="images/Loading_icon.gif" alt="Loading" style="height:250px;width:300px;position:fixed ;top:50%;left:50%;transform: translate(-50%, -50%);"> -->
-</div>
+<!-- <div id = 'loading-window' style= 'top:0%;left:0%;opacity:0.8;height:100%;width:100%;background-color:#333;position:absolute;display:none;'> 
+<img src="images/Loading_icon.gif" alt="Loading" style="height:250px;width:300px;position:fixed ;top:50%;left:50%;transform: translate(-50%, -50%);">
+</div> -->
  
   </body>
 
