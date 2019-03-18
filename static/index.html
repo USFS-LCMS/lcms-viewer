@@ -185,18 +185,18 @@
     <!-- Bring in various js modules -->
 
    
-    <script type="text/javascript" src="js/drawing-manager.js"></script><!--Module for user-defined vectors-->
-    <script type="text/javascript" src="js/map-manager.js"></script><!--Module for managing EE, area and distance calculation etc-->
+    <script type="text/javascript" src="js/drawing-manager2.js"></script><!--Module for user-defined vectors-->
+    <script type="text/javascript" src="js/map-manager2.js"></script><!--Module for managing EE, area and distance calculation etc-->
 
     <!-- <script type="text/javascript">loadScript("ee/EE-main-run-code-lcms.js")</script> -->
-    <script type="text/javascript" src="ee/run.js"></script><!--Module for general EE code- place all EE code here to run on refresh-->
+    <script type="text/javascript" src="ee/run2.js"></script><!--Module for general EE code- place all EE code here to run on refresh-->
     <script type="text/javascript" src="metadata/metadata-parser.js"></script><!--For parsing metadata-->
-    <script type="text/javascript" src="js/chart-manager.js"></script><!--Module for charting-->
-    <script type="text/javascript" src="js/export-manager.js"></script><!--Module for creating EE images for exporting- Place all EE code here for exporting EE objects-->
+    <script type="text/javascript" src="js/chart-manager2.js"></script><!--Module for charting-->
+    <script type="text/javascript" src="js/export-manager2.js"></script><!--Module for creating EE images for exporting- Place all EE code here for exporting EE objects-->
      
 
    
-    <!-- Master button panel -->
+    <!-- Master button panel -->    
     <div id="top-button-panel">
       <!-- <input style = 'height:30px;font-size:12pt;'id="pac-input" class="controls" type="text" placeholder="Search Places"><!--Search box for finding locations anywhere--> 
 
@@ -531,8 +531,8 @@
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Exit without submitting any images for export">
          <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style = 'display:inline-block;' 
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
-        <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download Metadata" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download metadata for exports">
+        <!-- <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download Metadata" style = 'display:inline-block;' 
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download metadata for exports"> -->
   </div>
 <!--   <li><a data-toggle="tab" href="#legend-tab"
     rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view the legend of available LCMS and reference layers">

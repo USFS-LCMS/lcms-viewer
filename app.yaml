@@ -1,20 +1,20 @@
 runtime: php55
 api_version: 1
 
-default_expiration: "30d"
+default_expiration: "1m"
 
 handlers:
 - url: /(.*\.(appcache|manifest))
   mime_type: text/cache-manifest
   static_files: static/\1
   upload: static/(.*\.(appcache|manifest))
-  expiration: "0m"
+  
 
 - url: /(.*\.atom)
   mime_type: application/atom+xml
   static_files: static/\1
   upload: static/(.*\.atom)
-  expiration: "1h"
+  
 
 - url: /(.*\.crx)
   mime_type: application/x-chrome-extension
@@ -45,13 +45,13 @@ handlers:
   mime_type: text/html
   static_files: static/\1
   upload: static/(.*\.html)
-  expiration: "1h"
+ 
 
 - url: /(.*\.ico)
   mime_type: image/x-icon
   static_files: static/\1
   upload: static/(.*\.ico)
-  expiration: "7d"
+  
 
 - url: /(.*\.js)
   mime_type: text/javascript
@@ -62,7 +62,7 @@ handlers:
   mime_type: application/json
   static_files: static/\1
   upload: static/(.*\.json)
-  expiration: "1h"
+ 
 
 - url: /(.*\.m4v)
   mime_type: video/m4v
@@ -93,7 +93,7 @@ handlers:
   mime_type: application/rss+xml
   static_files: static/\1
   upload: static/(.*\.rss)
-  expiration: "1h"
+ 
 
 - url: /(.*\.safariextz)
   mime_type: application/octet-stream
@@ -144,8 +144,7 @@ handlers:
   mime_type: application/xml
   static_files: static/\1
   upload: static/(.*\.xml)
-  expiration: "1h"
-
+  
 - url: /(.*\.xpi)
   mime_type: application/x-xpinstall
   static_files: static/\1
@@ -175,15 +174,15 @@ handlers:
 - url: /(.+)/
   static_files: static/\1/index.html
   upload: static/(.+)/index.html
-  expiration: "15m"
+ 
 
 - url: /(.+)
   static_files: static/\1/index.html
   upload: static/(.+)/index.html
-  expiration: "15m"
+  
 
 # site root
 - url: /
   static_files: static/index.html
   upload: static/index.html
-  expiration: "15m"
+  

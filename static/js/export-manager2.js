@@ -176,7 +176,7 @@ function trackExports(){
         if(Object.keys(cachedEEExports).indexOf(t.id) >-1){
             var cachedEEExport = cachedEEExports[t.id]
 
-            if(t.state === 'RUNNING' || t.state === 'READY'  ){
+            if(t.state === 'RUNNING' || t.state === 'READY'   ){
                 taskCount ++;
                 // cachedEEExport.status = t.status
                 var st = cachedEEExport['start-time']
@@ -185,7 +185,7 @@ function trackExports(){
                 
                 timeDiff = new Date(timeDiff);
                 var timeDiffShow = zeroPad(timeDiff.getMinutes(),2) + ':' +zeroPad(timeDiff.getSeconds(),2)
-                taskIDList = taskIDList+ '\n' + t.description  + ' Processing Time: ' + timeDiffShow;
+                taskIDList = taskIDList+ '\n' + t.description  + ' Status: ' + t.state +' Processing Time: ' + timeDiffShow;
                 }
         else if(t.state === 'COMPLETED'  && cachedEEExport.downloaded === false ){
             
@@ -198,7 +198,7 @@ function trackExports(){
             
             
             showMessage('SUCCESS!',
-                 '<p style = "margin:5px;">'+ cachedEEExports[t.id].outputName + ' has successfully exported! </p><p style = "margin:3px;">'
+                 '<p style = "margin:5px;">'+ cachedEEExports[t.id].outputName + ' has successfully downloaded! </p><p style = "margin:3px;">'
                  )  
              // sleep(2000);
               // window.open(tOutputName);
@@ -325,8 +325,13 @@ function exportImages(){
             meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_LONGNAME',metadata_parser_dict.STUDYAREA_LONGNAME[metadataParams.studyAreaName]);
             meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_URL','https://lcms-data-explorer.appspot.com/');
             meta_template_strT = meta_template_strT.replaceAll('WHICHONE',metadataParams.whichOne);
-            meta_template_strT = meta_template_strT.replaceAll('DETAILED_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description']);
+            meta_template_strT = meta_template_strT.replaceAll('DETAILED_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][0]);
+            meta_template_strT = meta_template_strT.replaceAll('SUPER_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][1]);
             meta_template_strT = meta_template_strT.replaceAll('SUMMARY_METHOD',metadata_parser_dict.SUMMARYMETHOD[metadataParams.summaryMethod]);
+            var theThesh;
+            if(metadataParams.whichOne.split(' ')[0] == 'Loss'){theThesh = lowerThresholdDecline}
+                else{theThesh = lowerThresholdRecovery}
+            meta_template_strT = meta_template_strT.replaceAll('LOWER_THRESHOLD',theThesh);
 
             meta_template_strT = meta_template_strT.replaceAll('CLASS_MIN',metadataParams.min);
             meta_template_strT = meta_template_strT.replaceAll('CLASS_MAX',metadataParams.max);

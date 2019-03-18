@@ -76,7 +76,7 @@ References:<br>
 The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover change across the United States. The objective of LCMS is to develop a consistent approach using the latest technology and advancements in change detection to produce a “best available” map of landscape change. LCMS data are designed to advance and modernize our intra- and inter-agency monitoring capabilities using reference data and a series of change detection algorithms. Because no algorithm performs best in all situations, LCMS uses an ensemble model to improve map accuracy across a range of ecosystems and disturbance processes. Reference data are collected using TimeSync, a web-based tool that helps analysts visualize and interpret the Landsat data record from 1984-present. The LCMS ensemble model yields a “best available” map highlighting a multitude of change processes and land cover types (Healey et al 2018).
 <br>
 <br>
-Landsat 5, 7, and 8 surface reflectance data are accessed in Google Earth Engine (Gorelick et al 2017). All data have the cFmask cloud and cloud shadow masking algorithm applied to them (Zhu and Woodcock 2012). The annual medoid is then computed to summarize each year into a single composite.  Composites are then run through the LANDTRENDR (Kennedy et al 2018; Cohen et al 2018) and VERDET (Hughes et al 2017) temporal segmentation algorithms. The raw composite values and fitted values from LANDTRENDR and VERDET along with the respective pair-wise differences are then used as independent predictor variables in a Random Forest (Breiman 2001) model. Model calibration data are manually interpretted by analysts using the TimeSync Landsat visualization tool (Cohen et al 2010). Predicted values include: loss, gain, landcover, and landuse. These values are predicted for each year of the Landsat time series. These serve as the foundational products for LCMS.
+Landsat 5, 7, and 8 surface reflectance data are accessed in Google Earth Engine (Gorelick et al 2017). All data have the cFmask cloud and cloud shadow masking algorithm applied to them (Zhu and Woodcock 2012). The annual medoid is then computed to summarize each year into a single composite.  Composites are run through the LANDTRENDR (Kennedy et al 2018; Cohen et al 2018) and VERDET (Hughes et al 2017) temporal segmentation algorithms. The raw composite values and fitted values from LANDTRENDR and VERDET along with the respective pair-wise differences are used as independent predictor variables in a Random Forest (Breiman 2001) model. Model calibration data are manually interpreted by analysts using the TimeSync Landsat visualization tool (Cohen et al 2010). Predicted values include: loss, gain, landcover, and landuse. These values are predicted for each year of the Landsat time series, and serve as the foundational products for LCMS.
 
 </dd>
 </dl>
@@ -247,7 +247,7 @@ DETAILED_PARAGRAPH_DESCRIPTION
 <dd>
 <dl>
 <dt><em>Attribute_Label:</em>  WHICHONE</dt>
-<dt><em>Attribute_Definition:</em>  DETAILED_PARAGRAPH_DESCRIPTION </dt>
+<dt><em>Attribute_Definition:</em>  SUPER_PARAGRAPH_DESCRIPTION </dt>
 </dl>
 </dd>
 <dd>

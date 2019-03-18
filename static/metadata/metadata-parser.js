@@ -1,3 +1,29 @@
+var gainLongDescription = 'Land exhibiting an increase in vegetation cover due to growth and succession over one or more years. Applicable to any areas that may express spectral change associated with vegetation regrowth. In developed areas, growth can result from maturing vegetation and/or newly installed lawns and landscaping. In forests, growth includes vegetation growth from bare ground, as well as the over topping of intermediate and co-dominate trees and/or lower-lying grasses and shrubs. Growth/Recovery segments recorded following forest harvest will likely transition through different land cover classes as the forest regenerates. For these changes to be considered growth/recovery, spectral values should closely adhere to an increasing trend line (e.g. a positive slope that would, if extended to ~20 years, be on the order of .10 units of NDVI) which persists for several years.';
+var lossLongDescription = 'Land where the change process most closely aligns with the following classifications. Loss is not categorized explicitly, rather all of the following processes are collectively considered loss processes.<br>\
+						FIRE &#45 Land altered by fire, regardless of the cause of the ignition (natural or anthropogenic), severity, or land use.<br>\
+						HARVEST &#45 Forest land where trees, shrubs or other vegetation have been severed or removed by anthropogenic means. Examples include clearcutting, salvage logging after fire or insect outbreaks, thinning and other forest management prescriptions (e.g. shelterwood/seedtree harvest).<br>\
+						MECHANICAL &#45 Non-forest land where trees, shrubs or other vegetation has been mechanically severed or removed by chaining, scraping, brush sawing, bulldozing, or any other methods of non-forest vegetation removal.<br>\
+						STRUCTURAL DECLINE &#45 Land where trees or other woody vegetation is physically altered by unfavorable growing conditions brought on by non-anthropogenic or non-mechanical factors. This type of loss should generally create a trend in the spectral signal(s) (e.g. NDVI decreasing, Wetness decreasing; SWIR increasing; etc.) however the trend can be subtle. Structural decline occurs in woody vegetation environments, most likely from insects, disease, drought, acid rain, etc. Structural decline can include defoliation events that do not result in mortality such as in Gypsy moth and spruce budworm infestations which may recover within 1 or 2 years.<br>\
+						SPECTRAL DECLINE &#45 A plot where the spectral signal shows a trend in one or more of the spectral bands or indices (e.g. NDVI decreasing, Wetness decreasing; SWIR increasing; etc.). Examples include cases where: a) non-forest/non-woody vegetation shows a trend suggestive of decline (e.g. NDVI decreasing, Wetness decreasing; SWIR increasing; etc.), or b) where woody vegetation shows a decline trend which is not related to the loss of woody vegetation, such as when mature tree canopies close resulting in increased shadowing, when species composition changes from conifer to hardwood, or when a dry period (as opposed to stronger, more acute drought) causes an apparent decline in vigor, but no loss of woody material or leaf area.<br>\
+						WIND/ICE &#45 Land (regardless of use) where vegetation is altered by wind from hurricanes, tornados, storms and other severe weather events including freezing rain from ice storms.<br>\
+						HYDROLOGY &#45 Land where flooding has significantly altered woody cover or other Land cover elements regardless of land use (e.g. new mixtures of gravel and vegetation in and around streambeds after a flood).<br>\
+						DEBRIS &#45 Land (regardless of use) altered by natural material movement associated with landslides, avalanches, volcanos, debris flows, etc.<br>\
+						OTHER &#45 Land (regardless of use) where the spectral trend or other supporting evidence suggests a disturbance or change event has occurred but the definitive cause cannot be determined or the type of change fails to meet any of the change process categories defined above.'
+var lcLongDescription =  'BARREN &#45 Land comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren.<br>\
+						GRASS/FORB/HERB &#45 Land covered by perennial grasses, forbs, or other forms of herbaceous vegetation.<br>\
+						IMPERVIOUS &#45 Land covered with man-made materials that water cannot penetrate, such as paved roads, rooftops, and parking lots.<br>\
+						SHRUB &#45 Land vegetated with shrubs.<br>\
+						SNOW/ICE &#45 Land covered by snow and ice.<br>\
+						TREE &#45 Land comprised of live or standing dead trees.<br>\
+						WATER &#45 Land covered by water.';
+var luLongDescription = 'AGRICULTURE &#45 Land used for the production of food, fiber and fuels which is in either a vegetated or non-vegetated state. This includes but is not limited to cultivated and uncultivated croplands, hay lands, orchards, vineyards, confined livestock operations, and areas planted for production of fruits, nuts or berries. Roads used primarily for agricultural use (i.e. not used for public transport from town to town) are considered agriculture land use.<br>\
+						DEVELOPED&#45 Land covered by man-made structures (e.g. high density residential, commercial, industrial, mining or transportation), or a mixture of both vegetation (including trees) and structures (e.g., low density residential, lawns, recreational facilities, cemeteries, transportation and utility corridors, etc.), including any land functionally altered by human activity.<br>\
+						FOREST &#45 Land that is planted or naturally vegetated and which contains (or is likely to contain) 10% or greater tree cover at some time during a near-term successional sequence. This may include deciduous, evergreen and/or mixed categories of natural forest, forest plantations, and woody wetlands.<br>\
+						NON-FOREST WETLAND &#45 Lands adjacent to or within a visible water table (either permanently or seasonally saturated) dominated by shrubs or persistent emergents. These wetlands may be situated shoreward of lakes, river channels, or estuaries; on river floodplains; in isolated catchments; or on slopes. They may also occur as prairie potholes, drainage ditches and stock ponds in agricultural landscapes and may also appear as islands in the middle of lakes or rivers. Other examples also include marshes, bogs, swamps, quagmires, muskegs, sloughs, fens, and bayous.<br>\
+						OTHER &#45 Lands which are perennially covered with snow and ice, water, salt flats and other undeclared classes. Glaciers and ice sheets or places where snow and ice obscure any other land cover call are<br>\
+						included (assumed is the presence of permanent snow and ice). Water includes rivers, streams, canals, ponds, lakes, reservoirs, bays, or oceans. This assumes permanent water (which can be in some state of flux due to ephemeral changes brought on by climate or anthropogenic).<br>\
+						RANGELAND/PASTURE &#45 This class includes any area that is either a.) Rangeland, where vegetation is a mix of native grasses, shrubs, forbs and grass-like plants largely arising from natural factors and processes such as rainfall, temperature, elevation and fire, although limited management may include prescribed burning as well as grazing by domestic and wild herbivores; or b.) Pasture, where vegetation may range from mixed, largely natural grasses, forbs and herbs to more managed vegetation dominated by grass species that have been seeded and managed to maintain near monoculture.'
+
 metadata_parser_dict ={'STUDYAREA': [ 'BTNF', 'FNF' ],
 'STUDYAREA_LONGNAME': {'BTNF':'Bridger-Teton National Forest','FNF': 'Flathead National Forest'},
 
@@ -14,17 +40,33 @@ metadata_parser_dict ={'STUDYAREA': [ 'BTNF', 'FNF' ],
 'Landcover_ACC':{'OOB_ACCURACY': 0.984, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
 'Landuse_ACC':{'OOB_ACCURACY': 0.991, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
 
-'Gain Year_Description':'SUMMARY_METHOD (0.35). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.',
-'Loss Year_Description':'SUMMARY_METHOD (0.35). Each year has a modelled probability of loss using TimeSync model calibration data in a Random Forest model.<br>The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.',
+'Gain Year_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>\
+						The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.<br>\
+						Classes:<br>0:No Data<br>All other values represent 4-digit year',gainLongDescription],
+'Loss Year_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of loss using TimeSync model calibration data in a Random Forest model.<br>\
+						The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.<br>\
+						Classes:<br>0:No Data<br>All other values represent 4-digit year',lossLongDescription],
 
-'Gain Duration_Description':'SUMMARY_METHOD (0.35). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>The modelled probability is then thresholded.  Any observation above the specified threshold is then counted toward duration.',
-'Loss Duration_Description':'SUMMARY_METHOD (0.35). Each year has a modelled probability of loss using TimeSync model calibration data in a Random Forest model.<br>The modelled probability is then thresholded.  Any observation above the specified threshold is then counted toward duration.',
+'Gain Duration_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>\
+						The modelled probability is then thresholded, and any observation above the specified threshold is counted toward duration.<br>\
+						Classes:<br>0:No Data<br>All other values represent a count in years',gainLongDescription],
+'Loss Duration_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of loss using TimeSync model calibration data in a Random Forest model.<br>\
+						The modelled probability is then thresholded, and any observation above the specified threshold is counted toward duration.<br>\
+						Classes:<br>0:No Data<br>All other values represent a count in years',lossLongDescription],
 
-'Gain Probability_Description':'SUMMARY_METHOD (0.35). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.',
-'Loss Probability_Description':'SUMMARY_METHOD (0.35). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.',
+'Gain Probability_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>\
+						The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.<br>\
+						Classes:<br>0:No Data<br>1 &#45 100: probability * 100 = raster value',gainLongDescription],
+'Loss Probability_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>\
+						The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.<br>\
+						Classes:<br>0:No Data<br>1 &#45 100: probability * 100 = raster value',lossLongDescription],
 
-'Landcover MODE_Description':'SUMMARY_METHOD. Each year has a modelled landcover class using TimeSync model calibration data in a Random Forest model.<br>The MODE of the landcover classes across the years is then selected for the final map output.',
-'Landuse MODE_Description':'SUMMARY_METHOD. Each year has a modelled landuse class using TimeSync model calibration data in a Random Forest model.<br>The MODE of the landuse classes across the years is then selected for the final map output.',
+'Landcover MODE_Description':['Each year has a modelled landcover class using TimeSync model calibration data in a Random Forest model.<br>\
+						The MODE of the landcover classes across the years is then selected for the final map output.<br>\
+						Classes:<br>0 &#45 No data<br>1 &#45 Barren<br>2 &#45 Grass/forb/herb<br>3 &#45 Impervious<br>4 &#45 Shrubs<br>5 &#45 Snow/ice<br>6 &#45 Trees<br>7 &#45 Water',lcLongDescription],
+'Landuse MODE_Description':['Each year has a modelled landuse class using TimeSync model calibration data in a Random Forest model.<br>\
+						The MODE of the landuse classes across the years is then selected for the final map output.<br>\
+						Classes:<br>0 &#45 No data<br>1 &#45 Agriculture<br>2 &#45 Developed<br>3 &#45 Forest<br>4 &#45 Non-forest wetland<br>5 &#45 Other<br>6 &#45 Rangeland',luLongDescription],
 
 
 
