@@ -311,6 +311,8 @@
     $('#study-area-label').text(this.innerHTML);
     var coords = studyAreaDict[this.innerHTML][1];
     studyAreaName = studyAreaDict[this.innerHTML][0];
+    // exportCRS = studyAreaDict[this.innerHTML][2];
+    // $('input[name = "Export crs"]').val(exportCRS);
     centerMap(coords[1],coords[0],8);
     reRun();
 

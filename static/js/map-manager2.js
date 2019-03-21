@@ -1324,16 +1324,21 @@ layer2.setMap(map);
 
 var layerObj = null;
 var queryObj = {};
+
 var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08]],
-                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1]]};
+var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08],'EPSG:26911'],
+                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1],'EPSG:26912']};
    
 var resetStudyArea = function(whichOne){
     localStorage.setItem("cachedStudyAreaName",whichOne)
     $('.status').text(whichOne);
     $('#study-area-label').text(whichOne);
+
+    
     var coords = studyAreaDict[whichOne][1];
     studyAreaName = studyAreaDict[whichOne][0];
+    // exportCRS = studyAreaDict[whichOne][2];
+    // $('#export-crs').val(exportCRS);
     // centerMap(coords[1],coords[0],8);
     // reRun();
 
