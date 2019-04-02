@@ -98,7 +98,7 @@
     <script>
       $(function() {
         // $( "#parameters-tools-layers" ).draggable();
-        $("#legend").draggable();
+        // $("#legend").draggable();
         // $("#export-list").draggable();
         
     //     $("#distance-area-measurement").draggable({
@@ -212,7 +212,7 @@
     </div>
 
     
- <div id = 'study-area-label' style = 'background-color: #555;color:#FFF;padding:5px;font-size: 15pt;border-radius: 5px;text-align: center;position:absolute;left:40%;'> Bridger Teton National Forest </div>
+ <div id = 'study-area-label' style = 'background-color: #555;color:#FFF;padding:5px;font-size: 15pt;border-radius: 5px;text-align: center;position:absolute;left:40%;'>Bridger-Teton National Forest</div>
 
 
 
@@ -301,6 +301,7 @@
     <ul class="dropdown-menu dropdown-inverse">
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a></li>
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a></li>
+      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss">Science Team CONUS NAFD</a></li>
     </ul>
   </div>
 
@@ -313,7 +314,10 @@
     studyAreaName = studyAreaDict[this.innerHTML][0];
     // exportCRS = studyAreaDict[this.innerHTML][2];
     // $('input[name = "Export crs"]').val(exportCRS);
-    centerMap(coords[1],coords[0],8);
+    centerMap(coords[1],coords[0],coords[2]);
+    if(studyAreaName === 'CONUS'){run = runCONUS}
+      else{run = runUSFS};
+
     reRun();
 
 });

@@ -1326,8 +1326,10 @@ var layerObj = null;
 var queryObj = {};
 
 var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08],'EPSG:26911'],
-                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1],'EPSG:26912']};
+var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08,8],'EPSG:26911'],
+                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1,8],'EPSG:26912'],
+                  'Science Team CONUS NAFD':['CONUS',[40.0,-90.0,4],'EPSG:5070'],
+                };
    
 var resetStudyArea = function(whichOne){
     localStorage.setItem("cachedStudyAreaName",whichOne)
@@ -1337,6 +1339,7 @@ var resetStudyArea = function(whichOne){
     
     var coords = studyAreaDict[whichOne][1];
     studyAreaName = studyAreaDict[whichOne][0];
+    if(studyAreaName === 'CONUS'){run = runCONUS}else{run = runUSFS};
     // exportCRS = studyAreaDict[whichOne][2];
     // $('#export-crs').val(exportCRS);
     // centerMap(coords[1],coords[0],8);
@@ -1639,6 +1642,7 @@ function initialize() {
       if(cachedStudyAreaName != null){
       resetStudyArea(cachedStudyAreaName)
     }
+    else{run = runUSFS}
   run()
 	// plotPlots()
 	});

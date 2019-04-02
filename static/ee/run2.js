@@ -22,8 +22,52 @@
 
   
 // }
-var warningShown = false;
-function run(){
+var run;
+function getMTBSandIDS(){
+
+var idsStartYear = 1997;
+  var idsEndYear = 2015
+  var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
+
+var mortCollection = idsYears.map(function(yr){
+  var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
+  mort = mort.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+  var yrBand = ee.Image(yr).updateMask(mort.mask()).rename(['year']).int16();
+  return mort.rename(['mort_code']).addBands(yrBand);
+});
+mortCollection = ee.ImageCollection(mortCollection);
+
+var mtbs = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/MTBS')
+          .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+          .map(function(img){return img.updateMask(img.neq(0))});
+
+
+mtbs = mtbs.map(function(img){return img.select([0],['burnSeverity']).byte()
+// .updateMask(img.neq(0).and(img.neq(6)))
+});
+var mtbsForYear = mtbs.map(function(img){return img.remap([1,2,3,4,5,6],[1,2,3,4,5,1]).rename(['burnSeverity'])});
+
+var mtbsYear = thresholdChange(mtbsForYear,1,10,1).qualityMosaic('burnSeverity').select([1])
+
+var mtbsClassDict = {
+  'Unburned to Low': '006400',
+  'Low':'7fffd4',
+  'Moderate':'ffff00',
+  'High':'ff0000',
+  'Increased Greenness':'7fff00',
+  'Non-Processing Area Mask':'ffffff'
+}
+
+var severityViz = {'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
+
+
+Map2.addLayer(mortCollection.select([0]).count(),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey','reference-layer-list');
+Map2.addLayer(mortCollection.select([1]).max(),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey','reference-layer-list');
+
+
+Map2.addLayer(mtbs.select([0]).max(),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from 1984-2016','reference-layer-list')
+Map2.addLayer(mtbsYear,{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from 1984-2016','reference-layer-list')
+};
 
 function multBands(img,distDir,by){
     var out = img.multiply(ee.Image(distDir).multiply(by));
@@ -85,33 +129,7 @@ function setNoData(image,noDataValue){
   image = image.where(m.not(),noDataValue);
   return image;
 }
-//////////////////////////////////////////////////////
-// var PALETTE = [
-//   'b67430', // Barren
-//   '78db53', // Grass/forb/herb
-//   'F0F',//Impervious
-//   'ffb88c', // Shrubs
-//   '8cfffc', // Snow/ice
-//   '32681e', // Trees
-//   '2a74b8'  // Water
-// ];
-
-
-var gnp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/GNP_Admin_Bndy');
-// var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
-var bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/BT_LCMS_ProjectArea_5km');
-var fnf_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k');
-var b = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
-
-var btnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Bridger-Teton National Forest')).first());
-var fnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Flathead National Forest')).first());
-
-var fnfStudyAreas = [['Glacier NP',gnp,'Boundary of Glacier National Park'],
-                    ['Flathead  NF',fnf,'Boundary of Flathead National Forest'],
-                    ['Flathead LCMS Study Area',fnf_study_area,'Outline over which LCMS model calibration data were collected and applied'],]
-
-var btStudyAreas = [['Bridger-Teton NF',btnf,'Boundary of Bridger-Teton National Forest'],
-                    ['Bridger-Teton LCMS Study Area',bt_study_area,'Outline over which LCMS model calibration data were collected and applied']]
+var warningShown = false;
 
 var PALETTE = 'b67430,78db53,F0F,ffb88c,8cfffc,32681e,2a74b8'
 
@@ -124,6 +142,43 @@ var recoveryProbPalette = 'F5DEB3,006400';
 
 var declineDurPalette = 'BD1600,E2F400,0C2780';
 var recoveryDurPalette = declineDurPalette;
+
+function runUSFS(){
+
+//////////////////////////////////////////////////////
+// var PALETTE = [
+//   'b67430', // Barren
+//   '78db53', // Grass/forb/herb
+//   'F0F',//Impervious
+//   'ffb88c', // Shrubs
+//   '8cfffc', // Snow/ice
+//   '32681e', // Trees
+//   '2a74b8'  // Water
+// ];
+
+
+// var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
+// var bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/BT_LCMS_ProjectArea_5km');
+var bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/GTNP_admin_bndy_5km_buffer_GTNP_Merge');
+
+
+var fnf_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k');
+var b = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
+var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
+
+var gtnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Grand Teton')).first());
+var gnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Glacier')).first());
+
+var btnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Bridger-Teton National Forest')).first());
+var fnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Flathead National Forest')).first());
+
+var fnfStudyAreas = [['Glacier NP',gnp,'Boundary of Glacier National Park'],
+                    ['Flathead  NF',fnf,'Boundary of Flathead National Forest'],
+                    ['Flathead LCMS Study Area',fnf_study_area,'Outline over which LCMS model calibration data were collected and applied']]
+
+var btStudyAreas = [['Grand Teton NP',gtnp,'Boundary of Grand Teton National Park'],
+                    ['Bridger-Teton NF',btnf,'Boundary of Bridger-Teton National Forest'],
+                    ['Bridger-Teton LCMS Study Area',bt_study_area,'Outline over which LCMS model calibration data were collected and applied with the addition of the Grand Teton National Park with a 5km buffer']]
 
 // var studyAreaName = 'FNF';
 var collectionDict = {
@@ -282,47 +337,7 @@ Map2.addLayer(lynxHab,{min:1970,max:2017,palette:lynxPalette,addToClassLegend: t
 
 }
 
-var idsStartYear = 1997;
-  var idsEndYear = 2015
-  var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
-
-var mortCollection = idsYears.map(function(yr){
-  var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
-  mort = mort.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-  var yrBand = ee.Image(yr).updateMask(mort.mask()).rename(['year']).int16();
-  return mort.rename(['mort_code']).addBands(yrBand);
-});
-mortCollection = ee.ImageCollection(mortCollection);
-
-Map2.addLayer(mortCollection.select([0]).count(),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey','reference-layer-list');
-Map2.addLayer(mortCollection.select([1]).max(),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey','reference-layer-list');
-
-var mtbs = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/MTBS')
-          .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-          .map(function(img){return img.updateMask(img.neq(0))});
-
-
-mtbs = mtbs.map(function(img){return img.select([0],['burnSeverity']).byte()
-// .updateMask(img.neq(0).and(img.neq(6)))
-});
-var mtbsForYear = mtbs.map(function(img){return img.remap([1,2,3,4,5,6],[1,2,3,4,5,1]).rename(['burnSeverity'])});
-
-var mtbsYear = thresholdChange(mtbsForYear,1,10,1).qualityMosaic('burnSeverity').select([1])
-
-var mtbsClassDict = {
-  'Unburned to Low': '006400',
-  'Low':'7fffd4',
-  'Moderate':'ffff00',
-  'High':'ff0000',
-  'Increased Greenness':'7fff00',
-  'Non-Processing Area Mask':'ffffff'
-}
-
-var severityViz = {'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
-
-Map2.addLayer(mtbs.select([0]).max(),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from 1984-2016','reference-layer-list')
-Map2.addLayer(mtbsYear,{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from 1984-2016','reference-layer-list')
-
+getMTBSandIDS();
 
 var studyAreas = collectionDict[studyAreaName][4];
 studyAreas.map(function(studyArea){
@@ -561,3 +576,73 @@ chartCollection =forCharting;
 if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 };
+
+///////////////////////////////////////////////
+function runCONUS(){
+  //Bring in reference data
+var hansen = ee.Image('UMD/hansen/global_forest_change_2017_v1_5');
+var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
+var hansenGain = hansen.select(['gain']);
+hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));
+Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
+Map2.addLayer(hansenGain.updateMask(hansenGain),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
+
+
+ var lossProb = ee.ImageCollection('projects/glri-phase3/science-team-outputs/conus-lcms-2018')
+    .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+    .map(function(img){return img.rename(['Loss Probability'])})
+    .map(function(img){return ee.Image(multBands(img,1,[0.01])).float()});
+ var dndThresh = thresholdChange(lossProb,lowerThresholdDecline,upperThresholdDecline, 1);
+ 
+if(summaryMethod === 'year'){
+  var dndThreshOut = dndThresh.qualityMosaic('Loss Probability_change_year');//.qualityMosaic('Decline_change');
+  
+
+  var threshYearNameEnd = 'Most recent year of ';
+  var threshProbNameEnd = 'Probability of most recent year of ';
+  var exportSummaryMethodNameEnd = 'Most Recent';
+}
+else{
+  var dndThreshOut = dndThresh.qualityMosaic('Loss Probability');//.qualityMosaic('Decline_change');
+  
+   
+
+}
+
+getMTBSandIDS();
+
+var declineNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdDecline.toString()+' and p <= '+upperThresholdDecline.toString()+')';
+
+Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+// Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
+
+
+
+// Map2.addLayer(dndThreshOutOld.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Old Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
+var dndYearForExport = dndThreshOut.select([1]).int16();//.subtract(1970).byte();
+
+
+Map2.addExport(dndYearForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Year','startYear':startYear,'endYear':endYear,'min':startYear,'max':endYear});
+
+
+
+if(analysisMode === 'advanced'){
+Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},'Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
+
+var dndCount = dndThresh.select([0]).count();
+Map2.addLayer(dndCount,{'min':1,'max':5,'palette':declineDurPalette},'Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
+
+var dndSevForExport = dndThreshOut.select([0]).multiply(100).add(1).byte();
+dndSevForExport = dndSevForExport.where(dndSevForExport.eq(101),100);
+var dndCountForExport = dndCount.byte();
+Map2.addExport(dndSevForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Probability','startYear':startYear,'endYear':endYear,'min':0,'max':100});
+
+Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' v2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Duration','startYear':startYear,'endYear':endYear,'min':0,'max':endYear-startYear});
+
+}
+chartCollection =lossProb;
+
+if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
+
+}
+

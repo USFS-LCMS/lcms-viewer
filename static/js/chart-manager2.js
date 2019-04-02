@@ -128,7 +128,7 @@ function getImageCollectionValuesForCharting(pt){
 	var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 	var tryCount = 2;
 	// print(icT.getRegion(pt.buffer(plotRadius),plotScale))
-	try{var allValues = icT.getRegion(pt.buffer(plotRadius+1),plotScale).evaluate();
+	try{var allValues = icT.getRegion(pt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate();
 		print(allValues)
 		return allValues}
 	catch(err){showMessage('Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
@@ -350,7 +350,7 @@ function chartIt(){
 	dataTable	=forChart;
 	
 	
-		uriName = chartType + ' ' +center.lng().toFixed(4).toString() + ' ' + center.lat().toFixed(4).toString() + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+		uriName = chartType + ' for lng ' +center.lng().toFixed(4).toString() + ', lat ' + center.lat().toFixed(4).toString();// + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
 		csvName = uriName + '.csv'
 		
 	     
