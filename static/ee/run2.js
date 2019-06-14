@@ -163,6 +163,10 @@ var bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/GTNP_admi
 
 
 var fnf_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k');
+
+var mls_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/MLS_LCMS_ProjectArea_5km');
+
+
 var b = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
 var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
 
@@ -171,6 +175,7 @@ var gnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Glacier')).first());
 
 var btnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Bridger-Teton National Forest')).first());
 var fnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Flathead National Forest')).first());
+var mlsnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Manti-La Sal National Forest')).first()); 
 
 var fnfStudyAreas = [['Glacier NP',gnp,'Boundary of Glacier National Park'],
                     ['Flathead  NF',fnf,'Boundary of Flathead National Forest'],
@@ -180,6 +185,8 @@ var btStudyAreas = [['Grand Teton NP',gtnp,'Boundary of Grand Teton National Par
                     ['Bridger-Teton NF',btnf,'Boundary of Bridger-Teton National Forest'],
                     ['Bridger-Teton LCMS Study Area',bt_study_area,'Outline over which LCMS model calibration data were collected and applied with the addition of the Grand Teton National Park with a 5km buffer']]
 
+var mslStudyAreas = [['Manti-La Sal NF',mlsnf,'Boundary of Manti-La Sal National Forest'],
+                      ['Manti-La Sal LCMS Study Area',mls_study_area,'Boundary of Manti-La Sal National Forest buffered by 5km over which LCMS model calibration data were collected and applied']];
 // var studyAreaName = 'FNF';
 var collectionDict = {
   'FNF': ['projects/USFS/LCMS-NFS/R1/Composites/R1-Composite-Collection',
@@ -200,6 +207,16 @@ var collectionDict = {
   'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
   // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
   bt_study_area
+  ],
+
+  'MLSNF':['projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+  'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+  'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+  'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
+  mslStudyAreas,
+  'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
+  // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+  mls_study_area
   ]
   
 }
@@ -336,6 +353,52 @@ var lynxClassDict = {'Suitable':'080','Unsuitable 1987':'ffffe5','Unsuitable 201
 Map2.addLayer(lynxHab,{min:1970,max:2017,palette:lynxPalette,addToClassLegend: true,classLegendDict:lynxClassDict},'BT Lynx Habitat Unsuitability Year',false,null,null,'Lynx habitat suitability 2017.  Years are years Lynx habitat became unsuitable.','reference-layer-list');
 
 }
+if(studyAreaName === 'MLSNF'){
+
+var landslides = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Landslides');
+var canyonsProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Canyons_ProjectArea');
+var johnsonCreekProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/JohnsonCreek_ProjectArea');
+
+var sageGrouseHomeRanges = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_HomeRanges');
+var sageGrounseSeasonalHabitat = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_SeasonalHabitat');
+
+var nizhoniFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Nizhoni_FirePerimeter');
+var seeleyFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Seeley_FirePerimeter');
+
+Map2.addLayer(landslides,{'min':1,'max':1,'palette':'AA0'},'Landslides',false,null,null,'','reference-layer-list');
+Map2.addLayer(canyonsProjectArea,{'min':1,'max':1,'palette':'AA0'},'canyonsProjectArea',false,null,null,'','reference-layer-list');
+Map2.addLayer(johnsonCreekProjectArea,{'min':1,'max':1,'palette':'AA0'},'johnsonCreekProjectArea',false,null,null,'','reference-layer-list');
+Map2.addLayer(sageGrouseHomeRanges,{'min':1,'max':1,'palette':'AA0'},'sageGrouseHomeRanges',false,null,null,'','reference-layer-list');
+Map2.addLayer(sageGrounseSeasonalHabitat,{'min':1,'max':1,'palette':'AA0'},'sageGrounseSeasonalHabitat',false,null,null,'','reference-layer-list');
+
+Map2.addLayer(nizhoniFire,{'min':1,'max':1,'palette':'AA0'},'nizhoniFire',false,null,null,'','reference-layer-list');
+
+Map2.addLayer(seeleyFire,{'min':1,'max':1,'palette':'AA0'},'seeleyFire',false,null,null,'','reference-layer-list');
+
+var canopyCover = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_CC_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
+var treeSize = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_TS_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
+var vegType = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_VT_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
+
+var canopyCoverClassDict = {"1: (10 - 19%)": "93ff93", "2: (10 - 19%)": "93ff93", "3: (10 - 19%)": "93ff93", "4: (10 - 19%)": "93ff93", "5: (10 - 19%)": "93ff93", "6: (10 - 19%)": "93ff93", "7: (10 - 19%)": "93ff93", "8: (10 - 19%)": "93ff93", "9: (10 - 19%)": "93ff93", "10: (10 - 19%)": "93ff93", "11: (20 - 39%)": "2dff2d", "12: (20 - 39%)": "2dff2d", "13: (20 - 39%)": "2dff2d", "14: (20 - 39%)": "2dff2d", "15: (20 - 39%)": "2dff2d", "16: (20 - 39%)": "2dff2d", "17: (20 - 39%)": "2dff2d", "18: (20 - 39%)": "2dff2d", "19: (20 - 39%)": "2dff2d", "20: (20 - 39%)": "2dff2d", "21: (20 - 39%)": "00ad00", "22: (20 - 39%)": "00ad00", "23: (20 - 39%)": "00ad00", "24: (20 - 39%)": "00ad00", "25: (20 - 39%)": "00ad00", "26: (20 - 39%)": "00ad00", "27: (20 - 39%)": "00ad00", "28: (20 - 39%)": "00ad00", "29: (20 - 39%)": "00ad00", "30: (20 - 39%)": "00ad00", "31: (40 -49%)": "428e63", "32: (40 -49%)": "428e63", "33: (40 -49%)": "428e63", "34: (40 -49%)": "428e63", "35: (40 -49%)": "428e63", "36: (40 -49%)": "428e63", "37: (40 -49%)": "428e63", "38: (40 -49%)": "428e63", "39: (40 -49%)": "428e63", "40: (40 -49%)": "428e63", "41: (50 - 59%)": "385b99", "42: (50 - 59%)": "385b99", "43: (50 - 59%)": "385b99", "44: (50 - 59%)": "385b99", "45: (50 - 59%)": "385b99", "46: (50 - 59%)": "385b99", "47: (50 - 59%)": "385b99", "48: (50 - 59%)": "385b99", "49: (50 - 59%)": "385b99", "50: (50 - 59%)": "385b99", "51: (60% +)": "0759fc", "52: (60% +)": "0759fc", "53: (60% +)": "0759fc", "54: (60% +)": "0759fc", "55: (60% +)": "0759fc", "56: (60% +)": "0759fc", "57: (60% +)": "0759fc", "58: (60% +)": "0759fc", "59: (60% +)": "0759fc", "60: (60% +)": "0759fc", "61: (60% +)": "1c9ee8", "62: (60% +)": "1c9ee8", "63: (60% +)": "1c9ee8", "64: (60% +)": "1c9ee8", "65: (60% +)": "1c9ee8", "66: (60% +)": "1c9ee8", "67: (60% +)": "1c9ee8", "68: (60% +)": "1c9ee8", "69: (60% +)": "1c9ee8", "70: (60% +)": "1c9ee8", "71: (60% +)": "a360ea", "72: (60% +)": "a360ea", "73: (60% +)": "a360ea", "74: (60% +)": "a360ea", "75: (60% +)": "a360ea", "76: (60% +)": "a360ea", "77: (60% +)": "a360ea", "78: (60% +)": "a360ea", "79: (60% +)": "a360ea", "80: (60% +)": "a360ea", "81: (60% +)": "fc4ff2", "82: (60% +)": "fc4ff2", "83: (60% +)": "fc4ff2", "84: (60% +)": "fc4ff2", "85: (60% +)": "fc4ff2", "86: Non Tree": "ffff00", "87: Non Tree": "ffa300", "88: Non Tree": "ff0000", "89: Non Tree": "bfbfbf"};
+
+var canopyCoverPalette = '93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,428e63,428e63,428e63,428e63,428e63,428e63,428e63,428e63,428e63,428e63,385b99,385b99,385b99,385b99,385b99,385b99,385b99,385b99,385b99,385b99,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,fc4ff2,fc4ff2,fc4ff2,fc4ff2,fc4ff2,ffff00,ffa300,ff0000,bfbfbf';
+
+var canopyCoverViz = {min:1,max:89,palette:canopyCoverPalette,addToClassLegend: true,classLegendDict:canopyCoverClassDict};
+
+var treeSizeClassDict = {"1: (0 - 4.9\"\" dbh)": "a5f984", "2: (5 - 11.9\"\" dbh)": "3ddb3d", "3: (12 - 17.9\"\" dbh)": "008900", "4: (18 - 23.9\"\" dbh)": "2196af", "5: (24\"\"+ dbh)": "056dce", "6: (0 - 5.9\"\" drc)": "f2ea5e", "7: (6 - 11.9\"\" drc)": "e0ba56", "8: (12 - 17.9\"\" drc)": "cc751e", "9: (18\"\"+ drc)": "b2022b", "10: Non Tree": "bfbfbf"};
+var treeSizePalette = 'a5f984,3ddb3d,008900,2196af,056dce,f2ea5e,e0ba56,cc751e,b2022b,bfbfbf';
+var treeSizeViz = {min:1,max:10,palette:treeSizePalette,addToClassLegend: true,classLegendDict:treeSizeClassDict};
+
+var vegTypeClassDict = {"1: Aspen": "00ffff", "2: Aspen/Conifer": "04c0aa", "3: Douglas-fir Mix": "005f00", "4: Ponderosa Pine": "c0ffc0", "5: Ponderosa Pine Mix": "9acc9a", "6: Ponderosa Pine/Woodland": "678967", "7: White Fir": "7fff00", "8: White Fir Mix": "2caf00", "9: Spruce/Fir": "6a59cc", "10: Bristlecone Pine/Limber Pine": "9fb7d2", "11: Mountain Mahogany": "bc6af7", "12: Pinyon-Juniper": "ccb791", "13: Rocky Mountain Juniper Mix": "846a5e", "14: Gambel Oak": "ffedc0", "15: Mountain Big Sagebrush": "ffcc66", "16: Wyoming/Basin Big Sagebrush": "d2914c", "17: Silver Sagebrush": "d25e11", "18: Black Sagebrush": "873700", "19: Mountain Shrubland": "4f84f8", "20: Alpine Vegetation": "ffa7b7", "21: Upland Herbaceous": "ffff00", "22: Riparian Woody": "cc0000", "23: Riparian Herbaceous": "ff2b2b", "24: Agriculture": "ff39ff", "25: Barren/Sparse Vegetation": "bcbcbc", "26: Developed": "676767", "27: Water": "195ef7"};
+
+var vegTypePalette = '00ffff,04c0aa,005f00,c0ffc0,9acc9a,678967,7fff00,2caf00,6a59cc,9fb7d2,bc6af7,ccb791,846a5e,ffedc0,ffcc66,d2914c,d25e11,873700,4f84f8,ffa7b7,ffff00,cc0000,ff2b2b,ff39ff,bcbcbc,676767,195ef7';
+var vegTypeViz = {min:1,max:27,palette:vegTypePalette,addToClassLegend: true,classLegendDict:vegTypeClassDict};
+
+Map2.addLayer(canopyCover.updateMask(canopyCover.neq(0)),canopyCoverViz,'VCMQ 2018 Canopy Cover',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) canopy cover classes','reference-layer-list');
+Map2.addLayer(treeSize.updateMask(treeSize.neq(0)),treeSizeViz,'VCMQ 2018 Tree Size',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) tree size classes','reference-layer-list');
+Map2.addLayer(vegType.updateMask(vegType.neq(0)),vegTypeViz,'VCMQ 2018 Veg Type',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) vegetation type classes','reference-layer-list');
+
+}
 
 getMTBSandIDS();
 
@@ -435,7 +498,6 @@ var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toStr
 
 var landcoverClassLegendDict = {'Barren (0.1 in chart)':'b67430',
                         'Grass/forb/herb (0.2 in chart)':'78db53',
-                        'Grass/forb/herb (0.2 in chart)':'78db53',
                         'Impervious (0.3 in chart)':'F0F',
                         'Shrubs (0.4 in chart)':'ffb88c',
                         'Snow/ice (0.5 in chart)':'8cfffc',
@@ -488,6 +550,17 @@ Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':upperT
 Map2.addLayer(dndCount,{'min':1,'max':5,'palette':declineDurPalette},'Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
 }
 if(viewBeta === 'yes'){
+
+var lcFirstFive = NFSLC.filter(ee.Filter.calendarRange(startYear,startYear+5-1,'year')).mode().multiply(100);
+var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year')).mode().multiply(10);
+var lcChangeMatrix = lcFirstFive.add(lcLastFive);
+
+var interestedClasses = [21,41,42,61,62,64, 12,14,16,24,26,46];
+var interestedChangeClasses = ee.Image(interestedClasses);
+lcChangeMatrix =interestedChangeClasses.updateMask(interestedChangeClasses.eq(lcChangeMatrix)).reduce(ee.Reducer.max());
+lcChangeMatrix = lcChangeMatrix.remap(interestedClasses,[-1,-2,-1,-3,-2,-1,1,2,3,1,2,1])
+Map2.addLayer(lcChangeMatrix,{min:-3,max:3,palette:"b2182b,ef8a62,fddbc7,f7f7f7,d1e5f0,67a9cf,2166ac"},'Landcover Change Matrix',false);
+
 Map2.addLayer(dndSlowThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
 Map2.addLayer(dndSlowThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
 Map2.addLayer(dndSlowCount,{'min':1,'max':5,'palette':declineDurPalette},'Slow Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
@@ -588,7 +661,7 @@ Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPal
 Map2.addLayer(hansenGain.updateMask(hansenGain),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
 
 
- var lossProb = ee.ImageCollection('projects/glri-phase3/science-team-outputs/conus-lcms-2018')
+ var lossProb = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/vCONUS-2019-1')
     .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
     .map(function(img){return img.rename(['Loss Probability'])})
     .map(function(img){return ee.Image(multBands(img,1,[0.01])).float()});
@@ -622,7 +695,7 @@ Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':
 var dndYearForExport = dndThreshOut.select([1]).int16();//.subtract(1970).byte();
 
 
-Map2.addExport(dndYearForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Year','startYear':startYear,'endYear':endYear,'min':startYear,'max':endYear});
+Map2.addExport(dndYearForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 '+exportSummaryMethodNameEnd+' Loss Year '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'vCONUS.2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Year','startYear':startYear,'endYear':endYear,'min':startYear,'max':endYear});
 
 
 
@@ -635,9 +708,9 @@ Map2.addLayer(dndCount,{'min':1,'max':5,'palette':declineDurPalette},'Loss Durat
 var dndSevForExport = dndThreshOut.select([0]).multiply(100).add(1).byte();
 dndSevForExport = dndSevForExport.where(dndSevForExport.eq(101),100);
 var dndCountForExport = dndCount.byte();
-Map2.addExport(dndSevForExport,'LCMS ' +studyAreaName +' v2019-1 '+exportSummaryMethodNameEnd+' Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Probability','startYear':startYear,'endYear':endYear,'min':0,'max':100});
+Map2.addExport(dndSevForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 '+exportSummaryMethodNameEnd+' Loss Probability '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'vCONUS.2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Probability','startYear':startYear,'endYear':endYear,'min':0,'max':100});
 
-Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' v2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Duration','startYear':startYear,'endYear':endYear,'min':0,'max':endYear-startYear});
+Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'vCONUS.2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Duration','startYear':startYear,'endYear':endYear,'min':0,'max':endYear-startYear});
 
 }
 chartCollection =lossProb;

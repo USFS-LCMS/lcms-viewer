@@ -60,9 +60,9 @@ var cpDict = {
   if(analysisMode === 'advanced'){
     // console.log('convertinggggggg tabbbbbbbble' );
     var isFirst = true;
-    dataTableT = dataTableT.map(function(i){if(isFirst === false){i[3] = lcDict[parseInt(i[3]*10)]};isFirst = false;return i});
+    dataTableT = dataTableT.map(function(i){if(isFirst === false){i[3] = lcDict[Math.round(i[3]*10)]};isFirst = false;return i});
     var isFirst = true;
-    dataTableT = dataTableT.map(function(i){if(isFirst === false){i[4] = luDict[parseInt(i[4]*10)]};isFirst = false;return i});
+    dataTableT = dataTableT.map(function(i){if(isFirst === false){i[4] = luDict[Math.round(i[4]*10)]};isFirst = false;return i});
     var isFirst = true;
     // dataTableT = dataTableT.map(function(i){if(isFirst === false){i[5] = cpDict[parseInt(i[5]*10)]};isFirst = false;return i});
 //       dataTableT = dataTableT.map(function(i){i[2] = cdlDict[i[2]];return i})
@@ -1324,19 +1324,33 @@ layer2.setMap(map);
 
 var layerObj = null;
 var queryObj = {};
+var lowerThresholdDecline = 0.35;
+var upperThresholdDecline = 1;
+var lowerThresholdRecovery = 0.35;
+var upperThresholdRecovery = 1;
 
 var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08,8],'EPSG:26911'],
-                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1,8],'EPSG:26912'],
-                  'Science Team CONUS NAFD':['CONUS',[40.0,-90.0,4],'EPSG:5070'],
+var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08,8],'EPSG:26911',0.35,0.35],
+                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1,8],'EPSG:26912',0.35,0.35],
+                  'Manti-La Sal National Forest':['MLSNF',[38.8,-109,8],'EPSG:26912',0.25,0.30],
+                  'Science Team CONUS NAFD':['CONUS',[40.0,-90.0,4],'EPSG:5070',0.30,0.30],
                 };
-   
+
+
 var resetStudyArea = function(whichOne){
     localStorage.setItem("cachedStudyAreaName",whichOne)
     $('.status').text(whichOne);
     $('#study-area-label').text(whichOne);
-
+    console.log('changing study area')
+    lowerThresholdDecline =  studyAreaDict[whichOne][3];
+    upperThresholdDecline = 1;
+    lowerThresholdRecovery = studyAreaDict[whichOne][4];
+    upperThresholdRecovery = 1;
     
+    setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
+    
+    setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
+
     var coords = studyAreaDict[whichOne][1];
     studyAreaName = studyAreaDict[whichOne][0];
     if(studyAreaName === 'CONUS'){run = runCONUS}else{run = runUSFS};

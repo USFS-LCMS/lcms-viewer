@@ -301,12 +301,14 @@
     <ul class="dropdown-menu dropdown-inverse">
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a></li>
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a></li>
-      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss">Science Team CONUS NAFD</a></li>
+      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest">Manti-La Sal National Forest</a></li>
+<!--       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss">Science Team CONUS NAFD</a></li> -->
     </ul>
   </div>
 
 <script type="text/javascript">
- $('.dropdown-inverse li > a').click(function(e){
+
+$('.dropdown-inverse li > a').click(function(e){
    localStorage.setItem("cachedStudyAreaName",this.innerHTML)
     $('.status').text(this.innerHTML);
     $('#study-area-label').text(this.innerHTML);
@@ -317,6 +319,15 @@
     centerMap(coords[1],coords[0],coords[2]);
     if(studyAreaName === 'CONUS'){run = runCONUS}
       else{run = runUSFS};
+
+    lowerThresholdDecline =  studyAreaDict[this.innerHTML][3];
+    upperThresholdDecline = 1;
+    lowerThresholdRecovery = studyAreaDict[this.innerHTML][4];
+    upperThresholdRecovery = 1;
+    
+    setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
+    
+    setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
 
     reRun();
 
@@ -366,11 +377,7 @@
 
           <div id = 'declineThreshold'class = 'dual-range-slider-value'> </div>
              </div >
-          <script type="text/javascript">
-            var lowerThresholdDecline = 0.35;
-            var upperThresholdDecline = 1;
-            setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
-          </script>
+      
           <br>
           <div href="#" class ='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
                <div class = 'dual-range-slider-name' >Gain Threshold:</div>
@@ -379,9 +386,10 @@
           <div id = 'recoveryThreshold'class = 'dual-range-slider-value'> </div>
              </div >
           <script type="text/javascript">
-            var lowerThresholdRecovery = 0.35;
-            var upperThresholdRecovery = 1;
-            setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
+          setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
+    
+          setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
+
           </script>
 
           <br>

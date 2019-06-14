@@ -25,10 +25,10 @@ var luLongDescription = 'AGRICULTURE &#45 Land used for the production of food, 
 						included (assumed is the presence of permanent snow and ice). Water includes rivers, streams, canals, ponds, lakes, reservoirs, bays, or oceans. This assumes permanent water (which can be in some state of flux due to ephemeral changes brought on by climate or anthropogenic).<br>\
 						RANGELAND/PASTURE &#45 This class includes any area that is either a.) Rangeland, where vegetation is a mix of native grasses, shrubs, forbs and grass-like plants largely arising from natural factors and processes such as rainfall, temperature, elevation and fire, although limited management may include prescribed burning as well as grazing by domestic and wild herbivores; or b.) Pasture, where vegetation may range from mixed, largely natural grasses, forbs and herbs to more managed vegetation dominated by grass species that have been seeded and managed to maintain near monoculture.'
 
-metadata_parser_dict ={'STUDYAREA': [ 'BTNF', 'FNF' ],
-'STUDYAREA_LONGNAME': {'BTNF':'Bridger-Teton National Forest','FNF': 'Flathead National Forest'},
+metadata_parser_dict ={'STUDYAREA': [ 'BTNF', 'FNF','MLSNF' ],
+'STUDYAREA_LONGNAME': {'BTNF':'Bridger-Teton National Forest','FNF': 'Flathead National Forest','MLSNF': 'Manti-La Sal National Forest'},
 
-'STUDYAREA_URL' :  'https://lcms-data-explorer-beta.appspot.com/',
+'STUDYAREA_URL' :  'https://lcms-data-explorer.appspot.com/',
 'VERSION' : 'v2019.1',
 'SUMMARYMETHOD' :{'year':'Most recent observation above specified threshold', 'prob':'Highest probability observation'},
 'GAINORLOSS' :['Gain' , 'Loss'],
@@ -36,10 +36,20 @@ metadata_parser_dict ={'STUDYAREA': [ 'BTNF', 'FNF' ],
 
 
 //(OOB_ACCURACY and OOB_KAPPA in html file)
-'Gain_ACC':{'OOB_ACCURACY': 0.993, 'OOB_KAPPA':0.931,'THRESHOLD':0.35},
-'Loss_ACC':{'OOB_ACCURACY': 0.985, 'OOB_KAPPA':0.752,'THRESHOLD':0.35},
-'Landcover_ACC':{'OOB_ACCURACY': 0.984, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
-'Landuse_ACC':{'OOB_ACCURACY': 0.991, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
+'FNF_Gain_ACC':{'OOB_ACCURACY': 0.993, 'OOB_KAPPA':0.931,'THRESHOLD':0.35},
+'FNF_Loss_ACC':{'OOB_ACCURACY': 0.985, 'OOB_KAPPA':0.752,'THRESHOLD':0.35},
+'FNF_Landcover_ACC':{'OOB_ACCURACY': 0.984, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
+'FNF_Landuse_ACC':{'OOB_ACCURACY': 0.991, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
+
+'BTNF_Gain_ACC':{'OOB_ACCURACY': 0.993, 'OOB_KAPPA':0.931,'THRESHOLD':0.35},
+'BTNF_Loss_ACC':{'OOB_ACCURACY': 0.985, 'OOB_KAPPA':0.752,'THRESHOLD':0.35},
+'BTNF_Landcover_ACC':{'OOB_ACCURACY': 0.984, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
+'BTNF_Landuse_ACC':{'OOB_ACCURACY': 0.991, 'OOB_KAPPA':0.978,'THRESHOLD':'NA'},
+
+'MLSNF_Gain_ACC':{'OOB_ACCURACY': 0.995, 'OOB_KAPPA':0.806,'THRESHOLD':0.3},
+'MLSNF_Loss_ACC':{'OOB_ACCURACY': 0.990, 'OOB_KAPPA':0.737,'THRESHOLD':0.25},
+'MLSNF_Landcover_ACC':{'OOB_ACCURACY': 0.997, 'OOB_KAPPA':0.995,'THRESHOLD':'NA'},
+'MLSNF_Landuse_ACC':{'OOB_ACCURACY': 0.999, 'OOB_KAPPA':0.997,'THRESHOLD':'NA'},
 
 'Gain Year_Description':['SUMMARY_METHOD (Threshold = LOWER_THRESHOLD). Each year has a modelled probability of gain using TimeSync model calibration data in a Random Forest model.<br>\
 						The modelled probability is then thresholded.  SUMMARY_METHOD is then selected for the final map output.<br>\
@@ -77,21 +87,65 @@ metadata_parser_dict ={'STUDYAREA': [ 'BTNF', 'FNF' ],
 'LANDUSE_ONELINE_DEFINITION' : 'The way in which land cover resources are used. ',
 
 // //(CONFUSIONMATRIX in html file)
-'Gain_CONFUSIONMATRIX':  '<table width = "300"><tr><th></th> <th>Reference</th>  </tr> <tr>  <td><b>Prediction</b></td> <td>  No Gain </td> <td>   Gain   </td> </tr>  <tr> <td>  No Gain   </td> <td>  71565   </td>  <td>    270   </td> </tr> <tr> <td>   Gain </td> <td>    296   </td>  <td>   4054   </td> </tr> </table>',
+'FNF_Gain_CONFUSIONMATRIX':  '<table width = "300"><tr><th></th> <th>Reference</th>  </tr> <tr>  <td><b>Prediction</b></td> <td>  No Gain </td> <td>   Gain   </td> </tr>  <tr> <td>  No Gain   </td> <td>  71565   </td>  <td>    270   </td> </tr> <tr> <td>   Gain </td> <td>    296   </td>  <td>   4054   </td> </tr> </table>',
  
 
-'Loss_CONFUSIONMATRIX' :'<table width = "300"><tr><th></th><th>Reference</th> </tr><tr> <td><b>Prediction</b></td> <td>   Loss   </td> <td>  No Loss </td> </tr><tr> <td>   Loss   </td><td>   1780   </td> <td>    500   </td></tr><tr><td>  No Loss </td><td>    628   </td> <td>   73277  </td></tr></table>',
+'FNF_Loss_CONFUSIONMATRIX' :'<table width = "300"><tr><th></th><th>Reference</th> </tr><tr> <td><b>Prediction</b></td> <td>   Loss   </td> <td>  No Loss </td> </tr><tr> <td>   Loss   </td><td>   1780   </td> <td>    500   </td></tr><tr><td>  No Loss </td><td>    628   </td> <td>   73277  </td></tr></table>',
 
-'Landcover_CONFUSIONMATRIX':
+'FNF_Landcover_CONFUSIONMATRIX':
 '<table width = "500"><tr><th></th><th>Reference</th></tr><tr><td><b>Prediction</b></td><td>Barren</td><td>Grass/Forb/Herb</td><td>Impervious</td><td>Shrubs</td><td>Trees</td><td>Water</td></tr><tr><td>Barren</td><td>7282</td><td>66</td><td>0</td><td>12</td><td>22</td><td>10</td></tr><tr><td>Grass/Forb/Herb</td><td>144</td><td>19311</td><td>2</td>\
     <td>123</td><td>90</td><td>11</td></tr><tr><td>Impervious</td><td>0</td><td>0</td><td>178</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Shrubs</td><td>29</td><td>154</td><td>0</td> <td>22771</td><td>76</td><td>7</td></tr><tr><td>Trees</td><td>102</td><td>194</td><td>0</td><td>180</td><td>24577</td><td>8</td></tr><tr><td>Water</td><td>0</td><td>1</td><td>0</td><td>1</td><td>3</td><td>831</td> </tr></table>',
 
 
-'Landuse_CONFUSIONMATRIX':
+'FNF_Landuse_CONFUSIONMATRIX':
 '<table width = "500"><tr><th></th><th>Reference</th></tr><tr><td><b>Prediction</b></td><td>Agriculture</td><td>Developed</td><td>Forest</td>\
     <td>Non_forest_Wetland</td><td>Other</td><td>Rangeland</td></tr><tr><td>Agriculture</td><td>812</td><td>0</td><td>0</td><td>3</td><td>0</td><td>1</td></tr><tr>\
     <td>Developed</td><td>0</td><td>506</td><td>0</td><td>0</td><td>0</td><td>1</td></tr><tr><td>Forest</td><td>19</td><td>5</td><td>37698</td><td>82</td>\
     <td>26</td><td>215</td></tr><tr><td>Non_forest_Wetland</td><td>2</td><td>1</td><td>5</td><td>2276</td><td>2</td><td>1</td></tr><tr><td>Other</td><td>0</td><td>0</td> \
-    <td>5</td><td>1</td><td>6579</td><td>8</td></tr><tr><td>Rangeland</td><td>48</td><td>14</td><td>118</td><td>71</td><td>25</td><td>27661</td></tr></table>'
+    <td>5</td><td>1</td><td>6579</td><td>8</td></tr><tr><td>Rangeland</td><td>48</td><td>14</td><td>118</td><td>71</td><td>25</td><td>27661</td></tr></table>',
+
+'BTNF_Gain_CONFUSIONMATRIX':  '<table width = "300"><tr><th></th> <th>Reference</th>  </tr> <tr>  <td><b>Prediction</b></td> <td>  No Gain </td> <td>   Gain   </td> </tr>  <tr> <td>  No Gain   </td> <td>  71565   </td>  <td>    270   </td> </tr> <tr> <td>   Gain </td> <td>    296   </td>  <td>   4054   </td> </tr> </table>',
+ 
+
+'BTNF_Loss_CONFUSIONMATRIX' :'<table width = "300"><tr><th></th><th>Reference</th> </tr><tr> <td><b>Prediction</b></td> <td>   Loss   </td> <td>  No Loss </td> </tr><tr> <td>   Loss   </td><td>   1780   </td> <td>    500   </td></tr><tr><td>  No Loss </td><td>    628   </td> <td>   73277  </td></tr></table>',
+
+'BTNF_Landcover_CONFUSIONMATRIX':
+'<table width = "500"><tr><th></th><th>Reference</th></tr><tr><td><b>Prediction</b></td><td>Barren</td><td>Grass/Forb/Herb</td><td>Impervious</td><td>Shrubs</td><td>Trees</td><td>Water</td></tr><tr><td>Barren</td><td>7282</td><td>66</td><td>0</td><td>12</td><td>22</td><td>10</td></tr><tr><td>Grass/Forb/Herb</td><td>144</td><td>19311</td><td>2</td>\
+    <td>123</td><td>90</td><td>11</td></tr><tr><td>Impervious</td><td>0</td><td>0</td><td>178</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Shrubs</td><td>29</td><td>154</td><td>0</td> <td>22771</td><td>76</td><td>7</td></tr><tr><td>Trees</td><td>102</td><td>194</td><td>0</td><td>180</td><td>24577</td><td>8</td></tr><tr><td>Water</td><td>0</td><td>1</td><td>0</td><td>1</td><td>3</td><td>831</td> </tr></table>',
+
+
+'BTNF_Landuse_CONFUSIONMATRIX':
+'<table width = "500"><tr><th></th><th>Reference</th></tr><tr><td><b>Prediction</b></td><td>Agriculture</td><td>Developed</td><td>Forest</td>\
+    <td>Non_forest_Wetland</td><td>Other</td><td>Rangeland</td></tr><tr><td>Agriculture</td><td>812</td><td>0</td><td>0</td><td>3</td><td>0</td><td>1</td></tr><tr>\
+    <td>Developed</td><td>0</td><td>506</td><td>0</td><td>0</td><td>0</td><td>1</td></tr><tr><td>Forest</td><td>19</td><td>5</td><td>37698</td><td>82</td>\
+    <td>26</td><td>215</td></tr><tr><td>Non_forest_Wetland</td><td>2</td><td>1</td><td>5</td><td>2276</td><td>2</td><td>1</td></tr><tr><td>Other</td><td>0</td><td>0</td> \
+    <td>5</td><td>1</td><td>6579</td><td>8</td></tr><tr><td>Rangeland</td><td>48</td><td>14</td><td>118</td><td>71</td><td>25</td><td>27661</td></tr></table>',
+
+
+'MLSNF_Gain_CONFUSIONMATRIX':  '<table width = "300"><tr><th></th> <th>Reference</th>  </tr> <tr>  <td><b>Prediction</b></td> <td>  No Gain </td> <td>   Gain   </td> </tr>  <tr> <td>  No Gain   </td> <td>  41174   </td>  <td>    99   </td> </tr> <tr> <td>   Gain </td> <td>    113   </td>  <td>   447   </td> </tr> </table>',
+ 
+
+'MLSNF_Loss_CONFUSIONMATRIX' :'<table width = "300"><tr><th></th><th>Reference</th> </tr><tr> <td><b>Prediction</b></td> <td>   Loss   </td> <td>  No Loss </td> </tr><tr> <td>   Loss   </td><td>   540   </td> <td>    207   </td></tr><tr><td>  No Loss </td><td>    170   </td> <td>   40916  </td></tr></table>',
+
+'MLSNF_Landcover_CONFUSIONMATRIX':
+'<table width = "500"><tr><th></th><th>Reference</th></tr><tr><td><b>Prediction</b></td><td>Barren</td><td>Grass/Forb/Herb</td><td>Impervious</td><td>Shrubs</td><td>Trees</td><td>Water</td></tr><tr>\
+<td>Barren</td><td>6980</td><td>8</td><td>0</td><td>0</td><td>2</td><td>0</td></tr><tr>\
+<td>Grass/Forb/Herb</td><td>48</td><td>11801</td><td>0</td><td>13</td><td>26</td><td>0</td></tr>\
+<tr><td>Impervious</td><td>0</td><td>0</td><td>66</td><td>0</td><td>0</td><td>0</td></tr>\
+<tr><td>Shrubs</td><td>2</td><td>3</td><td>0</td><td>4909</td><td>1</td><td>0</td></tr>\
+<tr><td>Trees</td><td>13</td><td>21</td><td>0</td><td>8</td><td>17830</td><td>0</td></tr>\
+<tr><td>Water</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>102</td> </tr></table>',
+
+
+'MLSNF_Landuse_CONFUSIONMATRIX':
+'<table width = "500"><tr><th></th><th>Reference</th></tr><tr><td><b>Prediction</b></td><td>Agriculture</td><td>Developed</td><td>Forest</td><td>Other</td><td>Rangeland</td></tr>\
+<tr><td>Agriculture</td><td>807</td><td>4</td><td>1</td><td>0</td><td>7</td></tr><tr>\
+    <td>Developed</td><td>0</td><td>262</td><td>0</td><td>0</td><td>0</td></tr>\
+    <tr><td>Forest</td><td>0</td><td>3</td><td>29484</td><td>1</td><td>20</td></tr>\
+    <tr><td>Other</td><td>0</td><td>1</td><td>0</td><td>1520</td><td>0</td></tr>\
+    <tr><td>Rangeland</td><td>4</td><td>1</td><td>15</td><td>0</td><td>9703</td></tr></table>'
+
+
+
 
 }
