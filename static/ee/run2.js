@@ -360,20 +360,15 @@ var canyonsProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Anc
 var johnsonCreekProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/JohnsonCreek_ProjectArea');
 
 var sageGrouseHomeRanges = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_HomeRanges');
-var sageGrounseSeasonalHabitat = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_SeasonalHabitat');
+var sageGrouseSeasonalHabitat = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_SeasonalHabitat');
 
 var nizhoniFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Nizhoni_FirePerimeter');
 var seeleyFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Seeley_FirePerimeter');
 
-Map2.addLayer(landslides,{'min':1,'max':1,'palette':'AA0'},'Landslides',false,null,null,'','reference-layer-list');
-Map2.addLayer(canyonsProjectArea,{'min':1,'max':1,'palette':'AA0'},'canyonsProjectArea',false,null,null,'','reference-layer-list');
-Map2.addLayer(johnsonCreekProjectArea,{'min':1,'max':1,'palette':'AA0'},'johnsonCreekProjectArea',false,null,null,'','reference-layer-list');
-Map2.addLayer(sageGrouseHomeRanges,{'min':1,'max':1,'palette':'AA0'},'sageGrouseHomeRanges',false,null,null,'','reference-layer-list');
-Map2.addLayer(sageGrounseSeasonalHabitat,{'min':1,'max':1,'palette':'AA0'},'sageGrounseSeasonalHabitat',false,null,null,'','reference-layer-list');
-
-Map2.addLayer(nizhoniFire,{'min':1,'max':1,'palette':'AA0'},'nizhoniFire',false,null,null,'','reference-layer-list');
-
-Map2.addLayer(seeleyFire,{'min':1,'max':1,'palette':'AA0'},'seeleyFire',false,null,null,'','reference-layer-list');
+Map2.addLayer(canyonsProjectArea,{'min':1,'max':1,'palette':'AA0'},'Canyons Project Area',false,null,null,'','reference-layer-list');
+Map2.addLayer(johnsonCreekProjectArea,{'min':1,'max':1,'palette':'AA0'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
+Map2.addLayer(sageGrouseHomeRanges,{'min':1,'max':1,'palette':'AA0'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
+Map2.addLayer(sageGrouseSeasonalHabitat,{'min':1,'max':1,'palette':'AA0'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
 
 var canopyCover = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_CC_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
 var treeSize = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_TS_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
@@ -529,7 +524,11 @@ if(analysisMode === 'advanced'){
 }
 
 
-
+Map2.addLayer(rnrThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
+if(analysisMode === 'advanced'){
+  Map2.addLayer(rnrThreshOut.select([0]),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
+  Map2.addLayer(rnrCount,{'min':1,'max':5,'palette':recoveryDurPalette},'Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);
+}
 
 
 // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
@@ -571,11 +570,7 @@ Map2.addLayer(dndFastCount,{'min':1,'max':5,'palette':declineDurPalette},'Fast L
 
 }
 
-Map2.addLayer(rnrThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
-if(analysisMode === 'advanced'){
-  Map2.addLayer(rnrThreshOut.select([0]),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
-  Map2.addLayer(rnrCount,{'min':1,'max':5,'palette':recoveryDurPalette},'Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);
-}
+
 
 
 
