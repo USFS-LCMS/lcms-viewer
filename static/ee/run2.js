@@ -355,21 +355,6 @@ Map2.addLayer(lynxHab,{min:1970,max:2017,palette:lynxPalette,addToClassLegend: t
 }
 if(studyAreaName === 'MLSNF'){
 
-var landslides = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Landslides');
-var canyonsProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Canyons_ProjectArea');
-var johnsonCreekProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/JohnsonCreek_ProjectArea');
-
-var sageGrouseHomeRanges = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_HomeRanges');
-var sageGrouseSeasonalHabitat = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_SeasonalHabitat');
-
-var nizhoniFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Nizhoni_FirePerimeter');
-var seeleyFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Seeley_FirePerimeter');
-
-Map2.addLayer(canyonsProjectArea,{'min':1,'max':1,'palette':'AA0'},'Canyons Project Area',false,null,null,'','reference-layer-list');
-Map2.addLayer(johnsonCreekProjectArea,{'min':1,'max':1,'palette':'AA0'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
-Map2.addLayer(sageGrouseHomeRanges,{'min':1,'max':1,'palette':'AA0'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
-Map2.addLayer(sageGrouseSeasonalHabitat,{'min':1,'max':1,'palette':'AA0'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
-
 var canopyCover = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_CC_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
 var treeSize = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_TS_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
 var vegType = ee.Image('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLSFL_VT_Filtered_QMbuffer_2017_03_08_t').clip(boundary);
@@ -393,6 +378,9 @@ Map2.addLayer(canopyCover.updateMask(canopyCover.neq(0)),canopyCoverViz,'VCMQ 20
 Map2.addLayer(treeSize.updateMask(treeSize.neq(0)),treeSizeViz,'VCMQ 2018 Tree Size',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) tree size classes','reference-layer-list');
 Map2.addLayer(vegType.updateMask(vegType.neq(0)),vegTypeViz,'VCMQ 2018 Veg Type',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) vegetation type classes','reference-layer-list');
 
+//**
+// Moved Unfilled Polygons to below LCMS Layers so they will draw on top of everything.
+//**
 }
 
 getMTBSandIDS();
@@ -570,8 +558,28 @@ Map2.addLayer(dndFastCount,{'min':1,'max':5,'palette':declineDurPalette},'Fast L
 
 }
 
+if(studyAreaName === 'MLSNF'){
+var landslides = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Landslides');
+var canyonsProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Canyons_ProjectArea');
+var johnsonCreekProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/JohnsonCreek_ProjectArea');
 
+var sageGrouseHomeRanges = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_HomeRanges');
+var sageGrouseSeasonalHabitat = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLNF_GreaterSageGrouse_SeasonalHabitat');
 
+var nizhoniFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Nizhoni_FirePerimeter');
+var seeleyFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Seeley_FirePerimeter');
+
+Map2.addLayer(canyonsProjectArea,{'min':1,'max':1,'palette':'AA0'},'Canyons Project Area',false,null,null,'','reference-layer-list');
+Map2.addLayer(johnsonCreekProjectArea,{'min':1,'max':1,'palette':'AA0'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
+Map2.addLayer(sageGrouseHomeRanges,{'min':1,'max':1,'palette':'#ff6700'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
+Map2.addLayer(sageGrouseSeasonalHabitat,{'min':1,'max':1,'palette':'#ff6700'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
+
+var huc6 = ee.FeatureCollection("USGS/WBD/2017/HUC06").filterBounds(mls_study_area);
+var huc10 = ee.FeatureCollection("USGS/WBD/2017/HUC10").filterBounds(mls_study_area);
+
+Map2.addLayer(huc6,{'min':1,'max':1,'palette':'#0000ff'},'HUC 06',false,null,null,null,'reference-layer-list');
+Map2.addLayer(huc10,{'min':1,'max':1,'palette':'#0000ff'},'HUC10',false,null,null,null,'reference-layer-list');
+}
 
 
 // Map2.addLayer(studyArea,{palette:'d9d9d9',addToLegend:false},studyAreaName + ' Boundary',true,null,null,'Boundary used for all analysis for the '+studyAreaName,'reference-layer-list')
