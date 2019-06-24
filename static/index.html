@@ -309,25 +309,20 @@
 <script type="text/javascript">
 
 $('.dropdown-inverse li > a').click(function(e){
-   localStorage.setItem("cachedStudyAreaName",this.innerHTML)
-    $('.status').text(this.innerHTML);
-    $('#study-area-label').text(this.innerHTML);
+
+  resetStudyArea(this.innerHTML);
+   // localStorage.setItem("cachedStudyAreaName",this.innerHTML)
+   //  $('.status').text(this.innerHTML);
+   //  $('#study-area-label').text(this.innerHTML);
     var coords = studyAreaDict[this.innerHTML][1];
-    studyAreaName = studyAreaDict[this.innerHTML][0];
-    // exportCRS = studyAreaDict[this.innerHTML][2];
-    // $('input[name = "Export crs"]').val(exportCRS);
+    // studyAreaName = studyAreaDict[this.innerHTML][0];
+   //  // exportCRS = studyAreaDict[this.innerHTML][2];
+   //  // $('input[name = "Export crs"]').val(exportCRS);
     centerMap(coords[1],coords[0],coords[2]);
     if(studyAreaName === 'CONUS'){run = runCONUS}
       else{run = runUSFS};
 
-    lowerThresholdDecline =  studyAreaDict[this.innerHTML][3];
-    upperThresholdDecline = 1;
-    lowerThresholdRecovery = studyAreaDict[this.innerHTML][4];
-    upperThresholdRecovery = 1;
-    
-    setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
-    
-    setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
+  
 
     reRun();
 

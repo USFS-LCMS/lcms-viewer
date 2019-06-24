@@ -224,9 +224,9 @@ var collectionDict = {
 var ts = ee.ImageCollection(collectionDict[studyAreaName][5]);
 var boundary = ee.FeatureCollection(collectionDict[studyAreaName][6]);
 var NFSLCMS = ee.ImageCollection(collectionDict[studyAreaName][1])
-              .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
+              // .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-              .select(['LC','LU','CP','DND','RNR','DND_Slow','DND_Fast'])
+              .select([0,1,2,3,4,5,6],['LC','LU','CP','DND','RNR','DND_Slow','DND_Fast'])
               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0,0,0])).clip(boundary)})
               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01,0.01,0.01])).float()})
               .select([0,1,2,3,4,5,6],['Land Cover Class','Land Use Class','Change Process','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
@@ -524,11 +524,7 @@ if(analysisMode === 'advanced'){
 }
 
 
-Map2.addLayer(rnrThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
-if(analysisMode === 'advanced'){
-  Map2.addLayer(rnrThreshOut.select([0]),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
-  Map2.addLayer(rnrCount,{'min':1,'max':5,'palette':recoveryDurPalette},'Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);
-}
+
 
 
 // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
@@ -548,6 +544,13 @@ Map2.addLayer(dndThreshOut.select([0]),{'min':lowerThresholdDecline,'max':upperT
 
 Map2.addLayer(dndCount,{'min':1,'max':5,'palette':declineDurPalette},'Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
 }
+
+Map2.addLayer(rnrThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
+if(analysisMode === 'advanced'){
+  Map2.addLayer(rnrThreshOut.select([0]),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
+  Map2.addLayer(rnrCount,{'min':1,'max':5,'palette':recoveryDurPalette},'Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);
+}
+
 if(viewBeta === 'yes'){
 
 var lcFirstFive = NFSLC.filter(ee.Filter.calendarRange(startYear,startYear+5-1,'year')).mode().multiply(100);
