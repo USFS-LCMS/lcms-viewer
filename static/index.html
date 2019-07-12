@@ -42,7 +42,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="visualize where land cover change is happening">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="css/main.css">
     <!-- <link rel="stylesheet" href="css/iThing.css" type="text/css" /> -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
@@ -302,7 +302,7 @@
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a></li>
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a></li>
       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest">Manti-La Sal National Forest</a></li>
-<!--       <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss">Science Team CONUS NAFD</a></li> -->
+      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss">Science Team CONUS NAFD</a></li>
     </ul>
   </div>
 
@@ -430,10 +430,16 @@ $('.dropdown-inverse li > a').click(function(e){
         <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to inspect values of layers that are currently visible.  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
         >Pixel Inspector (double-click)</label>
+        
+            
         <div id = 'query-container' style = 'display:none;background-color:#333' ></div> 
         <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+        
+        <div id = 'charting-container' style = 'display: inline-block;width:100%;font-weight: normal;'>
 
-        <div id = 'charting-container' style = 'display: none;width:100%;font-weight: normal;'>
+          
+
+        
         <input   id="charting-radio" style='font:#fff;' name='cb' value='charting' type="radio" onclick="toggleRadio(this.value);" />
         <label  id = 'charting-label' style='position:relative;display: none;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
          href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to chart time series.  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
@@ -441,8 +447,49 @@ $('.dropdown-inverse li > a').click(function(e){
         <br>
         <variable-radio var = 'whichIndex' title2 = 'Index for charting:' name2 = 'NBR' name1 = 'NDVI' value2 = 'NBR' value1 = 'NDVI' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
             <br>
-        <!-- <br> -->
-        <!-- <input onclick="toggleLegend();" type=button id = 'legend-button' style = 'display:none;'class='button' value="Toggle Legend"> -->
+            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+         <!-- <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
+        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Summarize LCMS layers by provided zipped Shapefile (all files associated with the shapefile must be zipped into a single .zip file) or select from pre-defined areas in dropdown below"
+        >Summarize by area</label> -->
+        <h4>Summarize by area</h4>
+      <!-- <div class = 'fa fa-spinner fa-spin '></div> -->
+        <ul class="nav nav-tabs" id="myTab"  role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="user-defined-zones" data-toggle="tab" href="#user-defined" role="tab" aria-controls="user-defined" aria-selected="true" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Draw an area to summarize LCMS products across">Draw an area</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="shp-defined-zones" data-toggle="tab" href="#shp-defined" role="tab" aria-controls="shp-defined" aria-selected="false" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Upload a zipped shapefile or geojson file to summarize LCMS products across">Upload an area</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="pre-defined-zones" data-toggle="tab" href="#pre-defined" role="tab" aria-controls="pre-defined" aria-selected="false" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Select a pre-defined area to summarize LCMS products across">Pre-defined areas</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade" id="user-defined" role="tabpanel" aria-labelledby="user-defined-zones">
+          Click on map to draw polygon for summarizing.  Double click to finish drawing
+      
+          <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name for user-defined area chart" style = 'width:50%;'>
+          <button type="button" onclick = 'startUserDefinedAreaCharting()' class="button">Chart another area</button>
+          
+        </div>
+        <div class="tab-pane fade" id="shp-defined" role="tabpanel" aria-labelledby="shp-defined-zones">
+         
+          <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style = "display: inline-block;">
+        </div>
+        <div class="tab-pane fade show active" id="pre-defined" role="tabpanel" aria-labelledby="pre-defined-zones">
+
+          <select id='forestBoundaries'  style = 'background-color: #555' onchange = 'chartChosenArea()'></select>
+        </div>
+      
+      </div>
+       
+
+
+        
+
+      
+
  <div id = 'charting-parameters' style = 'display:none;
                       margin-left:2px;
                       margin-right: 2px;
@@ -454,7 +501,7 @@ $('.dropdown-inverse li > a').click(function(e){
                       margin-bottom:4px;'>Charting Progress
     <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
     <script type="text/javascript">
-      var plotRadius = 15;var plotScale = 30;
+      var plotRadius = 15;var plotScale = 30;startAreaCharting();listenForUserDefinedAreaCharting();
     </script>
         
         <!-- <variable-range id="plot-radius"   name="Chart plot radius (m)" var="plotRadius" default="16" min="16" max="91" step="10"
@@ -467,6 +514,7 @@ $('.dropdown-inverse li > a').click(function(e){
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Spatial resolution for double click charting"
         ></variable-range>
         <br> -->
+        <img id = 'summary-spinner' class="spinner" src="images/GEE_logo_transparent.png" alt="" style = 'display: none;' >
         <div id="Progress" style = 'display:none;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
           <div id="Bar"></div>
         </div>
@@ -689,6 +737,7 @@ $('.dropdown-inverse li > a').click(function(e){
       var plotsOn = true;
       var helpOn = false;
       var queryOn = false;
+      var areaChartingOn = false;
       function toggleHelp(){
         if (helpOn) {
           $("#help-window").slideUp();
@@ -796,6 +845,16 @@ $('.dropdown-inverse li > a').click(function(e){
           startQuery();
         }
       }
+      function toggleAreaCharting(){
+        if(areaChartingOn){
+          areaChartingOn = false;
+          // stopAreaCharting();
+        }else{
+          areaChartingOn = true;
+
+          // startAreaCharting();
+        }
+      }
       function toggleDrawing() {
         if (drawing) {
           // shapesMap = undefined;
@@ -834,6 +893,9 @@ $('.dropdown-inverse li > a').click(function(e){
           if (queryOn) {
             toggleQuery()
           };
+          if (areaChartingOn) {
+            toggleAreaCharting()
+          };
           if (!chartingOn) {
             toggleCharting()
           };
@@ -849,6 +911,9 @@ $('.dropdown-inverse li > a').click(function(e){
           };
           if (queryOn) {
             toggleQuery()
+          };
+          if (areaChartingOn) {
+            toggleAreaCharting()
           };
           if (!distanceOn) {
             toggleDistance()
@@ -867,6 +932,9 @@ $('.dropdown-inverse li > a').click(function(e){
           if (distanceOn) {
             toggleDistance()
           };
+          if (areaChartingOn) {
+            toggleAreaCharting()
+          };
           if (!queryOn) {
             toggleQuery()
           };
@@ -882,6 +950,9 @@ $('.dropdown-inverse li > a').click(function(e){
           };
           if (queryOn) {
             toggleQuery()
+          };
+          if (areaChartingOn) {
+            toggleAreaCharting()
           };
           if (!drawing) {
             toggleDrawing()
@@ -899,7 +970,29 @@ $('.dropdown-inverse li > a').click(function(e){
           if (queryOn) {
             toggleQuery()
           };
+          if (areaChartingOn) {
+            toggleAreaCharting()
+          };
           if (!areaOn) {
+            toggleArea()
+          };
+        } else if (thisValue == 'areaCharting') {
+          if (drawing) {
+            toggleDrawing()
+          };
+          if (chartingOn) {
+            toggleCharting()
+          };
+          if (distanceOn) {
+            toggleDistance()
+          };
+          if (queryOn) {
+            toggleQuery()
+          };
+          if (!areaChartingOn) {
+            toggleAreaCharting()
+          };
+          if (areaOn) {
             toggleArea()
           };
         } else if (thisValue == 'none') {
@@ -914,6 +1007,9 @@ $('.dropdown-inverse li > a').click(function(e){
           };
           if (queryOn) {
             toggleQuery()
+          };
+          if (areaChartingOn) {
+            toggleAreaCharting()
           };
           if (distanceOn) {
             toggleDistance()

@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-var cachedShapes = null;var cookies;
+var cachedShapes = null;var cookies;var gatherVectors;
 function ShapesMap(_map, _deleteButton, _clearButton,_processButton,_exportButton, _toggleDrawingButton,_console) {
 
     // state

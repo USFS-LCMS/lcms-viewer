@@ -22,7 +22,10 @@
 
   
 // }
+
+
 var run;
+
 function getMTBSandIDS(){
 
 var idsStartYear = 1997;
@@ -588,7 +591,7 @@ var pastures = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLS
 
 Map2.addLayer(grazingAllotments,{},'Allotment Boundaries',false,null,null,'','reference-layer-list'); //'RMU Dataset - area boundaries of livestock grazing allotments' 'min':1,'max':1,'palette':'#ff0000'
 Map2.addLayer(pastures,{'min':1,'max':1,'palette':'#ffbf00'},'Pasture Boundaries',false,null,null,'RMU Dataset - area boundaries of pastures within livestock grazing allotments','reference-layer-list');
-print(pastures.getInfo())
+// print(pastures.getInfo())
 }
 
 
@@ -657,7 +660,15 @@ else{
 }
 forCharting = joinCollections(forCharting,NFSLCMS, false);
 
+var forAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year'])
+var forAreaChartingGeo = forAreaCharting.geometry();
+forAreaCharting =forAreaCharting.map(function(img){
+
+  return img.mask().clip(forAreaChartingGeo)});
 chartCollection =forCharting;
+areaChartCollection = forAreaCharting;
+
+
 
 if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
@@ -674,7 +685,7 @@ Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPal
 Map2.addLayer(hansenGain.updateMask(hansenGain),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
 
 
- var lossProb = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/vCONUS-2019-1')
+ var lossProb = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/vCONUS-2019-1').map(function(img){return img.unmask()})
     .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
     .map(function(img){return img.rename(['Loss Probability'])})
     .map(function(img){return ee.Image(multBands(img,1,[0.01])).float()});
@@ -727,6 +738,10 @@ Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 Loss Du
 
 }
 chartCollection =lossProb;
+var forAreaCharting = dndThresh.select(["Loss Probability_change_year"]);
+var forAreaChartingGeo = forAreaCharting.geometry();
+forAreaCharting = forAreaCharting.map(function(img){return img.mask().addBands(ee.Image(0).rename(["Gain Probability_change_year"])).clip(forAreaChartingGeo)})
+areaChartCollection = forAreaCharting;
 
 if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 

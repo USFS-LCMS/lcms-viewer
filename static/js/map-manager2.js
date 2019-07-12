@@ -72,7 +72,7 @@ var cpDict = {
       return dataTableT
     };
 
-var chartIncludeDate = true;var chartCollection;var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
+var chartIncludeDate = true;var chartCollection;var areaChartCollection;var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
 var updateArea;var updateDistance;var areaPolygonObj = {}
 ///////////////////////////////////////////////////////////////////
@@ -168,6 +168,27 @@ function centerMap(lng,lat,zoom){
     map.setCenter({lat:lat,lng:lng});
     map.setZoom(zoom);
 }
+function centerObject(fc){
+  try{
+    fc.geometry().bounds().evaluate(function(feature){
+    var bounds = new google.maps.LatLngBounds(); 
+    
+    feature.coordinates[0].map(function(latlng){
+     bounds.extend({lng:latlng[0], lat:latlng[1]});
+    });
+
+    map.fitBounds(bounds);
+    });
+    
+    
+  }
+  catch(err){
+    // alert('Bad Fusion Table');
+    console.log(err);
+   
+  }
+  
+}
 function showMessage(title,message){
     $( "#message" ).append( message + '<br>' );
     if(title != null && title != undefined){
@@ -202,6 +223,31 @@ function createColorRamp(styleName, colorList, width,height){
 
 return myCss
 }
+//////////////////////////////////////////////////////
+//Function to convert csv, kml, shp to geoJSON
+function convertToGeoJSON(formID){
+  var url = 'https://ogre.adc4gis.com/convert'
+
+  var data = new FormData();
+  data.append("targetSrs","EPSG:4326");
+// data.append("sourceSrs",'');
+  jQuery.each(jQuery('#'+formID)[0].files, function (i, file) {
+   
+    data.append("upload", file);
+  });
+  
+  var out= $.ajax({
+    type: 'POST',
+    url: url,
+    data: data,
+    processData: false,
+    contentType: false
+  });
+  
+  
+  return out;
+}
+
 //////////////////////////////////////////////////////
 //Wrappers for printing and printing to console
 function printImage(message){print(message)};
@@ -760,6 +806,7 @@ function reRun(){
     refreshNumber   ++;layerCount = 0;
   exportImageDict = {};
 	run();
+  setupFSB();
 
 
 //     var whileCount = 0;
@@ -1657,7 +1704,8 @@ function initialize() {
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}
-  run()
+  run();
+  setupFSB();
 	// plotPlots()
 	});
 

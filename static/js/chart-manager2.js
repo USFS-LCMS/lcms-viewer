@@ -1,5 +1,49 @@
 var center;var globalChartValues;
 var mapDiv = document.getElementById('map');
+var chartTextColor = '#FFF';
+var cssClassNames = {
+'headerRow': 'googleChartTable',
+'tableRow': 'googleChartTable',
+'oddTableRow': 'googleChartTable',
+'selectedTableRow': 'googleChartTable',
+'hoverTableRow': 'googleChartTable',
+'headerCell': 'googleChartTable',
+'tableCell': 'googleChartTable',
+'rowNumberCell': 'googleChartTable'};
+
+var chartOptions = {
+  title: uriName,
+  titleTextStyle: {
+	color: chartTextColor
+},
+  pointSize: 3,
+  legend: { position: 'bottom',textStyle:{color: chartTextColor,fontSize:'12'} },
+  dataOpacity: 1,
+ hAxis:{title:'Year',
+ 				titleTextStyle:{color: chartTextColor},
+				textStyle:{color: chartTextColor}
+			},
+	vAxis:{textStyle:{color: chartTextColor},titleTextStyle:{color: chartTextColor}},
+	legend: {
+        textStyle: {
+            color: chartTextColor
+        }
+    },
+
+   width: 800, 
+   height:350,
+   bar: {groupWidth: "100%"},
+   explorer: {  actions: [] },
+    chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
+    legendArea:{width:'20%'},
+   backgroundColor: { fill: "#888" }
+
+};
+var tableOptions = {width: 800, 
+   height:350,
+    'allowHtml': true,
+    'cssClassNames': cssClassNames};
+
 function updateProgress(pct) {
     var elem = document.getElementById("Bar"); 
     elem.style.width = pct + '%'; 
@@ -82,13 +126,343 @@ var  getQueryImages = function(lng,lat){
 	
 	
 	
+};
+var fsb;
+// var fieldName = 'NAME';
+// var fsbPath = 'TIGER/2018/Counties';
+
+var fieldName = 'name';
+var fsbPath = 'USGS/WBD/2017/HUC10';
+
+var fieldName = 'FORESTNAME';
+var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries';
+function setupFSB(){
+  $('#forestBoundaries').empty()
+  // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
+  // var fieldName = 'FORESTNAME';
+
+  fsb = ee.FeatureCollection(fsbPath);
+ 
+
+  fsb = fsb.filterBounds(areaChartCollection.geometry());
+
+  var names = ee.List(ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys());
+  ee.Dictionary.fromLists(names, names).evaluate(function(d){
+  	print('d');print(d);
+  	 var mySelect = $('#forestBoundaries');
+	  var choose;
+	  mySelect.append($('<option></option>').val(choose).html('Choose an area'))
+	  $.each(d, function(val,text) {
+	     
+	      mySelect.append($('<option></option>').val(val).html(text)
+	      );
+	  });
+  })
+ 	
+ 
+};
+function listenForUserDefinedAreaCharting(){
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  var target = $(e.target).attr("href") // activated tab
+  if(target === '#user-defined'){startUserDefinedAreaCharting()}
+  });
+        
 }
+var udp;
+var udpList = [];
+
+function startUserDefinedAreaCharting(){
+	console.log('start clicking');
+	stopCharting();
+	udpList = [];
+	map.setOptions({draggableCursor:'crosshair'});
+    map.setOptions({disableDoubleClickZoom: true });
+    google.maps.event.clearListeners(mapDiv, 'dblclick');
+    google.maps.event.clearListeners(mapDiv, 'click');
+    var fColor = randomColor();
+    var udpOptions = {
+              strokeColor:fColor,
+                fillOpacity:0.2,
+              strokeOpacity: 1,
+              strokeWeight: 3,
+              draggable: true,
+              editable: true,
+              geodesic:true,
+              polyNumber: 1
+            };
+     var udpPolyOptions = {
+              strokeColor:fColor,
+                fillOpacity:0.2,
+              strokeOpacity: 1,
+              strokeWeight: 3,
+              draggable: false,
+              editable: false,
+              geodesic:true,
+              polyNumber: 1
+            };
+   try{
+   	udp.setMap(null);
+   }catch(err){console.log(err)};
+   
+   udp = new google.maps.Polyline(udpOptions);
+
+   udp.setMap(map);
+
+   google.maps.event.addDomListener(mapDiv, 'click', function(event) {
+        
+        
+		
+        var path = udp.getPath();
+        var x =event.clientX;
+        var y = event.clientY;
+        clickLngLat =point2LatLng(x,y);
+        udpList.push([clickLngLat.lng(),clickLngLat.lat()])
+        path.push(clickLngLat);
+        
+    
+    });
+    google.maps.event.addDomListener(mapDiv, 'dblclick', function() {
+      
+        var path = udp.getPath();
+        udp.setMap(null);
+        udp = new google.maps.Polygon(udpPolyOptions);
+        udp.setPath(path);
+        udp.setMap(map);
+        google.maps.event.clearListeners(mapDiv, 'dblclick');
+    	google.maps.event.clearListeners(mapDiv, 'click');
+    	map.setOptions({draggableCursor:'hand'});
+ 		map.setOptions({cursor:'hand'});
+
+ 		// var geoJson = {'type':'Polygon',
+			// 	'geometry':[udpList]};
+		var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
+
+
+		$('#summary-spinner').slideDown()
+		$('#areaUpload').slideDown();
+	  	$('#charting-container').slideDown();
+	  	$("#charting-parameters").slideDown();
+	  	var udpName = $('#user-defined-area-name').val();
+	  	if(udpName === ''){udpName = 'User Defined Area '}
+		// Map2.addLayer(userArea,{},udpName,false)
+		// console.log(userArea.getInfo());
+		makeAreaChart(userArea,udpName,true);
+
+    });
+
+}
+
+function chartChosenArea(){
+  $('#charting-container').slideDown();
+    $("#charting-parameters").slideDown();
+    $('#summary-spinner').slideDown();
+    try{
+   	udp.setMap(null);
+   }catch(err){console.log(err)};
+    map.setOptions({draggableCursor:'progress'});
+			map.setOptions({cursor:'progress'});
+  // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
+  // var fieldName = 'FORESTNAME';
+
+ 
+  var chosenArea = $('#forestBoundaries').val();
+  var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName,chosenArea));
+
+  makeAreaChart(chosenAreaGeo,chosenArea);
+  console.log('Charting ' + chosenArea);
+}
+function getLossGainTable(areaChartCollection,area){
+	var test = ee.Image(areaChartCollection.first());
+	test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
+	print(test.getInfo());
+	return areaChartCollection.toList(10000,0).map(function(img){
+						img = ee.Image(img);
+				    // img = ee.Image(img).clip(area);
+				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
+				    var year = ee.Number(ee.Date(img.get('system:time_start')).get('year')).format();
+				    t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
+				    var lossT = t.slice(0,2,null);
+				    var gainT = t.slice(0,0,2);
+				    var lossSum = lossT.reduce(ee.Reducer.sum(),[0]).get([0]);
+				    var gainSum = gainT.reduce(ee.Reducer.sum(),[0]).get([0]);
+				    var lossPct = ee.Number.parse(lossT.get([1]).divide(lossSum).multiply(100).format('%.2f'));
+				    var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
+				    return [year,lossPct,gainPct];//ee.List([lossSum]);
+				})
+}
+var areaChartingCount = 0;var areaGeoJson;
+function makeAreaChart(area,name,userDefined){
+	if(!userDefined){userDefined = false};
+	areaChartingCount++;
+	closeChart();
+	
+	var fColor = randomColor().slice(1,7);
+	if(userDefined === false){
+		Map2.addLayer(area,{'palette':fColor},name,true,null,null,name + ' for summarizing','reference-layer-list');
+	}
+	
+	updateProgress(50);
+	area = area.set('source','LCMS_data_explorer');
+	areaGeoJson = area.getInfo();
+	centerObject(area);
+	area = area.geometry();
+
+	var table = getLossGainTable(areaChartCollection,area);
+	var iteration = 0;
+	var maxIterations = 30;
+	var success = false;
+	
+	var tableT;
+	function evalTable(){
+		table.evaluate(function(tableT, failure){
+			print(iteration);
+			print(tableT);
+			print(failure);
+			print(areaChartingCount);
+			if(failure !== undefined && iteration < maxIterations){evalTable()}
+			else if(failure === undefined) {
+				
+				updateProgress(80);
+				areaGeoJson.properties.LCMSSummary = tableT;
+				 document.getElementById('curve_chart').style.display = 'inline-block';
+				  print(tableT)
+				  var dataTable = [['Year','Loss %','Gain %']].concat(tableT);
+				  var name_for_filenames = name.replaceAll(' ','_');
+				  uriName = name_for_filenames + ' LCMS_Loss_and_Gain_Summary';
+				  var title = name + ' LCMS Loss and Gain Summary';
+				  csvName = uriName + '.csv'
+				  geoJsonName = uriName + '.geojson'
+
+				 dataTableT = null;
+				dataTableT = CopyAnArray (dataTable);
+				var chartOptionsT;
+				chartOptionsT = chartOptions;
+				chartOptionsT.hAxis.title = 'Time';
+				chartOptionsT.vAxis.title = 'Percent of Area';
+				chartOptionsT.title = title;
+				var data = google.visualization.arrayToDataTable(dataTableT);
+				var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+				google.visualization.events.addListener(chart, 'ready', function () {
+				    uri = chart.getImageURI();
+				});
+				updateProgress(90)
+				$('#summary-spinner').slideUp()
+				chart.draw(data, chartOptionsT);
+				$('#curve_chart').append('<br><br>');
+				$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
+				$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
+				$("#curve_chart").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
+				
+				$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart');
+				updateProgress(100);
+				map.setOptions({draggableCursor:'hand'});
+				map.setOptions({cursor:'hand'});
+				
+				areaChartingCount--;
+			}
+			else{
+				$('#summary-spinner').slideUp()
+				map.setOptions({draggableCursor:'hand'});
+				map.setOptions({cursor:'hand'});
+				updateProgress(0);
+				showMessage('Error!',failure)}
+			iteration ++;
+		
+
+		
+			
+	});
+		
+	}
+	evalTable();
+	
+	
+
+
+	
+}
+function fixGeoJSONZ(f){
+	console.log('getting rid of z');
+	f.features = f.features.map(function(f){
+    f.geometry.coordinates = f.geometry.coordinates.map(function(c){
+    															return c.map(function(i){
+    																return i.slice(0,2)})
+																		});
+    return f;
+  });
+	console.log(f);
+
+	return f
+}
+function startAreaCharting(){
+	console.log('starting area charting');
+	
+	$('#areaUpload').change(function(){
+		try{
+		   	udp.setMap(null);
+		   }catch(err){console.log(err)};
+		$('#summary-spinner').slideDown()
+		$('#areaUpload').slideDown();
+	  $('#charting-container').slideDown();
+	  $("#charting-parameters").slideDown();
+		console.log('it changed');
+		updateProgress(10);
+		document.getElementById('curve_chart').style.display = 'none';
+		
+			var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0];
+			map.setOptions({draggableCursor:'progress'});
+			map.setOptions({cursor:'progress'});
+			convertToGeoJSON('areaUpload').done(function(converted){
+					console.log('successfully converted to JSON');
+					console.log(converted);
+					updateProgress(30);
+
+					//First try assuming the geoJSON has spatial info
+					try{
+						var area =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
+					} 
+					//Fix it if not
+					catch(err){
+						err = err.toString();
+						console.log('Error');console.log(err);
+						if(err.indexOf('Error: Invalid GeoJSON geometry:') > -1){
+							var area =ee.FeatureCollection(fixGeoJSONZ(converted).features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}))	
+						}
+						else{
+							console.log('what to do');
+						}
+						
+					};
+					// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
+					makeAreaChart(area,name);
+					
+
+				})
+
+		
+	})
+};
+function stopAreaCharting(){
+	console.log('stopping area charting');
+	try{
+   	udp.setMap(null);
+   }catch(err){console.log(err)};
+	$('#areaUpload').unbind('change')
+	$("#charting-parameters").slideUp();
+	$('#areaUpload').slideUp();
+	
+	updateProgress(1)
+	closeChart()
+
+};
 function startQuery(){
+
 	map.setOptions({draggableCursor:'help'});
  			map.setOptions({cursor:'help'});
 	google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
 			map.setOptions({draggableCursor:'progress'});
 			map.setOptions({cursor:'progress'});
+			$('#summary-spinner').slideDown()
 			print('Map was double clicked');
 			var x =e.clientX;
         	var y = e.clientY;console.log(x);
@@ -104,6 +478,7 @@ function startQuery(){
   				});
 
 			marker.setMap(map);
+
 			getQueryImages(center.lng(),center.lat());
 
 		})
@@ -188,49 +563,7 @@ function Chart(){
 	document.getElementById('curve_chart').style.display = 'none';
 
 	// updateProgress(75);
-	var chartTextColor = '#FFF';
-	var cssClassNames = {
-    'headerRow': 'googleChartTable',
-    'tableRow': 'googleChartTable',
-    'oddTableRow': 'googleChartTable',
-    'selectedTableRow': 'googleChartTable',
-    'hoverTableRow': 'googleChartTable',
-    'headerCell': 'googleChartTable',
-    'tableCell': 'googleChartTable',
-    'rowNumberCell': 'googleChartTable'};
 	
-	var chartOptions = {
-	          title: uriName,
-	          titleTextStyle: {
-        		color: chartTextColor
-    		},
-	          pointSize: 3,
-	          legend: { position: 'bottom',textStyle:{color: chartTextColor,fontSize:'12'} },
-	          dataOpacity: 1,
-	         hAxis:{title:'Year',
-	         				titleTextStyle:{color: chartTextColor},
-	     				textStyle:{color: chartTextColor}
-	     			},
-	     	vAxis:{textStyle:{color: chartTextColor},titleTextStyle:{color: chartTextColor}},
-	     	legend: {
-			        textStyle: {
-			            color: chartTextColor
-			        }
-			    },
-
-	           width: 800, 
-	           height:350,
-	           bar: {groupWidth: "100%"},
-	           explorer: {  actions: [] },
-	            chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
-	            legendArea:{width:'20%'},
-	           backgroundColor: { fill: "#888" }
-
-	        };
-	        var tableOptions = {width: 800, 
-	           height:350,
-	            'allowHtml': true,
-	            'cssClassNames': cssClassNames}
 			var chartOptionsT;
 			// chartType = 'Table'
 			setTimeout(function(){updateProgress(80);},0);
@@ -430,7 +763,7 @@ function drawChart() {
       }
 
 function closeChart(){
-
+	updateProgress(1);
 	try{document.getElementById('curve_chart').style.display = 'none';}
 	catch(err){console.log('No charts to close')}
 	
@@ -444,7 +777,24 @@ function stopCharting(){
 	updateProgress(1)
 	closeChart()
 }
+function exportJSON(filename,json){
+	json = JSON.stringify(json);
 
+	var blob = new Blob([json], { type: "application/json" });
+	var url  = URL.createObjectURL(blob);
+
+	var link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
 function exportToCsv(filename, rows) {
         var processRow = function (row) {
             var finalVal = '';
