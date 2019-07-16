@@ -214,8 +214,9 @@
     
  <div id = 'study-area-label' style = 'background-color: #555;color:#FFF;padding:5px;font-size: 15pt;border-radius: 5px;text-align: center;position:absolute;left:40%;'>Bridger-Teton National Forest</div>
 
+<img id = 'summary-spinner' class="spinner" src="images/GEE_logo_transparent.png" alt="" style = 'position:absolute;display: none;left:35%; bottom:0%;' >
 
-
+<div id="curve_chart_big" style="display: none;position:absolute;border-radius: 10px;background: #888; left:10%;bottom:10%;"></div>
 
     <div id="parameters-tools-layers" style = "color:#FFF;" disabled="disabled">
 
@@ -251,10 +252,11 @@
 
 <!-- <p> -->
   <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
- <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;;" type="button" data-toggle="collapse" data-target="#help-tab" 
+ <button class="button tab-button"  type="button" data-toggle="collapse" data-target="#help-tab" 
   >
     About
   </button>
+
 <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
    <div id="help-tab" class="collapse">
     <div>
@@ -271,7 +273,7 @@
    
   </div>
 <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-  <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#parameters-tab" 
+  <button class="button  tab-button"   type="button" data-toggle="collapse" data-target="#parameters-tab" 
   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">
     Parameters
   </button>
@@ -397,7 +399,7 @@ $('.dropdown-inverse li > a').click(function(e){
 
 
 <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
- <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#basic-tools-tab" 
+ <button class="button  tab-button"  type="button" data-toggle="collapse" data-target="#basic-tools-tab" 
   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
     Tools
   </button>
@@ -441,7 +443,7 @@ $('.dropdown-inverse li > a').click(function(e){
 
         
         <input   id="charting-radio" style='font:#fff;' name='cb' value='charting' type="radio" onclick="toggleRadio(this.value);" />
-        <label  id = 'charting-label' style='position:relative;display: none;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
+        <label  id = 'charting-label' style='position:relative;display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
          href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to chart time series.  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
         >Time Series Charting (double-click)</label>
         <br>
@@ -470,14 +472,15 @@ $('.dropdown-inverse li > a').click(function(e){
           Click on map to draw polygon for summarizing.  Double click to finish drawing
       
           <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name for user-defined area chart" style = 'width:50%;'>
-          <button type="button" onclick = 'startUserDefinedAreaCharting()' class="button">Chart another area</button>
+          <button type="button" onclick = 'startUserDefinedAreaCharting()' class="button"
+          href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart">Chart another area</button>
           
         </div>
         <div class="tab-pane fade" id="shp-defined" role="tabpanel" aria-labelledby="shp-defined-zones">
          
           <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style = "display: inline-block;">
         </div>
-        <div class="tab-pane fade show active" id="pre-defined" role="tabpanel" aria-labelledby="pre-defined-zones">
+        <div class="tab-pane fade" id="pre-defined" role="tabpanel" aria-labelledby="pre-defined-zones">
 
           <select id='forestBoundaries'  style = 'background-color: #555' onchange = 'chartChosenArea()'></select>
         </div>
@@ -490,16 +493,13 @@ $('.dropdown-inverse li > a').click(function(e){
 
       
 
- <div id = 'charting-parameters' style = 'display:none;
-                      margin-left:2px;
-                      margin-right: 2px;
-                      background:rgba(100,100,100,0.9);
-                      border-radius: 15px;
-                      padding:5px;
-                      padding-top:3px;
-                      color:#fff;
-                      margin-bottom:4px;'>Charting Progress
+ <div id = 'charting-parameters' style = 'display:none;'>Charting Progress
+
+
     <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+    <div id="Progress" style = 'display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
+          <div id="Bar"></div>
+        </div>
     <script type="text/javascript">
       var plotRadius = 15;var plotScale = 30;startAreaCharting();listenForUserDefinedAreaCharting();
     </script>
@@ -514,16 +514,15 @@ $('.dropdown-inverse li > a').click(function(e){
         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Spatial resolution for double click charting"
         ></variable-range>
         <br> -->
-        <img id = 'summary-spinner' class="spinner" src="images/GEE_logo_transparent.png" alt="" style = 'display: none;' >
-        <div id="Progress" style = 'display:none;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
-          <div id="Bar"></div>
-        </div>
+        
+        
         <div id="curve_chart" style="display: none;width:100%;border-radius: 10px;background: #888"></div>
       </div> 
         </div>
 </div>
+
     <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> 
-     <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;"  data-toggle="collapse" data-target="#layers-tab" 
+     <button class="button  tab-button"   data-toggle="collapse" data-target="#layers-tab" 
   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
     LCMS Layers
   </button>
@@ -536,7 +535,7 @@ $('.dropdown-inverse li > a').click(function(e){
     <layer-list id="layers"></layer-list>
   </div>
 <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>   
-  <button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#reference-layers-tab" 
+  <button class="button  tab-button"  type="button" data-toggle="collapse" data-target="#reference-layers-tab" 
   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
     Reference Layers
   </button>
@@ -546,7 +545,7 @@ $('.dropdown-inverse li > a').click(function(e){
   </div>
 <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
  
-<button class="button" style= "width:100%;color:#FFF;border-radius: 5px;"  data-toggle="collapse" data-target="#exports-tab" 
+<button class="button  tab-button"  data-toggle="collapse" data-target="#exports-tab" 
   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view controls for downloading data.  Use drawing tools on left side of screen to select areas for download.  Use buttons within this tab control drawn polygons and start export processes.">
     Download Data
   </button>
@@ -611,7 +610,7 @@ $('.dropdown-inverse li > a').click(function(e){
   <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
   
 
-<button class="button" style= "width:100%;color:#FFF;border-radius: 5px;" type="button" data-toggle="collapse" data-target="#legendCollapse" aria-expanded="false" aria-controls="collapseExample">
+<button class="button  tab-button"  type="button" data-toggle="collapse" data-target="#legendCollapse" aria-expanded="false" aria-controls="collapseExample">
     Show Legend
   </button>
 

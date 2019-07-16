@@ -1551,8 +1551,8 @@ function initialize() {
        // document.getElementById('plot-radius').style.display = 'inline-block';
        // document.getElementById('plot-scale').style.display = 'inline-block'; 
         // document.getElementById('charting-radio').style.display = 'inline-block';
-        document.getElementById('charting-label').style.display = 'inline-block';
-        document.getElementById('Progress').style.display = 'inline-block';
+        // document.getElementById('charting-label').style.display = 'inline-block';
+        // document.getElementById('Progress').style.display = 'inline-block';
     }
     if(includeTools){
          // document.getElementById('tool-area').style.display = 'inline-block';

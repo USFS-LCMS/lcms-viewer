@@ -30,8 +30,8 @@ var chartOptions = {
         }
     },
 
-   width: 800, 
-   height:350,
+   // width: 800, 
+   height:250,
    bar: {groupWidth: "100%"},
    explorer: {  actions: [] },
     chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
@@ -39,8 +39,9 @@ var chartOptions = {
    backgroundColor: { fill: "#888" }
 
 };
-var tableOptions = {width: 800, 
-   height:350,
+var tableOptions = {
+	// width: 800, 
+   // height:350,
     'allowHtml': true,
     'cssClassNames': cssClassNames};
 
@@ -70,6 +71,7 @@ function downloadURI() {
 var  getQueryImages = function(lng,lat){
 	var lngLat = [lng, lat];
 	var outDict = {};
+	$('#summary-spinner').slideDown();
 	$('#query-container').text('');
 	$('#query-container').append('Queried values for lng: '+lng.toFixed(3).toString() + ' lat: '+lat.toFixed(3).toString());
 	var keys = Object.keys(queryObj);
@@ -79,7 +81,8 @@ var  getQueryImages = function(lng,lat){
 		if(q[0]){keysToShow.push(k);}
 	})
 
-	var lastKey = keysToShow[keysToShow.length-1];
+	var keyCount = keysToShow.length;
+	var keyI = 1;
 
 	keysToShow.map(function(k){
 		var q = queryObj[k];
@@ -111,11 +114,13 @@ var  getQueryImages = function(lng,lat){
 				}
 
 			
-			print(k + lastKey);
-			if(k == lastKey){
+		
+			if(keyI == keyCount){
 				map.setOptions({draggableCursor:'help'});
  			map.setOptions({cursor:'help'});
+ 			$('#summary-spinner').slideUp();
 			}
+			keyI++;
 			})
 			
 			// outDict[k] = value;
@@ -291,6 +296,11 @@ function getLossGainTable(areaChartCollection,area){
 				})
 }
 var areaChartingCount = 0;var areaGeoJson;
+function expandChart(){
+	console.log('expanding');
+	$('#curve_chart_big').slideDown();
+	closeChart();
+}
 function makeAreaChart(area,name,userDefined){
 	if(!userDefined){userDefined = false};
 	areaChartingCount++;
@@ -309,7 +319,7 @@ function makeAreaChart(area,name,userDefined){
 
 	var table = getLossGainTable(areaChartCollection,area);
 	var iteration = 0;
-	var maxIterations = 30;
+	var maxIterations = 60;
 	var success = false;
 	
 	var tableT;
@@ -325,6 +335,7 @@ function makeAreaChart(area,name,userDefined){
 				updateProgress(80);
 				areaGeoJson.properties.LCMSSummary = tableT;
 				 document.getElementById('curve_chart').style.display = 'inline-block';
+				 document.getElementById('curve_chart_big').style.display = 'inline-block';
 				  print(tableT)
 				  var dataTable = [['Year','Loss %','Gain %']].concat(tableT);
 				  var name_for_filenames = name.replaceAll(' ','_');
@@ -335,25 +346,55 @@ function makeAreaChart(area,name,userDefined){
 
 				 dataTableT = null;
 				dataTableT = CopyAnArray (dataTable);
-				var chartOptionsT;
-				chartOptionsT = chartOptions;
+
+
+
+			
+				var chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
 				chartOptionsT.hAxis.title = 'Time';
 				chartOptionsT.vAxis.title = 'Percent of Area';
 				chartOptionsT.title = title;
+
+				var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
+				chartOptionsTBig.width = 800;chartOptionsTBig.height
+				 = 350;
+				
 				var data = google.visualization.arrayToDataTable(dataTableT);
+				var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
 				var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-				google.visualization.events.addListener(chart, 'ready', function () {
-				    uri = chart.getImageURI();
-				});
-				updateProgress(90)
-				$('#summary-spinner').slideUp()
+				var chartBig = new google.visualization.LineChart(document.getElementById('curve_chart_big'));
+				chartBig.draw(dataBig, chartOptionsTBig);
+
+				
 				chart.draw(data, chartOptionsT);
+				
+
+				$('#curve_chart_big').append('<br><br>');
+				$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
+				$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
+				$("#curve_chart_big").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
+				$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
+				
+				// google.visualization.events.addListener(chartBig, 'ready', function () {
+				    uri = chartBig.getImageURI();
+				    document.getElementById('curve_chart_big').style.display = 'none';
+				    updateProgress(90)
+					$('#summary-spinner').slideUp();
+				
+				// });
+
 				$('#curve_chart').append('<br><br>');
 				$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
 				$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
 				$("#curve_chart").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
-				
+				$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
 				$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart');
+				
+
+				
+				// $("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
+				// $("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart');
+
 				updateProgress(100);
 				map.setOptions({draggableCursor:'hand'});
 				map.setOptions({cursor:'hand'});
@@ -456,13 +497,18 @@ function stopAreaCharting(){
 
 };
 function startQuery(){
-
+	try{
+   	udp.setMap(null);
+   }catch(err){console.log(err)};
+	google.maps.event.clearListeners(mapDiv, 'dblclick');
+    google.maps.event.clearListeners(mapDiv, 'click');
 	map.setOptions({draggableCursor:'help'});
  			map.setOptions({cursor:'help'});
 	google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
+			$('#summary-spinner').slideDown()
 			map.setOptions({draggableCursor:'progress'});
 			map.setOptions({cursor:'progress'});
-			$('#summary-spinner').slideDown()
+			
 			print('Map was double clicked');
 			var x =e.clientX;
         	var y = e.clientY;console.log(x);
@@ -589,7 +635,7 @@ function Chart(){
 			var data = google.visualization.arrayToDataTable(dataTableT);
 	       	console.log('data');
 	       	console.log(dataTableT);
-
+	       	$('#summary-spinner').slideUp();
 	        document.getElementById('curve_chart').style.display = 'inline-block';
 	       
 	        eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
@@ -732,6 +778,7 @@ function drawChart() {
 		 map.setOptions({draggableCursor:'help'});
 		google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
 			closeChart();
+			$('#summary-spinner').slideDown();
 			print('Map was double clicked');
 			var x =e.clientX;
         	var y = e.clientY;console.log(x);
@@ -764,18 +811,24 @@ function drawChart() {
 
 function closeChart(){
 	updateProgress(1);
-	try{document.getElementById('curve_chart').style.display = 'none';}
-	catch(err){console.log('No charts to close')}
+	$('#curve_chart').slideUp();
+
+	
+}
+function closeBigChart(){
+	$('#curve_chart_big').slideUp();
 	
 }
 function stopCharting(){
 	// document.getElementById('charting-parameters').style.display = 'none';
 	$("#charting-parameters").slideUp();
+
 	marker.setMap(null);
 	google.maps.event.clearListeners(mapDiv, 'dblclick');
 	map.setOptions({draggableCursor:'hand'});
-	updateProgress(1)
-	closeChart()
+	updateProgress(1);
+	closeChart();
+	closeBigChart();
 }
 function exportJSON(filename,json){
 	json = JSON.stringify(json);
