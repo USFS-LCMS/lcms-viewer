@@ -1,692 +1,590 @@
 <!DOCTYPE html>
 <html>
- <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-    <!-- Specify whether to allow user vector drawing, exporting, charting (drawing must be true for exportCapability to be possible) -->
-    <script type="text/javascript">
-    var includeLegend = true;//Whether to include a legend
-    var useShapes = true;//Whether to provie the ability of the user to draw polygons
-    var exportCapability = true;//Whether to include the ability to export EE data added with the addExport command (useShapes must = true)
-    var includeTools = true;//Whether to include the distance, area, and charting tools
-    var userCharting = true;//Whether to provide the ability to chart values of keyword chartCollection
-    var displayParameters = true;//Whether to provide the ability to change EE parameters
-    var plotNavigation = false;//Whether to provide the capability to show a list of plot IDS with corresponding jump-to locations
-    var helpBox = true;//Whether to provide the capability to show a help box with a message about the webpage
 
-    // var initialCenter = [48.16,-113.08];//Provide initial map center (lat,lng)for first time user loads page
-    var initialCenter = [43.2,-110.1];
-    var initialZoomLevel = 8;//Provide initial map zoom level (1-20) for first time user loads page
-
-    var chartTypeOptions = true;
-    </script>
-    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-  <head>
-      <!-- Global site tag (gtag.js) - Google Analytics -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128044829-1"></script>
-      <script>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128044829-1"></script>
+    <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
         gtag('js', new Date());
 
         gtag('config', 'UA-128044829-1');
-      </script>
-
-
-    <!-- <title>Climate Viz</title> -->
+    </script>
+    
     <title>LCMS Data Explorer</title>
-    <!-- <title>Forest Change Detection</title> -->
+    
     <link rel="icon" href="images/usfslogo.png">
-
-    <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" /> -->
-    <!-- <meta http-equiv="Pragma" content="no-cache" /> -->
-    <!-- <meta http-equiv="Expires" content="0" /> -->
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="visualize where land cover change is happening">
     <link rel="stylesheet" href="css/main.css">
     <!-- <link rel="stylesheet" href="css/iThing.css" type="text/css" /> -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script  async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
     <script type="text/javascript" src="js/ee_api_js.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-    google.charts.load('current', {'packages': ['corechart','table']});
- 
+        google.charts.load('current', {
+            'packages': ['corechart', 'table']
+        });
     </script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+       
 
-
-
-
-
-    <!--<script src="jquery/jquery-ui.custom.js"></script>-->
-    <!--<script src="jquery/jQDateRangeSlider-min.js"></script>-->
-
-     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+   
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-
-
     <link rel="import" href="elements/layer-list.html">
     <link rel="import" href="elements/ee-layer.html">
     <link rel="import" href="elements/variables.html">
-    
-
-  <!--   <style>
-      @font-face {
-        font-family: 'FontAwesome';
-        src: url('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts/fontawesome-webfont.eot');
-        src: url('//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/fonts/fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'), url('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts/fontawesome-webfont.woff') format('woff'), url('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts/fontawesome-webfont.ttf') format('truetype'), url('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts/fontawesome-webfont.svg') format('svg');
-        font-weight: normal;
-        font-style: normal;
-      }
-
-    </style> -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <script>
-      $(function() {
-        // $( "#parameters-tools-layers" ).draggable();
-        // $("#legend").draggable();
-        // $("#export-list").draggable();
-        
-    //     $("#distance-area-measurement").draggable({
-    //     cancel: false
-    // });;
-        
-        
-        $('#popup').resizable()
-        $("#messageBox").draggable();
-        $("#help-window").draggable();
-        // $("#messageBox").resizable();
-        
-        // $('#curve_chart').draggable();
-        // $('#curve_chart').resizable();
-        $('#resizable').resizable()
-      });
-      $("parameters-tools-layers").hover(
-        function() {
-          $(this).append($("<span> ***</span>"));
-        },
-        function() {
-          $(this).find("span:last").remove();
-        }
-      );
-
-      $("li.fade").hover(function() {
-        $(this).fadeOut(100);
-        $(this).fadeIn(500);
-      });
-     
-      $('input[rel="txtTooltip"]').tooltip({
-    
-    
-    });
-    </script>
-
- 
-    
-    <script>
-    //<!--
-      // $("#slider").dateRangeSlider();
-      
-      //     $("#slider").dateRangeSlider("bounds", new Date(2000, 1, 1), new Date(2015, 12, 31));                                                        
-      //      $("#slider").dateRangeSlider("values", new Date(2012, 6, 1), new Date(2012, 8, 31));
-      //      $("#slider").dateRangeSlider('resize');
-      //      $("#slider").dateRangeSlider('slide',
-      //      function( event, ui ) {
-      //       var v = ui.values
-      //       console.log(v)
-      //      })
-
-// $("#slider").rangeSlider();
-
-//   function loadScript(url)
-// {    
-//     var head = document.getElementsByTagName('head')[0];
-//     var script = document.createElement('script');
-//     script.type = 'text/javascript';
-//     script.src = url;
-//     head.appendChild(script);
-// }
-
-  
-    </script>
-
-
-   </head> 
-
-  <body>
-  
-
-    <script>
-      
-
-    </script>
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <!-- Add Google Map -->
-    <div id="map"></div>
-
-
-    <!-- Bring in various js modules -->
-
    
-    <script type="text/javascript" src="js/drawing-manager2.js"></script><!--Module for user-defined vectors-->
-    <script type="text/javascript" src="js/map-manager2.js"></script><!--Module for managing EE, area and distance calculation etc-->
+   <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- <script type="text/javascript">loadScript("ee/EE-main-run-code-lcms.js")</script> -->
-    <script type="text/javascript" src="ee/run2.js"></script><!--Module for general EE code- place all EE code here to run on refresh-->
-    <script type="text/javascript" src="metadata/metadata-parser.js"></script><!--For parsing metadata-->
-    <script type="text/javascript" src="js/chart-manager2.js"></script><!--Module for charting-->
-    <script type="text/javascript" src="js/export-manager2.js"></script><!--Module for creating EE images for exporting- Place all EE code here for exporting EE objects-->
-     
+    <title>Collapsible sidebar using Bootstrap 4</title>
 
-   
-    <!-- Master button panel -->    
-    <div id="top-button-panel">
-      <!-- <input style = 'height:30px;font-size:12pt;'id="pac-input" class="controls" type="text" placeholder="Search Places"><!--Search box for finding locations anywhere--> 
-
-      <!--Vector control buttons- comment out if controls are not needed-->
-      
-
-      <!--Widget controls-->
-      <!-- <input onclick="toggleHelp();" style = 'display:none;' type=button id = 'helpBoxButton' class='button' value="?"> -->
-      <!-- <input onclick="toggleWidgets();" type=button class='button' value="Toggle Tools"> -->
-      <!-- <input onclick="toggleLayers();" type=button class='button' value="Toggle Layer Controls"> -->
-      
-      <!-- <input onclick="togglePlotList();" type=button id = 'toggle-plot-list-button' style = 'display:none;'class='button' value="Toggle Plot List"> -->
-    </div>
 
     
- <div id = 'study-area-label' style = 'background-color: #555;color:#FFF;padding:5px;font-size: 15pt;border-radius: 5px;text-align: center;position:absolute;left:40%;'>Bridger-Teton National Forest</div>
-
-<img id = 'summary-spinner' class="spinner" src="images/GEE_logo_transparent.png" alt="" style = 'position:absolute;display: none;left:35%; bottom:0%;' >
-
-<div id="curve_chart_big" style="display: none;position:absolute;border-radius: 10px;background: #888; left:10%;bottom:10%;"></div>
-
-    <div id="parameters-tools-layers" style = "color:#FFF;" disabled="disabled">
-
-      <!-- <button data-toggle="collapse" data-target="#collapse-menu" style = 'color:#000;left:50%;'>Collapsible</button> -->
-      <button data-toggle="collapse" class="button" data-target="#collapse-menu"  style = 'color:#FFF;width:100%;'
-      data-toggle="tooltip" data-placement="top" title="Show or hide LCMS map controls"><i class="fa fa-bars"></i></button>
- 
 
 
-<div id="collapse-menu" class="collapse fade in active">
-<ul class="nav nav-tabs  nav-stacked"  >
-  
 
- <!--  <li><a data-toggle="tab" href="#help-tab">About</a>
+</head>
 
-  </li> -->
-  
- <!--  <li><a data-toggle="tab" href="#parameters-tab" 
-     rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">Parameters</a>
-   </li> -->
-  
-<!--   <li><a data-toggle="tab" href="#basic-tools-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available tools">
-    Tools</a></li> -->
-  
-  <!-- <li><a data-toggle="tab" href="#reference-layers-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
-    Reference Layers</a></li> -->
-
-  <!-- <li class="active"><a data-toggle="tab" href="#layers-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
-    LCMS Layers</a></li> -->
-
-<!-- <p> -->
-  <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
- <button class="button tab-button"  type="button" data-toggle="collapse" data-target="#help-tab" 
-  >
-    About
-  </button>
-
-<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-   <div id="help-tab" class="collapse">
-    <div>
-      <div  style=" overflow-wrap: break-word;max-width: 400px;" >
-      
-    This website is designed to provide a visualiztion of LCMS landcover change products, related geospatial data, and a portal to download the data
-    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-    <input onclick="downloadTraining();" type=button class='button' id="download-training-button" value="Download Training Tutorial" style = 'display:inline-block;width:100%;margin-top:3px;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download training tutorial pdf">
-      <br><br>
-    </div>
-    </div>
+<body>
     
-   
-  </div>
-<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-  <button class="button  tab-button"   type="button" data-toggle="collapse" data-target="#parameters-tab" 
-  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">
-    Parameters
-  </button>
-<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-<div id="parameters-tab" class="collapse">
- 
-                                  
-  
-
-    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-    <br>
-               <variable-radio var = 'analysisMode' title2 = 'Standard or Advanced:' name2 = 'Advanced' name1 = 'Standard' value2 = 'advanced' value1 = 'easy' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS parameters and outputs"></variable-radio>
-              <br><br>
-            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-            <br>
-
-              <script type="text/javascript">
-                      // var viewBeta = 'no';
-                      var viewCONUS = 'no';
-                    </script>
-
-             <script type="text/javascript">var studyAreaName = 'BTNF'</script>
-
-              <div class="dropdown" data-toggle="dropdown" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Choose which study area to display outputs for">Study Area: 
-    <button class="button dropdown-toggle status"  data-toggle="dropdown" >Bridger-Teton National Forest
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu dropdown-inverse">
-      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a></li>
-      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a></li>
-      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest">Manti-La Sal National Forest</a></li>
-      <li><a href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss">Science Team CONUS NAFD</a></li>
-    </ul>
-  </div>
-
-<script type="text/javascript">
-
-$('.dropdown-inverse li > a').click(function(e){
-
-  resetStudyArea(this.innerHTML);
-   // localStorage.setItem("cachedStudyAreaName",this.innerHTML)
-   //  $('.status').text(this.innerHTML);
-   //  $('#study-area-label').text(this.innerHTML);
-    var coords = studyAreaDict[this.innerHTML][1];
-    // studyAreaName = studyAreaDict[this.innerHTML][0];
-   //  // exportCRS = studyAreaDict[this.innerHTML][2];
-   //  // $('input[name = "Export crs"]').val(exportCRS);
-    centerMap(coords[1],coords[0],coords[2]);
-    if(studyAreaName === 'CONUS'){run = runCONUS}
-      else{run = runUSFS};
-
-  
-
-    reRun();
-
-});
-</script>
- <!--              <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Study Area
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-    <button class="dropdown-item" type="button">Action</button>
-    <button class="dropdown-item" type="button">Another action</button>
-    <button class="dropdown-item" type="button">Something else here</button>
-  </div>
-</div> -->
-            <div id = 'advanced-radio-container' style = "display: none;">
-              <br>
-              <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-              <br>
-            <variable-radio var = 'viewBeta' title2 = 'View Beta Outputs:' name2 = 'Yes' name1 = 'No' value2 = 'yes' value1 = 'no' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-              <br><br>
-            
-            <variable-radio var = 'summaryMethod' title2 = 'Summary method:' name2 = 'Highest probability' name1 = 'Most recent year' value2 = 'prob' value1 = 'year' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h4>Landscape Change Monitoring System</h4>
             </div>
+           
 
+            <ul class="list-unstyled components">
+               <li class="active">
+                    <a id = 'lcms-collapse' href="#lcms-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">LCMS <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#lcms-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers"></a>
+                    <div id="lcms-layers-submenu" class="collapse in">
+                    <layer-list id="layers"></layer-list>
+                </div>
+                </li>
+               
+            </ul>
+
+
+            <ul class="list-unstyled components">
+               <li class="active">
+                    <a id = 'reference-collapse' href="#reference-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Reference <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#reference-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers"></a>
+                    <div id="reference-layers-submenu" class="collapse in">
+                    <reference-layer-list id="reference-layers"></reference-layer-list>
+                </div>
+                </li>
+               
+            </ul>
+
+            <ul class="list-unstyled components">
+               <li class="active">
+            <div id="basic-tools-tab" style = 'color:#FFF;'>
+                    <button id='distance-area-measurement' class='button' onclick='toggleDistanceAreaUnits(this.value)' style='display:none;height:100;width:300px;font-weight: normal;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></button>
+                    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                    <div id='query-container' style='display:none;background-color:#333'></div>
+                    
+                    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                    <div id='charting-container' style='display: inline-block;width:100%;font-weight: normal;'>
+                        <div id='whichIndexForChartingRadio' style='display:none;'>
+                            <variable-radio var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
+                            <br>
+                        </div>
+                        <div id=areaChartingTabs style='display:none;'>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link fa fa-pencil fa-1x" id="user-defined-zones" data-toggle="tab" href="#user-defined" role="tab" aria-controls="user-defined" aria-selected="true" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Draw an area to summarize LCMS products across. Click on map to draw polygon for summarizing.  Double click to finish drawing"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link fa fa-upload fa-1x" id="shp-defined-zones" data-toggle="tab" href="#shp-defined" role="tab" aria-controls="shp-defined" aria-selected="false" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Upload a zipped shapefile or geojson file to summarize LCMS products across"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link fa fa-caret-square-o-down fa-1x" id="pre-defined-zones" data-toggle="tab" href="#pre-defined" role="tab" aria-controls="pre-defined" aria-selected="false" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Select a pre-defined area to summarize LCMS products across"></a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade" id="user-defined" role="tabpanel" aria-labelledby="user-defined-zones">
+                                    <br>
+                                    <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name for user-defined area chart" style='width:80%;'>
+                                    <br>
+                                    <button type="button" onclick='startUserDefinedAreaCharting()' class="button" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div class="tab-pane fade" id="shp-defined" role="tabpanel" aria-labelledby="shp-defined-zones">
+                                    <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
+                                </div>
+                                <div class="tab-pane fade" id="pre-defined" role="tabpanel" aria-labelledby="pre-defined-zones">
+                                    <select id='forestBoundaries' style='background-color: #555' onchange='chartChosenArea()'></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id='charting-parameters' style='display:none;'>Charting Progress
+                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                            <div id="Progress" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
+                                <div id="Bar"></div>
+                            </div>
+                            <script type="text/javascript">
+                                var plotRadius = 15;
+                                var plotScale = 30;
+                                listenForUserDefinedAreaCharting(); //startAreaCharting();
+                            </script>
+                            <div id="curve_chart" style="display: none;border-radius: 10px;background: #888"></div>
+                        </div>
+                    </div>
+                    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                </div>
+
+            
+                </li>
+               
+            </ul>
+            
+        </nav>
+      
+        <!-- Page Content Holder -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-black">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="navbar-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ">
+                            <div class="navbar-header">
+            <a class="navbar-brand" style='color:#FFF;' id='study-area-label' href="#"></a>
+        </div>
+                            
+                            
+                        </ul>
+
+
+                        <ul class = 'nav navbar-nav ml-auto'>
+                            <li class="nav-item ">
+                               <select id='studyAreaDropdown' style='height:100%;' onchange='dropdownUpdateStudyArea(this.value)'>
+                                    <option value="" disabled selected>Study Area</option>
+                                    <optgroup label="National Forest Products">
+                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley" value="Bridger-Teton National Forest">Bridger-Teton National Forest</option>
+                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km" value="Flathead National Forest">Flathead National Forest</option>
+                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</option>
+                                    </optgroup>
+                                    <optgroup label="CONUS Nationwide">
+                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</option>
+                                    </optgroup>
+                                </select>
+                            </li>
+
+                            <li class="nav-item">
+                               <select style='float:left;height:100%;' onclick="toggleRadio(this.value);">
+                                    <option value="" disabled selected>Tools</option>
+                                    <option value="none">Turn off Tools</option>
+                                    <optgroup label="Measuring Tools">
+                                        <option value="distance">Distance Measuring</option>
+                                        <option value="area">Area Measuring</option>
+                                    </optgroup>
+                                    <optgroup label="Charting Tools">
+                                        <option value="query">Inspector Single Pixel</option>
+                                        <option value="charting">Chart Time Series of Single Pixel</option>
+                                        <option value="areaCharting">Chart Time Series of an Area</option>
+                                    </optgroup>
+                                </select>
+                            </li>
+
+                            <li class="nav-item ">
+                                <p style='color:#FFF;margin-right:250px;margin-left:10px;margin-top:5px;' data-toggle="modal" data-target="#parameters-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Parameters">Parameters <i class="fa fa-angle-double-down fa-1x" style='color:#FFF;margin-left:5px;'></i></p>
+                            </li>
+                          
+                            <li class="nav-item ">
+                                <i class="fa fa-info-circle fa-2x" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            
+    
+   
+
+            <div id="map" ></div>
+             <div style = 'color:#FFF;height:10px;'class=" text-center py-3 row-1" id='current-mouse-position'></div>
+        </div>
+    </div>
+
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Add Google Map -->
+    <!-- <div id="map"></div> -->
+    <!-- Bring in various js modules -->
+    <script type="text/javascript" src="js/parameters-manager.js"></script>
+    <!--Module for basic parameters-->
+    <script type="text/javascript" src="js/drawing-manager.js"></script>
+    <!--Module for user-defined vectors-->
+    <script type="text/javascript" src="js/map-manager.js"></script>
+    <!--Module for managing EE, area and distance calculation etc-->
+    <script type="text/javascript" src="js/tools-toggle-manager.js"></script>
+    <!--Module for managing EE, area and distance calculation etc-->
+    <script type="text/javascript" src="ee/run.js"></script>
+    <!--Module for general EE code- place all EE code here to run on refresh-->
+    <script type="text/javascript" src="metadata/metadata-parser.js"></script>
+    <!--For parsing metadata-->
+    <script type="text/javascript" src="js/chart-manager.js"></script>
+    <!--Module for charting-->
+    <script type="text/javascript" src="js/export-manager.js"></script>
+    <!--Module for creating EE images for exporting- Place all EE code here for exporting EE objects-->
+    <script type="text/javascript" src="js/download-manager.js"></script>
+    <!--Module for exporting predefined images-->
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+
+
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+
+
+    <div id="info-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+            <h4 class="modal-title">A little bit about this app</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p>This website is designed to provide a visualiztion of LCMS landcover change products, related geospatial data, and a portal to download the data</p>
+                    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                    <input onclick="downloadTraining();" type=button class='button' id="download-training-button" value="Download Training Tutorial" style='display:inline-block;width:100%;margin-top:3px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download training tutorial pdf">
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+       
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="parameters-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+            <h4 class="modal-title">Parameters</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <!-- <input  type="checkbox" data-toggle="toggle" data-width="100" data-on="Advanced" data-onstyle="warning" data-off="Standard" id='standardOrAdvancedToggle'> -->
+        <label><input type="radio" name="standardOrAdvancedToggle" value="easy" checked>Standard</label> 
+        <label><input type="radio" name="standardOrAdvancedToggle" value="advanced">Advanced</label> 
+
+        <div id='advanced-radio-container' style="display: none;">
             <br>
             <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
             <br>
-
-            <div href="#" class= 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
-               <div class = 'dual-range-slider-name' >Analysis Years:</div>
-          <div id= "slider1" class = 'dual-range-slider-slider'  ></div>
-
-          <div id = 'date-range-value1'class = 'dual-range-slider-value'> </div>
-             </div >
-          <script type="text/javascript">
+            <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
+            <br>
+            <br>
+            <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
+        </div>
+        <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
+            <div class='dual-range-slider-name'>Analysis Years:</div>
+            <div id="slider1" class='dual-range-slider-slider'></div>
+            <div id='date-range-value1' class='dual-range-slider-value'></div>
+        </div>
+        <script type="text/javascript">
             var startYear = 1985;
             var endYear = 2017;
-            setUpRangeSlider('startYear','endYear',1985,2018,startYear,endYear,1,'slider1','date-range-value1','null')
-          </script>
-         <br>
+            setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null')
+        </script>
+        <br>
+        <div id='threshold-container' style="display: none;">
+            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
+                <div class='dual-range-slider-name'>Loss Threshold:</div>
+                <div id="slider2" class='dual-range-slider-slider'></div>
+                <div id='declineThreshold' class='dual-range-slider-value'></div>
+            </div>
+            <br>
+            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
+                <div class='dual-range-slider-name'>Gain Threshold:</div>
+                <div id="slider3" class='dual-range-slider-slider'></div>
+                <div id='recoveryThreshold' class='dual-range-slider-value'></div>
+            </div>
+            <script type="text/javascript">
+                setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')
 
-        <div id = 'threshold-container' style = "display: none;">
-          <div href="#" class ='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-               <div class = 'dual-range-slider-name' >Loss Threshold:</div>
-          <div id= "slider2" class = 'dual-range-slider-slider'  ></div>
-
-          <div id = 'declineThreshold'class = 'dual-range-slider-value'> </div>
-             </div >
-      
-          <br>
-          <div href="#" class ='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-               <div class = 'dual-range-slider-name' >Gain Threshold:</div>
-          <div id= "slider3" class = 'dual-range-slider-slider'  ></div>
-
-          <div id = 'recoveryThreshold'class = 'dual-range-slider-value'> </div>
-             </div >
-          <script type="text/javascript">
-          setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
-    
-          setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
-
-          </script>
-
-          <br>
-          </div>
-       <!--  <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-
-        <input  onclick="reRun();" type=button class='button' value="REFRESH Map" style='display: inline-block;width:100%;float: center;margin: 2px 2px 2px 2px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="If auto-update fails after changing parameters, click this to refresh map layers"> -->
+                setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null')
+            </script>
+            <br>
+       
+    </div>
       </div>
 
-
-<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
- <button class="button  tab-button"  type="button" data-toggle="collapse" data-target="#basic-tools-tab" 
-  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
-    Tools
-  </button>
-
-  <div id="basic-tools-tab" class="collapse">
-        <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-        <input style='display:inline-block;' id="box1" name='cb' value='none' type="radio" checked=t rue onclick="toggleRadio(this.value);" />
-        <label for="box1" style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal'>None</label>
-        
+      <!-- Modal footer -->
+      <div class="modal-footer">
        
-        <br>
-             <!--  <input style = 'display:inline-block;'name = 'cb' value = 'drawing'type="radio" id = 'toggle-drawing-button'  onclick = "toggleRadio(this.value);"/><label
-         style = 'display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff'>Drawing</label> -->
-        <input  name='cb' value='distance' type="radio" onclick="toggleRadio(this.value);" style='display:inline-block;font:#fff'/>
-        <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Measure distance (m/km or ft/miles). Double click to finish measurement. Click distance indicator to toggle metric/imperial"
-        >Distance Measuring</label>
+      </div>
 
-        <input style='display:inline-block;' name='cb' value='area' type="radio" onclick="toggleRadio(this.value);" />
-        <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Measure area (sq m/hectares or sq ft/acres). Click distance indicator to toggle metric/imperial.  Double click to start new polygon. Press 'd' or 'Delete' button to clear. Press 'u' to undo last vertex placement"
-        >Area Measuring</label>
-        <br>
-        <button id = 'distance-area-measurement' class = 'button'  onclick = 'toggleDistanceAreaUnits(this.value)' style = 'display:none;height:100;width:300px;font-weight: normal;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"
-        ></button>
-        <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-        
-        <input style='display:inline-block;' name='cb' value='query' type="radio" onclick="toggleRadio(this.value);" />
-        <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to inspect values of layers that are currently visible.  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
-        >Pixel Inspector (double-click)</label>
-        
+    </div>
+  </div>
+</div>
+
+     
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <img id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:100px;height:100px;'>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div id="curve_chart_big" style="display: none;position:absolute;z-index:1;border-radius: 10px;background: #888; right:10%;bottom:10%;"></div>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <div class='header' style='display:none;position:absolute;top:0%;left:0%;width:100%;height:5%;background:rgba(20,20,20,0.95);color:#FFF;'>
+        <div class="navbar-header">
+            <a class="navbar-brand" style='color:#FFF;' id='study-area-label' href="#"></a>
+        </div>
+        <div style='position:relative;left:20%;height:100%;'>
+            <select id='studyAreaDropdown' style='float:left;background-color:#222;color:#FFF;height:100%;margin-left:1px;' onchange='dropdownUpdateStudyArea(this.value)'>
+                <option value="" disabled selected>Study Area</option>
+                <optgroup label="National Forest Products">
+                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley" value="Bridger-Teton National Forest">Bridger-Teton National Forest</option>
+                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km" value="Flathead National Forest">Flathead National Forest</option>
+                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</option>
+                </optgroup>
+                <optgroup label="CONUS Nationwide">
+                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</option>
+                </optgroup>
+            </select>
+            <p style='float:left;margin-left:5px;' data-toggle="collapse" data-target="#parameters-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">Parameters
+                <i class="tab-button fa fa-cogs fa-2x fa-fw" aria-hidden="true" data-toggle="collapse" data-target="#parameters-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up"></i>
+            </p>
+            <select style='float:left;background-color:#222;color:#FFF;height:100%;margin-left:1px;' onclick="toggleRadio(this.value);">
+                <option value="" disabled selected>Tools</option>
+                <option value="none">Turn off Tools</option>
+                <optgroup label="Measuring Tools">
+                    <option value="distance">Distance Measuring</option>
+                    <option value="area">Area Measuring</option>
+                </optgroup>
+                <optgroup label="Charting Tools">
+                    <option value="query">Inspector Single Pixel</option>
+                    <option value="charting">Chart Time Series of Single Pixel</option>
+                    <option value="areaCharting">Chart Time Series of an Area</option>
+                </optgroup>
+            </select>
+            <div ref="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS parameters and outputs">
+                <input type="checkbox" data-onstyle="default" data-toggle="toggle" data-width="100" data-on="Advanced" data-off="Standard" id='standardOrAdvancedToggle'>
+            </div>
             
-        <div id = 'query-container' style = 'display:none;background-color:#333' ></div> 
-        <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-        
-        <div id = 'charting-container' style = 'display: inline-block;width:100%;font-weight: normal;'>
+           
+        </div> <i class="fa fa-info-circle fa-2x" style='display:inline-block;float:right;opacity:1;color:#FFF;margin-left:5px;margin-right:5px;' data-toggle="modal" data-target="#infoModal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
+    </div>
 
-          
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-        
-        <input   id="charting-radio" style='font:#fff;' name='cb' value='charting' type="radio" onclick="toggleRadio(this.value);" />
-        <label  id = 'charting-label' style='position:relative;display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
-         href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Double click to chart time series.  After double-clicking, panning can continue.   WARNING!!!- Extracting the data can take time, and re-double-clicking will just add to the queque"
-        >Time Series Charting (double-click)</label>
-        <br>
-        <variable-radio var = 'whichIndex' title2 = 'Index for charting:' name2 = 'NBR' name1 = 'NDVI' value2 = 'NBR' value1 = 'NDVI' type = 'string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
+    <div id="parameters-tab" class="collapse" style='position:absolute;top:5%;left:25%;width:30%;height:5%;background:rgba(20,20,20,0.95);color:#FFF;'>
+        <div id='advanced-radio-container' style="display: none;">
             <br>
             <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-         <!-- <label style='display: inline-block;float: center;margin: 1px 0 2px 2px;color:#fff;font-weight: normal;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Summarize LCMS layers by provided zipped Shapefile (all files associated with the shapefile must be zipped into a single .zip file) or select from pre-defined areas in dropdown below"
-        >Summarize by area</label> -->
-        <h4>Summarize by area</h4>
-      <!-- <div class = 'fa fa-spinner fa-spin '></div> -->
-        <ul class="nav nav-tabs" id="myTab"  role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="user-defined-zones" data-toggle="tab" href="#user-defined" role="tab" aria-controls="user-defined" aria-selected="true" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Draw an area to summarize LCMS products across">Draw an area</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="shp-defined-zones" data-toggle="tab" href="#shp-defined" role="tab" aria-controls="shp-defined" aria-selected="false" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Upload a zipped shapefile or geojson file to summarize LCMS products across">Upload an area</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="pre-defined-zones" data-toggle="tab" href="#pre-defined" role="tab" aria-controls="pre-defined" aria-selected="false" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Select a pre-defined area to summarize LCMS products across">Pre-defined areas</a>
-        </li>
-      </ul>
-
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade" id="user-defined" role="tabpanel" aria-labelledby="user-defined-zones">
-          Click on map to draw polygon for summarizing.  Double click to finish drawing
-      
-          <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name for user-defined area chart" style = 'width:50%;'>
-          <button type="button" onclick = 'startUserDefinedAreaCharting()' class="button"
-          href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart">Chart another area</button>
-          
+            <br>
+            <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
+            <br>
+            <br>
+            <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
         </div>
-        <div class="tab-pane fade" id="shp-defined" role="tabpanel" aria-labelledby="shp-defined-zones">
-         
-          <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style = "display: inline-block;">
+        <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
+            <div class='dual-range-slider-name'>Analysis Years:</div>
+            <div id="slider1" class='dual-range-slider-slider'></div>
+            <div id='date-range-value1' class='dual-range-slider-value'></div>
         </div>
-        <div class="tab-pane fade" id="pre-defined" role="tabpanel" aria-labelledby="pre-defined-zones">
-
-          <select id='forestBoundaries'  style = 'background-color: #555' onchange = 'chartChosenArea()'></select>
-        </div>
-      
-      </div>
-       
-
-
-        
-
-      
-
- <div id = 'charting-parameters' style = 'display:none;'>Charting Progress
-
-
-    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-    <div id="Progress" style = 'display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
-          <div id="Bar"></div>
-        </div>
-    <script type="text/javascript">
-      var plotRadius = 15;var plotScale = 30;startAreaCharting();listenForUserDefinedAreaCharting();
-    </script>
-        
-        <!-- <variable-range id="plot-radius"   name="Chart plot radius (m)" var="plotRadius" default="16" min="16" max="91" step="10"
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Radius of plot to use for double click charting"
-        ></variable-range>
-
-        
+        <script type="text/javascript">
+            var startYear = 1985;
+            var endYear = 2017;
+            setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null')
+        </script>
         <br>
-        <variable-range id="plot-scale"   name="Chart plot spatial res (m)" var="plotScale" default="30" min="30" max="180" step="30"
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Spatial resolution for double click charting"
-        ></variable-range>
-        <br> -->
-        
-        
-        <div id="curve_chart" style="display: none;width:100%;border-radius: 10px;background: #888"></div>
-      </div> 
+        <div id='threshold-container' style="display: none;">
+            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
+                <div class='dual-range-slider-name'>Loss Threshold:</div>
+                <div id="slider2" class='dual-range-slider-slider'></div>
+                <div id='declineThreshold' class='dual-range-slider-value'></div>
+            </div>
+            <br>
+            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
+                <div class='dual-range-slider-name'>Gain Threshold:</div>
+                <div id="slider3" class='dual-range-slider-slider'></div>
+                <div id='recoveryThreshold' class='dual-range-slider-value'></div>
+            </div>
+            <script type="text/javascript">
+                setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')
+
+                setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null')
+            </script>
+            <br>
         </div>
-</div>
-
-    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> 
-     <button class="button  tab-button"   data-toggle="collapse" data-target="#layers-tab" 
-  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
-    LCMS Layers
-  </button>
-
-  <!-- <a class="button" style = "width: 100%;text-align:center;" data-toggle="collapse" href="#layers-tab" role="button"  
-  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
-    LCMS Layers
-  </a> -->
-<div id="layers-tab" class="collapse in">
-    <layer-list id="layers"></layer-list>
-  </div>
-<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>   
-  <button class="button  tab-button"  type="button" data-toggle="collapse" data-target="#reference-layers-tab" 
-  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
-    Reference Layers
-  </button>
-
-<div id="reference-layers-tab" class="collapse in">
-    <reference-layer-list id="reference-layers"></reference-layer-list>
-  </div>
-<div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
- 
-<button class="button  tab-button"  data-toggle="collapse" data-target="#exports-tab" 
-  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view controls for downloading data.  Use drawing tools on left side of screen to select areas for download.  Use buttons within this tab control drawn polygons and start export processes.">
-    Download Data
-  </button>
-  
-
-
-<div id="exports-tab" class="collapse">
-     <div id = 'shape-edit-container' style = 'display:none;width:100%;'>
-        <p style='text-align:center;text-vertical-align:top;margin:1px 1px 10px 1px;color:#fff;font-size:13pt;' href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export">Data Download Selection Tools</p>
-
-       <input type="button" class='button' id="toggle-drawing-button" value="Toggle Shapes" 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Turn hand-drawn shapes on/off. Keyboard shortcut: 't'">
-       <input type="button"  class='button' id="delete-button" value="Clear Selected Shape" 
-       href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Delete selected shape.  Keyboard shortcut: 'd'"><!--Delete selected shape-->
-      <input type="button"  class='button' id="clear-button" value="Clear All Shapes"
-      href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Delete all shapes"><!--Delete all shapes-->
-      
-
-        </div>
-        <div id = 'export-container' style = 'display:none;'>
-        <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
-      
-       
-      <!--   <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div> -->
-        <!-- <export-layer-list id="export-layers"></export-layer-list>  -->
-          <!-- <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
-         </div>
-        
-           <export-list id="export-list" style = 'display:inline;width:100%'></export-list>
-        
-           <input type="button" type=button class='button' id="process-button" value="Display Export Image" style = 'display:none;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Display images within drawn polygons that can be exported">
-        <input type="button" type=button class='button' id="export-button" value="Export Data" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Export data within drawn polygons">
-       
-       <!-- <input onclick="exportImages();" type=button class='button' value="Submit" style='display:inline;margin-left:5px;margin-bottom:5px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Submit selected images for exporting"> -->
-        <input onclick="closePopup();" type=button class='button' value="Cancel" style='display:none'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Exit without submitting any images for export">
-         <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
-        <!-- <input onclick="downloadMetadata();" type=button class='button' id="download-metadata-button" value="Download Metadata" style = 'display:inline-block;' 
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download metadata for exports"> -->
-  </div>
-<!--   <li><a data-toggle="tab" href="#legend-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view the legend of available LCMS and reference layers">
-    Legend</a></li> -->
-
-  <!-- <li><a data-toggle="tab" href="#exports-tab"
-    rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view controls for downloading data.  Use drawing tools on left side of screen to select areas for download.  Use buttons within this tab control drawn polygons and start export processes.">
-  Download Data</a></li>
-</ul> -->
-
-
-<div class="tab-content">
- 
- 
-</div>
-
-
-</div>
-  <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
-  
-
-<button class="button  tab-button"  type="button" data-toggle="collapse" data-target="#legendCollapse" aria-expanded="false" aria-controls="collapseExample">
-    Show Legend
-  </button>
-
-<div class="collapse" id="legendCollapse">
-  
-    <legend-list id="legend" ></legend-list>
- 
-</div>
-</div>
-          </div>
-
-
-
     </div>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-      
-    <p id='current-mouse-position' style='color:#FFF;position:absolute;bottom:1%;right:50px;padding:2px;height: 20px;background-color:rgba(75,75,75,0.8);border-radius:5px' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cursor lng, lat, and zoom level"></p>
-    <input onclick="toggleLegend();" type=button id = 'legend-button' style = 'display:none;'class='button' value="Toggle Legend">
-    
-    
-    
-    <plot-container id="plot-container" style = 'position:absolute;left:0%;top:10%;width:150px;max-height:50%;overflow-y:auto;display:none;'> 
-    <pt-project-list id="pt-project-list" ></pt-project-list>
-    <pt-list id="pt-list" ></pt-list>
+    <div class='footer' style='display:none;color:#FFF;position:absolute;bottom:0%;left:0%;width:100%;height:3%;background:rgba(20,20,20,0.95)'>
+        <div style='margin-right:20%;float:right;height:90%;margin-top:1px;'>
+            <a href="http://www.fs.fed.us//" target="_blank">
+                <img src="images/usfslogo.png" alt="FS Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
+            </a>
+            <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                <img src="images/GTAC_Logo.png" alt="GTAC Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+            </a>
+            <a href="https://www.redcastleresources.com/" target="_blank">
+                <img src="images/RCR-logo.jpg" alt="RedCastle Inc. Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
+            </a>
+            <a href="https://earthengine.google.com/" target="_blank">
+                <img src="images/GEE.png" alt="Powered by Google Earth Engine" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
+            </a>
+        </div>
+        <div id='current-mouse-position' style='float:right;margin-right:20px;margin-top:5px;'></div>
+    </div>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <div id="parameters-tools-layers" disabled="disabled" style = 'display:none;'>
+        <div id="collapse-menu" class="collapse fade in active">
+            <ul class="nav nav-tabs  nav-stacked">
+                <br>
+                <br>
+                <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#layers-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
+                <p class='image-icon-label' data-toggle="collapse" data-target="#layers-tab">LCMS</p>
+                <br>
+                <div id="layers-tab" class="collapse in">
+                    <layer-list id="layers"></layer-list>
+                </div>
+                <br>
+                <br>
+                <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#reference-layers-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
+                <p class='image-icon-label' data-toggle="collapse" data-target="#reference-layers-tab">Reference</p>
+                <br>
+                <br>
+                <div id="reference-layers-tab" class="collapse in">
+                    <reference-layer-list id="reference-layers"></reference-layer-list>
+                </div>
+                <br>
+                <p style='float:right;' data-toggle="collapse" data-target="#exports-tab">Download Data
+                    <i class="tab-button fa fa-cloud-download  fa-2x fa-fw" aria-hidden="true" data-toggle="collapse" data-target="#exports-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change"></i>
+                </p>
+                </ul>
+                <br>
+                <div id="exports-tab" class="collapse">
+                    <div id='download-container' style='display:none;'>
+                        <h4>Choose area to download</h4>
+                        <select id='downloadDropdown' style='background-color: #555;border-radius:5px;'>
+                            <option value=''>Choose a download</option>
+                        </select>
+                        <input type="button" class='button' value='Download selected area' style='margin-left:5px;border-radius:5px;' onclick="downloadSelectedArea()">
+                    </div>
+                    <div id='export-container-big' style='display:none;'>
+                        <div id='shape-edit-container' style='display:none;width:100%;'>
+                            <p style='text-align:center;text-vertical-align:top;margin:1px 1px 10px 1px;color:#fff;font-size:13pt;' href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export">Data Download Selection Tools</p>
+                            <input type="button" class='button' id="toggle-drawing-button" value="Toggle Shapes" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Turn hand-drawn shapes on/off. Keyboard shortcut: 't'">
+                            <input type="button" class='button' id="delete-button" value="Clear Selected Shape" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Delete selected shape.  Keyboard shortcut: 'd'">
+                            <input type="button" class='button' id="clear-button" value="Clear All Shapes" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Delete all shapes">
+                        </div>
+                        <div id='export-container' style='display:none;'>
+                            <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
+                        </div>
+                        <export-list id="export-list" style='display:inline;width:100%'></export-list>
+                        <input type="button" type=button class='button' id="process-button" value="Display Export Image" style='display:none;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Display images within drawn polygons that can be exported">
+                        <input type="button" type=button class='button' id="export-button" value="Export Data" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Export data within drawn polygons">
+                        <input onclick="closePopup();" type=button class='button' value="Cancel" style='display:none' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Exit without submitting any images for export">
+                        <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
+                    </div>
+                </div>
+
+
+                <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                
+                <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        </div>
+    </div>
+    </div>
+    </div>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <div id='legendDiv' style='position:absolute;right:0%;bottom:10%;max-height: 60%;max-width:250px;overflow-y:auto; background:#000;'>
+        <br>
+        <p style='float:right;color:#FFF;margin-left:5px;margin-right:5px;' data-toggle="collapse" data-target="#legendCollapse"rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view LCMS and Reference layers map legend">Legend 
+        </p>
+        <br>
+        <div class="collapse in" id="legendCollapse">
+            <legend-list id="legend"></legend-list>
+        </div>
+    </div>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <plot-container id="plot-container" style='position:absolute;left:0%;top:10%;width:200px;max-height:50%;overflow-y:auto;display:none;'>
+        <pt-project-list id="pt-project-list"></pt-project-list>
+        <pt-list id="pt-list"></pt-list>
     </plot-container>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <img id='download-spinner'  src="images/ee-logo-spinner2.gif" alt="EE image exporting" style="position:absolute;right:50%;bottom:3%;padding: 1px ;visibility:hidden;width:50px;height:50px;background-color:rgba(255,255,255,0.6);border-radius: 10px;"
-    href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">
-    
-    
-    <div style="position:absolute;height:3%;left:70px;bottom:1%;right:0px">
-       <a href="http://www.fs.fed.us//" target="_blank">
-      <img src="images/usfslogo.png" alt="FS Logo" style="height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;"
-      href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
-    </a>
-      <a href="https://www.fs.fed.us/gstc/" target="_blank">
-      <img src="images/GTAC_Logo.png" alt="GTAC Logo" style="height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;"
-      href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
-    </a>
-      <a href="https://www.redcastleresources.com/" target="_blank">
-      <img src="images/RCR-logo.jpg" alt="RedCastle Inc. Logo" style="height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;"
-      href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
-    </a>
-   
-      <a href="https://earthengine.google.com/" target="_blank">
-      <img src="images/GEE.png" alt="Powered by Google Earth Engine" style="height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;"
-      href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
-    </a>
-    
-    </div>
-     
-    
-    <!-- <div id = "resizable" style = "position: absolute;background:#FFF">hello -->
-    <!-- <div id = 'curve_chart'style="visible :false; position: absolute;width: 60%; height: 45%;top: 20%"></div> -->
-    
+    <img id='download-spinner' src="images/ee-logo-spinner2.gif" alt="EE image exporting" style="position:absolute;right:50%;bottom:3%;padding: 1px ;visibility:hidden;width:50px;height:50px;background-color:rgba(255,255,255,0.6);border-radius: 10px;" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <div id = 'messageBox' style = 'display:none;
+    <div id='messageBox' style='display:none;
                       border-radius:5px;
                       position:absolute;
                       z-index: 15;
                       top: 50%;
-                      left: 30%;
+                      right: 30%;
                       width:500px;
                       max-height:500px;
                       overflow-y:auto;
                       overflow-x:auto;
                       margin: -100px 0 0 -150px;background-color:rgba(150,150,150,0.95)'>
-  <p id = 'message-title' style='text-align:center;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>MESSAGE</p> 
-  <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-  <p id = 'message' style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'></p> 
-  
-        <input onclick="closeMessage()" type=button class='button' value="x" style='position:absolute;right:0%;top:0%;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel">
+        <p id='message-title' style='text-align:center;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>MESSAGE</p>
+        <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+        <p id='message' style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'></p>
+        <input onclick="closeMessage()" type=button class='button' value="x" style='position:absolute;right:0%;top:0%;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel">
     </div>
- 
-    <div id = 'popup' style = 'display:none;
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <div id='popup' style='display:none;
                       border-radius:5px;
                       position:absolute;
                       z-index: 15;
@@ -694,344 +592,14 @@ $('.dropdown-inverse li > a').click(function(e){
                       left: 30%;
                       width: 500px;
                       margin: -100px 0 0 -150px;background-color:rgba(150,150,150,0.95)'>
-  <p style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>Image Export Parameters</p> 
-  <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-      <ol id = 'popup-output-list'>
-        
-
-      </ol>
-      <!-- <input id = 'popup-text-input' type = 'text' style = 'color:#FFF;border-radius:5px;width:90%;padding:5px;background-color:#576066;' -->
-      <!-- href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Name of image to be exported.  No extension necessary"> -->
-
-         <!-- <variable-range id="export-scale"  name="Image Export Resolution (m)" var="exportScale" default="30" min="15" max="1000" step="15"
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Spatial resolution (m) of image exports"
-        ></variable-range>
-
-      <variable-text id="export-crs" name="Export crs:" var="exportCRS" default="EPSG:4326" 
-       href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="EPSG format export projection specification. UTM WGS 84: 326 + zone number, USGS Albers: 5070, Web Mercator: 4326"
-       ></variable-text>
-       <br>
-      <input onclick="submitOutputName();" type=button class='button' value="Submit" style='float: center;margin: 5px 0 2px 2px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Submit">
-        <input onclick="closePopup();" type=button class='button' value="Cancel" style='float: center;margin: 5px 0 2px 2px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel">
-        <input onclick="updatePopup();" type=button class='button' value="Auto-update output name" style='float: center;margin: 5px 0 2px 2px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Update output name to include latest resolution and CRS">
-        <input onclick="closePopup();" type=button class='button' value="x" style='position:absolute;right:1px;top:1px;'
-        href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel"> -->
-        <!-- <p id = 'popupList'style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'></p>  -->
-       
+        <p style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>Image Export Parameters</p>
+        <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+        <ol id='popup-output-list'></ol>
     </div>
-    <!-- </div>	 -->
-    <div id="marker-position"></div>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <script>
-      var widgetsOn = true;
-      var layersOn = true;
-      var legendOn = true;
-      var chartingOn = false;
-      var distanceOn = false;
-      var areaOn = false;
-      var drawing = false;
-      var plotsOn = true;
-      var helpOn = false;
-      var queryOn = false;
-      var areaChartingOn = false;
-      function toggleHelp(){
-        if (helpOn) {
-          $("#help-window").slideUp();
-          
-
-          helpOn = false;
-        } else {
-          $("#help-window").slideDown();
-         
-
-          helpOn = true;
-        }
-      }
-      function toggleWidgets() {
-        if (widgetsOn) {
-          $("#tool-area").slideUp();
-          $("#shape-edit-container").slideUp();
-          $("#export-container").slideUp();
-          // $("#parameters-tools-layers").css('min-width','25%');
-
-          widgetsOn = false;
-        } else {
-          $("#tool-area").slideDown();
-          $("#shape-edit-container").slideDown();
-          $("#export-container").slideDown();
-          // $("#parameters-tools-layers").css('min-width','35%');
-
-          widgetsOn = true;
-        }
-      }
-
-        function toggleLayers() {
-        if (layersOn) {
-          $("#layers-container").slideUp();
-          
-
-          layersOn = false;
-        } else {
-          $("#layers-container").slideDown();
-
-          layersOn = true;
-        }
-      }
-      function togglePlotList() {
-        if (plotsOn) {
-          $("#plot-container").slideUp();
-          
-
-          plotsOn = false;
-        } else {
-          $("#plot-container").slideDown();
-
-          plotsOn = true;
-        }
-      }
-
-      function toggleLegend() {
-        if (legendOn) {
-
-          $("#legend").slideUp();
-          legendOn = false;
-        } else {
-          $("#legend").slideDown();
-
-          legendOn = true;
-        }
-      }
-
-      function toggleCharting() {
-        if (chartingOn) {
-          stopCharting();
-          chartingOn = false;
-        } else {
-          drawChart();
-          chartingOn = true;
-        }
-      }
-
-      function toggleDistance() {
-        if (distanceOn) {
-          stopDistance();
-          distanceOn = false;
-        } else {
-          startDistance();
-          distanceOn = true;
-        }
-      }
-
-      function toggleArea() {
-        if (areaOn) {
-          stopArea();
-          map.setOptions({draggableCursor:'hand'});
-          areaOn = false;
-        } else {
-          startArea();
-          areaOn = true;
-        }
-      }
-      function toggleQuery(){
-        if(queryOn){
-          queryOn = false;
-          stopQuery();
-        }else{
-          queryOn = true;
-          startQuery();
-        }
-      }
-      function toggleAreaCharting(){
-        if(areaChartingOn){
-          areaChartingOn = false;
-          // stopAreaCharting();
-        }else{
-          areaChartingOn = true;
-
-          // startAreaCharting();
-        }
-      }
-      function toggleDrawing() {
-        if (drawing) {
-          // shapesMap = undefined;
-          drawingManager.setMap(null);
-          drawing = false;
-        } else {
-          console.log('shapesmap');
-          console.log(shapesMap)
-          if (shapesMap != undefined) {
-            drawingManager.setMap(map);
-          } else {
-            shapesMap = new ShapesMap(
-              map,
-              document.getElementById("delete-button"),
-              document.getElementById("clear-button"),
-              document.getElementById("process-button"),
-              document.getElementById("export-button"),
-              document.getElementById("toggle-drawing-button"),
-              document.getElementById("console"));
-          }
-          drawing = true;
-        }
-      }
-    
-      function toggleRadio(thisValue) {
-        if (thisValue == 'charting') {
-          if (distanceOn) {
-            toggleDistance()
-          };
-          if (areaOn) {
-            toggleArea()
-          };
-          if (drawing) {
-            toggleDrawing()
-          };
-          if (queryOn) {
-            toggleQuery()
-          };
-          if (areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (!chartingOn) {
-            toggleCharting()
-          };
-        } else if (thisValue == 'distance') {
-          if (areaOn) {
-            toggleArea()
-          };
-          if (chartingOn) {
-            toggleCharting()
-          };
-          if (drawing) {
-            toggleDrawing()
-          };
-          if (queryOn) {
-            toggleQuery()
-          };
-          if (areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (!distanceOn) {
-            toggleDistance()
-          };
-        } 
-        else if (thisValue == 'query') {
-          if (areaOn) {
-            toggleArea()
-          };
-          if (chartingOn) {
-            toggleCharting()
-          };
-          if (drawing) {
-            toggleDrawing()
-          };
-          if (distanceOn) {
-            toggleDistance()
-          };
-          if (areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (!queryOn) {
-            toggleQuery()
-          };
-        }else if (thisValue == 'drawing') {
-          if (areaOn) {
-            toggleArea()
-          };
-          if (chartingOn) {
-            toggleCharting()
-          };
-          if (distanceOn) {
-            toggleDistance()
-          };
-          if (queryOn) {
-            toggleQuery()
-          };
-          if (areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (!drawing) {
-            toggleDrawing()
-          };
-        } else if (thisValue == 'area') {
-          if (drawing) {
-            toggleDrawing()
-          };
-          if (chartingOn) {
-            toggleCharting()
-          };
-          if (distanceOn) {
-            toggleDistance()
-          };
-          if (queryOn) {
-            toggleQuery()
-          };
-          if (areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (!areaOn) {
-            toggleArea()
-          };
-        } else if (thisValue == 'areaCharting') {
-          if (drawing) {
-            toggleDrawing()
-          };
-          if (chartingOn) {
-            toggleCharting()
-          };
-          if (distanceOn) {
-            toggleDistance()
-          };
-          if (queryOn) {
-            toggleQuery()
-          };
-          if (!areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (areaOn) {
-            toggleArea()
-          };
-        } else if (thisValue == 'none') {
-          if (areaOn) {
-            toggleArea()
-          };
-          if (chartingOn) {
-            toggleCharting()
-          };
-          if (drawing) {
-            toggleDrawing()
-          };
-          if (queryOn) {
-            toggleQuery()
-          };
-          if (areaChartingOn) {
-            toggleAreaCharting()
-          };
-          if (distanceOn) {
-            toggleDistance()
-          };
-        }
-      }
-      
-//       function dateSlider(){
-//         var values = $("#slider").dateRangeSlider("values");
-// console.log(values .min + " " + values .max);
-//       }
-     // toggleWidgets();
-    </script>
- <!-- <script type="text/javascript" src="js/pt-parser.js"></script> -->
-<!-- <script type="text/javascript" src="js/plot-parser.js"></script> -->
-<!-- <script type="text/javascript">toggleWidgets();toggleWidgets();toggleWidgets()</script> -->
-<!-- <div id = 'loading-window' style= 'top:0%;left:0%;opacity:0.8;height:100%;width:100%;background-color:#333;position:absolute;display:none;'> 
-<img src="images/Loading_icon.gif" alt="Loading" style="height:250px;width:300px;position:fixed ;top:50%;left:50%;transform: translate(-50%, -50%);">
-</div> -->
- 
-  </body>
-
-
-
+    <!-- </div>  -->
+    <!-- <div id="marker-position"></div> -->
+</body>
 
 </html>

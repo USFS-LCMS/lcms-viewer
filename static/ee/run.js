@@ -224,6 +224,62 @@ var collectionDict = {
   
 }
 
+var downloadDict = {'FNF':['lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Gain_Prob.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Gain_Year.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Loss_Prob.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Loss_Year.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Landcover_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Landuse_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Gain_Prob.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Gain_Year.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Loss_Prob.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Loss_Year.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Raw_Gain_Prob_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Raw_Loss_Prob_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Gain_Prob_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Gain_Year_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Loss_Prob_Stack.tif',
+'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Loss_Year_Stack.tif'],
+'BTNF':['lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Gain_Prob.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Gain_Year.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Loss_Prob.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Loss_Year.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Landcover_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Landuse_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Gain_Prob.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Gain_Year.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Loss_Prob.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Loss_Year.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Raw_Gain_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Raw_Loss_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Gain_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Gain_Year_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Loss_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Loss_Year_Stack.tif'],
+'MLSNF':['lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Gain_Prob.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Gain_Year.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Loss_Prob.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Loss_Year.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Landcover_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Landuse_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Gain_Prob.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Gain_Year.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Loss_Prob.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Loss_Year.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Raw_Gain_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Raw_Loss_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Gain_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Gain_Year_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Loss_Prob_Stack.tif',
+        'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Loss_Year_Stack.tif']
+}
+var downloads = downloadDict[studyAreaName];
+downloads.map(function(d){
+  var url = 'https://storage.cloud.google.com/' + d;
+  var name = d.substr(d.lastIndexOf('/') + 1);
+  addDownload(url,name);
+
+})
 var ts = ee.ImageCollection(collectionDict[studyAreaName][5]);
 var boundary = ee.FeatureCollection(collectionDict[studyAreaName][6]);
 var NFSLCMS = ee.ImageCollection(collectionDict[studyAreaName][1])

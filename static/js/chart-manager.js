@@ -11,6 +11,8 @@ var cssClassNames = {
 'tableCell': 'googleChartTable',
 'rowNumberCell': 'googleChartTable'};
 
+var expandedWidth = 900;
+var expandedHeight = 400;
 var chartOptions = {
   title: uriName,
   titleTextStyle: {
@@ -136,24 +138,41 @@ var fsb;
 // var fieldName = 'NAME';
 // var fsbPath = 'TIGER/2018/Counties';
 
-var fieldName = 'name';
-var fsbPath = 'USGS/WBD/2017/HUC10';
+// var fieldName = 'name';
+// var fsbPath = 'USGS/WBD/2017/HUC10';
 
-var fieldName = 'FORESTNAME';
-var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries';
+// var fieldName = 'FORESTNAME';
+// var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries';
+
+
+// var fieldName = 'PARKNAME';
+// var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries';
 function setupFSB(){
   $('#forestBoundaries').empty()
   // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
   // var fieldName = 'FORESTNAME';
 
-  fsb = ee.FeatureCollection(fsbPath);
+  	var nfsFieldName = 'FORESTNAME';
+	var nfs = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
+
+
+	var npsFieldName = 'PARKNAME';
+	var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
+
+	nfs = nfs.map(function(f){return f.set('label',f.get(nfsFieldName))});
+
+
+	nps = nps.map(function(f){return f.set('label',ee.String(f.get(npsFieldName)).cat(' National Park'))});
+
+	fsb = nfs.merge(nps);
+	fieldName = 'label';
  
 
   fsb = fsb.filterBounds(areaChartCollection.geometry());
 
   var names = ee.List(ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys());
   ee.Dictionary.fromLists(names, names).evaluate(function(d){
-  	print('d');print(d);
+  	// print('d');print(d);
   	 var mySelect = $('#forestBoundaries');
 	  var choose;
 	  mySelect.append($('<option></option>').val(choose).html('Choose an area'))
@@ -166,20 +185,38 @@ function setupFSB(){
  	
  
 };
+var udp;
+var udpList = [];
+var whichAreaDrawingMethod;
 function listenForUserDefinedAreaCharting(){
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  	google.maps.event.clearListeners(mapDiv, 'dblclick');
+    google.maps.event.clearListeners(mapDiv, 'click');
+    try{
+   	udp.setMap(null);
+   }catch(err){console.log(err)};
+    $('#summary-spinner').slideUp();
+    
+    map.setOptions({draggableCursor:'hand'});
+	map.setOptions({cursor:'hand'});
   var target = $(e.target).attr("href") // activated tab
+  console.log(target);
+  whichAreaDrawingMethod = target;
+  console.log(target);
   if(target === '#user-defined'){startUserDefinedAreaCharting()}
+  else if(target === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
   });
         
 }
-var udp;
-var udpList = [];
+listenForUserDefinedAreaCharting();
 
 function startUserDefinedAreaCharting(){
 	console.log('start clicking');
 	stopCharting();
 	udpList = [];
+	$('#areaChartingTabs').slideDown();
+	$('#summary-spinner').slideUp();
+	$('#areaUpload').slideDown();
 	map.setOptions({draggableCursor:'crosshair'});
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -240,7 +277,8 @@ function startUserDefinedAreaCharting(){
 
  		// var geoJson = {'type':'Polygon',
 			// 	'geometry':[udpList]};
-		var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
+		try{
+			var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
 
 
 		$('#summary-spinner').slideDown()
@@ -252,6 +290,9 @@ function startUserDefinedAreaCharting(){
 		// Map2.addLayer(userArea,{},udpName,false)
 		// console.log(userArea.getInfo());
 		makeAreaChart(userArea,udpName,true);
+		}
+		catch(err){showMessage('Error',err);startUserDefinedAreaCharting();}
+		
 
     });
 
@@ -279,7 +320,7 @@ function chartChosenArea(){
 function getLossGainTable(areaChartCollection,area){
 	var test = ee.Image(areaChartCollection.first());
 	test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
-	print(test.getInfo());
+	// print(test.getInfo());
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
@@ -305,7 +346,7 @@ function makeAreaChart(area,name,userDefined){
 	if(!userDefined){userDefined = false};
 	areaChartingCount++;
 	closeChart();
-	
+	document.getElementById('curve_chart_big').style.display = 'none';
 	var fColor = randomColor().slice(1,7);
 	if(userDefined === false){
 		Map2.addLayer(area,{'palette':fColor},name,true,null,null,name + ' for summarizing','reference-layer-list');
@@ -356,8 +397,7 @@ function makeAreaChart(area,name,userDefined){
 				chartOptionsT.title = title;
 
 				var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
-				chartOptionsTBig.width = 800;chartOptionsTBig.height
-				 = 350;
+				chartOptionsTBig.width = expandedWidth;chartOptionsTBig.height= expandedHeight;
 				
 				var data = google.visualization.arrayToDataTable(dataTableT);
 				var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
@@ -373,7 +413,7 @@ function makeAreaChart(area,name,userDefined){
 				$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
 				$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
 				$("#curve_chart_big").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
-				$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
+				$("#curve_chart_big").append('<button class="button" onclick="startUserDefinedAreaCharting();" style= "position:absolute;right:0%;top:0%;">X');
 				
 				// google.visualization.events.addListener(chartBig, 'ready', function () {
 				    uri = chartBig.getImageURI();
@@ -387,8 +427,9 @@ function makeAreaChart(area,name,userDefined){
 				$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
 				$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
 				$("#curve_chart").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
+				$("#curve_chart").append('<br>');
 				$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
-				$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart');
+				$("#curve_chart").append('<button class="button" onclick="startUserDefinedAreaCharting();" style= "position:inline-block;float:right;">Close Chart');
 				
 
 				
@@ -437,6 +478,13 @@ function fixGeoJSONZ(f){
 }
 function startAreaCharting(){
 	console.log('starting area charting');
+	$('#areaChartingTabs').slideDown();
+	$("#charting-parameters").slideDown();
+	if(whichAreaDrawingMethod === '#user-defined'){console.log('starting user defined area charting');startUserDefinedAreaCharting();}
+  	else if(whichAreaDrawingMethod === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
+
+}
+function startShpDefinedCharting(){
 	
 	$('#areaUpload').change(function(){
 		try{
@@ -488,12 +536,14 @@ function stopAreaCharting(){
 	try{
    	udp.setMap(null);
    }catch(err){console.log(err)};
+   $('#areaChartingTabs').slideUp();
 	$('#areaUpload').unbind('change')
 	$("#charting-parameters").slideUp();
-	$('#areaUpload').slideUp();
-	
-	updateProgress(1)
-	closeChart()
+	// $('#areaUpload').slideUp();
+	google.maps.event.clearListeners(mapDiv, 'dblclick');
+    google.maps.event.clearListeners(mapDiv, 'click');
+	updateProgress(1);
+	closeChart();
 
 };
 function startQuery(){
@@ -594,20 +644,22 @@ function getDataTable(pt){
 	return forChart
 }
 
-function changeChartType(newType){
+function changeChartType(newType,showExpanded){
+	if(!showExpanded){showExpanded = false};
 	newType.checked = true;
 	$(newType).checked = true;
 	chartType = newType.value;
-	uriName = chartType + ' ' +center.lng().toFixed(4).toString() + ' ' + center.lat().toFixed(4).toString() + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+	uriName = 'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
 	csvName = uriName + '.csv'
 	document.getElementById('curve_chart').style.display = 'none';
 	setTimeout(function(){updateProgress(80);},0);
-	Chart()
+	Chart(showExpanded);
 }
 
-function Chart(){
+function Chart(showExpanded){
+	if(!showExpanded){showExpanded = false};
 	document.getElementById('curve_chart').style.display = 'none';
-
+	document.getElementById('curve_chart_big').style.display = 'none';
 	// updateProgress(75);
 	
 			var chartOptionsT;
@@ -625,26 +677,31 @@ function Chart(){
 			
 				}
 			// else{dataTableT = dataTableT.slice(0)};
-			chartOptionsT = chartOptions;
+			chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
 			if(chartType === 'Histogram'){chartOptionsT.hAxis.title = 'Value'}
 				else if(chartType === 'ScatterChart'){chartOptionsT.hAxis.title = dataTableT[0][0];chartOptionsT.opacity = 0.1}
 				else if(chartType === 'Table'){chartOptionsT = tableOptions}
 				else{chartOptionsT.hAxis.title = 'Time'};
-			
+			chartOptionsT.title = uriName.replaceAll('_',' ');
+			var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
+			chartOptionsTBig.width = expandedWidth;chartOptionsTBig.height= expandedHeight;
+
 			
 			var data = google.visualization.arrayToDataTable(dataTableT);
+			var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
 	       	console.log('data');
 	       	console.log(dataTableT);
 	       	$('#summary-spinner').slideUp();
 	        document.getElementById('curve_chart').style.display = 'inline-block';
-	       
-	        eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
+	       	document.getElementById('curve_chart_big').style.display = 'inline-block';
 
+	        eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
+	        eval("var chartBig = new google.visualization."+chartType+"(document.getElementById('curve_chart_big'));")
 
 
 	        
-	       google.visualization.events.addListener(chart, 'ready', function () {
-    		if(chartType != 'Table'){uri = chart.getImageURI();}
+	       google.visualization.events.addListener(chartBig, 'ready', function () {
+    		if(chartType != 'Table'){uri = chartBig.getImageURI();}
 
     		// printImage(imageUri);
     		// downloadURI( "helloWorld.png");
@@ -653,6 +710,7 @@ function Chart(){
 			});
 	       setTimeout(function(){updateProgress(90);},0);
 	        chart.draw(data, chartOptionsT);
+	        chartBig.draw(dataBig, chartOptionsTBig);
 	        setTimeout(function(){updateProgress(100);},0);
 			
 			$('#curve_chart').append('<br><br>')
@@ -672,7 +730,27 @@ function Chart(){
  	       		// 					<input class="button" type="button"  value = "ColumnChart" onclick = "changeChartType(this);">')
  	       
  	       	}
+ 	       	$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
  	       	$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart')
+ 	       	
+ 	       	$('#curve_chart_big').append('<br><br>')
+
+ 	       	if(chartType != 'Table'){$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
+ 	       	$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
+ 	       	// $('#curve_chart').append('<p></p>')
+ 	       	if(chartTypeOptions){
+ 	       		chartTypes.map(function(ct){
+ 	       			$("#curve_chart_big").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this,true);" >')
+ 	       		})
+ 	       		
+ 	       
+ 	       	}
+ 	       	$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
+ 	       	if(showExpanded){
+				document.getElementById('curve_chart').style.display = 'none';
+ 	       	}else{
+ 	       		document.getElementById('curve_chart_big').style.display = 'none';
+ 	       	}
  	       	
  			map.setOptions({draggableCursor:'help'});
  			map.setOptions({cursor:'help'});
@@ -698,7 +776,7 @@ function chartIt(){
 
 		var pt = ee.Geometry.Point([center.lng(),center.lat()]);
 		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
-		try{
+		
 		icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(
 			function(values){
 					// globalChartValues	 = values;
@@ -706,64 +784,37 @@ function chartIt(){
 	
 	if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
 	print('Extracted values:',values)
-	if(values.length !== 1){
-		var header = values[0].slice(startColumn);
-
-	values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
-
-
-
-
-	
-	if(chartIncludeDate){
-	values = values.map(function(v){
-			  // var d = [new Date(v[0])];
-			  // v.slice(1).map(function(vt){d.push(vt)})
-			  v[0] = (new Date(v[0]).getYear()+1900).toString();
-			  return v;
-			})
-	}
-
-	var forChart = [header];
-	values.map(function(v){forChart.push(v)});
-	dataTable	=forChart;
-	
-	
-		uriName = chartType + ' for lng ' +center.lng().toFixed(4).toString() + ', lat ' + center.lat().toFixed(4).toString();// + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
-		csvName = uriName + '.csv'
-		
-	     
-	    // interval2(Chart, 1000, 1)
-		Chart();
-		// console.log(dataTable)
-
+	try{
+		if(values !== undefined){
+			var header = values[0].slice(startColumn);
+			values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
+			if(chartIncludeDate){
+				values = values.map(function(v){
+				  // var d = [new Date(v[0])];
+				  // v.slice(1).map(function(vt){d.push(vt)})
+				  v[0] = (new Date(v[0]).getYear()+1900).toString();
+				  return v;
+				})
 			}
-	else{
-		// print('Plot radius too small.  Increasing radius by 5 m');
-		showMessage('Charting error','Clicked between two pixels.  Try double clicking centered on a pixel')
-		// plotRadius	+=5;
-		// chartIt()
-		};
-		});
-	}
-	
-	
-		catch(err){showMessage('Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
-	
 
-		// dataTable = getDataTable(pt);
+			var forChart = [header];
+			values.map(function(v){forChart.push(v)});
+			dataTable	=forChart;
+			uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString();// + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+			csvName = uriName + '.csv'
 		
-		// map.setOptions({draggableCursor:'help'});
-	
-		// uriName = chartType + ' ' +center.lng().toFixed(4).toString() + ' ' + center.lat().toFixed(4).toString() + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
-		// csvName = uriName + '.csv'
+			Chart();	
+		}
+		else{showMessage('Error!','Clicked outside area with available LCMS products. Double click within selected LCMS product area');$('#summary-spinner').slideUp();}
 		
-	     
-	 //    interval2(Chart, 1000, 1)
-		// Chart();
-		
-		
-}
+
+
+	}
+	catch(err){
+
+	}
+
+})}
 // var cT = 
 var marker=new google.maps.Circle({
   				center:{lat:45,lng:-111},
@@ -773,12 +824,14 @@ function drawChart() {
 		// if(chartType.toLowerCase() === 'histogram'){chartIncludeDate = false};
 		// document.getElementById('charting-parameters').style.display = 'inline-block';
 		$("#charting-parameters").slideDown();
-		
+		$("#whichIndexForChartingRadio").slideDown();
 
 		 map.setOptions({draggableCursor:'help'});
 		google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
 			closeChart();
 			$('#summary-spinner').slideDown();
+			document.getElementById('curve_chart').style.display = 'none';
+			document.getElementById('curve_chart_big').style.display = 'none';
 			print('Map was double clicked');
 			var x =e.clientX;
         	var y = e.clientY;console.log(x);
@@ -822,7 +875,7 @@ function closeBigChart(){
 function stopCharting(){
 	// document.getElementById('charting-parameters').style.display = 'none';
 	$("#charting-parameters").slideUp();
-
+	$("#whichIndexForChartingRadio").slideUp();
 	marker.setMap(null);
 	google.maps.event.clearListeners(mapDiv, 'dblclick');
 	map.setOptions({draggableCursor:'hand'});

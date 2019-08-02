@@ -589,7 +589,7 @@ function ShapesMap(_map, _deleteButton, _clearButton,_processButton,_exportButto
 
         var drawingControlOptions = {
             drawingModes: drawingModes,
-            position: google.maps.ControlPosition.LEFT_TOP
+            position: google.maps.ControlPosition.RIGHT_TOP
         };
 
 

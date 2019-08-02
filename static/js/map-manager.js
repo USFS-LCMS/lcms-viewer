@@ -354,6 +354,9 @@ function addExport(eeImage,name,res,Export,metadataParams){
     exportList.insertBefore(exportElement,exportList.firstChild);
   exportID ++;
 }
+function addImageDownloads(imagePathJson){
+  
+}
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
 function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList){
@@ -364,7 +367,9 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         name = "Layer "+NEXT_LAYER_ID;
         NEXT_LAYER_ID += 1;
     }
-
+    name = name.replaceAll(' ','-');
+    name = name.replaceAll('(','-');
+    name = name.replaceAll(')','-');
     if(visible == null){
         visible = true;
     }
@@ -400,11 +405,17 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     //   layer.min = viz.min;
     // }
     // else{layer.min = 0;}
+    
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
+        var legendItemContainer = document.createElement("legend-item");
+
+        legendItemContainer.setAttribute("id", name);
+
+
         var legendBreak = document.createElement("legend-break");
      
-       var legendList = document.querySelector("legend-list");
-      legendList.insertBefore(legendBreak,legendList.firstChild);
+ 
+      legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
         var legend = document.createElement("ee-legend");
         legend.name = name;
@@ -441,16 +452,20 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         else{legend.fontColor    = "color:#808080;"}
      
     var legendList = document.querySelector("legend-list");
-    legendList.insertBefore(legend,legendList.firstChild);
+    legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
+    legendList.insertBefore(legendItemContainer,legendList.firstChild);
 
     
     }
 
     else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
+
+      var legendItemContainer = document.createElement("legend-item");
+      legendItemContainer.setAttribute("id", name);
       var legendBreak = document.createElement("legend-break");
      
        var legendList = document.querySelector("legend-list");
-      legendList.insertBefore(legendBreak,legendList.firstChild);
+      legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
       var legendKeys = Object.keys(viz.classLegendDict).reverse();
       legendKeys.map(function(lk){
@@ -462,15 +477,16 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         legend.classColor = viz.classLegendDict[lk];
         legend.className = lk;
 
-        var legendList = document.querySelector("legend-list");
-        legendList.insertBefore(legend,legendList.firstChild);
+        // var legendList = document.querySelector("legend-list");
+        legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
       })
 
       var title = document.createElement("ee-class-legend-title");
       title.name = name;
       title.helpBoxMessage = helpBox;
       var legendList = document.querySelector("legend-list");
-      legendList.insertBefore(title,legendList.firstChild);
+      legendItemContainer.insertBefore(title,legendItemContainer.firstChild);
+      legendList.insertBefore(legendItemContainer,legendList.firstChild);
      
     }
 
@@ -558,6 +574,10 @@ function addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerLis
 //////////////////////////////////////////////////////
 function point2LatLng(x,y) {
   
+  var m = document.getElementById('map');
+  x = x- m.offsetLeft;
+  y = y-m.offsetTop;
+  // console.log('converting div to lat lng');console.log(x.toString() + ' ' + y.toString());
   var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
   var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
   var scale = Math.pow(2, map.getZoom());
@@ -805,6 +825,7 @@ function reRun(){
     }
     refreshNumber   ++;layerCount = 0;
   exportImageDict = {};
+  clearDownloadDropdown();
 	run();
   setupFSB();
 
@@ -870,8 +891,8 @@ function rgbToHex(r,g,b) {
 }
 function randomColor(){
   var r = getRandomInt(100, 255);
-  var g = getRandomInt(100, 255);
-  var b = getRandomInt(100, 255);
+  var g = getRandomInt(0, 255);
+  var b = getRandomInt(0, 50);
   var c = rgbToHex(r,g,b)
   return c
 }
@@ -1164,7 +1185,8 @@ function clearPolys(){
 
 }
 function stopArea(){
-  
+  google.maps.event.clearListeners(mapDiv, 'dblclick');
+    google.maps.event.clearListeners(mapDiv, 'click');
   $( "#distance-area-measurement" ).html( '');
   document.getElementById('distance-area-measurement').style.display = 'none';
   map.setOptions({disableDoubleClickZoom: true });
@@ -1377,18 +1399,36 @@ var lowerThresholdRecovery = 0.35;
 var upperThresholdRecovery = 1;
 
 var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-113.08,8],'EPSG:26911',0.35,0.35],
-                  'Bridger-Teton National Forest':['BTNF',[43.4,-110.1,8],'EPSG:26912',0.35,0.35],
-                  'Manti-La Sal National Forest':['MLSNF',[38.8,-109,8],'EPSG:26912',0.25,0.30],
-                  'Science Team CONUS NAFD':['CONUS',[40.0,-90.0,4],'EPSG:5070',0.30,0.30],
+var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-115.08,8],'EPSG:26911',0.35,0.35],
+                  'Bridger-Teton National Forest':['BTNF',[43.4,-111.1,8],'EPSG:26912',0.35,0.35],
+                  'Manti-La Sal National Forest':['MLSNF',[38.8,-111,8],'EPSG:26912',0.25,0.30],
+                  'Science Team CONUS NAFD':['CONUS',[40.0,-95.0,4],'EPSG:5070',0.30,0.30],
                 };
 
+function dropdownUpdateStudyArea(whichOne){
+  resetStudyArea(whichOne);
+   // localStorage.setItem("cachedStudyAreaName",this.innerHTML)
+   //  $('.status').text(this.innerHTML);
+   //  $('#study-area-label').text(this.innerHTML);
+    var coords = studyAreaDict[whichOne][1];
+    // studyAreaName = studyAreaDict[this.innerHTML][0];
+   //  // exportCRS = studyAreaDict[this.innerHTML][2];
+   //  // $('input[name = "Export crs"]').val(exportCRS);
+    centerMap(coords[1],coords[0],coords[2]);
+    if(studyAreaName === 'CONUS'){run = runCONUS}
+      else{run = runUSFS};
 
+  
+
+    reRun();
+};
 var resetStudyArea = function(whichOne){
     localStorage.setItem("cachedStudyAreaName",whichOne)
-    $('.status').text(whichOne);
+   
+    $('#studyAreaDropdown').val(whichOne);
     $('#study-area-label').text(whichOne);
-    console.log('changing study area')
+    console.log('changing study area');
+    console.log(whichOne);
     lowerThresholdDecline =  studyAreaDict[whichOne][3];
     upperThresholdDecline = 1;
     lowerThresholdRecovery = studyAreaDict[whichOne][4];
@@ -1453,10 +1493,12 @@ function initialize() {
       // maxZoom: 15,
       mapTypeId: google.maps.MapTypeId.HYBRID,
 	  streetViewControl: true,
-    // fullscreenControl: false,
-    fullscreenControlOptions:{position: google.maps.ControlPosition.LEFT_TOP},
-    streetViewControlOptions:{position: google.maps.ControlPosition.LEFT_TOP},
-    zoomControlOptions:{position: google.maps.ControlPosition.LEFT_TOP},
+    fullscreenControl: false,
+    mapTypeControlOptions :{style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,position: google.maps.ControlPosition.RIGHT_TOP},
+    // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+    streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+
+    zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     tilt:0,
     controlSize: 25,
     // mapTypeId: "OSM",
@@ -1535,7 +1577,7 @@ function initialize() {
             document.getElementById("console"));
 
             if(exportCapability){
-              document.getElementById('export-container').style.display = 'block';
+              document.getElementById('export-container-big').style.display = 'block';
              //    document.getElementById('process-button').style.display = 'inline-block';
              // document.getElementById('export-button').style.display = 'inline-block';
              // document.getElementById('cancel-tasks-button').style.display = 'inline-block';
@@ -1546,7 +1588,12 @@ function initialize() {
 
             
          }
+
     }
+
+    if(downloadCapability){
+        document.getElementById('download-container').style.display = 'block';
+      }
     if(userCharting){
        // document.getElementById('plot-radius').style.display = 'inline-block';
        // document.getElementById('plot-scale').style.display = 'inline-block'; 

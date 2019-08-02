@@ -19,30 +19,31 @@
             border-radius: 5px;
             
             box-shadow: inset 0 0 5px #333;
-            background-color: #999;
+            background-color: #FFF;
             height: 5px;
             vertical-align: middle;
+            width:15%;
         }
         input[type='range']::-moz-range-track {
             -moz-appearance: none;
-            border-radius: 5px;
-            box-shadow: inset 0 0 5px #333;
-            background-color: #999;
+            /*border-radius: 5px;*/
+            box-shadow: inset 0 0 5px #FFF;
+            background-color: #FFF;
             height: 10px;
         }
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none !important;
-            border-radius: 5px;
+            border-radius: 2px;
             background-color: #FFF;
             
             box-shadow:inset 0 0 10px rgba(000,000,000,0.5);
             border: 1px solid #999;
-            height: 12px;
-            width: 10px;
+            height: 15px;
+            width: 7px;
         }
         input[type='range']::-moz-range-thumb {
             -moz-appearance: none;
-            border-radius: 20px;
+            /*border-radius: 20px;*/
             background-color: #FFF;
             box-shadow:inset 0 0 10px rgba(000,000,000,0.5);
             border: 1px solid #999;
@@ -56,7 +57,7 @@
                 clear:both;
                 /*padding-bottom:6px;*/
                 color: #FFFFFF;
-                font-size: 1.1em;
+                font-size: 1em;
             }
             #viz:hover{width:50px;}
             li:hover{color: #9aa9b3;-webkit-transition: color  0.5s;}
@@ -93,7 +94,7 @@
             percent:0,
             created:function(){
                 this.layerId = nextId;
-           
+                this.name = name;
                 
                 nextId += 1;
                 this.urls=[];
@@ -120,7 +121,9 @@
                 
                 if(this.visible){
                     this.map.overlayMapTypes.setAt(this.layerId, this.layer);
-
+                    $('#'+this.name).show();  
+                }else{
+                  $('#'+this.name).hide();  
                 }
 
                 
@@ -128,17 +131,19 @@
             onChange:function(){
                 
                 if(this.visible){
-                    console.log('its visible')
                     
                     this.map.overlayMapTypes.setAt(this.layerId,null);
                     // this.map.overlayMapTypes.removeAt(this.layerId);
                     // this.$.opacity.disabled = true;
                     // this.detached();
                     this.percent = 0;
+                    $('#'+this.name).hide();
 
 
                 }else{
                     this.map.overlayMapTypes.setAt(this.layerId,this.layer);
+                    $('#'+this.name).show();
+
                     // this.$.opacity.disabled = false;
                     // this.detached();
                 }
