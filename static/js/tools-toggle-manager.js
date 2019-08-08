@@ -151,10 +151,39 @@ var widgetsOn = true;
           drawing = true;
         }
       }
-    
+      
+      function turnOnSidebar(which){
+        setIdCol('#map',8);
+        setIdCol('#'+which+'-sidebar',2);
+      };
+      function turnOffSidebar(which){
+        setIdCol('#map',10);
+        setIdCol('#'+which+'-sidebar',0);
+      };
+
+      function setIdCol(id,n){
+        var classes = $(id).attr('class').split(' ');
+        classes.map(function(c){$(id).removeClass(c)})
+        $(id).addClass('col-sm-'+n.toString());
+      }
+      
+      
+      function toggleRightSidebar(){
+        var rightSidebarVisible;
+        if($('#map').attr('class').indexOf('-8') > -1){
+          rightSidebarVisible = true;
+        }else{
+          rightSidebarVisible = false;
+        }
+
+        if(!rightSidebarVisible){turnOnSidebar('right')}
+        else{turnOffSidebar('right')}
+
+      }
       function toggleRadio(thisValue) {
-        
+       
         if (thisValue == 'charting') {
+          turnOnSidebar('right')
           if (distanceOn) {
             toggleDistance()
           };
@@ -174,6 +203,7 @@ var widgetsOn = true;
             toggleCharting()
           };
         } else if (thisValue == 'distance') {
+          turnOnSidebar('right')
           if (areaOn) {
             toggleArea()
           };
@@ -194,6 +224,7 @@ var widgetsOn = true;
           };
         } 
         else if (thisValue == 'query') {
+          turnOnSidebar('right')
           if (areaOn) {
             toggleArea()
           };
@@ -232,6 +263,7 @@ var widgetsOn = true;
             toggleDrawing()
           };
         } else if (thisValue == 'area') {
+          turnOnSidebar('right')
           if (drawing) {
             toggleDrawing()
           };
@@ -251,6 +283,7 @@ var widgetsOn = true;
             toggleArea()
           };
         } else if (thisValue == 'areaCharting') {
+          turnOnSidebar('right')
           if (drawing) {
             toggleDrawing()
           };
@@ -271,6 +304,7 @@ var widgetsOn = true;
           };
           
         } else if (thisValue == 'none') {
+          turnOffSidebar('right')
           if (areaOn) {
             toggleArea()
           };
@@ -294,16 +328,19 @@ var widgetsOn = true;
       }
 
       $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-                $(this).toggleClass('active');
-                // $('#lcms-layers-submenu').toggle();
-                // $('#reference-layers-submenu').toggle();
-            });
+            // $('#sidebarCollapse').on('click', function () {
+            //     $('#sidebar').toggleClass('active');
+            //     $('#sidebar-tools').toggle();
+            //     // $('#sidebar2').toggleClass('active');
+
+            //     $(this).toggleClass('active');
+            //     // $('#lcms-layers-submenu').toggle();
+            //     // $('#reference-layers-submenu').toggle();
+            // });
             $('#lcms-collapse').click();
             $('#reference-collapse').click();
-
-
+            $('#legend-clicker').click();
+            // listenForUserDefinedAreaCharting();
             $("input[name='standardOrAdvancedToggle']").change(function() {
               console.log('mode change');
                 analysisMode = $("input[name='standardOrAdvancedToggle']:checked").val();

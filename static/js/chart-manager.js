@@ -38,7 +38,7 @@ var chartOptions = {
    explorer: {  actions: [] },
     chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
     legendArea:{width:'20%'},
-   backgroundColor: { fill: "#888" }
+   backgroundColor: { fill: "#000" }
 
 };
 var tableOptions = {
@@ -188,35 +188,51 @@ function setupFSB(){
 var udp;
 var udpList = [];
 var whichAreaDrawingMethod;
-function listenForUserDefinedAreaCharting(){
-  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  	google.maps.event.clearListeners(mapDiv, 'dblclick');
-    google.maps.event.clearListeners(mapDiv, 'click');
-    try{
-   	udp.setMap(null);
-   }catch(err){console.log(err)};
-    $('#summary-spinner').slideUp();
-    
-    map.setOptions({draggableCursor:'hand'});
-	map.setOptions({cursor:'hand'});
-  var target = $(e.target).attr("href") // activated tab
-  console.log(target);
-  whichAreaDrawingMethod = target;
-  console.log(target);
-  if(target === '#user-defined'){startUserDefinedAreaCharting()}
-  else if(target === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
-  });
-        
-}
-listenForUserDefinedAreaCharting();
 
+function startAreaCharting(){
+	console.log('starting area charting');
+	$('#areaChartingTabs').slideDown();
+	$("#charting-parameters").slideDown();
+	if(whichAreaDrawingMethod === '#user-defined'){console.log('starting user defined area charting');startUserDefinedAreaCharting();}
+  	else if(whichAreaDrawingMethod === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
+  	else if(whichAreaDrawingMethod === '#pre-defined'){$('#pre-defined').slideDown();}
+
+}
+function areaChartingTabSelect(target){
+	stopAreaCharting();
+	stopCharting();
+	$('#charting-container').slideDown();
+	$("#charting-parameters").slideDown();
+	
+   
+	whichAreaDrawingMethod = target;
+  	console.log(target);
+  	if(target === '#user-defined'){startUserDefinedAreaCharting();}
+  	else if(target === '#shp-defined'){startShpDefinedCharting();}
+  	else if(target === '#pre-defined'){$('#pre-defined').slideDown();}
+  	// startAreaCharting();
+}
+// function listenForUserDefinedAreaCharting(){
+//   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  	
+//   var target = $(e.target).attr("href") // activated tab
+
+//   console.log(target);
+//   areaChartingTabSelect(target);
+//   });
+        
+// }
+// listenForUserDefinedAreaCharting();
+var userDefinedI = 1;
 function startUserDefinedAreaCharting(){
 	console.log('start clicking');
-	stopCharting();
+	
 	udpList = [];
-	$('#areaChartingTabs').slideDown();
-	$('#summary-spinner').slideUp();
-	$('#areaUpload').slideDown();
+	// $('#areaChartingTabs').slideDown();
+
+	$('#user-defined').slideDown();
+	
+	// $('#areaUpload').slideDown();
 	map.setOptions({draggableCursor:'crosshair'});
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -282,16 +298,16 @@ function startUserDefinedAreaCharting(){
 
 
 		$('#summary-spinner').slideDown()
-		$('#areaUpload').slideDown();
-	  	$('#charting-container').slideDown();
+		// $('#areaUpload').slideDown();
+	  	
 	  	$("#charting-parameters").slideDown();
 	  	var udpName = $('#user-defined-area-name').val();
-	  	if(udpName === ''){udpName = 'User Defined Area '}
+	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString();userDefinedI++;}
 		// Map2.addLayer(userArea,{},udpName,false)
 		// console.log(userArea.getInfo());
 		makeAreaChart(userArea,udpName,true);
 		}
-		catch(err){showMessage('Error',err);startUserDefinedAreaCharting();}
+		catch(err){areaChartingTabSelect(whichAreaDrawingMethod);showMessage('Error',err);}
 		
 
     });
@@ -342,14 +358,15 @@ function expandChart(){
 	$('#curve_chart_big').slideDown();
 	closeChart();
 }
-function makeAreaChart(area,name,userDefined){
+function makeAreaChart(area,name,target,userDefined){
 	if(!userDefined){userDefined = false};
 	areaChartingCount++;
 	closeChart();
 	document.getElementById('curve_chart_big').style.display = 'none';
 	var fColor = randomColor().slice(1,7);
 	if(userDefined === false){
-		Map2.addLayer(area,{'palette':fColor},name,true,null,null,name + ' for summarizing','reference-layer-list');
+		
+		Map2.addLayer(area,{'palette':fColor,addToClassLegend: true,classLegendDict:{'':fColor}},name,true,null,null,name + ' for summarizing','reference-layer-list');
 	}
 	
 	updateProgress(50);
@@ -370,7 +387,7 @@ function makeAreaChart(area,name,userDefined){
 			print(tableT);
 			print(failure);
 			print(areaChartingCount);
-			if(failure !== undefined && iteration < maxIterations){evalTable()}
+			if(failure !== undefined && iteration < maxIterations && failure.indexOf('aggregations') > -1){evalTable()}
 			else if(failure === undefined) {
 				
 				updateProgress(80);
@@ -413,7 +430,7 @@ function makeAreaChart(area,name,userDefined){
 				$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
 				$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
 				$("#curve_chart_big").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
-				$("#curve_chart_big").append('<button class="button" onclick="startUserDefinedAreaCharting();" style= "position:absolute;right:0%;top:0%;">X');
+				$("#curve_chart_big").append('<button class="button" onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= "position:absolute;right:0%;top:0%;">X');
 				
 				// google.visualization.events.addListener(chartBig, 'ready', function () {
 				    uri = chartBig.getImageURI();
@@ -429,7 +446,7 @@ function makeAreaChart(area,name,userDefined){
 				$("#curve_chart").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
 				$("#curve_chart").append('<br>');
 				$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
-				$("#curve_chart").append('<button class="button" onclick="startUserDefinedAreaCharting();" style= "position:inline-block;float:right;">Close Chart');
+				$("#curve_chart").append('<button class="button" onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= "position:inline-block;float:right;">Close Chart');
 				
 
 				
@@ -447,7 +464,11 @@ function makeAreaChart(area,name,userDefined){
 				map.setOptions({draggableCursor:'hand'});
 				map.setOptions({cursor:'hand'});
 				updateProgress(0);
-				showMessage('Error!',failure)}
+				areaChartingTabSelect(whichAreaDrawingMethod);
+				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1){
+					failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
+				}
+				showMessage('Error! Try again',failure)};
 			iteration ++;
 		
 
@@ -476,17 +497,13 @@ function fixGeoJSONZ(f){
 
 	return f
 }
-function startAreaCharting(){
-	console.log('starting area charting');
-	$('#areaChartingTabs').slideDown();
-	$("#charting-parameters").slideDown();
-	if(whichAreaDrawingMethod === '#user-defined'){console.log('starting user defined area charting');startUserDefinedAreaCharting();}
-  	else if(whichAreaDrawingMethod === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
 
-}
 function startShpDefinedCharting(){
-	
+	$('#shp-defined').slideDown();
+	$('#areaUpload').slideDown();
 	$('#areaUpload').change(function(){
+		if(jQuery('#areaUpload')[0].files.length > 0){
+
 		try{
 		   	udp.setMap(null);
 		   }catch(err){console.log(err)};
@@ -527,7 +544,7 @@ function startShpDefinedCharting(){
 					
 
 				})
-
+	}
 		
 	})
 };
@@ -539,6 +556,10 @@ function stopAreaCharting(){
    $('#areaChartingTabs').slideUp();
 	$('#areaUpload').unbind('change')
 	$("#charting-parameters").slideUp();
+	$('#user-defined').slideUp();
+	$('#shp-defined').slideUp();
+	$('#pre-defined').slideUp();
+	$('#summary-spinner').slideUp();
 	// $('#areaUpload').slideUp();
 	google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
@@ -823,6 +844,7 @@ var marker=new google.maps.Circle({
 function drawChart() {
 		// if(chartType.toLowerCase() === 'histogram'){chartIncludeDate = false};
 		// document.getElementById('charting-parameters').style.display = 'inline-block';
+		$("#charting-container").slideDown();
 		$("#charting-parameters").slideDown();
 		$("#whichIndexForChartingRadio").slideDown();
 

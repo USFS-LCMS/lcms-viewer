@@ -21,10 +21,10 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="visualize where land cover change is happening">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css">
     <!-- <link rel="stylesheet" href="css/iThing.css" type="text/css" /> -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> -->
     <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
     <script type="text/javascript" src="js/ee_api_js.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -33,6 +33,7 @@
             'packages': ['corechart', 'table']
         });
     </script>
+    
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -45,8 +46,8 @@
    
     <!-- Latest compiled and minified JavaScript -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<!--     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
     <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
     <link rel="import" href="elements/layer-list.html">
     <link rel="import" href="elements/ee-layer.html">
@@ -56,9 +57,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Collapsible sidebar using Bootstrap 4</title>
-
-
+ 
     
 
 
@@ -66,18 +65,197 @@
 </head>
 
 <body>
+    <div class="container-fluid master-container">
+  <div class="row">
     
-    <div class="wrapper">
-        <!-- Sidebar Holder -->
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h4>Landscape Change Monitoring System</h4>
+    
+        
+            <div class = 'col-sm-2'></div>
+            <div class = 'col-sm-10'>
+                <nav class="navbar navbar-expand-sm navbar-dark ">
+                <div class="container-fluid">
+
+                    <!-- <button type="button" id="sidebarCollapse" class="navbar-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button> -->
+
+                    <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
+                      <!--   <ul class="nav navbar-nav ">
+                            <div class="navbar-header">
+                                <div class="sidebar-header">
+                                <h4>Landscape Change Monitoring System <h5 id='study-area-label'></h5></h4>
+                                
+                                
+                                </div>
+                                
+                            </div>
+                        </ul> -->
+       
+         
+        
+                            
+                            
+                        
+                        <h5 id='study-area-label'></h5>
+
+                        <ul class = 'nav navbar-nav mr-auto' >
+                          
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Study Area</a>
+                                <div class="dropdown-menu" >
+                                <div class="dropdown-header">National Forest Products</div>
+                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Bridger-Teton National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a>
+                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a>
+                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</a>
+                                  <div class="dropdown-divider"></div>
+                                  <div class="dropdown-header">CONUS Nationwide</div>
+                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Science Team CONUS NAFD")'  href="#" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</a>
+                                </div>
+                              </li>
+                       
+
+                             <li class="nav-item dropdown">
+                                  <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a>
+                                  
+                                  <div class="dropdown-menu dropdown-menu-right" >
+                                    
+                                    <div class="dropdown-header">Choose which mode</div>
+                                      <a class="dropdown-item"   href="#" >
+                         
+                                        <variable-radio var='analysisMode' title2='' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
+                                      </a>
+                                      
+                                     
+                                      <div class="dropdown-divider"></div>
+                                      <div class="dropdown-header">Choose Year Range</div>
+                                      <a class="dropdown-item"   href="#" >
+                                          <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
+                                            <div class='dual-range-slider-name'>Analysis Years:</div>
+                                            <div id="slider1" class='dual-range-slider-slider'></div>
+                                            <div id='date-range-value1' class='dual-range-slider-value'></div>
+                                        </div>
+                                        <script type="text/javascript">
+                                            var startYear = 1985;
+                                            var endYear = 2017;
+                                            setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null')
+                                        </script>
+                                      </a>
+
+                                  <div class="dropdown-divider"></div>
+                                  <div id='threshold-container' style="display: none;">
+                                  <div class="dropdown-header" >Choose Thresholds</div>
+                                    <a class="dropdown-item"   href="#" >
+                                        <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
+                                            <div class='dual-range-slider-name'>Loss Threshold:</div>
+                                            <div id="slider2" class='dual-range-slider-slider'></div>
+                                            <div id='declineThreshold' class='dual-range-slider-value'></div>
+                                        </div>
+                                        <br>
+                                        <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
+                                            <div class='dual-range-slider-name'>Gain Threshold:</div>
+                                            <div id="slider3" class='dual-range-slider-slider'></div>
+                                            <div id='recoveryThreshold' class='dual-range-slider-value'></div>
+                                        </div>
+                                        <script type="text/javascript">
+                                            setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')
+
+                                            setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null')
+                                        </script>
+                                        <br>
+                                        </a>
+                                    </div>
+
+                                    
+                                  <div id='advanced-radio-container' style="display: none;">
+                                    <div class="dropdown-divider"></div>
+                                  <div class="dropdown-header" >Additional Features</div>
+                                    <a class="dropdown-item"   href="#" >
+                                       <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
+            <br>
+            <br>
+            <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
+                                        </a>
+                                    </div>
+
+
+        
+
+
+                                  
+                                </div>
+
+                              </li>
+
+                              <li class="nav-item dropdown">
+                                  <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
+                                  <div class="dropdown-menu dropdown-menu-right" >
+                                   
+                                    <a class="dropdown-item " onclick = 'toggleRadio("none")'  href="#" >Turn off Tools</a>
+                                    <div class="dropdown-divider"></div>
+                                <div class="dropdown-header">Measuring Tools</div>
+                                  <a class="dropdown-item" onclick = 'toggleRadio("distance")'  href="#" >Distance Measuring</a>
+                                  <a class="dropdown-item" onclick = 'toggleRadio("area")'  href="#" >Area Measuring</a>
+                                 
+                                  <div class="dropdown-divider"></div>
+                                  <div class="dropdown-header">Pixel Charting Tools</div>
+                                  <a class="dropdown-item" onclick = 'toggleRadio("query")'  href="#" >Inspector Single Pixel</a>
+                                  <a class="dropdown-item" onclick = 'toggleRadio("charting")'  href="#" >Chart Time Series of Single Pixel</a>
+                               
+
+                                  <div class="dropdown-divider"></div>
+                                  <div class="dropdown-header">Area Charting Tools</div>
+                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#user-defined")'  href="#" >User Defined Area</a>
+                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#shp-defined")'  href="#" >Upload a Shapefile</a>
+                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#pre-defined")'  href="#" >Select Pre-defined Area</a>
+                                </div>
+                              </li>
+                         
+                             
+                            <!-- <li class="nav-item">
+                               <select style='float:left;height:100%;' onclick="toggleRadio(this.value);">
+                                    <option value="" disabled selected>Tools</option>
+                                    <option value="none">Turn off Tools</option>
+                                    <optgroup label="Measuring Tools">
+                                        <option value="distance">Distance Measuring</option>
+                                        <option value="area">Area Measuring</option>
+                                    </optgroup>
+                                    <optgroup label="Charting Tools">
+                                        <option value="query">Inspector Single Pixel</option>
+                                        <option value="charting">Chart Time Series of Single Pixel</option>
+                                        <option value="areaCharting">Chart Time Series of an Area</option>
+                                    </optgroup>
+                                </select>
+                            </li> -->
+
+                           </ul>
+                          <ul  class = 'nav navbar-nav ml-auto'>
+                              <li class="nav-item ">
+                                <i class="fa fa-info-circle fa-2x" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
+                            </li> 
+                          </ul>
+                           
+                            
+                        
+                    <!-- </div> -->
+                </div>
+            </nav>
             </div>
+            
+    
+
+    <div class="col-sm-2 sidebar " id = 'left-sidebar'>
+    
+            
            
 
             <ul class="list-unstyled components">
                <li class="active">
-                    <a id = 'lcms-collapse' href="#lcms-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">LCMS <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#lcms-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers"></a>
+                    <a id = 'lcms-collapse' href="#lcms-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >LCMS <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#lcms-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers"></a>
                     <div id="lcms-layers-submenu" class="collapse in">
                     <layer-list id="layers"></layer-list>
                 </div>
@@ -98,18 +276,31 @@
 
             <ul class="list-unstyled components">
                <li class="active">
-            <div id="basic-tools-tab" style = 'color:#FFF;'>
-                    <button id='distance-area-measurement' class='button' onclick='toggleDistanceAreaUnits(this.value)' style='display:none;height:100;width:300px;font-weight: normal;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></button>
-                    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-                    <div id='query-container' style='display:none;background-color:#333'></div>
+            
+
+            
+                </li>
+               
+            </ul>
+            
+       
+    </div>
+    <div class="col-sm-10 " id="map"  ></div>
+
+    <div class="col-sm-2 d-none" id = 'right-sidebar' >
+        
+        <div id="basic-tools-tab" style = 'color:#FFF;margin-top:20px;overflow:auto;max-height:100%;'>
+                    <div id='distance-area-measurement'  onclick='toggleDistanceAreaUnits(this.value)' style='display:none;font-weight: bold;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></div>
+                    <!-- <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
+                    <div id='query-container' style='display:none;background-color:#000'></div>
                     
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-                    <div id='charting-container' style='display: inline-block;width:100%;font-weight: normal;'>
+                    <div id='charting-container' style='display: none;width:100%;font-weight: normal;'>
                         <div id='whichIndexForChartingRadio' style='display:none;'>
                             <variable-radio var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
                             <br>
                         </div>
-                        <div id=areaChartingTabs style='display:none;'>
+                        <!-- <div id=areaChartingTabs style='display:none;'>
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link fa fa-pencil fa-1x" id="user-defined-zones" data-toggle="tab" href="#user-defined" role="tab" aria-controls="user-defined" aria-selected="true" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Draw an area to summarize LCMS products across. Click on map to draw polygon for summarizing.  Double click to finish drawing"></a>
@@ -136,8 +327,34 @@
                                     <select id='forestBoundaries' style='background-color: #555' onchange='chartChosenArea()'></select>
                                 </div>
                             </div>
+                        </div> -->
+                        <div id = 'user-defined' style = 'display:none;'>
+                            <br>
+                            <h8>Click on map to draw polygon<br>Double-click to finish drawing polygon<br>The chart will then be automatically created</h8>
+                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                            <!-- <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Chart Name" style='width:100%;'> -->
+                            <br>
+                            <div class="form-group">
+                                <label for="inputsm">User-defined chart name</label>
+                                <input class="form-control input-sm" id="user-defined-area-name" type="text" placeholder="Chart Name">
+                            </div>
+                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                            <button type="button" onclick='startUserDefinedAreaCharting()' class="button" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                            </button>
                         </div>
+
+                        <div id = 'shp-defined' style = 'display:none;'>
+                            <h8>Choose zipped shapefile<br>or geoJSON file to summarize across</h8>
+                            <br>
+                            <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
+                        </div>
+
+                        <div id = 'pre-defined' style = 'display:none;'>
+                            <select id='forestBoundaries' onchange='chartChosenArea()'></select>
+                        </div>
+
                         <div id='charting-parameters' style='display:none;'>Charting Progress
+
                             <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
                             <div id="Progress" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
                                 <div id="Bar"></div>
@@ -145,97 +362,23 @@
                             <script type="text/javascript">
                                 var plotRadius = 15;
                                 var plotScale = 30;
-                                listenForUserDefinedAreaCharting(); //startAreaCharting();
+                                // listenForUserDefinedAreaCharting(); //startAreaCharting();
                             </script>
-                            <div id="curve_chart" style="display: none;border-radius: 10px;background: #888"></div>
+                            <div id="curve_chart" style="display: none;border-radius: 10px;background: #000"></div>
                         </div>
                     </div>
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
                 </div>
+    </div>
 
-            
-                </li>
-               
-            </ul>
-            
-        </nav>
-      
-        <!-- Page Content Holder -->
-        <div id="content">
-
-            <nav class="navbar navbar-expand-lg navbar-dark bg-black">
-                <div class="container-fluid">
-
-                    <button type="button" id="sidebarCollapse" class="navbar-btn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ">
-                            <div class="navbar-header">
-            <a class="navbar-brand" style='color:#FFF;' id='study-area-label' href="#"></a>
-        </div>
-                            
-                            
-                        </ul>
-
-
-                        <ul class = 'nav navbar-nav ml-auto'>
-                            <li class="nav-item ">
-                               <select id='studyAreaDropdown' style='height:100%;' onchange='dropdownUpdateStudyArea(this.value)'>
-                                    <option value="" disabled selected>Study Area</option>
-                                    <optgroup label="National Forest Products">
-                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley" value="Bridger-Teton National Forest">Bridger-Teton National Forest</option>
-                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km" value="Flathead National Forest">Flathead National Forest</option>
-                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</option>
-                                    </optgroup>
-                                    <optgroup label="CONUS Nationwide">
-                                        <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</option>
-                                    </optgroup>
-                                </select>
-                            </li>
-
-                            <li class="nav-item">
-                               <select style='float:left;height:100%;' onclick="toggleRadio(this.value);">
-                                    <option value="" disabled selected>Tools</option>
-                                    <option value="none">Turn off Tools</option>
-                                    <optgroup label="Measuring Tools">
-                                        <option value="distance">Distance Measuring</option>
-                                        <option value="area">Area Measuring</option>
-                                    </optgroup>
-                                    <optgroup label="Charting Tools">
-                                        <option value="query">Inspector Single Pixel</option>
-                                        <option value="charting">Chart Time Series of Single Pixel</option>
-                                        <option value="areaCharting">Chart Time Series of an Area</option>
-                                    </optgroup>
-                                </select>
-                            </li>
-
-                            <li class="nav-item ">
-                                <p style='color:#FFF;margin-right:250px;margin-left:10px;margin-top:5px;' data-toggle="modal" data-target="#parameters-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Parameters">Parameters <i class="fa fa-angle-double-down fa-1x" style='color:#FFF;margin-left:5px;'></i></p>
-                            </li>
-                          
-                            <li class="nav-item ">
-                                <i class="fa fa-info-circle fa-2x" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-            
     
+        
+      </div>
+    
+  </div>
+
    
 
-            <div id="map" ></div>
-             <div style = 'color:#FFF;height:10px;'class=" text-center py-3 row-1" id='current-mouse-position'></div>
-        </div>
-    </div>
 
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -303,78 +446,13 @@
   </div>
 </div>
 
-<div id="parameters-modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-            <h4 class="modal-title">Parameters</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <!-- <input  type="checkbox" data-toggle="toggle" data-width="100" data-on="Advanced" data-onstyle="warning" data-off="Standard" id='standardOrAdvancedToggle'> -->
-        <label><input type="radio" name="standardOrAdvancedToggle" value="easy" checked>Standard</label> 
-        <label><input type="radio" name="standardOrAdvancedToggle" value="advanced">Advanced</label> 
-
-        <div id='advanced-radio-container' style="display: none;">
-            <br>
-            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-            <br>
-            <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-            <br>
-            <br>
-            <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-        </div>
-        <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
-            <div class='dual-range-slider-name'>Analysis Years:</div>
-            <div id="slider1" class='dual-range-slider-slider'></div>
-            <div id='date-range-value1' class='dual-range-slider-value'></div>
-        </div>
-        <script type="text/javascript">
-            var startYear = 1985;
-            var endYear = 2017;
-            setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null')
-        </script>
-        <br>
-        <div id='threshold-container' style="display: none;">
-            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-                <div class='dual-range-slider-name'>Loss Threshold:</div>
-                <div id="slider2" class='dual-range-slider-slider'></div>
-                <div id='declineThreshold' class='dual-range-slider-value'></div>
-            </div>
-            <br>
-            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-                <div class='dual-range-slider-name'>Gain Threshold:</div>
-                <div id="slider3" class='dual-range-slider-slider'></div>
-                <div id='recoveryThreshold' class='dual-range-slider-value'></div>
-            </div>
-            <script type="text/javascript">
-                setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')
-
-                setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null')
-            </script>
-            <br>
-       
-    </div>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-       
-      </div>
-
-    </div>
-  </div>
-</div>
 
      
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <img id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:100px;height:100px;'>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <div id="curve_chart_big" style="display: none;position:absolute;z-index:1;border-radius: 10px;background: #888; right:10%;bottom:10%;"></div>
+    <div id="curve_chart_big" style="display: none;position:absolute;z-index:1;border-radius: 10px;background: #000; right:20%;bottom:15%;"></div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <div class='header' style='display:none;position:absolute;top:0%;left:0%;width:100%;height:5%;background:rgba(20,20,20,0.95);color:#FFF;'>
@@ -545,16 +623,22 @@
     </div>
     </div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <div id = 'right-sidebar'  style='position:absolute;right:10px;top:8%;max-height:85%;background:#000;overflow-y:auto;overflow-x:hidden;display:none;'>
 
-    <div id='legendDiv' style='position:absolute;right:0%;bottom:10%;max-height: 60%;max-width:250px;overflow-y:auto; background:#000;'>
-        <br>
-        <p style='float:right;color:#FFF;margin-left:5px;margin-right:5px;' data-toggle="collapse" data-target="#legendCollapse"rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view LCMS and Reference layers map legend">Legend 
+        
+
+        <div id='legendDiv' style='max-width:250px; '>
+        
+        <p style='float:right;color:#FFF;margin-left:5px;margin-right:5px;' id = 'legend-clicker' data-toggle="collapse" data-target="#legendCollapse"rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view LCMS and Reference layers map legend">Legend 
         </p>
-        <br>
+       
         <div class="collapse in" id="legendCollapse">
             <legend-list id="legend"></legend-list>
         </div>
     </div>
+
+    </div>
+    
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <plot-container id="plot-container" style='position:absolute;left:0%;top:10%;width:200px;max-height:50%;overflow-y:auto;display:none;'>
@@ -576,7 +660,7 @@
                       max-height:500px;
                       overflow-y:auto;
                       overflow-x:auto;
-                      margin: -100px 0 0 -150px;background-color:rgba(150,150,150,0.95)'>
+                      margin: -100px 0 0 -150px;background-color:#000;'>
         <p id='message-title' style='text-align:center;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>MESSAGE</p>
         <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
         <p id='message' style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'></p>

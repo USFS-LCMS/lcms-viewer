@@ -449,7 +449,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         if(legend.max ==null){legend.max = 'max'};
     
     if(fontColor != null){legend.fontColor = "color:#" +fontColor + ";" }
-        else{legend.fontColor    = "color:#808080;"}
+        else{legend.fontColor    = "color:#DDD;"}
      
     var legendList = document.querySelector("legend-list");
     legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
@@ -1489,6 +1489,7 @@ function initialize() {
 	  center: center,
 	  zoom: zoom,
 	  minZoom: 2,
+    gestureHandling: 'greedy',
     disableDoubleClickZoom: true,
       // maxZoom: 15,
       mapTypeId: google.maps.MapTypeId.HYBRID,
