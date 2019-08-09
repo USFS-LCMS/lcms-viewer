@@ -153,33 +153,80 @@ var widgetsOn = true;
       }
       
       function turnOnSidebar(which){
-        setIdCol('#map',8);
-        setIdCol('#'+which+'-sidebar',2);
+        $('#legendDiv').show();
+        setIdCol('#map',6);
+        setIdCol('#sidebar-'+which,3);
       };
       function turnOffSidebar(which){
-        setIdCol('#map',10);
-        setIdCol('#'+which+'-sidebar',0);
+        $('#legendDiv').hide();
+        setIdCol('#map',9);
+        setIdCol('#sidebar-'+which,0);
+
       };
 
       function setIdCol(id,n){
+        console.log(id);
         var classes = $(id).attr('class').split(' ');
-        classes.map(function(c){$(id).removeClass(c)})
+        classes.map(function(c){if(c.indexOf('col-sm-') >-1){$(id).removeClass(c)}})
         $(id).addClass('col-sm-'+n.toString());
       }
       
       
-      function toggleRightSidebar(){
-        var rightSidebarVisible;
-        if($('#map').attr('class').indexOf('-8') > -1){
-          rightSidebarVisible = true;
-        }else{
-          rightSidebarVisible = false;
-        }
+      // function toggleRightSidebar(){
+      //   var rightSidebarVisible;
+      //   if($('#map').attr('class').indexOf('-6') > -1){
+      //     rightSidebarVisible = true;
+      //   }else{
+      //     rightSidebarVisible = false;
+      //   }
 
-        if(!rightSidebarVisible){turnOnSidebar('right')}
-        else{turnOffSidebar('right')}
+      //   if(!rightSidebarVisible){turnOnSidebar('right')}
+      //   else{turnOffSidebar('right')}
+
+      // }
+
+      function findCols(){
+        var mapCols = $('#map').attr('class').split(' ').filter(c => c.indexOf('col-sm-')>-1)[0].split('col-sm-')[1];
+        var leftCols = $('#sidebar-left').attr('class').split(' ').filter(c => c.indexOf('col-sm-')>-1)[0].split('col-sm-')[1];
+        var rightCols = $('#sidebar-right').attr('class').split(' ').filter(c => c.indexOf('col-sm-')>-1)[0].split('col-sm-')[1];
+
+        return {left:parseInt(leftCols),right:parseInt(rightCols),map:parseInt(mapCols)};
 
       }
+      function updateCols(left,right){
+        var map = 12- (left + right);
+      
+        setIdCol('#sidebar-left',left);
+        setIdCol('#sidebar-right',right);
+        
+        
+        setIdCol('#map',map);
+        
+        // if(right <1){$('#legendDiv').hide();}
+        // else if(right >= 1){$('#legendDiv').show();}
+      }
+      function toggleLeftSidebar(){
+        var state = findCols();
+        $('#sidebar-left').toggle();
+        if(state.left > 0){
+          updateCols(0,state.right);
+        }
+        else{
+          updateCols(3,state.right);
+        } 
+      }
+
+      function toggleRightSidebar(){
+        var state = findCols();
+        $('#sidebar-right').toggle();
+        if(state.right > 0){
+          updateCols(state.left,0);
+        }
+        else{
+          updateCols(state.left,3);
+        } 
+      }
+      
       function toggleRadio(thisValue) {
        
         if (thisValue == 'charting') {

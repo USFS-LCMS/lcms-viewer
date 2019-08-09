@@ -212,9 +212,7 @@ function closeMessage(){
 function createColorRamp(styleName, colorList, width,height){
     var myCss = 
         
-        "background-image:\
-      linear-gradient(\
-      to right, ";
+        "background-image:linear-gradient(to right, ";
      
     for(var i = 0; i< colorList.length;i++){myCss = myCss + '#'+colorList[i].toLowerCase() + ',';}
     myCss = myCss.slice(0,-1) + ");";
@@ -426,7 +424,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         var paletteList = palette.split(',');
         if(paletteList.length == 1){paletteList = [paletteList[0],paletteList[0]];}
         var colorRamp = createColorRamp('colorRamp'+colorRampIndex.toString(),paletteList,180,20);
-        
+      
         legend.colorRamp = colorRamp;
 
 

@@ -65,13 +65,14 @@
 </head>
 
 <body>
-    <div class="container-fluid master-container">
-  <div class="row">
-    
-    
-        
-            <div class = 'col-sm-2'></div>
-            <div class = 'col-sm-10'>
+
+    <div class = 'container col-sm-12'>
+  <div class = 'row top-row col-sm-12'>
+     <div class = 'col-sm-3'>
+         </li><i class="fa fa-bars fa-2x" onclick = 'toggleLeftSidebar()'></i></ul>
+
+     </div>
+            <div class = 'col-sm-6'>
                 <nav class="navbar navbar-expand-sm navbar-dark ">
                 <div class="container-fluid">
 
@@ -101,9 +102,9 @@
                             
                             
                         
-                        <h5 id='study-area-label'></h5>
+                        <h5 class = 'study-area-label' id='study-area-label'></h5>
 
-                        <ul class = 'nav navbar-nav mr-auto' >
+                        <ul class = 'nav navbar-nav mr-auto' style = 'margin-left:40px;'>
                           
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Study Area</a>
@@ -111,7 +112,7 @@
                                 <div class="dropdown-header">National Forest Products</div>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Bridger-Teton National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a>
-                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</a>
+                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Manti-La Sal National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</a>
                                   <div class="dropdown-divider"></div>
                                   <div class="dropdown-header">CONUS Nationwide</div>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Science Team CONUS NAFD")'  href="#" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</a>
@@ -231,13 +232,12 @@
                                     </optgroup>
                                 </select>
                             </li> -->
-
-                           </ul>
-                          <ul  class = 'nav navbar-nav ml-auto'>
-                              <li class="nav-item ">
+                            <li class="nav-item ">
                                 <i class="fa fa-info-circle fa-2x" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
-                            </li> 
-                          </ul>
+                                 </li>
+                           </ul>
+                         
+                            
                            
                             
                         
@@ -245,18 +245,26 @@
                 </div>
             </nav>
             </div>
-            
-    
+            <div class = 'col-sm-3'
+         <ul  class = 'nav navbar-nav ml-auto'>
 
-    <div class="col-sm-2 sidebar " id = 'left-sidebar'>
-    
-            
-           
+                           
+                          <!--   <li class="nav-item ">
+                                <i class="fa fa-arrow-up fa-2x" onclick = "$('#legendDiv').toggle()" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
+                            </li>  -->
+                              
+                                 <i class="fa fa-bars fa-2x" onclick = 'toggleRightSidebar()'></i>
+                             </ul></div>
+  </div>
+  <div class = 'row middle-row'>
 
-            <ul class="list-unstyled components">
+    <div class = 'col-sm-3 sidebar collapse show' id = 'sidebar-left' >
+        
+
+            <ul class="list-unstyled components" style = 'margin-top:20px;'>
                <li class="active">
                     <a id = 'lcms-collapse' href="#lcms-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >LCMS <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#lcms-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers"></a>
-                    <div id="lcms-layers-submenu" class="collapse in">
+                    <div id="lcms-layers-submenu" class="collapse in" >
                     <layer-list id="layers"></layer-list>
                 </div>
                 </li>
@@ -264,9 +272,9 @@
             </ul>
 
 
-            <ul class="list-unstyled components">
+            <ul class="list-unstyled components" style = 'margin-top:20px;'>
                <li class="active">
-                    <a id = 'reference-collapse' href="#reference-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Reference <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#reference-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers"></a>
+                    <a id = 'reference-collapse' href="#reference-layers-submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Reference <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#reference-layers-submenu" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers"></a>
                     <div id="reference-layers-submenu" class="collapse in">
                     <reference-layer-list id="reference-layers"></reference-layer-list>
                 </div>
@@ -282,14 +290,10 @@
                 </li>
                
             </ul>
-            
-       
     </div>
-    <div class="col-sm-10 " id="map"  ></div>
-
-    <div class="col-sm-2 d-none" id = 'right-sidebar' >
-        
-        <div id="basic-tools-tab" style = 'color:#FFF;margin-top:20px;overflow:auto;max-height:100%;'>
+      <div class = 'col-sm-6' id = 'map'> </div>
+      <div class = 'col-sm-3 sidebar  collapse show' id = 'sidebar-right' >
+          <div id="basic-tools-tab" style = 'color:#FFF;margin-top:20px;max-height:100%;'>
                     <div id='distance-area-measurement'  onclick='toggleDistanceAreaUnits(this.value)' style='display:none;font-weight: bold;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></div>
                     <!-- <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
                     <div id='query-container' style='display:none;background-color:#000'></div>
@@ -369,13 +373,39 @@
                     </div>
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
                 </div>
-    </div>
-
-    
-        
+                <br>
+                <div id = 'legendDiv'>   
+                <h4 onclick = "$('#legend').toggle()">Legend</h4>
+                <legend-list class = 'col-sm-10' id="legend"></legend-list>
+                </div>
       </div>
-    
+  </div> 
+  <div class = 'row col-sm-12 bottom-row'>
+<p id='current-mouse-position'  style='float:right;margin-right:20px;margin-top:5px;'></p>
+    <div class = 'ml-auto' style='margin-right:20%;float:right;height:90%;margin-top:1px;'>
+
+            <a href="http://www.fs.fed.us//" target="_blank">
+                <img src="images/usfslogo.png" alt="FS Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
+            </a>
+            <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                <img src="images/GTAC_Logo.png" alt="GTAC Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+            </a>
+            <a href="https://www.redcastleresources.com/" target="_blank">
+                <img src="images/RCR-logo.jpg" alt="RedCastle Inc. Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
+            </a>
+            <a href="https://earthengine.google.com/" target="_blank">
+                <img src="images/GEE.png" alt="Powered by Google Earth Engine" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
+            </a>
+        </div>
+       
+      
+  </div> 
+      
+      
   </div>
+
+
+
 
    
 
@@ -455,110 +485,14 @@
     <div id="curve_chart_big" style="display: none;position:absolute;z-index:1;border-radius: 10px;background: #000; right:20%;bottom:15%;"></div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <div class='header' style='display:none;position:absolute;top:0%;left:0%;width:100%;height:5%;background:rgba(20,20,20,0.95);color:#FFF;'>
-        <div class="navbar-header">
-            <a class="navbar-brand" style='color:#FFF;' id='study-area-label' href="#"></a>
-        </div>
-        <div style='position:relative;left:20%;height:100%;'>
-            <select id='studyAreaDropdown' style='float:left;background-color:#222;color:#FFF;height:100%;margin-left:1px;' onchange='dropdownUpdateStudyArea(this.value)'>
-                <option value="" disabled selected>Study Area</option>
-                <optgroup label="National Forest Products">
-                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley" value="Bridger-Teton National Forest">Bridger-Teton National Forest</option>
-                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km" value="Flathead National Forest">Flathead National Forest</option>
-                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</option>
-                </optgroup>
-                <optgroup label="CONUS Nationwide">
-                    <option href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</option>
-                </optgroup>
-            </select>
-            <p style='float:left;margin-left:5px;' data-toggle="collapse" data-target="#parameters-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up">Parameters
-                <i class="tab-button fa fa-cogs fa-2x fa-fw" aria-hidden="true" data-toggle="collapse" data-target="#parameters-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view user input parameters.  All layers will automatically update when changes are made.  There is a lag each time a change is made.  Try waiting ~5 seconds after making a change so the tool can keep up"></i>
-            </p>
-            <select style='float:left;background-color:#222;color:#FFF;height:100%;margin-left:1px;' onclick="toggleRadio(this.value);">
-                <option value="" disabled selected>Tools</option>
-                <option value="none">Turn off Tools</option>
-                <optgroup label="Measuring Tools">
-                    <option value="distance">Distance Measuring</option>
-                    <option value="area">Area Measuring</option>
-                </optgroup>
-                <optgroup label="Charting Tools">
-                    <option value="query">Inspector Single Pixel</option>
-                    <option value="charting">Chart Time Series of Single Pixel</option>
-                    <option value="areaCharting">Chart Time Series of an Area</option>
-                </optgroup>
-            </select>
-            <div ref="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to present more concise set of LCMS parameters and outputs">
-                <input type="checkbox" data-onstyle="default" data-toggle="toggle" data-width="100" data-on="Advanced" data-off="Standard" id='standardOrAdvancedToggle'>
-            </div>
-            
-           
-        </div> <i class="fa fa-info-circle fa-2x" style='display:inline-block;float:right;opacity:1;color:#FFF;margin-left:5px;margin-right:5px;' data-toggle="modal" data-target="#infoModal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
-    </div>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <div id="parameters-tab" class="collapse" style='position:absolute;top:5%;left:25%;width:30%;height:5%;background:rgba(20,20,20,0.95);color:#FFF;'>
-        <div id='advanced-radio-container' style="display: none;">
-            <br>
-            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-            <br>
-            <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-            <br>
-            <br>
-            <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-        </div>
-        <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
-            <div class='dual-range-slider-name'>Analysis Years:</div>
-            <div id="slider1" class='dual-range-slider-slider'></div>
-            <div id='date-range-value1' class='dual-range-slider-value'></div>
-        </div>
-        <script type="text/javascript">
-            var startYear = 1985;
-            var endYear = 2017;
-            setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null')
-        </script>
-        <br>
-        <div id='threshold-container' style="display: none;">
-            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-                <div class='dual-range-slider-name'>Loss Threshold:</div>
-                <div id="slider2" class='dual-range-slider-slider'></div>
-                <div id='declineThreshold' class='dual-range-slider-value'></div>
-            </div>
-            <br>
-            <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-                <div class='dual-range-slider-name'>Gain Threshold:</div>
-                <div id="slider3" class='dual-range-slider-slider'></div>
-                <div id='recoveryThreshold' class='dual-range-slider-value'></div>
-            </div>
-            <script type="text/javascript">
-                setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')
-
-                setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null')
-            </script>
-            <br>
-        </div>
-    </div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <div class='footer' style='display:none;color:#FFF;position:absolute;bottom:0%;left:0%;width:100%;height:3%;background:rgba(20,20,20,0.95)'>
-        <div style='margin-right:20%;float:right;height:90%;margin-top:1px;'>
-            <a href="http://www.fs.fed.us//" target="_blank">
-                <img src="images/usfslogo.png" alt="FS Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
-            </a>
-            <a href="https://www.fs.fed.us/gstc/" target="_blank">
-                <img src="images/GTAC_Logo.png" alt="GTAC Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
-            </a>
-            <a href="https://www.redcastleresources.com/" target="_blank">
-                <img src="images/RCR-logo.jpg" alt="RedCastle Inc. Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
-            </a>
-            <a href="https://earthengine.google.com/" target="_blank">
-                <img src="images/GEE.png" alt="Powered by Google Earth Engine" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
-            </a>
-        </div>
-        <div id='current-mouse-position' style='float:right;margin-right:20px;margin-top:5px;'></div>
-    </div>
+
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -620,24 +554,9 @@
                 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
         </div>
     </div>
-    </div>
-    </div>
+ 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <div id = 'right-sidebar'  style='position:absolute;right:10px;top:8%;max-height:85%;background:#000;overflow-y:auto;overflow-x:hidden;display:none;'>
 
-        
-
-        <div id='legendDiv' style='max-width:250px; '>
-        
-        <p style='float:right;color:#FFF;margin-left:5px;margin-right:5px;' id = 'legend-clicker' data-toggle="collapse" data-target="#legendCollapse"rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view LCMS and Reference layers map legend">Legend 
-        </p>
-       
-        <div class="collapse in" id="legendCollapse">
-            <legend-list id="legend"></legend-list>
-        </div>
-    </div>
-
-    </div>
     
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 

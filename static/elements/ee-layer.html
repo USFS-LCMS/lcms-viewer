@@ -10,7 +10,7 @@
 <polymer-element name="ee-layer" attributes="name">
     <template>
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-       
+        <link href = "https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700" rel = 'stylesheet'>
         <style>
 
 
@@ -57,7 +57,9 @@
                 clear:both;
                 /*padding-bottom:6px;*/
                 color: #FFFFFF;
-                font-size: 1em;
+                /*font-size: 1em;*/
+                font-family: 'Roboto', sans-serif;
+                font-stretch:   condensed;
             }
             #viz:hover{width:50px;}
             li:hover{color: #9aa9b3;-webkit-transition: color  0.5s;}
@@ -594,40 +596,50 @@
     <template>
         <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
-            .leftLabel{float:left;text-shadow:1px 1px 0 #000,
+            .leftLabel,.rightLabel,.nameLabel{text-shadow:1px 1px 0 #000,
                 -1px -1px 0 #000,
                 1px -1px 0 #000,
                 -1px 1px 0 #000,
                 0px 1px 0 #000,
                 1px 0px 0 #000,
                 0px -1px 0 #000,
-                -1px 0px 0 #000;}
-            .rightLabel{float:right;text-shadow:1px 1px 0 #000,
-            -1px -1px 0 #000,
-            1px -1px 0 #000,
-            -1px 1px 0 #000,
-            0px 1px 0 #000,
-            1px 0px 0 #000,
-            0px -1px 0 #000,
-            -1px 0px 0 #000;}
-                        
+                -1px 0px 0 #000;
+                margin-top:20px;
+                }
+            
+            .leftLabel{display:inline-block;float:left;}
+            .rightLabel{float:right;}
+            .nameLabel{font-weight: bold;float:left;position:relative;left:50%;transform: translateX(-60%);}     
             .container{float:left;}
-            .legendT{font-weight: bold;float:right;height:2%;width:100%;margin: 0 0 10px 10px;opacity:1;}
+            .legendT{font-weight: normal;float:right;height:2%;width:100%;opacity:1;background-size: 100% 20px;background-repeat: no-repeat;}
             
             li{
+                font-family: 'Roboto', sans-serif;
+                font-stretch:   condensed;
                 list-style-type:none;
                 margin-bottom:12px;
                 clear:both;
                 padding-bottom:6px;
                 color: #FFFFFF;
                 font-size: 0.9em;
+
                 
             }
 
             
         </style>
         <li  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
-            <div>{{name}}</div><div class = 'legendT'style={{colorRamp}} ><span class = 'leftLabel' style = '{{fontColor}}'>{{min}}</span><span class = 'rightLabel' style = {{fontColor}}>{{max}}</span></div>
+            
+            
+            <div class = 'legendT'style={{colorRamp}} >
+                <span class = 'leftLabel' style = {{fontColor}}>{{min}}</span>
+                <span class = 'nameLabel' style = {{fontColor}}>{{name}}</span>
+                
+                
+                <span class = 'rightLabel' style = {{fontColor}}>{{max}}</span>
+
+                </div>
+                
         </li>
     </template>
     
@@ -704,6 +716,8 @@
                 padding-bottom:1px;
                 color: #FFFFFF;
                 font-size: 0.9em;
+                font-family: 'Roboto', sans-serif;
+                font-stretch:   condensed;
                 
             }
 
@@ -803,6 +817,8 @@
                 padding-bottom:6px;
                 color: #FFFFFF;
                 font-size: 0.9em;
+                font-family: 'Roboto', sans-serif;
+                font-stretch:   condensed;
                 
             }
 

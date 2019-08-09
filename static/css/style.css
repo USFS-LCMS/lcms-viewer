@@ -1,17 +1,15 @@
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700";
+@import "https://fonts.googleapis.com/css?family=Cedarville+Cursive&display=swap";
 
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #fafafa;
-}
 
-p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
+p,html,body,h5,div,.dropdown-toggle{
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
     font-weight: 300;
-    line-height: 1.7em;
-    color: #999;
+    font-stretch:   condensed;
+    /*line-height: 1.7em;*/
+    color: #FFF;
 }
 
 a, a:hover, a:focus {
@@ -26,64 +24,40 @@ a, a:hover, a:focus {
         margin: 0;
         padding: 0;
       }
-
-.row,.container-fluid, .navbar,.footer{
-  color:#FFF;
-  background-color: #000;
-
-  
-}
-/*.navbar{height:10%;width:100%;}*/
-
-.container-fluid{
-  height:100%;
-  width:100%;
-  background-color: #000;
-}
-.master-container{overflow:hidden;}
-.row,.container-fluid,.navbar{
- 
-  
+.container{
+   left:0%;
+  top:0%;
   margin:0px;
   padding:0px;
+  position:absolute;
+  height:100%;
+  width:100%;
+  background-color: rgba(0,0,0,1);
+  z-index:1000000;
 }
 
-.dropdown-toggle{
-  color:#FFF;
+.top-row{
 
+  max-height:10%;
+  
 }
-.dropdown-toggle :hover{color: #9aa9b3;-webkit-transition: color  0.5s;}
-.image-icon{display: inline-block;
-  float:left;
-  width:20px;height:20px;
-  margin-right:10px;
+.middle-row{
+  height:85%;
+  
+}
+.bottom-row{
+  height:5%;
+  margin:0px;
+}
+.row{
+  background-color: rgba(0,0,0,1);
+  color:#AAA;
 }
 
-.sidebar{height:100%; }
-
-.row {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;
-  flex-wrap: wrap;
+.sidebar{
+  overflow-y: auto;
+  max-height:100%;
 }
-.row > [class*='col-'] {
-  display: flex;
-  flex-direction: column;
-}
-/*.map-container-6{
-overflow:hidden;
-padding-bottom:56.25%;
-position:relative;
-height:0;
-}*/ 
-#map {
-         overflow:hidden;
-padding-bottom:40.25%;
-position:relative;
-height:0;
-      }
 
       .button {
   display: inline-block;
