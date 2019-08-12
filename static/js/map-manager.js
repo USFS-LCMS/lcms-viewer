@@ -460,10 +460,10 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
 
       var legendItemContainer = document.createElement("legend-item");
       legendItemContainer.setAttribute("id", name);
-      var legendBreak = document.createElement("legend-break");
+      // var legendBreak = document.createElement("legend-break");
      
-       var legendList = document.querySelector("legend-list");
-      legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
+       // var legendList = document.querySelector("legend-list");
+      // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
       var legendKeys = Object.keys(viz.classLegendDict).reverse();
       legendKeys.map(function(lk){

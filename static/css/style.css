@@ -24,6 +24,38 @@ a, a:hover, a:focus {
         margin: 0;
         padding: 0;
       }
+      .panel-title a:after {
+    font-family:Fontawesome;
+    content:'\f068';
+    float:right;
+    font-size:15px;
+    font-weight:300;
+    color:#FFF;
+}
+.panel-title a.collapsed:after {
+    font-family:Fontawesome;
+    content:'\f067';
+    color:#FFF;
+}
+
+.layer-collapse-title {
+    content:'\f067';
+    color:#FFF;
+  }
+  .layer-collapse-title:hover { 
+  color:#888;
+  text-decoration: none;
+}
+.panel-body{
+  background-color: rgba(250,250,250,1);
+  margin:0px;
+  padding:0px;
+}
+.panel-heading{
+  margin-top:20px;
+  border-top: 1px solid #FFF;
+  border-bottom: 1px solid #FFF;
+}
 .container{
    left:0%;
   top:0%;
@@ -35,16 +67,23 @@ a, a:hover, a:focus {
   background-color: rgba(0,0,0,1);
   z-index:1000000;
 }
-
+#study-area-label{color:#054;}
+#legendDiv{padding:0px;}
+.googleChartTable {
+                background-color: #000;
+                color: #FFF;
+                overflow-y:auto;
+                 }
 .top-row{
 
-  max-height:10%;
+  /*max-height:50%;*/
   
 }
 .middle-row{
   height:85%;
   
 }
+
 .bottom-row{
   height:5%;
   margin:0px;

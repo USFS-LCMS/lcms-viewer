@@ -19,7 +19,7 @@
             border-radius: 5px;
             
             box-shadow: inset 0 0 5px #333;
-            background-color: #FFF;
+            background-color: #333;
             height: 5px;
             vertical-align: middle;
             width:15%;
@@ -27,14 +27,14 @@
         input[type='range']::-moz-range-track {
             -moz-appearance: none;
             /*border-radius: 5px;*/
-            box-shadow: inset 0 0 5px #FFF;
-            background-color: #FFF;
+            box-shadow: inset 0 0 5px #333;
+            background-color: #333;
             height: 10px;
         }
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none !important;
             border-radius: 2px;
-            background-color: #FFF;
+            background-color: #333;
             
             box-shadow:inset 0 0 10px rgba(000,000,000,0.5);
             border: 1px solid #999;
@@ -44,7 +44,7 @@
         input[type='range']::-moz-range-thumb {
             -moz-appearance: none;
             /*border-radius: 20px;*/
-            background-color: #FFF;
+            background-color: #333;
             box-shadow:inset 0 0 10px rgba(000,000,000,0.5);
             border: 1px solid #999;
             height: 0px;
@@ -56,7 +56,7 @@
                 margin-bottom:12px;
                 clear:both;
                 /*padding-bottom:6px;*/
-                color: #FFFFFF;
+                color: #333;
                 /*font-size: 1em;*/
                 font-family: 'Roboto', sans-serif;
                 font-stretch:   condensed;
@@ -596,20 +596,21 @@
     <template>
         <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
         <style>
-            .leftLabel,.rightLabel,.nameLabel{text-shadow:1px 1px 0 #000,
+            .leftLabel,.rightLabel,.nameLabel{
+                /*text-shadow:1px 1px 0 #000,
                 -1px -1px 0 #000,
                 1px -1px 0 #000,
                 -1px 1px 0 #000,
                 0px 1px 0 #000,
                 1px 0px 0 #000,
                 0px -1px 0 #000,
-                -1px 0px 0 #000;
+                -1px 0px 0 #000;*/
                 margin-top:20px;
                 }
             
-            .leftLabel{display:inline-block;float:left;}
-            .rightLabel{float:right;}
-            .nameLabel{font-weight: bold;float:left;position:relative;left:50%;transform: translateX(-60%);}     
+            .leftLabel{display:inline-block;float:left;color: #000;}
+            .rightLabel{float:right;color: #000;}
+            .nameLabel{font-weight: bold;float:left;left:0%;color: #000;}     
             .container{float:left;}
             .legendT{font-weight: normal;float:right;height:2%;width:100%;opacity:1;background-size: 100% 20px;background-repeat: no-repeat;}
             
@@ -618,9 +619,9 @@
                 font-stretch:   condensed;
                 list-style-type:none;
                 margin-bottom:12px;
-                clear:both;
+                /*clear:both;*/
                 padding-bottom:6px;
-                color: #FFFFFF;
+                color: #000;
                 font-size: 0.9em;
 
                 
@@ -630,13 +631,13 @@
         </style>
         <li  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
             
-            
+            <span class = 'nameLabel' >{{name}}</span>
             <div class = 'legendT'style={{colorRamp}} >
-                <span class = 'leftLabel' style = {{fontColor}}>{{min}}</span>
-                <span class = 'nameLabel' style = {{fontColor}}>{{name}}</span>
+                <span class = 'leftLabel' >{{min}}</span>
                 
                 
-                <span class = 'rightLabel' style = {{fontColor}}>{{max}}</span>
+                
+                <span class = 'rightLabel' >{{max}}</span>
 
                 </div>
                 
@@ -667,7 +668,7 @@
     margin-bottom: 1px;
     font-weight: bold;
     font-size: 90%;
-    color:#FFF;
+    color:#000;
     }
   .my-legend .legend-scale ul {
     margin: 0;
@@ -675,7 +676,7 @@
     padding: 0;
     float: left;
     list-style: none;
-    color: #FFF;
+    color: #000;
     }
   .my-legend .legend-scale ul li {
     font-size: 80%;
@@ -714,7 +715,7 @@
                 margin-bottom:10px;
                 clear:both;
                 padding-bottom:1px;
-                color: #FFFFFF;
+                color: #000;
                 font-size: 0.9em;
                 font-family: 'Roboto', sans-serif;
                 font-stretch:   condensed;
@@ -764,10 +765,10 @@
   .my-legend .legend-title {
     text-align: left;
     margin-bottom: 1px;
-    margin-top:10px;
+    margin-top:50px;
     font-weight: bold;
-    font-size: 90%;
-    color:#FFF;
+    /*font-size: 90%;*/
+    color:#000;
     }
   .my-legend .legend-scale ul {
     margin: 0;
