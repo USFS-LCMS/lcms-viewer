@@ -426,11 +426,11 @@ function makeAreaChart(area,name,target,userDefined){
 				chart.draw(data, chartOptionsT);
 				
 
-				$('#curve_chart_big').append('<br><br>');
-				$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
-				$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
-				$("#curve_chart_big").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
-				$("#curve_chart_big").append('<button class="button" onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= "position:absolute;right:0%;top:0%;">X');
+				// $('#curve_chart_big').append('<br><br>');
+				// $("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
+				// $("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
+				// $("#curve_chart_big").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
+				// $("#curve_chart_big").append('<button class="button" onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= "position:absolute;right:0%;top:0%;">X');
 				
 				// google.visualization.events.addListener(chartBig, 'ready', function () {
 				    uri = chartBig.getImageURI();
@@ -438,17 +438,23 @@ function makeAreaChart(area,name,target,userDefined){
 				    updateProgress(90)
 					$('#summary-spinner').slideUp();
 				
-				// });
-
-				$('#curve_chart').append('<br><br>');
-				$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
-				$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
-				$("#curve_chart").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
-				$("#curve_chart").append('<br>');
-				$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
-				$("#curve_chart").append('<button class="button" onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= "position:inline-block;float:right;">Close Chart');
 				
 
+				var bottomBarSmall = '<div style = "position:inline-block;">\
+				<a href="#"><i class="fa fa-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
+				<a href="#"><i class="fa fa-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
+				<a href="#"><i class="fa fa-expand bg-black ml-auto" onclick="expandChart();" style= "position:inline-block;"></i></a>\
+				<a href="#"><i class="fa fa-trash bg-black  ml-auto"  onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= position:inline-block;"></i></a>\
+				</div>';
+
+				var bottomBarLarge = '<div style = "position:inline-block;">\
+				<a href="#"><i class="fa fa-download bg-black" onclick="downloadURI();" style= "position:inline-block;">Graph</i></a>\
+				<a href="#"><i class="fa fa-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
+				<a href="#"><i class="fa fa-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
+				<a href="#"><i class="fa fa-trash bg-black  ml-auto"  onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= position:inline-block;"></i></a>\
+				</div>';
+				$('#curve_chart').append(bottomBarSmall);
+				$('#curve_chart_big').append(bottomBarLarge);
 				
 				// $("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
 				// $("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart');

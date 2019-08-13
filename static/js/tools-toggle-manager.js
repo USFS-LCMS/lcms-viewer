@@ -206,12 +206,12 @@ var widgetsOn = true;
         // if(right <1){$('#legendDiv').hide();}
         // else if(right >= 1){$('#legendDiv').show();}
       }
-      var leftRotate = 90;
+      var leftRotate = 180;
       function toggleLeftSidebar(){
         var state = findCols();
         $('#sidebar-left').toggle();
         $('#left-sidebar-toggler').css('transform','rotate('+leftRotate.toString()+'deg)');
-        leftRotate +=90;
+        leftRotate +=180;
         if(state.left > 0){
           updateCols(0,state.right);
         }
@@ -219,17 +219,19 @@ var widgetsOn = true;
           updateCols(3,state.right);
         } 
       }
-      var rightRotate = 90;
+      var rightRotate = 180;
       function toggleRightSidebar(){
         var state = findCols();
         $('#sidebar-right').toggle();
         $('#right-sidebar-toggler').css('transform','rotate('+rightRotate.toString()+'deg)');
-        rightRotate +=90;
+        rightRotate += 180;
         if(state.right > 0){
           updateCols(state.left,0);
+          
         }
         else{
           updateCols(state.left,3);
+          
         } 
       }
       
@@ -403,7 +405,11 @@ var widgetsOn = true;
                     //     analysisMode = 'easy';
                     // }
                     reRun();
-                })
+                });
+             $("#menu-toggle").click(function(e) {
+              e.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
 
         });
 

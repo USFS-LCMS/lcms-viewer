@@ -66,7 +66,7 @@
 
 <body>
 
-    <div class = 'container col-sm-12'>
+    <div class = 'container col-12'>
          <div id="info-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">
@@ -95,8 +95,22 @@
   <!-- <div class = 'row top-row col-sm-12'> -->
      <!-- <div class = 'col-sm-9'> -->
          
-        <nav class="row top-row navbar navbar-expand-lg navbar-dark col-sm-12 ">
-            <i id = 'left-sidebar-toggler' style = 'margin-left:5px;margin-right:20px;' class="fa fa-bars fa-2x" onclick = 'toggleLeftSidebar()'></i>
+        <nav class="navbar navbar-expand-lg navbar-dark ">
+
+        
+
+            
+            <div >
+              
+              <a href="#"><i   id = 'left-sidebar-toggler' class="fa fa-angle-double-left fa-2x bg-black" onclick = 'toggleLeftSidebar()'></i></a> 
+              <a href="#"><i  id = 'right-sidebar-toggler' class="fa fa-angle-double-right fa-2x  bg-black" onclick = 'toggleRightSidebar()'></i></a> 
+              
+            
+            </div>
+      
+            <!-- <i id = 'left-sidebar-toggler' class="fa fa-arrow-left fa-bars" style = 'padding:  20px;margin-right:20px;' onclick = 'toggleLeftSidebar()'></i> -->
+           
+            <!-- <i  style = 'margin-left:5px;margin-right:20px;' class="fa fa-bars fa-2x" onclick = 'toggleLeftSidebar()'></i> -->
                 <!-- <div class="container-fluid"> -->
 
                     <!-- <button type="button" id="sidebarCollapse" class="navbar-btn">
@@ -123,15 +137,20 @@
          
         
                             
-                          <h5 class = 'study-area-label id='study-area-label' ></h5>   
+                          <h3 class = 'study-area-label' id='study-area-label' style = 'margin-right:20px;' ></h3>   
                           
-                        <h1>LCMS DATA EXPLORER</h1>
-                       
+                        <h3 style = 'color:#372E2C;'>LCMS DATA EXPLORER</h1>
+                       <a href="#"><i   class="navbar-toggler fa fa-bars fa-2x  bg-black" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></i></a>
+                            
 
-                        <ul class = 'nav navbar-nav ml-auto' style = 'margin-left:40px;'>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            
                           
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Study Area</a>
+                                
+                                <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Study Area</a>
                                 <div class="dropdown-menu" >
                                 <div class="dropdown-header">National Forest Products</div>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Bridger-Teton National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a>
@@ -145,7 +164,7 @@
                        
 
                              <li class="nav-item dropdown">
-                                  <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a>
+                                  <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a>
                                   
                                   <div class="dropdown-menu dropdown-menu-right" >
                                     
@@ -217,7 +236,7 @@
                               </li>
 
                               <li class="nav-item dropdown">
-                                  <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
+                                  <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
                                   <div class="dropdown-menu dropdown-menu-right bg-light" >
                                    
                                     <a class="dropdown-item  " onclick = 'toggleRadio("none")'  href="#" >Turn off Tools</a>
@@ -239,6 +258,10 @@
                                   <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#pre-defined")'  href="#" >Select Pre-defined Area</a>
                                 </div>
                               </li>
+                              <li><i   class="fa fa-info-circle fa-2x ml-auto" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i></li>
+          </ul>
+        </div>
+                        
                          
                              
                             <!-- <li class="nav-item">
@@ -257,7 +280,7 @@
                                 </select>
                             </li> -->
                             
-                           </ul>
+                           
                          
                             
                            
@@ -266,8 +289,9 @@
                     <!-- </div> -->
                <!--  </div> -->
             
-               <i   class="fa fa-info-circle fa-2x ml-auto" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
-               <i  id = 'right-sidebar-toggler'  class="fa fa-bars fa-2x ml-auto" onclick = 'toggleRightSidebar()'></i>
+               
+<!--                <i  id = 'right-sidebar-toggler'  class="fa fa-bars fa-2x ml-auto" onclick = 'toggleRightSidebar()'></i> -->
+
             </nav>
      <!-- </div> -->
             
@@ -304,13 +328,19 @@
     </div>
       <div class = 'col-lg-6' id = 'map'> </div>
       <div class = 'col-lg-3 sidebar  collapse show' id = 'sidebar-right' >
-          <div id="basic-tools-tab" style = 'color:#FFF;margin-top:20px;max-height:100%;'>
-                    <div id='distance-area-measurement'  onclick='toggleDistanceAreaUnits(this.value)' style='display:none;font-weight: bold;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></div>
+          
+                
+                 <div   class="panel-heading" role="tab" id="tools-list-collapse-label">
+                        <h4 class="panel-title"> <a class = 'tools-collapse-title' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="true" aria-controls="tools-list-collapse-div">Tools</a> </h4>
+                </div>
+                <div  id="tools-list-collapse-div" class="panel-collapse collapse show panel-body bg-black" role="tabpanel" aria-labelledby="tools-list-collapse-label">
+                       <div id="basic-tools-tab" class = 'bg-black'>
+                    <div class = 'bg-black' id='distance-area-measurement'  onclick='toggleDistanceAreaUnits(this.value)' style='display:none;font-weight: bold;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></div>
                     <!-- <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
-                    <div id='query-container' style='display:none;background-color:#000'></div>
+                    <div class = 'bg-black' id='query-container' style='display:none;'></div>
                     
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-                    <div id='charting-container' style='display: none;width:100%;font-weight: normal;'>
+                    <div id='charting-container' class = 'bg-black'style='display: none;width:100%;font-weight: normal;'>
                         <div id='whichIndexForChartingRadio' style='display:none;'>
                             <variable-radio var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
                             <br>
@@ -353,7 +383,7 @@
                                 <label for="inputsm">User-defined chart name</label>
                                 <input class="form-control input-sm" id="user-defined-area-name" type="text" placeholder="Chart Name">
                             </div>
-                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;'></div>
                             <button type="button" onclick='startUserDefinedAreaCharting()' class="button" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -384,9 +414,10 @@
                     </div>
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
                 </div>
-                <br>
+                </div>
+
                  <div   class="panel-heading" role="tab" id="legend-list-collapse-label">
-                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div"> Legend</a> </h4>
+                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'>Legend</a> </h4>
                 </div>
                 <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
                        <legend-list  id="legend"></legend-list>
