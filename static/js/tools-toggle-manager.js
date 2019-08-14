@@ -209,6 +209,7 @@ var widgetsOn = true;
       var leftRotate = 180;
       function toggleLeftSidebar(){
         var state = findCols();
+        console.log(state);
         $('#sidebar-left').toggle();
         $('#left-sidebar-toggler').css('transform','rotate('+leftRotate.toString()+'deg)');
         leftRotate +=180;
@@ -409,7 +410,9 @@ var widgetsOn = true;
              $("#menu-toggle").click(function(e) {
               e.preventDefault();
               $("#wrapper").toggleClass("toggled");
+
             });
+
 
         });
 
@@ -417,3 +420,16 @@ var widgetsOn = true;
                 
                 // var viewBeta = 'no';
                 var viewCONUS = 'no';
+
+    $('.keep-open').on({
+      "shown.bs.dropdown": function() { this.closable = true; },
+      "click":             function(e) { 
+          var target = $(e.target);
+          console.log(target);
+          if(target.hasClass("close-button") ) 
+              this.closable = true;
+          else 
+             this.closable = false; 
+      },
+      "hide.bs.dropdown":  function() { return this.closable; }
+    });

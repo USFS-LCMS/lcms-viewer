@@ -258,11 +258,11 @@
 			},
 			checkIt1:function(){
 				window[this.var] = this.value1;
-				reRun();
+				// reRun();
 			},
 			checkIt2:function(){
 				window[this.var] = this.value2;
-				reRun();
+				// reRun();
 			}
 			
 			
@@ -449,8 +449,9 @@ $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
 
       
      
-    },
-    stop: function(e,ui){reRun()}
+    }
+    // ,
+    // stop: function(e,ui){reRun()}
 
       });
     

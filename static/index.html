@@ -39,9 +39,6 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-       
-
-    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
    
     <!-- Latest compiled and minified JavaScript -->
@@ -66,7 +63,7 @@
 
 <body>
 
-    <div class = 'container col-12'>
+    <div class = 'container col-12 p-0'>
          <div id="info-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">
@@ -137,15 +134,16 @@
          
         
                             
-                          <h3 class = 'study-area-label' id='study-area-label' style = 'margin-right:20px;' ></h3>   
-                          
-                        <h3 style = 'color:#372E2C;'>LCMS DATA EXPLORER</h1>
-                       <a href="#"><i   class="navbar-toggler fa fa-bars fa-2x  bg-black" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></i></a>
+                          <h3 class = 'teal pl-1' id='study-area-label'  ></h3>   
+                      
+                        <h3 class = 'gray pl-1' style="font-weight:300">LCMS<span class = 'gray' style="font-weight:1000"> DATA </span>EXPLORER</h3>
                             
+                       <a href="#"><i   class="navbar-toggler fa fa-bars fa-2x  bg-black" data-toggle="collapse" data-target="#sa-params-tools-navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></i></a>
+                            
+                   
 
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <div class="collapse navbar-collapse bg-black" id="sa-params-tools-navbar">
+                        <ul class="navbar-nav ml-auto ">
             
                           
                             <li class="nav-item dropdown">
@@ -163,11 +161,14 @@
                               </li>
                        
 
-                             <li class="nav-item dropdown">
+                             <li class="nav-item dropdown keep-open">
                                   <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a>
                                   
                                   <div class="dropdown-menu dropdown-menu-right" >
-                                    
+                                   
+                                    <button  class = 'm-2 close-button pull-right hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters and map is updated, close window with this button">&times;</button>
+                                    <br>
+                                    <br>
                                     <div class="dropdown-header">Choose which mode</div>
                                       <a class="dropdown-item"   href="#" >
                          
@@ -178,7 +179,7 @@
                                       <div class="dropdown-divider"></div>
                                       <div class="dropdown-header">Choose Year Range</div>
                                       <a class="dropdown-item"   href="#" >
-                                          <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
+                                          <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
                                             <div class='dual-range-slider-name'>Analysis Years:</div>
                                             <div id="slider1" class='dual-range-slider-slider'></div>
                                             <div id='date-range-value1' class='dual-range-slider-value'></div>
@@ -199,6 +200,8 @@
                                             <div id="slider2" class='dual-range-slider-slider'></div>
                                             <div id='declineThreshold' class='dual-range-slider-value'></div>
                                         </div>
+                                    </a>
+                                    <a class="dropdown-item"   href="#" >
                                         <br>
                                         <div href="#" class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
                                             <div class='dual-range-slider-name'>Gain Threshold:</div>
@@ -229,6 +232,7 @@
 
         
 
+                                    <button onclick = 'reRun()' class = 'ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters, press this button to refresh maps">Submit</button>
 
                                   
                                 </div>
@@ -237,7 +241,7 @@
 
                               <li class="nav-item dropdown">
                                   <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
-                                  <div class="dropdown-menu dropdown-menu-right bg-light" >
+                                  <div class="dropdown-menu dropdown-menu-right bg-light " >
                                    
                                     <a class="dropdown-item  " onclick = 'toggleRadio("none")'  href="#" >Turn off Tools</a>
                                     <div class="dropdown-divider"></div>
@@ -297,41 +301,38 @@
             
            
   <!-- </div> -->
-  <div class = 'row middle-row'>
 
-    <div class = 'col-lg-3 sidebar collapse show' id = 'sidebar-left' >
+  <div class = 'row middle-row p-0'>
+
+    <div class = 'col-lg-3 sidebar collapse show p-0 flexcroll' id = 'sidebar-left' >
        
-<div >
-                        
+
+                           <div class="collapse navbar-collapse bg-light" id="sidebar-left-collapse">
+                        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                            safd
+                        </ul>
+                    </div>
                  
-                                        <div   class="panel-heading" role="tab" id="lcms-layer-list-collapse-label">
+                                        <div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="lcms-layer-list-collapse-label">
                                                 <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#lcms-layer-list-collapse-div" aria-expanded="true" aria-controls="lcms-layer-list-collapse-div"> LCMS <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
                                         </div>
-                                        <div id="lcms-layer-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="lcms-layer-list-collapse-label">
+                                        <div id="lcms-layer-list-collapse-div" class="panel-collapse collapse show panel-body p-2" role="tabpanel" aria-labelledby="lcms-layer-list-collapse-label">
                                                 <layer-list id="layers"></layer-list>
                                             </div>
                                       
-                                        <div   class="panel-heading" role="tab" id="reference-layer-list-collapse-label">
+                                        <div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="reference-layer-list-collapse-label">
                                                 <h4 class="panel-title"> <a class = ' layer-collapse-title' data-toggle="collapse"  href="#reference-layer-list-collapse-div" aria-expanded="true" aria-controls="reference-layer-list-collapse-div"> Reference <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
                                         </div>
-                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
+                                        
+                                        
+                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse show panel-body p-2 " role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
                                                <reference-layer-list id="reference-layers"></reference-layer-list>
                                         </div>
                           
-                </div>
+              
         
-
-
-          
-
-         
-    </div>
-      <div class = 'col-lg-6' id = 'map'> </div>
-      <div class = 'col-lg-3 sidebar  collapse show' id = 'sidebar-right' >
-          
-                
-                 <div   class="panel-heading" role="tab" id="tools-list-collapse-label">
-                        <h4 class="panel-title"> <a class = 'tools-collapse-title' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="true" aria-controls="tools-list-collapse-div">Tools</a> </h4>
+<div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="tools-list-collapse-label">
+                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="true" aria-controls="tools-list-collapse-div">Tools</a> </h4>
                 </div>
                 <div  id="tools-list-collapse-div" class="panel-collapse collapse show panel-body bg-black" role="tabpanel" aria-labelledby="tools-list-collapse-label">
                        <div id="basic-tools-tab" class = 'bg-black'>
@@ -416,18 +417,22 @@
                 </div>
                 </div>
 
-                 <div   class="panel-heading" role="tab" id="legend-list-collapse-label">
+                 <div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="legend-list-collapse-label">
                         <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'>Legend</a> </h4>
                 </div>
                 <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
                        <legend-list  id="legend"></legend-list>
                 </div>
-               
-      </div>
-  </div> 
-  <div class = 'row col-sm-12 bottom-row'>
-<p id='current-mouse-position'  style='float:right;margin-right:20px;margin-top:5px;'></p>
-    <div class = 'ml-auto' style='margin-right:20%;float:right;height:90%;margin-top:1px;'>
+
+          
+
+         
+    </div>
+      <div class = 'col-lg-9 map' id = 'map'> </div>
+      <div class = 'col-lg-0 sidebar  collapse show flexcroll p-0' id = 'sidebar-right' ></div>
+ <div class = 'row bottom-row col-12'>
+        <p id='current-mouse-position'  ></p>
+    <!-- <div class = 'ml-auto' style='margin-right:20%;float:right;height:90%;margin-top:1px;'>
 
             <a href="http://www.fs.fed.us//" target="_blank">
                 <img src="images/usfslogo.png" alt="FS Logo" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
@@ -441,13 +446,16 @@
             <a href="https://earthengine.google.com/" target="_blank">
                 <img src="images/GEE.png" alt="Powered by Google Earth Engine" style="float:right;height:100%;background-color:rgba(200,200,200,0.7);border-radius: 5px;margin-left:  5px;" href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
             </a>
-        </div>
+        </div> -->
        
       
   </div> 
       
       
   </div>
+  </div> 
+
+ 
 
 
 
@@ -530,7 +538,7 @@
                 </div>
                 <br>
                 <br>
-                <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#reference-layers-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
+                <img class='image-icon' src="icons/data-layers_968B83-01.svg" data-toggle="collapse" data-target="#reference-layers-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
                 <p class='image-icon-label' data-toggle="collapse" data-target="#reference-layers-tab">Reference</p>
                 <br>
                 <br>
