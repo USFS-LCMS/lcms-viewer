@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
    
     <!-- Latest compiled and minified JavaScript -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 <!--     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
@@ -92,18 +93,19 @@
   <!-- <div class = 'row top-row col-sm-12'> -->
      <!-- <div class = 'col-sm-9'> -->
          
-        <nav class="navbar navbar-expand-lg navbar-dark ">
+        <nav class=" col-lg-3 bg-black">
 
         
 
+                          
             
-            <div >
-              
-              <a href="#"><i   id = 'left-sidebar-toggler' class="fa fa-angle-double-left fa-2x bg-black" onclick = 'toggleLeftSidebar()'></i></a> 
-              <a href="#"><i  id = 'right-sidebar-toggler' class="fa fa-angle-double-right fa-2x  bg-black" onclick = 'toggleRightSidebar()'></i></a> 
+            
               
             
-            </div>
+              <!-- <a href="#"><i  id = 'right-sidebar-toggler' class="fa fa-angle-double-right fa-2x  bg-black" onclick = 'toggleRightSidebar()'></i></a>  -->
+              
+            
+           
       
             <!-- <i id = 'left-sidebar-toggler' class="fa fa-arrow-left fa-bars" style = 'padding:  20px;margin-right:20px;' onclick = 'toggleLeftSidebar()'></i> -->
            
@@ -133,23 +135,20 @@
        
          
         
-                            
-                          <h3 class = 'teal pl-1' id='study-area-label'  ></h3>   
-                      
-                        <h3 class = 'gray pl-1' style="font-weight:300">LCMS<span class = 'gray' style="font-weight:1000"> DATA </span>EXPLORER</h3>
-                            
-                       <a href="#"><i   class="navbar-toggler fa fa-bars fa-2x  bg-black" data-toggle="collapse" data-target="#sa-params-tools-navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></i></a>
-                            
-                   
+                            <h1 class = 'gray px-2 pb-0 m-0' style="font-weight:100;font-family: 'Roboto';font-size: calc(1vw + 2vh);">LCMS<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER</h1>
 
-                    <div class="collapse navbar-collapse bg-black" id="sa-params-tools-navbar">
-                        <ul class="navbar-nav ml-auto ">
-            
-                          
-                            <li class="nav-item dropdown">
+                            <div   style = 'display:inline-block;' href="#"id = 'left-sidebar-toggler' class="fa fa-bars  px-2 m-0" onclick = 'toggleLeftSidebar()'></div>
+                          <ul class = 'navbar-nav  pl-5  m-0'   style = 'display:inline-block;text-align:center;'>
+                            
+                              <li   class="nav-item dropdown navbar-dark navbar-nav nav-link" data-toggle="dropdown">
+
+                                <!-- <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a> -->
+
+                                <h5 href = '#' class = 'teal pl-1 caret nav-link dropdown-toggle' id='study-area-label'  >Bridger-Teton National Forest</h5> 
                                 
-                                <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Study Area</a>
-                                <div class="dropdown-menu" >
+                                 
+                                
+                                <div class="dropdown-menu dropdown-menu" >
                                 <div class="dropdown-header">National Forest Products</div>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Bridger-Teton National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a>
@@ -158,17 +157,112 @@
                                   <div class="dropdown-header">CONUS Nationwide</div>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Science Team CONUS NAFD")'  href="#" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</a>
                                 </div>
+                             
                               </li>
+                               
+                        </ul>
+                     
+                        
+                            
+                      <!--  <a href="#"><i   class="fa fa-bars fa-2x  bg-black" data-toggle="collapse" data-target="#sidebar-left" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></i></a> -->
+                            
+                   
+
+                    <div class="collapse navbar-collapse bg-black" id="sa-params-tools-navbar">
+                        
+            
+                            <script type="text/javascript">
+                                var lowerThresholdDecline = 0.3;
+                                var upperThresholdDecline = 1.0;
+                                var lowerThresholdRecovery = 0.3;
+                                var upperThresholdRecovery = 1.0;
+                                var studyAreaName = 'BTNF';
+                            </script>
+                            
                        
 
-                             <li class="nav-item dropdown keep-open">
-                                  <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a>
-                                  
-                                  <div class="dropdown-menu dropdown-menu-right" >
-                                   
-                                    <button  class = 'm-2 close-button pull-right hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters and map is updated, close window with this button">&times;</button>
-                                    <br>
-                                    <br>
+                           
+                              <i   class="fa fa-info-circle fa-2x ml-auto" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
+          
+        </div>
+                        
+                         
+                             
+                            <!-- <li class="nav-item">
+                               <select style='float:left;height:100%;' onclick="toggleRadio(this.value);">
+                                    <option value="" disabled selected>Tools</option>
+                                    <option value="none">Turn off Tools</option>
+                                    <optgroup label="Measuring Tools">
+                                        <option value="distance">Distance Measuring</option>
+                                        <option value="area">Area Measuring</option>
+                                    </optgroup>
+                                    <optgroup label="Charting Tools">
+                                        <option value="query">Inspector Single Pixel</option>
+                                        <option value="charting">Chart Time Series of Single Pixel</option>
+                                        <option value="areaCharting">Chart Time Series of an Area</option>
+                                    </optgroup>
+                                </select>
+                            </li> -->
+                            
+                           
+                         
+                            
+                           
+                            
+                        
+                    <!-- </div> -->
+               <!--  </div> -->
+            
+               
+<!--                <i  id = 'right-sidebar-toggler'  class="fa fa-bars fa-2x ml-auto" onclick = 'toggleRightSidebar()'></i> -->
+
+            </nav>
+     <!-- </div> -->
+            
+           
+  <!-- </div> -->
+
+  <div class = 'row middle-row p-0'>
+
+    <div class = 'col-lg-3 sidebar show p-0 flexcroll' id = 'sidebar-left' >
+   
+  <!--   <div class="panel panel-default">
+        <div class="panel-heading"  id="headingOne">
+             <h4 class="panel-title">
+        <a data-toggle="collapse"  href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Collapsible Group Item #1
+        </a>
+      </h4>
+
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.le VHS.</div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"  id="headingTwo">
+             <h4 class="panel-title">
+        <a class="collapsed" data-toggle="collapse"  href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Collapsible Group Item #2
+        </a>
+      </h4>
+
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.</div>
+        </div>
+    </div> -->
+    
+
+
+                            <div   class="panel-heading px-4 py-2 " role="tab" id="parameters-collapse-label">
+                                                <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#parameters-collapse-div" aria-expanded="false" aria-controls="parameters-collapse-div"> Parameters <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
+                                        </div>
+                                        <div id="parameters-collapse-div" class="panel-collapse collapse panel-body p-2" role="tabpanel" aria-labelledby="parameters-collapse-label">
+                                               
+                             <!--       
+                                    <button  class = 'm-2 close-button pull-right hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters and map is updated, close window with this button">&times;</button> -->
+                                
                                     <div class="dropdown-header">Choose which mode</div>
                                       <a class="dropdown-item"   href="#" >
                          
@@ -235,13 +329,38 @@
                                     <button onclick = 'reRun()' class = 'ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters, press this button to refresh maps">Submit</button>
 
                                   
-                                </div>
-
-                              </li>
-
-                              <li class="nav-item dropdown">
-                                  <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
-                                  <div class="dropdown-menu dropdown-menu-right bg-light " >
+                                
+                                            </div>
+                 
+                                        <div   class="panel-heading px-4 py-2 " role="tab" id="lcms-layer-list-collapse-label">
+                                                <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#lcms-layer-list-collapse-div" aria-expanded="true" aria-controls="lcms-layer-list-collapse-div"> LCMS <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
+                                        </div>
+                                        <div id="lcms-layer-list-collapse-div" class="panel-collapse collapse show panel-body px-0" role="tabpanel" aria-labelledby="lcms-layer-list-collapse-label">
+                                                <layer-list id="layers"></layer-list>
+                                            </div>
+                                      
+                                        <div   class="panel-heading px-4 py-2 " role="tab" id="reference-layer-list-collapse-label">
+                                                <h4 class="panel-title"> <a class = ' layer-collapse-title' data-toggle="collapse"  href="#reference-layer-list-collapse-div" aria-expanded="true" aria-controls="reference-layer-list-collapse-div"> Reference <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
+                                        </div>
+                                        
+                                        
+                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse panel-body px-0 " role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
+                                               <reference-layer-list id="reference-layers"></reference-layer-list>
+                                        </div>
+                          
+              
+        
+<div   class="panel-heading px-4 py-2 " role="tab" id="tools-list-collapse-label">
+                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div">Tools</a> </h4>
+                </div>
+                <div  id="tools-list-collapse-div" class="panel-collapse collapse  panel-body" role="tabpanel" aria-labelledby="tools-list-collapse-label">
+                       <div id="basic-tools-tab" class = 'bg-black'>
+                        
+                        <div class="dropdown">
+                          <a  href = "#" class=" dropdown-toggle bg-black" data-toggle="dropdown">
+                            Select Tool
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-right bg-light " >
                                    
                                     <a class="dropdown-item  " onclick = 'toggleRadio("none")'  href="#" >Turn off Tools</a>
                                     <div class="dropdown-divider"></div>
@@ -257,85 +376,12 @@
 
                                   <div class="dropdown-divider"></div>
                                   <div class = 'dropdown-header'><h5>Area Charting Tools</h5></div>
-                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#user-defined")'  href="#" >User Defined Area</a>
-                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#shp-defined")'  href="#" >Upload a Shapefile</a>
-                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;turnOnSidebar("right");areaChartingTabSelect("#pre-defined")'  href="#" >Select Pre-defined Area</a>
+                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#user-defined")'  href="#" >User Defined Area</a>
+                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#shp-defined")'  href="#" >Upload a Shapefile</a>
+                                  <a class="dropdown-item" onclick = 'startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#pre-defined")'  href="#" >Select Pre-defined Area</a>
                                 </div>
-                              </li>
-                              <li><i   class="fa fa-info-circle fa-2x ml-auto" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i></li>
-          </ul>
-        </div>
-                        
-                         
-                             
-                            <!-- <li class="nav-item">
-                               <select style='float:left;height:100%;' onclick="toggleRadio(this.value);">
-                                    <option value="" disabled selected>Tools</option>
-                                    <option value="none">Turn off Tools</option>
-                                    <optgroup label="Measuring Tools">
-                                        <option value="distance">Distance Measuring</option>
-                                        <option value="area">Area Measuring</option>
-                                    </optgroup>
-                                    <optgroup label="Charting Tools">
-                                        <option value="query">Inspector Single Pixel</option>
-                                        <option value="charting">Chart Time Series of Single Pixel</option>
-                                        <option value="areaCharting">Chart Time Series of an Area</option>
-                                    </optgroup>
-                                </select>
-                            </li> -->
-                            
-                           
-                         
-                            
-                           
-                            
-                        
-                    <!-- </div> -->
-               <!--  </div> -->
-            
-               
-<!--                <i  id = 'right-sidebar-toggler'  class="fa fa-bars fa-2x ml-auto" onclick = 'toggleRightSidebar()'></i> -->
-
-            </nav>
-     <!-- </div> -->
-            
-           
-  <!-- </div> -->
-
-  <div class = 'row middle-row p-0'>
-
-    <div class = 'col-lg-3 sidebar collapse show p-0 flexcroll' id = 'sidebar-left' >
-       
-
-                           <div class="collapse navbar-collapse bg-light" id="sidebar-left-collapse">
-                        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                            safd
-                        </ul>
-                    </div>
-                 
-                                        <div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="lcms-layer-list-collapse-label">
-                                                <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#lcms-layer-list-collapse-div" aria-expanded="true" aria-controls="lcms-layer-list-collapse-div"> LCMS <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
-                                        </div>
-                                        <div id="lcms-layer-list-collapse-div" class="panel-collapse collapse show panel-body p-2" role="tabpanel" aria-labelledby="lcms-layer-list-collapse-label">
-                                                <layer-list id="layers"></layer-list>
-                                            </div>
-                                      
-                                        <div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="reference-layer-list-collapse-label">
-                                                <h4 class="panel-title"> <a class = ' layer-collapse-title' data-toggle="collapse"  href="#reference-layer-list-collapse-div" aria-expanded="true" aria-controls="reference-layer-list-collapse-div"> Reference <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
-                                        </div>
-                                        
-                                        
-                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse show panel-body p-2 " role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
-                                               <reference-layer-list id="reference-layers"></reference-layer-list>
-                                        </div>
-                          
-              
-        
-<div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="tools-list-collapse-label">
-                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="true" aria-controls="tools-list-collapse-div">Tools</a> </h4>
-                </div>
-                <div  id="tools-list-collapse-div" class="panel-collapse collapse show panel-body bg-black" role="tabpanel" aria-labelledby="tools-list-collapse-label">
-                       <div id="basic-tools-tab" class = 'bg-black'>
+                        </div>
+                       
                     <div class = 'bg-black' id='distance-area-measurement'  onclick='toggleDistanceAreaUnits(this.value)' style='display:none;font-weight: bold;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring"></div>
                     <!-- <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
                     <div class = 'bg-black' id='query-container' style='display:none;'></div>
@@ -417,11 +463,11 @@
                 </div>
                 </div>
 
-                 <div   class="panel-heading pl-4 pr-4 pt-2 pb-2" role="tab" id="legend-list-collapse-label">
+                 <div   class="panel-heading px-4 py-2 " role="tab" id="legend-list-collapse-label">
                         <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'>Legend</a> </h4>
                 </div>
                 <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
-                       <legend-list  id="legend"></legend-list>
+                       <legend-list  class = 'px-4' id="legend"></legend-list>
                 </div>
 
           

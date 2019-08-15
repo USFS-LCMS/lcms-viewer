@@ -2,7 +2,7 @@
 
 <polymer-element name="base-list" noscript attributes="listName">
 	<template>
-		<style>
+	<!-- 	<style>
 			:host{				
 				margin-left:4px;
 				margin-right: 4px;
@@ -15,16 +15,12 @@
 				margin-top:4px;
 			}
 			div {
-				/*font-family:"Courier New", Courier, monospace;*/
-				/*font-weight:bold;*/
 				font-size: font-size:18pt;
-				/*text-decoration:overline;	
-							*/
 				text-align:center;				
 				margin-bottom:2px;
 				color: #FFFFFF;
 			}
-		</style>
+		</style> -->
 		<div>{{listName}}</div>
 		<content></content>
 	</template>
@@ -113,7 +109,8 @@
 
 <polymer-element name="export-list" noscript>
 	<template>
-	<style type="text/css">
+	
+	<!-- <style type="text/css">
 
 .button {
   display: inline-block;
@@ -147,7 +144,7 @@
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
-	</style>
+	</style> -->
 		<div style = 'background-color:#666;border-radius:5px;width:100%;'>
 		<base-list listName="Download Image List" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export.  Then check any images you would like to download, and then click  'Export Data' image for export">
 		<div style='width:99%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>

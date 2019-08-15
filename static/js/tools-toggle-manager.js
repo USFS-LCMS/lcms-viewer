@@ -153,17 +153,7 @@ var widgetsOn = true;
       }
       
       var colSize = 'lg'
-      function turnOnSidebar(which){
-        $('#legendDiv').show();
-        setIdCol('#map',6);
-        setIdCol('#sidebar-'+which,3);
-      };
-      function turnOffSidebar(which){
-        $('#legendDiv').hide();
-        setIdCol('#map',9);
-        setIdCol('#sidebar-'+which,0);
-
-      };
+     
 
       function setIdCol(id,n){
         console.log(id);
@@ -235,11 +225,24 @@ var widgetsOn = true;
           
         } 
       }
-      
+      //  function turnOnSidebar(which){
+      //   var rotate = eval(which+'Rotate');
+      //   $('#'+which+'-sidebar-toggler').css('transform','rotate('+rotate.toString()+'deg)');
+      //   eval(which+ 'Rotate += 180;')
+        
+      //   setIdCol('#map',9);
+      //   setIdCol('#sidebar-'+which,3);
+      // };
+      // function turnOffSidebar(which){
+      //   $('#legendDiv').hide();
+      //   setIdCol('#map',12);
+      //   setIdCol('#sidebar-'+which,0);
+
+      // };
       function toggleRadio(thisValue) {
        
         if (thisValue == 'charting') {
-          turnOnSidebar('right')
+          // turnOnSidebar('left')
           if (distanceOn) {
             toggleDistance()
           };
@@ -259,7 +262,7 @@ var widgetsOn = true;
             toggleCharting()
           };
         } else if (thisValue == 'distance') {
-          turnOnSidebar('right')
+          // turnOnSidebar('left')
           if (areaOn) {
             toggleArea()
           };
@@ -280,7 +283,7 @@ var widgetsOn = true;
           };
         } 
         else if (thisValue == 'query') {
-          turnOnSidebar('right')
+          // turnOnSidebar('left')
           if (areaOn) {
             toggleArea()
           };
@@ -319,7 +322,7 @@ var widgetsOn = true;
             toggleDrawing()
           };
         } else if (thisValue == 'area') {
-          turnOnSidebar('right')
+          // turnOnSidebar('left')
           if (drawing) {
             toggleDrawing()
           };
@@ -339,7 +342,7 @@ var widgetsOn = true;
             toggleArea()
           };
         } else if (thisValue == 'areaCharting') {
-          turnOnSidebar('right')
+          // turnOnSidebar('left')
           if (drawing) {
             toggleDrawing()
           };
@@ -421,15 +424,21 @@ var widgetsOn = true;
                 // var viewBeta = 'no';
                 var viewCONUS = 'no';
 
-    $('.keep-open').on({
-      "shown.bs.dropdown": function() { this.closable = true; },
-      "click":             function(e) { 
-          var target = $(e.target);
-          console.log(target);
-          if(target.hasClass("close-button") ) 
-              this.closable = true;
-          else 
-             this.closable = false; 
-      },
-      "hide.bs.dropdown":  function() { return this.closable; }
-    });
+    // $('.keep-open').on({
+    //   "shown.bs.dropdown": function() { this.closable = true; },
+    //   "click":             function(e) { 
+    //       var target = $(e.target);
+    //       console.log(target);
+    //       if(target.hasClass("close-button") ) 
+    //           this.closable = true;
+    //       else 
+    //          this.closable = false; 
+    //   },
+    //   "hide.bs.dropdown":  function() { return this.closable; }
+    // });
+    $(".dropdown-menu li a").click(function(){
+
+  $(this).parents(".btn-group").find('.selection').text($(this).text());
+  $(this).parents(".btn-group").find('.selection').val($(this).text());
+
+});
