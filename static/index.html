@@ -56,90 +56,86 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
  
-    
+     <script type="text/javascript">
+        var lowerThresholdDecline = 0.3;
+        var upperThresholdDecline = 1.0;
+        var lowerThresholdRecovery = 0.3;
+        var upperThresholdRecovery = 1.0;
+        var studyAreaName = 'BTNF';
+    </script>
 
 
 
 </head>
 
 <body>
-
-    <div class = 'container col-12 p-0'>
-         <div id="info-modal" class="modal fade" role="dialog">
+    <div   style = 'position:absolute;top:0%;left:0%;z-index:10000000000' href="#" class="fa fa-bars  px-1 py-2 m-0 " onclick = 'toggleLeftSidebar()'></div>
+    <div class = 'container col-12 p-0 bg-black'>
+    <!--      <div id="info-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+
+            <div class="modal-header">
+            <h4 class="modal-title">A little bit about this app</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+         
+          <div class="modal-body">
+            <p>This website is designed to provide a visualiztion of LCMS landcover change products, related geospatial data, and a portal to download the data</p>
+                        <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
+                        <input onclick="downloadTraining();" type=button class='button' id="download-training-button" value="Download Training Tutorial" style='display:inline-block;width:100%;margin-top:3px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download training tutorial pdf">
+          </div>
+
+         
+          <div class="modal-footer">
+           
+          </div>
+
+        </div>
+        </div>
+        </div> -->
+
+        <div id = "curve_chart_big_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
             <div class="modal-content bg-dark">
 
             <!-- Modal Header -->
             <div class="modal-header">
-            <h4 class="modal-title">A little bit about this app</h4>
+            <h4 class="modal-title">Chart</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
+          </div>
 
-      <!-- Modal body -->
-      <div class="modal-body">
-        <p>This website is designed to provide a visualiztion of LCMS landcover change products, related geospatial data, and a portal to download the data</p>
-                    <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-                    <input onclick="downloadTraining();" type=button class='button' id="download-training-button" value="Download Training Tutorial" style='display:inline-block;width:100%;margin-top:3px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to download training tutorial pdf">
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-       
-      </div>
-
-    </div>
-  </div>
-</div>
-  <!-- <div class = 'row top-row col-sm-12'> -->
-     <!-- <div class = 'col-sm-9'> -->
-         
-        <nav class=" col-lg-3 bg-black">
-
-        
-
-                          
-            
-            
-              
-            
-              <!-- <a href="#"><i  id = 'right-sidebar-toggler' class="fa fa-angle-double-right fa-2x  bg-black" onclick = 'toggleRightSidebar()'></i></a>  -->
-              
-            
+          <!-- Modal body -->
+          <div class="modal-body" id = 'curve_chart_big'>
            
-      
-            <!-- <i id = 'left-sidebar-toggler' class="fa fa-arrow-left fa-bars" style = 'padding:  20px;margin-right:20px;' onclick = 'toggleLeftSidebar()'></i> -->
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
            
-            <!-- <i  style = 'margin-left:5px;margin-right:20px;' class="fa fa-bars fa-2x" onclick = 'toggleLeftSidebar()'></i> -->
-                <!-- <div class="container-fluid"> -->
+          </div>
 
-                    <!-- <button type="button" id="sidebarCollapse" class="navbar-btn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button> -->
+        </div>
+        </div>
+              <!-- <div id="curve_chart_big" class = 'bg-black' style="display: none;position:absolute; right:30%;bottom:15%;z-index:10000000;"></div>  -->
+        </div>
 
-                    <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
-                      <!--   <ul class="nav navbar-nav ">
-                            <div class="navbar-header">
-                                <div class="sidebar-header">
-                                <h4>Landscape Change Monitoring System <h5 id='study-area-label'></h5></h4>
-                                
-                                
-                                </div>
-                                
-                            </div>
-                        </ul> -->
-       
-         
+          
+
+                   
+          
+                  
+
+  <div class = 'row middle-row p-0'>
+
+    <div class = 'col-lg-3 sidebar show p-0 m-0 flexcroll' id = 'sidebar-left' >
         
-                            <h1 class = 'gray px-2 pb-0 m-0' style="font-weight:100;font-family: 'Roboto';font-size: calc(1vw + 2vh);">LCMS<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER</h1>
+    <h1 class = 'gray px-4 py-1 pb-0 m-0' style="font-weight:100;font-family: 'Roboto';font-size: calc(1vw + 2vh);">LCMS<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER</h1>
 
-                            <div   style = 'display:inline-block;' href="#"id = 'left-sidebar-toggler' class="fa fa-bars  px-2 m-0" onclick = 'toggleLeftSidebar()'></div>
+                           <!--  <div   style = 'display:inline-block;' href="#"id = 'left-sidebar-toggler' class="fa fa-bars  px-2 m-0" onclick = 'toggleLeftSidebar()'></div> -->
                           <ul class = 'navbar-nav  pl-5  m-0'   style = 'display:inline-block;text-align:center;'>
-                            
+                            <!-- <i   class="fa fa-info-circle fa-2x  bg-dark "  data-toggle="modal" data-target="#curve_chart_big" href="#" ></i> -->
                               <li   class="nav-item dropdown navbar-dark navbar-nav nav-link" data-toggle="dropdown">
 
                                 <!-- <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a> -->
@@ -161,104 +157,14 @@
                               </li>
                                
                         </ul>
-                     
+                    
                         
-                            
-                      <!--  <a href="#"><i   class="fa fa-bars fa-2x  bg-black" data-toggle="collapse" data-target="#sidebar-left" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></i></a> -->
-                            
-                   
-
-                    <div class="collapse navbar-collapse bg-black" id="sa-params-tools-navbar">
-                        
-            
-                            <script type="text/javascript">
-                                var lowerThresholdDecline = 0.3;
-                                var upperThresholdDecline = 1.0;
-                                var lowerThresholdRecovery = 0.3;
-                                var upperThresholdRecovery = 1.0;
-                                var studyAreaName = 'BTNF';
-                            </script>
-                            
-                       
-
-                           
-                              <i   class="fa fa-info-circle fa-2x ml-auto" style='color:#FFF' data-toggle="modal" data-target="#info-modal" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about this app"></i>
-          
-        </div>
-                        
-                         
-                             
-                            <!-- <li class="nav-item">
-                               <select style='float:left;height:100%;' onclick="toggleRadio(this.value);">
-                                    <option value="" disabled selected>Tools</option>
-                                    <option value="none">Turn off Tools</option>
-                                    <optgroup label="Measuring Tools">
-                                        <option value="distance">Distance Measuring</option>
-                                        <option value="area">Area Measuring</option>
-                                    </optgroup>
-                                    <optgroup label="Charting Tools">
-                                        <option value="query">Inspector Single Pixel</option>
-                                        <option value="charting">Chart Time Series of Single Pixel</option>
-                                        <option value="areaCharting">Chart Time Series of an Area</option>
-                                    </optgroup>
-                                </select>
-                            </li> -->
-                            
-                           
-                         
-                            
-                           
-                            
-                        
-                    <!-- </div> -->
-               <!--  </div> -->
-            
-               
-<!--                <i  id = 'right-sidebar-toggler'  class="fa fa-bars fa-2x ml-auto" onclick = 'toggleRightSidebar()'></i> -->
-
-            </nav>
-     <!-- </div> -->
-            
-           
-  <!-- </div> -->
-
-  <div class = 'row middle-row p-0'>
-
-    <div class = 'col-lg-3 sidebar show p-0 flexcroll' id = 'sidebar-left' >
-   
-  <!--   <div class="panel panel-default">
-        <div class="panel-heading"  id="headingOne">
-             <h4 class="panel-title">
-        <a data-toggle="collapse"  href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Collapsible Group Item #1
-        </a>
-      </h4>
-
-        </div>
-        <div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne">
-            <div class="panel-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.le VHS.</div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading"  id="headingTwo">
-             <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse"  href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Collapsible Group Item #2
-        </a>
-      </h4>
-
-        </div>
-        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-            <div class="panel-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.</div>
-        </div>
-    </div> -->
-    
 
 
                             <div   class="panel-heading px-4 py-2 " role="tab" id="parameters-collapse-label">
-                                                <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#parameters-collapse-div" aria-expanded="false" aria-controls="parameters-collapse-div"> Parameters <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
+                                                <h5 class="panel-title"> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#parameters-collapse-div" aria-expanded="false" aria-controls="parameters-collapse-div"><i class="fa fa-birthday-cake mr-1" aria-hidden="true"></i> Parameters </a> </h5>
                                         </div>
-                                        <div id="parameters-collapse-div" class="panel-collapse collapse panel-body p-2" role="tabpanel" aria-labelledby="parameters-collapse-label">
+                                        <div id="parameters-collapse-div" class="panel-collapse collapse panel-body px-4 " role="tabpanel" aria-labelledby="parameters-collapse-label">
                                                
                              <!--       
                                     <button  class = 'm-2 close-button pull-right hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters and map is updated, close window with this button">&times;</button> -->
@@ -333,33 +239,54 @@
                                             </div>
                  
                                         <div   class="panel-heading px-4 py-2 " role="tab" id="lcms-layer-list-collapse-label">
-                                                <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#lcms-layer-list-collapse-div" aria-expanded="true" aria-controls="lcms-layer-list-collapse-div"> LCMS <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
+                                                <h5 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#lcms-layer-list-collapse-div" aria-expanded="true" aria-controls="lcms-layer-list-collapse-div"> <img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">LCMS </a> </h5>
                                         </div>
                                         <div id="lcms-layer-list-collapse-div" class="panel-collapse collapse show panel-body px-0" role="tabpanel" aria-labelledby="lcms-layer-list-collapse-label">
                                                 <layer-list id="layers"></layer-list>
                                             </div>
                                       
                                         <div   class="panel-heading px-4 py-2 " role="tab" id="reference-layer-list-collapse-label">
-                                                <h4 class="panel-title"> <a class = ' layer-collapse-title' data-toggle="collapse"  href="#reference-layer-list-collapse-div" aria-expanded="true" aria-controls="reference-layer-list-collapse-div"> Reference <img style = 'width:20px;' class='image-icon' src="images/layer_icon.png"></a> </h4>
+                                                <h5 class="panel-title"> <a class = ' layer-collapse-title ' data-toggle="collapse"  href="#reference-layer-list-collapse-div" aria-expanded="true" aria-controls="reference-layer-list-collapse-div"> <img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">Reference </a> </h5>
                                         </div>
                                         
                                         
-                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse panel-body px-0 " role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
+                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse show panel-body px-0 " role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
                                                <reference-layer-list id="reference-layers"></reference-layer-list>
                                         </div>
                           
               
         
-<div   class="panel-heading px-4 py-2 " role="tab" id="tools-list-collapse-label">
-                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div">Tools</a> </h4>
+                <div   class="panel-heading px-4 py-2 " role="tab" id="tools-list-collapse-label">
+                        <h5 class="panel-title"> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div"><i class="fa fa-cog mr-1" aria-hidden="true"></i>Tools</a> </h5>
                 </div>
-                <div  id="tools-list-collapse-div" class="panel-collapse collapse  panel-body" role="tabpanel" aria-labelledby="tools-list-collapse-label">
-                       <div id="basic-tools-tab" class = 'bg-black'>
+                <div  id="tools-list-collapse-div" class="panel-collapse collapse panel-body px-4  " role="tabpanel" aria-labelledby="tools-list-collapse-label">
+                    <!-- <div class = 'px-4'>
+                         <div   class="panel-heading px-6 " role="tab" id="distance-measuring-collapse-label">
+                        <h6 class="panel-title  "> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#distance-measuring-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div">Distance Measuring</a> </h6>
+                    </div> 
+                        <div  id="distance-measuring-collapse-div" class="panel-collapse collapsepanel-body  px-6" role="tabpanel" aria-labelledby="distance-measuring-collapse-label">xzczxczx</div>
+                    </div>
+                   
+
+
+                    <div   class="panel-heading " role="tab" id="distance-measuring-collapse-label">
+                        <h6 class="panel-title  "> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#distance-measuring-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div">Distance Measuring</a> </h6>
+                    </div> 
+                        <div  id="distance-measuring-collapse-div" class="panel-collapse collapsepanel-body  px-6" role="tabpanel" aria-labelledby="distance-measuring-collapse-label">xzczxczx</div>
+
+                    <div   class="panel-heading " role="tab" id="distance-measuring-collapse-label">
+                        <h6 class="panel-title  "> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#distance-measuring-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div">Distance Measuring</a> </h6>
+                    </div> 
+                        <div  id="distance-measuring-collapse-div" class="panel-collapse collapsepanel-body  px-6" role="tabpanel" aria-labelledby="distance-measuring-collapse-label">xzczxczx</div> -->
+
+
+                       <div id="basic-tools-tab" class = 'bg-black ' >
                         
-                        <div class="dropdown">
-                          <a  href = "#" class=" dropdown-toggle bg-black" data-toggle="dropdown">
-                            Select Tool
+                        <div class="dropdown ">
+                          <a  href = "#" class=" dropdown-toggle bg-black px-6" data-toggle="dropdown">
+                            Select Tool 
                           </a>
+
                           <div class="dropdown-menu dropdown-menu-right bg-light " >
                                    
                                     <a class="dropdown-item  " onclick = 'toggleRadio("none")'  href="#" >Turn off Tools</a>
@@ -392,7 +319,7 @@
                             <variable-radio var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
                             <br>
                         </div>
-                        <!-- <div id=areaChartingTabs style='display:none;'>
+                        <div id=areaChartingTabs style='display:none;'>
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link fa fa-pencil fa-1x" id="user-defined-zones" data-toggle="tab" href="#user-defined" role="tab" aria-controls="user-defined" aria-selected="true" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Draw an area to summarize LCMS products across. Click on map to draw polygon for summarizing.  Double click to finish drawing"></a>
@@ -419,7 +346,7 @@
                                     <select id='forestBoundaries' style='background-color: #555' onchange='chartChosenArea()'></select>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div id = 'user-defined' style = 'display:none;'>
                             <br>
                             <h8>Click on map to draw polygon<br>Double-click to finish drawing polygon<br>The chart will then be automatically created</h8>
@@ -456,7 +383,7 @@
                                 var plotScale = 30;
                                 // listenForUserDefinedAreaCharting(); //startAreaCharting();
                             </script>
-                            <div id="curve_chart" style="display: none;background: #000;max-height:500px;overflow-y:auto;"></div>
+                            <div id="curve_chart" class = 'bg-black' style="display: none;max-height:500px;overflow-y:auto;"></div>
                         </div>
                     </div>
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -464,7 +391,7 @@
                 </div>
 
                  <div   class="panel-heading px-4 py-2 " role="tab" id="legend-list-collapse-label">
-                        <h4 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'>Legend</a> </h4>
+                        <h5 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'>Legend</a> </h5>
                 </div>
                 <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
                        <legend-list  class = 'px-4' id="legend"></legend-list>
@@ -557,7 +484,7 @@
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <img id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:100px;height:100px;z-index:10000000;'>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <div id="curve_chart_big" style="display: none;position:absolute;z-index:1;background: #000; right:30%;bottom:15%;z-index:10000000;"></div>
+ 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 

@@ -11,7 +11,7 @@ var cssClassNames = {
 'tableCell': 'googleChartTable',
 'rowNumberCell': 'googleChartTable'};
 
-var expandedWidth = 900;
+var expandedWidth = 600;
 var expandedHeight = 400;
 var chartOptions = {
   title: uriName,
@@ -38,7 +38,7 @@ var chartOptions = {
    explorer: {  actions: [] },
     chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
     legendArea:{width:'20%'},
-   backgroundColor: { fill: "#000" }
+   backgroundColor: { fill: "#1B1716" }
 
 };
 var tableOptions = {
@@ -414,7 +414,8 @@ function makeAreaChart(area,name,target,userDefined){
 				chartOptionsT.title = title;
 
 				var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
-				chartOptionsTBig.width = expandedWidth;chartOptionsTBig.height= expandedHeight;
+				// chartOptionsTBig.width = expandedWidth;
+				chartOptionsTBig.height= expandedHeight;
 				
 				var data = google.visualization.arrayToDataTable(dataTableT);
 				var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
@@ -439,18 +440,18 @@ function makeAreaChart(area,name,target,userDefined){
 					$('#summary-spinner').slideUp();
 				
 				
-
+				// var exportCSVTooltip = 
 				var bottomBarSmall = '<div style = "position:inline-block;">\
-				<a href="#"><i class="fa fa-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
-				<a href="#"><i class="fa fa-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
+				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
+				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
 				<a href="#"><i class="fa fa-expand bg-black ml-auto" onclick="expandChart();" style= "position:inline-block;"></i></a>\
 				<a href="#"><i class="fa fa-trash bg-black  ml-auto"  onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= position:inline-block;"></i></a>\
 				</div>';
 
 				var bottomBarLarge = '<div style = "position:inline-block;">\
-				<a href="#"><i class="fa fa-download bg-black" onclick="downloadURI();" style= "position:inline-block;">Graph</i></a>\
-				<a href="#"><i class="fa fa-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
-				<a href="#"><i class="fa fa-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
+				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="downloadURI();" style= "position:inline-block;">Graph</i></a>\
+				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
+				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
 				<a href="#"><i class="fa fa-trash bg-black  ml-auto"  onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= position:inline-block;"></i></a>\
 				</div>';
 				$('#curve_chart').append(bottomBarSmall);
@@ -711,7 +712,8 @@ function Chart(showExpanded){
 				else{chartOptionsT.hAxis.title = 'Time'};
 			chartOptionsT.title = uriName.replaceAll('_',' ');
 			var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
-			chartOptionsTBig.width = expandedWidth;chartOptionsTBig.height= expandedHeight;
+			// chartOptionsTBig.width = expandedWidth;
+			chartOptionsTBig.height= expandedHeight;
 
 			
 			var data = google.visualization.arrayToDataTable(dataTableT);
