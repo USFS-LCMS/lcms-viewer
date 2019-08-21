@@ -74,7 +74,7 @@ var cpDict = {
 
 var chartIncludeDate = true;var chartCollection;var areaChartCollection;var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
-var updateArea;var updateDistance;var areaPolygonObj = {}
+var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;
 ///////////////////////////////////////////////////////////////////
 //Function to compute range list on client side
 function range(start, stop, step){
@@ -410,10 +410,10 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         legendItemContainer.setAttribute("id", name);
 
 
-        var legendBreak = document.createElement("legend-break");
+        // var legendBreak = document.createElement("legend-break");
      
  
-      legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
+      // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
         var legend = document.createElement("ee-legend");
         legend.name = name;
@@ -769,7 +769,7 @@ function reRun(){
         overlayIndex++
 
 	}
-  map.overlayMapTypes.j.forEach(function(element,index){
+  map.overlayMapTypes.g.forEach(function(element,index){
                     
                     // if(element !== undefined && element !== null){
                         // console.log('remooooooving');
@@ -923,13 +923,13 @@ var areaPolygonOptions = {
             };
 function startArea(){
   if(polyOn === false){
-    $( "#distance-area-measurement" ).html( 'Click on map to start measuring<br>Press "Delete" or "d" button to clear<br>Press "u" to undo last vertex placement<br>Press "None" radio button to stop measuring');
+    $( "#area-measurement" ).html( 'Click on map to start measuring<br>Press "Delete" or "d" button to clear<br>Press "u" to undo last vertex placement<br>Press "None" radio button to stop measuring');
     polyOn = true;
   }
   // 
    // $( "#distance-area-measurement" ).style.width = '0px';
-  document.getElementById('distance-area-measurement').style.display = 'block';
-  document.getElementById('distance-area-measurement').value = 'a';
+  document.getElementById('area-measurement').style.display = 'block';
+  document.getElementById('area-measurement').value = 'a';
   currentColor =  colorList[colorMod%colorList.length];
     areaPolygonOptions = {
               strokeColor:currentColor,
@@ -1014,7 +1014,7 @@ function startArea(){
           if(keys.length>1){
             polyString = 'polygons';
           }
-          $( "#distance-area-measurement" ).html(totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName );//+' <br>' +pixelProp.toFixed(2) + '%pixel');
+          $( "#area-measurement" ).html(totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName );//+' <br>' +pixelProp.toFixed(2) + '%pixel');
     
       
             // }       
@@ -1074,7 +1074,9 @@ function startListening(){
         updateArea();
     
     });
-    google.maps.event.addDomListener(mapDiv, 'dblclick', function() {
+    // google.maps.event.addDomListener(mapDiv, 'dblclick', function() {
+    mapHammer = new Hammer(document.getElementById('map'));
+    mapHammer.on("doubletap",function(){
         // console.log('doubleClicked');
         // newPoly();
         // startArea();
@@ -1184,9 +1186,10 @@ function clearPolys(){
 }
 function stopArea(){
   google.maps.event.clearListeners(mapDiv, 'dblclick');
+  mapHammer.destroy();
     google.maps.event.clearListeners(mapDiv, 'click');
-  $( "#distance-area-measurement" ).html( '');
-  document.getElementById('distance-area-measurement').style.display = 'none';
+  $( "#area-measurement" ).html( '');
+  document.getElementById('area-measurement').style.display = 'none';
   map.setOptions({disableDoubleClickZoom: true });
   
   clearPolys();
@@ -1211,9 +1214,9 @@ function newPolygon(){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 function startDistance(){
-  $( "#distance-area-measurement" ).html( 'Click on map to start measuring<br>Double click to finish measurement');
-  document.getElementById('distance-area-measurement').style.display = 'inline-block';
-  document.getElementById('distance-area-measurement').value = 'd';
+  $( "#distance-measurement" ).html( 'Click on map to start measuring<br>Double click to finish measurement');
+  document.getElementById('distance-measurement').style.display = 'inline-block';
+  document.getElementById('distance-measurement').value = 'd';
     var distancePolylineOptions = {
               strokeColor: '#FF0',
               icons: [{
@@ -1265,7 +1268,9 @@ function startDistance(){
 
 
     google.maps.event.addListener(distancePolyline, "click", updateDistance);
-    google.maps.event.addDomListener(mapDiv, "dblclick", resetPolyline);
+    mapHammer = new Hammer(document.getElementById('map'));
+    mapHammer.on("doubletap", resetPolyline)
+    // google.maps.event.addDomListener(mapDiv, "dblclick", resetPolyline);
     google.maps.event.addListener(distancePolyline, "mouseup", updateDistance);
     google.maps.event.addListener(distancePolyline, "dragend", updateDistance);
     google.maps.event.addListener(distancePolyline.getPath(), 'set_at',  updateDistance);
@@ -1275,8 +1280,9 @@ function startDistance(){
     }
 
 function stopDistance(){
-  $( "#distance-area-measurement" ).html( '');
-  document.getElementById('distance-area-measurement').style.display = 'none';
+  $( "#distance-measurement" ).html( '');
+  document.getElementById('distance-measurement').style.display = 'none';
+  mapHammer.destroy();
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(distancePolyline, 'click');
@@ -1326,7 +1332,7 @@ updateDistance = function(){
     if(distance > 0){
      
 
-          $( "#distance-area-measurement" ).html(distance.toFixed(4) + ' ' + unitName );
+          $( "#distance-measurement" ).html(distance.toFixed(4) + ' ' + unitName );
     
 
 

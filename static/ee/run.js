@@ -733,11 +733,11 @@ if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('
 ///////////////////////////////////////////////
 function runCONUS(){
   //Bring in reference data
-var hansen = ee.Image('UMD/hansen/global_forest_change_2017_v1_5');
+var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6');
 var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
 var hansenGain = hansen.select(['gain']);
 hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));
-Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
+Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPalette,'opacity':0.5},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
 Map2.addLayer(hansenGain.updateMask(hansenGain),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
 
 

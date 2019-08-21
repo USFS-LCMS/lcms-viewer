@@ -20,7 +20,7 @@
             
             
      
-            background-color: #000;
+            background-color: rgba(0,0,0,1);
             height: 2px;
             
             width:15%;
@@ -32,10 +32,10 @@
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none !important;
             
-            background-color: #000;
-            
-            /*box-shadow:inset 0 0 1px #847779;
-            border: 0px solid #999;*/
+            background-color: rgba(0,0,0,{{rangeOpacity}});
+            /*outline-color: #000;*/
+            /*box-shadow:inset 0 0 1px #847779;*/
+            border: 2px solid #000;
             height: 15px;
             width: 8px;
         }
@@ -57,7 +57,7 @@
                 /*color: -webkit-linear-gradient(left, #FFF, #ACA199 {{percent}}%, transparent {{percent}}%, transparent 100%);*/
             }
             #viz:hover{width:50px;}
-            li:hover{color:#00BFA5;-webkit-transition: color  0.5s;}
+            li:hover{color:#00897B;-webkit-transition: color  0.5s;}
             .leftLabel{float:left;}
             .rightLabel{float:right;}
             .deactivated{display:none;}
@@ -70,12 +70,13 @@
             }*/
             /*.legend{color: #000;font-weight: bold;float:right;height:10;width:200px;margin: 0 0 10px 10px;}*/
             .range{float:right;}
-            #opacity{margin-left:1Spx;}
+            /*#opacity{margin-left:1Spx;}*/
         </style>
-        <li  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
+        <li   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
 
             <i class="fa fa-spinner fa-spin {{ {deactivated:layer != null}| tokenList }}"></i><input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> {{name}}
-            <input id="opacity"  type="range" class="range" value=100 style = '' on-input="{{onRangeChange}}">
+            <!-- <label class = 'rightLabel'>{{opacity}}</label> -->
+            <input id="opacity"  type="range"  class="range" value=100 style = '' on-input="{{onRangeChange}}">
         
         </li>
 
@@ -93,10 +94,12 @@
             highWaterMark:0,
             urls:null,
             percent:0,
+            
+            
             created:function(){
                 this.layerId = nextId;
                 this.name = name;
-                
+                this.rangeOpacity = this.opacity;
                 nextId += 1;
                 this.urls=[];
             },
@@ -118,13 +121,16 @@
                     }
 
                     inst.percent = 100-((event.count / inst.highWaterMark) * 100);
+                
                 });
                 
                 if(this.visible){
                     this.map.overlayMapTypes.setAt(this.layerId, this.layer);
-                    $('#'+this.name).show();  
+                    $('#'+this.name).show();
+                    this.rangeOpacity = this.opacity;  
                 }else{
-                  $('#'+this.name).hide();  
+                  $('#'+this.name).hide();
+                  this.rangeOpacity = 0;  
                 }
 
                 
@@ -139,11 +145,12 @@
                     // this.detached();
                     this.percent = 0;
                     $('#'+this.name).hide();
-
+                    this.rangeOpacity = 0;
 
                 }else{
                     this.map.overlayMapTypes.setAt(this.layerId,this.layer);
                     $('#'+this.name).show();
+                    this.rangeOpacity = this.opacity;
 
                     // this.$.opacity.disabled = false;
                     // this.detached();
@@ -165,9 +172,17 @@
                 localStorage.setItem("layerObj",JSON.stringify(layerObj));
             },
             onRangeChange:function(){
+            
                 var item = queryObj[this.name][1];
-                this.layer.setOpacity(this.getOpacity());
-                layerObj[this.name] = [this.visible,this.getOpacity()];
+                var opacity = this.getOpacity();
+            
+                this.layer.setOpacity(opacity);
+                this.opacity = opacity;
+                if(this.visible){
+                    this.rangeOpacity = opacity;
+                }
+                
+                layerObj[this.name] = [this.visible,opacity];
                 queryObj[this.name] = [this.visible,item];
                 if(typeof(Storage) == "undefined") return;
                 localStorage.setItem("layerObj",JSON.stringify(layerObj));

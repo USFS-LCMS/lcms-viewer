@@ -198,17 +198,18 @@ var widgetsOn = true;
       }
       var leftRotate = 180;
       function toggleLeftSidebar(){
-        var state = findCols();
-        console.log(state);
-        $('#sidebar-left').toggle();
+        // var state = findCols();
+        // console.log(state);
+       
         $('#left-sidebar-toggler').css('transform','rotate('+leftRotate.toString()+'deg)');
         leftRotate +=180;
-        if(state.left > 0){
-          updateCols(0,state.right);
-        }
-        else{
-          updateCols(3,state.right);
-        } 
+        // if(state.left > 0){
+          // updateCols(0,state.right);
+        // }
+        // else{
+          // updateCols(3,state.right);
+        // } 
+         $('#sidebar-left').toggle();
       }
       var rightRotate = 180;
       function toggleRightSidebar(){
@@ -387,6 +388,8 @@ var widgetsOn = true;
       }
 
       $(document).ready(function () {
+         $("a").tooltip();
+         
             // $('#sidebarCollapse').on('click', function () {
             //     $('#sidebar').toggleClass('active');
             //     $('#sidebar-tools').toggle();
@@ -442,3 +445,32 @@ var widgetsOn = true;
   $(this).parents(".btn-group").find('.selection').val($(this).text());
 
 });
+
+  // $("body").on("swipeleft",function(){toggleLeftSidebar()});
+  // $("body").on("swiperight",function(){toggleLeftSidebar()});
+
+
+
+// create a simple instance
+// by default, it only adds horizontal recognizers
+var sidebarLeftHammer = new Hammer(document.getElementById('sidebar-left'));
+var mcHammer = new Hammer(document.getElementById('main-container'));
+// listen to events...
+// sidebarLeftHammer.on("panleft", function() {toggleLeftSidebar()});
+
+
+var dontShowAgain;
+if(localStorage.showIntroModal == undefined){
+  localStorage.showIntroModal = 'true';
+  }
+if(localStorage.showIntroModal === 'true'){
+  $('#introModal').modal().show();
+}
+$('#dontShowAgainCheckbox').change(function(){
+  console.log(this.checked)
+  localStorage.showIntroModal  = !this.checked;
+  
+});
+$('#title-banner').fitText(1.2);
+$('#study-area-label').fitText(1.3);
+
