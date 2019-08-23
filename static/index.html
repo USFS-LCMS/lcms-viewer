@@ -144,13 +144,15 @@
 
                                 <h5 href = '#' onclick = "$('#sidebar-left').show('fade')" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
                                 
-                                 
+                              
                                 
                                 <div class="dropdown-menu dropdown-menu" >
-                                <div class="dropdown-header">National Forest Products</div>
-                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Bridger-Teton National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a>
+                                <div class="dropdown-header" id = 'studyAreaDropdownList'>National Forest Products</div>
+
+                                 
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Manti-La Sal National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</a>
+                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Chugach National Forest - Kenai Peninsula")'  href="#" data-toggle="tooltip" data-placement="top" title="Chugach National Forest - Kenai Peninsula" value="Chugach National Forest - Kenai Peninsula">Chugach National Forest - Kenai Peninsula</a>
                                   <div class="dropdown-divider"></div>
                                   <div class="dropdown-header">CONUS Nationwide</div>
                                   <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Science Team CONUS NAFD")'  href="#" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</a>
@@ -182,9 +184,9 @@
                                       <div >Choose Year Range</div>
                                       <a  >
                                           <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
-                                            <div class='dual-range-slider-name'>Analysis Years:</div>
+                                            <div class='dual-range-slider-name m-2'>Analysis Years:</div>
                                             <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
-                                            <div id='date-range-value1' class='dual-range-slider-value'></div>
+                                            <div id='date-range-value1' class='dual-range-slider-value m-2'></div>
                                         </div>
                                         <script type="text/javascript">
                                             var startYear = 1985;
@@ -198,17 +200,17 @@
                                   <div  >Choose Thresholds</div>
                                     <a >
                                         <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-                                            <div class='dual-range-slider-name'>Loss Threshold:</div>
+                                            <div class='dual-range-slider-name m-2'>Loss Threshold:</div>
                                             <div id="slider2" class='dual-range-slider-slider'></div>
-                                            <div id='declineThreshold' class='dual-range-slider-value'></div>
+                                            <div id='declineThreshold' class='dual-range-slider-value  m-2'></div>
                                         </div>
                                     </a>
                                     <a >
                                         <br>
                                         <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-                                            <div class='dual-range-slider-name'>Gain Threshold:</div>
+                                            <div class='dual-range-slider-name  m-2'>Gain Threshold:</div>
                                             <div id="slider3" class='dual-range-slider-slider'></div>
-                                            <div id='recoveryThreshold' class='dual-range-slider-value'></div>
+                                            <div id='recoveryThreshold' class='dual-range-slider-value  m-2'></div>
                                         </div>
                                         <script type="text/javascript">
                                             setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')

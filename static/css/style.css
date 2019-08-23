@@ -24,6 +24,31 @@
   
 }
 
+/*        input[type='range'] {
+            -webkit-appearance: none;
+            
+            
+     
+            background-color: rgba(0,0,0,1);
+            height: 2px;
+            
+            width:15%;
+            display:inline-block;
+            vertical-align:bottom;
+            margin-top:12px;
+        }
+      
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none !important;
+            
+            background-color: rgba(0,0,0,{{rangeOpacity}});
+           
+            border: 2px solid #000;
+            height: 15px;
+            width: 8px;
+        }*/
+
+
 * {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 1em;
@@ -31,7 +56,7 @@
     /*line-height: 1.7em;*/
     /*color: var(--white);*/
 }
-a{font-size:0.9em;}
+/*a{font-size:0.9em;}*/
 /*a {color:var(--white)!important;}*/
       /* Optional: Makes the sample page fill the window. */
 html, body {
@@ -199,6 +224,40 @@ z-index:1;
   border-radius: 0px;
   background:rgba(255,255,255,0.2);
 }
+
+.ui-slider .ui-slider-handle { position: absolute; 
+  z-index: 2; 
+  /*width: 1.2em; 
+  height: 1.2em; */
+  cursor: default; 
+  color:#000!important; 
+  background: black!important;}
+.ui-slider .ui-slider-range { position: absolute; z-index: 1; font-size: .7em; display: block; border: 0; background-position: 0 0; }
+
+.ui-slider-horizontal , .ui-slider-range{ height: .1em !important;
+            background:white!important;
+            
+            
+          }
+.ui-widget-content{border-style:hidden;}
+.ui-slider-horizontal .ui-slider-range{ 
+  height: .2em !important;
+            background:#000!important;
+            
+            
+          }
+/*.ui-slider-handle ,.ui-state-default, .ui-corner-all{
+    background: black!important;
+    border-
+}*/
+.ui-slider-horizontal .ui-slider-handle {
+  border-style: hidden!important;
+  top: -.5em !important; 
+  border-radius:0px !important;
+  margin-left: -0.3em !important;
+  width: 0.6em !important;
+  height: 1em !important; }
+
 
 #Progress {
     position: relative;
