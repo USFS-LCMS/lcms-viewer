@@ -50,8 +50,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
         <script src = 'js/jquery.fittext.js'></script>
-<!--     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
     <link rel="import" href="elements/layer-list.html">
     <link rel="import" href="elements/ee-layer.html">
@@ -171,10 +171,10 @@
                              <!--       
                                     <button  class = 'm-2 close-button pull-right hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters and map is updated, close window with this button">&times;</button> -->
                                 
-                                    <div >Choose which mode</div>
+                                    
                                       <a   >
                          
-                                        <variable-radio var='analysisMode' title2='' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
+                                        <variable-radio var='analysisMode' title2='Choose which mode' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
                                       </a>
                                       
                                      
@@ -223,12 +223,13 @@
                                   <div id='advanced-radio-container' style="display: none;">
                                     <div class="dropdown-divider"></div>
                                   <div  >Additional Features</div>
-                                    <a  >
+                                   
                                        <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
             
             <br>
             <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-                                        </a>
+                                       <br>
+                                       <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#' ></variable-radio>
                                         <div class="dropdown-divider"></div>
                                     </div>
 
@@ -264,66 +265,12 @@
                 </div>
                 <div  id="tools-list-collapse-div" class="panel-collapse collapse panel-body px-4  " role="tabpanel" aria-labelledby="tools-list-collapse-label">
 
-<ul class="nav nav-tabs nav-justified md-tabs" id="toolTabs" role="tablist">
-  <li class="nav-item">
-    <a onclick = 'toggleRadio("none");toggleRadio("distance")' class="nav-link text-black" id="distance-measuring-tools-tab" data-toggle="tab" href="#distance-measuring-tools-div" role="tab" aria-controls="distance-measuring-tools-div"
-      aria-selected="false">Distance Measuring</a>
-  </li>
-  <li class="nav-item">
-    <a onclick = 'toggleRadio("none");toggleRadio("area")' class="nav-link text-black" id="area-measuring-tools-tab" data-toggle="tab" href="#area-measuring-tools-div" role="tab" aria-controls="area-measuring-tools-div"
-      aria-selected="false">Area Measuring</a>
-  </li>
 
-  <li class="nav-item">
-    <a onclick = 'toggleRadio("none");toggleRadio("query")' class="nav-link text-black" id="single-pixel-inspector-tools-tab" data-toggle="tab" href="#single-pixel-inspector-tools-div" role="tab" aria-controls="single-pixel-inspector-tools-div"
-      aria-selected="false">Query Visible Map Layers</a>
-  </li>
+                <ul class="nav nav-tabs nav-justified md-tabs" id="toolTabs" role="tablist">  
+                </ul>
+                <div class = 'tab-content card' id = 'toolDivs'>
+                </div>
 
-  <li class="nav-item">
-    <a onclick = 'toggleRadio("none");toggleRadio("charting")' class="nav-link text-black" id="single-pixel-time-series-inspector-tools-tab" data-toggle="tab" href="#single-pixel-time-series-inspector-tools-div" role="tab" aria-controls="single-pixel-time-series-inspector-tools-div"
-      aria-selected="false">Query LCMS Data</a>
-  </li>
-
-  
-</ul>
-<div class="tab-content card " >
-  <div class="tab-pane fade  " id="distance-measuring-tools-div" role="tabpanel" aria-labelledby="distance-measuring-tools-tab">
-    <div  id='distance-measurement'  onclick='toggleDistanceAreaUnits(this.value)'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring">
-    </div>
-  </div>
-  <div class="tab-pane fade  " id="area-measuring-tools-div" role="tabpanel" aria-labelledby="area-measuring-tools-tab">
-    <div  id='area-measurement'  onclick='toggleDistanceAreaUnits(this.value)'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring">
-    </div>
-  </div>
-  <div class="tab-pane fade  " id="single-pixel-inspector-tools-div" role="tabpanel" aria-labelledby="single-pixel-inspector-tools-tab">
-    <div  id='query-container' style='display:none;'>Double click on map to query values of displayed layers at a location</div>
-                    
-  </div>
-
-  <div class="tab-pane fade  " id="single-pixel-time-series-inspector-tools-div" role="tabpanel" aria-labelledby="single-pixel-time-series-inspector-tools-tab">
-    <div  id='query-container' style='display:none;'>Double click on map to query values of displayed layers at a location</div>
-                    
-  </div>
-
-  
-  <div class="tab-pane fade" id="profile-just" role="tabpanel" aria-labelledby="profile-tab-just">
-    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
-      labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft
-      beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad
-      vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar
-      helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes
-      anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party
-      scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
-  </div>
-  <div class="tab-pane fade" id="contact-just" role="tabpanel" aria-labelledby="contact-tab-just">
-    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro
-      fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone
-      skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings
-      gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork
-      biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl
-      craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
-  </div>
-</div>
 
                        <div id="basic-tools-tab"  >
                         
@@ -360,7 +307,7 @@
                     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
                     <div id='charting-container' style='display: none;'>
                         <div id='whichIndexForChartingRadio' style='display:none;'>
-                            <variable-radio var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio>
+                            <!-- <variable-radio id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio> -->
                             <br>
                         </div>
                         <div  id="user-defined" >
@@ -422,7 +369,7 @@
                 </div>
 
                  <div   class="panel-heading px-4 py-2 " role="tab" id="legend-list-collapse-label">
-                        <h5 class="panel-title"><i class="fa fa-location-arrow fa-rotate-45 mr-1" aria-hidden="true"></i> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'>Legend</a> </h5>
+                        <h5 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'><i class="fa fa-location-arrow fa-rotate-45 mr-1" aria-hidden="true"></i>Legend</a> </h5>
                 </div>
                 <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
                        <legend-list  class = 'px-4' id="legend"></legend-list>

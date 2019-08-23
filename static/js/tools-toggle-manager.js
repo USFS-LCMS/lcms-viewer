@@ -388,8 +388,37 @@ var widgetsOn = true;
       }
 
       $(document).ready(function () {
-         $("a").tooltip();
+         $(function(){
+  $('#whichIndexRadio').change(function(){
+    console.log('change');
+  });
+});
+
+         // function 
+         //Add tool tabs
+         var distanceDiv = '<div  id="distance-measurement"  onclick=toggleDistanceAreaUnits(this.value)></div>';
+         var distanceTip = "Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring";
+
+         var areaDiv = '<div  id="area-measurement"  onclick=toggleDistanceAreaUnits(this.value)></div>'
+         var areaTip = "Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring";
          
+         var queryDiv = "<div  id='query-container' >Double click on map to query values of displayed layers at a location</div>";
+         var queryTip = 'Double click on map to query values of displayed layers at a location';
+
+         var pixelChartDiv = "<div  id='charting-container' >\
+                            Double click on map to query LCMS data time series<br>\
+                            \
+                            </div>";
+         var pixelChartTip = 'click here'
+
+         addTab('Distance Measuring','toolTabs','toolDivs','distance-tab','distance-div','toggleRadio("none");toggleRadio("distance")',distanceDiv,distanceTip,false)
+         addTab('Area Measuring','toolTabs','toolDivs','area-tab','area-div','toggleRadio("none");toggleRadio("area")',areaDiv,areaTip,false)
+         
+         addTab('Query Visible Map Layers','toolTabs','toolDivs','query-tab','query-div','toggleRadio("none");toggleRadio("query")',queryDiv,queryTip,false)
+         
+         addTab('Query LCMS Time Series','toolTabs','toolDivs','pixel-chart-tab','pixel-chart-div','toggleRadio("none");toggleRadio("charting")',pixelChartDiv,pixelChartTip,false)
+         
+   
             // $('#sidebarCollapse').on('click', function () {
             //     $('#sidebar').toggleClass('active');
             //     $('#sidebar-tools').toggle();

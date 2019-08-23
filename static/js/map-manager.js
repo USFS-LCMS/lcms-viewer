@@ -207,6 +207,18 @@ function closeMessage(){
     
     // document.getElementById('messageBox').style.display = 'none';
 }
+//////////////////////////////////////////////
+//Functio to add tab to list
+function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
+  if(!tabToolTip){tabToolTip = ''};
+  var show;
+  if(selected || selected === 'true'){show = 'active show'}else{show = ''};
+
+  $("#" + tabListID ).append('<li class="nav-item"><a onclick = '+tabOnClick+' class="nav-link text-black '+show+'" id="'+tabID+'" data-toggle="tab" href="#'+divID+'" role="tab" aria-controls="'+divID+'" aria-selected="false" rel="txtTooltip" data-toggle="tooltip"  title="'+tabToolTip+'">'+tabTitle+' </a></li>');
+
+  $('#'+divListID).append($('<div class="tab-pane fade '+show+' " id="'+divID+'" role="tabpanel" aria-labelledby="'+tabID+'" rel="txtTooltip" data-toggle="tooltip"  title="'+tabToolTip+'"></div>').append(divHTML))
+
+    };
 /////////////////////////////////////////////////////////////////////////////////////////////
 //Function for creating color ramp generally for a map legend
 function createColorRamp(styleName, colorList, width,height){

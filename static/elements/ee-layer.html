@@ -72,7 +72,7 @@
             .range{float:right;}
             /*#opacity{margin-left:1Spx;}*/
         </style>
-        <li   rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
+        <li   class = 'ee-layer'rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
 
             <i class="fa fa-spinner fa-spin {{ {deactivated:layer != null}| tokenList }}"></i><input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> {{name}}
             <!-- <label class = 'rightLabel'>{{opacity}}</label> -->

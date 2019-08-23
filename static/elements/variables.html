@@ -236,9 +236,109 @@
 <polymer-element name="variable-radio" attributes="var name1 name2 value1 value2 type title2" extends="ee-variable">
 	
 	<template>
+
+		<style type="text/css">
+			.wrapper{
+  /*background: #497dd0;*/
+  padding:100px;
+}
+
+.toggle_radio{
+  position: relative;
+  background: rgba(255,255,255,.5);
+  margin: 4px auto;
+  overflow: hidden;
+  padding: 0 !important;
+  /*-webkit-border-radius: 50px;*/
+  /*-moz-border-radius: 50px;*/
+  /*border-radius: 50px;*/
+  position: relative;
+  height: 26px;
+  width: 214px;
+}
+.toggle_radio > * {
+  float: left;
+}
+.toggle_radio input[type=radio]{
+  display: none;
+  /*position: fixed;*/
+}
+.toggle_radio label{
+  background:#FFF;
+  color: #000;
+  z-index: 0;
+  display: block;
+  width: 100px;
+  height: 20px;
+  margin: 3px 3px;
+  /*-webkit-border-radius: 50px;*/
+  /*-moz-border-radius: 50px;*/
+  /*border-radius: 50px;*/
+  cursor: pointer;
+  z-index: 1;
+
+  text-align: center;
+
+}
+.toggle_option_slider{
+  /*display: none;*/
+  /*background: red;*/
+  width: 100px;
+  height: 20px;
+  position: absolute;
+  top: 3px;
+  /*-webkit-border-radius: 50px;*/
+  /*-moz-border-radius: 50px;*/
+  /*border-radius: 50px;*/
+  -webkit-transition: all .4s ease;
+  -moz-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  -ms-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+#first_toggle:checked ~ .toggle_option_slider{
+  background: #00897B55;
+  left: 3px;
+}
+#second_toggle:checked ~ .toggle_option_slider{
+  background: #00897B55;
+  left: 109px;
+}
+#third_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 215px;
+}
+label{color:#00;}
+		</style>
+
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		
-		{{title2}}&nbsp&nbsp&nbsp&nbsp<input type="radio" name="browser" on-change="{{checkIt1}}" value="1" checked>{{name1}}
-				<input type="radio" name="browser" on-change="{{checkIt2}}" value="2">{{name2}}
+		<!-- <p>{{title2}}</p><input type="radio" name="browser" on-change="{{checkIt1}}" value="1" checked>{{name1}} -->
+				<!-- <input type="radio" name="browser" on-change="{{checkIt2}}" value="2">{{name2}} -->
+
+	<div style = 'position:inline-block' >
+	
+	
+  	<div style = 'float:right;' id = '#radio-toggler' class="toggle_radio">
+
+	  	<!-- -->
+	    <input type="radio" checked class="toggle_option" id="first_toggle" name="toggle_option" on-change="{{checkIt1}}" value="1" >
+	    <input type="radio"  class="toggle_option" id="second_toggle" name="toggle_option" on-change="{{checkIt2}}" value="2" >
+	    
+	    <label for="first_toggle"><p>{{name1}}</p></label>
+	    <label for="second_toggle"><p>{{name2}}</p></label>
+	    
+	    <div class="toggle_option_slider">
+	    </div>
+ 
+	</div>
+	<p class = 'p-2' style = 'float:right;'>{{title2}}	</p> 
+	
+	</div>
+	<br>
 	</template>
 	
 	<script>
