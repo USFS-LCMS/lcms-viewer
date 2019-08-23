@@ -1418,6 +1418,7 @@ var cachedStudyAreaName = null;
 var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-115.08,8],'EPSG:26911',0.35,0.35],
                   'Bridger-Teton National Forest':['BTNF',[43.4,-111.1,8],'EPSG:26912',0.35,0.35],
                   'Manti-La Sal National Forest':['MLSNF',[38.8,-111,8],'EPSG:26912',0.25,0.30],
+                  'Chugach National Forest - Kenai Peninsula':['CNFKP',[60.4,-150.1, 9],'EPSG:3338',0.25,0.35],
                   'Science Team CONUS NAFD':['CONUS',[40.0,-95.0,4],'EPSG:5070',0.30,0.30],
                 };
 
