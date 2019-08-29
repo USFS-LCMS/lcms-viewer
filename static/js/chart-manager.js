@@ -68,8 +68,9 @@ function downloadURI() {
 	  link.click();
 	  // document.body.removeChild(link);
 	    delete link;
-}
-}
+}}
+
+
 var  getQueryImages = function(lng,lat){
 	var lngLat = [lng, lat];
 	var outDict = {};
@@ -691,17 +692,82 @@ function changeChartType(newType,showExpanded){
 	setTimeout(function(){updateProgress(80);},0);
 	Chart(showExpanded);
 }
-const arrayColumn = (arr, n) => arr.map(x => x[n]);
-function addChartJS(array,canvasID){
-  
-    // var header = array[0];
-    // var data = array.slice(1,array.length);
-    var firstColumn = arrayColumn(array,0).slice(1);
-    var columnN = array[0].length;
-    var columns = range(1,columnN);
 
+//////////////////////////////////////////////////////////////////
+//ChartJS code
+function downloadChartJS(chart,name){
+	var link = document.createElement("a");
+	link.download = name;
+	link.href = chart.toBase64Image();
+	link.click();
+	delete link;
+}
+
+function addModal(containerID,modalID){
+	if(containerID === null || containerID === undefined){containerID = 'main-container'};
+	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	$('#'+ containerID).append(`
+            <div id = "${modalID}" class="modal fade " role="dialog">
+            	<div class="modal-dialog modal-lg ">
+            		<div class="modal-content bg-black">
+	            		<div class="modal-header" id ="${modalID}-header">
+	            			<h4 class="modal-title" id = 'chart-title'></h4>
+	        				<button type="button" class="close" data-dismiss="modal" >&times;</button>
+	          			</div>
+	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>
+			          	<div class="modal-footer" id ="${modalID}-footer"></div>
+        			</div>
+        		</div> 
+        	</div>`
+        	)
+}
+function addModalTitle(modalID,title){
+	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	$('#'+modalID+' .modal-title').html('');
+	$('#'+modalID+' .modal-title').append(title);
+}
+
+function clearModal(modalID){
+	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	$('#'+modalID+' .modal-title').html('')
+	$('#'+modalID+'-body').html('');
+	$('#'+modalID+'-footer').html('');
+}
+Chart.pluginService.register({
+    beforeDraw: function (chart, easing) {
+        if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+            var helpers = Chart.helpers;
+            var ctx = chart.chart.ctx;
+            var chartArea = chart.chartArea;
+
+            ctx.save();
+            ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+            ctx.fillRect(chartArea.left-30, chartArea.top-30, chartArea.right - chartArea.left+60, chartArea.bottom - chartArea.top+120);
+            ctx.restore();
+        }
+    }
+});
+addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
+function addChartJS(dt,title,canvasWidth,canvasHeight){
+	dataTable = dt;
+	if(canvasWidth === null || canvasWidth === undefined){canvasWidth = '1200'};
+	if(canvasHeight === null || canvasHeight === undefined){canvasHeight = '600'};
+	console.log(dt);
+	// $('#'+modalID).html('');
+	clearModal('chart-modal');
+	// if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
+	
+
+    $('#chart-modal-body').append(`<canvas id="chart-canvas" width="${canvasWidth}" height="${canvasHeight}"></canvas>`);
+    var data = dt.slice(1);
+    console.log(data);
+    var firstColumn = arrayColumn(data,0);
+    console.log(firstColumn)
+    var columnN = dt[1].length;
+    var columns = range(1,columnN);
+    
     var datasets = columns.map(function(i){
-        var col = arrayColumn(array,i);
+        var col = arrayColumn(dt,i);
         var label = col[0];
         var data = col.slice(1);
         var color = randomRGBColor()
@@ -709,166 +775,192 @@ function addChartJS(array,canvasID){
         // console.log(label);console.log(data)
     })
     console.log(datasets)
-    
-    new Chart(document.getElementById(canvasID),{"type":"line",
-    "data":{"labels":firstColumn,
-    "datasets":datasets},"options":{}});
-    $('#curve_chart_big_modal').modal();
+    lineChart = new Chart($('#chart-canvas'),{"type":"line",
+	    "data":{"labels":firstColumn,
+	    "datasets":datasets},"options":{
+	    	 title: {
+	            display: true,
+	            position:'top',
+	            text: title.replaceAll('_',' ')
+	        },
+	        legend:{
+	        	display:true,
+	        	position:'bottom'
+	        },
+	        chartArea: {
+		        backgroundColor: '#D6D1CA'
+		    }
+    	}	
+	});
+    console.log(lineChart.toBase64Image());
+    // $('#chart-modal-footer').append(`<p onclick = "downloadChartJS(lineChart,'${title}.png')">Download Png</p>`)
+    // $('#chart-modal-footer').append(`<p onclick = "exportToCsv('${title}.csv', dataTable)">Download CSV</p>`)
+    $('#chart-modal-footer').append(`<div class="dropdown">
+									  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    Download
+									  </div>
+									  <div class="dropdown-menu" aria-labelledby="chartDownloadDropdown">
+									    <a class="dropdown-item" href="#" onclick = "downloadChartJS(lineChart,'${title}.png')">PNG</a>
+									    <a class="dropdown-item" href="#" onclick = "exportToCsv('${title}.csv', dataTable)">CSV</a>
+									   
+									  </div>
+									</div>`)
+    $('#chart-modal').modal();
 }
-function Chart(showExpanded){
-	console.log('here');
-	console.log(dataTable);
-	$('#summary-spinner').slideUp();
-	// updateProgress(75);
-	addChartJS(dataTable,'chart-canvas');
+// function Chart(showExpanded){
+// 	console.log('here');
+// 	console.log(dataTable);
+// 	$('#summary-spinner').slideUp();
+// 	// updateProgress(75);
+// 	addChartJS(dataTable,'chart-canvas');
 	
 
-	// if(!showExpanded){showExpanded = false};
-	// document.getElementById('curve_chart').style.display = 'none';
-	// document.getElementById('curve_chart_big').style.display = 'none';
-	// // updateProgress(75);
+// 	// if(!showExpanded){showExpanded = false};
+// 	// document.getElementById('curve_chart').style.display = 'none';
+// 	// document.getElementById('curve_chart_big').style.display = 'none';
+// 	// // updateProgress(75);
 	
-	// 		var chartOptionsT;
-	// 		// chartType = 'Table'
-	// 		setTimeout(function(){updateProgress(80);},0);
-	// 		dataTableT = null;
-	// 		dataTableT = CopyAnArray (dataTable)
-	// 		if(chartType === 'Histogram' || chartType === 'ScatterChart' && dataTable[0][0] === 'time'){
-	// 			dataTableT = dataTableT.map(function(row){return row.slice(1)})
-	// 		} 
-	// 		else if(chartType === 'Table'){
-	// 		if(tableConverter != null && tableConverter != undefined){
-	// 			dataTableT	= tableConverter(dataTableT)
-	// 		}
+// 	// 		var chartOptionsT;
+// 	// 		// chartType = 'Table'
+// 	// 		setTimeout(function(){updateProgress(80);},0);
+// 	// 		dataTableT = null;
+// 	// 		dataTableT = CopyAnArray (dataTable)
+// 	// 		if(chartType === 'Histogram' || chartType === 'ScatterChart' && dataTable[0][0] === 'time'){
+// 	// 			dataTableT = dataTableT.map(function(row){return row.slice(1)})
+// 	// 		} 
+// 	// 		else if(chartType === 'Table'){
+// 	// 		if(tableConverter != null && tableConverter != undefined){
+// 	// 			dataTableT	= tableConverter(dataTableT)
+// 	// 		}
 			
-	// 			}
-	// 		// else{dataTableT = dataTableT.slice(0)};
-	// 		chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
-	// 		if(chartType === 'Histogram'){chartOptionsT.hAxis.title = 'Value'}
-	// 			else if(chartType === 'ScatterChart'){chartOptionsT.hAxis.title = dataTableT[0][0];chartOptionsT.opacity = 0.1}
-	// 			else if(chartType === 'Table'){chartOptionsT = tableOptions}
-	// 			else{chartOptionsT.hAxis.title = 'Time'};
-	// 		chartOptionsT.title = uriName.replaceAll('_',' ');
-	// 		var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
-	// 		// chartOptionsTBig.width = expandedWidth;
-	// 		chartOptionsTBig.height= expandedHeight;
+// 	// 			}
+// 	// 		// else{dataTableT = dataTableT.slice(0)};
+// 	// 		chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
+// 	// 		if(chartType === 'Histogram'){chartOptionsT.hAxis.title = 'Value'}
+// 	// 			else if(chartType === 'ScatterChart'){chartOptionsT.hAxis.title = dataTableT[0][0];chartOptionsT.opacity = 0.1}
+// 	// 			else if(chartType === 'Table'){chartOptionsT = tableOptions}
+// 	// 			else{chartOptionsT.hAxis.title = 'Time'};
+// 	// 		chartOptionsT.title = uriName.replaceAll('_',' ');
+// 	// 		var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
+// 	// 		// chartOptionsTBig.width = expandedWidth;
+// 	// 		chartOptionsTBig.height= expandedHeight;
 
 			
-	// 		var data = google.visualization.arrayToDataTable(dataTableT);
-	// 		var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
-	//        	console.log('data');
-	//        	console.log(dataTableT);
-	//        	$('#summary-spinner').slideUp();
-	//         document.getElementById('curve_chart').style.display = 'inline-block';
-	//        	document.getElementById('curve_chart_big').style.display = 'inline-block';
+// 	// 		var data = google.visualization.arrayToDataTable(dataTableT);
+// 	// 		var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
+// 	//        	console.log('data');
+// 	//        	console.log(dataTableT);
+// 	//        	$('#summary-spinner').slideUp();
+// 	//         document.getElementById('curve_chart').style.display = 'inline-block';
+// 	//        	document.getElementById('curve_chart_big').style.display = 'inline-block';
 
-	//         eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
-	//         eval("var chartBig = new google.visualization."+chartType+"(document.getElementById('curve_chart_big'));")
+// 	//         eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
+// 	//         eval("var chartBig = new google.visualization."+chartType+"(document.getElementById('curve_chart_big'));")
 
 
 	        
-	//        google.visualization.events.addListener(chartBig, 'ready', function () {
- //    		if(chartType != 'Table'){uri = chartBig.getImageURI();}
+// 	//        google.visualization.events.addListener(chartBig, 'ready', function () {
+//  //    		if(chartType != 'Table'){uri = chartBig.getImageURI();}
 
- //    		// printImage(imageUri);
- //    		// downloadURI( "helloWorld.png");
- //    		// do something with the image URI, like:
+//  //    		// printImage(imageUri);
+//  //    		// downloadURI( "helloWorld.png");
+//  //    		// do something with the image URI, like:
     		
-	// 		});
-	//        setTimeout(function(){updateProgress(90);},0);
-	//         chart.draw(data, chartOptionsT);
-	//         chartBig.draw(dataBig, chartOptionsTBig);
-	//         setTimeout(function(){updateProgress(100);},0);
+// 	// 		});
+// 	//        setTimeout(function(){updateProgress(90);},0);
+// 	//         chart.draw(data, chartOptionsT);
+// 	//         chartBig.draw(dataBig, chartOptionsTBig);
+// 	//         setTimeout(function(){updateProgress(100);},0);
 			
-	// 		$('#curve_chart').append('<br><br>')
+// 	// 		$('#curve_chart').append('<br><br>')
 
- // 	       	if(chartType != 'Table'){$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
- // 	       	$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
- // 	       	// $('#curve_chart').append('<p></p>')
- // 	       	if(chartTypeOptions){
- // 	       		chartTypes.map(function(ct){
- // 	       			$("#curve_chart").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this);" >')
- // 	       		})
- // 	       		// $("#curve_chart").append(
- // 	       		// 					'<input class="button" type="button"  value = "LineChart" onclick = "changeChartType(this);" >\n\
- // 	       		// 					<input class="button" type="button" value = "ScatterChart" onclick = "changeChartType(this);" >\n\
- // 	       		// 					<input class="button" type="button" value = "Histogram" onclick = "changeChartType(this);" >\n\
- // 	       		// 					<input class="button" type="button" value = "Table" onclick = "changeChartType(this);" >\n\
- // 	       		// 					<input class="button" type="button"  value = "ColumnChart" onclick = "changeChartType(this);">')
+//  // 	       	if(chartType != 'Table'){$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
+//  // 	       	$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
+//  // 	       	// $('#curve_chart').append('<p></p>')
+//  // 	       	if(chartTypeOptions){
+//  // 	       		chartTypes.map(function(ct){
+//  // 	       			$("#curve_chart").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this);" >')
+//  // 	       		})
+//  // 	       		// $("#curve_chart").append(
+//  // 	       		// 					'<input class="button" type="button"  value = "LineChart" onclick = "changeChartType(this);" >\n\
+//  // 	       		// 					<input class="button" type="button" value = "ScatterChart" onclick = "changeChartType(this);" >\n\
+//  // 	       		// 					<input class="button" type="button" value = "Histogram" onclick = "changeChartType(this);" >\n\
+//  // 	       		// 					<input class="button" type="button" value = "Table" onclick = "changeChartType(this);" >\n\
+//  // 	       		// 					<input class="button" type="button"  value = "ColumnChart" onclick = "changeChartType(this);">')
  	       
- // 	       	}
- // 	       	$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
- // 	       	$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart')
+//  // 	       	}
+//  // 	       	$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
+//  // 	       	$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart')
  	       	
- // 	       	$('#curve_chart_big').append('<br><br>')
+//  // 	       	$('#curve_chart_big').append('<br><br>')
 
- // 	       	if(chartType != 'Table'){$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
- // 	       	$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
- // 	       	// $('#curve_chart').append('<p></p>')
- // 	       	if(chartTypeOptions){
- // 	       		chartTypes.map(function(ct){
- // 	       			$("#curve_chart_big").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this,true);" >')
- // 	       		})
+//  // 	       	if(chartType != 'Table'){$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
+//  // 	       	$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
+//  // 	       	// $('#curve_chart').append('<p></p>')
+//  // 	       	if(chartTypeOptions){
+//  // 	       		chartTypes.map(function(ct){
+//  // 	       			$("#curve_chart_big").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this,true);" >')
+//  // 	       		})
  	       		
  	       
- // 	       	}
- // 	       	$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
- // 	       	if(showExpanded){
-	// 			document.getElementById('curve_chart').style.display = 'none';
- // 	       	}else{
- // 	       		document.getElementById('curve_chart_big').style.display = 'none';
- // 	       	}
+//  // 	       	}
+//  // 	       	$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
+//  // 	       	if(showExpanded){
+// 	// 			document.getElementById('curve_chart').style.display = 'none';
+//  // 	       	}else{
+//  // 	       		document.getElementById('curve_chart_big').style.display = 'none';
+//  // 	       	}
  	       	
- 			map.setOptions({draggableCursor:'help'});
- 			map.setOptions({cursor:'help'});
-			// $("#curve_chart").append('<variable-range id = "graphControls" name="Chart plot radius (m)" var="plotRadius" default="15" min="30" max="300" step = "30"></variable-range>');
- 	       	// $("input[name='gender']").change(function(){this.checked = true;changeChartType(this);})
- 	       	// $("#curve_chart").append('<label class="radio-inline"><input type="radio" name="chartTypeR">Option 2</label>')
- 	       	// $("#curve_chart").append('<label class="radio-inline"><input type="radio" name="chartTypeR">Option 3</label>')
+//  			map.setOptions({draggableCursor:'help'});
+//  			map.setOptions({cursor:'help'});
+// 			// $("#curve_chart").append('<variable-range id = "graphControls" name="Chart plot radius (m)" var="plotRadius" default="15" min="30" max="300" step = "30"></variable-range>');
+//  	       	// $("input[name='gender']").change(function(){this.checked = true;changeChartType(this);})
+//  	       	// $("#curve_chart").append('<label class="radio-inline"><input type="radio" name="chartTypeR">Option 2</label>')
+//  	       	// $("#curve_chart").append('<label class="radio-inline"><input type="radio" name="chartTypeR">Option 3</label>')
 
-	        // $('#download-spinner').css({'visibility': 'hidden'});
-        // updateProgress(100);
-}
-function chartIt(){
-	var pt = ee.Geometry.Point([center.lng(),center.lat()]);
-	var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
+// 	        // $('#download-spinner').css({'visibility': 'hidden'});
+//         // updateProgress(100);
+// }
+// function chartIt(){
+// 	var pt = ee.Geometry.Point([center.lng(),center.lat()]);
+// 	var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 		
-	icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(
-		function(values){
+// 	icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(
+// 		function(values){
 	
-			if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
-			print('Extracted values:',values)
-	try{
-		if(values !== undefined){
-			var header = values[0].slice(startColumn);
-			values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
-			if(chartIncludeDate){
-				values = values.map(function(v){
-				  // var d = [new Date(v[0])];
-				  // v.slice(1).map(function(vt){d.push(vt)})
-				  v[0] = (new Date(v[0]).getYear()+1900).toString();
-				  return v;
-				})
-			}
+// 			if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
+// 			print('Extracted values:',values)
+// 	try{
+// 		if(values !== undefined){
+// 			var header = values[0].slice(startColumn);
+// 			values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
+// 			if(chartIncludeDate){
+// 				values = values.map(function(v){
+// 				  // var d = [new Date(v[0])];
+// 				  // v.slice(1).map(function(vt){d.push(vt)})
+// 				  v[0] = (new Date(v[0]).getYear()+1900).toString();
+// 				  return v;
+// 				})
+// 			}
 
-			var forChart = [header];
-			values.map(function(v){forChart.push(v)});
-			dataTable	=forChart;
-			uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString();// + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
-			csvName = uriName + '.csv'
+// 			var forChart = [header];
+// 			values.map(function(v){forChart.push(v)});
+// 			dataTable	=forChart;
+// 			uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString();// + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+// 			csvName = uriName + '.csv'
 		
-			Chart();	
-		}
-		else{showMessage('Error!','Clicked outside area with available LCMS products. Double click within selected LCMS product area');$('#summary-spinner').slideUp();}
+// 			Chart();	
+// 		}
+// 		else{showMessage('Error!','Clicked outside area with available LCMS products. Double click within selected LCMS product area');$('#summary-spinner').slideUp();}
 		
 
 
-	}
-	catch(err){
+// 	}
+// 	catch(err){
 
-	}
+// 	}
 
-})}
+// })}
 // var cT = 
 var marker=new google.maps.Circle({
   				center:{lat:45,lng:-111},
@@ -884,27 +976,83 @@ function addClickMarker(center){
 			});
 	marker.setMap(map);
 }
+function getEveryOther(values){
+			return values.filter(i => values.indexOf(i)%2 ==0)
+		}
 function startPixelChartCollection() {
 
 	map.setOptions({draggableCursor:'help'});
 	mapHammer = new Hammer(document.getElementById('map'));
    
     mapHammer.on("doubletap", function(event) {
+    	$('#summary-spinner').slideDown();
     	map.setOptions({draggableCursor:'progress'});
         var x =event.center.x;
         var y = event.center.y;
         center =point2LatLng(x,y);
     	addClickMarker(center)
         
+		var pt = ee.Geometry.Point([center.lng(),center.lat()]);
 		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
-		var tryCount = 2;
-	
-		try{icT.getRegion(pt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate();
-			var tryCount = 2;
-	
-	
-    });
-   
+		
+		uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
+		csvName = uriName + '.csv'
+		
+
+		function chartValues(values){
+			
+			if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
+			print('Extracted values:');
+			print(values);
+			var header = values[0].slice(startColumn);
+			values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
+			if(chartIncludeDate){
+				values = values.map(function(v){
+				  // var d = [new Date(v[0])];
+				  // v.slice(1).map(function(vt){d.push(vt)})
+				  v[0] = (new Date(v[0]).getYear()+1900).toString();
+				  return v;
+				})
+			}
+			values.unshift(header);
+			$('#summary-spinner').slideUp();
+			map.setOptions({draggableCursor:'help'});
+			addChartJS(values,uriName);
+			
+	// try{
+	// 	if(values !== undefined){
+	// 		var header = values[0].slice(startColumn);
+	// 		values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
+	// 		if(chartIncludeDate){
+	// 			values = values.map(function(v){
+	// 			  // var d = [new Date(v[0])];
+	// 			  // v.slice(1).map(function(vt){d.push(vt)})
+	// 			  v[0] = (new Date(v[0]).getYear()+1900).toString();
+	// 			  return v;
+	// 			})
+	// 		}
+
+	// 		var forChart = [header];
+	// 		values.map(function(v){forChart.push(v)});
+	// 		dataTable	=forChart;
+	// 		uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString();// + ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+	// 		csvName = uriName + '.csv'
+		
+	// 		Chart();	
+   		}
+		icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(function(values){
+			if(values.length > 1){
+				if(values.length > icT.size().getInfo()+1){
+					console.log('reducing number of inputs');
+					values = getEveryOther(values);
+				}
+				chartValues(values)
+			}
+			else{
+				showMessage('Error','Error');
+			}
+		})
+	})
 
 		// // if(chartType.toLowerCase() === 'histogram'){chartIncludeDate = false};
 		// // document.getElementById('charting-parameters').style.display = 'inline-block';

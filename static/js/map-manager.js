@@ -141,7 +141,7 @@ function CopyAnArray (ari1) {
    }
    return mxx4;
 }
-
+function arrayColumn(arr,i){return arr.map(function(r){return r[i]})};
 //Source: http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
 function tileXYZToQuadKey(x, y, z){
         var quadKey = '';
