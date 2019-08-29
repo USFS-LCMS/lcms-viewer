@@ -330,11 +330,17 @@ function runUSFS(){
 
     var gtnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Grand Teton')).first());
     var gnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Glacier')).first());
+    var kfnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Kenai Fjords')).first());
 
     var btnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Bridger-Teton National Forest')).first());
     var fnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Flathead National Forest')).first());
     var mlsnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Manti-La Sal National Forest')).first()); 
     var cnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Chugach National Forest')).first());
+
+    // Other boundaries
+    var huc10 = ee.FeatureCollection("USGS/WBD/2017/HUC10");
+    var kenai_nwr = ee.FeatureCollection('projects/USFS/LCMS-NFS/AK-Ancillary-Data/Kenai_NWR').filterBounds(ck_study_area);
+
 
     var fnfStudyAreas = [['Glacier NP',gnp,'Boundary of Glacier National Park'],
                         ['Flathead  NF',fnf,'Boundary of Flathead National Forest'],
@@ -347,7 +353,10 @@ function runUSFS(){
     var mslStudyAreas = [['Manti-La Sal NF',mlsnf,'Boundary of Manti-La Sal National Forest'],
                           ['Manti-La Sal LCMS Study Area',mls_study_area,'Boundary of Manti-La Sal National Forest buffered by 5km over which LCMS model calibration data were collected and applied']];
     
-    var ckStudyAreas = [['Chugach NF',cnf,'Boundary of Chugach National Forest'],
+    var ckStudyAreas = [['HUC10 Boundaries',huc10.filterBounds(ck_study_area),'USGS Watershed Boundary Dataset of Watersheds'],
+    				['Kenai Fjords National Park',kfnp,'Boundary of Kenai Fjords National Park'],
+    				['Kenai National Wildlife Refuge',kenai_nwr,'Boundary of Kenai National Wildlife Refuge'],
+    				['Chugach NF',cnf,'Boundary of Chugach National Forest'],
                     ['Chugach-Kenai LCMS Study Area',ck_study_area,'Outline over which LCMS model calibration data were collected and applied']];
 
     // var studyAreaName = 'FNF';
@@ -725,10 +734,10 @@ function runUSFS(){
 		dndFastThreshOut = dndFastThreshOut.updateMask(lcMask);
 
 		// Calculate # of missing years per pixel
-		var missingYears = NFSDND.map(function(img){return addYearBand(img.unmask()).select('year').updateMask(img.mask().not())}).toArray();
+		var missingYears = NFSDND.map(function(img){return addYearBand(img.unmask()).select('year').updateMask(img.mask().not())}).toArray().arrayProject([0]); // This will give array of missing years
 		var dndMask = NFSDND.map(function(img){return img.mask().not().unmask()});
 		var maskCount = ee.Image(dndMask.reduce(ee.Reducer.sum())).rename('Number of Missing Years');
-		maskCount = maskCount.updateMask(maskCount.lt(34));
+		maskCount = maskCount.clip(boundary);
 		
     }
 
@@ -816,7 +825,8 @@ function runUSFS(){
     // Map2.addLayer(NFSCP.max().multiply(10),{min:0,max:4},'Change Process',false);
     if(analysisMode === 'advanced'){
       if (studyAreaName == 'CNFKP'){
-	      Map2.addLayer(maskCount,{'min':1,'max':33,'palette':'0C2780,E2F400,BD1600',addToClassLegend: true}, 'Number of Missing Years',false)
+	      Map2.addLayer(maskCount,{'min':1,'max':33,'palette':'0C2780,E2F400,BD1600'}, 'Number of Missing Data Years',false)
+	      //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
 	  }
       Map2.addLayer(NFSLC.mode().multiply(10),{'palette':PALETTE,'min':1,'max':7,addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
       Map2.addLayer(NFSLU.mode().multiply(10),{'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
@@ -826,8 +836,8 @@ function runUSFS(){
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
 
     Map2.addLayer(dndThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-    if (studyAreaName == 'CNFKP'){
-    	Map2.addLayer(dndThreshOutUnMasked.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year - unmasked',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+    if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
+    	Map2.addLayer(dndThreshOutUnMasked.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
     }
     // Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshOutOld.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Old Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
@@ -895,6 +905,7 @@ function runUSFS(){
       Map2.addLayer(pastures,{'min':1,'max':1,'palette':'#ffbf00'},'Pasture Boundaries',false,null,null,'RMU Dataset - area boundaries of pastures within livestock grazing allotments','reference-layer-list');
       // print(pastures.getInfo())
     }
+    
 
 
     // Map2.addLayer(studyArea,{palette:'d9d9d9',addToLegend:false},studyAreaName + ' Boundary',true,null,null,'Boundary used for all analysis for the '+studyAreaName,'reference-layer-list')
