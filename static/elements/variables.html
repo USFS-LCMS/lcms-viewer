@@ -1,6 +1,6 @@
 <link rel="import" href="../components/polymer/polymer.html">
 
-
+<link rel="stylesheet" href="../css/style.css">
 <!-- <dom-element name="ee-variable" noscript>
 	<template>
 		<style>
@@ -18,6 +18,47 @@
 		</style>
 	</template>
 </dom-element> -->
+
+<polymer-element name = 'variable-study-area' attributes = 'name tooltip' style = 'padding:0px;line-height:0;'>
+	<template>
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+   
+    <!-- Latest compiled and minified JavaScript -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <!-- <script src = 'js/jquery.fittext.js'></script> -->
+   
+		<style type="text/css">
+			a{
+				line-height: 1em!important;
+
+			}
+			a:hover{
+				color:var(--teal-100)!important;
+
+			}
+			a:focus{
+				background:var(--deep-brown-100)!important;
+				color:var(--teal-30)!important;
+			}
+		</style>
+		<!-- <div class="dropdown-divider"></div> -->
+		<a class="dropdown-item " on-click = "{{onValueChange}}"  href="#" data-toggle="tooltip" data-placement="top" title="{{tooltip}}">{{name}}</a>
+		<!-- <div class="dropdown-divider"></div> -->
+	</template>
+	<script>
+		Polymer('variable-study-area',{
+			
+			onValueChange:function(){
+				dropdownUpdateStudyArea(this.name);
+			
+			}
+		});
+	</script>
+	
+</polymer-element>
 
 <polymer-element name="variable-number" attributes="name default var min max step" extends="ee-variable">
 	<template>
@@ -238,10 +279,10 @@
 	<template>
 
 		<style type="text/css">
-			.wrapper{
-  /*background: #497dd0;*/
+			/*.wrapper{
+
   padding:100px;
-}
+}*/
 
 .toggle_radio{
   position: relative;
@@ -309,7 +350,7 @@
   background: rgba(255,255,255,.3);
   left: 215px;
 }
-label{color:#00;}
+
 		</style>
 
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">

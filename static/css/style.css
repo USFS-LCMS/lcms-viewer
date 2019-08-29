@@ -53,6 +53,7 @@
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 1em;
     font-weight: 100;
+    /*cursor: pointer;*/
     /*line-height: 1.7em;*/
     /*color: var(--white);*/
 }
@@ -64,6 +65,7 @@ html, body {
         margin: 0;
         padding: 0;
         background-color: var(--black);
+
       }
 
 .main-container{
@@ -88,7 +90,7 @@ html, body {
 }
 .fa{font-size:22 px!important;
     color:#FFF;
- 
+    cursor:pointer;
   }
 /* Handle */
 .flexcroll::-webkit-scrollbar-thumb {
@@ -102,8 +104,8 @@ html, body {
   background-color: var(--black)!important;
   margin:0px!important;
   color:var(--white)!important;
-  outline:none;
-  vertical-align:middle;
+  outline:none!important;
+  vertical-align:middle!important;
 
 }
 
@@ -119,11 +121,11 @@ html, body {
 
 }
 .bg-white, .panel-body{
-  background-color: var(--deep-brown-10);
+  background-color: var(--deep-brown-10)!important;
   margin:0px!important;
   color:#000!important;
-  outline:none;
-  vertical-align:middle;
+  outline:none!important;
+  vertical-align:middle!important;
 }
 
 
@@ -143,8 +145,8 @@ html, body {
     
 
 }
-
-
+.nav-item{}
+.close{color:#FFF;}
 .layer-collapse-title {
   
     color:var(--white);
@@ -164,9 +166,11 @@ html, body {
 /* Show the dropdown menu on hover */
 .dropdown-menu:hover  {
   display: block;
-  
+  cursor:pointer;
 }
-
+.dropdown-item{
+  padding:0px!important;
+}
 .card{
   border-radius: 0px!important;
   background-color: var(--white)!important;
@@ -215,6 +219,18 @@ z-index:1;
   color:var(--white);
   background-color: var(--black)!important;
   max-height:30px;
+  z-index:2;
+}
+.legendDiv{
+  position:absolute;
+  bottom:30px;
+  right:0%;
+  min-width:10%;
+  overflow-y:auto;
+  max-height:50%;
+  color:var(--white);
+  background-color: var(--black)!important;
+  
   z-index:2;
 }
 .image-icon-bar{
@@ -273,10 +289,6 @@ z-index:1;
     background-color: var(--white);
     border-radius:  5px;
 }
-select {
-   border:0px;
-   outline:0px;
-   background-color:#FFF;
-   color:#000;
-   margin-left:1px;
-}
+
+.toggle-on  { background-color: var(--teal-100);}
+.toggle-off  { background-color: var(--deep-brown-80);}

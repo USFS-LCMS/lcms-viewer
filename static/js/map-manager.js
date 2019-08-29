@@ -16,6 +16,7 @@ var chartTypes = ['LineChart','Table'];//Options LineChart, BarChart, ScatterCha
 var tableConverter = null;
 var mapDiv = document.getElementById('map');
 var groundOverlayOn = false;
+var mapDiv = document.getElementById('map');
 tableConverter = function(dataTableT){
 
   // var x = [dataTableT[0]]
@@ -140,6 +141,7 @@ function CopyAnArray (ari1) {
    }
    return mxx4;
 }
+
 //Source: http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
 function tileXYZToQuadKey(x, y, z){
         var quadKey = '';
@@ -837,7 +839,7 @@ function reRun(){
   exportImageDict = {};
   clearDownloadDropdown();
 	run();
-  setupFSB();
+  // setupFSB();
 
 
 //     var whileCount = 0;
@@ -905,6 +907,13 @@ function randomColor(){
   var b = getRandomInt(0, 50);
   var c = rgbToHex(r,g,b)
   return c
+}
+function randomRGBColor(){
+  var r = getRandomInt(50, 255);
+  var g = getRandomInt(50, 255);
+  var b = getRandomInt(50, 255);
+  
+  return [r,g,b];
 }
 function randomColors(n){
   var out = [];
@@ -1769,7 +1778,7 @@ function initialize() {
     }
     else{run = runUSFS}
   run();
-  setupFSB();
+  // setupFSB();
 	// plotPlots()
 	});
 

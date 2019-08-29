@@ -1,5 +1,5 @@
 var center;var globalChartValues;
-var mapDiv = document.getElementById('map');
+
 var chartTextColor = '#FFF';
 var cssClassNames = {
 'headerRow': 'googleChartTable',
@@ -691,103 +691,133 @@ function changeChartType(newType,showExpanded){
 	setTimeout(function(){updateProgress(80);},0);
 	Chart(showExpanded);
 }
+const arrayColumn = (arr, n) => arr.map(x => x[n]);
+function addChartJS(array,canvasID){
+  
+    // var header = array[0];
+    // var data = array.slice(1,array.length);
+    var firstColumn = arrayColumn(array,0).slice(1);
+    var columnN = array[0].length;
+    var columns = range(1,columnN);
 
+    var datasets = columns.map(function(i){
+        var col = arrayColumn(array,i);
+        var label = col[0];
+        var data = col.slice(1);
+        var color = randomRGBColor()
+        return {'label':label,'data':data,'fill':false,'borderColor':`rgb(${color[0]},${color[1]},${color[2]})`,'lineTension':0}
+        // console.log(label);console.log(data)
+    })
+    console.log(datasets)
+    
+    new Chart(document.getElementById(canvasID),{"type":"line",
+    "data":{"labels":firstColumn,
+    "datasets":datasets},"options":{}});
+    $('#curve_chart_big_modal').modal();
+}
 function Chart(showExpanded){
-	if(!showExpanded){showExpanded = false};
-	document.getElementById('curve_chart').style.display = 'none';
-	document.getElementById('curve_chart_big').style.display = 'none';
+	console.log('here');
+	console.log(dataTable);
+	$('#summary-spinner').slideUp();
 	// updateProgress(75);
+	addChartJS(dataTable,'chart-canvas');
 	
-			var chartOptionsT;
-			// chartType = 'Table'
-			setTimeout(function(){updateProgress(80);},0);
-			dataTableT = null;
-			dataTableT = CopyAnArray (dataTable)
-			if(chartType === 'Histogram' || chartType === 'ScatterChart' && dataTable[0][0] === 'time'){
-				dataTableT = dataTableT.map(function(row){return row.slice(1)})
-			} 
-			else if(chartType === 'Table'){
-			if(tableConverter != null && tableConverter != undefined){
-				dataTableT	= tableConverter(dataTableT)
-			}
+
+	// if(!showExpanded){showExpanded = false};
+	// document.getElementById('curve_chart').style.display = 'none';
+	// document.getElementById('curve_chart_big').style.display = 'none';
+	// // updateProgress(75);
+	
+	// 		var chartOptionsT;
+	// 		// chartType = 'Table'
+	// 		setTimeout(function(){updateProgress(80);},0);
+	// 		dataTableT = null;
+	// 		dataTableT = CopyAnArray (dataTable)
+	// 		if(chartType === 'Histogram' || chartType === 'ScatterChart' && dataTable[0][0] === 'time'){
+	// 			dataTableT = dataTableT.map(function(row){return row.slice(1)})
+	// 		} 
+	// 		else if(chartType === 'Table'){
+	// 		if(tableConverter != null && tableConverter != undefined){
+	// 			dataTableT	= tableConverter(dataTableT)
+	// 		}
 			
-				}
-			// else{dataTableT = dataTableT.slice(0)};
-			chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
-			if(chartType === 'Histogram'){chartOptionsT.hAxis.title = 'Value'}
-				else if(chartType === 'ScatterChart'){chartOptionsT.hAxis.title = dataTableT[0][0];chartOptionsT.opacity = 0.1}
-				else if(chartType === 'Table'){chartOptionsT = tableOptions}
-				else{chartOptionsT.hAxis.title = 'Time'};
-			chartOptionsT.title = uriName.replaceAll('_',' ');
-			var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
-			// chartOptionsTBig.width = expandedWidth;
-			chartOptionsTBig.height= expandedHeight;
+	// 			}
+	// 		// else{dataTableT = dataTableT.slice(0)};
+	// 		chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
+	// 		if(chartType === 'Histogram'){chartOptionsT.hAxis.title = 'Value'}
+	// 			else if(chartType === 'ScatterChart'){chartOptionsT.hAxis.title = dataTableT[0][0];chartOptionsT.opacity = 0.1}
+	// 			else if(chartType === 'Table'){chartOptionsT = tableOptions}
+	// 			else{chartOptionsT.hAxis.title = 'Time'};
+	// 		chartOptionsT.title = uriName.replaceAll('_',' ');
+	// 		var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
+	// 		// chartOptionsTBig.width = expandedWidth;
+	// 		chartOptionsTBig.height= expandedHeight;
 
 			
-			var data = google.visualization.arrayToDataTable(dataTableT);
-			var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
-	       	console.log('data');
-	       	console.log(dataTableT);
-	       	$('#summary-spinner').slideUp();
-	        document.getElementById('curve_chart').style.display = 'inline-block';
-	       	document.getElementById('curve_chart_big').style.display = 'inline-block';
+	// 		var data = google.visualization.arrayToDataTable(dataTableT);
+	// 		var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
+	//        	console.log('data');
+	//        	console.log(dataTableT);
+	//        	$('#summary-spinner').slideUp();
+	//         document.getElementById('curve_chart').style.display = 'inline-block';
+	//        	document.getElementById('curve_chart_big').style.display = 'inline-block';
 
-	        eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
-	        eval("var chartBig = new google.visualization."+chartType+"(document.getElementById('curve_chart_big'));")
+	//         eval("var chart = new google.visualization."+chartType+"(document.getElementById('curve_chart'));")
+	//         eval("var chartBig = new google.visualization."+chartType+"(document.getElementById('curve_chart_big'));")
 
 
 	        
-	       google.visualization.events.addListener(chartBig, 'ready', function () {
-    		if(chartType != 'Table'){uri = chartBig.getImageURI();}
+	//        google.visualization.events.addListener(chartBig, 'ready', function () {
+ //    		if(chartType != 'Table'){uri = chartBig.getImageURI();}
 
-    		// printImage(imageUri);
-    		// downloadURI( "helloWorld.png");
-    		// do something with the image URI, like:
+ //    		// printImage(imageUri);
+ //    		// downloadURI( "helloWorld.png");
+ //    		// do something with the image URI, like:
     		
-			});
-	       setTimeout(function(){updateProgress(90);},0);
-	        chart.draw(data, chartOptionsT);
-	        chartBig.draw(dataBig, chartOptionsTBig);
-	        setTimeout(function(){updateProgress(100);},0);
+	// 		});
+	//        setTimeout(function(){updateProgress(90);},0);
+	//         chart.draw(data, chartOptionsT);
+	//         chartBig.draw(dataBig, chartOptionsTBig);
+	//         setTimeout(function(){updateProgress(100);},0);
 			
-			$('#curve_chart').append('<br><br>')
+	// 		$('#curve_chart').append('<br><br>')
 
- 	       	if(chartType != 'Table'){$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
- 	       	$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
- 	       	// $('#curve_chart').append('<p></p>')
- 	       	if(chartTypeOptions){
- 	       		chartTypes.map(function(ct){
- 	       			$("#curve_chart").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this);" >')
- 	       		})
- 	       		// $("#curve_chart").append(
- 	       		// 					'<input class="button" type="button"  value = "LineChart" onclick = "changeChartType(this);" >\n\
- 	       		// 					<input class="button" type="button" value = "ScatterChart" onclick = "changeChartType(this);" >\n\
- 	       		// 					<input class="button" type="button" value = "Histogram" onclick = "changeChartType(this);" >\n\
- 	       		// 					<input class="button" type="button" value = "Table" onclick = "changeChartType(this);" >\n\
- 	       		// 					<input class="button" type="button"  value = "ColumnChart" onclick = "changeChartType(this);">')
+ // 	       	if(chartType != 'Table'){$("#curve_chart").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
+ // 	       	$("#curve_chart").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
+ // 	       	// $('#curve_chart').append('<p></p>')
+ // 	       	if(chartTypeOptions){
+ // 	       		chartTypes.map(function(ct){
+ // 	       			$("#curve_chart").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this);" >')
+ // 	       		})
+ // 	       		// $("#curve_chart").append(
+ // 	       		// 					'<input class="button" type="button"  value = "LineChart" onclick = "changeChartType(this);" >\n\
+ // 	       		// 					<input class="button" type="button" value = "ScatterChart" onclick = "changeChartType(this);" >\n\
+ // 	       		// 					<input class="button" type="button" value = "Histogram" onclick = "changeChartType(this);" >\n\
+ // 	       		// 					<input class="button" type="button" value = "Table" onclick = "changeChartType(this);" >\n\
+ // 	       		// 					<input class="button" type="button"  value = "ColumnChart" onclick = "changeChartType(this);">')
  	       
- 	       	}
- 	       	$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
- 	       	$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart')
+ // 	       	}
+ // 	       	$("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
+ // 	       	$("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart')
  	       	
- 	       	$('#curve_chart_big').append('<br><br>')
+ // 	       	$('#curve_chart_big').append('<br><br>')
 
- 	       	if(chartType != 'Table'){$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
- 	       	$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
- 	       	// $('#curve_chart').append('<p></p>')
- 	       	if(chartTypeOptions){
- 	       		chartTypes.map(function(ct){
- 	       			$("#curve_chart_big").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this,true);" >')
- 	       		})
+ // 	       	if(chartType != 'Table'){$("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG')}
+ // 	       	$("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV')
+ // 	       	// $('#curve_chart').append('<p></p>')
+ // 	       	if(chartTypeOptions){
+ // 	       		chartTypes.map(function(ct){
+ // 	       			$("#curve_chart_big").append('<input class="button" type="button"  value = "'+ct+'" onclick = "changeChartType(this,true);" >')
+ // 	       		})
  	       		
  	       
- 	       	}
- 	       	$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
- 	       	if(showExpanded){
-				document.getElementById('curve_chart').style.display = 'none';
- 	       	}else{
- 	       		document.getElementById('curve_chart_big').style.display = 'none';
- 	       	}
+ // 	       	}
+ // 	       	$("#curve_chart_big").append('<button class="button" onclick="closeBigChart();" style= "position:absolute;right:0%;top:0%;">X');
+ // 	       	if(showExpanded){
+	// 			document.getElementById('curve_chart').style.display = 'none';
+ // 	       	}else{
+ // 	       		document.getElementById('curve_chart_big').style.display = 'none';
+ // 	       	}
  	       	
  			map.setOptions({draggableCursor:'help'});
  			map.setOptions({cursor:'help'});
@@ -800,27 +830,14 @@ function Chart(showExpanded){
         // updateProgress(100);
 }
 function chartIt(){
-
-		// modal.style.display = "block";
-
-		// $('#download-spinner').css({'visibility': 'visible'});
-         // $('#download-spinner').attr('src', 'images/spinnerGT5.gif');
-         
-    
-    	
-    	
-
-
-		var pt = ee.Geometry.Point([center.lng(),center.lat()]);
-		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
+	var pt = ee.Geometry.Point([center.lng(),center.lat()]);
+	var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 		
-		icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(
-			function(values){
-					// globalChartValues	 = values;
-	// var values = imageCollectionForCharting.getRegion(pt.buffer(chartPtSize),chartScale).getInfo();
+	icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(
+		function(values){
 	
-	if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
-	print('Extracted values:',values)
+			if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
+			print('Extracted values:',values)
 	try{
 		if(values !== undefined){
 			var header = values[0].slice(startColumn);
@@ -857,45 +874,76 @@ var marker=new google.maps.Circle({
   				center:{lat:45,lng:-111},
   				radius:5
   				});
-function drawChart() {
-		// if(chartType.toLowerCase() === 'histogram'){chartIncludeDate = false};
-		// document.getElementById('charting-parameters').style.display = 'inline-block';
-		// $("#charting-container").slideDown();
-		// $("#charting-parameters").slideDown();
-		// $("#whichIndexForChartingRadio").slideDown();
+function addClickMarker(center){
+	marker.setMap(null);
+	marker=new google.maps.Circle({
+			center:{lat:center.lat(),lng:center.lng()},
+			radius:plotRadius,
+			strokeColor: '#FF0',
+			fillOpacity:0
+			});
+	marker.setMap(map);
+}
+function startPixelChartCollection() {
 
-		 map.setOptions({draggableCursor:'help'});
-		google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
-			closeChart();
-			$('#summary-spinner').slideDown();
-			document.getElementById('curve_chart').style.display = 'none';
-			document.getElementById('curve_chart_big').style.display = 'none';
-			print('Map was double clicked');
-			var x =e.clientX;
-        	var y = e.clientY;console.log(x);
-        	center =point2LatLng(x,y);
+	map.setOptions({draggableCursor:'help'});
+	mapHammer = new Hammer(document.getElementById('map'));
+   
+    mapHammer.on("doubletap", function(event) {
+    	map.setOptions({draggableCursor:'progress'});
+        var x =event.center.x;
+        var y = event.center.y;
+        center =point2LatLng(x,y);
+    	addClickMarker(center)
+        
+		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
+		var tryCount = 2;
+	
+		try{icT.getRegion(pt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate();
+			var tryCount = 2;
+	
+	
+    });
+   
 
-			// center = e.latLng;
-			marker.setMap(null);
-			marker=new google.maps.Circle({
-  				center:{lat:center.lat(),lng:center.lng()},
-  				radius:plotRadius,
-  				strokeColor: '#FF0',
-  				fillOpacity:0
-  				});
+		// // if(chartType.toLowerCase() === 'histogram'){chartIncludeDate = false};
+		// // document.getElementById('charting-parameters').style.display = 'inline-block';
+		// // $("#charting-container").slideDown();
+		// // $("#charting-parameters").slideDown();
+		// // $("#whichIndexForChartingRadio").slideDown();
 
-			marker.setMap(map);
+		//  map.setOptions({draggableCursor:'help'});
+		// google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
+		// 	closeChart();
+		// 	$('#summary-spinner').slideDown();
+		// 	document.getElementById('curve_chart').style.display = 'none';
+		// 	document.getElementById('curve_chart_big').style.display = 'none';
+		// 	print('Map was double clicked');
+		// 	var x =e.clientX;
+  //       	var y = e.clientY;console.log(x);
+  //       	center =point2LatLng(x,y);
 
-			map.setOptions({draggableCursor:'progress'});
-			updateProgress(25)
-			var p = 25
-			// interval2(function(){updateProgress(p);p= p + 10}, 1000, 5)
-			setTimeout(function(){chartIt();updateProgress(75);},3000);
+		// 	// center = e.latLng;
+		// 	marker.setMap(null);
+		// 	marker=new google.maps.Circle({
+  // 				center:{lat:center.lat(),lng:center.lng()},
+  // 				radius:plotRadius,
+  // 				strokeColor: '#FF0',
+  // 				fillOpacity:0
+  // 				});
+
+		// 	marker.setMap(map);
+
+		// 	map.setOptions({draggableCursor:'progress'});
+		// 	updateProgress(25)
+		// 	var p = 25
+		// 	// interval2(function(){updateProgress(p);p= p + 10}, 1000, 5)
+		// 	setTimeout(function(){chartIt();updateProgress(75);},3000);
 			
-			// ee.data.newTaskId(null,move);
-			// ee.data.newTaskId(null,chartIt);
+		// 	// ee.data.newTaskId(null,move);
+		// 	// ee.data.newTaskId(null,chartIt);
 		
-		});
+		// });
 		
 		
       }

@@ -83,7 +83,7 @@ var widgetsOn = true;
           stopCharting();
           chartingOn = false;
         } else {
-          drawChart();
+          startPixelChartCollection();
           chartingOn = true;
         }
       }
@@ -504,7 +504,23 @@ $('#title-banner').fitText(1.2);
 $('#study-area-label').fitText(1.3);
 
 function addStudyAreaToDropdown(name,toolTip){
-    console.log(name);
-    $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = dropdownUpdateStudyArea("{{name}}")  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
+  var sa = document.createElement("variable-study-area");
+  sa.name = name;
+  sa.tooltip = toolTip;
+  var saList = document.querySelector("study-area-list");
+    saList.insertBefore(sa,saList.firstChild);
+    
+    // $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = "dropdownUpdateStudyArea("Bridger-Teton National Forest")"  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
  }
- // addStudyAreaToDropdown('Bridger-Teton National Forest',"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley");
+
+
+
+
+
+addStudyAreaToDropdown('Bridger-Teton National Forest',"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley");
+addStudyAreaToDropdown('Flathead National Forest',"Flathead National Forest buffered along with Glacier National Park buffered by 1km");
+addStudyAreaToDropdown('Manti-La Sal National Forest',"Manti-La Sal National Forest");
+addStudyAreaToDropdown('Chugach National Forest - Kenai Peninsula',"Chugach National Forest - Kenai Peninsula");
+addStudyAreaToDropdown('Science Team CONUS NAFD',"2018 LCMS Science Team CONUS-wide loss");
+
+
