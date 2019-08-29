@@ -11,7 +11,8 @@
     <template>
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <link href = "https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel = 'stylesheet'>
-        
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
         <style>
 
 
@@ -46,15 +47,15 @@
                 list-style-type:none;
                 margin:0px;padding:0px;
                 color: #333;
-                /*font-size: 1em;*/
+                overflow-wrap: anywhere; 
                 margin-left: 1.5rem!important;
                 margin-right: 1.5rem!important;
                 margin-top:1px;
                 margin-bottom:1px;
                 font-family: 'Roboto Condensed', sans-serif;
                 font-stretch:   condensed;
-                background: -webkit-linear-gradient(left, #ACA199, #ACA199 {{percent}}%, transparent {{percent}}%, transparent 100%);
-                /*color: -webkit-linear-gradient(left, #FFF, #ACA199 {{percent}}%, transparent {{percent}}%, transparent 100%);*/
+                background: -webkit-linear-gradient(left, #FFF, #FFF {{percent}}%, transparent {{percent}}%, transparent 100%);
+                
             }
             #viz:hover{width:50px;}
             li:hover{color:#00897B;-webkit-transition: color  0.5s;}
@@ -70,15 +71,14 @@
             }*/
             /*.legend{color: #000;font-weight: bold;float:right;height:10;width:200px;margin: 0 0 10px 10px;}*/
             .range{float:right;}
+
             /*#opacity{margin-left:1Spx;}*/
         </style>
-        <li   class = 'ee-layer'rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
-
-            <i class="fa fa-spinner fa-spin {{ {deactivated:layer != null}| tokenList }}"></i><input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> {{name}}
-            <!-- <label class = 'rightLabel'>{{opacity}}</label> -->
-            <input id="opacity"  type="range"  class="range" value=100 style = '' on-input="{{onRangeChange}}">
-        
-        </li>
+       <li rel="txtTooltip" data-toggle="tooltip"  title= {{helpBoxMessage}}>
+           <input id="opacity"  type="range"  class="range" value=100 style = '' on-input="{{onRangeChange}}">
+            <i class="fa fa-spinner fa-spin {{ {deactivated:layer != null}| tokenList }}"></i>
+            <input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> {{name}}
+       </li>
 
     </template>
     <script>

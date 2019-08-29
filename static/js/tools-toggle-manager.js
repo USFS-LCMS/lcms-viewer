@@ -505,6 +505,6 @@ $('#study-area-label').fitText(1.3);
 
 function addStudyAreaToDropdown(name,toolTip){
     console.log(name);
-    $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = dropdownUpdateStudyArea("'+name+'")  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
+    $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = dropdownUpdateStudyArea("{{name}}")  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
  }
  // addStudyAreaToDropdown('Bridger-Teton National Forest',"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley");
