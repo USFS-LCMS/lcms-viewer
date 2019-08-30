@@ -67,7 +67,7 @@
         var studyAreaName = 'BTNF';
     </script>
 
-
+  <script type="text/javascript" src="js/templates.js"></script>
 
 </head>
 
@@ -78,32 +78,7 @@
 
         <div class = 'container main-container' id = 'main-container'>
              
-<!-- 
-             <div id = "curve_chart_big_modal" class="modal fade " role="dialog">
-            <div class="modal-dialog modal-lg ">
-            <div class="modal-content bg-black">
 
-            <div class="modal-header">
-            <h4 class="modal-title" id = 'chart-title'></h4>
-        <button type="button" class="close" data-dismiss="modal" >&times;</button>
-          </div>
-
-         
-          <div id = 'chart-modal-body' class="modal-body bg-white" >
-           
-        
-          </div>
-
-
-         
-          <div class="modal-footer">
-           <div id = 'curve_chart_big_footer'></div>
-          </div>
-
-        </div>
-        </div>
-             
-        </div> -->
  
           <div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
     <div class="modal-dialog modal-md " role="document">
@@ -148,13 +123,7 @@
                                 <div class="dropdown-menu col-12 p-0 " >
                                 <!-- <div class="dropdown-header" id = 'studyAreaDropdownList'>National Forest Products</div> -->
                                 <study-area-list  class = 'px-4' id="study-area-list"></study-area-list>
-                                <!--  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Bridger-Teton National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Bridger-Teton National Forest boundary buffered by 5km plus Star Valley">Bridger-Teton National Forest</a>
-                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Flathead National Forest")'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Flathead National Forest buffered along with Glacier National Park buffered by 1km">Flathead National Forest</a>
-                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Manti-La Sal National Forest")'  href="#" data-toggle="tooltip" data-placement="top" title="Manti-La Sal National Forest" value="Manti-La Sal National Forest">Manti-La Sal National Forest</a>
-                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Chugach National Forest - Kenai Peninsula")'  href="#" data-toggle="tooltip" data-placement="top" title="Chugach National Forest - Kenai Peninsula" value="Chugach National Forest - Kenai Peninsula">Chugach National Forest - Kenai Peninsula</a>
-                                  <div class="dropdown-divider"></div>
-                                  <div class="dropdown-header">CONUS Nationwide</div>
-                                  <a class="dropdown-item" onclick = 'dropdownUpdateStudyArea("Science Team CONUS NAFD")'  href="#" data-toggle="tooltip" data-placement="top" title="2018 LCMS Science Team CONUS-wide loss" value="Science Team CONUS NAFD">Science Team CONUS NAFD</a> -->
+                              
                                 </div>
                              
                               </li>
@@ -163,108 +132,101 @@
                     
                         <div id = 'sidebar-left'> 
 
-
-                            <div   class="panel-heading px-4 py-2 " role="tab" id="parameters-collapse-label">
-                                                <h5 class="panel-title"> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#parameters-collapse-div" aria-expanded="false" aria-controls="parameters-collapse-div"><i class="fa fa-sliders mr-1" aria-hidden="true"></i> Parameters </a> </h5>
-                                        </div>
-                                        <div id="parameters-collapse-div" class="panel-collapse collapse panel-body px-4 " role="tabpanel" aria-labelledby="parameters-collapse-label">
-                                               
-                             <!--       
-                                    <button  class = 'm-2 close-button pull-right hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters and map is updated, close window with this button">&times;</button> -->
-                                
-                                    
-                                      <a   >
+                            <script type="text/javascript">
+                            
+                            var paramsDiv =`<a >
                          
-                                        <variable-radio var='analysisMode' title2='Choose which mode' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
-                                      </a>
-                                      
-                                     
-                                      <div class="dropdown-divider"></div>
-                                      <div >Choose Year Range</div>
-                                      <a  >
-                                          <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
-                                            <div class='dual-range-slider-name m-2'>Analysis Years:</div>
-                                            <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
-                                            <div id='date-range-value1' class='dual-range-slider-value m-2'></div>
-                                        </div>
-                                        <script type="text/javascript">
-                                            var startYear = 1985;
-                                            var endYear = 2017;
-                                            setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null')
-                                        </script>
-                                      </a>
+                                <variable-radio var='analysisMode' title2='Choose which mode' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
+                              </a>
+                              
+                             
+                              <div class="dropdown-divider"></div>
+                              <div >Choose Year Range</div>
+                              <a  >
+                                  <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
+                                    <div class='dual-range-slider-name m-2'>Analysis Years:</div>
+                                    <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
+                                    <div id='date-range-value1' class='dual-range-slider-value m-2'></div>
+                                </div>
+                                
+                              </a>
 
-                                  <div class="dropdown-divider"></div>
-                                  <div id='threshold-container' style="display: none;">
-                                  <div  >Choose Thresholds</div>
-                                    <a >
-                                        <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-                                            <div class='dual-range-slider-name m-2'>Loss Threshold:</div>
-                                            <div id="slider2" class='dual-range-slider-slider'></div>
-                                            <div id='declineThreshold' class='dual-range-slider-value  m-2'></div>
-                                        </div>
-                                    </a>
-                                    <a >
-                                        <br>
-                                        <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-                                            <div class='dual-range-slider-name  m-2'>Gain Threshold:</div>
-                                            <div id="slider3" class='dual-range-slider-slider'></div>
-                                            <div id='recoveryThreshold' class='dual-range-slider-value  m-2'></div>
-                                        </div>
-                                        <script type="text/javascript">
-                                            setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null')
-
-                                            setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null')
-                                        </script>
-                                        
-                                        </a>
+                              <div class="dropdown-divider"></div>
+                              <div id='threshold-container' style="display: none;">
+                              <div  >Choose Thresholds</div>
+                                <a >
+                                    <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
+                                        <div class='dual-range-slider-name m-2'>Loss Threshold:</div>
+                                        <div id="slider2" class='dual-range-slider-slider'></div>
+                                        <div id='declineThreshold' class='dual-range-slider-value  m-2'></div>
                                     </div>
+                                </a>
+                                <a >
+                                <br>
+                                <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
+                                    <div class='dual-range-slider-name  m-2'>Gain Threshold:</div>
+                                    <div id="slider3" class='dual-range-slider-slider'></div>
+                                    <div id='recoveryThreshold' class='dual-range-slider-value  m-2'></div>
+                                </div>
+                              
+                                
+                                </a>
+                                </div>
+
+                                
+                              <div id='advanced-radio-container' style="display: none;">
+                                <div class="dropdown-divider"></div>
+                              <div  >Additional Features</div>
+                               
+                                   <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
+
+                                <br>
+                                <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
+                                   <br>
+                                   <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#' ></variable-radio>
+                                    <div class="dropdown-divider"></div>
+                                </div>
+
+
+
+
+                            <button onclick = 'reRun()' class = 'ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters, press this button to refresh maps">Submit</button>`
 
                                     
-                                  <div id='advanced-radio-container' style="display: none;">
-                                    <div class="dropdown-divider"></div>
-                                  <div  >Additional Features</div>
-                                   
-                                       <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-            
-            <br>
-            <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-                                       <br>
-                                       <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#' ></variable-radio>
-                                        <div class="dropdown-divider"></div>
-                                    </div>
+                                    
+                                    addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','Parameters','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>')
+                                    addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,true);
+                                    addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','Reference',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,true);
 
+                                    addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','Tools',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,true,'toggleRadio("none")');
+                                    
+                                    $('#parameters-collapse-div').append(paramsDiv);
+                                    $('#layer-list-collapse-div').append(`<layer-list id="layers"></layer-list>`);
+                                    $('#reference-layer-list-collapse-div').append(`<reference-layer-list id="reference-layers"></reference-layer-list>`);
 
-        
+                                    addTabContainer('tools-collapse-div','toolTabs','toolDivs')
+                                    var startYear = 1985;
+                                    var endYear = 2017;
+                                    setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
+                                    setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null');
 
-                                    <button onclick = 'reRun()' class = 'ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters, press this button to refresh maps">Submit</button>
+                                    setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null');
+
+                                    $('body').append(`<div class = 'legendDiv flexcroll' id = 'legendDiv'></div>`);
+                                    addCollapse('legendDiv','legend-collapse-label','legend-collapse-div','Legend','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true)
+                                    $('#legend-collapse-div').append(`<legend-list  class = 'px-4 py-0' id="legend"></legend-list>`)
+                                      </script>
 
                                   
                                 
-                                            </div>
-                 
-                                        <div   class="panel-heading px-4 py-2 " role="tab" id="lcms-layer-list-collapse-label">
-                                                <h5 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#lcms-layer-list-collapse-div" aria-expanded="true" aria-controls="lcms-layer-list-collapse-div"> <img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">LCMS </a> </h5>
-                                        </div>
-                                        <div id="lcms-layer-list-collapse-div" class="panel-collapse collapse show panel-body px-0" role="tabpanel" aria-labelledby="lcms-layer-list-collapse-label">
-                                                <layer-list id="layers"></layer-list>
-                                            </div>
-                                      
-                                        <div   class="panel-heading px-4 py-2 " role="tab" id="reference-layer-list-collapse-label">
-                                                <h5 class="panel-title"> <a class = ' layer-collapse-title ' data-toggle="collapse"  href="#reference-layer-list-collapse-div" aria-expanded="true" aria-controls="reference-layer-list-collapse-div"> <img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">Reference </a> </h5>
-                                        </div>
-                                        
-                                        
-                                        <div id="reference-layer-list-collapse-div" class="panel-collapse collapse show panel-body px-0 " role="tabpanel" aria-labelledby="reference-layer-list-collapse-label">
-                                               <reference-layer-list id="reference-layers"></reference-layer-list>
-                                        </div>
-                          
+                                           
               
         
-                <div   class="panel-heading px-4 py-2 " role="tab" id="tools-list-collapse-label" onclick = 'toggleRadio("none")'>
+                <!-- <div   class="panel-heading px-4 py-2 " role="tab" id="tools-list-collapse-label" onclick = 'toggleRadio("none")'>
                         <h5 class="panel-title"> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div"><i class="fa fa-gear mr-1" aria-hidden="true"></i>Tools</a> </h5>
-                </div>
-                <div  id="tools-list-collapse-div" class="panel-collapse collapse panel-body px-4 show " role="tabpanel" aria-labelledby="tools-list-collapse-label">
+                </div> -->
+
+                <div  style = 'display:none;'id="tools-list-collapse-div222" class="panel-collapse collapse panel-body px-4 show " role="tabpanel" aria-labelledby="tools-list-collapse-label">
 
 
                 <ul class="nav nav-tabs nav-justified md-tabs" id="toolTabs" role="tablist">  
@@ -392,15 +354,17 @@
             </a>
 
         </div>
-   
-    <div class = 'legendDiv flexcroll'>
+    <script type="text/javascript">
+
+    </script>
+ <!--    <div class = 'legendDiv flexcroll'>
          <div   class="panel-heading px-4 py-2 " role="tab" id="legend-list-collapse-label">
                         <h5 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'><i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>Legend</a> </h5>
                 </div>
                 <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
                        <legend-list  class = 'px-4' id="legend"></legend-list>
                 </div>
-    </div>
+    </div> -->
  
        
       
@@ -424,7 +388,7 @@
     <!-- <div id="map"></div> -->
     <!-- Bring in various js modules -->
     <script type="text/javascript" src="js/map-manager.js"></script>
-    <script type="text/javascript" src="js/templates.js"></script>
+  
  
      <script type="text/javascript" src = 'js/chart-manager.js'></script>
     <script type="text/javascript" src="js/parameters-manager.js"></script>

@@ -76,6 +76,13 @@ var cpDict = {
 var chartIncludeDate = true;var chartCollection;var areaChartCollection;var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
 var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;
+
+infowindow = new google.maps.InfoWindow({
+               content : 'testContent',
+                maxWidth: 200,
+                pixelOffset: new google.maps.Size(0,0),
+                close:false
+              });
 ///////////////////////////////////////////////////////////////////
 //Function to compute range list on client side
 function range(start, stop, step){
@@ -192,13 +199,19 @@ function centerObject(fc){
   
 }
 function showMessage(title,message){
-    $( "#message" ).append( message + '<br>' );
-    if(title != null && title != undefined){
-      $( "#message-title" ).html( title );
-    }
+  var modalName = 'error-modal';
+  clearModal(modalName);
+  addModal('main-container',modalName);
+  addModalTitle(modalName,title);
+  $('#'+modalName+'-body').append(message);
+  $('#'+modalName).modal();
+    // $( "#message" ).append( message + '<br>' );
+    // if(title != null && title != undefined){
+    //   $( "#message-title" ).html( title );
+    // }
     
-    // document.getElementById('messageBox').style.display = 'block';
-    $("#messageBox").slideDown();
+    // // document.getElementById('messageBox').style.display = 'block';
+    // $("#messageBox").slideDown();
 };
 
 function closeMessage(){
@@ -209,19 +222,7 @@ function closeMessage(){
     
     // document.getElementById('messageBox').style.display = 'none';
 }
-//////////////////////////////////////////////
-//Functio to add tab to list
-function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
-  if(!tabToolTip){tabToolTip = ''};
-  var show;
-  if(selected || selected === 'true'){show = 'active show'}else{show = ''};
 
-  $("#" + tabListID ).append('<li class="nav-item"><a onclick = '+tabOnClick+' class="nav-link text-black '+show+'" id="'+tabID+'" data-toggle="tab" href="#'+divID+'" role="tab" aria-controls="'+divID+'" aria-selected="false" rel="txtTooltip" data-toggle="tooltip"  title="'+tabToolTip+'">'+tabTitle+' </a></li>');
-
-  $('#'+divListID).append($('<div class="tab-pane fade '+show+' " id="'+divID+'" role="tabpanel" aria-labelledby="'+tabID+'" rel="txtTooltip" data-toggle="tooltip"  title="'+tabToolTip+'"></div>').append(divHTML))
-
-    };
-/////////////////////////////////////////////////////////////////////////////////////////////
 //Function for creating color ramp generally for a map legend
 function createColorRamp(styleName, colorList, width,height){
     var myCss = 
@@ -943,6 +944,7 @@ var areaPolygonOptions = {
             
             };
 function startArea(){
+  
   if(polyOn === false){
     $( "#area-measurement" ).html( 'Click on map to start measuring<br>Press "Delete" or "d" button to clear<br>Press "u" to undo last vertex placement<br>Press "None" radio button to stop measuring');
     polyOn = true;
@@ -982,8 +984,9 @@ function startArea(){
         var outString = ''
         function areaWrapper(key){
         // print('Adding in: '+key.toString());
-        var pathT = areaPolygonObj[key].getPath().j
-        clickCoords = pathT[pathT.length-1]
+        var pathT = areaPolygonObj[key].getPath().g
+        clickCoords = pathT[pathT.length-1];
+        console.log(clickCoords)
         area = google.maps.geometry.spherical.computeArea(areaPolygonObj[key].getPath());
         
         var unitNames = unitNameDict[metricOrImperial].area;
@@ -1035,8 +1038,13 @@ function startArea(){
           if(keys.length>1){
             polyString = 'polygons';
           }
-          $( "#area-measurement" ).html(totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName );//+' <br>' +pixelProp.toFixed(2) + '%pixel');
-    
+          var areaContent = totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName ;
+          $( "#area-measurement" ).html(areaContent);//+' <br>' +pixelProp.toFixed(2) + '%pixel');
+          infowindow.setContent(areaContent);
+          infowindow.setPosition(clickCoords);
+          
+          infowindow.open(map);
+          $('.gm-ui-hover-effect').hide();
       
             // }       
     }
@@ -1180,7 +1188,7 @@ function stopListening(){
     google.maps.event.clearListeners(mapDiv, 'click');
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'mouseup');
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'dragend');
-    if(infowindow != undefined){infowindow.close()}
+    // if(infowindow != undefined){infowindow.close()}
     window.removeEventListener('keydown',resetPolys);
     window.removeEventListener('keydown',deleteLastVertex);
     // var thisPoly = areaPolygonObj[polyNumber]
@@ -1227,7 +1235,7 @@ function resetPolygon(){
     polyNumber = parseInt(lastKey);
     polyNumber++;
     startArea();
-    console.log(areaPolygonObj)
+    // console.log(areaPolygonObj)
 }
 function newPolygon(){
   stopArea();
@@ -1236,8 +1244,9 @@ function newPolygon(){
 ///////////////////////////////////////////////////////////////////////////////////
 function startDistance(){
   $( "#distance-measurement" ).html( 'Click on map to start measuring<br>Double click to finish measurement');
-  document.getElementById('distance-measurement').style.display = 'inline-block';
-  document.getElementById('distance-measurement').value = 'd';
+  
+  // document.getElementById('distance-measurement').style.display = 'inline-block';
+  // document.getElementById('distance-measurement').value = 'd';
     var distancePolylineOptions = {
               strokeColor: '#FF0',
               icons: [{
@@ -1260,29 +1269,8 @@ function startDistance(){
     distancePolyline.setMap(map);
 
 
-    google.maps.event.addDomListener(mapDiv, 'click', function(event) {
-        console.log('clicked');
-        
-        
+    
 
-        
-    
-   
-        var path = distancePolyline.getPath();
-        var x =event.clientX;
-        var y = event.clientY;
-        clickLngLat =point2LatLng(x,y)
-        path.push(clickLngLat);
-        updateDistance();
- 
-   
-    
-    });
-    // google.maps.event.addDomListener(distancePolyline, 'dblclick', function() {
-    //     console.log('doubleClicked')
-    //     resetPolyline();
-    
-    // });
 
     map.setOptions({disableDoubleClickZoom: true });
 
@@ -1290,7 +1278,16 @@ function startDistance(){
 
     google.maps.event.addListener(distancePolyline, "click", updateDistance);
     mapHammer = new Hammer(document.getElementById('map'));
-    mapHammer.on("doubletap", resetPolyline)
+    mapHammer.on("doubletap", resetPolyline);
+    mapHammer.on("tap", function(event) {
+        console.log('clicked');
+        var x =event.center.x;
+        var y = event.center.y;
+        var path = distancePolyline.getPath();
+        clickLngLat =point2LatLng(x,y)
+        path.push(clickLngLat);
+        updateDistance();
+    });
     // google.maps.event.addDomListener(mapDiv, "dblclick", resetPolyline);
     google.maps.event.addListener(distancePolyline, "mouseup", updateDistance);
     google.maps.event.addListener(distancePolyline, "dragend", updateDistance);
@@ -1310,7 +1307,7 @@ function stopDistance(){
     google.maps.event.clearListeners(mapDiv, 'click');
     google.maps.event.clearListeners(distancePolyline, 'mouseup');
     google.maps.event.clearListeners(distancePolyline, 'dragend');
-    if(infowindow != undefined){infowindow.close()}
+    if(infowindow != undefined){infowindow.setMap(null);}
     distancePolyline.setMap(null);
     // clearInterval(distanceUpdater);
     map.setOptions({draggableCursor:'hand'});
@@ -1329,8 +1326,9 @@ function resetPolyline(){
 // }
 updateDistance = function(){
     distance = google.maps.geometry.spherical.computeLength(distancePolyline.getPath());
-    var pathT = distancePolyline.getPath().j
-    clickCoords = pathT[pathT.length-1]
+    var pathT = distancePolyline.getPath().g;
+    clickCoords = pathT[pathT.length-1];
+    console.log(clickCoords)
     
     var unitNames = unitNameDict[metricOrImperial].distance;
     var unitMultipliers = unitMultiplierDict[metricOrImperial].distance;
@@ -1352,11 +1350,14 @@ updateDistance = function(){
 
     if(distance > 0){
      
-
-          $( "#distance-measurement" ).html(distance.toFixed(4) + ' ' + unitName );
+          var distanceContent = distance.toFixed(4) + ' ' + unitName 
+          $( "#distance-measurement" ).html(distanceContent);
     
+          infowindow.setContent(distanceContent);
+          infowindow.setPosition(clickCoords);
 
-
+          infowindow.open(map);
+          $('.gm-ui-hover-effect').hide();
 
 
     }
@@ -1528,6 +1529,7 @@ function initialize() {
     zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     tilt:0,
     controlSize: 25,
+
     // mapTypeId: "OSM",
     // mapTypeControlOptions: {
     //                 mapTypeIds: mapTypeIds,
@@ -1535,6 +1537,8 @@ function initialize() {
     //                 // position: google.maps.ControlPosition.TOP_CENTER
     //             },
                 scaleControl: true,
+                clickableIcons:false
+
 	};
     
 
@@ -1631,10 +1635,10 @@ function initialize() {
     if(includeTools){
          // document.getElementById('tool-area').style.display = 'inline-block';
     }
-    if(includeLegend){
-        document.getElementById('legend').style.display = 'inline-block';
+    // if(includeLegend){
+        // document.getElementById('legend').style.display = 'inline-block';
         // document.getElementById('legend-button').style.display = 'inline-block';
-    }
+    // }
     if(displayParameters){
       // document.getElementById('parameters-only').style.display = 'inline-block';
     }

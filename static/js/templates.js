@@ -36,16 +36,6 @@ function addDropdownItem(id,label,onclick){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show){
-	if(show === true || show === 'true' || show === 'show'){show = 'show' }else{show = ''}
-	var collapseTitleDiv = `<div   class="panel-heading px-4 py-2 " role="tab" id="${collapseLabelID}">
-	<h5 class="panel-title"> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="parameters-collapse-div">
-	<i class="fa ${collapseLabelIcon} mr-1" aria-hidden="true"></i> ${collapseLabel} </a></h5></div>`;
-
-	var collapseDiv =`<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-4 " role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
-	$('#'+containerID).append(collapseTitleDiv);
-	$('#'+containerID).append(collapseDiv);
-}
 
 const setRadioValue =function(variable,value){
 	console.log(value)
@@ -116,3 +106,73 @@ function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variab
 }
 
 
+
+function addModal(containerID,modalID){
+	if(containerID === null || containerID === undefined){containerID = 'main-container'};
+	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	$('#'+ containerID).append(`
+            <div id = "${modalID}" class="modal fade " role="dialog">
+            	<div class="modal-dialog modal-lg ">
+            		<div class="modal-content bg-black">
+            		<button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
+	            		<div class="modal-header py-0" id ="${modalID}-header"></div>
+	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>
+			          	<div class="modal-footer" id ="${modalID}-footer"></div>
+        			</div>
+        		</div> 
+        	</div>`
+        	)
+}
+function addModalTitle(modalID,title){
+	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	// $('#'+modalID+' .modal-title').html('');
+	$('#'+modalID+' .modal-header').append(`<h4 class="modal-title" id = 'chart-title'>${title}</h4>`);
+
+}
+
+function clearModal(modalID){
+	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	$('#'+modalID+' .modal-title').html('')
+	$('#'+modalID+'-body').html('');
+	$('#'+modalID+'-footer').html('');
+}
+
+function addStudyAreaToDropdown(name,toolTip){
+  var sa = document.createElement("variable-study-area");
+  sa.name = name;
+  sa.tooltip = toolTip;
+  var saList = document.querySelector("study-area-list");
+    saList.insertBefore(sa,saList.firstChild);
+    
+    // $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = "dropdownUpdateStudyArea("Bridger-Teton National Forest")"  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
+ }
+ //////////////////////////////////////////////
+//Functio to add tab to list
+function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
+  if(!tabToolTip){tabToolTip = ''};
+  var show;
+  if(selected || selected === 'true'){show = 'active show'}else{show = ''};
+
+  $("#" + tabListID ).append(`<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-black tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}">${tabTitle}</a></li>`);
+
+  $('#'+divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}"></div>`).append(divHTML))
+
+    };
+/////////////////////////////////////////////////////////////////////////////////////////////
+function addTabContainer(containerID,tabListID,divListID){
+	$('#'+ containerID).append(`<ul class="nav nav-tabs nav-justified md-tabs" id="${tabListID}" role="tablist">  
+    </ul>
+    <div class = 'tab-content card' id = '${divListID}'>
+    </div>`);
+}
+function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick){
+	var collapsed;
+	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
+	var collapseTitleDiv = `<div   class="panel-heading px-4 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
+	<h5 class="panel-title  ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}"> <a class = 'collapse-title' >
+	${collapseLabelIcon} ${collapseLabel} </a></h5></div>`;
+
+	var collapseDiv =`<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-4 " role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
+	$('#'+containerID).append(collapseTitleDiv);
+	$('#'+containerID).append(collapseDiv);
+}
