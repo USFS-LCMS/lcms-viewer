@@ -421,7 +421,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
         var legendItemContainer = document.createElement("legend-item");
-
+        addLegendContainer(name,'legend-collapse-div2',visible);
         legendItemContainer.setAttribute("id", name);
 
 

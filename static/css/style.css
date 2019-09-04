@@ -51,7 +51,7 @@
 
 * {
     font-family: 'Roboto Condensed', sans-serif;
-    font-size: 1em;
+    /*font-size: 1.0rem;*/
     font-weight: 100;
     /*cursor: pointer;*/
     /*line-height: 1.7em;*/
@@ -60,14 +60,14 @@
 /*a{font-size:0.9em;}*/
 /*a {color:var(--white)!important;}*/
       /* Optional: Makes the sample page fill the window. */
-html, body {
+html, body{
         height: 100%;
         margin: 0;
         padding: 0;
         background-color: var(--black);
 
       }
-
+.dropdown{cursor: pointer;}
 .main-container{
   position: absolute;
 
@@ -153,6 +153,28 @@ html, body {
     
 
 }
+.sub-panel-title > a:after {
+
+    float: left !important;
+    font-family: FontAwesome;
+    content:"\f077" !important;
+    padding-right: 5px;
+    
+    
+}
+.sub-panel-title.collapsed > a:after {
+    float: left !important;
+    content:"\f078" !important;
+    
+    
+
+}
+.sub-panel-title{
+  color:var(--black);
+  font-weight: bold!important;
+  background-color:var(--deep-brown-20);
+  font-size:1.1rem;
+}
 .nav-item{}
 .close{color:#FFF;}
 .collapse-title {
@@ -168,7 +190,7 @@ html, body {
   cursor:pointer;
 
 }
-
+.submit-button{background-color: var(--deep-brown-30)}
 .text-black{
   color:var(--black)!important;
 }
@@ -302,3 +324,48 @@ z-index:1;
 
 .toggle-on  { background-color: var(--teal-100);}
 .toggle-off  { background-color: var(--deep-brown-80);}
+
+ul{list-style-type:none!important;}
+.my-legend .legend-title {
+    text-align: left;
+    margin-bottom: 1px;
+    font-weight: bold;
+    font-size: 90%;
+    color:#000;
+    }
+  .my-legend .legend-scale ul {
+    margin: 0;
+    margin-bottom: 1px;
+    padding: 0;
+    float: left;
+    list-style: none;
+    color: #000;
+    }
+  .my-legend .legend-scale ul li {
+    font-size: 100%;
+    list-style: none;
+    margin-left: 0;
+    line-height: 18px;
+    margin-bottom: 1px;
+    }
+  .my-legend ul.legend-labels li span {
+    display: block;
+    float: left;
+    height: 16px;
+    width: 30px;
+    margin-right: 5px;
+    margin-left: 0;
+    border: 1px solid #999;
+    
+
+    }
+  .my-legend .legend-source {
+    font-size: 70%;
+    color: #999;
+    clear: both;
+    
+    }
+  .my-legend a {
+    color: #777;
+    border: 1px solid
+    }

@@ -232,8 +232,8 @@ function startAreaCharting(){
 function areaChartingTabSelect(target){
 	stopAreaCharting();
 	stopCharting();
-	$('#charting-container').slideDown();
-	$("#charting-parameters").slideDown();
+	// $('#charting-container').slideDown();
+	// $("#charting-parameters").slideDown();
 	
    
 	whichAreaDrawingMethod = target;
@@ -261,7 +261,7 @@ function startUserDefinedAreaCharting(){
 	udpList = [];
 	// $('#areaChartingTabs').slideDown();
 
-	$('#user-defined').slideDown();
+	// $('#user-defined').slideDown();
 	
 	// $('#areaUpload').slideDown();
 	map.setOptions({draggableCursor:'crosshair'});
@@ -333,11 +333,12 @@ function startUserDefinedAreaCharting(){
 		$('#summary-spinner').slideDown()
 		// $('#areaUpload').slideDown();
 	  	
-	  	$("#charting-parameters").slideDown();
+	  	// $("#charting-parameters").slideDown();
 	  	var udpName = $('#user-defined-area-name').val();
 	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString();userDefinedI++;}
 		// Map2.addLayer(userArea,{},udpName,false)
 		// console.log(userArea.getInfo());
+		console.log('hhhhhhhhhhhhhhhhhheeeeeeeeeeeeeeeeeellllllllllllll')
 		makeAreaChart(userArea,udpName,true);
 		}
 		catch(err){areaChartingTabSelect(whichAreaDrawingMethod);showMessage('Error',err);}
@@ -395,11 +396,12 @@ function expandChart(){
 	$('#curve_chart_big_modal').modal();
 	closeChart();
 }
-function makeAreaChart(area,name,target,userDefined){
-	if(!userDefined){userDefined = false};
+function makeAreaChart(area,name,userDefined){
+	console.log('making chart');console.log(userDefined);
+	if(userDefined === undefined || userDefined === null){userDefined = false};
 	areaChartingCount++;
-	closeChart();
-	document.getElementById('curve_chart_big').style.display = 'none';
+	// closeChart();
+	// document.getElementById('curve_chart_big').style.display = 'none';
 	var fColor = randomColor().slice(1,7);
 	if(userDefined === false){
 		
@@ -413,6 +415,7 @@ function makeAreaChart(area,name,target,userDefined){
 	area = area.geometry();
 
 	var table = getLossGainTable(areaChartCollection,area);
+	// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
 	var iteration = 0;
 	var maxIterations = 60;
 	var success = false;
@@ -426,76 +429,10 @@ function makeAreaChart(area,name,target,userDefined){
 			print(areaChartingCount);
 			if(failure !== undefined && iteration < maxIterations && failure.indexOf('aggregations') > -1){evalTable()}
 			else if(failure === undefined) {
-				
-				updateProgress(80);
-				areaGeoJson.properties.LCMSSummary = tableT;
-				 document.getElementById('curve_chart').style.display = 'inline-block';
-				 document.getElementById('curve_chart_big').style.display = 'inline-block';
-				  print(tableT)
-				  var dataTable = [['Year','Loss %','Gain %']].concat(tableT);
-				  var name_for_filenames = name.replaceAll(' ','_');
-				  uriName = name_for_filenames + ' LCMS_Loss_and_Gain_Summary';
-				  var title = name + ' LCMS Loss and Gain Summary';
-				  csvName = uriName + '.csv'
-				  geoJsonName = uriName + '.geojson'
-
-				 dataTableT = null;
-				dataTableT = CopyAnArray (dataTable);
-
-
-
-			
-				var chartOptionsT = JSON.parse(JSON.stringify(chartOptions));
-				chartOptionsT.hAxis.title = 'Time';
-				chartOptionsT.vAxis.title = 'Percent of Area';
-				chartOptionsT.title = title;
-
-				var chartOptionsTBig = JSON.parse(JSON.stringify(chartOptionsT));
-				chartOptionsTBig.width = expandedWidth;
-				chartOptionsTBig.height= expandedHeight;
-			
-				var data = google.visualization.arrayToDataTable(dataTableT);
-				var dataBig	 = google.visualization.arrayToDataTable(dataTableT);
-				var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-				var chartBig = new google.visualization.LineChart(document.getElementById('curve_chart_big'));
-				chartBig.draw(dataBig, chartOptionsTBig);
-
-				
-				chart.draw(data, chartOptionsT);
-				
-
-				// $('#curve_chart_big').append('<br><br>');
-				// $("#curve_chart_big").append('<button class="button" onclick="downloadURI();" style= "position:inline-block;">Download PNG');
-				// $("#curve_chart_big").append('<button class="button" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Download CSV');
-				// $("#curve_chart_big").append('<button class="button" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">Download GeoJSON');
-				// $("#curve_chart_big").append('<button class="button" onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= "position:absolute;right:0%;top:0%;">X');
-				
-				// google.visualization.events.addListener(chartBig, 'ready', function () {
-
-				    uri = chartBig.getImageURI();
-				    document.getElementById('curve_chart_big').style.display = 'none';
-				    updateProgress(90)
-					$('#summary-spinner').slideUp();
-				
-				
-				// var exportCSVTooltip = 
-				var bottomBarSmall = '<div style = "position:inline-block;">\
-				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportToCsv(csvName, dataTableT);" style= "position:inline-block;">Table</i></a>\
-				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" style= "position:inline-block;">GeoJSON</i></a>\
-				<a href="#"><i class="fa fa-expand bg-black ml-auto" onclick="expandChart();" style= "position:inline-block;"></i></a>\
-				<a href="#"><i class="fa fa-trash bg-black  ml-auto"  onclick="areaChartingTabSelect(whichAreaDrawingMethod);" style= position:inline-block;"></i></a>\
-				</div>';
-
-				var bottomBarLarge = '<a href="#"><i class="fa fa-cloud-download bg-black" onclick="downloadURI();" >Graph</i></a>\
-				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportToCsv(csvName, dataTableT);" >Table</i></a>\
-				<a href="#"><i class="fa fa-cloud-download bg-black" onclick="exportJSON(geoJsonName, areaGeoJson);" >GeoJSON</i></a>';
-				$('#curve_chart').append(bottomBarSmall);
-				$('#curve_chart_big_footer').append(bottomBarLarge);
-				
-				// $("#curve_chart").append('<button class="button" onclick="expandChart();" style= "position:inline-block;">Expand Chart');
-				// $("#curve_chart").append('<button class="button" onclick="closeChart();" style= "position:inline-block;float:right;">Close Chart');
-
-				updateProgress(100);
+				tableT.unshift(['year','Loss','Gain']);
+				$('#summary-spinner').slideUp();
+				addChartJS(tableT,name);
+				areaChartingTabSelect(whichAreaDrawingMethod);
 				map.setOptions({draggableCursor:'hand'});
 				map.setOptions({cursor:'hand'});
 				
@@ -505,7 +442,7 @@ function makeAreaChart(area,name,target,userDefined){
 				$('#summary-spinner').slideUp()
 				map.setOptions({draggableCursor:'hand'});
 				map.setOptions({cursor:'hand'});
-				updateProgress(0);
+				
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1){
 					failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
@@ -595,18 +532,18 @@ function stopAreaCharting(){
 	try{
    	udp.setMap(null);
    }catch(err){console.log(err)};
-   $('#areaChartingTabs').slideUp();
-	$('#areaUpload').unbind('change')
-	$("#charting-parameters").slideUp();
-	$('#user-defined').slideUp();
-	$('#shp-defined').slideUp();
-	$('#pre-defined').slideUp();
+ //   $('#areaChartingTabs').slideUp();
+	// $('#areaUpload').unbind('change')
+	// $("#charting-parameters").slideUp();
+	// $('#user-defined').slideUp();
+	// $('#shp-defined').slideUp();
+	// $('#pre-defined').slideUp();
 	$('#summary-spinner').slideUp();
-	// $('#areaUpload').slideUp();
-	google.maps.event.clearListeners(mapDiv, 'dblclick');
-    google.maps.event.clearListeners(mapDiv, 'click');
-	updateProgress(1);
-	closeChart();
+	// // $('#areaUpload').slideUp();
+	// google.maps.event.clearListeners(mapDiv, 'dblclick');
+ //    google.maps.event.clearListeners(mapDiv, 'click');
+	// updateProgress(1);
+	// closeChart();
 
 };
 
@@ -742,7 +679,7 @@ Chart.pluginService.register({
 
             ctx.save();
             ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left-30, chartArea.top-30, chartArea.right - chartArea.left+60, chartArea.bottom - chartArea.top+120);
+            ctx.fillRect(chartArea.left-60, chartArea.top-30, chartArea.right - chartArea.left+60, chartArea.bottom - chartArea.top+150);
             ctx.restore();
         }
     }
@@ -800,16 +737,16 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
     	}	
 	});
 
-	  $('#chart-modal-footer').append(`<div class="dropdown">
-										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										    Chart Type
-										  </div>
-										  <div class="dropdown-menu" aria-labelledby="chartDownloadDropdown" id = 'chart-type-dropdown-list'></div>
-										</div>`)
-	  var chartTypes = ['Bar','Line','Pie','Radar'];
-	  chartTypes.map(function(t){
-	  	$('#chart-type-dropdown-list').append(`<a class="dropdown-item" href="#" onclick = "change('${t}'.toLowerCase())">${t}</a>`)
-	  })
+	  // $('#chart-modal-footer').append(`<div class="dropdown">
+			// 							  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			// 							    Chart Type
+			// 							  </div>
+			// 							  <div class="dropdown-menu" aria-labelledby="chartDownloadDropdown" id = 'chart-type-dropdown-list'></div>
+			// 							</div>`)
+	  // var chartTypes = ['Bar','Line','Pie','Radar'];
+	  // chartTypes.map(function(t){
+	  	// $('#chart-type-dropdown-list').append(`<a class="dropdown-item" href="#" onclick = "change('${t}'.toLowerCase())">${t}</a>`)
+	  // })
 	    
 	    $('#chart-modal-footer').append(`<div class="dropdown">
 										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

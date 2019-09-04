@@ -45,7 +45,7 @@ var PALETTE = 'b67430,78db53,F0F,ffb88c,8cfffc,32681e,2a74b8'
 
 // Loss/Gain Palettes
 var declineYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
-var recoveryYearPalette = '54A247,AFDEA8,80C476,308023,145B09';
+var recoveryYearPalette = 'AFDEA8,80C476,308023,145B09';
 
 var declineProbPalette = 'F5DEB3,D00';
 var recoveryProbPalette = 'F5DEB3,006400';

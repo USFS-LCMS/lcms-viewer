@@ -132,90 +132,7 @@
                     
                         <div id = 'sidebar-left'> 
 
-                            <script type="text/javascript">
-                            
-                            var paramsDiv =`<a >
-                         
-                                <variable-radio var='analysisMode' title2='Choose which mode' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
-                              </a>
-                              
-                             
-                              <div class="dropdown-divider"></div>
-                              <div >Choose Year Range</div>
-                              <a  >
-                                  <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use,loss, and gain">
-                                    <div class='dual-range-slider-name m-2'>Analysis Years:</div>
-                                    <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
-                                    <div id='date-range-value1' class='dual-range-slider-value m-2'></div>
-                                </div>
-                                
-                              </a>
-
-                              <div class="dropdown-divider"></div>
-                              <div id='threshold-container' style="display: none;">
-                              <div  >Choose Thresholds</div>
-                                <a >
-                                    <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-                                        <div class='dual-range-slider-name m-2'>Loss Threshold:</div>
-                                        <div id="slider2" class='dual-range-slider-slider'></div>
-                                        <div id='declineThreshold' class='dual-range-slider-value  m-2'></div>
-                                    </div>
-                                </a>
-                                <a >
-                                <br>
-                                <div  class='dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-                                    <div class='dual-range-slider-name  m-2'>Gain Threshold:</div>
-                                    <div id="slider3" class='dual-range-slider-slider'></div>
-                                    <div id='recoveryThreshold' class='dual-range-slider-value  m-2'></div>
-                                </div>
-                              
-                                
-                                </a>
-                                </div>
-
-                                
-                              <div id='advanced-radio-container' style="display: none;">
-                                <div class="dropdown-divider"></div>
-                              <div  >Additional Features</div>
-                               
-                                   <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-
-                                <br>
-                                <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-                                   <br>
-                                   <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#' ></variable-radio>
-                                    <div class="dropdown-divider"></div>
-                                </div>
-
-
-
-
-                            <button onclick = 'reRun()' class = 'ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished with changing parameters, press this button to refresh maps">Submit</button>`
-
-                                    
-                                    
-                                    addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','Parameters','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>')
-                                    addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,true);
-                                    addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','Reference',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,true);
-
-                                    addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','Tools',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,true,'toggleRadio("none")');
-                                    
-                                    $('#parameters-collapse-div').append(paramsDiv);
-                                    $('#layer-list-collapse-div').append(`<layer-list id="layers"></layer-list>`);
-                                    $('#reference-layer-list-collapse-div').append(`<reference-layer-list id="reference-layers"></reference-layer-list>`);
-
-                                    addTabContainer('tools-collapse-div','toolTabs','toolDivs')
-                                    var startYear = 1985;
-                                    var endYear = 2017;
-                                    setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
-                                    setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null');
-
-                                    setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null');
-
-                                    $('body').append(`<div class = 'legendDiv flexcroll' id = 'legendDiv'></div>`);
-                                    addCollapse('legendDiv','legend-collapse-label','legend-collapse-div','Legend','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true)
-                                    $('#legend-collapse-div').append(`<legend-list  class = 'px-4 py-0' id="legend"></legend-list>`)
-                                      </script>
+                       <script type="text/javascript" src="js/template-adder.js"></script>
 
                                   
                                 
@@ -387,9 +304,10 @@
     <!-- Add Google Map -->
     <!-- <div id="map"></div> -->
     <!-- Bring in various js modules -->
+
     <script type="text/javascript" src="js/map-manager.js"></script>
   
- 
+    
      <script type="text/javascript" src = 'js/chart-manager.js'></script>
     <script type="text/javascript" src="js/parameters-manager.js"></script>
     <!--Module for basic parameters-->
@@ -411,7 +329,7 @@
     <script type="text/javascript" src="js/download-manager.js"></script>
     <!--Module for exporting predefined images-->
     
-    <script type="text/javascript" src="js/template-adder.js"></script>
+    
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->

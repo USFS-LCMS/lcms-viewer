@@ -172,7 +172,39 @@ function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, colla
 	<h5 class="panel-title  ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}"> <a class = 'collapse-title' >
 	${collapseLabelIcon} ${collapseLabel} </a></h5></div>`;
 
-	var collapseDiv =`<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-4 " role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
+	var collapseDiv =`<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-5 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
 	$('#'+containerID).append(collapseTitleDiv);
 	$('#'+containerID).append(collapseDiv);
 }
+
+function addSubCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick){
+	var collapsed;
+	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
+	var collapseTitleDiv = `<div   class="panel-heading px-0 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
+	<h5 class="sub-panel-title ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}"> <a class = 'collapse-title' >
+	${collapseLabelIcon} ${collapseLabel} </a></h5></div>`;
+
+	var collapseDiv =`<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-2 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
+	$('#'+containerID).append(collapseTitleDiv);
+	$('#'+containerID).append(collapseDiv);
+}
+function addLegendContainer(legendContainerID,containerID,show){
+	if(containerID === undefined || containerID === null){containerID = 'legend-collapse-div'}
+	if(show === undefined || show === null){show = true}
+	if(show){show = 'block'}
+	else{show = 'none'}
+	$('#' + containerID).append(`<div style = 'display:${show};' id = '${legendContainerID}'></div>`);
+}
+
+function addClassLegendContainer(classLegendContainerID,legendContainerID,classLegendTitle){
+	$('#'+legendContainerID).append(`<div  class='legend-title'>${classLegendTitle}</div>
+    								<div class='legend-scale'>
+        								<ul id = "${classLegendContainerID}" class='legend-labels'>
+            								
+        								</ul>
+    								</div>`)
+}
+function addClassLegendEntry(classLegendContainerID,title,color){
+	$('#'+classLegendContainerID).append(`<li ><span style='background:${color};'></span>${title}</li>`)
+}
+
