@@ -153,19 +153,25 @@ function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,ta
   var show;
   if(selected || selected === 'true'){show = 'active show'}else{show = ''};
 
-  $("#" + tabListID ).append(`<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-black tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}">${tabTitle}</a></li>`);
+  $("#" + tabListID ).append(`<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-left text-dark tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}">${tabTitle}</a></li>`);
 
   $('#'+divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}"></div>`).append(divHTML))
 
     };
 /////////////////////////////////////////////////////////////////////////////////////////////
 function addTabContainer(containerID,tabListID,divListID){
-	$('#'+ containerID).append(`<ul class="nav nav-tabs nav-justified md-tabs" id="${tabListID}" role="tablist">  
+	$('#'+ containerID).append(`<ul class="pb-1 nav nav-tabs flex-column nav-justified md-tabs" id="${tabListID}" role="tablist">  
     </ul>
     <div class = 'tab-content card' id = '${divListID}'>
     </div>`);
 }
-function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick){
+// function addAccordianContainer(containerID,tabListID,divListID){
+// 	$('#'+ containerID).append(`<ul class="pb-1 nav nav-tabs flex-column nav-justified md-tabs" id="${tabListID}" role="tablist">  
+//     </ul>
+//     <div class = 'tab-content card' id = '${divListID}'>
+//     </div>`);
+// }
+function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick,toolTip){
 	var collapsed;
 	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
 	var collapseTitleDiv = `<div   class="panel-heading px-4 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
@@ -180,6 +186,8 @@ function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, colla
 function addSubCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick){
 	var collapsed;
 	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
+
+
 	var collapseTitleDiv = `<div   class="panel-heading px-0 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	<h5 class="sub-panel-title ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}"> <a class = 'collapse-title' >
 	${collapseLabelIcon} ${collapseLabel} </a></h5></div>`;
@@ -188,6 +196,29 @@ function addSubCollapse(containerID,collapseLabelID,collapseID,collapseLabel, co
 	$('#'+containerID).append(collapseTitleDiv);
 	$('#'+containerID).append(collapseDiv);
 }
+
+function addAccordianContainer(parentContainerID,accordianContainerID){
+  $('#' + parentContainerID).append(`<div class="accordion" id="${accordianContainerID}"></div>`);
+    
+}
+function addAccordianCard(accordianContainerID,accordianCardHeaderID, accordianCardBodyID,accordianCardHeaderContent,accordianCardBodyContent,show,onclick,toolTip){
+  var collapsed;
+  if(toolTip === undefined || toolTip === null){toolTip = '';}
+  if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
+  $('#' + accordianContainerID).append(`
+    <div>
+      <div class=" px-0 py-2 sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
+        aria-expanded="false" aria-controls="${accordianCardBodyID}" onclick = '${onclick}'>
+      <a class = 'collapse-title' rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}"  >
+        ${accordianCardHeaderContent} </a>
+      </div>
+      <div id="${accordianCardBodyID}" class=" panel-collapse collapse panel-body px-4 py-0 collapse ${show}" aria-labelledby="${accordianCardHeaderID}"
+        data-parent="#${accordianContainerID}">
+        <div rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}">${accordianCardBodyContent}</div>
+      </div>
+    </div>`)
+}
+
 function addLegendContainer(legendContainerID,containerID,show){
 	if(containerID === undefined || containerID === null){containerID = 'legend-collapse-div'}
 	if(show === undefined || show === null){show = true}

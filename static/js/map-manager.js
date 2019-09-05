@@ -1,22 +1,7 @@
 //Wrapper for mapping functions
 ///////////////////////////////////////////////////////////////////
 //Set up some globals
-var fc;//Feature collection container for drawing on map and submitting tasks with user-defined vectors
-var toExport;
-var taskCount = 0;//Keeping track of the number of export tasks each session submitted
-var canAddToMap = true;//Set whether addToMap function can add to the map
-var canExport = false;//Set whether exports are allowed
-var colorRampIndex = 1;
-var NEXT_LAYER_ID = 1;var layerChildID = 0;
-var layerCount = 0;var refreshNumber = 0;
-var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow
-var outputURL;
-var chartType = 'LineChart';//Options LineChart, BarChart, ScatterChart, Histogram, AreaChart, Table
-var chartTypes = ['LineChart','Table'];//Options LineChart, BarChart, ScatterChart, Histogram, AreaChart, Table
-var tableConverter = null;
-var mapDiv = document.getElementById('map');
-var groundOverlayOn = false;
-var mapDiv = document.getElementById('map');
+
 tableConverter = function(dataTableT){
 
   // var x = [dataTableT[0]]
@@ -73,9 +58,7 @@ var cpDict = {
       return dataTableT
     };
 
-var chartIncludeDate = true;var chartCollection;var areaChartCollection;var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
-var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
-var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;
+
 
 infowindow = new google.maps.InfoWindow({
                content : 'testContent',
@@ -282,7 +265,7 @@ var plotElements = document.getElementById("pt-list");;
     plotIDList = [];
     plotID =1;
 }
-var plotDictID = 1;
+
 function addPlotProject(plotProjectName,plotProjectPts){
   
   var projectElement = document.createElement("ee-pt-project");
@@ -330,7 +313,6 @@ function setPlotProjectColor(ID){
    
 }
 /////////////////////////////////////////////////////
-var exportID = 1;
 //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
 String.prototype.replaceAll = function(str1, str2, ignore) 
 {
@@ -421,7 +403,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
         var legendItemContainer = document.createElement("legend-item");
-        addLegendContainer(name,'legend-collapse-div2',visible);
+
         legendItemContainer.setAttribute("id", name);
 
 
@@ -745,13 +727,13 @@ function reRun(){
   if(analysisMode === 'advanced'){
     document.getElementById('threshold-container').style.display = 'inline-block';
     document.getElementById('advanced-radio-container').style.display = 'inline';
-    document.getElementById('charting-container').style.display = 'inline-block';
+    // document.getElementById('charting-container').style.display = 'inline-block';
     
   }
   else{
     document.getElementById('threshold-container').style.display = 'none';
     document.getElementById('advanced-radio-container').style.display = 'none';
-    document.getElementById('charting-container').style.display = 'none';
+    // document.getElementById('charting-container').style.display = 'none';
     viewBeta = 'no';
     lowerThresholdDecline = 0.35;
     upperThresholdDecline = 1;
@@ -840,7 +822,7 @@ function reRun(){
   exportImageDict = {};
   clearDownloadDropdown();
 	run();
-  // setupFSB();
+  setupFSB();
 
 
 //     var whileCount = 0;
@@ -864,16 +846,6 @@ function reRun(){
     // processFeatures(fc);
    
 }
-var metricOrImperial = 'metric';
-var unitMultiplierDict = {imperial:
-{area:[10.7639,0.000247105],distance:[3.28084,0.000621371]},
-metric:
-{area:[1,0.0001],distance:[1,0.001]}};
-
-var unitNameDict = {imperial:
-{area:['ft<sup>2</sup>','acres'],distance:['ft','miles']},
-metric:
-{area:['m<sup>2</sup>','hectares'],distance:['m','km']}};
 
 function toggleUnits(){
   if(metricOrImperial === 'metric'){metricOrImperial = 'imperial'}
@@ -909,10 +881,17 @@ function randomColor(){
   var c = rgbToHex(r,g,b)
   return c
 }
+var chartColorI = 0;
+var chartColors = ['#111','#808','#1f78b4','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
+function getChartColor(){
+  chartColorI++;
+  return chartColors[chartColorI%chartColors.length]
+
+}
 function randomRGBColor(){
-  var r = getRandomInt(50, 255);
-  var g = getRandomInt(50, 255);
-  var b = getRandomInt(50, 255);
+  var r = getRandomInt(100, 225);
+  var g = getRandomInt(100, 225);
+  var b = getRandomInt(100, 225);
   
   return [r,g,b];
 }
@@ -924,14 +903,14 @@ function randomColors(n){
   }
   return out
 }
-
-var polyNumber = 1;
-var polyOn = false;
-
 var colorList = randomColors(50);
 var colorMod = colorList.length;
 var currentColor =  colorList[colorMod%colorList.length];
 colorMod++;
+var polyNumber = 1;
+var polyOn = false;
+
+
 var areaPolygonOptions = {
               strokeColor:currentColor,
                 fillOpacity:0.2,
@@ -943,16 +922,17 @@ var areaPolygonOptions = {
               polyNumber: polyNumber
             
             };
+
 function startArea(){
   
   if(polyOn === false){
-    $( "#area-measurement" ).html( 'Click on map to start measuring<br>Press "Delete" or "d" button to clear<br>Press "u" to undo last vertex placement<br>Press "None" radio button to stop measuring');
+    // $( "#area-measurement" ).html( 'Click on map to start measuring<br>Press "Delete" or "d" button to clear<br>Press "u" to undo last vertex placement<br>Press "None" radio button to stop measuring');
     polyOn = true;
   }
   // 
    // $( "#distance-area-measurement" ).style.width = '0px';
-  document.getElementById('area-measurement').style.display = 'block';
-  document.getElementById('area-measurement').value = 'a';
+  // document.getElementById('area-measurement').style.display = 'block';
+  // document.getElementById('area-measurement').value = 'a';
   currentColor =  colorList[colorMod%colorList.length];
     areaPolygonOptions = {
               strokeColor:currentColor,
@@ -1039,7 +1019,7 @@ function startArea(){
             polyString = 'polygons';
           }
           var areaContent = totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName ;
-          $( "#area-measurement" ).html(areaContent);//+' <br>' +pixelProp.toFixed(2) + '%pixel');
+          // $( "#area-measurement" ).html(areaContent);//+' <br>' +pixelProp.toFixed(2) + '%pixel');
           infowindow.setContent(areaContent);
           infowindow.setPosition(clickCoords);
           
@@ -1217,8 +1197,8 @@ function stopArea(){
   google.maps.event.clearListeners(mapDiv, 'dblclick');
   mapHammer.destroy();
     google.maps.event.clearListeners(mapDiv, 'click');
-  $( "#area-measurement" ).html( '');
-  document.getElementById('area-measurement').style.display = 'none';
+  // $( "#area-measurement" ).html( '');
+  // document.getElementById('area-measurement').style.display = 'none';
   map.setOptions({disableDoubleClickZoom: true });
   
   clearPolys();
@@ -1243,7 +1223,7 @@ function newPolygon(){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 function startDistance(){
-  $( "#distance-measurement" ).html( 'Click on map to start measuring<br>Double click to finish measurement');
+  // $( "#distance-measurement" ).html( 'Click on map to start measuring<br>Double click to finish measurement');
   
   // document.getElementById('distance-measurement').style.display = 'inline-block';
   // document.getElementById('distance-measurement').value = 'd';
@@ -1298,8 +1278,8 @@ function startDistance(){
     }
 
 function stopDistance(){
-  $( "#distance-measurement" ).html( '');
-  document.getElementById('distance-measurement').style.display = 'none';
+  // $( "#distance-measurement" ).html( '');
+  // document.getElementById('distance-measurement').style.display = 'none';
   mapHammer.destroy();
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -1351,7 +1331,7 @@ updateDistance = function(){
     if(distance > 0){
      
           var distanceContent = distance.toFixed(4) + ' ' + unitName 
-          $( "#distance-measurement" ).html(distanceContent);
+          // $( "#distance-measurement" ).html(distanceContent);
     
           infowindow.setContent(distanceContent);
           infowindow.setPosition(clickCoords);
@@ -1512,35 +1492,9 @@ function initialize() {
    
     
 
-	var mapOptions = {
-	  center: center,
-	  zoom: zoom,
-	  minZoom: 2,
-    // gestureHandling: 'greedy',
-    disableDoubleClickZoom: true,
-      // maxZoom: 15,
-      mapTypeId: google.maps.MapTypeId.HYBRID,
-	  streetViewControl: true,
-    fullscreenControl: false,
-    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT},
-    // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-    streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-
-    zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-    tilt:0,
-    controlSize: 25,
-
-    // mapTypeId: "OSM",
-    // mapTypeControlOptions: {
-    //                 mapTypeIds: mapTypeIds,
-    //                 // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-    //                 // position: google.maps.ControlPosition.TOP_CENTER
-    //             },
-                scaleControl: true,
-                clickableIcons:false
-
-	};
-    
+	
+    mapOptions.center = center;
+    mapOptions.zoom = zoom;
 
     map = new google.maps.Map(document.getElementById("map"),
                                   mapOptions);
@@ -1775,7 +1729,7 @@ function initialize() {
     //Proxy server used for EE and GCS auth
     //RCR appspot proxy costs $$
 	// ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
-    ee.initialize("https://rcr-ee-proxy.herokuapp.com/api","https://earthengine.googleapis.com/map",function(){
+    ee.initialize(authProxyAPIURL,geeAPIURL,function(){
     
     // ee.initialize("http://localhost:8080/api","https://earthengine.googleapis.com/map",function(){
       if(cachedStudyAreaName != null){
@@ -1783,7 +1737,7 @@ function initialize() {
     }
     else{run = runUSFS}
   run();
-  // setupFSB();
+  setupFSB();
 	// plotPlots()
 	});
 

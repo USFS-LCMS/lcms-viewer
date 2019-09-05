@@ -8,7 +8,7 @@
   --teal-100:#00897B;
 
   
-  --deep-brown-10:#D6D1CADD;
+  --deep-brown-10:#D6D1CA;
   --deep-brown-20:#BFB7B0;
   --deep-brown-30:#ACA199;
   --deep-brown-50:#968B83;
@@ -72,6 +72,10 @@ html, body{
   position: absolute;
 
 }
+
+
+
+
 .gray{
   color:var(--grayy);
 }
@@ -110,8 +114,8 @@ html, body{
 }
 
 .panel-heading{
-  border-top: 1px solid var(--deep-brown-10);
-  border-bottom: 1px solid var(--deep-brown-10);
+  border-top: 0.1rem solid var(--deep-brown-10);
+  /*border-bottom: 0.1rem solid var(--deep-brown-10);*/
   background-color: var(--transparent)!important;
   font-size: 1.5em;
   margin:0px!important;
@@ -153,8 +157,9 @@ html, body{
     
 
 }
-.sub-panel-title > a:after {
 
+.sub-panel-title > a:after {
+ 
     float: left !important;
     font-family: FontAwesome;
     content:"\f077" !important;
@@ -169,11 +174,14 @@ html, body{
     
 
 }
+
 .sub-panel-title{
+  background-color: var(--deep-brown-10)!important;
   color:var(--black);
   font-weight: bold!important;
-  background-color:var(--deep-brown-20);
+  /*background-color:var(--deep-brown-20);*/
   font-size:1.1rem;
+  border-top: 0.1rem solid var(--deep-brown-30);
 }
 .nav-item{}
 .close{color:#FFF;}
@@ -229,7 +237,7 @@ position:absolute;
 z-index:1;
 }
 .sidebar-toggler{
-  position:absolute;top:0%;left:0%;z-index:5;font-size:1.3em!important;border-radius: 1px;
+  position:absolute;top:0%;left:0%;z-index:5;font-size:1.3rem!important;border-radius: 1px;
 }
 
 

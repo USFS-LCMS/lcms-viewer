@@ -1,57 +1,4 @@
-var center;var globalChartValues;
 
-var chartTextColor = '#FFF';
-var cssClassNames = {
-'headerRow': 'googleChartTable',
-'tableRow': 'googleChartTable',
-'oddTableRow': 'googleChartTable',
-'selectedTableRow': 'googleChartTable',
-'hoverTableRow': 'googleChartTable',
-'headerCell': 'googleChartTable',
-'tableCell': 'googleChartTable',
-'rowNumberCell': 'googleChartTable'};
-
-var expandedWidth = $(window).width()/3;
-var expandedHeight = $(window).height()/2;
-var chartOptions = {
-  title: uriName,
-  titleTextStyle: {
-	color: chartTextColor
-},
-  pointSize: 3,
-  legend: { position: 'bottom',textStyle:{color: chartTextColor,fontSize:'12'} },
-  dataOpacity: 1,
- hAxis:{title:'Year',
- 				titleTextStyle:{color: chartTextColor},
-				textStyle:{color: chartTextColor}
-			},
-	vAxis:{textStyle:{color: chartTextColor},titleTextStyle:{color: chartTextColor}},
-	legend: {
-        textStyle: {
-            color: chartTextColor
-        }
-    },
-
-   // width: 800, 
-   height:250,
-   bar: {groupWidth: "100%"},
-   explorer: {  actions: [] },
-    chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
-    legendArea:{width:'20%'},
-   backgroundColor: { fill: "#1B1716" }
-
-};
-var tableOptions = {
-	// width: 800, 
-   // height:350,
-    'allowHtml': true,
-    'cssClassNames': cssClassNames};
-
-function updateProgress(pct) {
-    var elem = document.getElementById("Bar"); 
-    elem.style.width = pct + '%'; 
-        
-}
 function sortFunction(a, b) {
     if (a[0] === b[0]) {
         return 0;
@@ -76,7 +23,7 @@ var  getQueryImages = function(lng,lat){
 	$('.gm-ui-hover-effect').show();
 	var outDict = {};
 	$('#summary-spinner').slideDown();
-	$('#query-container').empty();
+	// $('#query-container').empty();
 	infowindow.setMap(null);
 	infowindow.setPosition({lng:lng,lat:lat});
 	
@@ -94,7 +41,7 @@ var  getQueryImages = function(lng,lat){
 
 	var queryLine = '<h6>Queried values for lng: '+lng.toFixed(3).toString() + ' lat: '+lat.toFixed(3).toString()+ '</h6>';
 	// queryContent += queryLine;
-	$('#query-container').append(queryLine);
+	// $('#query-container').append(queryLine);
 	var keys = Object.keys(queryObj);
 	var keysToShow = [];
 	keys.map(function(k){
@@ -123,12 +70,12 @@ var  getQueryImages = function(lng,lat){
 				if(value === null){
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
 					queryContent +=`<tr><td>${k}</td><td>null</td></tr>`;
-					$('#query-container').append(queryLine);
+					// $('#query-container').append(queryLine);
 				}
 				else if(Object.keys(value).length === 1 ){
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
 					queryContent +=`<tr><td>${k}</td><td>${JSON.stringify(Object.values(value)[0])}</td></tr>`;
-					$('#query-container').append(queryLine);
+					// $('#query-container').append(queryLine);
 				}
 				else{
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ':<br>';
@@ -179,7 +126,12 @@ var fsb;
 // var fieldName = 'PARKNAME';
 // var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries';
 function setupFSB(){
-  $('#forestBoundaries').empty()
+  $('#forestBoundaries').empty();
+  $('#forestBoundaries').hide();
+  // $('#summary-spinner').slideDown();
+  $('#select-area-spinner').show();
+  $('#select-area-spinner').addClass(`fa-spin fa fa-spinner`);
+
   // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
   // var fieldName = 'FORESTNAME';
 
@@ -187,15 +139,15 @@ function setupFSB(){
 	var nfs = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
 
 
-	var npsFieldName = 'PARKNAME';
-	var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
+	// var npsFieldName = 'PARKNAME';
+	// var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
 
 	nfs = nfs.map(function(f){return f.set('label',f.get(nfsFieldName))});
 
 
-	nps = nps.map(function(f){return f.set('label',ee.String(f.get(npsFieldName)).cat(' National Park'))});
+	// nps = nps.map(function(f){return f.set('label',ee.String(f.get(npsFieldName)).cat(' National Park'))});
 
-	fsb = nfs.merge(nps);
+	fsb = nfs//.merge(nps);
 	fieldName = 'label';
  
 
@@ -212,10 +164,14 @@ function setupFSB(){
 	      mySelect.append($('<option></option>').val(val).html(text)
 	      );
 	  });
+	  $('#select-area-spinner').removeClass('fa-spin fa fa-spinner');
+	  $('#select-area-spinner').hide();
+	  $('#forestBoundaries').show();
   })
  	
  
 };
+
 var udp;
 var udpList = [];
 var whichAreaDrawingMethod;
@@ -330,7 +286,7 @@ function startUserDefinedAreaCharting(){
 			var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
 
 
-		$('#summary-spinner').slideDown()
+		$('#summary-spinner').slideDown();
 		// $('#areaUpload').slideDown();
 	  	
 	  	// $("#charting-parameters").slideDown();
@@ -338,7 +294,6 @@ function startUserDefinedAreaCharting(){
 	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString();userDefinedI++;}
 		// Map2.addLayer(userArea,{},udpName,false)
 		// console.log(userArea.getInfo());
-		console.log('hhhhhhhhhhhhhhhhhheeeeeeeeeeeeeeeeeellllllllllllll')
 		makeAreaChart(userArea,udpName,true);
 		}
 		catch(err){areaChartingTabSelect(whichAreaDrawingMethod);showMessage('Error',err);}
@@ -352,8 +307,8 @@ function startUserDefinedAreaCharting(){
 }
 
 function chartChosenArea(){
-  $('#charting-container').slideDown();
-    $("#charting-parameters").slideDown();
+  // $('#charting-container').slideDown();
+    // $("#charting-parameters").slideDown();
     $('#summary-spinner').slideDown();
     try{
    	udp.setMap(null);
@@ -368,7 +323,7 @@ function chartChosenArea(){
   var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName,chosenArea));
 
   makeAreaChart(chosenAreaGeo,chosenArea);
-  console.log('Charting ' + chosenArea);
+  // console.log('Charting ' + chosenArea);
 }
 function getLossGainTable(areaChartCollection,area){
 	var test = ee.Image(areaChartCollection.first());
@@ -389,7 +344,7 @@ function getLossGainTable(areaChartCollection,area){
 				    return [year,lossPct,gainPct];//ee.List([lossSum]);
 				})
 }
-var areaChartingCount = 0;var areaGeoJson;
+
 function expandChart(){
 	console.log('expanding');
 	$('#curve_chart_big').slideDown();
@@ -397,20 +352,27 @@ function expandChart(){
 	closeChart();
 }
 function makeAreaChart(area,name,userDefined){
+	areaGeoJson = null;
 	console.log('making chart');console.log(userDefined);
 	if(userDefined === undefined || userDefined === null){userDefined = false};
 	areaChartingCount++;
 	// closeChart();
 	// document.getElementById('curve_chart_big').style.display = 'none';
 	var fColor = randomColor().slice(1,7);
-	if(userDefined === false){
+	// if(userDefined === false){
 		
 		Map2.addLayer(area,{'palette':fColor,addToClassLegend: true,classLegendDict:{'':fColor}},name,true,null,null,name + ' for summarizing','reference-layer-list');
-	}
+	// }
 	
-	updateProgress(50);
+	// updateProgress(50);
 	area = area.set('source','LCMS_data_explorer');
-	areaGeoJson = area.getInfo();
+	
+	area.evaluate(function(i){
+		areaGeoJson = i;
+		if(areaGeoJson !== undefined && areaGeoJson !== null){
+	    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+	    }});
+	
 	centerObject(area);
 	area = area.geometry();
 
@@ -429,7 +391,7 @@ function makeAreaChart(area,name,userDefined){
 			print(areaChartingCount);
 			if(failure !== undefined && iteration < maxIterations && failure.indexOf('aggregations') > -1){evalTable()}
 			else if(failure === undefined) {
-				tableT.unshift(['year','Loss','Gain']);
+				tableT.unshift(['year','Loss %','Gain %']);
 				$('#summary-spinner').slideUp();
 				addChartJS(tableT,name);
 				areaChartingTabSelect(whichAreaDrawingMethod);
@@ -478,53 +440,40 @@ function fixGeoJSONZ(f){
 }
 
 function startShpDefinedCharting(){
-	$('#shp-defined').slideDown();
-	$('#areaUpload').slideDown();
 	$('#areaUpload').change(function(){
-		if(jQuery('#areaUpload')[0].files.length > 0){
-
-		try{
-		   	udp.setMap(null);
-		   }catch(err){console.log(err)};
-		$('#summary-spinner').slideDown()
-		$('#areaUpload').slideDown();
-	  $('#charting-container').slideDown();
-	  $("#charting-parameters").slideDown();
-		console.log('it changed');
-		updateProgress(10);
-		document.getElementById('curve_chart').style.display = 'none';
+	if(jQuery('#areaUpload')[0].files.length > 0){
+		try{udp.setMap(null);}
+		catch(err){console.log(err)};
 		
-			var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0];
-			map.setOptions({draggableCursor:'progress'});
-			map.setOptions({cursor:'progress'});
-			convertToGeoJSON('areaUpload').done(function(converted){
-					console.log('successfully converted to JSON');
-					console.log(converted);
-					updateProgress(30);
-
-					//First try assuming the geoJSON has spatial info
-					try{
-						var area =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
-					} 
-					//Fix it if not
-					catch(err){
-						err = err.toString();
-						console.log('Error');console.log(err);
-						if(err.indexOf('Error: Invalid GeoJSON geometry:') > -1){
-							var area =ee.FeatureCollection(fixGeoJSONZ(converted).features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}))	
-						}
-						else{
-							console.log('what to do');
-						}
-						
-					};
-					// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
-					makeAreaChart(area,name);
-					
-
-				})
-	}
 		
+		var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0];
+		map.setOptions({draggableCursor:'progress'});
+		map.setOptions({cursor:'progress'});
+		convertToGeoJSON('areaUpload').done(function(converted){
+			console.log('successfully converted to JSON');
+			console.log(converted);
+				
+
+			//First try assuming the geoJSON has spatial info
+			try{
+				var area =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
+				} 
+			//Fix it if not
+			catch(err){
+				err = err.toString();
+				console.log('Error');console.log(err);
+				if(err.indexOf('Error: Invalid GeoJSON geometry:') > -1){
+					var area =ee.FeatureCollection(fixGeoJSONZ(converted).features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}))	
+					}
+				else{
+					console.log('what to do');
+					showMessage('Error Ingesting Study Area!',err)
+					}
+				};
+				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
+				makeAreaChart(area,name);
+			})
+		}	
 	})
 };
 function stopAreaCharting(){
@@ -548,15 +497,15 @@ function stopAreaCharting(){
 };
 
 function startQuery(){
-	try{
-   	udp.setMap(null);
-   }catch(err){console.log(err)};
+	areaGeoJson = null;
+	try{udp.setMap(null);}catch(err){console.log(err)};
+
 	google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
 	map.setOptions({draggableCursor:'help'});
- 			map.setOptions({cursor:'help'});
+ 	map.setOptions({cursor:'help'});
  	mapHammer = new Hammer(document.getElementById('map'));
-   mapHammer.on("doubletap", function(e) {
+   	mapHammer.on("doubletap", function(e) {
 	// google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
 			$('#summary-spinner').slideDown()
 			map.setOptions({draggableCursor:'progress'});
@@ -581,17 +530,17 @@ function startQuery(){
 			getQueryImages(center.lng(),center.lat());
 
 		})
-	document.getElementById('query-container').style.display = 'block';
+	// document.getElementById('query-container').style.display = 'block';
 }
 function stopQuery(){
 	print('stopping');
 	mapHammer.destroy();
 	map.setOptions({draggableCursor:'hand'});
 	map.setOptions({cursor:'hand'});
-	$('#query-container').text('Double click on map to query values of displayed layers at a location');
+	// $('#query-container').text('Double click on map to query values of displayed layers at a location');
 	google.maps.event.clearListeners(mapDiv, 'dblclick');
 	map.setOptions({cursor:'hand'});
-	document.getElementById('query-container').style.display = 'none';
+	// document.getElementById('query-container').style.display = 'none';
 }
 function getImageCollectionValuesForCharting(pt){
 	
@@ -656,7 +605,7 @@ function changeChartType(newType,showExpanded){
 	uriName = 'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
 	csvName = uriName + '.csv'
 	document.getElementById('curve_chart').style.display = 'none';
-	setTimeout(function(){updateProgress(80);},0);
+	// setTimeout(function(){updateProgress(80);},0);
 	Chart(showExpanded);
 }
 
@@ -709,8 +658,9 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
         var col = arrayColumn(dt,i);
         var label = col[0];
         var data = col.slice(1);
-        var color = randomRGBColor()
-        return {'label':label,pointStyle: chartType,'data':data,'fill':false,'borderColor':`rgb(${color[0]},${color[1]},${color[2]})`,'lineTension':0}
+        // var color = randomRGBColor();
+        var color = getChartColor()
+        return {'label':label,pointStyle: chartType,'data':data,'fill':false,'borderColor':color,'lineTension':0}
         // console.log(label);console.log(data)
     })
     console.log(datasets)
@@ -752,12 +702,12 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
 										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										    Download
 										  </div>
-										  <div class="dropdown-menu" aria-labelledby="chartDownloadDropdown">
+										  <div id = 'chart-download-dropdown' class="dropdown-menu" aria-labelledby="chartDownloadDropdown">
 										    <a class="dropdown-item" href="#" onclick = "downloadChartJS(chartJSChart,'${title}.png')">PNG</a>
 										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${title}.csv', dataTable)">CSV</a>
-										   
 										  </div>
-										</div>`)
+										</div>`);
+	    
 	    $('#chart-modal').modal();
 }
 function change(newType) {
@@ -850,11 +800,12 @@ function getEveryOther(values){
 		}
 
 function startPixelChartCollection() {
-
+	
 	map.setOptions({draggableCursor:'help'});
 	mapHammer = new Hammer(document.getElementById('map'));
    
     mapHammer.on("doubletap", function(event) {
+    	areaGeoJson = null;
     	$('#summary-spinner').slideDown();
     	map.setOptions({draggableCursor:'progress'});
         var x =event.center.x;
@@ -916,7 +867,7 @@ function startPixelChartCollection() {
 			}
 			else{
 
-				showMessage('Charting Error','Unknown Error');
+				showMessage('Charting Error','Unknown Error<br>Try again');
 			}
 		})
 	})

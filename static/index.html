@@ -27,12 +27,12 @@
     <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
     <script type="text/javascript" src="js/ee_api_js.js"></script>
     
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', {
             'packages': ['corechart', 'table']
         });
-    </script>
+    </script> -->
     <script type="text/javascript" src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js'></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -59,201 +59,23 @@
     <link rel="import" href="elements/variables.html">
    
     
-     <script >
-        var lowerThresholdDecline = 0.3;
-        var upperThresholdDecline = 1.0;
-        var lowerThresholdRecovery = 0.3;
-        var upperThresholdRecovery = 1.0;
-        var studyAreaName = 'BTNF';
-    </script>
-
-  <script type="text/javascript" src="js/templates.js"></script>
+     
+    
 
 </head>
 
 <body>
     <div   href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>
-
     <div class = ' map' id = 'map'> </div>
-
-        <div class = 'container main-container' id = 'main-container'>
-             
-
- 
-          <div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
-    <div class="modal-dialog modal-md " role="document">
-        <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-            <button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
-            <div class = 'modal-header'>
-
-                <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</h3>
-            </div>
-            <div class="modal-body">
-               
-                
-           
-                <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
-                
-            </div>
-            <div class = 'modal-footer'>
-                <div class="form-check  mr-0">
-                    <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                    <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-        </div>
-        <div style = 'position: absolute;left:0%;top:0%;'class = 'col-lg-3 sidebar show p-0 m-0 flexcroll  bg-image'  >
-     
-    <h1 id = 'title-banner' data-toggle="tooltip" title="Hooray!" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">LCMS<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER </h1>
-
-                         
-                          <ul class = 'navbar-nav  px-5  m-0 text-center'   >
-                            <!-- <i   class="fa fa-info-circle fa-2x  bg-dark "  data-toggle="modal" data-target="#curve_chart_big" href="#" ></i> -->
-                              <li   class="nav-item dropdown navbar-dark navbar-nav nav-link "  data-toggle="dropdown">
-
-                                <!-- <a href = '#' class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parameters</a> -->
-
-                                <h5 href = '#' onclick = "$('#sidebar-left').show('fade')" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
-                                
-                              
-                                
-                                <div class="dropdown-menu col-12 p-0 " >
-                                <!-- <div class="dropdown-header" id = 'studyAreaDropdownList'>National Forest Products</div> -->
-                                <study-area-list  class = 'px-4' id="study-area-list"></study-area-list>
-                              
-                                </div>
-                             
-                              </li>
-                               
-                        </ul>
-                    
-                        <div id = 'sidebar-left'> 
-
-                       <script type="text/javascript" src="js/template-adder.js"></script>
-
-                                  
-                                
-                                           
-              
-        
-                <!-- <div   class="panel-heading px-4 py-2 " role="tab" id="tools-list-collapse-label" onclick = 'toggleRadio("none")'>
-                        <h5 class="panel-title"> <a class = 'layer-collapse-title collapsed' data-toggle="collapse"  href="#tools-list-collapse-div" aria-expanded="false" aria-controls="tools-list-collapse-div"><i class="fa fa-gear mr-1" aria-hidden="true"></i>Tools</a> </h5>
-                </div> -->
-
-                <div  style = 'display:none;'id="tools-list-collapse-div222" class="panel-collapse collapse panel-body px-4 show " role="tabpanel" aria-labelledby="tools-list-collapse-label">
-
-
-                <ul class="nav nav-tabs nav-justified md-tabs" id="toolTabs" role="tablist">  
-                </ul>
-                <div class = 'tab-content card' id = 'toolDivs'>
-                </div>
-
-
-                       <div id="basic-tools-tab"  >
-                        
-                        <div class="dropdown ">
-                          <a  href = "#" class=" gray px-6 caret nav-link dropdown-toggle" data-toggle="dropdown">
-                            Select Tool 
-                          </a>
-                          <div class="dropdown-divider"></div>
-                          <div class="dropdown-menu dropdown-menu-right " >
-                                   
-                                    <!-- <a class="dropdown-item  " onclick = 'toggleRadio("none")'  href="#" >Turn off Tools</a>
-                                    <div class="dropdown-divider"></div> -->
-                                <div class = 'dropdown-header'><h5>Measuring Tools</h5></div>
-                                  <a class="dropdown-item " onclick = 'toggleRadio("none");toggleRadio("distance")'  href="#" >Distance Measuring</a>
-                                  <a class="dropdown-item " onclick = 'toggleRadio("none");toggleRadio("area")'  href="#" >Area Measuring</a>
-                                 
-                                  <div class="dropdown-divider"></div>
-                                  <div class = 'dropdown-header'><h5>Pixel Charting Tools</h5></div>
-                                  <a class="dropdown-item" onclick = 'toggleRadio("none");toggleRadio("query")'  href="#" >Inspector Single Pixel</a>
-                                  <a class="dropdown-item" onclick = 'toggleRadio("none");toggleRadio("charting")'  href="#" >Chart Time Series of Single Pixel</a>
-                               
-
-                                  <div class="dropdown-divider"></div>
-                                  <div class = 'dropdown-header'><h5>Area Charting Tools</h5></div>
-                                  <a class="dropdown-item" onclick = 'toggleRadio("none");startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#user-defined")'  href="#" >User Defined Area</a>
-                                  <a class="dropdown-item" onclick = 'toggleRadio("none");startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#shp-defined")'  href="#" >Upload a Shapefile</a>
-                                  <a class="dropdown-item" onclick = 'toggleRadio("none");startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#pre-defined")'  href="#" >Select Pre-defined Area</a>
-                                </div>
-                        </div>
-                       
-                    
-                    <!-- <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div> -->
-                    
-                    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-                    <div id='charting-container' style='display: none;'>
-                        <div id='whichIndexForChartingRadio' style='display:none;'>
-                            <!-- <variable-radio id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Which vegetation index to use for charting"></variable-radio> -->
-                            <br>
-                        </div>
-                        <div  id="user-defined" >
-                                    <br>
-                                    <label>Provide name for area selected for charting:</label>
-                                    <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Give me a name!" style='width:80%;'>
-                                    <br>
-                                    <button  onclick='areaChartingTabSelect(whichAreaDrawingMethod);startUserDefinedAreaCharting()'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x" aria-hidden="true"></i>
-                                    </button>
-                        </div>
-                        <div  id="shp-defined" >
-                            <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
-                        </div>
-                        <div  id="pre-defined" >
-                            <select id='forestBoundaries'  onchange='chartChosenArea()'></select>
-                        </div>
-                      
-                   <!--      <div id = 'user-defined'  style = 'display:none;'>
-                            <br>
-                            <h8>Click on map to draw polygon<br>Double-click to finish drawing polygon<br>The chart will then be automatically created</h8>
-                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-                           
-                            <br>
-                            <div class="form-group">
-                                <label for="inputsm">User-defined chart name</label>
-                                <input class="form-control input-sm" id="user-defined-area-name" type="text" placeholder="Chart Name">
-                            </div>
-                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;'></div>
-                            <button type="button" onclick='startUserDefinedAreaCharting()' class="button" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x" aria-hidden="true"></i>
-                            </button>
-                        </div> -->
-
-                        <div id = 'shp-defined' style = 'display:none;'>
-                            <h8>Choose zipped shapefile<br>or geoJSON file to summarize across</h8>
-                            <br>
-                            <input type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
-                        </div>
-
-                        <div id = 'pre-defined' style = 'display:none;'>
-                            <select id='forestBoundaries' onchange='chartChosenArea()'></select>
-                        </div>
-
-                        <div id='charting-parameters' style='display:none;'>Charting Progress
-
-                            <div style='width:100%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-                            <div id="Progress" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Progress bar for double-click charting">
-                                <div id="Bar"></div>
-                            </div>
-                            <script type="text/javascript">
-                                var plotRadius = 15;
-                                var plotScale = 30;
-                                // listenForUserDefinedAreaCharting(); //startAreaCharting();
-                            </script>
-                            <div id="curve_chart" class = 'bg-black' style="display: none;max-height:500px;overflow-y:auto;"></div>
-                        </div>
-                    </div>
-                    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-                </div>
-                </div>
-
-                
-
-          
-            </div>
-        </div>  
-        
+    <div class = 'container main-container' id = 'main-container'></div>
+    
+    <div style = 'position: absolute;left:0%;top:0%;'class = 'col-lg-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
+        <div id = 'sidebar-left-header'></div>
+        <div id = 'sidebar-left'></div>
+    </div>  
+    <script type="text/javascript" src="js/1variables.js"></script>
+    <script type="text/javascript" src="js/2templates.js"></script>
+    <script type="text/javascript" src="js/3template-adder.js"></script>
         <div class = 'bottombar' >
                 <p class = 'px-2 m-0' style = 'float:right;' id='current-mouse-position'  ></p>
 
@@ -351,7 +173,7 @@
 
      
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <img id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:100px;height:100px;z-index:10000000;'>
+    <img rel="txtTooltip" data-toggle="tooltip"  title="Background processing is occurring in Google Earth Engine"id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:100px;height:100px;z-index:10000000;'>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
  
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
