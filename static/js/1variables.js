@@ -4,6 +4,8 @@ var upperThresholdDecline = 1.0;
 var lowerThresholdRecovery = 0.3;
 var upperThresholdRecovery = 1.0;
 var studyAreaName = 'BTNF';
+var startYear = 1985;
+var endYear = 2017;
 
 var fc;//Feature collection container for drawing on map and submitting tasks with user-defined vectors
 var toExport;
@@ -18,9 +20,7 @@ var outputURL;
 var chartType = 'LineChart';//Options LineChart, BarChart, ScatterChart, Histogram, AreaChart, Table
 var chartTypes = ['LineChart','Table'];//Options LineChart, BarChart, ScatterChart, Histogram, AreaChart, Table
 var tableConverter = null;
-var mapDiv = document.getElementById('map');
 var groundOverlayOn = false;
-var mapDiv = document.getElementById('map');
 
 var chartIncludeDate = true;var chartCollection;var areaChartCollection;var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;

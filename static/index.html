@@ -1,195 +1,69 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>LCMS Data Explorer</title>
+        
+        <link rel="icon" href="images/usfslogo.png">
+        
+        
+        <link rel="stylesheet" href="css/style.css">
+       
+        <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
+        
+        <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
+        <script type="text/javascript" src="js/ee_api_js.js"></script>
+        
+      
+        <script type="text/javascript" src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js'></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
-<head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128044829-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-128044829-1');
-    </script>
-    
-    <title>LCMS Data Explorer</title>
-    
-    <link rel="icon" href="images/usfslogo.png">
-    
-    
-    <link rel="stylesheet" href="css/style.css">
-    <!-- <link rel="stylesheet" href="css/iThing.css" type="text/css" /> -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> -->
-    <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
-    <script type="text/javascript" src="js/ee_api_js.js"></script>
-    
-    <!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', {
-            'packages': ['corechart', 'table']
-        });
-    </script> -->
-    <script type="text/javascript" src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js'></script>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <script src="https://hammerjs.github.io/dist/hammer.js"></script>
 
 
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-   
-    <!-- Latest compiled and minified JavaScript -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+       
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
         <script src = 'js/jquery.fittext.js'></script>
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-    <link rel="import" href="elements/layer-list.html">
-    <link rel="import" href="elements/ee-layer.html">
-    <link rel="import" href="elements/variables.html">
-   
-    
-     
-    
-
-</head>
-
-<body>
-    <div   href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>
-    <div class = ' map' id = 'map'> </div>
-    <div class = 'container main-container' id = 'main-container'></div>
-    
-    <div style = 'position: absolute;left:0%;top:0%;'class = 'col-lg-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
-        <div id = 'sidebar-left-header'></div>
-        <div id = 'sidebar-left'></div>
-    </div>  
-    <script type="text/javascript" src="js/1variables.js"></script>
-    <script type="text/javascript" src="js/2templates.js"></script>
-    <script type="text/javascript" src="js/3template-adder.js"></script>
-        <div class = 'bottombar' >
-                <p class = 'px-2 m-0' style = 'float:right;' id='current-mouse-position'  ></p>
-
-                 <a href="http://www.fs.fed.us//" target="_blank" >
-                    <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
-                </a>
-                <a href="https://www.fs.fed.us/gstc/" target="_blank"  >
-                <img src="images/GTAC_Logo.png" class = 'image-icon-bar' alt="GTAC Logo"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
-            </a>
-              <a href="https://www.redcastleresources.com/" target="_blank"  >
-                <img src="images/RCR-logo.jpg"  class = 'image-icon-bar'alt="RedCastle Inc. Logo"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
-            </a>
-            <a href="https://earthengine.google.com/" target="_blank"  >
-                <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
-            </a>
-
-        </div>
-    <script type="text/javascript">
-
-    </script>
- <!--    <div class = 'legendDiv flexcroll'>
-         <div   class="panel-heading px-4 py-2 " role="tab" id="legend-list-collapse-label">
-                        <h5 class="panel-title"> <a class = 'layer-collapse-title' data-toggle="collapse"  href="#legend-list-collapse-div" aria-expanded="true" aria-controls="legend-list-collapse-div" style = 'vertical-align:center;'><i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>Legend</a> </h5>
-                </div>
-                <div  id="legend-list-collapse-div" class="panel-collapse collapse show panel-body" role="tabpanel" aria-labelledby="legend-list-collapse-label">
-                       <legend-list  class = 'px-4' id="legend"></legend-list>
-                </div>
-    </div> -->
- 
-       
-      
-  </div> 
-      
-      
-  </div>
-  </div> 
- 
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+        <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+        <link rel="import" href="elements/layer-list.html">
+        <link rel="import" href="elements/ee-layer.html">
+        <link rel="import" href="elements/variables.html">
+    </head>
 
 
+    <body>
+        <script type="text/javascript" src="js/1variables.js"></script>
+        <script type="text/javascript" src="js/2templates.js"></script>
+        <script type="text/javascript" src="js/3template-adder.js"></script>
+        <script type="text/javascript" src="js/4map-manager.js"></script>
+        <script type="text/javascript" src="js/5chart-manager.js"></script>
+        <script type="text/javascript" src="js/6parameters-manager.js"></script>
+        <script type="text/javascript" src="js/7tools-toggle-manager.js"></script>
+        <script type="text/javascript" src="ee/run.js"></script>
 
 
-   
+        <script type="text/javascript" src="metadata/metadata-parser.js"></script>
+        <script type="text/javascript" src="js/export-manager.js"></script>
+        <script type="text/javascript" src="js/download-manager.js"></script>
 
+        
+        
+        <export-list id="export-list" style='display:none;width:100%'></export-list>
+    </body>
+</html>
 
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- Add Google Map -->
-    <!-- <div id="map"></div> -->
-    <!-- Bring in various js modules -->
-
-    <script type="text/javascript" src="js/map-manager.js"></script>
-  
-    
-     <script type="text/javascript" src = 'js/chart-manager.js'></script>
-    <script type="text/javascript" src="js/parameters-manager.js"></script>
-    <!--Module for basic parameters-->
-    <script type="text/javascript" src="js/drawing-manager.js"></script>
-    <!--Module for user-defined vectors-->
-
-    <!--Module for managing EE, area and distance calculation etc-->
-    <script type="text/javascript" src="js/tools-toggle-manager.js"></script>
-    <!--Module for managing EE, area and distance calculation etc-->
-    <script type="text/javascript" src="ee/run.js"></script>
-    <!--Module for general EE code- place all EE code here to run on refresh-->
-    <script type="text/javascript" src="metadata/metadata-parser.js"></script>
-    <!--For parsing metadata-->
-    <!-- <script type="text/javascript" src="js/chart-manager.js"></script> -->
-
-    <!--Module for charting-->
-    <script type="text/javascript" src="js/export-manager.js"></script>
-    <!--Module for creating EE images for exporting- Place all EE code here for exporting EE objects-->
-    <script type="text/javascript" src="js/download-manager.js"></script>
-    <!--Module for exporting predefined images-->
-    
-    
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-
-
-
-
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-
-
-
-   
-
-
-
-     
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <img rel="txtTooltip" data-toggle="tooltip"  title="Background processing is occurring in Google Earth Engine"id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:100px;height:100px;z-index:10000000;'>
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
- 
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <div id="parameters-tools-layers" disabled="disabled" style = 'display:none;'>
+<!--OLD CODE
+ <div id="parameters-tools-layers" disabled="disabled" style = 'display:none;'>
         <div id="collapse-menu" class="collapse fade in active">
             <ul class="nav nav-tabs  nav-stacked">
                 <br>
@@ -241,28 +115,24 @@
                     </div>
                 </div>
 
-
-                <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-                
-                <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
         </div>
-    </div>
+    </div> -->
  
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <plot-container id="plot-container" style='position:absolute;left:0%;top:10%;width:200px;max-height:50%;overflow-y:auto;display:none;'>
+<!--     <plot-container id="plot-container" style='position:absolute;left:0%;top:10%;width:200px;max-height:50%;overflow-y:auto;display:none;'>
         <pt-project-list id="pt-project-list"></pt-project-list>
         <pt-list id="pt-list"></pt-list>
-    </plot-container>
+    </plot-container> -->
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- 
+    <img id='download-spinner' src="images/ee-logo-spinner2.gif" alt="EE image exporting" style="position:absolute;right:50%;bottom:3%;padding: 1px ;visibility:hidden;width:50px;height:50px;background-color:rgba(255,255,255,0.6);border-radius: 10px;" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title=""> -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <img id='download-spinner' src="images/ee-logo-spinner2.gif" alt="EE image exporting" style="position:absolute;right:50%;bottom:3%;padding: 1px ;visibility:hidden;width:50px;height:50px;background-color:rgba(255,255,255,0.6);border-radius: 10px;" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <div id='messageBox' style='display:none;
+<!--     <div id='messageBox' style='display:none;
                       border-radius:5px;
                       position:absolute;
                       z-index: 15;
@@ -277,9 +147,9 @@
         <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
         <p id='message' style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'></p>
         <input onclick="closeMessage()" type=button class='button' value="x" style='position:absolute;right:0%;top:0%;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel">
-    </div>
+    </div> -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
+<!-- 
     <div id='popup' style='display:none;
                       border-radius:5px;
                       position:absolute;
@@ -291,11 +161,8 @@
         <p style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>Image Export Parameters</p>
         <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
         <ol id='popup-output-list'></ol>
-    </div>
+    </div> -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <!-- </div>  -->
     <!-- <div id="marker-position"></div> -->
-</body>
-
-</html>

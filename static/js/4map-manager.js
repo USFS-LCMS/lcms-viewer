@@ -1,6 +1,7 @@
 //Wrapper for mapping functions
 ///////////////////////////////////////////////////////////////////
 //Set up some globals
+var mapDiv = document.getElementById('map');
 
 tableConverter = function(dataTableT){
 
@@ -61,9 +62,9 @@ var cpDict = {
 
 
 infowindow = new google.maps.InfoWindow({
-               content : 'testContent',
-                maxWidth: 200,
-                pixelOffset: new google.maps.Size(0,0),
+               content : '',
+                maxWidth: 300,
+                pixelOffset: new google.maps.Size(30,-30,'rem','rem'),
                 close:false
               });
 ///////////////////////////////////////////////////////////////////
@@ -181,30 +182,9 @@ function centerObject(fc){
   }
   
 }
-function showMessage(title,message){
-  var modalName = 'error-modal';
-  clearModal(modalName);
-  addModal('main-container',modalName);
-  addModalTitle(modalName,title);
-  $('#'+modalName+'-body').append(message);
-  $('#'+modalName).modal();
-    // $( "#message" ).append( message + '<br>' );
-    // if(title != null && title != undefined){
-    //   $( "#message-title" ).html( title );
-    // }
-    
-    // // document.getElementById('messageBox').style.display = 'block';
-    // $("#messageBox").slideDown();
-};
 
-function closeMessage(){
-  $("#messageBox").slideUp();
-    $( "#message" ).html('');
-     $( "#message-title" ).html( '' );
-    
-    
-    // document.getElementById('messageBox').style.display = 'none';
-}
+
+
 
 //Function for creating color ramp generally for a map legend
 function createColorRamp(styleName, colorList, width,height){
@@ -1025,7 +1005,10 @@ function startArea(){
           
           infowindow.open(map);
           $('.gm-ui-hover-effect').hide();
-      
+          // $('#tool-message-box').empty();
+          // $('#tool-message-box').show();
+          // $('#tool-message-box').append(areaContent);
+          
             // }       
     }
     // function newPoly(){
@@ -1202,7 +1185,8 @@ function stopArea(){
   map.setOptions({disableDoubleClickZoom: true });
   
   clearPolys();
-   
+   // $('#tool-message-box').empty();
+    // $('#tool-message-box').hide();
   // map.setOptions({draggableCursor:'hand'});
   
 }
@@ -1223,6 +1207,7 @@ function newPolygon(){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 function startDistance(){
+  // showTip("DISTANCE MEASURING","Click on map to measure distance. Double click on map to clear")
   // $( "#distance-measurement" ).html( 'Click on map to start measuring<br>Double click to finish measurement');
   
   // document.getElementById('distance-measurement').style.display = 'inline-block';
@@ -1291,6 +1276,8 @@ function stopDistance(){
     distancePolyline.setMap(null);
     // clearInterval(distanceUpdater);
     map.setOptions({draggableCursor:'hand'});
+    // $('#tool-message-box').empty();
+    // $('#tool-message-box').hide();
 }
 
 function resetPolyline(){
@@ -1337,6 +1324,9 @@ updateDistance = function(){
           infowindow.setPosition(clickCoords);
 
           infowindow.open(map);
+          // $('#tool-message-box').empty();
+          // $('#tool-message-box').show();
+          // $('#tool-message-box').append(distanceContent);
           $('.gm-ui-hover-effect').hide();
 
 
@@ -1409,7 +1399,7 @@ var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-115.08,8],'EPSG:2
                   'Bridger-Teton National Forest':['BTNF',[43.4,-111.1,8],'EPSG:26912',0.35,0.35],
                   'Manti-La Sal National Forest':['MLSNF',[38.8,-111,8],'EPSG:26912',0.25,0.30],
                   'Chugach National Forest - Kenai Peninsula':['CNFKP',[60.4,-150.1, 9],'EPSG:3338',0.25,0.35],
-                  'Science Team CONUS NAFD':['CONUS',[40.0,-95.0,4],'EPSG:5070',0.30,0.30],
+                  'Science Team CONUS':['CONUS',[40.0,-95.0,4],'EPSG:5070',0.30,0.30],
                 };
 
 function dropdownUpdateStudyArea(whichOne){
@@ -1576,9 +1566,9 @@ function initialize() {
 
     }
 
-    if(downloadCapability){
-        document.getElementById('download-container').style.display = 'block';
-      }
+    // if(downloadCapability){
+    //     document.getElementById('download-container').style.display = 'block';
+    //   }
     if(userCharting){
        // document.getElementById('plot-radius').style.display = 'inline-block';
        // document.getElementById('plot-scale').style.display = 'inline-block'; 

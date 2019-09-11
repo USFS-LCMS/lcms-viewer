@@ -28,6 +28,7 @@
             display:inline-block;
             vertical-align:bottom;
             margin-top:0.7rem;
+            cursor:pointer;
 
         }
       
@@ -42,7 +43,9 @@
             width: 0.6rem;
             /*margin-top:0.6rem;*/
         }
-      
+      input[type = 'checkbox']{
+        cursor:pointer;
+      }
 
        
             li{
@@ -52,11 +55,14 @@
                 overflow-wrap: anywhere; 
                 /*margin-left: 1.5rem!important;*/
                 /*margin-right: 1.5rem!important;*/
-                margin-top:1px;
+                /*font-size:1rem;*/
+                /*font-weight:50;*/
+                /*margin-top:1px;*/
                 margin-bottom:1px;
                 font-family: 'Roboto Condensed', sans-serif;
                 font-stretch:   condensed;
                 background: -webkit-linear-gradient(left, #FFF, #FFF {{percent}}%, transparent {{percent}}%, transparent 100%);
+
                 
             }
             #viz:hover{width:50px;}

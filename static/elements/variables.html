@@ -274,7 +274,7 @@
 </polymer-element>
 
 
-<polymer-element name="variable-radio" attributes="var name1 name2 value1 value2 type title2" extends="ee-variable">
+<polymer-element name="variable-radio" attributes="var name1 name2 value1 value2 type title2 onclick1 onclick2" extends="ee-variable">
 	
 	<template>
 
@@ -382,11 +382,11 @@
 	<div class = 'row'>
 		<label class="col-sm-4">{{title2}} </label>
 		<div class = 'col-sm-8'>
-		<div  id = '#radio-toggler' class="toggle_radio">
+		<div  id = '#radio-toggler'  class="toggle_radio">
 
 	  	
 	    <input type="radio" checked class="toggle_option" id="first_toggle" name="toggle_option" on-change="{{checkIt1}}" value="1" >
-	    <input type="radio"  class="toggle_option" id="second_toggle" name="toggle_option" on-change="{{checkIt2}}" value="2" >
+	    <input type="radio"   class="toggle_option" id="second_toggle" name="toggle_option" on-change="{{checkIt2}}" value="2" >
 	    
 	    <label for="first_toggle"><p>{{name1}}</p></label>
 	    <label for="second_toggle"><p>{{name2}}</p></label>
@@ -418,10 +418,13 @@
 			},
 			checkIt1:function(){
 				window[this.var] = this.value1;
+			
+				eval(this.onclick1);
 				// reRun();
 			},
 			checkIt2:function(){
 				window[this.var] = this.value2;
+				eval(this.onclick2);
 				// reRun();
 			}
 			

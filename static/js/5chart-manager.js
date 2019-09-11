@@ -28,7 +28,7 @@ var  getQueryImages = function(lng,lat){
 	infowindow.setPosition({lng:lng,lat:lat});
 	
 
-	var queryContent =`<h6>Queried values for lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
+	var queryContent =`<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
 						<table class="table table-hover bg-white">
 					    <thead>
 					      <tr>
@@ -70,6 +70,7 @@ var  getQueryImages = function(lng,lat){
 				if(value === null){
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
 					queryContent +=`<tr><td>${k}</td><td>null</td></tr>`;
+
 					// $('#query-container').append(queryLine);
 				}
 				else if(Object.keys(value).length === 1 ){
@@ -79,7 +80,7 @@ var  getQueryImages = function(lng,lat){
 				}
 				else{
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ':<br>';
-					queryContent += `<tr><td>${k}</td><td>?</td></tr>`;
+					queryContent += `<tr><th>${k}</th><th>Multi band</th></tr>`;
 					// $('#query-container').append(queryLine);
 					Object.keys(value).map(function(kt){
 						var v = value[kt].toFixed(2).toString();
@@ -88,6 +89,8 @@ var  getQueryImages = function(lng,lat){
 						// $('#query-container').append(queryLine);
 					})
 				}
+				infowindow.setContent(queryContent);
+	          	infowindow.open(map);
 
 			
 		
@@ -367,11 +370,7 @@ function makeAreaChart(area,name,userDefined){
 	// updateProgress(50);
 	area = area.set('source','LCMS_data_explorer');
 	
-	area.evaluate(function(i){
-		areaGeoJson = i;
-		if(areaGeoJson !== undefined && areaGeoJson !== null){
-	    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
-	    }});
+
 	
 	centerObject(area);
 	area = area.geometry();
@@ -397,7 +396,11 @@ function makeAreaChart(area,name,userDefined){
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				map.setOptions({draggableCursor:'hand'});
 				map.setOptions({cursor:'hand'});
-				
+				area.evaluate(function(i){
+					areaGeoJson = i;
+					if(areaGeoJson !== undefined && areaGeoJson !== null){
+				    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+				    }});
 				areaChartingCount--;
 			}
 			else{
@@ -516,14 +519,11 @@ function startQuery(){
         	var y = e.center.y;console.log(x);
         	center =point2LatLng(x,y);
 
-			// center = e.latLng;
-			marker.setMap(null);
-			marker=new google.maps.Circle({
-  				center:{lat:center.lat(),lng:center.lng()},
-  				radius:plotRadius,
-  				strokeColor: '#FF0',
-  				fillOpacity:0
-  				});
+			
+
+			var pt = ee.Geometry.Point([center.lng(),center.lat()]);
+			var plotBounds = pt.buffer(plotRadius).bounds();
+	   		addClickMarker(plotBounds)
 
 			marker.setMap(map);
 
@@ -785,15 +785,26 @@ var marker=new google.maps.Circle({
   				center:{lat:45,lng:-111},
   				radius:5
   				});
-function addClickMarker(center){
+function addClickMarker(plotBounds){
+	plotBounds.evaluate(function(plotBounds){
+		var coords = plotBounds.coordinates[0];
+	
 	marker.setMap(null);
-	marker=new google.maps.Circle({
-			center:{lat:center.lat(),lng:center.lng()},
-			radius:plotRadius,
+	marker=new google.maps.Rectangle({
+			// center:{lat:center.lat(),lng:center.lng()},
+			// radius:plotRadius,
+			 bounds: {
+            north: coords[0][1],
+            south: coords[2][1],
+            east: coords[1][0],
+            west: coords[0][0],
+          	},
 			strokeColor: '#FF0',
 			fillOpacity:0
 			});
 	marker.setMap(map);
+	})
+	
 }
 function getEveryOther(values){
 			return values.filter(i => values.indexOf(i)%2 ==0)
@@ -811,9 +822,10 @@ function startPixelChartCollection() {
         var x =event.center.x;
         var y = event.center.y;
         center =point2LatLng(x,y);
-    	addClickMarker(center)
-        
+
 		var pt = ee.Geometry.Point([center.lng(),center.lat()]);
+		var plotBounds = pt.buffer(plotRadius).bounds();
+   		addClickMarker(plotBounds)
 		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 		
 		uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
@@ -853,7 +865,8 @@ function startPixelChartCollection() {
 			
 		
    		}
-		icT.getRegion(pt.buffer(plotRadius),plotScale).evaluate(function(values){
+
+		icT.getRegion(plotBounds,plotScale).evaluate(function(values){
 			$('#summary-spinner').slideUp();
 			if(values === undefined ||  values === null){
 				showMessage('Error','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');

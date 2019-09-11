@@ -93,6 +93,7 @@ function toggleDistance() {
     stopDistance();
     distanceOn = false;
   } else {
+    
     startDistance();
     distanceOn = true;
   }
@@ -104,6 +105,7 @@ function toggleArea() {
     map.setOptions({draggableCursor:'hand'});
     areaOn = false;
   } else {
+    // showTip("AREA MEASURING","Click on map to measure area. Double click on map to finish polygon. Press u to undo most recent point");
     startArea();
     areaOn = true;
   }
@@ -113,6 +115,7 @@ function toggleQuery(){
     queryOn = false;
     stopQuery();
   }else{
+    // showTip("Query Map","Double-click on map to query value of layers currently displayed on map. Layers must be turned on to be included in the query");
     queryOn = true;
     startQuery();
   }
@@ -306,20 +309,7 @@ function toggleRadio(thisValue) {
        
 
 
-var dontShowAgain;
-if(localStorage.showIntroModal == undefined){
-  localStorage.showIntroModal = 'true';
-  }
-if(localStorage.showIntroModal === 'true'){
-  $('#introModal').modal().show();
-}
-$('#dontShowAgainCheckbox').change(function(){
-  console.log(this.checked)
-  localStorage.showIntroModal  = !this.checked;
-  
-});
-$('#title-banner').fitText(1.2);
-$('#study-area-label').fitText(1.3);
+
 
 
 

@@ -48,10 +48,16 @@
             width: 8px;
         }*/
 
-
+html, body{
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: var(--black);
+        font-size : 16px;
+      }
 * {
     font-family: 'Roboto Condensed', sans-serif;
-    /*font-size: 1.0rem;*/
+    /*font-size: 1.1rem;*/
     font-weight: 100;
     /*cursor: pointer;*/
     /*line-height: 1.7em;*/
@@ -60,13 +66,7 @@
 /*a{font-size:0.9em;}*/
 /*a {color:var(--white)!important;}*/
       /* Optional: Makes the sample page fill the window. */
-html, body{
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: var(--black);
 
-      }
 .dropdown{cursor: pointer;}
 .main-container{
   position: absolute;
@@ -77,7 +77,7 @@ html, body{
 
 
 .gray{
-  color:var(--grayy);
+  color:var(--deep-brown-70);
 }
 .teal{
   color:var(--teal-100)!important;
@@ -92,7 +92,7 @@ html, body{
 .flexcroll::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 }
-.fa{font-size:22 px!important;
+.fa{font-size:1.1rem!important;
     color:#FFF;
     cursor:pointer;
   }
@@ -137,6 +137,7 @@ html, body{
 .gm-style-iw {
   border-radius: 1px!important;
 }
+th{font-weight:  600!important}
 /*.gm-style .gm-style-iw-c,.gm-style .gm-style-iw-d {
   border-radius: 1px!important;
   background-color:#000!important;
@@ -164,6 +165,7 @@ html, body{
     font-family: FontAwesome;
     content:"\f077" !important;
     padding-right: 5px;
+
     
     
 }
@@ -174,6 +176,7 @@ html, body{
     
 
 }
+
 
 .sub-panel-title{
   background-color: var(--deep-brown-10)!important;
@@ -237,7 +240,7 @@ position:absolute;
 z-index:1;
 }
 .sidebar-toggler{
-  position:absolute;top:0%;left:0%;z-index:5;font-size:1.3rem!important;border-radius: 1px;
+  position:absolute;top:0%;left:0%;z-index:5;font-size:1.5rem!important;border-radius: 1px;
 }
 
 
