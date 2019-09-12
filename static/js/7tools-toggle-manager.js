@@ -1,320 +1,66 @@
-var widgetsOn = true;
-var layersOn = true;
-var legendOn = true;
-var chartingOn = false;
-var distanceOn = false;
-var areaOn = false;
-var drawing = false;
-var plotsOn = true;
-var helpOn = false;
-var queryOn = false;
-var areaChartingOn = false;
-var studyAreaName = 'BTNF'
-function toggleHelp(){
-  if (helpOn) {
-    $("#help-window").slideUp();
-    
 
-    helpOn = false;
-  } else {
-    $("#help-window").slideDown();
-   
-
-    helpOn = true;
-  }
+function stopAllTools(){
+  stopArea();
+  stopDistance();
+  stopQuery();
+  stopCharting();
+  stopAreaCharting();
+  stopCharting();
+  Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){toolFunctions[t][tt]['state'] = false})})
 }
-function toggleWidgets() {
-  if (widgetsOn) {
-    $("#tool-area").slideUp();
-    $("#shape-edit-container").slideUp();
-    $("#export-container").slideUp();
-    // $("#parameters-tools-layers").css('min-width','25%');
+var toolFunctions = {'measuring':
+                    {'area':
+                      {'on':'stopAllTools();startArea();showTip("AREA MEASURING",staticTemplates.areaTip);',
+                      'off':'stopAllTools();',
+                      'state':false
+                      },
+                    'distance':
+                      {'on':'stopAllTools();startDistance();showTip("DISTANCE MEASURING",staticTemplates.distanceTip);',
+                      'off':'stopAllTools()',
+                      'state':false
+                      }
+                    },
+                  'pixel':
+                    {
+                      'query':{
+                        'on':'stopAllTools();startQuery();showTip("QUERY VISIBLE MAP LAYERS",staticTemplates.queryTip);',
+                        'off':'stopAllTools()',
+                        'state':false
+                      },
+                      'chart':{
+                        'on':'stopAllTools();startPixelChartCollection();showTip("QUERY LCMS TIME SERIES",staticTemplates.pixelChartTip);',
+                        'off':'stopAllTools()',
+                        'state':false
+                      }
+                    },
+                    'area':
+                    {
+                      'userDefined':{
+                        'on':'stopAllTools();areaChartingTabSelect("#user-defined");showTip("SUMMARIZE BY USER-DEFINED AREA",staticTemplates.userDefinedAreaChartTip);',
+                        'off':'stopAllTools()',
+                        'state':false
+                      },
+                      'shpDefined':{
+                        'on':'stopAllTools();areaChartingTabSelect("#shp-defined");showTip("SUMMARIZE BY UPLOADED AREA",staticTemplates.uploadAreaChartTip);',
+                        'off':'stopAllTools()',
+                        'state':false
+                      },
+                      'select':{
+                        'on':'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaChartTip);',
+                        'off':'stopAllTools()',
+                        'state':false
+                      },
+                    }
+                  }
 
-    widgetsOn = false;
-  } else {
-    $("#tool-area").slideDown();
-    $("#shape-edit-container").slideDown();
-    $("#export-container").slideDown();
-    // $("#parameters-tools-layers").css('min-width','35%');
-
-    widgetsOn = true;
-  }
-}
-
-  function toggleLayers() {
-  if (layersOn) {
-    $("#layers-container").slideUp();
-    
-
-    layersOn = false;
-  } else {
-    $("#layers-container").slideDown();
-
-    layersOn = true;
-  }
-}
-function togglePlotList() {
-  if (plotsOn) {
-    $("#plot-container").slideUp();
-    
-
-    plotsOn = false;
-  } else {
-    $("#plot-container").slideDown();
-
-    plotsOn = true;
-  }
-}
-
-function toggleLegend() {
-  if (legendOn) {
-
-    $("#legend").slideUp();
-    legendOn = false;
-  } else {
-    $("#legend").slideDown();
-
-    legendOn = true;
-  }
-}
-
-function toggleCharting() {
-  if (chartingOn) {
-    stopCharting();
-    chartingOn = false;
-  } else {
-    startPixelChartCollection();
-    chartingOn = true;
-  }
-}
-
-function toggleDistance() {
-  if (distanceOn) {
-    stopDistance();
-    distanceOn = false;
-  } else {
-    
-    startDistance();
-    distanceOn = true;
-  }
-}
-
-function toggleArea() {
-  if (areaOn) {
-    stopArea();
-    map.setOptions({draggableCursor:'hand'});
-    areaOn = false;
-  } else {
-    // showTip("AREA MEASURING","Click on map to measure area. Double click on map to finish polygon. Press u to undo most recent point");
-    startArea();
-    areaOn = true;
-  }
-}
-function toggleQuery(){
-  if(queryOn){
-    queryOn = false;
-    stopQuery();
+function toggleTool(tool){
+  if(tool.state){
+    eval(tool.off);
+    // tool.state = false
   }else{
-    // showTip("Query Map","Double-click on map to query value of layers currently displayed on map. Layers must be turned on to be included in the query");
-    queryOn = true;
-    startQuery();
+    eval(tool.on);
+    tool.state = true
   }
 }
-function toggleAreaCharting(){
-  console.log('toggling area charting')
-  if(areaChartingOn){
-    areaChartingOn = false;
-    stopAreaCharting();
-  }else{
-    areaChartingOn = true;
-
-    startAreaCharting();
-  }
-}
-function toggleDrawing() {
-  if (drawing) {
-    // shapesMap = undefined;
-    drawingManager.setMap(null);
-    drawing = false;
-  } else {
-    console.log('shapesmap');
-    console.log(shapesMap)
-    if (shapesMap != undefined) {
-      drawingManager.setMap(map);
-    } else {
-      shapesMap = new ShapesMap(
-        map,
-        document.getElementById("delete-button"),
-        document.getElementById("clear-button"),
-        document.getElementById("process-button"),
-        document.getElementById("export-button"),
-        document.getElementById("toggle-drawing-button"),
-        document.getElementById("console"));
-    }
-    drawing = true;
-  }
-}
-
-
-function toggleRadio(thisValue) {
- 
-  if (thisValue == 'charting') {
-    // turnOnSidebar('left')
-    if (distanceOn) {
-      toggleDistance()
-    };
-    if (areaOn) {
-      toggleArea()
-    };
-    if (drawing) {
-      toggleDrawing()
-    };
-    if (queryOn) {
-      toggleQuery()
-    };
-    if (areaChartingOn) {
-      toggleAreaCharting()
-    };
-    if (!chartingOn) {
-      toggleCharting()
-    };
-  } else if (thisValue == 'distance') {
-    // turnOnSidebar('left')
-    if (areaOn) {
-      toggleArea()
-    };
-    if (chartingOn) {
-      toggleCharting()
-    };
-    if (drawing) {
-      toggleDrawing()
-    };
-    if (queryOn) {
-      toggleQuery()
-    };
-    if (areaChartingOn) {
-      toggleAreaCharting()
-    };
-    if (!distanceOn) {
-      toggleDistance()
-    };
-  } 
-  else if (thisValue == 'query') {
-    // turnOnSidebar('left')
-    if (areaOn) {
-      toggleArea()
-    };
-    if (chartingOn) {
-      toggleCharting()
-    };
-    if (drawing) {
-      toggleDrawing()
-    };
-    if (distanceOn) {
-      toggleDistance()
-    };
-    if (areaChartingOn) {
-      toggleAreaCharting()
-    };
-    if (!queryOn) {
-      toggleQuery()
-    };
-  }else if (thisValue == 'drawing') {
-    if (areaOn) {
-      toggleArea()
-    };
-    if (chartingOn) {
-      toggleCharting()
-    };
-    if (distanceOn) {
-      toggleDistance()
-    };
-    if (queryOn) {
-      toggleQuery()
-    };
-    if (areaChartingOn) {
-      toggleAreaCharting()
-    };
-    if (!drawing) {
-      toggleDrawing()
-    };
-  } else if (thisValue == 'area') {
-    // turnOnSidebar('left')
-    if (drawing) {
-      toggleDrawing()
-    };
-    if (chartingOn) {
-      toggleCharting()
-    };
-    if (distanceOn) {
-      toggleDistance()
-    };
-    if (queryOn) {
-      toggleQuery()
-    };
-    if (areaChartingOn) {
-      toggleAreaCharting()
-    };
-    if (!areaOn) {
-      toggleArea()
-    };
-  } else if (thisValue == 'areaCharting') {
-    // turnOnSidebar('left')
-    if (drawing) {
-      toggleDrawing()
-    };
-    if (chartingOn) {
-      toggleCharting()
-    };
-    if (distanceOn) {
-      toggleDistance()
-    };
-    if (queryOn) {
-      toggleQuery()
-    };
-    if (areaOn) {
-      toggleArea()
-    };
-    if (!areaChartingOn) {
-      toggleAreaCharting()
-    };
-    
-  } else if (thisValue == 'none') {
-    // turnOffSidebar('right')
-    if (areaOn) {
-      toggleArea()
-    };
-    if (chartingOn) {
-      toggleCharting()
-    };
-    if (drawing) {
-      toggleDrawing()
-    };
-    if (queryOn) {
-      toggleQuery()
-    };
-    if (areaChartingOn) {
-      toggleAreaCharting()
-    };
-    if (distanceOn) {
-      toggleDistance()
-    };
-    stopCharting();
-  }
-}
-
-
-        
-
-       
-
-
-
-
-
-
-
-
-
 
 

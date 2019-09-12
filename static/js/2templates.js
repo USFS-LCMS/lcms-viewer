@@ -131,13 +131,13 @@ supportDiv :`<div class = 'p-0' >
 				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov ">If you have comment/questions about this data explorer and/or the LCMS program, feel free to contact us.</a>
 			</div>`,
 distanceDiv : `Click on map to measure distance<br><button class = ' bg-black' onclick=toggleDistanceAreaUnits()>Click to toggle metric or imperial units</button>`,
-distanceTip : "Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring",
+distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
 areaDiv : `Click on map to measure area<br><button class = ' bg-black' onclick=toggleDistanceAreaUnits()>Click to toggle metric or imperial units</button>`,
-areaTip : "Click to toggle metric or imperial.  Drag if needed.  Click on map to start measuring.  Press 'Delete' or 'd' button to clear for area measuring and double click for distance measuring.  Press 'u' to undo last vertex placement for area measuring.  Press 'None' radio button to stop measuring",
+areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
-queryTip : 'Double click on map to query values of displayed layers at a location',
+queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
 pixelChartDiv : `<div>Double click on map to query LCMS data time series<br></div>`,
-pixelChartTip : 'click here',
+pixelChartTip : 'Double click on map to look at the full time series of LCMS outputs for a pixel.',
 userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     <br>
                                     <label>Provide name for area selected for charting:</label>
@@ -147,16 +147,16 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     </button>
                         		</div>`,
 
-userDefinedAreaChartTip : 'test',
+userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS Loss and Gain products across. Double-click to finish polygon and create graph.',
 
 uploadAreaChartDiv : `<h8>Choose zipped shapefile<br>or geoJSON file to summarize across</h8>
                         <br>
                         <input class = 'file-input' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                         `,
-uploadAreaChartTip : 'test',
+uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS Loss and Gain products across.',
 selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2"></i>
                     <select style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>`,
-selectAreaChartTip : 'test'
+selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS Loss and Gain products across.'
 
 
 
@@ -254,7 +254,7 @@ function addModal(containerID,modalID){
 	$('#'+ containerID).append(`
             <div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-lg ">
-            		<div class="modal-content bg-black">
+            		<div class="modal-content bg-transparent">
             		<button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
 	            		<div class="modal-header py-0" id ="${modalID}-header"></div>
 	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>

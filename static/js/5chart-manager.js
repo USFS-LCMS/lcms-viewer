@@ -362,10 +362,10 @@ function makeAreaChart(area,name,userDefined){
 	// closeChart();
 	// document.getElementById('curve_chart_big').style.display = 'none';
 	var fColor = randomColor().slice(1,7);
-	// if(userDefined === false){
+	if(userDefined === false){
 		
 		Map2.addLayer(area,{'palette':fColor,addToClassLegend: true,classLegendDict:{'':fColor}},name,true,null,null,name + ' for summarizing','reference-layer-list');
-	// }
+	}
 	
 	// updateProgress(50);
 	area = area.set('source','LCMS_data_explorer');
@@ -534,12 +534,17 @@ function startQuery(){
 }
 function stopQuery(){
 	print('stopping');
-	mapHammer.destroy();
-	map.setOptions({draggableCursor:'hand'});
-	map.setOptions({cursor:'hand'});
-	// $('#query-container').text('Double click on map to query values of displayed layers at a location');
-	google.maps.event.clearListeners(mapDiv, 'dblclick');
-	map.setOptions({cursor:'hand'});
+	try{
+		mapHammer.destroy();
+		map.setOptions({draggableCursor:'hand'});
+		map.setOptions({cursor:'hand'});
+		// $('#query-container').text('Double click on map to query values of displayed layers at a location');
+		google.maps.event.clearListeners(mapDiv, 'dblclick');
+		map.setOptions({cursor:'hand'});
+		infowindow.setMap(null);
+		marker.setMap(null);
+	}catch(err){};
+	
 	// document.getElementById('query-container').style.display = 'none';
 }
 function getImageCollectionValuesForCharting(pt){
@@ -659,10 +664,11 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
         var label = col[0];
         var data = col.slice(1);
         // var color = randomRGBColor();
-        var color = getChartColor()
+        var color = getChartColor();
         return {'label':label,pointStyle: chartType,'data':data,'fill':false,'borderColor':color,'lineTension':0}
         // console.log(label);console.log(data)
     })
+    chartColorI = 0;
     console.log(datasets)
     chartJSChart = new Chart($('#chart-canvas'),{"type":chartType,
 	    "data":{"labels":firstColumn,
@@ -905,13 +911,15 @@ function stopCharting(){
 	// $("#whichIndexForChartingRadio").slideUp();
 	// marker.setMap(null);
 	// google.maps.event.clearListeners(mapDiv, 'dblclick');
-	map.setOptions({draggableCursor:'hand'});
-	$('#summary-spinner').slideUp();
-	infowindow.setMap(null);
+
 	// updateProgress(1);
 	// closeChart();
 	// closeBigChart();
 	try{
+		map.setOptions({draggableCursor:'hand'});
+		$('#summary-spinner').slideUp();
+		infowindow.setMap(null);
+		marker.setMap(null);
 		mapHammer.destroy();
 	}catch(err){
 		console.log(err)

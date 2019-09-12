@@ -21,6 +21,7 @@
   --black:#1B1716DD;
   --transparent:#00000000;
   --white:#FFF;
+  --almost-transparent:#000000AA;
   
 }
 
@@ -112,16 +113,21 @@ html, body{
   vertical-align:middle!important;
 
 }
-
+.bg-transparent{
+  background-color: var(--almost-transparent)!important;
+  color:var(--white)!important;
+}
 .panel-heading{
-  border-top: 0.1rem solid var(--deep-brown-10);
+  /*border:0.04rem solid var(--deep-brown-10);*/
+  border-top: 0.04rem solid var(--deep-brown-10);
+  border-bottom: 0.04rem solid var(--deep-brown-10);
   /*border-bottom: 0.1rem solid var(--deep-brown-10);*/
   background-color: var(--transparent)!important;
-  font-size: 1.5em;
-  margin:0px!important;
+  /*font-size: 1.5rem!important;*/
+  /*margin:0px!important;*/
   color:var(--white)!important;
-  outline:none;
-  vertical-align:middle!important;
+  /*outline:none;*/
+  /*vertical-align:middle!important;*/
 
 }
 .bg-white, .panel-body{

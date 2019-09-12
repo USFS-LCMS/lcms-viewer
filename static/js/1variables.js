@@ -138,3 +138,15 @@ var mapOptions = {
 
 var authProxyAPIURL = "https://rcr-ee-proxy.herokuapp.com/api";
 var geeAPIURL = "https://earthengine.googleapis.com/map";
+var widgetsOn = true;
+var layersOn = true;
+var legendOn = true;
+var chartingOn = false;
+var distanceOn = false;
+var areaOn = false;
+var drawing = false;
+var plotsOn = true;
+var helpOn = false;
+var queryOn = false;
+var areaChartingOn = false;
+var studyAreaName = 'BTNF'

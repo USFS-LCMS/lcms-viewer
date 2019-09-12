@@ -862,10 +862,11 @@ function randomColor(){
   return c
 }
 var chartColorI = 0;
-var chartColors = ['#111','#808','#1f78b4','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
+var chartColors = ['#111','#808','#fb9a99','#33a02c','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
 function getChartColor(){
+  var color = chartColors[chartColorI%chartColors.length]
   chartColorI++;
-  return chartColors[chartColorI%chartColors.length]
+  return color
 
 }
 function randomRGBColor(){
@@ -1145,6 +1146,8 @@ function activatePoly(poly){
 function stopListening(){
     // areaPolygonObj[polyNumber].setEditable(false);
     // areaPolygonObj[polyNumber].setDraggable(false);
+    try{
+    mapHammer.destroy();
     console.log(areaPolygonObj[polyNumber].polyNumber);
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'dblclick');
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'click');
@@ -1158,6 +1161,8 @@ function stopListening(){
     // if(thisPoly.getPath().length > 2){
     //   google.maps.event.addListener(thisPoly, "click", function(){activatePoly(thisPoly)});
     // }
+    }catch(err){}
+    
     
 }
 function clearPoly(id){
@@ -1177,14 +1182,19 @@ function clearPolys(){
 
 }
 function stopArea(){
-  google.maps.event.clearListeners(mapDiv, 'dblclick');
-  mapHammer.destroy();
-    google.maps.event.clearListeners(mapDiv, 'click');
+  // google.maps.event.clearListeners(mapDiv, 'dblclick');
+  try{
+    mapHammer.destroy();
+  }catch(err){}
+  
+    // google.maps.event.clearListeners(mapDiv, 'click');
   // $( "#area-measurement" ).html( '');
   // document.getElementById('area-measurement').style.display = 'none';
   map.setOptions({disableDoubleClickZoom: true });
   
   clearPolys();
+  infowindow.setMap(null);
+  map.setOptions({draggableCursor:'hand'});
    // $('#tool-message-box').empty();
     // $('#tool-message-box').hide();
   // map.setOptions({draggableCursor:'hand'});
@@ -1245,7 +1255,7 @@ function startDistance(){
     mapHammer = new Hammer(document.getElementById('map'));
     mapHammer.on("doubletap", resetPolyline);
     mapHammer.on("tap", function(event) {
-        console.log('clicked');
+        // console.log('clicked');
         var x =event.center.x;
         var y = event.center.y;
         var path = distancePolyline.getPath();
@@ -1265,9 +1275,10 @@ function startDistance(){
 function stopDistance(){
   // $( "#distance-measurement" ).html( '');
   // document.getElementById('distance-measurement').style.display = 'none';
-  mapHammer.destroy();
+  try{
+    mapHammer.destroy();
     map.setOptions({disableDoubleClickZoom: true });
-    google.maps.event.clearListeners(mapDiv, 'dblclick');
+    // google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(distancePolyline, 'click');
     google.maps.event.clearListeners(mapDiv, 'click');
     google.maps.event.clearListeners(distancePolyline, 'mouseup');
@@ -1276,8 +1287,11 @@ function stopDistance(){
     distancePolyline.setMap(null);
     // clearInterval(distanceUpdater);
     map.setOptions({draggableCursor:'hand'});
+    infowindow.setMap(null);
     // $('#tool-message-box').empty();
     // $('#tool-message-box').hide();
+  }catch(err){}
+    
 }
 
 function resetPolyline(){
@@ -1295,7 +1309,7 @@ updateDistance = function(){
     distance = google.maps.geometry.spherical.computeLength(distancePolyline.getPath());
     var pathT = distancePolyline.getPath().g;
     clickCoords = pathT[pathT.length-1];
-    console.log(clickCoords)
+    // console.log(clickCoords)
     
     var unitNames = unitNameDict[metricOrImperial].distance;
     var unitMultipliers = unitMultiplierDict[metricOrImperial].distance;

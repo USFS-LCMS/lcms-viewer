@@ -29,7 +29,7 @@ addStudyAreaToDropdown('Bridger-Teton National Forest',"Bridger-Teton National F
 addStudyAreaToDropdown('Flathead National Forest',"Flathead National Forest buffered along with Glacier National Park buffered by 1km");
 addStudyAreaToDropdown('Manti-La Sal National Forest',"Manti-La Sal National Forest");
 addStudyAreaToDropdown('Chugach National Forest - Kenai Peninsula',"Chugach National Forest - Kenai Peninsula");
-addStudyAreaToDropdown('Science Team CONUS',"2018 LCMS Science Team CONUS-wide loss");
+// addStudyAreaToDropdown('Science Team CONUS',"2018 LCMS Science Team CONUS-wide loss");
 $('#title-banner').fitText(1.2);
 $('#study-area-label').fitText(1.3);
 
@@ -50,15 +50,15 @@ addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-laye
 
 addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'toggleRadio("none")','Tools to measure and chart data provided on the map');
 
-addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
-addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you have questions or comments');
+// addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
+addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
 
 $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
 $('#layer-list-collapse-div').append(`<layer-list id="layers"></layer-list>`);
 $('#reference-layer-list-collapse-div').append(`<reference-layer-list id="reference-layers"></reference-layer-list>`);
 
 
-$('#download-collapse-div').append(staticTemplates.downloadDiv);
+// $('#download-collapse-div').append(staticTemplates.downloadDiv);
 $('#support-collapse-div').append(staticTemplates.supportDiv);
 
 
@@ -79,22 +79,22 @@ $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
 
 addAccordianContainer('tools-collapse-div','tools-accordian')
 
-addAccordianCard('tools-accordian','measuring-tools-collapse-label','measuring-tools-collapse-div','Measuring Tools',``,false,'toggleRadio("none")');
-addAccordianCard('tools-accordian','pixel-tools-collapse-label','pixel-tools-collapse-div','Pixel Tools',``,false,'toggleRadio("none")');
-addAccordianCard('tools-accordian','area-tools-collapse-label','area-tools-collapse-div','Area Tools',``,false,'toggleRadio("none")');
+addAccordianCard('tools-accordian','measuring-tools-collapse-label','measuring-tools-collapse-div','Measuring Tools',``,false,'stopAllTools()');
+addAccordianCard('tools-accordian','pixel-tools-collapse-label','pixel-tools-collapse-div','Pixel Tools',``,false,'stopAllTools()');
+addAccordianCard('tools-accordian','area-tools-collapse-label','area-tools-collapse-div','Area Tools',``,false,'stopAllTools()');
 
 addAccordianContainer('measuring-tools-collapse-div','measuring-tools-accordian');
-addAccordianCard('measuring-tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleRadio("none");toggleRadio("distance");`,staticTemplates.distanceTip);
-addAccordianCard('measuring-tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,'toggleRadio("none");toggleRadio("area");',staticTemplates.areaTip);
+addAccordianCard('measuring-tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
+addAccordianCard('measuring-tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
 
 addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
-addAccordianCard('pixel-tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleRadio("none");toggleRadio("query");`,staticTemplates.queryTip);
-addAccordianCard('pixel-tools-accordian','pixel-chart-label','pixel-chart-div','Query LCMS Time Series',staticTemplates.pixelChartDiv,false,'toggleRadio("none");toggleRadio("charting")',staticTemplates.pixelChartTip);
+addAccordianCard('pixel-tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTip);
+addAccordianCard('pixel-tools-accordian','pixel-chart-label','pixel-chart-div','Query LCMS Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTip);
 
 addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
-addAccordianCard('area-tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleRadio("none");startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#user-defined")`,staticTemplates.userDefinedAreaChartTip);
-addAccordianCard('area-tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleRadio("none");startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#shp-defined")',staticTemplates.uploadAreaChartTip);
-addAccordianCard('area-tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleRadio("none");startAreaCharting();areaChartingOn = true;areaChartingTabSelect("#pre-defined")',staticTemplates.selectAreaChartTip);
+addAccordianCard('area-tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);
+addAccordianCard('area-tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
+addAccordianCard('area-tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
 
 
 
