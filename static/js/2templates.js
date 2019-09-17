@@ -36,7 +36,7 @@ var staticTemplates = {
 	introModal:`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</h3>
                         </div>
@@ -54,7 +54,7 @@ var staticTemplates = {
                 </div>
             </div>`,
 	bottomBar:`<div class = 'bottombar' >
-                <p class = 'px-2 m-0' style = 'float:right;' id='current-mouse-position'  ></p>
+                <p class = 'px-2 py-1' style = 'float:right;' id='current-mouse-position'  ></p>
 
                  <a href="http://www.fs.fed.us//" target="_blank" >
                     <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
@@ -72,63 +72,59 @@ var staticTemplates = {
         </div>`,
 
     paramsDiv:`<a class = 'm-1' >
-    <variable-radio  onclick1 = toggleAdvancedOff() onclick2 = toggleAdvancedOn() var='analysisMode' title2='Choose which mode' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
+    <variable-radio  onclick1 = toggleAdvancedOff() onclick2 = toggleAdvancedOn() var='analysisMode' title2='Choose which mode:' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
   </a>
   
   <div class="dropdown-divider p-0 m-0" style = 'width:100%'></div>
-  <div>Choose Analysis Year Range:</div>
-  <a>
-      <div  class='dual-range-slider-container px-4' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use, loss, and gain">
-        <div class='dual-range-slider-name p-2'>Analysis Years:</div>
+  
+  
+      <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use, loss, and gain">
+        <div class='dual-range-slider-name py-2'>Choose Analysis Year Range:</div>
         <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
         <div id='date-range-value1' class='dual-range-slider-value p-2'></div>
     </div>
     
-  </a>
+  
 
   <div class="dropdown-divider"></div>
   <div id='threshold-container' style="display: none;width:100%">
-  <div  >Choose Thresholds</div>
-    <a >
-        <div  class='dual-range-slider-container px-4' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-            <div class='dual-range-slider-name p-2'>Loss Threshold:</div>
+
+   
+        <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
+            <div class='dual-range-slider-name py-2'>Choose Loss Threshold:</div>
             <div id="slider2" class='dual-range-slider-slider'></div>
             <div id='declineThreshold' class='dual-range-slider-value  p-2'></div>
         </div>
-    </a>
-    <a >
-    <br>
-    <div  class='dual-range-slider-container px-4' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-        <div class='dual-range-slider-name  p-2'>Gain Threshold:</div>
+    
+    
+    <div class="dropdown-divider"></div>
+    <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
+        <div class='dual-range-slider-name  py-2'>Choose Gain Threshold:</div>
         <div id="slider3" class='dual-range-slider-slider'></div>
         <div id='recoveryThreshold' class='dual-range-slider-value  p-2'></div>
     </div>
   
     
-    </a>
+    
     </div>
 
     
   <div id='advanced-radio-container' style="display: none;">
     <div class="dropdown-divider"></div>
-  <div  >Additional Features</div>
+  
    
        <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
 
-    <br>
+    <div class="dropdown-divider"></div>
     <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-       <br>
+       <div class="dropdown-divider"></div>
        <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#'rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='The vegetation index that will be displayed in the "Query LCMS Time Series" tool' ></variable-radio>
         <div class="dropdown-divider"></div>
     </div>
-
-
-
-
-<button onclick = 'reRun()' class = 'ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`,
+	<button onclick = 'reRun()' class = 'mb-1 ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`,
 downloadDiv :`download`,
 supportDiv :`<div class = 'p-0' >
-				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov ">If you have comment/questions about this data explorer and/or the LCMS program, feel free to contact us.</a>
+				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov ">If you have comment/questions about this data explorer and/or the LCMS program, feel free to contact us.  <br><i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i></a>
 			</div>`,
 distanceDiv : `Click on map to measure distance<br><button class = ' bg-black' onclick=toggleDistanceAreaUnits()>Click to toggle metric or imperial units</button>`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",

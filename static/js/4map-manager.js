@@ -1499,7 +1499,7 @@ function initialize() {
 	
     mapOptions.center = center;
     mapOptions.zoom = zoom;
-
+     
     map = new google.maps.Map(document.getElementById("map"),
                                   mapOptions);
 
