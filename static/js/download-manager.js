@@ -10,11 +10,11 @@ function downloadSelectedArea(){
   if(url !== ''){
     print('downloading');
     print(url);
-    var link=document.createElement('a');
-    link.href = url;
-    var downloadName = url.substr(url.lastIndexOf('/') + 1);
-    link.download = downloadName;
-    link.click();
+    // var link=document.createElement('a');
+    // link.href = url;
+    // var downloadName = url.substr(url.lastIndexOf('/') + 1);
+    // link.download = downloadName;
+    // link.click();
     // showMessage('Success!','Successfully downloaded ' + downloadName);
   }
 }

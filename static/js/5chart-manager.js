@@ -394,8 +394,8 @@ function makeAreaChart(area,name,userDefined){
 				$('#summary-spinner').slideUp();
 				addChartJS(tableT,name);
 				areaChartingTabSelect(whichAreaDrawingMethod);
-				map.setOptions({draggableCursor:'hand'});
-				map.setOptions({cursor:'hand'});
+				// map.setOptions({draggableCursor:'hand'});
+				// map.setOptions({cursor:'hand'});
 				area.evaluate(function(i){
 					areaGeoJson = i;
 					if(areaGeoJson !== undefined && areaGeoJson !== null){
@@ -405,8 +405,8 @@ function makeAreaChart(area,name,userDefined){
 			}
 			else{
 				$('#summary-spinner').slideUp()
-				map.setOptions({draggableCursor:'hand'});
-				map.setOptions({cursor:'hand'});
+				// map.setOptions({draggableCursor:'hand'});
+				// map.setOptions({cursor:'hand'});
 				
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1){
@@ -633,7 +633,7 @@ Chart.pluginService.register({
 
             ctx.save();
             ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left-60, chartArea.top-30, chartArea.right - chartArea.left+60, chartArea.bottom - chartArea.top+150);
+            ctx.fillRect(chartArea.left-90, chartArea.top-30, chartArea.right - chartArea.left+190, chartArea.bottom - chartArea.top+150);
             ctx.restore();
         }
     }
@@ -670,6 +670,10 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
     })
     chartColorI = 0;
     console.log(datasets)
+    try{
+    	chartJSChart.destroy();	
+    }
+    catch(err){};
     chartJSChart = new Chart($('#chart-canvas'),{"type":chartType,
 	    "data":{"labels":firstColumn,
 	    "datasets":datasets},"options":{
@@ -878,9 +882,13 @@ function startPixelChartCollection() {
 				showMessage('Error','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
 			}
 			else if(values.length > 1){
-				if(values.length > icT.size().getInfo()+1){
+				var expectedLength = icT.size().getInfo()+1
+				if(values.length > expectedLength){
 					console.log('reducing number of inputs');
-					values = getEveryOther(values);
+					// console.log(expectedLength);
+					// console.log(values);
+					values = values.slice(0,expectedLength)
+					// values = getEveryOther(values);
 				}
 				chartValues(values);
 			}

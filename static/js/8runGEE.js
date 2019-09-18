@@ -313,6 +313,18 @@ function fitStackToCollection(stack, maxSegments, startYear, endYear){
   return yrDurMagSlopeCleaned;
 }
 
+function setupDownloads(studyAreaName){
+  // Prep downloads
+    var downloads = lcmsDownloadDict[studyAreaName];
+    if(downloads !== undefined){
+      downloads.map(function(url){
+      var name = url.substr(url.lastIndexOf('/') + 1);
+      addDownload(url,name);
+
+      })
+    }
+    else{addDownload('','No downloads available for chosen study area')}
+}
 //------------Main Function to Run National Forest Products------------------------------------------------
 function runUSFS(){
 
@@ -407,81 +419,11 @@ function runUSFS(){
       
     }
 
-    var downloadDict = {
-    'FNF':['lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Highest_Prob_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Landcover_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Landuse_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Most_Recent_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Raw_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Raw_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Gain_Year_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_FNF_v2019-1_Thresholded_Loss_Year_Stack.tif'],
-    'BTNF':['lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Highest_Prob_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Landcover_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Landuse_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Most_Recent_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Raw_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Raw_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Gain_Year_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_BTNF_v2019-1_Thresholded_Loss_Year_Stack.tif'],
-    'MLSNF':['lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Highest_Prob_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Landcover_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Landuse_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Most_Recent_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Raw_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Raw_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Gain_Year_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_MLSNF_v2019-1_Thresholded_Loss_Year_Stack.tif'],
-    'CNFKP':['lcms-output-bucket/LCMS_CNFKP_v2019-2_Highest_Prob_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Highest_Prob_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Highest_Prob_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Highest_Prob_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Landcover_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Landuse_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Most_Recent_Gain_Prob.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Most_Recent_Gain_Year.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Most_Recent_Loss_Prob.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Most_Recent_Loss_Year.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Raw_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Raw_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Thresholded_Gain_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Thresholded_Gain_Year_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Thresholded_Loss_Prob_Stack.tif',
-            'lcms-output-bucket/LCMS_CNFKP_v2019-2_Thresholded_Loss_Year_Stack.tif'] 
-    }
+    
+    setupDownloads(studyAreaName);
 
-    // Prep downloads
-    var downloads = downloadDict[studyAreaName];
-    downloads.map(function(d){
-      var url = 'https://storage.cloud.google.com/' + d;
-      var name = d.substr(d.lastIndexOf('/') + 1);
-      addDownload(url,name);
-
-    })
+  
+    
 
     // Paths / definitions
     var ts = ee.ImageCollection(collectionDict[studyAreaName][5]);
@@ -989,6 +931,7 @@ function runUSFS(){
 
 //------------------------------Main Function to Run CONUS Product----------------------------------------------------------
 function runCONUS(){
+  setupDownloads(studyAreaName);
   //Bring in reference data
   var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6');
   var hansenLoss = hansen.select(['lossyear']).add(2000).int16();

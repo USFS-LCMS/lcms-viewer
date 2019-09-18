@@ -9,8 +9,8 @@ $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
 
 $('#sidebar-left-header').append(staticTemplates.topBanner)
-$('#title-banner').fitText(1.2);
-$('#studyAreaDropdownLabel').fitText(1.9);
+// $('#title-banner').fitText(1.2);
+// $('#studyAreaDropdownLabel').fitText(0.5);
 
 $('#main-container').append(staticTemplates.introModal)
 
@@ -29,9 +29,9 @@ addStudyAreaToDropdown('Bridger-Teton National Forest',"Bridger-Teton National F
 addStudyAreaToDropdown('Flathead National Forest',"Flathead National Forest buffered along with Glacier National Park buffered by 1km");
 addStudyAreaToDropdown('Manti-La Sal National Forest',"Manti-La Sal National Forest");
 addStudyAreaToDropdown('Chugach National Forest - Kenai Peninsula',"Chugach National Forest - Kenai Peninsula");
-// addStudyAreaToDropdown('Science Team CONUS',"2018 LCMS Science Team CONUS-wide loss");
+addStudyAreaToDropdown('Science Team CONUS',"2018 LCMS Science Team CONUS-wide loss");
 $('#title-banner').fitText(1.2);
-$('#study-area-label').fitText(1.3);
+$('#study-area-label').fitText(1.8);
 
 
 function toggleAdvancedOn(){
@@ -48,9 +48,9 @@ addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div'
 addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
 addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
 
-addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'toggleRadio("none")','Tools to measure and chart data provided on the map');
+addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'stopAllTools()','Tools to measure and chart data provided on the map');
 
-// addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
+addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
 addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
 
 $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
@@ -58,7 +58,7 @@ $('#layer-list-collapse-div').append(`<layer-list id="layers"></layer-list>`);
 $('#reference-layer-list-collapse-div').append(`<reference-layer-list id="reference-layers"></reference-layer-list>`);
 
 
-// $('#download-collapse-div').append(staticTemplates.downloadDiv);
+$('#download-collapse-div').append(staticTemplates.downloadDiv);
 $('#support-collapse-div').append(staticTemplates.supportDiv);
 
 
@@ -67,7 +67,7 @@ setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerTh
 
 setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null');
 
-$('body').append(`<div class = 'legendDiv flexcroll' id = 'legendDiv'></div>`);
+$('body').append(`<div class = 'legendDiv flexcroll col-sm-6 col-md-4 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
 // $('body').append(`<span style = 'position:absolute;right:20%;bottom:50%;z-index:10;cursor:pointer;' class = 'p-2 bg-black' id = 'tool-message-box'></span>`);
 // $('#tool-message-box').draggable();
 // $('#tool-message-box').hide();

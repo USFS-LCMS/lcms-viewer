@@ -14,7 +14,7 @@ var staticTemplates = {
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
 
-	sidebarLeftContainer: `<div style = 'position: absolute;left:0%;top:0%;'class = 'col-lg-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
+	sidebarLeftContainer: `<div style = 'position: absolute;left:0%;top:0%;'class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
 					        <div id = 'sidebar-left-header'>
 					            <div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>
 					        </div>
@@ -54,7 +54,7 @@ var staticTemplates = {
                 </div>
             </div>`,
 	bottomBar:`<div class = 'bottombar' >
-                <p class = 'px-2 py-1' style = 'float:right;' id='current-mouse-position'  ></p>
+                <p class = 'px-2 my-1' style = 'float:right;' id='current-mouse-position'  ></p>
 
                  <a href="http://www.fs.fed.us//" target="_blank" >
                     <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
@@ -122,32 +122,33 @@ var staticTemplates = {
         <div class="dropdown-divider"></div>
     </div>
 	<button onclick = 'reRun()' class = 'mb-1 ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`,
-downloadDiv :`download`,
+downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
+			<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>`,
 supportDiv :`<div class = 'p-0' >
-				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov ">If you have comment/questions about this data explorer and/or the LCMS program, feel free to contact us.  <br><i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i></a>
+				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov ">If you have comment/questions about this data explorer, the LCMS program, and/or how to acquire more in-depth data products, feel free to contact us.  <br><i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i></a>
 			</div>`,
-distanceDiv : `Click on map to measure distance<br><button class = ' bg-black' onclick=toggleDistanceAreaUnits()>Click to toggle metric or imperial units</button>`,
+distanceDiv : `Click on map to measure distance<br><button class = ' bg-black' onclick=toggleDistanceUnits()>Click to toggle metric or imperial units</button>`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
-areaDiv : `Click on map to measure area<br><button class = ' bg-black' onclick=toggleDistanceAreaUnits()>Click to toggle metric or imperial units</button>`,
+areaDiv : `Click on map to measure area<br><button class = ' bg-black' onclick=toggleAreaUnits()>Click to toggle metric or imperial units</button>`,
 areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
 pixelChartDiv : `<div>Double click on map to query LCMS data time series<br></div>`,
 pixelChartTip : 'Double click on map to look at the full time series of LCMS outputs for a pixel.',
 userDefinedAreaChartDiv : `<div  id="user-defined" >
-                                    <br>
-                                    <label>Provide name for area selected for charting:</label>
-                                    <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Give me a name!" style='width:80%;'>
-                                    <br>
-                                    <button  onclick='areaChartingTabSelect(whichAreaDrawingMethod);startUserDefinedAreaCharting()'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                                    
+                                    <label>Provide name for area selected for charting (optional):</label>
+                                    <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                    
+                                    <button  class = 'my-1' onclick='areaChartingTabSelect(whichAreaDrawingMethod);startUserDefinedAreaCharting()'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x bg-white" aria-hidden="true"></i>
                                     </button>
                         		</div>`,
 
 userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS Loss and Gain products across. Double-click to finish polygon and create graph.',
 
-uploadAreaChartDiv : `<h8>Choose zipped shapefile<br>or geoJSON file to summarize across</h8>
-                        <br>
-                        <input class = 'file-input' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
+uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summarize across</label>
+                        
+                        <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                         `,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS Loss and Gain products across.',
 selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2"></i>
@@ -244,13 +245,27 @@ function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variab
 
 
 
-function addModal(containerID,modalID){
+function addModal(containerID,modalID,bodyOnly){
+	if(bodyOnly === null || bodyOnly === undefined){bodyOnly = false};
 	if(containerID === null || containerID === undefined){containerID = 'main-container'};
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	if(bodyOnly){
+	$('#'+ containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
+            	<div class="modal-dialog modal-md ">
+            		<div class="modal-content bg-white">
+            		<button type="button" class="close p-2 text-dark ml-auto " data-dismiss="modal">&times;</button>
+	            		<div class="modal-header py-0" id ="${modalID}-header"></div>
+	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>
+			          	
+        			</div>
+        		</div> 
+        	</div>`
+        	)
+	}else{
 	$('#'+ containerID).append(`
             <div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-lg ">
-            		<div class="modal-content bg-transparent">
+            		<div class="modal-content bg-black">
             		<button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
 	            		<div class="modal-header py-0" id ="${modalID}-header"></div>
 	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>
@@ -259,6 +274,7 @@ function addModal(containerID,modalID){
         		</div> 
         	</div>`
         	)
+	}
 }
 function addModalTitle(modalID,title){
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
@@ -278,7 +294,7 @@ function showMessage(title,message,modalID,show){
 	if(show === undefined || show === null){show = true}
 	if(modalID === undefined || modalID === null){modalID = 'error-modal'}
 	clearModal(modalID);
-	addModal('main-container',modalID);
+	addModal('main-container',modalID,true);
 	addModalTitle(modalID,title);
 	$('#'+modalID+'-body').append(message);
 	if(show){$('#'+modalID).modal();}
@@ -286,9 +302,10 @@ function showMessage(title,message,modalID,show){
 };
 
 function showTip(title,message){
-	showMessage(title,message,'tip-modal',false)
+	showMessage('',title +': ' +message,'tip-modal',false)
 
-	$('#tip-modal-footer').append(`<div class="form-check  mr-0">
+	$('#tip-modal-body').append(`<div class="dropdown-divider"></div>
+								<div class="form-check  mr-0 py-0">
                                  <input type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                  <label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
                              </div>`)

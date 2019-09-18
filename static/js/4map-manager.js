@@ -831,17 +831,16 @@ function toggleUnits(){
   if(metricOrImperial === 'metric'){metricOrImperial = 'imperial'}
     else{metricOrImperial = 'metric'};
 }
-function toggleAreaUnits(v){
-  console.log(v);
+function toggleAreaUnits(){
+  
   toggleUnits();
   updateArea();
   
 }
-function toggleDistanceAreaUnits(value){
+function toggleDistanceUnits(){
   // console.log(value);
   toggleUnits();
-  if(value === 'a'){updateArea();}
-  else{updateDistance();}
+  updateDistance();
   
   
 }
@@ -1711,7 +1710,7 @@ function initialize() {
 
     google.maps.event.addListener(map,'bounds_changed',function(){
       zoom = map.getZoom();
-      console.log('bounds changed');
+      // console.log('bounds changed');
       var bounds = map.getBounds();
       var keys = Object.keys(bounds);
       var keysX = Object.keys(bounds[keys[0]]);
