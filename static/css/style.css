@@ -224,6 +224,10 @@ th{font-weight:  600!important}
 position:absolute;
 z-index:1;
 }
+.modal-content{
+  border-radius: 0!important;
+}
+
 .sidebar-toggler{
   position:absolute;top:0%;left:0%;z-index:5;font-size:2em!important;border-radius: 1px;
 }

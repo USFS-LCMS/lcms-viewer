@@ -445,6 +445,22 @@ function runUSFS(){
     //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
 
+    if(applyTreeMask === 'yes'){
+      console.log('Applying tree mask')
+      var rawLC = ee.ImageCollection(collectionDict[studyAreaName][1])
+                .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+                .select([0],['LC'])
+
+
+      // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
+      // waterMask = waterMask.mask(waterMask).clip(boundary);
+      var treeMask = rawLC.map(function(img){return img.eq(5)}).sum().gte(3);
+      treeMask = treeMask.mask(treeMask).clip(boundary);
+      
+      NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(treeMask)});
+
+    }
+    
     var NFSLC =  NFSLCMS.select([0]);
     var NFSLU =  NFSLCMS.select([1]);
     var NFSCP =  NFSLCMS.select([2]);
@@ -772,8 +788,15 @@ function runUSFS(){
     }
       Map2.addLayer(NFSLC.mode().multiply(10),{'palette':PALETTE,'min':1,'max':7,addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
       Map2.addLayer(NFSLU.mode().multiply(10),{'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
+      if(applyTreeMask === 'yes'){
+        // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
+        Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:{'Tree (2 or more years)':'32681e'}},'Tree Mask',false);
+     
+      }
     }
+    
 
+     
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
 
@@ -925,7 +948,7 @@ function runUSFS(){
 
 
 
-    if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
+    if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 }; // End runUSFS()
 
@@ -999,7 +1022,7 @@ function runCONUS(){
   forAreaCharting = forAreaCharting.map(function(img){return img.mask().addBands(ee.Image(0).rename(["Gain Probability_change_year"])).clip(forAreaChartingGeo)})
   areaChartCollection = forAreaCharting;
 
-  if(endYear === 2018 && warningShown === false){warningShown = true;showMessage('!!Caution!!','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
+  if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 } // end runCONUS()
 

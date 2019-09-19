@@ -112,7 +112,9 @@ var staticTemplates = {
   <div id='advanced-radio-container' style="display: none;">
     <div class="dropdown-divider"></div>
   
-   
+   <variable-radio var='applyTreeMask' title2='Constrain analysis to areas with trees:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas."></variable-radio>
+
+    <div class="dropdown-divider"></div>
        <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
 
     <div class="dropdown-divider"></div>
@@ -125,7 +127,10 @@ var staticTemplates = {
 downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
 			<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>`,
 supportDiv :`<div class = 'p-0' >
-				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov ">If you have comment/questions about this data explorer, the LCMS program, and/or how to acquire more in-depth data products, feel free to contact us.  <br><i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i></a>
+				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov "><br><i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i> If you have comment/questions about this data explorer, the LCMS program, and/or how to acquire more in-depth data products, feel free to contact us.</a>
+				<div class="dropdown-divider"></div>
+				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
+				<button  class = 'mb-2' onclick = 'showToolTipsAgain()'>Click here to show tooltips again</button>
 			</div>`,
 distanceDiv : `Click on map to measure distance<br><button class = ' bg-black' onclick=toggleDistanceUnits()>Click to toggle metric or imperial units</button>`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
@@ -160,6 +165,16 @@ selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS Loss and G
         
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+function showToolTipsAgain(){
+	if(localStorage.showToolTipModal === 'false'){
+		localStorage.showToolTipModal = 'true';
+		showMessage('Success','Tool tips are re-activated')
+	}
+	else{
+		showMessage('Nothing to change','Tool tips are already active')
+	}
+	
+}
 function getDropdown(id,label){return `// <div class="dropdown text-center">
 					  <button class="btn btn-secondary dropdown-toggle" type="button" id="${id}-label" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					    ${label}
@@ -249,13 +264,16 @@ function addModal(containerID,modalID,bodyOnly){
 	if(bodyOnly === null || bodyOnly === undefined){bodyOnly = false};
 	if(containerID === null || containerID === undefined){containerID = 'main-container'};
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+	$('#'+modalID).remove();
 	if(bodyOnly){
 	$('#'+ containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-md ">
             		<div class="modal-content bg-white">
-            		<button type="button" class="close p-2 text-dark ml-auto " data-dismiss="modal">&times;</button>
-	            		<div class="modal-header py-0" id ="${modalID}-header"></div>
-	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>
+            			
+	            		<div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
+	            			<button style = 'float:right;' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
+	            		</div>
+	      				<div id ="${modalID}-body" class="modal-body bg-white " ></div>
 			          	
         			</div>
         		</div> 
@@ -268,7 +286,7 @@ function addModal(containerID,modalID,bodyOnly){
             		<div class="modal-content bg-black">
             		<button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
 	            		<div class="modal-header py-0" id ="${modalID}-header"></div>
-	      				<div id ="${modalID}-body" class="modal-body bg-white" ></div>
+	      				<div id ="${modalID}-body" class="modal-body " style = 'background:#DDD;' ></div>
 			          	<div class="modal-footer" id ="${modalID}-footer"></div>
         			</div>
         		</div> 
@@ -279,14 +297,16 @@ function addModal(containerID,modalID,bodyOnly){
 function addModalTitle(modalID,title){
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
 	// $('#'+modalID+' .modal-title').html('');
-	$('#'+modalID+' .modal-header').append(`<h4 class="modal-title" id = 'chart-title'>${title}</h4>`);
+	$('#'+modalID+' .modal-header').prepend(`<h4 class="modal-title" id = '${modalID}-title'>${title}</h4>`);
 
 }
 
 function clearModal(modalID){
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
 	// $('#'+modalID).empty();
-	$('#'+modalID+' .modal-title').html('')
+
+	$('#'+modalID+'-title .modal-title').html('')
+	$('#'+modalID+'-header').html('');
 	$('#'+modalID+'-body').html('');
 	$('#'+modalID+'-footer').html('');
 }
@@ -302,14 +322,14 @@ function showMessage(title,message,modalID,show){
 };
 
 function showTip(title,message){
-	showMessage('',title +': ' +message,'tip-modal',false)
+	showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
 
-	$('#tip-modal-body').append(`<div class="dropdown-divider"></div>
-								<div class="form-check  mr-0 py-0">
+	$('#tip-modal-body').append(`
+								<div class="form-check  pt-3 pb-0">
                                  <input type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                  <label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
                              </div>`)
-	if(localStorage.showToolTipModal == undefined){
+	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
 	  }
 	if(localStorage.showToolTipModal === 'true'){

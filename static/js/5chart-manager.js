@@ -396,11 +396,13 @@ function makeAreaChart(area,name,userDefined){
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
-				area.evaluate(function(i){
-					areaGeoJson = i;
-					if(areaGeoJson !== undefined && areaGeoJson !== null){
-				    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
-				    }});
+				if(whichAreaDrawingMethod === '#user-defined'){
+					area.evaluate(function(i){
+						areaGeoJson = i;
+						if(areaGeoJson !== undefined && areaGeoJson !== null){
+					    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+					   }});
+				}
 				areaChartingCount--;
 			}
 			else{
@@ -412,7 +414,7 @@ function makeAreaChart(area,name,userDefined){
 				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1){
 					failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
 				}
-				showMessage('Error! Try again',failure)};
+				showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',failure)};
 			iteration ++;
 		
 
@@ -469,8 +471,8 @@ function startShpDefinedCharting(){
 					var area =ee.FeatureCollection(fixGeoJSONZ(converted).features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}))	
 					}
 				else{
-					console.log('what to do');
-					showMessage('Error Ingesting Study Area!',err)
+					
+					showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i>Error Ingesting Study Area!',err)
 					}
 				};
 				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
@@ -560,7 +562,7 @@ function getImageCollectionValuesForCharting(pt){
 	try{var allValues = icT.getRegion(pt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate();
 		print(allValues)
 		return allValues}
-	catch(err){showMessage('Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
+	catch(err){showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
 	
 
 }
@@ -640,18 +642,27 @@ Chart.pluginService.register({
 });
 var chartJSChart;
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
+function addChartJS(dt,title,chartType){
 	dataTable = dt;
 	if(chartType === null || chartType === undefined){chartType = 'line'};
-	if(canvasWidth === null || canvasWidth === undefined){canvasWidth = '1200'};
-	if(canvasHeight === null || canvasHeight === undefined){canvasHeight = '600'};
+	var h = $(document).height();
+	var w = $(document).width();
+	if(h/w > 1){
+		canvasHeight = '90%';
+		canvasWidth = '100%';
+	}
+	else{
+		canvasHeight = '50%';
+		canvasWidth = '100%';
+	}
+	
 	console.log(dt);
 	// $('#'+modalID).html('');
 	clearModal('chart-modal');
 	// if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
 	
 
-    $('#chart-modal-body').append(`<canvas id="chart-canvas" width="${canvasWidth}" height="${canvasHeight}"></canvas>`);
+    $('#chart-modal-body').append(`<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>`);
     var data = dt.slice(1);
     console.log(data);
     var firstColumn = arrayColumn(data,0);
@@ -665,7 +676,7 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
         var data = col.slice(1);
         // var color = randomRGBColor();
         var color = getChartColor();
-        return {'label':label,pointStyle: chartType,'data':data,'fill':false,'borderColor':color,'lineTension':0}
+        return {'label':label,pointStyle: 'circle',pointRadius:1,'data':data,'fill':false,'borderColor':color,'lineTension':0,'borderWidth':2}
         // console.log(label);console.log(data)
     })
     chartColorI = 0;
@@ -687,12 +698,13 @@ function addChartJS(dt,title,chartType,canvasWidth,canvasHeight){
 	        	position:'bottom',
 	        	
 	        	labels : {
+	        		boxWidth:5,
 	        		usePointStyle: true,
             
         }
 	        },
 	        chartArea: {
-		        backgroundColor: '#D6D1CA'
+		        backgroundColor: '#DDD'
 		    }
     	}	
 	});
@@ -879,7 +891,7 @@ function startPixelChartCollection() {
 		icT.getRegion(plotBounds,plotScale).evaluate(function(values){
 			$('#summary-spinner').slideUp();
 			if(values === undefined ||  values === null){
-				showMessage('Error','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
+				showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
 			}
 			else if(values.length > 1){
 				var expectedLength = icT.size().getInfo()+1

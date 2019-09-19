@@ -809,7 +809,8 @@ function reRun(){
 //     while(whileCount < 5000){
     // while(map.overlayMapTypes.b.length < layerCount*(refreshNumber+1)){}
     interval2(function(){
-      map.overlayMapTypes.j.slice(0,map.overlayMapTypes.j.length-layerCount).forEach(function(element,index){
+      console.log('cleaning')
+      map.overlayMapTypes.g.slice(0,map.overlayMapTypes.g.length-layerCount).forEach(function(element,index){
                     
                     // if(element !== undefined && element !== null){
                     //     console.log('remooooooving');
@@ -819,7 +820,7 @@ function reRun(){
                 // };
                     
                 });  
-  },5000,3)
+  },5000,5)
     
 //     whileCount++;
 // }

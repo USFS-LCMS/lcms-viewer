@@ -123,7 +123,10 @@
                 var inst = this;
                 
                 this.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
+                
                 this.layer.addTileCallback(function(event){
+                    
+                    
                     if(event.count > inst.highWaterMark){
                         inst.highWaterMark = event.count;
                     }
