@@ -74,8 +74,14 @@ var  getQueryImages = function(lng,lat){
 					// $('#query-container').append(queryLine);
 				}
 				else if(Object.keys(value).length === 1 ){
+					var tValue = JSON.stringify(Object.values(value)[0]);
+					if(Object.keys(queryClassDict).indexOf(k) !== -1){
+						console.log(queryClassDict[k]);
+						console.log(queryClassDict[k][tValue]);
+						tValue = queryClassDict[k][tValue]
+					}
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
-					queryContent +=`<tr><td>${k}</td><td>${JSON.stringify(Object.values(value)[0])}</td></tr>`;
+					queryContent +=`<tr><td>${k}</td><td>${tValue}</td></tr>`;
 					// $('#query-container').append(queryLine);
 				}
 				else{
@@ -728,8 +734,8 @@ function addChartJS(dt,title,chartType){
 										    <a class="dropdown-item" href="#" onclick = "downloadChartJS(chartJSChart,'${title}.png')">PNG</a>
 										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${title}.csv', dataTable)">CSV</a>
 										  </div>
-										</div>`);
-	    
+										</div><div class = 'dropdown-divider'</div>`);
+	   
 	    $('#chart-modal').modal();
 }
 function change(newType) {
@@ -801,7 +807,10 @@ var d =
 ,["2015", 0.6380090497737556, 0.6613538461538462, 0.4000000059604645, 0.6000000238418579, 0.019999999552965164, 0.8700000047683716]
 ,["2016", 0.7084615384615386, 0.7109692307692308, 0.4000000059604645, 0.30000001192092896, 0, 0.75]
 ,["2017", 0.7672530446549392, 0.7605846153846154, 0.4000000059604645, 0.30000001192092896, 0, 0.6499999761581421]]
-// addChartJS(d,'test1')
+// addChartJS(d,'test1');
+
+// var legends = chartCollection.get('legends').getInfo();
+// if(legends !== null){makeLegend(legends)}
 
 var marker=new google.maps.Circle({
   				center:{lat:45,lng:-111},
@@ -832,8 +841,37 @@ function getEveryOther(values){
 			return values.filter(i => values.indexOf(i)%2 ==0)
 		}
 
+function makeLegend(legendDicts){
+	$( '#chart-modal-body' ).append(`<div id = 'chart-legend' style = 'font-size:0.7em;' class = 'text-dark row'></div>`);
+	Object.keys(legendDicts).map(function(k){
+		var title = k;
+		var legendDict = legendDicts[k];
+		var legendID = title.replaceAll(' ','-')
+		legendID = legendID.replaceAll(':','') + '-legend'
+		$( '#chart-legend' ).append(`<div  class = 'px-2' id='${legendID}'>
+										<div class = 'p-0'>${title}</div>
+										<table class = 'table-bordered' id = '${legendID}-table'></table>
+									</div>`)
+
+		$('#'+legendID+ '-table').append(`<tr id = '${legendID}-table-names'></tr>`);
+		$('#'+legendID+ '-table').append(`<tr id = '${legendID}-table-values'></tr>`);
+		Object.keys(legendDict).map(function(k){
+			$('#'+legendID+ '-table-names').append(`<td>${k}</td>`)
+		})
+		Object.keys(legendDict).map(function(k){
+			$('#'+legendID+ '-table-values').append(`<td>${legendDict[k]}</td>`)
+		})
+	})
+	
+
+}
+
+
 function startPixelChartCollection() {
 	
+	
+	
+
 	map.setOptions({draggableCursor:'help'});
 	mapHammer = new Hammer(document.getElementById('map'));
    
@@ -884,9 +922,11 @@ function startPixelChartCollection() {
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
 			addChartJS(values,uriName);
-			
-		
-   		}
+			var legends = chartCollection.get('legends').getInfo();
+			if(legends !== null && analysisMode === 'advanced'){
+				makeLegend(legends);
+				};
+   			}
 
 		icT.getRegion(plotBounds,plotScale).evaluate(function(values){
 			$('#summary-spinner').slideUp();

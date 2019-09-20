@@ -1,8 +1,5 @@
 
 
-if(navigator.userAgent.indexOf("Chrome") === -1){
-    showMessage('Not using Chrome!','This app is designed to work with Google Chrome.  Please re-open in Chrome.')
-}
 
 $('body').append(staticTemplates.map);
 $('body').append(staticTemplates.mainContainer);
@@ -132,3 +129,36 @@ function showError(error) {
       break;
   }
 }
+function walkThrough(){
+    walkThroughDict = {'Parameters':{
+                            title: 'Parameters',
+                            divID:'parameters-collapse-div',
+                            message:`<li>
+                                    <ul>There are a number of parameters </ul>
+                                    </li>`
+                        },
+                        'lcms-layers':{
+                            title: 'lcms layers',
+                            divID: 'layer-list-collapse-div',
+                            message:`<li>
+                                <ul>There are a number of parameters </ul>
+                                </li>`
+                        }
+
+                    
+                    }
+    Object.keys(walkThroughDict).map(function(k){
+        console.log(walkThroughDict[k].divID)
+        $('#'+walkThroughDict[k].divID).collapse('hide')
+    })
+    // showTip('lcms data explorer walk-through','We will walk through some of the features of the LCMS Data Explorer ');
+    // $('#tip-modal').on('hidden.bs.modal',function(){
+    //     $('#parameters-collapse-div').collapse('show')
+    //     showTip('Parameters',`<li>
+    //                             <ul>There are a number of parameters </ul>
+    //                             </li>`)
+    // })
+
+    // while($('#tip-modal').is(':visible')){}
+}
+// walkThrough();

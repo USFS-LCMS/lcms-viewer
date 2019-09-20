@@ -445,7 +445,7 @@ function runUSFS(){
     //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
 
-    if(applyTreeMask === 'yes'){
+    if(applyTreeMask === 'yes' && analysisMode === 'advanced'){
       console.log('Applying tree mask')
       var rawLC = ee.ImageCollection(collectionDict[studyAreaName][1])
                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
@@ -509,7 +509,7 @@ function runUSFS(){
         var l = keys.length;
         var out = new Object();
         for(var i = 0;i< l;i++){
-          console.log(i);
+          // console.log(i);
           out[keys[i]] = values[i];
         }
           return out;
@@ -753,24 +753,50 @@ function runUSFS(){
     var luPalette = "efff6b,ff2ff8,1b9d0c,97ffff,a1a1a1,c2b34a";
     var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
 
-    var landcoverClassLegendDict = {'Barren (0.1 in chart)':'b67430',
-                            'Grass/forb/herb (0.2 in chart)':'78db53',
-                            'Impervious (0.3 in chart)':'F0F',
-                            'Shrubs (0.4 in chart)':'ffb88c',
-                            'Snow/ice (0.5 in chart)':'8cfffc',
-                            'Trees (0.6 in chart)':'32681e',
-                            'Water (0.7 in chart)':'2a74b8'};
+    var landcoverClassLegendDict = {'Barren':'b67430',
+                            'Grass/forb/herb':'78db53',
+                            'Impervious':'F0F',
+                            'Shrubs':'ffb88c',
+                            'Snow/ice':'8cfffc',
+                            'Trees':'32681e',
+                            'Water':'2a74b8'};
 
     var landuseClassLegendDict = {
-      'Agriculture (0.1 in chart)':'efff6b',
-      'Developed (0.2 in chart)':'ff2ff8',
-      'Forest (0.3 in chart)':'1b9d0c',
-      'Non-forest Wetland (0.4 in chart)':'97ffff',
-      'Other (0.5 in chart)':'a1a1a1',
-      'Rangeland (0.6 in chart)':'c2b34a',
+      'Agriculture':'efff6b',
+      'Developed':'ff2ff8',
+      'Forest':'1b9d0c',
+      'Non-forest Wetland':'97ffff',
+      'Other':'a1a1a1',
+      'Rangeland':'c2b34a',
 
     }
 
+    var landcoverClassChartDict={
+      'Barren':0.1,
+      'Grass/forb/herb':0.2,
+      'Impervious':0.3,
+      'Shrubs': 0.4,
+      'Snow/ice': 0.5,
+      'Trees': 0.6,
+      'Water': 0.7
+    }
+    var landuseClassChartDict={
+      'Agriculture': 0.1,
+      'Developed' : 0.2,
+      'Forest' : 0.3,
+      'Non-forest Wetland' : 0.4,
+      'Other' : 0.5,
+      'Rangeland':0.6
+    }
+
+    var landcoverClassQueryDict = {};
+    Object.keys(landcoverClassChartDict).map(function(k){landcoverClassQueryDict[parseInt(landcoverClassChartDict[k]*10)] =k});
+    var landuseClassQueryDict = {};
+    queryClassDict = {};
+    Object.keys(landuseClassChartDict).map(function(k){landuseClassQueryDict[parseInt(landuseClassChartDict[k]*10)] =k})
+    queryClassDict['Land Cover (mode) '+startYear.toString() + '-'+ endYear.toString()] =landcoverClassQueryDict;
+    queryClassDict['Land Use (mode) '+startYear.toString() + '-'+ endYear.toString()] =landuseClassQueryDict;
+    console.log(landcoverClassQueryDict);console.log(landuseClassQueryDict);
     // <li><span style='background:#efff6b;'></span>Agriculture (0.1 in chart)</li>
     //   <li><span style='background:#ff2ff8;'></span>Developed (0.2 in chart)</li>
     //   <li><span style='background:#1b9d0c;'></span>Forest (0.3 in chart)</li>
@@ -790,7 +816,7 @@ function runUSFS(){
       Map2.addLayer(NFSLU.mode().multiply(10),{'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
       if(applyTreeMask === 'yes'){
         // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
-        Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:{'Tree (2 or more years)':'32681e'}},'Tree Mask',false);
+        Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:{'Tree (2 or more years)':'32681e'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for 2 or more years');
      
       }
     }
@@ -944,6 +970,10 @@ function runUSFS(){
 
       return img.mask().clip(forAreaChartingGeo)});
     chartCollection =forCharting;
+
+    if(analysisMode === 'advanced'){
+     chartCollection = chartCollection.set('legends',{'Land Cover Class': landcoverClassChartDict,'Land Use Class:':landuseClassChartDict}) 
+    }
     areaChartCollection = forAreaCharting;
 
 

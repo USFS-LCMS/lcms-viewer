@@ -13,6 +13,7 @@
         <link href = "https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel = 'stylesheet'>
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
         <style>
 
 
@@ -43,11 +44,23 @@
             width: 0.6rem;
             /*margin-top:0.6rem;*/
         }
-      input[type = 'checkbox']{
-        cursor:pointer;
-      }
+              input[type = 'checkbox'],label{
+                cursor:pointer;
+              }
+              /*** custom checkboxes ***/
 
-       
+            input[type=checkbox] { display:none; } /* to hide the checkbox itself */
+            input[type=checkbox] + label:before {
+              font-family: FontAwesome;
+              display: inline-block;
+            }
+
+
+            input[type=checkbox] + label:before { content: "\f10c"; } /* unchecked icon */
+            input[type=checkbox] + label:before { letter-spacing: 0.2em; } /* space between checkbox and label */
+
+            input[type=checkbox]:checked + label:before { content: "\f111"; color:#FF834C;} /* checked icon */
+            input[type=checkbox]:checked + label:before { letter-spacing: 0.2em; } /* allow space for check mark */
             li{
                 list-style-type:none;
                 margin:0px;padding:0px;
@@ -66,7 +79,8 @@
                 
             }
             #viz:hover{width:50px;}
-            li:hover{color:#00897B;-webkit-transition: color  0.5s;}
+            li:hover, #opacity:hover input[type="range"]::-webkit-slider-thumb {color:#00897B!important;-webkit-transition: color  0.5s;}
+            i{font-size: 1em,margin:0px;padding:0px;}
             .leftLabel{float:left;}
             .rightLabel{float:right;}
             .deactivated{display:none;}
@@ -84,8 +98,14 @@
         </style>
        <li rel="txtTooltip" data-toggle="tooltip"  title= {{helpBoxMessage}}>
            <input id="opacity"  type="range"  class="range" value=100 style = '' on-input="{{onRangeChange}}">
-            <i class="fa fa-spinner fa-spin {{ {deactivated:layer != null}| tokenList }}"></i>
-            <input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> {{name}}
+            <i class="fa fa-spinner fa-spin  {{ {deactivated:layer != null}| tokenList }} "></i>
+           <!--  <input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> -->
+
+          
+            
+  <input  id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}" />
+  <label class="{{ {deactivated:layer == null}| tokenList }} " style = 'margin-bottom:0px;'  for="enabled"></label>{{name}}
+
        </li>
 
     </template>
@@ -137,10 +157,10 @@
                 
                 if(this.visible){
                     this.map.overlayMapTypes.setAt(this.layerId, this.layer);
-                    $('#'+this.name).show();
+                    $('#'+this.legendDivID).show();
                     this.rangeOpacity = this.opacity;  
                 }else{
-                  $('#'+this.name).hide();
+                  $('#'+this.legendDivID).hide();
                   this.rangeOpacity = 0;  
                 }
 
@@ -155,12 +175,12 @@
                     // this.$.opacity.disabled = true;
                     // this.detached();
                     this.percent = 0;
-                    $('#'+this.name).hide();
+                    $('#'+this.legendDivID).hide();
                     this.rangeOpacity = 0;
 
                 }else{
                     this.map.overlayMapTypes.setAt(this.layerId,this.layer);
-                    $('#'+this.name).show();
+                    $('#'+this.legendDivID).show();
                     this.rangeOpacity = this.opacity;
 
                     // this.$.opacity.disabled = false;
@@ -742,7 +762,7 @@
 <!-- {{classLegendHTML}} -->
 <li><span style='background:#{{classColor}};'></span>{{className}}</li>
 
-</script>
+
 
   </ul>
 </div>

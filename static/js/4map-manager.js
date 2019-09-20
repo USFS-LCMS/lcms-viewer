@@ -342,9 +342,10 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
         name = "Layer "+NEXT_LAYER_ID;
         NEXT_LAYER_ID += 1;
     }
-    name = name.replaceAll(' ','-');
-    name = name.replaceAll('(','-');
-    name = name.replaceAll(')','-');
+    var legendDivID = name.replaceAll(' ','-');
+   
+    legendDivID = legendDivID.replaceAll('(','-');
+    legendDivID = legendDivID.replaceAll(')','-');
     if(visible == null){
         visible = true;
     }
@@ -373,6 +374,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     layer.label = label;
     layer.fontColor = fontColor;
     layer.helpBox = helpBox;
+    layer.legendDivID = legendDivID;
     // layer.viz = JSON.stringify(viz);
     // layer.viz  = viz;
 
@@ -384,7 +386,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
         var legendItemContainer = document.createElement("legend-item");
 
-        legendItemContainer.setAttribute("id", name);
+        legendItemContainer.setAttribute("id", legendDivID);
 
 
         // var legendBreak = document.createElement("legend-break");
@@ -436,7 +438,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
 
       var legendItemContainer = document.createElement("legend-item");
-      legendItemContainer.setAttribute("id", name);
+      legendItemContainer.setAttribute("id", legendDivID);
       // var legendBreak = document.createElement("legend-break");
      
        // var legendList = document.querySelector("legend-list");
