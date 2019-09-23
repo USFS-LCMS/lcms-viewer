@@ -72,14 +72,14 @@ var staticTemplates = {
         </div>`,
 
     paramsDiv:`<a class = 'm-1' >
-    <variable-radio  onclick1 = toggleAdvancedOff() onclick2 = toggleAdvancedOn() var='analysisMode' title2='Choose which mode:' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Advanced mode provides additional layers and functionality"></variable-radio>
+    <variable-radio  onclick1 = toggleAdvancedOff() onclick2 = toggleAdvancedOn() var='analysisMode' title2='Choose which mode:' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"></variable-radio>
   </a>
   
   <div class="dropdown-divider p-0 m-0" style = 'width:100%'></div>
   
   
       <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use, loss, and gain">
-        <div class='dual-range-slider-name py-2'>Choose Analysis Year Range:</div>
+        <div class='dual-range-slider-name py-2'>Choose analysis year range:</div>
         <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
         <div id='date-range-value1' class='dual-range-slider-value p-2'></div>
     </div>
@@ -91,7 +91,7 @@ var staticTemplates = {
 
    
         <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-            <div class='dual-range-slider-name py-2'>Choose Loss Threshold:</div>
+            <div class='dual-range-slider-name py-2'>Choose loss threshold:</div>
             <div id="slider2" class='dual-range-slider-slider'></div>
             <div id='declineThreshold' class='dual-range-slider-value  p-2'></div>
         </div>
@@ -99,7 +99,7 @@ var staticTemplates = {
     
     <div class="dropdown-divider"></div>
     <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-        <div class='dual-range-slider-name  py-2'>Choose Gain Threshold:</div>
+        <div class='dual-range-slider-name  py-2'>Choose gain threshold:</div>
         <div id="slider3" class='dual-range-slider-slider'></div>
         <div id='recoveryThreshold' class='dual-range-slider-value  p-2'></div>
     </div>
@@ -115,7 +115,7 @@ var staticTemplates = {
    <variable-radio var='applyTreeMask' title2='Constrain analysis to areas with trees:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas."></variable-radio>
 
     <div class="dropdown-divider"></div>
-       <variable-radio var='viewBeta' title2='View Beta Outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
+       <variable-radio var='viewBeta' title2='View beta outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
 
     <div class="dropdown-divider"></div>
     <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
@@ -132,9 +132,9 @@ supportDiv :`<div class = 'p-0' >
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'mb-2' onclick = 'showToolTipsAgain()'>Click here to show tooltips again</button>
 			</div>`,
-distanceDiv : `Click on map to measure distance<br><button class = ' bg-black' onclick=toggleDistanceUnits()>Click to toggle metric or imperial units</button>`,
+distanceDiv : `Click on map to measure distance<div class="dropdown-divider"></div>`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
-areaDiv : `Click on map to measure area<br><button class = ' bg-black' onclick=toggleAreaUnits()>Click to toggle metric or imperial units</button>`,
+areaDiv : `Click on map to measure area<div class="dropdown-divider"></div>`,
 areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
@@ -372,6 +372,21 @@ function addStudyAreaToDropdown(name,toolTip){
     
     // $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = "dropdownUpdateStudyArea("Bridger-Teton National Forest")"  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
  }
+ function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction){
+    var valueDict = {true:valueOn,false:valueOff};
+    var checked;
+    if(on === null || on === undefined || on === 'checked' || on === 'true'){on = true;checked = 'checked';}
+    else {on = false;checked = ''};
+    console.log('on');console.log(on);console.log(valueDict[on]);
+    eval(`window.${variable} = valueDict[on];`)
+
+    $('#'+containerDivID).append(`${title}<input id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" >`)
+    $('#'+toggleID).change(function(){
+        var value = valueDict[!$('#'+toggleID).prop('checked')];
+        eval(`window.${variable} = value;`);
+        eval(`${onChangeFunction}`); 
+    })
+}
  //////////////////////////////////////////////
 //Functio to add tab to list
 function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
@@ -451,7 +466,28 @@ function addAccordianCard(accordianContainerID,accordianCardHeaderID, accordianC
 	});
   panelCollapseI++;
 }
-
+function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordianCardBodyID,accordianCardHeaderContent,accordianCardBodyContent,show,onclick,toolTip){
+  var collapsed;
+  if(toolTip === undefined || toolTip === null){toolTip = '';}
+  if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
+  $('#' + accordianContainerID).append(`
+    <div>
+      <div class=" px-0 py-2 sub-sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
+        aria-expanded="false" aria-controls="${accordianCardBodyID}" onclick = '${onclick}'>
+      <a class = 'collapse-title' rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}"  >
+        ${accordianCardHeaderContent} </a>
+      </div>
+      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
+        data-parent="#${accordianContainerID}">
+        <div rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}">${accordianCardBodyContent}</div>
+      </div>
+    </div>`)
+  $('.panel-collapse-'+ panelCollapseI).on('hidden.bs.collapse', function () {
+  	// find the children and close them
+  	$(this).find('.show').collapse('hide');
+	});
+  panelCollapseI++;
+}
 function addLegendContainer(legendContainerID,containerID,show){
 	if(containerID === undefined || containerID === null){containerID = 'legend-collapse-div'}
 	if(show === undefined || show === null){show = true}

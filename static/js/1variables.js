@@ -30,7 +30,7 @@ var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;
 var plotDictID = 1;
 var exportID = 1;
 
-var metricOrImperial = 'metric';
+// var metricOrImperial = 'metric';
 var unitMultiplierDict = {imperial:
 {area:[10.7639,0.000247105],distance:[3.28084,0.000621371]},
 metric:

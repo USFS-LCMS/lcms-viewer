@@ -43,7 +43,7 @@ function toggleAdvancedOff(){
 }
 
         
-addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust PARAMETERS used to filter and sort LCMS products');
+addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
 addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
 addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:20px;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
 
@@ -60,7 +60,6 @@ $('#reference-layer-list-collapse-div').append(`<reference-layer-list id="refere
 $('#download-collapse-div').append(staticTemplates.downloadDiv);
 $('#support-collapse-div').append(staticTemplates.supportDiv);
 
-
 setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
 setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null');
 
@@ -70,6 +69,8 @@ $('body').append(`<div class = 'legendDiv flexcroll col-sm-6 col-md-4 col-lg-3 c
 // $('body').append(`<span style = 'position:absolute;right:20%;bottom:50%;z-index:10;cursor:pointer;' class = 'p-2 bg-black' id = 'tool-message-box'></span>`);
 // $('#tool-message-box').draggable();
 // $('#tool-message-box').hide();
+
+// addToggle('layer-list-collapse-div','test-toggle','Toggle metric or imperial', 'Imperial','Metric','checked','mi','imperial','metric');
 addCollapse('legendDiv','legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
 $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
 
@@ -83,18 +84,20 @@ addAccordianCard('tools-accordian','pixel-tools-collapse-label','pixel-tools-col
 addAccordianCard('tools-accordian','area-tools-collapse-label','area-tools-collapse-div','Area Tools',``,false,'stopAllTools()');
 
 addAccordianContainer('measuring-tools-collapse-div','measuring-tools-accordian');
-addAccordianCard('measuring-tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
-addAccordianCard('measuring-tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
+addSubAccordianCard('measuring-tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
+addSubAccordianCard('measuring-tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
 
 addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
-addAccordianCard('pixel-tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTip);
-addAccordianCard('pixel-tools-accordian','pixel-chart-label','pixel-chart-div','Query LCMS Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTip);
+addSubAccordianCard('pixel-tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTip);
+addSubAccordianCard('pixel-tools-accordian','pixel-chart-label','pixel-chart-div','Query LCMS Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTip);
 
 addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
-addAccordianCard('area-tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);
-addAccordianCard('area-tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
-addAccordianCard('area-tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
+addSubAccordianCard('area-tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);
+addSubAccordianCard('area-tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
+addSubAccordianCard('area-tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
 
+addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperial','imperial','metric','toggleDistanceUnits()');
+addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperial','imperial','metric','toggleAreaUnits()');
 
 
 // $('#sidebar-left').append(`<button onclick="getLocation()">Try It</button><p id="demo"></p>`)

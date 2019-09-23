@@ -76,8 +76,8 @@ var  getQueryImages = function(lng,lat){
 				else if(Object.keys(value).length === 1 ){
 					var tValue = JSON.stringify(Object.values(value)[0]);
 					if(Object.keys(queryClassDict).indexOf(k) !== -1){
-						console.log(queryClassDict[k]);
-						console.log(queryClassDict[k][tValue]);
+						// console.log(queryClassDict[k]);
+						// console.log(queryClassDict[k][tValue]);
 						tValue = queryClassDict[k][tValue]
 					}
 					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
@@ -538,6 +538,9 @@ function startQuery(){
 			getQueryImages(center.lng(),center.lat());
 
 		})
+   		mapHammer.on("tap",function(e){
+   			infowindow.setMap(null);
+   		})
 	// document.getElementById('query-container').style.display = 'block';
 }
 function stopQuery(){
@@ -1013,6 +1016,7 @@ function exportToCsv(filename, rows) {
                 if (row[j] instanceof Date) {
                     innerValue = row[j].toLocaleString();
                 };
+
                 var result = innerValue.replace(/"/g, '""');
                 if (result.search(/("|,|\n)/g) >= 0)
                     result = '"' + result + '"';
