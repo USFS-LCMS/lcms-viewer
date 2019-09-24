@@ -414,7 +414,7 @@ function runUSFS(){
             ],
 
       'CNFKP':['projects/USFS/LCMS-NFS/R10/CK/Composites/Composite-Collection-cloudScoreTDOM',
-            'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-newTuning',
+            'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-tallShrub',
             'projects/USFS/LCMS-NFS/R10/CK/Base-Learners/LANDTRENDR-Collection-10vert',
             //'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
             'N/A',
@@ -452,11 +452,14 @@ function runUSFS(){
     //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
 
+    var rawLC = ee.ImageCollection(collectionDict[studyAreaName][1])
+                .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+                .select([0],['LC']);
+
+    
     if(applyTreeMask === 'yes' && analysisMode === 'advanced'){
       console.log('Applying tree mask')
-      var rawLC = ee.ImageCollection(collectionDict[studyAreaName][1])
-                .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-                .select([0],['LC'])
+      
 
 
       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
@@ -1011,6 +1014,7 @@ function runUSFS(){
     }
     //Set up charting
     var forCharting = joinCollections(composites.select([whichIndex]),fittedAsset, false);
+    
 
     if(analysisMode !== 'advanced' && viewBeta === 'no'){
       NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability']);
@@ -1028,9 +1032,31 @@ function runUSFS(){
       NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
 
     }
+
+    var lcClassCodes = ee.List.sequence(0,6).getInfo();
+    var imageIndexes = ee.List.sequence(0,rawLC.size().subtract(1)).getInfo();
+    var rawLCL = rawLC.toList(100,0);
+    var lcStack = imageIndexes.map(function(i){
+      var lcc = ee.Image(rawLCL.get(i));
+      var d = ee.Date(lcc.get('system:time_start'));
+      var img;
+      lcClassCodes.map(function(c){
+        // console.log(i);console.log(c);
+        var ci = lcc.eq(c).byte().rename(['lc_'+ parseInt((c)).toString()]);
+        if(img === undefined){img = ci}
+          else{img = img.addBands(ci)};
+      })
+      return img.set('system:time_start',d);
+    });
+    lcStack = ee.ImageCollection(lcStack);
+    lcStack = lcStack.select(lcClassCodes,Object.keys(landcoverClassChartDict))
+
+
     forCharting = joinCollections(forCharting,NFSLCMS, false);
 
-    var forAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year'])
+
+    var forAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year']);
+
     var forAreaChartingGeo = forAreaCharting.geometry();
     forAreaCharting =forAreaCharting.map(function(img){
 
@@ -1040,13 +1066,21 @@ function runUSFS(){
     if(analysisMode === 'advanced'){
      chartCollection = chartCollection.set('legends',{'Land Cover Class': landcoverClassChartDict,'Land Use Class:':landuseClassChartDict}) 
     }
-    areaChartCollection = forAreaCharting;
-
+    areaChartCollection = lcStack;
+    forAreaCharting = forAreaCharting.select([0,1],['Loss','Gain']);
+    areaChartCollections['lc'] = {'collection':lcStack,'stacked':true};
+    areaChartCollections['lg'] = {'collection':forAreaCharting,'stacked':false};;
 
 
     if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 }; // End runUSFS()
+function toggleAreaChartCollection(){
+  console.log(whichAreaChartCollection)
+  areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
+  stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
+  setupFSB();
+}
 
 //------------------------------Main Function to Run CONUS Product----------------------------------------------------------
 function runCONUS(){

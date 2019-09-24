@@ -139,7 +139,7 @@ function setupFSB(){
   $('#forestBoundaries').hide();
   // $('#summary-spinner').slideDown();
   $('#select-area-spinner').show();
-  $('#select-area-spinner').addClass(`fa-spin fa fa-spinner`);
+  // $('#select-area-spinner').addClass(`fa-spin fa fa-spinner`);
 
   // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
   // var fieldName = 'FORESTNAME';
@@ -173,7 +173,7 @@ function setupFSB(){
 	      mySelect.append($('<option></option>').val(val).html(text)
 	      );
 	  });
-	  $('#select-area-spinner').removeClass('fa-spin fa fa-spinner');
+	  // $('#select-area-spinner').removeClass('fa-spin fa fa-spinner');
 	  $('#select-area-spinner').hide();
 	  $('#forestBoundaries').show();
   })
@@ -256,7 +256,7 @@ function startUserDefinedAreaCharting(){
             };
    try{
    	udp.setMap(null);
-   }catch(err){console.log(err)};
+   }catch(err){};
    
    udp = new google.maps.Polyline(udpOptions);
 
@@ -321,7 +321,7 @@ function chartChosenArea(){
     $('#summary-spinner').slideDown();
     try{
    	udp.setMap(null);
-   }catch(err){console.log(err)};
+   }catch(err){};
     map.setOptions({draggableCursor:'progress'});
 			map.setOptions({cursor:'progress'});
   // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
@@ -335,22 +335,34 @@ function chartChosenArea(){
   // console.log('Charting ' + chosenArea);
 }
 function getLossGainTable(areaChartCollection,area){
-	var test = ee.Image(areaChartCollection.first());
-	test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
+	// var test = ee.Image(areaChartCollection.first());
+	// test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
 	// print(test.getInfo());
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
 				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
 				    var year = ee.Number(ee.Date(img.get('system:time_start')).get('year')).format();
-				    t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
-				    var lossT = t.slice(0,2,null);
-				    var gainT = t.slice(0,0,2);
-				    var lossSum = lossT.reduce(ee.Reducer.sum(),[0]).get([0]);
-				    var gainSum = gainT.reduce(ee.Reducer.sum(),[0]).get([0]);
-				    var lossPct = ee.Number.parse(lossT.get([1]).divide(lossSum).multiply(100).format('%.2f'));
-				    var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
-				    return [year,lossPct,gainPct];//ee.List([lossSum]);
+				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
+				    // var lossT = t.slice(0,2,null);
+				    // var gainT = t.slice(0,0,2);
+				    // var lossSum = lossT.reduce(ee.Reducer.sum(),[0]).get([0]);
+				    // var gainSum = gainT.reduce(ee.Reducer.sum(),[0]).get([0]);
+				    // var lossPct = ee.Number.parse(lossT.get([1]).divide(lossSum).multiply(100).format('%.2f'));
+				    // var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
+				    // return [year,lossPct,gainPct];//ee.List([lossSum]);
+				    t = ee.Dictionary(t);
+				    var values = t.values();
+				    var keys = t.keys();
+				    values = values.map(function(a){
+				      a = ee.Array(a).slice(1,1,2).project([0]);
+				      var sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
+				      a = ee.Number(a.toList().get(1));
+				      var pct = a.divide(sum).multiply(100);
+				      return pct;
+				    });
+				    values = ee.List([year]).cat(values);
+				    return values;
 				})
 }
 
@@ -380,7 +392,9 @@ function makeAreaChart(area,name,userDefined){
 	
 	centerObject(area);
 	area = area.geometry();
-
+	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
+	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' %'});
+	bandNames.unshift('year')
 	var table = getLossGainTable(areaChartCollection,area);
 	// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
 	var iteration = 0;
@@ -396,9 +410,10 @@ function makeAreaChart(area,name,userDefined){
 			print(areaChartingCount);
 			if(failure !== undefined && iteration < maxIterations && failure.indexOf('aggregations') > -1){evalTable()}
 			else if(failure === undefined) {
-				tableT.unshift(['year','Loss %','Gain %']);
+				// tableT.unshift(['year','Loss %','Gain %']);
+				tableT.unshift(bandNames)
 				$('#summary-spinner').slideUp();
-				addChartJS(tableT,name);
+				addChartJS(tableT,name,'line',stackedAreaChart);
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
@@ -491,7 +506,7 @@ function stopAreaCharting(){
 	console.log('stopping area charting');
 	try{
    	udp.setMap(null);
-   }catch(err){console.log(err)};
+   }catch(err){};
  //   $('#areaChartingTabs').slideUp();
 	// $('#areaUpload').unbind('change')
 	// $("#charting-parameters").slideUp();
@@ -651,9 +666,11 @@ Chart.pluginService.register({
 });
 var chartJSChart;
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function addChartJS(dt,title,chartType){
+function addChartJS(dt,title,chartType,stacked){
 	dataTable = dt;
 	if(chartType === null || chartType === undefined){chartType = 'line'};
+	if(stacked === null || stacked === undefined){stacked = false};
+
 	var h = $(document).height();
 	var w = $(document).width();
 	if(h/w > 1){
@@ -665,7 +682,7 @@ function addChartJS(dt,title,chartType){
 		canvasWidth = '100%';
 	}
 	
-	console.log(dt);
+	// console.log(dt);
 	// $('#'+modalID).html('');
 	clearModal('chart-modal');
 	// if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
@@ -673,9 +690,9 @@ function addChartJS(dt,title,chartType){
 
     $('#chart-modal-body').append(`<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>`);
     var data = dt.slice(1);
-    console.log(data);
+    // console.log(data);
     var firstColumn = arrayColumn(data,0);
-    console.log(firstColumn)
+    // console.log(firstColumn)
     var columnN = dt[1].length;
     var columns = range(1,columnN);
     
@@ -685,7 +702,20 @@ function addChartJS(dt,title,chartType){
         var data = col.slice(1);
         // var color = randomRGBColor();
         var color = getChartColor();
-        return {'label':label,pointStyle: 'circle',pointRadius:1,'data':data,'fill':false,'borderColor':color,'lineTension':0,'borderWidth':2}
+        var out = {'label':label,
+			        pointStyle: 'circle',
+			        pointRadius:1,
+			        'data':data,
+			        'fill':false,
+			        'borderColor':color,
+			        'lineTension':0,
+			        'borderWidth':2
+			    	};
+		if(stacked){
+			out['fill'] = true;
+			out['backgroundColor'] = color
+		}
+        return out
         // console.log(label);console.log(data)
     })
     chartColorI = 0;
@@ -714,20 +744,15 @@ function addChartJS(dt,title,chartType){
 	        },
 	        chartArea: {
 		        backgroundColor: '#DDD'
-		    }
+		    },
+		    scales: {
+				yAxes: [{ stacked: stacked }],
+				xAxes: [{ stacked: stacked }]
+			}
     	}	
 	});
 
-	  // $('#chart-modal-footer').append(`<div class="dropdown">
-			// 							  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			// 							    Chart Type
-			// 							  </div>
-			// 							  <div class="dropdown-menu" aria-labelledby="chartDownloadDropdown" id = 'chart-type-dropdown-list'></div>
-			// 							</div>`)
-	  // var chartTypes = ['Bar','Line','Pie','Radar'];
-	  // chartTypes.map(function(t){
-	  	// $('#chart-type-dropdown-list').append(`<a class="dropdown-item" href="#" onclick = "change('${t}'.toLowerCase())">${t}</a>`)
-	  // })
+	
 	    
 	    $('#chart-modal-footer').append(`<div class="dropdown">
 										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -741,12 +766,45 @@ function addChartJS(dt,title,chartType){
 	   
 	    $('#chart-modal').modal();
 }
-function change(newType) {
-  var config = chartJSChart.config;
-  chartJSChart.destroy();
-  config.type = newType;
-  chartJSChart = new Chart($('#chart-canvas'), config);
+function change(newType,stacked) {
+	if(stacked === undefined || stacked == null){stacked = false};
+	var config = chartJSChart.config;
+	chartJSChart.destroy();
+	config.type = newType;
+	
+	if(stacked){
+		config.options.scales = {
+			yAxes: [{ stacked: stacked }],//,ticks:{min:0,max:100}}],
+			xAxes: [{ stacked: stacked }]
+		}
+
+		var datasets = config.data.datasets;
+		console.log(datasets);
+		datasets = datasets.map(function(dataset){
+			dataset['fill'] = true;
+			dataset['backgroundColor'] = dataset['borderColor'];
+			return dataset;
+		})
+		config.data.datasets = datasets;
+	}else{
+		config.options.scales = {
+			yAxes: [{ stacked: stacked }],
+			xAxes: [{ stacked: stacked }]
+		}
+		var datasets = config.data.datasets;
+		console.log(datasets);
+		datasets = datasets.map(function(dataset){
+			dataset['fill'] = false;
+			dataset['backgroundColor'] = null;
+			return dataset;
+		})
+		config.data.datasets = datasets;
+	};
+	
+	
+	chartJSChart = new Chart($('#chart-canvas'), config);
 };
+
 function chartToTable(chart) {
 	var dataset = chart.config.data;
 	var title = chart.options.title.text;
@@ -984,9 +1042,7 @@ function stopCharting(){
 		infowindow.setMap(null);
 		marker.setMap(null);
 		mapHammer.destroy();
-	}catch(err){
-		console.log(err)
-	}
+	}catch(err){}
 	
 
 }

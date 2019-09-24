@@ -156,8 +156,8 @@ uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summar
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                         `,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS Loss and Gain products across.',
-selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2"></i>
-                    <select style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>`,
+selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
+                    <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>`,
 selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS Loss and Gain products across.'
 
 
@@ -372,17 +372,23 @@ function addStudyAreaToDropdown(name,toolTip){
     
     // $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = "dropdownUpdateStudyArea("Bridger-Teton National Forest")"  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
  }
- function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction){
+ function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction,tooltip){
     var valueDict = {true:valueOn,false:valueOff};
     var checked;
+    if(tooltip === undefined || tooltip === null){tooltip = ''}
     if(on === null || on === undefined || on === 'checked' || on === 'true'){on = true;checked = 'checked';}
     else {on = false;checked = ''};
-    console.log('on');console.log(on);console.log(valueDict[on]);
-    eval(`window.${variable} = valueDict[on];`)
-
-    $('#'+containerDivID).append(`${title}<input id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" >`)
+    // console.log('on');console.log(on);console.log(valueDict[on]);
+    eval(`window.${variable} = valueDict[on];`);
+    // try{
+    // 	eval(`${onChangeFunction}`);
+    // }catch(err){
+    // 	console.log('Adding toggle error: ' + err);
+    // }
+    
+    $('#'+containerDivID).append(`<div data-toggle="tooltip" data-placement="top" title="${tooltip}" >${title}<input  id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" ></div>`)
     $('#'+toggleID).change(function(){
-        var value = valueDict[!$('#'+toggleID).prop('checked')];
+        var value = valueDict[$('#'+toggleID).prop('checked')];
         eval(`window.${variable} = value;`);
         eval(`${onChangeFunction}`); 
     })

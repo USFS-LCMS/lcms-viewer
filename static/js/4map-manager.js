@@ -830,23 +830,23 @@ function reRun(){
    
 }
 
-function toggleUnits(){
-  if(metricOrImperial === 'metric'){metricOrImperial = 'imperial'}
-    else{metricOrImperial = 'metric'};
-}
-function toggleAreaUnits(){
+// function toggleUnits(){
+//   if(metricOrImperial === 'metric'){metricOrImperial = 'imperial'}
+//     else{metricOrImperial = 'metric'};
+// }
+// function toggleAreaUnits(){
   
-  toggleUnits();
-  updateArea();
+//   // toggleUnits();
+//   updateArea();
   
-}
-function toggleDistanceUnits(){
-  // console.log(value);
-  toggleUnits();
-  updateDistance();
+// }
+// function toggleDistanceUnits(){
+//   // console.log(value);
+//   // toggleUnits();
+//   updateDistance();
   
   
-}
+// }
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -942,47 +942,50 @@ function startArea(){
     updateArea = function(){
       var unitName;var unitMultiplier;
         var keys = Object.keys(areaPolygonObj);
+        // console.log('keys');console.log(keys);
         var totalArea = 0;
         var totalWithArea = 0;
         var outString = ''
         function areaWrapper(key){
+          // console.log('key');console.log(key);
         // print('Adding in: '+key.toString());
         var pathT = areaPolygonObj[key].getPath().g
-        clickCoords = pathT[pathT.length-1];
-        console.log(clickCoords)
-        area = google.maps.geometry.spherical.computeArea(areaPolygonObj[key].getPath());
-        
-        var unitNames = unitNameDict[metricOrImperial].area;
-        var unitMultipliers = unitMultiplierDict[metricOrImperial].area;
-        // console.log(unitNames);
-        // console.log(unitMultipliers);
-        // console.log(area)
-        
-        if(totalArea >= 1){
-          unitName = unitNames[1];
-          unitMultiplier = unitMultipliers[1];
-        }
-        else{
-          unitName = unitNames[0];
-          unitMultiplier = unitMultipliers[0];
+        if(pathT.length > 0){
+          clickCoords = pathT[pathT.length-1];
+          // console.log(clickCoords);console.log(pathT.length);
+          area = google.maps.geometry.spherical.computeArea(areaPolygonObj[key].getPath());
+          
+          var unitNames = unitNameDict[metricOrImperialArea].area;
+          var unitMultipliers = unitMultiplierDict[metricOrImperialArea].area;
+          // console.log(unitNames);
+          // console.log(unitMultipliers);
+          // console.log(area)
+          
+          if(totalArea >= 1){
+            unitName = unitNames[1];
+            unitMultiplier = unitMultipliers[1];
           }
-        if(area >= 1){
-          var unitNameT = unitNames[1];
-          var unitMultiplierT = unitMultipliers[1];
+          else{
+            unitName = unitNames[0];
+            unitMultiplier = unitMultipliers[0];
+            }
+          if(area >= 1){
+            var unitNameT = unitNames[1];
+            var unitMultiplierT = unitMultipliers[1];
+          }
+          else{
+            var unitNameT = unitNames[0];
+            var unitMultiplierT = unitMultipliers[0];
+            };
+          area = area;//*unitMultiplier
+          // console.log(unitName);
+          // console.log(unitMultiplier);
+          if(area>0){
+            totalWithArea++;
+            outString  = outString + area*unitMultiplierT.toFixed(4).toString() + ' ' + unitNameT + '<br>'
+          }
+          totalArea = totalArea + area
         }
-        else{
-          var unitNameT = unitNames[0];
-          var unitMultiplierT = unitMultipliers[0];
-          };
-        area = area;//*unitMultiplier
-        // console.log(unitName);
-        // console.log(unitMultiplier);
-        if(area>0){
-          totalWithArea++;
-          outString  = outString + area*unitMultiplierT.toFixed(4).toString() + ' ' + unitNameT + '<br>'
-        }
-        totalArea = totalArea + area
-
         // console.log(totalArea);
       }
       keys.map(areaWrapper)
@@ -1313,8 +1316,8 @@ updateDistance = function(){
     clickCoords = pathT[pathT.length-1];
     // console.log(clickCoords)
     
-    var unitNames = unitNameDict[metricOrImperial].distance;
-    var unitMultipliers = unitMultiplierDict[metricOrImperial].distance;
+    var unitNames = unitNameDict[metricOrImperialDistance].distance;
+    var unitMultipliers = unitMultiplierDict[metricOrImperialDistance].distance;
     // console.log(unitNames);
     // console.log(unitMultipliers);
     // console.log(area)

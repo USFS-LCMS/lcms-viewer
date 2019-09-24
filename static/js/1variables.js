@@ -22,7 +22,7 @@ var chartTypes = ['LineChart','Table'];//Options LineChart, BarChart, ScatterCha
 var tableConverter = null;
 var groundOverlayOn = false;
 
-var chartIncludeDate = true;var chartCollection;var areaChartCollection;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
+var chartIncludeDate = true;var chartCollection;var areaChartCollection;var areaChartCollections = {};var stackedAreaChart = false;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
 var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;
 

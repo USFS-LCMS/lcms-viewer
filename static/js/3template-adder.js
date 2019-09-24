@@ -92,12 +92,14 @@ addSubAccordianCard('pixel-tools-accordian','query-label','query-div','Query Vis
 addSubAccordianCard('pixel-tools-accordian','pixel-chart-label','pixel-chart-div','Query LCMS Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTip);
 
 addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
+
+addToggle('area-tools-accordian','toggle-area-chart-collection','Chart Loss/Gain or Landcover: ',"Loss/Gain",'Landcover','true','whichAreaChartCollection','lg','lc','toggleAreaChartCollection()','Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
+
 addSubAccordianCard('area-tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);
 addSubAccordianCard('area-tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
 addSubAccordianCard('area-tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
-
-addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperial','imperial','metric','toggleDistanceUnits()');
-addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperial','imperial','metric','toggleAreaUnits()');
+addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');
+addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialArea','imperial','metric','updateArea()');
 
 
 // $('#sidebar-left').append(`<button onclick="getLocation()">Try It</button><p id="demo"></p>`)
