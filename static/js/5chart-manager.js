@@ -160,7 +160,7 @@ function setupFSB(){
 	fieldName = 'label';
  
 
-  fsb = fsb.filterBounds(areaChartCollection.geometry());
+  fsb = fsb.filterBounds(areaChartCollections[whichAreaChartCollection].collection.geometry());
 
   var names = ee.List(ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys());
   ee.Dictionary.fromLists(names, names).evaluate(function(d){
@@ -387,11 +387,10 @@ function makeAreaChart(area,name,userDefined){
 	
 	// updateProgress(50);
 	area = area.set('source','LCMS_data_explorer');
-	
-
-	
 	centerObject(area);
 	area = area.geometry();
+
+	var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
 	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' %'});
 	bandNames.unshift('year')
@@ -413,7 +412,10 @@ function makeAreaChart(area,name,userDefined){
 				// tableT.unshift(['year','Loss %','Gain %']);
 				tableT.unshift(bandNames)
 				$('#summary-spinner').slideUp();
-				addChartJS(tableT,name,'line',stackedAreaChart);
+				var stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
+				var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;
+				var colors = areaChartCollections[whichAreaChartCollection].colors;
+				addChartJS(tableT,name,'line',stackedAreaChart,steppedLine,colors);
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
@@ -432,7 +434,7 @@ function makeAreaChart(area,name,userDefined){
 				// map.setOptions({cursor:'hand'});
 				
 				areaChartingTabSelect(whichAreaDrawingMethod);
-				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1){
+				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1 || failure.indexOf("Array: Parameter 'values' is required.")> -1){
 					failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
 				}
 				showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',failure)};
@@ -666,10 +668,12 @@ Chart.pluginService.register({
 });
 var chartJSChart;
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function addChartJS(dt,title,chartType,stacked){
+function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
 	dataTable = dt;
+	if(colors === null || colors === undefined){colors = chartColors};
 	if(chartType === null || chartType === undefined){chartType = 'line'};
 	if(stacked === null || stacked === undefined){stacked = false};
+	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
 
 	var h = $(document).height();
 	var w = $(document).width();
@@ -701,7 +705,8 @@ function addChartJS(dt,title,chartType,stacked){
         var label = col[0];
         var data = col.slice(1);
         // var color = randomRGBColor();
-        var color = getChartColor();
+        var color = colors[(i-1)%colors.length];
+        if(color.indexOf('#') === -1){color = '#'+color};
         var out = {'label':label,
 			        pointStyle: 'circle',
 			        pointRadius:1,
@@ -709,7 +714,8 @@ function addChartJS(dt,title,chartType,stacked){
 			        'fill':false,
 			        'borderColor':color,
 			        'lineTension':0,
-			        'borderWidth':2
+			        'borderWidth':2,
+			        'steppedLine':steppedLine
 			    	};
 		if(stacked){
 			out['fill'] = true;
@@ -762,12 +768,14 @@ function addChartJS(dt,title,chartType,stacked){
 										    <a class="dropdown-item" href="#" onclick = "downloadChartJS(chartJSChart,'${title}.png')">PNG</a>
 										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${title}.csv', dataTable)">CSV</a>
 										  </div>
-										</div><div class = 'dropdown-divider'</div>`);
+										</div>
+										<div class = 'dropdown-divider'</div>`);
 	   
 	    $('#chart-modal').modal();
 }
-function change(newType,stacked) {
+function change(newType,stacked,steppedLine) {
 	if(stacked === undefined || stacked == null){stacked = false};
+	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
 	var config = chartJSChart.config;
 	chartJSChart.destroy();
 	config.type = newType;
@@ -783,6 +791,7 @@ function change(newType,stacked) {
 		datasets = datasets.map(function(dataset){
 			dataset['fill'] = true;
 			dataset['backgroundColor'] = dataset['borderColor'];
+			dataset['steppedLine'] = steppedLine;
 			return dataset;
 		})
 		config.data.datasets = datasets;

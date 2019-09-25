@@ -93,7 +93,10 @@ addSubAccordianCard('pixel-tools-accordian','pixel-chart-label','pixel-chart-div
 
 addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
 
-addToggle('area-tools-accordian','toggle-area-chart-collection','Chart Loss/Gain or Landcover: ',"Loss/Gain",'Landcover','true','whichAreaChartCollection','lg','lc','toggleAreaChartCollection()','Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
+// addToggle('area-tools-accordian','toggle-area-chart-collection','Chart Loss/Gain or Landcover: ',"Loss/Gain",'Landcover','true','whichAreaChartCollection','lg','lc',null,'Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
+
+addDropdown('area-tools-accordian','area-collection-dropdown','Choose which LCMS product to summarize','whichAreaChartCollection','Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
+
 
 addSubAccordianCard('area-tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);
 addSubAccordianCard('area-tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);

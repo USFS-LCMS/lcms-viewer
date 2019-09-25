@@ -80,7 +80,7 @@ th{font-weight:  600!important}
 /*///////////////////////////////////////////////////////////*/
 /*Sidebar styling*/
 .sidebar-toggler{
-  position:absolute;top:0%;left:0%;z-index:5;font-size:1.8em!important;border-radius: 1px;
+  position:absolute;top:0%;left:0%;z-index:5;font-size:1.9em!important;border-radius: 1px;
 }
 .sidebar-toggler:hover{font-size:1.9em!important;}
 .sidebar-toggler:active {
@@ -143,7 +143,7 @@ font-size:0.9em;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 }
 .fa{
-  font-size:1.1em!important;
+  font-size:1.1em;
   color:#FFF;
   cursor:pointer;
   }

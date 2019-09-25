@@ -175,19 +175,35 @@ function showToolTipsAgain(){
 	}
 	
 }
-function getDropdown(id,label){return `// <div class="dropdown text-center">
-					  <button class="btn btn-secondary dropdown-toggle" type="button" id="${id}-label" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					    ${label}
-					  </button>
-					  <div id = "${id}" class="dropdown-menu" aria-labelledby="${id}-label"></div>
-					</div>`}
+// function getDropdown(id,label){return `<div class="dropdown text-center">
+// 					  <button class="btn btn-secondary dropdown-toggle" type="button" id="${id}-label" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+// 					    ${label}
+// 					  </button>
+// 					  <div id = "${id}" class="dropdown-menu" aria-labelledby="${id}-label"></div>
+// 					</div>`}
 
 
-function addDropdownItem(id,label,onclick){
-	$('#' + id).append(`<button onclick = ${onclick} class="dropdown-item" type="button">${label}</button>`)
+// function addDropdownItem(id,label,onclick){
+// 	$('#' + id).append(`<button onclick = '${onclick}' class="dropdown-item" type="button">${label}</button>`)
+// }
+function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
+	if(tooltip === undefined || tooltip === null){tooltip = ''}
+	$('#' + containerID).append(`<div class="form-group" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+								  <label for="${dropdownID}">${dropdownLabel}:</label>
+								  <select class="form-control" id="${dropdownID}"></select>
+								</div>`)
+	
+	  $("select#"+dropdownID).on("change", function(value) {
+	  	console.log('it changed');
+	  	console.log($(this).val());
+	  	eval(`window.${variable} = $(this).val()`);
+	  });
+	
 }
-
-
+function addDropdownItem(dropdownID,label,value){
+	$('#'+dropdownID).append(`<option value = "${value}">${label}</option>`)
+}
+	
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 const setRadioValue =function(variable,value){

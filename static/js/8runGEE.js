@@ -934,9 +934,10 @@ function runUSFS(){
       Map2.addLayer(dndFastCount,{'min':1,'max':5,'palette':declineDurPalette},'Fast Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
 
     }
-
+    
     // Additional Layers for MLSNF
     if(studyAreaName === 'MLSNF'){
+      
       var landslides = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Landslides');
       var canyonsProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Canyons_ProjectArea');
       var johnsonCreekProjectArea = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/JohnsonCreek_ProjectArea');
@@ -1033,6 +1034,9 @@ function runUSFS(){
 
     }
 
+    var steppedLineLC = false;
+    if(studyAreaName === 'CNFKP'){steppedLineLC = 'before';}
+    
     var lcClassCodes = ee.List.sequence(0,6).getInfo();
     var imageIndexes = ee.List.sequence(0,rawLC.size().subtract(1)).getInfo();
     var rawLCL = rawLC.toList(100,0);
@@ -1042,46 +1046,66 @@ function runUSFS(){
       var img;
       lcClassCodes.map(function(c){
         // console.log(i);console.log(c);
+        var m = lcc.mask();
         var ci = lcc.eq(c).byte().rename(['lc_'+ parseInt((c)).toString()]);
+        //Unmask if in AK
+        if(studyAreaName === 'CNFKP'){
+          ci = ci.mask(ee.Image(1));
+          ci = ci.where(m.not(),0);
+        }
+        
         if(img === undefined){img = ci}
           else{img = img.addBands(ci)};
       })
       return img.set('system:time_start',d);
     });
     lcStack = ee.ImageCollection(lcStack);
-    lcStack = lcStack.select(lcClassCodes,Object.keys(landcoverClassChartDict))
-
+    lcStack = lcStack.select(lcClassCodes,Object.keys(landcoverClassChartDict));
+    // Map2.addLayer(lcStack.mosaic(),{},'lcStack');
 
     forCharting = joinCollections(forCharting,NFSLCMS, false);
-
-
-    var forAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year']);
-
-    var forAreaChartingGeo = forAreaCharting.geometry();
-    forAreaCharting =forAreaCharting.map(function(img){
-
-      return img.mask().clip(forAreaChartingGeo)});
     chartCollection =forCharting;
-
     if(analysisMode === 'advanced'){
      chartCollection = chartCollection.set('legends',{'Land Cover Class': landcoverClassChartDict,'Land Use Class:':landuseClassChartDict}) 
     }
-    areaChartCollection = lcStack;
-    forAreaCharting = forAreaCharting.select([0,1],['Loss','Gain']);
-    areaChartCollections['lc'] = {'collection':lcStack,'stacked':true};
-    areaChartCollections['lg'] = {'collection':forAreaCharting,'stacked':false};;
 
 
+    var lossGainAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year']);
+    var lossGainAreaChartingGeo = lossGainAreaCharting.geometry();
+    lossGainAreaCharting =lossGainAreaCharting.map(function(img){
+      return img.mask().clip(lossGainAreaChartingGeo)
+    });
+    lossGainAreaCharting = lossGainAreaCharting.select([1,0],['Loss','Gain']);
+    
+    
+    // areaChartCollection = forAreaCharting;
+    // stackedAreaChart = false;
+    areaChartCollections = {};
+    areaChartCollections['lg'] = {'label':'Loss/Gain',
+                                  'collection':lossGainAreaCharting,
+                                  'stacked':false,
+                                  'steppedLine':false,
+                                  'colors':['F00','00F']};
+                                  
+    areaChartCollections['lc'] = {'label':'Landcover',
+                                  'collection':lcStack,
+                                  'stacked':true,
+                                  'steppedLine':steppedLineLC,
+                                  'colors':Object.values(landcoverClassLegendDict)};
+    
+
+    populateAreaChartDropdown();
     if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 }; // End runUSFS()
-function toggleAreaChartCollection(){
-  console.log(whichAreaChartCollection)
-  areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
-  stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
-  setupFSB();
-}
 
+function populateAreaChartDropdown(){
+  $('#area-collection-dropdown').empty();
+  whichAreaChartCollection = Object.keys(areaChartCollections)[0];
+  Object.keys(areaChartCollections).map(function(k){
+    addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k);
+  })
+}
 //------------------------------Main Function to Run CONUS Product----------------------------------------------------------
 function runCONUS(){
   queryClassDict = {};
@@ -1150,8 +1174,16 @@ function runCONUS(){
   chartCollection =lossProb;
   var forAreaCharting = dndThresh.select(["Loss Probability_change_year"]);
   var forAreaChartingGeo = forAreaCharting.geometry();
-  forAreaCharting = forAreaCharting.map(function(img){return img.mask().addBands(ee.Image(0).rename(["Gain Probability_change_year"])).clip(forAreaChartingGeo)})
-  areaChartCollection = forAreaCharting;
+  forAreaCharting = forAreaCharting.map(function(img){return img.mask().clip(forAreaChartingGeo)}).select([0],['Loss'])
+
+  areaChartCollections = {};
+  areaChartCollections['lg'] = {'label':'Loss/Gain',
+                                'stacked':false,
+                                'steppedLine':false,
+                                'collection':forAreaCharting,
+                                'colors':['F00']};
+
+  populateAreaChartDropdown();
 
   if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
