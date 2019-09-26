@@ -338,6 +338,7 @@ function getLossGainTable(areaChartCollection,area){
 	// var test = ee.Image(areaChartCollection.first());
 	// test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
 	// print(test.getInfo());
+	var bandNames = ee.Image(areaChartCollection.first()).bandNames();
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
@@ -352,9 +353,10 @@ function getLossGainTable(areaChartCollection,area){
 				    // var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
 				    // return [year,lossPct,gainPct];//ee.List([lossSum]);
 				    t = ee.Dictionary(t);
-				    var values = t.values();
-				    var keys = t.keys();
-				    values = values.map(function(a){
+				    // var values = t.values();
+				    // var keys = t.keys();
+				    values = bandNames.map(function(bn){
+				      var a = t.get(bn);
 				      a = ee.Array(a).slice(1,1,2).project([0]);
 				      var sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
 				      a = ee.Number(a.toList().get(1));
@@ -915,7 +917,7 @@ function makeLegend(legendDicts){
 	$( '#chart-modal-body' ).append(`<div id = 'chart-legend' style = 'font-size:0.7em;' class = 'text-dark row'></div>`);
 	Object.keys(legendDicts).map(function(k){
 		var title = k;
-		var legendDict = legendDicts[k];
+		var legendDict = JSON.parse(legendDicts[k]);
 		var legendID = title.replaceAll(' ','-')
 		legendID = legendID.replaceAll(':','') + '-legend'
 		$( '#chart-legend' ).append(`<div  class = 'px-2' id='${legendID}'>
@@ -993,7 +995,8 @@ function startPixelChartCollection() {
 			map.setOptions({draggableCursor:'help'});
 			addChartJS(values,uriName);
 			var legends = chartCollection.get('legends').getInfo();
-			if(legends !== null && analysisMode === 'advanced'){
+			print(legends);
+			if(legends !== null){// && analysisMode === 'advanced'){
 				makeLegend(legends);
 				};
    			}

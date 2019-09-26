@@ -5,7 +5,7 @@ var lowerThresholdRecovery = 0.3;
 var upperThresholdRecovery = 1.0;
 var studyAreaName = 'BTNF';
 var startYear = 1985;
-var endYear = 2017;
+var endYear = 2018;
 
 var fc;//Feature collection container for drawing on map and submitting tasks with user-defined vectors
 var toExport;

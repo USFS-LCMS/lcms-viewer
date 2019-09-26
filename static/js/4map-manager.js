@@ -293,6 +293,15 @@ function setPlotProjectColor(ID){
    
 }
 /////////////////////////////////////////////////////
+//Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript
+Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function() {
+  return Math.min.apply(null, this);
+};
+/////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
 String.prototype.replaceAll = function(str1, str2, ignore) 
 {

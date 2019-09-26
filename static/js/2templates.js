@@ -13,11 +13,9 @@ var staticTemplates = {
 	map:`<div class = ' map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
-
+	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>`,
 	sidebarLeftContainer: `<div style = 'position: absolute;left:0%;top:0%;'class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
-					        <div id = 'sidebar-left-header'>
-					            <div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>
-					        </div>
+					        <div id = 'sidebar-left-header'></div>
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
 
@@ -54,6 +52,7 @@ var staticTemplates = {
                 </div>
             </div>`,
 	bottomBar:`<div class = 'bottombar' >
+				<p class = 'px-2 my-1' style = 'float:left'; id='current-tool-selection'></p>
                 <p class = 'px-2 my-1' style = 'float:right;' id='current-mouse-position'  ></p>
 
                  <a href="http://www.fs.fed.us//" target="_blank" >
@@ -112,7 +111,7 @@ var staticTemplates = {
   <div id='advanced-radio-container' style="display: none;">
     <div class="dropdown-divider"></div>
   
-   <variable-radio var='applyTreeMask' title2='Constrain analysis to areas with trees:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas."></variable-radio>
+   <variable-radio var='applyTreeMask' title2='Constrain analysis to areas with trees:' name2='No' name1='Yes' value2='no' value1='yes' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas."></variable-radio>
 
     <div class="dropdown-divider"></div>
        <variable-radio var='viewBeta' title2='View beta outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
@@ -127,7 +126,10 @@ var staticTemplates = {
 downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
 			<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>`,
 supportDiv :`<div class = 'p-0' >
-				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov "><br><i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i> If you have comment/questions about this data explorer, the LCMS program, and/or how to acquire more in-depth data products, feel free to contact us.</a>
+				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
+					<br>
+					<i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i>
+					Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
 				<div class="dropdown-divider"></div>
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'mb-2' onclick = 'showToolTipsAgain()'>Click here to show tooltips again</button>
@@ -477,17 +479,21 @@ function addAccordianCard(accordianContainerID,accordianCardHeaderID, accordianC
       <a class = 'collapse-title' rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}"  >
         ${accordianCardHeaderContent} </a>
       </div>
-      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
+      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} super-panel-collapse panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
         data-parent="#${accordianContainerID}">
         <div rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}">${accordianCardBodyContent}</div>
       </div>
     </div>`)
-  $('.panel-collapse-'+ panelCollapseI).on('hidden.bs.collapse', function () {
+  // $('#'+accordianCardBodyID+'.super-panel-collapse').on('hidden.bs.collapse', function () {
   	// find the children and close them
-  	$(this).find('.show').collapse('hide');
-	});
+  	// $(!this).find('.show').collapse('hide');
+  	// console.log('hello')
+  	// $('.panel-collapse.show.collapse.toggle-collapse').collapse('hide');
+  	// stopAllTools();
+	// });
   panelCollapseI++;
 }
+
 function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordianCardBodyID,accordianCardHeaderContent,accordianCardBodyContent,show,onclick,toolTip){
   var collapsed;
   if(toolTip === undefined || toolTip === null){toolTip = '';}
@@ -499,15 +505,18 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
       <a class = 'collapse-title' rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}"  >
         ${accordianCardHeaderContent} </a>
       </div>
-      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
+      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} toggle-collapse panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
         data-parent="#${accordianContainerID}">
         <div rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}">${accordianCardBodyContent}</div>
       </div>
     </div>`)
-  $('.panel-collapse-'+ panelCollapseI).on('hidden.bs.collapse', function () {
-  	// find the children and close them
-  	$(this).find('.show').collapse('hide');
-	});
+ //  $('.panel-collapse.toggle-collapse').on('hidden.bs.collapse', function () {
+ //  	console.log('hello')
+ //  	// find the children and close them
+ //  	$(this).find('.show').collapse('hide');
+ //  	// $('.panel-collapse.show.collapse.toggle-collapse').collapse('hide');
+	// });
+  
   panelCollapseI++;
 }
 function addLegendContainer(legendContainerID,containerID,show){
