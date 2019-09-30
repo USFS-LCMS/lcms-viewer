@@ -942,13 +942,36 @@ function runUSFS(){
       var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year')).mode().multiply(10);
       var lcChangeMatrix = lcFirstFive.add(lcLastFive);
 
-      var interestedClasses = [21,41,42,61,62,64, 12,14,16,24,26,46];
+      var interestedClasses =  ee.List([51,57,52,54,58,56,65,85,45,25,75,15,71,72,74,78,76,67,87,47,27,17,12,14,18,16,61,81,41,21,24,28,26,62,82,42,48,46,64,84,86,68]);
+      var posNegValues = ee.List([1,1,2,3,4,5,-5,-4,-3,-2,-1,-1,1,2,3,4,5,-5,-4,-3,-2,-1,1,2,3,4,-4,-3,-2,-1,1,2,3,-3,-2,-1,1,2,-2,-1,1,-1]);
+      var LCchangeMag = lcChangeMatrix.remap(validValues, posNegValues,0);
+      //var interestedClasses = [21,41,42,61,62,64, 12,14,16,24,26,46]; original values
       var interestedChangeClasses = ee.Image(interestedClasses);
       lcChangeMatrix =interestedChangeClasses.updateMask(interestedChangeClasses.eq(lcChangeMatrix)).reduce(ee.Reducer.max());
-      lcChangeMatrix = lcChangeMatrix.remap(interestedClasses,[-1,-2,-1,-3,-2,-1,1,2,3,1,2,1])
-      Map2.addLayer(lcChangeMatrix,{min:-3,max:3,palette:"b2182b,ef8a62,fddbc7,f7f7f7,d1e5f0,67a9cf,2166ac"},
-        'Landcover Change Magnitude',false,null,null, 
-        'Magnitude of vegetation cover related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
+      lcChangeMag = lcChangeMatrix.remap(interestedClasses, posNegValues)
+      //lcChangeMatrix = lcChangeMatrix.remap(interestedClasses,[-1,-2,-1,-3,-2,-1,1,2,3,1,2,1]) original values
+      // Map2.addLayer(lcChangeMatrix,{min:-3,max:3,palette:"b2182b,ef8a62,fddbc7,f7f7f7,d1e5f0,67a9cf,2166ac"},
+      //   'Landcover Change Magnitude',false,null,null, 
+      //   'Magnitude of vegetation cover related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
+
+      // Vegetation change layer
+      var vegValues = ee.List([0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+      var vegChangeMask = lcChangeMatrix.remap(interestedClasses, vegValues, 0);
+      var vegChangeMag = lcChangeMag.updateMask(vegChangeMask);
+      Map2.addLayer(vegChangeMag.neq(0),{min:-5,max:5,palette:'D00, F5DEB3, 006400'},
+         'Landcover Change Magnitude',false,null,null, 
+         'Magnitude of vegetation cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
+
+      // Snow change layer
+      if (studyAreaName == 'CNFKP'){
+        var snowValues = ee.List([1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+        var snowChangeMask = lcChangeMatrix.remap(interestedClasses, snowValues, 0);
+        var snowChangeMag = lcChangeMag.updateMask(vegChangeMask);
+        var snowChangePalette = '313695, 4575b4, 74add1, abd9e9, e0f3f8, ffffbf, fee090, fdae61,  f46d43, d73027, a50026'
+        Map2.addLayer(snowChangeMag.neq(0),{min:-5,max:5,palette:snowChangePalette},
+           'Snow Cover Change Magnitude',false,null,null, 
+           'Magnitude of snow cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
+      }
 
       Map2.addLayer(dndSlowThreshOut.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
       Map2.addLayer(dndSlowThreshOut.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
