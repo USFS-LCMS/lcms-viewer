@@ -46,18 +46,23 @@ var  getQueryImages = function(lng,lat){
 	var keysToShow = [];
 	keys.map(function(k){
 		var q = queryObj[k];
-		if(q[0]){keysToShow.push(k);}
+		if(q.visible){keysToShow.push(k);}
 	})
 
 	var keyCount = keysToShow.length;
 	var keyI = 1;
 	
+	if(keyCount === 0){
+		$('#summary-spinner').slideUp();
+		showMessage('No Layers to Query!','No visible layers to query. Please turn on any layers you would like to query');
+
+	}
 	keysToShow.map(function(k){
 		var q = queryObj[k];
 	
 
-		if(q[0]){
-			var img = ee.Image(q[1]);
+		if(q.visible){
+			var img = ee.Image(q.queryItem);
 			var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).evaluate(function(value){
 				if(value != null){
 				value = value['properties'];
@@ -100,7 +105,7 @@ var  getQueryImages = function(lng,lat){
 
 			
 		
-			if(keyI == keyCount){
+			if(keyI >= keyCount){
 				map.setOptions({draggableCursor:'help'});
  			map.setOptions({cursor:'help'});
  			$('#summary-spinner').slideUp();
@@ -668,6 +673,30 @@ Chart.pluginService.register({
         }
     }
 });
+var dataToTable = function (dataset) {
+    var html = '<table>';
+    html += '<thead><tr><th style="width:120px;">#</th>';
+    
+    var columnCount = 0;
+    jQuery.each(dataset.datasets, function (idx, item) {
+        html += '<th style="background-color:' + item.fillColor + ';">' + item.label + '</th>';
+        columnCount += 1;
+    });
+
+    html += '</tr></thead>';
+
+    jQuery.each(dataset.labels, function (idx, item) {
+        html += '<tr><td>' + item + '</td>';
+        for (i = 0; i < columnCount; i++) {
+            html += '<td style="background-color:' + dataset.datasets[i].fillColor + ';">' + (dataset.datasets[i].data[idx] === '0' ? '-' : dataset.datasets[i].data[idx]) + '</td>';
+        }
+        html += '</tr>';
+    });
+
+    html += '</tr><tbody></table>';
+
+    return html;
+};
 var chartJSChart;
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
 function addChartJS(dt,title,chartType,stacked,steppedLine,colors){

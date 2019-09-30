@@ -120,7 +120,9 @@ function llToNAD83(x,y){
       }
       return {'x':vertex[0],'y':vertex[1]}
     }
-
+//From:https://stackoverflow.com/questions/12199051/merge-two-arrays-of-keys-and-values-to-an-object-using-underscore answer 6
+var toObj = (ks, vs) => ks.reduce((o,k,i)=> {o[k] = vs[i]; return o;}, {});
+////////////////////////////////////////
 function CopyAnArray (ari1) {
    var mxx4 = [];
    for (var i=0;i<ari1.length;i++) {
@@ -343,7 +345,7 @@ function addImageDownloads(imagePathJson){
 }
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
-function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList){
+function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     // print(item.getInfo().type)
     // if(item.getInfo().type === 'ImageCollection'){print('It is a collection')}
@@ -384,6 +386,8 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     layer.fontColor = fontColor;
     layer.helpBox = helpBox;
     layer.legendDivID = legendDivID;
+    if(queryItem === null || queryItem === undefined){queryItem = item};
+    layer.queryItem = queryItem;
     // layer.viz = JSON.stringify(viz);
     // layer.viz  = viz;
 
@@ -480,7 +484,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     layer.visible = visible;
     layer.item = item;
     layer.name = name;
-    layer.addToLayerObj(name,visible,item);
+    layer.addToLayerObj(name,visible,queryItem);
     var layerList = document.querySelector(whichLayerList);
     
     
@@ -665,11 +669,11 @@ var viz = {};var item = ee.Image();
 //////////////////////////////////////////////////////
 //Function for adding ee object to map
 //Will handle vectors by converting them to rasters
-function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList){
+function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     if(canAddToMap){
     try{var t = item.bandNames();
         
-        addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList);}
+        addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);}
     catch(err){
         try{
         item = ee.Image().paint(item,3,3);
@@ -684,8 +688,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList){
     
 }
 function mp(){
-  this.addLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList){
-    addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList);
+  this.addLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
   };
   this.addREST = function(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList){
     addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList);

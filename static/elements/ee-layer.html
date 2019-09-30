@@ -131,10 +131,10 @@
                 nextId += 1;
                 this.urls=[];
             },
-            addToLayerObj:function(name,visible,item){
+            addToLayerObj:function(name,visible,queryItem){
 
                 layerObj[name] = [visible,1];
-                queryObj[name] = [visible,1,item];
+                queryObj[name] = {'visible':visible,'queryItem':queryItem};//[visible,1,item];
             },
             setLayer:function(layer){
 
@@ -186,10 +186,10 @@
                     // this.$.opacity.disabled = false;
                     // this.detached();
                 }
-                var item = queryObj[this.name][1];
+                // var item = queryObj[this.name][1];
 
                 layerObj[this.name] = [!this.visible,this.getOpacity()];
-                queryObj[this.name] = [!this.visible,item];
+                queryObj[this.name].visible = !this.visible;
                 if(typeof(Storage) == "undefined") return;
                 localStorage.setItem("layerObj",JSON.stringify(layerObj));
             },
@@ -198,13 +198,13 @@
                 this.layer.setOpacity(opacity);
                 this.$.opacity.value = opacity*100;
                 layerObj[this.name] = [this.visible,this.getOpacity()];
-                queryObj[this.name] = [this.visible,item];
+                // queryObj[this.name] = [this.visible,item];
                 if(typeof(Storage) == "undefined") return;
                 localStorage.setItem("layerObj",JSON.stringify(layerObj));
             },
             onRangeChange:function(){
             
-                var item = queryObj[this.name][1];
+                // var item = queryObj[this.name][1];
                 var opacity = this.getOpacity();
             
                 this.layer.setOpacity(opacity);
@@ -214,7 +214,7 @@
                 }
                 
                 layerObj[this.name] = [this.visible,opacity];
-                queryObj[this.name] = [this.visible,item];
+                // queryObj[this.name] = [this.visible,item];
                 if(typeof(Storage) == "undefined") return;
                 localStorage.setItem("layerObj",JSON.stringify(layerObj));
             },
