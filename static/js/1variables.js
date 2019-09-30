@@ -26,6 +26,7 @@ var chartIncludeDate = true;var chartCollection;var areaChartCollections = {};va
 var mouseLat;var mouseLng;var distancePolyline; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
 var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;
 
+var featureObj = {};
 
 var plotDictID = 1;
 var exportID = 1;

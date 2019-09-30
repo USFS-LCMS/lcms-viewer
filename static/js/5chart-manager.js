@@ -73,19 +73,17 @@ var  getQueryImages = function(lng,lat){
 			};
 			
 				if(value === null){
-					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
+					// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
 					queryContent +=`<tr><td>${k}</td><td>null</td></tr>`;
 
 					// $('#query-container').append(queryLine);
 				}
 				else if(Object.keys(value).length === 1 ){
 					var tValue = JSON.stringify(Object.values(value)[0]);
-					if(Object.keys(queryClassDict).indexOf(k) !== -1){
-						// console.log(queryClassDict[k]);
-						// console.log(queryClassDict[k][tValue]);
-						tValue = queryClassDict[k][tValue]
+					if(q.queryDict !== null && q.queryDict !== undefined){
+						tValue = q.queryDict[tValue]
 					}
-					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
+					// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
 					queryContent +=`<tr><td>${k}</td><td>${tValue}</td></tr>`;
 					// $('#query-container').append(queryLine);
 				}
@@ -95,10 +93,11 @@ var  getQueryImages = function(lng,lat){
 					// $('#query-container').append(queryLine);
 					Object.keys(value).map(function(kt){
 						var v = value[kt].toFixed(2).toString();
-						var queryLine =  kt+ ': '+v + "<br>";
-						queryContent += `<tr><td>${kt}</td><td>${v}</td></tr>`;;
+						// var queryLine =  kt+ ': '+v + "<br>";
+						queryContent += `<tr><td>${kt}</td><td>${v}</td></tr>`;
 						// $('#query-container').append(queryLine);
-					})
+					});
+					
 				}
 				infowindow.setContent(queryContent);
 	          	infowindow.open(map);

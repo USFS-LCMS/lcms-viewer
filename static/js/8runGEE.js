@@ -162,8 +162,8 @@ function getMTBSandIDS(studyAreaName){
   mtbsQueryClassDict = {};
   var keyI = 1;
   Object.keys(mtbsClassDict).map(function(k){mtbsQueryClassDict[keyI] =k;keyI++;})
-  queryClassDict['MTBS Severity Composite'] =mtbsQueryClassDict;
-  var severityViz = {'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
+  
+  var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
 
   Map2.addLayer(mortCollection.select([0]).count(),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey','reference-layer-list');
   Map2.addLayer(mortCollection.select([1]).max(),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey','reference-layer-list');
@@ -532,15 +532,7 @@ function runUSFS(){
 
       var lfColorsHex = 'ffffbe,ffbee8,4c7300,002673,828282,000000';
       var cColorsHex = 'ffffbe,ffbee8,ffff00,aaff00,4c7300,734c00,002673,828282,000000,ff73df,ff00c5';
-      function toDict(keys,values) {
-        var l = keys.length;
-        var out = new Object();
-        for(var i = 0;i< l;i++){
-          // console.log(i);
-          out[keys[i]] = values[i];
-        }
-          return out;
-      }
+     
       var lfDict = toDict(lfNames,lfColorsHex.split(','));
       var cDict = toDict(cNames,cColorsHex.split(','));
 
@@ -549,9 +541,9 @@ function runUSFS(){
       lfNames.map(function(k){lfQueryClassDict[keyI] =k;keyI++;})
       var keyI = 1;
       cNames.map(function(k){cQueryClassDict[keyI] =k;keyI++;})
-      queryClassDict['VMAP-LIFEFORM'] =lfQueryClassDict;queryClassDict['VMAP-TREECANOPY'] =cQueryClassDict;
+      // queryClassDict['VMAP-LIFEFORM'] =lfQueryClassDict;queryClassDict['VMAP-TREECANOPY'] =cQueryClassDict;
 
-      var properties = [['LIFEFORM',lfCodes,lfColorsHex,lfDict],['TREECANOPY',cCodes,cColorsHex,cDict]];
+      var properties = [['LIFEFORM',lfCodes,lfColorsHex,lfDict,lfQueryClassDict],['TREECANOPY',cCodes,cColorsHex,cDict,cQueryClassDict]];
       var vmapExport = ee.Image('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/VMAP-Lifeform-TreeCanopy');
 
       properties.map(function(prop){
@@ -559,7 +551,7 @@ function runUSFS(){
         var vmapRast = vmapExport.select([prop[0]]);
         vmapRast = vmapRast.remap(prop[1],ee.List.sequence(1,prop[1].length));
         
-        Map2.addLayer(vmapRast,{min:1,max:prop[1].length,palette:prop[2],addToClassLegend: true,classLegendDict:prop[3]},'VMAP-'+prop[0],false,null,null,'VMAP layer attribute: '+prop[0],'reference-layer-list')
+        Map2.addLayer(vmapRast,{queryDict: prop[4],min:1,max:prop[1].length,palette:prop[2],addToClassLegend: true,classLegendDict:prop[3]},'VMAP-'+prop[0],false,null,null,'VMAP layer attribute: '+prop[0],'reference-layer-list')
       })
 
       var wb = ee.Image('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/IRPSV102_WHITEBARK');
@@ -567,7 +559,7 @@ function runUSFS(){
       Map2.addLayer(wb,{min:1,max:1,palette:'080',addToLegend:false},'Whitebark Pine',false,null,null,'Extent of potential Whitebark Pine','reference-layer-list')
 
       var gnpHUC = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/GNP_Huc12');
-      Map2.addLayer(gnpHUC,{palette:'0088FF',addToLegend:false},'GNP HUC 12',false,null,null,null,'reference-layer-list')
+      Map2.addLayer(gnpHUC,{strokeColor:'#0088FF',addToLegend:false},'GNP HUC 12',false,null,null,null,'reference-layer-list')
 
     }
     // End FNF Layers
@@ -586,8 +578,8 @@ function runUSFS(){
       var lynxClassQueryDict = {};
       var keyI = 1;
       Object.keys(wbpClassDict).map(function(k){wbpClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['GYA Whitebark Pine Mortality'] = wbpClassQueryDict;
-      var wbpViz = {'min':1,'max':5,'palette':wbpPalette,addToClassLegend: true,classLegendDict:wbpClassDict}
+      
+      var wbpViz = {'queryDict':wbpClassQueryDict,'min':1,'max':5,'palette':wbpPalette,addToClassLegend: true,classLegendDict:wbpClassDict}
 
       Map2.addLayer(wbp.updateMask(wbp.neq(0)),wbpViz,'GYA Whitebark Pine Mortality',false,null,null,'Mortality from two date change detection over Whitebark Pine areas of the Greater Yellowstone Area','reference-layer-list');
 
@@ -598,25 +590,23 @@ function runUSFS(){
 
       var canopyCoverClassDict = {"Tree Canopy 1 (10-19%)": "f400f4", "Tree Canopy 2 (20-29%)": "9311e2", "Tree Canopy 3 (30-39%)": "0000f4", "Tree Canopy 4 (40-49%)": "00f400", "Tree Canopy 5 (50-59%)": "f4f400", "Tree Canopy 6 (60-69%)": "f49900", "Tree Canopy 7 (70-100%)": "f40000", "Shrub Canopy 1 (10-24%)": "e8e8d1", "Shrub Canopy 2 (25-100%)": "c4a57f", "No Canopy Cover": "b2b2b2"};
       var canopyCoverPalette = 'f400f4,9311e2,0000f4,00f400,f4f400,f49900,f40000,e8e8d1,c4a57f,b2b2b2';
-      var canopyCoverViz = {min:1,max:10,palette:canopyCoverPalette,addToClassLegend: true,classLegendDict:canopyCoverClassDict};
       var keyI = 1;
       Object.keys(canopyCoverClassDict).map(function(k){canopyCoverClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['VCMQ 2018 Canopy Cover'] = canopyCoverClassQueryDict;
-
+      var canopyCoverViz = {queryDict:canopyCoverClassQueryDict,min:1,max:10,palette:canopyCoverPalette,addToClassLegend: true,classLegendDict:canopyCoverClassDict};
+      
       var treeSizeClassDict = {"Tree Size 2  (< 5 dbh)": "0000f9", "Tree Size 3  (5 - 9.9 dbh)": "00f900", "Tree Size 4 (10 - 19.9  dbh)": "f9f900", "Tree Size 5  (20 - 29.9 dbh)": "f99e00", "Tree Size 6  (30.0+  dbh)": "f90000", "Non-Forest": "666666"};
       var treeSizePalette = '0000f9,00f900,f9f900,f99e00,f90000,666666';
-      var treeSizeViz = {min:2,max:7,palette:treeSizePalette,addToClassLegend: true,classLegendDict:treeSizeClassDict};
-      var keyI = 1;
+      var keyI = 2;
       Object.keys(treeSizeClassDict).map(function(k){treeSizeClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['VCMQ 2018 Tree Size'] = treeSizeClassQueryDict;
-
+      var treeSizeViz = {queryDict:treeSizeClassQueryDict,min:2,max:7,palette:treeSizePalette,addToClassLegend: true,classLegendDict:treeSizeClassDict};
+      
       var vegTypeClassDict = {"Urban/Developed": "6b6b6b", "Water": "0000b5", "Snow/Ice": "a5a5a5", "Barren/Rock": "0c0c0c", "Sparse Vegetation": "d3bf9b", "Alpine Vegetation": "f26df2", "Tall Forbland": "0054c1", "Riparian Herbland": "d81919", "Agriculture": "3d0030", "Grassland/Forbland": "dddd00", "Low/Alkali Sagebrush": "e26b00", "Sagebrush/Bitterbrush Mix": "a33d00", "Mountain Big Sagebrush": "f49b00", "Spiked Big Sagebrush": "f43a00", "Mountain Mahogany": "4f997c", "Mountain Shrubland": "9314e2", "Silver Sagebrush/Shrubby Cinquef": "aa8200", "Willow": "bf0000", "Cottonwood": "930000", "Aspen": "00f9f9", "Aspen/Conifer Mix": "00bfbf", "Rocky Mountain Juniper": "6b00f7", "Limber Pine": "47ad47", "Douglas-fir Mix": "16ed16", "Lodgepole Pine Mix": "7c633d", "Spruce/Subalpine Fir Mix": "005b00", "White Bark Pine": "600000", "White Bark Pine Mix": "280000"};
       var vegTypePalette = '6b6b6b,0000b5,a5a5a5,0c0c0c,d3bf9b,f26df2,0054c1,d81919,3d0030,dddd00,e26b00,a33d00,f49b00,f43a00,4f997c,9314e2,aa8200,bf0000,930000,00f9f9,00bfbf,6b00f7,47ad47,16ed16,7c633d,005b00,600000,280000';
-      var vegTypeViz = {min:1,max:28,palette:vegTypePalette,addToClassLegend: true,classLegendDict:vegTypeClassDict};
       var keyI = 1;
       Object.keys(vegTypeClassDict).map(function(k){vegTypeClassQueryDict[keyI] =k;keyI++;})
       queryClassDict['VCMQ 2018 Veg Type'] = vegTypeClassQueryDict;
-
+      var vegTypeViz = {queryDict:vegTypeClassQueryDict,min:1,max:28,palette:vegTypePalette,addToClassLegend: true,classLegendDict:vegTypeClassDict};
+      
       Map2.addLayer(canopyCover.updateMask(canopyCover.neq(0)),canopyCoverViz,'VCMQ 2018 Canopy Cover',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) canopy cover classes','reference-layer-list');
       Map2.addLayer(treeSize.updateMask(treeSize.neq(0)),treeSizeViz,'VCMQ 2018 Tree Size',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) tree size classes','reference-layer-list');
       Map2.addLayer(vegType.updateMask(vegType.neq(0)),vegTypeViz,'VCMQ 2018 Veg Type',false,null,null,'2018 updated VCMQ (mid-level vegetation cover map) vegetation type classes','reference-layer-list');
@@ -629,8 +619,7 @@ function runUSFS(){
      
       lynxClassQueryDict['1970'] = 'Suitable 1987-2018';
       ee.List.sequence(1987,2018).getInfo().map(function(k){lynxClassQueryDict[k] =k;})
-      queryClassDict['B-T Lynx Habitat Unsuitability Year'] = lynxClassQueryDict;
-      Map2.addLayer(lynxHab,{min:1970,max:2017,palette:lynxPalette,addToClassLegend: true,classLegendDict:lynxClassDict},'B-T Lynx Habitat Unsuitability Year',false,null,null,'Lynx habitat suitability 2017.  Years are years Lynx habitat became unsuitable.','reference-layer-list');
+      Map2.addLayer(lynxHab,{queryDict:lynxClassQueryDict,min:1970,max:2017,palette:lynxPalette,addToClassLegend: true,classLegendDict:lynxClassDict},'B-T Lynx Habitat Unsuitability Year',false,null,null,'Lynx habitat suitability 2017.  Years are years Lynx habitat became unsuitable.','reference-layer-list');
 
     }
     // End BTNF Layers
@@ -649,31 +638,28 @@ function runUSFS(){
       // Object.keys(canopyCoverClassDict).map(function(k){canopyCoverClassDict2[k.split(': ')[1]] = canopyCoverClassDict[k]});
 
       var canopyCoverPalette = '93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,93ff93,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,2dff2d,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,00ad00,428e63,428e63,428e63,428e63,428e63,428e63,428e63,428e63,428e63,428e63,385b99,385b99,385b99,385b99,385b99,385b99,385b99,385b99,385b99,385b99,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,0759fc,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,1c9ee8,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,a360ea,fc4ff2,fc4ff2,fc4ff2,fc4ff2,fc4ff2,ffff00,ffa300,ff0000,bfbfbf';
-      var canopyCoverViz = {min:1,max:89,palette:canopyCoverPalette,addToClassLegend: true,classLegendDict:canopyCoverClassDict};
       var keyI = 1;
       Object.keys(canopyCoverClassDict).map(function(k){canopyCoverClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['VCMQ 2014 Canopy Cover'] = canopyCoverClassQueryDict;
-
+      var canopyCoverViz = {queryDict:canopyCoverClassQueryDict,min:1,max:89,palette:canopyCoverPalette,addToClassLegend: true,classLegendDict:canopyCoverClassDict};
+      
       var treeSizeClassDict = {"1: (0 - 4.9\"\" dbh)": "a5f984", "2: (5 - 11.9\"\" dbh)": "3ddb3d", "3: (12 - 17.9\"\" dbh)": "008900", "4: (18 - 23.9\"\" dbh)": "2196af", "5: (24\"\"+ dbh)": "056dce", "6: (0 - 5.9\"\" drc)": "f2ea5e", "7: (6 - 11.9\"\" drc)": "e0ba56", "8: (12 - 17.9\"\" drc)": "cc751e", "9: (18\"\"+ drc)": "b2022b", "10: Non Tree": "bfbfbf"};
       var treeSizeClassDict2 = {};
       Object.keys(treeSizeClassDict).map(function(k){treeSizeClassDict2[k.split(': ')[1]] = treeSizeClassDict[k]});
       
       var treeSizePalette = 'a5f984,3ddb3d,008900,2196af,056dce,f2ea5e,e0ba56,cc751e,b2022b,bfbfbf';
-      var treeSizeViz = {min:1,max:10,palette:treeSizePalette,addToClassLegend: true,classLegendDict:treeSizeClassDict2};
       var keyI = 1;
       Object.keys(treeSizeClassDict2).map(function(k){treeSizeClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['VCMQ 2014 Tree Size'] = treeSizeClassQueryDict;
-
+      var treeSizeViz = {queryDict:treeSizeClassQueryDict,min:1,max:10,palette:treeSizePalette,addToClassLegend: true,classLegendDict:treeSizeClassDict2};
+      
       var vegTypeClassDict = {"1: Aspen": "00ffff", "2: Aspen/Conifer": "04c0aa", "3: Douglas-fir Mix": "005f00", "4: Ponderosa Pine": "c0ffc0", "5: Ponderosa Pine Mix": "9acc9a", "6: Ponderosa Pine/Woodland": "678967", "7: White Fir": "7fff00", "8: White Fir Mix": "2caf00", "9: Spruce/Fir": "6a59cc", "10: Bristlecone Pine/Limber Pine": "9fb7d2", "11: Mountain Mahogany": "bc6af7", "12: Pinyon-Juniper": "ccb791", "13: Rocky Mountain Juniper Mix": "846a5e", "14: Gambel Oak": "ffedc0", "15: Mountain Big Sagebrush": "ffcc66", "16: Wyoming/Basin Big Sagebrush": "d2914c", "17: Silver Sagebrush": "d25e11", "18: Black Sagebrush": "873700", "19: Mountain Shrubland": "4f84f8", "20: Alpine Vegetation": "ffa7b7", "21: Upland Herbaceous": "ffff00", "22: Riparian Woody": "cc0000", "23: Riparian Herbaceous": "ff2b2b", "24: Agriculture": "ff39ff", "25: Barren/Sparse Vegetation": "bcbcbc", "26: Developed": "676767", "27: Water": "195ef7"};
       var vegTypeClassDict2 = {};
       Object.keys(vegTypeClassDict).map(function(k){vegTypeClassDict2[k.split(': ')[1]] = vegTypeClassDict[k]});
       
       var vegTypePalette = '00ffff,04c0aa,005f00,c0ffc0,9acc9a,678967,7fff00,2caf00,6a59cc,9fb7d2,bc6af7,ccb791,846a5e,ffedc0,ffcc66,d2914c,d25e11,873700,4f84f8,ffa7b7,ffff00,cc0000,ff2b2b,ff39ff,bcbcbc,676767,195ef7';
-      var vegTypeViz = {min:1,max:27,palette:vegTypePalette,addToClassLegend: true,classLegendDict:vegTypeClassDict2};
       var keyI = 1;
       Object.keys(vegTypeClassDict2).map(function(k){vegTypeClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['VCMQ 2014 Veg Type'] = vegTypeClassQueryDict;
-
+      var vegTypeViz = {queryDict:vegTypeClassQueryDict,min:1,max:27,palette:vegTypePalette,addToClassLegend: true,classLegendDict:vegTypeClassDict2};
+      
       Map2.addLayer(canopyCover.updateMask(canopyCover.neq(0)),canopyCoverViz,'VCMQ 2014 Canopy Cover',false,null,null,'2014 updated VCMQ (mid-level vegetation cover map) canopy cover classes','reference-layer-list');
       Map2.addLayer(treeSize.updateMask(treeSize.neq(0)),treeSizeViz,'VCMQ 2014 Tree Size',false,null,null,'2014 updated VCMQ (mid-level vegetation cover map) tree size classes','reference-layer-list');
       Map2.addLayer(vegType.updateMask(vegType.neq(0)),vegTypeViz,'VCMQ 2014 Veg Type',false,null,null,'2014 updated VCMQ (mid-level vegetation cover map) vegetation type classes','reference-layer-list');
@@ -694,10 +680,9 @@ function runUSFS(){
       Object.keys(kenaiVegTypeClassDict).map(function(k){kenaiVegTypeClassDict2[k.split(': ')[1]] = kenaiVegTypeClassDict[k]});
       var keyI = 1;
       Object.keys(kenaiVegTypeClassDict2).map(function(k){kenaiVegTypeClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['Kenai Veg Type 2017'] = kenaiVegTypeClassQueryDict;
-
+      
       var kenaiVegTypePalette = '4e5e38,87751e,007800,0f5e4f,005e00,003800,215c4f,87f38c,b0ff8c,d4ffc0,0b9721,45a138,66b52b,38a89e,ff0000,9c2e23,a30000,d1852e,ab3a11,f0d1ab,ffe3e8,ff73de,9e1eee,fa9402,c0e8ff,ffffc0,ffff00,e6e600,686868,cccccc,4780f3,ffffff,000000';
-      var kenaiVegTypeViz = {min: 1, max: 33, palette: kenaiVegTypePalette, addToClassLegend: true, classLegendDict: kenaiVegTypeClassDict2};
+      var kenaiVegTypeViz = {queryDict:kenaiVegTypeClassQueryDict,min: 1, max: 33, palette: kenaiVegTypePalette, addToClassLegend: true, classLegendDict: kenaiVegTypeClassDict2};
       Map2.addLayer(kenaiVegType.updateMask(kenaiVegType.neq(0)),kenaiVegTypeViz,'Kenai Veg Type 2017',false,null,null,'2017 Kenai Peninsula vegetation dominance classes','reference-layer-list');
 
       // Copper River Veg Map  
@@ -707,10 +692,9 @@ function runUSFS(){
       Object.keys(CRvegTypeClassDict).map(function(k){CRvegTypeClassDict2[k.split(': ')[1]] = CRvegTypeClassDict[k]});
       var keyI = 1;
       Object.keys(CRvegTypeClassDict2).map(function(k){CRvegTypeClassQueryDict[keyI] =k;keyI++;})
-      queryClassDict['Copper River Delta Veg Type 2010'] = CRvegTypeClassQueryDict;
-
+      
       var CRvegTypePalette = '3db370,006300,c9ff70,75ed00,f8644f,781212,e02a3e,ffd480,8acc66,78c2c4,9efade,dfcbaf,457dc7,ffffff,000000';
-      var CRvegTypeViz = {min: 1, max: 15, palette: CRvegTypePalette, addToClassLegend: true, classLegendDict:CRvegTypeClassDict2};  
+      var CRvegTypeViz = {queryDict:CRvegTypeClassQueryDict,min: 1, max: 15, palette: CRvegTypePalette, addToClassLegend: true, classLegendDict:CRvegTypeClassDict2};  
       Map2.addLayer(CRvegType.updateMask(CRvegType.neq(0)), CRvegTypeViz, 'Copper River Delta Veg Type 2010', false, null, null, '2010 Copper River Delta vegetation dominance classes','reference-layer-list');
     }
     // End CNFKP Layers
@@ -720,7 +704,7 @@ function runUSFS(){
 
     var studyAreas = collectionDict[studyAreaName][4];
     studyAreas.map(function(studyArea){
-      Map2.addLayer(studyArea[1],{palette:'d9d9d9',addToLegend:false},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
+      Map2.addLayer(studyArea[1],{fillColor:'#000',strokeOpacity: 1,fillOpacity: 0.2,strokeWeight: 2,strokeColor:'#d9d9d9',addToLegend:false},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
     // 
     })
 
@@ -886,8 +870,6 @@ function runUSFS(){
     var landuseClassQueryDict = {};
     
     Object.keys(landuseClassChartDict).map(function(k){landuseClassQueryDict[parseInt(landuseClassChartDict[k]*10)] =k})
-    queryClassDict['Land Cover (mode) '+startYear.toString() + '-'+ endYear.toString()] =landcoverClassQueryDict;
-    queryClassDict['Land Use (mode) '+startYear.toString() + '-'+ endYear.toString()] =landuseClassQueryDict;
     // console.log(landcoverClassQueryDict);console.log(landuseClassQueryDict);
     // <li><span style='background:#efff6b;'></span>Agriculture (0.1 in chart)</li>
     //   <li><span style='background:#ff2ff8;'></span>Developed (0.2 in chart)</li>
@@ -904,8 +886,8 @@ function runUSFS(){
         Map2.addLayer(maskCount,{'min':1,'max':33,'palette':'0C2780,E2F400,BD1600'}, 'Number of Missing Data Years',false)
         //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
     }
-      Map2.addLayer(NFSLC.mode().multiply(10),{'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
-      Map2.addLayer(NFSLU.mode().multiply(10),{'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
+      Map2.addLayer(NFSLC.mode().multiply(10),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
+      Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
       
     }
     
@@ -943,9 +925,13 @@ function runUSFS(){
     queryClassDict['Vegetation Change'] = vegetationChangeClassDict;
     if(viewBeta === 'yes'){
 
-      var lcFirstFive = NFSLC.filter(ee.Filter.calendarRange(startYear,startYear+5-1,'year')).mode().multiply(100);
-      var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year')).mode().multiply(10);
-      var lcChangeMatrix = lcFirstFive.add(lcLastFive);
+      var lcFirstFive = NFSLC.filter(ee.Filter.calendarRange(startYear,startYear+5-1,'year'));
+      var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year'));      
+      var firstMask = lcFirstFive.count().gt(2);
+      var lastMask = lcLastFive.count().gt(2);
+      var lcFirstFiveMode = lcFirstFive.mode().multiply(100).updateMask(firstMask);
+      var lcLastFiveMode = lcLastFive.mode().multiply(10).updateMask(lastMask);
+      var lcChangeMatrix = lcFirstFiveMode.add(lcLastFiveMode); 
 
 
 
@@ -1006,22 +992,22 @@ function runUSFS(){
       var nizhoniFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Nizhoni_FirePerimeter');
       var seeleyFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Seeley_FirePerimeter');
 
-      Map2.addLayer(canyonsProjectArea,{'min':1,'max':1,'palette':'AA0'},'Canyons Project Area',false,null,null,'','reference-layer-list');
-      Map2.addLayer(johnsonCreekProjectArea,{'min':1,'max':1,'palette':'AA0'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
-      Map2.addLayer(sageGrouseHomeRanges,{'min':1,'max':1,'palette':'#ff6700'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
-      Map2.addLayer(sageGrouseSeasonalHabitat,{'min':1,'max':1,'palette':'#ff6700'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
+      Map2.addLayer(canyonsProjectArea,{'strokeColor':'#AA0'},'Canyons Project Area',false,null,null,'','reference-layer-list');
+      Map2.addLayer(johnsonCreekProjectArea,{'strokeColor':'#AA0'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
+      Map2.addLayer(sageGrouseHomeRanges,{'strokeColor':'#ff6700'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
+      Map2.addLayer(sageGrouseSeasonalHabitat,{'strokeColor':'#ff6700'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
 
       var huc6 = ee.FeatureCollection("USGS/WBD/2017/HUC06").filterBounds(mls_study_area);
       var huc10 = ee.FeatureCollection("USGS/WBD/2017/HUC10").filterBounds(mls_study_area);
 
-      Map2.addLayer(huc6,{'min':1,'max':1,'palette':'#0000ff'},'HUC06 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Basins','reference-layer-list');
-      Map2.addLayer(huc10,{'min':1,'max':1,'palette':'#0000ff'},'HUC10 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Watersheds','reference-layer-list');
+      Map2.addLayer(huc6,{'strokeColor':'#0000ff'},'HUC06 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Basins','reference-layer-list');
+      Map2.addLayer(huc10,{'strokeColor':'#0000ff'},'HUC10 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Watersheds','reference-layer-list');
 
       var grazingAllotments = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLS_Allotments');
       var pastures = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLS_Pastures');
 
       Map2.addLayer(grazingAllotments,{},'Allotment Boundaries',false,null,null,'','reference-layer-list'); //'RMU Dataset - area boundaries of livestock grazing allotments' 'min':1,'max':1,'palette':'#ff0000'
-      Map2.addLayer(pastures,{'min':1,'max':1,'palette':'#ffbf00'},'Pasture Boundaries',false,null,null,'RMU Dataset - area boundaries of pastures within livestock grazing allotments','reference-layer-list');
+      Map2.addLayer(pastures,{'strokeColor':'#ffbf00'},'Pasture Boundaries',false,null,null,'RMU Dataset - area boundaries of pastures within livestock grazing allotments','reference-layer-list');
       // print(pastures.getInfo())
     }
     

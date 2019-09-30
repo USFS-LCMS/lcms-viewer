@@ -122,6 +122,7 @@
             highWaterMark:0,
             urls:null,
             percent:0,
+            isVector:false,
             
             
             created:function(){
@@ -131,10 +132,10 @@
                 nextId += 1;
                 this.urls=[];
             },
-            addToLayerObj:function(name,visible,queryItem){
+            addToLayerObj:function(name,visible,queryItem,queryDict){
 
                 layerObj[name] = [visible,1];
-                queryObj[name] = {'visible':visible,'queryItem':queryItem};//[visible,1,item];
+                queryObj[name] = {'visible':visible,'queryItem':queryItem,'queryDict':queryDict};//[visible,1,item];
             },
             setLayer:function(layer){
 
@@ -166,32 +167,76 @@
 
                 
             },
+            setFeatureLayer:function(v){
+                if(this.viz.strokeOpacity === undefined || this.viz.strokeOpacity === null){this.viz.strokeOpacity = 1};
+                if(this.viz.fillOpacity === undefined || this.viz.fillOpacity === null){this.viz.fillOpacity = 0.1};
+                this.opacityRatio = this.viz.strokeOpacity/this.viz.fillOpacity;
+                this.layer = new google.maps.Data();
+                this.layer.setStyle(this.viz);
+              
+              this.layer.addGeoJson(v);
+              featureObj[this.name] = this.layer
+              // console.log(this.viz);
+              
+              if(this.visible){
+                this.layer.setMap(this.map);
+                this.rangeOpacity = this.viz.strokeOpacity;
+                this.percent = 100;
+              }else{
+                this.rangeOpacity = 0;
+                this.percent = 0;
+              }
+
+              
+              this.isVector = true;
+                // if(this.visible){
+                //     this.map.overlayMapTypes.setAt(this.layerId, layer);
+                //     $('#'+this.legendDivID).show();
+                //     this.rangeOpacity = this.opacity;  
+                // }else{
+                //   $('#'+this.legendDivID).hide();
+                //   this.rangeOpacity = 0;  
+                // }
+            },
             onChange:function(){
-                
-                if(this.visible){
-                    
-                    this.map.overlayMapTypes.setAt(this.layerId,null);
-                    // this.map.overlayMapTypes.removeAt(this.layerId);
-                    // this.$.opacity.disabled = true;
-                    // this.detached();
-                    this.percent = 0;
-                    $('#'+this.legendDivID).hide();
-                    this.rangeOpacity = 0;
+                if(!this.isVector){
+                    if(this.visible){
+                        
+                        this.map.overlayMapTypes.setAt(this.layerId,null);
 
-                }else{
-                    this.map.overlayMapTypes.setAt(this.layerId,this.layer);
-                    $('#'+this.legendDivID).show();
-                    this.rangeOpacity = this.opacity;
+                        // this.map.overlayMapTypes.removeAt(this.layerId);
+                        // this.$.opacity.disabled = true;
+                        // this.detached();
+                        this.percent = 0;
+                        $('#'+this.legendDivID).hide();
+                        this.rangeOpacity = 0;
 
-                    // this.$.opacity.disabled = false;
-                    // this.detached();
+                    }else{
+                        this.map.overlayMapTypes.setAt(this.layerId,this.layer);
+                        $('#'+this.legendDivID).show();
+                        this.rangeOpacity = this.opacity;
+
+                        // this.$.opacity.disabled = false;
+                        // this.detached();
+                    }
+                    // var item = queryObj[this.name][1];
+
+                    layerObj[this.name] = [!this.visible,this.getOpacity()];
+                    queryObj[this.name].visible = !this.visible;
+                    if(typeof(Storage) == "undefined") return;
+                    localStorage.setItem("layerObj",JSON.stringify(layerObj));
                 }
-                // var item = queryObj[this.name][1];
-
-                layerObj[this.name] = [!this.visible,this.getOpacity()];
-                queryObj[this.name].visible = !this.visible;
-                if(typeof(Storage) == "undefined") return;
-                localStorage.setItem("layerObj",JSON.stringify(layerObj));
+                else{
+                    if(!this.visible){
+                        this.percent = 100;
+                        this.layer.setMap(this.map);
+                        this.rangeOpacity = this.viz.strokeOpacity;
+                    }else{
+                        this.percent = 0;
+                        this.layer.setMap(null);
+                        this.rangeOpacity = 0;
+                    }
+                }
             },
             setOpacity:function(opacity,item){
                 // var item = layerObj[this.name][-1];
@@ -203,20 +248,31 @@
                 localStorage.setItem("layerObj",JSON.stringify(layerObj));
             },
             onRangeChange:function(){
-            
-                // var item = queryObj[this.name][1];
-                var opacity = this.getOpacity();
-            
-                this.layer.setOpacity(opacity);
-                this.opacity = opacity;
-                if(this.visible){
-                    this.rangeOpacity = opacity;
-                }
+                if(!this.isVector){
+                    // var item = queryObj[this.name][1];
+                    var opacity = this.getOpacity();
                 
-                layerObj[this.name] = [this.visible,opacity];
-                // queryObj[this.name] = [this.visible,item];
-                if(typeof(Storage) == "undefined") return;
-                localStorage.setItem("layerObj",JSON.stringify(layerObj));
+                    this.layer.setOpacity(opacity);
+                    this.opacity = opacity;
+                    if(this.visible){
+                        this.rangeOpacity = opacity;
+                    }
+                    
+                    layerObj[this.name] = [this.visible,opacity];
+                    // queryObj[this.name] = [this.visible,item];
+                    if(typeof(Storage) == "undefined") return;
+                    localStorage.setItem("layerObj",JSON.stringify(layerObj));
+                }else{
+                    var opacity = this.getOpacity();
+                    var style = this.layer.getStyle();
+                    style.strokeOpacity = opacity;
+                    style.fillOpacity = opacity/this.opacityRatio;
+                    this.layer.setStyle(style);
+                    this.opacity = opacity;
+                    if(this.visible){
+                        this.rangeOpacity = opacity;
+                    }
+                }
             },
             // vizMouseover:function(){
             //     // console.log('mouse overed');
@@ -368,6 +424,7 @@
                 if(!this.visible) return;
                 this.map.overlayMapTypes.setAt(this.layerId, this.layer);
             },
+
             onChange:function(){
                 console.log('Changing it');
                 // var isChecked = this.visible = this.$.enabled.checked;

@@ -122,6 +122,7 @@ function llToNAD83(x,y){
     }
 //From:https://stackoverflow.com/questions/12199051/merge-two-arrays-of-keys-and-values-to-an-object-using-underscore answer 6
 var toObj = (ks, vs) => ks.reduce((o,k,i)=> {o[k] = vs[i]; return o;}, {});
+var toDict = toObj;
 ////////////////////////////////////////
 function CopyAnArray (ari1) {
    var mxx4 = [];
@@ -345,7 +346,7 @@ function addImageDownloads(imagePathJson){
 }
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
-function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     // print(item.getInfo().type)
     // if(item.getInfo().type === 'ImageCollection'){print('It is a collection')}
@@ -370,6 +371,7 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
       visible = layerObj[name][0];
       viz.opacity = layerObj[name][1];
     }
+
 
     if(helpBox == null){helpBox = ''};
     var layer = document.createElement("ee-layer");
@@ -484,15 +486,42 @@ function addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayer
     layer.visible = visible;
     layer.item = item;
     layer.name = name;
-    layer.addToLayerObj(name,visible,queryItem);
+    layer.viz = viz;
+    
     var layerList = document.querySelector(whichLayerList);
-    
-    
     layerList.insertBefore(layer,layerList.firstChild);
     layerCount ++;
-    item.getMap(viz,function(eeLayer){
-        layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
-    });
+   
+    // print(item)
+    try{var t = item.bandNames();
+        layer.addToLayerObj(name,visible,queryItem,viz.queryDict);
+        item.getMap(viz,function(eeLayer){
+          layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
+         });
+        }
+    catch(err){item.evaluate(function(v){layer.setFeatureLayer(v)})}
+
+    // item.evaluate(function(info){
+    //   var type = info.type;
+    //   print(type);
+    //   if(type === 'ImageCollection'){item = ee.Image(item.mosaic())};
+    //   if(type === 'Feature' || type === 'FeatureCollection'){
+
+    //     item.evaluate(function(v){
+    //       // console.log(v)
+    //       layer.setFeatureLayer(v)
+
+    //       })
+    //   }
+    //   else{
+    //   layer.addToLayerObj(name,visible,queryItem,viz.queryDict);
+    //     item.getMap(viz,function(eeLayer){
+    //       layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
+    //      });
+    //   };
+    // })
+    
+    
 }
 
 //////////////////////////////////////////////////////
@@ -666,24 +695,37 @@ var viz = {};var item = ee.Image();
     layer.startUp();
    
 }
+function addFeatureToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+  console.log('adding feature: '+name);
+  item.evaluate(function(v){
+    var layer = new google.maps.Data({fillOpacity: 0,strokeColor:'#F00'});
+    layer.addGeoJson(v);
+    
+   
+    layer.setMap(map);
+    // map.overlayMapTypes.setAt(this.layerId, v);
+  })
+}
 //////////////////////////////////////////////////////
 //Function for adding ee object to map
 //Will handle vectors by converting them to rasters
 function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     if(canAddToMap){
-    try{var t = item.bandNames();
+    // try{var t = item.bandNames();
         
-        addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);}
-    catch(err){
-        try{
-        item = ee.Image().paint(item,3,3);
-        addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
-      }
-    catch(err){
-      item = ee.Image().paint(ee.FeatureCollection([item]),3,3);
-        addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
-    }
-    };
+        // addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+      // }
+    // catch(err){
+        // try{
+        // item = ee.Image().paint(item,3,3);
+        addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem)
+        // addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
+      // }
+    // catch(err){
+    //   item = ee.Image().paint(ee.FeatureCollection([item]),3,3);
+    //     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
+    // }
+    // };
 }
     
 }
@@ -761,6 +803,8 @@ function reRun(){
         overlayIndex++
 
 	}
+  Object.values(featureObj).map(function(f){f.setMap(null)});
+  featureObj = {};
   map.overlayMapTypes.g.forEach(function(element,index){
                     
                     // if(element !== undefined && element !== null){
@@ -813,7 +857,8 @@ function reRun(){
     while(legend.firstChild){
         legend.removeChild(legend.firstChild);
     }
-    refreshNumber   ++;layerCount = 0;
+    refreshNumber   ++;
+    // layerCount = 0;
   exportImageDict = {};
   clearDownloadDropdown();
 	run();
@@ -824,8 +869,9 @@ function reRun(){
 //     while(whileCount < 5000){
     // while(map.overlayMapTypes.b.length < layerCount*(refreshNumber+1)){}
     interval2(function(){
-      console.log('cleaning')
-      map.overlayMapTypes.g.slice(0,map.overlayMapTypes.g.length-layerCount).forEach(function(element,index){
+      var layerCountN = layerCount;
+      console.log('cleaning ' +layerCountN.toString());
+      map.overlayMapTypes.g.slice(0,map.overlayMapTypes.g.length-layerCountN).forEach(function(element,index){
                     
                     // if(element !== undefined && element !== null){
                     //     console.log('remooooooving');
