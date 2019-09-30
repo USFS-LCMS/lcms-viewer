@@ -942,14 +942,18 @@ function runUSFS(){
       var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year')).mode().multiply(10);
       var lcChangeMatrix = lcFirstFive.add(lcLastFive);
 
-      var interestedClasses =  ee.List([51,57,52,54,58,56,65,85,45,25,75,15,71,72,74,78,76,67,87,47,27,17,12,14,18,16,61,81,41,21,24,28,26,62,82,42,48,46,64,84,86,68]);
-      var posNegValues = ee.List([1,1,2,3,4,5,-5,-4,-3,-2,-1,-1,1,2,3,4,5,-5,-4,-3,-2,-1,1,2,3,4,-4,-3,-2,-1,1,2,3,-3,-2,-1,1,2,-2,-1,1,-1]);
-      var LCchangeMag = lcChangeMatrix.remap(validValues, posNegValues,0);
-      //var interestedClasses = [21,41,42,61,62,64, 12,14,16,24,26,46]; original values
+      var interestedClasses =  [24,21,25,26,27,28,82,72,62,52,12,42,14,15,16,17,18,81,71,61,51,41,45,46,47,48,84,74,64,54,56,57,58,85,75,65,67,68,86,76,78,87];
+      var lcChangeClassWords = ["Snow/Ice to Barren" , "Snow/Ice to Water" , "Snow/Ice to Grass/Forb/Herb" , "Snow/Ice to Shrubs" , "Snow/Ice to Tall Shrubs" , "Snow/Ice to Tree" , "Tree to Snow/Ice" , "Tall Shrubs to Snow/Ice" , "Shrubs to Snow/Ice" , "Grass/Forb/Herb to Snow/Ice" , "Water to Snow/Ice" , "Barren to Snow/Ice" , "Water to Barren" , "Water to Grass/Forb/Herb" , "Water to Shrubs" , "Water to Tall Shrubs" , "Water to Tree" , "Tree to Water" , "Tall Shrubs to Water" , "Shrubs to Water" , "Grass/Forb/Herb to Water" , "Barren to Water" , "Barren to Grass/Forb/Herb" , "Barren to Shrubs" , "Barren to Tall Shrubs" , "Barren to Tree" , "Tree to Barren" , "Tall Shrubs to Barren" , "Shrubs to Barren" , "Grass/Forb/Herb to Barren" , "Grass/Forb/Herb to Shrubs" , "Grass/Forb/Herb to Tall Shrubs" , "Grass/Forb/Herb to Tree" , "Tree to Grass/Forb/Herb" , "Tall Shrubs to Grass/Forb/Herb" , "Shrubs to Grass/Forb/Herb" , "Shrubs to Tall Shrubs" , "Shrubs to Tree" , "Tree to Shrubs" , "Tall Shrubs to Shrubs" , "Tall Shrubs to Tree" , "Tree to Tall Shrubs"];
       var interestedChangeClasses = ee.Image(interestedClasses);
+      var posNegValues = ee.List([1,1,2,3,4,5,-5,-4,-3,-2,-1,-1,1,2,3,4,5,-5,-4,-3,-2,-1,1,2,3,4,-4,-3,-2,-1,1,2,3,-3,-2,-1,1,2,-2,-1,1,-1]);
       lcChangeMatrix =interestedChangeClasses.updateMask(interestedChangeClasses.eq(lcChangeMatrix)).reduce(ee.Reducer.max());
-      lcChangeMag = lcChangeMatrix.remap(interestedClasses, posNegValues)
-      //lcChangeMatrix = lcChangeMatrix.remap(interestedClasses,[-1,-2,-1,-3,-2,-1,1,2,3,1,2,1]) original values
+      Map2.addLayer(lcChangeMatrix, {}, 'lcChangeMatrix', false, null, null, '') // Take this out when finalized - just for debugging the pixel inspector words
+      var lcChangeMag = lcChangeMatrix.remap(interestedClasses, posNegValues,0);
+      
+      // Original landcover change matrix:
+      //var interestedClasses = [21,41,42,61,62,64, 12,14,16,24,26,46]; original values
+      //var interestedChangeClasses = ee.Image(interestedClasses);
+      //lcChangeMatrix = lcChangeMatrix.remap(interestedClasses,[-1,-2,-1,-3,-2,-1,1,2,3,1,2,1]) 
       // Map2.addLayer(lcChangeMatrix,{min:-3,max:3,palette:"b2182b,ef8a62,fddbc7,f7f7f7,d1e5f0,67a9cf,2166ac"},
       //   'Landcover Change Magnitude',false,null,null, 
       //   'Magnitude of vegetation cover related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
@@ -958,18 +962,19 @@ function runUSFS(){
       var vegValues = ee.List([0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
       var vegChangeMask = lcChangeMatrix.remap(interestedClasses, vegValues, 0);
       var vegChangeMag = lcChangeMag.updateMask(vegChangeMask);
-      Map2.addLayer(vegChangeMag.neq(0),{min:-5,max:5,palette:'D00, F5DEB3, 006400'},
-         'Landcover Change Magnitude',false,null,null, 
+      var vegChangePalette = 'a50026,d73027,f46d43,fdae61,fee090,ffffbf,e0f3f8,abd9e9,74add1,4575b4,3e45c1'
+      Map2.addLayer(vegChangeMag,{min:-5,max:5,palette:vegChangePalette},
+         'Vegetation Change',false,null,null, 
          'Magnitude of vegetation cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
 
       // Snow change layer
       if (studyAreaName == 'CNFKP'){
         var snowValues = ee.List([1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
         var snowChangeMask = lcChangeMatrix.remap(interestedClasses, snowValues, 0);
-        var snowChangeMag = lcChangeMag.updateMask(vegChangeMask);
-        var snowChangePalette = '313695, 4575b4, 74add1, abd9e9, e0f3f8, ffffbf, fee090, fdae61,  f46d43, d73027, a50026'
-        Map2.addLayer(snowChangeMag.neq(0),{min:-5,max:5,palette:snowChangePalette},
-           'Snow Cover Change Magnitude',false,null,null, 
+        var snowChangeMag = lcChangeMag.updateMask(snowChangeMask);
+        var snowChangePalette = '3e45c1,4575b4,74add1,abd9e9,e0f3f8,ffffbf,fee090,fdae61,f46d43,d73027,a50026'
+        Map2.addLayer(snowChangeMag,{min:-5,max:5,palette:snowChangePalette},
+           'Snow Cover Change',false,null,null, 
            'Magnitude of snow cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
       }
 
