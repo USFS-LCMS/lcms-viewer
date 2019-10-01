@@ -196,8 +196,8 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 								</div>`)
 	
 	  $("select#"+dropdownID).on("change", function(value) {
-	  	console.log('it changed');
-	  	console.log($(this).val());
+	  	// console.log('it changed');
+	  	// console.log($(this).val());
 	  	eval(`window.${variable} = $(this).val()`);
 	  });
 	

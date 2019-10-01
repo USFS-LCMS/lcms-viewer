@@ -347,13 +347,37 @@ function addImageDownloads(imagePathJson){
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
 function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     // print(item.getInfo().type)
     // if(item.getInfo().type === 'ImageCollection'){print('It is a collection')}
+    if(viz === null || viz === undefined){viz = {}}
     if(name == null){
         name = "Layer "+NEXT_LAYER_ID;
         NEXT_LAYER_ID += 1;
     }
+
+    //Take care of vector option
+    var isVector = false;
+    try{var t = item.bandNames();}
+    catch(err){isVector = true};
+
+    if(isVector){
+      if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
+      if(viz.fillOpacity === undefined || viz.fillOpacity === null){viz.fillOpacity = 0.2};
+      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '000'};
+      if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getChartColor()};
+      if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 2};
+
+      if(viz.fillColor.indexOf('#') == -1){viz.fillColor = '#' + viz.fillColor};
+      if(viz.strokeColor.indexOf('#') == -1){viz.strokeColor = '#' + viz.strokeColor};
+      if(viz.addToClassLegend === undefined || viz.addToClassLegend === null){
+        viz.addToClassLegend = true;
+        
+      }
+    }
+
+
     var legendDivID = name.replaceAll(' ','-');
    
     legendDivID = legendDivID.replaceAll('(','-');
@@ -459,19 +483,40 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
        // var legendList = document.querySelector("legend-list");
       // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
-      var legendKeys = Object.keys(viz.classLegendDict).reverse();
-      legendKeys.map(function(lk){
+      if(!isVector){
+        var legendKeys = Object.keys(viz.classLegendDict).reverse();
+        legendKeys.map(function(lk){
 
         var legend = document.createElement("ee-class-legend");
         legend.name = name;
         legend.helpBoxMessage = helpBox;
 
+
         legend.classColor = viz.classLegendDict[lk];
+        legend.classOutlineColor = '999';
+        legend.classStrokeWeight = 1;
         legend.className = lk;
 
         // var legendList = document.querySelector("legend-list");
         legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
-      })
+        })
+      }else{
+        var legend = document.createElement("ee-class-legend");
+        legend.name = name;
+        legend.helpBoxMessage = helpBox;
+        var strokeColor = viz.strokeColor.slice(1);
+        var fillColor = viz.fillColor.slice(1);
+        if(strokeColor.length === 3){strokeColor =  strokeColor.split('').map(function(i){return i+i}).join().replaceAll(',','')}
+        if(fillColor.length === 3){fillColor =  fillColor.split('').map(function(i){return i+i}).join().replaceAll(',','')}
+        
+        legend.classColor =  fillColor + Math.floor(viz.fillOpacity/2 * 255).toString(16);
+        legend.classStrokeColor = strokeColor+ Math.floor(viz.strokeOpacity * 255).toString(16);
+        legend.classStrokeWeight = viz.strokeWeight*2;
+        legend.className = '';
+        legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
+      }
+
+      
 
       var title = document.createElement("ee-class-legend-title");
       title.name = name;
@@ -493,14 +538,12 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     layerCount ++;
    
     // print(item)
-    try{var t = item.bandNames();
-        layer.addToLayerObj(name,visible,queryItem,viz.queryDict);
+    
+    if(isVector){item.evaluate(function(v){layer.setFeatureLayer(v)})}
+    else{layer.addToLayerObj(name,visible,queryItem,viz.queryDict);
         item.getMap(viz,function(eeLayer){
           layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
-         });
-        }
-    catch(err){item.evaluate(function(v){layer.setFeatureLayer(v)})}
-
+         });};
     // item.evaluate(function(info){
     //   var type = info.type;
     //   print(type);
@@ -760,7 +803,7 @@ function stringToBoolean(string){
 // function refreshLayerToMap()
 function reRun(){
   layerChildID = 0;
-  queryObj = {};
+  queryObj = {};areaChartCollections = {};
   if(analysisMode === 'advanced'){
     document.getElementById('threshold-container').style.display = 'inline-block';
     document.getElementById('advanced-radio-container').style.display = 'inline';

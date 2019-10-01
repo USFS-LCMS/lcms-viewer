@@ -85,12 +85,12 @@ addAccordianContainer('tools-collapse-div','tools-accordian')
 // addAccordianCard('tools-accordian','area-tools-collapse-label','area-tools-collapse-div','Area Tools',``,false,'');
 
 // addAccordianContainer('measuring-tools-collapse-div','measuring-tools-accordian');
-$('#tools-accordian').append(`<h5 style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
+$('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
 addSubAccordianCard('tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
 addSubAccordianCard('tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
 
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
-$('#tools-accordian').append(`<h5 style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
+$('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTip);
 addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query LCMS Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTip);
 
@@ -98,7 +98,7 @@ addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Que
 
 
 
-$('#tools-accordian').append(`<h5 style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
+$('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
 addDropdown('tools-accordian','area-collection-dropdown','Choose which LCMS product to summarize','whichAreaChartCollection','Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
 
 addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);

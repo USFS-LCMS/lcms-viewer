@@ -282,7 +282,7 @@ function startUserDefinedAreaCharting(){
     });
    
 	mapHammer.on("doubletap", function() {
-
+		$('#summary-spinner').slideDown();
         var path = udp.getPath();
         udp.setMap(null);
         udp = new google.maps.Polygon(udpPolyOptions);
@@ -299,12 +299,12 @@ function startUserDefinedAreaCharting(){
 			var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
 
 
-		$('#summary-spinner').slideDown();
+		
 		// $('#areaUpload').slideDown();
 	  	
 	  	// $("#charting-parameters").slideDown();
 	  	var udpName = $('#user-defined-area-name').val();
-	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString();userDefinedI++;}
+	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() + ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';userDefinedI++;}
 		// Map2.addLayer(userArea,{},udpName,false)
 		// console.log(userArea.getInfo());
 		makeAreaChart(userArea,udpName,true);
@@ -332,7 +332,7 @@ function chartChosenArea(){
   // var fieldName = 'FORESTNAME';
 
  
-  var chosenArea = $('#forestBoundaries').val();
+  var chosenArea = $('#forestBoundaries').val()+ ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
   var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName,chosenArea));
 
   makeAreaChart(chosenAreaGeo,chosenArea);
@@ -388,7 +388,7 @@ function makeAreaChart(area,name,userDefined){
 	var fColor = randomColor().slice(1,7);
 	if(userDefined === false){
 		
-		Map2.addLayer(area,{'palette':fColor,addToClassLegend: true,classLegendDict:{'':fColor}},name,true,null,null,name + ' for summarizing','reference-layer-list');
+		Map2.addLayer(area,{},name,true,null,null,name + ' for area summarizing','reference-layer-list');
 	}
 	
 	// updateProgress(50);
@@ -421,7 +421,9 @@ function makeAreaChart(area,name,userDefined){
 				var stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
 				var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;
 				var colors = areaChartCollections[whichAreaChartCollection].colors;
-				addChartJS(tableT,name,'line',stackedAreaChart,steppedLine,colors);
+				var chartType = areaChartCollections[whichAreaChartCollection].chartType
+				if(chartType === null || chartType === undefined){chartType = 'line'}
+				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors);
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
@@ -480,7 +482,7 @@ function startShpDefinedCharting(){
 		catch(err){console.log(err)};
 		
 		
-		var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0];
+		var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0] +  ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
 		map.setOptions({draggableCursor:'progress'});
 		map.setOptions({cursor:'progress'});
 		convertToGeoJSON('areaUpload').done(function(converted){
@@ -732,6 +734,15 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
     
     var datasets = columns.map(function(i){
         var col = arrayColumn(dt,i);
+        
+        col = col.map(function(i){
+        			var out;
+        			try{out = i.toFixed(2)}
+        			catch(err){out = i;}
+        			return out
+        			})
+        // print(col)
+        
         var label = col[0];
         var data = col.slice(1);
         // var color = randomRGBColor();
@@ -853,7 +864,7 @@ function chartToTable(chart) {
     
     var columnCount = 0;
     jQuery.each(dataset.datasets, function (idx, item) {
-        html += '<th style="background-color:' + item.fillColor + ';">' + item.label + '</th>';
+        html += '<th style="background-color:' + item.borderColor + ';">' + item.label + '</th>';
         columnCount += 1;
     });
 
@@ -862,7 +873,7 @@ function chartToTable(chart) {
     jQuery.each(dataset.labels, function (idx, item) {
         html += '<tr><td>' + item + '</td>';
         for (i = 0; i < columnCount; i++) {
-            html += '<td style="background-color:' + dataset.datasets[i].fillColor + ';">' + (dataset.datasets[i].data[idx] === '0' ? '-' : dataset.datasets[i].data[idx]) + '</td>';
+            html += '<td style="background-color:' + dataset.datasets[i].borderColor + ';">' + (dataset.datasets[i].data[idx] === '0' ? '-' : dataset.datasets[i].data[idx]) + '</td>';
         }
         html += '</tr>';
     });

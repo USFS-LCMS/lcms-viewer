@@ -169,7 +169,10 @@
             },
             setFeatureLayer:function(v){
                 if(this.viz.strokeOpacity === undefined || this.viz.strokeOpacity === null){this.viz.strokeOpacity = 1};
-                if(this.viz.fillOpacity === undefined || this.viz.fillOpacity === null){this.viz.fillOpacity = 0.1};
+                if(this.viz.fillOpacity === undefined || this.viz.fillOpacity === null){this.viz.fillOpacity = 0.2};
+                if(this.viz.fillColor === undefined || this.viz.fillColor === null){this.viz.fillColor = '#000'};
+                if(this.viz.strokeColor === undefined || this.viz.strokeColor === null){this.viz.strokeColor = '#d9d9d9'};
+                if(this.viz.strokeWeight === undefined || this.viz.strokeWeight === null){this.viz.strokeWeight = 2};
                 this.opacityRatio = this.viz.strokeOpacity/this.viz.fillOpacity;
                 this.layer = new google.maps.Data();
                 this.layer.setStyle(this.viz);
@@ -182,9 +185,11 @@
                 this.layer.setMap(this.map);
                 this.rangeOpacity = this.viz.strokeOpacity;
                 this.percent = 100;
+                $('#'+this.legendDivID).show();
               }else{
                 this.rangeOpacity = 0;
                 this.percent = 0;
+                $('#'+this.legendDivID).hide();
               }
 
               
@@ -229,10 +234,12 @@
                 else{
                     if(!this.visible){
                         this.percent = 100;
+                        $('#'+this.legendDivID).show();
                         this.layer.setMap(this.map);
                         this.rangeOpacity = this.viz.strokeOpacity;
                     }else{
                         this.percent = 0;
+                        $('#'+this.legendDivID).hide();
                         this.layer.setMap(null);
                         this.rangeOpacity = 0;
                     }
@@ -817,7 +824,7 @@
     <!-- {{classLegendHTML}} -->
 
 <!-- {{classLegendHTML}} -->
-<li><span style='background:#{{classColor}};'></span>{{className}}</li>
+<li><span style='border: {{classStrokeWeight}}px solid #{{classStrokeColor}};background:#{{classColor}};'></span>{{className}}</li>
 
 
 

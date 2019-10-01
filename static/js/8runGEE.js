@@ -57,6 +57,35 @@ var recoveryDurPalette = declineDurPalette;
 //                                 Functions
 //---------------------------------------------------------------------------------------------------------------
 //----------Helper Functions-----------------------------------------
+function formatAreaChartCollection(collection,classCodes,classNames,unmask){
+  if(unmask === undefined || unmask === null){unmask = false};
+  var imageIndexes = ee.List.sequence(0,collection.size().subtract(1)).getInfo();
+  var collectionL = collection.toList(100,0);
+  classCodes = classCodes.map(function(c){return parseInt(c)})
+  // print(classCodes)
+  var stack = imageIndexes.map(function(i){
+      var ic = ee.Image(collectionL.get(i));
+      var d = ee.Date(ic.get('system:time_start'));
+      var img;
+      classCodes.map(function(c){
+        // console.log(i);console.log(c);
+        var m = ic.mask();
+        var ci = ic.eq(c).byte().rename(['c_'+ parseInt((c)).toString()]);
+        //Unmask if in AK
+        if(studyAreaName === 'CNFKP' || unmask){
+          ci = ci.mask(ee.Image(1));
+          ci = ci.where(m.not(),0);
+        }
+        
+        if(img === undefined){img = ci}
+          else{img = img.addBands(ci)};
+      })
+      // print(img.getInfo())
+      return img.set('system:time_start',d).rename(classNames);
+    });
+    stack = ee.ImageCollection(stack);
+    return stack;
+}
 function multBands(img,distDir,by){
     var out = img.multiply(ee.Image(distDir).multiply(by));
     out  = out.copyProperties(img,['system:time_start'])
@@ -147,6 +176,8 @@ function getMTBSandIDS(studyAreaName){
   mtbs = mtbs.map(function(img){return img.select([0],['burnSeverity']).byte()
     // .updateMask(img.neq(0).and(img.neq(6)))
     });
+
+
   var mtbsForYear = mtbs.map(function(img){return img.remap([1,2,3,4,5,6],[1,2,3,4,5,1]).rename(['burnSeverity'])});
 
   var mtbsYear = thresholdChange(mtbsForYear,1,10,1).qualityMosaic('burnSeverity').select([1])
@@ -162,7 +193,18 @@ function getMTBSandIDS(studyAreaName){
   mtbsQueryClassDict = {};
   var keyI = 1;
   Object.keys(mtbsClassDict).map(function(k){mtbsQueryClassDict[keyI] =k;keyI++;})
-  
+
+if(chartMTBS === true){
+  var mtbsStack = formatAreaChartCollection(mtbs,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+  areaChartCollections['mtbs'] = {'collection':mtbsStack,
+                                'colors':Object.values(mtbsClassDict),
+                                'label':'MTBS Severity',
+                                'stacked':true,
+                                'steppedLine':false,
+                                'chartType':'bar'}
+}
+
+// print(mtbsStack.getInfo());
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
 
   Map2.addLayer(mortCollection.select([0]).count(),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey','reference-layer-list');
@@ -439,6 +481,8 @@ function runUSFS(){
 
     // Initial load & format of LCMS layers
     var rawC = ee.ImageCollection(collectionDict[studyAreaName][1]);
+ 
+
     if(studyAreaName !== 'CNFKP'){
       rawC = rawC.map(function(img){
         var lc = img.select([0]);
@@ -474,12 +518,12 @@ function runUSFS(){
                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
                 .select([0],['LC']);
 
-    
+    var minTreeNumber = 3;
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
       // waterMask = waterMask.mask(waterMask).clip(boundary);
-      var minTreeNumber = 3;
+      
       if((endYear-startYear) < minTreeNumber){minTreeNumber = endYear-startYear+1}
       var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
       treeMask = treeMask.mask(treeMask).clip(boundary);
@@ -700,11 +744,11 @@ function runUSFS(){
     // End CNFKP Layers
 
     //----------------Prep Universal Layers & Add Some------------------------------------------------------
-    getMTBSandIDS(studyAreaName);
+    
 
     var studyAreas = collectionDict[studyAreaName][4];
     studyAreas.map(function(studyArea){
-      Map2.addLayer(studyArea[1],{fillColor:'#000',strokeOpacity: 1,fillOpacity: 0.2,strokeWeight: 2,strokeColor:'#d9d9d9',addToLegend:false},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
+      Map2.addLayer(studyArea[1],null,studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
     // 
     })
 
@@ -778,6 +822,16 @@ function runUSFS(){
             // .map(getImageLib.simpleAddTCAngles)
             // .select(['NBR']);
 
+    // var ts = composites.select(['NBR']);
+    // ts = ts.map(addYearBand).select([1,0]);
+    // var trend = ts.reduce(ee.Reducer.linearFit()).select([0]);
+    
+    // var subtleGain = trend.gt(0.001)//.and(trend.lte(0.03));
+
+    // subtleGain = trend.updateMask(subtleGain);
+    // Map2.addLayer(subtleGain,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Subtle Gain')
+    // Map2.addLayer(trend,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Trend')
+    
     if(analysisMode === 'advanced'){
       var lastYearAdded = false;
       ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
@@ -825,10 +879,10 @@ function runUSFS(){
     var landcoverClassLegendDict = {};var landcoverClassChartDict = {}
     var lcPalette = Object.values(lcJSON).map(function(v){return v['color']});
     var lcValues = Object.keys(lcJSON).map(function(i){return parseInt(i)});
-    print(lcValues);
+    // print(lcValues);
     Object.keys(lcJSON).map(function(k){landcoverClassLegendDict[lcJSON[k]['name']] = lcJSON[k]['color']});
     Object.keys(lcJSON).map(function(k){landcoverClassChartDict[lcJSON[k]['name']] = k/10.});
-    console.log(lcPalette);console.log(landcoverClassChartDict)
+    // console.log(lcPalette);console.log(landcoverClassChartDict)
     // var landcoverClassLegendDict = {'Barren':'b67430',
     //                         'Grass/forb/herb':'78db53',
     //                         'Impervious':'F0F',
@@ -888,14 +942,17 @@ function runUSFS(){
     }
       Map2.addLayer(NFSLC.mode().multiply(10),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
       Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
-      
-    }
-    
-    if(applyTreeMask === 'yes'){
+      if(applyTreeMask === 'yes'){
         // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
-        Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:{'Tree (2 or more years)':'32681e'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more years');
+        var treeClassLegendDict = {};
+        treeClassLegendDict['Tree ('+minTreeNumber+' or more years)'] = '32681e';
+
+        Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more years');
      
       }
+    }
+    
+
      
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
@@ -920,15 +977,23 @@ function runUSFS(){
     var interestedClasses =  [24,21,25,26,27,28,82,72,62,52,12,42,14,15,16,17,18,81,71,61,51,41,45,46,47,48,84,74,64,54,56,57,58,85,75,65,67,68,86,76,78,87];
     var lcChangeClassWords = ["Snow/Ice to Barren" , "Snow/Ice to Water" , "Snow/Ice to Grass/Forb/Herb" , "Snow/Ice to Shrubs" , "Snow/Ice to Tall Shrubs" , "Snow/Ice to Tree" , "Tree to Snow/Ice" , "Tall Shrubs to Snow/Ice" , "Shrubs to Snow/Ice" , "Grass/Forb/Herb to Snow/Ice" , "Water to Snow/Ice" , "Barren to Snow/Ice" , "Water to Barren" , "Water to Grass/Forb/Herb" , "Water to Shrubs" , "Water to Tall Shrubs" , "Water to Tree" , "Tree to Water" , "Tall Shrubs to Water" , "Shrubs to Water" , "Grass/Forb/Herb to Water" , "Barren to Water" , "Barren to Grass/Forb/Herb" , "Barren to Shrubs" , "Barren to Tall Shrubs" , "Barren to Tree" , "Tree to Barren" , "Tall Shrubs to Barren" , "Shrubs to Barren" , "Grass/Forb/Herb to Barren" , "Grass/Forb/Herb to Shrubs" , "Grass/Forb/Herb to Tall Shrubs" , "Grass/Forb/Herb to Tree" , "Tree to Grass/Forb/Herb" , "Tall Shrubs to Grass/Forb/Herb" , "Shrubs to Grass/Forb/Herb" , "Shrubs to Tall Shrubs" , "Shrubs to Tree" , "Tree to Shrubs" , "Tall Shrubs to Shrubs" , "Tall Shrubs to Tree" , "Tree to Tall Shrubs"];
     var vegetationChangeClassDict = toObj(interestedClasses,lcChangeClassWords);
-    console.log(vegetationChangeClassDict);
+    // console.log(vegetationChangeClassDict);
     queryClassDict['lcChangeMatrix'] = vegetationChangeClassDict;
     queryClassDict['Vegetation Change'] = vegetationChangeClassDict;
     if(viewBeta === 'yes'){
 
       var lcFirstFive = NFSLC.filter(ee.Filter.calendarRange(startYear,startYear+5-1,'year'));
-      var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year'));      
-      var firstMask = lcFirstFive.count().gt(2);
-      var lastMask = lcLastFive.count().gt(2);
+      var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year')); 
+
+      // Get "variety" of landcover classes and number of years of data to mask out unreliable pixels
+      var earlyHist = lcFirstFive.reduce(ee.Reducer.autoHistogram(8,0.1)).arraySlice(1,1);
+      var earlyVariety = earlyHist.arrayMask(earlyHist.neq(0)).arrayLength(0);
+      var lateHist = lcLastFive.reduce(ee.Reducer.autoHistogram(8,0.1)).arraySlice(1,1);
+      var lateVariety = lateHist.arrayMask(lateHist.neq(0)).arrayLength(0);
+      var firstMask = lcFirstFive.count().gt(2).and(earlyVariety.lte(2));
+      var lastMask = lcLastFive.count().gt(2).and(lateVariety.lte(2));
+      // Map2.addLayer(firstMask,{},'firstMask')
+
       var lcFirstFiveMode = lcFirstFive.mode().multiply(100).updateMask(firstMask);
       var lcLastFiveMode = lcLastFive.mode().multiply(10).updateMask(lastMask);
       var lcChangeMatrix = lcFirstFiveMode.add(lcLastFiveMode); 
@@ -938,7 +1003,7 @@ function runUSFS(){
       var interestedChangeClasses = ee.Image(interestedClasses);
       var posNegValues = ee.List([1,1,2,3,4,5,-5,-4,-3,-2,-1,-1,1,2,3,4,5,-5,-4,-3,-2,-1,1,2,3,4,-4,-3,-2,-1,1,2,3,-3,-2,-1,1,2,-2,-1,1,-1]);
       lcChangeMatrix =interestedChangeClasses.updateMask(interestedChangeClasses.eq(lcChangeMatrix)).reduce(ee.Reducer.max());
-      Map2.addLayer(lcChangeMatrix, {}, 'lcChangeMatrix', false, null, null, '') // Take this out when finalized - just for debugging the pixel inspector words
+      // Map2.addLayer(lcChangeMatrix, {}, 'lcChangeMatrix', false, null, null, '') // Take this out when finalized - just for debugging the pixel inspector words
       var lcChangeMag = lcChangeMatrix.remap(interestedClasses, posNegValues,0);
       
       // Original landcover change matrix:
@@ -950,10 +1015,10 @@ function runUSFS(){
       //   'Magnitude of vegetation cover related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
 
       // Vegetation change layer
-      var vegValues = ee.List([0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+      var vegValues = ee.List([0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]); 
       var vegChangeMask = lcChangeMatrix.remap(interestedClasses, vegValues, 0);
       var vegChangeMag = lcChangeMag.updateMask(vegChangeMask);
-      var vegChangePalette = 'a50026,d73027,f46d43,fdae61,fee090,ffffbf,e0f3f8,abd9e9,74add1,4575b4,3e45c1'
+      var vegChangePalette = 'a50026,d73027,f46d43,fdae61,fee090,ffffbf,e0f3f8,abd9e9,74add1,4575b4,3e45c1';
       Map2.addLayer(vegChangeMag,{min:-5,max:5,palette:vegChangePalette},
          'Vegetation Change',false,null,null, 
          'Magnitude of vegetation cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.',null,lcChangeMatrix);
@@ -1081,29 +1146,30 @@ function runUSFS(){
     var steppedLineLC = false;
     if(studyAreaName === 'CNFKP'){steppedLineLC = 'before';}
     
-    var lcClassCodes = lcValues;
-    var imageIndexes = ee.List.sequence(0,rawLC.size().subtract(1)).getInfo();
-    var rawLCL = rawLC.toList(100,0);
-    var lcStack = imageIndexes.map(function(i){
-      var lcc = ee.Image(rawLCL.get(i));
-      var d = ee.Date(lcc.get('system:time_start'));
-      var img;
-      lcClassCodes.map(function(c){
-        // console.log(i);console.log(c);
-        var m = lcc.mask();
-        var ci = lcc.eq(c).byte().rename(['lc_'+ parseInt((c)).toString()]);
-        //Unmask if in AK
-        if(studyAreaName === 'CNFKP'){
-          ci = ci.mask(ee.Image(1));
-          ci = ci.where(m.not(),0);
-        }
+    var lcStack =formatAreaChartCollection(rawLC,lcValues,Object.keys(landcoverClassChartDict))
+    // var lcClassCodes = lcValues;
+    // var imageIndexes = ee.List.sequence(0,rawLC.size().subtract(1)).getInfo();
+    // var rawLCL = rawLC.toList(100,0);
+    // var lcStack = imageIndexes.map(function(i){
+    //   var lcc = ee.Image(rawLCL.get(i));
+    //   var d = ee.Date(lcc.get('system:time_start'));
+    //   var img;
+    //   lcClassCodes.map(function(c){
+    //     // console.log(i);console.log(c);
+    //     var m = lcc.mask();
+    //     var ci = lcc.eq(c).byte().rename(['lc_'+ parseInt((c)).toString()]);
+    //     //Unmask if in AK
+    //     if(studyAreaName === 'CNFKP'){
+    //       ci = ci.mask(ee.Image(1));
+    //       ci = ci.where(m.not(),0);
+    //     }
         
-        if(img === undefined){img = ci}
-          else{img = img.addBands(ci)};
-      })
-      return img.set('system:time_start',d).rename(Object.keys(landcoverClassChartDict));
-    });
-    lcStack = ee.ImageCollection(lcStack);
+    //     if(img === undefined){img = ci}
+    //       else{img = img.addBands(ci)};
+    //   })
+    //   return img.set('system:time_start',d).rename(Object.keys(landcoverClassChartDict));
+    // });
+    // lcStack = ee.ImageCollection(lcStack);
     // console.log(Object.keys(landcoverClassChartDict))
     // Map2.addLayer(lcStack.mode(),{},'lcmode')
     // lcStack = lcStack.select(lcClassCodes,Object.keys(landcoverClassChartDict));
@@ -1112,9 +1178,9 @@ function runUSFS(){
 
     forCharting = joinCollections(forCharting,NFSLCMS, false);
     chartCollection =forCharting;
-    // if(analysisMode === 'advanced'){
+    if(analysisMode === 'advanced'){
      chartCollection = chartCollection.set('legends',{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)}) 
-    // }
+    }
 
 
     var lossGainAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year']);
@@ -1127,20 +1193,20 @@ function runUSFS(){
     
     // areaChartCollection = forAreaCharting;
     // stackedAreaChart = false;
-    areaChartCollections = {};
-    areaChartCollections['lg'] = {'label':'Loss/Gain',
+    // areaChartCollections = {};
+    areaChartCollections['lg'] = {'label':'LCMS Loss/Gain',
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
                                   'colors':['F00','00F']};
 
-    areaChartCollections['lc'] = {'label':'Landcover',
+    areaChartCollections['lc'] = {'label':'LCMS Landcover',
                                   'collection':lcStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
                                   'colors':Object.values(landcoverClassLegendDict)};
     
-
+    getMTBSandIDS(studyAreaName);
     populateAreaChartDropdown();
     // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
@@ -1153,6 +1219,10 @@ function populateAreaChartDropdown(){
     addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k);
   })
 }
+$('#area-collection-dropdown').change(function(){
+  console.log(whichAreaChartCollection);
+  setupFSB();
+})
 //------------------------------Main Function to Run CONUS Product----------------------------------------------------------
 function runCONUS(){
   queryClassDict = {};
@@ -1187,7 +1257,7 @@ function runCONUS(){
 
   }
 
-  getMTBSandIDS(studyAreaName);
+  
 
   var declineNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdDecline.toString()+' and p <= '+upperThresholdDecline.toString()+')';
 
@@ -1223,13 +1293,13 @@ function runCONUS(){
   var forAreaChartingGeo = forAreaCharting.geometry();
   forAreaCharting = forAreaCharting.map(function(img){return img.mask().clip(forAreaChartingGeo)}).select([0],['Loss'])
 
-  areaChartCollections = {};
-  areaChartCollections['lg'] = {'label':'Loss/Gain',
+  // areaChartCollections = {};
+  areaChartCollections['lg'] = {'label':'LCMS Loss',
                                 'stacked':false,
                                 'steppedLine':false,
                                 'collection':forAreaCharting,
                                 'colors':['F00']};
-
+  getMTBSandIDS(studyAreaName);
   populateAreaChartDropdown();
 
   // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
