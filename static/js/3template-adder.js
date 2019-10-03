@@ -85,10 +85,27 @@ addAccordianContainer('tools-collapse-div','tools-accordian')
 // addAccordianCard('tools-accordian','area-tools-collapse-label','area-tools-collapse-div','Area Tools',``,false,'');
 
 // addAccordianContainer('measuring-tools-collapse-div','measuring-tools-accordian');
+
+function updateDistanceColor(jscolor) {
+    distancePolylineOptions.strokeColor = '#' + jscolor;
+    if(distancePolyline !== undefined){
+        distancePolyline.setOptions(distancePolylineOptions);
+    }
+}
+function updateUDPColor(jscolor) {
+    udpOptions.strokeColor = '#' + jscolor;
+    if(udp !== undefined){
+        udp.setOptions(udpOptions);
+    }
+}
+function addColorPicker(containerID,pickerID,updateFunction){
+    $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
+}
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
+$('#tools-accordian').append(staticTemplates.imperialMetricToggle);
 addSubAccordianCard('tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
 addSubAccordianCard('tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
-
+addColorPicker('measure-distance-div','distance-color-picker','updateDistanceColor');
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTip);
@@ -100,15 +117,23 @@ addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Que
 
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
 addDropdown('tools-accordian','area-collection-dropdown','Choose which LCMS product to summarize','whichAreaChartCollection','Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
-
 addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTip);
 addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
 addSubAccordianCard('tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
 
+addColorPicker('user-defined-area-chart-div','user-defined-color-picker','updateUDPColor');
+
+var showChartButton = `<div class = 'py-2'>
+                        <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
+                        </div>`;
+$('#user-defined-area-chart-div').append(showChartButton);
+$('#upload-area-chart-div').append(showChartButton);
+$('#select-area-chart-div').append(showChartButton);
 
 
-addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');
-addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialArea','imperial','metric','updateArea()');
+
+// addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');
+// addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialArea','imperial','metric','updateArea()');
 
 
 // $('#sidebar-left').append(`<button onclick="getLocation()">Try It</button><p id="demo"></p>`)

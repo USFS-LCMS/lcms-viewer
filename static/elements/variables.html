@@ -341,10 +341,12 @@
 #first_toggle:checked ~ .toggle_option_slider{
   background: #00897B55;
   left: 3px;
+  font-weight: 900!important;
 }
 #second_toggle:checked ~ .toggle_option_slider{
   background: #00897B55;
   left: 109px;
+  font-weight: 900!important;
 }
 #third_toggle:checked ~ .toggle_option_slider{
   background: rgba(255,255,255,.3);
@@ -388,8 +390,8 @@
 	    <input type="radio" checked class="toggle_option" id="first_toggle" name="toggle_option" on-change="{{checkIt1}}" value="1" >
 	    <input type="radio"   class="toggle_option" id="second_toggle" name="toggle_option" on-change="{{checkIt2}}" value="2" >
 	    
-	    <label for="first_toggle"><p>{{name1}}</p></label>
-	    <label for="second_toggle"><p>{{name2}}</p></label>
+	    <label for="first_toggle" id = 'first_toggle_label'><p>{{name1}}</p></label>
+	    <label for="second_toggle"  id = 'second_toggle_label'><p>{{name2}}</p></label>
 	    
 	    <div class="toggle_option_slider">
 	    </div>

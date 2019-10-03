@@ -55,7 +55,7 @@ html, body{
   color:var(--teal-100)!important;
 }
 
-.bg-black{
+.bg-black,.btn{
   background-color: var(--black)!important;
   margin:0px!important;
   color:var(--white)!important;
@@ -209,7 +209,7 @@ font-size:0.9em;
 
 .sub-sub-panel-title > a , .sub-panel-title > a{
   font-weight: 900!important;
-  color:var(--orange)!important;
+  /*color:var(--orange)!important;*/
 }
 
 .sub-sub-panel-title > a:after {
@@ -217,7 +217,7 @@ font-size:0.9em;
     font-family: FontAwesome;
     content:"\f205" !important;
     padding-right: 5px;
-    color:var(--orange);
+    color:var(--teal-100);
 }
 
 .sub-sub-panel-title.collapsed > a:after {
@@ -260,7 +260,13 @@ font-size:0.9em;
 }
 /*///////////////////////////////////////////////////////////*/
 .dropdown{cursor: pointer;}
-.submit-button{background-color: var(--deep-brown-30)}
+
+
+
+.btn{padding:0.3em;}
+.btn:active{background-color: var(--teal-100)!important;
+            transform: scale3d(1.05, 1, 1);}
+.btn:hover{font-weight: 300}
 /*///////////////////////////////////////////////////////////*/
 /*Dropdown styling*/
 
@@ -271,6 +277,7 @@ font-size:0.9em;
 .dropdown-item{
   padding:0px!important;
 }
+
 
 /*///////////////////////////////////////////////////////////*/
 /*Modal styling*/

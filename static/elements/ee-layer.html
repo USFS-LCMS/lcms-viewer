@@ -59,7 +59,7 @@
             input[type=checkbox] + label:before { content: "\f10c"; } /* unchecked icon */
             input[type=checkbox] + label:before { letter-spacing: 0.2em; } /* space between checkbox and label */
 
-            input[type=checkbox]:checked + label:before { content: "\f111"; color:#FF834C;} /* checked icon */
+            input[type=checkbox]:checked + label:before { content: "\f111"; color:#00897B;} /* checked icon */
             input[type=checkbox]:checked + label:before { letter-spacing: 0.2em; } /* allow space for check mark */
             li{
                 list-style-type:none;
@@ -132,10 +132,11 @@
                 nextId += 1;
                 this.urls=[];
             },
-            addToLayerObj:function(name,visible,queryItem,queryDict){
-
+            addToLayerObj:function(name,visible){
                 layerObj[name] = [visible,1];
-                queryObj[name] = {'visible':visible,'queryItem':queryItem,'queryDict':queryDict};//[visible,1,item];
+            },
+            addToQueryObj:function(name,visible,queryItem,queryDict){
+                queryObj[name] = {'visible':visible,'queryItem':queryItem,'queryDict':queryDict};
             },
             setLayer:function(layer){
 
@@ -146,14 +147,17 @@
                 this.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
                 
                 this.layer.addTileCallback(function(event){
-                    
-                    
+                    // console.log(event)
+
                     if(event.count > inst.highWaterMark){
                         inst.highWaterMark = event.count;
                     }
 
                     inst.percent = 100-((event.count / inst.highWaterMark) * 100);
-                
+                    // console.log(event.count);
+                    // console.log(inst.highWaterMark);
+                    // console.log(event.count / inst.highWaterMark);
+                    // console.log(inst.percent)
                 });
                 
                 if(this.visible){
@@ -168,12 +172,8 @@
                 
             },
             setFeatureLayer:function(v){
-                if(this.viz.strokeOpacity === undefined || this.viz.strokeOpacity === null){this.viz.strokeOpacity = 1};
-                if(this.viz.fillOpacity === undefined || this.viz.fillOpacity === null){this.viz.fillOpacity = 0.2};
-                if(this.viz.fillColor === undefined || this.viz.fillColor === null){this.viz.fillColor = '#000'};
-                if(this.viz.strokeColor === undefined || this.viz.strokeColor === null){this.viz.strokeColor = '#d9d9d9'};
-                if(this.viz.strokeWeight === undefined || this.viz.strokeWeight === null){this.viz.strokeWeight = 2};
-                this.opacityRatio = this.viz.strokeOpacity/this.viz.fillOpacity;
+                
+                
                 this.layer = new google.maps.Data();
                 this.layer.setStyle(this.viz);
               
@@ -226,7 +226,7 @@
                     }
                     // var item = queryObj[this.name][1];
 
-                    layerObj[this.name] = [!this.visible,this.getOpacity()];
+                    
                     queryObj[this.name].visible = !this.visible;
                     if(typeof(Storage) == "undefined") return;
                     localStorage.setItem("layerObj",JSON.stringify(layerObj));
@@ -236,50 +236,44 @@
                         this.percent = 100;
                         $('#'+this.legendDivID).show();
                         this.layer.setMap(this.map);
-                        this.rangeOpacity = this.viz.strokeOpacity;
+                        this.rangeOpacity = this.opacity;
                     }else{
                         this.percent = 0;
                         $('#'+this.legendDivID).hide();
                         this.layer.setMap(null);
                         this.rangeOpacity = 0;
                     }
+                    
                 }
+                layerObj[this.name] = [!this.visible,this.getOpacity()];
             },
-            setOpacity:function(opacity,item){
-                // var item = layerObj[this.name][-1];
-                this.layer.setOpacity(opacity);
-                this.$.opacity.value = opacity*100;
+            setOpacity:function(){
+                if(!this.isVector){
+                    this.layer.setOpacity(this.opacity);
+                }else{
+                    this.opacity = this.viz.strokeOpacity;
+                    this.$.opacity.value = this.viz.strokeOpacity*100;
+                }
                 layerObj[this.name] = [this.visible,this.getOpacity()];
-                // queryObj[this.name] = [this.visible,item];
-                if(typeof(Storage) == "undefined") return;
-                localStorage.setItem("layerObj",JSON.stringify(layerObj));
+                this.$.opacity.value = this.opacity*100;
             },
             onRangeChange:function(){
-                if(!this.isVector){
-                    // var item = queryObj[this.name][1];
-                    var opacity = this.getOpacity();
-                
-                    this.layer.setOpacity(opacity);
-                    this.opacity = opacity;
-                    if(this.visible){
+                var opacity = this.getOpacity();
+                this.opacity = opacity;
+                layerObj[this.name] = [this.visible,opacity];
+
+                if(this.visible){
                         this.rangeOpacity = opacity;
                     }
-                    
-                    layerObj[this.name] = [this.visible,opacity];
-                    // queryObj[this.name] = [this.visible,item];
-                    if(typeof(Storage) == "undefined") return;
-                    localStorage.setItem("layerObj",JSON.stringify(layerObj));
+                if(!this.isVector){
+                    this.layer.setOpacity(opacity);
                 }else{
-                    var opacity = this.getOpacity();
                     var style = this.layer.getStyle();
                     style.strokeOpacity = opacity;
-                    style.fillOpacity = opacity/this.opacityRatio;
+                    style.fillOpacity = opacity/this.viz.opacityRatio;
                     this.layer.setStyle(style);
-                    this.opacity = opacity;
-                    if(this.visible){
-                        this.rangeOpacity = opacity;
-                    }
                 }
+                
             },
             // vizMouseover:function(){
             //     // console.log('mouse overed');

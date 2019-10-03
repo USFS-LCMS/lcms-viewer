@@ -70,9 +70,9 @@ var staticTemplates = {
 
         </div>`,
 
-    paramsDiv:`<a class = 'm-1' >
+    paramsDiv:`<div class = 'm-1' >
     <variable-radio  onclick1 = toggleAdvancedOff() onclick2 = toggleAdvancedOn() var='analysisMode' title2='Choose which mode:' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"></variable-radio>
-  </a>
+  </div>
   
   <div class="dropdown-divider p-0 m-0" style = 'width:100%'></div>
   
@@ -122,21 +122,22 @@ var staticTemplates = {
        <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#'rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='The vegetation index that will be displayed in the "Query LCMS Time Series" tool' ></variable-radio>
         <div class="dropdown-divider"></div>
     </div>
-	<button onclick = 'reRun()' class = 'mb-1 ml-1 submit-button hover-teal' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`,
+	<button onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`,
 downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
 			<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>`,
-supportDiv :`<div class = 'p-0' >
+supportDiv :`<div class = 'p-0 pb-2' >
 				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
 					<br>
 					<i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i>
 					Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
 				<div class="dropdown-divider"></div>
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
-				<button  class = 'mb-2' onclick = 'showToolTipsAgain()'>Click here to show tooltips again</button>
+				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
 			</div>`,
-distanceDiv : `Click on map to measure distance<div class="dropdown-divider"></div>`,
+distanceDiv : `Click on map to measure distance`,
+imperialMetricToggle:`<variable-radio var='metricOrImperial' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
-areaDiv : `Click on map to measure area<div class="dropdown-divider"></div>`,
+areaDiv : `Click on map to measure area`,
 areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
@@ -151,7 +152,7 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     </button>
                         		</div>`,
 
-userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS Loss and Gain products across. Double-click to finish polygon and create graph.',
+userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS products across. Double-click to finish polygon and create graph.',
 
 uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summarize across</label>
                         
@@ -190,7 +191,7 @@ function showToolTipsAgain(){
 // }
 function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 	if(tooltip === undefined || tooltip === null){tooltip = ''}
-	$('#' + containerID).append(`<div class="form-group" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" data-toggle="tooltip" data-placement="top" title="${tooltip}">
 								  <label for="${dropdownID}">${dropdownLabel}:</label>
 								  <select class="form-control" id="${dropdownID}"></select>
 								</div>`)
@@ -276,7 +277,21 @@ function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variab
 	})
 }
 
-
+function updateDistanceColor(jscolor) {
+    distancePolylineOptions.strokeColor = '#' + jscolor;
+    if(distancePolyline !== undefined){
+        distancePolyline.setOptions(distancePolylineOptions);
+    }
+}
+function updateUDPColor(jscolor) {
+    udpOptions.strokeColor = '#' + jscolor;
+    if(udp !== undefined){
+        udp.setOptions(udpOptions);
+    }
+}
+function addColorPicker(containerID,pickerID,updateFunction){
+    $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
+}
 
 function addModal(containerID,modalID,bodyOnly){
 	if(bodyOnly === null || bodyOnly === undefined){bodyOnly = false};
@@ -327,10 +342,16 @@ function clearModal(modalID){
 	$('#'+modalID+'-header').html('');
 	$('#'+modalID+'-body').html('');
 	$('#'+modalID+'-footer').html('');
+	$('.modal').modal('hide');
+	$('.modal-backdrop').remove()
 }
+
 function showMessage(title,message,modalID,show){
+	if(title === undefined || title === null){title = ''}
+	if(message === undefined || message === null){message = ''}
 	if(show === undefined || show === null){show = true}
 	if(modalID === undefined || modalID === null){modalID = 'error-modal'}
+	
 	clearModal(modalID);
 	addModal('main-container',modalID,true);
 	addModalTitle(modalID,title);
@@ -342,11 +363,20 @@ function showMessage(title,message,modalID,show){
 function showTip(title,message){
 	showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
 
-	$('#tip-modal-body').append(`
-								<div class="form-check  pt-3 pb-0">
-                                 <input type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                 <label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
-                             </div>`)
+	$('#tip-modal-body').append(`<form class="form-inline pt-3 pb-0">
+								  
+								  <div class="checkbox">
+								    <label class = 'text-uppercase form-check-label '>
+								    	<input type="checkbox"   id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+								    Turn off tips</label>
+								  </div>
+								  
+								</form>`)
+	// .append(`
+	// 							<div class="form-check  pt-3 pb-0">
+ //                                 <input type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+ //                                 <label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
+ //                             </div>`)
 	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
 	  }

@@ -347,7 +347,7 @@ function addImageDownloads(imagePathJson){
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
 function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
-    
+    var currentGEERunID = geeRunID;
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     // print(item.getInfo().type)
     // if(item.getInfo().type === 'ImageCollection'){print('It is a collection')}
@@ -359,16 +359,26 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
 
     //Take care of vector option
     var isVector = false;
+    var isImageCollection = false;
     try{var t = item.bandNames();}
-    catch(err){isVector = true};
-
+    // catch(err){
+      // try{
+      //   var t = ee.Image(item.first()).bandNames().getInfo();
+      //   item = item.mosaic();
+      //   // isImageCollection = true;
+      // }
+      catch(err2){
+        isVector = true;
+        }
+      // };
+    // console.log(name + ' ' + isVector + isImageCollection)
     if(isVector){
       if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
       if(viz.fillOpacity === undefined || viz.fillOpacity === null){viz.fillOpacity = 0.2};
-      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '000'};
-      if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getChartColor()};
-      if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 2};
-
+      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222'};
+      if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = randomColor()};
+      if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 3};
+      viz.opacityRatio = viz.strokeOpacity/viz.fillOpacity;
       if(viz.fillColor.indexOf('#') == -1){viz.fillColor = '#' + viz.fillColor};
       if(viz.strokeColor.indexOf('#') == -1){viz.strokeColor = '#' + viz.strokeColor};
       if(viz.addToClassLegend === undefined || viz.addToClassLegend === null){
@@ -379,7 +389,8 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
 
 
     var legendDivID = name.replaceAll(' ','-');
-   
+    
+    legendDivID = legendDivID.replaceAll('/','-');
     legendDivID = legendDivID.replaceAll('(','-');
     legendDivID = legendDivID.replaceAll(')','-');
     if(visible == null){
@@ -394,6 +405,11 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     if(nameIndex   != -1){
       visible = layerObj[name][0];
       viz.opacity = layerObj[name][1];
+      if(isVector){
+        viz.strokeOpacity =  layerObj[name][1];
+        viz.fillOpacity = viz.strokeOpacity / viz.opacityRatio;
+
+      }
     }
 
 
@@ -511,7 +527,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
         
         legend.classColor =  fillColor + Math.floor(viz.fillOpacity/2 * 255).toString(16);
         legend.classStrokeColor = strokeColor+ Math.floor(viz.strokeOpacity * 255).toString(16);
-        legend.classStrokeWeight = viz.strokeWeight*2;
+        legend.classStrokeWeight = viz.strokeWeight+1;
         legend.className = '';
         legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
       }
@@ -539,10 +555,20 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
    
     // print(item)
     
-    if(isVector){item.evaluate(function(v){layer.setFeatureLayer(v)})}
-    else{layer.addToLayerObj(name,visible,queryItem,viz.queryDict);
-        item.getMap(viz,function(eeLayer){
-          layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
+    if(isVector){item.evaluate(function(v){
+      if(currentGEERunID === geeRunID){
+        layer.addToLayerObj(name,visible);
+        layer.setFeatureLayer(v);
+        layer.setOpacity();
+      };
+    })}else{
+      layer.addToLayerObj(name,visible);
+      layer.addToQueryObj(name,visible,queryItem,viz.queryDict);
+      item.getMap(viz,function(eeLayer){
+          if(currentGEERunID === geeRunID){
+            layer.setLayer(eeLayer);
+            layer.setOpacity();
+          };
          });};
     // item.evaluate(function(info){
     //   var type = info.type;
@@ -800,8 +826,12 @@ function stringToBoolean(string){
         default: return Boolean(string);
     }
 }
+function setGEERunID(){
+  geeRunID = new Date().getTime();
+}
 // function refreshLayerToMap()
 function reRun(){
+  setGEERunID();
   layerChildID = 0;
   queryObj = {};areaChartCollections = {};
   if(analysisMode === 'advanced'){
@@ -911,20 +941,20 @@ function reRun(){
 //     var whileCount = 0;
 //     while(whileCount < 5000){
     // while(map.overlayMapTypes.b.length < layerCount*(refreshNumber+1)){}
-    interval2(function(){
-      var layerCountN = layerCount;
-      console.log('cleaning ' +layerCountN.toString());
-      map.overlayMapTypes.g.slice(0,map.overlayMapTypes.g.length-layerCountN).forEach(function(element,index){
+  //   interval2(function(){
+  //     var layerCountN = layerCount;
+  //     console.log('cleaning ' +layerCountN.toString());
+  //     map.overlayMapTypes.g.slice(0,map.overlayMapTypes.g.length-layerCountN).forEach(function(element,index){
                     
-                    // if(element !== undefined && element !== null){
-                    //     console.log('remooooooving');
-                    // console.log(index);
-                    // console.log(element)
-                    map.overlayMapTypes.setAt(index,null);
-                // };
+  //                   // if(element !== undefined && element !== null){
+  //                   //     console.log('remooooooving');
+  //                   // console.log(index);
+  //                   // console.log(element)
+  //                   map.overlayMapTypes.setAt(index,null);
+  //               // };
                     
-                });  
-  },5000,5)
+  //               });  
+  // },5000,5)
     
 //     whileCount++;
 // }
@@ -966,7 +996,8 @@ function randomColor(){
   return c
 }
 var chartColorI = 0;
-var chartColors = ['#111','#808','#fb9a99','#33a02c','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
+var chartColors = ['#050','#0F0','#808','#00aeef','#880','#220'];
+// ['#111','#808','#fb9a99','#33a02c','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
 function getChartColor(){
   var color = chartColors[chartColorI%chartColors.length]
   chartColorI++;
@@ -1057,8 +1088,8 @@ function startArea(){
           // console.log(clickCoords);console.log(pathT.length);
           area = google.maps.geometry.spherical.computeArea(areaPolygonObj[key].getPath());
           
-          var unitNames = unitNameDict[metricOrImperialArea].area;
-          var unitMultipliers = unitMultiplierDict[metricOrImperialArea].area;
+          var unitNames = unitNameDict[metricOrImperial].area;
+          var unitMultipliers = unitMultiplierDict[metricOrImperial].area;
           // console.log(unitNames);
           // console.log(unitMultipliers);
           // console.log(area)
@@ -1207,14 +1238,14 @@ function startListening(){
 function resetPolys(e){
  
      
-      if( e.key == 'Delete'|| e.key == 'd' ){
+      if( e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace' ){
         stopArea();
         startArea();
       }
     }
 function deleteLastVertex(e){
  
-      
+      console.log(e.key);
       if(e.key == 'u' || e.key == 'z' ){
         if(areaPolygonObj[polyNumber].getPath().length >0){
           areaPolygonObj[polyNumber].getPath().pop(1);
@@ -1329,24 +1360,13 @@ function startDistance(){
   
   // document.getElementById('distance-measurement').style.display = 'inline-block';
   // document.getElementById('distance-measurement').value = 'd';
-    var distancePolylineOptions = {
-              strokeColor: '#FF0',
-              icons: [{
-                icon:  {
-              path: 'M 0,-1 0,1',
-              strokeOpacity: 1,
-              scale: 4
-            },
-                offset: '0',
-                repeat: '20px'
-              }],
-              strokeOpacity: 0,
-              strokeWeight: 3,
-              draggable: true,
-              editable: true,
-              geodesic:true
-            };
+    
     map.setOptions({draggableCursor:'crosshair'});
+    console.log(distancePolylineOptions);
+    try{
+      distancePolyline.destroy();
+    }catch(err){};
+    
     distancePolyline = new google.maps.Polyline(distancePolylineOptions);
     distancePolyline.setMap(map);
 
@@ -1418,8 +1438,8 @@ updateDistance = function(){
     clickCoords = pathT[pathT.length-1];
     // console.log(clickCoords)
     
-    var unitNames = unitNameDict[metricOrImperialDistance].distance;
-    var unitMultipliers = unitMultiplierDict[metricOrImperialDistance].distance;
+    var unitNames = unitNameDict[metricOrImperial].distance;
+    var unitMultipliers = unitMultiplierDict[metricOrImperial].distance;
     // console.log(unitNames);
     // console.log(unitMultipliers);
     // console.log(area)
@@ -1847,6 +1867,7 @@ function initialize() {
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}
+  setGEERunID();
   run();
   setupFSB();
 	// plotPlots()

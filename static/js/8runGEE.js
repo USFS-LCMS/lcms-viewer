@@ -213,7 +213,32 @@ if(chartMTBS === true){
   Map2.addLayer(mtbs.select([0]).max(),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),'reference-layer-list')
   Map2.addLayer(mtbsYear,{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),'reference-layer-list')  
 }
+function getNLCD(){
+  var nlcd = ee.ImageCollection('USGS/NLCD').select([0]);
 
+  var nlcdForClasses = ee.Image('USGS/NLCD/NLCD2011');
+  var names = nlcdForClasses.get('landcover_class_names');
+  var palette = nlcdForClasses.get('landcover_class_palette');
+  var values = nlcdForClasses.get('landcover_class_values').getInfo().map(function(i){return i.toString()});
+
+  var classDict = ee.Dictionary.fromLists(values, palette).getInfo();
+  print(classDict);
+  var years = nlcd.toList(1000).map(function(i){
+    i = ee.Image(i);
+    var d = ee.Date(i.get('system:time_start'));
+    var y = d.get('year');
+    return y;
+  }).getInfo();
+  var yearsU = [];
+  years.map(function(y){if(yearsU.indexOf(y) == -1){yearsU.push(y)}});
+
+  var nlcdMosaic = yearsU.map(function(y){
+    var nlcdT = nlcd.filter(ee.Filter.calendarRange(y,y,'year')).mosaic();
+    return nlcdT.set('system:time_start',ee.Date.fromYMD(y,6,1).millis());
+  });
+  nlcdMosaic = ee.ImageCollection(nlcdMosaic);
+  Map2.addLayer(nlcdMosaic.mode(),{addToClassLegend: true,classLegendDict:classDict},'NLCD');
+}
 
 //---------------Apply thresholds to loss and gain-------------------------------------------------------
 function thresholdChange(changeCollection,changeThreshLower,changeThreshUpper,changeDir){
@@ -600,7 +625,7 @@ function runUSFS(){
 
       var wb = ee.Image('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/IRPSV102_WHITEBARK');
       wb = wb.updateMask(wb)
-      Map2.addLayer(wb,{min:1,max:1,palette:'080',addToLegend:false},'Whitebark Pine',false,null,null,'Extent of potential Whitebark Pine','reference-layer-list')
+      Map2.addLayer(wb,{queryDict: {1:'Whitebark Pine Range'},min:1,max:1,palette:'080',addToClassLegend: true,classLegendDict:{'':'080'}},'Whitebark Pine Range',false,null,null,'Extent of potential Whitebark Pine','reference-layer-list')
 
       var gnpHUC = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/GNP_Huc12');
       Map2.addLayer(gnpHUC,{strokeColor:'#0088FF',addToLegend:false},'GNP HUC 12',false,null,null,null,'reference-layer-list')
@@ -745,7 +770,7 @@ function runUSFS(){
 
     //----------------Prep Universal Layers & Add Some------------------------------------------------------
     
-
+    getMTBSandIDS(studyAreaName);
     var studyAreas = collectionDict[studyAreaName][4];
     studyAreas.map(function(studyArea){
       Map2.addLayer(studyArea[1],null,studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
@@ -1206,7 +1231,7 @@ function runUSFS(){
                                   'steppedLine':steppedLineLC,
                                   'colors':Object.values(landcoverClassLegendDict)};
     
-    getMTBSandIDS(studyAreaName);
+    
     populateAreaChartDropdown();
     // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
@@ -1214,10 +1239,15 @@ function runUSFS(){
 
 function populateAreaChartDropdown(){
   $('#area-collection-dropdown').empty();
-  whichAreaChartCollection = Object.keys(areaChartCollections)[0];
-  Object.keys(areaChartCollections).map(function(k){
+  var keys = Object.keys(areaChartCollections)
+  whichAreaChartCollection = keys[0];
+  if(keys.length > 1){
+    Object.keys(areaChartCollections).map(function(k){
     addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k);
-  })
+    });
+    $('#area-collection-dropdown-container').show();
+  }else{$('#area-collection-dropdown-container').hide();}
+  
 }
 $('#area-collection-dropdown').change(function(){
   console.log(whichAreaChartCollection);
@@ -1235,7 +1265,7 @@ function runCONUS(){
   Map2.addLayer(hansenLoss,{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
   Map2.addLayer(hansenGain.updateMask(hansenGain),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
 
-
+  getMTBSandIDS(studyAreaName);
    var lossProb = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/vCONUS-2019-1').map(function(img){return img.unmask()})
       .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
       .map(function(img){return img.rename(['Loss Probability'])})
@@ -1299,7 +1329,7 @@ function runCONUS(){
                                 'steppedLine':false,
                                 'collection':forAreaCharting,
                                 'colors':['F00']};
-  getMTBSandIDS(studyAreaName);
+  
   populateAreaChartDropdown();
 
   // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}

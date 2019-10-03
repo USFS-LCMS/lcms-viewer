@@ -152,15 +152,15 @@ function setupFSB(){
 	var nfs = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
 
 
-	// var npsFieldName = 'PARKNAME';
-	// var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
+	var npsFieldName = 'PARKNAME';
+	var nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
 
 	nfs = nfs.map(function(f){return f.set('label',f.get(nfsFieldName))});
 
 
-	// nps = nps.map(function(f){return f.set('label',ee.String(f.get(npsFieldName)).cat(' National Park'))});
+	nps = nps.map(function(f){return f.set('label',ee.String(f.get(npsFieldName)).cat(' National Park'))});
 
-	fsb = nfs//.merge(nps);
+	fsb = nfs.merge(nps);
 	fieldName = 'label';
  
 
@@ -224,6 +224,17 @@ function areaChartingTabSelect(target){
 // }
 // listenForUserDefinedAreaCharting();
 var userDefinedI = 1;
+var fColor = '#FF0';//randomColor();
+var udpOptions = {
+          strokeColor:fColor,
+            fillOpacity:0.2,
+          strokeOpacity: 1,
+          strokeWeight: 3,
+          draggable: true,
+          editable: true,
+          geodesic:true,
+          polyNumber: 1
+        };
 function startUserDefinedAreaCharting(){
 	console.log('start clicking');
 	
@@ -237,27 +248,17 @@ function startUserDefinedAreaCharting(){
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
-    var fColor = randomColor();
-    var udpOptions = {
-              strokeColor:fColor,
-                fillOpacity:0.2,
-              strokeOpacity: 1,
-              strokeWeight: 3,
-              draggable: true,
-              editable: true,
-              geodesic:true,
-              polyNumber: 1
-            };
-     var udpPolyOptions = {
-              strokeColor:fColor,
-                fillOpacity:0.2,
-              strokeOpacity: 1,
-              strokeWeight: 3,
-              draggable: false,
-              editable: false,
-              geodesic:true,
-              polyNumber: 1
-            };
+    
+     // var udpPolyOptions = {
+     //          strokeColor:fColor,
+     //            fillOpacity:0.2,
+     //          strokeOpacity: 1,
+     //          strokeWeight: 3,
+     //          draggable: false,
+     //          editable: false,
+     //          geodesic:true,
+     //          polyNumber: 1
+     //        };
    try{
    	udp.setMap(null);
    }catch(err){};
@@ -285,7 +286,7 @@ function startUserDefinedAreaCharting(){
 		$('#summary-spinner').slideDown();
         var path = udp.getPath();
         udp.setMap(null);
-        udp = new google.maps.Polygon(udpPolyOptions);
+        udp = new google.maps.Polygon(udpOptions);
         udp.setPath(path);
         udp.setMap(map);
         google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -304,7 +305,9 @@ function startUserDefinedAreaCharting(){
 	  	
 	  	// $("#charting-parameters").slideDown();
 	  	var udpName = $('#user-defined-area-name').val();
-	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() + ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';userDefinedI++;}
+	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() ;userDefinedI++;};
+	  	var addon = ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';
+	  	udpName +=  addon
 		// Map2.addLayer(userArea,{},udpName,false)
 		// console.log(userArea.getInfo());
 		makeAreaChart(userArea,udpName,true);
@@ -332,10 +335,11 @@ function chartChosenArea(){
   // var fieldName = 'FORESTNAME';
 
  
-  var chosenArea = $('#forestBoundaries').val()+ ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
+  var chosenArea = $('#forestBoundaries').val();
+  var chosenAreaName = chosenArea + ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
   var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName,chosenArea));
 
-  makeAreaChart(chosenAreaGeo,chosenArea);
+  makeAreaChart(chosenAreaGeo,chosenAreaName);
   // console.log('Charting ' + chosenArea);
 }
 function getLossGainTable(areaChartCollection,area){
@@ -427,13 +431,13 @@ function makeAreaChart(area,name,userDefined){
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
-				if(whichAreaDrawingMethod === '#user-defined'){
+				// if(whichAreaDrawingMethod === '#user-defined'){
 					area.evaluate(function(i){
 						areaGeoJson = i;
 						if(areaGeoJson !== undefined && areaGeoJson !== null){
 					    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
 					   }});
-				}
+				// }
 				areaChartingCount--;
 			}
 			else{
@@ -477,18 +481,23 @@ function fixGeoJSONZ(f){
 
 function startShpDefinedCharting(){
 	$('#areaUpload').change(function(){
-	if(jQuery('#areaUpload')[0].files.length > 0){
-		try{udp.setMap(null);}
-		catch(err){console.log(err)};
+		if(jQuery('#areaUpload')[0].files.length > 0){
+			try{udp.setMap(null);}
+			catch(err){console.log(err)};
 		
-		
-		var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0] +  ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
-		map.setOptions({draggableCursor:'progress'});
-		map.setOptions({cursor:'progress'});
-		convertToGeoJSON('areaUpload').done(function(converted){
-			console.log('successfully converted to JSON');
-			console.log(converted);
-				
+			$('#summary-spinner').slideDown();
+
+			var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0] 
+			var addon = ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
+			if(name.indexOf(addon) === -1){
+				name += addon;
+			}
+			map.setOptions({draggableCursor:'progress'});
+			map.setOptions({cursor:'progress'});
+			convertToGeoJSON('areaUpload').done(function(converted){
+				console.log('successfully converted to JSON');
+				console.log(converted);
+					
 
 			//First try assuming the geoJSON has spatial info
 			try{
@@ -669,7 +678,7 @@ Chart.pluginService.register({
 
             ctx.save();
             ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left-90, chartArea.top-30, chartArea.right - chartArea.left+190, chartArea.bottom - chartArea.top+150);
+            ctx.fillRect(chartArea.left-90, chartArea.top-40, chartArea.right - chartArea.left+190, chartArea.bottom - chartArea.top+150);
             ctx.restore();
         }
     }
@@ -777,7 +786,9 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
 	    	 title: {
 	            display: true,
 	            position:'top',
-	            text: title.replaceAll('_',' ')
+	            text: title.replaceAll('_',' '),
+	            fontColor: '#000',
+	            fontSize: 16
 	        },
 	        legend:{
 	        	display:true,
@@ -800,12 +811,12 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
 	});
 
 	
-	    
+	    $('#chart-download-dropdown').empty();
 	    $('#chart-modal-footer').append(`<div class="dropdown">
 										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										    Download
 										  </div>
-										  <div id = 'chart-download-dropdown' class="dropdown-menu" aria-labelledby="chartDownloadDropdown">
+										  <div id = 'chart-download-dropdown' class="dropdown-menu px-2" aria-labelledby="chartDownloadDropdown">
 										    <a class="dropdown-item" href="#" onclick = "downloadChartJS(chartJSChart,'${title}.png')">PNG</a>
 										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${title}.csv', dataTable)">CSV</a>
 										  </div>
@@ -1088,11 +1099,14 @@ function stopCharting(){
 	// closeChart();
 	// closeBigChart();
 	try{
+		mapHammer.destroy();
+	}catch(err){};
+	try{
 		map.setOptions({draggableCursor:'hand'});
 		$('#summary-spinner').slideUp();
 		infowindow.setMap(null);
 		marker.setMap(null);
-		mapHammer.destroy();
+		
 	}catch(err){}
 	
 
