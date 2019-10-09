@@ -22,12 +22,42 @@ var staticTemplates = {
 	geeSpinner : `<img rel="txtTooltip" data-toggle="tooltip"  title="Background processing is occurring in Google Earth Engine"id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;'>`,
 
 
+	exportContainer:`<div class = 'dropdown-divider'></div>
+                    <div class = 'py-2' id = 'export-list-container'>
+                        <h5>Choose which images to export:</h5>
+                        <div class = 'py-2' id="export-list"></div>
+                        <div class = 'dropdown-divider'></div>
+                        <div class = 'pl-3'>
+                            <form class="form-inline">
+                              <label for="export-crs">Projection: </label>
+                              <div class="form-group pl-1">
+                                <input type="text" id="export-crs" name="rg-from" value="EPSG:4326" class="form-control">
+                              </div> 
+                              
+                            </form>
+                            <div class = 'py-2'>
+                                <button class = 'btn' onclick = 'selectExportArea()'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
+                            </div>
+                            <div class = 'dropdown-divider'></div>
+                            <div class = 'py-2'>
+                                <button class = 'btn' onclick = 'exportImages()'>Export Images</button>
+                                <button class = 'btn' onclick = 'cancelAllTasks()'>Cancel All Exports</button>
+                                <span style = 'display:none;' class="fa-stack fa-2x" id='export-spinner' data-toggle="tooltip"  title="">
+						    		<img rel="txtTooltip"   class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
+						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
+								</span>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>`,
+
 	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="Hooray!" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
 		        <ul class = 'navbar-nav  px-5  m-0 text-center'   >
 		            <li   class="nav-item dropdown navbar-dark navbar-nav nav-link p-0col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade')" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
 		                <div class="dropdown-menu  " >
-		                    <study-area-list    id="study-area-list"></study-area-list>
+		                    <div id="study-area-list"></div>
 		                </div>
 		            </li>
 		        </ul>`,
@@ -134,10 +164,10 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
 			</div>`,
-distanceDiv : `Click on map to measure distance`,
+distanceDiv : `Click on map to measure distance<variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
 imperialMetricToggle:`<variable-radio var='metricOrImperial' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
-areaDiv : `Click on map to measure area`,
+areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
 areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
@@ -289,8 +319,26 @@ function updateUDPColor(jscolor) {
         udp.setOptions(udpOptions);
     }
 }
-function addColorPicker(containerID,pickerID,updateFunction){
-    $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
+function updateAreaColor(jscolor) {
+    areaPolygonOptions.strokeColor = '#' + jscolor;
+
+    Object.keys(areaPolygonObj).map(function(k){
+    	areaPolygonObj[k].setOptions(areaPolygonOptions) ;
+
+    	console.log(areaPolygonObj[k])
+    })
+}
+function addColorPicker(containerID,pickerID,updateFunction,value){
+	if(value === undefined	|| value === null){value = 'FFFF00'}
+	$('#'+containerID).append(`<div class = 'py-2'>
+									<button		
+							    		id = '${pickerID}'
+							    		class="color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
+							    		>
+							    		Choose color
+									</button>
+								</div>`);
+    // $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
 }
 
 function addModal(containerID,modalID,bodyOnly){
@@ -412,13 +460,13 @@ function showTip(title,message){
  //  $('#tip-modal').modal();
 }
 function addStudyAreaToDropdown(name,toolTip){
-  var sa = document.createElement("variable-study-area");
-  sa.name = name;
-  sa.tooltip = toolTip;
-  var saList = document.querySelector("study-area-list");
-    saList.insertBefore(sa,saList.firstChild);
+	var id = name.replaceAll(' ','-');
+	// console.log(id);
+	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   href="#" data-toggle="tooltip" data-placement="top" title="${toolTip}">${name}</a>`)
+  	$('#'+id).on('click',function(){
+    	dropdownUpdateStudyArea(this.name);
+    })
     
-    // $('#studyAreaDropdownList').append('<a class="dropdown-item" onclick = "dropdownUpdateStudyArea("Bridger-Teton National Forest")"  href="#" data-toggle="tooltip" data-placement="top" title="'+toolTip+'">'+name+'</a>')
  }
  function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction,tooltip){
     var valueDict = {true:valueOn,false:valueOff};
@@ -441,6 +489,58 @@ function addStudyAreaToDropdown(name,toolTip){
         eval(`${onChangeFunction}`); 
     })
 }
+
+function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn,valueOff,onFunction,offFunction,tooltip){
+	// var valueDict = {true:valueOn,false:valueOff};
+	eval(`window.${variable} = '${valueOn}';`);
+	// console.log(valueDict);
+	
+	$('#'+containerDivID).append(`<div class = 'row' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+		<label class="col-12 pb-0">${title} </label>
+		<div class = 'col-12 pt-0'>
+		<div  id = '#${radioID}'  class="toggle_radio p-0">
+
+	  	
+	    <input type="radio" class = "first_toggle" checked class="toggle_option" id="${radioID}-first_toggle" name="${radioID}-toggle_option"  value="1" >
+	    <input type="radio" class="toggle_option second_toggle" id="${radioID}-second_toggle" name="${radioID}-toggle_option"  value="2" >
+	    
+	    <label for="${radioID}-first_toggle" id = '${radioID}-first_toggle_label'><p>${onLabel}</p></label>
+	    <label for="${radioID}-second_toggle"  id = '${radioID}-second_toggle_label'><p>${offLabel}</p></label>
+	    
+	    <div class="toggle_option_slider">
+	    </div>
+	    </div>
+ 
+	</div>
+	</div>`)
+
+	$('#'+radioID + '-first_toggle').change(function(){
+		// console.log('first');
+		eval(`window.${variable} = '${valueOn}';`);
+		eval(`${onFunction}`);
+	})
+	$('#'+radioID + '-second_toggle').change(function(){
+		// console.log('second');
+		eval(`window.${variable} = '${valueOff}';`);
+		eval(`${offFunction}`);
+	})
+
+
+	
+}
+function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip){
+	if(tooltip === null || tooltip === undefined){tooltip = ''};
+	
+	// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
+	$('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+							        <div class='dual-range-slider-name py-2'>${title}</div>
+							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
+							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
+							    </div>`);
+	setUpRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,sliderID+ '-update',mode)
+
+}
+
  //////////////////////////////////////////////
 //Functio to add tab to list
 function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
@@ -549,23 +649,426 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
   
   panelCollapseI++;
 }
-function addLegendContainer(legendContainerID,containerID,show){
+function addLegendContainer(legendContainerID,containerID,show,toolTip){
 	if(containerID === undefined || containerID === null){containerID = 'legend-collapse-div'}
 	if(show === undefined || show === null){show = true}
 	if(show){show = 'block'}
 	else{show = 'none'}
-	$('#' + containerID).append(`<div style = 'display:${show};' id = '${legendContainerID}'></div>`);
+	$('#' + containerID).append(`<div class = 'py-2 row' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+								</div>`);
 }
 
 function addClassLegendContainer(classLegendContainerID,legendContainerID,classLegendTitle){
-	$('#'+legendContainerID).append(`<div  class='legend-title'>${classLegendTitle}</div>
-    								<div class='legend-scale'>
-        								<ul id = "${classLegendContainerID}" class='legend-labels'>
-            								
-        								</ul>
-    								</div>`)
+	$('#'+legendContainerID).append(`<div class='my-legend'>
+										<div class = 'legend-title'>${classLegendTitle}</div>
+										<div class='legend-scale'>
+									  		<ul class='legend-labels' id = '${classLegendContainerID}'></ul>
+										</div>
+									</div>`)
 }
-function addClassLegendEntry(classLegendContainerID,title,color){
-	$('#'+classLegendContainerID).append(`<li ><span style='background:${color};'></span>${title}</li>`)
+function addClassLegendEntry(classLegendContainerID,obj){
+	$('#'+classLegendContainerID).append(`<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:#${obj.classColor};'></span>${obj.className}</li>`)
 }
 
+function addColorRampLegendEntry(legendContainerID,obj){
+	$('#'+legendContainerID).append(`<li class = 'legend-colorRamp' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= '${obj.helpBoxMessage}'>
+							            <div class = 'legend-title'>${obj.name}</div>
+							            <div class = 'colorRamp'style='${obj.colorRamp};'></div>
+							            <div>
+							                <span class = 'leftLabel'>${obj.min}</span>
+							                <span class = 'rightLabel'>${obj.max}</span>
+							            </div>
+							            
+							        </li> `)
+}
+
+
+function addLayer(layer){
+	
+	var id = layer.legendDivID;
+	var containerID = id + '-container';
+	var opacityID = id + '-opacity';
+	var visibleID = id + '-visible';
+	var spanID = id + '-span';
+	var visibleLabelID = visibleID + '-label';
+	var spinnerID = id + '-spinner';
+	var checked = '';
+	if(layer.visible){checked = 'checked'}
+	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
+								           <input id="${opacityID}"  type="range"  class="layer-opacity-range" value=100 >
+								           <input  id="${visibleID}" type="checkbox" ${checked}  />
+								            <label  id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
+								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Background processing is occurring in Google Earth Engine'></i>
+								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
+								       </li>`);
+	
+	function setRangeSliderThumbOpacity(){
+		// $('#'+opacityID+'.layer-opacity-range').css("background", 'rgba(0,0,0,'+layer.rangeOpacity+')')
+	}
+	function updateProgress(){
+		var pct = layer.percent;
+		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
+	}
+	$("#"+ opacityID).val(layer.opacity * 100);
+	// $('#'+ spanID).click(function(){
+		
+	// 	if(!layer.isVector){
+ //            if(layer.visible){
+ //            	layer.visible = false;
+ //            	$('#'+visibleID).attr('Checked','');
+ //                layer.map.overlayMapTypes.setAt(layer.layerId,null);
+	// 			layer.percent = 0;
+	// 			updateProgress();
+ //                $('#'+layer.legendDivID).hide();
+ //                layer.rangeOpacity = 0;
+                
+                
+	// 		}else{
+	// 			layer.visible = true;
+	// 			$('#'+visibleID).attr('Checked','Checked');
+ //                layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
+ //                $('#'+layer.legendDivID).show();
+ //                layer.rangeOpacity = layer.opacity;
+                
+ //                layer.layer.setOpacity(layer.opacity); 
+	// 			}
+ //                 queryObj[layer.name].visible = layer.visible;
+                   
+ //                }
+ //                else{
+ //                    if(layer.visible){
+ //                    	layer.visible = false;
+ //                    	$('#'+visibleID).attr('Checked','');
+ //                        layer.percent = 0;
+ //                        updateProgress();
+ //                        $('#'+layer.legendDivID).hide();
+ //                        layer.layer.setMap(null);
+ //                        layer.rangeOpacity = 0;
+                        
+ //                    }else{
+ //                    	layer.visible = true;
+ //                    	$('#'+visibleID).attr('Checked','Checked');
+ //                        layer.percent = 100;
+ //                        updateProgress();
+ //                        $('#'+layer.legendDivID).show();
+ //                        layer.layer.setMap(layer.map);
+ //                        layer.rangeOpacity = layer.opacity;
+                        
+ //                    }
+                    
+ //                }
+ //                setRangeSliderThumbOpacity();
+               
+		
+	// 	// console.log(layer.item.geometry().bounds().getInfo())
+	// 	// centerObject(layer.item);
+	// })
+	$('#'+opacityID).on('input', function() {
+    	layer.opacity = this.value/100;
+		// console.log(layer.opacity);
+		 if(!layer.isVector){
+            layer.layer.setOpacity(layer.opacity);
+            if(layer.visible){
+            	layer.rangeOpacity = layer.opacity;
+            }
+            
+          }else{
+                    var style = layer.layer.getStyle();
+                    style.strokeOpacity = layer.opacity;
+                    style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
+                    layer.layer.setStyle(style);
+                }
+                setRangeSliderThumbOpacity()
+	});
+	
+	$('#'+visibleID).change( function() {
+		// console.log(layer.layerId);
+    	// var layer.visible = this.checked;
+    	if(!layer.isVector){
+            if(layer.visible){
+            	layer.visible = false;
+                layer.map.overlayMapTypes.setAt(layer.layerId,null);
+				layer.percent = 0;
+				updateProgress();
+                $('#'+layer.legendDivID).hide();
+                layer.rangeOpacity = 0;
+                
+                
+			}else{
+				layer.visible = true;
+                layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
+                $('#'+layer.legendDivID).show();
+                layer.rangeOpacity = layer.opacity;
+                
+                layer.layer.setOpacity(layer.opacity); 
+				}
+                 queryObj[layer.name].visible = layer.visible;
+                   
+                }
+                else{
+                    if(layer.visible){
+                    	layer.visible = false;
+                        layer.percent = 0;
+                        updateProgress();
+                        $('#'+layer.legendDivID).hide();
+                        layer.layer.setMap(null);
+                        layer.rangeOpacity = 0;
+                        
+                    }else{
+                    	layer.visible = true;
+                        layer.percent = 100;
+                        updateProgress();
+                        $('#'+layer.legendDivID).show();
+                        layer.layer.setMap(layer.map);
+                        layer.rangeOpacity = layer.opacity;
+                        
+                    }
+                    
+                }
+                setRangeSliderThumbOpacity();
+               
+		
+	});
+
+	
+	layerObj[layer.name] = [layer.visible,1];
+	
+
+	if(!layer.isVector){
+		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
+		outstandingGEERequests ++;
+		console.log(outstandingGEERequests);
+		// console.log('adding tile map service');
+		layer.item.getMap(layer.viz,function(eeLayer){
+			outstandingGEERequests --;
+			console.log(outstandingGEERequests);
+			// console.log('tile service created');
+			$('#' + spinnerID).hide();
+			$('#' + visibleLabelID).show();
+			
+			if(layer.currentGEERunID === geeRunID){
+				var MAPID = eeLayer.mapid;
+	            var TOKEN = eeLayer.token;
+	            layer.highWaterMark = 0;
+	            // console.log(MAPID + TOKEN);
+	        	layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
+	        	layer.layer.addTileCallback(function(event){
+                    // console.log(event)
+
+                    if(event.count > layer.highWaterMark){
+                        layer.highWaterMark = event.count;
+                    }
+
+                    layer.percent = 100-((event.count / layer.highWaterMark) * 100);
+                    if(layer.percent !== 100){
+                    	$('#' + spinnerID).show();
+                    }else{$('#' + spinnerID).hide();}
+                    updateProgress();
+                    // console.log(event.count);
+                    // console.log(inst.highWaterMark);
+                    // console.log(event.count / inst.highWaterMark);
+                    // console.log(layer.percent)
+                });
+	        	if(layer.visible){
+	                    layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+	                    $('#'+layer.legendDivID).show();
+	                    layer.rangeOpacity = layer.opacity; 
+	                    
+	                    layer.layer.setOpacity(layer.opacity); 
+	                }else{
+	                  $('#'+layer.legendDivID).hide();
+	                  layer.rangeOpacity = 0;
+	                  
+	                }
+	                setRangeSliderThumbOpacity();
+            }
+          // console.log(layer)
+		})
+
+	}else{
+		outstandingGEERequests ++;
+		console.log(outstandingGEERequests);
+		layer.item.evaluate(function(v){
+			outstandingGEERequests --;
+			console.log(outstandingGEERequests);
+			$('#' + spinnerID).hide();
+			$('#' + visibleLabelID).show();
+
+			if(layer.currentGEERunID === geeRunID){
+				layer.layer = new google.maps.Data();
+		        layer.layer.setStyle(layer.viz);
+		      
+		      	layer.layer.addGeoJson(v);
+		      	featureObj[layer.name] = layer.layer
+		      	// console.log(this.viz);
+		      
+		      	if(layer.visible){
+		        	layer.layer.setMap(layer.map);
+		        	layer.rangeOpacity = layer.viz.strokeOpacity;
+		        	layer.percent = 100;
+		        	$('#'+layer.legendDivID).show();
+		      	}else{
+		        	layer.rangeOpacity = 0;
+		        	layer.percent = 0;
+		        	$('#'+layer.legendDivID).hide();
+		      		}
+		      	setRangeSliderThumbOpacity();
+		      	}
+  		})
+	}
+	// console.log(layer)
+	// item.getMap(viz,function(eeLayer){
+    //       if(currentGEERunID === geeRunID){
+    //         layer.setLayer(eeLayer);
+    //         layer.setOpacity();
+    //       };
+    //      });}
+
+}
+
+
+function zeroPad(num, places) {
+  var zero = places - num.toString().length + 1;
+  return Array(+(zero > 0 && zero)).join("0") + num;
+}
+function formatDT(__dt) {
+    var year = __dt.getFullYear();
+    var month = zeroPad(__dt.getMonth()+1, 2);
+    var date = zeroPad(__dt.getDate(), 2);
+    // var hours = zeroPad(__dt.getHours(), 2);
+    // var minutes = zeroPad(__dt.getMinutes(), 2);
+    // var seconds = zeroPad(__dt.getSeconds(), 2);
+    return   month + '/'+ date + '/'+ year.toString().slice(2,4) //+ ' ' + hours + ':' + minutes + ':' + seconds;
+};
+function formatDTJulian(__dt) {
+    // var year = __dt.getFullYear();
+    var month = zeroPad(__dt.getMonth()+1, 2);
+    var date = zeroPad(__dt.getDate(), 2);
+    // var hours = zeroPad(__dt.getHours(), 2);
+    // var minutes = zeroPad(__dt.getMinutes(), 2);
+    // var seconds = zeroPad(__dt.getSeconds(), 2);
+    return  month + '/' + date ;//+ ' ' + hours + ':' + minutes + ':' + seconds;
+};
+
+Date.fromDayofYear= function(n, y){
+    if(!y) y= new Date().getFullYear();
+    var d= new Date(y, 0, 1);
+    return new Date(d.setMonth(0, n));
+}
+Date.prototype.dayofYear= function(){
+    var d= new Date(this.getFullYear(), 0, 0);
+    return Math.floor((this-d)/8.64e+7);
+}
+
+
+function setUpRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,updateID,mode){
+    // var dt_from = "2000/11/01";
+  // var dt_to = "2015/11/24";
+// $("#"+updateID +" .ui-slider .ui-slider-handle").css( {"width": '3px'} );
+  if(mode === undefined  || mode === null){mode = 'date'};
+  if(defaultMin === undefined  || defaultMin   === null){defaultMin  = min};
+  if(defaultMax === undefined  || defaultMax   === null){defaultMax  = max};
+  // if(step === undefined  || step === null){step = 1};
+
+  if(mode === 'date'){
+    min = new Date(min);
+    max = new Date(max);
+    step = step *24*60*60;
+    defaultMin   = new Date(defaultMin);
+    defaultMax   = new Date(defaultMax);
+    // step = step*60*60*24
+    $( "#"+updateID).html(formatDT(defaultMin)+ ' - ' + formatDT(defaultMax));
+  }
+  else if(mode === 'julian'){
+    min = Date.fromDayofYear(min);
+    max = Date.fromDayofYear(max);
+    step = step *24*60*60;
+    defaultMin = Date.fromDayofYear(defaultMin);
+    defaultMax = Date.fromDayofYear(defaultMax);
+    $( "#"+updateID).html(formatDTJulian(defaultMin)+ ' - ' + formatDTJulian(defaultMax));
+  }
+  else{$( "#"+updateID).html(defaultMin.toString()+ ' - ' + defaultMax.toString());}
+  
+  
+  
+
+  
+  
+
+  if(mode === 'date' || mode === 'julian'){
+  var minVal = Date.parse(min)/1000;
+  var maxVal = Date.parse(max)/1000;
+  var minDefault = Date.parse(defaultMin)/1000;
+  var maxDefault = Date.parse(defaultMax)/1000;
+  }
+  else{
+    var minVal = min;
+    var maxVal = max;
+    var minDefault = defaultMin;
+    var maxDefault = defaultMax;
+  }
+
+      $("#"+sliderID).slider({
+        range:true,
+         min: minVal,
+    max: maxVal,
+    step: step,
+    values: [minDefault, maxDefault],
+
+    slide: function(e,ui){
+
+      if(mode === 'date'){
+      var value1 = ui.values[0]*1000;
+      var value2 = ui.values[1]*1000;
+
+      var value1Show  = formatDT(new Date(value1));
+      var value2Show  = formatDT(new Date(value2));
+
+      // value1 = new Date(value1);
+      // value2 = new Date(value2);
+      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+      
+      eval(var1 + '= new Date('+ value1.toString()+')');
+      eval(var2 + '= new Date('+ value2.toString()+')');
+        }
+      else if(mode === 'julian'){
+      var value1 = new Date(ui.values[0]*1000);
+      var value2 = new Date(ui.values[1]*1000);
+
+      var value1Show  = formatDTJulian(value1);
+      var value2Show  = formatDTJulian(value2);
+      value1 =value1.dayofYear();
+      value2 = value2.dayofYear();
+      
+$( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+      
+      eval(var1 + '= '+ value1.toString());
+      eval(var2 + '= '+ value2.toString());
+        }
+      else{
+      var value1 = ui.values[0];
+      var value2 = ui.values[1];
+
+      var value1Show  = value1;
+      var value2Show  = value2;
+
+      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+      
+      eval(var1 + '= '+ value1.toString());
+      eval(var2 + '= '+ value2.toString());
+      }
+
+
+      
+     
+    }
+    // ,
+    // stop: function(e,ui){reRun()}
+
+      });
+    
+    // $( " .ui-slider-range" ).css( "background-color", '#000' );
+
+    // $( " .ui-widget-content .ui-state-default" ).css( "background-color", "chartreuse" );
+
+  }

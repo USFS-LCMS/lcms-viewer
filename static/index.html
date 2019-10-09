@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
     <head>
         <script type="text/javascript">
@@ -13,9 +13,9 @@
         
         
        
-        <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
+        <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script> -->
         
-        <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=drawing"></script>
+        <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE"></script>
         <script type="text/javascript" src="js/ee_api_js.js"></script>
         
       
@@ -44,9 +44,9 @@
 
         <link rel="stylesheet" href="./css/style.css">
         <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-        <link rel="import" href="./elements/layer-list.html">
-        <link rel="import" href="./elements/ee-layer.html">
-        <link rel="import" href="./elements/variables.html">
+        <!-- <link rel="import" href="./elements/layer-list.html"> -->
+        <!-- <link rel="import" href="./elements/ee-layer.html"> -->
+        <!-- <link rel="import" href="./elements/variables.html"> -->
     </head>
 
 
@@ -58,120 +58,24 @@
         <script type="text/javascript" src="./js/5chart-manager.js"></script>
         <script type="text/javascript" src="./js/6parameters-manager.js"></script>
         <script type="text/javascript" src="./js/7tools-toggle-manager.js"></script>
-        <script type="text/javascript" src="./js/8runGEE.js"></script>
-        <script type="text/javascript" src="./js/9download_dict.json"></script>
-        <script type="text/javascript" src="./js/10download-manager.js"></script>
-        <!-- <script type="text/javascript" src="./metadata/metadata-parser.js"></script> -->
-        <script type="text/javascript" src="./js/export-manager.js"></script>
+        <script type="text/javascript" src="./js/8gee-lib-manager.js"></script>
+        <script type="text/javascript" src="./js/9gee-run-manager.js"></script>
+        <script type="text/javascript" src="./js/10download_dict.json"></script>
+        <script type="text/javascript" src="./js/11download-manager.js"></script>
+        <script type="text/javascript" src="./js/12metadata-parser.js"></script>
+        <script type="text/javascript" src="./js/13export-manager.js"></script>
         
 
         
         
-        <export-list id="export-list" style='display:none;width:100%'></export-list>
+        
     </body>
 </html>
 
 <!--OLD CODE
- <div id="parameters-tools-layers" disabled="disabled" style = 'display:none;'>
-        <div id="collapse-menu" class="collapse fade in active">
-            <ul class="nav nav-tabs  nav-stacked">
-                <br>
-                <br>
-                <img class='image-icon' src="images/layer_icon.png" data-toggle="collapse" data-target="#layers-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available LCMS layers">
-                <p class='image-icon-label' data-toggle="collapse" data-target="#layers-tab">LCMS</p>
-                <br>
-                <div id="layers-tab" class="collapse in">
-                    <layer-list id="layers"></layer-list>
-                </div>
-                <br>
-                <br>
-                <img class='image-icon' src="icons/data-layers_968B83-01.svg" data-toggle="collapse" data-target="#reference-layers-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change">
-                <p class='image-icon-label' data-toggle="collapse" data-target="#reference-layers-tab">Reference</p>
-                <br>
-                <br>
-                <div id="reference-layers-tab" class="collapse in">
-                    <reference-layer-list id="reference-layers"></reference-layer-list>
-                </div>
-                <br>
-                <p style='float:right;' data-toggle="collapse" data-target="#exports-tab">Download Data
-                    <i class="tab-button fa fa-cloud-download  fa-2x fa-fw" aria-hidden="true" data-toggle="collapse" data-target="#exports-tab" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click here to view available reference layers.  These layers include existing geospatial data related to land cover and land cover change"></i>
-                </p>
-                </ul>
-                <br>
-                <div id="exports-tab" class="collapse">
-                    <div id='download-container' style='display:none;'>
-                        <h4>Choose area to download</h4>
-                        <select id='downloadDropdown' style='background-color: #555;border-radius:5px;'>
-                            <option value=''>Choose a download</option>
-                        </select>
-                        <input type="button" class='button' value='Download selected area' style='margin-left:5px;border-radius:5px;' onclick="downloadSelectedArea()">
-                    </div>
-                    <div id='export-container-big' style='display:none;'>
-                        <div id='shape-edit-container' style='display:none;width:100%;'>
-                            <p style='text-align:center;text-vertical-align:top;margin:1px 1px 10px 1px;color:#fff;font-size:13pt;' href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Use drawing tools in center left of screen to select areas for export">Data Download Selection Tools</p>
-                            <input type="button" class='button' id="toggle-drawing-button" value="Toggle Shapes" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Turn hand-drawn shapes on/off. Keyboard shortcut: 't'">
-                            <input type="button" class='button' id="delete-button" value="Clear Selected Shape" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Delete selected shape.  Keyboard shortcut: 'd'">
-                            <input type="button" class='button' id="clear-button" value="Clear All Shapes" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Delete all shapes">
-                        </div>
-                        <div id='export-container' style='display:none;'>
-                            <div style='width:100%;height:2px;border-radius:5px;margin:5px;background-color:#fff'></div>
-                        </div>
-                        <export-list id="export-list" style='display:inline;width:100%'></export-list>
-                        <input type="button" type=button class='button' id="process-button" value="Display Export Image" style='display:none;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Display images within drawn polygons that can be exported">
-                        <input type="button" type=button class='button' id="export-button" value="Export Data" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Export data within drawn polygons">
-                        <input onclick="closePopup();" type=button class='button' value="Cancel" style='display:none' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Exit without submitting any images for export">
-                        <input onclick="cancelAllTasks();" type=button class='button' id="cancel-tasks-button" value="Cancel All Exports" style='display:inline-block;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel all export tasks">
-                    </div>
-                </div>
-
-        </div>
-    </div> -->
- 
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <!--     <plot-container id="plot-container" style='position:absolute;left:0%;top:10%;width:200px;max-height:50%;overflow-y:auto;display:none;'>
         <pt-project-list id="pt-project-list"></pt-project-list>
         <pt-list id="pt-list"></pt-list>
     </plot-container> -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- 
-    <img id='download-spinner' src="images/ee-logo-spinner2.gif" alt="EE image exporting" style="position:absolute;right:50%;bottom:3%;padding: 1px ;visibility:hidden;width:50px;height:50px;background-color:rgba(255,255,255,0.6);border-radius: 10px;" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title=""> -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-<!--     <div id='messageBox' style='display:none;
-                      border-radius:5px;
-                      position:absolute;
-                      z-index: 15;
-                      top: 50%;
-                      right: 30%;
-                      width:500px;
-                      max-height:500px;
-                      overflow-y:auto;
-                      overflow-x:auto;
-                      margin: -100px 0 0 -150px;background-color:#000;z-index:10000000;'>
-        <p id='message-title' style='text-align:center;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>MESSAGE</p>
-        <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-        <p id='message' style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'></p>
-        <input onclick="closeMessage()" type=button class='button' value="x" style='position:absolute;right:0%;top:0%;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Cancel">
-    </div> -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- 
-    <div id='popup' style='display:none;
-                      border-radius:5px;
-                      position:absolute;
-                      z-index: 15;
-                      top: 50%;
-                      left: 30%;
-                      width: 500px;
-                      margin: -100px 0 0 -150px;background-color:rgba(150,150,150,0.95)'>
-        <p style='text-align:left;vertical-align:bottom;color:#fff;font-size:15pt;margin:5px'>Image Export Parameters</p>
-        <div style='width:95%;height:2px;border-radius:5px;margin:2px;background-color:#fff'></div>
-        <ol id='popup-output-list'></ol>
-    </div> -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <!-- </div>  -->
-    <!-- <div id="marker-position"></div> -->

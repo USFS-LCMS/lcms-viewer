@@ -6,7 +6,7 @@ var list = [];
 var bucketName = 'test-bucket-housman2';//Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
 var eID = 1;
 var exportFC;
-
+// exportCapability = true;
 ///////////////////////////////////////////////////////////////////
 var cachedEEExports = null;
     if(typeof(Storage) !== "undefined"){
@@ -206,7 +206,7 @@ downloadTraining = function(){
 }
 ////////////////////////////////////////////////
 function trackExports(){
-    print('tracking exports')
+    
     exportList = [];
     var taskIDList  = 'Exporting: ';
     taskCount = 0;
@@ -294,6 +294,7 @@ function cacheExport(id,outputName,metadata){
     localStorage.setItem("cachedEEExports",JSON.stringify(cachedEEExports));
     trackExports();
 }
+if(exportCapability){interval2(trackExports, 15000, 100000)};
 
 function updateSpinner(){
 
@@ -429,4 +430,3 @@ function displayExports(fc){
         
     })
 }
-if(canExport){interval2(trackExports, 1000, 100000)};

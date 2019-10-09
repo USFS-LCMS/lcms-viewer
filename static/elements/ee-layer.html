@@ -81,8 +81,8 @@
             #viz:hover{width:50px;}
             li:hover, #opacity:hover input[type="range"]::-webkit-slider-thumb {color:#00897B!important;-webkit-transition: color  0.5s;}
             i{font-size: 1em,margin:0px;padding:0px;}
-            .leftLabel{float:left;}
-            .rightLabel{float:right;}
+           /* .leftLabel{float:left;}
+            .rightLabel{float:right;}*/
             .deactivated{display:none;}
            /* .container{float:left;display: inline-block;
                         vertical-align: top;
@@ -99,13 +99,8 @@
        <li rel="txtTooltip" data-toggle="tooltip"  title= {{helpBoxMessage}}>
            <input id="opacity"  type="range"  class="range" value=100 style = '' on-input="{{onRangeChange}}">
             <i class="fa fa-spinner fa-spin  {{ {deactivated:layer != null}| tokenList }} "></i>
-           <!--  <input class="{{ {deactivated:layer == null}| tokenList }}" id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}"> -->
-
-          
-            
-  <input  id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}" />
-  <label class="{{ {deactivated:layer == null}| tokenList }} " style = 'margin-bottom:0px;'  for="enabled"></label>{{name}}
-
+            <input  id="enabled" type="checkbox" on-change="{{onChange}}" checked="{{visible}}" />
+            <label class="{{ {deactivated:layer == null}| tokenList }} " style = 'margin-bottom:0px;'  for="enabled"></label>{{name}}
        </li>
 
     </template>
@@ -566,7 +561,7 @@
             .container{float:left;display: inline-block;
     vertical-align: top;}
             /*.legend{color: #000;font-weight: bold;float:right;height:10;width:200px;margin: 0 0 10px 10px;}*/
-            .range{float:right;}
+            .layer-range{float:right;}
             #opacity{margin-left:1Spx;}
         </style>
         <li style = 'height:5px;' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
@@ -811,20 +806,12 @@
         </style>
         <li  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= {{helpBoxMessage}}>
             <div class='my-legend'>
-
-<div class='legend-scale'>
-  <ul class='legend-labels'>
-  <!-- <div class='legend-title'>{{name}}</div> -->
-    <!-- {{classLegendHTML}} -->
-
-<!-- {{classLegendHTML}} -->
-<li><span style='border: {{classStrokeWeight}}px solid #{{classStrokeColor}};background:#{{classColor}};'></span>{{className}}</li>
-
-
-
-  </ul>
-</div>
-</div>
+                <div class='legend-scale'>
+                    <ul class='legend-labels'>
+                        <li><span style='border: {{classStrokeWeight}}px solid #{{classStrokeColor}};background:#{{classColor}};'></span>{{className}}</li>
+                    </ul>
+                </div>
+            </div>
         </li>
     </template>
     

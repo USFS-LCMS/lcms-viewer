@@ -53,18 +53,43 @@ addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`
 addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
 addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
 
-$('#parameters-collapse-div').append(staticTemplates.paramsDiv);
-$('#layer-list-collapse-div').append(`<layer-list id="layers"></layer-list>`);
-$('#reference-layer-list-collapse-div').append(`<reference-layer-list id="reference-layers"></reference-layer-list>`);
+// $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
+
+//Construct parameters form
+addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
+$('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',1985, 2018, startYear, endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
+
+$('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>
+                                        <div id='threshold-container' style="display:none;width:100%"></div>
+                                        <div id='advanced-radio-container' style="display: none;"></div>`)
+addDualRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline','upperThresholdDecline',0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+$('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
+addDualRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery','upperThresholdRecovery',0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ")
+$('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+
+addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
+$('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
+$('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold')
+$('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
+$('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+$('#parameters-collapse-div').append(`<button onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`);
+
+//Set up layer lists
+$('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
+$('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
 
 
 $('#download-collapse-div').append(staticTemplates.downloadDiv);
 $('#support-collapse-div').append(staticTemplates.supportDiv);
 
-setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
-setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null');
+// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
+// setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null');
 
-setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null');
+// setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null');
 
 $('body').append(`<div class = 'legendDiv flexcroll col-sm-6 col-md-4 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
 // $('body').append(`<span style = 'position:absolute;right:20%;bottom:50%;z-index:10;cursor:pointer;' class = 'p-2 bg-black' id = 'tool-message-box'></span>`);
@@ -73,8 +98,8 @@ $('body').append(`<div class = 'legendDiv flexcroll col-sm-6 col-md-4 col-lg-3 c
 
 // addToggle('layer-list-collapse-div','test-toggle','Toggle metric or imperial', 'Imperial','Metric','checked','mi','imperial','metric');
 addCollapse('legendDiv','legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
-$('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
-
+// $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
+$('#legend-collapse-div').append(`<div   id="legend"></div>`)
 //Add tool tabs
  
 
@@ -86,26 +111,14 @@ addAccordianContainer('tools-collapse-div','tools-accordian')
 
 // addAccordianContainer('measuring-tools-collapse-div','measuring-tools-accordian');
 
-function updateDistanceColor(jscolor) {
-    distancePolylineOptions.strokeColor = '#' + jscolor;
-    if(distancePolyline !== undefined){
-        distancePolyline.setOptions(distancePolylineOptions);
-    }
-}
-function updateUDPColor(jscolor) {
-    udpOptions.strokeColor = '#' + jscolor;
-    if(udp !== undefined){
-        udp.setOptions(udpOptions);
-    }
-}
-function addColorPicker(containerID,pickerID,updateFunction){
-    $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
-}
+
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
-$('#tools-accordian').append(staticTemplates.imperialMetricToggle);
+// $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
 addSubAccordianCard('tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
 addSubAccordianCard('tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
-addColorPicker('measure-distance-div','distance-color-picker','updateDistanceColor');
+addColorPicker('measure-distance-div','distance-color-picker','updateDistanceColor',distancePolylineOptions.strokeColor);
+addColorPicker('measure-area-div','area-color-picker','updateAreaColor',areaPolygonOptions.strokeColor);
+
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTip);
@@ -121,7 +134,7 @@ addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defi
 addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
 addSubAccordianCard('tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
 
-addColorPicker('user-defined-area-chart-div','user-defined-color-picker','updateUDPColor');
+addColorPicker('user-defined-area-chart-div','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
 var showChartButton = `<div class = 'py-2'>
                         <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
@@ -131,6 +144,9 @@ $('#upload-area-chart-div').append(showChartButton);
 $('#select-area-chart-div').append(showChartButton);
 
 
+if(canExport){
+   $('#download-collapse-div').append(staticTemplates.exportContainer);
+}
 
 // addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');
 // addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialArea','imperial','metric','updateArea()');

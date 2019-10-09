@@ -135,7 +135,22 @@ var fsb;
 // var fieldName = 'FORESTNAME';
 // var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries';
 
-
+function populateAreaChartDropdown(){
+  $('#area-collection-dropdown').empty();
+  var keys = Object.keys(areaChartCollections)
+  whichAreaChartCollection = keys[0];
+  if(keys.length > 1){
+    Object.keys(areaChartCollections).map(function(k){
+    addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k);
+    });
+    $('#area-collection-dropdown-container').show();
+  }else{$('#area-collection-dropdown-container').hide();}
+  
+}
+$('#area-collection-dropdown').change(function(){
+  console.log(whichAreaChartCollection);
+  setupFSB();
+})
 // var fieldName = 'PARKNAME';
 // var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries';
 function setupFSB(){
@@ -163,24 +178,26 @@ function setupFSB(){
 	fsb = nfs.merge(nps);
 	fieldName = 'label';
  
+	if(areaChartCollections[whichAreaChartCollection] !== undefined){
+		fsb = fsb.filterBounds(areaChartCollections[whichAreaChartCollection].collection.geometry());
 
-  fsb = fsb.filterBounds(areaChartCollections[whichAreaChartCollection].collection.geometry());
-
-  var names = ee.List(ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys());
-  ee.Dictionary.fromLists(names, names).evaluate(function(d){
-  	// print('d');print(d);
-  	 var mySelect = $('#forestBoundaries');
-	  var choose;
-	  mySelect.append($('<option></option>').val(choose).html('Choose an area'))
-	  $.each(d, function(val,text) {
-	     
-	      mySelect.append($('<option></option>').val(val).html(text)
-	      );
-	  });
-	  // $('#select-area-spinner').removeClass('fa-spin fa fa-spinner');
-	  $('#select-area-spinner').hide();
-	  $('#forestBoundaries').show();
-  })
+		  var names = ee.List(ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys());
+		  ee.Dictionary.fromLists(names, names).evaluate(function(d){
+		  	// print('d');print(d);
+		  	 var mySelect = $('#forestBoundaries');
+			  var choose;
+			  mySelect.append($('<option></option>').val(choose).html('Choose an area'))
+			  $.each(d, function(val,text) {
+			     
+			      mySelect.append($('<option></option>').val(val).html(text)
+			      );
+			  });
+			  // $('#select-area-spinner').removeClass('fa-spin fa fa-spinner');
+			  $('#select-area-spinner').hide();
+			  $('#forestBoundaries').show();
+		  })
+	}
+  
  	
  
 };
@@ -189,15 +206,15 @@ var udp;
 var udpList = [];
 var whichAreaDrawingMethod;
 
-function startAreaCharting(){
-	console.log('starting area charting');
-	// $('#areaChartingTabs').slideDown();
-	$("#charting-parameters").slideDown();
-	if(whichAreaDrawingMethod === '#user-defined'){console.log('starting user defined area charting');startUserDefinedAreaCharting();}
-  	else if(whichAreaDrawingMethod === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
-  	else if(whichAreaDrawingMethod === '#pre-defined'){$('#pre-defined').slideDown();}
+// function startAreaCharting(){
+// 	console.log('starting area charting');
+// 	// $('#areaChartingTabs').slideDown();
+// 	$("#charting-parameters").slideDown();
+// 	if(whichAreaDrawingMethod === '#user-defined'){console.log('starting user defined area charting');startUserDefinedAreaCharting();}
+//   	else if(whichAreaDrawingMethod === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
+//   	else if(whichAreaDrawingMethod === '#pre-defined'){$('#pre-defined').slideDown();}
 
-}
+// }
 function areaChartingTabSelect(target){
 	stopAreaCharting();
 	stopCharting();
@@ -223,18 +240,7 @@ function areaChartingTabSelect(target){
         
 // }
 // listenForUserDefinedAreaCharting();
-var userDefinedI = 1;
-var fColor = '#FF0';//randomColor();
-var udpOptions = {
-          strokeColor:fColor,
-            fillOpacity:0.2,
-          strokeOpacity: 1,
-          strokeWeight: 3,
-          draggable: true,
-          editable: true,
-          geodesic:true,
-          polyNumber: 1
-        };
+
 function startUserDefinedAreaCharting(){
 	console.log('start clicking');
 	
@@ -249,16 +255,7 @@ function startUserDefinedAreaCharting(){
     google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
     
-     // var udpPolyOptions = {
-     //          strokeColor:fColor,
-     //            fillOpacity:0.2,
-     //          strokeOpacity: 1,
-     //          strokeWeight: 3,
-     //          draggable: false,
-     //          editable: false,
-     //          geodesic:true,
-     //          polyNumber: 1
-     //        };
+    
    try{
    	udp.setMap(null);
    }catch(err){};
@@ -434,6 +431,7 @@ function makeAreaChart(area,name,userDefined){
 				// if(whichAreaDrawingMethod === '#user-defined'){
 					area.evaluate(function(i){
 						areaGeoJson = i;
+						areaGeoJson[name] = tableT;
 						if(areaGeoJson !== undefined && areaGeoJson !== null){
 					    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
 					   }});
@@ -441,7 +439,7 @@ function makeAreaChart(area,name,userDefined){
 				areaChartingCount--;
 			}
 			else{
-				$('#summary-spinner').slideUp()
+				$('#summary-spinner').slideUp();
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
 				
@@ -527,7 +525,7 @@ function stopAreaCharting(){
    	udp.setMap(null);
    }catch(err){};
  //   $('#areaChartingTabs').slideUp();
-	// $('#areaUpload').unbind('change')
+	$('#areaUpload').unbind('change')
 	// $("#charting-parameters").slideUp();
 	// $('#user-defined').slideUp();
 	// $('#shp-defined').slideUp();
@@ -787,7 +785,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
 	            display: true,
 	            position:'top',
 	            text: title.replaceAll('_',' '),
-	            fontColor: '#000',
+	            // fontColor: '#000',
 	            fontSize: 16
 	        },
 	        legend:{

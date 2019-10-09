@@ -166,6 +166,7 @@ function centerMap(lng,lat,zoom){
 }
 function centerObject(fc){
   try{
+    // Map2.addLayer(ee.FeatureCollection([ee.Feature(fc.geometry())]))
     fc.geometry().bounds().evaluate(function(feature){
     var bounds = new google.maps.LatLngBounds(); 
     
@@ -222,7 +223,7 @@ function convertToGeoJSON(formID){
     processData: false,
     contentType: false
   });
-  
+  // console.log('out');console.log(out);
   
   return out;
 }
@@ -295,31 +296,19 @@ function setPlotProjectColor(ID){
   plotElements[plotElements.length-ID].style.outline = '#FFF dotted';
    
 }
-/////////////////////////////////////////////////////
-//Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript
-Array.prototype.max = function() {
-  return Math.max.apply(null, this);
-};
 
-Array.prototype.min = function() {
-  return Math.min.apply(null, this);
-};
-/////////////////////////////////////////////////////
-//Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
-String.prototype.replaceAll = function(str1, str2, ignore) 
-{
-    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-} 
 /////////////////////////////////////
 function addExport(eeImage,name,res,Export,metadataParams){
 
-  var exportElement = document.createElement("ee-export");
+  var exportElement = {};
   if(metadataParams === null || metadataParams === undefined){
     metadataParams = {'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
   }
   if(Export === null || Export === undefined){
     Export = true;
   }
+  var checked = '';
+  if(Export){checked = 'checked'}
   
   var now = Date().split(' ');
   var nowSuffix = '_'+now[2]+'_'+now[1]+'_'+now[3]+'_'+now[4]
@@ -337,8 +326,23 @@ function addExport(eeImage,name,res,Export,metadataParams){
   exportElement.ID = exportID;
   
   exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'metadataParams':metadataParams}
-  var exportList = document.querySelector("export-list");
-    exportList.insertBefore(exportElement,exportList.firstChild);
+  // var exportList = document.querySelector("export-list");
+  $('#export-list').append(`<div class = 'input-group'>
+                              <span  class="input-group-addon">
+                                <input  id = '${name}-checkbox' type="checkbox" ${checked} >
+                                <label  style = 'margin-bottom:0px;'  for='${name}-checkbox'></label>
+                              </span>
+                              
+                              <input  id = '${name}-name' class="form-control" type="text" value="${exportElement.name}">
+                            </div>`)
+  $('#' + name + '-name').on('input', function() {
+    exportImageDict[exportElement.ID].name = $(this).val()
+  })
+  $('#' + name + '-checkbox').on('change', function() {
+   
+    exportImageDict[exportElement.ID].shouldExport = this.checked
+  })
+    // exportList.insertBefore(exportElement,exportList.firstChild);
   exportID ++;
 }
 function addImageDownloads(imagePathJson){
@@ -370,6 +374,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
       catch(err2){
         isVector = true;
         }
+
       // };
     // console.log(name + ' ' + isVector + isImageCollection)
     if(isVector){
@@ -414,7 +419,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
 
 
     if(helpBox == null){helpBox = ''};
-    var layer = document.createElement("ee-layer");
+    var layer = {};//document.createElement("ee-layer");
     layer.ID = NEXT_LAYER_ID;
     layer.layerChildID = layerChildID;
     layerChildID++
@@ -430,6 +435,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     layer.legendDivID = legendDivID;
     if(queryItem === null || queryItem === undefined){queryItem = item};
     layer.queryItem = queryItem;
+    layer.isVector = isVector;
     // layer.viz = JSON.stringify(viz);
     // layer.viz  = viz;
 
@@ -439,9 +445,10 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     // else{layer.min = 0;}
     
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
-        var legendItemContainer = document.createElement("legend-item");
+      addLegendContainer(legendDivID,'legend',false,helpBox)
+        // var legendItemContainer = document.createElement("legend-item");
 
-        legendItemContainer.setAttribute("id", legendDivID);
+        // legendItemContainer.setAttribute("id", legendDivID);
 
 
         // var legendBreak = document.createElement("legend-break");
@@ -449,7 +456,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
  
       // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
-        var legend = document.createElement("ee-legend");
+        var legend ={};// document.createElement("ee-legend");
         legend.name = name;
         legend.helpBoxMessage = helpBox
         if(viz.palette != null){
@@ -482,18 +489,20 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     
     if(fontColor != null){legend.fontColor = "color:#" +fontColor + ";" }
         else{legend.fontColor    = "color:#DDD;"}
-     
-    var legendList = document.querySelector("legend-list");
-    legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
-    legendList.insertBefore(legendItemContainer,legendList.firstChild);
+     addColorRampLegendEntry(legendDivID,legend)
+    // var legendList = document.querySelector("legend-list");
+    // legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
+    // legendList.insertBefore(legendItemContainer,legendList.firstChild);
 
     
     }
 
     else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
-
-      var legendItemContainer = document.createElement("legend-item");
-      legendItemContainer.setAttribute("id", legendDivID);
+      addLegendContainer(legendDivID,'legend',false,helpBox)
+      var classLegendContainerID = legendDivID + '-class-container'
+      addClassLegendContainer(classLegendContainerID,legendDivID,name)
+      // var legendItemContainer = document.createElement("legend-item");
+      // legendItemContainer.setAttribute("id", legendDivID);
       // var legendBreak = document.createElement("legend-break");
      
        // var legendList = document.querySelector("legend-list");
@@ -503,21 +512,21 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
         var legendKeys = Object.keys(viz.classLegendDict).reverse();
         legendKeys.map(function(lk){
 
-        var legend = document.createElement("ee-class-legend");
+        var legend = {};//document.createElement("ee-class-legend");
         legend.name = name;
         legend.helpBoxMessage = helpBox;
 
 
         legend.classColor = viz.classLegendDict[lk];
-        legend.classOutlineColor = '999';
+        legend.classStrokeColor = '999';
         legend.classStrokeWeight = 1;
         legend.className = lk;
-
+        addClassLegendEntry(classLegendContainerID,legend)
         // var legendList = document.querySelector("legend-list");
-        legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
+        // legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
         })
       }else{
-        var legend = document.createElement("ee-class-legend");
+        var legend = {};//document.createElement("ee-class-legend");
         legend.name = name;
         legend.helpBoxMessage = helpBox;
         var strokeColor = viz.strokeColor.slice(1);
@@ -529,17 +538,18 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
         legend.classStrokeColor = strokeColor+ Math.floor(viz.strokeOpacity * 255).toString(16);
         legend.classStrokeWeight = viz.strokeWeight+1;
         legend.className = '';
-        legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
+        addClassLegendEntry(classLegendContainerID,legend)
+        // legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
       }
 
       
 
-      var title = document.createElement("ee-class-legend-title");
+      var title = {};//document.createElement("ee-class-legend-title");
       title.name = name;
       title.helpBoxMessage = helpBox;
-      var legendList = document.querySelector("legend-list");
-      legendItemContainer.insertBefore(title,legendItemContainer.firstChild);
-      legendList.insertBefore(legendItemContainer,legendList.firstChild);
+      // var legendList = document.querySelector("legend-list");
+      // legendItemContainer.insertBefore(title,legendItemContainer.firstChild);
+      // legendList.insertBefore(legendItemContainer,legendList.firstChild);
      
     }
 
@@ -548,47 +558,33 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     layer.item = item;
     layer.name = name;
     layer.viz = viz;
-    
-    var layerList = document.querySelector(whichLayerList);
-    layerList.insertBefore(layer,layerList.firstChild);
+    layer.whichLayerList = whichLayerList;
+    layer.layerId = layerCount;
+    layer.currentGEERunID = currentGEERunID;
+    // console.log(whichLayerList);
+    addLayer(layer);
+    // var layerList = document.querySelector(whichLayerList);
+    // layerList.insertBefore(layer,layerList.firstChild);
     layerCount ++;
    
     // print(item)
     
-    if(isVector){item.evaluate(function(v){
-      if(currentGEERunID === geeRunID){
-        layer.addToLayerObj(name,visible);
-        layer.setFeatureLayer(v);
-        layer.setOpacity();
-      };
-    })}else{
-      layer.addToLayerObj(name,visible);
-      layer.addToQueryObj(name,visible,queryItem,viz.queryDict);
-      item.getMap(viz,function(eeLayer){
-          if(currentGEERunID === geeRunID){
-            layer.setLayer(eeLayer);
-            layer.setOpacity();
-          };
-         });};
-    // item.evaluate(function(info){
-    //   var type = info.type;
-    //   print(type);
-    //   if(type === 'ImageCollection'){item = ee.Image(item.mosaic())};
-    //   if(type === 'Feature' || type === 'FeatureCollection'){
-
-    //     item.evaluate(function(v){
-    //       // console.log(v)
-    //       layer.setFeatureLayer(v)
-
-    //       })
-    //   }
-    //   else{
-    //   layer.addToLayerObj(name,visible,queryItem,viz.queryDict);
-    //     item.getMap(viz,function(eeLayer){
-    //       layer.setLayer(eeLayer);layer.setOpacity(layer.opacity,item);
-    //      });
+    // if(isVector){item.evaluate(function(v){
+    //   if(currentGEERunID === geeRunID){
+    //     layer.addToLayerObj(name,visible);
+    //     layer.setFeatureLayer(v);
+    //     layer.setOpacity();
     //   };
-    // })
+    // })}else{
+    //   layer.addToLayerObj(name,visible);
+    //   layer.addToQueryObj(name,visible,queryItem,viz.queryDict);
+    //   item.getMap(viz,function(eeLayer){
+    //       if(currentGEERunID === geeRunID){
+    //         layer.setLayer(eeLayer);
+    //         layer.setOpacity();
+    //       };
+    //      });};
+
     
     
 }
@@ -834,102 +830,40 @@ function reRun(){
   setGEERunID();
   layerChildID = 0;
   queryObj = {};areaChartCollections = {};
-  if(analysisMode === 'advanced'){
-    document.getElementById('threshold-container').style.display = 'inline-block';
-    document.getElementById('advanced-radio-container').style.display = 'inline';
-    // document.getElementById('charting-container').style.display = 'inline-block';
+  // if(analysisMode === 'advanced'){
+  //   document.getElementById('threshold-container').style.display = 'inline-block';
+  //   document.getElementById('advanced-radio-container').style.display = 'inline';
+  //   // document.getElementById('charting-container').style.display = 'inline-block';
     
-  }
-  else{
-    document.getElementById('threshold-container').style.display = 'none';
-    document.getElementById('advanced-radio-container').style.display = 'none';
-    // document.getElementById('charting-container').style.display = 'none';
-    viewBeta = 'no';
-    lowerThresholdDecline = 0.35;
-    upperThresholdDecline = 1;
-    lowerThresholdRecovery = 0.35;
-    upperThresholdRecovery = 1;
-    summaryMethod = 'year';
-  }
+  // }
+  // else{
+  //   document.getElementById('threshold-container').style.display = 'none';
+  //   document.getElementById('advanced-radio-container').style.display = 'none';
+  //   // document.getElementById('charting-container').style.display = 'none';
+  //   viewBeta = 'no';
+  //   lowerThresholdDecline = 0.35;
+  //   upperThresholdDecline = 1;
+  //   lowerThresholdRecovery = 0.35;
+  //   upperThresholdRecovery = 1;
+  //   summaryMethod = 'year';
+  // }
 
-	var layers = document.getElementById("layers");
-  var referenceLayers = document.getElementById("reference-layers");
-  var exportLayers = document.getElementById("export-layers");
-    console.log('layers');
-    console.log(layers);
-    // console.log(layers.firstChild);
-    var legend = document.getElementById("legend");
-    var exports = document.getElementById("export-list");
-    var overlayIndex = 0;
-	while(layers.firstChild){
-        
-		layers.removeChild(layers.firstChild);
-        // var thisOverlay = map.overlayMapTypes.b[overlayIndex];
-        
-        // console.log(layerCount);
-        // setInterval(function(){if(map.overlayMapTypes.b.length >= layerCount){
-        //     console.log('waiting')
-        // }
-        // console.log(map.overlayMapTypes.b.length)
-        // this.map.overlayMapTypes.removeAt(foundIndex);
-        // console.log(thisOverlay)
-        overlayIndex++
-
-	}
+  $('#layer-list').empty();
+  $('#reference-layer-list').empty();
+  $('#export-list').empty();
+  $('#legend').empty();
+	
   Object.values(featureObj).map(function(f){f.setMap(null)});
   featureObj = {};
   map.overlayMapTypes.g.forEach(function(element,index){
-                    
-                    // if(element !== undefined && element !== null){
-                        // console.log('remooooooving');
-                    // console.log(index);
-                    // console.log(element)
-                    map.overlayMapTypes.setAt(index,null);
-                    // map.overlayMapTypes.removeAt(index);
-
-                // };
-                    
+                     map.overlayMapTypes.setAt(index,null);
+                   
                 });
-  // while(exportLayers.firstChild){
-        
-  //   exportLayers.removeChild(exportLayers.firstChild);
-  //       // var thisOverlay = map.overlayMapTypes.b[overlayIndex];
-        
-  //       // console.log(layerCount);
-  //       // setInterval(function(){if(map.overlayMapTypes.b.length >= layerCount){
-  //       //     console.log('waiting')
-  //       // }
-  //       // console.log(map.overlayMapTypes.b.length)
-  //       // this.map.overlayMapTypes.removeAt(foundIndex);
-  //       // console.log(thisOverlay)
-  //       // overlayIndex++
-
-  // }
-  while(referenceLayers.firstChild){
-        
-    referenceLayers.removeChild(referenceLayers.firstChild);
-        // var thisOverlay = map.overlayMapTypes.b[overlayIndex];
-        
-        // console.log(layerCount);
-        // setInterval(function(){if(map.overlayMapTypes.b.length >= layerCount){
-        //     console.log('waiting')
-        // }
-        // console.log(map.overlayMapTypes.b.length)
-        // this.map.overlayMapTypes.removeAt(foundIndex);
-        // console.log(thisOverlay)
-        // overlayIndex++
-
-  }
-  while(exports.firstChild){
-        
-    exports.removeChild(exports.firstChild);
-
-  }
+  
+ 
     console.log(layerCount);
     console.log(refreshNumber);
-    while(legend.firstChild){
-        legend.removeChild(legend.firstChild);
-    }
+  
     refreshNumber   ++;
     // layerCount = 0;
   exportImageDict = {};
@@ -1019,25 +953,10 @@ function randomColors(n){
   }
   return out
 }
-var colorList = randomColors(50);
-var colorMod = colorList.length;
-var currentColor =  colorList[colorMod%colorList.length];
-colorMod++;
-var polyNumber = 1;
-var polyOn = false;
-
-
-var areaPolygonOptions = {
-              strokeColor:currentColor,
-                fillOpacity:0.2,
-              strokeOpacity: 1,
-              strokeWeight: 3,
-              draggable: true,
-              editable: true,
-              geodesic:true,
-              polyNumber: polyNumber
-            
-            };
+// var colorList = randomColors(50);
+// var colorMod = colorList.length;
+// var currentColor =  colorList[colorMod%colorList.length];
+// colorMod++;
 
 function startArea(){
   
@@ -1049,19 +968,19 @@ function startArea(){
    // $( "#distance-area-measurement" ).style.width = '0px';
   // document.getElementById('area-measurement').style.display = 'block';
   // document.getElementById('area-measurement').value = 'a';
-  currentColor =  colorList[colorMod%colorList.length];
-    areaPolygonOptions = {
-              strokeColor:currentColor,
-                fillOpacity:0.2,
-              strokeOpacity: 1,
-              strokeWeight: 3,
-              draggable: true,
-              editable: true,
-              geodesic:true,
-              polyNumber: polyNumber
-            };
-        
-        colorMod++;
+  // currentColor =  colorList[colorMod%colorList.length];
+    // areaPolygonOptions = {
+    //           strokeColor:currentColor,
+    //             fillOpacity:0.2,
+    //           strokeOpacity: 1,
+    //           strokeWeight: 3,
+    //           draggable: true,
+    //           editable: true,
+    //           geodesic:true,
+    //           polyNumber: polyNumber
+    //         };
+        areaPolygonOptions.polyNumber = polyNumber;
+        // colorMod++;
     map.setOptions({draggableCursor:'crosshair'});
     map.setOptions({disableDoubleClickZoom: true });
 
@@ -1088,8 +1007,8 @@ function startArea(){
           // console.log(clickCoords);console.log(pathT.length);
           area = google.maps.geometry.spherical.computeArea(areaPolygonObj[key].getPath());
           
-          var unitNames = unitNameDict[metricOrImperial].area;
-          var unitMultipliers = unitMultiplierDict[metricOrImperial].area;
+          var unitNames = unitNameDict[metricOrImperialArea].area;
+          var unitMultipliers = unitMultiplierDict[metricOrImperialArea].area;
           // console.log(unitNames);
           // console.log(unitMultipliers);
           // console.log(area)
@@ -1438,8 +1357,8 @@ updateDistance = function(){
     clickCoords = pathT[pathT.length-1];
     // console.log(clickCoords)
     
-    var unitNames = unitNameDict[metricOrImperial].distance;
-    var unitMultipliers = unitMultiplierDict[metricOrImperial].distance;
+    var unitNames = unitNameDict[metricOrImperialDistance].distance;
+    var unitMultipliers = unitMultiplierDict[metricOrImperialDistance].distance;
     // console.log(unitNames);
     // console.log(unitMultipliers);
     // console.log(area)
@@ -1579,6 +1498,7 @@ var resetStudyArea = function(whichOne){
     var coords = studyAreaDict[whichOne][1];
     studyAreaName = studyAreaDict[whichOne][0];
     if(studyAreaName === 'CONUS'){run = runCONUS}else{run = runUSFS};
+    $('#export-crs').val(studyAreaDict[whichOne][2])
     // exportCRS = studyAreaDict[whichOne][2];
     // $('#export-crs').val(exportCRS);
     // centerMap(coords[1],coords[0],8);
@@ -1867,6 +1787,7 @@ function initialize() {
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}
+  // run = runSimple;
   setGEERunID();
   run();
   setupFSB();

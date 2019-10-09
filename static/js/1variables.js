@@ -6,9 +6,13 @@ var upperThresholdRecovery = 1.0;
 var studyAreaName = 'BTNF';
 var startYear = 1985;
 var endYear = 2018;
-
-var fc;//Feature collection container for drawing on map and submitting tasks with user-defined vectors
+// var applyTreeMask = true;
+// var summaryMethod = 'recent';
+var whichIndex = 'NBR';
+// var viewBeta = false;
+// var fc;//Feature collection container for drawing on map and submitting tasks with user-defined vectors
 var toExport;
+var exportArea;
 var taskCount = 0;//Keeping track of the number of export tasks each session submitted
 var canAddToMap = true;//Set whether addToMap function can add to the map
 var canExport = false;//Set whether exports are allowed
@@ -45,7 +49,57 @@ var distancePolylineOptions = {
               geodesic:true
             };
 
-var featureObj = {};var geeRunID;
+var polyNumber = 1;
+var polyOn = false;
+
+
+var areaPolygonOptions = {
+              strokeColor:'#FF0',
+                fillOpacity:0.2,
+              strokeOpacity: 1,
+              strokeWeight: 3,
+              draggable: true,
+              editable: true,
+              geodesic:true,
+              polyNumber: polyNumber
+            
+            };
+
+var userDefinedI = 1;
+
+var udpOptions = {
+          strokeColor:'#FF0',
+            fillOpacity:0.2,
+          strokeOpacity: 1,
+          strokeWeight: 3,
+          draggable: true,
+          editable: true,
+          geodesic:true,
+          polyNumber: 1
+        };
+var exportAreaPolylineOptions = {
+          strokeColor:'#FF0',
+            fillOpacity:0.2,
+          strokeOpacity: 1,
+          strokeWeight: 3,
+          draggable: true,
+          editable: true,
+          geodesic:true,
+          polyNumber: 1
+        };
+var exportAreaPolygonOptions = {
+          strokeColor:'#FF0',
+            fillOpacity:0.2,
+          strokeOpacity: 1,
+          strokeWeight: 3,
+          draggable: false,
+          editable: false,
+          geodesic:true,
+          polyNumber: 1
+        };
+var exportImageDict = {};
+var canExport = true;
+var featureObj = {};var geeRunID;var outstandingGEERequests = 0;
 
 var plotDictID = 1;
 var exportID = 1;
@@ -170,3 +224,19 @@ var helpOn = false;
 var queryOn = false;
 var areaChartingOn = false;
 var studyAreaName = 'BTNF'
+
+/////////////////////////////////////////////////////
+//Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript
+Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function() {
+  return Math.min.apply(null, this);
+};
+/////////////////////////////////////////////////////
+//Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
+String.prototype.replaceAll = function(str1, str2, ignore) 
+{
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+} 
