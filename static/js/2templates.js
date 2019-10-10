@@ -60,7 +60,14 @@ var staticTemplates = {
 		                    <div id="study-area-list"></div>
 		                </div>
 		            </li>
-		        </ul>`,
+		            <div class="input-group px-2 pb-2 text-center">
+			            <div class="input-group-prepend">
+	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
+	  					</div>
+			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
+		            </div>
+		        </ul>
+		        `,
 	introModal:`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -82,7 +89,9 @@ var staticTemplates = {
                 </div>
             </div>`,
 	bottomBar:`<div class = 'bottombar' >
-				<p class = 'px-2 my-1' style = 'float:left'; id='current-tool-selection'></p>
+
+				<p class = 'px-2 my-1' style = 'float:left'; id='current-tool-selection' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Any tool that is currently active is shown here."></p>
+				<p class = 'px-2 my-1' style = 'float:left'; rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></p>
                 <p class = 'px-2 my-1' style = 'float:right;' id='current-mouse-position'  ></p>
 
                  <a href="http://www.fs.fed.us//" target="_blank" >
@@ -99,61 +108,10 @@ var staticTemplates = {
             </a>
 
         </div>`,
-
-    paramsDiv:`<div class = 'm-1' >
-    <variable-radio  onclick1 = toggleAdvancedOff() onclick2 = toggleAdvancedOn() var='analysisMode' title2='Choose which mode:' name2='Advanced' name1='Standard' value2='advanced' value1='easy' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"></variable-radio>
-  </div>
-  
-  <div class="dropdown-divider p-0 m-0" style = 'width:100%'></div>
-  
-  
-      <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Years of LCMS data to include for land cover, land use, loss, and gain">
-        <div class='dual-range-slider-name py-2'>Choose analysis year range:</div>
-        <div id="slider1" class='dual-range-slider-slider' href = '#'></div>
-        <div id='date-range-value1' class='dual-range-slider-value p-2'></div>
-    </div>
-    
-  
-
-  <div class="dropdown-divider"></div>
-  <div id='threshold-container' style="display: none;width:100%">
-
-   
-        <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ">
-            <div class='dual-range-slider-name py-2'>Choose loss threshold:</div>
-            <div id="slider2" class='dual-range-slider-slider'></div>
-            <div id='declineThreshold' class='dual-range-slider-value  p-2'></div>
-        </div>
-    
-    
-    <div class="dropdown-divider"></div>
-    <div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ">
-        <div class='dual-range-slider-name  py-2'>Choose gain threshold:</div>
-        <div id="slider3" class='dual-range-slider-slider'></div>
-        <div id='recoveryThreshold' class='dual-range-slider-value  p-2'></div>
-    </div>
-  
-    
-    
-    </div>
-
-    
-  <div id='advanced-radio-container' style="display: none;">
-    <div class="dropdown-divider"></div>
-  
-   <variable-radio var='applyTreeMask' title2='Constrain analysis to areas with trees:' name2='No' name1='Yes' value2='no' value1='yes' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas."></variable-radio>
-
-    <div class="dropdown-divider"></div>
-       <variable-radio var='viewBeta' title2='View beta outputs:' name2='Yes' name1='No' value2='yes' value1='no' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Whether to view products that are currently in beta development"></variable-radio>
-
-    <div class="dropdown-divider"></div>
-    <variable-radio var='summaryMethod' title2='Summary method:' name2='Highest probability' name1='Most recent year' value2='prob' value1='year' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold"></variable-radio>
-       <div class="dropdown-divider"></div>
-       <variable-radio  id = 'whichIndexRadio' var='whichIndex' title2='Index for charting:' name2='NBR' name1='NDVI' value2='NBR' value1='NDVI' type='string' href='#'rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='The vegetation index that will be displayed in the "Query LCMS Time Series" tool' ></variable-radio>
-        <div class="dropdown-divider"></div>
-    </div>
-	<button onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`,
-downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
+        reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
+        reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
+        reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
+    downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
 			<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>`,
 supportDiv :`<div class = 'p-0 pb-2' >
 				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
@@ -164,8 +122,7 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
 			</div>`,
-distanceDiv : `Click on map to measure distance<variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
-imperialMetricToggle:`<variable-radio var='metricOrImperial' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
+distanceDiv : `Click on map to measure distance`,
 distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
 areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
@@ -188,10 +145,10 @@ uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summar
                         
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                         `,
-uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS Loss and Gain products across.',
+uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS products across.',
 selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                     <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>`,
-selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS Loss and Gain products across.'
+selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS products across.'
 
 
 
@@ -413,11 +370,11 @@ function showTip(title,message){
 
 	$('#tip-modal-body').append(`<form class="form-inline pt-3 pb-0">
 								  
-								  <div class="checkbox">
-								    <label class = 'text-uppercase form-check-label '>
-								    	<input type="checkbox"   id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-								    Turn off tips</label>
-								  </div>
+								  <div class="form-check  mr-0">
+                                	<input type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                	<label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
+                            		</div>
+								    
 								  
 								</form>`)
 	// .append(`
@@ -682,7 +639,29 @@ function addColorRampLegendEntry(legendContainerID,obj){
 							        </li> `)
 }
 
-
+function regulateReRunButton(){
+	if(outstandingGEERequests > 0){
+		$('#reRun-button').prop('disabled',true);
+		$('#reRun-button').prop('title',staticTemplates.reRunButtonDisabledTooltip);
+	}
+	else{
+		$('#reRun-button').prop('disabled',false);
+		$('#reRun-button').prop('title',staticTemplates.reRunButtonEnabledTooltip);
+	}
+	
+} 
+function incrementOutstandingGEERequests(){
+	outstandingGEERequests ++;
+	console.log(outstandingGEERequests);
+	$('#outstanding-gee-requests').html(outstandingGEERequests.toString());
+	regulateReRunButton();
+}
+function decrementOutstandingGEERequests(){
+	outstandingGEERequests --;
+	console.log(outstandingGEERequests);
+	$('#outstanding-gee-requests').html(outstandingGEERequests.toString());
+	regulateReRunButton();
+}
 function addLayer(layer){
 	
 	var id = layer.legendDivID;
@@ -778,7 +757,8 @@ function addLayer(layer){
                     style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
                     layer.layer.setStyle(style);
                 }
-                setRangeSliderThumbOpacity()
+                setRangeSliderThumbOpacity();
+                layerObj[layer.name] = [layer.visible,layer.opacity];
 	});
 	
 	$('#'+visibleID).change( function() {
@@ -826,6 +806,7 @@ function addLayer(layer){
                     
                 }
                 setRangeSliderThumbOpacity();
+                layerObj[layer.name] = [layer.visible,layer.opacity];
                
 		
 	});
@@ -836,12 +817,11 @@ function addLayer(layer){
 
 	if(!layer.isVector){
 		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
-		outstandingGEERequests ++;
-		console.log(outstandingGEERequests);
+		incrementOutstandingGEERequests();
+		
 		// console.log('adding tile map service');
 		layer.item.getMap(layer.viz,function(eeLayer){
-			outstandingGEERequests --;
-			console.log(outstandingGEERequests);
+			decrementOutstandingGEERequests();
 			// console.log('tile service created');
 			$('#' + spinnerID).hide();
 			$('#' + visibleLabelID).show();
@@ -886,11 +866,11 @@ function addLayer(layer){
 		})
 
 	}else{
-		outstandingGEERequests ++;
-		console.log(outstandingGEERequests);
+		incrementOutstandingGEERequests();
+		
 		layer.item.evaluate(function(v){
-			outstandingGEERequests --;
-			console.log(outstandingGEERequests);
+			decrementOutstandingGEERequests();
+			
 			$('#' + spinnerID).hide();
 			$('#' + visibleLabelID).show();
 

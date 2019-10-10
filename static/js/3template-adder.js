@@ -76,7 +76,7 @@ addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Mos
 $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
 addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
 $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
-$('#parameters-collapse-div').append(`<button onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Once finished changing parameters, press this button to refresh maps">Submit</button>`);
+$('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
 //Set up layer lists
 $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
@@ -115,7 +115,12 @@ addAccordianContainer('tools-collapse-div','tools-accordian')
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
 // $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
 addSubAccordianCard('tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTip);
+addRadio('measure-distance-div','metricOrImperialDistance-radio','','Imperial','Metric','metricOrImperialDistance','imperial','metric','updateDistance()','updateDistance()','Toggle between imperial or metric units')
+
+// <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
 addSubAccordianCard('tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
+addRadio('measure-area-div','metricOrImperialArea-radio','','Imperial','Metric','metricOrImperialArea','imperial','metric','updateArea()','updateArea()','Toggle between imperial or metric units')
+
 addColorPicker('measure-distance-div','distance-color-picker','updateDistanceColor',distancePolylineOptions.strokeColor);
 addColorPicker('measure-area-div','area-color-picker','updateAreaColor',areaPolygonOptions.strokeColor);
 

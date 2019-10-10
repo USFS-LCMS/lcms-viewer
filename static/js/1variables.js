@@ -98,7 +98,7 @@ var exportAreaPolygonOptions = {
           polyNumber: 1
         };
 var exportImageDict = {};
-var canExport = true;
+var canExport = false;
 var featureObj = {};var geeRunID;var outstandingGEERequests = 0;
 
 var plotDictID = 1;
