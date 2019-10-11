@@ -674,15 +674,40 @@ function addLayer(layer){
 	var checked = '';
 	if(layer.visible){checked = 'checked'}
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
-								           <input id="${opacityID}"  type="range"  class="layer-opacity-range" value=100 >
+								           
+								           <div id="${opacityID}" class = 'simple-layer-opacity-range'></div>
 								           <input  id="${visibleID}" type="checkbox" ${checked}  />
 								            <label  id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Background processing is occurring in Google Earth Engine'></i>
 								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
 								       </li>`);
-	
+	$("#"+opacityID).slider({
+        
+         min: 0,
+    max: 100,
+    step: 1,
+    value: layer.opacity*100,
+	slide: function(e,ui){
+		layer.opacity = ui.value/100;
+		console.log(layer.opacity);
+		 if(!layer.isVector){
+            layer.layer.setOpacity(layer.opacity);
+            if(layer.visible){
+            	layer.rangeOpacity = layer.opacity;
+            }
+            
+          }else{
+                    var style = layer.layer.getStyle();
+                    style.strokeOpacity = layer.opacity;
+                    style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
+                    layer.layer.setStyle(style);
+                }
+                setRangeSliderThumbOpacity();
+                layerObj[layer.name] = [layer.visible,layer.opacity];
+		
+	}})
 	function setRangeSliderThumbOpacity(){
-		// $('#'+opacityID+'.layer-opacity-range').css("background", 'rgba(0,0,0,'+layer.rangeOpacity+')')
+		$('#'+opacityID+'> .ui-slider-handle').css("background-color", 'rgba(0,0,0,'+layer.rangeOpacity+')')
 	}
 	function updateProgress(){
 		var pct = layer.percent;
@@ -742,24 +767,24 @@ function addLayer(layer){
 	// 	// console.log(layer.item.geometry().bounds().getInfo())
 	// 	// centerObject(layer.item);
 	// })
-	$('#'+opacityID).on('input', function() {
-    	layer.opacity = this.value/100;
-		// console.log(layer.opacity);
-		 if(!layer.isVector){
-            layer.layer.setOpacity(layer.opacity);
-            if(layer.visible){
-            	layer.rangeOpacity = layer.opacity;
-            }
+	// $('#'+opacityID).on('slide', function() {
+ //    	layer.opacity = this.value/100;
+	// 	// console.log(layer.opacity);
+	// 	 if(!layer.isVector){
+ //            layer.layer.setOpacity(layer.opacity);
+ //            if(layer.visible){
+ //            	layer.rangeOpacity = layer.opacity;
+ //            }
             
-          }else{
-                    var style = layer.layer.getStyle();
-                    style.strokeOpacity = layer.opacity;
-                    style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
-                    layer.layer.setStyle(style);
-                }
-                setRangeSliderThumbOpacity();
-                layerObj[layer.name] = [layer.visible,layer.opacity];
-	});
+ //          }else{
+ //                    var style = layer.layer.getStyle();
+ //                    style.strokeOpacity = layer.opacity;
+ //                    style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
+ //                    layer.layer.setStyle(style);
+ //                }
+ //                setRangeSliderThumbOpacity();
+ //                layerObj[layer.name] = [layer.visible,layer.opacity];
+	// });
 	
 	$('#'+visibleID).change( function() {
 		// console.log(layer.layerId);
@@ -806,13 +831,15 @@ function addLayer(layer){
                     
                 }
                 setRangeSliderThumbOpacity();
+                console.log('visible: ' +layer.visible);
+                console.log('opacity: '+layer.opacity);
                 layerObj[layer.name] = [layer.visible,layer.opacity];
                
 		
 	});
 
 	
-	layerObj[layer.name] = [layer.visible,1];
+	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
 
 	if(!layer.isVector){
