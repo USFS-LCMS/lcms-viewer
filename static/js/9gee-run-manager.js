@@ -736,23 +736,29 @@ function runUSFS(){
     lossGainAreaCharting =lossGainAreaCharting.map(function(img){
       return img.mask().clip(lossGainAreaChartingGeo)
     });
-    lossGainAreaCharting = lossGainAreaCharting.select([1,0],['Loss','Gain']);
+    lossGainAreaCharting = lossGainAreaCharting.select([0,1],['Loss','Gain']);
     
     
     // areaChartCollection = forAreaCharting;
     // stackedAreaChart = false;
     // areaChartCollections = {};
+    var lColors = declineYearPalette.split(',');
+    var gColors = recoveryYearPalette.split(',');
+    var lColor = lColors[lColors.length-1];
+    var gColor = gColors[gColors.length-1];; 
     areaChartCollections['lg'] = {'label':'LCMS Loss/Gain',
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
-                                  'colors':['F00','00F']};
-
-    areaChartCollections['lc'] = {'label':'LCMS Landcover',
+                                  'colors':[lColor,gColor]};
+    if(analysisMode === 'advanced'){
+      areaChartCollections['lc'] = {'label':'LCMS Landcover',
                                   'collection':lcStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
                                   'colors':Object.values(landcoverClassLegendDict)};
+    }
+    
     
     
     populateAreaChartDropdown();

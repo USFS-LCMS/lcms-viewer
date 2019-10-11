@@ -381,7 +381,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
       if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
       if(viz.fillOpacity === undefined || viz.fillOpacity === null){viz.fillOpacity = 0.2};
       if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222'};
-      if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = randomColor()};
+      if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getColor()};
       if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 3};
       viz.opacityRatio = viz.strokeOpacity/viz.fillOpacity;
       if(viz.fillColor.indexOf('#') == -1){viz.fillColor = '#' + viz.fillColor};
@@ -445,7 +445,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     // else{layer.min = 0;}
     
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
-      addLegendContainer(legendDivID,'legend',false,helpBox)
+      addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
         // var legendItemContainer = document.createElement("legend-item");
 
         // legendItemContainer.setAttribute("id", legendDivID);
@@ -498,7 +498,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     }
 
     else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
-      addLegendContainer(legendDivID,'legend',false,helpBox)
+      addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       var classLegendContainerID = legendDivID + '-class-container'
       addClassLegendContainer(classLegendContainerID,legendDivID,name)
       // var legendItemContainer = document.createElement("legend-item");
@@ -847,11 +847,13 @@ function reRun(){
   //   upperThresholdRecovery = 1;
   //   summaryMethod = 'year';
   // }
-
-  $('#layer-list').empty();
-  $('#reference-layer-list').empty();
+  ['layer-list','reference-layer-list'].map(function(l){
+    $('#'+l).empty();
+    $('#legend-'+l).empty();
+  })
+  
   $('#export-list').empty();
-  $('#legend').empty();
+  
 	
   Object.values(featureObj).map(function(f){f.setMap(null)});
   featureObj = {};
@@ -859,10 +861,11 @@ function reRun(){
                      map.overlayMapTypes.setAt(index,null);
                    
                 });
-  
+
+  // map.overlayMapTypes.g = {};
  
-    console.log(layerCount);
-    console.log(refreshNumber);
+    // console.log(layerCount);
+    // console.log(refreshNumber);
   
     refreshNumber   ++;
     // layerCount = 0;
@@ -931,6 +934,7 @@ function randomColor(){
 }
 var chartColorI = 0;
 var chartColors = ['#050','#0F0','#808','#00aeef','#880','#220'];
+
 // ['#111','#808','#fb9a99','#33a02c','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
 function getChartColor(){
   var color = chartColors[chartColorI%chartColors.length]
@@ -953,10 +957,16 @@ function randomColors(n){
   }
   return out
 }
-// var colorList = randomColors(50);
-// var colorMod = colorList.length;
-// var currentColor =  colorList[colorMod%colorList.length];
-// colorMod++;
+//////////////////////////////////
+//Taken from: https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
+var colorList = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'];
+var colorMod = colorList.length;
+function getColor(){
+  var currentColor =  colorList[colorMod%colorList.length];
+  colorMod++;
+  return currentColor
+}
+
 
 function startArea(){
   
@@ -1459,10 +1469,12 @@ var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-115.08,8],'EPSG:2
                   'Bridger-Teton National Forest':['BTNF',[43.4,-111.1,8],'EPSG:26912',0.35,0.35],
                   'Manti-La Sal National Forest':['MLSNF',[38.8,-111,8],'EPSG:26912',0.25,0.30],
                   'Chugach National Forest - Kenai Peninsula':['CNFKP',[60.4,-150.1, 9],'EPSG:3338',0.25,0.35],
-                  'Science Team CONUS':['CONUS',[40.0,-95.0,4],'EPSG:5070',0.30,0.30],
+                  'Science Team CONUS':['CONUS',[37.5334105816903,-105.6787109375,5],'EPSG:5070',0.30,0.30],
                 };
 
 function dropdownUpdateStudyArea(whichOne){
+  console.log('clicked')
+   
   resetStudyArea(whichOne);
    // localStorage.setItem("cachedStudyAreaName",this.innerHTML)
    //  $('.status').text(this.innerHTML);
@@ -1475,11 +1487,12 @@ function dropdownUpdateStudyArea(whichOne){
     if(studyAreaName === 'CONUS'){run = runCONUS}
       else{run = runUSFS};
 
-  
+    
 
     reRun();
 };
 var resetStudyArea = function(whichOne){
+
     localStorage.setItem("cachedStudyAreaName",whichOne)
    
     $('#studyAreaDropdown').val(whichOne);
@@ -1491,10 +1504,10 @@ var resetStudyArea = function(whichOne){
     lowerThresholdRecovery = studyAreaDict[whichOne][4];
     upperThresholdRecovery = 1;
     
-    setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'slider2','declineThreshold','null')
+    setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'decline-threshold-slider','decline-threshold-slider-update','null')
     
-    setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'slider3','recoveryThreshold','null')
-
+    setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'recovery-threshold-slider','recovery-threshold-slider-update','null')
+    
     var coords = studyAreaDict[whichOne][1];
     studyAreaName = studyAreaDict[whichOne][0];
     if(studyAreaName === 'CONUS'){run = runCONUS}else{run = runUSFS};

@@ -230,7 +230,7 @@ function getMTBSandIDS(studyAreaName){
   
   mtbs = ee.ImageCollection(mtbs_path)
     .filter(ee.Filter.calendarRange(startYear,mtbsEndYear,'year'))
-      .map(function(img){return img.updateMask(img.neq(0))});
+      .map(function(img){return img.selfMask()});
   
   mtbs = mtbs.map(function(img){return img.select([0],['burnSeverity']).byte()
     // .updateMask(img.neq(0).and(img.neq(6)))

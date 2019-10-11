@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
         <script type="text/javascript">
            
             // var ua = navigator.userAgent;
@@ -44,9 +46,9 @@
             // whichBrowser['blink'] = isBlink;
 
             var browser = Object.keys(Object.filter(whichBrowser, b => b === true))[0]
-            if(!isChrome && isChrome !== undefined){
-                alert('Detected browser is: ' + browser + '\nThis app is designed to work best with Google Chrome.\nPlease re-open in Chrome.')
-            }
+            // if(!isChrome && isChrome !== undefined){
+                // alert('Detected browser is: ' + browser + '\nThis app is designed to work best with Google Chrome.\nPlease re-open in Chrome.')
+            // }
             console.log(browser)
 
         </script>
@@ -113,7 +115,7 @@
         <script type="text/javascript" src="./js/7tools-toggle-manager.js"></script>
         <script type="text/javascript" src="./js/8gee-lib-manager.js"></script>
         <script type="text/javascript" src="./js/9gee-run-manager.js"></script>
-        <script type="text/javascript" src="./js/10download_dict.json"></script>
+        <script type="text/javascript" src="./js/10download_dict.js"></script>
         <script type="text/javascript" src="./js/11download-manager.js"></script>
         <script type="text/javascript" src="./js/12metadata-parser.js"></script>
         <script type="text/javascript" src="./js/13export-manager.js"></script>

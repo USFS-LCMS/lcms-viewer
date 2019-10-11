@@ -99,7 +99,8 @@ $('body').append(`<div class = 'legendDiv flexcroll col-sm-6 col-md-4 col-lg-3 c
 // addToggle('layer-list-collapse-div','test-toggle','Toggle metric or imperial', 'Imperial','Metric','checked','mi','imperial','metric');
 addCollapse('legendDiv','legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
 // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
-$('#legend-collapse-div').append(`<div   id="legend"></div>`)
+$('#legend-collapse-div').append(`<div id="legend-layer-list"></div>`);
+$('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
 //Add tool tabs
  
 

@@ -5,16 +5,16 @@ var topBannerParams = {
     centerWords: 'DATA',
     rightWords:'Explorer'
 };
-var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `
+var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 
 
 
 var staticTemplates = {
-	map:`<div class = ' map' id = 'map'> </div>`,
+	map:`<div onclick = "$('#study-area-list').hide();" class = ' map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
 	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>`,
-	sidebarLeftContainer: `<div style = 'position: absolute;left:0%;top:0%;'class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
+	sidebarLeftContainer: `<div onclick = "$('#study-area-list').hide();" style = 'position: absolute;left:0%;top:0%;'class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
 					        <div id = 'sidebar-left-header'></div>
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
@@ -52,15 +52,15 @@ var staticTemplates = {
                         
                     </div>`,
 
-	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="Hooray!" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
-		        <ul class = 'navbar-nav  px-5  m-0 text-center'   >
-		            <li   class="nav-item dropdown navbar-dark navbar-nav nav-link p-0col-12  "  data-toggle="dropdown">
-		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade')" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
-		                <div class="dropdown-menu  " >
-		                    <div id="study-area-list"></div>
+	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
+		        <ul class = 'navbar-nav  px-5  m-0 text-center'data-toggle="tooltip" title="Choose your study area"    >
+		            <li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
+		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Flathead National Forest</h5> 
+		                <div class="dropdown-menu" id="study-area-list"  >
+		                    
 		                </div>
 		            </li>
-		            <div class="input-group px-2 pb-2 text-center">
+		            <div class="input-group px-2 pb-2 text-center"">
 			            <div class="input-group-prepend">
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
@@ -108,6 +108,8 @@ var staticTemplates = {
             </a>
 
         </div>`,
+        studyAreaDropdownButtonEnabledTooltip:`Choose your study area`,
+        studyAreaDropdownButtonDisabledTooltip:`Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
         reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
         reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
@@ -419,8 +421,10 @@ function showTip(title,message){
 function addStudyAreaToDropdown(name,toolTip){
 	var id = name.replaceAll(' ','-');
 	// console.log(id);
-	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   href="#" data-toggle="tooltip" data-placement="top" title="${toolTip}">${name}</a>`)
+	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`)
   	$('#'+id).on('click',function(){
+  		console.log('clicked')
+  		$('#study-area-list').hide();
     	dropdownUpdateStudyArea(this.name);
     })
     
@@ -611,7 +615,7 @@ function addLegendContainer(legendContainerID,containerID,show,toolTip){
 	if(show === undefined || show === null){show = true}
 	if(show){show = 'block'}
 	else{show = 'none'}
-	$('#' + containerID).append(`<div class = 'py-2 row' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+	$('#' + containerID).prepend(`<div class = 'py-2 row' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
 								</div>`);
 }
 
@@ -641,29 +645,33 @@ function addColorRampLegendEntry(legendContainerID,obj){
 
 function regulateReRunButton(){
 	if(outstandingGEERequests > 0){
+
 		$('#reRun-button').prop('disabled',true);
+		// $('#study-area-dropdown').attr('data-toggle','');
+
+		// $('#study-area-dropdown').prop('title',staticTemplates.studyAreaDropdownButtonDisabledTooltip);
 		$('#reRun-button').prop('title',staticTemplates.reRunButtonDisabledTooltip);
 	}
 	else{
 		$('#reRun-button').prop('disabled',false);
+		// $('#study-area-dropdown').attr('data-toggle','dropdown');
+
+		// $('#study-area-dropdown').prop('title',staticTemplates.studyAreaDropdownButtonEnabledTooltip);
 		$('#reRun-button').prop('title',staticTemplates.reRunButtonEnabledTooltip);
 	}
 	
 } 
-function incrementOutstandingGEERequests(){
-	outstandingGEERequests ++;
-	console.log(outstandingGEERequests);
-	$('#outstanding-gee-requests').html(outstandingGEERequests.toString());
+function updateOutstandingGEERequests(){
+	$('#outstanding-gee-requests').html(outstandingGEERequests);
 	regulateReRunButton();
+}
+function incrementOutstandingGEERequests(){
+	outstandingGEERequests ++;updateOutstandingGEERequests();
 }
 function decrementOutstandingGEERequests(){
-	outstandingGEERequests --;
-	console.log(outstandingGEERequests);
-	$('#outstanding-gee-requests').html(outstandingGEERequests.toString());
-	regulateReRunButton();
+	outstandingGEERequests --;updateOutstandingGEERequests();
 }
 function addLayer(layer){
-	
 	var id = layer.legendDivID;
 	var containerID = id + '-container';
 	var opacityID = id + '-opacity';
@@ -689,7 +697,7 @@ function addLayer(layer){
     value: layer.opacity*100,
 	slide: function(e,ui){
 		layer.opacity = ui.value/100;
-		console.log(layer.opacity);
+		// console.log(layer.opacity);
 		 if(!layer.isVector){
             layer.layer.setOpacity(layer.opacity);
             if(layer.visible){
@@ -704,16 +712,22 @@ function addLayer(layer){
                 }
                 setRangeSliderThumbOpacity();
                 layerObj[layer.name] = [layer.visible,layer.opacity];
-		
-	}})
+		setRangeSliderThumbOpacity();
+		}
+	})
 	function setRangeSliderThumbOpacity(){
-		$('#'+opacityID+'> .ui-slider-handle').css("background-color", 'rgba(0,0,0,'+layer.rangeOpacity+')')
+		// console.log(layer.opacity);
+		var current
+		$('#'+opacityID).css("background-color", 'rgba(55, 46, 44,'+layer.rangeOpacity+')')
+		// $( "#"+opacityID+" .ui-slider-range" ).css( "background-color", 'rgb(255,0,0)' );
+		// $('#'+opacityID+'> .ui-slider-handle').css("background-color", 'rgba(0,0,0,'+layer.rangeOpacity+')')
 	}
 	function updateProgress(){
 		var pct = layer.percent;
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
 	$("#"+ opacityID).val(layer.opacity * 100);
+	
 	// $('#'+ spanID).click(function(){
 		
 	// 	if(!layer.isVector){
