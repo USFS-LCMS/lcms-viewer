@@ -122,8 +122,11 @@ addRadio('measure-distance-div','metricOrImperialDistance-radio','','Imperial','
 addSubAccordianCard('tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTip);
 addRadio('measure-area-div','metricOrImperialArea-radio','','Imperial','Metric','metricOrImperialArea','imperial','metric','updateArea()','updateArea()','Toggle between imperial or metric units')
 
-addColorPicker('measure-distance-div','distance-color-picker','updateDistanceColor',distancePolylineOptions.strokeColor);
-addColorPicker('measure-area-div','area-color-picker','updateAreaColor',areaPolygonOptions.strokeColor);
+addShapeEditToolbar('measure-distance-div', 'measure-distance-div-icon-bar','undoDistanceMeasuring()','resetPolyline()')
+addColorPicker('measure-distance-div-icon-bar','distance-color-picker','updateDistanceColor',distancePolylineOptions.strokeColor);
+
+addShapeEditToolbar('measure-area-div', 'measure-area-div-icon-bar','undoAreaMeasuring()','resetPolys()')
+addColorPicker('measure-area-div-icon-bar','area-color-picker','updateAreaColor',areaPolygonOptions.strokeColor);
 
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
@@ -140,14 +143,13 @@ addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defi
 addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTip);
 addSubAccordianCard('tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTip);
 
-addColorPicker('user-defined-area-chart-div','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
+addShapeEditToolbar('user-defined', 'user-defined-area-icon-bar','undoUserDefinedAreaCharting()','restartUserDefinedAreaCarting()')
+addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
-var showChartButton = `<div class = 'py-2'>
-                        <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
-                        </div>`;
-$('#user-defined-area-chart-div').append(showChartButton);
-$('#upload-area-chart-div').append(showChartButton);
-$('#select-area-chart-div').append(showChartButton);
+
+$('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
+$('#upload-area-chart-div').append(staticTemplates.showChartButton);
+$('#select-area-chart-div').append(staticTemplates.showChartButton);
 
 
 if(canExport){

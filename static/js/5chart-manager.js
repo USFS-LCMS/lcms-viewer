@@ -216,6 +216,7 @@ var whichAreaDrawingMethod;
 
 // }
 function areaChartingTabSelect(target){
+
 	stopAreaCharting();
 	stopCharting();
 	// $('#charting-container').slideDown();
@@ -240,7 +241,22 @@ function areaChartingTabSelect(target){
         
 // }
 // listenForUserDefinedAreaCharting();
-
+function restartUserDefinedAreaCarting(e){
+	console.log(e);
+	if(e === undefined || e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace'){
+		areaChartingTabSelect(whichAreaDrawingMethod);
+		//startUserDefinedAreaCharting();
+	}
+	
+}
+function undoUserDefinedAreaCharting(e){
+	console.log(e);
+	if(e === undefined || (e.key == 'z' && e.ctrlKey) ){
+        udp.getPath().pop(1);
+        udpList.pop(1);
+      }
+	
+}
 function startUserDefinedAreaCharting(){
 	console.log('start clicking');
 	
@@ -254,8 +270,8 @@ function startUserDefinedAreaCharting(){
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
-    
-    
+    window.addEventListener("keydown", restartUserDefinedAreaCarting);
+    window.addEventListener("keydown", undoUserDefinedAreaCharting);
    try{
    	udp.setMap(null);
    }catch(err){};
@@ -520,6 +536,8 @@ function startShpDefinedCharting(){
 	})
 };
 function stopAreaCharting(){
+	window.removeEventListener("keydown", restartUserDefinedAreaCarting);
+    window.removeEventListener("keydown", undoUserDefinedAreaCharting);
 	console.log('stopping area charting');
 	try{
    	udp.setMap(null);

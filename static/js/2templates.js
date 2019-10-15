@@ -53,7 +53,7 @@ var staticTemplates = {
                     </div>`,
 
 	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
-		        <ul class = 'navbar-nav  px-5  m-0 text-center'data-toggle="tooltip" title="Choose your study area"    >
+		        <ul class = 'navbar-nav  px-5  m-0 text-center' data-toggle="tooltip" title="Choose your study area"    >
 		            <li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Flathead National Forest</h5> 
 		                <div class="dropdown-menu" id="study-area-list"  >
@@ -65,8 +65,7 @@ var staticTemplates = {
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
-		            </div>
-		        </ul>
+			    </ul>
 		        `,
 	introModal:`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
@@ -125,9 +124,9 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
 			</div>`,
 distanceDiv : `Click on map to measure distance`,
-distanceTip : "Click on map to measure distance. Double click to clear measurment and start over.",
+distanceTip : "Click on map to measure distance. Press ctrl+z to undo most recent point. Double click, press Delete, or press Backspace to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
-areaTip : "Click on map to measure area. Double click to complete polygon, press u to undo most recent point, press d or delete to start over.",
+areaTip : "Click on map to measure area. Double click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
 pixelChartDiv : `<div>Double click on map to query LCMS data time series<br></div>`,
@@ -135,21 +134,22 @@ pixelChartTip : 'Double click on map to look at the full time series of LCMS out
 userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     
                                     <label>Provide name for area selected for charting (optional):</label>
-                                    <input type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                    <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
                                     
-                                    <button  class = 'my-1' onclick='areaChartingTabSelect(whichAreaDrawingMethod);startUserDefinedAreaCharting()'  href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to clear chart and currently defined charting area, or if you messed up while defining your area to chart"><i class="fa fa-trash fa-2x bg-white" aria-hidden="true"></i>
-                                    </button>
-                        		</div>`,
-
-userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS products across. Double-click to finish polygon and create graph.',
+		            			</div>
+                        	</div>`,
+showChartButton:`<div class = 'py-2'>
+                        <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
+                        </div>`,
+userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS products across. Press ctrl+z to undo most recent point. Double-click to finish polygon and create graph.',
 
 uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summarize across</label>
-                        
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
-                        `,
+                        <div class = 'dropdown-divider'></div>`,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS products across.',
 selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
-                    <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>`,
+                    <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
+                    <div class = 'dropdown-divider'></div>`,
 selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS products across.'
 
 
@@ -197,7 +197,14 @@ function addDropdownItem(dropdownID,label,value){
 }
 	
 //////////////////////////////////////////////////////////////////////////////////////////////
-
+function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction){
+	$('#'+containerID).append(`<div class = 'dropdown-divider'></div>
+								    <div id = '${toolbarID}' class="icon-bar ">
+								    	<a href="#" onclick = '${undoFunction}' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
+									  	<a href="#" onclick = '${restartFunction}' rel="txtTooltip" title = 'Click to clear current drawing and start a new one (Delete, or Backspace)'><i class="btn fa fa-trash"></i></a>
+									</div>
+									<div class = 'dropdown-divider'></div>`);
+}
 const setRadioValue =function(variable,value){
 	console.log(value)
 	window[variable] = value;
@@ -289,14 +296,9 @@ function updateAreaColor(jscolor) {
 }
 function addColorPicker(containerID,pickerID,updateFunction,value){
 	if(value === undefined	|| value === null){value = 'FFFF00'}
-	$('#'+containerID).append(`<div class = 'py-2'>
-									<button		
-							    		id = '${pickerID}'
-							    		class="color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
-							    		>
-							    		Choose color
-									</button>
-								</div>`);
+	$('#'+containerID).append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
+							    class=" fa fa-paint-brush text-dark color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
+							    ></button>`);
     // $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
 }
 
@@ -672,13 +674,14 @@ function decrementOutstandingGEERequests(){
 	outstandingGEERequests --;updateOutstandingGEERequests();
 }
 function addLayer(layer){
+	console.log(layer);
 	var id = layer.legendDivID;
-	var containerID = id + '-container';
-	var opacityID = id + '-opacity';
-	var visibleID = id + '-visible';
-	var spanID = id + '-span';
-	var visibleLabelID = visibleID + '-label';
-	var spinnerID = id + '-spinner';
+	var containerID = id + '-container-'+layer.ID;
+	var opacityID = id + '-opacity-'+layer.ID;
+	var visibleID = id + '-visible-'+layer.ID;
+	var spanID = id + '-span-'+layer.ID;
+	var visibleLabelID = visibleID + '-label-'+layer.ID;
+	var spinnerID = id + '-spinner-'+layer.ID;
 	var checked = '';
 	if(layer.visible){checked = 'checked'}
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
@@ -728,8 +731,20 @@ function addLayer(layer){
 	}
 	$("#"+ opacityID).val(layer.opacity * 100);
 	
-	// $('#'+ spanID).click(function(){
+	$('#'+ spanID).click(function(){
+		console.log(layer.name);
+		// console.log(layer.item.get('geometry').getInfo());
 		
+		if(layer.isVector){
+			centerObject(layer.item)
+		}else{
+			if(layer.item.get('bounds').getInfo() !== null){
+				// console.log(layer.item.get('bounds').getInfo())
+				synchronousCenterObject(layer.item.get('bounds').getInfo())
+				// console.log(ee.FeatureCollection(layer.item.get('geometry')).geometry().getInfo())
+					// centerObject(ee.FeatureCollection(layer.item.get('geometry')))
+			};
+		}
 	// 	if(!layer.isVector){
  //            if(layer.visible){
  //            	layer.visible = false;
@@ -798,7 +813,7 @@ function addLayer(layer){
  //                }
  //                setRangeSliderThumbOpacity();
  //                layerObj[layer.name] = [layer.visible,layer.opacity];
-	// });
+	});
 	
 	$('#'+visibleID).change( function() {
 		// console.log(layer.layerId);

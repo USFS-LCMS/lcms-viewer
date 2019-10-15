@@ -164,10 +164,8 @@ function centerMap(lng,lat,zoom){
     map.setCenter({lat:lat,lng:lng});
     map.setZoom(zoom);
 }
-function centerObject(fc){
-  try{
-    // Map2.addLayer(ee.FeatureCollection([ee.Feature(fc.geometry())]))
-    fc.geometry().bounds().evaluate(function(feature){
+function synchronousCenterObject(feature){
+
     var bounds = new google.maps.LatLngBounds(); 
     
     feature.coordinates[0].map(function(latlng){
@@ -175,9 +173,12 @@ function centerObject(fc){
     });
 
     map.fitBounds(bounds);
-    });
-    
-    
+}
+
+function centerObject(fc){
+  try{
+    // Map2.addLayer(ee.FeatureCollection([ee.Feature(fc.geometry())]))
+    fc.geometry().bounds().evaluate(function(feature){synchronousCenterObject(feature)});
   }
   catch(err){
     // alert('Bad Fusion Table');
@@ -358,7 +359,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     if(viz === null || viz === undefined){viz = {}}
     if(name == null){
         name = "Layer "+NEXT_LAYER_ID;
-        NEXT_LAYER_ID += 1;
+        
     }
 
     //Take care of vector option
@@ -421,6 +422,7 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     if(helpBox == null){helpBox = ''};
     var layer = {};//document.createElement("ee-layer");
     layer.ID = NEXT_LAYER_ID;
+    NEXT_LAYER_ID += 1;
     layer.layerChildID = layerChildID;
     layerChildID++
     layer.name = name ;
@@ -618,7 +620,7 @@ function addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerLis
     // if(item.getInfo().type === 'ImageCollection'){print('It is a collection')}
     if(name === null || name === undefined){
         name = "Layer "+NEXT_LAYER_ID;
-        NEXT_LAYER_ID += 1;
+        
     }
 
     if(visible === null || visible === undefined){
@@ -631,6 +633,7 @@ function addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerLis
     var layer = document.createElement("REST-layer");
     layer.tileURLFunction = tileURLFunction;
     layer.ID = NEXT_LAYER_ID;
+    NEXT_LAYER_ID += 1;
     layer.layerChildID = layerChildID;
     layerChildID++
     layer.name = name ;
@@ -717,7 +720,7 @@ var viz = {};var item = ee.Image();
     // if(item.getInfo().type === 'ImageCollection'){print('It is a collection')}
     if(name === null || name === undefined){
         name = "Layer "+NEXT_LAYER_ID;
-        NEXT_LAYER_ID += 1;
+        
     }
 
     if(visible === null || visible === undefined){
@@ -738,6 +741,7 @@ var viz = {};var item = ee.Image();
     var layer = document.createElement("dynamic-layer");
     
     layer.ID = NEXT_LAYER_ID;
+    NEXT_LAYER_ID += 1;
     layer.layerChildID = layerChildID;
     layerChildID++
     layer.name = name ;
@@ -1161,22 +1165,19 @@ function startListening(){
     google.maps.event.addListener(areaPolygonObj[polyNumber].getPath(), 'set_at',  updateArea);
 
     window.addEventListener("keydown", resetPolys);
-    window.addEventListener("keydown", deleteLastVertex);
+    window.addEventListener("keydown", deleteLastAreaVertex);
 
 }
 function resetPolys(e){
  
      
-      if( e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace' ){
+      if( e === undefined || e.key === 'Delete'|| e.key === 'd'|| e.key === 'Backspace' ){
         stopArea();
         startArea();
       }
     }
-function deleteLastVertex(e){
- 
-      console.log(e.key);
-      if(e.key == 'u' || e.key == 'z' ){
-        if(areaPolygonObj[polyNumber].getPath().length >0){
+function undoAreaMeasuring(){
+  if(areaPolygonObj[polyNumber].getPath().length >0){
           areaPolygonObj[polyNumber].getPath().pop(1);
           updateArea();
         }
@@ -1187,7 +1188,21 @@ function deleteLastVertex(e){
           setToPolyline()
           startListening();
         }
-        
+}
+function undoDistanceMeasuring(){
+  distancePolyline.getPath().pop(1);
+  updateDistance();
+}
+function deleteLastAreaVertex(e){
+      // console.log(e);
+      if(e.key == 'z' && e.ctrlKey){
+        undoAreaMeasuring();
+      }
+    }
+function deleteLastDistanceVertex(e){
+      // console.log(e);
+      if(e.key == 'z' && e.ctrlKey){
+        undoDistanceMeasuring();
       }
     }
 function activatePoly(poly){
@@ -1215,7 +1230,7 @@ function stopListening(){
     // areaPolygonObj[polyNumber].setDraggable(false);
     try{
     mapHammer.destroy();
-    console.log(areaPolygonObj[polyNumber].polyNumber);
+    // console.log(areaPolygonObj[polyNumber].polyNumber);
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'dblclick');
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'click');
     google.maps.event.clearListeners(mapDiv, 'click');
@@ -1223,7 +1238,7 @@ function stopListening(){
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], 'dragend');
     // if(infowindow != undefined){infowindow.close()}
     window.removeEventListener('keydown',resetPolys);
-    window.removeEventListener('keydown',deleteLastVertex);
+    window.removeEventListener('keydown',deleteLastAreaVertex);
     // var thisPoly = areaPolygonObj[polyNumber]
     // if(thisPoly.getPath().length > 2){
     //   google.maps.event.addListener(thisPoly, "click", function(){activatePoly(thisPoly)});
@@ -1291,7 +1306,7 @@ function startDistance(){
   // document.getElementById('distance-measurement').value = 'd';
     
     map.setOptions({draggableCursor:'crosshair'});
-    console.log(distancePolylineOptions);
+    // console.log(distancePolylineOptions);
     try{
       distancePolyline.destroy();
     }catch(err){};
@@ -1323,7 +1338,8 @@ function startDistance(){
     google.maps.event.addListener(distancePolyline, "mouseup", updateDistance);
     google.maps.event.addListener(distancePolyline, "dragend", updateDistance);
     google.maps.event.addListener(distancePolyline.getPath(), 'set_at',  updateDistance);
-
+    window.addEventListener('keydown',deleteLastDistanceVertex);
+    window.addEventListener('keydown',resetPolyline);
     // distanceUpdater = setInterval(function(){updateMarkerPositionList();updateDistance();},500);
 
     }
@@ -1332,6 +1348,8 @@ function stopDistance(){
   // $( "#distance-measurement" ).html( '');
   // document.getElementById('distance-measurement').style.display = 'none';
   try{
+    window.removeEventListener('keydown',deleteLastDistanceVertex);
+    window.removeEventListener('keydown',resetPolyline);
     mapHammer.destroy();
     map.setOptions({disableDoubleClickZoom: true });
     // google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -1350,8 +1368,11 @@ function stopDistance(){
     
 }
 
-function resetPolyline(){
+function resetPolyline(e){
+  // console.log(e.key);
+  if(e === undefined || e.key === undefined ||  e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace'){
     stopDistance();startDistance();
+  }    
 }
     
 // function updateMarkerPositionList(){
@@ -1385,7 +1406,7 @@ updateDistance = function(){
     // console.log(unitName);
     // console.log(unitMultiplier);
 
-    if(distance > 0){
+    if(distance >= 0){
      
           var distanceContent = distance.toFixed(4) + ' ' + unitName 
           // $( "#distance-measurement" ).html(distanceContent);
