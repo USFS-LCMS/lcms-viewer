@@ -91,6 +91,16 @@ html, body{
 }
 .search-box{height:1.3em;}
 
+.walk-through-popup {
+    position:absolute;
+    left:50%;
+    bottom:50%;
+    z-index:3;
+    background-color: var(--black);
+    color:var(--white);
+    max-width: 50%;
+    max-height: 50%;
+}
 /*///////////////////////////////////////////////////////////*/
 /*misc styling*/
 ul, li{list-style-type:none!important;}

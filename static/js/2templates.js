@@ -126,9 +126,9 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
 			</div>`,
 distanceDiv : `Click on map to measure distance`,
-distanceTip : "Click on map to measure distance. Press ctrl+z to undo most recent point. Double click, press Delete, or press Backspace to clear measurment and start over.",
+distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
-areaTip : "Click on map to measure area. Double click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.",
+areaTip : "Click on map to measure area. Double click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.",
 queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
 pixelChartDiv : `<div>Double click on map to query LCMS data time series<br></div>`,
@@ -143,7 +143,7 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
 showChartButton:`<div class = 'py-2'>
                         <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
                         </div>`,
-userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS products across. Press ctrl+z to undo most recent point. Double-click to finish polygon and create graph.',
+userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon and create graph.',
 
 uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summarize across</label>
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
@@ -158,6 +158,13 @@ selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS products a
 
         
 }
+
+// .replaceAll(`<kbd>`,'')
+Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(function(t){
+	var tip = staticTemplates[t].replaceAll(`<kbd>`,``);
+	tip = tip.replaceAll(`</kbd>`,``);
+	staticTemplates[t+'Hover'] = tip
+})
 //////////////////////////////////////////////////////////////////////////////////////////////
 function showToolTipsAgain(){
 	if(localStorage.showToolTipModal === 'false'){
