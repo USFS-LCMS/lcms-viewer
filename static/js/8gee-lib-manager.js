@@ -43,7 +43,7 @@ window.mlsnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Manti-La Sal Natio
 window.cnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Chugach National Forest')).first());
 
 // Other boundaries
-window.huc10 = ee.FeatureCollection("USGS/WBD/2017/HUC10");
+window.huc8 = ee.FeatureCollection("USGS/WBD/2017/HUC08");
 window.kenai_nwr = ee.FeatureCollection('projects/USFS/LCMS-NFS/AK-Ancillary-Data/Kenai_NWR').filterBounds(ck_study_area);
 
 
@@ -58,7 +58,7 @@ window.btStudyAreas = [['Grand Teton NP',gtnp,'Boundary of Grand Teton National 
 window.mslStudyAreas = [['Manti-La Sal NF',mlsnf,'Boundary of Manti-La Sal National Forest'],
                       ['Manti-La Sal LCMS Study Area',mls_study_area,'Boundary of Manti-La Sal National Forest buffered by 5km LCMS model calibration data were collected and applied']];
 
-window.ckStudyAreas = [['HUC10 Boundaries',huc10.filterBounds(ck_study_area),'USGS Watershed Boundary Dataset of Watersheds'],
+window.ckStudyAreas = [['HUC8 Boundaries',huc8.filterBounds(ck_study_area),'USGS Watershed Boundary Dataset of Watersheds'],
         ['Kenai Fjords National Park',kfnp,'Boundary of Kenai Fjords National Park'],
         ['Kenai National Wildlife Refuge',kenai_nwr,'Boundary of Kenai National Wildlife Refuge'],
         ['Chugach NF',cnf,'Boundary of Chugach National Forest'],

@@ -77,7 +77,7 @@ function runUSFS(){
       //var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
       treeMask = treeMask.mask(treeMask).clip(boundary);
       
-      // NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask))});
+      NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask))});
 
     }
     
@@ -335,18 +335,18 @@ function runUSFS(){
 
     if (studyAreaName == 'CNFKP'){
       // Create mask for water, barren, and snow surfaces from land cover layers
-    var lcMode = NFSLC.mode().multiply(10).round();
-    var lcMask = lcMode.neq(1).and(lcMode.neq(7)).and(lcMode.neq(5));
+    // var lcMode = NFSLC.mode().multiply(10).round();
+    // var lcMask = lcMode.neq(1).and(lcMode.neq(7)).and(lcMode.neq(5));
 
-    // Apply mask, keeping a copy of the original layers
-    var dndThreshOutUnMasked = dndThreshOut;
-    var rnrThreshOutUnMasked = rnrThreshOut;
-    var dndSlowThreshOutUnMasked = dndSlowThreshOut;
-    var dndFastThreshOutUnMasked = dndFastThreshOut;
-    dndThreshOut = dndThreshOut.updateMask(lcMask);
-    rnrThreshOut = rnrThreshOut.updateMask(lcMask);
-    dndSlowThreshOut = dndSlowThreshOut.updateMask(lcMask);
-    dndFastThreshOut = dndFastThreshOut.updateMask(lcMask);
+    // // Apply mask, keeping a copy of the original layers
+    // var dndThreshOutUnMasked = dndThreshOut;
+    // var rnrThreshOutUnMasked = rnrThreshOut;
+    // var dndSlowThreshOutUnMasked = dndSlowThreshOut;
+    // var dndFastThreshOutUnMasked = dndFastThreshOut;
+    // dndThreshOut = dndThreshOut.updateMask(lcMask);
+    // rnrThreshOut = rnrThreshOut.updateMask(lcMask);
+    // dndSlowThreshOut = dndSlowThreshOut.updateMask(lcMask);
+    // dndFastThreshOut = dndFastThreshOut.updateMask(lcMask);
 
     // Calculate # of missing years per pixel
     var missingYears = NFSDND.map(function(img){return addYearBand(img.unmask()).select('year').updateMask(img.mask().not())}).toArray().arrayProject([0]); // This will give array of missing years
@@ -503,9 +503,9 @@ function runUSFS(){
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
 
     Map2.addLayer(dndThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-    if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
-      Map2.addLayer(dndThreshOutUnMasked.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-    }
+    // if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
+    //   Map2.addLayer(dndThreshOutUnMasked.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+    // }
     // Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshOutOld.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Old Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
 
