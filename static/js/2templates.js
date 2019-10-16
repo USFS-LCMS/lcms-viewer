@@ -680,10 +680,10 @@ function decrementOutstandingGEERequests(){
 }
 
 function incrementGEETileLayersLoading(){
-	geeTileLayersDownloading++;updateGEETileLayersLoading()
+	geeTileLayersDownloading++;updateGEETileLayersLoading();
 }
 function decrementGEETileLayersLoading(){
-	geeTileLayersDownloading--;updateGEETileLayersLoading()
+	geeTileLayersDownloading--;updateGEETileLayersLoading();
 }
 function addLayer(layer){
 	// console.log(layer);
@@ -783,6 +783,9 @@ function addLayer(layer){
                         $('#'+layer.legendDivID).hide();
                         layer.layer.setMap(null);
                         layer.rangeOpacity = 0;
+                        $('#' + spinnerID+'2').hide();
+                        geeTileLayersDownloading = 0;
+                        updateGEETileLayersLoading();
                         
                     }else{
                     	layer.visible = true;
@@ -856,7 +859,7 @@ function addLayer(layer){
 
                     layer.percent = 100-((event.count / layer.highWaterMark) * 100);
                     if(event.count ===0 && layer.highWaterMark !== 0){layer.highWaterMark = 0}
-                    	
+
                     if(layer.percent !== 100){
                     	$('#' + spinnerID+'2').show();
                     	if(!tileIncremented){
