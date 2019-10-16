@@ -178,7 +178,8 @@ function synchronousCenterObject(feature){
 function centerObject(fc){
   try{
     // Map2.addLayer(ee.FeatureCollection([ee.Feature(fc.geometry())]))
-    fc.geometry().bounds().evaluate(function(feature){synchronousCenterObject(feature)});
+    $('#summary-spinner').show();
+    fc.geometry().bounds().evaluate(function(feature){synchronousCenterObject(feature);$('#summary-spinner').hide();});
   }
   catch(err){
     // alert('Bad Fusion Table');
@@ -1486,11 +1487,46 @@ var lowerThresholdRecovery = 0.35;
 var upperThresholdRecovery = 1;
 
 var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':['FNF',[48.16,-115.08,8],'EPSG:26911',0.35,0.35],
-                  'Bridger-Teton National Forest':['BTNF',[43.4,-111.1,8],'EPSG:26912',0.35,0.35],
-                  'Manti-La Sal National Forest':['MLSNF',[38.8,-111,8],'EPSG:26912',0.25,0.30],
-                  'Chugach National Forest - Kenai Peninsula':['CNFKP',[60.4,-150.1, 9],'EPSG:3338',0.25,0.35],
-                  'Science Team CONUS':['CONUS',[37.5334105816903,-105.6787109375,5],'EPSG:5070',0.30,0.30],
+var studyAreaDict = {'Flathead National Forest':{
+                                                name:'FNF',
+                                                center:[48.16,-115.08,8],
+                                                crs:'EPSG:26911',
+                                                lossThresh:0.35,
+                                                gainThresh:0.35,
+                                                startYear:1985,
+                                                endYear:2018},
+                  'Bridger-Teton National Forest':{
+                                                  name:'BTNF',
+                                                  center:[43.4,-111.1,8],
+                                                  crs:'EPSG:26912',
+                                                  lossThresh:0.35,
+                                                  gainThresh:0.35,
+                                                  startYear : 1985,
+                                                  endYear : 2018},
+                  'Manti-La Sal National Forest':{
+                                                  name:'MLSNF',
+                                                  center:[38.8,-111,8],
+                                                  crs:'EPSG:26912',
+                                                  lossThresh:0.25,
+                                                  gainThresh:0.30,
+                                                  startYear: 1985,
+                                                  endYear: 2018},
+                  'Chugach National Forest - Kenai Peninsula':{
+                                                name:'CNFKP',
+                                                center:[60.4,-150.1, 9],
+                                                crs:'EPSG:3338',
+                                                lossThresh:0.35,
+                                                gainThresh:0.45,
+                                                startYear:1985,
+                                                endYear:2019},
+                  'Science Team CONUS':{
+                                                name:'CONUS',
+                                                center:[37.5334105816903,-105.6787109375,5],
+                                                crs:'EPSG:5070',
+                                                lossThresh:0.30,
+                                                gainThresh:0.30,
+                                                startYear:1985,
+                                                endYear:2017}
                 };
 
 function dropdownUpdateStudyArea(whichOne){
@@ -1500,7 +1536,7 @@ function dropdownUpdateStudyArea(whichOne){
    // localStorage.setItem("cachedStudyAreaName",this.innerHTML)
    //  $('.status').text(this.innerHTML);
    //  $('#study-area-label').text(this.innerHTML);
-    var coords = studyAreaDict[whichOne][1];
+    var coords = studyAreaDict[whichOne].center;
     // studyAreaName = studyAreaDict[this.innerHTML][0];
    //  // exportCRS = studyAreaDict[this.innerHTML][2];
    //  // $('input[name = "Export crs"]').val(exportCRS);
@@ -1520,19 +1556,23 @@ var resetStudyArea = function(whichOne){
     $('#study-area-label').text(whichOne);
     console.log('changing study area');
     console.log(whichOne);
-    lowerThresholdDecline =  studyAreaDict[whichOne][3];
+    lowerThresholdDecline =  studyAreaDict[whichOne].lossThresh;
     upperThresholdDecline = 1;
-    lowerThresholdRecovery = studyAreaDict[whichOne][4];
+    lowerThresholdRecovery = studyAreaDict[whichOne].gainThresh;
     upperThresholdRecovery = 1;
     
+    startYear = studyAreaDict[whichOne].startYear;
+    endYear = studyAreaDict[whichOne].endYear;
     setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'decline-threshold-slider','decline-threshold-slider-update','null')
     
     setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'recovery-threshold-slider','recovery-threshold-slider-update','null')
+    setUpRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
     
-    var coords = studyAreaDict[whichOne][1];
-    studyAreaName = studyAreaDict[whichOne][0];
+
+    var coords = studyAreaDict[whichOne].center;
+    studyAreaName = studyAreaDict[whichOne].name;
     if(studyAreaName === 'CONUS'){run = runCONUS}else{run = runUSFS};
-    $('#export-crs').val(studyAreaDict[whichOne][2])
+    $('#export-crs').val(studyAreaDict[whichOne].crs)
     // exportCRS = studyAreaDict[whichOne][2];
     // $('#export-crs').val(exportCRS);
     // centerMap(coords[1],coords[0],8);

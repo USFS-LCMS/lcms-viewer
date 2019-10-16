@@ -91,6 +91,8 @@ var staticTemplates = {
 
 				<p class = 'px-2 my-1' style = 'float:left'; id='current-tool-selection' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Any tool that is currently active is shown here."></p>
 				<p class = 'px-2 my-1' style = 'float:left'; rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></p>
+                <p class = 'px-2 my-1' style = 'float:left'; rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></p>
+                
                 <p class = 'px-2 my-1' style = 'float:right;' id='current-mouse-position'  ></p>
 
                  <a href="http://www.fs.fed.us//" target="_blank" >
@@ -667,14 +669,24 @@ function updateOutstandingGEERequests(){
 	$('#outstanding-gee-requests').html(outstandingGEERequests);
 	regulateReRunButton();
 }
+function updateGEETileLayersLoading(){
+	$('#number-gee-tiles-downloading').html(geeTileLayersDownloading);
+}
 function incrementOutstandingGEERequests(){
 	outstandingGEERequests ++;updateOutstandingGEERequests();
 }
 function decrementOutstandingGEERequests(){
 	outstandingGEERequests --;updateOutstandingGEERequests();
 }
+
+function incrementGEETileLayersLoading(){
+	geeTileLayersDownloading++;updateGEETileLayersLoading()
+}
+function decrementGEETileLayersLoading(){
+	geeTileLayersDownloading--;updateGEETileLayersLoading()
+}
 function addLayer(layer){
-	console.log(layer);
+	// console.log(layer);
 	var id = layer.legendDivID;
 	var containerID = id + '-container-'+layer.ID;
 	var opacityID = id + '-opacity-'+layer.ID;
@@ -689,7 +701,9 @@ function addLayer(layer){
 								           <div id="${opacityID}" class = 'simple-layer-opacity-range'></div>
 								           <input  id="${visibleID}" type="checkbox" ${checked}  />
 								            <label  id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
-								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Background processing is occurring in Google Earth Engine'></i>
+								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for layer service from Google Earth Engine'></i>
+								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
+								            
 								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
 								       </li>`);
 	$("#"+opacityID).slider({
@@ -729,96 +743,18 @@ function addLayer(layer){
 		var pct = layer.percent;
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
-	$("#"+ opacityID).val(layer.opacity * 100);
 	
-	$('#'+ spanID).click(function(){
-		console.log(layer.name);
-		// console.log(layer.item.get('geometry').getInfo());
-		
+	function zoomFunction(){
 		if(layer.isVector){
 			centerObject(layer.item)
 		}else{
-			if(layer.item.get('bounds').getInfo() !== null){
-				// console.log(layer.item.get('bounds').getInfo())
-				synchronousCenterObject(layer.item.get('bounds').getInfo())
-				// console.log(ee.FeatureCollection(layer.item.get('geometry')).geometry().getInfo())
-					// centerObject(ee.FeatureCollection(layer.item.get('geometry')))
+			if(layer.item.args.value !== null && layer.item.args.value !== undefined){
+				synchronousCenterObject(layer.item.args.value)
 			};
 		}
-	// 	if(!layer.isVector){
- //            if(layer.visible){
- //            	layer.visible = false;
- //            	$('#'+visibleID).attr('Checked','');
- //                layer.map.overlayMapTypes.setAt(layer.layerId,null);
-	// 			layer.percent = 0;
-	// 			updateProgress();
- //                $('#'+layer.legendDivID).hide();
- //                layer.rangeOpacity = 0;
-                
-                
-	// 		}else{
-	// 			layer.visible = true;
-	// 			$('#'+visibleID).attr('Checked','Checked');
- //                layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
- //                $('#'+layer.legendDivID).show();
- //                layer.rangeOpacity = layer.opacity;
-                
- //                layer.layer.setOpacity(layer.opacity); 
-	// 			}
- //                 queryObj[layer.name].visible = layer.visible;
-                   
- //                }
- //                else{
- //                    if(layer.visible){
- //                    	layer.visible = false;
- //                    	$('#'+visibleID).attr('Checked','');
- //                        layer.percent = 0;
- //                        updateProgress();
- //                        $('#'+layer.legendDivID).hide();
- //                        layer.layer.setMap(null);
- //                        layer.rangeOpacity = 0;
-                        
- //                    }else{
- //                    	layer.visible = true;
- //                    	$('#'+visibleID).attr('Checked','Checked');
- //                        layer.percent = 100;
- //                        updateProgress();
- //                        $('#'+layer.legendDivID).show();
- //                        layer.layer.setMap(layer.map);
- //                        layer.rangeOpacity = layer.opacity;
-                        
- //                    }
-                    
- //                }
- //                setRangeSliderThumbOpacity();
-               
-		
-	// 	// console.log(layer.item.geometry().bounds().getInfo())
-	// 	// centerObject(layer.item);
-	// })
-	// $('#'+opacityID).on('slide', function() {
- //    	layer.opacity = this.value/100;
-	// 	// console.log(layer.opacity);
-	// 	 if(!layer.isVector){
- //            layer.layer.setOpacity(layer.opacity);
- //            if(layer.visible){
- //            	layer.rangeOpacity = layer.opacity;
- //            }
-            
- //          }else{
- //                    var style = layer.layer.getStyle();
- //                    style.strokeOpacity = layer.opacity;
- //                    style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
- //                    layer.layer.setStyle(style);
- //                }
- //                setRangeSliderThumbOpacity();
- //                layerObj[layer.name] = [layer.visible,layer.opacity];
-	});
-	
-	$('#'+visibleID).change( function() {
-		// console.log(layer.layerId);
-    	// var layer.visible = this.checked;
-    	if(!layer.isVector){
+	}
+	function checkFunction(){
+		if(!layer.isVector){
             if(layer.visible){
             	layer.visible = false;
                 layer.map.overlayMapTypes.setAt(layer.layerId,null);
@@ -864,8 +800,29 @@ function addLayer(layer){
                 console.log('opacity: '+layer.opacity);
                 layerObj[layer.name] = [layer.visible,layer.opacity];
                
+	}
+
+	$("#"+ opacityID).val(layer.opacity * 100);
+
+	var prevent = false;
+	var delay = 200;
+	$('#'+ spanID).click(function(){
+		setTimeout(function(){
+			if(!prevent){
+				$('#'+visibleID).click();
+			}
+		},delay)
 		
 	});
+	$('#'+ spanID).dblclick(function(){zoomFunction();
+			prevent = true;
+			zoomFunction();
+			if(!layer.visible){$('#'+visibleID).click();}
+			setTimeout(function(){prevent = false},delay)
+		})
+
+	
+	$('#'+visibleID).change( function() {checkFunction();});
 
 	
 	layerObj[layer.name] = [layer.visible,layer.opacity];
@@ -886,19 +843,31 @@ function addLayer(layer){
 				var MAPID = eeLayer.mapid;
 	            var TOKEN = eeLayer.token;
 	            layer.highWaterMark = 0;
+	            var tileIncremented = false;
+
 	            // console.log(MAPID + TOKEN);
 	        	layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
 	        	layer.layer.addTileCallback(function(event){
-                    // console.log(event)
+                    // console.log(event.count);console.log(layer.highWaterMark);
 
                     if(event.count > layer.highWaterMark){
                         layer.highWaterMark = event.count;
                     }
 
                     layer.percent = 100-((event.count / layer.highWaterMark) * 100);
+                    if(event.count ===0 && layer.highWaterMark !== 0){layer.highWaterMark = 0}
+                    	
                     if(layer.percent !== 100){
-                    	$('#' + spinnerID).show();
-                    }else{$('#' + spinnerID).hide();}
+                    	$('#' + spinnerID+'2').show();
+                    	if(!tileIncremented){
+                    		incrementGEETileLayersLoading();
+                    		tileIncremented = true;
+                    	}
+                    }else{
+                    	$('#' + spinnerID+'2').hide();
+                    	decrementGEETileLayersLoading();
+                    	tileIncremented = false;
+                    }
                     updateProgress();
                     // console.log(event.count);
                     // console.log(inst.highWaterMark);
@@ -952,13 +921,7 @@ function addLayer(layer){
 		      	}
   		})
 	}
-	// console.log(layer)
-	// item.getMap(viz,function(eeLayer){
-    //       if(currentGEERunID === geeRunID){
-    //         layer.setLayer(eeLayer);
-    //         layer.setOpacity();
-    //       };
-    //      });}
+
 
 }
 

@@ -99,7 +99,7 @@ var exportAreaPolygonOptions = {
         };
 var exportImageDict = {};
 var canExport = false;
-var featureObj = {};var geeRunID;var outstandingGEERequests = 0;
+var featureObj = {};var geeRunID;var outstandingGEERequests = 0;var geeTileLayersDownloading = 0;
 
 var plotDictID = 1;
 var exportID = 1;

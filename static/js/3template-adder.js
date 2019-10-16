@@ -58,7 +58,7 @@ addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPP
 //Construct parameters form
 addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
 $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',1985, 2018, startYear, endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
+addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
 
 $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>
                                         <div id='threshold-container' style="display:none;width:100%"></div>
