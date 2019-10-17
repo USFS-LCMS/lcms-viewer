@@ -939,9 +939,9 @@ function randomColor(){
 }
 var chartColorI = 0;
 var chartColorsDict = {
-  'standard':['#050','#0A0','#808','#00F'],
-  'advanced':['#050','#0A0','#800','#880','#808','#00F'],
-  'advancedBeta':['#050','#0A0','#800','#880','#808','#00F','#e6beff','#f032e6'],
+  'standard':['#050','#0A0','#e6194B','#14d4f4'],
+  'advanced':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4'],
+  'advancedBeta':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4','#808','#f58231'],
   }
 var chartColors = chartColorsDict.standard;
 
