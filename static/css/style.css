@@ -28,6 +28,7 @@
   --transparent-teal:rgba(0, 137, 123, 0.3);
 
 
+
   --slider-border-radius:2px;
 }
 /*///////////////////////////////////////////////////////*/
@@ -74,6 +75,10 @@ html, body{
   /*color:var(--white)!important;*/
   color:#000!important;
 }
+.list-group-item,.list-group{
+  background-color: var(--transparent)!important;
+  color:var(--white)!important;
+}
 .text-black{
   color:var(--black)!important;
 }
@@ -93,17 +98,20 @@ html, body{
 
 .walk-through-popup {
     position:absolute;
-    left:50%;
-    bottom:50%;
+    left:30%;
+    top:30%;
     z-index:3;
     background-color: var(--black);
     color:var(--white);
-    max-width: 50%;
+    width: 25%;
+    overflow-y:auto;
     max-height: 50%;
+    
 }
+
 /*///////////////////////////////////////////////////////////*/
 /*misc styling*/
-ul, li{list-style-type:none!important;}
+ul, li{list-style-type:none;}
 th{font-weight:  600!important}
 /*///////////////////////////////////////////////////////////*/
 /*Sidebar styling*/
@@ -223,7 +231,7 @@ font-size:0.9em;
     vertical-align:bottom;
     margin-top:0.7rem;
     cursor:pointer;}
-.layer-span, .layer-spinner,.layer-container,.toggle_radio{
+.layer-span, .layer-spinner,.layer-container,.toggle_radio,.collapse-title{
   cursor:pointer;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -485,6 +493,10 @@ input[type=checkbox]:checked + label:before { letter-spacing: 0.2em; } /* allow 
 .modal-content{
   border-radius: 0!important;
 }
+/*.modal-backdrop{
+        display:none !important;
+        backdrop: 'static';
+    }*/
 /*///////////////////////////////////////////////////////////*/
 /*Dual slider styling*/
 

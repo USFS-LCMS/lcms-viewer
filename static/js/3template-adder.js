@@ -1,24 +1,12 @@
-
-
-
 $('body').append(staticTemplates.map);
 
 $('body').append(staticTemplates.mainContainer);
 $('body').append(staticTemplates.sidebarLeftContainer);
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
-
-$('body').append(`<div id = 'walk-through-popup' class = 'walk-through-popup' >
-                    <div>
-                      <div style = 'float:right;' onclick = '$("#walk-through-popup").hide()' class="btn " >&times;</div>
-                    </div>
-                    
-                    
-                    <div class = 'dropdown-divider'></div>
-                    <div id = 'walk-through-popup-content'></div>
-                </div>`);
-$('#walk-through-popup-content').append(`some cool content`);
+$('body').append(staticTemplates.walkThroughPopup);
 $('#walk-through-popup').draggable();
+
 $('#main-container').append(staticTemplates.sidebarLeftToggler)
 
 $('#sidebar-left-header').append(staticTemplates.topBanner)
@@ -132,6 +120,8 @@ addSubAccordianCard('tools-accordian','measure-distance-label','measure-distance
 
 // <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
 addSubAccordianCard('tools-accordian','measure-area-label','measure-area-div','Area Measuring',staticTemplates.areaDiv,false,`toggleTool(toolFunctions.measuring.area)`,staticTemplates.areaTipHover);
+addRadio('measure-distance-div','metricOrImperialDistance-radio','','Imperial','Metric','metricOrImperialDistance','imperial','metric','updateDistance()','updateDistance()','Toggle between imperial or metric units')
+
 addRadio('measure-area-div','metricOrImperialArea-radio','','Imperial','Metric','metricOrImperialArea','imperial','metric','updateArea()','updateArea()','Toggle between imperial or metric units')
 
 addShapeEditToolbar('measure-distance-div', 'measure-distance-div-icon-bar','undoDistanceMeasuring()','resetPolyline()')
@@ -204,24 +194,140 @@ function showError(error) {
       break;
   }
 }
-function walkThrough(){
-    walkThroughDict = {'Parameters':{
-                            title: 'Parameters',
-                            divID:'parameters-collapse-div',
-                            message:`<li>
-                                    <ul>There are a number of parameters </ul>
-                                    </li>`
+var walkThroughKeyI = 0;
+var collapse
+walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h5>
+                                            <p>Welcome to the LCMS Data Explorer walk-through. The walk-through will explain what features are available and how to use them. Click on the <kbd><i class="fa fa-chevron-right"></i></kbd> button in the lower right corner to start</p>`
+
                         },
                         'lcms-layers':{
-                            title: 'lcms layers',
                             divID: 'layer-list-collapse-div',
-                            message:`<li>
-                                <ul>There are a number of parameters </ul>
-                                </li>`
+                            message:`<h5>LCMS DATA</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">The LCMS DATA layers are the core LCMS products</li>
+                                      <li class="list-group-item">All map layers can be turned on or off with the circle checkbox on the left or with a single click on the name</li>
+                                      <li class="list-group-item">The slider on the right controls the opacity of the layer. This is useful for overlaying different layers to see how they relate</li>
+                                      <li class="list-group-item">If you do not see the layer when you turn it on, you can  double-click on the layer name to zoom to the extent of the layer</li>
+                                      <li class="list-group-item">Since all of map layers are being created on-the-fly within <span><a href="https://earthengine.google.com/" target="_blank">Google Earth Engine (GEE) </a></span>, there can be a delay. The number of layers still being created within GEE can be viewed on the bottom bar under "Queue length for maps from GEE," while the number of layers tiles are still being downloaded for appears under "Number of map layers loading tiles."</li>
+                                      <li class="list-group-item">When appropriate, when a layer is turned on, an entry in the LEGEND on the bottom-right side will appear.</li>  
+                                    </ul>`
+                        },
+                        'reference-layers':{
+                            divID: 'reference-layer-list-collapse-div',
+                            message:`<h5>REFERENCE DATA</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">The REFERENCE DATA layers are related geospatial data that can help provide context for the LCMS data products</li>
+                                      <li class="list-group-item">They include the <a href = "https://earthenginepartners.appspot.com/science-2013-global-forest" target = '_blank'>Hansen Global Forest Change data</a>, 
+                                                                <a href = "https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml" target = "_blank">US Forest Service Insect and Disease Survey (IDS) data</a>,
+                                                                 <a href = "https://mtbs.gov/" target = '_blank'>Monitoring Trends in Burn Severity (MTBS)</a> data, along with related boundary data</li>
+                                      <li class="list-group-item">Some study areas include additional data such as mid-level vegetation maps.</li>
+                                      <li class="list-group-item">The functionality of these layers is the same as the LCMS DATA.</li>
+                                    </ul>`
+                        },
+                        'TOOLS':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5>TOOLS-Overview</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">A number of tools are provided to explore both the LCMS DATA as well as the REFERENCE DATA</li>
+                                      <li class="list-group-item">These include measuring tools for relating to how small or large something you see on the map really is, single pixel query tools to explore a single location, and area query tools to summarize across an area</li>
+                                      <li class="list-group-item">Each tool can be turned on by clicking on the toggle slider to the left of the tool's title. They can be turned off either by clicking on the toggle slider again or clicking on another tool's toggle slider</li>
+                                      <li class="list-group-item">Any active tool will be listed on the bottom bar under the "Currently active tools"</li>
+                                    </ul>`
+                        },
+                        'measuring-tools-distance-measuring':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5>TOOLS-Measuring Tools-Distance Measuring</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">Activate the "Distance Measuring" tool</li>
+                                      <li class="list-group-item">Once activated, click on map to draw line to measure distance</li>
+                                      <li class="list-group-item">Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.</li>
+                                      <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing</li>
+                                      <li class="list-group-item">If the color of the lines is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
+                                    </ul>`
+                        },
+                        'measuring-tools-area-measuring':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5>TOOLS-Measuring Tools-Area Measuring</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">Activate the "Area Measuring" tool</li>
+                                      <li class="list-group-item">Once activated, click on map to draw polygons to measure area</li>
+                                      <li class="list-group-item">Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.</li>
+                                      <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing</li>
+                                      <li class="list-group-item">If the color of the lines is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
+                                    </ul>`
+                        },
+                        'pixel-tools-query-visible-map-layers':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5>TOOLS-Pixel Tools-Query Visible Map Layers</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">Activate the "Query Visible Map Layers" tool</li>
+                                      <li class="list-group-item">Once activated, anywhere you double-click will query the value of any visible layer.</li>
+                                      <li class="list-group-item">The values will appear in a popup on the map.</li>
+                                      <li class="list-group-item">Sometimes it can take some time to query all visible layers as the query is done on-the-fly within Google Earth Engine</li>
+                                      <li class="list-group-item">The popup window can be closed by clicking the <kbd>&times</kbd> in the upper right or by clickin on the map</li>
+                                      <li class="list-group-item">To query the map again, double-click once more</li>
+                                    </ul>`
+                        },
+                        'Parameters':{
+                            divID:'parameters-collapse-div',
+                            message:`<h5>PARAMETERS</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">There are a number of parameters that can be changed</li>
+                                      <li class="list-group-item">There are two modes to explore the data with. The standard mode provides the core LCMS products, related data, and tools to explore LCMS data</li>
+                                      <li class="list-group-item">The only parameter to change in standard mode is the range of years included in the analysis. Try selecting a different range of years and then hit submit. This will filter all products to only include those years.</li>
+                                      <li class="list-group-item">When the analysis mode is changed to "Advanced" a number of additional parameters will appear</li>
+                                      <li class="list-group-item">The first parameters are the thresholds used to determine where loss and gain are. The default thresholds optimize the balanced-accuracy. Sometimes a more inclusive or exclusive depiction of loss or gain may be needed. Try changing these thresholds and then looking at the map</li>
+                                    </ul>`
                         }
+                        
+                        
 
                     
                     }
+
+function closeWalkThroughPopup(){
+    $("#walk-through-popup").hide('fade');
+}
+
+function showWalkThroughPopupMessage(message){
+    $('#walk-through-popup-content').empty();
+    $('#walk-through-popup-content').append(message);
+    $('#walk-through-popup').show('fade');
+}
+// function showPreviousWalkThrough(){
+//     if(walkThroughKeyI >1){
+//         walkThroughKeyI--;walkThroughKeyI--;
+//     }
+    
+//     showWalkThroughI();
+// }
+function nextWalkThrough(){
+    walkThroughKeyI++;
+    showWalkThroughI();
+}
+function previousWalkThrough(){
+    walkThroughKeyI--;
+    showWalkThroughI();
+}
+function showWalkThroughI(){
+    $('#walk-through-popup').scrollTop(0);
+    // var lastDict = walkThroughDict[Object.keys(walkThroughDict)[walkThroughKeyI-1]];
+    var dict = walkThroughDict[Object.keys(walkThroughDict)[walkThroughKeyI]];
+  
+    if(dict === undefined){
+        showWalkThroughPopupMessage(`All features have been shown`);
+    }else{
+        $('.panel-collapse').removeClass('show')
+        
+        $('#'+dict.divID).addClass('show');
+        showWalkThroughPopupMessage(dict.message);
+       
+    };
+    console.log(dict);
+    
+}
+function walkThrough(){
+    
     Object.keys(walkThroughDict).map(function(k){
         console.log(walkThroughDict[k].divID)
         $('#'+walkThroughDict[k].divID).collapse('hide')

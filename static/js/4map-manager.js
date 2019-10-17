@@ -938,7 +938,12 @@ function randomColor(){
   return c
 }
 var chartColorI = 0;
-var chartColors = ['#050','#0F0','#808','#00aeef','#880','#220'];
+var chartColorsDict = {
+  'standard':['#050','#0A0','#808','#00F'],
+  'advanced':['#050','#0A0','#800','#880','#808','#00F'],
+  'advancedBeta':['#050','#0A0','#800','#880','#808','#00F','#e6beff','#f032e6'],
+  }
+var chartColors = chartColorsDict.standard;
 
 // ['#111','#808','#fb9a99','#33a02c','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
 function getChartColor(){
@@ -1564,7 +1569,6 @@ var resetStudyArea = function(whichOne){
     startYear = studyAreaDict[whichOne].startYear;
     endYear = studyAreaDict[whichOne].endYear;
     setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'decline-threshold-slider','decline-threshold-slider-update','null')
-    
     setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'recovery-threshold-slider','recovery-threshold-slider-update','null')
     setUpRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
     

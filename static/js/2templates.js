@@ -55,7 +55,7 @@ var staticTemplates = {
 	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
 		        <ul class = 'navbar-nav  px-5  m-0 text-center' data-toggle="tooltip" title="Choose your study area"    >
 		            <li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
-		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Flathead National Forest</h5> 
+		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
 		                <div class="dropdown-menu" id="study-area-list"  >
 		                    
 		                </div>
@@ -109,6 +109,17 @@ var staticTemplates = {
             </a>
 
         </div>`,
+        walkThroughPopup:`<div id = 'walk-through-popup' style = 'display:none;' class = 'flexcroll walk-through-popup alert alert-success alert-dismissable' >
+                    <button type="button" onclick = closeWalkThroughPopup() class="close" >&times</button> 
+                    	
+                        <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
+                        <div id = 'walk-through-popup-footer'>
+	                        <div class="icon-bar " style = 'float:right;'>
+							  <a onclick = 'previousWalkThrough()' href="#" rel="txtTooltip" title = 'Previous tutorial slide'><i class="fa fa-chevron-left"></i></a>
+							  <a onclick = 'nextWalkThrough()' href="#" rel="txtTooltip" title = 'Next tutorial slide'><i class="fa fa-chevron-right"></i></a>
+							</div>
+                        </div>
+                    </div>`,
         studyAreaDropdownButtonEnabledTooltip:`Choose your study area`,
         studyAreaDropdownButtonDisabledTooltip:`Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
@@ -124,15 +135,18 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<div class="dropdown-divider"></div>
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
+				<div class="dropdown-divider"></div>
+				<label class = 'mt-2'>Run a walk-through of the LCMS Data Explorer's features</label>
+				<button  class = 'btn  bg-black' onclick = 'showWalkThroughI()'>Run Walk-Through</button>
 			</div>`,
 distanceDiv : `Click on map to measure distance`,
-distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
+distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
-areaTip : "Click on map to measure area. Double click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.",
-queryDiv : "<div>Double click on map to query values of displayed layers at a location</div>",
-queryTip : 'Double click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
-pixelChartDiv : `<div>Double click on map to query LCMS data time series<br></div>`,
-pixelChartTip : 'Double click on map to look at the full time series of LCMS outputs for a pixel.',
+areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.",
+queryDiv : "<div>Double-click on map to query values of displayed layers at a location</div>",
+queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
+pixelChartDiv : `<div>Double-click on map to query LCMS data time series<br></div>`,
+pixelChartTip : 'Double-click on map to look at the full time series of LCMS outputs for a pixel.',
 userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     
                                     <label>Provide name for area selected for charting (optional):</label>
@@ -398,7 +412,7 @@ function showTip(title,message){
 	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
 	  }
-	if(localStorage.showToolTipModal === 'true'){
+	if(localStorage.showToolTipModal === 'true' && $('#walk-through-popup').css('display') === 'none'){
 	  $('#tip-modal').modal().show();
 	}
 	$('#dontShowTipAgainCheckbox').change(function(){

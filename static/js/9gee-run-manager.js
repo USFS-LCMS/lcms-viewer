@@ -61,7 +61,7 @@ function runUSFS(){
     var rawLC = rawC
                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
                 .select([0],['LC']);
-
+    var NFSLCMSForCharting = NFSLCMS;
     var minTreeNumber = 3;
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
@@ -349,8 +349,8 @@ function runUSFS(){
     // dndFastThreshOut = dndFastThreshOut.updateMask(lcMask);
 
     // Calculate # of missing years per pixel
-    var missingYears = NFSDND.map(function(img){return addYearBand(img.unmask()).select('year').updateMask(img.mask().not())}).toArray().arrayProject([0]); // This will give array of missing years
-    var dndMask = NFSDND.map(function(img){return img.mask().not().unmask()});
+    var missingYears = NFSLC.map(function(img){return addYearBand(img.unmask()).select('year').updateMask(img.mask().not())}).toArray().arrayProject([0]); // This will give array of missing years
+    var dndMask = NFSLC.map(function(img){return img.mask().not().unmask()});
     var maskCount = ee.Image(dndMask.reduce(ee.Reducer.sum())).rename('Number of Missing Years');
     maskCount = maskCount.clip(boundary);
     
@@ -673,19 +673,24 @@ function runUSFS(){
 
     if(analysisMode !== 'advanced' && viewBeta === 'no'){
       NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability']);
+      NFSLCMSForCharting = NFSLCMSForCharting.select(['Loss Probability','Gain Probability']);
+      chartColors = chartColorsDict.standard;
 
     }
     else if(analysisMode !== 'advanced' && viewBeta === 'yes'){
       NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
-
+      NFSLCMSForCharting = NFSLCMSForCharting.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
+      chartColors = chartColorsDict.beta;
     }
     else if(analysisMode == 'advanced' && viewBeta === 'no'){
       NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability']);
-
+      NFSLCMSForCharting = NFSLCMSForCharting.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability']);
+      chartColors = chartColorsDict.advanced;
     }
     else{
       NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
-
+      NFSLCMSForCharting = NFSLCMSForCharting.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
+      chartColors = chartColorsDict.advancedBeta;
     }
 
     var steppedLineLC = false;
@@ -721,7 +726,7 @@ function runUSFS(){
     // print(lcStack.getInfo())
     // Map2.addLayer(lcStack.mosaic(),{},'lcStack');
 
-    forCharting = joinCollections(forCharting,NFSLCMS, false);
+    forCharting = joinCollections(forCharting,NFSLCMSForCharting, false);
     chartCollection =forCharting;
     if(analysisMode === 'advanced'){
      chartCollection = chartCollection.set('legends',{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)}) 
