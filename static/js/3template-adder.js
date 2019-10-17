@@ -300,6 +300,17 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                                       <li class="list-group-item">To summarize another area, close the chart and draw another polygon</li>
                                     </ul>`
                         },
+                        'downloads':{
+                            divID : 'download-collapse-div',
+                            message:`<h5>DOWNLOADS</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">There are a number of parameters that can be changed</li>
+                                      <li class="list-group-item">There are two modes to explore the data with. The standard mode provides the core LCMS products, related data, and tools to explore LCMS data</li>
+                                      <li class="list-group-item">The only parameter to change in standard mode is the range of years included in the analysis. Try selecting a different range of years and then hit submit. This will filter all products to only include those years.</li>
+                                      <li class="list-group-item">When the analysis mode is changed to "Advanced" a number of additional parameters will appear</li>
+                                      <li class="list-group-item">The first parameters are the thresholds used to determine where loss and gain are. The default thresholds optimize the balanced-accuracy. Sometimes a more inclusive or exclusive depiction of loss or gain may be needed. Try changing these thresholds and then looking at the map</li>
+                                    </ul>`
+                        },
                         'Parameters':{
                             divID:'parameters-collapse-div',
                             message:`<h5>PARAMETERS</h5>
