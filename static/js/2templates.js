@@ -77,9 +77,12 @@ var staticTemplates = {
 
                         <div class="modal-body">
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
+                        	<button  class = 'btn' data-dismiss="modal" onclick = 'showWalkThroughI()' data-toggle="tooltip" title = 'Run a walk-through of the LCMS Data Explorer's features'>Run Walk-Through</button>
+                            
                         </div>
                         <div class = 'modal-footer'>
-                            <div class="form-check  mr-0">
+                      
+						<div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>

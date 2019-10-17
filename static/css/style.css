@@ -108,7 +108,7 @@ html, body{
     max-height: 50%;
     
 }
-
+kbd{border: 1px solid #999;}
 /*///////////////////////////////////////////////////////////*/
 /*misc styling*/
 ul, li{list-style-type:none;}

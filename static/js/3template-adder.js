@@ -141,14 +141,14 @@ addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Que
 
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
 addDropdown('tools-accordian','area-collection-dropdown','Choose which LCMS product to summarize','whichAreaChartCollection','Choose which LCMS time series to summarize. Loss/Gain will chart the proportion of both loss and gain over a selected area while Landcover will chart the proportion of each landcover class over a selected area.');
-addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User Defined Area Tool',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTipHover);
+addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User-Defined Area',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTipHover);
 addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTipHover);
 addSubAccordianCard('tools-accordian','select-area-chart-label','select-area-chart-div','Select an Area',staticTemplates.selectAreaChartDiv,false,'toggleTool(toolFunctions.area.select)',staticTemplates.selectAreaChartTipHover);
 
 addShapeEditToolbar('user-defined', 'user-defined-area-icon-bar','undoUserDefinedAreaCharting()','restartUserDefinedAreaCarting()')
 addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
-
+$('#pixel-chart-div').append(staticTemplates.showChartButton);
 $('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
 $('#upload-area-chart-div').append(staticTemplates.showChartButton);
 $('#select-area-chart-div').append(staticTemplates.showChartButton);
@@ -242,7 +242,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                                       <li class="list-group-item">Once activated, click on map to draw line to measure distance</li>
                                       <li class="list-group-item">Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.</li>
                                       <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing</li>
-                                      <li class="list-group-item">If the color of the lines is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
+                                      <li class="list-group-item">If the color of the line is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
                                     </ul>`
                         },
                         'measuring-tools-area-measuring':{
@@ -253,7 +253,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                                       <li class="list-group-item">Once activated, click on map to draw polygons to measure area</li>
                                       <li class="list-group-item">Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.</li>
                                       <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing</li>
-                                      <li class="list-group-item">If the color of the lines is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
+                                      <li class="list-group-item">If the color of the line is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
                                     </ul>`
                         },
                         'pixel-tools-query-visible-map-layers':{
@@ -266,6 +266,38 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                                       <li class="list-group-item">Sometimes it can take some time to query all visible layers as the query is done on-the-fly within Google Earth Engine</li>
                                       <li class="list-group-item">The popup window can be closed by clicking the <kbd>&times</kbd> in the upper right or by clickin on the map</li>
                                       <li class="list-group-item">To query the map again, double-click once more</li>
+                                    </ul>`
+                        },
+                        'pixel-tools-query-visible-lcms-time-series':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5>TOOLS-Pixel Tools-Query Visible LCMS Time Series</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">Activate the "Query LCMS Time Series" tool</li>
+                                      <li class="list-group-item">This tool allows you to query a single pixel from the LCMS time series</li>
+                                      <li class="list-group-item">This is helpful to understand what happened in a smaller area and to understand the suite of products available from LCMS</li>
+                                      <li class="list-group-item">Once activated, anywhere you double-click will query the LCMS time series.</li>
+                                      <li class="list-group-item">Sometimes it can take some time to query the LCMS time series as the query is done on-the-fly within Google Earth Engine</li>
+                                      <li class="list-group-item">Once this is complete, a chart will apear</li>
+                                      <li class="list-group-item">Each line in the chart can be turned off by clicking on it in the chart legend.</li>
+                                      <li class="list-group-item">You can download a CSV or PNG of the extracted data in the dropdown menu in the bottom of the chart window</li>
+                                      <li class="list-group-item">To query another area, close the chart and double-click on the map</li>
+                                    </ul>`
+                        },
+                        'area-tools-user-defined-area':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5>TOOLS-Area Tools-User-Defined Area</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">Activate the "User-Defined Area" tool</li>
+                                      <li class="list-group-item">This tool allows you to draw a polygon on the map and summarize LCMS products across that area</li>
+                                      <li class="list-group-item">Once activated, click on map to draw a polygon. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.</li>
+                                      <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing</li>
+                                      <li class="list-group-item">If the color of the line is hard to see, it can be changed with the color picker under the tool in the left sidebar</li>
+                                      <li class="list-group-item">Once polygon is completed, the area will be summarized.  Once this is complete, a chart will apear</li>
+                                      <li class="list-group-item">Sometimes it can take some time to summarize the area as it is done on-the-fly within Google Earth Engine</li>
+                                      <li class="list-group-item">Selecting a very large area may not successfully run</li>
+                                      <li class="list-group-item">Each line in the chart can be turned off by clicking on it in the chart legend.</li>
+                                      <li class="list-group-item">You can download a CSV, PNG, or geoJSON of the extracted data in the dropdown menu in the bottom of the chart window</li>
+                                      <li class="list-group-item">To summarize another area, close the chart and draw another polygon</li>
                                     </ul>`
                         },
                         'Parameters':{
