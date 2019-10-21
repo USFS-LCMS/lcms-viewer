@@ -13,8 +13,9 @@ var staticTemplates = {
 	map:`<div onclick = "$('#study-area-list').hide();" class = ' map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
-	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('fade')"></div>`,
-	sidebarLeftContainer: `<div onclick = "$('#study-area-list').hide();" style = 'position: absolute;left:0%;top:0%;'class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar show p-0 m-0 flexcroll  bg-image' id = 'sidebar-left-container' >
+	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('collapse')"></div>`,
+	sidebarLeftContainer: `
+						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >
 					        <div id = 'sidebar-left-header'></div>
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
@@ -77,8 +78,7 @@ var staticTemplates = {
 
                         <div class="modal-body">
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
-                        	<button  class = 'btn' data-dismiss="modal" onclick = 'showWalkThroughI()' data-toggle="tooltip" title = 'Run a walk-through of the LCMS Data Explorer's features'>Run Walk-Through</button>
-                            
+                        	
                         </div>
                         <div class = 'modal-footer'>
                       
@@ -112,17 +112,18 @@ var staticTemplates = {
             </a>
 
         </div>`,
-        walkThroughPopup:`<div id = 'walk-through-popup' style = 'display:none;' class = 'flexcroll walk-through-popup alert alert-success alert-dismissable' >
-                    <button type="button" onclick = closeWalkThroughPopup() class="close" >&times</button> 
-                    	
-                        <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
-                        <div id = 'walk-through-popup-footer'>
-	                        <div class="icon-bar " style = 'float:right;'>
-							  <a onclick = 'previousWalkThrough()' href="#" rel="txtTooltip" title = 'Previous tutorial slide'><i class="fa fa-chevron-left"></i></a>
-							  <a onclick = 'nextWalkThrough()' href="#" rel="txtTooltip" title = 'Next tutorial slide'><i class="fa fa-chevron-right"></i></a>
-							</div>
-                        </div>
-                    </div>`,
+        walkThroughPopup:`
+                    
+                    	<div class = 'walk-through-popup'>
+	                        <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
+	                       		<div class = 'dropdown-divider'></div>
+		                        <div class="icon-bar py-1 ">
+								  <a onclick = 'previousWalkThrough()' href="#" rel="txtTooltip" title = 'Previous tutorial slide'><i class="fa fa-chevron-left text-black"></i></a>
+								  <a onclick = 'nextWalkThrough()' href="#" rel="txtTooltip" title = 'Next tutorial slide'><i class="fa fa-chevron-right text-black"></i></a>
+								</div>
+						</div>
+	                       
+                    	`,
         studyAreaDropdownButtonEnabledTooltip:`Choose your study area`,
         studyAreaDropdownButtonDisabledTooltip:`Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
@@ -138,9 +139,9 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<div class="dropdown-divider"></div>
 				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
-				<div class="dropdown-divider"></div>
+				<!--<div class="dropdown-divider"></div>
 				<label class = 'mt-2'>Run a walk-through of the LCMS Data Explorer's features</label>
-				<button  class = 'btn  bg-black' onclick = 'showWalkThroughI()'>Run Walk-Through</button>
+				 <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()'>Run Walk-Through</button>-->
 			</div>`,
 distanceDiv : `Click on map to measure distance`,
 distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
@@ -415,7 +416,7 @@ function showTip(title,message){
 	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
 	  }
-	if(localStorage.showToolTipModal === 'true' && $('#walk-through-popup').css('display') === 'none'){
+	if(localStorage.showToolTipModal === 'true' ){
 	  $('#tip-modal').modal().show();
 	}
 	$('#dontShowTipAgainCheckbox').change(function(){

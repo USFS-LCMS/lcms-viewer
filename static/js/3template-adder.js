@@ -2,9 +2,10 @@ $('body').append(staticTemplates.map);
 
 $('body').append(staticTemplates.mainContainer);
 $('body').append(staticTemplates.sidebarLeftContainer);
+
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
-$('body').append(staticTemplates.walkThroughPopup);
+
 $('#walk-through-popup').draggable();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler)
@@ -87,17 +88,11 @@ $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"><
 $('#download-collapse-div').append(staticTemplates.downloadDiv);
 $('#support-collapse-div').append(staticTemplates.supportDiv);
 
-// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
-// setUpRangeSlider('lowerThresholdDecline', 'upperThresholdDecline', 0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05, 'slider2', 'declineThreshold', 'null');
 
-// setUpRangeSlider('lowerThresholdRecovery', 'upperThresholdRecovery', 0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05, 'slider3', 'recoveryThreshold', 'null');
+$('body').append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-4 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
 
-$('body').append(`<div class = 'legendDiv flexcroll col-sm-6 col-md-4 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
-// $('body').append(`<span style = 'position:absolute;right:20%;bottom:50%;z-index:10;cursor:pointer;' class = 'p-2 bg-black' id = 'tool-message-box'></span>`);
-// $('#tool-message-box').draggable();
-// $('#tool-message-box').hide();
 
-// addToggle('layer-list-collapse-div','test-toggle','Toggle metric or imperial', 'Imperial','Metric','checked','mi','imperial','metric');
+
 addCollapse('legendDiv','legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
 // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
 $('#legend-collapse-div').append(`<div id="legend-layer-list"></div>`);
@@ -106,12 +101,6 @@ $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
  
 
 addAccordianContainer('tools-collapse-div','tools-accordian')
-
-// addAccordianCard('tools-accordian','measuring-tools-collapse-label','measuring-tools-collapse-div','Measuring Tools',``,false,'');
-// addAccordianCard('tools-accordian','pixel-tools-collapse-label','pixel-tools-collapse-div','Pixel Tools',``,false,'');
-// addAccordianCard('tools-accordian','area-tools-collapse-label','area-tools-collapse-div','Area Tools',``,false,'');
-
-// addAccordianContainer('measuring-tools-collapse-div','measuring-tools-accordian');
 
 
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
@@ -196,13 +185,15 @@ function showError(error) {
 }
 var walkThroughKeyI = 0;
 var collapse
-walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h5>
-                                            <p>Welcome to the LCMS Data Explorer walk-through. The walk-through will explain what features are available and how to use them. Click on the <kbd><i class="fa fa-chevron-right"></i></kbd> button in the lower right corner to start</p>`
+walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>LCMS DATA Explorer Walk-Through</h5>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">Welcome to the LCMS Data Explorer walk-through. The walk-through will explain what features are available and how to use them. Click on the <i class="fa fa-chevron-right text-black"></i> button in the lower left corner to start</li>
+                                            </ul>`
 
                         },
                         'lcms-layers':{
                             divID: 'layer-list-collapse-div',
-                            message:`<h5>LCMS DATA</h5>
+                            message:`<h5 class = 'list-group-title'>LCMS DATA</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">The LCMS DATA layers are the core LCMS products</li>
                                       <li class="list-group-item">All map layers can be turned on or off with the circle checkbox on the left or with a single click on the name</li>
@@ -214,7 +205,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'reference-layers':{
                             divID: 'reference-layer-list-collapse-div',
-                            message:`<h5>REFERENCE DATA</h5>
+                            message:`<h5 class = 'list-group-title'>REFERENCE DATA</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">The REFERENCE DATA layers are related geospatial data that can help provide context for the LCMS data products</li>
                                       <li class="list-group-item">They include the <a href = "https://earthenginepartners.appspot.com/science-2013-global-forest" target = '_blank'>Hansen Global Forest Change data</a>, 
@@ -226,7 +217,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'TOOLS':{
                             divID: 'tools-collapse-div',
-                            message:`<h5>TOOLS-Overview</h5>
+                            message:`<h5 class = 'list-group-title'>TOOLS-Overview</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">A number of tools are provided to explore both the LCMS DATA as well as the REFERENCE DATA</li>
                                       <li class="list-group-item">These include measuring tools for relating to how small or large something you see on the map really is, single pixel query tools to explore a single location, and area query tools to summarize across an area</li>
@@ -236,7 +227,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'measuring-tools-distance-measuring':{
                             divID: 'tools-collapse-div',
-                            message:`<h5>TOOLS-Measuring Tools-Distance Measuring</h5>
+                            message:`<h5 class = 'list-group-title'>TOOLS-Measuring Tools-Distance Measuring</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Distance Measuring" tool</li>
                                       <li class="list-group-item">Once activated, click on map to draw line to measure distance</li>
@@ -247,7 +238,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'measuring-tools-area-measuring':{
                             divID: 'tools-collapse-div',
-                            message:`<h5>TOOLS-Measuring Tools-Area Measuring</h5>
+                            message:`<h5 class = 'list-group-title'>TOOLS-Measuring Tools-Area Measuring</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Area Measuring" tool</li>
                                       <li class="list-group-item">Once activated, click on map to draw polygons to measure area</li>
@@ -258,7 +249,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'pixel-tools-query-visible-map-layers':{
                             divID: 'tools-collapse-div',
-                            message:`<h5>TOOLS-Pixel Tools-Query Visible Map Layers</h5>
+                            message:`<h5 class = 'list-group-title'>TOOLS-Pixel Tools-Query Visible Map Layers</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Query Visible Map Layers" tool</li>
                                       <li class="list-group-item">Once activated, anywhere you double-click will query the value of any visible layer.</li>
@@ -270,7 +261,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'pixel-tools-query-visible-lcms-time-series':{
                             divID: 'tools-collapse-div',
-                            message:`<h5>TOOLS-Pixel Tools-Query Visible LCMS Time Series</h5>
+                            message:`<h5 class = 'list-group-title'>TOOLS-Pixel Tools-Query Visible LCMS Time Series</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Query LCMS Time Series" tool</li>
                                       <li class="list-group-item">This tool allows you to query a single pixel from the LCMS time series</li>
@@ -285,7 +276,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'area-tools-user-defined-area':{
                             divID: 'tools-collapse-div',
-                            message:`<h5>TOOLS-Area Tools-User-Defined Area</h5>
+                            message:`<h5 class = 'list-group-title'>TOOLS-Area Tools-User-Defined Area</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "User-Defined Area" tool</li>
                                       <li class="list-group-item">This tool allows you to draw a polygon on the map and summarize LCMS products across that area</li>
@@ -302,9 +293,9 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'downloads':{
                             divID : 'download-collapse-div',
-                            message:`<h5>DOWNLOADS</h5>
+                            message:`<h5 class = 'list-group-title'>DOWNLOADS</h5>
                                     <ul class="list-group list-group-flush">
-                                      <li class="list-group-item">There are a number of parameters that can be changed</li>
+                                      <li class="list-group-item">to dow</li>
                                       <li class="list-group-item">There are two modes to explore the data with. The standard mode provides the core LCMS products, related data, and tools to explore LCMS data</li>
                                       <li class="list-group-item">The only parameter to change in standard mode is the range of years included in the analysis. Try selecting a different range of years and then hit submit. This will filter all products to only include those years.</li>
                                       <li class="list-group-item">When the analysis mode is changed to "Advanced" a number of additional parameters will appear</li>
@@ -313,7 +304,7 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
                         },
                         'Parameters':{
                             divID:'parameters-collapse-div',
-                            message:`<h5>PARAMETERS</h5>
+                            message:`<h5 class = 'list-group-title'>PARAMETERS</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">There are a number of parameters that can be changed</li>
                                       <li class="list-group-item">There are two modes to explore the data with. The standard mode provides the core LCMS products, related data, and tools to explore LCMS data</li>
@@ -327,7 +318,37 @@ walkThroughDict = {     'intro':{message:`<h5>LCMS DATA Explorer Walk-Through</h
 
                     
                     }
+var walkThroughAdded = false;
+function getWalkThroughCollapseContainerID(){
+    var collapseContainer;
+    if($(window).width() < 576){collapseContainer = 'sidebar-left' }
+    else{collapseContainer = 'legendDiv';}
+    return collapseContainer
+}
+$(window).resize(function(){
+    if(walkThroughAdded){
+        removeWalkThroughCollapse();
+        addWalkThroughCollapse();
+    }
 
+})
+function toggleWalkThroughCollapse(){
+    if(walkThroughAdded){
+        removeWalkThroughCollapse();
+    }else(addWalkThroughCollapse());
+}
+function addWalkThroughCollapse(){
+    var collapseContainer =getWalkThroughCollapseContainerID(); 
+    addCollapse(collapseContainer,'walk-through-collapse-label','walk-through-collapse-div','TUTORIAL','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Walk through the features of the LCMS Data Explorer')
+    $('#walk-through-collapse-div').append(staticTemplates.walkThroughPopup);
+    showWalkThroughI();
+    walkThroughAdded = true;
+}
+function removeWalkThroughCollapse(){
+    $('#walk-through-collapse-label').remove();
+    $('#walk-through-collapse-div').remove();
+    walkThroughAdded = false;
+}
 function closeWalkThroughPopup(){
     $("#walk-through-popup").hide('fade');
 }
@@ -353,7 +374,7 @@ function previousWalkThrough(){
     showWalkThroughI();
 }
 function showWalkThroughI(){
-    $('#walk-through-popup').scrollTop(0);
+    $('#legendDiv').scrollTop(0);
     // var lastDict = walkThroughDict[Object.keys(walkThroughDict)[walkThroughKeyI-1]];
     var dict = walkThroughDict[Object.keys(walkThroughDict)[walkThroughKeyI]];
   
@@ -363,6 +384,7 @@ function showWalkThroughI(){
         $('.panel-collapse').removeClass('show')
         
         $('#'+dict.divID).addClass('show');
+         $('#walk-through-collapse-div').addClass('show');
         showWalkThroughPopupMessage(dict.message);
        
     };

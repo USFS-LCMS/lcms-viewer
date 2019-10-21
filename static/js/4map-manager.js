@@ -178,8 +178,10 @@ function synchronousCenterObject(feature){
 function centerObject(fc){
   try{
     // Map2.addLayer(ee.FeatureCollection([ee.Feature(fc.geometry())]))
-    $('#summary-spinner').show();
-    fc.geometry().bounds().evaluate(function(feature){synchronousCenterObject(feature);$('#summary-spinner').hide();});
+    // $('#summary-spinner').show();
+    fc.geometry().bounds().evaluate(function(feature){synchronousCenterObject(feature);
+      // $('#summary-spinner').hide();
+    });
   }
   catch(err){
     // alert('Bad Fusion Table');
