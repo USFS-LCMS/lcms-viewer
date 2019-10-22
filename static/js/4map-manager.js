@@ -265,19 +265,19 @@ function addPlotProject(plotProjectName,plotProjectPts){
   plotProjectID++;
 
 }
-function addPlot(latLng){
-  // plotDict[plotDictID] = false;
+// function addPlot(latLng){
+//   // plotDict[plotDictID] = false;
  
-  var ptElement = document.createElement("ee-pt");
+//   var ptElement = document.createElement("ee-pt");
   
-  ptElement.name = latLng;
-  // print(latLng);
-  ptElement.ID = plotDictID;
-  // ptElement.isOn = false;
-  var ptList = document.querySelector("pt-list");
-    ptList.insertBefore(ptElement,ptList.firstChild);
-   plotDictID ++;
-}
+//   ptElement.name = latLng;
+//   // print(latLng);
+//   ptElement.ID = plotDictID;
+//   // ptElement.isOn = false;
+//   var ptList = document.querySelector("pt-list");
+//     ptList.insertBefore(ptElement,ptList.firstChild);
+//    plotDictID ++;
+// }
 function setPlotColor(ID){
     var plotElements = document.getElementsByTagName("ee-pt");
       
@@ -1649,6 +1649,7 @@ function initSearchBox() {
       }
   
 function initialize() {
+
     var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
     var zoom = initialZoomLevel;//8;
 
@@ -1933,7 +1934,13 @@ function initialize() {
   setGEERunID();
   run();
   setupFSB();
-	// plotPlots()
+
+  if(plotsOn){
+    addPlotCollapse();
+    loadAllPlots();
+  }
+  
+
 	});
 
 }

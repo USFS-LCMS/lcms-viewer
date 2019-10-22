@@ -21,8 +21,6 @@ var NEXT_LAYER_ID = 1;var layerChildID = 0;
 var layerCount = 0;var refreshNumber = 0;
 var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow
 var outputURL;
-var chartType = 'LineChart';//Options LineChart, BarChart, ScatterChart, Histogram, AreaChart, Table
-var chartTypes = ['LineChart','Table'];//Options LineChart, BarChart, ScatterChart, Histogram, AreaChart, Table
 var tableConverter = null;
 var groundOverlayOn = false;
 
@@ -194,7 +192,7 @@ var mapOptions = {
     mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT},
     // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-
+	scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     tilt:0,
     controlSize: 25,
@@ -212,18 +210,18 @@ var mapOptions = {
 
 var authProxyAPIURL = "https://rcr-ee-proxy.herokuapp.com/api";
 var geeAPIURL = "https://earthengine.googleapis.com/map";
-var widgetsOn = true;
-var layersOn = true;
-var legendOn = true;
-var chartingOn = false;
-var distanceOn = false;
-var areaOn = false;
-var drawing = false;
+// var widgetsOn = true;
+// var layersOn = true;
+// var legendOn = true;
+// var chartingOn = false;
+// var distanceOn = false;
+// var areaOn = false;
+// var drawing = false;
 var plotsOn = true;
-var helpOn = false;
-var queryOn = false;
-var areaChartingOn = false;
-var studyAreaName = 'BTNF'
+// var helpOn = false;
+// var queryOn = false;
+// var areaChartingOn = false;
+// var studyAreaName = 'BTNF'
 
 /////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript

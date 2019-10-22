@@ -639,6 +639,34 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
   
   panelCollapseI++;
 }
+function getWalkThroughCollapseContainerID(){
+    var collapseContainer;
+    if($(window).width() < 576){collapseContainer = 'sidebar-left' }
+    else{collapseContainer = 'legendDiv';}
+    return collapseContainer
+}
+function moveCollapse(baseID){
+    var collapseContainer =getWalkThroughCollapseContainerID();
+    $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
+    $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
+}
+
+function addLegendCollapse(){
+    var collapseContainer =getWalkThroughCollapseContainerID(); 
+    addCollapse(collapseContainer,'legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
+    // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
+    $('#legend-collapse-div').append(`<div id="legend-layer-list"></div>`);
+    $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
+}
+function addPlotCollapse(){
+	var collapseContainer =getWalkThroughCollapseContainerID(); 
+    addCollapse(collapseContainer,'plot-collapse-label','plot-collapse-div','PLOTS','<i class="fa fa-crosshairs  mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
+    // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
+    $('#plot-collapse-div').append(`<select multiple class = 'form-control bg-black flexcroll' id="plot-list"></select>`);
+    // $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
+}
+
+
 function addLegendContainer(legendContainerID,containerID,show,toolTip){
 	if(containerID === undefined || containerID === null){containerID = 'legend-collapse-div'}
 	if(show === undefined || show === null){show = true}

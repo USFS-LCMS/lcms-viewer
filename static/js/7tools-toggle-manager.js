@@ -92,3 +92,10 @@ function toggleTool(tool){
 
 
 updateToolStatusBar();
+// var paragraphs = document.getElementsByClassName("collapse-title");
+// for (var i = 0; i < paragraphs.length; i++) {
+//   var paragraph = paragraphs.item(i);
+//   paragraph.style.setProperty("font-size", "0.5em", null);
+//   paragraph.style.setProperty("padding", "0.0em", null);
+//   paragraph.style.setProperty("margin", "0.0em", null);
+// }
