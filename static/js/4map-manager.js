@@ -61,12 +61,7 @@ var cpDict = {
 
 
 
-infowindow = new google.maps.InfoWindow({
-               content : '',
-                maxWidth: 300,
-                pixelOffset: new google.maps.Size(30,-30,'rem','rem'),
-                close:false
-              });
+
 ///////////////////////////////////////////////////////////////////
 //Function to compute range list on client side
 function range(start, stop, step){
@@ -354,7 +349,8 @@ function addImageDownloads(imagePathJson){
 }
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
-function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+
     var currentGEERunID = geeRunID;
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     // print(item.getInfo().type)
@@ -368,7 +364,12 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     //Take care of vector option
     var isVector = false;
     var isImageCollection = false;
-    try{var t = item.bandNames();}
+    var isTileMapService = false;
+    var isDynamicMapService = false;
+    if(viz.isTileMapService === true){isTileMapService = true}
+    else if(viz.isDynamicMapService === true){isDynamicMapService = true;}
+    else if(!isTileMapService && !isDynamicMapService ){
+      try{var t = item.bandNames();}
     // catch(err){
       // try{
       //   var t = ee.Image(item.first()).bandNames().getInfo();
@@ -376,11 +377,14 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
       //   // isImageCollection = true;
       // }
       catch(err2){
-        isVector = true;
+        if(!isTileMapService){ isVector = true;}
+       
         }
+    }
+    
 
       // };
-    // console.log(name + ' ' + isVector + isImageCollection)
+    // console.log(name + ' ' + isVector + isImageCollection+isTileMapService)
     if(isVector){
       if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
       if(viz.fillOpacity === undefined || viz.fillOpacity === null){viz.fillOpacity = 0.2};
@@ -441,6 +445,8 @@ function addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerLis
     if(queryItem === null || queryItem === undefined){queryItem = item};
     layer.queryItem = queryItem;
     layer.isVector = isVector;
+    layer.isTileMapService = isTileMapService;
+    layer.isDynamicMapService = isDynamicMapService;
     // layer.viz = JSON.stringify(viz);
     // layer.viz  = viz;
 
@@ -686,7 +692,7 @@ function getGroundOverlay(baseUrl,minZoom){
   var keys = Object.keys(bounds);
   var keysX = Object.keys(bounds[keys[0]]);
   var keysY = Object.keys(bounds[keys[1]]);
-       console.log('b');console.log(bounds);
+       // console.log('b');console.log(bounds);
         eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
 
   var ulxy = [bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]]];
@@ -781,26 +787,26 @@ function addFeatureToMap(item,viz,name,visible,label,fontColor,helpBox,whichLaye
 //////////////////////////////////////////////////////
 //Function for adding ee object to map
 //Will handle vectors by converting them to rasters
-function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
-    if(canAddToMap){
-    // try{var t = item.bandNames();
+// function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+//     if(canAddToMap){
+//     // try{var t = item.bandNames();
         
-        // addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
-      // }
-    // catch(err){
-        // try{
-        // item = ee.Image().paint(item,3,3);
-        addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem)
-        // addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
-      // }
-    // catch(err){
-    //   item = ee.Image().paint(ee.FeatureCollection([item]),3,3);
-    //     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
-    // }
-    // };
-}
+//         // addRasterToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+//       // }
+//     // catch(err){
+//         // try{
+//         // item = ee.Image().paint(item,3,3);
+//         addGEEToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem)
+//         // addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
+//       // }
+//     // catch(err){
+//     //   item = ee.Image().paint(ee.FeatureCollection([item]),3,3);
+//     //     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList)
+//     // }
+//     // };
+// }
     
-}
+// }
 function mp(){
   this.addLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
@@ -834,6 +840,7 @@ function setGEERunID(){
 }
 // function refreshLayerToMap()
 function reRun(){
+  $('#summary-spinner').show();
   setGEERunID();
   layerChildID = 0;
   queryObj = {};areaChartCollections = {};
@@ -903,7 +910,7 @@ function reRun(){
 //     whileCount++;
 // }
     // processFeatures(fc);
-   
+  $('#summary-spinner').hide(); 
 }
 
 // function toggleUnits(){
@@ -945,6 +952,7 @@ var chartColorsDict = {
   'advanced':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4'],
   'advancedBeta':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4','#808','#f58231'],
   }
+
 var chartColors = chartColorsDict.standard;
 
 // ['#111','#808','#fb9a99','#33a02c','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#b15928'];
@@ -1486,55 +1494,7 @@ layer2.setMap(map);
     
     }
 
-var layerObj = null;
-var queryObj = {};
-var lowerThresholdDecline = 0.35;
-var upperThresholdDecline = 1;
-var lowerThresholdRecovery = 0.35;
-var upperThresholdRecovery = 1;
 
-var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':{
-                                                name:'FNF',
-                                                center:[48.16,-115.08,8],
-                                                crs:'EPSG:26911',
-                                                lossThresh:0.35,
-                                                gainThresh:0.35,
-                                                startYear:1985,
-                                                endYear:2018},
-                  'Bridger-Teton National Forest':{
-                                                  name:'BTNF',
-                                                  center:[43.4,-111.1,8],
-                                                  crs:'EPSG:26912',
-                                                  lossThresh:0.35,
-                                                  gainThresh:0.35,
-                                                  startYear : 1985,
-                                                  endYear : 2018},
-                  'Manti-La Sal National Forest':{
-                                                  name:'MLSNF',
-                                                  center:[38.8,-111,8],
-                                                  crs:'EPSG:26912',
-                                                  lossThresh:0.25,
-                                                  gainThresh:0.30,
-                                                  startYear: 1985,
-                                                  endYear: 2018},
-                  'Chugach National Forest - Kenai Peninsula':{
-                                                name:'CNFKP',
-                                                center:[60.4,-150.1, 9],
-                                                crs:'EPSG:3338',
-                                                lossThresh:0.35,
-                                                gainThresh:0.45,
-                                                startYear:1985,
-                                                endYear:2019},
-                  'Science Team CONUS':{
-                                                name:'CONUS',
-                                                center:[37.5334105816903,-105.6787109375,5],
-                                                crs:'EPSG:5070',
-                                                lossThresh:0.30,
-                                                gainThresh:0.30,
-                                                startYear:1985,
-                                                endYear:2017}
-                };
 
 function dropdownUpdateStudyArea(whichOne){
   console.log('clicked')
@@ -1550,7 +1510,7 @@ function dropdownUpdateStudyArea(whichOne){
     centerMap(coords[1],coords[0],coords[2]);
     if(studyAreaName === 'CONUS'){run = runCONUS}
       else{run = runUSFS};
-
+    // run = runSimple;
     
 
     reRun();
@@ -1649,42 +1609,60 @@ function initSearchBox() {
       }
   
 function initialize() {
+  marker=new google.maps.Circle({
+    center:{lat:45,lng:-111},
+    radius:5
+  });
 
-    var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
-    var zoom = initialZoomLevel;//8;
+  infowindow = new google.maps.InfoWindow({
+    content : '',
+    maxWidth: 300,
+    pixelOffset: new google.maps.Size(30,-30,'rem','rem'),
+    close:false
+  });
 
-    var settings = null;
+  var mapOptions = {
+    center: null,
+    zoom: null,
+    minZoom: 2,
+    // gestureHandling: 'greedy',
+    disableDoubleClickZoom: true,
+    // maxZoom: 15,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    streetViewControl: true,
+    fullscreenControl: false,
+    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT},
+    // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+    streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+    scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+    zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+    tilt:0,
+    controlSize: 25,
+    scaleControl: true,
+    clickableIcons:false
+  };
+  var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
+  var zoom = initialZoomLevel;//8;
+
+  var settings = null;
 
 
-    // var randomID = null;
-    if(typeof(Storage) !== "undefined"){
-        settings = JSON.parse(localStorage.getItem("settings"));
+  // var randomID = null;
+  if(typeof(Storage) !== "undefined"){
+    settings = JSON.parse(localStorage.getItem("settings"));
+    layerObj =  null;//JSON.parse(localStorage.getItem("layerObj"));
+    cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
+  }
 
-        layerObj =  null;//JSON.parse(localStorage.getItem("layerObj"));
+  if(settings != null && settings.center != null && settings.zoom != null){
+    center = settings.center;
+    zoom  = settings.zoom;
+  }
+  if(layerObj === null){
+    layerObj = {};
+  }
 
-        cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
-        // randomID = JSON.parse(localStorage.getItem("randomID"));
-    }
-
-    if(settings != null && settings.center != null && settings.zoom != null){
-        center = settings.center;
-        zoom  = settings.zoom;
-    }
-    if(layerObj === null){
-        layerObj = {};
-    }
-    
  
-  // var mapTypeIds = [];
-  //           for(var type in google.maps.MapTypeId) {
-  //               mapTypeIds.push(google.maps.MapTypeId[type]);
-  //           }
-    // mapTypeIds.push("Bing Satellite");
-    // mapTypeIds.push("Mapbox Satellite");         
-    
-    // [1,2,3,4,5,6,7,8,9].map(function(n){mapTypeIds.push("Placeholder"+n.toString());})
-   
-    
 
 	
     mapOptions.center = center;
@@ -1739,80 +1717,7 @@ function initialize() {
             }
               
 
-        if(helpBox){
-          // document.getElementById('helpBoxButton').style.display = 'inline-block';
-        }
-        if(useShapes){
-          
-            document.getElementById('shape-edit-container').style.display = 'inline-block';
-            
-            shapesMap = new ShapesMap(
-            map, 
-            document.getElementById("delete-button"),
-            document.getElementById("clear-button"),
-            document.getElementById("process-button"),
-            document.getElementById("export-button"),
-            document.getElementById("toggle-drawing-button"),
-            document.getElementById("console"));
-
-            if(exportCapability){
-              document.getElementById('export-container-big').style.display = 'block';
-             //    document.getElementById('process-button').style.display = 'inline-block';
-             // document.getElementById('export-button').style.display = 'inline-block';
-             // document.getElementById('cancel-tasks-button').style.display = 'inline-block';
-             // document.getElementById('export-scale').style.display = 'inline-block';
-
-
-             // document.getElementById('export-crs').style.display = 'inline-block';
-
-            
-         }
-
-    }
-
-    // if(downloadCapability){
-    //     document.getElementById('download-container').style.display = 'block';
-    //   }
-    if(userCharting){
-       // document.getElementById('plot-radius').style.display = 'inline-block';
-       // document.getElementById('plot-scale').style.display = 'inline-block'; 
-        // document.getElementById('charting-radio').style.display = 'inline-block';
-        // document.getElementById('charting-label').style.display = 'inline-block';
-        // document.getElementById('Progress').style.display = 'inline-block';
-    }
-    if(includeTools){
-         // document.getElementById('tool-area').style.display = 'inline-block';
-    }
-    // if(includeLegend){
-        // document.getElementById('legend').style.display = 'inline-block';
-        // document.getElementById('legend-button').style.display = 'inline-block';
-    // }
-    if(displayParameters){
-      // document.getElementById('parameters-only').style.display = 'inline-block';
-    }
-    if(plotNavigation){
-      // document.getElementById('pt-list').style.display = 'inline-block';
-      // document.getElementById('pt-project-list').style.display = 'inline-block';
-      document.getElementById('plot-container').style.display = 'inline-block';
-      document.getElementById('toggle-plot-list-button').style.display = 'inline-block';
-    }
-        // var shapesMap = new ShapesMap(
-        // map, 
-        // document.getElementById("delete-button"),
-        // document.getElementById("clear-button"),
-        // document.getElementById("process-button"),
-        // document.getElementById("export-button"),
-        // document.getElementById("stop-drawing-button"),
-        // document.getElementById("console"));
-        //     var panorama = new google.maps.StreetViewPanorama(
-        //     document.getElementById('pano'), {
-              
-        //       pov: {
-        //         heading: 34,
-        //         pitch: 10
-        //       }
-        //     });
-        // map.setStreetView(panorama);
+        
         var zoomDict = {20 : '1,128.49',
                         19 : '2,256.99',
                         18 : '4,513.98',
@@ -1940,12 +1845,12 @@ function initialize() {
     loadAllPlots();
   }
   
-
+  $('#summary-spinner').hide();
 	});
 
 }
 
-google.maps.event.addDomListener(window, 'load', function(){
+$(document).ready(function(){
   
   initialize();
   

@@ -5,7 +5,7 @@ $('body').append(staticTemplates.sidebarLeftContainer);
 
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
-
+$('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler)
 
@@ -26,11 +26,7 @@ $('#dontShowAgainCheckbox').change(function(){
   localStorage.showIntroModal  = !this.checked;
 });
 
-addStudyAreaToDropdown('Bridger-Teton National Forest',"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley");
-addStudyAreaToDropdown('Flathead National Forest',"Flathead National Forest buffered along with Glacier National Park buffered by 1km");
-addStudyAreaToDropdown('Manti-La Sal National Forest',"Manti-La Sal National Forest");
-addStudyAreaToDropdown('Chugach National Forest - Kenai Peninsula',"Chugach National Forest - Kenai Peninsula");
-addStudyAreaToDropdown('Science Team CONUS',"2018 LCMS Science Team CONUS-wide loss");
+Object.keys(studyAreaDict).map(function(k){addStudyAreaToDropdown(k,studyAreaDict[k].popOver);})
 $('#title-banner').fitText(1.2);
 $('#study-area-label').fitText(1.8);
 

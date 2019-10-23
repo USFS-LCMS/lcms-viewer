@@ -63,14 +63,17 @@ var  getQueryImages = function(lng,lat){
 
 		if(q.visible){
 			var img = ee.Image(q.queryItem);
-			var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).evaluate(function(value){
-				if(value != null){
-				value = value['properties'];
+			img.reduceRegion(ee.Reducer.first(),ee.Geometry.Point(lngLat),null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){
+
+		
+			// var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).evaluate(function(value){
+				// if(value != null){
+				// value = value['properties'];
 
 				// if(Object.keys(value).length > 1){value = null;show = false;}
 				// else{value = Object.values(value)[0];}
 				
-			};
+			// };
 			
 				if(value === null){
 					// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
@@ -81,10 +84,10 @@ var  getQueryImages = function(lng,lat){
 				else if(Object.keys(value).length === 1 ){
 					var tValue = JSON.stringify(Object.values(value)[0]);
 					if(q.queryDict !== null && q.queryDict !== undefined){
-						tValue = q.queryDict[tValue]
+						tValue = q.queryDict[parseInt(tValue)]
 					}
 					// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
-					queryContent +=`<tr><td>${k}</td><td>${tValue}</td></tr>`;
+					queryContent +=`<tr><th>${k}</th><td>${tValue}</td></tr>`;
 					// $('#query-container').append(queryLine);
 				}
 				else{
@@ -440,7 +443,8 @@ function makeAreaChart(area,name,userDefined){
 				var colors = areaChartCollections[whichAreaChartCollection].colors;
 				var chartType = areaChartCollections[whichAreaChartCollection].chartType
 				if(chartType === null || chartType === undefined){chartType = 'line'}
-				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors);
+				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,null,'% Area');
+		
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
@@ -725,8 +729,10 @@ var dataToTable = function (dataset) {
 };
 var chartJSChart;
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
-	dataTable = dt;
+function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel){
+	dataTable = dt;var displayXAxis = true;var displayYAxis = true;
+	if(xAxisLabel === null || xAxisLabel === undefined){xAxisLabel = '';displayXAxis = false};
+	if(yAxisLabel === null || yAxisLabel === undefined){yAxisLabel = '';displayYAxis = false};
 	if(colors === null || colors === undefined){colors = chartColors};
 	if(chartType === null || chartType === undefined){chartType = 'line'};
 	if(stacked === null || stacked === undefined){stacked = false};
@@ -796,9 +802,11 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
     	chartJSChart.destroy();	
     }
     catch(err){};
-    chartJSChart = new Chart($('#chart-canvas'),{"type":chartType,
+    chartJSChart = new Chart($('#chart-canvas'),{
+    	"type":chartType,
 	    "data":{"labels":firstColumn,
-	    "datasets":datasets},"options":{
+	    "datasets":datasets},
+	    "options":{
 	    	 title: {
 	            display: true,
 	            position:'top',
@@ -814,14 +822,14 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors){
 	        		boxWidth:5,
 	        		usePointStyle: true,
             
-        }
+        		}
 	        },
 	        chartArea: {
 		        backgroundColor: '#DDD'
 		    },
 		    scales: {
-				yAxes: [{ stacked: stacked }],
-				xAxes: [{ stacked: stacked }]
+				yAxes: [{ stacked: stacked ,scaleLabel:{display:displayYAxis,labelString:yAxisLabel}}],
+				xAxes: [{ stacked: stacked ,scaleLabel:{display:displayXAxis,labelString:xAxisLabel}}]
 			}
     	}	
 	});
@@ -950,10 +958,7 @@ var d =
 // var legends = chartCollection.get('legends').getInfo();
 // if(legends !== null){makeLegend(legends)}
 
-var marker=new google.maps.Circle({
-  				center:{lat:45,lng:-111},
-  				radius:5
-  				});
+
 function addClickMarker(plotBounds){
 	plotBounds.evaluate(function(plotBounds){
 		var coords = plotBounds.coordinates[0];
@@ -1060,6 +1065,7 @@ function startPixelChartCollection() {
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
 			addChartJS(values,uriName);
+			
 			var legends = chartCollection.get('legends').getInfo();
 			print(legends);
 			if(legends !== null){// && analysisMode === 'advanced'){

@@ -6,6 +6,61 @@ var upperThresholdRecovery = 1.0;
 var studyAreaName = 'BTNF';
 var startYear = 1985;
 var endYear = 2018;
+var layerObj = null;
+var queryObj = {};
+
+
+var cachedStudyAreaName = null;
+var studyAreaDict = {'Flathead National Forest':{
+                                                name:'FNF',
+                                                center:[48.16,-115.08,8],
+                                                crs:'EPSG:26911',
+                                                lossThresh:0.4,
+                                                lossFastThresh:0.4,
+                                                lossSlowThresh:0.35,
+                                                gainThresh:0.45,
+                                                startYear:1985,
+                                                endYear:2019,
+                                            	popOver:"Flathead National Forest buffered along with Glacier National Park buffered by 1km"},
+                  'Bridger-Teton National Forest':{
+                                                  name:'BTNF',
+                                                  center:[43.4,-111.1,8],
+                                                  crs:'EPSG:26912',
+                                                  lossThresh:0.35,
+                                                  gainThresh:0.35,
+                                                  startYear : 1985,
+                                                  endYear : 2018,
+                                              	  popOver:"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley"},
+                  'Manti-La Sal National Forest':{
+                                                  name:'MLSNF',
+                                                  center:[38.8,-111,8],
+                                                  crs:'EPSG:26912',
+                                                  lossThresh:0.25,
+                                                  gainThresh:0.30,
+                                                  startYear: 1985,
+                                                  endYear: 2018,
+                                              	  popOver:"Manti-La Sal National Forest"},
+                  'Chugach National Forest - Kenai Peninsula':{
+                                                name:'CNFKP',
+                                                center:[60.4,-150.1, 9],
+                                                crs:'EPSG:3338',
+                                                lossThresh:0.35,
+                                                gainThresh:0.45,
+                                                startYear:1985,
+                                                endYear:2019,
+                                            	popOver:"Chugach National Forest - Kenai Peninsula"},
+                  // 'Science Team CONUS':{
+                  //                               name:'CONUS',
+                  //                               center:[37.5334105816903,-105.6787109375,5],
+                  //                               crs:'EPSG:5070',
+                  //                               lossThresh:0.30,
+                  //                               gainThresh:0.30,
+                  //                               startYear:1985,
+                  //                               endYear:2017,
+                  //                           	popOver:"2018 LCMS Science Team CONUS-wide loss"}
+                };
+
+
 // var applyTreeMask = true;
 // var summaryMethod = 'recent';
 var whichIndex = 'NBR';
@@ -19,7 +74,7 @@ var canExport = false;//Set whether exports are allowed
 var colorRampIndex = 1;
 var NEXT_LAYER_ID = 1;var layerChildID = 0;
 var layerCount = 0;var refreshNumber = 0;
-var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow
+var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow;var marker;
 var outputURL;
 var tableConverter = null;
 var groundOverlayOn = false;
@@ -179,34 +234,6 @@ var tableOptions = {
 
 
 
-var mapOptions = {
-	  center: null,
-	  zoom: null,
-	  minZoom: 2,
-    // gestureHandling: 'greedy',
-    disableDoubleClickZoom: true,
-      // maxZoom: 15,
-      mapTypeId: google.maps.MapTypeId.HYBRID,
-	  streetViewControl: true,
-    fullscreenControl: false,
-    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT},
-    // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-    streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-	scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-    zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-    tilt:0,
-    controlSize: 25,
-
-    // mapTypeId: "OSM",
-    // mapTypeControlOptions: {
-    //                 mapTypeIds: mapTypeIds,
-    //                 // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-    //                 // position: google.maps.ControlPosition.TOP_CENTER
-    //             },
-                scaleControl: true,
-                clickableIcons:false
-
-	};
 
 var authProxyAPIURL = "https://rcr-ee-proxy.herokuapp.com/api";
 var geeAPIURL = "https://earthengine.googleapis.com/map";
@@ -217,7 +244,7 @@ var geeAPIURL = "https://earthengine.googleapis.com/map";
 // var distanceOn = false;
 // var areaOn = false;
 // var drawing = false;
-var plotsOn = true;
+var plotsOn = false;
 // var helpOn = false;
 // var queryOn = false;
 // var areaChartingOn = false;

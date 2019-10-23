@@ -5,6 +5,11 @@ var topBannerParams = {
     centerWords: 'DATA',
     rightWords:'Explorer'
 };
+// var topBannerParams = {
+//     leftWords: 'Ancillary',
+//     centerWords: 'DATA',
+//     rightWords:'Viewer'
+// };
 var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 
 
@@ -129,8 +134,10 @@ var staticTemplates = {
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
         reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
         reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
-    downloadDiv :`<label class = 'p-0' for="downloadDropdown">Select product to download:</label>
-			<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>`,
+    downloadDiv :`<div class = 'pb-2'>
+    				<label  for="downloadDropdown">Select product to download:</label>
+					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
+				 </div>`,
 supportDiv :`<div class = 'p-0 pb-2' >
 				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
 					<br>
@@ -658,13 +665,6 @@ function addLegendCollapse(){
     $('#legend-collapse-div').append(`<div id="legend-layer-list"></div>`);
     $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
 }
-function addPlotCollapse(){
-	var collapseContainer =getWalkThroughCollapseContainerID(); 
-    addCollapse(collapseContainer,'plot-collapse-label','plot-collapse-div','PLOTS','<i class="fa fa-crosshairs  mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
-    // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
-    $('#plot-collapse-div').append(`<select multiple class = 'form-control bg-black flexcroll' id="plot-list"></select>`);
-    // $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
-}
 
 
 function addLegendContainer(legendContainerID,containerID,show,toolTip){
@@ -807,7 +807,28 @@ function addLayer(layer){
 		}
 	}
 	function checkFunction(){
-		if(!layer.isVector){
+		if(layer.isDynamicMapService){
+			if(layer.visible){
+				layer.layer.setMap(null);
+				layer.visible = false;
+				layer.percent = 0;
+				layer.rangeOpacity = 0;
+				setRangeSliderThumbOpacity();
+				updateProgress();
+				$('#'+layer.legendDivID).hide();
+			}else{
+				layer.layer.setMap(map);
+				layer.visible = true;
+				layer.percent = 100;
+				layer.rangeOpacity = layer.opacity;
+				setRangeSliderThumbOpacity();
+				updateProgress();
+				$('#'+layer.legendDivID).show();
+			}
+			
+			
+		}
+		else if(!layer.isVector){
             if(layer.visible){
             	layer.visible = false;
                 layer.map.overlayMapTypes.setAt(layer.layerId,null);
@@ -822,10 +843,12 @@ function addLayer(layer){
                 layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
                 $('#'+layer.legendDivID).show();
                 layer.rangeOpacity = layer.opacity;
-                
+                if(layer.isTileMapService){layer.percent = 100;updateProgress();}
                 layer.layer.setOpacity(layer.opacity); 
 				}
+				if(!layer.isTileMapService && !layer.isDynamicMapService){
                  queryObj[layer.name].visible = layer.visible;
+				}
                    
                 }
                 else{
@@ -851,6 +874,7 @@ function addLayer(layer){
                     }
                     
                 }
+                
                 setRangeSliderThumbOpacity();
                 console.log('visible: ' +layer.visible);
                 console.log('opacity: '+layer.opacity);
@@ -884,7 +908,7 @@ function addLayer(layer){
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
 
-	if(!layer.isVector){
+	if(!layer.isVector && !layer.isTileMapService && !layer.isDynamicMapService){
 		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
 		incrementOutstandingGEERequests();
 		
@@ -946,7 +970,7 @@ function addLayer(layer){
           // console.log(layer)
 		})
 
-	}else{
+	}else if(layer.isVector){
 		incrementOutstandingGEERequests();
 		
 		layer.item.evaluate(function(v){
@@ -967,6 +991,7 @@ function addLayer(layer){
 		        	layer.layer.setMap(layer.map);
 		        	layer.rangeOpacity = layer.viz.strokeOpacity;
 		        	layer.percent = 100;
+		        	updateProgress();
 		        	$('#'+layer.legendDivID).show();
 		      	}else{
 		        	layer.rangeOpacity = 0;
@@ -976,6 +1001,62 @@ function addLayer(layer){
 		      	setRangeSliderThumbOpacity();
 		      	}
   		})
+	}else if(layer.isTileMapService){
+		layer.layer = new google.maps.ImageMapType({
+                getTileUrl: layer.item,
+                tileSize: new google.maps.Size(256, 256),
+                // tileSize: new google.maps.Size($('#map').width(),$('#map').height()),
+                maxZoom: 15
+            
+            })
+		if(layer.visible){
+        	
+        	layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+        	layer.rangeOpacity = layer.opacity; 
+        	layer.layer.setOpacity(layer.opacity); 
+             }else{layer.rangeOpacity = 0;}
+             $('#' + spinnerID).hide();
+			$('#' + visibleLabelID).show();
+			setRangeSliderThumbOpacity();
+                
+		
+	}else if(layer.isDynamicMapService){
+		function groundOverlayWrapper(){
+	      if(map.getZoom() > layer.item[1].minZoom){
+	        return getGroundOverlay(layer.item[1].baseURL,layer.item[1].minZoom)
+	      }
+	      else{
+	        return getGroundOverlay(layer.item[0].baseURL,layer.item[0].minZoom)
+	      }
+	      };
+	      function updateGroundOverlay(){
+                if(layer.layer !== null && layer.layer !== undefined){
+                    layer.layer.setMap(null);
+                }
+                
+                layer.layer =groundOverlayWrapper();
+                if(layer.visible){
+                	layer.layer.setMap(map);
+                	layer.percent = 100;
+					updateProgress();
+                	groundOverlayOn = true
+              		$('#'+layer.legendDivID).show();
+                	layer.layer.setOpacity(layer.opacity);
+                	layer.rangeOpacity = layer.opacity;
+                	
+                }else{layer.rangeOpacity = 0};
+                   setRangeSliderThumbOpacity();          
+
+            };
+            updateGroundOverlay();
+            // if(layer.visible){layer.opacity = 1}
+                // else{this.opacity = 0}
+            google.maps.event.addListener(map,'zoom_changed',function(){updateGroundOverlay()});
+
+            google.maps.event.addListener(map,'dragend',function(){updateGroundOverlay()});
+             $('#' + spinnerID).hide();
+			$('#' + visibleLabelID).show();
+			setRangeSliderThumbOpacity();
 	}
 
 

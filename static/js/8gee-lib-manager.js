@@ -27,7 +27,7 @@ window.recoveryDurPalette = declineDurPalette;
 window.bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/GTNP_admin_bndy_5km_buffer_GTNP_Merge');
 window.fnf_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_GNP_Merge_Admin_BND_1k');
 window.mls_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/MLS_LCMS_ProjectArea_5km');
-window.ck_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R10/CK/CK_LCMS_ProjectArea');
+window.ck_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R10/CK/CK_LCMS_ProjectArea').map(function(f){return f.convexHull(1000)});
 
 // Forest Service and Park Service Boundaries
 window.b = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
@@ -66,10 +66,14 @@ window.ckStudyAreas = [['HUC8 Boundaries',huc8.filterBounds(ck_study_area),'USGS
 
 // var studyAreaName = 'FNF';
 window.collectionDict = {
-  'FNF': ['projects/USFS/LCMS-NFS/R1/Composites/R1-Composite-Collection',
+  'FNF': [
+          // 'projects/USFS/LCMS-NFS/R1/Composites/R1-Composite-Collection',
+          'projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7',
           // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Change/Landcover-Change-Collection',
-          'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-R1',
-          'projects/USFS/LCMS-NFS/R1/Base-Learners/LANDTRENDR-Collection',
+          // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-R1',
+          'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+          'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+          // 'projects/USFS/LCMS-NFS/R1/Base-Learners/LANDTRENDR-Collection',
           'projects/USFS/LCMS-NFS/R1/Base-Learners/Harmonic-Coefficients',
           fnfStudyAreas,
           'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table',

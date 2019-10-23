@@ -27,7 +27,7 @@ function loadPlots(plotProjectObj){
   	 addPlotgeoJSON(plotProjectObj.path)
 }
 function addPlot(obj){
-	console.log(obj);
+	// console.log(obj);
 	$('#'+obj.name.replaceAll(' ','-')+'-plot-list').append(`
 		<option onclick = 'synchronousCenterObject(${JSON.stringify(obj.geometry)})'>${obj.properties.PLOTID}</option>
 		`)

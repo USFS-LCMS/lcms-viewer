@@ -27,7 +27,7 @@ function runUSFS(){
     var rawC = ee.ImageCollection(collectionDict[studyAreaName][1]);
  
 
-    if(studyAreaName !== 'CNFKP'){
+    if(studyAreaName !== 'CNFKP' && studyAreaName !== 'FNF'){
       rawC = rawC.map(function(img){
         var lc = img.select([0]);
         lc = lc.remap([0,1,2,3,4,5,6],[4,5,3,6,2,7,1]).rename(['LC']);
@@ -51,16 +51,20 @@ function runUSFS(){
     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
     
     var lcJSON = JSON.parse(NFSLCMS.get('landcoverJSON').getInfo());
+    var luJSON = JSON.parse(NFSLCMS.get('landuseJSON').getInfo());
     
     var lcJSONFlipped = {};
-    Object.keys(lcJSON).map(function(k){
-                              // print(k);
-                              lcJSONFlipped[lcJSON[k]['name']] = parseInt(k)
-                            });
-   
+    var luJSONFlipped = {};
+    Object.keys(lcJSON).map(function(k){lcJSONFlipped[lcJSON[k]['name']] = parseInt(k)});
+    Object.keys(luJSON).map(function(k){luJSONFlipped[luJSON[k]['name']] = parseInt(k)});
     var rawLC = rawC
                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
                 .select([0],['LC']);
+    var rawLU = rawC
+                .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+                .select([1],['LU'])
+                .map(function(img){return ee.Image(additionBands(img,[1]))});
+
     var NFSLCMSForCharting = NFSLCMS;
     var minTreeNumber = 3;
     if(applyTreeMask === 'yes'){
@@ -417,16 +421,23 @@ function runUSFS(){
 
     var lcLayerName =  'Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
 
-    var luPalette = "efff6b,ff2ff8,1b9d0c,97ffff,a1a1a1,c2b34a";
+    // var luPalette = "efff6b,ff2ff8,1b9d0c,97ffff,a1a1a1,c2b34a";
     var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
     
    
     var landcoverClassLegendDict = {};var landcoverClassChartDict = {}
     var lcPalette = Object.values(lcJSON).map(function(v){return v['color']});
     var lcValues = Object.keys(lcJSON).map(function(i){return parseInt(i)});
-    // print(lcValues);
+   
     Object.keys(lcJSON).map(function(k){landcoverClassLegendDict[lcJSON[k]['name']] = lcJSON[k]['color']});
     Object.keys(lcJSON).map(function(k){landcoverClassChartDict[lcJSON[k]['name']] = k/10.});
+
+    var landuseClassLegendDict = {};var landuseClassChartDict = {}
+    var luPalette = Object.values(luJSON).map(function(v){return v['color']});
+    var luValues = Object.keys(luJSON).map(function(i){return parseInt(i)});
+   
+    Object.keys(luJSON).map(function(k){landuseClassLegendDict[luJSON[k]['name']] = luJSON[k]['color']});
+    Object.keys(luJSON).map(function(k){landuseClassChartDict[luJSON[k]['name']] = k/10.});
     // console.log(lcPalette);console.log(landcoverClassChartDict)
     // var landcoverClassLegendDict = {'Barren':'b67430',
     //                         'Grass/forb/herb':'78db53',
@@ -436,15 +447,15 @@ function runUSFS(){
     //                         'Trees':'32681e',
     //                         'Water':'2a74b8'};
 
-    var landuseClassLegendDict = {
-      'Agriculture':'efff6b',
-      'Developed':'ff2ff8',
-      'Forest':'1b9d0c',
-      'Non-forest Wetland':'97ffff',
-      'Other':'a1a1a1',
-      'Rangeland':'c2b34a',
+    // var landuseClassLegendDict = {
+    //   'Agriculture':'efff6b',
+    //   'Developed':'ff2ff8',
+    //   'Forest':'1b9d0c',
+    //   'Non-forest Wetland':'97ffff',
+    //   'Other':'a1a1a1',
+    //   'Rangeland':'c2b34a',
 
-    }
+    // }
 
     // var landcoverClassChartDict={
     //   'Barren':0.1,
@@ -455,19 +466,18 @@ function runUSFS(){
     //   'Trees': 0.6,
     //   'Water': 0.7
     // }
-    var landuseClassChartDict={
-      'Agriculture': 0.1,
-      'Developed' : 0.2,
-      'Forest' : 0.3,
-      'Non-forest Wetland' : 0.4,
-      'Other' : 0.5,
-      'Rangeland':0.6
-    }
+    // var landuseClassChartDict={
+    //   'Agriculture': 0.1,
+    //   'Developed' : 0.2,
+    //   'Forest' : 0.3,
+    //   'Non-forest Wetland' : 0.4,
+    //   'Other' : 0.5,
+    //   'Rangeland':0.6
+    // }
 
     var landcoverClassQueryDict = {};
     Object.keys(landcoverClassChartDict).map(function(k){landcoverClassQueryDict[parseInt(landcoverClassChartDict[k]*10)] =k});
     var landuseClassQueryDict = {};
-    
     Object.keys(landuseClassChartDict).map(function(k){landuseClassQueryDict[parseInt(landuseClassChartDict[k]*10)] =k})
     // console.log(landcoverClassQueryDict);console.log(landuseClassQueryDict);
     // <li><span style='background:#efff6b;'></span>Agriculture (0.1 in chart)</li>
@@ -525,7 +535,7 @@ function runUSFS(){
     // console.log(vegetationChangeClassDict);
     queryClassDict['lcChangeMatrix'] = vegetationChangeClassDict;
     queryClassDict['Vegetation Change'] = vegetationChangeClassDict;
-    if(viewBeta === 'yes'){
+    if(viewBeta === 'yes' && analysisMode === 'advanced'){
 
       var lcFirstFive = NFSLC.filter(ee.Filter.calendarRange(startYear,startYear+5-1,'year'));
       var lcLastFive = NFSLC.filter(ee.Filter.calendarRange(endYear-5+1,endYear,'year')); 
@@ -671,17 +681,17 @@ function runUSFS(){
     var forCharting = joinCollections(composites.select([whichIndex],['Raw ' + whichIndex]),fittedAsset, false);
     
 
-    if(analysisMode !== 'advanced' && viewBeta === 'no'){
+    if(analysisMode !== 'advanced' ){
       NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability']);
       NFSLCMSForCharting = NFSLCMSForCharting.select(['Loss Probability','Gain Probability']);
       chartColors = chartColorsDict.standard;
 
     }
-    else if(analysisMode !== 'advanced' && viewBeta === 'yes'){
-      NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
-      NFSLCMSForCharting = NFSLCMSForCharting.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
-      chartColors = chartColorsDict.beta;
-    }
+    // else if(analysisMode !== 'advanced' && viewBeta === 'yes'){
+    //   NFSLCMS =  NFSLCMS.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
+    //   NFSLCMSForCharting = NFSLCMSForCharting.select(['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
+    //   chartColors = chartColorsDict.beta;
+    // }
     else if(analysisMode == 'advanced' && viewBeta === 'no'){
       NFSLCMS =  NFSLCMS.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability']);
       NFSLCMSForCharting = NFSLCMSForCharting.select(['Land Cover Class','Land Use Class','Loss Probability','Gain Probability']);
@@ -697,34 +707,8 @@ function runUSFS(){
     if(studyAreaName === 'CNFKP'){steppedLineLC = 'before';}
     
     var lcStack =formatAreaChartCollection(rawLC,lcValues,Object.keys(landcoverClassChartDict))
-    // var lcClassCodes = lcValues;
-    // var imageIndexes = ee.List.sequence(0,rawLC.size().subtract(1)).getInfo();
-    // var rawLCL = rawLC.toList(100,0);
-    // var lcStack = imageIndexes.map(function(i){
-    //   var lcc = ee.Image(rawLCL.get(i));
-    //   var d = ee.Date(lcc.get('system:time_start'));
-    //   var img;
-    //   lcClassCodes.map(function(c){
-    //     // console.log(i);console.log(c);
-    //     var m = lcc.mask();
-    //     var ci = lcc.eq(c).byte().rename(['lc_'+ parseInt((c)).toString()]);
-    //     //Unmask if in AK
-    //     if(studyAreaName === 'CNFKP'){
-    //       ci = ci.mask(ee.Image(1));
-    //       ci = ci.where(m.not(),0);
-    //     }
-        
-    //     if(img === undefined){img = ci}
-    //       else{img = img.addBands(ci)};
-    //   })
-    //   return img.set('system:time_start',d).rename(Object.keys(landcoverClassChartDict));
-    // });
-    // lcStack = ee.ImageCollection(lcStack);
-    // console.log(Object.keys(landcoverClassChartDict))
-    // Map2.addLayer(lcStack.mode(),{},'lcmode')
-    // lcStack = lcStack.select(lcClassCodes,Object.keys(landcoverClassChartDict));
-    // print(lcStack.getInfo())
-    // Map2.addLayer(lcStack.mosaic(),{},'lcStack');
+    var luStack =formatAreaChartCollection(rawLU,luValues,Object.keys(landuseClassChartDict))
+    
 
     forCharting = joinCollections(forCharting,NFSLCMSForCharting, false);
     chartCollection =forCharting;
@@ -734,31 +718,46 @@ function runUSFS(){
 
 
     var lossGainAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year']);
+    
+
+    if(analysisMode === 'advanced' && viewBeta === 'yes'){
+      lossGainAreaCharting = joinCollections(lossGainAreaCharting,dndSlowThresh,false).select(['.*_change_year']);
+      lossGainAreaCharting = joinCollections(lossGainAreaCharting,dndFastThresh,false).select(['.*_change_year']);
+      lossGainAreaCharting = lossGainAreaCharting.select([0,1,2,3],['Loss','Gain','Slow Loss','Fast Loss'])
+    }else{lossGainAreaCharting = lossGainAreaCharting.select([0,1],['Loss','Gain'])};
+
     var lossGainAreaChartingGeo = lossGainAreaCharting.geometry();
     lossGainAreaCharting =lossGainAreaCharting.map(function(img){
       return img.mask().clip(lossGainAreaChartingGeo)
     });
-    lossGainAreaCharting = lossGainAreaCharting.select([0,1],['Loss','Gain']);
+    
     
     
     // areaChartCollection = forAreaCharting;
     // stackedAreaChart = false;
     // areaChartCollections = {};
-    var lColors = declineYearPalette.split(',');
-    var gColors = recoveryYearPalette.split(',');
-    var lColor = lColors[lColors.length-1];
-    var gColor = gColors[gColors.length-1];; 
+    // var lColors = declineYearPalette.split(',');
+    // var gColors = recoveryYearPalette.split(',');
+    // var lColor = lColors[lColors.length-1];
+    // var gColor = gColors[gColors.length-1];
+    // var slColor = '808';//lColors[2];
+    // var flColor = 'f58231';//lColors[5];
     areaChartCollections['lg'] = {'label':'LCMS Loss/Gain',
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
-                                  'colors':[lColor,gColor]};
+                                  'colors':chartColorsDict.advancedBeta.slice(4)};
     if(analysisMode === 'advanced'){
       areaChartCollections['lc'] = {'label':'LCMS Landcover',
                                   'collection':lcStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
                                   'colors':Object.values(landcoverClassLegendDict)};
+      areaChartCollections['lu'] = {'label':'LCMS Landuse',
+                                  'collection':luStack,
+                                  'stacked':true,
+                                  'steppedLine':steppedLineLC,
+                                  'colors':Object.values(landuseClassLegendDict)};
     }
     
     
@@ -883,5 +882,50 @@ function runSimple(){
   Map2.addLayer(tcc,{min:30,max:80,palette:'000,0F0','opacity':0.5},'tcc',true,null,null,'test');
   Map2.addLayer(lc,{min:1,max:90,palette:'000,0F0','opacity':0.4},'lc',false,null,null,'test2');
   Map2.addLayer(ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/GTNP_admin_bndy_5km_buffer_GTNP_Merge'),{},'bt study area');
+  Map2.addLayer(function(coord, zoom) {
+                        var quadCode = tileXYZToQuadKey(coord.x, coord.y, zoom)
+                        var center = map.getCenter()
+                        var url = 'http://ecn.t1.tiles.virtualearth.net/tiles/h'+quadCode +'.jpeg?g=5256&mkt=en-US&token=AuuPPqhBI42-Eo2fJ3uRFFrvhzM93YmEIZFbOtqjFPNW2V641ZvU4g53ivnlVT8b'
+                        var metadata = 'http://dev.virtualearth.net/REST/v1/Imagery/BasicMetadata/AerialWithLabels/'+center.lat()+','+center.lng()+'?orientation=0&zoomLevel='+zoom+'&include=ImageryProviders&key=AuuPPqhBI42-Eo2fJ3uRFFrvhzM93YmEIZFbOtqjFPNW2V641ZvU4g53ivnlVT8b'
+                        console.log(coord);
+                        console.log(metadata)
+                        $.getJSON(metadata, function(data) {
+                            var dates = data.resourceSets[0].resources[0];
+                            var startDate = dates.vintageStart;
+                            var endDate = dates.vintageEnd;
+                            console.log(dates);
+                            console.log([startDate,endDate])
+                        });
+                        
+                    return url
+                },{isTileMapService:true,opacity:0.5},'Bing Hybrid',false,null,null,'test bing');
+  Map2.addLayer(function(coord, zoom) {
+                    var tilesPerGlobe = 1 << zoom;
+                    var x = coord.x % tilesPerGlobe;
+                    if (x < 0) {x = tilesPerGlobe+x;}
+                    return "http://d.tiles.mapbox.com/v4/mapquest.satellite/" + zoom + "/" + x + "/" + coord.y + ".png?access_token=pk.eyJ1IjoibWFwcXVlc3QiLCJhIjoiY2Q2N2RlMmNhY2NiZTRkMzlmZjJmZDk0NWU0ZGJlNTMifQ.mPRiEubbajc6a5y9ISgydg";
+                },{isTileMapService:true,opacity:0.5},'MapBox Hybrid',false);
+    Map2.addLayer(function(coord, zoom) {
+                    var tilesPerGlobe = 1 << zoom;
+                    var x = coord.x % tilesPerGlobe;
+                    if (x < 0) {x = tilesPerGlobe+x;}
+                    return "https://heatmap-external-c.strava.com/tiles/all/hot/" + zoom + "/" + x + "/" + coord.y + ".png?v=6";
+                },{isTileMapService:true,opacity:0.5},'Strava',false)
+    Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{isTileMapService:true,opacity:0.5},'SSURGO Soils',false)
+var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
+                    'Freshwater Emergent wetland':'7fc31c',
+                    'Freshwater pond': '688cc0',
+                    'Estuarine and Marine wetland':'66c2a5',
+                    'Riverine':'0190bf',
+                    'Lakes': '13007c',
+                    'Estuarine and Marine Deepwater': '007c88',
+                    'Other Freshwater wetland':'b28653'
+                  }
+    Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:8},
+                   {baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11}],{isDynamicMapService:true,addToClassLegend: true,classLegendDict:nwiLegendDict},'nwi',false)
+// addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
+//                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
+//                 8,11,
+//                 'NWI',false,'National Wetlands Inventory data as viewed in https://www.fws.gov/wetlands/Data/Mapper.html from zoom levels >= 8')
 }
 
