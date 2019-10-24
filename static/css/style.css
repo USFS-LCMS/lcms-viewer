@@ -94,6 +94,10 @@ html, body{
   vertical-align:middle!important;
 
 }
+.simple-bg-black{
+  background-color: var(--black)!important;
+  color:var(--white)!important;
+}
 .bg-transparent{
   background-color: var(--almost-transparent)!important;
   /*color:var(--white)!important;*/
@@ -248,7 +252,7 @@ font-size:0.9em;
     vertical-align:bottom;
     margin-top:0.7rem;
     cursor:pointer;}
-.layer-span, .layer-spinner,.layer-container,.toggle_radio,.collapse-title,.nav-item{
+.layer-span, .layer-spinner,.layer-container,.toggle_radio,.collapse-title,.nav-item,ul{
   cursor:pointer;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */

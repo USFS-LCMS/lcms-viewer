@@ -6,9 +6,26 @@ function addPlotCollapse(){
     // $('#plot-collapse-div').append(`<select multiple class = 'form-control bg-black flexcroll' id="plot-list"></select>`);
     // $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
 }
+
+function plotListFilterFunction(id){
+	console.log(id);
+	var rows = $('#'+id).children('tbody').children('tr');
+	var value = $('#'+id + '-search').val().toLowerCase();
+	console.log(value);
+	if(value !== ''){
+		$("#"+id+" > ul ").filter(function() {      $(this).toggle($(this).text().toLowerCase().indexOf(value)== 0)});
+	}else{$("#"+id+" > ul").filter(function() {      $(this).toggle($(this).text().toLowerCase()!== undefined)});}
+	
+	console.log(value);
+	// console.log(rows);
+}
 function addPlotProjectAccordian(name){
 	var nameID = name.replaceAll(' ','-');
-	addSubAccordianCard('plots-accordian',nameID+'-accordian-label',nameID+'-accordian-div',name,`<select multiple class = 'bg-white flexcroll' id="${nameID}-plot-list"></select>`,false,``,'Click to expand plot project');
+
+	var plotListDiv = `<input  id="${nameID}-plot-list-search" class = 'form-control bg-black ' type="text" placeholder="Search Plots.." id="myInput" onkeyup="plotListFilterFunction('${nameID}-plot-list')">
+						<li id="${nameID}-plot-list"></li>`;
+	addSubAccordianCard('plots-accordian',nameID+'-accordian-label',nameID+'-accordian-div',name,plotListDiv,false,``,'Click to expand plot project');
+	
 }
 function addPlotgeoJSON(plotGeoJSONPath){
 	map.data.loadGeoJson(plotGeoJSONPath);
@@ -29,7 +46,7 @@ function loadPlots(plotProjectObj){
 function addPlot(obj){
 	// console.log(obj);
 	$('#'+obj.name.replaceAll(' ','-')+'-plot-list').append(`
-		<option onclick = 'synchronousCenterObject(${JSON.stringify(obj.geometry)})'>${obj.properties.PLOTID}</option>
+		 <ul class = 'plot-button border-top border-bottom m-0' onclick = 'synchronousCenterObject(${JSON.stringify(obj.geometry)});$("ul.plot-button").removeClass("simple-bg-black");$(this).addClass("simple-bg-black")'>${obj.properties.PLOTID}</ul>
 		`)
 }
 

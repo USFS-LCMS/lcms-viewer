@@ -473,7 +473,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         if(viz.palette != null){
             var palette = viz.palette;
         } else{var palette = '000,FFF';}
-        var paletteList = palette.split(',');
+        var paletteList = palette;
+        if(typeof(palette) === 'string'){paletteList = paletteList.split(',');}
         if(paletteList.length == 1){paletteList = [paletteList[0],paletteList[0]];}
         var colorRamp = createColorRamp('colorRamp'+colorRampIndex.toString(),paletteList,180,20);
       

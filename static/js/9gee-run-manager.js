@@ -877,41 +877,69 @@ function runRaw(){
     print(ts.getInfo());
 }
 function runSimple(){
-  var tcc = ee.Image('USGS/NLCD/NLCD2011').select([3]);
-  var lc = ee.Image('USGS/NLCD/NLCD2011').select([0]);
-  Map2.addLayer(tcc,{min:30,max:80,palette:'000,0F0','opacity':0.5},'tcc',true,null,null,'test');
-  Map2.addLayer(lc,{min:1,max:90,palette:'000,0F0','opacity':0.4},'lc',false,null,null,'test2');
-  Map2.addLayer(ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/GTNP_admin_bndy_5km_buffer_GTNP_Merge'),{},'bt study area');
-  Map2.addLayer(function(coord, zoom) {
-                        var quadCode = tileXYZToQuadKey(coord.x, coord.y, zoom)
-                        var center = map.getCenter()
-                        var url = 'http://ecn.t1.tiles.virtualearth.net/tiles/h'+quadCode +'.jpeg?g=5256&mkt=en-US&token=AuuPPqhBI42-Eo2fJ3uRFFrvhzM93YmEIZFbOtqjFPNW2V641ZvU4g53ivnlVT8b'
-                        var metadata = 'http://dev.virtualearth.net/REST/v1/Imagery/BasicMetadata/AerialWithLabels/'+center.lat()+','+center.lng()+'?orientation=0&zoomLevel='+zoom+'&include=ImageryProviders&key=AuuPPqhBI42-Eo2fJ3uRFFrvhzM93YmEIZFbOtqjFPNW2V641ZvU4g53ivnlVT8b'
-                        console.log(coord);
-                        console.log(metadata)
-                        $.getJSON(metadata, function(data) {
-                            var dates = data.resourceSets[0].resources[0];
-                            var startDate = dates.vintageStart;
-                            var endDate = dates.vintageEnd;
-                            console.log(dates);
-                            console.log([startDate,endDate])
-                        });
-                        
-                    return url
-                },{isTileMapService:true,opacity:0.5},'Bing Hybrid',false,null,null,'test bing');
-  Map2.addLayer(function(coord, zoom) {
-                    var tilesPerGlobe = 1 << zoom;
-                    var x = coord.x % tilesPerGlobe;
-                    if (x < 0) {x = tilesPerGlobe+x;}
-                    return "http://d.tiles.mapbox.com/v4/mapquest.satellite/" + zoom + "/" + x + "/" + coord.y + ".png?access_token=pk.eyJ1IjoibWFwcXVlc3QiLCJhIjoiY2Q2N2RlMmNhY2NiZTRkMzlmZjJmZDk0NWU0ZGJlNTMifQ.mPRiEubbajc6a5y9ISgydg";
-                },{isTileMapService:true,opacity:0.5},'MapBox Hybrid',false);
-    Map2.addLayer(function(coord, zoom) {
-                    var tilesPerGlobe = 1 << zoom;
-                    var x = coord.x % tilesPerGlobe;
-                    if (x < 0) {x = tilesPerGlobe+x;}
-                    return "https://heatmap-external-c.strava.com/tiles/all/hot/" + zoom + "/" + x + "/" + coord.y + ".png?v=6";
-                },{isTileMapService:true,opacity:0.5},'Strava',false)
-    Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{isTileMapService:true,opacity:0.5},'SSURGO Soils',false)
+  getLCMSVariables();
+  Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{isTileMapService:true},'SSURGO Soils',false)
+  
+  var nlcd = ee.ImageCollection('USGS/NLCD');
+
+  var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
+  var nlcdLCMin = 0;//parseInt(nlcd.get('system:visualization_0_min').getInfo());
+  var nlcdLCPalette = ["466b9f", "d1def8", "dec5c5", "d99282", "eb0000", "ab0000", "b3ac9f", "68ab5f", "1c5f2c", "b5c58f", "af963c", "ccb879", "dfdfc2", "d1d182", "a3cc51", "82ba9e", "dcd939", "ab6c28", "b8d9eb", "6c9fb8"];//nlcd.get('system:visualization_0_palette').getInfo().split(',');
+  
+  var nlcdClassCodes = [11,12,21,22,23,24,31,41,42,43,51,52,71,72,73,74,81,82,90,95];
+  var nlcdClassNames = ['Open Water','Perennial Ice/Snow','Developed, Open Space','Developed, Low Intensity','Developed, Medium Intensity','Developed High Intensity','Barren Land (Rock/Sand/Clay)','Deciduous Forest','Evergreen Forest','Mixed Forest','Dwarf Scrub','Shrub/Scrub','Grassland/Herbaceous','Sedge/Herbaceous','Lichens','Moss','Pasture/Hay','Cultivated Crops','Woody Wetlands','Emergent Herbaceous Wetlands'];
+  var nlcdFullClassCodes = ee.List.sequence(nlcdLCMin,nlcdLCMax).getInfo();
+  var nlcdLCVizDict = {};
+  var nlcdLCQueryDict = {};
+  var nlcdLegendDict = {};
+
+  var ii = 0
+  nlcdFullClassCodes.map(function(i){
+    var index = nlcdClassCodes.indexOf(i);
+    if(index !== -1){
+      nlcdLCQueryDict[i] = nlcdClassNames[ii];
+      nlcdLCVizDict[i] = nlcdLCPalette[ii];
+      nlcdLegendDict[nlcdClassNames[ii]] = nlcdLCPalette[ii];
+      ii++;
+    }else{nlcdLCVizDict[i] = '000'}
+  })
+  var nlcdLegendDictReverse = {};
+  Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]})
+  
+  nlcd = nlcd.map(function(img){return img.set('bns',img.bandNames())});
+
+  var nlcdLC = nlcd.filter(ee.Filter.listContains('bns','landcover')).select(['landcover'])
+  var nlcdLCYears = nlcdLC.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
+  
+  var nlcdImpv= nlcd.filter(ee.Filter.listContains('bns','impervious')).select(['impervious'])
+  var nlcdImpvYears = nlcdImpv.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
+
+  var nlcdTCC= nlcd.filter(ee.Filter.listContains('bns','percent_tree_cover')).select(['percent_tree_cover'])
+  var nlcdTCCYears = nlcdTCC.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
+  
+  nlcdLCYears.getInfo().map(function(yr){
+    var nlcdLCYr = nlcdLC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+    Map2.addLayer(nlcdLCYr,{min:nlcdLCMin,max:nlcdLCMax,palette:Object.values(nlcdLCVizDict),addToClassLegend: true,classLegendDict:nlcdLegendDictReverse,queryDict: nlcdLCQueryDict},'NLCD Landcover ' + yr.toString(),false);
+  });
+  nlcdImpvYears.getInfo().map(function(yr){
+    var nlcdImpvYr = nlcdImpv.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+    Map2.addLayer(nlcdImpvYr,{'min':0,'max':90,'palette':'000,555,FF0,F30,F00'},'NLCD Impervious ' + yr.toString(),false);
+  
+  });
+  nlcdTCCYears.getInfo().map(function(yr){
+    var nlcdTCCYr = nlcdTCC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+    Map2.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
+  
+  });
+
+//Add NAIP to viewer
+// var naipYears = ee.List.sequence(2007,2017).getInfo();
+// var naip = ee.ImageCollection("USDA/NAIP/DOQQ").select([0,1,2],['R','G','B']);
+// naipYears.map(function(yr){
+//   var naipT = naip.filter(ee.Filter.calendarRange(yr,yr,'year'));
+//   Map2.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
+// });
+getMTBSandIDS('anc','layer-list');  
 var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Freshwater Emergent wetland':'7fc31c',
                     'Freshwater pond': '688cc0',
@@ -922,10 +950,29 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Other Freshwater wetland':'b28653'
                   }
     Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},
-                   {baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{isDynamicMapService:true,addToClassLegend: true,classLegendDict:nwiLegendDict},'nwi',false)
+                   {baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{isDynamicMapService:true,addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',false)
 // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
 //                 8,11,
 //                 'NWI',false,'National Wetlands Inventory data as viewed in https://www.fws.gov/wetlands/Data/Mapper.html from zoom levels >= 8')
+var years = ee.List.sequence(1984,2018).getInfo();
+var dummyNLCDImage = ee.Image(nlcdLC.first());
+
+function batchFillCollection(c,expectedYears){
+  var actualYears = c.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct().getInfo();
+  var missingYears = expectedYears.filter(function(x){return actualYears.indexOf(x)==-1})
+  var dummyImage = ee.Image(c.first()).mask(ee.Image(0));
+  var missingCollection = missingYears.map(function(yr){return dummyImage.set('system:time_start',ee.Date.fromYMD(yr,1,1).millis())});
+  var out = c.merge(missingCollection).sort('system:time_start');
+  return out.map(function(img){return img.unmask(255)});
+}
+// nlcdLC = batchFillCollection(nlcdLC,years);
+// print(nlcdLC.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).parse()}).getInfo())
+// mtbs = batchFillCollection(mtbs,years)
+// // fillEmptyCollections(inCollection,dummyImage
+var forCharting = nlcdLC;//joinCollections(nlcdLC,mtbs, false);
+
+// console.log(forCharting.getInfo())
+chartCollection = forCharting;
 }
 

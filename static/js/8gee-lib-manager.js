@@ -207,10 +207,15 @@ function addYearBand(img){
   db = db.updateMask(img.select([0]).mask())
   return img.addBands(db).float();
 }
+function fillEmptyCollections(inCollection,dummyImage){                       
+  var dummyCollection = ee.ImageCollection([dummyImage.mask(ee.Image(0))]);
+  var imageCount = inCollection.toList(1).length();
+  return ee.ImageCollection(ee.Algorithms.If(imageCount.gt(0),inCollection,dummyCollection));
 
+}
 // --------Add MTBS and IDS Layers-------------------------------
-function getMTBSandIDS(studyAreaName){
-
+function getMTBSandIDS(studyAreaName,whichLayerList){
+  if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
   var idsStartYear = 1997;
   var idsEndYear = 2015
   var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
@@ -271,11 +276,11 @@ if(chartMTBS === true){
 // print(mtbsStack.getInfo());
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
 
-  Map2.addLayer(mortCollection.select([0]).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey','reference-layer-list');
-  Map2.addLayer(mortCollection.select([1]).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey','reference-layer-list');
+  Map2.addLayer(mortCollection.select([0]).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
+  Map2.addLayer(mortCollection.select([1]).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
 
-  Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),'reference-layer-list')
-  Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),'reference-layer-list')  
+  Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
+  Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
 }
 function getHansen(){
   var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6');
@@ -283,8 +288,8 @@ function getHansen(){
   var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
   var hansenGain = hansen.select(['gain']);
   hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));
-  Map2.addLayer(hansenLoss.set('bounds',hansenClientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss','reference-layer-list');
-  Map2.addLayer(hansenGain.updateMask(hansenGain).set('bounds',hansenClientBoundary),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain','reference-layer-list');
+  Map2.addLayer(hansenLoss.set('bounds',hansenClientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList);
+  Map2.addLayer(hansenGain.updateMask(hansenGain).set('bounds',hansenClientBoundary),{'min':1,'max':1,'palette':'0A0',addToClassLegend: true,classLegendDict:{'Forest Gain':'0A0'}},'Hansen Gain',false,null,null,'Hansen Global Forest Change gain',whichLayerList);
 
 }
 function getNLCD(){
