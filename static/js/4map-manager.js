@@ -1510,7 +1510,7 @@ function dropdownUpdateStudyArea(whichOne){
     centerMap(coords[1],coords[0],coords[2]);
     if(studyAreaName === 'CONUS'){run = runCONUS}
       else{run = runUSFS};
-    // run = runSimple;
+    run = runSimple;
     
 
     reRun();
@@ -1835,7 +1835,7 @@ function initialize() {
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}
-  // run = runSimple;
+  run = runSimple;
   setGEERunID();
   run();
   setupFSB();

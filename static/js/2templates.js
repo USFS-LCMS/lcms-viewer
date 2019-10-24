@@ -1,15 +1,18 @@
 var dropdownI = 1;
-
-var topBannerParams = {
-    leftWords: 'LCMS',
-    centerWords: 'DATA',
-    rightWords:'Explorer'
-};
-// var topBannerParams = {
-//     leftWords: 'Ancillary',
-//     centerWords: 'DATA',
-//     rightWords:'Viewer'
-// };
+var mode = 'Ancillary';//Choose LCMS or Ancillary
+var  topBanners = {
+	'LCMS': {
+		    leftWords: 'LCMS',
+		    centerWords: 'DATA',
+		    rightWords:'Explorer'
+			},
+	'Ancillary': {
+		    leftWords: 'Ancillary',
+		    centerWords: 'DATA',
+		    rightWords:'Viewer'
+			},
+}
+var topBannerParams = topBanners[mode];
 var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 
 
@@ -59,20 +62,20 @@ var staticTemplates = {
                     </div>`,
 
 	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
-		        <ul class = 'navbar-nav  px-5  m-0 text-center' data-toggle="tooltip" title="Choose your study area"    >
+		        
+		        `,
+	studyAreaDropdown:`<ul id = 'study-area-dropdown-container' class = 'navbar-nav  px-5  m-0 text-center' data-toggle="tooltip" title="Choose your study area"    >
 		            <li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
-		                <div class="dropdown-menu" id="study-area-list"  >
-		                    
+		                <div class="dropdown-menu" id="study-area-list"  >  
 		                </div>
 		            </li>
-		            <div class="input-group px-2 pb-2 text-center"">
+			    </ul>`,
+	placesSearchDiv:`<div class="input-group px-5 pb-2 text-center"">
 			            <div class="input-group-prepend">
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
-			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
-			    </ul>
-		        `,
+			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">`,
 	introModal:`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
