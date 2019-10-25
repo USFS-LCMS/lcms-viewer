@@ -35,13 +35,27 @@ function loadPlots(plotProjectObj){
 	if(plotProjectObj['plotIDField'] === null || plotProjectObj['plotIDField'] === undefined){plotProjectObj['plotIDField'] = 'PLOTID'}
 	addPlotProjectAccordian(plotProjectObj.name)
 	fetch(plotProjectObj.path)
-  	.then(response => response.json())
-  	.then(json => json.features.map(function(f){
+	.then((resp) => resp.json()) // Transform the data into json
+  	.then(function(json) {
+  		json.features.map(function(f){
   		f.name = plotProjectObj.name;
   		f.properties.PLOTID = f.properties[plotProjectObj['plotIDField']];
 			addPlot(f)
-  	}));
-  	 addPlotgeoJSON(plotProjectObj.path)
+  		});
+  		// console.log(json)  		
+ 	Map2.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00'},plotProjectObj.name + ' Plots',true,null,null,'Plots for: '+plotProjectObj.name,'reference-layer-list')
+    // Create and append the li's to the ul
+    })
+  
+	// fetch(plotProjectObj.path)
+ //  	.then(response => response.json())
+ //  	.then(json => json.features.map(function(f){
+ //  		f.name = plotProjectObj.name;
+ //  		f.properties.PLOTID = f.properties[plotProjectObj['plotIDField']];
+	// 		addPlot(f)
+ //  	}))
+ //  	.then(json => console.log(json));
+ //  	 addPlotgeoJSON(plotProjectObj.path)
 }
 function addPlot(obj){
 	// console.log(obj);

@@ -27,13 +27,13 @@ function runUSFS(){
     var rawC = ee.ImageCollection(collectionDict[studyAreaName][1]);
  
 
-    if(studyAreaName !== 'CNFKP' && studyAreaName !== 'FNF'){
-      rawC = rawC.map(function(img){
-        var lc = img.select([0]);
-        lc = lc.remap([0,1,2,3,4,5,6],[4,5,3,6,2,7,1]).rename(['LC']);
-        return img.select([1,2,3,4,5,6]).addBands(lc).select([6,0,1,2,3,4,5]).byte();
-      })
-    }
+    // if(studyAreaName !== 'CNFKP' && studyAreaName !== 'FNF'){
+    //   rawC = rawC.map(function(img){
+    //     var lc = img.select([0]);
+    //     lc = lc.remap([0,1,2,3,4,5,6],[4,5,3,6,2,7,1]).rename(['LC']);
+    //     return img.select([1,2,3,4,5,6]).addBands(lc).select([6,0,1,2,3,4,5]).byte();
+    //   })
+    // }
 
     // print(rawC.getInfo());
     var NFSLCMS = rawC
@@ -878,7 +878,7 @@ function runRaw(){
 }
 function runSimple(){
   getLCMSVariables();
-  Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{isTileMapService:true},'SSURGO Soils',false)
+  Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false)
   
   var nlcd = ee.ImageCollection('USGS/NLCD');
 
@@ -904,33 +904,39 @@ function runSimple(){
     }else{nlcdLCVizDict[i] = '000'}
   })
   var nlcdLegendDictReverse = {};
-  Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]})
+  Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]});
   
   nlcd = nlcd.map(function(img){return img.set('bns',img.bandNames())});
-
-  var nlcdLC = nlcd.filter(ee.Filter.listContains('bns','landcover')).select(['landcover'])
+  function annualMosaicCollection(c){
+    var years = c.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
+    return ee.ImageCollection(years.map(function(yr){return c.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());}))
+  }
+  var nlcdLC = nlcd.filter(ee.Filter.listContains('bns','landcover')).select(['landcover']);
+  nlcdLC = annualMosaicCollection(nlcdLC);
   var nlcdLCYears = nlcdLC.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
   
-  var nlcdImpv= nlcd.filter(ee.Filter.listContains('bns','impervious')).select(['impervious'])
+  var nlcdImpv= nlcd.filter(ee.Filter.listContains('bns','impervious')).select(['impervious']);
+  nlcdImpv = annualMosaicCollection(nlcdImpv);
   var nlcdImpvYears = nlcdImpv.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
 
-  var nlcdTCC= nlcd.filter(ee.Filter.listContains('bns','percent_tree_cover')).select(['percent_tree_cover'])
+  var nlcdTCC= nlcd.filter(ee.Filter.listContains('bns','percent_tree_cover')).select(['percent_tree_cover']);
+  nlcdTCC = annualMosaicCollection(nlcdTCC);
   var nlcdTCCYears = nlcdTCC.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct();
   
-  nlcdLCYears.getInfo().map(function(yr){
-    var nlcdLCYr = nlcdLC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
-    Map2.addLayer(nlcdLCYr,{min:nlcdLCMin,max:nlcdLCMax,palette:Object.values(nlcdLCVizDict),addToClassLegend: true,classLegendDict:nlcdLegendDictReverse,queryDict: nlcdLCQueryDict},'NLCD Landcover ' + yr.toString(),false);
-  });
-  nlcdImpvYears.getInfo().map(function(yr){
-    var nlcdImpvYr = nlcdImpv.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
-    Map2.addLayer(nlcdImpvYr,{'min':0,'max':90,'palette':'000,555,FF0,F30,F00'},'NLCD Impervious ' + yr.toString(),false);
+  // nlcdLCYears.getInfo().map(function(yr){
+  //   var nlcdLCYr = nlcdLC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+  //   Map2.addLayer(nlcdLCYr,{min:nlcdLCMin,max:nlcdLCMax,palette:Object.values(nlcdLCVizDict),addToClassLegend: true,classLegendDict:nlcdLegendDictReverse,queryDict: nlcdLCQueryDict},'NLCD Landcover ' + yr.toString(),false);
+  // });
+  // nlcdImpvYears.getInfo().map(function(yr){
+  //   var nlcdImpvYr = nlcdImpv.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+  //   Map2.addLayer(nlcdImpvYr,{'min':0,'max':90,'palette':'000,555,FF0,F30,F00'},'NLCD Impervious ' + yr.toString(),false);
   
-  });
-  nlcdTCCYears.getInfo().map(function(yr){
-    var nlcdTCCYr = nlcdTCC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
-    Map2.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
+  // });
+  // nlcdTCCYears.getInfo().map(function(yr){
+  //   var nlcdTCCYr = nlcdTCC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+  //   Map2.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
   
-  });
+  // });
 
 //Add NAIP to viewer
 // var naipYears = ee.List.sequence(2007,2017).getInfo();
@@ -950,28 +956,90 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Other Freshwater wetland':'b28653'
                   }
     Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},
-                   {baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{isDynamicMapService:true,addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',false)
+                   {baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',false)
 // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
 //                 8,11,
 //                 'NWI',false,'National Wetlands Inventory data as viewed in https://www.fws.gov/wetlands/Data/Mapper.html from zoom levels >= 8')
 var years = ee.List.sequence(1984,2018).getInfo();
 var dummyNLCDImage = ee.Image(nlcdLC.first());
-
+var cdl = ee.ImageCollection('USDA/NASS/CDL').select([0],['cdl']);
 function batchFillCollection(c,expectedYears){
   var actualYears = c.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct().getInfo();
   var missingYears = expectedYears.filter(function(x){return actualYears.indexOf(x)==-1})
   var dummyImage = ee.Image(c.first()).mask(ee.Image(0));
   var missingCollection = missingYears.map(function(yr){return dummyImage.set('system:time_start',ee.Date.fromYMD(yr,1,1).millis())});
   var out = c.merge(missingCollection).sort('system:time_start');
-  return out.map(function(img){return img.unmask(255)});
+  return out;//.map(function(img){return img.unmask(255)});
 }
-// nlcdLC = batchFillCollection(nlcdLC,years);
-// print(nlcdLC.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).parse()}).getInfo())
-// mtbs = batchFillCollection(mtbs,years)
-// // fillEmptyCollections(inCollection,dummyImage
-var forCharting = nlcdLC;//joinCollections(nlcdLC,mtbs, false);
+function setSameDate(img){
+  var yr = ee.Date(img.get('system:time_start')).get('year');
+  return img.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+}
 
+//Denote dca_codes
+//From: https://www.fs.fed.us/foresthealth/technology/pdfs/Appendix_E_DCA_20141030.pdf
+//DCA codes are divided by 1000
+var dca_codes = {
+  10:'General Insects',
+  11:'Bark Beetles',
+  12:'Defoliators',
+  13: 'Chewing Insects',
+  14:'Sap Feeding Insects',
+  15: 'Boring Insects',
+  16: 'Seed/Cone/Flower/Fruit Insects',
+  17: 'Gallmaker Insects',
+  18: 'Insect Predators',
+  19: 'General Diseases',
+  20: 'Biotic Damage',
+  21: 'Root/Butt Diseases',
+  22: 'Stem Decays/Cankers',
+  23: 'Parsitic/Epiphytic Plants',
+  24: 'Decline Complexes/Dieback/Wilts',
+  25: 'Foliage Diseases',
+  26: 'Stem Rusts',
+  27: 'Broom Rusts',
+  28: 'Terminal, Shoot, and Twig Insects',
+  29: 'Root Insects',
+  30: 'Fire',
+  40: 'Wild Animals',
+  50: 'Abiotic Damage',
+  60: 'Competition',
+  70: 'Human Activities',
+  80: 'Multi-Damage (Insect/Disease)',
+  85: 'Plants',
+  90: 'Other Damages and Symptoms',
+  99: 'No Damage'
+};
+var damage_codes = {1:'Not Specified',
+  2:    'Mortality',
+3   :'Crown Discoloration',
+4   :'Crown Dieback',
+5   :'Topkill',
+6   :'Branch Breakage',
+7   :'Main stem Broken or Uprooted',
+8   :'Branch flagging',
+9   :'No damage',
+11: 'Mortality - Previously Undocumented',
+12: 'Defoliation < 50% of leaves defoliated',
+13: 'Defoliation 50-75% of leaves defoliated',
+14: 'Defoliation > 75% of leaves defoliated',
+18: 'Other Damage (known)',
+19: 'Unknown Damage'
+};
+var idsCollection = getIDSCollection();
+
+idsCollection = batchFillCollection(idsCollection,years).map(setSameDate);  
+nlcdLC = batchFillCollection(nlcdLC,years).map(setSameDate);
+mtbs = batchFillCollection(mtbs,years).map(setSameDate);
+cdl = batchFillCollection(cdl,years).map(setSameDate);
+nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
+nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
+var forCharting = joinCollections(nlcdLC,mtbs, false);
+forCharting  = joinCollections(forCharting,cdl, false);
+forCharting  = joinCollections(forCharting,nlcdTCC, false);
+forCharting  = joinCollections(forCharting,nlcdImpv, false);
+forCharting  = joinCollections(forCharting,idsCollection, false);
 // console.log(forCharting.getInfo())
 chartCollection = forCharting;
 }

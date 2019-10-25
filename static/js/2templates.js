@@ -1,5 +1,5 @@
 var dropdownI = 1;
-var mode = 'Ancillary';//Choose LCMS or Ancillary
+var mode = 'LCMS';//Choose LCMS or Ancillary
 var  topBanners = {
 	'LCMS': {
 		    leftWords: 'LCMS',
@@ -771,26 +771,27 @@ function addLayer(layer){
 	slide: function(e,ui){
 		layer.opacity = ui.value/100;
 		// console.log(layer.opacity);
-		 if(!layer.isVector){
+		 if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
             layer.layer.setOpacity(layer.opacity);
-            if(layer.visible){
-            	layer.rangeOpacity = layer.opacity;
-            }
+            
             
           }else{
-                    var style = layer.layer.getStyle();
-                    style.strokeOpacity = layer.opacity;
-                    style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
-                    layer.layer.setStyle(style);
+	            var style = layer.layer.getStyle();
+	            style.strokeOpacity = layer.opacity;
+	            style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
+	            layer.layer.setStyle(style);
+	            if(layer.visible){layer.range}
                 }
-                setRangeSliderThumbOpacity();
-                layerObj[layer.name] = [layer.visible,layer.opacity];
+        if(layer.visible){
+        	layer.rangeOpacity = layer.opacity;
+        }     
+        layerObj[layer.name] = [layer.visible,layer.opacity];
 		setRangeSliderThumbOpacity();
 		}
 	})
 	function setRangeSliderThumbOpacity(){
 		// console.log(layer.opacity);
-		var current
+		// var current;
 		$('#'+opacityID).css("background-color", 'rgba(55, 46, 44,'+layer.rangeOpacity+')')
 		// $( "#"+opacityID+" .ui-slider-range" ).css( "background-color", 'rgb(255,0,0)' );
 		// $('#'+opacityID+'> .ui-slider-handle').css("background-color", 'rgba(0,0,0,'+layer.rangeOpacity+')')
@@ -801,8 +802,11 @@ function addLayer(layer){
 	}
 	
 	function zoomFunction(){
-		if(layer.isVector){
+		if(layer.layerType === 'geeVector' ){
 			centerObject(layer.item)
+		}else if(layer.layerType === 'geoJSONVector'){
+			// centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
+			// synchronousCenterObject(layer.item.features[0].geometry)
 		}else{
 			if(layer.item.args.value !== null && layer.item.args.value !== undefined){
 				synchronousCenterObject(layer.item.args.value)
@@ -810,7 +814,7 @@ function addLayer(layer){
 		}
 	}
 	function checkFunction(){
-		if(layer.isDynamicMapService){
+		if(layer.layerType === 'dynamicMapService'){
 			if(layer.visible){
 				layer.layer.setMap(null);
 				layer.visible = false;
@@ -831,7 +835,7 @@ function addLayer(layer){
 			
 			
 		}
-		else if(!layer.isVector){
+		else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
             if(layer.visible){
             	layer.visible = false;
                 layer.map.overlayMapTypes.setAt(layer.layerId,null);
@@ -854,35 +858,35 @@ function addLayer(layer){
 				}
                    
                 }
-                else{
-                    if(layer.visible){
-                    	layer.visible = false;
-                        layer.percent = 0;
-                        updateProgress();
-                        $('#'+layer.legendDivID).hide();
-                        layer.layer.setMap(null);
-                        layer.rangeOpacity = 0;
-                        $('#' + spinnerID+'2').hide();
-                        geeTileLayersDownloading = 0;
-                        updateGEETileLayersLoading();
-                        
-                    }else{
-                    	layer.visible = true;
-                        layer.percent = 100;
-                        updateProgress();
-                        $('#'+layer.legendDivID).show();
-                        layer.layer.setMap(layer.map);
-                        layer.rangeOpacity = layer.opacity;
-                        
-                    }
-                    
-                }
+        else{
+            if(layer.visible){
+            	layer.visible = false;
+                layer.percent = 0;
+                updateProgress();
+                $('#'+layer.legendDivID).hide();
+                layer.layer.setMap(null);
+                layer.rangeOpacity = 0;
+                $('#' + spinnerID+'2').hide();
+                geeTileLayersDownloading = 0;
+                updateGEETileLayersLoading();
                 
-                setRangeSliderThumbOpacity();
-                console.log('visible: ' +layer.visible);
-                console.log('opacity: '+layer.opacity);
-                layerObj[layer.name] = [layer.visible,layer.opacity];
-               
+            }else{
+            	layer.visible = true;
+                layer.percent = 100;
+                updateProgress();
+                $('#'+layer.legendDivID).show();
+                layer.layer.setMap(layer.map);
+                layer.rangeOpacity = layer.opacity;
+                
+            }
+            
+        }
+        
+        setRangeSliderThumbOpacity();
+        console.log('visible: ' +layer.visible);
+        console.log('opacity: '+layer.opacity);
+        layerObj[layer.name] = [layer.visible,layer.opacity];
+       
 	}
 
 	$("#"+ opacityID).val(layer.opacity * 100);
@@ -911,7 +915,7 @@ function addLayer(layer){
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
 
-	if(!layer.isVector && !layer.isTileMapService && !layer.isDynamicMapService){
+	if(layer.layerType === 'geeImage'){
 		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
 		incrementOutstandingGEERequests();
 		
@@ -973,10 +977,10 @@ function addLayer(layer){
           // console.log(layer)
 		})
 
-	}else if(layer.isVector){
+	}else if(layer.layerType === 'geeVector' || layer.layerType === 'geoJSONVector'){
 		incrementOutstandingGEERequests();
-		
-		layer.item.evaluate(function(v){
+		function addGeoJsonToMap(v){
+			
 			decrementOutstandingGEERequests();
 			
 			$('#' + spinnerID).hide();
@@ -1003,8 +1007,12 @@ function addLayer(layer){
 		      		}
 		      	setRangeSliderThumbOpacity();
 		      	}
-  		})
-	}else if(layer.isTileMapService){
+  		}
+  		if(layer.layerType === 'geeVector'){
+  			layer.item.evaluate(function(v){addGeoJsonToMap(v)})
+  		}else{addGeoJsonToMap(layer.item)}
+		
+	}else if(layer.layerType === 'tileMapService'){
 		layer.layer = new google.maps.ImageMapType({
                 getTileUrl: layer.item,
                 tileSize: new google.maps.Size(256, 256),
@@ -1023,7 +1031,7 @@ function addLayer(layer){
 			setRangeSliderThumbOpacity();
                 
 		
-	}else if(layer.isDynamicMapService){
+	}else if(layer.layerType === 'dynamicMapService'){
 		function groundOverlayWrapper(){
 	      if(map.getZoom() > layer.item[1].minZoom){
 	        return getGroundOverlay(layer.item[1].baseURL,layer.item[1].minZoom)

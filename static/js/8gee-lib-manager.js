@@ -81,9 +81,13 @@ window.collectionDict = {
          'landtrendr_stack_format'
           ],
 
-  'BTNF':['projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
-        'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-TRA',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+  'BTNF':[
+  // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+        'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+        // 'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-TRA',
+        'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+        // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
         'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
         btStudyAreas,
         'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
@@ -92,9 +96,13 @@ window.collectionDict = {
         'landtrendr_stack_format'
         ],
 
-  'MLSNF':['projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
-        'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+  'MLSNF':[
+        // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+        'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+        // 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+        'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+        // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
         'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
         mslStudyAreas,
         'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
@@ -214,6 +222,34 @@ function fillEmptyCollections(inCollection,dummyImage){
 
 }
 // --------Add MTBS and IDS Layers-------------------------------
+function getIDSCollection(){
+  var idsStartYear = 1997;
+var idsEndYear = 2015
+var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
+
+var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol');
+
+  var idsCollection = idsYears.map(function(yr){
+    var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
+    // print(mort.first())
+    
+    var mortDamageType = mort.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).rename(['IDS Mort Type']);
+    var mortDCA = mort.reduceToImage(['DCA_CODE'],ee.Reducer.first()).rename(['IDS Mort DCA']);
+    var mortDCAMod = mortDCA.mod(1000);
+    mortDCA = (mortDCA.subtract(mortDCAMod)).divide(1000);
+    
+    
+    var defolCollectionYr =defolCollection.filter(ee.Filter.eq('SURVEY_YEA',yr));
+    var defolDamageType = defolCollectionYr.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).rename(['IDS Defol Type']);
+    var defolDCA = defolCollectionYr.reduceToImage(['DCA_CODE'],ee.Reducer.first()).rename(['IDS Defol DCA']);
+    var defolDCAMod = defolDCA.mod(1000);
+    defolDCA = (defolDCA.subtract(defolDCAMod)).divide(1000);
+    
+    return mortDamageType.addBands(mortDCA).addBands(defolDamageType).addBands(defolDCA).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte();
+  });
+  idsCollection = ee.ImageCollection(idsCollection);
+  return idsCollection
+}
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
   var idsStartYear = 1997;
@@ -282,7 +318,8 @@ if(chartMTBS === true){
   Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
   Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
 }
-function getHansen(){
+function getHansen(whichLayerList){
+  if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
   var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6');
   var hansenClientBoundary =hansen.geometry().bounds(1000).getInfo();
   var hansenLoss = hansen.select(['lossyear']).add(2000).int16();

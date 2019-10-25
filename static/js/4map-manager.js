@@ -360,16 +360,10 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         name = "Layer "+NEXT_LAYER_ID;
         
     }
+    //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageCollection,tileMapService,dynamicMapService
 
-    //Take care of vector option
-    var isVector = false;
-    var isImageCollection = false;
-    var isTileMapService = false;
-    var isDynamicMapService = false;
-    if(viz.isTileMapService === true){isTileMapService = true}
-    else if(viz.isDynamicMapService === true){isDynamicMapService = true;}
-    else if(!isTileMapService && !isDynamicMapService ){
-      try{var t = item.bandNames();}
+    if(viz.layerType === null || viz.layerType === undefined){
+      try{var t = item.bandNames();viz.layerType = 'geeImage'}
     // catch(err){
       // try{
       //   var t = ee.Image(item.first()).bandNames().getInfo();
@@ -377,15 +371,37 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       //   // isImageCollection = true;
       // }
       catch(err2){
-        if(!isTileMapService){ isVector = true;}
+        viz.layerType = 'geeVector';
        
         }
     }
+    // console.log(viz.layerType);console.log(name);
+    //Take care of vector option
+    // var isVector = false;
+    // var isImageCollection = false;
+    // var isTileMapService = false;
+    // var isDynamicMapService = false;
+    // if(viz.isTileMapService === true){isTileMapService = true}
+    // else if(viz.isDynamicMapService === true){isDynamicMapService = true;}
+    // else if(viz.)
+    // else if(!isTileMapService && !isDynamicMapService ){
+    //   try{var t = item.bandNames();}
+    // // catch(err){
+    //   // try{
+    //   //   var t = ee.Image(item.first()).bandNames().getInfo();
+    //   //   item = item.mosaic();
+    //   //   // isImageCollection = true;
+    //   // }
+    //   catch(err2){
+    //     if(!isTileMapService){ isVector = true;}
+       
+    //     }
+    // }
     
 
       // };
     // console.log(name + ' ' + isVector + isImageCollection+isTileMapService)
-    if(isVector){
+    if(viz.layerType === 'geeVector' || viz.layerType === 'geoJSONVector'){
       if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
       if(viz.fillOpacity === undefined || viz.fillOpacity === null){viz.fillOpacity = 0.2};
       if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222'};
@@ -418,7 +434,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     if(nameIndex   != -1){
       visible = layerObj[name][0];
       viz.opacity = layerObj[name][1];
-      if(isVector){
+      if(viz.layerType === 'geeVector' || viz.layerType === 'geoJSONVector'){
         viz.strokeOpacity =  layerObj[name][1];
         viz.fillOpacity = viz.strokeOpacity / viz.opacityRatio;
 
@@ -444,9 +460,9 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.legendDivID = legendDivID;
     if(queryItem === null || queryItem === undefined){queryItem = item};
     layer.queryItem = queryItem;
-    layer.isVector = isVector;
-    layer.isTileMapService = isTileMapService;
-    layer.isDynamicMapService = isDynamicMapService;
+    layer.layerType = viz.layerType;
+    // layer.isTileMapService = isTileMapService;
+    // layer.isDynamicMapService = isDynamicMapService;
     // layer.viz = JSON.stringify(viz);
     // layer.viz  = viz;
 
@@ -520,7 +536,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
        // var legendList = document.querySelector("legend-list");
       // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
-      if(!isVector){
+      if(viz.layerType !== 'geeVector' && viz.layerType !== 'geoJSONVector'){
         var legendKeys = Object.keys(viz.classLegendDict).reverse();
         legendKeys.map(function(lk){
 
@@ -1509,9 +1525,13 @@ function dropdownUpdateStudyArea(whichOne){
    //  // exportCRS = studyAreaDict[this.innerHTML][2];
    //  // $('input[name = "Export crs"]').val(exportCRS);
     centerMap(coords[1],coords[0],coords[2]);
-    if(studyAreaName === 'CONUS'){run = runCONUS}
-      else{run = runUSFS};
-    run = runSimple;
+    if(mode === 'Ancillary'){
+      run = runSimple;
+    } else if(studyAreaName === 'CONUS'){
+      run = runCONUS
+    }else{run = runUSFS};
+
+    
     
 
     reRun();
@@ -1832,11 +1852,15 @@ function initialize() {
     ee.initialize(authProxyAPIURL,geeAPIURL,function(){
     
     // ee.initialize("http://localhost:8080/api","https://earthengine.googleapis.com/map",function(){
-      if(cachedStudyAreaName != null){
+      
+    if(mode === 'Ancillary'){
+      run = runSimple;
+    } else if(cachedStudyAreaName != null){
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}
-  run = runSimple;
+
+   
   setGEERunID();
   run();
   setupFSB();
