@@ -78,7 +78,7 @@ window.collectionDict = {
           fnfStudyAreas,
           'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table',
           fnf_study_area,
-         'landtrendr_stack_format'
+         'landtrendr_vertex_format'
           ],
 
   'BTNF':[
@@ -93,7 +93,7 @@ window.collectionDict = {
         'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
         // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
         bt_study_area,
-        'landtrendr_stack_format'
+        'landtrendr_vertex_format'
         ],
 
   'MLSNF':[
@@ -108,7 +108,7 @@ window.collectionDict = {
         'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
         // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
         mls_study_area,
-        'landtrendr_stack_format'
+        'landtrendr_vertex_format'
         ],
 
   'CNFKP':['projects/USFS/LCMS-NFS/R10/CK/Composites/Composite-Collection-cloudScoreTDOM2',
@@ -245,9 +245,15 @@ var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol')
     var defolDCAMod = defolDCA.mod(1000);
     defolDCA = (defolDCA.subtract(defolDCAMod)).divide(1000);
     
-    return mortDamageType.addBands(mortDCA).addBands(defolDamageType).addBands(defolDCA).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte();
+    var idsStack = mortDamageType.addBands(mortDCA).addBands(defolDamageType).addBands(defolDCA).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte();
+    var idsYearStack = ee.Image([yr,yr,yr,yr]).updateMask([mortDamageType.mask(),mortDCA.mask(),defolDamageType.mask(),defolDCA.mask()]).int16();
+    var bns = idsStack.bandNames();
+    bns = bns.map(function(bn){return ee.String(bn).cat(' Year')});
+    idsYearStack = idsYearStack.rename(bns)
+    return idsStack.addBands(idsYearStack)
   });
   idsCollection = ee.ImageCollection(idsCollection);
+  print(idsCollection.getInfo())
   return idsCollection
 }
 function getMTBSandIDS(studyAreaName,whichLayerList){
