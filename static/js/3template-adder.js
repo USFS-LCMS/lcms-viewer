@@ -94,7 +94,7 @@ if(mode === 'LCMS'){
 else{
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
-
+  
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
@@ -129,7 +129,7 @@ addColorPicker('measure-area-div-icon-bar','area-color-picker','updateAreaColor'
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTipHover);
 addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query '+mode+' Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTipHover);
-
+$('#pixel-chart-div').append(staticTemplates.showChartButton);
 // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
 
 
@@ -143,7 +143,7 @@ if(mode === 'LCMS'){
   addShapeEditToolbar('user-defined', 'user-defined-area-icon-bar','undoUserDefinedAreaCharting()','restartUserDefinedAreaCarting()')
   addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
-  $('#pixel-chart-div').append(staticTemplates.showChartButton);
+  
   $('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
   $('#upload-area-chart-div').append(staticTemplates.showChartButton);
   $('#select-area-chart-div').append(staticTemplates.showChartButton);

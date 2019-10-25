@@ -1028,7 +1028,18 @@ var damage_codes = {1:'Not Specified',
 19: 'Unknown Damage'
 };
 var idsCollection = getIDSCollection();
+print(idsCollection.getInfo())
+var mortType = idsCollection.select(['IDS Mort Type']).max();
+var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
+var defolType = idsCollection.select(['IDS Defol Type']).max();
+var defolDCA = idsCollection.select(['IDS Defol DCA']).max();
 
+var typeViz = {min:1,max:19,palette:'F00,888,00F',queryDict:damage_codes};
+var dcaViz = {min:10,max:99,palette:'F00,888,00F',queryDict:dca_codes};
+Map2.addLayer(mortType,typeViz,'mortType');
+Map2.addLayer(mortDCA,dcaViz,'mortDCA');
+Map2.addLayer(defolType,typeViz,'defolType');
+Map2.addLayer(defolDCA,dcaViz,'defolDCA')
 idsCollection = batchFillCollection(idsCollection,years).map(setSameDate);  
 nlcdLC = batchFillCollection(nlcdLC,years).map(setSameDate);
 mtbs = batchFillCollection(mtbs,years).map(setSameDate);

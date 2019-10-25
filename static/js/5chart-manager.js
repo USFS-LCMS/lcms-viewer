@@ -672,7 +672,7 @@ function changeChartType(newType,showExpanded){
 	newType.checked = true;
 	$(newType).checked = true;
 	chartType = newType.value;
-	uriName = 'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+	uriName = mode+'_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
 	csvName = uriName + '.csv'
 	document.getElementById('curve_chart').style.display = 'none';
 	// setTimeout(function(){updateProgress(80);},0);
@@ -1031,7 +1031,7 @@ function startPixelChartCollection() {
    		addClickMarker(plotBounds)
 		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 		
-		uriName =  'LCMS_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
+		uriName =  mode+'_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
 		csvName = uriName + '.csv'
 		
 

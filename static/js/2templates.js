@@ -808,7 +808,7 @@ function addLayer(layer){
 			// centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
 			// synchronousCenterObject(layer.item.features[0].geometry)
 		}else{
-			if(layer.item.args.value !== null && layer.item.args.value !== undefined){
+			if(layer.item.args !== undefined &&layer.item.args.value !== null && layer.item.args.value !== undefined){
 				synchronousCenterObject(layer.item.args.value)
 			};
 		}
@@ -853,9 +853,9 @@ function addLayer(layer){
                 if(layer.isTileMapService){layer.percent = 100;updateProgress();}
                 layer.layer.setOpacity(layer.opacity); 
 				}
-				if(!layer.isTileMapService && !layer.isDynamicMapService){
-                 queryObj[layer.name].visible = layer.visible;
-				}
+			if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' ){
+             queryObj[layer.name].visible = layer.visible;
+			}
                    
                 }
         else{

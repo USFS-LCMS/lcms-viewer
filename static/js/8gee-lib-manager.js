@@ -222,9 +222,10 @@ function fillEmptyCollections(inCollection,dummyImage){
 
 }
 // --------Add MTBS and IDS Layers-------------------------------
+var idsStartYear = 1997;
+var idsEndYear = 2015;
 function getIDSCollection(){
-  var idsStartYear = 1997;
-var idsEndYear = 2015
+
 var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
 
 var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol');
@@ -253,22 +254,12 @@ var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol')
     return idsStack.addBands(idsYearStack)
   });
   idsCollection = ee.ImageCollection(idsCollection);
-  print(idsCollection.getInfo())
+
   return idsCollection
 }
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
-  var idsStartYear = 1997;
-  var idsEndYear = 2015
-  var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
-
-  var mortCollection = idsYears.map(function(yr){
-    var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
-    mort = mort.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-    var yrBand = ee.Image(yr).updateMask(mort.mask()).rename(['year']).int16();
-    return mort.rename(['mort_code']).addBands(yrBand);
-  });
-  mortCollection = ee.ImageCollection(mortCollection);
+  var idsCollection = getIDSCollection();
   
   if(studyAreaName === 'CNFKP'){
     var mtbs_path = 'projects/USFS/LCMS-NFS/AK-Ancillary-Data/MTBS';
@@ -318,8 +309,11 @@ if(chartMTBS === true){
 // print(mtbsStack.getInfo());
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
 
-  Map2.addLayer(mortCollection.select([0]).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
-  Map2.addLayer(mortCollection.select([1]).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
+  Map2.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
+  Map2.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
+  
+  Map2.addLayer(idsCollection.select(['IDS Defol Type']).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Defoliation Survey Count',false,null,null, 'Number of times an area was recorded as defoliation by the IDS survey',whichLayerList);
+  Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
 
   Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
   Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
