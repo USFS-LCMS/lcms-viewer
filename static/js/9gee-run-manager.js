@@ -712,6 +712,19 @@ function runUSFS(){
 
     forCharting = joinCollections(forCharting,NFSLCMSForCharting, false);
     chartCollection =forCharting;
+
+    var landcoverClassQueryDictDecimal = {};
+    Object.keys(landcoverClassQueryDict).map(function(k){landcoverClassQueryDictDecimal[k/10]= landcoverClassQueryDict[k]});
+    var landuseClassQueryDictDecimal = {};
+    Object.keys(landuseClassQueryDict).map(function(k){landuseClassQueryDictDecimal[k/10]= landuseClassQueryDict[k]});
+    var chartTableDict = {
+    'Land Cover Class':landcoverClassQueryDictDecimal,
+    'Land Use Class':landuseClassQueryDictDecimal
+    
+
+  }
+
+  chartCollection = chartCollection.set('chartTableDict',chartTableDict)
     if(analysisMode === 'advanced'){
      chartCollection = chartCollection.set('legends',{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)}) 
     }
@@ -831,7 +844,7 @@ function runCONUS(){
   Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'vCONUS.2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Duration','startYear':startYear,'endYear':endYear,'min':0,'max':endYear-startYear});
 
   }
-  chartCollection =lossProb;
+ 
   var forAreaCharting = dndThresh.select(["Loss Probability_change_year"]);
   var forAreaChartingGeo = forAreaCharting.geometry();
   forAreaCharting = forAreaCharting.map(function(img){return img.mask().clip(forAreaChartingGeo)}).select([0],['Loss'])
@@ -964,6 +977,8 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
 var years = ee.List.sequence(1984,2018).getInfo();
 var dummyNLCDImage = ee.Image(nlcdLC.first());
 var cdl = ee.ImageCollection('USDA/NASS/CDL').select([0],['cdl']);
+
+
 function batchFillCollection(c,expectedYears){
   var actualYears = c.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct().getInfo();
   var missingYears = expectedYears.filter(function(x){return actualYears.indexOf(x)==-1})
@@ -1027,31 +1042,66 @@ var damage_codes = {1:'Not Specified',
 18: 'Other Damage (known)',
 19: 'Unknown Damage'
 };
-var idsCollection = getIDSCollection();
-print(idsCollection.getInfo())
-var mortType = idsCollection.select(['IDS Mort Type']).max();
-var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
-var defolType = idsCollection.select(['IDS Defol Type']).max();
-var defolDCA = idsCollection.select(['IDS Defol DCA']).max();
 
-var typeViz = {min:1,max:19,palette:'F00,888,00F',queryDict:damage_codes};
-var dcaViz = {min:10,max:99,palette:'F00,888,00F',queryDict:dca_codes};
-Map2.addLayer(mortType,typeViz,'mortType');
-Map2.addLayer(mortDCA,dcaViz,'mortDCA');
-Map2.addLayer(defolType,typeViz,'defolType');
-Map2.addLayer(defolDCA,dcaViz,'defolDCA')
+// var cdl = ee.Image('USDA/NASS/CDL/2014').select([0]);
+
+var d = ee.Image('USDA/NASS/CDL/2014').select([0]).toDictionary();
+
+var cdlNames = ee.List(d.get('cropland_class_names'));
+var cdlValues = ee.List(d.get('cropland_class_values'));
+var cdlPalette = ee.List(d.get('cropland_class_palette'));
+var cdlQueryDict = {};
+cdlValues.zip(cdlNames).getInfo().map(function(l){cdlQueryDict[l[0]] = l[1]});
+var cdlLegendDict = {};
+cdlNames.zip(cdlPalette).getInfo().map(function(l){cdlLegendDict[l[0]] = l[1]});
+// var cdl2 = ee.Image('USDA/NASS/CDL/2018').select([0]);
+// var palette = cdl2.get('cropland_class_palette').getInfo();
+
+// Map2.addLayer(cdl2,{min:0,max:254,palette:palette,addToClassLegend:true,classLegendDict:cdlLegendDict,queryDict:cdlQueryDict},'CDL')
+
+var idsCollection = getIDSCollection().select([0,1,2,3]);
+// print(idsCollection.getInfo())
+// var mortType = idsCollection.select(['IDS Mort Type']).max();
+// var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
+// var defolType = idsCollection.select(['IDS Defol Type']).max();
+// var defolDCA = idsCollection.select(['IDS Defol DCA']).max();
+
+// var typeViz = {min:1,max:19,palette:'F00,888,00F',queryDict:damage_codes};
+// var dcaViz = {min:10,max:99,palette:'F00,888,00F',queryDict:dca_codes};
+// Map2.addLayer(mortType,typeViz,'mortType');
+// Map2.addLayer(mortDCA,dcaViz,'mortDCA');
+// Map2.addLayer(defolType,typeViz,'defolType');
+// Map2.addLayer(defolDCA,dcaViz,'defolDCA')
 idsCollection = batchFillCollection(idsCollection,years).map(setSameDate);  
 nlcdLC = batchFillCollection(nlcdLC,years).map(setSameDate);
 mtbs = batchFillCollection(mtbs,years).map(setSameDate);
 cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
 nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
-var forCharting = joinCollections(nlcdLC,mtbs, false);
-forCharting  = joinCollections(forCharting,cdl, false);
-forCharting  = joinCollections(forCharting,nlcdTCC, false);
-forCharting  = joinCollections(forCharting,nlcdImpv, false);
-forCharting  = joinCollections(forCharting,idsCollection, false);
+
+var forCharting = joinCollections(idsCollection,mtbs.select([0],['MTBS Burn Severity']), false);
+forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover']), false);
+forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
+forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
+forCharting  = joinCollections(forCharting,cdl.select([0],['Cropland Data']), false);
+
+
 // console.log(forCharting.getInfo())
+
+var chartTableDict = {
+  'IDS Mort Type':damage_codes,
+  'IDS Mort DCA':dca_codes,
+  'IDS Defol Type':damage_codes,
+  'IDS Defol DCA':dca_codes,
+  'MTBS Burn Severity':mtbsQueryClassDict,
+  'NLCD Landcover':nlcdLCQueryDict,
+  'Cropland Data':cdlQueryDict
+
+}
+
+forCharting = forCharting.set('chartTableDict',chartTableDict)
+chartColors = chartColorsDict.ancillary;
 chartCollection = forCharting;
+// addChartJS(d,'test1');
 }
 

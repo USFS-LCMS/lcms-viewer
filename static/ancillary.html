@@ -3,7 +3,7 @@
     <head>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
-       <!--  <script type="text/javascript">
+        <script type="text/javascript">
            
             // var ua = navigator.userAgent;
             // var browser;
@@ -19,10 +19,10 @@
             //Browser detection
             //Taken from: https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
             // Opera 8.0+
-            // Object.filter = (obj, predicate) => 
-            //     Object.keys(obj)
-            //           .filter( key => predicate(obj[key]) )
-            //           .reduce( (res, key) => (res[key] = obj[key], res), {} );
+            Object.filter = (obj, predicate) => 
+                Object.keys(obj)
+                      .filter( key => predicate(obj[key]) )
+                      .reduce( (res, key) => (res[key] = obj[key], res), {} );
             var whichBrowser = {};
             var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
             whichBrowser['Opera'] = isOpera;
@@ -51,7 +51,7 @@
             // }
             console.log(browser)
 
-        </script> -->
+        </script>
         <title>LCMS Data Explorer</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="icon" href="./images/usfslogo.png">

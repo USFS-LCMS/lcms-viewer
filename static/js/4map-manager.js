@@ -968,6 +968,7 @@ var chartColorsDict = {
   'standard':['#050','#0A0','#e6194B','#14d4f4'],
   'advanced':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4'],
   'advancedBeta':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4','#808','#f58231'],
+  'ancillary':['#cc0066','#660033','#9933ff','#330080','#ff3300','#47d147','#00cc99','#ff9966','#b37700']
   }
 
 var chartColors = chartColorsDict.standard;
@@ -1871,12 +1872,15 @@ function initialize() {
   }
   
   $('#summary-spinner').hide();
+  if(localStorage.showIntroModal === 'true'){
+    $('#introModal').modal().show();
+  }
 	});
 
 }
 
-$(document).ready(function(){
-  
+// $(document).ready(function(){
+ document.addEventListener("DOMContentLoaded", function(event) { 
   initialize();
   
   });

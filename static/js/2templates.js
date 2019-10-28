@@ -1,18 +1,24 @@
 var dropdownI = 1;
-var mode = 'LCMS';//Choose LCMS or Ancillary
-var  topBanners = {
+if(localStorage.lcmsViewerMode === null || localStorage.lcmsViewerMode === undefined){
+	localStorage.lcmsViewerMode = 'LCMS';
+}
+var mode = localStorage.lcmsViewerMode;//Choose LCMS or Ancillary
+var  titles = {
 	'LCMS': {
 		    leftWords: 'LCMS',
 		    centerWords: 'DATA',
-		    rightWords:'Explorer'
+		    rightWords:'Explorer',
+		    title:'LCMS Data Explorer'
 			},
 	'Ancillary': {
 		    leftWords: 'Ancillary',
 		    centerWords: 'DATA',
-		    rightWords:'Viewer'
+		    rightWords:'Viewer',
+		    title:'TimeSync Ancillary Data Explorer'
 			},
 }
-var topBannerParams = topBanners[mode];
+$('head').append(`<title>${titles[mode].title}</title>`);
+var topBannerParams = titles[mode];
 var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 
 

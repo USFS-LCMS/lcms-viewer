@@ -72,6 +72,6 @@ var r4PlotsJson = {name:'Region 4',path:'./geojson/region4_sample_9strata_NEW_g_
 var mls = {name:'Manti La Sal',path:'./geojson/LCMS_Sample_1000k_MLSNF_5km_g_albers_30m_box.json','plotIDField':'FID_1'};
 var bt = {name:'Bridger-Teton',path:'./geojson/LCMS_Sample_1000k_BTNF_g_albers_30m_box.json','plotIDField':'FID_1'};
 var fnf = {name:'Flathead',path:'./geojson/LCMS_Sample_1000k_FNF_GNP_g_albers_30m_box.json','plotIDField':'FID_1'};
-var plotsGeoJSONs = [r4PlotsJson,mls,bt,fnf];
+var plotsGeoJSONs =[r4PlotsJson,mls,bt,fnf];
 
 

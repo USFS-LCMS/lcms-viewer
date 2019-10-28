@@ -5,6 +5,7 @@ $('body').append(staticTemplates.sidebarLeftContainer);
 
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
+
 $('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler)
@@ -19,9 +20,7 @@ $('#main-container').append(staticTemplates.introModal)
 if(localStorage.showIntroModal == undefined){
   localStorage.showIntroModal = 'true';
   }
-if(localStorage.showIntroModal === 'true'){
-  $('#introModal').modal().show();
-}
+
 $('#dontShowAgainCheckbox').change(function(){
   console.log(this.checked)
   localStorage.showIntroModal  = !this.checked;

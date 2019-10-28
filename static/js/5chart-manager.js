@@ -728,16 +728,21 @@ var dataToTable = function (dataset) {
     return html;
 };
 var chartJSChart;
+var chartType;
+if(localStorage.tableOrChart === undefined || localStorage.tableOrchart === null){
+	localStorage.tableOrChart = 'chart';
+}
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
 function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel){
-	dataTable = dt;var displayXAxis = true;var displayYAxis = true;
+	var displayXAxis = true;var displayYAxis = true;
 	if(xAxisLabel === null || xAxisLabel === undefined){xAxisLabel = '';displayXAxis = false};
 	if(yAxisLabel === null || yAxisLabel === undefined){yAxisLabel = '';displayYAxis = false};
 	if(colors === null || colors === undefined){colors = chartColors};
 	if(chartType === null || chartType === undefined){chartType = 'line'};
 	if(stacked === null || stacked === undefined){stacked = false};
 	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
-
+	dataTable = dataTableNumbersToNames(dt);
+	
 	var h = $(document).height();
 	var w = $(document).width();
 	if(h/w > 1){
@@ -756,6 +761,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 	
 
     $('#chart-modal-body').append(`<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>`);
+    $('#chart-modal-body').append(`<div id="chart-table" style = 'display:none;' width="${canvasWidth}" height = "${canvasHeight}" ></div>`);
     var data = dt.slice(1);
     // console.log(data);
     var firstColumn = arrayColumn(data,0);
@@ -797,7 +803,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
         // console.log(label);console.log(data)
     })
     chartColorI = 0;
-    console.log(datasets)
+    // console.log(datasets)
     try{
     	chartJSChart.destroy();	
     }
@@ -845,78 +851,136 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${title}.csv', dataTable)">CSV</a>
 										  </div>
 										</div>
-										<div class = 'dropdown-divider'</div>`);
-	   
+										
+										<div class="dropdown">
+										  <div class=" dropdown-toggle"  id="chartTypeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										    Chart Type
+										  </div>
+										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart')">Line</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
+										  </div>
+										</div>
+										`);
+	   	
+	    var chartTableHTML = htmlTable(dataTable);
+	    $('#chart-table').append(chartTableHTML);
+	    toggleChartTable(localStorage.tableOrchart)
 	    $('#chart-modal').modal();
+}
+
+
+function toggleChartTable(showWhich){
+	if(showWhich === 'table'){
+		$('#chart-canvas').hide();
+		$('#chart-legend').hide();
+		$('#chart-table').show();
+		localStorage.tableOrchart = 'table';
+	}else{
+		$('#chart-canvas').show();
+		$('#chart-legend').show();
+		$('#chart-table').hide();
+		localStorage.tableOrchart = 'chart';
+	}
 }
 function change(newType,stacked,steppedLine) {
 	if(stacked === undefined || stacked == null){stacked = false};
 	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
-	var config = chartJSChart.config;
-	chartJSChart.destroy();
-	config.type = newType;
 	
-	if(stacked){
-		config.options.scales = {
-			yAxes: [{ stacked: stacked }],//,ticks:{min:0,max:100}}],
-			xAxes: [{ stacked: stacked }]
-		}
 
-		var datasets = config.data.datasets;
-		console.log(datasets);
-		datasets = datasets.map(function(dataset){
-			dataset['fill'] = true;
-			dataset['backgroundColor'] = dataset['borderColor'];
-			dataset['steppedLine'] = steppedLine;
-			return dataset;
-		})
-		config.data.datasets = datasets;
-	}else{
-		config.options.scales = {
-			yAxes: [{ stacked: stacked }],
-			xAxes: [{ stacked: stacked }]
-		}
-		var datasets = config.data.datasets;
-		console.log(datasets);
-		datasets = datasets.map(function(dataset){
-			dataset['fill'] = false;
-			dataset['backgroundColor'] = null;
-			return dataset;
-		})
-		config.data.datasets = datasets;
-	};
+		var config = chartJSChart.config;
+		chartJSChart.destroy();
+		config.type = newType;
+		
+		if(stacked){
+			config.options.scales = {
+				yAxes: [{ stacked: stacked }],//,ticks:{min:0,max:100}}],
+				xAxes: [{ stacked: stacked }]
+			}
+
+			var datasets = config.data.datasets;
+			console.log(datasets);
+			datasets = datasets.map(function(dataset){
+				dataset['fill'] = true;
+				dataset['backgroundColor'] = dataset['borderColor'];
+				dataset['steppedLine'] = steppedLine;
+				return dataset;
+			})
+			config.data.datasets = datasets;
+		}else{
+			config.options.scales = {
+				yAxes: [{ stacked: stacked }],
+				xAxes: [{ stacked: stacked }]
+			}
+			var datasets = config.data.datasets;
+			console.log(datasets);
+			datasets = datasets.map(function(dataset){
+				dataset['fill'] = false;
+				dataset['backgroundColor'] = null;
+				return dataset;
+			})
+			config.data.datasets = datasets;
+		};
+		
+		
+		chartJSChart = new Chart($('#chart-canvas'), config);
 	
-	
-	chartJSChart = new Chart($('#chart-canvas'), config);
 };
+var chartTableDict;
+function dataTableNumbersToNames(dataTable){
+	try{chartTableDict = chartCollection.get('chartTableDict').getInfo();}
+	catch(err){chartTableDict = null};
 
-function chartToTable(chart) {
-	var dataset = chart.config.data;
-	var title = chart.options.title.text;
+	var header = dataTable[0];
+	var outTable = [header];
+	dataTable.slice(1).map(function(r){
+		var row = [];
+		jQuery.each(r,function(i,value){
+			
+			var label = header[i];
+			
+			var tableValue;
+        	if(chartTableDict !== null && chartTableDict[label] !== null && chartTableDict[label] !== undefined && value !== undefined && (chartTableDict[label][parseInt(value)] !== undefined || chartTableDict[label][parseFloat(value)] !== undefined)){
+        		// console.log('yay');
+        		// console.log(chartTableDict[label]);
+        		tableValue = chartTableDict[label][parseInt(value)];
+        		if(tableValue === undefined){
+        			tableValue = chartTableDict[label][parseFloat(value)];
+        		}
+			}else{tableValue = value;};
+			row.push(tableValue);
+		});
+		outTable.push(row);
 
-    var html = '<table>';
-    html += '<thead><tr><th style="width:120px;"></th>';
-    
-    var columnCount = 0;
-    jQuery.each(dataset.datasets, function (idx, item) {
-        html += '<th style="background-color:' + item.borderColor + ';">' + item.label + '</th>';
-        columnCount += 1;
-    });
+	})
+	return outTable;
 
-    html += '</tr></thead>';
+}
+function htmlTable(table){
+	var html = '<div class = "flexcroll chart-table text-black"><table class="table  table-hover">';
+    html += '<thead><tr>';
+    var header = dataTable[0];
+ 
 
-    jQuery.each(dataset.labels, function (idx, item) {
-        html += '<tr><td>' + item + '</td>';
-        for (i = 0; i < columnCount; i++) {
-            html += '<td style="background-color:' + dataset.datasets[i].borderColor + ';">' + (dataset.datasets[i].data[idx] === '0' ? '-' : dataset.datasets[i].data[idx]) + '</td>';
-        }
-        html += '</tr>';
-    });
+   header.map(function(label){
+   		html += '<th  class = "chart-table-first-row bg-black">' + label + '</th>';
+      
+   });
+   html += '</tr></thead>';
 
-    html += '</tr><tbody></table>';
-    showMessage(title,html)
-    // return html;
-};
+    table.slice(1).map(function(r){
+		html += '<tr>';
+		var columnI = 0;
+		r.map(function(value){
+			html += '<td>' +  value + '</td>';
+			columnI++;
+		})	
+		html += '</tr>';	
+	});
+	html += '</tr><tbody></table></div>';
+   return html
+}
+
 
 var d =
 [["time", "NDVI", "NDVI_LT_fitted", "Land Cover Class", "Land Use Class", "Loss Probability", "Gain Probability"]
@@ -952,7 +1016,45 @@ var d =
 ,["2014", 0.569609507640068, 0.6117384615384616, 0.4000000059604645, 0.30000001192092896, 0, 0.6499999761581421]
 ,["2015", 0.6380090497737556, 0.6613538461538462, 0.4000000059604645, 0.6000000238418579, 0.019999999552965164, 0.8700000047683716]
 ,["2016", 0.7084615384615386, 0.7109692307692308, 0.4000000059604645, 0.30000001192092896, 0, 0.75]
-,["2017", 0.7672530446549392, 0.7605846153846154, 0.4000000059604645, 0.30000001192092896, 0, 0.6499999761581421]]
+,["2017", 0.7672530446549392, 0.7605846153846154, 0.4000000059604645, 0.30000001192092896, 0, 0.6499999761581421]];
+var d = [['time','landcover','burnSeverity','cdl','percent_tree_cover','impervious','IDS Mort Type','IDS Mort DCA','IDS Defol Type','IDS Defol DCA','IDS Mort Type Year','IDS Mort DCA Year','IDS Defol Type Year','IDS Defol DCA Year'],
+[1984,,,,,,,,,,,,,],
+[1985,,,,,,,,,,,,,],
+[1986,,,,,,,,,,,,,],
+[1987,,,,,,,,,,,,,],
+[1988,,,,,,,,,,,,,],
+[1989,,,,,,,,,,,,,],
+[1990,,,,,,,,,,,,,],
+[1991,,,,,,,,,,,,,],
+[1992,43,,,,,,,,,,,,],
+[1993,,,,,,,,,,,,,],
+[1994,,,,,,,,,,,,,],
+[1995,,,,,,,,,,,,,],
+[1996,,,,,,,,,,,,,],
+[1997,,,,,,,,,,,,,],
+[1998,,,,,,,,,,,,,],
+[1999,,,,,,,,,,,,,],
+[2000,,,,,,,,,,,,,],
+[2001,43,,,,0,,,,,,,,],
+[2002,,,,,,,,,,,,,],
+[2003,,,,,,,,,,,,,],
+[2004,43,,,,,,,,,,,,],
+[2005,,,,,,2,11,,,2005,2005,,],
+[2005,,,,,,2,11,,,2005,2005,,],
+[2006,43,,,,0,,,,,,,,],
+[2007,,,,,,2,80,,,2007,2007,,],
+[2007,,,,,,2,80,,,2007,2007,,],
+[2008,43,,143,,,,,,,,,,],
+[2009,,,143,,,,,,,,,,],
+[2010,,,143,,,,,,,,,,],
+[2011,43,,142,65,0,,,,,,,,],
+[2012,,,143,,,,,,,,,,],
+[2013,43,,143,,,,,,,,,,],
+[2014,,,143,,,,,,,,,,],
+[2015,,,141,,,,,,,,,,],
+[2016,43,,143,,0,,,,,,,,],
+[2017,,,143,,,,,,,,,,],
+[2018,,,143,,,,,,,,,,]]
 // addChartJS(d,'test1');
 
 // var legends = chartCollection.get('legends').getInfo();
@@ -1056,7 +1158,7 @@ function startPixelChartCollection() {
 			values = values.map(function(v)
 				{return v.map(function(i){
 				if(i === null || i === undefined){return i}
-				else if(i%1!==0){return i.toFixed(3)}
+				else if(i%1!==0){return parseFloat(i.toFixed(3))}
 				else if(i%1==0){return parseInt(i)}
 				else{return i}
 				})
@@ -1070,6 +1172,7 @@ function startPixelChartCollection() {
 			print(legends);
 			if(legends !== null){// && analysisMode === 'advanced'){
 				makeLegend(legends);
+				toggleChartTable(localStorage.tableOrchart);
 				};
    			}
 
