@@ -172,7 +172,7 @@ th{font-weight:  600!important}
 .table-bordered td{    border-right: 1px solid #000!important;border-left: 1px solid #000!important;}
 .chart-table  {
   max-height:30em;
-  max-width:60em;
+  max-width:90em;
   overflow-y:auto; 
   overflow-x:auto; 
   font-size: 0.8em;

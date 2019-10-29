@@ -15,7 +15,7 @@ $('#sidebar-left-header').append(staticTemplates.topBanner);
 // $('#title-banner').fitText(1.2);
 // $('#studyAreaDropdownLabel').fitText(0.5);
 
-$('#main-container').append(staticTemplates.introModal)
+$('#main-container').append(staticTemplates.introModal[mode])
 
 if(localStorage.showIntroModal == undefined){
   localStorage.showIntroModal = 'true';
@@ -31,7 +31,7 @@ if(mode === 'LCMS'){
 }
 $('#title-banner').append(staticTemplates.placesSearchDiv);
 $('#title-banner').fitText(1.2);
-$('#study-area-label').fitText(1.8);
+$('#study-area-label').fitText(2);
 
 
 function toggleAdvancedOn(){

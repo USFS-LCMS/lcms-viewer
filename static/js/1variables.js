@@ -8,8 +8,8 @@ var startYear = 1985;
 var endYear = 2018;
 var layerObj = null;
 var queryObj = {};
-
-
+var initialCenter = [43.4,-111];
+var initialZoomLevel = 8;
 var cachedStudyAreaName = null;
 var studyAreaDict = {'Flathead National Forest':{
                                                 name:'FNF',

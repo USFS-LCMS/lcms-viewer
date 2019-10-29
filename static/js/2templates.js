@@ -2,7 +2,7 @@ var dropdownI = 1;
 if(localStorage.lcmsViewerMode === null || localStorage.lcmsViewerMode === undefined){
 	localStorage.lcmsViewerMode = 'LCMS';
 }
-var mode = localStorage.lcmsViewerMode;//Choose LCMS or Ancillary
+
 var  titles = {
 	'LCMS': {
 		    leftWords: 'LCMS',
@@ -14,7 +14,7 @@ var  titles = {
 		    leftWords: 'Ancillary',
 		    centerWords: 'DATA',
 		    rightWords:'Viewer',
-		    title:'TimeSync Ancillary Data Explorer'
+		    title:'TimeSync Ancillary Data Viewer'
 			},
 }
 $('head').append(`<title>${titles[mode].title}</title>`);
@@ -82,7 +82,7 @@ var staticTemplates = {
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">`,
-	introModal:`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+	introModal:{'LCMS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
                         <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
@@ -104,6 +104,29 @@ var staticTemplates = {
                     </div>
                 </div>
             </div>`,
+            'Ancillary':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-md " role="document">
+                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                        <div class = 'modal-header'>
+                            <h3 class="mb-0 ">Welcome to the TimeSync Ancillary Data Viewer!</h3>
+                        </div>
+
+                        <div class="modal-body">
+                            <p class="pb-3 ">This viewer is intended to provide an efficient way of looking at ancillary data to help with responses for the TimeSync tool.</p>
+                        	
+                        </div>
+                        <div class = 'modal-footer'>
+                      
+						<div class="form-check  mr-0">
+                                <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        },
 	bottomBar:`<div class = 'bottombar' >
 
 				<p class = 'px-2 my-1' style = 'float:left'; id='current-tool-selection' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Any tool that is currently active is shown here."></p>
@@ -165,8 +188,8 @@ areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()'
 areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.",
 queryDiv : "<div>Double-click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
-pixelChartDiv : `<div>Double-click on map to query LCMS data time series<br></div>`,
-pixelChartTip : 'Double-click on map to look at the full time series of LCMS outputs for a pixel.',
+pixelChartDiv : `<div>Double-click on map to query ${mode} data time series<br></div>`,
+pixelChartTip : 'Double-click on map to look at the full time series of '+mode+' outputs for a pixel.',
 userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     
                                     <label>Provide name for area selected for charting (optional):</label>
@@ -177,16 +200,16 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
 showChartButton:`<div class = 'py-2'>
                         <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
                         </div>`,
-userDefinedAreaChartTip : 'Click on map to select an area to summarize LCMS products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon and create graph.',
+userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon and create graph.',
 
 uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summarize across</label>
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                         <div class = 'dropdown-divider'></div>`,
-uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize LCMS products across.',
-selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen LCMS study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
+uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
+selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                     <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
                     <div class = 'dropdown-divider'></div>`,
-selectAreaChartTip : 'Select from pre-defined areas to summarize LCMS products across.'
+selectAreaChartTip : 'Select from pre-defined areas to summarize products across.'
 
 
 

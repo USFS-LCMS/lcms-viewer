@@ -1522,6 +1522,7 @@ function dropdownUpdateStudyArea(whichOne){
    //  $('.status').text(this.innerHTML);
    //  $('#study-area-label').text(this.innerHTML);
     var coords = studyAreaDict[whichOne].center;
+
     // studyAreaName = studyAreaDict[this.innerHTML][0];
    //  // exportCRS = studyAreaDict[this.innerHTML][2];
    //  // $('input[name = "Export crs"]').val(exportCRS);
@@ -1631,18 +1632,7 @@ function initSearchBox() {
       }
   
 function initialize() {
-  marker=new google.maps.Circle({
-    center:{lat:45,lng:-111},
-    radius:5
-  });
-
-  infowindow = new google.maps.InfoWindow({
-    content : '',
-    maxWidth: 300,
-    pixelOffset: new google.maps.Size(30,-30,'rem','rem'),
-    close:false
-  });
-
+  
   var mapOptions = {
     center: null,
     zoom: null,
@@ -1692,6 +1682,18 @@ function initialize() {
      
     map = new google.maps.Map(document.getElementById("map"),
                                   mapOptions);
+    marker=new google.maps.Circle({
+    center:{lat:45,lng:-111},
+    radius:5
+  });
+
+  infowindow = new google.maps.InfoWindow({
+    content : '',
+    maxWidth: 300,
+    pixelOffset: new google.maps.Size(30,-30,'rem','rem'),
+    close:false
+  });
+
     initSearchBox();
     
        
@@ -1878,10 +1880,35 @@ function initialize() {
 	});
 
 }
-
+///////////////////////////////////////////////////////////////
+//Wait to initialize
 // $(document).ready(function(){
- document.addEventListener("DOMContentLoaded", function(event) { 
-  initialize();
+
+ // document.addEventListener("DOMContentLoaded", function(event) { 
+  // initialize();
   
-  });
+  // });
+//Taken from: https://stackoverflow.com/questions/32808613/how-to-wait-till-the-google-maps-api-has-loaded-before-loading-a-google-maps-ove
+var mapWaitCount = 0;
+var mapWaitMax = 20;
+
+function map_load() { // if you need any param
+    mapWaitCount++;
+    // if api is loaded
+    if(typeof google !== 'undefined') {
+        initialize();
+    }
+    // try again if until maximum allowed attempt
+    else if(mapWaitCount < mapWaitMax) {
+        console.log('Waiting attempt #' + mapWaitCount); // just log
+        setTimeout(function() { map_load(); }, 1000);
+    }
+    // if failed after maximum attempt, not mandatory
+    else if(mapWaitCount >= mapWaitMax) {
+        console.log('Failed to load google api');
+    }
+}
+
+map_load();
+/////////////////////////////////////////////////////
 

@@ -34,10 +34,10 @@ var toolFunctions = {'measuring':
                         'title': 'Pixel Tools-Query Visible Map Layers'
                       },
                       'chart':{
-                        'on':'stopAllTools();startPixelChartCollection();showTip("QUERY LCMS TIME SERIES",staticTemplates.pixelChartTip);',
+                        'on':'stopAllTools();startPixelChartCollection();showTip("QUERY "+mode+" TIME SERIES",staticTemplates.pixelChartTip);',
                         'off':'stopAllTools()',
                         'state':false,
-                        'title': 'Pixel Tools-Query LCMS Time Series'
+                        'title': 'Pixel Tools-Query '+mode+' Time Series'
                       }
                     },
                     'area':
