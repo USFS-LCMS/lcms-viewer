@@ -974,7 +974,7 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
 //                 8,11,
 //                 'NWI',false,'National Wetlands Inventory data as viewed in https://www.fws.gov/wetlands/Data/Mapper.html from zoom levels >= 8')
-var years = ee.List.sequence(1984,2018).getInfo();
+var years = ee.List.sequence(1984,2019).getInfo();
 var dummyNLCDImage = ee.Image(nlcdLC.first());
 var cdl = ee.ImageCollection('USDA/NASS/CDL').select([0],['cdl']);
 
@@ -1059,6 +1059,41 @@ cdlNames.zip(cdlPalette).getInfo().map(function(l){cdlLegendDict[l[0]] = l[1]});
 
 // Map2.addLayer(cdl2,{min:0,max:254,palette:palette,addToClassLegend:true,classLegendDict:cdlLegendDict,queryDict:cdlQueryDict},'CDL')
 
+// Terra-Climate
+var pdsiStartYear = 1984;
+var pdsiEndYear = 2019;
+var terra = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE')
+   .filter(ee.Filter.calendarRange(pdsiStartYear-1, pdsiEndYear,'year'));
+var terra_pdsi = terra.select('pdsi').map(function(img) {return img.multiply(0.01).copyProperties(img,['system:time_start']).copyProperties(img)});
+var years = ee.List.sequence(pdsiStartYear, pdsiEndYear).getInfo();
+var annualPDSI = years.map(function(yr) {
+  var startDate = ee.Date.fromYMD(yr-1, 10, 1);
+  var endDate = ee.Date.fromYMD(yr, 9, 30);
+  var yearPDSI = terra_pdsi.filter(ee.Filter.date(startDate, endDate));
+  var meanPDSI = yearPDSI.reduce(ee.Reducer.mean()).set('system:time_start', ee.Date.fromYMD(yr,6,1).millis());
+  return ee.Image(meanPDSI);
+});
+annualPDSI = ee.ImageCollection(annualPDSI);   
+annualPDSI = annualPDSI.map(function(img) {
+  var t = img;
+  img = img.clamp(-5, 5);
+  img = img.where(img.lt(-0.5), img.floor())
+  img = img.where((img.gte(-0.5)).and(img.lt(0.5)), 0)
+  img = img.where(img.gte(0.5), img.ceil())
+  return img.add(5).copyProperties(t,['system:time_start']);
+});
+var pdsiDict = {
+  10:'extremely wet',      // 4 +        == 5
+  9:'very wet',           // 3-3.99     == 4
+  8:'moderately wet',     // 2-2.99     == 3
+  7:'slightly wet',       // 1-1.99     == 2
+  6:'incipient wet spell',// 0.5-0.99   == 1
+  5:'near normal',        // -0.49-0.49 == 0
+  4:'incipient dry spell',// -0.99--0.5 == -1
+  3:'mild drought',       // -1.99--1   == -2
+  2:'moderate drought',   // -2.99--2   == -3
+  1:'severe drought',     // -3.99--3   == -4
+  0:'extreme drought'}
 var idsCollection = getIDSCollection().select([0,1,2,3]);
 // print(idsCollection.getInfo())
 // var mortType = idsCollection.select(['IDS Mort Type']).max();
@@ -1072,6 +1107,7 @@ var idsCollection = getIDSCollection().select([0,1,2,3]);
 // Map2.addLayer(mortDCA,dcaViz,'mortDCA');
 // Map2.addLayer(defolType,typeViz,'defolType');
 // Map2.addLayer(defolDCA,dcaViz,'defolDCA')
+annualPDSI = batchFillCollection(annualPDSI,years).map(setSameDate);  
 idsCollection = batchFillCollection(idsCollection,years).map(setSameDate);  
 nlcdLC = batchFillCollection(nlcdLC,years).map(setSameDate);
 mtbs = batchFillCollection(mtbs,years).map(setSameDate);
@@ -1079,11 +1115,13 @@ cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
 nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
 
-var forCharting = joinCollections(idsCollection,mtbs.select([0],['MTBS Burn Severity']), false);
+var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), cdl.select([0],['Cropland Data']),false);
+forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
+forCharting  = joinCollections(forCharting,idsCollection, false);
 forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover']), false);
 forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
 forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
-forCharting  = joinCollections(forCharting,cdl.select([0],['Cropland Data']), false);
+
 
 
 // console.log(forCharting.getInfo())
@@ -1095,8 +1133,8 @@ var chartTableDict = {
   'IDS Defol DCA':dca_codes,
   'MTBS Burn Severity':mtbsQueryClassDict,
   'NLCD Landcover':nlcdLCQueryDict,
-  'Cropland Data':cdlQueryDict
-
+  'Cropland Data':cdlQueryDict,
+  'PDSI':pdsiDict
 }
 
 forCharting = forCharting.set('chartTableDict',chartTableDict)

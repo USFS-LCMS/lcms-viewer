@@ -1,5 +1,5 @@
 function addPlotCollapse(){
-	var collapseContainer =getWalkThroughCollapseContainerID(); 
+	var collapseContainer ="sidebar-left";//getWalkThroughCollapseContainerID(); 
     addCollapse(collapseContainer,'plot-collapse-label','plot-collapse-div','PLOTS','<i class="fa fa-crosshairs  mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
     addAccordianContainer('plot-collapse-div','plots-accordian')
     // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
