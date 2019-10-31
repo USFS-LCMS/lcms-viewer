@@ -1020,6 +1020,22 @@ function addLayer(layer){
 		        layer.layer.setStyle(layer.viz);
 		      
 		      	layer.layer.addGeoJson(v);
+		      	layer.layer.addListener('click', function(event) {
+    				// console.log(event);
+    				infowindow.setPosition(event.latLng);
+    				var infoContent = `<table class="table table-hover bg-white">
+					    <tbody>`
+					var info = event.feature.h;
+					Object.keys(info).map(function(name){
+						var value = info[name];
+						infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+					});
+					infoContent +=`</tbody></table>`;
+    				infowindow.setContent(infoContent);
+	          		infowindow.open(map);
+    
+				})
+				
 		      	featureObj[layer.name] = layer.layer
 		      	// console.log(this.viz);
 		      
