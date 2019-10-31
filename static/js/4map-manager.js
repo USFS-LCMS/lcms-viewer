@@ -1090,6 +1090,7 @@ function startArea(){
       }
       keys.map(areaWrapper)
       var pixelProp = totalArea/9;
+
       totalArea = totalArea*unitMultiplier;
         // if(infowindow != undefined){infowindow.close()}
         // if(totalArea > 0){
@@ -1105,6 +1106,7 @@ function startArea(){
             polyString = 'polygons';
           }
           var areaContent = totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName ;
+          if(mode === 'Ancillary'){areaContent += '<br>'+pixelProp.toFixed(2) + ' % pixel'}
           // $( "#area-measurement" ).html(areaContent);//+' <br>' +pixelProp.toFixed(2) + '%pixel');
           infowindow.setContent(areaContent);
           infowindow.setPosition(clickCoords);
