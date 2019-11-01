@@ -155,36 +155,36 @@ downloadMetadata = function(){
 // var lu_meta = 'metadata/lcms_v2019-1_metadata_template_landcover_landuse.html';
 // var prob_meta = 'metadata/lcms_v2019-1_metadata_template_probability.html';
 // var year_meta = 'metadata/lcms_v2019-1_metadata_template_year.html';
-var meta_template = 'metadata/lcms_v2019-1_metadata_template.html';
-var dur_meta_str;var lu_meta_str;var prob_meta_str;var year_meta_str;var meta_template_str;
+// var meta_template = 'metadata/lcms_v2019-1_metadata_template.html';
+// var dur_meta_str;var lu_meta_str;var prob_meta_str;var year_meta_str;var meta_template_str;
 
-$(document).ready(function(){
-    $.get(meta_template, function(html_string){meta_template_str = html_string;},'html');
-  // $.get(dur_meta, function(html_string){dur_meta_str = html_string;},'html');
-  // $.get(lu_meta, function(html_string){lu_meta_str = html_string;},'html');
-  // $.get(prob_meta, function(html_string){prob_meta_str = html_string;},'html');   
-  // $.get(year_meta, function(html_string){year_meta_str = html_string;},'html');  
+// $(document).ready(function(){
+//     $.get(meta_template, function(html_string){meta_template_str = html_string;},'html');
+//   // $.get(dur_meta, function(html_string){dur_meta_str = html_string;},'html');
+//   // $.get(lu_meta, function(html_string){lu_meta_str = html_string;},'html');
+//   // $.get(prob_meta, function(html_string){prob_meta_str = html_string;},'html');   
+//   // $.get(year_meta, function(html_string){year_meta_str = html_string;},'html');  
   
-});
-function exportMetadata(filename, html_string) {
+// });
+// function exportMetadata(filename, html_string) {
         
-        var blob = new Blob([html_string], { type: 'text/html;charset=utf-8;' });
-        if (navigator.msSaveBlob) { // IE 10+
-            navigator.msSaveBlob(blob, filename);
-        } else {
-            var link = document.createElement("a");
-            if (link.download !== undefined) { // feature detection
-                // Browsers that support HTML5 download attribute
-                var url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-    }
+//         var blob = new Blob([html_string], { type: 'text/html;charset=utf-8;' });
+//         if (navigator.msSaveBlob) { // IE 10+
+//             navigator.msSaveBlob(blob, filename);
+//         } else {
+//             var link = document.createElement("a");
+//             if (link.download !== undefined) { // feature detection
+//                 // Browsers that support HTML5 download attribute
+//                 var url = URL.createObjectURL(blob);
+//                 link.setAttribute("href", url);
+//                 link.setAttribute("download", filename);
+//                 link.style.visibility = 'hidden';
+//                 document.body.appendChild(link);
+//                 link.click();
+//                 document.body.removeChild(link);
+//             }
+//         }
+//     }
 function downloadExport(url,output){
                 var link = document.createElement("a");
                 link.setAttribute("href", url);

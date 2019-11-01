@@ -92,10 +92,10 @@ var staticTemplates = {
 
                         <div class="modal-body">
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
-                        	
+                        	<button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
                         </div>
                         <div class = 'modal-footer'>
-                      
+                        
 						<div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
@@ -176,7 +176,9 @@ supportDiv :`<div class = 'p-0 pb-2' >
 					<i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i>
 					Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
 				<div class="dropdown-divider"></div>
-				<label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
+                <button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
+				<div class="dropdown-divider"></div>
+                <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
 				<!--<div class="dropdown-divider"></div>
 				<label class = 'mt-2'>Run a walk-through of the LCMS Data Explorer's features</label>

@@ -1236,6 +1236,14 @@ function stopCharting(){
 	
 
 }
+function downloadTutorial(){
+	var link = document.createElement("a");
+	link.href = './tutorials/LCMS_Data_Explorer_Overview_20191101.pdf';
+    link.target = '_blank';
+	
+	link.click();
+	// link.setAttribute("download", filename);
+}
 function exportJSON(filename,json){
 	json = JSON.stringify(json);
 
