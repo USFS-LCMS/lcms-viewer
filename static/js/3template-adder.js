@@ -31,7 +31,7 @@ if(mode === 'LCMS'){
 }
 $('#title-banner').append(staticTemplates.placesSearchDiv);
 $('#title-banner').fitText(1.2);
-$('#study-area-label').fitText(2);
+$('#study-area-label').fitText(1.8);
 
 
 function toggleAdvancedOn(){

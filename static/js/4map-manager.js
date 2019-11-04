@@ -860,6 +860,8 @@ function reRun(){
   $('#summary-spinner').show();
   setGEERunID();
   layerChildID = 0;
+  geeTileLayersDownloading = 0;
+  updateGEETileLayersLoading();
   queryObj = {};areaChartCollections = {};
   // if(analysisMode === 'advanced'){
   //   document.getElementById('threshold-container').style.display = 'inline-block';
@@ -1517,9 +1519,10 @@ layer2.setMap(map);
 
 
 function dropdownUpdateStudyArea(whichOne){
-  console.log('clicked')
+  $('#summary-spinner').show();
    
   resetStudyArea(whichOne);
+
    // localStorage.setItem("cachedStudyAreaName",this.innerHTML)
    //  $('.status').text(this.innerHTML);
    //  $('#study-area-label').text(this.innerHTML);
@@ -1539,6 +1542,7 @@ function dropdownUpdateStudyArea(whichOne){
     
 
     reRun();
+    // $('#summary-spinner').hide();
 };
 var resetStudyArea = function(whichOne){
 

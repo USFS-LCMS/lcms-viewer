@@ -163,9 +163,9 @@ th{font-weight:  600!important}
   z-index:2;
 }
 .image-icon-bar{
-  max-height:20px;
+  max-height:1.3em;
   float:right;
-  margin:5px;
+  margin:0.1em;
   border-radius: 0px;
   background:rgba(255,255,255,0.2);
 }
@@ -187,7 +187,7 @@ th{font-weight:  600!important}
   bottom:1.7em;
   right:0%;
   overflow-y:auto;
-  max-height:50%;
+  max-height:60%;
   color:var(--white);
   background-color: var(--black)!important;
   z-index:2;

@@ -263,15 +263,19 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   
   if(studyAreaName === 'CNFKP'){
     var mtbs_path = 'projects/USFS/LCMS-NFS/AK-Ancillary-Data/MTBS';
+    var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-163.83922691651176,61.8957471095411],[-143.28412464845243,61.8957471095411],[-143.28412464845243,68.23773785333091],[-163.83922691651176,68.23773785333091],[-163.83922691651176,61.8957471095411]]]};
   } else {
     var mtbs_path = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/MTBS';
+     var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-125.75643073529548,24.088884681079445],[-66.54030227863115,24.088884681079445],[-66.54030227863115,49.98575233937072],[-125.75643073529548,49.98575233937072],[-125.75643073529548,24.088884681079445]]]}
+  
   }
   var mtbsEndYear = endYear;
   if(endYear > 2017){mtbsEndYear = 2017}
 
   
   mtbs = ee.ImageCollection(mtbs_path);
-  var mtbsClientBoundary =ee.Image(mtbs.first()).geometry().bounds(1000).getInfo();
+  // var mtbsClientBoundary =ee.Image(mtbs.first()).geometry().bounds(1000).getInfo();
+ // print(mtbsClientBoundary)
   mtbs = mtbs.filter(ee.Filter.calendarRange(startYear,mtbsEndYear,'year'))
       .map(function(img){return img.selfMask()});
   
@@ -321,7 +325,8 @@ if(chartMTBS === true){
 function getHansen(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
   var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6');
-  var hansenClientBoundary =hansen.geometry().bounds(1000).getInfo();
+  var hansenClientBoundary = {"type":"Polygon","coordinates":[[[-180,-90],[180,-90],[180,90],[-180,90],[-180,-90]]]};//hansen.geometry().bounds(1000).getInfo();
+  // print(hansenClientBoundary);
   var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
   var hansenGain = hansen.select(['gain']);
   hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));

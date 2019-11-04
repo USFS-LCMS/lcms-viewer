@@ -70,14 +70,13 @@ var staticTemplates = {
 	topBanner:`<h1 id = 'title-banner' data-toggle="tooltip" title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
 		        
 		        `,
-	studyAreaDropdown:`<ul id = 'study-area-dropdown-container' class = 'navbar-nav  px-5  m-0 text-center' data-toggle="tooltip" title="Choose your study area"    >
-		            <li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
+	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal p-0 caret nav-link dropdown-toggle ' id='study-area-label'  >Bridger-Teton National Forest</h5> 
 		                <div class="dropdown-menu" id="study-area-list"  >  
 		                </div>
 		            </li>
-			    </ul>`,
-	placesSearchDiv:`<div class="input-group px-5 pb-2 text-center"">
+			    `,
+	placesSearchDiv:`<div class="input-group px-4 pb-2 text-center"">
 			            <div class="input-group-prepend">
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
@@ -493,9 +492,11 @@ function addStudyAreaToDropdown(name,toolTip){
 	// console.log(id);
 	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`)
   	$('#'+id).on('click',function(){
+  		$('#summary-spinner').show();
   		console.log('clicked')
   		$('#study-area-list').hide();
     	dropdownUpdateStudyArea(this.name);
+ 
     })
     
  }
@@ -898,8 +899,8 @@ function addLayer(layer){
                 layer.layer.setMap(null);
                 layer.rangeOpacity = 0;
                 $('#' + spinnerID+'2').hide();
-                geeTileLayersDownloading = 0;
-                updateGEETileLayersLoading();
+                // geeTileLayersDownloading = 0;
+                // updateGEETileLayersLoading();
                 
             }else{
             	layer.visible = true;
