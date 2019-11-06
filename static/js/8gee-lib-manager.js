@@ -269,6 +269,16 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
      var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-125.75643073529548,24.088884681079445],[-66.54030227863115,24.088884681079445],[-66.54030227863115,49.98575233937072],[-125.75643073529548,49.98575233937072],[-125.75643073529548,24.088884681079445]]]}
   
   }
+
+  // var ned = ee.Image('USGS/NED');
+  // var hillshade = ee.Terrain.hillshade(ned);
+  // Map2.addLayer(hillshade,{min:0,max:255},'hillshade')
+  var nlcd = ee.ImageCollection('USGS/NLCD');
+  // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
+  var tcc = nlcd.filter(ee.Filter.calendarRange(2011,2011,'year')).select(['percent_tree_cover']).mosaic();
+  // tcc = tcc.mask(tcc.neq(0));
+  Map2.addLayer(tcc,{min:10,max:70,palette:'000,2d7d1f'},'NLCD Tree Canopy Cover 2011',false,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
+
   var mtbsEndYear = endYear;
   if(endYear > 2017){mtbsEndYear = 2017}
 

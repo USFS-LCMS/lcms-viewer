@@ -1534,7 +1534,10 @@ function dropdownUpdateStudyArea(whichOne){
     centerMap(coords[1],coords[0],coords[2]);
     if(mode === 'Ancillary'){
       run = runSimple;
-    } else if(studyAreaName === 'CONUS'){
+    } else if( mode === 'LT'){
+      run  = runLT;
+    }
+      else if(studyAreaName === 'CONUS'){
       run = runCONUS
     }else{run = runUSFS};
 
@@ -1864,7 +1867,13 @@ function initialize() {
       
     if(mode === 'Ancillary'){
       run = runSimple;
-    } else if(cachedStudyAreaName != null){
+    } else if( mode === 'LT'){
+      run  = runLT;
+    }
+      else if(studyAreaName === 'CONUS'){
+      run = runCONUS
+    }
+    else if(cachedStudyAreaName != null){
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}

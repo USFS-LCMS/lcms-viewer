@@ -16,6 +16,12 @@ var  titles = {
 		    rightWords:'Viewer',
 		    title:'TimeSync Ancillary Data Viewer'
 			},
+    'LT': {
+            leftWords: 'Landsat',
+            centerWords: 'DATA',
+            rightWords:'Viewer',
+            title:'TimeSync Ancillary Data Viewer'
+            },
 }
 $('head').append(`<title>${titles[mode].title}</title>`);
 var topBannerParams = titles[mode];
@@ -203,8 +209,10 @@ showChartButton:`<div class = 'py-2'>
                         </div>`,
 userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon and create graph.',
 
-uploadAreaChartDiv : `<label>Choose a zipped shapefile or geoJSON file to summarize across</label>
+uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
+                        <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
+                        <button class = 'btn' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Summarize across chosen file</button>
                         <div class = 'dropdown-divider'></div>`,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
 selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
@@ -1023,21 +1031,21 @@ function addLayer(layer){
 		        layer.layer.setStyle(layer.viz);
 		      
 		      	layer.layer.addGeoJson(v);
-		      	layer.layer.addListener('click', function(event) {
-    				// console.log(event);
-    				infowindow.setPosition(event.latLng);
-    				var infoContent = `<table class="table table-hover bg-white">
-					    <tbody>`
-					var info = event.feature.h;
-					Object.keys(info).map(function(name){
-						var value = info[name];
-						infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-					});
-					infoContent +=`</tbody></table>`;
-    				infowindow.setContent(infoContent);
-	          		infowindow.open(map);
+		  //     	layer.layer.addListener('click', function(event) {
+    // 				// console.log(event);
+    // 				infowindow.setPosition(event.latLng);
+    // 				var infoContent = `<table class="table table-hover bg-white">
+				// 	    <tbody>`
+				// 	var info = event.feature.h;
+				// 	Object.keys(info).map(function(name){
+				// 		var value = info[name];
+				// 		infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+				// 	});
+				// 	infoContent +=`</tbody></table>`;
+    // 				infowindow.setContent(infoContent);
+	   //        		infowindow.open(map);
     
-				})
+				// })
 				
 		      	featureObj[layer.name] = layer.layer
 		      	// console.log(this.viz);

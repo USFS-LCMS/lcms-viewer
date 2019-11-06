@@ -496,9 +496,8 @@ function fixGeoJSONZ(f){
 
 	return f
 }
+function runShpDefinedCharting(){
 
-function startShpDefinedCharting(){
-	$('#areaUpload').change(function(){
 		if(jQuery('#areaUpload')[0].files.length > 0){
 			try{udp.setMap(null);}
 			catch(err){console.log(err)};
@@ -536,8 +535,11 @@ function startShpDefinedCharting(){
 				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 				makeAreaChart(area,name);
 			})
-		}	
-	})
+		
+	}else{showMessage('No Summary Area Selected','Please select a .zip shapefile or a .geojson file to summarize across')}
+}
+function startShpDefinedCharting(){
+	// $('#areaUpload').change(function(){runShpDefinedCharting()})
 };
 function stopAreaCharting(){
 	window.removeEventListener("keydown", restartUserDefinedAreaCarting);
@@ -771,17 +773,18 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
     
     var datasets = columns.map(function(i){
         var col = arrayColumn(dt,i);
-        
-        col = col.map(function(i){
+        var label = col[0];
+        var data = col.slice(1);
+        // console.log(data)
+        data = data.map(function(i){
         			var out;
-        			try{out = i.toFixed(2)}
+        			try{out = i.toFixed(4)}
         			catch(err){out = i;}
         			return out
         			})
-        // print(col)
+        // console.log(data)
         
-        var label = col[0];
-        var data = col.slice(1);
+        
         // var color = randomRGBColor();
         var color = colors[(i-1)%colors.length];
         if(color.indexOf('#') === -1){color = '#'+color};
@@ -940,6 +943,7 @@ function dataTableNumbersToNames(dataTable){
 			var label = header[i];
 			
 			var tableValue;
+			// console.log(value);
         	if(chartTableDict !== null && chartTableDict[label] !== null && chartTableDict[label] !== undefined && value !== undefined && (chartTableDict[label][parseInt(value)] !== undefined || chartTableDict[label][parseFloat(value)] !== undefined)){
         		// console.log('yay');
         		// console.log(chartTableDict[label]);
@@ -947,7 +951,11 @@ function dataTableNumbersToNames(dataTable){
         		if(tableValue === undefined){
         			tableValue = chartTableDict[label][parseFloat(value)];
         		}
-			}else{tableValue = value;};
+			}else{
+				try{value = value.toFixed(4)}
+				catch(err){};
+				tableValue =value ;
+			};
 			row.push(tableValue);
 		});
 		outTable.push(row);
@@ -1158,7 +1166,7 @@ function startPixelChartCollection() {
 			values = values.map(function(v)
 				{return v.map(function(i){
 				if(i === null || i === undefined){return i}
-				else if(i%1!==0){return parseFloat(i.toFixed(3))}
+				else if(i%1!==0){return parseFloat(i.toFixed(4))}
 				else if(i%1==0){return parseInt(i)}
 				else{return i}
 				})
@@ -1236,14 +1244,7 @@ function stopCharting(){
 	
 
 }
-function downloadTutorial(){
-	var link = document.createElement("a");
-	link.href = './tutorials/LCMS_Data_Explorer_Overview_20191101.pdf';
-    link.target = '_blank';
-	
-	link.click();
-	// link.setAttribute("download", filename);
-}
+
 function exportJSON(filename,json){
 	json = JSON.stringify(json);
 

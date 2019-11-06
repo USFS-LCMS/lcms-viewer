@@ -1143,3 +1143,117 @@ chartCollection = forCharting;
 // addChartJS(d,'test1');
 }
 
+
+function runLT(){
+  // var startYear = 1984;
+  // var endYear   = 2019;
+  var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
+
+  // LSC updated 4/15/19 to add medium and high confidence cloud masks
+  // Supported fmaskClass options: 'cloud', 'shadow', 'snow', 'high_confidence_cloud', 'med_confidence_cloud'
+  function cFmask(img,fmaskClass){
+    var m;
+    var qa = img.select('pixel_qa').int16();
+    if (fmaskClass == 'high_confidence_cloud'){
+      m = qa.bitwiseAnd(1 << 6).neq(0).and(qa.bitwiseAnd(1 << 7).neq(0))
+    }else if (fmaskClass == 'med_confidence_cloud'){
+      m = qa.bitwiseAnd(1 << 7).neq(0)
+    }else{
+      m = qa.bitwiseAnd(fmaskBitDict[fmaskClass]).neq(0);
+    }
+    return img.updateMask(m.not());
+  }
+
+  function cFmaskCloud(img){
+    return cFmask(img,'cloud');
+  }
+  function cFmaskCloudShadow(img){
+    return cFmask(img,'shadow');
+  }
+  /////////////////////////////////////////////////////////////////
+  //Function for only adding common indices
+  function simpleAddIndices(in_image){
+      in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'red']).select([0],['NDVI']));
+      in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'swir2']).select([0],['NBR']));
+      in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'swir1']).select([0],['NDMI']));
+      in_image = in_image.addBands(in_image.normalizedDifference(['green', 'swir1']).select([0],['NDSI']));
+    
+      return in_image;
+  }
+  function addYearBand(img){
+    var d = ee.Date(img.get('system:time_start'));
+    var y = d.get('year');
+    
+    var db = ee.Image.constant(y).rename(['year']).float();
+    db = db;//.updateMask(img.select([0]).mask())
+    return img.addBands(db).float();
+  }
+  ///////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  var aoi = eeBoundsPoly;
+  //Define the LandTrendr run parameters as a dictionary. See the parameters section for definitions. Note that the image collection will be appended to this dictionary in a later step.
+  var run_params = { 
+    maxSegments:            6,
+    spikeThreshold:         0.9,
+    vertexCountOvershoot:   3,
+    preventOneYearRecovery: true,
+    recoveryThreshold:      0.25,
+    pvalThreshold:          0.05,
+    bestModelProportion:    0.75,
+    minObservationsNeeded:  6
+  };
+  //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
+  for(var year = startYear; year <= endYear; year++) {
+    var l5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+                .filterBounds(aoi)
+                .filter(ee.Filter.calendarRange(year-1,year+1,'year'))
+                .filter(ee.Filter.calendarRange(190,250))
+                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp', 'swir2','pixel_qa']);
+    var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+                .filterBounds(aoi)
+                .filter(ee.Filter.calendarRange(year-1,year+1,'year'))
+                .filter(ee.Filter.calendarRange(190,250))
+                .select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp', 'swir2','pixel_qa']);
+    var img = l5.merge(l8);
+    if(applyFmaskCloud === 'yes'){
+      img = img.map(cFmaskCloud);
+    }
+    if(applyFmaskCloudShadow === 'yes'){
+      img = img.map(cFmaskCloudShadow)
+    }
+    
+    img = img.map(simpleAddIndices).median().set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
+  
+    // print(year);
+    if(year%5 ==0 || year === startYear || year === endYear){
+      Map2.addLayer(img,{min:500,max:3500,bands:'swir1,nir,red'},'Composite '+year.toString(),false);
+    }
+    
+    var tempCollection = ee.ImageCollection([img]);         
+
+    if(year == startYear) {
+      var srCollection = tempCollection;
+    } else {
+      srCollection = srCollection.merge(tempCollection);
+    }
+  };
+  srCollection = srCollection.map(addYearBand);
+  chartCollection = srCollection.select(['NBR','NDVI'])
+
+  var trendIndices = ['NBR'];
+  trendIndices.map(function(index){
+    var trend = srCollection.select(['year',index]).reduce(ee.Reducer.linearFit()).select([0]);
+    Map2.addLayer(trend,{min:-0.05,max:0.05,palette:'F00,888,00F'},index+' Linear Trend '+startYear.toString() + ' ' + endYear.toString(),false);
+    var classes = ee.Image(0);
+    classes = classes.where(trend.lte(-0.01),1)
+    classes = classes.where(trend.gte(0.01),2)
+    classes = classes.mask(classes.neq(0))
+    Map2.addLayer(classes,{min:1,max:2,palette:'F00,0F0',addToClassLegend:true,classLegendDict: {'Loss':'F00','Gain':'0F0'}},index+' Change Category '+startYear.toString() + ' ' + endYear.toString(),false)
+  })
+  // print(srCollection.getInfo());
+// Append the image collection to the LandTrendr run parameter dictionary
+// run_params.timeSeries = srCollection;
+// Run the LandTrendr algorithm
+// var LTresult = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
+
+}
