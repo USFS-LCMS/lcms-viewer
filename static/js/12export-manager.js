@@ -79,16 +79,44 @@ function interval2(func, wait, times){
         setTimeout(interv, wait);
     };
 ////////////////////////////////////////////////
+function deleteExportArea(){
+    window.removeEventListener('keydown',deleteLastExportVertex);
+    window.removeEventListener('keydown',resetExportArea);
+    google.maps.event.clearListeners(mapDiv, 'dblclick');
+    google.maps.event.clearListeners(mapDiv, 'click');
+    map.setOptions({draggableCursor:'hand'});
+    map.setOptions({cursor:'hand'});
+    mapHammer.destroy()
+    exportArea.setMap(null);
+    exportArea = null;
+}
+function undoExportArea(){
+    exportArea.getPath().pop(1)
+}
+function deleteLastExportVertex(e){
+      console.log(e);
+      if(e.key == 'z' && e.ctrlKey){
+        undoExportArea();
+      }
+    }
+function resetExportArea(e){
+  // console.log(e.key);
+  if(e === undefined || e.key === undefined ||  e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace'){
+    selectExportArea();
+  }    
+}
 function selectExportArea(){
     try{
-        exportArea.setMap(null);
+        deleteExportArea();
     }catch(err){};
     
+    window.addEventListener('keydown',deleteLastExportVertex);
+    window.addEventListener('keydown',resetExportArea);
     map.setOptions({draggableCursor:'crosshair'});
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
-    var exportAreaList = [];
+    // var exportAreaList = [];
     exportArea = new google.maps.Polyline(exportAreaPolylineOptions);
 
     exportArea.setMap(map);
@@ -101,7 +129,7 @@ function selectExportArea(){
     var x =event.center.x;
     var y = event.center.y;
     clickLngLat =point2LatLng(x,y);
-    exportAreaList.push([clickLngLat.lng(),clickLngLat.lat()])
+    // exportAreaList.push([clickLngLat.lng(),clickLngLat.lat()])
     path.push(clickLngLat);
     
 
@@ -114,6 +142,8 @@ function selectExportArea(){
         exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
         exportArea.setPath(path);
         exportArea.setMap(map);
+        window.removeEventListener('keydown',deleteLastExportVertex);
+        window.removeEventListener('keydown',resetExportArea);
         google.maps.event.clearListeners(mapDiv, 'dblclick');
         google.maps.event.clearListeners(mapDiv, 'click');
         map.setOptions({draggableCursor:'hand'});
@@ -236,7 +266,7 @@ function trackExports(){
                 }
         else if(t.state === 'COMPLETED'  && cachedEEExport.downloaded === false ){
             
-            var tOutputName = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+cachedEEExports[t.id].outputName +'.tif'
+            var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.id].outputName +'.tif'
             downloadExport(tOutputName,cachedEEExports[t.id].outputName +'.tif')
             // exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
             
@@ -294,7 +324,7 @@ function cacheExport(id,outputName,metadata){
     localStorage.setItem("cachedEEExports",JSON.stringify(cachedEEExports));
     trackExports();
 }
-if(exportCapability){interval2(trackExports, 15000, 100000)};
+if(canExport){interval2(trackExports, 15000, 100000)};
 
 function updateSpinner(){
 
@@ -357,7 +387,7 @@ function googleMapPolygonToGEEPolygon(googleMapPolygon){
 }
 function exportImages(){
     if(exportArea === null || exportArea === undefined){
-        showMessage('Error','No export area selected')
+        showMessage('Error','No export area selected. Select area by clicking on the <kbd>Draw area to download</kbd> button and then draw a polygon on the map.')
     }else{
 
         var fc = googleMapPolygonToGEEPolygon(exportArea);
@@ -367,49 +397,54 @@ function exportImages(){
         // console.log('yay');
         var now = Date().split(' ');
         var nowSuffix = '_'+now[2]+'_'+now[1]+'_'+now[3]+'_'+now[4];
-
+        var exportsStarted = 0;
+        var exportsSubmitted = ''
         Object.keys(exportImageDict).map(function(k){
             var exportObject = exportImageDict[k];
+            
             if(exportObject['shouldExport'] === true){
-               
+                exportsStarted ++;
+                exportsSubmitted += exportObject['name']+nowSuffix + '<br>'
                 var IDAndParams = getIDAndParams(exportObject['eeImage'],exportObject['name']+nowSuffix,exportCRS,exportObject['res'],fc);
                 print(IDAndParams)
                 //Start processing
                 ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
                 
 
-                var metadataParams = exportObject['metadataParams']
-                meta_template_strT = meta_template_str;
+                // var metadataParams = exportObject['metadataParams']
+                meta_template_strT = '{}';//meta_template_str;
 
                
-                meta_template_strT = meta_template_strT.replaceAll('FILENAME_TITLE',exportObject['name']+nowSuffix + '.tif');
-                meta_template_strT = meta_template_strT.replaceAll('EXPORT_CRS',exportCRS);
-                meta_template_strT = meta_template_strT.replaceAll('STARTYEAR',metadataParams.startYear);
-                meta_template_strT = meta_template_strT.replaceAll('ENDYEAR',metadataParams.endYear);
-                meta_template_strT = meta_template_strT.replaceAll('VERSION',metadataParams.version);
+                // meta_template_strT = meta_template_strT.replaceAll('FILENAME_TITLE',exportObject['name']+nowSuffix + '.tif');
+                // meta_template_strT = meta_template_strT.replaceAll('EXPORT_CRS',exportCRS);
+                // meta_template_strT = meta_template_strT.replaceAll('STARTYEAR',metadataParams.startYear);
+                // meta_template_strT = meta_template_strT.replaceAll('ENDYEAR',metadataParams.endYear);
+                // meta_template_strT = meta_template_strT.replaceAll('VERSION',metadataParams.version);
                 
-                meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_LONGNAME',metadata_parser_dict.STUDYAREA_LONGNAME[metadataParams.studyAreaName]);
-                meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_URL','https://lcms-data-explorer.appspot.com/');
-                meta_template_strT = meta_template_strT.replaceAll('WHICHONE',metadataParams.whichOne);
-                meta_template_strT = meta_template_strT.replaceAll('DETAILED_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][0]);
-                meta_template_strT = meta_template_strT.replaceAll('SUPER_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][1]);
-                meta_template_strT = meta_template_strT.replaceAll('SUMMARY_METHOD',metadata_parser_dict.SUMMARYMETHOD[metadataParams.summaryMethod]);
-                var theThesh;
-                if(metadataParams.whichOne.split(' ')[0] == 'Loss'){theThesh = lowerThresholdDecline}
-                    else{theThesh = lowerThresholdRecovery}
-                meta_template_strT = meta_template_strT.replaceAll('LOWER_THRESHOLD',theThesh);
+                // meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_LONGNAME',metadata_parser_dict.STUDYAREA_LONGNAME[metadataParams.studyAreaName]);
+                // meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_URL','https://lcms-data-explorer.appspot.com/');
+                // meta_template_strT = meta_template_strT.replaceAll('WHICHONE',metadataParams.whichOne);
+                // meta_template_strT = meta_template_strT.replaceAll('DETAILED_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][0]);
+                // meta_template_strT = meta_template_strT.replaceAll('SUPER_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][1]);
+                // meta_template_strT = meta_template_strT.replaceAll('SUMMARY_METHOD',metadata_parser_dict.SUMMARYMETHOD[metadataParams.summaryMethod]);
+                // var theThesh;
+                // if(metadataParams.whichOne.split(' ')[0] == 'Loss'){theThesh = lowerThresholdDecline}
+                //     else{theThesh = lowerThresholdRecovery}
+                // meta_template_strT = meta_template_strT.replaceAll('LOWER_THRESHOLD',theThesh);
 
-                meta_template_strT = meta_template_strT.replaceAll('CLASS_MIN',metadataParams.min);
-                meta_template_strT = meta_template_strT.replaceAll('CLASS_MAX',metadataParams.max);
+                // meta_template_strT = meta_template_strT.replaceAll('CLASS_MIN',metadataParams.min);
+                // meta_template_strT = meta_template_strT.replaceAll('CLASS_MAX',metadataParams.max);
 
-                meta_template_strT = meta_template_strT.replaceAll('OOB_ACCURACY',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_ACCURACY']);
-                meta_template_strT = meta_template_strT.replaceAll('OOB_KAPPA',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_KAPPA']);
-                meta_template_strT = meta_template_strT.replaceAll('CONFUSIONMATRIX',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_CONFUSIONMATRIX']);
+                // meta_template_strT = meta_template_strT.replaceAll('OOB_ACCURACY',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_ACCURACY']);
+                // meta_template_strT = meta_template_strT.replaceAll('OOB_KAPPA',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_KAPPA']);
+                // meta_template_strT = meta_template_strT.replaceAll('CONFUSIONMATRIX',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_CONFUSIONMATRIX']);
                 cacheExport(IDAndParams['id'],exportObject['name']+nowSuffix,meta_template_strT);
                 // exportMetadata(exportObject['name']+nowSuffix + '_metadata.html', meta_template_strT)
         
             }
         });
+        if(exportsStarted === 0){showMessage('Nothing to Export!','No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again.')}
+        else{showMessage('Success!','<div class = "dropdown-divider"></div>The following exports were submitted:<br>'+exportsSubmitted+'<div class = "dropdown-divider"></div>They are now running. Once finished, they will automatically download. The current status of exports can be followed by hovering over the gear spinner in the bottom right corner of the <kbd>DOWNLOAD DATA</kbd> menu')}
         $('#summary-spinner').hide(); 
     }
     

@@ -332,7 +332,7 @@ function addExport(eeImage,name,res,Export,metadataParams){
                                 <label  style = 'margin-bottom:0px;'  for='${name}-checkbox'></label>
                               </span>
                               
-                              <input  id = '${name}-name' class="form-control" type="text" value="${exportElement.name}">
+                              <input  id = '${name}-name' class="form-control" type="text" value="${exportElement.name}" rel="txtTooltip" title = 'Change export name if needed'>
                             </div>`)
   $('#' + name + '-name').on('input', function() {
     exportImageDict[exportElement.ID].name = $(this).val()

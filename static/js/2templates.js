@@ -57,13 +57,15 @@ var staticTemplates = {
                               
                             </form>
                             <div class = 'py-2'>
-                                <button class = 'btn' onclick = 'selectExportArea()'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
+                                <button class = 'btn' onclick = 'selectExportArea()' rel="txtTooltip" title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
+                                <a href="#" onclick = 'undoExportArea()' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
+                                <a href="#" onclick = 'deleteExportArea()' rel="txtTooltip" title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
                             <div class = 'dropdown-divider'></div>
-                            <div class = 'py-2'>
-                                <button class = 'btn' onclick = 'exportImages()'>Export Images</button>
-                                <button class = 'btn' onclick = 'cancelAllTasks()'>Cancel All Exports</button>
-                                <span style = 'display:none;' class="fa-stack fa-2x" id='export-spinner' data-toggle="tooltip"  title="">
+                            <div class = 'pt-1 pb-3'>
+                                <button class = 'btn' onclick = 'exportImages()' rel="txtTooltip" title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                <button class = 'btn' onclick = 'cancelAllTasks()' rel="txtTooltip" title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' data-toggle="tooltip"  title="">
 						    		<img rel="txtTooltip"   class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
 						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
 								</span>
@@ -124,6 +126,28 @@ var staticTemplates = {
                         <div class = 'modal-footer'>
                       
 						<div class="form-check  mr-0">
+                                <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            'LT':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-md " role="document">
+                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                        <div class = 'modal-header'>
+                            <h3 class="mb-0 ">Welcome to the Landsat Data Explorer!</h3>
+                        </div>
+
+                        <div class="modal-body">
+                            <p class="pb-3 ">This tool is intended to allow for quick exploration of the Landsat time series and long-term trends. Any area on earth can be mapped.</p>
+                            
+                        </div>
+                        <div class = 'modal-footer'>
+                      
+                        <div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
@@ -568,6 +592,33 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 
 	
 }
+function addCheckboxes(containerID,checkboxID,title,variable,optionList){
+  
+    $('#'+containerID).append(`<form  id = '${checkboxID}'>${title}<br></form>`);
+
+    eval(`window.${variable} = []`);
+
+    Object.keys(optionList).map(function(k){
+      console.log(k)
+      var checkboxCheckboxID = k + '-checkbox';
+      var checkboxLabelID = checkboxCheckboxID + '-label'
+      var checked = optionList[k];
+      if(checked){checked = 'checked';}
+        else{checked = ''};
+        eval(`window.${variable} = optionList`)
+      $('#'+checkboxID).append(`
+                                 <input  id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${k}</label>
+                               `)
+
+      $('#'+checkboxCheckboxID).change( function() {
+                                      var v = $(this).val();
+                                      var checked = $(this)[0].checked;
+                                      optionList[v] = checked;
+                                      eval(`window.${variable} = optionList`)
+                                    });
+    })
+  }
 function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip){
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	
@@ -960,62 +1011,79 @@ function addLayer(layer){
 		incrementOutstandingGEERequests();
 		
 		// console.log('adding tile map service');
-		layer.item.getMap(layer.viz,function(eeLayer){
-			decrementOutstandingGEERequests();
-			// console.log('tile service created');
-			$('#' + spinnerID).hide();
-			$('#' + visibleLabelID).show();
-			
-			if(layer.currentGEERunID === geeRunID){
-				var MAPID = eeLayer.mapid;
-	            var TOKEN = eeLayer.token;
-	            layer.highWaterMark = 0;
-	            var tileIncremented = false;
+        function getGEEMapServiceCallback(eeLayer){
+            decrementOutstandingGEERequests();
+            // console.log(eeLayer);
+            // console.log('tile service created');
+            $('#' + spinnerID).hide();
+            $('#' + visibleLabelID).show();
+            
+            if(layer.currentGEERunID === geeRunID){
+                if(eeLayer === undefined){
+                    console.log('GEE Tile Service request failed for '+layer.name);
+                    $('#'+containerID).css('background-color','red');
+                    $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
+                    // getGEEMapService();
+                }
+                else{
+                    var MAPID = eeLayer.mapid;
+                    var TOKEN = eeLayer.token;
+                    layer.highWaterMark = 0;
+                    var tileIncremented = false;
 
-	            // console.log(MAPID + TOKEN);
-	        	layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
-	        	layer.layer.addTileCallback(function(event){
-                    // console.log(event.count);console.log(layer.highWaterMark);
+                    // console.log(MAPID + TOKEN);
+                    layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
+                    layer.layer.addTileCallback(function(event){
+                        // console.log(event.count);console.log(layer.highWaterMark);
 
-                    if(event.count > layer.highWaterMark){
-                        layer.highWaterMark = event.count;
-                    }
+                        if(event.count > layer.highWaterMark){
+                            layer.highWaterMark = event.count;
+                        }
 
-                    layer.percent = 100-((event.count / layer.highWaterMark) * 100);
-                    if(event.count ===0 && layer.highWaterMark !== 0){layer.highWaterMark = 0}
+                        layer.percent = 100-((event.count / layer.highWaterMark) * 100);
+                        if(event.count ===0 && layer.highWaterMark !== 0){layer.highWaterMark = 0}
 
-                    if(layer.percent !== 100){
-                    	$('#' + spinnerID+'2').show();
-                    	if(!tileIncremented){
-                    		incrementGEETileLayersLoading();
-                    		tileIncremented = true;
-                    	}
-                    }else{
-                    	$('#' + spinnerID+'2').hide();
-                    	decrementGEETileLayersLoading();
-                    	tileIncremented = false;
-                    }
-                    updateProgress();
-                    // console.log(event.count);
-                    // console.log(inst.highWaterMark);
-                    // console.log(event.count / inst.highWaterMark);
-                    // console.log(layer.percent)
-                });
-	        	if(layer.visible){
-	                    layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
-	                    $('#'+layer.legendDivID).show();
-	                    layer.rangeOpacity = layer.opacity; 
-	                    
-	                    layer.layer.setOpacity(layer.opacity); 
-	                }else{
-	                  $('#'+layer.legendDivID).hide();
-	                  layer.rangeOpacity = 0;
-	                  
-	                }
-	                setRangeSliderThumbOpacity();
+                        if(layer.percent !== 100){
+                            $('#' + spinnerID+'2').show();
+                            if(!tileIncremented){
+                                incrementGEETileLayersLoading();
+                                tileIncremented = true;
+                            }
+                        }else{
+                            $('#' + spinnerID+'2').hide();
+                            decrementGEETileLayersLoading();
+                            tileIncremented = false;
+                        }
+                        updateProgress();
+                        // console.log(event.count);
+                        // console.log(inst.highWaterMark);
+                        // console.log(event.count / inst.highWaterMark);
+                        // console.log(layer.percent)
+                    });
+                    if(layer.visible){
+                            layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+                            $('#'+layer.legendDivID).show();
+                            layer.rangeOpacity = layer.opacity; 
+                            
+                            layer.layer.setOpacity(layer.opacity); 
+                        }else{
+                          $('#'+layer.legendDivID).hide();
+                          layer.rangeOpacity = 0;
+                          
+                        }
+                        setRangeSliderThumbOpacity(); 
+                }
+                
             }
-          // console.log(layer)
-		})
+        }
+        function getGEEMapService(){
+            layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)})
+        };
+        getGEEMapService();
+
+        
+
+		
 
 	}else if(layer.layerType === 'geeVector' || layer.layerType === 'geoJSONVector'){
 		incrementOutstandingGEERequests();

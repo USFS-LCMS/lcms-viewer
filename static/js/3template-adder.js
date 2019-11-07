@@ -90,22 +90,32 @@ if(mode === 'LCMS'){
   $('#support-collapse-div').append(staticTemplates.supportDiv);
 
 }else if(mode === 'LT'){
+  canExport = true;
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-
-  addRadio('parameters-collapse-div','fmask-cloud-radio','Apply Fmask cloud mask','Yes','No','applyFmaskCloud','yes','no','','','Whether to apply Fmask cloud mask')
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-  addRadio('parameters-collapse-div','fmask-cloud-shadow-radio','Apply Fmask cloud shadow mask','Yes','No','applyFmaskCloudShadow','yes','no','','','Whether to apply Fmask cloud shadow mask')
+  addDualRangeSlider('parameters-collapse-div','Choose analysis date range:','startJulian','endJulian',1, 365, startJulian, endJulian, 1,'julian-day-slider','julian','Years of LCMS data to include for land cover, land use, loss, and gain')
+  
+  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // addRadio('parameters-collapse-div','cloudScore-cloud-radio','Apply CloudScore','No','Yes','applyCloudScore','no','yes','','',"Whether to apply Google's Landsat CloudScore algorithm")
+  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // addRadio('parameters-collapse-div','fmask-cloud-radio','Apply Fmask cloud mask','Yes','No','applyFmaskCloud','yes','no','','','Whether to apply Fmask cloud mask')
+  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // addRadio('parameters-collapse-div','fmask-cloud-shadow-radio','Apply Fmask cloud shadow mask','Yes','No','applyFmaskCloudShadow','yes','no','','','Whether to apply Fmask cloud shadow mask')
   
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-
+  addCheckboxes('parameters-collapse-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',{'cloudScore':false,'fMask-Cloud':true,'fMask-Cloud-Shadow':true})
+  
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',{'NBR':true,'NDVI':false,'NDMI':false,'NDSI':true,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false})
+  
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
-
+  addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
+  
 }else{
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
@@ -168,6 +178,7 @@ if(mode === 'LCMS'){
 
 if(canExport){
    $('#download-collapse-div').append(staticTemplates.exportContainer);
+
 }
 
 // addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');

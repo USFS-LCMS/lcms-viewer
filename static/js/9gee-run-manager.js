@@ -844,7 +844,7 @@ function runCONUS(){
   Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'vCONUS.2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Duration','startYear':startYear,'endYear':endYear,'min':0,'max':endYear-startYear});
 
   }
- 
+  chartCollection =lossProb;
   var forAreaCharting = dndThresh.select(["Loss Probability_change_year"]);
   var forAreaChartingGeo = forAreaCharting.geometry();
   forAreaCharting = forAreaCharting.map(function(img){return img.mask().clip(forAreaChartingGeo)}).select([0],['Loss'])
@@ -1180,6 +1180,56 @@ function runLT(){
     
       return in_image;
   }
+  function simpleGetTasseledCap(image) {
+ 
+  var bands = ee.List(['blue','green','red','nir','swir1','swir2']);
+  // // Kauth-Thomas coefficients for Thematic Mapper data
+  // var coefficients = ee.Array([
+  //   [0.3037, 0.2793, 0.4743, 0.5585, 0.5082, 0.1863],
+  //   [-0.2848, -0.2435, -0.5436, 0.7243, 0.0840, -0.1800],
+  //   [0.1509, 0.1973, 0.3279, 0.3406, -0.7112, -0.4572],
+  //   [-0.8242, 0.0849, 0.4392, -0.0580, 0.2012, -0.2768],
+  //   [-0.3280, 0.0549, 0.1075, 0.1855, -0.4357, 0.8085],
+  //   [0.1084, -0.9022, 0.4120, 0.0573, -0.0251, 0.0238]
+  // ]);
+  
+  //Crist 1985 coeffs - TOA refl (http://www.gis.usu.edu/~doug/RS5750/assign/OLD/RSE(17)-301.pdf)
+  var coefficients = ee.Array([[0.2043, 0.4158, 0.5524, 0.5741, 0.3124, 0.2303],
+                    [-0.1603, -0.2819, -0.4934, 0.7940, -0.0002, -0.1446],
+                    [0.0315, 0.2021, 0.3102, 0.1594, -0.6806, -0.6109]]);
+  // Make an Array Image, with a 1-D Array per pixel.
+  var arrayImage1D = image.select(bands).toArray();
+  
+  // Make an Array Image with a 2-D Array per pixel, 6x1.
+  var arrayImage2D = arrayImage1D.toArray(1);
+  
+  var componentsImage = ee.Image(coefficients)
+    .matrixMultiply(arrayImage2D)
+    // Get rid of the extra dimensions.
+    .arrayProject([0])
+    // Get a multi-band image with TC-named bands.
+    .arrayFlatten(
+      [['brightness', 'greenness', 'wetness']])
+    .float();
+  
+  return image.addBands(componentsImage);
+  }
+  ///////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
+  //Only adds tc bg angle as in Powell et al 2009
+  //https://www.sciencedirect.com/science/article/pii/S0034425709003745?via%3Dihub
+  function simpleAddTCAngles(image){
+    // Select brightness, greenness, and wetness bands
+    var brightness = image.select(['brightness']);
+    var greenness = image.select(['greenness']);
+    var wetness = image.select(['wetness']);
+    
+    // Calculate Tasseled Cap angles and distances
+    var tcAngleBG = brightness.atan2(greenness).divide(Math.PI).rename('tcAngleBG');
+    
+    return image.addBands(tcAngleBG);
+  }
+  ///////////////////////////////////////////////////////////////////////////////
   function addYearBand(img){
     var d = ee.Date(img.get('system:time_start'));
     var y = d.get('year');
@@ -1188,47 +1238,472 @@ function runLT(){
     db = db;//.updateMask(img.select([0]).mask())
     return img.addBands(db).float();
   }
+  // Helper function to apply an expression and linearly rescale the output.
+  // Used in the landsatCloudScore function below.
+  function rescale(img, exp, thresholds) {
+    return img.expression(exp, {img: img})
+      .subtract(thresholds[0]).divide(thresholds[1] - thresholds[0]);
+  }
+  ////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Compute a cloud score and adds a band that represents the cloud mask.  
+  // This expects the input image to have the common band names: 
+  // ["red", "blue", etc], so it can work across sensors.
+  function landsatCloudScore(img) {
+    // Compute several indicators of cloudiness and take the minimum of them.
+    var score = ee.Image(1.0);
+    // Clouds are reasonably bright in the blue band.
+    score = score.min(rescale(img, 'img.blue', [0.1, 0.3]));
+   
+    // Clouds are reasonably bright in all visible bands.
+    score = score.min(rescale(img, 'img.red + img.green + img.blue', [0.2, 0.8]));
+     
+    // Clouds are reasonably bright in all infrared bands.
+    score = score.min(
+      rescale(img, 'img.nir + img.swir1 + img.swir2', [0.3, 0.8]));
+
+    // Clouds are reasonably cool in temperature.
+    score = score.min(rescale(img,'img.temp', [300, 290]));
+
+    // However, clouds are not snow.
+    var ndsi = img.normalizedDifference(['green', 'swir1']);
+    score = score.min(rescale(ndsi, 'img', [0.8, 0.6]));
+    
+   
+    score = score.multiply(100).byte();
+    score = score.clamp(0,100);
+    return score;
+  }
+  function applyLandsatCloudScore(img){
+    var cloudScoreThresh = 20;
+    var cs = landsatCloudScore(img);
+    var cloudMask = cs.lt(cloudScoreThresh);
+    return img.updateMask(cloudMask);
+  }
+  ///////////////////////////////////////////////////////////////////////////
+  //Function to handle empty collections that will cause subsequent processes to fail
+  //If the collection is empty, will fill it with an empty image
+  function fillEmptyCollections(inCollection,dummyImage){                       
+    var dummyCollection = ee.ImageCollection([dummyImage.mask(ee.Image(0))]);
+    var imageCount = inCollection.toList(1).length();
+    return ee.ImageCollection(ee.Algorithms.If(imageCount.gt(0),inCollection,dummyCollection));
+
+  }
+  //////////////////////////////////////////////////////////////////////////////////
+  //Direction of  a decrease in photosynthetic vegetation- add any that are missing
+  var changeDirDict = {
+  "blue":1,"green":1,"red":1,"nir":-1,"swir1":1,"swir2":1,"temp":1,
+  "NDVI":-1,"NBR":-1,"NDMI":-1,"NDSI":1,
+  "brightness":1,"greenness":-1,"wetness":-1,"fourth":-1,"fifth":1,"sixth":-1,
+
+  "ND_blue_green":-1,"ND_blue_red":-1,"ND_blue_nir":1,"ND_blue_swir1":-1,"ND_blue_swir2":-1,
+  "ND_green_red":-1,"ND_green_nir":1,"ND_green_swir1":-1,"ND_green_swir2":-1,"ND_red_swir1":-1,
+  "ND_red_swir2":-1,"ND_nir_red":-1,"ND_nir_swir1":-1,"ND_nir_swir2":-1,"ND_swir1_swir2":-1,
+  "R_swir1_nir":1,"R_red_swir1":-1,"EVI":-1,"SAVI":-1,"IBI":1,
+  "tcAngleBG":-1,"tcAngleGW":-1,"tcAngleBW":-1,"tcDistBG":1,"tcDistGW":1,"tcDistBW":1,
+  'NIRv':-1
+  };
+  ///////////////////////////////////////////////////////////////
+  //Function to convert an image array object to collection
+  function arrayToTimeSeries(tsArray,yearsArray,possibleYears,bandName){
+      //Set up dummy image for handling null values
+      var noDateValue = -32768;
+      var dummyImage = ee.Image(noDateValue).toArray();
+      
+      //Ierate across years
+      var tsC = possibleYears.map(function(yr){
+        yr = ee.Number(yr);
+        
+        //Pull out given year
+        var yrMask = yearsArray.eq(yr);
+      
+        //Mask array for that given year
+        var masked = tsArray.arrayMask(yrMask);
+        
+        
+        //Find null pixels
+        var l = masked.arrayLength(0);
+        
+        //Fill null values and convert to regular image
+        masked = masked.where(l.eq(0),dummyImage).arrayGet([-1]);
+        
+        //Remask nulls
+        masked = masked.updateMask(masked.neq(noDateValue)).rename([bandName])      
+          .set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+          
+        return masked;
+      
+      
+    });
+    return ee.ImageCollection(tsC);
+    }
+
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // Function to prep data following our workflows. Will have to run Landtrendr and convert to stack after.
+  function prepTimeSeriesForLandTrendr(ts,indexName, run_params){
+    var maxSegments = ee.Number(run_params.maxSegments);
+    //var startYear = ee.Date(ts.first().get('system:time_start')).get('year');
+    //var endYear = ee.Date(ts.sort('system:time_start',false).first().get('system:time_start')).get('year');
+
+     //Get single band time series and set its direction so that a loss in veg is going up
+    ts = ts.select([indexName]);
+    var distDir = changeDirDict[indexName];
+    var tsT = ts.map(function(img){return multBands(img, 1, distDir)});
+    
+    //Find areas with insufficient data to run LANDTRENDR
+    var countMask = tsT.count().unmask().gte(maxSegments.add(1));
+
+    tsT = tsT.map(function(img){
+      var m = img.mask();
+      //Allow areas with insufficient data to be included, but then set to a dummy value for later masking
+      m = m.or(countMask.not());
+      img = img.mask(m);
+      img = img.where(countMask.not(),-32768);
+      return img});
+
+    run_params.timeSeries = tsT;
+    var runMask = countMask.rename('insufficientDataMask');
+    var prepDict = {
+      'run_params': run_params,
+      'runMask':    runMask,
+      'distDir':    distDir
+    }
+    
+    return prepDict;  
+  }
+  //////////////////////////////////////////////
+  //Function to join raw time series with fitted time series from LANDTRENDR
+  //Takes the rawTs as an imageCollection, lt is the first band of the output from LANDTRENDR, and the distDir
+  //is the direction of change for a loss in vegeation for the chosen band/index
+  function getRawAndFittedLT(rawTs,lt,startYear,endYear,indexName,distDir){
+    if(indexName === undefined || indexName === null){indexName = 'Band'}
+    if(distDir === undefined || distDir === null){distDir = -1}
+    
+    //Pop off years and fitted values
+    var ltYear = lt.arraySlice(0,0,1).arrayProject([1]);
+    var ltFitted = lt.arraySlice(0,2,3).arrayProject([1]);
+    
+    //Flip fitted values if needed
+    if(distDir == -1){ltFitted = ltFitted.multiply(-1)}
+    
+    //Convert array to an imageCollection
+    var fittedCollection = arrayToTimeSeries(ltFitted,ltYear,ee.List.sequence(startYear,endYear),'LT_Fitted_'+indexName);
+    
+    //Join raw time series with fitted
+    var joinedTS = joinCollections(rawTs,fittedCollection);
+    
+    return joinedTS;
+    
+
+  }
+  //Adapted version for converting sorted array to image
+
+function getLTStack(LTresult,maxVertices,bandNames) {
+  var nBands = bandNames.length;
+  var emptyArray = [];                              // make empty array to hold another array whose length will vary depending on maxSegments parameter    
+  var vertLabels = [];                              // make empty array to hold band names whose length will vary depending on maxSegments parameter 
+  var iString;                                      // initialize variable to hold vertex number
+  for(var i=1;i<=maxVertices;i++){     // loop through the maximum number of vertices in segmentation and fill empty arrays
+    iString = i.toString();                         // define vertex number as string 
+    vertLabels.push(iString);               // make a band name for given vertex
+    emptyArray.push(-32768);                             // fill in emptyArray
+  }
+  //Set up empty array list
+  var emptyArrayList = [];
+  ee.List.sequence(1,nBands).getInfo().map(function(i){emptyArrayList.push(emptyArray)});
+  var zeros = ee.Image(ee.Array(emptyArrayList));        // make an image to fill holes in result 'LandTrendr' array where vertices found is not equal to maxSegments parameter plus 1
+                               
+  
+  var lbls = [bandNames, vertLabels,]; // labels for 2 dimensions of the array that will be cast to each other in the final step of creating the vertice output 
+  
+          // slices out the 4th row of a 4 row x N col (N = number of years in annual stack) matrix, which identifies vertices - contains only 0s and 1s, where 1 is a vertex (referring to spectral-temporal segmentation) year and 0 is not
+  
+  var ltVertStack = LTresult       // uses the sliced out isVert row as a mask to only include vertice in this data - after this a pixel will only contain as many "bands" are there are vertices for that pixel - min of 2 to max of 7. 
+                      .addBands(zeros)              // ...adds the 3 row x 7 col 'zeros' matrix as a band to the vertOnly array - this is an intermediate step to the goal of filling in the vertOnly data so that there are 7 vertice slots represented in the data - right now there is a mix of lengths from 2 to 7
+                      .toArray(1)                   // ...concatenates the 3 row x 7 col 'zeros' matrix band to the vertOnly data so that there are at least 7 vertice slots represented - in most cases there are now > 7 slots filled but those will be truncated in the next step
+                      .arraySlice(1, 0, maxVertices) // ...before this line runs the array has 3 rows and between 9 and 14 cols depending on how many vertices were found during segmentation for a given pixel. this step truncates the cols at 7 (the max verts allowed) so we are left with a 3 row X 7 col array
+                      .arrayFlatten(lbls, '');      // ...this takes the 2-d array and makes it 1-d by stacking the unique sets of rows and cols into bands. there will be 7 bands (vertices) for vertYear, followed by 7 bands (vertices) for rawVert, followed by 7 bands (vertices) for fittedVert, according to the 'lbls' list
+  
+  return ltVertStack.updateMask(ltVertStack.neq(-32768));                               // return the stack
+};
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function to convert from raw Landtrendr Output OR Landtrendr/VerdetVertStack output to Loss & Gain Space
+// format = 'rawLandtrendr' (Landtrendr only) or 'vertStack' (Verdet or Landtrendr)
+// If using vertStack format, this will not work if there are masked values in the vertStack. Must use getImagesLib.setNoData prior to 
+// calling this function
+// Have to apply LandTrendr changeDirection to both Verdet and Landtrendr before applying convertToLossGain()
+function convertToLossGain(ltStack, format, lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, 
+                            slowLossDurationThresh, chooseWhichLoss, chooseWhichGain, howManyToPull){
+  if(lossMagThresh === undefined || lossMagThresh === null){lossMagThresh =-0.15}
+  if(lossSlopeThresh === undefined || lossSlopeThresh === null){lossSlopeThresh =-0.1}
+  if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =0.1}
+  if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =0.1}
+  if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
+  if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss ='largest'}
+  if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain ='largest'}
+  if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
+  if(format === undefined || format === null){format = 'raw'}
+  
+  if (format == 'rawLandTrendr'){
+    print('Converting LandTrendr from raw output to Gain & Loss')
+    //Pop off vertices
+    var vertices = ltStack.arraySlice(0,3,4);
+    
+    //Mask out any non-vertex values
+    ltStack = ltStack.arrayMask(vertices);
+    ltStack = ltStack.arraySlice(0,0,3);
+    
+    //Get the pair-wise difference and slopes of the years
+    var left = ltStack.arraySlice(1,0,-1);
+    var right = ltStack.arraySlice(1,1,null);
+    var diff  = left.subtract(right);
+    var slopes = diff.arraySlice(0,2,3).divide(diff.arraySlice(0,0,1)).multiply(-1);  
+    var duration = diff.arraySlice(0,0,1).multiply(-1);
+    var fittedMag = diff.arraySlice(0,2,3);
+    //Set up array for sorting
+    var forSorting = right.arraySlice(0,0,1).arrayCat(duration,0).arrayCat(fittedMag,0).arrayCat(slopes,0);
+    
+  }else if(format == 'vertStack'){
+    print('Converting LandTrendr OR Verdet from vertStack format to Gain & Loss');
+    
+    var baseMask = ltStack.select([0]).mask(); //Will fail on completely masked pixels. Have to work around and then remask later.
+    var ltStack = ltStack.unmask(255); // Set masked pixels to 255
+    
+    var yrs = ltStack.select('yrs.*').toArray();
+    var yrMask = yrs.eq(-32768).or(yrs.eq(32767)).or(yrs.eq(0)).not();
+    yrs = yrs.arrayMask(yrMask);
+    var fit = ltStack.select('fit.*').toArray().arrayMask(yrMask);
+    var both = yrs.arrayCat(fit,1).matrixTranspose();
+
+    var left = both.arraySlice(1,0,-1);
+    var right = both.arraySlice(1,1,null);
+    var diff = left.subtract(right);
+    var fittedMag = diff.arraySlice(0,1,2);
+    var duration = diff.arraySlice(0,0,1).multiply(-1);
+    var slopes = fittedMag.divide(duration);
+    var forSorting = right.arraySlice(0,0,1).arrayCat(duration,0).arrayCat(fittedMag,0).arrayCat(slopes,0);
+    forSorting = forSorting.updateMask(baseMask);
+
+  }
+  
+  //Apply thresholds
+  var magLossMask =  forSorting.arraySlice(0,2,3).lte(lossMagThresh);
+  var slopeLossMask = forSorting.arraySlice(0,3,4).lte(lossSlopeThresh);
+  var lossMask = magLossMask.or(slopeLossMask);  
+  var magGainMask =  forSorting.arraySlice(0,2,3).gte(gainMagThresh);
+  var slopeGainMask = forSorting.arraySlice(0,3,4).gte(gainSlopeThresh);
+  var gainMask = magGainMask.or(slopeGainMask);
+  
+  //Mask any segments that do not meet thresholds
+  var forLossSorting = forSorting.arrayMask(lossMask);
+  var forGainSorting = forSorting.arrayMask(gainMask);
+  
+  //Dictionaries for choosing the column and direction to multiply the column for sorting
+  //Loss and gain are handled differently for sorting magnitude and slope (largest/smallest and steepest/mostgradual)
+  var lossColumnDict = {'newest':[0,-1],
+                    'oldest':[0,1],
+                    'largest':[2,1],
+                    'smallest':[2,-1],
+                    'steepest':[3,1],
+                    'mostGradual':[3,-1],
+                    'shortest':[1,1],
+                    'longest':[1,-1]
+                  };
+  var gainColumnDict = {'newest':[0,-1],
+                    'oldest':[0,1],
+                    'largest':[2,-1],
+                    'smallest':[2,1],
+                    'steepest':[3,-1],
+                    'mostGradual':[3,1],
+                    'shortest':[1,1],
+                    'longest':[1,-1]
+                  };
+  //Pull the respective column and direction
+  var lossSortValue = lossColumnDict[chooseWhichLoss];
+  var gainSortValue = gainColumnDict[chooseWhichGain];
+
+  //Pull the sort column and multiply it
+  var lossSortBy = forLossSorting.arraySlice(0,lossSortValue[0],lossSortValue[0]+1).multiply(lossSortValue[1]);
+  var gainSortBy = forGainSorting.arraySlice(0,gainSortValue[0],gainSortValue[0]+1).multiply(gainSortValue[1]);
+
+  //Sort the loss and gain and slice off the first column
+  var lossAfterForSorting = forLossSorting.arraySort(lossSortBy);
+  var gainAfterForSorting = forGainSorting.arraySort(gainSortBy);
+
+  //Convert array to image stck
+  var lossStack = getLTStack(lossAfterForSorting,howManyToPull,['loss_yr_','loss_dur_','loss_mag_','loss_slope_']);
+  var gainStack = getLTStack(gainAfterForSorting,howManyToPull,['gain_yr_','gain_dur_','gain_mag_','gain_slope_']);
+  
+  var lossGainDict = {  'lossStack': lossStack,
+                        'gainStack': gainStack
+  };
+  
+  return lossGainDict;
+}
+  //////////////////////////////////////////////////////////////////////////////////
+//Function for running LT, thresholding the segments for both loss and gain, sort them, and convert them to an image stack
+// July 2019 LSC: replaced some parts of workflow with functions in changeDetectionLib
+function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThresh,lossSlopeThresh,gainMagThresh,gainSlopeThresh,slowLossDurationThresh,chooseWhichLoss,chooseWhichGain,addToMap,howManyToPull){
+  
+  if(indexName === undefined || indexName === null){indexName = 'NBR'}
+  if(run_params === undefined || run_params === null){
+    run_params = {'maxSegments':6,
+      'spikeThreshold':         0.9,
+      'vertexCountOvershoot':   3,
+      'preventOneYearRecovery': true,
+      'recoveryThreshold':      0.25,
+      'pvalThreshold':          0.05,
+      'bestModelProportion':    0.75,
+      'minObservationsNeeded':  6
+    };
+  }
+  if(lossMagThresh === undefined || lossMagThresh === null){lossMagThresh =-0.15}
+  if(lossSlopeThresh === undefined || lossSlopeThresh === null){lossSlopeThresh =-0.1}
+  if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =0.1}
+  if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =0.1}
+  if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
+  if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss ='largest'}
+  if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain ='largest'}
+  if(addToMap === undefined || addToMap === null){addToMap =true}
+  if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
+  
+  var prepDict = prepTimeSeriesForLandTrendr(ts, indexName, run_params);
+ 
+  run_params = prepDict.run_params; // added composite time series prepped above
+  var countMask = prepDict.runMask; // count mask for pixels without enough data
+  var distDir = changeDirDict[indexName];
+
+  //Run LANDTRENDR
+  var rawLt = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
+  
+  var lt = rawLt.select([0]);
+  //Remask areas with insufficient data that were given dummy values
+  lt = lt.updateMask(countMask);
+  
+  //Get joined raw and fitted LANDTRENDR for viz
+  var joinedTS = getRawAndFittedLT(ts, lt, startYear, endYear, indexName, distDir);
+  
+  // Convert LandTrendr to Loss & Gain space
+  var lossGainDict = convertToLossGain(lt, 'rawLandTrendr', lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, 
+                                        slowLossDurationThresh, chooseWhichLoss, chooseWhichGain, howManyToPull)
+  var lossStack = lossGainDict.lossStack;
+  var gainStack = lossGainDict.gainStack;
+
+  //Convert to byte/int16 to save space
+  var lossThematic = lossStack.select(['.*_yr_.*']).int16().addBands(lossStack.select(['.*_dur_.*']).byte());
+  var lossContinuous = lossStack.select(['.*_mag_.*','.*_slope_.*']).multiply(10000).int16();
+  lossStack = lossThematic.addBands(lossContinuous);
+  
+  var gainThematic = gainStack.select(['.*_yr_.*']).int16().addBands(gainStack.select(['.*_dur_.*']).byte());
+  var gainContinuous = gainStack.select(['.*_mag_.*','.*_slope_.*']).multiply(10000).int16();
+  gainStack = gainThematic.addBands(gainContinuous);
+  
+  if(addToMap){
+    var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+    var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
+
+    var lossMagPalette = 'F5DEB3,D00';
+    var gainMagPalette = 'F5DEB3,006400';
+
+    var changeDurationPalette = 'BD1600,E2F400,0C2780';
+    
+    //Set up viz params
+    var vizParamsLossYear = {'min':startYear,'max':endYear,'palette':lossYearPalette};
+    var vizParamsLossMag = {'min':-0.8*10000 ,'max':lossMagThresh*10000,'palette':lossMagPalette};
+    
+    var vizParamsGainYear = {'min':startYear,'max':endYear,'palette':gainYearPalette};
+    var vizParamsGainMag = {'min':gainMagThresh*10000,'max':0.8*10000,'palette':gainMagPalette};
+    
+    var vizParamsDuration = {'min':1,'max':5,'palette':changeDurationPalette};
+  
+    // Map.addLayer(lt,{},'Raw LT',false);
+    // Map.addLayer(joinedTS,{},'Time Series',false);
+  
+    ee.List.sequence(1,howManyToPull).getInfo().map(function(i){
+     
+      var lossStackI = lossStack.select(['.*_'+i.toString()]);
+      var gainStackI = gainStack.select(['.*_'+i.toString()]);
+      
+      Map2.addLayer(lossStackI.select(['loss_yr.*']),vizParamsLossYear,i.toString()+' '+indexName +' Loss Year',false);
+      Map2.addLayer(lossStackI.select(['loss_mag.*']),vizParamsLossMag,i.toString()+' '+indexName +' Loss Magnitude',false);
+      Map2.addLayer(lossStackI.select(['loss_dur.*']),vizParamsDuration,i.toString()+' '+indexName +' Loss Duration',false);
+      
+      Map2.addLayer(gainStackI.select(['gain_yr.*']),vizParamsGainYear,i.toString()+' '+indexName +' Gain Year',false);
+      Map2.addLayer(gainStackI.select(['gain_mag.*']),vizParamsGainMag,i.toString()+' '+indexName +' Gain Magnitude',false);
+      Map2.addLayer(gainStackI.select(['gain_dur.*']),vizParamsDuration,i.toString()+' '+indexName +' Gain Duration',false);
+    });
+  }
+  // var outStack = lossStack.addBands(gainStack);
+  
+  // //Add indexName to bandnames
+  // var bns = outStack.bandNames();
+  // var outBns = bns.map(function(bn){return ee.String(indexName).cat('_LT_').cat(bn)});
+  // outStack = outStack.select(bns,outBns);
+  
+  // return [rawLt,outStack];
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   var aoi = eeBoundsPoly;
-  //Define the LandTrendr run parameters as a dictionary. See the parameters section for definitions. Note that the image collection will be appended to this dictionary in a later step.
-  var run_params = { 
-    maxSegments:            6,
-    spikeThreshold:         0.9,
-    vertexCountOvershoot:   3,
-    preventOneYearRecovery: true,
-    recoveryThreshold:      0.25,
-    pvalThreshold:          0.05,
-    bestModelProportion:    0.75,
-    minObservationsNeeded:  6
-  };
-  //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
-  for(var year = startYear; year <= endYear; year++) {
-    var l5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+
+
+   var l5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
                 .filterBounds(aoi)
-                .filter(ee.Filter.calendarRange(year-1,year+1,'year'))
-                .filter(ee.Filter.calendarRange(190,250))
-                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp', 'swir2','pixel_qa']);
+                .filter(ee.Filter.calendarRange(startYear-1,endYear+1,'year'))
+                .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
     var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
                 .filterBounds(aoi)
-                .filter(ee.Filter.calendarRange(year-1,year+1,'year'))
-                .filter(ee.Filter.calendarRange(190,250))
-                .select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp', 'swir2','pixel_qa']);
-    var img = l5.merge(l8);
-    if(applyFmaskCloud === 'yes'){
-      img = img.map(cFmaskCloud);
-    }
-    if(applyFmaskCloudShadow === 'yes'){
-      img = img.map(cFmaskCloudShadow)
-    }
+                .filter(ee.Filter.calendarRange(startYear-1,endYear+1,'year'))
+                .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
+    var imgs = l5.merge(l8);
+
+    imgs = imgs.map(function(img){
+      var out =img.multiply( ee.Image([0.0001,0.0001,0.0001,0.0001,0.0001,0.1,0.0001,1]));
+      out  = out.copyProperties(img,['system:time_start']);
+      return out;
+    });
+     
+    Object.keys(whichCloudMasks).map(function(k){
+      if(whichCloudMasks[k]){
+        if(k  === 'cloudScore'){
+          console.log('applying cloudScore');
+          imgs = imgs.map(applyLandsatCloudScore);
+        }
+        else if(k  === 'fMask-Cloud'){
+          console.log('applying Fmask cloud');
+          imgs = imgs.map(cFmaskCloud);
+        }
+        else if(k  === 'fMask-Cloud-Shadow'){
+          console.log('applying Fmask cloud shadow');
+          imgs = imgs.map(cFmaskCloudShadow)
+        }
+      }
+    })
     
-    img = img.map(simpleAddIndices).median().set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
+
+    
+    imgs = imgs.map(simpleAddIndices).map(simpleGetTasseledCap).map(simpleAddTCAngles)
+    var dummyImage = ee.Image(imgs.first());
+  //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
+  for(var year = startYear; year <= endYear; year++) {
+      var imgsT = imgs.filter(ee.Filter.calendarRange(year-1,year+1,'year'));
+      imgsT = fillEmptyCollections(imgsT,dummyImage);
+      var img = imgsT.median().set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
   
     // print(year);
     if(year%5 ==0 || year === startYear || year === endYear){
-      Map2.addLayer(img,{min:500,max:3500,bands:'swir1,nir,red'},'Composite '+year.toString(),false);
+      Map2.addLayer(img,{min:0.05,max:0.35,bands:'swir1,nir,red'},'Composite '+year.toString(),false);
     }
-    
+    Map2.addExport(img.select(['blue','green','red','nir','swir1','swir2']).multiply(10000).int16(),'Landsat_Composite_'+year.toString() ,30,false,{});
     var tempCollection = ee.ImageCollection([img]);         
 
     if(year == startYear) {
@@ -1238,18 +1713,53 @@ function runLT(){
     }
   };
   srCollection = srCollection.map(addYearBand);
-  chartCollection = srCollection.select(['NBR','NDVI'])
-
-  var trendIndices = ['NBR'];
-  trendIndices.map(function(index){
-    var trend = srCollection.select(['year',index]).reduce(ee.Reducer.linearFit()).select([0]);
-    Map2.addLayer(trend,{min:-0.05,max:0.05,palette:'F00,888,00F'},index+' Linear Trend '+startYear.toString() + ' ' + endYear.toString(),false);
-    var classes = ee.Image(0);
-    classes = classes.where(trend.lte(-0.01),1)
-    classes = classes.where(trend.gte(0.01),2)
-    classes = classes.mask(classes.neq(0))
-    Map2.addLayer(classes,{min:1,max:2,palette:'F00,0F0',addToClassLegend:true,classLegendDict: {'Loss':'F00','Gain':'0F0'}},index+' Change Category '+startYear.toString() + ' ' + endYear.toString(),false)
+  
+  // print(ee.Image(srCollection.first()).bandNames().getInfo())
+  var indexList = [];
+  Object.keys(whichIndices).map(function(index){
+    if(whichIndices[index]){
+      var trendName = index+' Linear Trend '+startYear.toString() + '-' + endYear.toString();
+      indexList.push(index);
+      var trend = srCollection.select(['year',index]).reduce(ee.Reducer.linearFit()).select([0]);
+      Map2.addExport(trend.multiply(10000).int16(),trendName ,30,true,{});
+    
+      Map2.addLayer(trend,{min:-0.05,max:0.05,palette:'F00,888,00F'},trendName,false);
+      var classes = ee.Image(0);
+      classes = classes.where(trend.lte(-0.005),1)
+      classes = classes.where(trend.gte(0.005),2)
+      classes = classes.mask(classes.neq(0))
+      Map2.addLayer(classes,{min:1,max:2,palette:'F00,0F0',addToClassLegend:true,classLegendDict: {'Loss':'F00','Gain':'0F0'}},index+' Change Category '+startYear.toString() + '-' + endYear.toString(),false)
+    
+    }
+    chartCollection = srCollection.select(indexList)
+  
   })
+
+  var indexName = 'NBR'
+  simpleLANDTRENDR(srCollection,startYear,endYear,indexName)
+  // var distDir = -1;
+  // 
+  // var ts = srCollection.select([indexName]);
+  // ts = ts.map(function(img){return multBands(img,-1,1)});
+  // run_params.timeSeries = ts; 
+  // var lt = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
+
+  // //Convert to collection
+  // var rawLT = lt.select([0]);
+  // var ltYear = rawLT.arraySlice(0,0,1).arrayProject([1]);
+  // var ltFitted = rawLT.arraySlice(0,2,3).arrayProject([1]);
+  // if(distDir === -1){
+  //   ltFitted = ltFitted.multiply(-1);
+  // }
+  // fittedCollection = arrayToTimeSeries(ltFitted,ltYear,ee.List.sequence(startYear,endYear),'LT_Fitted_'+indexName);
+
+  // var lossGainDict = convertToLossGain(lt, 'rawLandTrendr');
+  // var lossStack = lossGainDict.lossStack;
+  // var gainStack = lossGainDict.gainStack;
+
+  // print(lossStack.getInfo());
+  // chartCollection = joinCollections(srCollection.select([indexName]),fittedCollection,false);
+  // console.log(fittedCollection.getInfo());
   // print(srCollection.getInfo());
 // Append the image collection to the LandTrendr run parameter dictionary
 // run_params.timeSeries = srCollection;

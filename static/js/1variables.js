@@ -6,12 +6,15 @@ var upperThresholdRecovery = 1.0;
 var studyAreaName = 'BTNF';
 var startYear = 1985;
 var endYear = 2019;
+var startJulian = 190;
+var endJulian = 250;
 var layerObj = null;
 var queryObj = {};
 var initialCenter = [43.4,-111];
 var initialZoomLevel = 8;
 var cachedStudyAreaName = null;
-var studyAreaDict = {'Flathead National Forest':{
+var studyAreaDict = {
+                  'Flathead National Forest':{
                                                 name:'FNF',
                                                 center:[48.16,-115.08,8],
                                                 crs:'EPSG:26911',
@@ -53,15 +56,15 @@ var studyAreaDict = {'Flathead National Forest':{
                                                 startYear:1985,
                                                 endYear:2019,
                                             	popOver:"Chugach National Forest - Kenai Peninsula"},
-                  // 'Science Team CONUS':{
-                  //                               name:'CONUS',
-                  //                               center:[37.5334105816903,-105.6787109375,5],
-                  //                               crs:'EPSG:5070',
-                  //                               lossThresh:0.30,
-                  //                               gainThresh:0.30,
-                  //                               startYear:1985,
-                  //                               endYear:2017,
-                  //                           	popOver:"2018 LCMS Science Team CONUS-wide loss"}
+                  'Science Team CONUS':{
+                                                name:'CONUS',
+                                                center:[37.5334105816903,-105.6787109375,5],
+                                                crs:'EPSG:5070',
+                                                lossThresh:0.30,
+                                                gainThresh:0.30,
+                                                startYear:1985,
+                                                endYear:2017,
+                                            	popOver:"2018 LCMS Science Team CONUS-wide loss"}
                 };
 
 

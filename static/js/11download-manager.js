@@ -31,7 +31,7 @@ function downloadSelectedArea(){
     // link.download = downloadNameAux;
     // link.click();
 
-    showTip('SUCCESS','Your download of ' + downloadName + ' should complete shortly!');
+    showMessage('SUCCESS','Your download of ' + downloadName + ' should complete shortly!');
   }
 }
 function downloadTutorial(){

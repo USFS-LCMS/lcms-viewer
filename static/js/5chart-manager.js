@@ -743,8 +743,9 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 	if(chartType === null || chartType === undefined){chartType = 'line'};
 	if(stacked === null || stacked === undefined){stacked = false};
 	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
+	console.log('starting convert to table')
 	dataTable = dataTableNumbersToNames(dt);
-	
+	console.log('finished convert to table')
 	var h = $(document).height();
 	var w = $(document).width();
 	if(h/w > 1){
@@ -770,7 +771,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
     // console.log(firstColumn)
     var columnN = dt[1].length;
     var columns = range(1,columnN);
-    
+    console.log('starting to convert to chart')
     var datasets = columns.map(function(i){
         var col = arrayColumn(dt,i);
         var label = col[0];
@@ -804,7 +805,8 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 		}
         return out
         // console.log(label);console.log(data)
-    })
+    });
+    console.log('finished to convert to chart')
     chartColorI = 0;
     // console.log(datasets)
     try{
@@ -1163,14 +1165,14 @@ function startPixelChartCollection() {
 				  return v;
 				})
 			}
-			values = values.map(function(v)
-				{return v.map(function(i){
-				if(i === null || i === undefined){return i}
-				else if(i%1!==0){return parseFloat(i.toFixed(4))}
-				else if(i%1==0){return parseInt(i)}
-				else{return i}
-				})
-			});
+			// values = values.map(function(v)
+			// 	{return v.map(function(i){
+			// 	if(i === null || i === undefined){return i}
+			// 	else if(i%1!==0){return parseFloat(i.toFixed(4))}
+			// 	else if(i%1==0){return parseInt(i)}
+			// 	else{return i}
+			// 	})
+			// });
 			values.unshift(header);
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
