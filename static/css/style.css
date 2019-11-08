@@ -506,11 +506,11 @@ input[type=checkbox] + label:before ,input[type=radio] + label:before{
 }
 
 
-input[type=checkbox] + label:before,input[type=radio] + label:before { content: "\f10c"; } /* unchecked icon */
-input[type=checkbox] + label:before,input[type=radio] + label:before { letter-spacing: 0.2em; } /* space between checkbox and label */
+input[type=checkbox] + label:before,input[type=radio].form-check-input + label:before { content: "\f10c"; } /* unchecked icon */
+input[type=checkbox] + label:before,input[type=radio].form-check-input + label:before { letter-spacing: 0.2em; } /* space between checkbox and label */
 
-input[type=checkbox]:checked + label:before,input[type=radio]:checked + label:before { content: "\f111"; color:#00897B;} /* checked icon */
-input[type=checkbox]:checked + label:before,input[type=radio]:checked + label:before { letter-spacing: 0.2em; } /* allow space for check mark */
+input[type=checkbox]:checked + label:before,input[type=radio].form-check-input:checked + label:before { content: "\f111"; color:#00897B;} /* checked icon */
+input[type=checkbox]:checked + label:before,input[type=radio].form-check-input:checked + label:before { letter-spacing: 0.2em; } /* allow space for check mark */
 
 /*///////////////////////////////////////////////////////////*/
 /*Modal styling*/
