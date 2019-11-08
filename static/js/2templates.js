@@ -600,7 +600,7 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     eval(`window.${variable} = []`);
 
     Object.keys(optionList).map(function(k){
-      console.log(k)
+      // console.log(k)
       var checkboxCheckboxID = k + '-checkbox';
       var checkboxLabelID = checkboxCheckboxID + '-label'
       var checked = optionList[k];
@@ -625,7 +625,7 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
 
     eval(`window.${variable} = '';`);
     Object.keys(optionList).map(function(k){
-      console.log(k)
+      // console.log(k)
       var radioCheckboxID = k + '-checkbox';
       var radioLabelID = radioCheckboxID + '-label'
       var checked = optionList[k];
@@ -657,7 +657,26 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 	setUpRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,sliderID+ '-update',mode)
 
 }
-
+function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
+    $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+                                    <div class='dual-range-slider-name py-2'>${title}</div>
+                                    <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
+                                    <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
+                                </div>`);
+    eval(`window.${variable} = ${defaultValue};`);
+    $('#'+sliderID + '-update').html(defaultValue);
+    $("#"+sliderID).slider({
+        min: min,
+        max:max,
+        step: step,
+        value: defaultValue,
+        slide: function(e,ui){
+            eval(`window.${variable} = ${ui.value};`);
+            $('#'+sliderID + '-update').empty();
+            $('#'+sliderID + '-update').html(ui.value);
+        }
+    })
+}
  //////////////////////////////////////////////
 //Functio to add tab to list
 function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
@@ -858,6 +877,7 @@ function incrementGEETileLayersLoading(){
 function decrementGEETileLayersLoading(){
 	geeTileLayersDownloading--;updateGEETileLayersLoading();
 }
+
 function addLayer(layer){
 	// console.log(layer);
 	var id = layer.legendDivID;

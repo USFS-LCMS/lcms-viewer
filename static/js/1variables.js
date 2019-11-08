@@ -56,15 +56,15 @@ var studyAreaDict = {
                                                 startYear:1985,
                                                 endYear:2019,
                                             	popOver:"Chugach National Forest - Kenai Peninsula"},
-                  'Science Team CONUS':{
-                                                name:'CONUS',
-                                                center:[37.5334105816903,-105.6787109375,5],
-                                                crs:'EPSG:5070',
-                                                lossThresh:0.30,
-                                                gainThresh:0.30,
-                                                startYear:1985,
-                                                endYear:2017,
-                                            	popOver:"2018 LCMS Science Team CONUS-wide loss"}
+                  // 'Science Team CONUS':{
+                  //                               name:'CONUS',
+                  //                               center:[37.5334105816903,-105.6787109375,5],
+                  //                               crs:'EPSG:5070',
+                  //                               lossThresh:0.30,
+                  //                               gainThresh:0.30,
+                  //                               startYear:1985,
+                  //                               endYear:2017,
+                  //                           	popOver:"2018 LCMS Science Team CONUS-wide loss"}
                 };
 
 

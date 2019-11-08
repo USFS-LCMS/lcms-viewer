@@ -261,6 +261,7 @@ font-size:0.9em;
     vertical-align:bottom;
     margin-top:0.7rem;
     cursor:pointer;}
+
 .layer-span, .layer-spinner,.layer-container,.toggle_radio,.collapse-title,.nav-item,ul{
   cursor:pointer;
   -webkit-touch-callout: none; /* iOS Safari */

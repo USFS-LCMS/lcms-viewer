@@ -1435,15 +1435,15 @@ function getLTStack(LTresult,maxVertices,bandNames) {
 // Have to apply LandTrendr changeDirection to both Verdet and Landtrendr before applying convertToLossGain()
 function convertToLossGain(ltStack, format, lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, 
                             slowLossDurationThresh, chooseWhichLoss, chooseWhichGain, howManyToPull){
-  if(lossMagThresh === undefined || lossMagThresh === null){lossMagThresh =-0.15}
-  if(lossSlopeThresh === undefined || lossSlopeThresh === null){lossSlopeThresh =-0.1}
-  if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =0.1}
-  if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =0.1}
-  if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
-  if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss ='largest'}
-  if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain ='largest'}
-  if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
-  if(format === undefined || format === null){format = 'raw'}
+  // if(lossMagThresh === undefined || lossMagThresh === null){lossMagThresh =-0.15}
+  // if(lossSlopeThresh === undefined || lossSlopeThresh === null){lossSlopeThresh =-0.1}
+  // if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =0.1}
+  // if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =0.1}
+  // if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
+  // if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss ='largest'}
+  // if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain ='largest'}
+  // if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
+  // if(format === undefined || format === null){format = 'raw'}
   
   if (format == 'rawLandTrendr'){
     print('Converting LandTrendr from raw output to Gain & Loss')
@@ -1546,11 +1546,11 @@ function convertToLossGain(ltStack, format, lossMagThresh, lossSlopeThresh, gain
   //////////////////////////////////////////////////////////////////////////////////
 //Function for running LT, thresholding the segments for both loss and gain, sort them, and convert them to an image stack
 // July 2019 LSC: replaced some parts of workflow with functions in changeDetectionLib
-function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThresh,lossSlopeThresh,gainMagThresh,gainSlopeThresh,slowLossDurationThresh,chooseWhichLoss,chooseWhichGain,addToMap,howManyToPull){
+function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMagThresh,lossSlopeThresh,gainMagThresh,gainSlopeThresh,slowLossDurationThresh,chooseWhichLoss,chooseWhichGain,addToMap,howManyToPull){
   
-  if(indexName === undefined || indexName === null){indexName = 'NBR'}
-  if(run_params === undefined || run_params === null){
-    run_params = {'maxSegments':6,
+  // if(indexName === undefined || indexName === null){indexName = 'NBR'}
+  // if(run_params === undefined || run_params === null){
+    var run_params = {'maxSegments':maxSegments,
       'spikeThreshold':         0.9,
       'vertexCountOvershoot':   3,
       'preventOneYearRecovery': true,
@@ -1559,16 +1559,19 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
       'bestModelProportion':    0.75,
       'minObservationsNeeded':  6
     };
-  }
-  if(lossMagThresh === undefined || lossMagThresh === null){lossMagThresh =-0.15}
-  if(lossSlopeThresh === undefined || lossSlopeThresh === null){lossSlopeThresh =-0.1}
-  if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =0.1}
-  if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =0.1}
-  if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
-  if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss =LTSortBy}
-  if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain =LTSortBy}
-  if(addToMap === undefined || addToMap === null){addToMap =true}
-  if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
+    var addToMap =true;
+    // var howManyToPull =3;
+    var slowLossDurationThresh =3;
+  // }
+  // if(lossMagThresh === undefined || lossMagThresh === null){lossMagThresh =lossMagThresh}
+  // if(lossSlopeThresh === undefined || lossSlopeThresh === null){lossSlopeThresh =lossSlopeThresh}
+  // if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =gainMagThresh}
+  // if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =gainSlopeThresh}
+  // if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
+  // if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss =LTSortBy}
+  // if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain =LTSortBy}
+  // if(addToMap === undefined || addToMap === null){addToMap =true}
+  // if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
   
   var prepDict = prepTimeSeriesForLandTrendr(ts, indexName, run_params);
  
@@ -1587,8 +1590,10 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
   var joinedTS = getRawAndFittedLT(ts, lt, startYear, endYear, indexName, distDir);
   chartCollection= joinedTS.select(['.*'+indexName]);
   // Convert LandTrendr to Loss & Gain space
+  
   var lossGainDict = convertToLossGain(lt, 'rawLandTrendr', lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, 
-                                        slowLossDurationThresh, chooseWhichLoss, chooseWhichGain, howManyToPull)
+                                        slowLossDurationThresh, LTSortBy, LTSortBy, howManyToPull);
+
   var lossStack = lossGainDict.lossStack;
   var gainStack = lossGainDict.gainStack;
 
@@ -1605,7 +1610,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
     var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
     var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
 
-    var lossMagPalette = 'F5DEB3,D00';
+    var lossMagPalette = 'D00,F5DEB3';
     var gainMagPalette = 'F5DEB3,006400';
 
     var changeDurationPalette = 'BD1600,E2F400,0C2780';
@@ -1627,14 +1632,16 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
       var lossStackI = lossStack.select(['.*_'+i.toString()]);
       var gainStackI = gainStack.select(['.*_'+i.toString()]);
       
-      var shouldExport = true;
-      if(i >1){shouldExport = false};
+      var shouldExport = true;var shouldShowLossYear = false;
+      if(i >1){shouldExport = false}
+        else{shouldShowLossYear = true}
+      
 
       var iName = nameDict[i]
       Map2.addExport(lossStackI.int16(),indexName +'_LANDTRENDR_Loss_Stack_'+iName+'_'+LTSortBy+'_change' ,30,shouldExport,{});
       Map2.addExport(gainStackI.int16(),indexName +'_LANDTRENDR_Gain_Stack_'+iName+'_'+LTSortBy+'_change' ,30,shouldExport,{});
 
-      Map2.addLayer(lossStackI.select(['loss_yr.*']),vizParamsLossYear,indexName +' '+iName+ ' '+LTSortBy+' Loss Year',false);
+      Map2.addLayer(lossStackI.select(['loss_yr.*']),vizParamsLossYear,indexName +' '+iName+ ' '+LTSortBy+' Loss Year',shouldShowLossYear);
       Map2.addLayer(lossStackI.select(['loss_mag.*']),vizParamsLossMag,indexName +' '+iName+ ' '+LTSortBy+' Loss Magnitude',false);
       Map2.addLayer(lossStackI.select(['loss_dur.*']),vizParamsDuration,indexName +' '+iName+ ' '+LTSortBy+' Loss Duration',false);
       
@@ -1661,16 +1668,15 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
   ///////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   var aoi = eeBoundsPoly;
-
-
+ 
    var l5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
                 .filterBounds(aoi)
-                .filter(ee.Filter.calendarRange(startYear-1,endYear+1,'year'))
+                .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
     var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
                 .filterBounds(aoi)
-                .filter(ee.Filter.calendarRange(startYear-1,endYear+1,'year'))
+                .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
     var imgs = l5.merge(l8);
@@ -1704,15 +1710,15 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
     var dummyImage = ee.Image(imgs.first());
   //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
   for(var year = startYear; year <= endYear; year++) {
-      var imgsT = imgs.filter(ee.Filter.calendarRange(year-1,year+1,'year'));
+      var imgsT = imgs.filter(ee.Filter.calendarRange(year-yearBuffer,year+yearBuffer,'year'));
       imgsT = fillEmptyCollections(imgsT,dummyImage);
       var img = imgsT.median().set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
-  
+      var nameEnd = (year-yearBuffer).toString() + '-'+ (year+yearBuffer).toString();
     // print(year);
     if(year%5 ==0 || year === startYear || year === endYear){
-      Map2.addLayer(img,{min:0.05,max:0.35,bands:'swir1,nir,red'},'Composite '+year.toString(),false);
+      Map2.addLayer(img,{min:0.05,max:0.35,bands:'swir1,nir,red'},'Composite '+nameEnd,false);
     }
-    Map2.addExport(img.select(['blue','green','red','nir','swir1','swir2']).multiply(10000).int16(),'Landsat_Composite_'+year.toString() ,30,false,{});
+    Map2.addExport(img.select(['blue','green','red','nir','swir1','swir2']).multiply(10000).int16(),'Landsat_Composite_'+ nameEnd,30,false,{});
     var tempCollection = ee.ImageCollection([img]);         
 
     if(year == startYear) {
@@ -1721,6 +1727,15 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
       srCollection = srCollection.merge(tempCollection);
     }
   };
+
+  if(maskWater === 'Yes'){
+    var jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
+
+    jrcWater = jrcWater.updateMask(jrcWater.neq(0)).reproject('EPSG:4326',null,30);
+
+    Map2.addLayer(jrcWater,{min:0,max:1,'palette':'000,00F',addToClassLegend:true,classLegendDict:{'Water 50% time or more 1984-2018':'00F'},queryDict: {1:'Water 50% time or more 1984-2018'}},'JRC Water',false);
+    srCollection = srCollection.map(function(img){return img.updateMask(jrcWater.mask().not())})
+  }
   srCollection = srCollection.map(addYearBand);
   
   // print(ee.Image(srCollection.first()).bandNames().getInfo())
