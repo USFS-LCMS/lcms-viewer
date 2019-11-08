@@ -592,6 +592,7 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 
 	
 }
+ //////////////////////////////////////////
 function addCheckboxes(containerID,checkboxID,title,variable,optionList){
   
     $('#'+containerID).append(`<form  id = '${checkboxID}'>${title}<br></form>`);
@@ -619,6 +620,31 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
                                     });
     })
   }
+  function addMultiRadio(containerID,radioID,title,variable,optionList){
+    $('#'+containerID).append(`<form  id = '${radioID}'>${title}<br></form>`);
+
+    eval(`window.${variable} = '';`);
+    Object.keys(optionList).map(function(k){
+      console.log(k)
+      var radioCheckboxID = k + '-checkbox';
+      var radioLabelID = radioCheckboxID + '-label'
+      var checked = optionList[k];
+      if(checked){
+        checked = 'checked';
+        eval(`window.${variable} = "${k}"`)
+      }else{checked = ''};
+      
+      $('#'+radioID).append(`<div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
+                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
+                            </div>`);
+      $('#'+radioCheckboxID).change( function() {
+                                      var v = $(this).val();
+                                      eval(`window.${variable} = "${v}"`)
+                                    });
+    })
+  }
+  //////////////////////////////////////////
 function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip){
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	

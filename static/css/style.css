@@ -125,8 +125,8 @@ html, body{
   position:absolute;
   z-index:1;
 }
-.search-box{height:1.3em;}
 
+.search-box,.form-control{height:1.5em;}
 
 kbd{border: 1px solid #999;}
 /*///////////////////////////////////////////////////////////*/
@@ -271,6 +271,7 @@ font-size:0.9em;
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }
+
 
 /*///////////////////////////////////////////////////////////*/
 /*Radio toggle styling*/
@@ -495,21 +496,21 @@ font-size:0.9em;
 .dropdown-item{
   padding:0px!important;
 }
-input[type = 'checkbox'],label{
+input[type = 'checkbox'],label,input[type = 'radio']{
                 cursor:pointer;
               }
-input[type=checkbox] { display:none; } /* to hide the checkbox itself */
-input[type=checkbox] + label:before {
+input[type=checkbox],input[type=radio] { display:none; } /* to hide the checkbox itself */
+input[type=checkbox] + label:before ,input[type=radio] + label:before{
   font-family: FontAwesome;
   display: inline-block;
 }
 
 
-input[type=checkbox] + label:before { content: "\f10c"; } /* unchecked icon */
-input[type=checkbox] + label:before { letter-spacing: 0.2em; } /* space between checkbox and label */
+input[type=checkbox] + label:before,input[type=radio] + label:before { content: "\f10c"; } /* unchecked icon */
+input[type=checkbox] + label:before,input[type=radio] + label:before { letter-spacing: 0.2em; } /* space between checkbox and label */
 
-input[type=checkbox]:checked + label:before { content: "\f111"; color:#00897B;} /* checked icon */
-input[type=checkbox]:checked + label:before { letter-spacing: 0.2em; } /* allow space for check mark */
+input[type=checkbox]:checked + label:before,input[type=radio]:checked + label:before { content: "\f111"; color:#00897B;} /* checked icon */
+input[type=checkbox]:checked + label:before,input[type=radio]:checked + label:before { letter-spacing: 0.2em; } /* allow space for check mark */
 
 /*///////////////////////////////////////////////////////////*/
 /*Modal styling*/

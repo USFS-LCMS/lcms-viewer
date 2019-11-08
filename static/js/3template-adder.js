@@ -106,7 +106,10 @@ if(mode === 'LCMS'){
   addCheckboxes('parameters-collapse-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',{'cloudScore':false,'fMask-Cloud':true,'fMask-Cloud-Shadow':true})
   
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-  addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',{'NBR':true,'NDVI':false,'NDMI':false,'NDSI':true,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false})
+  addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',{'NBR':true,'NDVI':false,'NDMI':false,'NDSI':false,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false})
+  
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  addMultiRadio('parameters-collapse-div','lt-sort-radio','Choose method to summarize LANDTRENDR change','LTSortBy',{"largest":true,"steepest":false,"newest":false, "oldest":false,  "shortest":false, "longest":false})
   
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);

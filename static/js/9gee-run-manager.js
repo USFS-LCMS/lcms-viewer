@@ -1510,6 +1510,7 @@ function convertToLossGain(ltStack, format, lossMagThresh, lossSlopeThresh, gain
                     'shortest':[1,1],
                     'longest':[1,-1]
                   };
+
   var gainColumnDict = {'newest':[0,-1],
                     'oldest':[0,1],
                     'largest':[2,-1],
@@ -1519,6 +1520,7 @@ function convertToLossGain(ltStack, format, lossMagThresh, lossSlopeThresh, gain
                     'shortest':[1,1],
                     'longest':[1,-1]
                   };
+
   //Pull the respective column and direction
   var lossSortValue = lossColumnDict[chooseWhichLoss];
   var gainSortValue = gainColumnDict[chooseWhichGain];
@@ -1563,8 +1565,8 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
   if(gainMagThresh === undefined || gainMagThresh === null){gainMagThresh =0.1}
   if(gainSlopeThresh === undefined || gainSlopeThresh === null){gainSlopeThresh =0.1}
   if(slowLossDurationThresh === undefined || slowLossDurationThresh === null){slowLossDurationThresh =3}
-  if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss ='largest'}
-  if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain ='largest'}
+  if(chooseWhichLoss === undefined || chooseWhichLoss === null){chooseWhichLoss =LTSortBy}
+  if(chooseWhichGain === undefined || chooseWhichGain === null){chooseWhichGain =LTSortBy}
   if(addToMap === undefined || addToMap === null){addToMap =true}
   if(howManyToPull === undefined || howManyToPull === null){howManyToPull =2}
   
@@ -1583,7 +1585,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
   
   //Get joined raw and fitted LANDTRENDR for viz
   var joinedTS = getRawAndFittedLT(ts, lt, startYear, endYear, indexName, distDir);
-  
+  chartCollection= joinedTS.select(['.*'+indexName]);
   // Convert LandTrendr to Loss & Gain space
   var lossGainDict = convertToLossGain(lt, 'rawLandTrendr', lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, 
                                         slowLossDurationThresh, chooseWhichLoss, chooseWhichGain, howManyToPull)
@@ -1619,29 +1621,36 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
   
     // Map.addLayer(lt,{},'Raw LT',false);
     // Map.addLayer(joinedTS,{},'Time Series',false);
-  
+    var nameDict = {1:'first',2:'second',3:'third',4:'fourth',5:'fifth'}
     ee.List.sequence(1,howManyToPull).getInfo().map(function(i){
      
       var lossStackI = lossStack.select(['.*_'+i.toString()]);
       var gainStackI = gainStack.select(['.*_'+i.toString()]);
       
-      Map2.addLayer(lossStackI.select(['loss_yr.*']),vizParamsLossYear,i.toString()+' '+indexName +' Loss Year',false);
-      Map2.addLayer(lossStackI.select(['loss_mag.*']),vizParamsLossMag,i.toString()+' '+indexName +' Loss Magnitude',false);
-      Map2.addLayer(lossStackI.select(['loss_dur.*']),vizParamsDuration,i.toString()+' '+indexName +' Loss Duration',false);
+      var shouldExport = true;
+      if(i >1){shouldExport = false};
+
+      var iName = nameDict[i]
+      Map2.addExport(lossStackI.int16(),indexName +'_LANDTRENDR_Loss_Stack_'+iName+'_'+LTSortBy+'_change' ,30,shouldExport,{});
+      Map2.addExport(gainStackI.int16(),indexName +'_LANDTRENDR_Gain_Stack_'+iName+'_'+LTSortBy+'_change' ,30,shouldExport,{});
+
+      Map2.addLayer(lossStackI.select(['loss_yr.*']),vizParamsLossYear,indexName +' '+iName+ ' '+LTSortBy+' Loss Year',false);
+      Map2.addLayer(lossStackI.select(['loss_mag.*']),vizParamsLossMag,indexName +' '+iName+ ' '+LTSortBy+' Loss Magnitude',false);
+      Map2.addLayer(lossStackI.select(['loss_dur.*']),vizParamsDuration,indexName +' '+iName+ ' '+LTSortBy+' Loss Duration',false);
       
-      Map2.addLayer(gainStackI.select(['gain_yr.*']),vizParamsGainYear,i.toString()+' '+indexName +' Gain Year',false);
-      Map2.addLayer(gainStackI.select(['gain_mag.*']),vizParamsGainMag,i.toString()+' '+indexName +' Gain Magnitude',false);
-      Map2.addLayer(gainStackI.select(['gain_dur.*']),vizParamsDuration,i.toString()+' '+indexName +' Gain Duration',false);
+      Map2.addLayer(gainStackI.select(['gain_yr.*']),vizParamsGainYear,indexName +' '+iName+ ' '+LTSortBy+' Gain Year',false);
+      Map2.addLayer(gainStackI.select(['gain_mag.*']),vizParamsGainMag,indexName +' '+iName+ ' '+LTSortBy+' Gain Magnitude',false);
+      Map2.addLayer(gainStackI.select(['gain_dur.*']),vizParamsDuration,indexName +' '+iName+ ' '+LTSortBy+' Gain Duration',false);
     });
   }
-  // var outStack = lossStack.addBands(gainStack);
+  var outStack = lossStack.addBands(gainStack);
   
-  // //Add indexName to bandnames
-  // var bns = outStack.bandNames();
-  // var outBns = bns.map(function(bn){return ee.String(indexName).cat('_LT_').cat(bn)});
-  // outStack = outStack.select(bns,outBns);
+  //Add indexName to bandnames
+  var bns = outStack.bandNames();
+  var outBns = bns.map(function(bn){return ee.String(indexName).cat('_LT_').cat(bn)});
+  outStack = outStack.select(bns,outBns);
   
-  // return [rawLt,outStack];
+  return [rawLt,outStack];
 }
 
 
@@ -1718,25 +1727,29 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName, run_params,lossMagThre
   var indexList = [];
   Object.keys(whichIndices).map(function(index){
     if(whichIndices[index]){
-      var trendName = index+' Linear Trend '+startYear.toString() + '-' + endYear.toString();
+      // var trendName = index+' Linear Trend '+startYear.toString() + '-' + endYear.toString();
       indexList.push(index);
-      var trend = srCollection.select(['year',index]).reduce(ee.Reducer.linearFit()).select([0]);
-      Map2.addExport(trend.multiply(10000).int16(),trendName ,30,true,{});
+      // var trend = srCollection.select(['year',index]).reduce(ee.Reducer.linearFit()).select([0]);
+      // Map2.addExport(trend.multiply(10000).int16(),trendName ,30,true,{});
     
-      Map2.addLayer(trend,{min:-0.05,max:0.05,palette:'F00,888,00F'},trendName,false);
-      var classes = ee.Image(0);
-      classes = classes.where(trend.lte(-0.005),1)
-      classes = classes.where(trend.gte(0.005),2)
-      classes = classes.mask(classes.neq(0))
-      Map2.addLayer(classes,{min:1,max:2,palette:'F00,0F0',addToClassLegend:true,classLegendDict: {'Loss':'F00','Gain':'0F0'}},index+' Change Category '+startYear.toString() + '-' + endYear.toString(),false)
+      // Map2.addLayer(trend,{min:-0.05,max:0.05,palette:'F00,888,00F'},trendName,false);
+      // var classes = ee.Image(0);
+      // classes = classes.where(trend.lte(-0.005),1)
+      // classes = classes.where(trend.gte(0.005),2)
+      // classes = classes.mask(classes.neq(0))
+      // Map2.addLayer(classes,{min:1,max:2,palette:'F00,0F0',addToClassLegend:true,classLegendDict: {'Loss':'F00','Gain':'0F0'}},index+' Change Category '+startYear.toString() + '-' + endYear.toString(),false)
     
     }
-    chartCollection = srCollection.select(indexList)
+    // chartCollection = srCollection.select(indexList)
   
   })
 
-  var indexName = 'NBR'
-  simpleLANDTRENDR(srCollection,startYear,endYear,indexName)
+  
+  indexList.map(function(indexName){
+    var LTStack = simpleLANDTRENDR(srCollection,startYear,endYear,indexName)[1];
+    
+  })
+  
   // var distDir = -1;
   // 
   // var ts = srCollection.select([indexName]);
