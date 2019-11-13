@@ -262,10 +262,10 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   var idsCollection = getIDSCollection();
   
   if(studyAreaName === 'CNFKP'){
-    var mtbs_path = 'projects/USFS/LCMS-NFS/AK-Ancillary-Data/MTBS';
+    var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
     var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-163.83922691651176,61.8957471095411],[-143.28412464845243,61.8957471095411],[-143.28412464845243,68.23773785333091],[-163.83922691651176,68.23773785333091],[-163.83922691651176,61.8957471095411]]]};
   } else {
-    var mtbs_path = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/MTBS';
+    var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
      var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-125.75643073529548,24.088884681079445],[-66.54030227863115,24.088884681079445],[-66.54030227863115,49.98575233937072],[-125.75643073529548,49.98575233937072],[-125.75643073529548,24.088884681079445]]]}
   
   }
@@ -282,12 +282,22 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   var mtbsEndYear = endYear;
   if(endYear > 2017){mtbsEndYear = 2017}
 
-  
-  mtbs = ee.ImageCollection(mtbs_path);
+  var mtbsYears = ee.List.sequence(1984,mtbsEndYear);
+  var mtbs = ee.ImageCollection(mtbs_path);
+  mtbs = mtbsYears.map(function(yr){
+    var mtbsYr = mtbs.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+    return mtbsYr.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+  })
+  mtbs = ee.ImageCollection.fromImages(mtbs);
+
+  // var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD').filterBounds(eeBoundsPoly).map(function(f){return f.simplify(100)});
+
+  // console.log(perims.getInfo());
+  // Map2.addLayer(perims,{clickQuery:true},'MTBS Perims',false);
   // var mtbsClientBoundary =ee.Image(mtbs.first()).geometry().bounds(1000).getInfo();
  // print(mtbsClientBoundary)
   mtbs = mtbs.filter(ee.Filter.calendarRange(startYear,mtbsEndYear,'year'))
-      .map(function(img){return img.selfMask()});
+      
   
   mtbs = mtbs.map(function(img){return img.select([0],['burnSeverity']).byte()
     // .updateMask(img.neq(0).and(img.neq(6)))

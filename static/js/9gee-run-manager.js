@@ -791,13 +791,33 @@ function runCONUS(){
   //Bring in reference data
   getHansen();
   getMTBSandIDS(studyAreaName);
+
+
+
+  
    var lossProb = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/vCONUS-2019-1').map(function(img){return img.unmask()})
       .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
       .map(function(img){return img.rename(['Loss Probability'])})
       .map(function(img){return ee.Image(multBands(img,1,[0.01])).float()});
-   var dndThresh = thresholdChange(lossProb,lowerThresholdDecline,upperThresholdDecline, 1);
+    
    
-    var clientBoundary = dndThresh.geometry().bounds(1000).getInfo();
+    var clientBoundary = lossProb.geometry().bounds(1000).getInfo();
+
+
+    if(applyTreeMask === 'yes'){
+      console.log('Applying tree mask');
+      var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask');
+      var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
+      Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:0,max:3,palette:'a1a1a1,32681e,ffb88c,97ffff',addToClassLegend:true,classLegendDict:{'Tree':'32681e','Woody Wetland':'97ffff','Shrub':'ffb88c','Other':'a1a1a1'},queryDict:forestMaskQueryDict},'Landcover Mask Classes',false,null,null,'Landcover classes of 3 or more years. Any pixel that was tree 3 or more years is tree. Remaining pixels, any pixel that was woody wetland 3 or more years is woody wetland. Remaining pixels, any pixel that was shrub 3 or more years is shrub.  Remaining pixels are other. Both tree and woodywetland classes are included in the tree mask.');
+      treeMask = treeMask.eq(1).or(treeMask.eq(3)).selfMask();
+      var treeClassLegendDict = {};
+      treeClassLegendDict['Tree (3 or more years)'] = '32681e';
+
+      // Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for 3 or more years');
+      lossProb = lossProb.map(function(img){return img.updateMask(treeMask)})
+    }
+
+    var dndThresh = thresholdChange(lossProb,lowerThresholdDecline,upperThresholdDecline, 1);
   if(summaryMethod === 'year'){
     var dndThreshOut = dndThresh.qualityMosaic('Loss Probability_change_year');//.qualityMosaic('Decline_change');
     
@@ -894,6 +914,17 @@ function runSimple(){
   Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false)
   
   var nlcd = ee.ImageCollection('USGS/NLCD');
+
+
+  var nlcdLCMS  = ee.ImageCollection('users/yang/CONUS_NLCD2016');
+
+  function getYear(img){
+    var yr = img.id().split('_').get(-1);
+    img = img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(yr),6,1).millis());
+    return img;
+  }
+  nlcdLCMS = nlcdLCMS.map(getYear);
+
 
   var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
   var nlcdLCMin = 0;//parseInt(nlcd.get('system:visualization_0_min').getInfo());
@@ -1110,6 +1141,7 @@ var idsCollection = getIDSCollection().select([0,1,2,3]);
 annualPDSI = batchFillCollection(annualPDSI,years).map(setSameDate);  
 idsCollection = batchFillCollection(idsCollection,years).map(setSameDate);  
 nlcdLC = batchFillCollection(nlcdLC,years).map(setSameDate);
+nlcdLCMS = batchFillCollection(nlcdLCMS,years)
 mtbs = batchFillCollection(mtbs,years).map(setSameDate);
 cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
@@ -1119,6 +1151,7 @@ var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), cdl.s
 forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
 forCharting  = joinCollections(forCharting,idsCollection, false);
 forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover']), false);
+forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
 forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
 forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
 
@@ -1133,6 +1166,7 @@ var chartTableDict = {
   'IDS Defol DCA':dca_codes,
   'MTBS Burn Severity':mtbsQueryClassDict,
   'NLCD Landcover':nlcdLCQueryDict,
+  'NLCD LCMS Landcover':nlcdLCQueryDict,
   'Cropland Data':cdlQueryDict,
   'PDSI':pdsiDict
 }
@@ -1664,11 +1698,33 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 
 //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
+  var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6').select(['lossyear']).selfMask().add(2000);
+  Map2.addLayer(hansen,{min:1985,max:2018,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},'Hansen Forest Loss',false);
+
+  
+  //Bring in CONUS ccdc
+  // var ccdc = ee.ImageCollection('projects/CCDC/USA')
+            // .filterBounds(geometry)
+            // .mosaic();
+  // console.log(ccdc.getInfo());
+  // Map.addLayer(ccdc.select('.*tStart').divide(365.25))
+  // Map.addLayer(ccdc.select('.*tEnd').divide(365.25))
+  // ee.List.sequence(1,3).getInfo().map(function(i){
+  //   i = i.toString();
+  //   ['tStart','tEnd'].map(function(ending){
+  //     var v = ccdc.select(['S'+i+'_.*'+ending]).divide(365.25);
+  //     var vMin = ccdc.select(['.*'+ending]).reduce(ee.Reducer.min()).divide(365.25);
+  //     var vMax = ccdc.select(['.*'+ending]).reduce(ee.Reducer.max()).divide(365.25);
+      
+  //     v = v.updateMask(v.gt(vMin).and(v.lt(vMax)).and(forestMask))
+  //     Map2.addLayer(v,{min:1985,max:2018,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},ending + ' '+i,false);
+  //   })
+  // })
   ////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   var aoi = eeBoundsPoly;
- 
+    
    var l5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
                 .filterBounds(aoi)
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))

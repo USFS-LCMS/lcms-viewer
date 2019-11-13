@@ -950,6 +950,12 @@ function addLayer(layer){
 			};
 		}
 	}
+    function loadFailure(){
+        console.log('GEE Tile Service request failed for '+layer.name);
+        $('#'+containerID).css('background-color','red');
+        $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
+        // getGEEMapService();
+    }
 	function checkFunction(){
 		if(layer.layerType === 'dynamicMapService'){
 			if(layer.visible){
@@ -1066,10 +1072,7 @@ function addLayer(layer){
             
             if(layer.currentGEERunID === geeRunID){
                 if(eeLayer === undefined){
-                    console.log('GEE Tile Service request failed for '+layer.name);
-                    $('#'+containerID).css('background-color','red');
-                    $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
-                    // getGEEMapService();
+                    loadFailure();
                 }
                 else{
                     var MAPID = eeLayer.mapid;
@@ -1134,32 +1137,35 @@ function addLayer(layer){
 	}else if(layer.layerType === 'geeVector' || layer.layerType === 'geoJSONVector'){
 		incrementOutstandingGEERequests();
 		function addGeoJsonToMap(v){
-			
 			decrementOutstandingGEERequests();
 			
 			$('#' + spinnerID).hide();
 			$('#' + visibleLabelID).show();
 
 			if(layer.currentGEERunID === geeRunID){
+                if(v === undefined){loadFailure()}
 				layer.layer = new google.maps.Data();
 		        layer.layer.setStyle(layer.viz);
 		      
 		      	layer.layer.addGeoJson(v);
-		  //     	layer.layer.addListener('click', function(event) {
-    // 				// console.log(event);
-    // 				infowindow.setPosition(event.latLng);
-    // 				var infoContent = `<table class="table table-hover bg-white">
-				// 	    <tbody>`
-				// 	var info = event.feature.h;
-				// 	Object.keys(info).map(function(name){
-				// 		var value = info[name];
-				// 		infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-				// 	});
-				// 	infoContent +=`</tbody></table>`;
-    // 				infowindow.setContent(infoContent);
-	   //        		infowindow.open(map);
-    
-				// })
+                if(layer.viz.clickQuery){
+                    layer.layer.addListener('click', function(event) {
+                        console.log(event);
+                        infowindow.setPosition(event.latLng);
+                        var infoContent = `<table class="table table-hover bg-white">
+                            <tbody>`
+                        var info = event.feature.h;
+                        Object.keys(info).map(function(name){
+                            var value = info[name];
+                            infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                        });
+                        infoContent +=`</tbody></table>`;
+                        infowindow.setContent(infoContent);
+                        infowindow.open(map);
+        
+                    })  
+                }
+		      	
 				
 		      	featureObj[layer.name] = layer.layer
 		      	// console.log(this.viz);
