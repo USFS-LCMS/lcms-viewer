@@ -989,7 +989,8 @@ function runSimple(){
 //   var naipT = naip.filter(ee.Filter.calendarRange(yr,yr,'year'));
 //   Map2.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
 // });
-getMTBSandIDS('anc','layer-list');  
+var mtbsIDS = getMTBSandIDS('anc','layer-list');  
+var mtbs =mtbsIDS[0];
 var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Freshwater Emergent wetland':'7fc31c',
                     'Freshwater pond': '688cc0',
@@ -1141,7 +1142,7 @@ var idsCollection = getIDSCollection().select([0,1,2,3]);
 annualPDSI = batchFillCollection(annualPDSI,years).map(setSameDate);  
 idsCollection = batchFillCollection(idsCollection,years).map(setSameDate);  
 nlcdLC = batchFillCollection(nlcdLC,years).map(setSameDate);
-nlcdLCMS = batchFillCollection(nlcdLCMS,years)
+// nlcdLCMS = batchFillCollection(nlcdLCMS,years)
 mtbs = batchFillCollection(mtbs,years).map(setSameDate);
 cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
@@ -1151,7 +1152,7 @@ var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), cdl.s
 forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
 forCharting  = joinCollections(forCharting,idsCollection, false);
 forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover']), false);
-forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
+// forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
 forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
 forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
 

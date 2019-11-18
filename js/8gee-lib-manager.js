@@ -341,6 +341,7 @@ if(chartMTBS === true){
 
   Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
   Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  return [mtbs,idsCollection]
 }
 function getHansen(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
