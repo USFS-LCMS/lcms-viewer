@@ -415,6 +415,14 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         viz.addToClassLegend = true;
         
       }
+    }else if(viz.layerType === 'geeVectorImage' ){
+      // if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
+      if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getColor()};
+      if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 2};
+      if(viz.addToClassLegend === undefined || viz.addToClassLegend === null){
+        viz.addToClassLegend = false;viz.addToLegend = false;
+        
+      }
     }
 
 
@@ -1870,11 +1878,12 @@ function initialize() {
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
-    }
-      else if(studyAreaName === 'CONUS'){
-      run = runCONUS
-    }
-    else if(cachedStudyAreaName != null){
+    } else if(mode === 'MTBS'){
+      run = runMTBS;
+    }else if(studyAreaName === 'CONUS'){
+      run = runCONUS;
+    
+    }else if(cachedStudyAreaName != null){
       resetStudyArea(cachedStudyAreaName)
     }
     else{run = runUSFS}

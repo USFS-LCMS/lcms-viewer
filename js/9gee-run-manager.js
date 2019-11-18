@@ -1852,3 +1852,30 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 // var LTresult = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
 
 }
+function runMTBS(){
+  chartMTBS = true;
+  getLCMSVariables();
+
+  var mtbs = getMTBS('anc','layer-list'); 
+
+
+  // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
+  //   var stop = start + 999;
+  //   var nameEnd = start.toString()+'_'+stop.toString();
+  //   fetch('./geojson/mtbs_perims_'+nameEnd+'.json')
+  //   .then((resp) => resp.json()) // Transform the data into json
+  //     .then(function(json) {
+        
+  //       // console.log(json)      
+  //   Map2.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00',clickQuery:true},'MTBS Perims '+nameEnd,true)
+  //     // Create and append the li's to the ul
+  //   })
+  // })
+  var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  // var perimYear = perims.reduceToImage(['Year'], ee.Reducer.first())
+  // var perims = ee.Image().paint(perims,null,2);
+  // Map2.addLayer(perimYear,{min:1984,max:2018,palette:'FF0,F00'},'perims year')
+  Map2.addLayer(perims,{layerType:'geeVectorImage'},'perims')
+  chartCollection =mtbs;
+  populateAreaChartDropdown();
+}

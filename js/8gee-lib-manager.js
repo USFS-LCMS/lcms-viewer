@@ -257,10 +257,7 @@ var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol')
 
   return idsCollection
 }
-function getMTBSandIDS(studyAreaName,whichLayerList){
-  if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
-  var idsCollection = getIDSCollection();
-  
+function getMTBS(studyAreaName,whichLayerList){
   if(studyAreaName === 'CNFKP'){
     var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
     var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-163.83922691651176,61.8957471095411],[-143.28412464845243,61.8957471095411],[-143.28412464845243,68.23773785333091],[-163.83922691651176,68.23773785333091],[-163.83922691651176,61.8957471095411]]]};
@@ -269,16 +266,6 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
      var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-125.75643073529548,24.088884681079445],[-66.54030227863115,24.088884681079445],[-66.54030227863115,49.98575233937072],[-125.75643073529548,49.98575233937072],[-125.75643073529548,24.088884681079445]]]}
   
   }
-
-  // var ned = ee.Image('USGS/NED');
-  // var hillshade = ee.Terrain.hillshade(ned);
-  // Map2.addLayer(hillshade,{min:0,max:255},'hillshade')
-  var nlcd = ee.ImageCollection('USGS/NLCD');
-  // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
-  var tcc = nlcd.filter(ee.Filter.calendarRange(2011,2011,'year')).select(['percent_tree_cover']).mosaic();
-  // tcc = tcc.mask(tcc.neq(0));
-  Map2.addLayer(tcc,{min:10,max:70,palette:'000,2d7d1f'},'NLCD Tree Canopy Cover 2011',false,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
-
   var mtbsEndYear = endYear;
   if(endYear > 2017){mtbsEndYear = 2017}
 
@@ -320,27 +307,53 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   var keyI = 1;
   Object.keys(mtbsClassDict).map(function(k){mtbsQueryClassDict[keyI] =k;keyI++;})
 
-if(chartMTBS === true){
-  var mtbsStack = formatAreaChartCollection(mtbs,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
-  areaChartCollections['mtbs'] = {'collection':mtbsStack,
-                                'colors':Object.values(mtbsClassDict),
-                                'label':'MTBS Severity',
-                                'stacked':true,
-                                'steppedLine':false,
-                                'chartType':'bar'}
-}
+  if(chartMTBS === true){
+    var mtbsStack = formatAreaChartCollection(mtbs,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+    areaChartCollections['mtbs'] = {'collection':mtbsStack,
+                                  'colors':Object.values(mtbsClassDict),
+                                  'label':'MTBS Severity',
+                                  'stacked':true,
+                                  'steppedLine':false,
+                                  'chartType':'bar'}
+  }
 
 // print(mtbsStack.getInfo());
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
+  Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
+  Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  return mtbs;
+}
+function getMTBSandIDS(studyAreaName,whichLayerList){
+  if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
+  var idsCollection = getIDSCollection();
+  if(studyAreaName === 'CNFKP'){
+    var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
+    var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-163.83922691651176,61.8957471095411],[-143.28412464845243,61.8957471095411],[-143.28412464845243,68.23773785333091],[-163.83922691651176,68.23773785333091],[-163.83922691651176,61.8957471095411]]]};
+  } else {
+    var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
+     var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-125.75643073529548,24.088884681079445],[-66.54030227863115,24.088884681079445],[-66.54030227863115,49.98575233937072],[-125.75643073529548,49.98575233937072],[-125.75643073529548,24.088884681079445]]]}
+  
+  }
+  
 
+  // var ned = ee.Image('USGS/NED');
+  // var hillshade = ee.Terrain.hillshade(ned);
+  // Map2.addLayer(hillshade,{min:0,max:255},'hillshade')
+  var nlcd = ee.ImageCollection('USGS/NLCD');
+  // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
+  var tcc = nlcd.filter(ee.Filter.calendarRange(2011,2011,'year')).select(['percent_tree_cover']).mosaic();
+  // tcc = tcc.mask(tcc.neq(0));
+  Map2.addLayer(tcc,{min:10,max:70,palette:'000,2d7d1f'},'NLCD Tree Canopy Cover 2011',false,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
+
+  
+
+  
   Map2.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
   Map2.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
   
   Map2.addLayer(idsCollection.select(['IDS Defol Type']).count().set('bounds',mtbsClientBoundary),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Defoliation Survey Count',false,null,null, 'Number of times an area was recorded as defoliation by the IDS survey',whichLayerList);
   Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
-
-  Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',false,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
-  Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  var mtbs =getMTBS(studyAreaName,whichLayerList)
   return [mtbs,idsCollection]
 }
 function getHansen(whichLayerList){

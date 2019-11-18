@@ -22,6 +22,12 @@ var  titles = {
             rightWords:'Viewer',
             title:'TimeSync Ancillary Data Viewer'
             },
+    'MTBS': {
+            leftWords: 'MTBS',
+            centerWords: 'DATA',
+            rightWords:'Explorer',
+            title:'TimeSync Ancillary Data Viewer'
+            },    
 }
 $('head').append(`<title>${titles[mode].title}</title>`);
 var topBannerParams = titles[mode];
@@ -877,7 +883,7 @@ function incrementGEETileLayersLoading(){
 function decrementGEETileLayersLoading(){
 	geeTileLayersDownloading--;updateGEETileLayersLoading();
 }
-
+ var queryGeoJSON = new google.maps.Data();
 function addLayer(layer){
 	// console.log(layer);
 	var id = layer.legendDivID;
@@ -1058,7 +1064,61 @@ function addLayer(layer){
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
 
-	if(layer.layerType === 'geeImage'){
+	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage'){
+       
+        if(layer.layerType === 'geeVectorImage'){
+          layer.queryVector = layer.item;
+          layer.item = ee.Image().paint(layer.item,null,layer.viz.strokeWeight);
+
+          layer.viz.palette = layer.viz.strokeColor;
+         
+          // layer.viz.opacity = layer.viz.strokeOpacity;
+          // layer.opacity = layer.viz.strokeOpacity;
+          map.addListener('click',function(event){
+            infowindow.setMap(null);
+            queryGeoJSON.setMap(null);
+       
+            var features = layer.queryVector.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+            
+                
+              
+                
+            features.evaluate(function(values){
+
+                queryGeoJSON.addGeoJson(values);
+                queryGeoJSON.setMap(layer.map);
+                var infoContent = `<table class="table table-hover bg-white">
+                            <tbody>`
+                var features = values.features; 
+                var featureI = 1
+                if(features.length > 0){
+                features.map(function(f){
+                    infowindow.setPosition(event.latLng);
+                    
+                        var info = f.properties;
+                        var infoKeys = Object.keys(info);
+                        
+                        infoKeys.map(function(name){
+                            var value = info[name];
+                            infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                        });
+                        
+                        if(featureI < features.length){
+                            infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
+                        }
+                        
+                    featureI ++;
+                });
+                infoContent +=`</tbody></table>`;
+                        infowindow.setContent(infoContent);
+                        infowindow.open(map);
+                }
+            })
+            // var center =point2LatLng(event.latLng.lng(),event.latLng.lat());
+            // console.log(feature.getInfo());
+                        // infowindow.setMap(event);
+            })
+        };
 		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
 		incrementOutstandingGEERequests();
 		
@@ -1149,6 +1209,9 @@ function addLayer(layer){
 		      
 		      	layer.layer.addGeoJson(v);
                 if(layer.viz.clickQuery){
+                    map.addListener('click',function(){
+                        infowindow.setMap(null);
+                    })
                     layer.layer.addListener('click', function(event) {
                         console.log(event);
                         infowindow.setPosition(event.latLng);

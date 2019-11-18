@@ -366,7 +366,7 @@ function getLossGainTable(areaChartCollection,area){
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
-				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
+				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,30,'EPSG:5070',null,true,1e13,2);
 				    var year = ee.Number(ee.Date(img.get('system:time_start')).get('year')).format();
 				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
 				    // var lossT = t.slice(0,2,null);
