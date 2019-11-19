@@ -416,11 +416,15 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         
       }
     }else if(viz.layerType === 'geeVectorImage' ){
-      // if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
+      if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
+      viz.fillOpacity = 0;
+      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222'};
       if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getColor()};
       if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 2};
+      if(viz.fillColor.indexOf('#') == -1){viz.fillColor = '#' + viz.fillColor};
+      if(viz.strokeColor.indexOf('#') == -1){viz.strokeColor = '#' + viz.strokeColor};
       if(viz.addToClassLegend === undefined || viz.addToClassLegend === null){
-        viz.addToClassLegend = false;viz.addToLegend = false;
+        viz.addToClassLegend = true;viz.addToLegend = false;
         
       }
     }
@@ -545,7 +549,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
        // var legendList = document.querySelector("legend-list");
       // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
-      if(viz.layerType !== 'geeVector' && viz.layerType !== 'geoJSONVector'){
+      if(viz.layerType !== 'geeVector' && viz.layerType !== 'geoJSONVector' && viz.layerType !== 'geeVectorImage'){
         var legendKeys = Object.keys(viz.classLegendDict).reverse();
         legendKeys.map(function(lk){
 
@@ -568,6 +572,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         legend.helpBoxMessage = helpBox;
         var strokeColor = viz.strokeColor.slice(1);
         var fillColor = viz.fillColor.slice(1);
+
         if(strokeColor.length === 3){strokeColor =  strokeColor.split('').map(function(i){return i+i}).join().replaceAll(',','')}
         if(fillColor.length === 3){fillColor =  fillColor.split('').map(function(i){return i+i}).join().replaceAll(',','')}
         
@@ -575,6 +580,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         legend.classStrokeColor = strokeColor+ Math.floor(viz.strokeOpacity * 255).toString(16);
         legend.classStrokeWeight = viz.strokeWeight+1;
         legend.className = '';
+   
         addClassLegendEntry(classLegendContainerID,legend)
         // legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
       }
@@ -913,6 +919,7 @@ function reRun(){
     // layerCount = 0;
   exportImageDict = {};
   clearDownloadDropdown();
+  google.maps.event.clearListeners(mapDiv, 'click');
 	run();
   setupFSB();
 
@@ -966,6 +973,30 @@ function padLeft(nr, n, str){
 }
 function rgbToHex(r,g,b) {
     return "#"+("00000"+(r<<16|g<<8|b).toString(16)).slice(-6);
+}
+function invertColor(hex) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    // invert color components
+    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+        g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+        b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+    // pad each with zeros and return
+    return '#' + padZero(r) + padZero(g) + padZero(b);
+}
+
+function padZero(str, len) {
+    len = len || 2;
+    var zeros = new Array(len).join('0');
+    return (zeros + str).slice(-len);
 }
 function randomColor(){
   var r = getRandomInt(100, 255);
@@ -1648,7 +1679,18 @@ function initSearchBox() {
           map.fitBounds(bounds);
         });
       }
-  
+var infoWindowXOffset = 30;
+
+function getInfoWindow(xOffset,yOffset){
+  if(xOffset == null || xOffset === undefined){xOffset = 30};
+  if(yOffset == null || yOffset === undefined){yOffset = -30};
+  return new google.maps.InfoWindow({
+    content : '',
+    maxWidth: 300,
+    pixelOffset: new google.maps.Size(xOffset,yOffset,'rem','rem'),
+    close:false
+  });
+} 
 function initialize() {
   
   var mapOptions = {
@@ -1704,13 +1746,8 @@ function initialize() {
     center:{lat:45,lng:-111},
     radius:5
   });
-
-  infowindow = new google.maps.InfoWindow({
-    content : '',
-    maxWidth: 300,
-    pixelOffset: new google.maps.Size(30,-30,'rem','rem'),
-    close:false
-  });
+  
+  infowindow = getInfoWindow();
 
     initSearchBox();
     

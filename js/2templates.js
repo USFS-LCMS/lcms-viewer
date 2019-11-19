@@ -883,8 +883,9 @@ function incrementGEETileLayersLoading(){
 function decrementGEETileLayersLoading(){
 	geeTileLayersDownloading--;updateGEETileLayersLoading();
 }
- var queryGeoJSON = new google.maps.Data();
+
 function addLayer(layer){
+
 	// console.log(layer);
 	var id = layer.legendDivID;
 	var containerID = id + '-container-'+layer.ID;
@@ -902,7 +903,8 @@ function addLayer(layer){
 								            <label  id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for layer service from Google Earth Engine'></i>
 								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
-								            
+								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-question fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
+                                            
 								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
 								       </li>`);
 	$("#"+opacityID).slider({
@@ -1035,7 +1037,10 @@ function addLayer(layer){
         console.log('visible: ' +layer.visible);
         console.log('opacity: '+layer.opacity);
         layerObj[layer.name] = [layer.visible,layer.opacity];
-       
+       if(layer.layerType === 'geeVectorImage'){
+            layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
+            layer.infoWindow.setMap(null);
+        }
 	}
 
 	$("#"+ opacityID).val(layer.opacity * 100);
@@ -1067,56 +1072,56 @@ function addLayer(layer){
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage'){
        
         if(layer.layerType === 'geeVectorImage'){
-          layer.queryVector = layer.item;
-          layer.item = ee.Image().paint(layer.item,null,layer.viz.strokeWeight);
+            layer.queryGeoJSON = new google.maps.Data();
+            layer.queryGeoJSON.setMap(layer.map);
+            layer.infoWindow = getInfoWindow(infoWindowXOffset);
+            // infoWindowXOffset += 30;
+            layer.queryGeoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
+            layer.queryVector = layer.item;
+            layer.item = ee.Image().paint(layer.item,null,layer.viz.strokeWeight);
 
-          layer.viz.palette = layer.viz.strokeColor;
+            layer.viz.palette = layer.viz.strokeColor;
          
-          // layer.viz.opacity = layer.viz.strokeOpacity;
-          // layer.opacity = layer.viz.strokeOpacity;
-          map.addListener('click',function(event){
-            infowindow.setMap(null);
-            queryGeoJSON.setMap(null);
-       
-            var features = layer.queryVector.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
-            
-                
-              
-                
-            features.evaluate(function(values){
+          
+            map.addListener('click',function(event){
+                layer.infoWindow.setMap(null);
+                if(layer.visible){
+                    $('#'+spinnerID + '3').show();
+                    layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
-                queryGeoJSON.addGeoJson(values);
-                queryGeoJSON.setMap(layer.map);
-                var infoContent = `<table class="table table-hover bg-white">
-                            <tbody>`
-                var features = values.features; 
-                var featureI = 1
-                if(features.length > 0){
-                features.map(function(f){
-                    infowindow.setPosition(event.latLng);
+                    var features = layer.queryVector.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
                     
-                        var info = f.properties;
-                        var infoKeys = Object.keys(info);
-                        
-                        infoKeys.map(function(name){
-                            var value = info[name];
-                            infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                    features.evaluate(function(values){
+                        layer.queryGeoJSON.addGeoJson(values);
+                    
+                        var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
+                        var features = values.features; 
+                        var featureI = 1
+                        if(features.length > 0){
+                            layer.infoWindow.setPosition(event.latLng);
+                            features.map(function(f){
+                            var info = f.properties;
+                            var infoKeys = Object.keys(info);
+                            
+                            infoKeys.map(function(name){
+                                var value = info[name];
+                                infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                            });
+                            
+                            if(featureI < features.length){
+                                infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
+                            }
+                            
+                            featureI ++;
                         });
-                        
-                        if(featureI < features.length){
-                            infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
+                        infoContent +=`</tbody></table>`;
+                            layer.infoWindow.setContent(infoContent);
+                            layer.infoWindow.open(map);
+
                         }
-                        
-                    featureI ++;
-                });
-                infoContent +=`</tbody></table>`;
-                        infowindow.setContent(infoContent);
-                        infowindow.open(map);
+                        $('#'+spinnerID + '3').hide();
+                    })
                 }
-            })
-            // var center =point2LatLng(event.latLng.lng(),event.latLng.lat());
-            // console.log(feature.getInfo());
-                        // infowindow.setMap(event);
             })
         };
 		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
