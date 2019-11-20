@@ -245,14 +245,32 @@ uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
                         <button class = 'btn' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Summarize across chosen file</button>
                         <div class = 'dropdown-divider'></div>`,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
-selectAreaChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
+selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                     <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
                     <div class = 'dropdown-divider'></div>`,
-selectAreaChartTip : 'Select from pre-defined areas to summarize products across.'
+selectAreaDropdownChartTip : 'Select from pre-defined areas to summarize products across.',
+selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map to select areas to include in chart</div>
+                                <div class = 'dropdown-divider'></div>
+                                <div id="area-charting-select-layer-list"></div>
+                                <div class = 'dropdown-divider'></div>
+                                <button class = 'btn' onclick = 'clearSelectedAreas()'>Clear Selected Areas</button>
+                                <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
+selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.'
 
 
 
         
+}
+function clearSelectedAreas(){
+    $('.selected-features-list').empty();
+    selectedFeatures = undefined;
+}
+function chartSelectedAreas(){
+    
+    Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
+    // console.log(selectedFeatures);
+    // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
+    makeAreaChart(selectedFeatures,'Selected Areas',false)
 }
 
 // .replaceAll(`<kbd>`,'')
@@ -894,6 +912,7 @@ function addLayer(layer){
 	var spanID = id + '-span-'+layer.ID;
 	var visibleLabelID = visibleID + '-label-'+layer.ID;
 	var spinnerID = id + '-spinner-'+layer.ID;
+    var selectionID = id + '-selection-list-'+layer.ID;
 	var checked = '';
 	if(layer.visible){checked = 'checked'}
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
@@ -1004,7 +1023,7 @@ function addLayer(layer){
                 if(layer.isTileMapService){layer.percent = 100;updateProgress();}
                 layer.layer.setOpacity(layer.opacity); 
 				}
-			if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' ){
+			if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
              queryObj[layer.name].visible = layer.visible;
 			}
                    
@@ -1037,9 +1056,11 @@ function addLayer(layer){
         console.log('visible: ' +layer.visible);
         console.log('opacity: '+layer.opacity);
         layerObj[layer.name] = [layer.visible,layer.opacity];
-       if(layer.layerType === 'geeVectorImage'){
-            layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
-            layer.infoWindow.setMap(null);
+        if(layer.layerType === 'geeVectorImage' && layer.viz.isSelectLayer){
+       //      layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
+            if(layer.visible){
+                layer.queryGeoJSON.setMap(layer.map);
+            }else{layer.queryGeoJSON.setMap(null)};
         }
 	}
 
@@ -1072,59 +1093,84 @@ function addLayer(layer){
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage'){
        
         if(layer.layerType === 'geeVectorImage'){
-            layer.queryGeoJSON = new google.maps.Data();
-            layer.queryGeoJSON.setMap(layer.map);
-            layer.infoWindow = getInfoWindow(infoWindowXOffset);
-            // infoWindowXOffset += 30;
-            layer.queryGeoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
-            layer.queryVector = layer.item;
+            if(layer.viz.isSelectLayer){
+                $('#'+visibleLabelID).addClass('select-layer-checkbox')
+                layer.queryGeoJSON = new google.maps.Data();
+                layer.queryGeoJSON.setMap(layer.map);
+                // layer.infoWindow = getInfoWindow(infoWindowXOffset);
+                // infoWindowXOffset += 30;
+                layer.queryGeoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
+                // layer.queryVector = layer.item;  
+            }
+            
+            layer.queryItem = layer.item;
             layer.item = ee.Image().paint(layer.item,null,layer.viz.strokeWeight);
 
             layer.viz.palette = layer.viz.strokeColor;
-         
-          
-            map.addListener('click',function(event){
-                layer.infoWindow.setMap(null);
-                if(layer.visible){
-                    $('#'+spinnerID + '3').show();
-                    layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
+            $('#'+containerID).append(`<div>Selected areas:</div>
+                                        <li class = 'selected-features-list' id = '${selectionID}'></li>`)
+            if(layer.viz.isSelectLayer){
+                map.addListener('click',function(event){
+                //     layer.infoWindow.setMap(null);
+                    if(layer.visible){
+                        $('#'+spinnerID + '3').show();
+                        // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
-                    var features = layer.queryVector.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
-                    
-                    features.evaluate(function(values){
-                        layer.queryGeoJSON.addGeoJson(values);
-                    
-                        var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
-                        var features = values.features; 
-                        var featureI = 1
-                        if(features.length > 0){
-                            layer.infoWindow.setPosition(event.latLng);
+                        var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+                        if(selectedFeatures === undefined){selectedFeatures = features}
+                            else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
+                        
+                        features.evaluate(function(values){
+                            console.log(values)
+                            layer.queryGeoJSON.addGeoJson(values);
+                        
+                //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
+                            var features = values.features;
+                          
+                            var name;
                             features.map(function(f){
-                            var info = f.properties;
-                            var infoKeys = Object.keys(info);
-                            
-                            infoKeys.map(function(name){
-                                var value = info[name];
-                                infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-                            });
-                            
-                            if(featureI < features.length){
-                                infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
+                                // selectedFeatures.features.push(f);
+                                Object.keys(f.properties).map(function(p){
+                                    if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
+                                })
+                            })
+                            console.log(name)
+                            if(name !== undefined){
+                                $('#'+selectionID).append(`<ul>${name}</ul>`)
                             }
                             
-                            featureI ++;
-                        });
-                        infoContent +=`</tbody></table>`;
-                            layer.infoWindow.setContent(infoContent);
-                            layer.infoWindow.open(map);
+                //             var featureI = 1
+                //             if(features.length > 0){
+                //                 layer.infoWindow.setPosition(event.latLng);
+                //                 features.map(function(f){
+                //                 var info = f.properties;
+                //                 var infoKeys = Object.keys(info);
+                                
+                //                 infoKeys.map(function(name){
+                //                     var value = info[name];
+                //                     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                //                 });
+                                
+                //                 if(featureI < features.length){
+                //                     infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
+                //                 }
+                                
+                //                 featureI ++;
+                //             });
+                //             infoContent +=`</tbody></table>`;
+                //                 layer.infoWindow.setContent(infoContent);
+                //                 layer.infoWindow.open(map);
 
-                        }
-                        $('#'+spinnerID + '3').hide();
-                    })
-                }
-            })
+                //             }
+                            $('#'+spinnerID + '3').hide();
+                        })
+                    }
+                })
+            }   
         };
-		queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict};
+        if(layer.canQuery){
+          queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType};  
+        }
 		incrementOutstandingGEERequests();
 		
 		// console.log('adding tile map service');

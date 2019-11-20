@@ -6,7 +6,7 @@ function stopAllTools(){
   stopCharting();
   stopAreaCharting();
   stopCharting();
-
+  clearQueryGeoJSON();
   Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){toolFunctions[t][tt]['state'] = false})});
   updateToolStatusBar();
   
@@ -54,8 +54,14 @@ var toolFunctions = {'measuring':
                         'state':false,
                         'title': 'Area Tools-Upload an Area'
                       },
-                      'select':{
-                        'on':'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaChartTip);',
+                      'selectDropdown':{
+                        'on':'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaDropdownChartTip);',
+                        'off':'stopAllTools()',
+                        'state':false,
+                        'title': 'Area Tools-Select an Area'
+                      },
+                      'selectInteractive':{
+                        'on':'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
                         'off':'stopAllTools()',
                         'state':false,
                         'title': 'Area Tools-Select an Area'

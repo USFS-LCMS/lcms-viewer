@@ -295,6 +295,15 @@ function setPlotProjectColor(ID){
   plotElements[plotElements.length-ID].style.outline = '#FFF dotted';
    
 }
+var selectedFeatures;
+function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+  viz.canQuery = false;
+  viz.isSelectLayer = true;
+  // selectLayers[name] = {'item':item,'viz':viz,'features':[]}
+  var id = name.replaceAll(' ','-');
+  addToMap(item,viz,name,visible,label,fontColor,helpBox,'area-charting-select-layer-list',queryItem);
+ 
+}
 
 /////////////////////////////////////
 function addExport(eeImage,name,res,Export,metadataParams){
@@ -472,6 +481,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.helpBox = helpBox;
     layer.legendDivID = legendDivID;
     if(queryItem === null || queryItem === undefined){queryItem = item};
+    if(viz.canQuery === null || viz.canQuery === undefined){viz.canQuery = true};
+    layer.canQuery = viz.canQuery;
     layer.queryItem = queryItem;
     layer.layerType = viz.layerType;
     // layer.isTileMapService = isTileMapService;
@@ -842,6 +853,10 @@ function addFeatureToMap(item,viz,name,visible,label,fontColor,helpBox,whichLaye
 function mp(){
   this.addLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+  };
+  this.addSelectLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+    
   };
   this.addREST = function(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList){
     addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList);
