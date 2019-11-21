@@ -296,6 +296,15 @@ function setPlotProjectColor(ID){
    
 }
 
+function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+  viz.canQuery = false;
+  viz.isSelectLayer = true;
+  // selectLayers[name] = {'item':item,'viz':viz,'features':[]}
+  var id = name.replaceAll(' ','-');
+  addToMap(item,viz,name,visible,label,fontColor,helpBox,'area-charting-select-layer-list',queryItem);
+ 
+}
+
 /////////////////////////////////////
 function addExport(eeImage,name,res,Export,metadataParams){
 
@@ -472,6 +481,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.helpBox = helpBox;
     layer.legendDivID = legendDivID;
     if(queryItem === null || queryItem === undefined){queryItem = item};
+    if(viz.canQuery === null || viz.canQuery === undefined){viz.canQuery = true};
+    layer.canQuery = viz.canQuery;
     layer.queryItem = queryItem;
     layer.layerType = viz.layerType;
     // layer.isTileMapService = isTileMapService;
@@ -843,6 +854,10 @@ function mp(){
   this.addLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
   };
+  this.addSelectLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+    
+  };
   this.addREST = function(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList){
     addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList);
   };
@@ -895,7 +910,9 @@ function reRun(){
   //   upperThresholdRecovery = 1;
   //   summaryMethod = 'year';
   // }
-  ['layer-list','reference-layer-list'].map(function(l){
+  clearSelectedAreas();
+  selectedFeaturesGeoJSON = {};
+  ['layer-list','reference-layer-list','area-charting-select-layer-list'].map(function(l){
     $('#'+l).empty();
     $('#legend-'+l).empty();
   })
@@ -1749,6 +1766,9 @@ function initialize() {
   
   infowindow = getInfoWindow();
 
+  queryGeoJSON = new google.maps.Data();
+  queryGeoJSON.setMap(map);
+  queryGeoJSON.setStyle({strokeColor:'#FF0'});
     initSearchBox();
     
        

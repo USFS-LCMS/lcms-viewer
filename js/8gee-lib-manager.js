@@ -304,6 +304,7 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
     'Increased Greenness':'7fff00',
     'Non-Processing Area Mask':'ffffff'
   }
+
   mtbsQueryClassDict = {};
   var keyI = 1;
   Object.keys(mtbsClassDict).map(function(k){mtbsQueryClassDict[keyI] =k;keyI++;})
@@ -322,7 +323,10 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
   Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',showSeverity,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
   Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
-  return mtbs;
+  var chartTableDict = {
+    'Burn Severity':mtbsQueryClassDict
+  }
+  return mtbs.set('bounds',mtbsClientBoundary).select([0],['Burn Severity']).set('chartTableDict',chartTableDict);
 }
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};

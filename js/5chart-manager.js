@@ -16,7 +16,36 @@ function downloadURI() {
 	  // document.body.removeChild(link);
 	    delete link;
 }}
+function clearSelectedAreas(){
+    $('.selected-features-list').empty();
+    Object.keys(selectedFeaturesGeoJSON).map(function(k){
+        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].remove(f)});
+    })
+    
+    selectedFeatures = undefined;
+    selectedFeaturesNames = undefined;
+}
+function chartSelectedAreas(){
+    
+    // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
+    // console.log(selectedFeatures);
+    // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
+    if(selectedFeatures !== undefined){
+    	var title = $('#user-selected-area-name').val();
+    	if(title === ''){title = selectedFeaturesNames;}
+    	$('#summary-spinner').slideDown();
+        makeAreaChart(selectedFeatures,title + ' ' + mode + ' Summary',true)
+    }else{showMessage('Error!','Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button.')}
+    try{}
+    catch(err){
+        console.log(err);console.log(selectedFeatures.size().getInfo())
+    };
+    
+}
 
+function clearQueryGeoJSON(){
+	queryGeoJSON.forEach(function(f){queryGeoJSON.remove(f)});
+}
 
 var  getQueryImages = function(lng,lat){
 	var lngLat = [lng, lat];
@@ -29,17 +58,69 @@ var  getQueryImages = function(lng,lat){
 	
 
 	var queryContent =`<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
-						<table class="table table-hover bg-white">
-					    <thead>
-					      <tr>
-					        <th>Layer Name</th>
-					        <th>Value</th>
-					      </tr>
-					    </thead>
-					    <tbody>`
+						<table class="table table-hover bg-white"><tbody>`
 	 
 
 	var queryLine = '<h6>Queried values for lng: '+lng.toFixed(3).toString() + ' lat: '+lat.toFixed(3).toString()+ '</h6>';
+
+	function makeQueryTable(value,q,k){
+		queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
+		if(q.type === 'geeImage'){
+			if(value === null){
+				// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
+				queryContent +=`<tr><td>${k}</td><td>null</td></tr>`;
+
+				// $('#query-container').append(queryLine);
+			}
+			else if(Object.keys(value).length === 1 ){
+				var tValue = JSON.stringify(Object.values(value)[0]);
+				if(q.queryDict !== null && q.queryDict !== undefined){
+					tValue = q.queryDict[parseInt(tValue)]
+				}
+				// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
+				queryContent +=`<tr><th>${k}</th><td>${tValue}</td></tr>`;
+				// $('#query-container').append(queryLine);
+			}
+			else{
+				var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ':<br>';
+				queryContent += `<tr><th>${k}</th><th>Multi band</th></tr>`;
+				// $('#query-container').append(queryLine);
+				Object.keys(value).map(function(kt){
+					var v = value[kt].toFixed(2).toString();
+					// var queryLine =  kt+ ': '+v + "<br>";
+					queryContent += `<tr><td>${kt}</td><td>${v}</td></tr>`;
+					// $('#query-container').append(queryLine);
+				});
+				
+			}	
+		}else if(q.type === 'geeVectorImage'){
+
+            var infoKeys = Object.keys(value);
+            queryContent += `<tr><th>${k}</th><th>Attribute Table</th></tr>`;
+            // queryContent += `<tr><th>Attribute Name</th><th>Attribute Value</th></tr>`;
+            
+            infoKeys.map(function(name){
+                var valueT = value[name];
+                queryContent +=`<tr><th>${name}</th><td>${valueT}</td></tr>`;
+            });
+		}
+		
+		infowindow.setContent(queryContent);
+	  	infowindow.open(map);
+
+
+
+	if(keyI >= keyCount){
+		map.setOptions({draggableCursor:'help'});
+		map.setOptions({cursor:'help'});
+		$('#summary-spinner').slideUp();
+		// queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
+		// queryContent +=`</tbody></table>`;
+	  // infowindow.setContent(queryContent);
+	  // infowindow.open(map);
+	}
+	
+	}
 	// queryContent += queryLine;
 	// $('#query-container').append(queryLine);
 	var keys = Object.keys(queryObj);
@@ -57,67 +138,39 @@ var  getQueryImages = function(lng,lat){
 		showMessage('No Layers to Query!','No visible layers to query. Please turn on any layers you would like to query');
 
 	}
+	clearQueryGeoJSON();
 	keysToShow.map(function(k){
 		var q = queryObj[k];
 	
 
 		if(q.visible){
-			var img = ee.Image(q.queryItem);
-			img.reduceRegion(ee.Reducer.first(),ee.Geometry.Point(lngLat),null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){
-
-		
-			// var value = ee.Feature(img.sampleRegions(ee.FeatureCollection([ee.Feature(ee.Geometry.Point(lngLat))]), null, 30, 'EPSG:5070').first()).evaluate(function(value){
-				// if(value != null){
-				// value = value['properties'];
-
-				// if(Object.keys(value).length > 1){value = null;show = false;}
-				// else{value = Object.values(value)[0];}
-				
-			// };
-			
-				if(value === null){
-					// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
-					queryContent +=`<tr><td>${k}</td><td>null</td></tr>`;
-
-					// $('#query-container').append(queryLine);
-				}
-				else if(Object.keys(value).length === 1 ){
-					var tValue = JSON.stringify(Object.values(value)[0]);
-					if(q.queryDict !== null && q.queryDict !== undefined){
-						tValue = q.queryDict[parseInt(tValue)]
-					}
-					// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
-					queryContent +=`<tr><th>${k}</th><td>${tValue}</td></tr>`;
-					// $('#query-container').append(queryLine);
-				}
-				else{
-					var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ':<br>';
-					queryContent += `<tr><th>${k}</th><th>Multi band</th></tr>`;
-					// $('#query-container').append(queryLine);
-					Object.keys(value).map(function(kt){
-						var v = value[kt].toFixed(2).toString();
-						// var queryLine =  kt+ ': '+v + "<br>";
-						queryContent += `<tr><td>${kt}</td><td>${v}</td></tr>`;
-						// $('#query-container').append(queryLine);
-					});
+			var clickPt = ee.Geometry.Point(lngLat);
+			if(q.type === 'geeImage'){
+				var img = ee.Image(q.queryItem);
+				img.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){keyI++;makeQueryTable(value,q,k);})
+			}else if(q.type === 'geeVectorImage'){
+				var features = q.queryItem.filterBounds(clickPt);
+				features.evaluate(function(values){
+					keyI++;
 					
-				}
-				infowindow.setContent(queryContent);
-	          	infowindow.open(map);
-
-			
-		
-			if(keyI >= keyCount){
-				map.setOptions({draggableCursor:'help'});
- 			map.setOptions({cursor:'help'});
- 			$('#summary-spinner').slideUp();
-
-    			queryContent +=`</tbody></table>`;
-	          infowindow.setContent(queryContent);
-	          infowindow.open(map);
+		            queryGeoJSON.addGeoJson(values);
+           
+					var features = values.features; 
+					
+					if(features.length === 0){
+						queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
+						queryContent += `<tr><th>${k}</th><td>null</td></tr>`;
+						infowindow.setContent(queryContent);
+	  					infowindow.open(map);
+					}else{
+						features.map(function(f){
+      						makeQueryTable(f.properties,q,k)
+      					})	
+					}
+      				
+            		
+        		})
 			}
-			keyI++;
-			})
 			
 			// outDict[k] = value;
 

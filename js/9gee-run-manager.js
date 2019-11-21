@@ -1872,6 +1872,8 @@ function runMTBS(){
   //   })
   // })
   var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
+  // console.log(perims.get('bounds').getInfo())
   perims = perims.filter(ee.Filter.gte('Year',startYear));
   perims = perims.filter(ee.Filter.lte('Year',endYear));
   // var perimYear = perims.reduceToImage(['Year'], ee.Reducer.first())
@@ -1885,6 +1887,18 @@ function runMTBS(){
   // var census = ee.FeatureCollection('TIGER/2018/Counties');
   // Map2.addLayer(census,{strokeColor:'008',layerType:'geeVectorImage'},'Census Counties 2018',false,null,null,'Census Counties 2018')
   
+  // var resolveEcoRegions = ee.FeatureCollection('RESOLVE/ECOREGIONS/2017');
+  // Map2.addLayer(resolveEcoRegions,{strokeColor:'008',layerType:'geeVectorImage'},'Resolve EcoRegions 2017',false,null,null,'Resolve EcoRegions 2017')
+  
+
   chartCollection =mtbs;
   populateAreaChartDropdown();
+
+  Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
+  Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
+
+  Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
+  // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
+  // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
+
 }
