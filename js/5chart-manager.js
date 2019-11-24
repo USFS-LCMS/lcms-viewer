@@ -25,6 +25,12 @@ function clearSelectedAreas(){
     selectedFeatures = undefined;
     selectedFeaturesNames = undefined;
 }
+function turnOffVectorLayers(){
+	$(".vector-layer-checkbox").trigger("turnOffAll");
+}
+function turnOffSelectLayers(){
+	$(".select-layer-checkbox").trigger("turnOffAll");
+}
 function chartSelectedAreas(){
     
     // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');

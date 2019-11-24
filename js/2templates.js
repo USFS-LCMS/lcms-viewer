@@ -979,75 +979,68 @@ function addLayer(layer){
         $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
         // getGEEMapService();
     }
-	function checkFunction(){
-		if(layer.layerType === 'dynamicMapService'){
-			if(layer.visible){
-				layer.layer.setMap(null);
-				layer.visible = false;
-				layer.percent = 0;
-				layer.rangeOpacity = 0;
-				setRangeSliderThumbOpacity();
-				updateProgress();
-				$('#'+layer.legendDivID).hide();
-			}else{
-				layer.layer.setMap(map);
-				layer.visible = true;
-				layer.percent = 100;
-				layer.rangeOpacity = layer.opacity;
-				setRangeSliderThumbOpacity();
-				updateProgress();
-				$('#'+layer.legendDivID).show();
-			}
-			
-			
-		}
-		else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
-            if(layer.visible){
-            	layer.visible = false;
-                layer.map.overlayMapTypes.setAt(layer.layerId,null);
-				layer.percent = 0;
-				updateProgress();
-                $('#'+layer.legendDivID).hide();
-                layer.rangeOpacity = 0;
-                
-                
-			}else{
-				layer.visible = true;
-                layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
-                $('#'+layer.legendDivID).show();
-                layer.rangeOpacity = layer.opacity;
-                if(layer.isTileMapService){layer.percent = 100;updateProgress();}
-                layer.layer.setOpacity(layer.opacity); 
-				}
-			if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
+    function turnOff(){
+        if(layer.layerType === 'dynamicMapService'){
+            layer.layer.setMap(null);
+            layer.visible = false;
+            layer.percent = 0;
+            layer.rangeOpacity = 0;
+            setRangeSliderThumbOpacity();
+            updateProgress();
+            $('#'+layer.legendDivID).hide();
+        } else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
+            layer.visible = false;
+            layer.map.overlayMapTypes.setAt(layer.layerId,null);
+            layer.percent = 0;
+            updateProgress();
+            $('#'+layer.legendDivID).hide();
+            layer.rangeOpacity = 0;
+            if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
              queryObj[layer.name].visible = layer.visible;
-			}
-                   
-                }
-        else{
-            if(layer.visible){
-            	layer.visible = false;
-                layer.percent = 0;
-                updateProgress();
-                $('#'+layer.legendDivID).hide();
-                layer.layer.setMap(null);
-                layer.rangeOpacity = 0;
-                $('#' + spinnerID+'2').hide();
-                // geeTileLayersDownloading = 0;
-                // updateGEETileLayersLoading();
-                
-            }else{
-            	layer.visible = true;
-                layer.percent = 100;
-                updateProgress();
-                $('#'+layer.legendDivID).show();
-                layer.layer.setMap(layer.map);
-                layer.rangeOpacity = layer.opacity;
-                
             }
-            
+        }else{
+            layer.visible = false;
+            layer.percent = 0;
+            updateProgress();
+            $('#'+layer.legendDivID).hide();
+            layer.layer.setMap(null);
+            layer.rangeOpacity = 0;
+            $('#' + spinnerID+'2').hide();
+            // geeTileLayersDownloading = 0;
+            // updateGEETileLayersLoading();
         }
-        
+        vizToggleCleanup();
+    }
+    function turnOn(){
+        if(layer.layerType === 'dynamicMapService'){
+            layer.layer.setMap(map);
+            layer.visible = true;
+            layer.percent = 100;
+            layer.rangeOpacity = layer.opacity;
+            setRangeSliderThumbOpacity();
+            updateProgress();
+            $('#'+layer.legendDivID).show();
+        } else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
+            layer.visible = true;
+            layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
+            $('#'+layer.legendDivID).show();
+            layer.rangeOpacity = layer.opacity;
+            if(layer.isTileMapService){layer.percent = 100;updateProgress();}
+            layer.layer.setOpacity(layer.opacity); 
+            if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
+             queryObj[layer.name].visible = layer.visible;
+            }
+        }else{
+           layer.visible = true;
+            layer.percent = 100;
+            updateProgress();
+            $('#'+layer.legendDivID).show();
+            layer.layer.setMap(layer.map);
+            layer.rangeOpacity = layer.opacity;
+        }
+        vizToggleCleanup();
+    }
+    function vizToggleCleanup(){
         setRangeSliderThumbOpacity();
         console.log('visible: ' +layer.visible);
         console.log('opacity: '+layer.opacity);
@@ -1058,8 +1051,22 @@ function addLayer(layer){
                 layer.queryGeoJSON.setMap(layer.map);
             }else{layer.queryGeoJSON.setMap(null)};
         }
+    }
+	function checkFunction(){
+        if(layer.visible){
+            turnOff();
+        }else{turnOn()}    
 	}
-
+    function turnOffAll(){
+        if(layer.visible){
+            $('#'+visibleID).click();
+        }
+    }
+    function turnOnAll(){
+        if(!layer.visible){
+            $('#'+visibleID).click();
+        }
+    }
 	$("#"+ opacityID).val(layer.opacity * 100);
 
 	var prevent = false;
@@ -1081,16 +1088,19 @@ function addLayer(layer){
 
 	
 	$('#'+visibleID).change( function() {checkFunction();});
+   
 
-	
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
-
+    if(layer.layerType === 'geeVector' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geoJSONVector'){
+        $('#'+visibleLabelID).addClass('vector-layer-checkbox');
+        $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
+        $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+    }
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage'){
        
         if(layer.layerType === 'geeVectorImage'){
             if(layer.viz.isSelectLayer){
-                $('#'+visibleLabelID).addClass('select-layer-checkbox')
                 layer.queryGeoJSON = new google.maps.Data();
                 selectedFeaturesGeoJSON[layer.name] = layer.queryGeoJSON;
                 layer.queryGeoJSON.setMap(layer.map);
@@ -1098,6 +1108,9 @@ function addLayer(layer){
                 // infoWindowXOffset += 30;
                 layer.queryGeoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
                 // layer.queryVector = layer.item;  
+                $('#'+visibleLabelID).addClass('select-layer-checkbox');
+                $('.select-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
+                $('.select-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
             }
             
             layer.queryItem = layer.item;
