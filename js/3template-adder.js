@@ -207,8 +207,8 @@ if(mode === 'LCMS' || mode === 'MTBS'){
   
   $('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
   $('#upload-area-chart-div').append(staticTemplates.showChartButton);
-  $('#select-area-chart-div').append(staticTemplates.showChartButton);
-
+  $('#select-area-dropdown-chart-div').append(staticTemplates.showChartButton);
+  $('#select-area-interactive-chart-div').append(staticTemplates.showChartButton);
 
 }
 

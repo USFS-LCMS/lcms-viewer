@@ -6,7 +6,11 @@ function stopAllTools(){
   stopCharting();
   stopAreaCharting();
   stopCharting();
-  clearQueryGeoJSON();
+
+  // clearQueryGeoJSON();
+  // clearSelectedAreas();
+  turnOffSelectLayers();
+
   Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){toolFunctions[t][tt]['state'] = false})});
   updateToolStatusBar();
   
@@ -58,13 +62,13 @@ var toolFunctions = {'measuring':
                         'on':'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaDropdownChartTip);',
                         'off':'stopAllTools()',
                         'state':false,
-                        'title': 'Area Tools-Select an Area'
+                        'title': 'Area Tools-Select an Area from Dropdown'
                       },
                       'selectInteractive':{
-                        'on':'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
-                        'off':'stopAllTools()',
+                        'on':'stopAllTools();turnOffVectorLayers();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
+                        'off':'stopAllTools();turnOffVectorLayers();',
                         'state':false,
-                        'title': 'Area Tools-Select an Area'
+                        'title': 'Area Tools-Select an Area on map'
                       },
                     }
                   }

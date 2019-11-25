@@ -16,10 +16,39 @@ function downloadURI() {
 	  // document.body.removeChild(link);
 	    delete link;
 }}
+function clearSelectedAreas(){
+    $('.selected-features-list').empty();
+    Object.keys(selectedFeaturesGeoJSON).map(function(k){
+        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].remove(f)});
+    })
+    
+    selectedFeatures = undefined;
+    selectedFeaturesNames = undefined;
+}
+function turnOffVectorLayers(){
+	$(".vector-layer-checkbox").trigger("turnOffAll");
+}
+function turnOffSelectLayers(){
+	$(".select-layer-checkbox").trigger("turnOffAll");
+}
+function chartSelectedAreas(){
+    
+    // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
+    // console.log(selectedFeatures);
+    // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
+    if(selectedFeatures !== undefined){
+    	var title = $('#user-selected-area-name').val();
+    	if(title === ''){title = selectedFeaturesNames;}
+    	$('#summary-spinner').slideDown();
+        makeAreaChart(selectedFeatures,title + ' ' + mode + ' Summary',true)
+    }else{showMessage('Error!','Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button.')}
+    try{}
+    catch(err){
+        console.log(err);console.log(selectedFeatures.size().getInfo())
+    };
+    
+}
 
-var queryGeoJSON = new google.maps.Data();
-queryGeoJSON.setMap(map);
-queryGeoJSON.setStyle({strokeColor:'#FF0'});
 function clearQueryGeoJSON(){
 	queryGeoJSON.forEach(function(f){queryGeoJSON.remove(f)});
 }

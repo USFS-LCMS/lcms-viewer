@@ -251,7 +251,13 @@ selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="
 selectAreaDropdownChartTip : 'Select from pre-defined areas to summarize products across.',
 selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                 <div class = 'dropdown-divider'></div>
+                                <label>Provide name for area selected for charting (optional):</label>
+                                <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                <div class = 'dropdown-divider'></div>  
                                 <div id="area-charting-select-layer-list"></div>
+                                <div class = 'dropdown-divider'></div>
+                                <div>Selected areas:</div>
+                                <li class = 'selected-features-list' id = 'selected-features-list'></li>
                                 <div class = 'dropdown-divider'></div>
                                 <button class = 'btn' onclick = 'clearSelectedAreas()'>Clear Selected Areas</button>
                                 <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
@@ -261,17 +267,7 @@ selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summari
 
         
 }
-function clearSelectedAreas(){
-    $('.selected-features-list').empty();
-    selectedFeatures = undefined;
-}
-function chartSelectedAreas(){
-    
-    Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
-    // console.log(selectedFeatures);
-    // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
-    makeAreaChart(selectedFeatures,'Selected Areas',false)
-}
+
 
 // .replaceAll(`<kbd>`,'')
 Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(function(t){
@@ -983,75 +979,68 @@ function addLayer(layer){
         $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
         // getGEEMapService();
     }
-	function checkFunction(){
-		if(layer.layerType === 'dynamicMapService'){
-			if(layer.visible){
-				layer.layer.setMap(null);
-				layer.visible = false;
-				layer.percent = 0;
-				layer.rangeOpacity = 0;
-				setRangeSliderThumbOpacity();
-				updateProgress();
-				$('#'+layer.legendDivID).hide();
-			}else{
-				layer.layer.setMap(map);
-				layer.visible = true;
-				layer.percent = 100;
-				layer.rangeOpacity = layer.opacity;
-				setRangeSliderThumbOpacity();
-				updateProgress();
-				$('#'+layer.legendDivID).show();
-			}
-			
-			
-		}
-		else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
-            if(layer.visible){
-            	layer.visible = false;
-                layer.map.overlayMapTypes.setAt(layer.layerId,null);
-				layer.percent = 0;
-				updateProgress();
-                $('#'+layer.legendDivID).hide();
-                layer.rangeOpacity = 0;
-                
-                
-			}else{
-				layer.visible = true;
-                layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
-                $('#'+layer.legendDivID).show();
-                layer.rangeOpacity = layer.opacity;
-                if(layer.isTileMapService){layer.percent = 100;updateProgress();}
-                layer.layer.setOpacity(layer.opacity); 
-				}
-			if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
+    function turnOff(){
+        if(layer.layerType === 'dynamicMapService'){
+            layer.layer.setMap(null);
+            layer.visible = false;
+            layer.percent = 0;
+            layer.rangeOpacity = 0;
+            setRangeSliderThumbOpacity();
+            updateProgress();
+            $('#'+layer.legendDivID).hide();
+        } else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
+            layer.visible = false;
+            layer.map.overlayMapTypes.setAt(layer.layerId,null);
+            layer.percent = 0;
+            updateProgress();
+            $('#'+layer.legendDivID).hide();
+            layer.rangeOpacity = 0;
+            if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
              queryObj[layer.name].visible = layer.visible;
-			}
-                   
-                }
-        else{
-            if(layer.visible){
-            	layer.visible = false;
-                layer.percent = 0;
-                updateProgress();
-                $('#'+layer.legendDivID).hide();
-                layer.layer.setMap(null);
-                layer.rangeOpacity = 0;
-                $('#' + spinnerID+'2').hide();
-                // geeTileLayersDownloading = 0;
-                // updateGEETileLayersLoading();
-                
-            }else{
-            	layer.visible = true;
-                layer.percent = 100;
-                updateProgress();
-                $('#'+layer.legendDivID).show();
-                layer.layer.setMap(layer.map);
-                layer.rangeOpacity = layer.opacity;
-                
             }
-            
+        }else{
+            layer.visible = false;
+            layer.percent = 0;
+            updateProgress();
+            $('#'+layer.legendDivID).hide();
+            layer.layer.setMap(null);
+            layer.rangeOpacity = 0;
+            $('#' + spinnerID+'2').hide();
+            // geeTileLayersDownloading = 0;
+            // updateGEETileLayersLoading();
         }
-        
+        vizToggleCleanup();
+    }
+    function turnOn(){
+        if(layer.layerType === 'dynamicMapService'){
+            layer.layer.setMap(map);
+            layer.visible = true;
+            layer.percent = 100;
+            layer.rangeOpacity = layer.opacity;
+            setRangeSliderThumbOpacity();
+            updateProgress();
+            $('#'+layer.legendDivID).show();
+        } else if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
+            layer.visible = true;
+            layer.map.overlayMapTypes.setAt(layer.layerId,layer.layer);
+            $('#'+layer.legendDivID).show();
+            layer.rangeOpacity = layer.opacity;
+            if(layer.isTileMapService){layer.percent = 100;updateProgress();}
+            layer.layer.setOpacity(layer.opacity); 
+            if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
+             queryObj[layer.name].visible = layer.visible;
+            }
+        }else{
+           layer.visible = true;
+            layer.percent = 100;
+            updateProgress();
+            $('#'+layer.legendDivID).show();
+            layer.layer.setMap(layer.map);
+            layer.rangeOpacity = layer.opacity;
+        }
+        vizToggleCleanup();
+    }
+    function vizToggleCleanup(){
         setRangeSliderThumbOpacity();
         console.log('visible: ' +layer.visible);
         console.log('opacity: '+layer.opacity);
@@ -1062,8 +1051,22 @@ function addLayer(layer){
                 layer.queryGeoJSON.setMap(layer.map);
             }else{layer.queryGeoJSON.setMap(null)};
         }
+    }
+	function checkFunction(){
+        if(layer.visible){
+            turnOff();
+        }else{turnOn()}    
 	}
-
+    function turnOffAll(){
+        if(layer.visible){
+            $('#'+visibleID).click();
+        }
+    }
+    function turnOnAll(){
+        if(!layer.visible){
+            $('#'+visibleID).click();
+        }
+    }
 	$("#"+ opacityID).val(layer.opacity * 100);
 
 	var prevent = false;
@@ -1085,34 +1088,40 @@ function addLayer(layer){
 
 	
 	$('#'+visibleID).change( function() {checkFunction();});
+   
 
-	
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
-
+    if(layer.layerType === 'geeVector' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geoJSONVector'){
+        $('#'+visibleLabelID).addClass('vector-layer-checkbox');
+        $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
+        $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+    }
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage'){
        
         if(layer.layerType === 'geeVectorImage'){
             if(layer.viz.isSelectLayer){
-                $('#'+visibleLabelID).addClass('select-layer-checkbox')
                 layer.queryGeoJSON = new google.maps.Data();
+                selectedFeaturesGeoJSON[layer.name] = layer.queryGeoJSON;
                 layer.queryGeoJSON.setMap(layer.map);
                 // layer.infoWindow = getInfoWindow(infoWindowXOffset);
                 // infoWindowXOffset += 30;
                 layer.queryGeoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
                 // layer.queryVector = layer.item;  
+                $('#'+visibleLabelID).addClass('select-layer-checkbox');
+                $('.select-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
+                $('.select-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
             }
             
             layer.queryItem = layer.item;
             layer.item = ee.Image().paint(layer.item,null,layer.viz.strokeWeight);
 
             layer.viz.palette = layer.viz.strokeColor;
-            $('#'+containerID).append(`<div>Selected areas:</div>
-                                        <li class = 'selected-features-list' id = '${selectionID}'></li>`)
+            
             if(layer.viz.isSelectLayer){
                 map.addListener('click',function(event){
                 //     layer.infoWindow.setMap(null);
-                    if(layer.visible){
+                    if(layer.visible && toolFunctions.area.selectInteractive.state){
                         $('#'+spinnerID + '3').show();
                         // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
@@ -1123,7 +1132,7 @@ function addLayer(layer){
                         features.evaluate(function(values){
                             console.log(values)
                             layer.queryGeoJSON.addGeoJson(values);
-                        
+                            
                 //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
                             var features = values.features;
                           
@@ -1133,11 +1142,16 @@ function addLayer(layer){
                                 Object.keys(f.properties).map(function(p){
                                     if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
                                 })
+                                console.log(name)
+                                if(name !== undefined){
+                                    if(selectedFeaturesNames === undefined){
+                                        selectedFeaturesNames = name;
+                                    }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
+                                
+                                    $('#selected-features-list').append(`<ul>${name}</ul>`)
+                                }
                             })
-                            console.log(name)
-                            if(name !== undefined){
-                                $('#'+selectionID).append(`<ul>${name}</ul>`)
-                            }
+                            
                             
                 //             var featureI = 1
                 //             if(features.length > 0){

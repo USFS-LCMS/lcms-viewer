@@ -295,7 +295,7 @@ function setPlotProjectColor(ID){
   plotElements[plotElements.length-ID].style.outline = '#FFF dotted';
    
 }
-var selectedFeatures;
+
 function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   viz.canQuery = false;
   viz.isSelectLayer = true;
@@ -910,7 +910,9 @@ function reRun(){
   //   upperThresholdRecovery = 1;
   //   summaryMethod = 'year';
   // }
-  ['layer-list','reference-layer-list'].map(function(l){
+  clearSelectedAreas();
+  selectedFeaturesGeoJSON = {};
+  ['layer-list','reference-layer-list','area-charting-select-layer-list'].map(function(l){
     $('#'+l).empty();
     $('#legend-'+l).empty();
   })
@@ -1764,6 +1766,9 @@ function initialize() {
   
   infowindow = getInfoWindow();
 
+  queryGeoJSON = new google.maps.Data();
+  queryGeoJSON.setMap(map);
+  queryGeoJSON.setStyle({strokeColor:'#FF0'});
     initSearchBox();
     
        
