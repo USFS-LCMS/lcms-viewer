@@ -10,6 +10,7 @@ function stopAllTools(){
   // clearQueryGeoJSON();
   // clearSelectedAreas();
   turnOffSelectLayers();
+  turnOffSelectGeoJSON();
 
   Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){toolFunctions[t][tt]['state'] = false})});
   updateToolStatusBar();
@@ -65,8 +66,8 @@ var toolFunctions = {'measuring':
                         'title': 'Area Tools-Select an Area from Dropdown'
                       },
                       'selectInteractive':{
-                        'on':'stopAllTools();turnOffVectorLayers();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
-                        'off':'stopAllTools();turnOffVectorLayers();',
+                        'on':'stopAllTools();turnOffVectorLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
+                        'off':'stopAllTools();turnOffSelectLayers();',
                         'state':false,
                         'title': 'Area Tools-Select an Area on map'
                       },

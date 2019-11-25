@@ -25,11 +25,34 @@ function clearSelectedAreas(){
     selectedFeatures = undefined;
     selectedFeaturesNames = undefined;
 }
+function removeLastSelectArea(){
+	var k = $('li .select-layer-name').last().html().split(' - ')[0];
+	$('li .select-layer-name').last().remove();
+	var l = 0;var i = 0;
+	selectedFeaturesGeoJSON[k].forEach(function(f){l++});
+	selectedFeaturesGeoJSON[k].forEach(function(f){
+		if(i == l-1){
+			selectedFeaturesGeoJSON[k].remove(f);
+		}
+		i++
+		})
+
+}
 function turnOffVectorLayers(){
 	$(".vector-layer-checkbox").trigger("turnOffAll");
 }
 function turnOffSelectLayers(){
 	$(".select-layer-checkbox").trigger("turnOffAll");
+}
+function turnOffSelectGeoJSON(){
+	Object.keys(selectedFeaturesGeoJSON).map(function(k){
+        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].setMap(null)});
+    })
+}
+function turnOnSelectGeoJSON(){
+	Object.keys(selectedFeaturesGeoJSON).map(function(k){
+        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].setMap(map)});
+    })
 }
 function chartSelectedAreas(){
     
@@ -290,6 +313,10 @@ function areaChartingTabSelect(target){
   	if(target === '#user-defined'){startUserDefinedAreaCharting();}
   	else if(target === '#shp-defined'){startShpDefinedCharting();}
   	else if(target === '#pre-defined'){$('#pre-defined').slideDown();}
+  	else if(target === '#user-selected'){
+  		map.setOptions({draggableCursor:'pointer'});
+ 		map.setOptions({cursor:'pointer'});
+  	}
   	// startAreaCharting();
 }
 // function listenForUserDefinedAreaCharting(){

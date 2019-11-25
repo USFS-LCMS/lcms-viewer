@@ -133,6 +133,7 @@ kbd{border: 1px solid #999;}
 /*misc styling*/
 ul, li{list-style-type:none;}
 th{font-weight:  600!important}
+.select-layer-name{margin:0;color:var(--teal-100);}
 /*///////////////////////////////////////////////////////////*/
 /*Sidebar styling*/
 .sidebar-toggler{

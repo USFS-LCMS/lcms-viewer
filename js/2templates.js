@@ -258,8 +258,7 @@ selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map 
                                 <div class = 'dropdown-divider'></div>
                                 <div>Selected areas:</div>
                                 <li class = 'selected-features-list' id = 'selected-features-list'></li>
-                                <div class = 'dropdown-divider'></div>
-                                <button class = 'btn' onclick = 'clearSelectedAreas()'>Clear Selected Areas</button>
+                                <div id = 'select-features-edit-toolbar'></div>
                                 <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
 selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.'
 
@@ -1045,12 +1044,12 @@ function addLayer(layer){
         console.log('visible: ' +layer.visible);
         console.log('opacity: '+layer.opacity);
         layerObj[layer.name] = [layer.visible,layer.opacity];
-        if(layer.layerType === 'geeVectorImage' && layer.viz.isSelectLayer){
-       //      layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
-            if(layer.visible){
-                layer.queryGeoJSON.setMap(layer.map);
-            }else{layer.queryGeoJSON.setMap(null)};
-        }
+       //  if(layer.layerType === 'geeVectorImage' && layer.viz.isSelectLayer){
+       // //      layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
+       //      if(layer.visible){
+       //          layer.queryGeoJSON.setMap(layer.map);
+       //      }else{layer.queryGeoJSON.setMap(null)};
+       //  }
     }
 	function checkFunction(){
         if(layer.visible){
@@ -1148,7 +1147,7 @@ function addLayer(layer){
                                         selectedFeaturesNames = name;
                                     }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
                                 
-                                    $('#selected-features-list').append(`<ul>${name}</ul>`)
+                                    $('#selected-features-list').append(`<ul class = 'select-layer-name'>${layer.name} - ${name}</ul>`)
                                 }
                             })
                             
