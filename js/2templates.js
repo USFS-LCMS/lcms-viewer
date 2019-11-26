@@ -256,8 +256,12 @@ selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map 
                                 <div class = 'dropdown-divider'></div>  
                                 <div id="area-charting-select-layer-list"></div>
                                 <div class = 'dropdown-divider'></div>
-                                <div>Selected areas:</div>
+                                <div>Selected area names:</div>
+                                <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
                                 <li class = 'selected-features-list' id = 'selected-features-list'></li>
+                                <div class = 'dropdown-divider'></div>
+                                <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                 <div id = 'select-features-edit-toolbar'></div>
                                 <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
 selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.'
@@ -917,7 +921,7 @@ function addLayer(layer){
 								            <label  id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for layer service from Google Earth Engine'></i>
 								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
-								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-question fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
+								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
                                             
 								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
 								       </li>`);
@@ -1122,12 +1126,15 @@ function addLayer(layer){
                 //     layer.infoWindow.setMap(null);
                     if(layer.visible && toolFunctions.area.selectInteractive.state){
                         $('#'+spinnerID + '3').show();
+                        $('#select-features-list-spinner').show();
                         // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
                         var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
                         if(selectedFeatures === undefined){selectedFeatures = features}
-                            else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
+                        else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
                         
+                        updateSelectedAreaArea();
+                       
                         features.evaluate(function(values){
                             console.log(values)
                             layer.queryGeoJSON.addGeoJson(values);
@@ -1176,6 +1183,7 @@ function addLayer(layer){
 
                 //             }
                             $('#'+spinnerID + '3').hide();
+                            $('#select-features-list-spinner').hide();
                         })
                     }
                 })

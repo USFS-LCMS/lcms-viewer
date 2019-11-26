@@ -1894,12 +1894,20 @@ function runMTBS(){
   chartCollection =mtbs;
   populateAreaChartDropdown();
 
+
+  var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
+  Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
+
+  // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
+
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   // Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests2',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   
   Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
 
   Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
+  
+
   // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
   // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
 

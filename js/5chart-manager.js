@@ -21,22 +21,50 @@ function clearSelectedAreas(){
     Object.keys(selectedFeaturesGeoJSON).map(function(k){
         selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].remove(f)});
     })
-    
+    $('#selected-features-area').html('>0 hectares / 0 acres');
     selectedFeatures = undefined;
     selectedFeaturesNames = undefined;
+    updateSelectedAreaArea();
 }
 function removeLastSelectArea(){
-	var k = $('li .select-layer-name').last().html().split(' - ')[0];
-	$('li .select-layer-name').last().remove();
-	var l = 0;var i = 0;
-	selectedFeaturesGeoJSON[k].forEach(function(f){l++});
-	selectedFeaturesGeoJSON[k].forEach(function(f){
-		if(i == l-1){
-			selectedFeaturesGeoJSON[k].remove(f);
-		}
-		i++
-		})
+	try{
+		var k = $('li .select-layer-name').last().html().split(' - ')[0];
+		$('li .select-layer-name').last().remove();
+		
+		selectedFeatures = selectedFeatures.limit(selectedFeatures.size().subtract(1));
 
+		var l = 0;var i = 0;
+		selectedFeaturesGeoJSON[k].forEach(function(f){l++});
+		selectedFeaturesGeoJSON[k].forEach(function(f){
+			if(i == l-1){
+				selectedFeaturesGeoJSON[k].remove(f);
+			}
+			i++
+			});
+		var selectedFeaturesNamesList = selectedFeaturesNames.split(' - ');
+		if(selectedFeaturesNamesList.length <2){
+			selectedFeaturesNames = '';
+		}else{
+			selectedFeaturesNames = selectedFeaturesNames.split(' - ').slice(0,-1).join(' - ');
+		};
+		updateSelectedAreaArea();
+	}catch(err){clearSelectedAreas()}
+	
+
+}
+function updateSelectedAreaArea(){
+	if(selectedFeatures === undefined){
+		$('#selected-features-area').html('0 hectares / 0 acres');
+	}else{
+		$('#selected-features-area').html('Updating');
+		$('#select-features-area-spinner').show();
+		ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0]).evaluate(function(values){
+			if(values === undefined){values = 0};
+        	$('#selected-features-area').html((values*0.0001).toFixed(4) + ' hectares / '+(values*0.000247105).toFixed(4) + ' acres');
+        	$('#select-features-area-spinner').hide();
+    	})
+	}
+	
 }
 function turnOffVectorLayers(){
 	$(".vector-layer-checkbox").trigger("turnOffAll");
