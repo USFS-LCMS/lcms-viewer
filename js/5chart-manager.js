@@ -44,10 +44,12 @@ function removeLastSelectArea(){
 		var selectedFeaturesNamesList = selectedFeaturesNames.split(' - ');
 		if(selectedFeaturesNamesList.length <2){
 			selectedFeaturesNames = '';
+			clearSelectedAreas();
 		}else{
 			selectedFeaturesNames = selectedFeaturesNames.split(' - ').slice(0,-1).join(' - ');
+			updateSelectedAreaArea();
 		};
-		updateSelectedAreaArea();
+		
 	}catch(err){clearSelectedAreas()}
 	
 
@@ -710,6 +712,7 @@ function startQuery(){
 		})
    		mapHammer.on("tap",function(e){
    			infowindow.setMap(null);
+   			clearQueryGeoJSON();
    		})
 	// document.getElementById('query-container').style.display = 'block';
 }

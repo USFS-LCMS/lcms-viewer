@@ -204,12 +204,13 @@ if(mode === 'LCMS' || mode === 'MTBS'){
   addShapeEditToolbar('user-defined', 'user-defined-area-icon-bar','undoUserDefinedAreaCharting()','restartUserDefinedAreaCarting()')
   addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
-  addShapeEditToolbar('select-features-edit-toolbar', 'select-area-interactive-chart-icon-bar','removeLastSelectArea()','clearSelectedAreas()')
+  addShapeEditToolbar('select-features-edit-toolbar', 'select-area-interactive-chart-icon-bar','removeLastSelectArea()','clearSelectedAreas()','Click to unselect most recently selected polyogn','Click to clear all selected polygons')
   
-  $('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
-  $('#upload-area-chart-div').append(staticTemplates.showChartButton);
+  // $('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
+  // $('#upload-area-chart-div').append(staticTemplates.showChartButton);
   // $('#select-area-dropdown-chart-div').append(staticTemplates.showChartButton);
-  $('#select-area-interactive-chart-icon-bar').append(staticTemplates.showChartButton);
+  // $('#select-area-interactive-chart-div').append(staticTemplates.showChartButton);
+  // $('#tools-accordian').append(staticTemplates.showChartButton);
 
 }
 

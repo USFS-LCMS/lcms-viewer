@@ -889,6 +889,8 @@ function setGEERunID(){
 function reRun(){
   $('#summary-spinner').show();
   setGEERunID();
+  clearSelectedAreas();
+  
   layerChildID = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();

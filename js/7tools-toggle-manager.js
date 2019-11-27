@@ -6,7 +6,7 @@ function stopAllTools(){
   stopCharting();
   stopAreaCharting();
   stopCharting();
-
+  clearQueryGeoJSON();
   // clearQueryGeoJSON();
   // clearSelectedAreas();
   turnOffSelectLayers();

@@ -235,14 +235,14 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
 		            			</div>
                         	</div>`,
 showChartButton:`<div class = 'py-2'>
-                        <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Show Chart</button>
+                        <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                         </div>`,
 userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon and create graph.',
 
 uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
                         <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
-                        <button class = 'btn' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Summarize across chosen file</button>
+                        <button class = 'btn' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Chart across chosen file</button>
                         <div class = 'dropdown-divider'></div>`,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
 selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
@@ -263,7 +263,8 @@ selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map 
                                 <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                 <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                 <div id = 'select-features-edit-toolbar'></div>
-                                <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
+                                <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
+                                <div class = 'dropdown-divider'></div>`,
 selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.'
 
 
@@ -319,11 +320,13 @@ function addDropdownItem(dropdownID,label,value){
 }
 	
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction){
+function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction,undoTip,deleteTip){
+    if(undoTip === undefined || undoTip === null){undoTip = 'Click to undo last drawn point (ctrl z)'};
+    if(deleteTip === undefined || deleteTip === null){deleteTip = 'Click to clear current drawing and start a new one (Delete, or Backspace)'};
 	$('#'+containerID).append(`<div class = 'dropdown-divider'></div>
 								    <div id = '${toolbarID}' class="icon-bar ">
-								    	<a href="#" onclick = '${undoFunction}' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
-									  	<a href="#" onclick = '${restartFunction}' rel="txtTooltip" title = 'Click to clear current drawing and start a new one (Delete, or Backspace)'><i class="btn fa fa-trash"></i></a>
+								    	<a href="#" onclick = '${undoFunction}' rel="txtTooltip" title = '${undoTip}''><i class="btn fa fa-undo"></i></a>
+									  	<a href="#" onclick = '${restartFunction}' rel="txtTooltip" title = '${deleteTip}'><i class="btn fa fa-trash"></i></a>
 									</div>
 									<div class = 'dropdown-divider'></div>`);
 }
@@ -1123,69 +1126,72 @@ function addLayer(layer){
             
             if(layer.viz.isSelectLayer){
                 map.addListener('click',function(event){
-                //     layer.infoWindow.setMap(null);
-                    if(layer.visible && toolFunctions.area.selectInteractive.state){
-                        $('#'+spinnerID + '3').show();
-                        $('#select-features-list-spinner').show();
-                        // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
+                    if(layer.currentGEERunID === geeRunID){
+                            //     layer.infoWindow.setMap(null);
+                        if(layer.visible && toolFunctions.area.selectInteractive.state){
+                            $('#'+spinnerID + '3').show();
+                            $('#select-features-list-spinner').show();
+                            // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
-                        var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
-                        if(selectedFeatures === undefined){selectedFeatures = features}
-                        else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
-                        
-                        updateSelectedAreaArea();
-                       
-                        features.evaluate(function(values){
-                            console.log(values)
-                            layer.queryGeoJSON.addGeoJson(values);
+                            var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+                            if(selectedFeatures === undefined){selectedFeatures = features}
+                            else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
                             
-                //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
-                            var features = values.features;
-                          
-                            var name;
-                            features.map(function(f){
-                                // selectedFeatures.features.push(f);
-                                Object.keys(f.properties).map(function(p){
-                                    if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
+                            updateSelectedAreaArea();
+                           
+                            features.evaluate(function(values){
+                                console.log(values)
+                                layer.queryGeoJSON.addGeoJson(values);
+                                
+                    //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
+                                var features = values.features;
+                              
+                                var name;
+                                features.map(function(f){
+                                    // selectedFeatures.features.push(f);
+                                    Object.keys(f.properties).map(function(p){
+                                        if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
+                                    })
+                                    console.log(name)
+                                    if(name !== undefined){
+                                        if(selectedFeaturesNames === undefined){
+                                            selectedFeaturesNames = name;
+                                        }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
+                                    
+                                        $('#selected-features-list').append(`<ul class = 'select-layer-name'>${layer.name} - ${name}</ul>`)
+                                    }
                                 })
-                                console.log(name)
-                                if(name !== undefined){
-                                    if(selectedFeaturesNames === undefined){
-                                        selectedFeaturesNames = name;
-                                    }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
                                 
-                                    $('#selected-features-list').append(`<ul class = 'select-layer-name'>${layer.name} - ${name}</ul>`)
-                                }
-                            })
-                            
-                            
-                //             var featureI = 1
-                //             if(features.length > 0){
-                //                 layer.infoWindow.setPosition(event.latLng);
-                //                 features.map(function(f){
-                //                 var info = f.properties;
-                //                 var infoKeys = Object.keys(info);
                                 
-                //                 infoKeys.map(function(name){
-                //                     var value = info[name];
-                //                     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-                //                 });
-                                
-                //                 if(featureI < features.length){
-                //                     infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
-                //                 }
-                                
-                //                 featureI ++;
-                //             });
-                //             infoContent +=`</tbody></table>`;
-                //                 layer.infoWindow.setContent(infoContent);
-                //                 layer.infoWindow.open(map);
+                    //             var featureI = 1
+                    //             if(features.length > 0){
+                    //                 layer.infoWindow.setPosition(event.latLng);
+                    //                 features.map(function(f){
+                    //                 var info = f.properties;
+                    //                 var infoKeys = Object.keys(info);
+                                    
+                    //                 infoKeys.map(function(name){
+                    //                     var value = info[name];
+                    //                     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                    //                 });
+                                    
+                    //                 if(featureI < features.length){
+                    //                     infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
+                    //                 }
+                                    
+                    //                 featureI ++;
+                    //             });
+                    //             infoContent +=`</tbody></table>`;
+                    //                 layer.infoWindow.setContent(infoContent);
+                    //                 layer.infoWindow.open(map);
 
-                //             }
-                            $('#'+spinnerID + '3').hide();
-                            $('#select-features-list-spinner').hide();
-                        })
+                    //             }
+                                $('#'+spinnerID + '3').hide();
+                                $('#select-features-list-spinner').hide();
+                            })
+                        }
                     }
+                
                 })
             }   
         };
