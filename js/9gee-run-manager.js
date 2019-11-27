@@ -1881,7 +1881,9 @@ function runMTBS(){
   // Map2.addLayer(perimYear,{min:1984,max:2018,palette:'FF0,F00'},'perims year')
   Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',true,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
   
-  // var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
+  var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
+  var huc8 = ee.FeatureCollection('USGS/WBD/2017/HUC08');
+  
   // Map2.addLayer(huc4,{strokeColor:'808',layerType:'geeVectorImage'},'HUC 4',false,null,null,'HUC 4')
   
   // var census = ee.FeatureCollection('TIGER/2018/Counties');
@@ -1898,6 +1900,8 @@ function runMTBS(){
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
+  Map2.addSelectLayer(huc8,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 8',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
+  
   // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
 
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
