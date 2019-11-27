@@ -745,6 +745,7 @@ function runUSFS(){
     });
     
     
+    getSelectLayers();
     
     // areaChartCollection = forAreaCharting;
     // stackedAreaChart = false;
@@ -869,6 +870,7 @@ function runCONUS(){
   var forAreaChartingGeo = forAreaCharting.geometry();
   forAreaCharting = forAreaCharting.map(function(img){return img.mask().clip(forAreaChartingGeo)}).select([0],['Loss'])
 
+  getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',
                                 'stacked':false,
@@ -1882,22 +1884,25 @@ function runMTBS(){
   // Map2.addLayer(perimYear,{min:1984,max:2018,palette:'FF0,F00'},'perims year')
   Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',true,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
   
-  var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
-  var huc8 = ee.FeatureCollection('USGS/WBD/2017/HUC08');
-  
-  // Map2.addLayer(huc4,{strokeColor:'808',layerType:'geeVectorImage'},'HUC 4',false,null,null,'HUC 4')
-  
-  // var census = ee.FeatureCollection('TIGER/2018/Counties');
-  // Map2.addLayer(census,{strokeColor:'008',layerType:'geeVectorImage'},'Census Counties 2018',false,null,null,'Census Counties 2018')
-  
-  // var resolveEcoRegions = ee.FeatureCollection('RESOLVE/ECOREGIONS/2017');
-  // Map2.addLayer(resolveEcoRegions,{strokeColor:'008',layerType:'geeVectorImage'},'Resolve EcoRegions 2017',false,null,null,'Resolve EcoRegions 2017')
   
 
   chartCollection =mtbs;
   populateAreaChartDropdown();
 
+  getSelectLayers();
+  // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
+  // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
 
+}
+function getSelectLayers(){
+  var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
+  // console.log(perims.get('bounds').getInfo())
+  perims = perims.filter(ee.Filter.gte('Year',startYear));
+  perims = perims.filter(ee.Filter.lte('Year',endYear));
+  var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
+  var huc8 = ee.FeatureCollection('USGS/WBD/2017/HUC08');
+ 
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
@@ -1912,8 +1917,4 @@ function runMTBS(){
 
   Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
   
-
-  // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
-  // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
-
 }

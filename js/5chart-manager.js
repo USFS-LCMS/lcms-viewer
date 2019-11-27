@@ -540,6 +540,9 @@ function makeAreaChart(area,name,userDefined){
 
 	var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
 	var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
+	if(xAxisProperty === null || xAxisProperty == undefined){
+		xAxisProperty = 'year';
+	}
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
 	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' %'});
 	bandNames.unshift(xAxisProperty)
