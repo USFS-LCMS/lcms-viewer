@@ -137,7 +137,7 @@ function formatAreaChartCollection(collection,classCodes,classNames,unmask){
   // print(classCodes)
   var stack = imageIndexes.map(function(i){
       var ic = ee.Image(collectionL.get(i));
-      var d = ee.Date(ic.get('system:time_start'));
+      // var d = ee.Date(ic.get('system:time_start'));
       var img;
       classCodes.map(function(c){
         // console.log(i);console.log(c);
@@ -153,7 +153,9 @@ function formatAreaChartCollection(collection,classCodes,classNames,unmask){
           else{img = img.addBands(ci)};
       })
       // print(img.getInfo())
-      return img.set('system:time_start',d).rename(classNames);
+      img = img.copyProperties(ic);
+      img = img.copyProperties(ic,['system:time_start'])
+      return ee.Image(img).rename(classNames);
     });
     stack = ee.ImageCollection(stack);
     return stack;
@@ -317,7 +319,62 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
                                   'label':'MTBS Severity',
                                   'stacked':true,
                                   'steppedLine':false,
-                                  'chartType':'bar'}
+                                  'chartType':'bar',
+                                  'xAxisProperty':'year'}
+  }
+  if(chartMTBSByNLCD){
+    var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
+    var nlcdLCMin = 0;//parseInt(nlcd.get('system:visualization_0_min').getInfo());
+    var nlcdLCPalette = ["466b9f", "d1def8", "dec5c5", "d99282", "eb0000", "ab0000", "b3ac9f", "68ab5f", "1c5f2c", "b5c58f", "af963c", "ccb879", "dfdfc2", "d1d182", "a3cc51", "82ba9e", "dcd939", "ab6c28", "b8d9eb", "6c9fb8"];//nlcd.get('system:visualization_0_palette').getInfo().split(',');
+    
+    var nlcdClassCodes = [11,12,21,22,23,24,31,41,42,43,51,52,71,72,73,74,81,82,90,95];
+    var nlcdClassNames = ['Open Water','Perennial Ice/Snow','Developed, Open Space','Developed, Low Intensity','Developed, Medium Intensity','Developed High Intensity','Barren Land (Rock/Sand/Clay)','Deciduous Forest','Evergreen Forest','Mixed Forest','Dwarf Scrub','Shrub/Scrub','Grassland/Herbaceous','Sedge/Herbaceous','Lichens','Moss','Pasture/Hay','Cultivated Crops','Woody Wetlands','Emergent Herbaceous Wetlands'];
+    var nlcdFullClassCodes = ee.List.sequence(nlcdLCMin,nlcdLCMax).getInfo();
+    var nlcdLCVizDict = {};
+    var nlcdLCQueryDict = {};
+    var nlcdLegendDict = {};
+
+    var ii = 0
+    nlcdFullClassCodes.map(function(i){
+      var index = nlcdClassCodes.indexOf(i);
+      if(index !== -1){
+        nlcdLCQueryDict[i] = nlcdClassNames[ii];
+        nlcdLCVizDict[i] = nlcdLCPalette[ii];
+        nlcdLegendDict[nlcdClassNames[ii]] = nlcdLCPalette[ii];
+        ii++;
+      }else{nlcdLCVizDict[i] = '000'}
+    })
+    var nlcdLegendDictReverse = {};
+    Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]});
+    
+    
+    var nlcd = ee.ImageCollection('USGS/NLCD').select([0],['landcover'])
+    var mtbsMaxSeverity = mtbs.select([0]).max();
+
+   var nlcdYears = [1992,2001,2004,2006,2008,2011,2013,2016];
+   nlcdYears.map(function(nlcdYear){
+      if(nlcdYear >= startYear  && nlcdYear <= mtbsEndYear){
+        var nlcdT = nlcd.filter(ee.Filter.calendarRange(nlcdYear,nlcdYear,'year')).mosaic();
+        var mtbsByNLCD = Object.keys(nlcdLCQueryDict).map(function(k){
+          var name = nlcdLCQueryDict[k];
+          var out = mtbsMaxSeverity.updateMask(nlcdT.eq(ee.Number.parse(k))).set('nlcd_landcover_class',name);
+          return out
+         });
+         mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
+         var mtbsByNLCDStack = formatAreaChartCollection(mtbsByNLCD,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+          
+         // Map2.addLayer(nlcdT,{min:nlcdLCMin,max:nlcdLCMax,palette:Object.values(nlcdLCVizDict),addToClassLegend: true,classLegendDict:nlcdLegendDictReverse,queryDict: nlcdLCQueryDict},'NLCD '+nlcdYear.toString(),false);
+          
+          areaChartCollections['mtbsNLCD'+nlcdYear.toString()] = {'collection':mtbsByNLCDStack,
+                                        'colors':Object.values(mtbsClassDict),
+                                        'label':'MTBS Severity by NLCD Class '+nlcdYear.toString(),
+                                        'stacked':true,
+                                        'steppedLine':false,
+                                        'chartType':'bar',
+                                        'xAxisProperty':'nlcd_landcover_class'}
+          }
+      
+       })
   }
 
 // print(mtbsStack.getInfo());

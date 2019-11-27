@@ -1854,6 +1854,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 }
 function runMTBS(){
   chartMTBS = true;
+  chartMTBSByNLCD = true;
   getLCMSVariables();
 
   var mtbs = getMTBS('anc','layer-list',true); 

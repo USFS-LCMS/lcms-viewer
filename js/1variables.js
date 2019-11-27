@@ -93,7 +93,7 @@ var groundOverlayOn = false;
 
 var chartIncludeDate = true;var chartCollection;var areaChartCollections = {};var whichAreaChartCollection;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
-var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;var chartMTBS;
+var updateArea;var updateDistance;var areaPolygonObj = {};var mapHammer;var chartMTBS;var chartMTBSByNLCD
 
 var distancePolyline;
 var distancePolylineOptions = {

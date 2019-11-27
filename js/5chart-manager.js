@@ -474,16 +474,22 @@ function chartChosenArea(){
   makeAreaChart(chosenAreaGeo,chosenAreaName);
   // console.log('Charting ' + chosenArea);
 }
-function getLossGainTable(areaChartCollection,area){
+function getAreaSummaryTable(areaChartCollection,area,xAxisProperty){
+	if(xAxisProperty === null || xAxisProperty === undefined){xAxisProperty = 'year'}
 	// var test = ee.Image(areaChartCollection.first());
 	// test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
 	// print(test.getInfo());
+	if(xAxisProperty === 'year'){
+		areaChartCollection = areaChartCollection.map(function(img){return img.set('year',ee.Number(ee.Date(img.get('system:time_start')).get('year')).format())});
+		
+	}
+
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames();
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
 				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,30,'EPSG:5070',null,true,1e13,2);
-				    var year = ee.Number(ee.Date(img.get('system:time_start')).get('year')).format();
+				    var year = img.get(xAxisProperty);
 				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
 				    // var lossT = t.slice(0,2,null);
 				    // var gainT = t.slice(0,0,2);
@@ -533,10 +539,11 @@ function makeAreaChart(area,name,userDefined){
 	area = area.geometry();
 
 	var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
+	var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
 	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' %'});
-	bandNames.unshift('year')
-	var table = getLossGainTable(areaChartCollection,area);
+	bandNames.unshift(xAxisProperty)
+	var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty);
 	// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
 	var iteration = 0;
 	var maxIterations = 60;
@@ -979,7 +986,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 										    Chart Type
 										  </div>
 										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
-										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart')">Line</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart')">Graph</a>
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
 										  </div>
 										</div>
