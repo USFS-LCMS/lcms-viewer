@@ -18,43 +18,92 @@ function downloadURI() {
 }}
 function clearSelectedAreas(){
     $('.selected-features-list').empty();
-    Object.keys(selectedFeaturesGeoJSON).map(function(k){
-        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].remove(f)});
+    Object.keys(selectedFeaturesJSON).map(function(k){
+        selectedFeaturesJSON[k].geoJSON.forEach(function(f){
+        	var name = f.h.selectionTrackingName;
+			console.log(name);
+            delete selectedFeaturesJSON[k].rawGeoJSON[name]
+        	selectedFeaturesJSON[k].geoJSON.remove(f)
+        });
     })
     $('#selected-features-area').html('>0 hectares / 0 acres');
     selectedFeatures = undefined;
     selectedFeaturesNames = undefined;
     updateSelectedAreaArea();
 }
+function getSelectedAreasNameList(includeFeatureCollectionName){
+	if(includeFeatureCollectionName === null || includeFeatureCollectionName === undefined){includeFeatureCollectionName = true}
+	var nameList = [];
+	Object.keys(selectedFeaturesJSON).map(function(k){
+		selectedFeaturesJSON[k].geoJSON.forEach(function(f){
+			if(includeFeatureCollectionName){
+				var n = k+' - ' +f.h.selectionTrackingName;
+			}else{
+				var n = f.h.selectionTrackingName;
+			}
+			nameList.push(n)
+		})
+	})
+	return nameList
+}
+function updateSelectedAreasNameList(){
+	var nameList = getSelectedAreasNameList();
+	console.log(nameList);
+	$('#selected-features-list').empty();
+	nameList.map(function(nm){
+		$('#selected-features-list').append(`<ul class = 'select-layer-name'>${nm}</ul>`)
+	})
+	
+
+}
+function getSelectedGEEFeatureCollection(){
+	var selectedGEEFeatureCollection = [];
+	Object.keys(selectedFeaturesJSON).map(function(k){
+		Object.keys(selectedFeaturesJSON[k].rawGeoJSON).map(function(kk){
+			var f = selectedFeaturesJSON[k].rawGeoJSON[kk];
+			selectedGEEFeatureCollection.push(ee.Feature(f))
+		})
+	})
+	return ee.FeatureCollection(selectedGEEFeatureCollection)
+}
 function removeLastSelectArea(){
 	try{
 		var k = $('li .select-layer-name').last().html().split(' - ')[0];
-		$('li .select-layer-name').last().remove();
+		// $('li .select-layer-name').last().remove();
 		
-		selectedFeatures = selectedFeatures.limit(selectedFeatures.size().subtract(1));
+		// selectedFeatures = selectedFeatures.limit(selectedFeatures.size().subtract(1));
 
 		var l = 0;var i = 0;
-		selectedFeaturesGeoJSON[k].forEach(function(f){l++});
-		selectedFeaturesGeoJSON[k].forEach(function(f){
+		selectedFeaturesJSON[k].geoJSON.forEach(function(f){l++});
+		selectedFeaturesJSON[k].geoJSON.forEach(function(f){
 			if(i == l-1){
-				selectedFeaturesGeoJSON[k].remove(f);
+				var name = f.h.selectionTrackingName;
+				console.log(name);
+                delete selectedFeaturesJSON[k].rawGeoJSON[name];
+				selectedFeaturesJSON[k].geoJSON.remove(f);
 			}
 			i++
 			});
-		var selectedFeaturesNamesList = selectedFeaturesNames.split(' - ');
-		if(selectedFeaturesNamesList.length <2){
-			selectedFeaturesNames = '';
-			clearSelectedAreas();
-		}else{
-			selectedFeaturesNames = selectedFeaturesNames.split(' - ').slice(0,-1).join(' - ');
-			updateSelectedAreaArea();
-		};
+		// var selectedFeaturesNamesList = selectedFeaturesNames.split(' - ');
+		var selectedFeaturesNamesList = getSelectedAreasNameList();
+		updateSelectedAreasNameList();
+		// if(selectedFeaturesNamesList.length <2){
+		// 	// selectedFeaturesNames = '';
+		// 	clearSelectedAreas();
+		// }else{
+		// 	// selectedFeaturesNames = selectedFeaturesNames.split(' - ').slice(0,-1).join(' - ');
+		// 	updateSelectedAreaArea();
+		// };
 		
-	}catch(err){clearSelectedAreas()}
+	}catch(err){
+		console.log(err);
+		// clearSelectedAreas();
+	}
 	
 
 }
 function updateSelectedAreaArea(){
+	var selectedFeatures = getSelectedGEEFeatureCollection();
 	if(selectedFeatures === undefined){
 		$('#selected-features-area').html('0 hectares / 0 acres');
 	}else{
@@ -75,13 +124,13 @@ function turnOffSelectLayers(){
 	$(".select-layer-checkbox").trigger("turnOffAll");
 }
 function turnOffSelectGeoJSON(){
-	Object.keys(selectedFeaturesGeoJSON).map(function(k){
-        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].setMap(null)});
+	Object.keys(selectedFeaturesJSON).map(function(k){
+        selectedFeaturesJSON[k].geoJSON.forEach(function(f){selectedFeaturesJSON[k].geoJSON.setMap(null)});
     })
 }
 function turnOnSelectGeoJSON(){
-	Object.keys(selectedFeaturesGeoJSON).map(function(k){
-        selectedFeaturesGeoJSON[k].forEach(function(f){selectedFeaturesGeoJSON[k].setMap(map)});
+	Object.keys(selectedFeaturesJSON).map(function(k){
+        selectedFeaturesJSON[k].geoJSON.forEach(function(f){selectedFeaturesJSON[k].geoJSON.setMap(map)});
     })
 }
 function chartSelectedAreas(){
@@ -89,9 +138,10 @@ function chartSelectedAreas(){
     // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
     // console.log(selectedFeatures);
     // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
-    if(selectedFeatures !== undefined){
+    var selectedFeatures = getSelectedGEEFeatureCollection();
+    if(selectedFeatures !== undefined && selectedFeatures.size().getInfo() !== 0){
     	var title = $('#user-selected-area-name').val();
-    	if(title === ''){title = selectedFeaturesNames;}
+    	if(title === ''){title = getSelectedAreasNameList(false).join(' - ');}
     	$('#summary-spinner').slideDown();
         makeAreaChart(selectedFeatures,title + ' ' + mode + ' Summary',true)
     }else{showMessage('Error!','Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button.')}
@@ -827,7 +877,7 @@ Chart.pluginService.register({
 
             ctx.save();
             ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left-90, chartArea.top-40, chartArea.right - chartArea.left+190, chartArea.bottom - chartArea.top+150);
+            ctx.fillRect(chartArea.left-90, chartArea.top-40, chartArea.right - chartArea.left+190, chartArea.bottom - chartArea.top+350);
             ctx.restore();
         }
     }

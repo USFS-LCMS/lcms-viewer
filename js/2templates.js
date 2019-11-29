@@ -1107,12 +1107,13 @@ function addLayer(layer){
        
         if(layer.layerType === 'geeVectorImage'){
             if(layer.viz.isSelectLayer){
-                layer.queryGeoJSON = new google.maps.Data();
-                selectedFeaturesGeoJSON[layer.name] = layer.queryGeoJSON;
-                layer.queryGeoJSON.setMap(layer.map);
+                
+                selectedFeaturesJSON[layer.name] = {'geoJSON':new google.maps.Data(),'id':layer.id,'rawGeoJSON':{}}
+                selectedFeaturesJSON[layer.name].geoJSON.setMap(layer.map);
+
                 // layer.infoWindow = getInfoWindow(infoWindowXOffset);
                 // infoWindowXOffset += 30;
-                layer.queryGeoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
+                selectedFeaturesJSON[layer.name].geoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
                 // layer.queryVector = layer.item;  
                 $('#'+visibleLabelID).addClass('select-layer-checkbox');
                 $('.select-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
@@ -1125,7 +1126,18 @@ function addLayer(layer){
             layer.viz.palette = layer.viz.strokeColor;
             
             if(layer.viz.isSelectLayer){
+                
+                selectedFeaturesJSON[layer.name].geoJSON.addListener('click',function(event){
+                    console.log(event);
+                    var name = event.feature.h.selectionTrackingName;
+                    delete selectedFeaturesJSON[layer.name].rawGeoJSON[name]
+                    selectedFeaturesJSON[layer.name].geoJSON.remove(event.feature);
+                    updateSelectedAreasNameList();
+                    updateSelectedAreaArea();
+
+                });
                 map.addListener('click',function(event){
+                    // console.log(layer.name);console.log(event);
                     if(layer.currentGEERunID === geeRunID){
                             //     layer.infoWindow.setMap(null);
                         if(layer.visible && toolFunctions.area.selectInteractive.state){
@@ -1134,60 +1146,48 @@ function addLayer(layer){
                             // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
                             var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
-                            if(selectedFeatures === undefined){selectedFeatures = features}
-                            else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
+                            // if(selectedFeatures === undefined){selectedFeatures = features}
+                            // else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
                             
-                            updateSelectedAreaArea();
+                            
                            
                             features.evaluate(function(values){
                                 console.log(values)
-                                layer.queryGeoJSON.addGeoJson(values);
+                                
                                 
                     //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
                                 var features = values.features;
                               
                                 var name;
                                 features.map(function(f){
+                                    
                                     // selectedFeatures.features.push(f);
                                     Object.keys(f.properties).map(function(p){
                                         if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
                                     })
                                     console.log(name)
                                     if(name !== undefined){
-                                        if(selectedFeaturesNames === undefined){
-                                            selectedFeaturesNames = name;
-                                        }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
+                                        // if(selectedFeaturesNames === undefined){
+                                        //     selectedFeaturesNames = name;
+                                        // }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
                                     
-                                        $('#selected-features-list').append(`<ul class = 'select-layer-name'>${layer.name} - ${name}</ul>`)
+                                    
                                     }
-                                })
-                                
-                                
-                    //             var featureI = 1
-                    //             if(features.length > 0){
-                    //                 layer.infoWindow.setPosition(event.latLng);
-                    //                 features.map(function(f){
-                    //                 var info = f.properties;
-                    //                 var infoKeys = Object.keys(info);
+                                    if(getSelectedAreasNameList(false).indexOf(name) !== -1){
+                                        name += '-'+selectionUNID.toString();
+                                        selectionUNID++;
+                                    }
+                                    f.properties.selectionTrackingName = name
                                     
-                    //                 infoKeys.map(function(name){
-                    //                     var value = info[name];
-                    //                     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-                    //                 });
-                                    
-                    //                 if(featureI < features.length){
-                    //                     infoContent +=`<tr class = 'bg-black'><th></th><td></td></tr>`;
-                    //                 }
-                                    
-                    //                 featureI ++;
-                    //             });
-                    //             infoContent +=`</tbody></table>`;
-                    //                 layer.infoWindow.setContent(infoContent);
-                    //                 layer.infoWindow.open(map);
 
-                    //             }
+                                    selectedFeaturesJSON[layer.name].geoJSON.addGeoJson(f);
+                                    selectedFeaturesJSON[layer.name].rawGeoJSON[name]= f;
+                                });
+                                updateSelectedAreasNameList();    
+    
                                 $('#'+spinnerID + '3').hide();
                                 $('#select-features-list-spinner').hide();
+                                updateSelectedAreaArea();
                             })
                         }
                     }
