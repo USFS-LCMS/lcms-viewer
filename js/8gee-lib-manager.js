@@ -371,7 +371,8 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
                                         'stacked':true,
                                         'steppedLine':false,
                                         'chartType':'bar',
-                                        'xAxisProperty':'nlcd_landcover_class'}
+                                        'xAxisProperty':'nlcd_landcover_class',
+                                        'xAxisLabel':'NLCD '+nlcdYear.toString() + ' Class'}
           }
       
        })

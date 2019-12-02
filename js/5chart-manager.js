@@ -92,7 +92,7 @@ function removeLastSelectArea(){
 		// 	clearSelectedAreas();
 		// }else{
 		// 	// selectedFeaturesNames = selectedFeaturesNames.split(' - ').slice(0,-1).join(' - ');
-		// 	updateSelectedAreaArea();
+		updateSelectedAreaArea();
 		// };
 		
 	}catch(err){
@@ -574,6 +574,7 @@ function makeAreaChart(area,name,userDefined){
 	areaGeoJson = null;
 	console.log('making chart');console.log(userDefined);
 	if(userDefined === undefined || userDefined === null){userDefined = false};
+	
 	areaChartingCount++;
 	// closeChart();
 	// document.getElementById('curve_chart_big').style.display = 'none';
@@ -590,9 +591,12 @@ function makeAreaChart(area,name,userDefined){
 
 	var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
 	var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
-	if(xAxisProperty === null || xAxisProperty == undefined){
-		xAxisProperty = 'year';
-	}
+	var xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
+	var yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
+	if(xAxisProperty === null || xAxisProperty == undefined){xAxisProperty = 'year'};
+	if(xAxisLabel === null || xAxisLabel == undefined){xAxisLabel = null};
+	if(yAxisLabel === null || yAxisLabel == undefined){yAxisLabel = '% Area'};
+
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
 	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' %'});
 	bandNames.unshift(xAxisProperty)
@@ -619,7 +623,7 @@ function makeAreaChart(area,name,userDefined){
 				var colors = areaChartCollections[whichAreaChartCollection].colors;
 				var chartType = areaChartCollections[whichAreaChartCollection].chartType
 				if(chartType === null || chartType === undefined){chartType = 'line'}
-				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,null,'% Area');
+				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel);
 		
 				areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
