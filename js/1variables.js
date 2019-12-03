@@ -81,7 +81,7 @@ var canExport = false;//Set whether exports are allowed
 var colorRampIndex = 1;
 var NEXT_LAYER_ID = 1;var layerChildID = 0;
 var layerCount = 0;var refreshNumber = 0;
-var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow;var queryGeoJSON;var marker;
+var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow;var queryGeoJSON;var marker;var mtbsSummaryMethod;
 
 // var selectedFeatures;
 var selectedFeaturesJSON = {};

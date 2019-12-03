@@ -139,12 +139,16 @@ if(mode === 'LCMS'){
 }else if(mode === 'MTBS'){
   startYear = 1984;
   endYear = 2017;
+  
+
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of MTBS data to include')
+  addMultiRadio('parameters-collapse-div','mtbs-summary-method-radio','How to summarize MTBS data','mtbsSummaryMethod',{"Highest-Severity":true,"Most-Recent":false,"Oldest":false})
+  $('#mtbs-summary-method-radio').prop('title','Selected how to summarize MTBS raster data record in areas with multiple fires.  Each summary method is applied on a pixel bases. "Highest-Severity" will show the severity and fire year corresponding to the highest severity. "Most-Recent" will show the severity and fire year corresponding to the most recently mapped fire. "Oldest" will show the severity and fire year corresponding to the oldest mapped fire.')
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MTBS DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
@@ -213,7 +217,11 @@ if(mode === 'LCMS' || mode === 'MTBS'){
   // $('#tools-accordian').append(staticTemplates.showChartButton);
 
 }
-
+if(mode === 'MTBS' || mode === 'Ancillary'){
+  $('#contributor-logos').prepend(`<a href="https://www.usgs.gov/" target="_blank" >
+                                    <img src="images/usgslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the US Geological Survey">
+                                  </a>`)
+}
 if(canExport){
    $('#download-collapse-div').append(staticTemplates.exportContainer);
 

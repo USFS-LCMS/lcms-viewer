@@ -1860,7 +1860,7 @@ function runMTBS(){
   getLCMSVariables();
 
   var mtbs = getMTBS('anc','layer-list',true); 
-
+  getNAIP();
 
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
   //   var stop = start + 999;
@@ -1902,11 +1902,12 @@ function getSelectLayers(){
   perims = perims.filter(ee.Filter.lte('Year',endYear));
   var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
   var huc8 = ee.FeatureCollection('USGS/WBD/2017/HUC08');
+  var huc12 = ee.FeatureCollection('USGS/WBD/2017/HUC12');
  
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
-  Map2.addSelectLayer(huc8,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 8',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
+  Map2.addSelectLayer(huc12,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 12',false,null,null,'HUC 12 watershed boundaries. Turn on layer and click on any HUC 12 wanted to include in chart');
   
   // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
 

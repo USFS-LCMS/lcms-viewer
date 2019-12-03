@@ -169,21 +169,24 @@ var staticTemplates = {
                 <p class = 'px-2 my-1' style = 'float:left'; rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></p>
                 
                 <p class = 'px-2 my-1' style = 'float:right;' id='current-mouse-position'  ></p>
-
-                 <a href="http://www.fs.fed.us//" target="_blank" >
-                    <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more the US Forest Service">
-                </a>
-                <a href="https://www.fs.fed.us/gstc/" target="_blank"  >
-                <img src="images/GTAC_Logo.png" class = 'image-icon-bar' alt="GTAC Logo"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
-            </a>
-              <a href="https://www.redcastleresources.com/" target="_blank"  >
-                <img src="images/RCR-logo.jpg"  class = 'image-icon-bar'alt="RedCastle Inc. Logo"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
-            </a>
-            <a href="https://earthengine.google.com/" target="_blank"  >
-                <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
-            </a>
-
-        </div>`,
+                <div>
+                    <div id = 'contributor-logos'>
+                        
+                         <a href="http://www.fs.fed.us//" target="_blank" >
+                            <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the US Forest Service">
+                         </a>
+                     </div>
+                    <a href="https://www.fs.fed.us/gstc/" target="_blank"  >
+                    <img src="images/GTAC_Logo.png" class = 'image-icon-bar' alt="GTAC Logo"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                    </a>
+                      <a href="https://www.redcastleresources.com/" target="_blank"  >
+                        <img src="images/RCR-logo.jpg"  class = 'image-icon-bar'alt="RedCastle Inc. Logo"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about RedCastle Resources Inc.">
+                    </a>
+                    <a href="https://earthengine.google.com/" target="_blank"  >
+                        <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" class 'dual-range-slider-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about Google Earth Engine">
+                    </a>
+                </div>
+            </div>`,
         walkThroughPopup:`
                     
                     	<div class = 'walk-through-popup'>

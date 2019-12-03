@@ -261,7 +261,8 @@ var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol')
   return idsCollection
 }
 function getMTBS(studyAreaName,whichLayerList,showSeverity){
-  if(showSeverity === null || showSeverity === undefined){showSeverity = false}
+  if(showSeverity === null || showSeverity === undefined){showSeverity = false};
+  if(mtbsSummaryMethod === null || mtbsSummaryMethod === undefined){mtbsSummaryMethod = 'Highest-Severity'}
   if(studyAreaName === 'CNFKP'){
     var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
     var mtbsClientBoundary = {"geodesic":false,"type":"Polygon","coordinates":[[[-163.83922691651176,61.8957471095411],[-143.28412464845243,61.8957471095411],[-143.28412464845243,68.23773785333091],[-163.83922691651176,68.23773785333091],[-163.83922691651176,61.8957471095411]]]};
@@ -295,10 +296,23 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
     });
 
 
-  var mtbsForYear = mtbs.map(function(img){return img.remap([1,2,3,4,5,6],[1,2,3,4,5,1]).rename(['burnSeverity'])});
-
-  var mtbsYear = thresholdChange(mtbsForYear,1,10,1).qualityMosaic('burnSeverity').select([1])
-
+  var mtbs = mtbs.map(function(img){
+    var severityRemapped = img.remap([1,2,3,4,5,6],[1,3,4,5,2,1]).rename(['burnSeverityRemap']);
+    var burned = img.remap([1,2,3,4,5,6],[0,1,1,1,0,0]).rename(['burnedNotBurned']);
+    burned = burned.selfMask();
+    var burnYear = ee.Image(ee.Date(img.get('system:time_start')).get('year')).updateMask(severityRemapped.mask()).rename('burnYear');
+    return img.addBands(severityRemapped).addBands(burned).addBands(burned.multiply(-1).rename(['burnYearNegative'])).addBands(burnYear).int16();
+  });
+ 
+  mtbs = ee.ImageCollection(mtbs);
+  var mtbsSummaryDict = {'Highest-Severity':'burnSeverityRemap',"Most-Recent":'burnYear',"Oldest":'burnYearNegative'}
+  var mtbsSummarized = mtbs.qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod]);
+  var mtbsCount = mtbs.select([2]).count();
+  // var mtbsDistinct = mtbs.select([0]).reduce(ee.Reducer.countDistinct());
+  // var multipleSame = mtbsCount.gt(1).and(mtbsDistinct.gt(1))
+  // multipleSame = multipleSame.selfMask()
+  // Map2.addLayer(mtbsDistinct,{min:1,max:3,palette:'00F,F00'},'Distinct',false);
+  // Map2.addLayer(multipleSame,{min:1,max:1,palette:'F00'},'multipleSame',false);
   var mtbsClassDict = {
     'Unburned to Low': '006400',
     'Low':'7fffd4',
@@ -313,10 +327,10 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
   Object.keys(mtbsClassDict).map(function(k){mtbsQueryClassDict[keyI] =k;keyI++;})
 
   if(chartMTBS === true){
-    var mtbsStack = formatAreaChartCollection(mtbs,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+    var mtbsStack = formatAreaChartCollection(mtbs.select([0]),Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
     areaChartCollections['mtbs'] = {'collection':mtbsStack,
                                   'colors':Object.values(mtbsClassDict),
-                                  'label':'MTBS Severity',
+                                  'label':'MTBS Burn Severity by Year',
                                   'stacked':true,
                                   'steppedLine':false,
                                   'chartType':'bar',
@@ -363,11 +377,11 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
          mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
          var mtbsByNLCDStack = formatAreaChartCollection(mtbsByNLCD,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
           
-         // Map2.addLayer(nlcdT,{min:nlcdLCMin,max:nlcdLCMax,palette:Object.values(nlcdLCVizDict),addToClassLegend: true,classLegendDict:nlcdLegendDictReverse,queryDict: nlcdLCQueryDict},'NLCD '+nlcdYear.toString(),false);
+         Map2.addLayer(nlcdT,{min:nlcdLCMin,max:nlcdLCMax,palette:Object.values(nlcdLCVizDict),addToClassLegend: true,classLegendDict:nlcdLegendDictReverse,queryDict: nlcdLCQueryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
           
           areaChartCollections['mtbsNLCD'+nlcdYear.toString()] = {'collection':mtbsByNLCDStack,
                                         'colors':Object.values(mtbsClassDict),
-                                        'label':'MTBS Severity by NLCD Class '+nlcdYear.toString(),
+                                        'label':'MTBS Burn Severity by NLCD Class '+nlcdYear.toString(),
                                         'stacked':true,
                                         'steppedLine':false,
                                         'chartType':'bar',
@@ -380,8 +394,10 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
 
 // print(mtbsStack.getInfo());
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
-  Map2.addLayer(mtbs.select([0]).max().set('bounds',mtbsClientBoundary),severityViz,'MTBS Severity Composite',showSeverity,null,null,'MTBS CONUS burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
-  Map2.addLayer(mtbsYear.set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Year of Highest Severity',false,null,null,'MTBS CONUS year of highest mapped burn severity from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  Map2.addLayer(mtbsSummarized.select([0]).set('bounds',mtbsClientBoundary),severityViz,'MTBS Burn Severity',showSeverity,null,null,'MTBS CONUS '+mtbsSummaryMethod+' burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
+  Map2.addLayer(mtbsSummarized.select([4]).set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Burn Year',false,null,null,'MTBS CONUS '+mtbsSummaryMethod+' burn year from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  Map2.addLayer(mtbsCount.set('bounds',mtbsClientBoundary),{min:1,max:5,palette:declineDurPalette.split(',').reverse().join(',')},'MTBS Burn Count',false,null,null,'MTBS CONUS number of burns mapped for a given area from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  
   var chartTableDict = {
     'Burn Severity':mtbsQueryClassDict
   }
@@ -419,6 +435,30 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',mtbsClientBoundary),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
   var mtbs =getMTBS(studyAreaName,whichLayerList)
   return [mtbs,idsCollection]
+}
+function getNAIP(whichLayerList){
+  if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
+  var naipYears = [[2003,2007],
+                [2008,2008],
+                [2009,2011],
+                [2012,2014],
+                [2015,2017]];
+
+  var naip = ee.ImageCollection("USDA/NAIP/DOQQ").select([0,1,2],['R','G','B']);
+  // naip = naip.map(function(img){
+  //   var y = ee.Date(img.get('system:time_start')).get('year');
+  //   y = ee.Image(y).rename(['NAIP Year']);
+  //   var out = img.addBands(y).copyProperties(img,['system:time_start']);
+  //   return out
+
+  // })
+  naipYears.map(function(yr){
+    
+    var naipT = naip.filter(ee.Filter.calendarRange(yr[0],yr[1],'year')).mosaic().byte();
+   
+    Map2.addLayer(naipT,{'addToLegend':false,'min':25,'max':225},'NAIP ' + yr[0].toString()+ '-'+yr[1].toString(),false,null,null,'The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the '+yr[0].toString()+' to the ' + yr[1].toString() +' agricultural growing season in the continental U.S.',whichLayerList);
+  });
+
 }
 function getHansen(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
