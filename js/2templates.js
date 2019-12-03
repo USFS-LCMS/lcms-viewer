@@ -1155,7 +1155,7 @@ function addLayer(layer){
                             
                            
                             features.evaluate(function(values){
-                                console.log(values)
+                                // console.log(values)
                                 
                                 
                     //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
@@ -1168,7 +1168,7 @@ function addLayer(layer){
                                     Object.keys(f.properties).map(function(p){
                                         if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
                                     })
-                                    console.log(name)
+                                    // console.log(name)
                                     if(name !== undefined){
                                         // if(selectedFeaturesNames === undefined){
                                         //     selectedFeaturesNames = name;
