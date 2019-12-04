@@ -890,7 +890,7 @@ function reRun(){
   $('#summary-spinner').show();
   setGEERunID();
   clearSelectedAreas();
-  
+
   layerChildID = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();
@@ -1379,7 +1379,7 @@ function stopArea(){
   // map.setOptions({draggableCursor:'hand'});
   
 }
-
+//
 function resetPolygon(){
     stopListening();
     var keys = Object.keys(areaPolygonObj);
