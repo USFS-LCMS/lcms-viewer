@@ -103,11 +103,11 @@ var staticTemplates = {
                             <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</h3>
                         </div>
 
-                        <div class="modal-body">
+                        <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
                         	<button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
                         </div>
-                        <div class = 'modal-footer'>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
                         
 						<div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
@@ -125,11 +125,11 @@ var staticTemplates = {
                             <h3 class="mb-0 ">Welcome to the TimeSync Ancillary Data Viewer!</h3>
                         </div>
 
-                        <div class="modal-body">
+                        <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-3 ">This viewer is intended to provide an efficient way of looking at ancillary data to help with responses for the TimeSync tool.</p>
                         	
                         </div>
-                        <div class = 'modal-footer'>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
                       
 						<div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
@@ -147,11 +147,33 @@ var staticTemplates = {
                             <h3 class="mb-0 ">Welcome to the Landsat Data Explorer!</h3>
                         </div>
 
-                        <div class="modal-body">
+                        <div class="modal-body" id = 'introModal-body' >
                             <p class="pb-3 ">This tool is intended to allow for quick exploration of the Landsat time series and long-term trends. Any area on earth can be mapped.</p>
                             
                         </div>
-                        <div class = 'modal-footer'>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
+                      
+                        <div class="form-check  mr-0">
+                                <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            'MTBS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-md " role="document">
+                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                        <div class = 'modal-header'>
+                            <h3 class="mb-0 ">Welcome to the MTBS Data Explorer!</h3>
+                        </div>
+
+                        <div class="modal-body" id = 'introModal-body'>
+                            <p class="pb-3 ">This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.</p>
+                            
+                        </div>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
                       
                         <div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
@@ -190,12 +212,16 @@ var staticTemplates = {
         walkThroughPopup:`
                     
                     	<div class = 'walk-through-popup'>
-	                        <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
+                          
+                            <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<div class = 'dropdown-divider'></div>
 		                        <div class="icon-bar py-1 ">
-								  <a onclick = 'previousWalkThrough()' href="#" rel="txtTooltip" title = 'Previous tutorial slide'><i class="fa fa-chevron-left text-black"></i></a>
-								  <a onclick = 'nextWalkThrough()' href="#" rel="txtTooltip" title = 'Next tutorial slide'><i class="fa fa-chevron-right text-black"></i></a>
-								</div>
+								  <a onclick = 'previousWalkThrough()' title = 'Previous tutorial slide'><i class="fa fa-chevron-left text-black"></i></a>
+								  <a onclick = 'nextWalkThrough()'  title = 'Next tutorial slide'><i class="fa fa-chevron-right text-black"></i></a>
+								  <a id = 'walk-through-popup-progress'></a>
+                                  <a onclick = 'removeWalkThroughCollapse()' style = 'float:right;'  title = 'Turn off Walk-Through'><i class="fa fa-stop text-black" aria-hidden="true"></i></a>
+                                  
+                                </div>
 						</div>
 	                       
                     	`,
@@ -218,10 +244,12 @@ supportDiv :`<div class = 'p-0 pb-2' >
 				<div class="dropdown-divider"></div>
                 <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
 				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
-				<!--<div class="dropdown-divider"></div>
-				<label class = 'mt-2'>Run a walk-through of the LCMS Data Explorer's features</label>
-				 <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()'>Run Walk-Through</button>-->
 			</div>`,
+walkThroughButton:`<div class = pb-2>
+                    <div class="dropdown-divider"></div>
+                    <label class = 'mt-2'>Run a walk-through of the ${mode} Data Explorer's features</label>
+                    <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()' title = 'Run interactive walk-through of the features of the ${mode} Data Explorer'>Run Walk-Through</button>
+                  </div>`,
 distanceDiv : `Click on map to measure distance`,
 distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,

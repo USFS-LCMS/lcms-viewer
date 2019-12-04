@@ -8,14 +8,15 @@ $('body').append(staticTemplates.bottomBar);
 
 $('#summary-spinner').show();
 
-$('#main-container').append(staticTemplates.sidebarLeftToggler)
+$('#main-container').append(staticTemplates.sidebarLeftToggler);
 
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
 // $('#title-banner').fitText(1.2);
 // $('#studyAreaDropdownLabel').fitText(0.5);
 
-$('#main-container').append(staticTemplates.introModal[mode])
+
+$('#main-container').append(staticTemplates.introModal[mode]);
 
 if(localStorage.showIntroModal == undefined){
   localStorage.showIntroModal = 'true';
@@ -140,7 +141,7 @@ if(mode === 'LCMS'){
   startYear = 1984;
   endYear = 2017;
   
-
+  
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of MTBS data to include')
   addMultiRadio('parameters-collapse-div','mtbs-summary-method-radio','How to summarize MTBS data','mtbsSummaryMethod',{"Highest-Severity":true,"Most-Recent":false,"Oldest":false})
@@ -152,9 +153,13 @@ if(mode === 'LCMS'){
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
 
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
   $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
+  
+  $('#support-collapse-div').append(staticTemplates.walkThroughButton);
+  $('#introModal-body').append(staticTemplates.walkThroughButton);
 }else{
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');

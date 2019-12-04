@@ -10,8 +10,8 @@ var startJulian = 190;
 var endJulian = 250;
 var layerObj = null;
 var queryObj = {};
-var initialCenter = [43.4,-111];
-var initialZoomLevel = 8;
+var initialCenter = [37.5334105816903,-105.6787109375];
+var initialZoomLevel = 5;
 var cachedStudyAreaName = null;
 var studyAreaDict = {
                   'Flathead National Forest':{
