@@ -412,7 +412,7 @@ function areaChartingTabSelect(target){
 // }
 // listenForUserDefinedAreaCharting();
 function restartUserDefinedAreaCarting(e){
-	console.log(e);
+	// console.log(e);
 	if(e === undefined || e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace'){
 		areaChartingTabSelect(whichAreaDrawingMethod);
 		//startUserDefinedAreaCharting();
@@ -420,22 +420,27 @@ function restartUserDefinedAreaCarting(e){
 	
 }
 function undoUserDefinedAreaCharting(e){
-	console.log(e);
+	// console.log(e);
 	if(e === undefined || (e.key == 'z' && e.ctrlKey) ){
-        udp.getPath().pop(1);
-        udpList.pop(1);
+		try{
+			udpPolygonObj[udpPolygonNumber].getPath().pop(1);
+		}catch(err){
+			udpPolygonNumber--;
+			if(udpPolygonNumber < 1){udpPolygonNumber = 1;showMessage('Error!','No more vertices to undo')}
+			udpPolygonObj[udpPolygonNumber].getPath().pop(1);
+		}
+        
+        // udpList.pop(1);
       }
 	
 }
 function startUserDefinedAreaCharting(){
 	console.log('start clicking');
 	
-	udpList = [];
-	// $('#areaChartingTabs').slideDown();
+	// udpList = [];
 
-	// $('#user-defined').slideDown();
-	
-	// $('#areaUpload').slideDown();
+
+
 	map.setOptions({draggableCursor:'crosshair'});
     map.setOptions({disableDoubleClickZoom: true });
     google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -445,57 +450,60 @@ function startUserDefinedAreaCharting(){
    try{
    	udp.setMap(null);
    }catch(err){};
-   
-   udp = new google.maps.Polyline(udpOptions);
+   udpPolygonObj[udpPolygonNumber]  = new google.maps.Polyline(udpOptions);
+   // udp = new google.maps.Polyline(udpOptions);
 
-   udp.setMap(map);
+   udpPolygonObj[udpPolygonNumber].setMap(map);
 
    mapHammer = new Hammer(document.getElementById('map'));
    // google.maps.event.addDomListener(mapDiv, 'click', function(event) {
         mapHammer.on("tap", function(event) {
         
 
-        var path = udp.getPath();
+        var path = udpPolygonObj[udpPolygonNumber].getPath();
         var x =event.center.x;
         var y = event.center.y;
         clickLngLat =point2LatLng(x,y);
-        udpList.push([clickLngLat.lng(),clickLngLat.lat()])
+        // udpList.push([clickLngLat.lng(),clickLngLat.lat()])
         path.push(clickLngLat);
         
     
     });
    
 	mapHammer.on("doubletap", function() {
-		$('#summary-spinner').slideDown();
-        var path = udp.getPath();
-        udp.setMap(null);
-        udp = new google.maps.Polygon(udpOptions);
-        udp.setPath(path);
-        udp.setMap(map);
-        google.maps.event.clearListeners(mapDiv, 'dblclick');
-    	google.maps.event.clearListeners(mapDiv, 'click');
-    	map.setOptions({draggableCursor:'hand'});
- 		map.setOptions({cursor:'hand'});
- 		mapHammer.destroy()
- 		// var geoJson = {'type':'Polygon',
-			// 	'geometry':[udpList]};
-		try{
-			var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
+	// 	$('#summary-spinner').slideDown();
+        var path = udpPolygonObj[udpPolygonNumber].getPath();
+        udpPolygonObj[udpPolygonNumber].setMap(null);
+        udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
+        udpPolygonObj[udpPolygonNumber].setPath(path);
+        udpPolygonObj[udpPolygonNumber].setMap(map);
+        udpPolygonNumber++
+        udpPolygonObj[udpPolygonNumber]  = new google.maps.Polyline(udpOptions);
+        udpPolygonObj[udpPolygonNumber].setMap(map);
+ //        google.maps.event.clearListeners(mapDiv, 'dblclick');
+ //    	google.maps.event.clearListeners(mapDiv, 'click');
+ //    	map.setOptions({draggableCursor:'hand'});
+ // 		map.setOptions({cursor:'hand'});
+ // 		mapHammer.destroy()
+ // 		// var geoJson = {'type':'Polygon',
+	// 		// 	'geometry':[udpList]};
+	// 	try{
+	// 		var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
 
 
 		
-		// $('#areaUpload').slideDown();
+	// 	// $('#areaUpload').slideDown();
 	  	
-	  	// $("#charting-parameters").slideDown();
-	  	var udpName = $('#user-defined-area-name').val();
-	  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() ;userDefinedI++;};
-	  	var addon = ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';
-	  	udpName +=  addon
-		// Map2.addLayer(userArea,{},udpName,false)
-		// console.log(userArea.getInfo());
-		makeAreaChart(userArea,udpName,true);
-		}
-		catch(err){areaChartingTabSelect(whichAreaDrawingMethod);showMessage('Error',err);}
+	//   	// $("#charting-parameters").slideDown();
+	//   	var udpName = $('#user-defined-area-name').val();
+	//   	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() ;userDefinedI++;};
+	//   	var addon = ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';
+	//   	udpName +=  addon
+	// 	// Map2.addLayer(userArea,{},udpName,false)
+	// 	// console.log(userArea.getInfo());
+	// 	makeAreaChart(userArea,udpName,true);
+	// 	}
+	// 	catch(err){areaChartingTabSelect(whichAreaDrawingMethod);showMessage('Error',err);}
 		
 
 	});
@@ -504,7 +512,35 @@ function startUserDefinedAreaCharting(){
     // });
 
 }
+function chartUserDefinedArea(){
+	try{
+		var userArea = [];
+		var anythingToChart = false;
+		Object.values(udpPolygonObj).map(function(v){
+			var coords = v.getPath().g;
+			var f = [];
+			coords.map(function(coord){f.push([coord.lng(),coord.lat()])});
+		
+			if(f.length > 2){userArea.push(ee.Feature(ee.Geometry.Polygon(f)));anythingToChart = true}
+		});
+		if(!anythingToChart){
+			showMessage('Error!','Please draw polygons on map. Double-click to finish drawing polygon. Once all polygons have been drawn, click the <kbd>Chart Selected Areas</kbd> button to create chart.')
+		}
+		else{
+			userArea = ee.FeatureCollection(userArea);
+			var udpName = $('#user-defined-area-name').val();
+		  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() ;userDefinedI++;};
+		  	var addon = ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';
+		  	udpName +=  addon
 
+			makeAreaChart(userArea,udpName,true);	
+		}
+		
+		}
+		catch(err){showMessage('Error',err);}
+	
+
+}
 function chartChosenArea(){
   // $('#charting-container').slideDown();
     // $("#charting-parameters").slideDown();
@@ -552,10 +588,11 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty){
 				    t = ee.Dictionary(t);
 				    // var values = t.values();
 				    // var keys = t.keys();
+				    var sum;
 				    values = bandNames.map(function(bn){
 				      var a = t.get(bn);
 				      a = ee.Array(a).slice(1,1,2).project([0]);
-				      var sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
+				      sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
 				      a = ee.Number(a.toList().get(1));
 				      var pct = a.divide(sum).multiply(100);
 				      return pct;
@@ -626,7 +663,7 @@ function makeAreaChart(area,name,userDefined){
 				if(chartType === null || chartType === undefined){chartType = 'line'}
 				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel);
 		
-				areaChartingTabSelect(whichAreaDrawingMethod);
+				// areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
 				// if(whichAreaDrawingMethod === '#user-defined'){
@@ -644,7 +681,7 @@ function makeAreaChart(area,name,userDefined){
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
 				
-				areaChartingTabSelect(whichAreaDrawingMethod);
+				// areaChartingTabSelect(whichAreaDrawingMethod);
 				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1 || failure.indexOf("Array: Parameter 'values' is required.")> -1){
 					failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
 				}
@@ -727,7 +764,11 @@ function stopAreaCharting(){
     window.removeEventListener("keydown", undoUserDefinedAreaCharting);
 	console.log('stopping area charting');
 	try{
-   	udp.setMap(null);
+   	Object.keys(udpPolygonObj).map(function(k){
+        udpPolygonObj[k].setMap(null) ;       
+    });
+    udpPolygonObj = {};
+    udpPolygonNumber = 1;
    }catch(err){};
  //   $('#areaChartingTabs').slideUp();
 	$('#areaUpload').unbind('change')

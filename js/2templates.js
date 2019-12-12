@@ -261,20 +261,23 @@ pixelChartTip : 'Double-click on map to look at the full time series of '+mode+'
 userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     
                                     <label>Provide name for area selected for charting (optional):</label>
-                                    <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                    
+                                    <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                    <div id = 'user-defined-edit-toolbar'></div>
+                                    <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' rel="txtTooltip" title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
+                        
 		            			</div>
                         	</div>`,
 showChartButton:`<div class = 'py-2'>
                         <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                         </div>`,
-userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon and create graph.',
+userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
 
 uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
                         <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
                         <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
-                        <button class = 'btn' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Chart across chosen file</button>
-                        <div class = 'dropdown-divider'></div>`,
+                        <div class = 'dropdown-divider'></div>
+                        <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Chart across chosen file</button>
+                        `,
 uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
 selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                     <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
@@ -437,9 +440,9 @@ function updateDistanceColor(jscolor) {
 }
 function updateUDPColor(jscolor) {
     udpOptions.strokeColor = '#' + jscolor;
-    if(udp !== undefined){
-        udp.setOptions(udpOptions);
-    }
+    Object.keys(udpPolygonObj).map(function(k){
+        udpPolygonObj[k].setOptions(udpOptions) ;       
+    })
 }
 function updateAreaColor(jscolor) {
     areaPolygonOptions.strokeColor = '#' + jscolor;
