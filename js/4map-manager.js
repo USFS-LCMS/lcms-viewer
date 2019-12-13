@@ -1106,7 +1106,7 @@ function startArea(){
         // console.log('keys');console.log(keys);
         var totalArea = 0;
         var totalWithArea = 0;
-        var outString = ''
+        var outString = '';
         function areaWrapper(key){
           // console.log('key');console.log(key);
         // print('Adding in: '+key.toString());
@@ -1118,11 +1118,27 @@ function startArea(){
           
           var unitNames = unitNameDict[metricOrImperialArea].area;
           var unitMultipliers = unitMultiplierDict[metricOrImperialArea].area;
-          // console.log(unitNames);
-          // console.log(unitMultipliers);
-          // console.log(area)
           
-          if(totalArea >= 1){
+
+          
+          // if(area >= 1){
+          //   var unitNameT = unitNames[1];
+          //   var unitMultiplierT = unitMultipliers[1];
+          // }
+          // else{
+          //   var unitNameT = unitNames[0];
+          //   var unitMultiplierT = unitMultipliers[0];
+          //   };
+          // area = area;//*unitMultiplier
+          // console.log(unitName);
+          // console.log(unitMultiplier);
+          if(area>0){
+            totalWithArea++;
+            // outString  = outString + area*unitMultiplier.toFixed(4).toString() + ' ' + unitName + '<br>'
+          }
+          totalArea = totalArea + area
+
+          if(totalArea >= 1000){
             unitName = unitNames[1];
             unitMultiplier = unitMultipliers[1];
           }
@@ -1130,22 +1146,12 @@ function startArea(){
             unitName = unitNames[0];
             unitMultiplier = unitMultipliers[0];
             }
-          if(area >= 1){
-            var unitNameT = unitNames[1];
-            var unitMultiplierT = unitMultipliers[1];
-          }
-          else{
-            var unitNameT = unitNames[0];
-            var unitMultiplierT = unitMultipliers[0];
-            };
-          area = area;//*unitMultiplier
-          // console.log(unitName);
-          // console.log(unitMultiplier);
-          if(area>0){
-            totalWithArea++;
-            outString  = outString + area*unitMultiplierT.toFixed(4).toString() + ' ' + unitNameT + '<br>'
-          }
-          totalArea = totalArea + area
+          console.log(unitNames);
+          console.log(unitMultipliers);
+          console.log(area);
+          console.log(totalArea);
+          console.log(unitName);
+          console.log(unitMultiplier)
         }
         // console.log(totalArea);
       }
@@ -1223,20 +1229,33 @@ function startListening(){
    
     
     // });
-    google.maps.event.addDomListener(mapDiv, 'click', function(event) {
+    // google.maps.event.addDomListener(mapDiv, 'click', function(event) {
         
         
 
+    //     var path = areaPolygonObj[polyNumber].getPath();
+    //     var x =event.clientX;
+    //     var y = event.clientY;
+    //     clickLngLat =point2LatLng(x,y)
+    //     path.push(clickLngLat);
+    //     updateArea();
+    
+    // });
+    // google.maps.event.addDomListener(mapDiv, 'dblclick', function() {
+    mapHammer = new Hammer(document.getElementById('map'));
+
+    mapHammer.on("tap", function(event) {
+        
+
         var path = areaPolygonObj[polyNumber].getPath();
-        var x =event.clientX;
-        var y = event.clientY;
-        clickLngLat =point2LatLng(x,y)
+        var x =event.center.x;
+        var y = event.center.y;
+        clickLngLat =point2LatLng(x,y);
+        // udpList.push([clickLngLat.lng(),clickLngLat.lat()])
         path.push(clickLngLat);
         updateArea();
     
     });
-    // google.maps.event.addDomListener(mapDiv, 'dblclick', function() {
-    mapHammer = new Hammer(document.getElementById('map'));
     mapHammer.on("doubletap",function(){
         // console.log('doubleClicked');
         // newPoly();
@@ -1491,7 +1510,7 @@ updateDistance = function(){
     // console.log(unitMultipliers);
     // console.log(area)
         
-    if(distance >= 10000){
+    if(distance >= 1000){
       var unitName = unitNames[1];
       var unitMultiplier = unitMultipliers[1];
     }

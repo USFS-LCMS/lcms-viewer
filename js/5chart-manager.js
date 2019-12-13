@@ -112,7 +112,7 @@ function updateSelectedAreaArea(){
 		// selectedFeatures.evaluate(function(values){console.log(values)})
 		ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0]).evaluate(function(values,error){
 			if(values === undefined){values = 0;console.log(error)};
-        	$('#selected-features-area').html((values*0.0001).toFixed(4) + ' hectares / '+(values*0.000247105).toFixed(4) + ' acres');
+        	$('#selected-features-area').html((values*0.0001).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' hectares / '+(values*0.000247105).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' acres');
         	$('#select-features-area-spinner').hide();
     	})
 	}
@@ -561,8 +561,9 @@ function chartChosenArea(){
   makeAreaChart(chosenAreaGeo,chosenAreaName);
   // console.log('Charting ' + chosenArea);
 }
-function getAreaSummaryTable(areaChartCollection,area,xAxisProperty){
-	if(xAxisProperty === null || xAxisProperty === undefined){xAxisProperty = 'year'}
+function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier){
+	if(xAxisProperty === null || xAxisProperty === undefined){xAxisProperty = 'year'};
+	if(multiplier === null || multiplier === undefined){multiplier = 100};
 	// var test = ee.Image(areaChartCollection.first());
 	// test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
 	// print(test.getInfo());
@@ -572,11 +573,12 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty){
 	}
 
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames();
+	
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
 				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,30,'EPSG:5070',null,true,1e13,2);
-				    var year = img.get(xAxisProperty);
+				    var xAxisLabel = img.get(xAxisProperty);
 				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
 				    // var lossT = t.slice(0,2,null);
 				    // var gainT = t.slice(0,0,2);
@@ -594,10 +596,10 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty){
 				      a = ee.Array(a).slice(1,1,2).project([0]);
 				      sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
 				      a = ee.Number(a.toList().get(1));
-				      var pct = a.divide(sum).multiply(100);
+				      var pct = a.divide(sum).multiply(multiplier);
 				      return pct;
 				    });
-				    values = ee.List([year]).cat(values);
+				    values = ee.List([xAxisLabel]).cat(values);
 				    return values;
 				})
 }
@@ -634,11 +636,19 @@ function makeAreaChart(area,name,userDefined){
 	if(xAxisProperty === null || xAxisProperty == undefined){xAxisProperty = 'year'};
 	if(xAxisLabel === null || xAxisLabel == undefined){xAxisLabel = null};
 	if(yAxisLabel === null || yAxisLabel == undefined){yAxisLabel = '% Area'};
-
+	yAxisLabel = areaChartFormatDict[areaChartFormat].label;
+	var totalArea = area.area();
+	if(['Acres','Hectares'].indexOf(areaChartFormat)>-1){
+		multiplier =totalArea.multiply(areaChartFormatDict[areaChartFormat].mult);
+	}
+	else{
+		multiplier = areaChartFormatDict[areaChartFormat].mult;
+	}
+	
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
-	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' %'});
+	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' '+areaChartFormatDict[areaChartFormat].label});
 	bandNames.unshift(xAxisProperty)
-	var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty);
+	var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier);
 	// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
 	var iteration = 0;
 	var maxIterations = 60;

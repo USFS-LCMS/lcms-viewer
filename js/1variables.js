@@ -185,6 +185,9 @@ metric:
 //Chart variables
 var plotRadius = 15;
 var plotScale = 30;
+var areaChartFormat = 'Percentage';
+var areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+
 var areaGeoJson;
 var areaChartingCount = 0;
 var center;var globalChartValues;
