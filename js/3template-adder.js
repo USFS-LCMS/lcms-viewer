@@ -143,6 +143,17 @@ if(mode === 'LCMS'){
   
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
+  
+  var mtbsZoomToDict ={"All":true,"CONUS":false,"Alaska":false,"Hawaii":false,"Puerto-Rico":false};
+
+  addMultiRadio('parameters-collapse-div','mtbs-zoom-to-radio','Zoom to MTBS Mapping Area','mtbsMappingArea',mtbsZoomToDict)
+  
+  $( "#mtbs-zoom-to-radio" ).change(function() {
+    console.log(mtbsMappingArea);
+    synchronousCenterObject(clientBoundsDict[mtbsMappingArea])
+  });
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of MTBS data to include')
   addMultiRadio('parameters-collapse-div','mtbs-summary-method-radio','How to summarize MTBS data','mtbsSummaryMethod',{"Highest-Severity":true,"Most-Recent":false,"Oldest":false})
 

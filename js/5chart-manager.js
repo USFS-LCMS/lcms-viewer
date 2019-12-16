@@ -118,6 +118,15 @@ function updateSelectedAreaArea(){
 	}
 	
 }
+function updateUserDefinedAreaArea(){
+	var area = 0;
+	Object.values(udpPolygonObj).map(function(poly){
+		area += google.maps.geometry.spherical.computeArea(poly.getPath());
+	});
+	$('#user-defined-features-area').html((area*0.0001).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' hectares / '+(area*0.000247105).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' acres');
+        	
+	
+}
 function turnOffVectorLayers(){
 	$(".vector-layer-checkbox").trigger("turnOffAll");
 }
@@ -415,6 +424,7 @@ function restartUserDefinedAreaCarting(e){
 	// console.log(e);
 	if(e === undefined || e.key == 'Delete'|| e.key == 'd'|| e.key == 'Backspace'){
 		areaChartingTabSelect(whichAreaDrawingMethod);
+		updateUserDefinedAreaArea();
 		//startUserDefinedAreaCharting();
 	}
 	
@@ -429,6 +439,7 @@ function undoUserDefinedAreaCharting(e){
 			if(udpPolygonNumber < 1){udpPolygonNumber = 1;showMessage('Error!','No more vertices to undo')}
 			udpPolygonObj[udpPolygonNumber].getPath().pop(1);
 		}
+		updateUserDefinedAreaArea();
         
         // udpList.pop(1);
       }
@@ -466,7 +477,7 @@ function startUserDefinedAreaCharting(){
         clickLngLat =point2LatLng(x,y);
         // udpList.push([clickLngLat.lng(),clickLngLat.lat()])
         path.push(clickLngLat);
-        
+        updateUserDefinedAreaArea();
     
     });
    
@@ -480,6 +491,7 @@ function startUserDefinedAreaCharting(){
         udpPolygonNumber++
         udpPolygonObj[udpPolygonNumber]  = new google.maps.Polyline(udpOptions);
         udpPolygonObj[udpPolygonNumber].setMap(map);
+        updateUserDefinedAreaArea();
  //        google.maps.event.clearListeners(mapDiv, 'dblclick');
  //    	google.maps.event.clearListeners(mapDiv, 'click');
  //    	map.setOptions({draggableCursor:'hand'});
@@ -964,9 +976,14 @@ var dataToTable = function (dataset) {
 };
 var chartJSChart;
 var chartType;
-if(localStorage.tableOrChart === undefined || localStorage.tableOrchart === null){
-	localStorage.tableOrChart = 'chart';
+if(localStorage.tableOrChart === undefined || localStorage.tableOrChart === null){
+	// if(mode === 'MTBS'){localStorage.tableOrChart = 'table'}
+	// else{
+		localStorage.tableOrChart = 'chart'
+	// };
+	
 }
+
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
 function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel){
 	var displayXAxis = true;var displayYAxis = true;
@@ -1103,7 +1120,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 	   	
 	    var chartTableHTML = htmlTable(dataTable);
 	    $('#chart-table').append(chartTableHTML);
-	    toggleChartTable(localStorage.tableOrchart)
+	    toggleChartTable(localStorage.tableOrChart)
 	    $('#chart-modal').modal();
 }
 
@@ -1113,12 +1130,12 @@ function toggleChartTable(showWhich){
 		$('#chart-canvas').hide();
 		$('#chart-legend').hide();
 		$('#chart-table').show();
-		localStorage.tableOrchart = 'table';
+		localStorage.tableOrChart = 'table';
 	}else{
 		$('#chart-canvas').show();
 		$('#chart-legend').show();
 		$('#chart-table').hide();
-		localStorage.tableOrchart = 'chart';
+		localStorage.tableOrChart = 'chart';
 	}
 }
 function change(newType,stacked,steppedLine) {
@@ -1415,7 +1432,7 @@ function startPixelChartCollection() {
 			print(legends);
 			if(legends !== null){// && analysisMode === 'advanced'){
 				makeLegend(legends);
-				toggleChartTable(localStorage.tableOrchart);
+				toggleChartTable(localStorage.tableOrChart);
 				};
    			}
 

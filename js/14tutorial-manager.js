@@ -252,7 +252,11 @@ function showWalkThroughPopupMessage(message){
     $('#walk-through-popup-content').append(message);
     $('#walk-through-popup').show('fade');
 }
-var walkThroughKeyI = walkThroughKeysOrder[mode].length*10;
+
+var walkThroughKeyI;
+if(walkThroughKeysOrder[mode] === undefined){
+  walkThroughKeyI= 100
+}else{walkThroughKeyI= walkThroughKeysOrder[mode].length*10};
 function nextWalkThrough(){
     walkThroughKeyI++;
     showWalkThroughI();

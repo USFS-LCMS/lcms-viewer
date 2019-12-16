@@ -1013,18 +1013,7 @@ var dummyNLCDImage = ee.Image(nlcdLC.first());
 var cdl = ee.ImageCollection('USDA/NASS/CDL').select([0],['cdl']);
 
 
-function batchFillCollection(c,expectedYears){
-  var actualYears = c.toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).distinct().getInfo();
-  var missingYears = expectedYears.filter(function(x){return actualYears.indexOf(x)==-1})
-  var dummyImage = ee.Image(c.first()).mask(ee.Image(0));
-  var missingCollection = missingYears.map(function(yr){return dummyImage.set('system:time_start',ee.Date.fromYMD(yr,1,1).millis())});
-  var out = c.merge(missingCollection).sort('system:time_start');
-  return out;//.map(function(img){return img.unmask(255)});
-}
-function setSameDate(img){
-  var yr = ee.Date(img.get('system:time_start')).get('year');
-  return img.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-}
+
 
 //Denote dca_codes
 //From: https://www.fs.fed.us/foresthealth/technology/pdfs/Appendix_E_DCA_20141030.pdf
@@ -1854,12 +1843,13 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 // var LTresult = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
 
 }
+var mtbsC;
 function runMTBS(){
   chartMTBS = true;
   chartMTBSByNLCD = true;
   getLCMSVariables();
 
-  var mtbs = getMTBS('anc','layer-list',true); 
+  mtbsC = getMTBS('anc','layer-list',true); 
   getNAIP();
 
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
@@ -1875,7 +1865,7 @@ function runMTBS(){
   //   })
   // })
   var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
+  perims = ee.FeatureCollection(perims.copyProperties(mtbsC,['bounds']));
   // console.log(perims.get('bounds').getInfo())
   perims = perims.filter(ee.Filter.gte('Year',startYear));
   perims = perims.filter(ee.Filter.lte('Year',endYear));
@@ -1884,9 +1874,10 @@ function runMTBS(){
   // Map2.addLayer(perimYear,{min:1984,max:2018,palette:'FF0,F00'},'perims year')
   Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',true,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
   
-  
-
-  chartCollection =mtbs;
+  // var years = ee.List.sequence(startYear,mtbs)
+  // var nlcdLCObj = getNLCDObj();
+  // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
+  chartCollection =mtbsC;
   populateAreaChartDropdown();
 
   getSelectLayers();
@@ -1905,16 +1896,24 @@ function getSelectLayers(){
   var huc12 = ee.FeatureCollection('USGS/WBD/2017/HUC12');
   var wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
   var wilderness = wdpa.filter(ee.Filter.eq('DESIG', 'Wilderness'));
+  var counties = ee.FeatureCollection('TIGER/2018/Counties');
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
+  var ecoregions_subsections = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections');
+  ecoregions_subsections = ecoregions_subsections.select(['MAP_UNIT_N'], ['NAME'], true);
+  var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
+
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
   Map2.addSelectLayer(huc12,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 12',false,null,null,'HUC 12 watershed boundaries. Turn on layer and click on any HUC 12 wanted to include in chart');
+  
+  Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'EPA Ecoregions (Level 4). Turn on layer and click on any ecoregion wanted to include in chart');
+  Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
   
   // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
 
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   
-  Map2.addSelectLayer(wilderness,{strokeColor:'80F',layerType:'geeVectorImage'},'Wilderness',false,null,null,'Wilderness boundaries. Turn on layer and click on any Forest wanted to include in chart');
+  Map2.addSelectLayer(wilderness,{strokeColor:'80F',layerType:'geeVectorImage'},'Wilderness',false,null,null,'Wilderness boundaries. Turn on layer and click on any winderness wanted to include in chart');
   
   // Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests2',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   

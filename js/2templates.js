@@ -253,7 +253,7 @@ walkThroughButton:`<div class = pb-2>
 distanceDiv : `Click on map to measure distance`,
 distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
-areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.",
+areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
 queryDiv : "<div>Double-click on map to query values of displayed layers at a location</div>",
 queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
 pixelChartDiv : `<div>Double-click on map to query ${mode} data time series<br></div>`,
@@ -262,6 +262,9 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
                                     
                                     <label>Provide name for area selected for charting (optional):</label>
                                     <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                    <div class = 'dropdown-divider'></div>
+                                    <div>Total area selected: <i id = "user-defined-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                    <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                     <div id = 'user-defined-edit-toolbar'></div>
                                     <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' rel="txtTooltip" title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
                         
@@ -270,7 +273,7 @@ userDefinedAreaChartDiv : `<div  id="user-defined" >
 showChartButton:`<div class = 'py-2'>
                         <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                         </div>`,
-userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
+userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
 
 uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
                         <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
