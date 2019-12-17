@@ -271,6 +271,41 @@ var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol')
 
   return idsCollection
 }
+function getAspectObj(){
+  var dem = ee.Image('USGS/SRTMGL1_003');
+  var aspect = ee.Terrain.aspect(dem).int16();
+  var aspectBinWidth = 90;
+  var aspectBreaks = ee.List.sequence(0,360,aspectBinWidth).slice(0,-1);
+  var from = [];
+  var to =  [];
+  var lookupDict = ee.Dictionary({});
+  var lookupNames = ['Northeast (0'+String.fromCharCode(176)+'-89'+String.fromCharCode(176)+')','Southeast (90'+String.fromCharCode(176)+'-179'+String.fromCharCode(176)+')','Southwest (180'+String.fromCharCode(176)+'-269'+String.fromCharCode(176)+')','Northwest (270'+String.fromCharCode(176)+'-359'+String.fromCharCode(176)+')'];
+  var lookupNumbers = ee.List([]);
+  var colorDict = ee.Dictionary({})
+
+  aspectBreaks.getInfo().map(function(b){
+    b = ee.Number(b);
+    var s = b;
+    var e = b.add(aspectBinWidth).subtract(1);
+    var toValue = (e.add(s)).divide(2).round();
+    var toValueStr = ee.Number(toValue).int16().format()
+    var fromT = ee.List.sequence(s,e);
+    var toT = ee.List.repeat(toValue,aspectBinWidth);
+    lookupNumbers = lookupNumbers.cat([toValueStr]);
+    from.push(fromT);
+    to.push(toT);
+    colorDict =colorDict.set(toValueStr,randomColor())
+    
+  });
+  
+  from = ee.List(from).flatten();
+  to = ee.List(to).flatten();
+
+  var aspectLookupDict = ee.Dictionary.fromLists(lookupNumbers,lookupNames);
+  var aspectBinned = aspect.remap(from,to)
+  // Map2.addLayer(aspectBinned,{min:0,max:360},'Aspect Binned');
+  return {'image':aspectBinned,'lookupDict':aspectLookupDict,'colorDict':colorDict}
+}
 function getNLCDObj(){
   var nlcdYears = [1992,2001,2004,2006,2008,2011,2013,2016];
   var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
@@ -377,15 +412,17 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
                                   'chartType':'bar',
                                   'xAxisProperty':'year'}
   }
+  var mtbsMaxSeverity = mtbs.select([0]).max();
   if(chartMTBSByNLCD){
     
     
    var nlcdObj = getNLCDObj();
+  
    // {'collection':nlcdC,'years':nlcdYears,'palette':nlcdLCPalette,'vizDict':nlcdLCVizDict,'queryDict':nlcdLCQueryDict,'legendDict':nlcdLegendDict,'legendDictReverse':nlcdLegendDictReverse}
    // var nlcd = nlcdObj.collection;
    // var nlcdYears = nlcdObj.years;
 
-    var mtbsMaxSeverity = mtbs.select([0]).max();
+    
 
    
    nlcdObj.years.map(function(nlcdYear){
@@ -412,6 +449,30 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
           }
       
        })
+  }
+  if(chartMTBSByAspect){
+    var aspectObj = getAspectObj();
+    var aspectBinned = aspectObj.image;
+    var aspectLookupDict = aspectObj.lookupDict.getInfo();
+    // var aspectColorDict = aspectObj.colorDict.getInfo();
+    var mtbsByAspect = Object.keys(aspectLookupDict).map(function(k){
+          var name = aspectLookupDict[k];
+          var out = mtbsMaxSeverity.updateMask(aspectBinned.eq(ee.Number.parse(k))).set('Aspect_Bin',name);
+          return out
+         });
+         mtbsByAspect = ee.ImageCollection(mtbsByAspect);
+         var mtbsByAspectStack = formatAreaChartCollection(mtbsByAspect,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+          // print(mtbsByAspectStack.getInfo())
+    //      Map2.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
+          
+          areaChartCollections['mtbsAspect'] = {'collection':mtbsByAspectStack,
+                                        'colors':Object.values(mtbsClassDict),
+                                        'label':'MTBS Burn Severity by Aspect',
+                                        'stacked':true,
+                                        'steppedLine':false,
+                                        'chartType':'bar',
+                                        'xAxisProperty':'Aspect_Bin',
+                                        'xAxisLabel':'Aspect Bin'}
   }
 
 // print(mtbsStack.getInfo());
@@ -450,7 +511,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   
   Map2.addLayer(idsCollection.select(['IDS Defol Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Defoliation Survey Count',false,null,null, 'Number of times an area was recorded as defoliation by the IDS survey',whichLayerList);
   Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
-  var mtbs =getMTBS(studyAreaName,whichLayerList)
+  var mtbs =getMTBSAndNLCD(studyAreaName,whichLayerList).MTBS.collection
   return [mtbs,idsCollection]
 }
 function getNAIP(whichLayerList){

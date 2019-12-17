@@ -1114,6 +1114,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart')">Graph</a>
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('both')">Graph and Table</a>
 										  </div>
 										</div>
 										`);
@@ -1131,11 +1132,17 @@ function toggleChartTable(showWhich){
 		$('#chart-legend').hide();
 		$('#chart-table').show();
 		localStorage.tableOrChart = 'table';
-	}else{
+	}else if(showWhich === 'chart'){
 		$('#chart-canvas').show();
 		$('#chart-legend').show();
 		$('#chart-table').hide();
 		localStorage.tableOrChart = 'chart';
+	}
+	else{
+		$('#chart-canvas').show();
+		$('#chart-legend').show();
+		$('#chart-table').show();
+		localStorage.tableOrChart = 'both';
 	}
 }
 function change(newType,stacked,steppedLine) {

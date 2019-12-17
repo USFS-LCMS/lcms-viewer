@@ -210,7 +210,7 @@ addColorPicker('measure-area-div-icon-bar','area-color-picker','updateAreaColor'
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTipHover);
 addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query '+mode+' Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTipHover);
-$('#pixel-chart-div').append(staticTemplates.showChartButton);
+// $('#pixel-chart-div').append(staticTemplates.showChartButton);
 // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
 
 

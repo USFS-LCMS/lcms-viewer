@@ -795,14 +795,25 @@ function runCONUS(){
 
 
 
-  
-   var lossProb = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/vCONUS-2019-1').map(function(img){return img.unmask()})
-      .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-      .map(function(img){return img.rename(['Loss Probability'])})
-      .map(function(img){return ee.Image(multBands(img,1,[0.01])).float()});
+  var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
+  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191209');
+  var years = ee.List.sequence(startYear,endYear);
+
+  lcms = years.map(function(yr){
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+    lcmsT = lcmsT.unmask(0);
+    lcmsT = ee.Image(multBands(lcmsT,1,[0.01])).float()
+    return lcmsT.rename(['Loss Probability']);
+  });
+  lcms = ee.ImageCollection.fromImages(lcms);
+ 
+   var lossProb = lcms
+   //    // .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+   //    // .map(function(img){return img})
+   //    .map(function(img){return ee.Image(multBands(img,1,[0.01])).float()});
     
    
-    var clientBoundary = lossProb.geometry().bounds(1000).getInfo();
+    var clientBoundary = clientBoundsDict.CONUS;//lossProb.geometry().bounds(1000).getInfo();
 
 
     if(applyTreeMask === 'yes'){
@@ -866,10 +877,11 @@ function runCONUS(){
 
   }
   chartCollection =lossProb;
-  var forAreaCharting = dndThresh.select(["Loss Probability_change_year"]);
-  var forAreaChartingGeo = forAreaCharting.geometry();
-  forAreaCharting = forAreaCharting.map(function(img){return img.mask().clip(forAreaChartingGeo)}).select([0],['Loss'])
-
+  var forAreaCharting = dndThresh.select(["Loss Probability_change_year"],['Loss']);
+  
+  forAreaCharting = forAreaCharting.map(function(img){return img.mask()})
+  
+  
   getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',
@@ -1847,9 +1859,11 @@ var mtbsC;
 function runMTBS(){
   chartMTBS = true;
   chartMTBSByNLCD = true;
+  chartMTBSByAspect = true;
   getLCMSVariables();
 
   var mtbsAndNLCD = getMTBSAndNLCD('anc','layer-list',true);
+  
   var nlcdLCObj = mtbsAndNLCD.NLCD;
   mtbsC = mtbsAndNLCD.MTBS.collection; 
   getNAIP();
@@ -1909,14 +1923,14 @@ function getSelectLayers(){
   var ecoregions_subsections = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections');
   ecoregions_subsections = ecoregions_subsections.select(['MAP_UNIT_N'], ['NAME'], true);
   var ecoregions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions');
-  ecoregions = ecoregions.select(['PROVINCE'],['NAME'])
+  ecoregions = ecoregions.select(['SECTION'],['NAME'])
   var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
 
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
   Map2.addSelectLayer(huc12,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 12',false,null,null,'HUC 12 watershed boundaries. Turn on layer and click on any HUC 12 wanted to include in chart');
   
-  Map2.addSelectLayer(ecoregions,{strokeColor:'8F8',layerType:'geeVectorImage'},"Baileys Ecoregions",false,null,null,'Baileys ecoregions. Turn on layer and click on any ecoregion wanted to include in chart');
+  Map2.addSelectLayer(ecoregions,{strokeColor:'8F8',layerType:'geeVectorImage'},"Baileys Ecoregions Sections",false,null,null,'Baileys ecoregion sections. Turn on layer and click on any ecoregion wanted to include in chart');
   
   Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'Baileys ecoregions subsections. Turn on layer and click on any ecoregion wanted to include in chart');
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');

@@ -56,15 +56,15 @@ var studyAreaDict = {
                                                 startYear:1985,
                                                 endYear:2019,
                                             	popOver:"Chugach National Forest - Kenai Peninsula"},
-                  // 'Science Team CONUS':{
-                  //                               name:'CONUS',
-                  //                               center:[37.5334105816903,-105.6787109375,5],
-                  //                               crs:'EPSG:5070',
-                  //                               lossThresh:0.30,
-                  //                               gainThresh:0.30,
-                  //                               startYear:1985,
-                  //                               endYear:2017,
-                  //                           	popOver:"2018 LCMS Science Team CONUS-wide loss"}
+                  'Science Team CONUS':{
+                                                name:'CONUS',
+                                                center:[37.5334105816903,-105.6787109375,5],
+                                                crs:'EPSG:5070',
+                                                lossThresh:0.30,
+                                                gainThresh:0.30,
+                                                startYear:1985,
+                                                endYear:2019,
+                                            	popOver:"2019 LCMS Science Team CONUS-wide loss"}
                 };
 
 var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],
@@ -114,7 +114,7 @@ var groundOverlayOn = false;
 
 var chartIncludeDate = true;var chartCollection;var areaChartCollections = {};var whichAreaChartCollection;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
-var updateArea;var updateDistance;var areaPolygonObj = {};var udpPolygonObj = {};var udpPolygonNumber = 1;var mapHammer;var chartMTBS;var chartMTBSByNLCD
+var updateArea;var updateDistance;var areaPolygonObj = {};var udpPolygonObj = {};var udpPolygonNumber = 1;var mapHammer;var chartMTBS;var chartMTBSByNLCD;var chartMTBSByAspect;
 
 var distancePolyline;
 var distancePolylineOptions = {
