@@ -1849,7 +1849,9 @@ function runMTBS(){
   chartMTBSByNLCD = true;
   getLCMSVariables();
 
-  mtbsC = getMTBS('anc','layer-list',true); 
+  var mtbsAndNLCD = getMTBSAndNLCD('anc','layer-list',true);
+  var nlcdLCObj = mtbsAndNLCD.NLCD;
+  mtbsC = mtbsAndNLCD.MTBS.collection; 
   getNAIP();
 
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
@@ -1875,9 +1877,15 @@ function runMTBS(){
   Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',true,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
   
   // var years = ee.List.sequence(startYear,mtbs)
-  // var nlcdLCObj = getNLCDObj();
+  
+
+  var chartTableDict = ee.Dictionary(nlcdLCObj.collection.get('chartTableDict')).combine(mtbsC.get('chartTableDict'));
+
+  var nlcdLCFilled =  batchFillCollection(nlcdLCObj.collection,ee.List.sequence(startYear,endYear).getInfo()).map(setSameDate);
+  var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
+  forCharting = forCharting.set('chartTableDict',chartTableDict);
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
-  chartCollection =mtbsC;
+  chartCollection =forCharting;
   populateAreaChartDropdown();
 
   getSelectLayers();
@@ -1900,13 +1908,17 @@ function getSelectLayers(){
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
   var ecoregions_subsections = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections');
   ecoregions_subsections = ecoregions_subsections.select(['MAP_UNIT_N'], ['NAME'], true);
+  var ecoregions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions');
+  ecoregions = ecoregions.select(['PROVINCE'],['NAME'])
   var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
 
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
   Map2.addSelectLayer(huc12,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 12',false,null,null,'HUC 12 watershed boundaries. Turn on layer and click on any HUC 12 wanted to include in chart');
   
-  Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'EPA Ecoregions (Level 4). Turn on layer and click on any ecoregion wanted to include in chart');
+  Map2.addSelectLayer(ecoregions,{strokeColor:'8F8',layerType:'geeVectorImage'},"Baileys Ecoregions",false,null,null,'Baileys ecoregions. Turn on layer and click on any ecoregion wanted to include in chart');
+  
+  Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'Baileys ecoregions subsections. Turn on layer and click on any ecoregion wanted to include in chart');
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
   
   // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');

@@ -544,7 +544,7 @@ function chartUserDefinedArea(){
 		  	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() ;userDefinedI++;};
 		  	var addon = ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';
 		  	udpName +=  addon
-
+		  	$('#summary-spinner').slideDown();
 			makeAreaChart(userArea,udpName,true);	
 		}
 		

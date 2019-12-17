@@ -296,7 +296,7 @@ function getNLCDObj(){
   })
   var nlcdLegendDictReverse = {};
   Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]});
-  var nlcd = ee.ImageCollection('USGS/NLCD').select([0],['landcover']);
+  var nlcd = ee.ImageCollection('USGS/NLCD').select([0],['NLCD Landcover']);
 
   var nlcdC = nlcdYears.map(function(nlcdYear){
       // if(nlcdYear >= startYear  && nlcdYear <= endYear){
@@ -305,9 +305,13 @@ function getNLCDObj(){
         return nlcdT;
       });
   nlcdC = ee.ImageCollection(nlcdC);
+  var chartTableDict = {
+    'NLCD Landcover':nlcdLCQueryDict
+  }
+  nlcdC =  nlcdC.set('bounds',clientBoundsDict.All).set('chartTableDict',chartTableDict);
   return {'collection':nlcdC,'years':nlcdYears,'palette':nlcdLCPalette,'vizDict':nlcdLCVizDict,'queryDict':nlcdLCQueryDict,'legendDict':nlcdLegendDict,'legendDictReverse':nlcdLegendDictReverse,'min':nlcdLCMin,'max':nlcdLCMax}
 }
-function getMTBS(studyAreaName,whichLayerList,showSeverity){
+function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   if(showSeverity === null || showSeverity === undefined){showSeverity = false};
   if(mtbsSummaryMethod === null || mtbsSummaryMethod === undefined){mtbsSummaryMethod = 'Highest-Severity'}
  
@@ -419,7 +423,7 @@ function getMTBS(studyAreaName,whichLayerList,showSeverity){
   var chartTableDict = {
     'Burn Severity':mtbsQueryClassDict
   }
-  return mtbs.set('bounds',clientBoundsDict.All).select([0],['Burn Severity']).set('chartTableDict',chartTableDict);
+  return {'NLCD':nlcdObj,'MTBS':{'collection':mtbs.set('bounds',clientBoundsDict.All).select([0],['Burn Severity']).set('chartTableDict',chartTableDict)}};
 }
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
