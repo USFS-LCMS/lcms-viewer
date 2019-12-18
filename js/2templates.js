@@ -684,7 +684,7 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     })
   }
   function addMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  id = '${radioID}'>${title}<br></form>`);
+    $('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
 
     eval(`window.${variable} = '';`);
     Object.keys(optionList).map(function(k){

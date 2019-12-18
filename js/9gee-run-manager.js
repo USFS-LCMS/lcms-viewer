@@ -1897,7 +1897,9 @@ function runMTBS(){
 
   var nlcdLCFilled =  batchFillCollection(nlcdLCObj.collection,ee.List.sequence(startYear,endYear).getInfo()).map(setSameDate);
   var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
+  
   forCharting = forCharting.set('chartTableDict',chartTableDict);
+  // forCharting = forCharting.set('legends',chartTableDict) 
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
   chartCollection =forCharting;
   populateAreaChartDropdown();

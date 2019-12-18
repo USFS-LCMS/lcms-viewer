@@ -102,6 +102,9 @@ function removeLastSelectArea(){
 	
 
 }
+function formatNumber(n){
+	return n.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+}
 function updateSelectedAreaArea(){
 	var selectedFeatures = getSelectedGEEFeatureCollection();
 	if(selectedFeatures === undefined){
@@ -112,7 +115,7 @@ function updateSelectedAreaArea(){
 		// selectedFeatures.evaluate(function(values){console.log(values)})
 		ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0]).evaluate(function(values,error){
 			if(values === undefined){values = 0;console.log(error)};
-        	$('#selected-features-area').html((values*0.0001).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' hectares / '+(values*0.000247105).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' acres');
+        	$('#selected-features-area').html(formatNumber((values*0.0001)) + ' hectares / '+formatNumber((values*0.000247105)) + ' acres');
         	$('#select-features-area-spinner').hide();
     	})
 	}
@@ -123,7 +126,7 @@ function updateUserDefinedAreaArea(){
 	Object.values(udpPolygonObj).map(function(poly){
 		area += google.maps.geometry.spherical.computeArea(poly.getPath());
 	});
-	$('#user-defined-features-area').html((area*0.0001).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' hectares / '+(area*0.000247105).toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' acres');
+	$('#user-defined-features-area').html(formatNumber((area*0.0001)) + ' hectares / '+formatNumber((area*0.000247105)) + ' acres');
         	
 	
 }
@@ -465,7 +468,10 @@ function startUserDefinedAreaCharting(){
    // udp = new google.maps.Polyline(udpOptions);
 
    udpPolygonObj[udpPolygonNumber].setMap(map);
-
+   google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "click", updateUserDefinedAreaArea);
+   google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "mouseup", updateUserDefinedAreaArea);
+   google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "dragend", updateUserDefinedAreaArea);
+   
    mapHammer = new Hammer(document.getElementById('map'));
    // google.maps.event.addDomListener(mapDiv, 'click', function(event) {
         mapHammer.on("tap", function(event) {
@@ -488,9 +494,16 @@ function startUserDefinedAreaCharting(){
         udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
         udpPolygonObj[udpPolygonNumber].setPath(path);
         udpPolygonObj[udpPolygonNumber].setMap(map);
+        google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "click", updateUserDefinedAreaArea);
+   		google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "mouseup", updateUserDefinedAreaArea);
+   		google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "dragend", updateUserDefinedAreaArea);
         udpPolygonNumber++
         udpPolygonObj[udpPolygonNumber]  = new google.maps.Polyline(udpOptions);
         udpPolygonObj[udpPolygonNumber].setMap(map);
+        google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "click", updateUserDefinedAreaArea);
+   		google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "mouseup", updateUserDefinedAreaArea);
+   		google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "dragend", updateUserDefinedAreaArea);
+   
         updateUserDefinedAreaArea();
  //        google.maps.event.clearListeners(mapDiv, 'dblclick');
  //    	google.maps.event.clearListeners(mapDiv, 'click');
@@ -791,6 +804,7 @@ function stopAreaCharting(){
     });
     udpPolygonObj = {};
     udpPolygonNumber = 1;
+    updateUserDefinedAreaArea();
    }catch(err){};
  //   $('#areaChartingTabs').slideUp();
 	$('#areaUpload').unbind('change')
@@ -1357,12 +1371,17 @@ function makeLegend(legendDicts){
 	$( '#chart-modal-body' ).append(`<div id = 'chart-legend' style = 'font-size:0.7em;' class = 'text-dark row'></div>`);
 	Object.keys(legendDicts).map(function(k){
 		var title = k;
-		var legendDict = JSON.parse(legendDicts[k]);
+		try{
+			var legendDict = JSON.parse(legendDicts[k]);
+		}catch(err){
+			var legendDict = legendDicts[k];
+		}
+		
 		var legendID = title.replaceAll(' ','-')
 		legendID = legendID.replaceAll(':','') + '-legend'
 		$( '#chart-legend' ).append(`<div  class = 'px-2' id='${legendID}'>
 										<div class = 'p-0'>${title}</div>
-										<table class = 'table-bordered' id = '${legendID}-table'></table>
+										<table  style = 'display:inline-block;vertical-align:top' class = 'table-bordered' id = '${legendID}-table'></table>
 									</div>`)
 
 		$('#'+legendID+ '-table').append(`<tr id = '${legendID}-table-names'></tr>`);

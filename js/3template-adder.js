@@ -220,8 +220,8 @@ if(mode === 'LCMS' || mode === 'MTBS'){
   addDropdown('tools-accordian','area-collection-dropdown','Choose which '+mode+' product to summarize','whichAreaChartCollection','Choose which '+mode+' time series to summarize.');
   $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-  addMultiRadio('tools-accordian','area-summary-format','Whether to chart areas as a percentage, acres, or hectares','areaChartFormat',{"Percentage":true,"Acres":false,"Hectares":false})
-  
+  addMultiRadio('tools-accordian','area-summary-format','Area Units','areaChartFormat',{"Percentage":true,"Acres":false,"Hectares":false})
+  $('#area-summary-format').prop('title','Choose how to summarize area- as a percentage of the area, acres, or hectares.')
   addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User-Defined Area',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTipHover);
   addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTipHover);
   // addSubAccordianCard('tools-accordian','select-area-dropdown-chart-label','select-area-dropdown-chart-div','Select an Area from Dropdown',staticTemplates.selectAreaDropdownChartDiv,false,'toggleTool(toolFunctions.area.selectDropdown)',staticTemplates.selectAreaDropdownChartTipHover);
