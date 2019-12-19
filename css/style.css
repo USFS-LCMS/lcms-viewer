@@ -179,6 +179,14 @@ th{font-weight:  600!important}
   font-size: 0.8em;
 
 }
+.chart-table-graph-container {
+  max-height:50em;
+  max-width:90em;
+  overflow-x:auto; 
+  overflow-y:auto; 
+
+
+}
 .chart-table-first-row { position: sticky!important; top: 0!important;}
 .chart-table-first-column { position: sticky; left: 0;}
 

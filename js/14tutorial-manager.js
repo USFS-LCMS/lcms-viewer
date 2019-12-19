@@ -181,8 +181,8 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">Selecting a very large area may not successfully run.</li>
                                       <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
-                                      <li class="list-group-item">You can download a CSV or PNG of the extracted data in the "Download" dropdown menu in the bottom of the chart window</li>
-                                      <li class="list-group-item">To summarize another area, close the chart and repeat this process.  You can continue selecting more areas, or clear your selected areas using the trash can button and start over.</li>
+                                      <li class="list-group-item">You can download a CSV or PNG of the extracted data in the "Download" dropdown menu in the bottom of the chart window.</li>
+                                      <li class="list-group-item">To summarize another area, close the chart and repeat this process. You can continue selecting more areas, or clear your selected areas using the trash can button and start over.</li>
                                     </ul>`
                         }, 
                         'downloads':{
@@ -231,6 +231,7 @@ var walkThroughAdded = false;
 $(window).resize(function(){
     
     moveCollapse('legend-collapse');
+    $('.legendDiv').css('bottom',$('.bottombar').height());
     // moveCollapse('plot-collapse');
     if(walkThroughAdded){
         moveCollapse('walk-through-collapse');

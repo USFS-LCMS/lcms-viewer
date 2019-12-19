@@ -1881,10 +1881,21 @@ function runMTBS(){
   //   })
   // })
   var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  perims = ee.FeatureCollection(perims.copyProperties(mtbsC,['bounds']));
-  // console.log(perims.get('bounds').getInfo())
   perims = perims.filter(ee.Filter.gte('Year',startYear));
   perims = perims.filter(ee.Filter.lte('Year',endYear));
+
+  perims = perims.map(function(f){
+    f = ee.Feature(f);
+    var d = ee.Number(f.get('StartDay')).format('%02d');
+    var m = ee.Number(f.get('StartMonth')).format('%02d');
+    var y = ee.Number(f.get('Year')).format();
+    var out = y.cat('-').cat(m).cat('-').cat(d);
+    return f.select(['Fire_Name','Fire_ID','Fire_Type','Acres'],['1_Fire_Name','2_Fire_ID','3_Fire_Type','4_Acres']).set('5_Start_Date',out);
+  });
+  // perims = ee.FeatureCollection(perims);
+  perims = perims.set('bounds',clientBoundsDict.All);
+  // console.log(perims.get('bounds').getInfo())
+  
   // var perimYear = perims.reduceToImage(['Year'], ee.Reducer.first())
   // var perims = ee.Image().paint(perims,null,2);
   // Map2.addLayer(perimYear,{min:1984,max:2018,palette:'FF0,F00'},'perims year')
@@ -1899,7 +1910,7 @@ function runMTBS(){
   var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
   
   forCharting = forCharting.set('chartTableDict',chartTableDict);
-  // forCharting = forCharting.set('legends',chartTableDict) 
+  forCharting = forCharting.set('legends',chartTableDict) 
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
   chartCollection =forCharting;
   populateAreaChartDropdown();

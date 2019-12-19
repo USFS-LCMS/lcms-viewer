@@ -184,7 +184,7 @@ var staticTemplates = {
                 </div>
             </div>`
         },
-	bottomBar:`<div class = 'bottombar' >
+	bottomBar:`<div class = 'bottombar' id = 'bottombar' >
 
 				<p class = 'px-2 my-1' style = 'float:left'; id='current-tool-selection' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Any tool that is currently active is shown here."></p>
 				<p class = 'px-2 my-1' style = 'float:left'; rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></p>
