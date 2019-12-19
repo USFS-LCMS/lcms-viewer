@@ -1166,14 +1166,14 @@ function startArea(){
             // position: clickCoords
             // });
             // infowindow.open(map);
-             totalArea = totalArea.toFixed(4).toString();
+             totalArea = totalArea.formatNumber();
 
           var polyString = 'polygon';
           if(keys.length>1){
             polyString = 'polygons';
           }
           var areaContent = totalWithArea.toString()+' '+polyString+' <br>'+totalArea +' '+unitName ;
-          if(mode === 'Ancillary'){areaContent += '<br>'+pixelProp.toFixed(2) + ' % pixel'}
+          if(mode === 'Ancillary'){areaContent += '<br>'+pixelProp.formatNumber() + ' % pixel'}
           // $( "#area-measurement" ).html(areaContent);//+' <br>' +pixelProp.toFixed(2) + '%pixel');
           infowindow.setContent(areaContent);
           infowindow.setPosition(clickCoords);
@@ -1524,7 +1524,7 @@ updateDistance = function(){
 
     if(distance >= 0){
      
-          var distanceContent = distance.toFixed(4) + ' ' + unitName 
+          var distanceContent = distance.formatNumber() + ' ' + unitName 
           // $( "#distance-measurement" ).html(distanceContent);
     
           infowindow.setContent(distanceContent);

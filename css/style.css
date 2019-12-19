@@ -160,7 +160,7 @@ th{font-weight:  600!important}
   width:100%;
   color:var(--white);
   background-color: var(--black)!important;
-  max-height:1.7em;
+  /*max-height:1.7em;*/
   z-index:2;
 }
 .image-icon-bar{

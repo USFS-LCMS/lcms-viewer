@@ -102,9 +102,7 @@ function removeLastSelectArea(){
 	
 
 }
-function formatNumber(n){
-	return n.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-}
+
 function updateSelectedAreaArea(){
 	var selectedFeatures = getSelectedGEEFeatureCollection();
 	if(selectedFeatures === undefined){
@@ -115,7 +113,7 @@ function updateSelectedAreaArea(){
 		// selectedFeatures.evaluate(function(values){console.log(values)})
 		ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0]).evaluate(function(values,error){
 			if(values === undefined){values = 0;console.log(error)};
-        	$('#selected-features-area').html(formatNumber((values*0.0001)) + ' hectares / '+formatNumber((values*0.000247105)) + ' acres');
+        	$('#selected-features-area').html((values*0.0001).formatNumber() + ' hectares / '+(values*0.000247105).formatNumber() + ' acres');
         	$('#select-features-area-spinner').hide();
     	})
 	}
@@ -126,7 +124,7 @@ function updateUserDefinedAreaArea(){
 	Object.values(udpPolygonObj).map(function(poly){
 		area += google.maps.geometry.spherical.computeArea(poly.getPath());
 	});
-	$('#user-defined-features-area').html(formatNumber((area*0.0001)) + ' hectares / '+formatNumber((area*0.000247105)) + ' acres');
+	$('#user-defined-features-area').html((area*0.0001).formatNumber()+ ' hectares / '+(area*0.000247105).formatNumber()+ ' acres');
         	
 	
 }
@@ -1043,7 +1041,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
         // console.log(data)
         data = data.map(function(i){
         			var out;
-        			try{out = i.toFixed(4)}
+        			try{out = i.formatNumber(4)}
         			catch(err){out = i;}
         			return out
         			})
@@ -1225,7 +1223,7 @@ function dataTableNumbersToNames(dataTable){
         			tableValue = chartTableDict[label][parseFloat(value)];
         		}
 			}else{
-				try{value = value.toFixed(4)}
+				try{value = value.formatNumber(4)}
 				catch(err){};
 				tableValue =value ;
 			};

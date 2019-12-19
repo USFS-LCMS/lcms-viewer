@@ -301,3 +301,8 @@ String.prototype.replaceAll = function(str1, str2, ignore)
 {
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 } 
+
+Number.prototype.formatNumber = function(n){
+  if(n === undefined || n === null){n = 2}
+  return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+}
