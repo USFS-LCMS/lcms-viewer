@@ -1626,7 +1626,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   
   //Get joined raw and fitted LANDTRENDR for viz
   var joinedTS = getRawAndFittedLT(ts, lt, startYear, endYear, indexName, distDir);
-  chartCollection= joinedTS.select(['.*'+indexName]);
+  var chartCollectionT= joinedTS.select(['.*'+indexName]);
   // Convert LandTrendr to Loss & Gain space
   
   var lossGainDict = convertToLossGain(lt, 'rawLandTrendr', lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, 
@@ -1695,7 +1695,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   var outBns = bns.map(function(bn){return ee.String(indexName).cat('_LT_').cat(bn)});
   outStack = outStack.select(bns,outBns);
   
-  return [rawLt,outStack];
+  return [rawLt,outStack,chartCollectionT];
 }
 
 
@@ -1776,7 +1776,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       var nameEnd = (year-yearBuffer).toString() + '-'+ (year+yearBuffer).toString();
     // print(year);
     if(year%5 ==0 || year === startYear || year === endYear){
-      Map2.addLayer(img,{min:0.05,max:0.35,bands:'swir1,nir,red'},'Composite '+nameEnd,false);
+      Map2.addLayer(img,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Composite '+nameEnd,false);
     }
     Map2.addExport(img.select(['blue','green','red','nir','swir1','swir2']).multiply(10000).int16(),'Landsat_Composite_'+ nameEnd,30,false,{});
     var tempCollection = ee.ImageCollection([img]);         
@@ -1819,11 +1819,14 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   
   })
 
-  
+  var chartCollectionT;
   indexList.map(function(indexName){
-    var LTStack = simpleLANDTRENDR(srCollection,startYear,endYear,indexName)[1];
-    
+    var LTStack = simpleLANDTRENDR(srCollection,startYear,endYear,indexName);
+    if(chartCollectionT === undefined){
+      chartCollectionT = LTStack[2];
+    }else{chartCollectionT = joinCollections(chartCollectionT,LTStack[2],false)}
   })
+  chartCollection = chartCollectionT;
   
   // var distDir = -1;
   // 

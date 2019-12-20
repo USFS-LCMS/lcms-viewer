@@ -1043,8 +1043,9 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
         // console.log(data)
         data = data.map(function(i){
         			var out;
-        			try{out = i.formatNumber()}
+        			try{out = i.toFixed(6)}
         			catch(err){out = i;}
+        			
         			return out
         			})
         // console.log(data)
@@ -1205,7 +1206,7 @@ function dataTableNumbersToNames(dataTable){
 	try{chartTableDict = chartCollection.get('chartTableDict').getInfo();}
 	catch(err){chartTableDict = null};
 
-	var keys = Object.keys(chartTableDict);
+	
 	// console.log(chartTableDict)
 	var header = dataTable[0];
 	var outTable = [header];
@@ -1239,7 +1240,7 @@ function dataTableNumbersToNames(dataTable){
         		// 	tableValue = chartTableDict[label][parseFloat(value)];
         		// }
 			}else{
-				try{value = value.formatNumber()}
+				try{value = value.toFixed(6)}
 				catch(err){};
 				tableValue =value ;
 			};

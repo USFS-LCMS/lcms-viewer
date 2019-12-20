@@ -366,11 +366,12 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
         description:exportOutputName,
         region:region,
         outputBucket:bucketName ,
-        maxPixels : 1e13,
         outputPrefix: exportOutputName,
         crs:exportCRS,
-        scale: exportScale
-        
+        scale: exportScale,
+        maxPixels:1e13,
+        shardSize:256,
+        fileDimensions:256*75
         }
 
     //Set up a task and update the spinner
