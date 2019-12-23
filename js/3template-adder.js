@@ -185,6 +185,7 @@ if(mode === 'LCMS'){
 
 $('body').append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-4 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
 $('.legendDiv').css('bottom',$('.bottombar').height());
+$('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
 addLegendCollapse();
 
 //Add tool tabs

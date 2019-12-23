@@ -232,6 +232,7 @@ $(window).resize(function(){
     
     moveCollapse('legend-collapse');
     $('.legendDiv').css('bottom',$('.bottombar').height());
+    $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
     // moveCollapse('plot-collapse');
     if(walkThroughAdded){
         moveCollapse('walk-through-collapse');
