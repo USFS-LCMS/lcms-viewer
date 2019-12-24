@@ -10,6 +10,12 @@ var  titles = {
 		    rightWords:'Explorer',
 		    title:'LCMS Data Explorer'
 			},
+    'lcms-base-learner': {
+            leftWords: 'LCMS',
+            centerWords: 'Base-Learner',
+            rightWords:'Explorer',
+            title:'LCMS Base Learner Explorer'
+            },
 	'Ancillary': {
 		    leftWords: 'Ancillary',
 		    centerWords: 'DATA',

@@ -895,6 +895,94 @@ function runCONUS(){
   // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
 
 } // end runCONUS()
+function runBaseLearner(){
+  var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
+// print(lt.aggregate_array('system:index').getInfo())
+var transform = [30,0,-2361915.0,0,-30,3177735.0];
+var crs  = 'EPSG:5070';
+
+var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
+var lossMagPalette = 'F5DEB3,D00';
+var gainMagPalette = 'F5DEB3,006400';
+var durPalette = 'BD1600,E2F400,0C2780';
+////////////////////////////////////////////////////
+var indexName = 'NBR';
+
+///////////////////////////////////////////////////
+var segNumbers = ee.List.sequence(0,10);
+var segNumbers2 = ee.List.sequence(1,11);
+var segNumbersLeft = segNumbers.slice(0,-1);
+var segNumbersRight = segNumbers.slice(1,null);
+
+var bns = segNumbers.map(function(bn){return ee.Number(bn).byte().format()});
+var bns2 = segNumbers2.map(function(bn){return ee.Number(bn).byte().format()});
+var indexList = [];Object.keys(whichIndices).map(function(index){if(whichIndices[index]){indexList.push(index)}});
+var chartCollectionT;
+function getLT(indexName){
+var ltT = lt.filter(ee.Filter.stringContains('system:index',indexName)).mosaic();
+ltT = ltT.reproject(crs,transform);
+// print(ltT.getInfo())
+// Map.addLayer(lt,{},'lt-stack',false);
+
+function addPrefix(bn,prefix){return ee.String(prefix).cat(bn)}
+
+  var ltFitted = ltT.select(['ftv.*']);
+  var ltYrs = ltT.select(['doy.*']);
+
+  // var forAnnual = 
+  var ftvBns = bns.map(function(bn){return addPrefix(bn,'ftv')});
+  var fittedBns = bns2.map(function(bn){return addPrefix(bn,'fit_')});
+
+  var yrBns = bns.map(function(bn){return addPrefix(bn,'doy')});
+  var yrsBns = bns2.map(function(bn){return addPrefix(bn,'yrs_')});
+  
+  var forAnnual = ltYrs.rename(yrsBns).addBands(ltFitted.rename(fittedBns));
+  var annualLT = fitStackToCollection(forAnnual, 10, startYear, endYear).select(['fitted']);
+  var annualBns = ee.Image(annualLT.first()).bandNames();
+  var annualBnsIndex = annualBns.map(function(bn){return addPrefix(bn,indexName+'_')});
+  annualLT = annualLT.select(annualBns,annualBnsIndex)
+  if(chartCollectionT === undefined){chartCollectionT = annualLT}
+  else{chartCollectionT = joinCollections(chartCollectionT,annualLT,false)}
+  
+
+
+  var ltFittedLeft = ltFitted.select(ftvBns.slice(0,-1));
+  var ltFittedRight = ltFitted.select(ftvBns.slice(1,null));
+
+  var ltYrsLeft = ltYrs.select(yrBns.slice(0,-1));
+  var ltYrsRight = ltYrs.select(yrBns.slice(1,null));
+
+  var diff = ltFittedRight.subtract(ltFittedLeft);//.selfMask();
+
+  var lossThresh = lossMagThresh*-1000;
+  var gainThresh = gainMagThresh*1000;
+  var loss = diff.gt(lossThresh);//.selfMask();
+  var gain = diff.multiply(-1).gt(gainThresh);//.selfMask();
+
+  var lossYrStart = ltYrsLeft.multiply(loss).reduce(ee.Reducer.max()).selfMask();
+  var gainYrStart = ltYrsLeft.multiply(gain).reduce(ee.Reducer.max()).selfMask();
+
+  var lossYrEnd = ltYrsRight.multiply(loss).reduce(ee.Reducer.max()).selfMask();
+  var gainYrEnd = ltYrsRight.multiply(gain).reduce(ee.Reducer.max()).selfMask();
+  var lossMag = diff.multiply(loss).reduce(ee.Reducer.max()).selfMask();
+  var gainMag = diff.multiply(-1).multiply(gain).reduce(ee.Reducer.max()).selfMask();
+
+  var lossDuration = lossYrEnd.subtract(lossYrStart);
+  var gainDuration = gainYrEnd.subtract(gainYrStart);
+
+
+  Map2.addLayer(ee.Image(lossYrEnd),{min:1985,max:2019,palette:lossYearPalette},indexName+' Loss Yr',true);
+  Map2.addLayer(ee.Image(lossMag),{min:lossThresh,max:lossThresh + 500,palette:lossMagPalette},indexName+' Loss Magnitude',false);
+  Map2.addLayer(ee.Image(lossDuration),{min:1,max:5,palette:durPalette},indexName+' Loss Duration',false);
+  
+  Map2.addLayer(ee.Image(gainYrEnd),{min:1985,max:2019,palette:gainYearPalette},indexName+' Gain Yr',false);
+  Map2.addLayer(ee.Image(gainMag),{min:gainThresh,max:gainThresh+500,palette:gainMagPalette},indexName+' Gain Magnitude',false);
+  Map2.addLayer(ee.Image(gainDuration),{min:1,max:5,palette:durPalette},indexName+' Gain Duration',false);
+}
+indexList.map(getLT);
+chartCollection = chartCollectionT;
+}
 function runRaw(){
   getLCMSVariables();
   // Initial load & format of LCMS layers
@@ -1800,24 +1888,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   
   // print(ee.Image(srCollection.first()).bandNames().getInfo())
   var indexList = [];
-  Object.keys(whichIndices).map(function(index){
-    if(whichIndices[index]){
-      // var trendName = index+' Linear Trend '+startYear.toString() + '-' + endYear.toString();
-      indexList.push(index);
-      // var trend = srCollection.select(['year',index]).reduce(ee.Reducer.linearFit()).select([0]);
-      // Map2.addExport(trend.multiply(10000).int16(),trendName ,30,true,{});
-    
-      // Map2.addLayer(trend,{min:-0.05,max:0.05,palette:'F00,888,00F'},trendName,false);
-      // var classes = ee.Image(0);
-      // classes = classes.where(trend.lte(-0.005),1)
-      // classes = classes.where(trend.gte(0.005),2)
-      // classes = classes.mask(classes.neq(0))
-      // Map2.addLayer(classes,{min:1,max:2,palette:'F00,0F0',addToClassLegend:true,classLegendDict: {'Loss':'F00','Gain':'0F0'}},index+' Change Category '+startYear.toString() + '-' + endYear.toString(),false)
-    
-    }
-    // chartCollection = srCollection.select(indexList)
-  
-  })
+  Object.keys(whichIndices).map(function(index){if(whichIndices[index]){indexList.push(index)}})
 
   var chartCollectionT;
   indexList.map(function(indexName){

@@ -1614,6 +1614,8 @@ function dropdownUpdateStudyArea(whichOne){
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
+    }else if(mode === 'lcms-base-learner'){
+      run = runBaseLearner
     }
       else if(studyAreaName === 'CONUS'){
       run = runCONUS
@@ -1958,6 +1960,8 @@ function initialize() {
       run  = runLT;
     } else if(mode === 'MTBS'){
       run = runMTBS;
+    }else if(mode === 'lcms-base-learner'){
+      run = runBaseLearner
     }else if(studyAreaName === 'CONUS'){
       run = runCONUS;
     
