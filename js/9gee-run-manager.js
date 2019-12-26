@@ -929,7 +929,8 @@ function addPrefix(bn,prefix){return ee.String(prefix).cat(bn)}
 
   var ltFitted = ltT.select(['ftv.*']);
   var ltYrs = ltT.select(['doy.*']);
-
+  // startYear = 1984;
+  
   // var forAnnual = 
   var ftvBns = bns.map(function(bn){return addPrefix(bn,'ftv')});
   var fittedBns = bns2.map(function(bn){return addPrefix(bn,'fit_')});
@@ -945,11 +946,14 @@ function addPrefix(bn,prefix){return ee.String(prefix).cat(bn)}
   if(chartCollectionT === undefined){chartCollectionT = annualLT}
   else{chartCollectionT = joinCollections(chartCollectionT,annualLT,false)}
   
+  ltYrs = ltYrs.updateMask(ltYrs.gte(startYear).and(ltYrs.lte(endYear)));
+  ltFitted = ltFitted.updateMask(ltYrs.mask());
 
 
   var ltFittedLeft = ltFitted.select(ftvBns.slice(0,-1));
   var ltFittedRight = ltFitted.select(ftvBns.slice(1,null));
-
+  // startYear = 2015;endYear = 2019;
+  
   var ltYrsLeft = ltYrs.select(yrBns.slice(0,-1));
   var ltYrsRight = ltYrs.select(yrBns.slice(1,null));
 
@@ -957,28 +961,36 @@ function addPrefix(bn,prefix){return ee.String(prefix).cat(bn)}
 
   var lossThresh = lossMagThresh*-1000;
   var gainThresh = gainMagThresh*1000;
+
   var loss = diff.gt(lossThresh);//.selfMask();
   var gain = diff.multiply(-1).gt(gainThresh);//.selfMask();
 
-  var lossYrStart = ltYrsLeft.multiply(loss).reduce(ee.Reducer.max()).selfMask();
-  var gainYrStart = ltYrsLeft.multiply(gain).reduce(ee.Reducer.max()).selfMask();
+  var lossYrStart = ltYrsLeft.mask(loss).reduce(ee.Reducer.max()).selfMask();
+  var gainYrStart = ltYrsLeft.mask(gain).reduce(ee.Reducer.max()).selfMask();
 
-  var lossYrEnd = ltYrsRight.multiply(loss).reduce(ee.Reducer.max()).selfMask();
-  var gainYrEnd = ltYrsRight.multiply(gain).reduce(ee.Reducer.max()).selfMask();
-  var lossMag = diff.multiply(loss).reduce(ee.Reducer.max()).selfMask();
-  var gainMag = diff.multiply(-1).multiply(gain).reduce(ee.Reducer.max()).selfMask();
+  var lossYrEnd = ee.Image(ltYrsRight.mask(loss).reduce(ee.Reducer.max()).selfMask());
+  var gainYrEnd = ee.Image(ltYrsRight.mask(gain).reduce(ee.Reducer.max()).selfMask());
+  var lossMag = ee.Image(diff.mask(loss).reduce(ee.Reducer.max()).selfMask());
+  var gainMag = ee.Image(diff.multiply(-1).mask(gain).reduce(ee.Reducer.max()).selfMask());
 
-  var lossDuration = lossYrEnd.subtract(lossYrStart);
-  var gainDuration = gainYrEnd.subtract(gainYrStart);
+  var lossDuration = ee.Image(lossYrEnd.subtract(lossYrStart));
+  var gainDuration = ee.Image(gainYrEnd.subtract(gainYrStart));
 
 
-  Map2.addLayer(ee.Image(lossYrEnd),{min:1985,max:2019,palette:lossYearPalette},indexName+' Loss Yr',true);
-  Map2.addLayer(ee.Image(lossMag),{min:lossThresh,max:lossThresh + 500,palette:lossMagPalette},indexName+' Loss Magnitude',false);
-  Map2.addLayer(ee.Image(lossDuration),{min:1,max:5,palette:durPalette},indexName+' Loss Duration',false);
+  Map2.addLayer(lossYrEnd.set('bounds',clientBoundsDict.CONUS),{min:startYear,max:endYear,palette:lossYearPalette},indexName+' Loss Yr',true);
+  Map2.addLayer(lossMag.set('bounds',clientBoundsDict.CONUS),{min:lossThresh,max:lossThresh + 500,palette:lossMagPalette},indexName+' Loss Magnitude',false);
+  Map2.addLayer(lossDuration.set('bounds',clientBoundsDict.CONUS),{min:1,max:5,palette:durPalette},indexName+' Loss Duration',false);
   
-  Map2.addLayer(ee.Image(gainYrEnd),{min:1985,max:2019,palette:gainYearPalette},indexName+' Gain Yr',false);
-  Map2.addLayer(ee.Image(gainMag),{min:gainThresh,max:gainThresh+500,palette:gainMagPalette},indexName+' Gain Magnitude',false);
-  Map2.addLayer(ee.Image(gainDuration),{min:1,max:5,palette:durPalette},indexName+' Gain Duration',false);
+  Map2.addLayer(gainYrEnd.set('bounds',clientBoundsDict.CONUS),{min:startYear,max:endYear,palette:gainYearPalette},indexName+' Gain Yr',false);
+  Map2.addLayer(gainMag.set('bounds',clientBoundsDict.CONUS),{min:gainThresh,max:gainThresh+500,palette:gainMagPalette},indexName+' Gain Magnitude',false);
+  Map2.addLayer(gainDuration.set('bounds',clientBoundsDict.CONUS),{min:1,max:5,palette:durPalette},indexName+' Gain Duration',false);
+
+  Map2.addExport(lossYrEnd.int16(),indexName +'_Loss_Yr',30,true,{});
+  Map2.addExport(lossMag.int16(),indexName +'_Loss_Mag',30,false,{});
+  Map2.addExport(lossDuration.int16(),indexName +'_Loss_Dur',30,false,{});
+  Map2.addExport(gainYrEnd.int16(),indexName +'_Gain_Yr',30,false,{});
+  Map2.addExport(gainMag.int16(),indexName +'_Gain_Mag',30,false,{});
+  Map2.addExport(gainDuration.int16(),indexName +'_Gain_Dur',30,false,{});
 }
 indexList.map(getLT);
 chartCollection = chartCollectionT;

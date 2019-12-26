@@ -91,6 +91,7 @@ if(mode === 'LCMS'){
   $('#support-collapse-div').append(staticTemplates.supportDiv);
 
 }else if(mode === 'lcms-base-learner'){
+  canExport = true;
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
 
@@ -107,6 +108,7 @@ if(mode === 'LCMS'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS BASE LEARNER DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+  addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
   
 }else if(mode === 'LT'){
   canExport = true;
@@ -266,7 +268,12 @@ if(mode === 'MTBS' || mode === 'Ancillary'){
 }
 if(canExport){
    $('#download-collapse-div').append(staticTemplates.exportContainer);
-
+   if(localStorage.export_crs !== undefined && localStorage.export_crs !== null && localStorage.export_crs.indexOf('EPSG') > -1){
+    $('#export-crs').val(localStorage.export_crs)
+  }else{localStorage.export_crs = $('#export-crs').val()};
+   function cacheCRS(){
+    localStorage.export_crs = $('#export-crs').val();
+   }
 }
 
 // addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');

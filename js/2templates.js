@@ -61,10 +61,10 @@ var staticTemplates = {
                         <div class = 'py-2' id="export-list"></div>
                         <div class = 'dropdown-divider'></div>
                         <div class = 'pl-3'>
-                            <form class="form-inline">
+                            <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
                               <label for="export-crs">Projection: </label>
                               <div class="form-group pl-1">
-                                <input type="text" id="export-crs" name="rg-from" value="EPSG:4326" class="form-control">
+                                <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
                               </div> 
                               
                             </form>
