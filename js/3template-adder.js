@@ -167,7 +167,7 @@ if(mode === 'LCMS'){
   var mtbsZoomToDict ={"All":true,"CONUS":false,"Alaska":false,"Hawaii":false,"Puerto-Rico":false};
 
   addMultiRadio('parameters-collapse-div','mtbs-zoom-to-radio','Zoom to MTBS Mapping Area','mtbsMappingArea',mtbsZoomToDict)
-  
+  $('#mtbs-zoom-to-radio').prop('title','Zoom to MTBS region')
   $( "#mtbs-zoom-to-radio" ).change(function() {
     console.log(mtbsMappingArea);
     synchronousCenterObject(clientBoundsDict[mtbsMappingArea])

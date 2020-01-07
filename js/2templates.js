@@ -132,7 +132,7 @@ var staticTemplates = {
                         </div>
 
                         <div class="modal-body" id = 'introModal-body'>
-                            <p class="pb-3 ">This viewer is intended to provide an efficient way of looking at ancillary data to help with responses for the TimeSync tool.</p>
+                            <p class="pb-2 ">This viewer is intended to provide an efficient way of looking at ancillary data to help with responses for the TimeSync tool.</p>
                         	
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
@@ -154,7 +154,7 @@ var staticTemplates = {
                         </div>
 
                         <div class="modal-body" id = 'introModal-body' >
-                            <p class="pb-3 ">This tool is intended to allow for quick exploration of the Landsat time series and long-term trends. Any area on earth can be mapped.</p>
+                            <p class="pb-2 ">This tool is intended to allow for quick exploration of the Landsat time series and long-term trends. Any area on earth can be mapped.</p>
                             
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
@@ -176,7 +176,7 @@ var staticTemplates = {
                         </div>
 
                         <div class="modal-body" id = 'introModal-body'>
-                            <p class="pb-3 ">This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.</p>
+                            <p class="pb-2 ">This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.</p>
                             
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
