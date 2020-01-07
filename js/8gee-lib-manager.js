@@ -532,7 +532,7 @@ function getNAIP(whichLayerList){
   // })
   naipYears.map(function(yr){
     
-    var naipT = naip.filter(ee.Filter.calendarRange(yr[0],yr[1],'year')).mosaic().byte();
+    var naipT = naip.filter(ee.Filter.calendarRange(yr[0],yr[1],'year')).mosaic().byte().set('bounds',clientBoundsDict.CONUS);
    
     Map2.addLayer(naipT,{'addToLegend':false,'min':25,'max':225},'NAIP ' + yr[0].toString()+ '-'+yr[1].toString(),false,null,null,'The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the '+yr[0].toString()+' to the ' + yr[1].toString() +' agricultural growing season in the continental U.S.',whichLayerList);
   });

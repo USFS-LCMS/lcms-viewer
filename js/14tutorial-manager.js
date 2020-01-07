@@ -1,6 +1,6 @@
 
 
-var walkThroughKeysOrder = {'MTBS':["intro", "data-layers","parameters-mtbs", "reference-layers-mtbs", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series", "area-tools-overview","area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'finished'],
+var walkThroughKeysOrder = {'MTBS':["intro", "data-layers","parameters-mtbs", "reference-layers-mtbs", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series-mtbs", "area-tools-overview","area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'finished'],
                       'LCMS':["intro", "data-layers","parameters-lcms", "reference-layers-lcms", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series", "area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'downloads','finished']}
 
 
@@ -65,8 +65,8 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>TOOLS-Measuring Tools-Distance Measuring</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Distance Measuring" tool</li>
-                                      <li class="list-group-item">Once activated, click on map to draw line to measure distance.</li>
-                                      <li class="list-group-item">Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.</li>
+                                      <li class="list-group-item">Once activated, click on the map to draw a line to measure distance.</li>
+                                      <li class="list-group-item">Press <kbd>ctrl+z</kbd> to undo the most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.</li>
                                       <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing as well.</li>
                                       <li class="list-group-item">Units can be toggled between imperial and metric using the toggler button.</li>
                                       <li class="list-group-item">If the color of the line is hard to see, it can be changed with the color picker under the tool in the left sidebar.</li>
@@ -77,12 +77,12 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>TOOLS-Measuring Tools-Area Measuring</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Area Measuring" tool</li>
-                                      <li class="list-group-item">Once activated, click on map to draw polygons to measure area.</li>
+                                      <li class="list-group-item">Once activated, click on the map to draw polygons to measure area.</li>
                                       <li class="list-group-item">Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over.</li>
                                       <li class="list-group-item">Buttons are available under the tool in the left sidebar to undo and restart drawing as well.</li>
                                       <li class="list-group-item">Units can be toggled between imperial and metric using the toggler button.</li>
                                       <li class="list-group-item">If the color of the line is hard to see, it can be changed with the color picker under the tool in the left sidebar.</li>
-                                      <li class="list-group-item">Multiple polygons can be drawn at a time.</li>
+                                      <li class="list-group-item">Multiple areas can be measured by continuing to click after a polygon has been completed.</li>
                                     </ul>`
                         },
                         'pixel-tools-query-visible-map-layers':{
@@ -112,8 +112,22 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data in the "Download" dropdown menu in the bottom of the chart window</li>
                                       <li class="list-group-item">To query another area, close the chart using the <kbd>&times</kbd> button in the upper right or by clicking off the chart window. Then repeat the process by double-clicking somewhere on the map</li>
                                     </ul>`
-                        },
-                        'area-tools-overview':{
+                        },'pixel-tools-query-time-series-mtbs':{
+                            divID: 'tools-collapse-div',
+                            message:`<h5 class = 'list-group-title'>TOOLS-Pixel Tools-Query ${mode} Time Series</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">Activate the "Query ${mode} Time Series" tool</li>
+                                      <li class="list-group-item">This tool allows you to query a single pixel from the ${mode} time series as well as NLCD landcover.</li>
+                                      <li class="list-group-item">This is helpful to understand what happened in a smaller area and to understand the suite of products available from ${mode} in the context of NLCD landcover.</li>
+                                      <li class="list-group-item">Once activated, anywhere you double-click will query the ${mode} and NLCD time series.</li>
+                                      <li class="list-group-item">Sometimes it can take some time to query the ${mode} and NLCD time series as the query is done on-the-fly within Google Earth Engine</li>
+                                      <li class="list-group-item">Once this is complete, a chart will apear</li>
+                                      <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
+                                      <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
+                                      <li class="list-group-item">You can download a CSV or PNG of the extracted data in the "Download" dropdown menu in the bottom of the chart window</li>
+                                      <li class="list-group-item">To query another area, close the chart using the <kbd>&times</kbd> button in the upper right or by clicking off the chart window. Then repeat the process by double-clicking somewhere on the map</li>
+                                    </ul>`
+                        },'area-tools-overview':{
                             divID: 'tools-collapse-div',
                             message:`<h5 class = 'list-group-title'>TOOLS-Area Tools-Overview</h5>
                                     <ul class="list-group list-group-flush">
@@ -138,7 +152,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">You can provide a name if you would like.  Otherwise one will be provided.</li>
                                       <li class="list-group-item">Once drawing is finished, click on the <kbd>Chart Selected Areas</kbd> button to create the chart.</li>
                                       <li class="list-group-item">Sometimes it can take some time to summarize the area as it is done on-the-fly within Google Earth Engine.</li>
-                                      <li class="list-group-item">Selecting a very large area may not successfully run. Right now if the total area is > 5,000,000,000 acres, the process becomes a bit unstable and may not successfully create a chart. The area you selected is tabulated and provided under the "Total area selected" title.</li>
+                                      <li class="list-group-item">Selecting a very large area may not successfully run. Right now if the total area is > 10,000,000 acres (4046856 hectares), the process becomes a bit unstable and may not successfully create a chart. The area you selected is tabulated and provided under the "Total area selected" title.</li>
                                       <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data in the "Download" dropdown menu in the bottom of the chart window</li>

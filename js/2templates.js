@@ -557,7 +557,7 @@ function showTip(title,message){
 	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
 	  }
-	if(localStorage.showToolTipModal === 'true' ){
+	if(localStorage.showToolTipModal === 'true' && walkThroughAdded == false){
 	  $('#tip-modal').modal().show();
 	}
 	$('#dontShowTipAgainCheckbox').change(function(){
