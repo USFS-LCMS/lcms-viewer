@@ -414,22 +414,22 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
                                   'chartType':'bar',
                                   'xAxisProperty':'year',
                                   'tooltip':'Chart the MTBS burn severity by year'}
-    areaChartCollections['mtbs_burn_mosaic'] = {'collection':ee.ImageCollection([mtbs.select([2]).mosaic().unmask(0).rename(['Burned']).set('Burned','All Mapped Burned Area (Low, Moderate, and High Severity combined)')]),
+    areaChartCollections['mtbs_burn_mosaic'] = {'collection':ee.ImageCollection([mtbs.select([2]).mosaic().unmask(0).rename(['Burned']).set('Burned','All Mapped Burned Area (Total of Low, Moderate, and High Severity) ' +startYear.toString() + '-' + endYear.toString())]),
                                   'colors':['#CC5500'],
-                                  'label':'MTBS Burned Area Total Across All Years',
+                                  'label':'MTBS Burned Area Total '+startYear.toString() + '-' + endYear.toString(),
                                   'stacked':true,
                                   'steppedLine':false,
                                   'chartType':'bar',
                                   'xAxisProperty':'Burned',
-                                  'tooltip':'Chart the union of all burned areas (areas with low, moderate, or high severity)'}
-    areaChartCollections['mtbs_burn_severity_mosaic'] = {'collection':ee.ImageCollection([mtbsStack.max().unmask(0).set('Burned','Burn Severity')]),
+                                  'tooltip':'Chart the union of all burned areas (areas with low, moderate, or high severity) ' +startYear.toString() + '-' + endYear.toString()}
+    areaChartCollections['mtbs_burn_severity_mosaic'] = {'collection':ee.ImageCollection([mtbsStack.max().unmask(0).set('Burned','Burn Severity Total ' +startYear.toString() + '-' + endYear.toString())]),
                                   'colors':Object.values(mtbsClassDict),
-                                  'label':'MTBS Burn Severity Total Across All Years',
+                                  'label':'MTBS Burn Severity Total '+startYear.toString() + '-' + endYear.toString(),
                                   'stacked':true,
                                   'steppedLine':false,
                                   'chartType':'bar',
                                   'xAxisProperty':'Burned',
-                                  'tooltip':'Chart the union of burn severity. The maximum severity is used when fires overlap. '}
+                                  'tooltip':'Chart the union of burn severity ' +startYear.toString() + '-' + endYear.toString()+'. The maximum severity is used when fires overlap. '}
   }
   var mtbsMaxSeverity = mtbs.select([0]).max();
   if(chartMTBSByNLCD){

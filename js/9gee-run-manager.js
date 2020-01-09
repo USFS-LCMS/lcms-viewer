@@ -2034,7 +2034,7 @@ function getSelectLayers(){
   Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'Baileys ecoregions subsections. Turn on layer and click on any ecoregion wanted to include in chart');
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
   
-  Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
+  // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
 
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   
