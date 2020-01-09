@@ -293,7 +293,8 @@ function runUSFS(){
     // End CNFKP Layers
 
     //----------------Prep Universal Layers & Add Some------------------------------------------------------
-    
+    mtbsSummaryMethodDict = {'year':'Most-Recent','prob':'Highest-Severity'};
+    mtbsSummaryMethod = mtbsSummaryMethodDict[summaryMethod]
     getMTBSandIDS(studyAreaName);
     var studyAreas = collectionDict[studyAreaName][4];
     studyAreas.map(function(studyArea){
