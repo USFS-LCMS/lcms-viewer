@@ -1,7 +1,7 @@
 
 
-var walkThroughKeysOrder = {'MTBS':["intro", "data-layers","parameters-mtbs", "reference-layers-mtbs", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series-mtbs", "area-tools-overview","area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'finished'],
-                      'LCMS':["intro", "data-layers","parameters-lcms", "reference-layers-lcms", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series", "area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'downloads','finished']}
+var walkThroughKeysOrder = {'MTBS':["intro", "data-layers","legend","parameters-mtbs", "reference-layers-mtbs", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series-mtbs", "area-tools-overview","area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'finished'],
+                      'LCMS':["intro", "data-layers","legend","parameters-lcms", "reference-layers-lcms", "tools-overview", "measuring-tools-distance-measuring", "measuring-tools-area-measuring", "pixel-tools-query-visible-map-layers", "pixel-tools-query-time-series", "area-tools-user-defined-area", "area-tools-user-uploaded-area", "area-tools-user-selected-area",'downloads','finished']}
 
 
 walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode} DATA Explorer Walk-Through</h5>
@@ -26,6 +26,15 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">If you do not see the layer when you turn it on, you can  double-click on the layer name to zoom to the extent of the layer.</li>
                                       <li class="list-group-item">Since all of map layers are being created on-the-fly within <span><a href="https://earthengine.google.com/" target="_blank">Google Earth Engine (GEE) </a></span>, there can be a delay. The number of layers still being created within GEE can be viewed on the bottom bar under "Queue length for maps from GEE," while the number of layers tiles are still being downloaded for appears under "Number of map layers loading tiles."</li>
                                       <li class="list-group-item">When appropriate, when a layer is turned on, an entry in the LEGEND on the bottom-right side (above this tutorial window) will appear.</li>  
+                                    </ul>`
+                        },
+                        'legend':{
+                            divID: 'legend-collapse-div',
+                            message:`<h5 class = 'list-group-title'>LEGEND</h5>
+                                    <ul class="list-group list-group-flush">
+                                      <li class="list-group-item">The LEGEND menu in the right sidebar (above this tutorial) shows a key for visible layers in the ${mode} DATA layers or REFERENCE layers menu in the left sidebar.</li>
+                                      <li class="list-group-item">LEGEND items are only displayed if the layer is displayed and it is appropriate to have a legend entry.</li>
+                                      <li class="list-group-item">Thematic data layers will have individual colors and names listed while continuous data layers will have a color ramp with numeric values. Vector data layers will display the color of the outline.</li>
                                     </ul>`
                         },
                         'reference-layers-lcms':{
@@ -224,7 +233,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>PARAMETERS</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">There are a number of parameters that can be changed.</li>
-                                      <li class="list-group-item">The first is a set of radio buttons that enable you to zoom to different areas ${mode} products are available for. Click on any to zoom to that area.</li>
+                                      <li class="list-group-item">The first is a set of radio buttons that enables you to zoom to different areas ${mode} products are available for. Click on any to zoom to that area.</li>
                                       <li class="list-group-item">The second is the analysis year range. ${mode} data can be filtered by the selected years within the dual slider.</li>
                                       <li class="list-group-item">The third parameter is how the MTBS raster data are summarized.</li>
                                       <li class="list-group-item">Since both the "MTBS Burn Severity" and "MTBS Burn Year" layers can only display a single severity value and year respectively, a method for choosing which to show when multiple fires overlap must be chosen.</li>

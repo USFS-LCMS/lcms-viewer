@@ -317,7 +317,8 @@ function populateAreaChartDropdown(){
   whichAreaChartCollection = keys[0];
   if(keys.length > 1){
     Object.keys(areaChartCollections).map(function(k){
-    addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k);
+    addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k,areaChartCollections[k].tooltip);
+
     });
     $('#area-collection-dropdown-container').show();
   }else{$('#area-collection-dropdown-container').hide();}
@@ -1105,7 +1106,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 		    },
 		    scales: {
 				yAxes: [{ stacked: stacked ,scaleLabel:{display:displayYAxis,labelString:yAxisLabel}}],
-				xAxes: [{ stacked: stacked ,scaleLabel:{display:displayXAxis,labelString:xAxisLabel}}]
+				xAxes: [{ stacked: stacked ,scaleLabel:{display:displayXAxis,labelString:xAxisLabel},maxBarThickness: 100}]
 			}
     	}	
 	});

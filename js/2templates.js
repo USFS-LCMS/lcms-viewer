@@ -358,8 +358,9 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 	  });
 	
 }
-function addDropdownItem(dropdownID,label,value){
-	$('#'+dropdownID).append(`<option value = "${value}">${label}</option>`)
+function addDropdownItem(dropdownID,label,value,tooltip){
+    if(tooltip === undefined || tooltip === null){tooltip = ''};
+	$('#'+dropdownID).append(`<option title = "${tooltip}" value = "${value}">${label}</option>`)
 }
 	
 //////////////////////////////////////////////////////////////////////////////////////////////

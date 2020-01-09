@@ -346,6 +346,7 @@ function getNLCDObj(){
   nlcdC =  nlcdC.set('bounds',clientBoundsDict.All).set('chartTableDict',chartTableDict);
   return {'collection':nlcdC,'years':nlcdYears,'palette':nlcdLCPalette,'vizDict':nlcdLCVizDict,'queryDict':nlcdLCQueryDict,'legendDict':nlcdLegendDict,'legendDictReverse':nlcdLegendDictReverse,'min':nlcdLCMin,'max':nlcdLCMax}
 }
+ 
 function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   if(showSeverity === null || showSeverity === undefined){showSeverity = false};
   if(mtbsSummaryMethod === null || mtbsSummaryMethod === undefined){mtbsSummaryMethod = 'Highest-Severity'}
@@ -381,6 +382,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   });
  
   mtbs = ee.ImageCollection(mtbs);
+
   var mtbsSummaryDict = {'Highest-Severity':'burnSeverityRemap',"Most-Recent":'burnYear',"Oldest":'burnYearNegative'}
   var mtbsSummarized = mtbs.qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod]);
   var mtbsCount = mtbs.select([2]).count();
@@ -410,7 +412,24 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
                                   'stacked':true,
                                   'steppedLine':false,
                                   'chartType':'bar',
-                                  'xAxisProperty':'year'}
+                                  'xAxisProperty':'year',
+                                  'tooltip':'Chart the MTBS burn severity by year'}
+    areaChartCollections['mtbs_burn_mosaic'] = {'collection':ee.ImageCollection([mtbs.select([2]).mosaic().unmask(0).rename(['Burned']).set('Burned','All Mapped Burned Area (Low, Moderate, and High Severity combined)')]),
+                                  'colors':['#CC5500'],
+                                  'label':'MTBS Burned Area Total Across All Years',
+                                  'stacked':true,
+                                  'steppedLine':false,
+                                  'chartType':'bar',
+                                  'xAxisProperty':'Burned',
+                                  'tooltip':'Chart the union of all burned areas (areas with low, moderate, or high severity)'}
+    areaChartCollections['mtbs_burn_severity_mosaic'] = {'collection':ee.ImageCollection([mtbsStack.max().unmask(0).set('Burned','Burn Severity')]),
+                                  'colors':Object.values(mtbsClassDict),
+                                  'label':'MTBS Burn Severity Total Across All Years',
+                                  'stacked':true,
+                                  'steppedLine':false,
+                                  'chartType':'bar',
+                                  'xAxisProperty':'Burned',
+                                  'tooltip':'Chart the union of burn severity. The maximum severity is used when fires overlap. '}
   }
   var mtbsMaxSeverity = mtbs.select([0]).max();
   if(chartMTBSByNLCD){
@@ -445,7 +464,8 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
                                         'steppedLine':false,
                                         'chartType':'bar',
                                         'xAxisProperty':'nlcd_landcover_class',
-                                        'xAxisLabel':'NLCD '+nlcdYear.toString() + ' Class'}
+                                        'xAxisLabel':'NLCD '+nlcdYear.toString() + ' Class',
+                                        'tooltip':'Chart MTBS burn severity by each NLCD '+nlcdYear.toString() + ' landcover class'}
           }
       
        })
@@ -472,7 +492,8 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
                                         'steppedLine':false,
                                         'chartType':'bar',
                                         'xAxisProperty':'Aspect_Bin',
-                                        'xAxisLabel':'Aspect Bin'}
+                                        'xAxisLabel':'Aspect Bin',
+                                        'tooltip':'Chart MTBS burn severity by aspect quadrants.'}
   }
 
 // print(mtbsStack.getInfo());
