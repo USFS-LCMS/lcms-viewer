@@ -792,6 +792,8 @@ function runCONUS(){
   setupDownloads(studyAreaName);
   //Bring in reference data
   getHansen();
+  mtbsSummaryMethodDict = {'year':'Most-Recent','prob':'Highest-Severity'};
+  mtbsSummaryMethod = mtbsSummaryMethodDict[summaryMethod]
   getMTBSandIDS(studyAreaName);
 
 
@@ -842,7 +844,9 @@ function runCONUS(){
   else{
     var dndThreshOut = dndThresh.qualityMosaic('Loss Probability');//.qualityMosaic('Decline_change');
     
-     
+    var threshYearNameEnd = 'Year of highest probability of ';
+    var threshProbNameEnd = 'Highest probability of ';
+    var exportSummaryMethodNameEnd = 'Highest Probability';
 
   }
 
