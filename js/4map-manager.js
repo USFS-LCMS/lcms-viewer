@@ -381,7 +381,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       // }
       catch(err2){
         try{
-          var t = ee.Image(item.first()).bandNames();
+          var t = ee.Image(item.first()).bandNames().getInfo();
+          // print(t.getInfo())
           viz.layerType = 'geeImageCollection';
         
         }
