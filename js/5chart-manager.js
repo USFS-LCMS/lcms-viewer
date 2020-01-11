@@ -178,10 +178,9 @@ var  getQueryImages = function(lng,lat){
 	
 
 	var queryContent =`<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
+						<div id = 'query-graph-container'></div>
 						<table class="table table-hover bg-white"><tbody>`
 	 
-
-	var queryLine = '<h6>Queried values for lng: '+lng.toFixed(3).toString() + ' lat: '+lat.toFixed(3).toString()+ '</h6>';
 
 	function makeQueryTable(value,q,k){
 		queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
@@ -213,6 +212,14 @@ var  getQueryImages = function(lng,lat){
 				});
 				
 			}	
+		}else if(q.type === 'geeImageCollection'){
+			console.log(q);console.log(k);console.log(value);
+			queryContent += `<tr><th>${k}</th><th>Image Collection</th></tr>`;
+			queryContent += `<tr><th>${value.xLabel}</th><th>${value.yLabel}</th></tr>`;
+			value.table.map(function(row){
+				queryContent += `<tr><th>${row[0]}</th><th>${row[1].join(',')}</th></tr>`;
+			})
+			 
 		}else if(q.type === 'geeVectorImage'){
 
             var infoKeys = Object.keys(value);
@@ -227,6 +234,22 @@ var  getQueryImages = function(lng,lat){
 		
 		infowindow.setContent(queryContent);
 	  	infowindow.open(map);
+// 	  	 var trace1 = {
+//   x: [1, 2, 3, 4],
+//   y: [10, 15, 13, 17],
+//   type: 'scatter'
+// };
+
+// var trace2 = {
+//   x: [1, 2, 3, 4],
+//   y: [16, 5, 11, 9],
+//   type: 'scatter'
+// };
+
+// var data = [trace1, trace2];
+
+// Plotly.newPlot('query-graph-container', data);
+
 
 
 
@@ -268,6 +291,46 @@ var  getQueryImages = function(lng,lat){
 			if(q.type === 'geeImage'){
 				var img = ee.Image(q.queryItem);
 				img.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){keyI++;makeQueryTable(value,q,k);})
+			}else if(q.type === 'geeImageCollection'){
+				var c = ee.ImageCollection(q.queryItem);
+				var plotBounds = clickPt.buffer(plotRadius).bounds();
+				c.getRegion(plotBounds,plotScale).evaluate(function(values){
+					var expectedLength = c.size().getInfo()+1
+					if(values.length > expectedLength){
+					console.log('reducing number of inputs');
+					// console.log(expectedLength);
+					
+					values = values.slice(0,expectedLength);
+					}
+					console.log(values);
+					var header = values[0];
+					values = values.slice(1);
+					
+					var hasTime = false;
+					var timeColumnN = header.indexOf('time');
+					var idColumnN = header.indexOf('id');
+					hasTime =values[0][timeColumnN] !== null;
+
+					var xColumn;
+					var xLabel;
+					if(hasTime){
+						xColumn = arrayColumn(values,timeColumnN).map(function(d){
+							var date = new Date(d);
+							var day = date.getDate();
+							var month = date.getMonth()+1;
+							var year = date.getFullYear();
+							return year + '-' + month + '-' + day;
+						});
+						xLabel = 'Time'}
+					else{xColumn = arrayColumn(values,idColumnN);xLabel = 'ID'}
+					// var yColumns = ee.Image(c.first()).bandNames().getInfo();
+					var yColumn = 	header.slice(4);
+					yColumns = values.map(function(v){return v.slice(4)});
+					keyI++;
+					var table = xColumn.map(function(x,i){return [x,yColumns[i]]})
+					makeQueryTable({table:table,xLabel:xLabel,yLabel:yColumn},q,k);
+				})
+				// c.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){keyI++;makeQueryTable(value,q,k);})
 			}else if(q.type === 'geeVectorImage'){
 				var features = q.queryItem.filterBounds(clickPt);
 				features.evaluate(function(values){

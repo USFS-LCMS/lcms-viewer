@@ -380,11 +380,20 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       //   // isImageCollection = true;
       // }
       catch(err2){
-        viz.layerType = 'geeVector';
+        try{
+          var t = ee.Image(item.first()).bandNames();
+          viz.layerType = 'geeImageCollection';
+        
+        }
+        catch(err3){
+          viz.layerType = 'geeVector';
+        }
+        
        
         }
     }
-   
+
+    console.log(viz.layerType);
     // console.log(viz.layerType);console.log(name);
     //Take care of vector option
     // var isVector = false;
@@ -466,6 +475,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 
     if(helpBox == null){helpBox = ''};
     var layer = {};//document.createElement("ee-layer");
+    
     layer.ID = NEXT_LAYER_ID;
     NEXT_LAYER_ID += 1;
     layer.layerChildID = layerChildID;
@@ -485,6 +495,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.canQuery = viz.canQuery;
     layer.queryItem = queryItem;
     layer.layerType = viz.layerType;
+
     // layer.isTileMapService = isTileMapService;
     // layer.isDynamicMapService = isDynamicMapService;
     // layer.viz = JSON.stringify(viz);
@@ -1960,6 +1971,8 @@ function initialize() {
       run  = runLT;
     } else if(mode === 'MTBS'){
       run = runMTBS;
+    }else if(mode === 'TEST'){
+      run = runTest;
     }else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
     }else if(studyAreaName === 'CONUS'){

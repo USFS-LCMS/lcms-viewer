@@ -2052,3 +2052,17 @@ function getSelectLayers(){
   Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
   
 }
+
+function runTest(){
+  Map2.addLayer(ee.Image(1),{},'Test Image',false);
+  var values = [1,2,3,4,3,2];
+  var c = ee.ImageCollection(values.map(function(i){return ee.Image(i).byte()}))
+  
+  Map2.addLayer(c,{},'Test Collection wo time',true);
+  var c = ee.ImageCollection(values.map(function(i){return ee.Image([i,i+1,i+2]).byte().set('system:time_start',ee.Date.fromYMD(2000,i,1).millis())}));
+  
+  Map2.addLayer(c,{},'Test Collection w time',true);
+  var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR').filterBounds(eeBoundsPoly);
+  Map2.addLayer(l8,{},'l8');
+
+}

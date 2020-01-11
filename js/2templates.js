@@ -33,7 +33,13 @@ var  titles = {
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'TimeSync Ancillary Data Viewer'
-            },    
+            },
+    'TEST': {
+            leftWords: 'TEST',
+            centerWords: 'DATA',
+            rightWords:'Explorer',
+            title:'TEST Data Viewer'
+            }    
 }
 $('head').append(`<title>${titles[mode].title}</title>`);
 var topBannerParams = titles[mode];
@@ -1152,9 +1158,11 @@ function addLayer(layer){
         $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
         $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
     }
-	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage'){
-       
-        if(layer.layerType === 'geeVectorImage'){
+	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection'){
+        if(layer.layerType === 'geeImageCollection'){
+            layer.imageCollection = layer.item;
+            layer.item = layer.item.mosaic();
+        } else if(layer.layerType === 'geeVectorImage'){
             if(layer.viz.isSelectLayer){
                 
                 selectedFeaturesJSON[layer.name] = {'geoJSON':new google.maps.Data(),'id':layer.id,'rawGeoJSON':{}}
