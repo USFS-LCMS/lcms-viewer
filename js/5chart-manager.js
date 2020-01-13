@@ -176,82 +176,111 @@ var  getQueryImages = function(lng,lat){
 	infowindow.setMap(null);
 	infowindow.setPosition({lng:lng,lat:lat});
 	
-
+	var nameEnd = ' Queried Values for Lng '+lng.toFixed(3) + ' Lat ' + lat.toFixed(3);
 	var queryContent =`<div>
 							<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
-							<table class="table table-hover bg-white">
-								<tbody id = 'query-table-container'></tbody>
-							</table>
+							<li id = 'query-list-container'></li>
+							
 						</div>`
 	 infowindow.setOptions({maxWidth:300});
 			
 	infowindow.setContent(queryContent);
-	 infowindow.open(map);
+	infowindow.open(map);
 	function makeQueryTable(value,q,k){
-		$('#query-table-container').append(`<tr class = 'bg-black'><th></th><td></td></tr>`);
+		console.log(value);
+		var containerID = k + '-container';
+		$('#query-list-container').append(`<table class="table table-hover bg-white">
+												<tbody>
+													<tr class = 'bg-black'><th></th></tr>
+												</tbody>
+											  </table>`);
 		if(q.type === 'geeImage'){
+			$('#query-list-container').append(`<table class="table table-hover bg-white">
+												<tbody id = '${containerID}'></tbody>
+											  </table>`);
 			if(value === null){
-				// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': null <br>';
-				$('#query-table-container').append(`<tr><td>${k}</td><td>null</td></tr>`);
+				$('#'+containerID).append(`<tr><td>${k}</td><td>null</td></tr>`);
 
-				// $('#query-container').append(queryLine);
+				
 			}
 			else if(Object.keys(value).length === 1 ){
 				var tValue = JSON.stringify(Object.values(value)[0]);
 				if(q.queryDict !== null && q.queryDict !== undefined){
 					tValue = q.queryDict[parseInt(tValue)]
 				}
-				// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ': '+JSON.stringify(Object.values(value)[0]) + "<br>";
-				$('#query-table-container').append(`<tr><th>${k}</th><td>${tValue}</td></tr>`);
-				// $('#query-container').append(queryLine);
+				
+				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
+				
 			}
 			else{
-				// var queryLine = "<div style='width:90%;height:2px;border-radius:5px;margin:2px;background-color:#000'></div>" +k+ ':<br>';
-				$('#query-table-container').append(`<tr><th>${k}</th><th>Multi band</th></tr>`);
-				// $('#query-container').append(queryLine);
+				$('#'+containerID).append(`<tr><th>${q.name}</th><th>Multi band</th></tr>`);
+				
 				Object.keys(value).map(function(kt){
 					var v = value[kt].toFixed(2).toString();
 					// var queryLine =  kt+ ': '+v + "<br>";
-					$('#query-table-container').append(`<tr><td>${kt}</td><td>${v}</td></tr>`);
-					// $('#query-container').append(queryLine);
+					$('#'+containerID).append(`<tr><td>${kt}</td><td>${v}</td></tr>`);
+			
 				});
 				
 			}	
 		}else if(q.type === 'geeImageCollection'){
-			// console.log(q);console.log(k);console.log(value);
-			// $('#query-table-container').append(`<tr><th>${k}</th><th>Image Collection</th></tr>`);
-			// $('#query-table-container').append(`<tr><th>${value.xLabel}</th><th>${value.yLabel}</th></tr>`);
-			// value.table.map(function(row){
-			// 	$('#query-table-container').append(`<tr><th>${row[0]}</th><th>${row[1].join(',')}</th></tr>`);
-			// })
-			var containerID = k + '-container';
-			$('#query-table-container').append(`<tr class = 'bg-white' id = '${containerID}'></tr>`);
-			infowindow.setOptions({maxWidth:1000});
+		
+			$('#query-list-container').append(`<ul class = 'bg-black dropdown-divider'></ul>`);
+			$('#query-list-container').append(`<ul class = 'm-0 p-0 bg-white' id = '${containerID}'></ul>`);
+			infowindow.setOptions({maxWidth:1200});
 			infowindow.open(map);
 	 		var plotLayout = {
 	 			plot_bgcolor:'#D6D1CA',
+	 			paper_bgcolor:"#D6D1CA",
+	 			font: {
+			    family: 'Roboto Condensed, sans-serif'
+			  },
+				 			// legend: {"orientation": "h"},
+
+	 			margin: {
+				    l: 50,
+				    r: 10,
+				    b: 30,
+				    t: 50,
+				    pad: 0
+				  },
 	 			width:600,
 	 			height:400,
 	 			title: {
-    				text:k
+    				text:q.name
     			},
     			xaxis: {
 				    title: {
 				      text: value.xLabel
 				  }}
-	 		}
-			Plotly.newPlot(containerID, value.table,plotLayout);
-			 
-		}else if(q.type === 'geeVectorImage'){
+	 		};
+	 		var buttonOptions = {
+				    toImageButtonOptions: {
+				        filename: q.name + nameEnd ,
+				        width: 800,
+				        height: 600,
+				        format: 'png'
+				    }
+				}
+			Plotly.newPlot(containerID, value.table,plotLayout,buttonOptions);
 
-            var infoKeys = Object.keys(value);
-            $('#query-table-container').append(`<tr><th>${k}</th><th>Attribute Table</th></tr>`);
-            // queryContent += `<tr><th>Attribute Name</th><th>Attribute Value</th></tr>`;
+		}else if(q.type === 'geeVectorImage'){
+			$('#query-list-container').append(`<table class="table table-hover bg-white">
+												<tbody id = '${containerID}'></tbody>
+											  </table>`);
+			if(value === null || value === undefined){
+				$('#'+containerID).append(`<tr><th>${q.name}</th><th>NULL</th></tr>`);
+			}else{
+				var infoKeys = Object.keys(value);
+	            $('#'+containerID).append(`<tr><th>${q.name}</th><th>Attribute Table</th></tr>`);
+	            // queryContent += `<tr><th>Attribute Name</th><th>Attribute Value</th></tr>`;
+	            
+	            infoKeys.map(function(name){
+	                var valueT = value[name];
+	                $('#'+containerID).append(`<tr><th>${name}</th><td>${valueT}</td></tr>`);
+	            });	
+			}
             
-            infoKeys.map(function(name){
-                var valueT = value[name];
-                $('#query-table-container').append(`<tr><th>${name}</th><td>${valueT}</td></tr>`);
-            });
 		}
 		
 		
@@ -260,15 +289,15 @@ var  getQueryImages = function(lng,lat){
 
 
 
-	if(keyI >= keyCount){
-		map.setOptions({draggableCursor:'help'});
-		map.setOptions({cursor:'help'});
-		$('#summary-spinner').slideUp();
-		// queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
-		// queryContent +=`</tbody></table>`;
-	  // infowindow.setContent(queryContent);
-	  // infowindow.open(map);
-	}
+		if(keyI >= keyCount){
+			map.setOptions({draggableCursor:'help'});
+			map.setOptions({cursor:'help'});
+			$('#summary-spinner').slideUp();
+			// queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
+			// queryContent +=`</tbody></table>`;
+		  // infowindow.setContent(queryContent);
+		  // infowindow.open(map);
+		}
 	
 	}
 	// queryContent += queryLine;
@@ -352,6 +381,7 @@ var  getQueryImages = function(lng,lat){
 			}else if(q.type === 'geeVectorImage'){
 				var features = q.queryItem.filterBounds(clickPt);
 				features.evaluate(function(values){
+					console.log(values);
 					keyI++;
 					
 		            queryGeoJSON.addGeoJson(values);
@@ -359,10 +389,7 @@ var  getQueryImages = function(lng,lat){
 					var features = values.features; 
 					
 					if(features.length === 0){
-						queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
-						queryContent += `<tr><th>${k}</th><td>null</td></tr>`;
-						infowindow.setContent(queryContent);
-	  					infowindow.open(map);
+						makeQueryTable(null,q,k)
 					}else{
 						features.map(function(f){
       						makeQueryTable(f.properties,q,k)

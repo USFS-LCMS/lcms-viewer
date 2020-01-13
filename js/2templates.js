@@ -959,6 +959,7 @@ function addLayer(layer){
 	// console.log(layer);
     layer.loadError = false;
 	var id = layer.legendDivID;
+    var queryID = id + '-'+layer.ID;
 	var containerID = id + '-container-'+layer.ID;
 	var opacityID = id + '-opacity-'+layer.ID;
 	var visibleID = id + '-visible-'+layer.ID;
@@ -1054,7 +1055,7 @@ function addLayer(layer){
             $('#'+layer.legendDivID).hide();
             layer.rangeOpacity = 0;
             if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
-             queryObj[layer.name].visible = layer.visible;
+             queryObj[queryID].visible = layer.visible;
             }
         }else{
             layer.visible = false;
@@ -1086,7 +1087,7 @@ function addLayer(layer){
             if(layer.isTileMapService){layer.percent = 100;updateProgress();}
             layer.layer.setOpacity(layer.opacity); 
             if(layer.layerType !== 'tileMapService' && layer.layerType !== 'dynamicMapService' && layer.canQuery){
-             queryObj[layer.name].visible = layer.visible;
+             queryObj[queryID].visible = layer.visible;
             }
         }else{
            layer.visible = true;
@@ -1253,7 +1254,7 @@ function addLayer(layer){
             }   
         };
         if(layer.canQuery){
-          queryObj[layer.name] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType};  
+          queryObj[queryID] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType,'name':layer.name};  
         }
 		incrementOutstandingGEERequests();
 		

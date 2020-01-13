@@ -2058,12 +2058,16 @@ function runTest(){
   var values = [1,2,3,4,3,2];
   var c = ee.ImageCollection(values.map(function(i){return ee.Image(i).byte()}))
   
-  Map2.addLayer(c,{},'Test Collection wo time',false);
+  // Map2.addLayer(c,{},'Test Collection wo time',false);
   var c = ee.ImageCollection(values.map(function(i){return ee.Image([i,i+1,i+2]).byte().set('system:time_start',ee.Date.fromYMD(2000,i,1).millis())}));
   
-  Map2.addLayer(c,{},'Test Collection w time',false);
+  // Map2.addLayer(c,{},'Test Collection w time',false);
   // var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR').filterBounds(eeBoundsPoly).select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
   // Map2.addLayer(l8.select(['swir2','nir','red']),{min:500,max:3500,bands:'swir2,nir,red'},'l8');
   var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7')
-  Map2.addLayer(composites.select(['swir2','nir','red']),{min:500,max:3500,bands:'swir2,nir,red'},'composites');
+  Map2.addLayer(composites,{min:500,max:3500,bands:'swir2,nir,red'},'composites');
+  Map2.addLayer(composites.mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'composites2');
+  var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',true,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
+  
 }
