@@ -394,7 +394,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         }
     }
 
-    console.log(viz.layerType);
+    // console.log(viz.layerType);
     // console.log(viz.layerType);console.log(name);
     //Take care of vector option
     // var isVector = false;

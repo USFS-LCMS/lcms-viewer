@@ -798,8 +798,12 @@ function runCONUS(){
 
 
 
-  var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
-  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191209');
+  // var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
+  var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20191231');
+  
+  // var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191209');
+  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191231');
+  
   var years = ee.List.sequence(startYear,endYear);
 
   lcms = years.map(function(yr){
@@ -822,6 +826,14 @@ function runCONUS(){
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
       var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask');
+      // var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask');
+      
+      var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
+      Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:0,max:3,palette:'a1a1a1,32681e,ffb88c,97ffff',addToClassLegend:true,classLegendDict:{'Tree':'32681e','Woody Wetland':'97ffff','Shrub':'ffb88c','Other':'a1a1a1'},queryDict:forestMaskQueryDict},'Landcover Mask Classes Old',false,null,null,'Landcover classes of 3 or more years. Any pixel that was tree 3 or more years is tree. Remaining pixels, any pixel that was woody wetland 3 or more years is woody wetland. Remaining pixels, any pixel that was shrub 3 or more years is shrub.  Remaining pixels are other. Both tree and woodywetland classes are included in the tree mask.');
+      
+      // var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask');
+      var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask');
+      
       var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
       Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:0,max:3,palette:'a1a1a1,32681e,ffb88c,97ffff',addToClassLegend:true,classLegendDict:{'Tree':'32681e','Woody Wetland':'97ffff','Shrub':'ffb88c','Other':'a1a1a1'},queryDict:forestMaskQueryDict},'Landcover Mask Classes',false,null,null,'Landcover classes of 3 or more years. Any pixel that was tree 3 or more years is tree. Remaining pixels, any pixel that was woody wetland 3 or more years is woody wetland. Remaining pixels, any pixel that was shrub 3 or more years is shrub.  Remaining pixels are other. Both tree and woodywetland classes are included in the tree mask.');
       treeMask = treeMask.eq(1).or(treeMask.eq(3)).selfMask();
@@ -1286,11 +1298,7 @@ chartCollection = forCharting;
 // addChartJS(d,'test1');
 }
 
-
-function runLT(){
-  // var startYear = 1984;
-  // var endYear   = 2019;
-  var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
+var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
 
   // LSC updated 4/15/19 to add medium and high confidence cloud masks
   // Supported fmaskClass options: 'cloud', 'shadow', 'snow', 'high_confidence_cloud', 'med_confidence_cloud'
@@ -1313,6 +1321,10 @@ function runLT(){
   function cFmaskCloudShadow(img){
     return cFmask(img,'shadow');
   }
+function runLT(){
+  // var startYear = 1984;
+  // var endYear   = 2019;
+  
   /////////////////////////////////////////////////////////////////
   //Function for only adding common indices
   function simpleAddIndices(in_image){
@@ -1872,6 +1884,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 
     
     imgs = imgs.map(simpleAddIndices).map(simpleGetTasseledCap).map(simpleAddTCAngles)
+    Map2.addLayer(imgs.select(['NDVI','NBR']),{min:0.2,max:0.6},'Raw Landsat Time Series',false);
     var dummyImage = ee.Image(imgs.first());
   //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
   for(var year = startYear; year <= endYear; year++) {
@@ -1881,7 +1894,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       var nameEnd = (year-yearBuffer).toString() + '-'+ (year+yearBuffer).toString();
     // print(year);
     if(year%5 ==0 || year === startYear || year === endYear){
-      Map2.addLayer(img,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Composite '+nameEnd,false);
+      Map2.addLayer(img,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red'},'Composite '+nameEnd,false);
     }
     Map2.addExport(img.select(['blue','green','red','nir','swir1','swir2']).multiply(10000).int16(),'Landsat_Composite_'+ nameEnd,30,false,{});
     var tempCollection = ee.ImageCollection([img]);         
@@ -2054,20 +2067,23 @@ function getSelectLayers(){
 }
 
 function runTest(){
-  Map2.addLayer(ee.Image(1),{},'Test Image',false);
+  Map2.addLayer(ee.Image(1).clip(eeBoundsPoly),{},'Test Image',false);
   var values = [1,2,3,4,3,2];
   var c = ee.ImageCollection(values.map(function(i){return ee.Image(i).byte()}))
   
-  // Map2.addLayer(c,{},'Test Collection wo time',false);
+  Map2.addLayer(c,{},'Test Collection wo time',false);
   var c = ee.ImageCollection(values.map(function(i){return ee.Image([i,i+1,i+2]).byte().set('system:time_start',ee.Date.fromYMD(2000,i,1).millis())}));
   
   // Map2.addLayer(c,{},'Test Collection w time',false);
-  // var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR').filterBounds(eeBoundsPoly).select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
-  // Map2.addLayer(l8.select(['swir2','nir','red']),{min:500,max:3500,bands:'swir2,nir,red'},'l8');
+  var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+          // .filter(ee.Filter.calendarRange(190,250))
+          .filterBounds(eeBoundsPoly).select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
+  l8 = l8.map(cFmaskCloud).map(cFmaskCloudShadow)
+  Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']),{min:500,max:3500,bands:'swir2,nir,red'},'l8');
   var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7')
-  Map2.addLayer(composites,{min:500,max:3500,bands:'swir2,nir,red'},'composites');
-  Map2.addLayer(composites.mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'composites2');
+  Map2.addLayer(composites,{min:500,max:3500,bands:'swir2,nir,red'},'composites',false);
+  Map2.addLayer(composites.mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'composites2',false);
   var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',true,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
+  Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
   
 }
