@@ -1321,6 +1321,45 @@ var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
   function cFmaskCloudShadow(img){
     return cFmask(img,'shadow');
   }
+  ////////////////////////////////////////////////////////////////////////////////
+  // Function for finding dark outliers in time series.
+  // Original concept written by Carson Stam and adapted by Ian Housman.
+  // Adds a band that is a mask of pixels that are dark, and dark outliers.
+  function simpleTDOM2(collection,zScoreThresh,shadowSumThresh,contractPixels,
+    dilatePixels,shadowSumBands,irMean,irStdDev){
+    if(zScoreThresh === undefined || zScoreThresh === null){zScoreThresh = -1}
+    if(shadowSumThresh === undefined || shadowSumThresh === null){shadowSumThresh = 0.35}
+    if(contractPixels === undefined || contractPixels === null){contractPixels = 1.5}
+    if(dilatePixels === undefined || dilatePixels === null){dilatePixels = 3.5}
+    if(shadowSumBands === null || shadowSumBands === undefined){
+      shadowSumBands = ['nir','swir1'];
+    }
+    
+    
+    // Get some pixel-wise stats for the time series
+    if(irMean === null || irMean === undefined){
+      print('Computing irMean for TDOM');
+      irMean = collection.select(shadowSumBands).mean();
+    }
+    if(irStdDev === null || irStdDev === undefined){
+      print('Computing irStdDev for TDOM');
+      irStdDev = collection.select(shadowSumBands).reduce(ee.Reducer.stdDev());
+    }
+    
+    // Mask out dark dark outliers
+    collection = collection.map(function(img){
+      var zScore = img.select(shadowSumBands).subtract(irMean).divide(irStdDev);
+      var irSum = img.select(shadowSumBands).reduce(ee.Reducer.sum());
+      var TDOMMask = zScore.lt(zScoreThresh).reduce(ee.Reducer.sum()).eq(shadowSumBands.length)
+        .and(irSum.lt(shadowSumThresh));
+      TDOMMask = TDOMMask.focal_min(contractPixels).focal_max(dilatePixels);
+      return img.updateMask(TDOMMask.not());
+    });
+    
+    return collection;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
 function runLT(){
   // var startYear = 1984;
   // var endYear   = 2019;
@@ -1400,6 +1439,42 @@ function runLT(){
       .subtract(thresholds[0]).divide(thresholds[1] - thresholds[0]);
   }
   ////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  // Function for computing the mean squared difference medoid from an image 
+  // collection
+  function medoidMosaicMSD(inCollection,medoidIncludeBands) {
+    // Find band names in first image
+    var f = ee.Image(inCollection.first());
+    var bandNames = f.bandNames();
+    //var bandNumbers = ee.List.sequence(1,bandNames.length());
+    
+    if (medoidIncludeBands === undefined || medoidIncludeBands === null) {
+      medoidIncludeBands = bandNames;
+    }
+    // Find the median
+    var median = inCollection.select(medoidIncludeBands).median();
+    
+    // Find the squared difference from the median for each image
+    var medoid = inCollection.map(function(img){
+      var diff = ee.Image(img).select(medoidIncludeBands).subtract(median)
+        .pow(ee.Image.constant(2));
+      // img = addFullYearJulianDayBand(img);
+      return diff.reduce('sum').addBands(img);
+    });
+    // When exported as CSV, this provides a weighted list of the scenes being included in the composite
+    // Map.addLayer(medoid,{},'Medoid Image Collection Scenes') 
+    
+    // bandNames = bandNames.cat(['yearJulian']);
+    var bandNumbers = ee.List.sequence(1, bandNames.length());
+    // Minimize the distance across all bands
+    medoid = ee.ImageCollection(medoid)
+      .reduce(ee.Reducer.min(bandNames.length().add(1)))
+      .select(bandNumbers,bandNames);
+    
+    return medoid;
+  }
+
+////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   // Compute a cloud score and adds a band that represents the cloud mask.  
   // This expects the input image to have the common band names: 
@@ -1850,13 +1925,39 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
                 .filterBounds(aoi)
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .filter(ee.Filter.lte('WRS_ROW',120))
+                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
+   var l7SLCOn = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+                .filterBounds(aoi)
+                .filterDate(ee.Date.fromYMD(1998,1,1),ee.Date.fromYMD(2003,5,31))
+                .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
+                .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .filter(ee.Filter.lte('WRS_ROW',120))
+                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
+    var l7SLCOff = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+                .filterBounds(aoi)
+                .filterDate(ee.Date.fromYMD(2003,6,1),ee.Date.fromYMD(3000,1,1))
+                .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
+                .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .filter(ee.Filter.lte('WRS_ROW',120))
                 .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
     var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
                 .filterBounds(aoi)
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .filter(ee.Filter.lte('WRS_ROW',120))
                 .select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
-    var imgs = l5.merge(l8);
+    var platformObj = {'L5':l5,'L7-SLC-On':l7SLCOn,'L7-SLC-Off':l7SLCOff,'L8':l8}
+    var imgs;
+    Object.keys(whichPlatforms).map(function(k){
+      // console.log(k);console.log(whichPlatforms[k]);console.log(platformObj[k].getInfo())
+      if(whichPlatforms[k]){
+        if(imgs === undefined){
+          imgs = platformObj[k];
+        }else{img = imgs.merge(platformObj[k])}
+      }
+    })
+     
 
     imgs = imgs.map(function(img){
       var out =img.multiply( ee.Image([0.0001,0.0001,0.0001,0.0001,0.0001,0.1,0.0001,1]));
@@ -1878,6 +1979,16 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
           console.log('applying Fmask cloud shadow');
           imgs = imgs.map(cFmaskCloudShadow)
         }
+        else if(k  === 'fMask-Snow'){
+          console.log('applying Fmask snow');
+         
+          imgs = imgs.map(function(img){return cFmask(img,'snow')});
+        }
+        else if(k  === 'TDOM'){
+          console.log('applying TDOM');
+          imgs = simpleTDOM2(imgs);
+        }
+        
       }
     })
     
@@ -1890,7 +2001,15 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   for(var year = startYear; year <= endYear; year++) {
       var imgsT = imgs.filter(ee.Filter.calendarRange(year-yearBuffer,year+yearBuffer,'year'));
       imgsT = fillEmptyCollections(imgsT,dummyImage);
-      var img = imgsT.median().set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
+      var count = imgsT.select([0]).count();
+      var img;
+      if(compMethod === 'Median'){
+        img = imgsT.median();
+      }else{
+        img = medoidMosaicMSD(imgsT,['nir','swir1','swir2']);
+      };
+      
+      img = img.updateMask(count.gte(minObs)).set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
       var nameEnd = (year-yearBuffer).toString() + '-'+ (year+yearBuffer).toString();
     // print(year);
     if(year%5 ==0 || year === startYear || year === endYear){

@@ -119,9 +119,15 @@ if(mode === 'LCMS'){
   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
   addDualRangeSlider('comp-params-div','Choose analysis date range:','startJulian','endJulian',1, 365, startJulian, endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+    addCheckboxes('comp-params-div','which-sensor-method-radio','Choose which Landsat platforms to include','whichPlatforms',{"L5":true,"L7-SLC-On":true,'L7-SLC-Off':false,'L8':true});
+    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
     addRangeSlider('comp-params-div','Composite Year Buffer','yearBuffer',0,2,0,1,'year-buffer-slider','','The number of adjacent years to include in a given year composite. (E.g. a value of 1 would mean the 2015 composite would have imagery from 2015 +- 1 year - 2014 to 2016)') 
    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-  addCheckboxes('comp-params-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',{'cloudScore':false,'fMask-Cloud':true,'fMask-Cloud-Shadow':true})
+   addRangeSlider('comp-params-div','Minimum Number of Observations','minObs',0,5,3,1,'min-obs-slider','','Minimum number of observations needed for a pixel to be included. This helps reduce noise in composites. Any number less than 3 can result in poor composite quality') 
+    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+  addMultiRadio('comp-params-div','comp-method-radio','Compositing method','compMethod',{"Median":false,"Medoid":true})
+   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+  addCheckboxes('comp-params-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',{'fMask-Snow':true,'cloudScore':false,'fMask-Cloud':true,'TDOM':false,'fMask-Cloud-Shadow':true})
    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
   addMultiRadio('comp-params-div','water-mask-radio','Mask out water','maskWater',{"No":false,"Yes":true})
   
