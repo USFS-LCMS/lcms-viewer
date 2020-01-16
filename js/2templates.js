@@ -42,6 +42,7 @@ var  titles = {
             }    
 }
 $('head').append(`<title>${titles[mode].title}</title>`);
+$('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`)
 var topBannerParams = titles[mode];
 var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 
@@ -1162,7 +1163,13 @@ function addLayer(layer){
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection'){
         if(layer.layerType === 'geeImageCollection'){
             layer.imageCollection = layer.item;
-            layer.item = layer.item.mosaic();
+
+            if(layer.viz.reducer === null || layer.viz.reducer === undefined){
+                layer.viz.reducer = ee.Reducer.firstNonNull();
+            }
+            var bandNames = ee.Image(layer.item.first()).bandNames();
+            layer.item = layer.item.reduce(layer.viz.reducer).rename(bandNames);
+            
         } else if(layer.layerType === 'geeVectorImage'){
             if(layer.viz.isSelectLayer){
                 

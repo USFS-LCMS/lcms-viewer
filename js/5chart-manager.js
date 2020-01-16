@@ -243,7 +243,7 @@ var  getQueryImages = function(lng,lat){
 				    l: 50,
 				    r: 10,
 				    b: 30,
-				    t: 60,
+				    t: 80,
 				    pad: 0
 				  },
 	 			width:600,
@@ -310,7 +310,7 @@ var  getQueryImages = function(lng,lat){
 	})
 
 	var keyCount = keysToShow.length;
-	var keyI = 1;
+	var keyI = 0;
 	
 	if(keyCount === 0){
 		$('#summary-spinner').slideUp();
@@ -335,7 +335,7 @@ var  getQueryImages = function(lng,lat){
 				var c = ee.ImageCollection(q.queryItem);
 				var plotBounds = clickPt.buffer(plotRadius).bounds();
 				function getCollectionValues(values){
-					
+					keyI++;
 					var expectedLength = c.size().getInfo()+1
 					
 					if(values.length > expectedLength){
@@ -344,6 +344,7 @@ var  getQueryImages = function(lng,lat){
 					
 					values = values.slice(0,expectedLength);
 					}
+
 					if(values.length >1){// && values[1][values[1].length-1] !== null){
 						// console.log(values);
 						var header = values[0];
@@ -378,7 +379,7 @@ var  getQueryImages = function(lng,lat){
 							}
 						})
 						
-						keyI++;
+						
 						
 						
 						
@@ -388,8 +389,8 @@ var  getQueryImages = function(lng,lat){
 				}
 				var getRegionCall = c.sort('system:time_start',false).getRegion(plotBounds,plotScale)
 				getRegionCall.evaluate(function(values){
-					console.log('values');
-					console.log(values);
+					// console.log('values');
+					// console.log(values);
 					if(values !== undefined && values !== null){
 						getCollectionValues(values);
 					}else{

@@ -528,6 +528,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         var paletteList = palette;
         if(typeof(palette) === 'string'){paletteList = paletteList.split(',');}
         if(paletteList.length == 1){paletteList = [paletteList[0],paletteList[0]];}
+        paletteList = paletteList.map(function(color){if(color.indexOf('#')>-1){color = color.slice(1)};return color});
         var colorRamp = createColorRamp('colorRamp'+colorRampIndex.toString(),paletteList,180,20);
       
         legend.colorRamp = colorRamp;
@@ -864,6 +865,10 @@ function addFeatureToMap(item,viz,name,visible,label,fontColor,helpBox,whichLaye
 // }
 function mp(){
   this.addLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+  };
+  this.addSerializedLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    viz.serialized = true;
     addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
   };
   this.addSelectLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){

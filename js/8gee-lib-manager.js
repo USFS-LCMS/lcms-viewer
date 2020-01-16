@@ -11,28 +11,7 @@
     //   '32681e', // Trees
     //   '2a74b8'  // Water
     // ];
-//Palettes Source: https://github.com/gee-community/ee-palettes
-var palettes = {};
-palettes.cmocean = {
-  Thermal: {7: ['042333', '2c3395', '744992', 'b15f82', 'eb7958', 'fbb43d', 'e8fa5b']},
-  Haline: {7: ['2a186c', '14439c', '206e8b', '3c9387', '5ab978', 'aad85c', 'fdef9a']},
-  Solar: {7: ['331418', '682325', '973b1c', 'b66413', 'cb921a', 'dac62f', 'e1fd4b']},
-  Ice: {7: ['040613', '292851', '3f4b96', '427bb7', '61a8c7', '9cd4da', 'eafdfd']},
-  Gray: {7: ['000000', '232323', '4a4a49', '727171', '9b9a9a', 'cacac9', 'fffffd']}, 
-  Oxy: {7: ['400505', '850a0b', '6f6f6e', '9b9a9a', 'cbcac9', 'ebf34b', 'ddaf19']},
-  Deep: {7: ['fdfecc', 'a5dfa7', '5dbaa4', '488e9e', '3e6495', '3f396c', '281a2c']},
-  Dense: {7: ['e6f1f1', 'a2cee2', '76a4e5', '7871d5', '7642a5', '621d62', '360e24']},
-  Algae: {7: ['d7f9d0', 'a2d595', '64b463', '129450', '126e45', '1a482f', '122414']},
-  Matter: {7: ['feedb0', 'f7b37c', 'eb7858', 'ce4356', '9f2462', '66185c', '2f0f3e']},
-  Turbid: {7: ['e9f6ab', 'd3c671', 'bf9747', 'a1703b', '795338', '4d392d', '221f1b']},
-  Speed: {7: ['fffdcd', 'e1cd73', 'aaac20', '5f920c', '187328', '144b2a', '172313']},
-  Amp: {7: ['f1edec', 'dfbcb0', 'd08b73', 'c0583b', 'a62225', '730e27', '3c0912']},
-  Tempo: {7: ['fff6f4', 'c3d1ba', '7db390', '2a937f', '156d73', '1c455b', '151d44']},
-  Phase: {7: ['a8780d', 'd74957', 'd02fd0', '7d73f0', '1e93a8', '359943', 'a8780d']},
-  Balance: {7: ['181c43', '0c5ebe', '75aabe', 'f1eceb', 'd08b73','a52125', '3c0912']},
-  Delta: {7: ['112040', '1c67a0', '6db6b3', 'fffccc', 'abac21', '177228', '172313']},
-  Curl: {7: ['151d44', '156c72', '7eb390', 'fdf5f4', 'db8d77', '9c3060', '340d35']}
-}
+
 function getLCMSVariables() {
 // Loss/Gain Palettes
 window.declineYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
@@ -547,7 +526,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
   var tcc = nlcd.filter(ee.Filter.calendarRange(2011,2011,'year')).select(['percent_tree_cover']).mosaic();
   // tcc = tcc.mask(tcc.neq(0));
-  Map2.addLayer(tcc,{min:1,max:90,palette:palettes.cmocean.Speed[7]},'NLCD Tree Canopy Cover 2011',false,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
+  Map2.addLayer(tcc,{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover 2011',true,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
 
   
 

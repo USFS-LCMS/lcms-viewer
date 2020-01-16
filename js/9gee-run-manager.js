@@ -2199,6 +2199,8 @@ function runTest(){
           .filterBounds(eeBoundsPoly).select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
   l8 = l8.map(cFmaskCloud).map(cFmaskCloudShadow)
   Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']),{min:500,max:3500,bands:'swir2,nir,red'},'l8');
+  Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']).sort('system:time_start',false).mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'l82');
+  
   var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7')
   Map2.addLayer(composites,{min:500,max:3500,bands:'swir2,nir,red'},'composites',false);
   Map2.addLayer(composites.mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'composites2',false);
