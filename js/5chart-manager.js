@@ -328,7 +328,7 @@ var  getQueryImages = function(lng,lat){
 				var img = ee.Image(q.queryItem);
 				img.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(values){
 					keyI++;
-					console.log(values)
+					// console.log(values)
 					makeQueryTable(values,q,k);
 				})
 			}else if(q.type === 'geeImageCollection'){

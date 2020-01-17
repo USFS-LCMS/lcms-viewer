@@ -526,7 +526,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
   var tcc = nlcd.filter(ee.Filter.calendarRange(2011,2011,'year')).select(['percent_tree_cover']).mosaic();
   // tcc = tcc.mask(tcc.neq(0));
-  Map2.addLayer(tcc,{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover 2011',true,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
+  Map2.addLayer(tcc,{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover 2011',false,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
 
   
 

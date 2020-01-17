@@ -359,7 +359,12 @@ function addImageDownloads(imagePathJson){
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
 function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
-
+    if(viz !== null && viz !== undefined && viz.serialized !== null && viz.serialized !== undefined && viz.serialized === true){
+        // console.log('its serialized');
+        // console.log(item);
+        item = ee.Deserializer.fromJSON(JSON.parse(JSON.stringify(item)));
+        // console.log(item.getInfo());
+    }
     var currentGEERunID = geeRunID;
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     // print(item.getInfo().type)
@@ -574,21 +579,21 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
       if(viz.layerType !== 'geeVector' && viz.layerType !== 'geoJSONVector' && viz.layerType !== 'geeVectorImage'){
-        var legendKeys = Object.keys(viz.classLegendDict).reverse();
+        var legendKeys = Object.keys(viz.classLegendDict);//.reverse();
         legendKeys.map(function(lk){
 
-        var legend = {};//document.createElement("ee-class-legend");
-        legend.name = name;
-        legend.helpBoxMessage = helpBox;
+          var legend = {};//document.createElement("ee-class-legend");
+          legend.name = name;
+          legend.helpBoxMessage = helpBox;
 
 
-        legend.classColor = viz.classLegendDict[lk];
-        legend.classStrokeColor = '999';
-        legend.classStrokeWeight = 1;
-        legend.className = lk;
-        addClassLegendEntry(classLegendContainerID,legend)
-        // var legendList = document.querySelector("legend-list");
-        // legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
+          legend.classColor = viz.classLegendDict[lk];
+          legend.classStrokeColor = '999';
+          legend.classStrokeWeight = 1;
+          legend.className = lk;
+          addClassLegendEntry(classLegendContainerID,legend)
+          // var legendList = document.querySelector("legend-list");
+          // legendItemContainer.insertBefore(legend,legendItemContainer.firstChild);
         })
       }else{
         var legend = {};//document.createElement("ee-class-legend");
@@ -1979,6 +1984,8 @@ function initialize() {
       run = runMTBS;
     }else if(mode === 'TEST'){
       run = runTest;
+    }else if(mode === 'geeViz'){
+      run = runGeeViz;
     }else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
     }else if(studyAreaName === 'CONUS'){

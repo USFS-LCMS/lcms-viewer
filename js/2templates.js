@@ -39,7 +39,13 @@ var  titles = {
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'TEST Data Viewer'
-            }    
+            },
+    'geeViz': {
+            leftWords: 'geeViz',
+            centerWords: 'DATA',
+            rightWords:'Viewer',
+            title:'geeViz Data Viewer'
+            }     
 }
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`)
@@ -969,6 +975,8 @@ function addLayer(layer){
 	var spinnerID = id + '-spinner-'+layer.ID;
     var selectionID = id + '-selection-list-'+layer.ID;
 	var checked = '';
+
+
 	if(layer.visible){checked = 'checked'}
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
 								           
@@ -1168,7 +1176,7 @@ function addLayer(layer){
                 layer.viz.reducer = ee.Reducer.firstNonNull();
             }
             var bandNames = ee.Image(layer.item.first()).bandNames();
-            layer.item = layer.item.reduce(layer.viz.reducer).rename(bandNames);
+            layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames);
             
         } else if(layer.layerType === 'geeVectorImage'){
             if(layer.viz.isSelectLayer){
