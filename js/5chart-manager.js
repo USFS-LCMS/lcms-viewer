@@ -20,7 +20,7 @@ function clearSelectedAreas(){
     $('.selected-features-list').empty();
     Object.keys(selectedFeaturesJSON).map(function(k){
         selectedFeaturesJSON[k].geoJSON.forEach(function(f){
-        	var name = f.h.selectionTrackingName;
+        	var name = f.i.selectionTrackingName;
 			console.log(name);
             delete selectedFeaturesJSON[k].rawGeoJSON[name]
         	selectedFeaturesJSON[k].geoJSON.remove(f)

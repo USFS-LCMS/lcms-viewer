@@ -247,7 +247,7 @@ function getIDSCollection(){
 var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
 
 var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol');
-
+// Map2.addLayer(defolCollection,{'layerType':'geeVectorImage'},'IDS Defoliation Vector')
   var idsCollection = idsYears.map(function(yr){
     var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
     // print(mort.first())
