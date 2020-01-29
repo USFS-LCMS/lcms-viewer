@@ -77,7 +77,7 @@ function removeLastSelectArea(){
 		selectedFeaturesJSON[k].geoJSON.forEach(function(f){l++});
 		selectedFeaturesJSON[k].geoJSON.forEach(function(f){
 			if(i == l-1){
-				var name = f.h.selectionTrackingName;
+				var name = f.i.selectionTrackingName;
 				console.log(name);
                 delete selectedFeaturesJSON[k].rawGeoJSON[name];
 				selectedFeaturesJSON[k].geoJSON.remove(f);

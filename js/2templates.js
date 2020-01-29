@@ -1029,15 +1029,20 @@ function addLayer(layer){
 	}
 	
 	function zoomFunction(){
+
 		if(layer.layerType === 'geeVector' ){
 			centerObject(layer.item)
 		}else if(layer.layerType === 'geoJSONVector'){
 			// centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
 			// synchronousCenterObject(layer.item.features[0].geometry)
 		}else{
-			if(layer.item.args !== undefined &&layer.item.args.value !== null && layer.item.args.value !== undefined){
+          
+			if(layer.item.args !== undefined && layer.item.args.value !== null && layer.item.args.value !== undefined){
 				synchronousCenterObject(layer.item.args.value)
-			};
+			}
+            else if(layer.item.args !== undefined &&layer.item.args.featureCollection !== undefined &&layer.item.args.featureCollection.args !== undefined && layer.item.args.featureCollection.args.value !== undefined && layer.item.args.featureCollection.args.value !== undefined){
+                synchronousCenterObject(layer.item.args.featureCollection.args.value);
+            };
 		}
 	}
     function loadFailure(){
