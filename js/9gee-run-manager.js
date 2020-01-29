@@ -813,7 +813,7 @@ function runCONUS(){
   var az_sad_accumlative = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_accumlative_aspen_decline').set('bounds',az_sad_accumlative_bounds);
   var az_sad_fhp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/Aspen_layer_2017_FHPmapped_Final').set('bounds',az_sad_fhp_bounds);
   var az_ads_2019 = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_ADS__Damage_2019').set('bounds',az_ads_2019_bounds);
-  console.log(JSON.stringify(az_ads_2019.geometry().bounds().getInfo()))
+  // console.log(JSON.stringify(az_ads_2019.geometry().bounds().getInfo()))
   Map2.addLayer(az_sad_accumlative,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,null,'reference-layer-list');
   Map2.addLayer(az_sad_fhp,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,null,'reference-layer-list');
   Map2.addLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,null,'reference-layer-list');
@@ -2232,6 +2232,7 @@ function runTest(){
     // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
   };
+  chartColors = chartColorsDict.test;
   getLCMSVariables();
 
   var areaCollection;
@@ -2240,13 +2241,9 @@ function runTest(){
   Object.keys(r4Runs).map(function(k){
     $('#layer-list').prepend(`<div class = 'dropdown-divider'></div>`)
     var rawC = ee.ImageCollection(r4Runs[k].collection);
-  
-    if(chartCollectionT === undefined){
-      chartCollectionT = rawC.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']);
-    }else{
-      chartCollectionT = joinCollections(chartCollectionT,rawC.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']))
-    }
+    
     Map2.addLayer(rawC,{'opacity':0},k + ' Raw',false);
+
     var thresholds = r4Runs[k].thresholds;
     
     var lowerThresholdDecline =thresholds.loss;
@@ -2264,7 +2261,13 @@ function runTest(){
     //               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0]))})
     //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
-    
+    var rawCT = NFSLCMS.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']).map(function(img){return img.unmask()})
+    if(chartCollectionT === undefined){
+      chartCollectionT = rawCT;
+    }
+    else{
+      chartCollectionT = joinCollections(chartCollectionT,rawCT,false)
+    }
     var lcJSON = JSON.parse(NFSLCMS.get('landcoverJSON').getInfo());
     var luJSON = JSON.parse(NFSLCMS.get('landuseJSON').getInfo());
     
@@ -2424,9 +2427,17 @@ var landcoverClassQueryDict = {};
 areaChartCollections['lg'] = {'label':'LCMS Runs',
                                   'collection':areaCollection,
                                   'stacked':false,
-                                  'steppedLine':false};
+                                  'steppedLine':false,
+                                  'colors':chartColorsDict.testArea};
 chartCollection =chartCollectionT;
-console.log(chartCollectionT.getInfo())
+// Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
+// Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
+// console.log(chartCollectionT.getInfo())
+var bns = ee.Image(chartCollection.first()).bandNames();
+[0,1,2,3,4,5].map(function(i){
+  var bn = bns.get(i);
+  console.log(bn.getInfo())
+})
  getSelectLayers();
  populateAreaChartDropdown();                                 
 }

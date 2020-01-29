@@ -1002,7 +1002,7 @@ function stopQuery(){
 		map.setOptions({cursor:'hand'});
 		// $('#query-container').text('Double click on map to query values of displayed layers at a location');
 		google.maps.event.clearListeners(mapDiv, 'dblclick');
-		google.maps.event.clearInstanceListeners(map);
+		// google.maps.event.clearInstanceListeners(map);
 		map.setOptions({cursor:'hand'});
 		infowindow.setMap(null);
 		marker.setMap(null);
