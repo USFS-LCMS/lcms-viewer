@@ -260,7 +260,7 @@ if(mode === 'geeViz'){
   $('#pixel-chart-label').remove();
 }
 
-if(mode === 'LCMS' || mode === 'MTBS' ){
+if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' ){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
   addDropdown('tools-accordian','area-collection-dropdown','Choose which '+mode+' product to summarize','whichAreaChartCollection','Choose which '+mode+' time series to summarize.');

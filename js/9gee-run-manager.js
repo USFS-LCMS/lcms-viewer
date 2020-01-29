@@ -2222,22 +2222,30 @@ function runTest(){
   // // Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
   // // Map2.addSerializedLayer('{"type":"Invocation","arguments":{"value":1},"functionName":"Image.constant"}',{},'testSerial');
   var r4Runs = {
-    'R4_all_pr_annualized':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_pr_annualized',
+    'PR':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_pr_annualized',
     'thresholds' : {'loss': 0.35, 'slowLoss': 0.35, 'fastLoss': 0.6, 'gain': 0.35} },
-    'R4_all_equal_annualized':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_equal_annualized',
+    'Equal':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_equal_annualized',
     'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.5, 'gain': 0.45}},
     
-    'R4_all_epwt_annualized':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
+    'EPWT':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
     'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.45, 'gain': 0.4}},
-    'R4_all_epm_annualized':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
-    'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
+    // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
+    // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
   };
   getLCMSVariables();
 
-
+  var areaCollection;
+  var chartCollectionT;
   var clientBoundary = clientBoundsDict.R4
   Object.keys(r4Runs).map(function(k){
+    $('#layer-list').prepend(`<div class = 'dropdown-divider'></div>`)
     var rawC = ee.ImageCollection(r4Runs[k].collection);
+  
+    if(chartCollectionT === undefined){
+      chartCollectionT = rawC.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']);
+    }else{
+      chartCollectionT = joinCollections(chartCollectionT,rawC.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']))
+    }
     Map2.addLayer(rawC,{'opacity':0},k + ' Raw',false);
     var thresholds = r4Runs[k].thresholds;
     
@@ -2357,6 +2365,15 @@ var landcoverClassQueryDict = {};
 
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdDecline,upperThresholdDecline, 1);
     var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdDecline,upperThresholdDecline, 1);
+
+    var stacked = joinCollections(dndThresh.select([0]),rnrThresh.select([0]), false);
+    stacked = joinCollections(stacked,dndSlowThresh.select([0]), false);
+    stacked = joinCollections(stacked,dndFastThresh.select([0]), false);
+    stacked = stacked.map(function(img){return img.mask()}).select([0,1,2,3],[k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss'])
+    if(areaCollection === undefined){
+      areaCollection = stacked;
+    }else{areaCollection = joinCollections(areaCollection,stacked, false);}
+    
     var summaryMethod = 'year';
     if(summaryMethod === 'year'){
       var dndThreshOut = dndThresh.qualityMosaic('Loss Probability_change_year');//.qualityMosaic('Decline_change');
@@ -2403,5 +2420,13 @@ var landcoverClassQueryDict = {};
 
     Map2.addLayer(rnrThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},k+' Gain Year',false,null,null,k+ ' '+threshYearNameEnd+'gain '+recoveryNameEnding);
 
-  })
+  });
+areaChartCollections['lg'] = {'label':'LCMS Runs',
+                                  'collection':areaCollection,
+                                  'stacked':false,
+                                  'steppedLine':false};
+chartCollection =chartCollectionT;
+console.log(chartCollectionT.getInfo())
+ getSelectLayers();
+ populateAreaChartDropdown();                                 
 }
