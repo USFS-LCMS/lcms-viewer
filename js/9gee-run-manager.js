@@ -2229,16 +2229,33 @@ function runTest(){
     
     'EPWT':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
     'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.45, 'gain': 0.4}},
-    // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
-    // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
+    'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
+    'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
   };
-  chartColors = chartColorsDict.test;
+  var chartColorsT;
+  var areaChartColors;
+  var colorOffset = 15
+  chartColors = chartColors.concat(chartColors.map(function(c){return LightenDarkenColor(c,-20)}))
+                .concat(chartColors.map(function(c){return LightenDarkenColor(c,30)}))
   getLCMSVariables();
 
   var areaCollection;
   var chartCollectionT;
   var clientBoundary = clientBoundsDict.R4
   Object.keys(r4Runs).map(function(k){
+    if(chartColorsT === undefined){
+      chartColorsT = chartColorsDict.test;
+      areaChartColors = chartColorsDict.testArea;
+      }else{
+        chartColorsT = chartColorsT.concat(chartColorsDict.test.map(function(c){return LightenDarkenColor(c,colorOffset)}));
+        areaChartColors = areaChartColors.concat(chartColorsDict.testArea.map(function(c){return LightenDarkenColor(c,colorOffset)}));
+        
+      };
+      colorOffset +=15;
+      console.log(colorOffset)
+      
+   
+
     $('#layer-list').prepend(`<div class = 'dropdown-divider'></div>`)
     var rawC = ee.ImageCollection(r4Runs[k].collection);
     
@@ -2428,16 +2445,12 @@ areaChartCollections['lg'] = {'label':'LCMS Runs',
                                   'collection':areaCollection,
                                   'stacked':false,
                                   'steppedLine':false,
-                                  'colors':chartColorsDict.testArea};
+                                  'colors':areaChartColors};
 chartCollection =chartCollectionT;
+chartColors = chartColorsT
 // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
 // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
-// console.log(chartCollectionT.getInfo())
-var bns = ee.Image(chartCollection.first()).bandNames();
-[0,1,2,3,4,5].map(function(i){
-  var bn = bns.get(i);
-  console.log(bn.getInfo())
-})
+
  getSelectLayers();
  populateAreaChartDropdown();                                 
 }
