@@ -2234,7 +2234,8 @@ function runTest(){
   };
   var chartColorsT;
   var areaChartColors;
-  var colorOffset = 15
+  var colorOffset = 15;
+  var colorOffsetDir = 1;
   chartColors = chartColors.concat(chartColors.map(function(c){return LightenDarkenColor(c,-20)}))
                 .concat(chartColors.map(function(c){return LightenDarkenColor(c,30)}))
   getLCMSVariables();
@@ -2247,13 +2248,15 @@ function runTest(){
       chartColorsT = chartColorsDict.test;
       areaChartColors = chartColorsDict.testArea;
       }else{
-        chartColorsT = chartColorsT.concat(chartColorsDict.test.map(function(c){return LightenDarkenColor(c,colorOffset)}));
-        areaChartColors = areaChartColors.concat(chartColorsDict.testArea.map(function(c){return LightenDarkenColor(c,colorOffset)}));
+        chartColorsT = chartColorsT.concat(chartColorsDict.test.map(function(c){return LightenDarkenColor(c,colorOffset*colorOffsetDir)}));
+        areaChartColors = areaChartColors.concat(chartColorsDict.testArea.map(function(c){return LightenDarkenColor(c,colorOffset*colorOffsetDir)}));
         
       };
-      colorOffset +=15;
-      console.log(colorOffset)
-      
+      colorOffset +=30;
+      if(colorOffsetDir === 1){colorOffsetDir = -1}
+        else{colorOffsetDir = 1}
+      // console.log(colorOffset)
+      // console.log(areaChartColors)
    
 
     $('#layer-list').prepend(`<div class = 'dropdown-divider'></div>`)
@@ -2452,5 +2455,6 @@ chartColors = chartColorsT
 // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
 
  getSelectLayers();
- populateAreaChartDropdown();                                 
+ populateAreaChartDropdown();   
+ // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')                              
 }

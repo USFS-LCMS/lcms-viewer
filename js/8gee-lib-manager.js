@@ -524,10 +524,12 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   // Map2.addLayer(hillshade,{min:0,max:255},'hillshade')
   var nlcd = ee.ImageCollection('USGS/NLCD');
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
-  var tcc = nlcd.filter(ee.Filter.calendarRange(2011,2011,'year')).select(['percent_tree_cover']).mosaic();
-  // tcc = tcc.mask(tcc.neq(0));
-  Map2.addLayer(tcc,{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover 2011',false,null,null, 'NLCD 2011 Tree Canopy Cover',whichLayerList);
+  [2011,2016].map(function(yr){
+    var tcc = nlcd.filter(ee.Filter.calendarRange(yr,yr,'year')).select(['percent_tree_cover']).mosaic();
+  Map2.addLayer(tcc.updateMask(tcc.gte(1)),{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover '+yr.toString(),false,null,null, 'NLCD '+yr.toString()+' Tree Canopy Cover',whichLayerList);
 
+  })
+  
   
 
   
