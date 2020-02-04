@@ -796,27 +796,27 @@ function runCONUS(){
   mtbsSummaryMethod = mtbsSummaryMethodDict[summaryMethod]
   getMTBSandIDS(studyAreaName);
 
-
-
+  if(analysisMode === 'advanced'){
+    var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
+      .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
+      .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+    ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
+      if(yr%5 == 0 || yr === startYear || yr === endYear){
+        var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+        Map2.addLayer(composite.set('bounds',clientBoundary),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Landsa Composite '+yr.toString(),false)
+      }  
+    })
+  }
   // var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
   var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20191231');
   
   // var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191209');
-  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191231').map(function(img){return img.translate(15,-15)});
+  // var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191231').map(function(img){return img.translate(15,-15)});
+  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20200120');//.map(function(img){return img.translate(15,-15)});
   
   var years = ee.List.sequence(startYear,endYear);
   
-  //Bring in AZ sad data
-  var az_sad_accumlative_bounds = {"geodesic":false,"type":"Polygon","coordinates":[[[-113.91098712647988,31.45169750161665],[-108.8813128720895,31.45169750161665],[-108.8813128720895,36.844119954348365],[-113.91098712647988,36.844119954348365],[-113.91098712647988,31.45169750161665]]]};
-  var az_sad_fhp_bounds = {"geodesic":false,"type":"Polygon","coordinates":[[[-112.24920059931354,34.38791770067013],[-111.08942723165458,34.38791770067013],[-111.08942723165458,35.543658110630254],[-112.24920059931354,35.543658110630254],[-112.24920059931354,34.38791770067013]]]};
-  var az_ads_2019_bounds= {"geodesic":false,"type":"Polygon","coordinates":[[[-113.91848427979691,31.376322382702632],[-109.04556497153769,31.376322382702632],[-109.04556497153769,36.86844802806162],[-113.91848427979691,36.86844802806162],[-113.91848427979691,31.376322382702632]]]};
-  var az_sad_accumlative = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_accumlative_aspen_decline').set('bounds',az_sad_accumlative_bounds);
-  var az_sad_fhp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/Aspen_layer_2017_FHPmapped_Final').set('bounds',az_sad_fhp_bounds);
-  var az_ads_2019 = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_ADS__Damage_2019').set('bounds',az_ads_2019_bounds);
-  // console.log(JSON.stringify(az_ads_2019.geometry().bounds().getInfo()))
-  Map2.addLayer(az_sad_accumlative,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,null,'reference-layer-list');
-  Map2.addLayer(az_sad_fhp,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,null,'reference-layer-list');
-  Map2.addLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,null,'reference-layer-list');
+  
   /////////////////////////////////////////
   lcms = years.map(function(yr){
     var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
@@ -910,7 +910,55 @@ function runCONUS(){
   
   forAreaCharting = forAreaCharting.map(function(img){return img.mask()})
   
+  //Bring in AZ sad data
+  var az_sad_accumlative_bounds = {"geodesic":false,"type":"Polygon","coordinates":[[[-113.91098712647988,31.45169750161665],[-108.8813128720895,31.45169750161665],[-108.8813128720895,36.844119954348365],[-113.91098712647988,36.844119954348365],[-113.91098712647988,31.45169750161665]]]};
+  var az_sad_fhp_bounds = {"geodesic":false,"type":"Polygon","coordinates":[[[-112.24920059931354,34.38791770067013],[-111.08942723165458,34.38791770067013],[-111.08942723165458,35.543658110630254],[-112.24920059931354,35.543658110630254],[-112.24920059931354,34.38791770067013]]]};
+  var az_ads_2019_bounds= {"geodesic":false,"type":"Polygon","coordinates":[[[-113.91848427979691,31.376322382702632],[-109.04556497153769,31.376322382702632],[-109.04556497153769,36.86844802806162],[-113.91848427979691,36.86844802806162],[-113.91848427979691,31.376322382702632]]]};
   
+  var nm_sad_bounds = {
+  "geodesic": false,
+  "type": "Polygon",
+  "coordinates": [
+    [
+      [
+        -109.27704677806874,
+        32.68652248686129
+      ],
+      [
+        -104.31938201771926,
+        32.68652248686129
+      ],
+      [
+        -104.31938201771926,
+        37.00436725159395
+      ],
+      [
+        -109.27704677806874,
+        37.00436725159395
+      ],
+      [
+        -109.27704677806874,
+        32.68652248686129
+      ]
+    ]
+  ]
+};
+
+  var az_sad_accumlative = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_accumlative_aspen_decline').set('bounds',az_sad_accumlative_bounds);
+  var az_sad_fhp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/Aspen_layer_2017_FHPmapped_Final').set('bounds',az_sad_fhp_bounds);
+  var az_ads_2019 = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_ADS__Damage_2019').set('bounds',az_ads_2019_bounds);
+  // console.log(JSON.stringify(az_ads_2019.geometry().bounds().getInfo()))
+  Map2.addLayer(az_sad_accumlative,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,null,'reference-layer-list');
+  Map2.addLayer(az_sad_fhp,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,null,'reference-layer-list');
+  Map2.addLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,null,'reference-layer-list');
+  var nmSAD = ee.List.sequence(2011,2018).getInfo().map(function(yr){
+    yr = yr.toString();
+    var fc = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/NM_Aspen_Mort_'+yr);
+    return fc;
+  });
+  console.log()
+  nmSAD = ee.FeatureCollection(nmSAD).flatten().set('bounds',nm_sad_bounds);
+  Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'reference-layer-list');
   getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',
@@ -952,18 +1000,13 @@ var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
 // var ltR4  = ee.Image(ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7')
           // .filter(ee.Filter.eq('band',indexName)).first());
 var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
-  .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2']);
-// var composites
-// print(composites)
+  .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
+  .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
 ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
   if(yr%5 == 0 || yr === startYear || yr === endYear){
-    var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year'));
-  // var comp1 = composite.filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept'))
-  var comp2 = composite.filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not())
-  // Map2.addLayer(comp1,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Sumnmer '+yr.toString(),false);
-  Map2.addLayer(comp2,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composite '+yr.toString(),false)
-  }
-  
+    var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+    Map2.addLayer(composite,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composite '+yr.toString(),false)
+  }  
 })
 
 
