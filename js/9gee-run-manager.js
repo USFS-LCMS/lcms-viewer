@@ -934,7 +934,8 @@ var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
 var lossThresh  = lossMagThresh *-1000;//2000;
-var gainThresh = gainMagThresh *-1000;//2000;
+var gainThresh = gainMagThresh *1000;//2000;
+
 var crs  = 'EPSG:5070';
 var indexName = 'NBR';
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
