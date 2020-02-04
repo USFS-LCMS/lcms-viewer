@@ -99,9 +99,12 @@ if(mode === 'LCMS'){
   addSubCollapse('parameters-collapse-div','lt-params-label','lt-params-div','LANDTRENDR Params', '',false,'')
   addSubCollapse('parameters-collapse-div','ccdc-params-label','ccdc-params-div','CCDC Params', '',false,'')
   
-  addRangeSlider('lt-params-div','Loss Magnitude Threshold','lossMagThresh',-0.8,0,-0.2,0.01,'loss-mag-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any difference for a given segement less than this threshold will be flagged as loss') 
-  addRangeSlider('lt-params-div','Gain Magnitude Threshold','gainMagThresh',0,0.8,0.1,0.01,'gain-mag-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any difference for a given segement greater than this threshold will be flagged as gain') 
-   addCheckboxes('lt-params-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',{'B1':false,'B2':false,'B3':false,'B4':false,'B5':false,'B7':false,'NBR':true,'NDVI':false,'NDMI':false,'TCB':false,'TCG':false,'TCW':false,'TCA':false})
+  addRangeSlider('lt-params-div','Loss Magnitude Threshold','lossMagThresh',-0.8,0,-0.2,0.05,'loss-mag-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any difference for a given segement less than this threshold will be flagged as loss') 
+  addRangeSlider('lt-params-div','Gain Magnitude Threshold','gainMagThresh',0,0.8,0.1,0.05,'gain-mag-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any difference for a given segement greater than this threshold will be flagged as gain') 
+  addCheckboxes('lt-params-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',{'B1':false,'B2':false,'B3':false,'B4':false,'B5':false,'B7':false,'NBR':true,'NDVI':false,'NDMI':false,'TCB':false,'TCG':false,'TCW':false,'TCA':false})
+  
+  addRangeSlider('ccdc-params-div','Change Probability Threshold','ccdcChangeProbThresh',0,1,0.8,0.1,'ccdc-change-prob-thresh-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
+  
   // $('#lt-params-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);

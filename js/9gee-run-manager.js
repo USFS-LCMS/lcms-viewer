@@ -925,104 +925,158 @@ function runCONUS(){
 
 } // end runCONUS()
 function runBaseLearner(){
-  var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
-// print(lt.aggregate_array('system:index').getInfo())
-var transform = [30,0,-2361915.0,0,-30,3177735.0];
-var crs  = 'EPSG:5070';
+ // var startYear = 1984;
+// var endYear = 2019;
 
+var transform = [30,0,-2361915.0,0,-30,3177735.0];
+var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
+var lossMagPalette = 'F5DEB3,D00';
+var gainMagPalette = 'F5DEB3,006400';
+var lossThresh  = lossMagThresh *-1000;//2000;
+var gainThresh = gainMagThresh *-1000;//2000;
+var crs  = 'EPSG:5070';
+var indexName = 'NBR';
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
 var durPalette = 'BD1600,E2F400,0C2780';
-////////////////////////////////////////////////////
-var indexName = 'NBR';
 
-///////////////////////////////////////////////////
-var segNumbers = ee.List.sequence(0,10);
-var segNumbers2 = ee.List.sequence(1,11);
-var segNumbersLeft = segNumbers.slice(0,-1);
-var segNumbersRight = segNumbers.slice(1,null);
+// Map: projects/LCMS/CONUS_Products/v20200120
+var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
+              
 
-var bns = segNumbers.map(function(bn){return ee.Number(bn).byte().format()});
-var bns2 = segNumbers2.map(function(bn){return ee.Number(bn).byte().format()});
-var indexList = [];Object.keys(whichIndices).map(function(index){if(whichIndices[index]){indexList.push(index)}});
-var chartCollectionT;
-function getLT(indexName){
-var ltT = lt.filter(ee.Filter.stringContains('system:index',indexName)).mosaic();
-ltT = ltT.reproject(crs,transform);
-// print(ltT.getInfo())
-// Map.addLayer(lt,{},'lt-stack',false);
-
-
-
-  var ltFitted = ltT.select(['ftv.*']);
-  var ltYrs = ltT.select(['doy.*']);
-  // startYear = 1984;
+// var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT').filter(ee.Filter.stringContains('system:index',indexName)).mosaic();
+// var ltR4  = ee.Image(ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7')
+          // .filter(ee.Filter.eq('band',indexName)).first());
+var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
+  .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2']);
+// var composites
+// print(composites)
+ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
+  if(yr%5 == 0 || yr === startYear || yr === endYear){
+    var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year'));
+  // var comp1 = composite.filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept'))
+  var comp2 = composite.filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not())
+  // Map2.addLayer(comp1,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Sumnmer '+yr.toString(),false);
+  Map2.addLayer(comp2,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composite '+yr.toString(),false)
+  }
   
-  // var forAnnual = 
-  var ftvBns = bns.map(function(bn){return addPrefix(bn,'ftv')});
-  var fittedBns = bns2.map(function(bn){return addPrefix(bn,'fit_')});
+})
 
-  var yrBns = bns.map(function(bn){return addPrefix(bn,'doy')});
-  var yrsBns = bns2.map(function(bn){return addPrefix(bn,'yrs_')});
+
+function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fittedPrefix,sign,lossThresh,gainThresh){
+  var ltFitted = ltStack.select([fittedPrefix+'.*']).multiply(sign);
+  var ltYrs = ltStack.select([yrsPrefix+'.*']);
   
-  var forAnnual = ltYrs.rename(yrsBns).addBands(ltFitted.rename(fittedBns));
-  var annualLT = fitStackToCollection(forAnnual, 10, startYear, endYear).select(['fitted']);
-  var annualBns = ee.Image(annualLT.first()).bandNames();
-  var annualBnsIndex = annualBns.map(function(bn){return addPrefix(bn,indexName+'_')});
-  annualLT = annualLT.select(annualBns,annualBnsIndex)
-  if(chartCollectionT === undefined){chartCollectionT = annualLT}
-  else{chartCollectionT = joinCollections(chartCollectionT,annualLT,false)}
-  
-  ltYrs = ltYrs.updateMask(ltYrs.gte(startYear).and(ltYrs.lte(endYear)));
-  ltFitted = ltFitted.updateMask(ltYrs.mask());
 
-
-  var ltFittedLeft = ltFitted.select(ftvBns.slice(0,-1));
-  var ltFittedRight = ltFitted.select(ftvBns.slice(1,null));
-  // startYear = 2015;endYear = 2019;
-  
-  var ltYrsLeft = ltYrs.select(yrBns.slice(0,-1));
-  var ltYrsRight = ltYrs.select(yrBns.slice(1,null));
-
-  var diff = ltFittedRight.subtract(ltFittedLeft);//.selfMask();
-
-  var lossThresh = lossMagThresh*-1000;
-  var gainThresh = gainMagThresh*1000;
-
-  var loss = diff.gt(lossThresh);//.selfMask();
-  var gain = diff.multiply(-1).gt(gainThresh);//.selfMask();
-
-  var lossYrStart = ltYrsLeft.mask(loss).reduce(ee.Reducer.max()).selfMask();
-  var gainYrStart = ltYrsLeft.mask(gain).reduce(ee.Reducer.max()).selfMask();
-
-  var lossYrEnd = ee.Image(ltYrsRight.mask(loss).reduce(ee.Reducer.max()).selfMask());
-  var gainYrEnd = ee.Image(ltYrsRight.mask(gain).reduce(ee.Reducer.max()).selfMask());
-  var lossMag = ee.Image(diff.mask(loss).reduce(ee.Reducer.max()).selfMask());
-  var gainMag = ee.Image(diff.multiply(-1).mask(gain).reduce(ee.Reducer.max()).selfMask());
-
-  var lossDuration = ee.Image(lossYrEnd.subtract(lossYrStart));
-  var gainDuration = ee.Image(gainYrEnd.subtract(gainYrStart));
-
-
-  Map2.addLayer(lossYrEnd.set('bounds',clientBoundsDict.CONUS),{min:startYear,max:endYear,palette:lossYearPalette},indexName+' Loss Yr',true);
-  Map2.addLayer(lossMag.set('bounds',clientBoundsDict.CONUS),{min:lossThresh,max:lossThresh + 500,palette:lossMagPalette},indexName+' Loss Magnitude',false);
-  Map2.addLayer(lossDuration.set('bounds',clientBoundsDict.CONUS),{min:1,max:5,palette:durPalette},indexName+' Loss Duration',false);
-  
-  Map2.addLayer(gainYrEnd.set('bounds',clientBoundsDict.CONUS),{min:startYear,max:endYear,palette:gainYearPalette},indexName+' Gain Yr',false);
-  Map2.addLayer(gainMag.set('bounds',clientBoundsDict.CONUS),{min:gainThresh,max:gainThresh+500,palette:gainMagPalette},indexName+' Gain Magnitude',false);
-  Map2.addLayer(gainDuration.set('bounds',clientBoundsDict.CONUS),{min:1,max:5,palette:durPalette},indexName+' Gain Duration',false);
-
-  Map2.addExport(lossYrEnd.int16(),indexName +'_Loss_Yr',30,true,{});
-  Map2.addExport(lossMag.int16(),indexName +'_Loss_Mag',30,false,{});
-  Map2.addExport(lossDuration.int16(),indexName +'_Loss_Dur',30,false,{});
-  Map2.addExport(gainYrEnd.int16(),indexName +'_Gain_Yr',30,false,{});
-  Map2.addExport(gainMag.int16(),indexName +'_Gain_Mag',30,false,{});
-  Map2.addExport(gainDuration.int16(),indexName +'_Gain_Dur',30,false,{});
+  var lossYearStack = ee.Image(ee.List.sequence(startSeg,endSeg).iterate(function(i,img){
+    var i1 = ee.Number(i).byte().format();
+    var i2 = ee.Number(i).byte().add(1).format();
+    
+    var ltFittedTPre = ltFitted.select([ee.String(fittedPrefix).cat(i1)]);
+    var ltFittedTPost = ltFitted.select([ee.String(fittedPrefix).cat(i2)]);
+    var diff = ltFittedTPost.subtract(ltFittedTPre);
+    var loss = diff.gt(lossThresh).selfMask();
+    var gain = diff.lt(-gainThresh).selfMask();
+    
+    
+    var ltYrTPre = ltYrs.select([ee.String(yrsPrefix).cat(i1)]);
+    var ltYrTPost = ltYrs.select([ee.String(yrsPrefix).cat(i2)]);
+    ltYrTPre = ltYrTPre.updateMask(ltYrTPost.gte(startYear).and(ltYrTPost.lte(endYear)));
+    ltYrTPost = ltYrTPost.updateMask(ltYrTPost.gte(startYear).and(ltYrTPost.lte(endYear)));
+    
+    var lossYear = ltYrTPost.updateMask(loss).rename([ee.String('loss_year_').cat(i1)]);
+    var gainYear = ltYrTPost.updateMask(gain).rename([ee.String('gain_year_').cat(i1)]);
+    
+    var lossMag = diff.updateMask(ltYrTPost.mask().and(loss)).rename([ee.String('loss_mag_').cat(i1)]);
+    var gainMag = diff.updateMask(ltYrTPost.mask().and(gain)).rename([ee.String('gain_mag_').cat(i1)]);
+    
+    var dur = ltYrTPost.subtract(ltYrTPre);
+    var lossDur = dur.updateMask(loss).rename([ee.String('loss_dur_').cat(i1)]);
+    var gainDur = dur.updateMask(gain).rename([ee.String('gain_dur_').cat(i1)]);
+    
+    return ee.Image(img).addBands(lossYear).addBands(lossMag).addBands(lossDur).addBands(gainYear).addBands(gainMag).addBands(gainDur);
+  },ee.Image(1)));
+  lossYearStack = lossYearStack.select(lossYearStack.bandNames().slice(1,null));
+ 
+  var lossYear = lossYearStack.select(['loss_year.*']).reduce(ee.Reducer.max()).rename(['loss_year']);
+  var gainYear = lossYearStack.select(['gain_year.*']).reduce(ee.Reducer.max()).rename(['gain_year']);
+  var lossMag = lossYearStack.select(['loss_mag.*']).reduce(ee.Reducer.max()).rename(['loss_mag']);
+  var gainMag = lossYearStack.select(['gain_mag.*']).reduce(ee.Reducer.max()).rename(['gain_mag']);
+  var lossDur = lossYearStack.select(['loss_dur.*']).reduce(ee.Reducer.max()).rename(['loss_dur']);
+  var gainDur = lossYearStack.select(['gain_dur.*']).reduce(ee.Reducer.max()).rename(['gain_dur']);
+  return lossYear.addBands(lossMag).addBands(lossDur).addBands(gainYear).addBands(gainMag).addBands(gainDur);
 }
-indexList.map(getLT);
-chartCollection = chartCollectionT;
+Object.keys(whichIndices).map(function(k){
+  var indexName = k;
+  if(whichIndices[k]){
+    var ltCONUST = ltCONUS.filter(ee.Filter.eq('timeSeries',indexName)).mosaic();
+    var lossGainCONUS = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
+
+    Map2.addLayer(lossGainCONUS.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS LT Loss Year '+indexName,false);
+    Map2.addLayer(lossGainCONUS.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'CONUS LT Loss Mag '+indexName,false);
+    Map2.addLayer(lossGainCONUS.select(['loss_dur']),{min:1,max:5,palette:durPalette},'CONUS LT Loss Dur '+indexName,false);
+
+    Map2.addLayer(lossGainCONUS.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'CONUS LT Gain Year '+indexName,false);
+    Map2.addLayer(lossGainCONUS.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'CONUS LT Gain Mag '+indexName,false);
+    Map2.addLayer(lossGainCONUS.select(['gain_dur']),{min:1,max:5,palette:durPalette},'CONUS LT Gain Dur '+indexName,false);
+
+  }
+});
+
+// var lossGainR4 = getLossGainLT(ltR4,startYear,endYear,1,10,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh);
+// Map.addLayer(lossGainR4.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'R4 Loss Year',false);
+// Map.addLayer(lossGainR4.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'R4 Loss Mag',false);
+// Map.addLayer(lossGainR4.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'R4 Gain Year',false);
+// Map.addLayer(lossGainR4.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'R4 Gain Mag',false);
+
+var ccdc = ee.ImageCollection('projects/CCDC/USA')
+          // .filterBounds(geometry)
+          .mosaic();
+
+
+function getChangeCCDC(ccdcStack,startYear,endYear,startSeg,endSeg,segPrefix,tStartSuffix,tEndSuffix,tBreakSuffix,changeProbSuffix,divideTimeBy,changeProbThresh){
+  var tStart = ccdcStack.select(['.*'+tStartSuffix]).divide(divideTimeBy);
+  var tEnd = ccdcStack.select(['.*'+tEndSuffix]).divide(divideTimeBy);
+  var tBreak = ccdcStack.select(['.*'+tBreakSuffix]).divide(divideTimeBy);
+  var changeProb = ccdcStack.select(['.*'+changeProbSuffix]);
+
+  
+  var changeYearStack = ee.Image(ee.List.sequence(startSeg,endSeg).iterate(function(i,img){
+    var i1 = ee.Number(i).byte().format();
+    var i2 = ee.Number(i).byte().add(1).format();
+    
+    var tStartT = tStart.select([ee.String(segPrefix).cat(i1).cat('.*')]);
+    var tEndT = tEnd.select([ee.String(segPrefix).cat(i1).cat('.*')]);
+    var changeProbT = changeProb.select([ee.String(segPrefix).cat(i1).cat('.*')]);
+    var change = changeProbT.gt(changeProbThresh);
+    var yrMask = tEndT.gte(startYear).and(tEndT.lte(endYear));
+    tEndT = tEndT.updateMask(change.and(yrMask)).rename([ee.String('change_year_').cat(i1)]);
+    changeProbT = changeProbT.updateMask(change.and(yrMask)).rename([ee.String('change_prob_').cat(i1)]);
+    
+    
+    return ee.Image(img).addBands(tEndT).addBands(changeProbT);
+  
+    
+  },ee.Image(1)));
+  changeYearStack = changeYearStack.select(changeYearStack.bandNames().slice(1,null));
+ 
+  var changeYear =changeYearStack.select(['change_year.*']).reduce(ee.Reducer.max()).rename(['change_year']);
+  changeProb =changeYearStack.select(['change_prob.*']).reduce(ee.Reducer.max()).rename(['change_prob']);
+  return changeYear.addBands(changeProb);
+}
+ 
+
+var change = getChangeCCDC(ccdc,startYear,endYear,1,9,'S','_tStart','_tEnd','_tBreak','_changeProb',365.25,ccdcChangeProbThresh*100) 
+// Map.addLayer(change.select([0]),)
+Map2.addLayer(change.select(['change_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Change Year',false);
+Map2.addLayer(change.select(['change_prob']),{min:ccdcChangeProbThresh*100,max:100,palette:lossMagPalette},'CONUS CCDC Change Prob',false);
+
+
+
+
 }
 function runRaw(){
   getLCMSVariables();
