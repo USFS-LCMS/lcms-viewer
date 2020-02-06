@@ -969,10 +969,10 @@ function runCONUS(){
   
   Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'reference-layer-list');
 
-  az_sad_accumlative = az_sad_accumlative.map(function(f){return f.set('name',f.get('OBJECTID'))});
-  az_sad_fhp = az_sad_fhp.map(function(f){return f.set('name',f.get('MODIFIED_D'))});
-  az_ads_2019 = az_ads_2019.map(function(f){return f.set('name',f.get('MODIFIED_D'))});
-  nmSAD = nmSAD.map(function(f){return f.set('name',f.get('OBJECTID'))});
+  az_sad_accumlative = az_sad_accumlative.map(function(f){return f.set('name',f.get('OBJECTID'))}).set('bounds',az_sad_accumlative_bounds);
+  az_sad_fhp = az_sad_fhp.map(function(f){return f.set('name',f.get('MODIFIED_D'))}).set('bounds',az_sad_fhp_bounds);
+  az_ads_2019 = az_ads_2019.map(function(f){return f.set('name',f.get('MODIFIED_D'))}).set('bounds',az_ads_2019_bounds);
+  nmSAD = nmSAD.map(function(f){return f.set('name',f.get('OBJECTID'))}).set('bounds',nm_sad_bounds);
   Map2.addSelectLayer(az_sad_accumlative,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,'AZ SAD Accumlative. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_sad_fhp,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,'AZ SAD FHP. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,'AZ ADS 2019. Turn on layer and click on any area wanted to include in chart');
