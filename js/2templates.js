@@ -1246,13 +1246,15 @@ function addLayer(layer){
                     //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
                                 var features = values.features;
                               
-                                var name;
+                                
+                                var dummyNameI = 1;
                                 features.map(function(f){
-                                    
+                                    var name;
                                     // selectedFeatures.features.push(f);
                                     Object.keys(f.properties).map(function(p){
                                         if(p.toLowerCase().indexOf('name') !== -1){name = f.properties[p]}
                                     })
+                                    if(name === undefined){name = dummyNameI.toString();dummyNameI++;}
                                     // console.log(name)
                                     if(name !== undefined){
                                         // if(selectedFeaturesNames === undefined){

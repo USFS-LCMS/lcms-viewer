@@ -945,6 +945,7 @@ function runCONUS(){
 };
 
   var az_sad_accumlative = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_accumlative_aspen_decline').set('bounds',az_sad_accumlative_bounds);
+
   var az_sad_fhp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/Aspen_layer_2017_FHPmapped_Final').set('bounds',az_sad_fhp_bounds);
   var az_ads_2019 = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_ADS__Damage_2019').set('bounds',az_ads_2019_bounds);
   // console.log(JSON.stringify(az_ads_2019.geometry().bounds().getInfo()))
@@ -956,7 +957,8 @@ function runCONUS(){
     var fc = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/NM_Aspen_Mort_'+yr);
     return fc;
   });
-  
+
+
   nmSAD = ee.FeatureCollection(nmSAD).flatten().set('bounds',nm_sad_bounds);
   // nmSADYrMin = nmSAD.reduceToImage(['Year'],ee.Reducer.min());
   // nmSADYrMax = nmSAD.reduceToImage(['Year'],ee.Reducer.max());
@@ -966,6 +968,16 @@ function runCONUS(){
   // Map2.addLayer(nmSADYrCount,{min:1,max:7},'nm yr count',false);
   
   Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'reference-layer-list');
+
+  az_sad_accumlative = az_sad_accumlative.map(function(f){return f.set('name',f.get('OBJECTID'))});
+  az_sad_fhp = az_sad_fhp.map(function(f){return f.set('name',f.get('MODIFIED_D'))});
+  az_ads_2019 = az_ads_2019.map(function(f){return f.set('name',f.get('MODIFIED_D'))});
+  nmSAD = nmSAD.map(function(f){return f.set('name',f.get('OBJECTID'))});
+  Map2.addSelectLayer(az_sad_accumlative,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,'AZ SAD Accumlative. Turn on layer and click on any area wanted to include in chart');
+  Map2.addSelectLayer(az_sad_fhp,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,'AZ SAD FHP. Turn on layer and click on any area wanted to include in chart');
+  Map2.addSelectLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,'AZ ADS 2019. Turn on layer and click on any area wanted to include in chart');
+  Map2.addSelectLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,'NM Aspen Mort 2011-2018. Turn on layer and click on any area wanted to include in chart');
+  
   getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',
