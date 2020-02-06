@@ -241,39 +241,31 @@ function fillEmptyCollections(inCollection,dummyImage){
 }
 // --------Add MTBS and IDS Layers-------------------------------
 var idsStartYear = 1997;
-var idsEndYear = 2015;
+var idsEndYear = 2018;
+
 function getIDSCollection(){
-
-var idsYears = ee.List.sequence(idsStartYear,idsEndYear).getInfo();
-
-var defolCollection = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Defol');
-// Map2.addLayer(defolCollection,{'layerType':'geeVectorImage'},'IDS Defoliation Vector')
-  var idsCollection = idsYears.map(function(yr){
-    var mort = ee.FeatureCollection('projects/USFS/FHAAST/IDS/IDS_Mort_' + yr.toString());
-    // print(mort.first())
-    
-    var mortDamageType = mort.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).rename(['IDS Mort Type']);
-    var mortDCA = mort.reduceToImage(['DCA_CODE'],ee.Reducer.first()).rename(['IDS Mort DCA']);
-    var mortDCAMod = mortDCA.mod(1000);
-    mortDCA = (mortDCA.subtract(mortDCAMod)).divide(1000);
-    
-    
-    var defolCollectionYr =defolCollection.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    var defolDamageType = defolCollectionYr.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first()).rename(['IDS Defol Type']);
-    var defolDCA = defolCollectionYr.reduceToImage(['DCA_CODE'],ee.Reducer.first()).rename(['IDS Defol DCA']);
-    var defolDCAMod = defolDCA.mod(1000);
-    defolDCA = (defolDCA.subtract(defolDCAMod)).divide(1000);
-    
-    var idsStack = mortDamageType.addBands(mortDCA).addBands(defolDamageType).addBands(defolDCA).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte();
-    var idsYearStack = ee.Image([yr,yr,yr,yr]).updateMask([mortDamageType.mask(),mortDCA.mask(),defolDamageType.mask(),defolDCA.mask()]).int16();
-    var bns = idsStack.bandNames();
-    bns = bns.map(function(bn){return ee.String(bn).cat(' Year')});
-    idsYearStack = idsYearStack.rename(bns)
-    return idsStack.addBands(idsYearStack)
+  if(startYear > idsStartYear){idsStartYear = startYear}
+  if(endYear < idsEndYear){idsEndYear = endYear}  
+  var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+  var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
+ 
+  ids = ids.map(function(id){
+    var idsT = ee.FeatureCollection(id);
+    return idsT;
   });
-  idsCollection = ee.ImageCollection(idsCollection);
+  ids = ee.FeatureCollection(ids).flatten();
+  ids = ids.filter(ee.Filter.and(ee.Filter.gte('SURVEY_YEA',idsStartYear),ee.Filter.lte('SURVEY_YEA',idsEndYear)));
 
-  return idsCollection
+  var years = ee.List.sequence(idsStartYear,idsEndYear);
+  var dcaCollection = years.map(function(yr){
+    var idsYr = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+    var dcaYr = idsYr.reduceToImage(['DCA_CODE'],ee.Reducer.first()).divide(1000);
+    var dtYr = idsYr.reduceToImage(['DAMAGE_TYP'],ee.Reducer.first());
+    return dcaYr.addBands(dtYr).int16().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).rename(['Damage_Agent','Damage_Type']);   
+  });
+  dcaCollection = ee.ImageCollection.fromImages(dcaCollection);
+  console.log(dcaCollection.size().getInfo())
+  return {'imageCollection':dcaCollection,'featureCollection':ids}
 }
 function getAspectObj(){
   var dem = ee.Image('USGS/SRTMGL1_003');
@@ -513,8 +505,8 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
 }
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
-  var idsCollection = getIDSCollection();
- 
+  var idsCollections = getIDSCollection();
+  
     var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
    
   
@@ -531,15 +523,20 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   })
   
   
-
+  var idsYr = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.max()).set('bounds',clientBoundsDict.All);
+  var idsCount = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.count()).selfMask().set('bounds',clientBoundsDict.All);
+  Map2.addLayer(idsCount,{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/2),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was included in the IDS survey (1997-2018)',whichLayerList);
+  Map2.addLayer(idsYr,{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year Surveyed',false,null,null, 'Most recent year an area was included in the IDS survey (1997-2018)',whichLayerList);
   
-  Map2.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
-  Map2.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
   
-  Map2.addLayer(idsCollection.select(['IDS Defol Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Defoliation Survey Count',false,null,null, 'Number of times an area was recorded as defoliation by the IDS survey',whichLayerList);
-  Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
+  // Map2.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
+  // Map2.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
+  
+  // Map2.addLayer(idsCollection.select(['IDS Defol Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Defoliation Survey Count',false,null,null, 'Number of times an area was recorded as defoliation by the IDS survey',whichLayerList);
+  // Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
+  
   var mtbs =getMTBSAndNLCD(studyAreaName,whichLayerList).MTBS.collection
-  return [mtbs,idsCollection]
+  return [mtbs,idsCollections.imageCollection]
 }
 function getNAIP(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};

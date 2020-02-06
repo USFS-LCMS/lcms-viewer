@@ -956,8 +956,15 @@ function runCONUS(){
     var fc = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/NM_Aspen_Mort_'+yr);
     return fc;
   });
-  console.log()
+  
   nmSAD = ee.FeatureCollection(nmSAD).flatten().set('bounds',nm_sad_bounds);
+  nmSADYrMin = nmSAD.reduceToImage(['Year'],ee.Reducer.min());
+  nmSADYrMax = nmSAD.reduceToImage(['Year'],ee.Reducer.max());
+  nmSADYrCount = nmSAD.reduceToImage(['Year'],ee.Reducer.count());
+  Map2.addLayer(nmSADYrMin,{min:2011,max:2018},'nm yr min',false);
+  Map2.addLayer(nmSADYrMax,{min:2011,max:2018},'nm yr max',false);
+  Map2.addLayer(nmSADYrCount,{min:1,max:7},'nm yr count',false);
+  
   Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'reference-layer-list');
   getSelectLayers();
   // areaChartCollections = {};
@@ -1356,7 +1363,7 @@ var pdsiDict = {
   2:'moderate drought',   // -2.99--2   == -3
   1:'severe drought',     // -3.99--3   == -4
   0:'extreme drought'}
-var idsCollection = getIDSCollection().select([0,1,2,3]);
+var idsCollection = mtbsIDS[1].select([1,0],['IDS Type','IDS DCA']);
 // print(idsCollection.getInfo())
 // var mortType = idsCollection.select(['IDS Mort Type']).max();
 // var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
@@ -1391,10 +1398,8 @@ forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervio
 // console.log(forCharting.getInfo())
 
 var chartTableDict = {
-  'IDS Mort Type':damage_codes,
-  'IDS Mort DCA':dca_codes,
-  'IDS Defol Type':damage_codes,
-  'IDS Defol DCA':dca_codes,
+  'IDS Type':damage_codes,
+  'IDS DCA':dca_codes,
   'MTBS Burn Severity':mtbsQueryClassDict,
   'NLCD Landcover':nlcdLCQueryDict,
   'NLCD LCMS Landcover':nlcdLCQueryDict,

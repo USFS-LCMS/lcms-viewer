@@ -186,9 +186,11 @@ var  getQueryImages = function(lng,lat){
 			
 	infowindow.setContent(queryContent);
 	infowindow.open(map);
+	var idI = 1;
 	function makeQueryTable(value,q,k){
 		// console.log(value);
-		var containerID = k + '-container';
+		var containerID = k + '-container-'+idI.toString();
+		idI++;
 		$('#query-list-container').append(`<table class="table table-hover bg-white">
 												<tbody>
 													<tr class = 'bg-black'><th></th></tr>
