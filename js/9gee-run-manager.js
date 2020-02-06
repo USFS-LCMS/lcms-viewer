@@ -812,7 +812,7 @@ function runCONUS(){
   
   // var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191209');
   // var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20191231').map(function(img){return img.translate(15,-15)});
-  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20200120');//.map(function(img){return img.translate(15,-15)});
+  var lcms  = ee.ImageCollection('projects/LCMS/CONUS_Products/v20200120').map(function(img){return img.translate(15,-15)});
   
   var years = ee.List.sequence(startYear,endYear);
   
@@ -837,14 +837,14 @@ function runCONUS(){
 
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
-      var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask');
+      // var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask').translate(15,-15);
       // var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask');
       
       var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
       // Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:0,max:3,palette:'a1a1a1,32681e,ffb88c,97ffff',addToClassLegend:true,classLegendDict:{'Tree':'32681e','Woody Wetland':'97ffff','Shrub':'ffb88c','Other':'a1a1a1'},queryDict:forestMaskQueryDict},'Landcover Mask Classes Old',false,null,null,'Landcover classes of 3 or more years. Any pixel that was tree 3 or more years is tree. Remaining pixels, any pixel that was woody wetland 3 or more years is woody wetland. Remaining pixels, any pixel that was shrub 3 or more years is shrub.  Remaining pixels are other. Both tree and woodywetland classes are included in the tree mask.');
       
       // var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask');
-      var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask');
+      var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask').translate(15,-15);
       
       var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
       Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:0,max:3,palette:'a1a1a1,32681e,ffb88c,97ffff',addToClassLegend:true,classLegendDict:{'Tree':'32681e','Woody Wetland':'97ffff','Shrub':'ffb88c','Other':'a1a1a1'},queryDict:forestMaskQueryDict},'Landcover Mask Classes',false,null,null,'Landcover classes of 3 or more years. Any pixel that was tree 3 or more years is tree. Remaining pixels, any pixel that was woody wetland 3 or more years is woody wetland. Remaining pixels, any pixel that was shrub 3 or more years is shrub.  Remaining pixels are other. Both tree and woodywetland classes are included in the tree mask.');
@@ -958,12 +958,12 @@ function runCONUS(){
   });
   
   nmSAD = ee.FeatureCollection(nmSAD).flatten().set('bounds',nm_sad_bounds);
-  nmSADYrMin = nmSAD.reduceToImage(['Year'],ee.Reducer.min());
-  nmSADYrMax = nmSAD.reduceToImage(['Year'],ee.Reducer.max());
-  nmSADYrCount = nmSAD.reduceToImage(['Year'],ee.Reducer.count());
-  Map2.addLayer(nmSADYrMin,{min:2011,max:2018},'nm yr min',false);
-  Map2.addLayer(nmSADYrMax,{min:2011,max:2018},'nm yr max',false);
-  Map2.addLayer(nmSADYrCount,{min:1,max:7},'nm yr count',false);
+  // nmSADYrMin = nmSAD.reduceToImage(['Year'],ee.Reducer.min());
+  // nmSADYrMax = nmSAD.reduceToImage(['Year'],ee.Reducer.max());
+  // nmSADYrCount = nmSAD.reduceToImage(['Year'],ee.Reducer.count());
+  // Map2.addLayer(nmSADYrMin,{min:2011,max:2018},'nm yr min',false);
+  // Map2.addLayer(nmSADYrMax,{min:2011,max:2018},'nm yr max',false);
+  // Map2.addLayer(nmSADYrCount,{min:1,max:7},'nm yr count',false);
   
   Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'reference-layer-list');
   getSelectLayers();

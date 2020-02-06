@@ -81,5 +81,8 @@ var lcmap8 ={name:'LCMAP 8',path:'./geojson/Set8_g.json','plotIDField':'plotid'}
 var lcmap9 ={name:'LCMAP 9',path:'./geojson/Set9_g.json','plotIDField':'plotid'};
 var lcmap10 ={name:'LCMAP 10',path:'./geojson/Set10_g.json','plotIDField':'plotid'};
 var plotsGeoJSONs =[r4PlotsJson,lcmapFirst3,lcmap4,lcmap5,lcmap6, lcmap7,lcmap8, lcmap9, lcmap10];//,mls,bt,fnf];
+[11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
+	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
+})
 
 
