@@ -796,10 +796,27 @@ function runCONUS(){
   mtbsSummaryMethod = mtbsSummaryMethodDict[summaryMethod]
   getMTBSandIDS(studyAreaName);
 
-  if(analysisMode === 'advanced'){
-    var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
+  var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
+                .filter(ee.Filter.eq('timeSeries',whichIndex)).mosaic();
+  
+  var yrNames = ee.List.sequence(1,11).map(function(i){return ee.String('yrs_').cat(ee.Number(i).byte().format())});
+  var fitNames = ee.List.sequence(1,11).map(function(i){return ee.String('fit_').cat(ee.Number(i).byte().format())});
+
+  var ltCONUSYr = ltCONUS.select(['doy.*'],yrNames);
+  var ltCONUSFit = ltCONUS.select(['ftv.*'],fitNames);
+
+  ltCONUS = ltCONUSYr.addBands(ltCONUSFit);
+  var ltCONUSC =fitStackToCollection(ltCONUS, 10, startYear, endYear).select(['fitted'],[whichIndex + '_LT_Fitted']).map(function(img){return multBands(img,-1,0.001)});
+
+  var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
       .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
       .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+  var raw = composites.map(simpleAddIndices).select([whichIndex]).map(setSameDate);
+
+  var raw = joinCollections(raw,ltCONUSC,false);
+
+  
+  if(analysisMode === 'advanced'){
     ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
       if(yr%5 == 0 || yr === startYear || yr === endYear){
         var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
@@ -905,7 +922,7 @@ function runCONUS(){
   Map2.addExport(dndCountForExport,'LCMS ' +studyAreaName +' vCONUS-2019-1 Loss Duration '+ startYear.toString() + '-'+ endYear.toString(),30,false,{'studyAreaName':studyAreaName,'version':'vCONUS.2019.1','summaryMethod':summaryMethod,'whichOne':'Loss Duration','startYear':startYear,'endYear':endYear,'min':0,'max':endYear-startYear});
 
   }
-  chartCollection =lossProb;
+  chartCollection = joinCollections(raw,lossProb,false);
   var forAreaCharting = dndThresh.select(["Loss Probability_change_year"],['Loss']);
   
   forAreaCharting = forAreaCharting.map(function(img){return img.mask()})
@@ -977,7 +994,7 @@ function runCONUS(){
   Map2.addSelectLayer(az_sad_fhp,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,'AZ SAD FHP. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,'AZ ADS 2019. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,'NM Aspen Mort 2011-2018. Turn on layer and click on any area wanted to include in chart');
-  
+
   getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',
