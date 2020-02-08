@@ -794,7 +794,8 @@ function runCONUS(){
   getHansen();
   mtbsSummaryMethodDict = {'year':'Most-Recent','prob':'Highest-Severity'};
   mtbsSummaryMethod = mtbsSummaryMethodDict[summaryMethod]
-  getMTBSandIDS(studyAreaName);
+  var mtbsAndIDS = getMTBSandIDS(studyAreaName);
+  
 
   var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
                 .filter(ee.Filter.eq('timeSeries',whichIndex)).mosaic();
@@ -969,6 +970,8 @@ function runCONUS(){
   Map2.addLayer(az_sad_accumlative,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,null,'reference-layer-list');
   Map2.addLayer(az_sad_fhp,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,null,'reference-layer-list');
   Map2.addLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,null,'reference-layer-list');
+  Map2.addLayer(chartCollection,{opacity:0},'LCMS CONUS Time Series',false,null,null,null,'reference-layer-list');
+
   var nmSAD = ee.List.sequence(2011,2018).getInfo().map(function(yr){
     yr = yr.toString();
     var fc = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/NM_Aspen_Mort_'+yr);
@@ -990,11 +993,13 @@ function runCONUS(){
   az_sad_fhp = az_sad_fhp.map(function(f){return f.set('name',f.get('MODIFIED_D'))}).set('bounds',az_sad_fhp_bounds);
   az_ads_2019 = az_ads_2019.map(function(f){return f.set('name',f.get('MODIFIED_D'))}).set('bounds',az_ads_2019_bounds);
   nmSAD = nmSAD.map(function(f){return f.set('name',f.get('OBJECTID'))}).set('bounds',nm_sad_bounds);
+  var ids = mtbsAndIDS[2].map(function(f){return f.set('name',f.get('DAMAGE_ARE'))}).set('bounds',clientBoundsDict.CONUS);
   Map2.addSelectLayer(az_sad_accumlative,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,'AZ SAD Accumlative. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_sad_fhp,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,'AZ SAD FHP. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,'AZ ADS 2019. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,'NM Aspen Mort 2011-2018. Turn on layer and click on any area wanted to include in chart');
-
+ 
+  Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
   getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',

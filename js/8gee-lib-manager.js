@@ -254,7 +254,7 @@ function getIDSCollection(){
     return idsT;
   });
   ids = ee.FeatureCollection(ids).flatten();
-  ids = ids.filter(ee.Filter.and(ee.Filter.gte('SURVEY_YEA',idsStartYear),ee.Filter.lte('SURVEY_YEA',idsEndYear)));
+  ids = ids.filter(ee.Filter.and(ee.Filter.gte('SURVEY_YEA',idsStartYear),ee.Filter.lte('SURVEY_YEA',idsEndYear))).set('bounds',clientBoundsDict.CONUS);
 
   var years = ee.List.sequence(idsStartYear,idsEndYear);
   var dcaCollection = years.map(function(yr){
@@ -527,7 +527,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   var idsCount = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.count()).selfMask().set('bounds',clientBoundsDict.All);
   Map2.addLayer(idsCount,{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/2),palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was included in the IDS survey (1997-2018)',whichLayerList);
   Map2.addLayer(idsYr,{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year Surveyed',false,null,null, 'Most recent year an area was included in the IDS survey (1997-2018)',whichLayerList);
-  
+  Map2.addLayer(idsCollections.featureCollection,{strokeColor:'0FF',layerType:'geeVectorImage'},'IDS Polygons',false,null,null, 'Polygons from the IDS survey (1997-2018)',whichLayerList);
   
   // Map2.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
   // Map2.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
@@ -536,7 +536,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   // Map2.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
   
   var mtbs =getMTBSAndNLCD(studyAreaName,whichLayerList).MTBS.collection
-  return [mtbs,idsCollections.imageCollection]
+  return [mtbs,idsCollections.imageCollection,idsCollections.featureCollection]
 }
 function getNAIP(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};

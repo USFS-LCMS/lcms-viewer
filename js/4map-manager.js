@@ -474,7 +474,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
 
 
-    var legendDivID = name.replaceAll(' ','-');
+    var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
     
     legendDivID = legendDivID.replaceAll('/','-');
     legendDivID = legendDivID.replaceAll('(','-');
@@ -515,7 +515,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.label = label;
     layer.fontColor = fontColor;
     layer.helpBox = helpBox;
-    layer.legendDivID = legendDivID;
+    layer.legendDivID = legendDivID ;
     if(queryItem === null || queryItem === undefined){queryItem = item};
     if(viz.canQuery === null || viz.canQuery === undefined){viz.canQuery = true};
     layer.canQuery = viz.canQuery;
