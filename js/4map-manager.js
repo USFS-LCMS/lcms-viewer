@@ -958,7 +958,7 @@ function reRun(){
   // }
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
-  ['layer-list','reference-layer-list','area-charting-select-layer-list'].map(function(l){
+  ['layer-list','reference-layer-list','area-charting-select-layer-list','fhp-div'].map(function(l){
     $('#'+l).empty();
     $('#legend-'+l).empty();
   })

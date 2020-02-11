@@ -885,7 +885,9 @@ function addLegendCollapse(){
     addCollapse(collapseContainer,'legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
     // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
     $('#legend-collapse-div').append(`<div id="legend-layer-list"></div>`);
-    $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
+    $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`);
+    $('#legend-collapse-div').append(`<div id="legend-fhp-div"></div>`);
+    $('#legend-collapse-div').append(`<div id="legend-area-charting-select-layer-list"></div>`);
 }
 
 

@@ -961,16 +961,30 @@ function runCONUS(){
     ]
   ]
 };
+    addSubCollapse('reference-layer-list','fhp-label','fhp-div','FHP Layers', '',false,'')
+    $('#fhp-label').prop('title','Various layers for Forest Health Protection applications. Most layers are Aerial Detection Survey-based data')
+  $('#reference-layer-list').append(`<div class = 'dropdown-divider'></div`)
+    var ids = mtbsAndIDS[2].map(function(f){return f.set('name',f.get('DAMAGE_ARE'))}).set('bounds',clientBoundsDict.CONUS);
+
+   //HOST_CODE = 746 AND (DAMAGE_TYPE_CODE = 2 OR DAMAGE_TYPE_CODE = 4) AND DCA_CODE <> 30000
+  //This query for aspen mortality/decline includes crown dieback which has also been used and I think would be appropriate to include. It will capture all agents except specifically excluding fire (30000) and will be composed primarily of three "DCAs" or Damage Casual Agents, 24000 = Wilts, 24008 = Decline complex, and 29002 = Sudden aspen decline.
+  var aspen_mort_dieback = ids.filter(ee.Filter.and(ee.Filter.eq('HOST_CODE',746),ee.Filter.or(ee.Filter.eq('DAMAGE_TYP',2),ee.Filter.eq('DAMAGE_TYP',4)),ee.Filter.neq('DCA_CODE',30000))).set('bounds',clientBoundsDict.CONUS);
+  Map2.addLayer(aspen_mort_dieback,{strokeColor:'0D0',layerType : 'geeVectorImage'}, 'IDS Aspen Mortality/Dieback',false,null,null,'Aspen mortality/decline includes crown dieback which has also been used and I think would be appropriate to include. It will capture all agents except specifically excluding fire (30000) and will be composed primarily of three "DCAs" or Damage Casual Agents, 24000 = Wilts, 24008 = Decline complex, and 29002 = Sudden aspen decline. SQL = HOST_CODE = 746 AND (DAMAGE_TYPE_CODE = 2 OR DAMAGE_TYPE_CODE = 4) AND DCA_CODE <> 30000','fhp-div');
+
+  //HOST_CODE = 746 AND (DAMAGE_TYPE_CODE = 1 OR DAMAGE_TYPE_CODE = 12 OR DAMAGE_TYPE_CODE = 13 OR DAMAGE_TYPE_CODE = 14)
+  //This query will capture all agents mapped as causing defoliation to aspen including, but not limited to 12900 (general defoliator code), 25036 (Marssonina/Black leaf spot), and 80001 (older multi-agent aspen defoliation code).
+  var aspen_defoliation = ids.filter(ee.Filter.and(ee.Filter.eq('HOST_CODE',746),ee.Filter.or(ee.Filter.eq('DAMAGE_TYP',12),ee.Filter.eq('DAMAGE_TYP',13),ee.Filter.eq('DAMAGE_TYP',14)))).set('bounds',clientBoundsDict.CONUS)
+  Map2.addLayer(aspen_defoliation,{strokeColor:'00D',layerType : 'geeVectorImage'}, 'IDS Aspen Defoliation',false,null,null,'All agents mapped as causing defoliation to aspen including, but not limited to 12900 (general defoliator code), 25036 (Marssonina/Black leaf spot), and 80001 (older multi-agent aspen defoliation code). SQL = HOST_CODE = 746 AND (DAMAGE_TYPE_CODE = 1 OR DAMAGE_TYPE_CODE = 12 OR DAMAGE_TYPE_CODE = 13 OR DAMAGE_TYPE_CODE = 14)','fhp-div');
 
   var az_sad_accumlative = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_accumlative_aspen_decline').set('bounds',az_sad_accumlative_bounds);
 
   var az_sad_fhp = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/Aspen_layer_2017_FHPmapped_Final').set('bounds',az_sad_fhp_bounds);
   var az_ads_2019 = ee.FeatureCollection('projects/USFS/LCMS-NFS/R3/SAD/AZ_ADS__Damage_2019').set('bounds',az_ads_2019_bounds);
   // console.log(JSON.stringify(az_ads_2019.geometry().bounds().getInfo()))
-  Map2.addLayer(az_sad_accumlative,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,null,'reference-layer-list');
-  Map2.addLayer(az_sad_fhp,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,null,'reference-layer-list');
-  Map2.addLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,null,'reference-layer-list');
-  Map2.addLayer(chartCollection,{opacity:0},'LCMS CONUS Time Series',false,null,null,null,'reference-layer-list');
+  Map2.addLayer(az_sad_accumlative,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,null,'fhp-div');
+  Map2.addLayer(az_sad_fhp,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ Aspen Polygons',false,null,null,null,'fhp-div');
+  Map2.addLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,null,'fhp-div');
+  
 
   var nmSAD = ee.List.sequence(2011,2018).getInfo().map(function(yr){
     yr = yr.toString();
@@ -987,19 +1001,31 @@ function runCONUS(){
   // Map2.addLayer(nmSADYrMax,{min:2011,max:2018},'nm yr max',false);
   // Map2.addLayer(nmSADYrCount,{min:1,max:7},'nm yr count',false);
   
-  Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'reference-layer-list');
-
+  Map2.addLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,null,'fhp-div');
+  Map2.addLayer(chartCollection,{opacity:0},'LCMS CONUS Time Series',false,null,null,null,'fhp-div');
   az_sad_accumlative = az_sad_accumlative.map(function(f){return f.set('name',f.get('OBJECTID'))}).set('bounds',az_sad_accumlative_bounds);
   az_sad_fhp = az_sad_fhp.map(function(f){return f.set('name',f.get('MODIFIED_D'))}).set('bounds',az_sad_fhp_bounds);
   az_ads_2019 = az_ads_2019.map(function(f){return f.set('name',f.get('MODIFIED_D'))}).set('bounds',az_ads_2019_bounds);
   nmSAD = nmSAD.map(function(f){return f.set('name',f.get('OBJECTID'))}).set('bounds',nm_sad_bounds);
-  var ids = mtbsAndIDS[2].map(function(f){return f.set('name',f.get('DAMAGE_ARE'))}).set('bounds',clientBoundsDict.CONUS);
+  
+
+ 
+  //Add select layers
+  Map2.addSelectLayer(aspen_mort_dieback,{strokeColor:'0D0',layerType : 'geeVectorImage'}, 'IDS Aspen Mortality/Dieback',false,null,null,'Aspen mortality/decline includes crown dieback which has also been used and I think would be appropriate to include. It will capture all agents except specifically excluding fire (30000) and will be composed primarily of three "DCAs" or Damage Casual Agents, 24000 = Wilts, 24008 = Decline complex, and 29002 = Sudden aspen decline. SQL = HOST_CODE = 746 AND (DAMAGE_TYPE_CODE = 2 OR DAMAGE_TYPE_CODE = 4) AND DCA_CODE <> 30000','fhp-div');
+  Map2.addSelectLayer(aspen_defoliation,{strokeColor:'00D',layerType : 'geeVectorImage'}, 'IDS Aspen Defoliation',false,null,null,'All agents mapped as causing defoliation to aspen including, but not limited to 12900 (general defoliator code), 25036 (Marssonina/Black leaf spot), and 80001 (older multi-agent aspen defoliation code). SQL = HOST_CODE = 746 AND (DAMAGE_TYPE_CODE = 1 OR DAMAGE_TYPE_CODE = 12 OR DAMAGE_TYPE_CODE = 13 OR DAMAGE_TYPE_CODE = 14)','fhp-div');
+
+  // var states = ee.FeatureCollection('TIGER/2018/States');
+  // var state = states.filter(ee.Filter.eq('NAME','Arizona'))
+  // aspen_mort_dieback_az = ids.filterBounds(state).union();
+  // Map2.addSelectLayer(aspen_mort_dieback_az,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ Mortality Single Poly',false,null,null,'AZ Mortality Single Poly. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_sad_accumlative,{strokeColor:'F0F',layerType:'geeVectorImage'},'AZ SAD Accumlative',false,null,null,'AZ SAD Accumlative. Turn on layer and click on any area wanted to include in chart');
-  Map2.addSelectLayer(az_sad_fhp,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ SAD FHP',false,null,null,'AZ SAD FHP. Turn on layer and click on any area wanted to include in chart');
+  Map2.addSelectLayer(az_sad_fhp,{strokeColor:'00F',layerType:'geeVectorImage'},'AZ Aspen Polygons',false,null,null,'AZ Aspen Polygons. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(az_ads_2019,{strokeColor:'0FF',layerType:'geeVectorImage'},'AZ ADS 2019',false,null,null,'AZ ADS 2019. Turn on layer and click on any area wanted to include in chart');
   Map2.addSelectLayer(nmSAD,{strokeColor:'808',layerType:'geeVectorImage'},'NM Aspen Mort 2011-2018',false,null,null,'NM Aspen Mort 2011-2018. Turn on layer and click on any area wanted to include in chart');
  
   Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
+
+
   getSelectLayers();
   // areaChartCollections = {};
   areaChartCollections['lg'] = {'label':'LCMS Loss',
