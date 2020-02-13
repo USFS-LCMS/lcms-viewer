@@ -449,7 +449,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     if(viz.layerType === 'geeVector' || viz.layerType === 'geoJSONVector'){
       if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
       if(viz.fillOpacity === undefined || viz.fillOpacity === null){viz.fillOpacity = 0.2};
-      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222'};
+      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222222'};
       if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getColor()};
       if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 3};
       viz.opacityRatio = viz.strokeOpacity/viz.fillOpacity;
@@ -462,7 +462,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }else if(viz.layerType === 'geeVectorImage' ){
       if(viz.strokeOpacity === undefined || viz.strokeOpacity === null){viz.strokeOpacity = 1};
       viz.fillOpacity = 0;
-      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222'};
+      if(viz.fillColor === undefined || viz.fillColor === null){viz.fillColor = '222222'};
       if(viz.strokeColor === undefined || viz.strokeColor === null){viz.strokeColor = getColor()};
       if(viz.strokeWeight === undefined || viz.strokeWeight === null){viz.strokeWeight = 2};
       if(viz.fillColor.indexOf('#') == -1){viz.fillColor = '#' + viz.fillColor};

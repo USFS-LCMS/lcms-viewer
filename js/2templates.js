@@ -1196,7 +1196,7 @@ function addLayer(layer){
         } else if(layer.layerType === 'geeVectorImage' || layer.layerType === 'geeVector'){
             if(layer.viz.isSelectLayer){
                 
-                selectedFeaturesJSON[layer.name] = {'geoJSON':new google.maps.Data(),'id':layer.id,'rawGeoJSON':{}}
+                selectedFeaturesJSON[layer.name] = {'geoJSON':new google.maps.Data(),'id':layer.id,'rawGeoJSON':{},'eeFeatureCollection':ee.FeatureCollection([])}
                 selectedFeaturesJSON[layer.name].geoJSON.setMap(layer.map);
 
                 // layer.infoWindow = getInfoWindow(infoWindowXOffset);
@@ -1236,6 +1236,7 @@ function addLayer(layer){
                             // layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
 
                             var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+                            selectedFeaturesJSON[layer.name].eeFeatureCollection =selectedFeaturesJSON[layer.name].eeFeatureCollection.merge(features);
                             // if(selectedFeatures === undefined){selectedFeatures = features}
                             // else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
                             

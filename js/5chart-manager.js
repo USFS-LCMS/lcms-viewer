@@ -111,7 +111,9 @@ function updateSelectedAreaArea(){
 		$('#selected-features-area').html('Updating');
 		$('#select-features-area-spinner').show();
 		// selectedFeatures.evaluate(function(values){console.log(values)})
-		ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0]).evaluate(function(values,error){
+		// ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0])
+		ee.Feature(selectedFeatures.union().first()).area()
+		.evaluate(function(values,error){
 			if(values === undefined){values = 0;console.log(error)};
         	$('#selected-features-area').html((values*0.0001).formatNumber() + ' hectares / '+(values*0.000247105).formatNumber() + ' acres');
         	$('#select-features-area-spinner').hide();
