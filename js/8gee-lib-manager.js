@@ -268,7 +268,7 @@ function getIDSCollection(){
     return dcaYr.addBands(dtYr).int16().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).rename(['Damage_Agent','Damage_Type']);   
   });
   dcaCollection = ee.ImageCollection.fromImages(dcaCollection);
-  console.log(dcaCollection.size().getInfo())
+  // console.log(dcaCollection.size().getInfo())
   return {'imageCollection':dcaCollection,'featureCollection':ids}
 }
 function getAspectObj(){
