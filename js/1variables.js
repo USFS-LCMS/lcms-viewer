@@ -56,6 +56,15 @@ var studyAreaDict = {
                                                 startYear:1985,
                                                 endYear:2019,
                                             	popOver:"Chugach National Forest - Kenai Peninsula"},
+                  'USFS Intermountain Region':{
+                                                name:'R4',
+                                                center:[40.257866715877526,-114.51403372873794, 6],
+                                                crs:'EPSG:26912',
+                                                lossThresh:0.35,
+                                                gainThresh:0.4,
+                                                startYear:1985,
+                                                endYear:2019,
+                                              popOver:"US Forest Service Intermountain Region 4"},
                   'Science Team CONUS':{
                                                 name:'CONUS',
                                                 center:[37.5334105816903,-105.6787109375,5],

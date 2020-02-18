@@ -47,6 +47,8 @@ window.fnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Flathead National Fo
 window.mlsnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Manti-La Sal National Forest')).first()); 
 window.cnf = ee.Feature(b.filter(ee.Filter.eq('FORESTNAME','Chugach National Forest')).first());
 
+window.R4_unofficial = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/R4_LCMS_ProjectArea_5km');
+window.R4_official =usfs_regions.filter(ee.Filter.eq('REGION','04'));
 // Other boundaries
 window.huc8 = ee.FeatureCollection("USGS/WBD/2017/HUC08");
 window.kenai_nwr = ee.FeatureCollection('projects/USFS/LCMS-NFS/AK-Ancillary-Data/Kenai_NWR').filterBounds(ck_study_area);
@@ -62,6 +64,8 @@ window.btStudyAreas = [['Grand Teton NP',gtnp,'Boundary of Grand Teton National 
 
 window.mslStudyAreas = [['Manti-La Sal NF',mlsnf,'Boundary of Manti-La Sal National Forest'],
                       ['Manti-La Sal LCMS Study Area',mls_study_area,'Boundary of Manti-La Sal National Forest buffered by 5km LCMS model calibration data were collected and applied']];
+window.R4StudyAreas = [['USFS Intermountain Region LCMS Study Area',R4_unofficial,'Boundary of the USFS Intermountain Region 4 with a 5km buffer and additional areas to include more of the Greater Yellowstone Ecosystem'],
+                        ['USFS Intermountain Region Official',R4_official,'Boundary of the USFS Intermountain Region 4']];
 
 window.ckStudyAreas = [['HUC8 Boundaries',huc8.filterBounds(ck_study_area),'USGS Watershed Boundary Dataset of Watersheds'],
         ['Kenai Fjords National Park',kfnp,'Boundary of Kenai Fjords National Park'],
@@ -115,7 +119,20 @@ window.collectionDict = {
         mls_study_area,
         'landtrendr_vertex_format'
         ],
-
+    'R4':[
+        // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+        'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+        // 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+        'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
+        // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+        'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
+        R4StudyAreas,
+        'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
+        // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+        R4_unofficial,
+        'landtrendr_vertex_format'
+        ],
   'CNFKP':['projects/USFS/LCMS-NFS/R10/CK/Composites/Composite-Collection-cloudScoreTDOM2',
             'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
             'projects/USFS/LCMS-NFS/R10/CK/Base-Learners/LANDTRENDR-Collection2019',

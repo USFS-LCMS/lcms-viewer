@@ -20,7 +20,9 @@ function runUSFS(){
     // Paths / definitions
     var ts = ee.ImageCollection(collectionDict[studyAreaName][5]);
     var boundary = ee.FeatureCollection(collectionDict[studyAreaName][6]);
+    console.log('finding bounds');
     var clientBoundary = boundary.geometry().bounds().getInfo();
+    console.log('found bounds');
     var landtrendr_format = collectionDict[studyAreaName][7];
 
     // Initial load & format of LCMS Layers
