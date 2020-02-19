@@ -3,7 +3,7 @@ var lowerThresholdDecline = 0.3;
 var upperThresholdDecline = 1.0;
 var lowerThresholdRecovery = 0.3;
 var upperThresholdRecovery = 1.0;
-var studyAreaName = 'BTNF';
+
 var startYear = 1984;
 var endYear = 2019;
 var startJulian = 153;//190;
@@ -75,6 +75,12 @@ var studyAreaDict = {
                                                 endYear:2019,
                                             	popOver:"2019 LCMS Science Team CONUS-wide loss"}
                 };
+
+
+var defaultStudyArea = 'USFS Intermountain Region';
+var studyAreaName = studyAreaDict[defaultStudyArea].name;
+
+
 
 var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],
         [-169.215141654273, 15.643479915898974],

@@ -2024,7 +2024,9 @@ function initialize() {
     ee.initialize(authProxyAPIURL,geeAPIURL,function(){
     
     // ee.initialize("http://localhost:8080/api","https://earthengine.googleapis.com/map",function(){
-      
+    if(cachedStudyAreaName === null){
+      $('#study-area-label').text(defaultStudyArea);
+    }
     if(mode === 'Ancillary'){
       run = runSimple;
     } else if( mode === 'LT'){
@@ -2042,7 +2044,7 @@ function initialize() {
     
     }else if(cachedStudyAreaName != null){
       resetStudyArea(cachedStudyAreaName)
-    }
+    } 
     else{run = runUSFS}
 
    

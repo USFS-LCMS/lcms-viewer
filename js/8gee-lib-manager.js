@@ -541,16 +541,16 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
   [2016].map(function(yr){
     var tcc = nlcd.filter(ee.Filter.calendarRange(yr,yr,'year')).select(['percent_tree_cover']).mosaic();
-  Map2.addLayer(tcc.updateMask(tcc.gte(1)),{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover '+yr.toString(),false,null,null, 'NLCD '+yr.toString()+' Tree Canopy Cover',whichLayerList);
+  Map2.addLayer(tcc.updateMask(tcc.gte(1)).set('bounds',clientBoundsDict.CONUS),{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover '+yr.toString(),false,null,null, 'NLCD '+yr.toString()+' Tree Canopy Cover',whichLayerList);
 
   })
   
   
-  var idsYr = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.max()).set('bounds',clientBoundsDict.All);
-  var idsCount = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.count()).selfMask().set('bounds',clientBoundsDict.All);
+  var idsYr = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.max()).set('bounds',clientBoundsDict.CONUS);
+  var idsCount = idsCollections.featureCollection.reduceToImage(['SURVEY_YEA'],ee.Reducer.count()).selfMask().set('bounds',clientBoundsDict.CONUS);
   Map2.addLayer(idsCount,{'min':1,'max':Math.ceil((idsEndYear-idsStartYear)/2)+1,palette:declineYearPalette},'IDS Survey Count',false,null,null, 'Number of times an area was included in the IDS survey ('+idsStartYear.toString()+'-'+idsEndYear.toString()+')',whichLayerList);
   Map2.addLayer(idsYr,{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year Surveyed',false,null,null, 'Most recent year an area was included in the IDS survey ('+idsStartYear.toString()+'-'+idsEndYear.toString()+')',whichLayerList);
-  Map2.addLayer(idsCollections.featureCollection,{strokeColor:'0FF',layerType:'geeVectorImage'},'IDS Polygons',false,null,null, 'Polygons from the IDS survey ('+idsStartYear.toString()+'-'+idsEndYear.toString()+')',whichLayerList);
+  Map2.addLayer(idsCollections.featureCollection.set('bounds',clientBoundsDict.CONUS),{strokeColor:'0FF',layerType:'geeVectorImage'},'IDS Polygons',false,null,null, 'Polygons from the IDS survey ('+idsStartYear.toString()+'-'+idsEndYear.toString()+')',whichLayerList);
   
   // Map2.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
   // Map2.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
