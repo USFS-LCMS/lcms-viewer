@@ -20,9 +20,22 @@ function runUSFS(){
     // Paths / definitions
     var ts = ee.ImageCollection(collectionDict[studyAreaName][5]);
     var boundary = ee.FeatureCollection(collectionDict[studyAreaName][6]);
-    console.log('finding bounds');
-    var clientBoundary = boundary.geometry().bounds().getInfo();
-    console.log('found bounds');
+    
+    
+    if(localStorage.studyAreaBounds === undefined || localStorage.studyAreaBounds === null){
+      localStorage.studyAreaBounds = JSON.stringify({});
+    }
+    var cachedBounds = JSON.parse(localStorage.studyAreaBounds);
+    if(cachedBounds[studyAreaName] === null || cachedBounds[studyAreaName] === undefined){
+      console.log('finding bounds');
+      cachedBounds[studyAreaName] = boundary.geometry().bounds().getInfo();
+      localStorage.studyAreaBounds= JSON.stringify(cachedBounds);
+       console.log('found bounds');
+    }
+    var clientBoundary = cachedBounds[studyAreaName];
+   
+    
+   
     var landtrendr_format = collectionDict[studyAreaName][7];
 
     // Initial load & format of LCMS Layers
@@ -152,7 +165,7 @@ function runUSFS(){
       Map2.addLayer(wb.set('bounds',clientBoundary),{queryDict: {1:'Whitebark Pine Range'},min:1,max:1,palette:'080',addToClassLegend: true,classLegendDict:{'':'080'}},'Whitebark Pine Range',false,null,null,'Extent of potential Whitebark Pine','reference-layer-list')
 
       var gnpHUC = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/Ancillary/GNP_Huc12');
-      Map2.addLayer(gnpHUC,{strokeColor:'#0088FF',addToLegend:false},'GNP HUC 12',false,null,null,null,'reference-layer-list')
+      Map2.addLayer(gnpHUC,{strokeColor:'#0088FF','layerType':'geeVector'},'GNP HUC 12',false,null,null,null,'reference-layer-list')
 
     }
     // End FNF Layers
@@ -268,7 +281,7 @@ function runUSFS(){
       var kenaiVegTypeClassQueryDict = {}; var CRvegTypeClassQueryDict = {};
       //Kenai Veg Map
       var kenaiVegType = ee.Image('projects/USFS/LCMS-NFS/R10/CK/Ancillary/Kenai_VegMap');
-      var kenaiVegTypeBoundary =kenaiVegType.geometry().bounds(1000).getInfo();
+      var kenaiVegTypeBoundary ={"geodesic":false,"type":"Polygon","coordinates":[[[-152.28716571806967,59.069538598321934],[-148.46724086550446,59.069538598321934],[-148.46724086550446,61.083356927132535],[-152.28716571806967,61.083356927132535],[-152.28716571806967,59.069538598321934]]]};//kenaiVegType.geometry().bounds(1000).getInfo();
       var kenaiVegTypeClassDict = {"1: Black Spruce": "4e5e38", "2: Black Spruce Peatland": "87751e", "3: Mountain Hemlock": "007800", "4: Mountain Hemlock-Lutz Spruce": "0f5e4f", "5: Mountain Hemlock-Sitka Spruce": "005e00", "6: Sitka Spruce": "003800", "7: White/Lutz Spruce": "215c4f", "8: Alaska Paper Birch (and Kenai Birch": "87f38c", "9: Black Cottonwood (and Balsam Poplar": "b0ff8c", "10: Quaking Aspen": "d4ffc0", "11: Black Spruce-Broadleaf": "0b9721", "12: White/Lutz Spruce-Birch": "45a138", "13: White/Lutz Spruce-Cottonwood": "66b52b", "14: White/Lutz Spruce-Aspen": "38a89e", "15: Alder": "ff0000", "16: Willow": "9c2e23", "17: Alder-Willow": "a30000", "18: Low Shrub Peatland": "d1852e", "19: Low Shrub Willow-Dwarf Birch": "ab3a11", "20: Wet Willow (Sweetgale)": "f0d1ab", "21: Dryas Dwarf Shrub": "ffe3e8", "22: Dwarf Shrub-Lichen": "ff73de", "23: Ericaceous Dwarf Shrub": "9e1eee", "24: Sedge Peatland": "fa9402", "25: Aquatic Herbaceous": "c0e8ff", "26: Dry Herbaceous": "ffffc0", "27: Mesic Herbaceous": "ffff00", "28: Wet Herbaceous": "e6e600", "29: Sparse Vegetation": "686868", "30: Barren": "cccccc", "31: Water": "4780f3", "32: Snow/Ice": "ffffff", "33: Developed": "000000"};
       var kenaiVegTypeClassDict2 = {};
       Object.keys(kenaiVegTypeClassDict).map(function(k){kenaiVegTypeClassDict2[k.split(': ')[1]] = kenaiVegTypeClassDict[k]});
@@ -281,7 +294,7 @@ function runUSFS(){
 
       // Copper River Veg Map  
       var CRvegType = ee.Image('projects/USFS/LCMS-NFS/R10/CK/Ancillary/CopperRiverDelta_VegMap');//.setDefaultProjection(crs, transform, scale);
-      var CRvegTypeBoundary =CRvegType.geometry().bounds(1000).getInfo();
+      var CRvegTypeBoundary ={"geodesic":false,"type":"Polygon","coordinates":[[[-146.08862317790675,59.78251540939132],[-143.82386409934708,59.78251540939132],[-143.82386409934708,60.692575655008945],[-146.08862317790675,60.692575655008945],[-146.08862317790675,59.78251540939132]]]};//CRvegType.geometry().bounds(1000).getInfo();
       var CRvegTypeClassDict = {"1: Western Hemlock": "3db370", "2: Sitka Spruce": "006300", "3: Black Cottonwood": "c9ff70", "4: Sitka Spruce - Black Cottonwood": "75ed00", "5: Sitka Alder": "f8644f", "6: Willow": "781212", "7: Sitka Alder - Willow Mix": "e02a3e", "8: Sweetgale": "ffd480", "9: Dry Graminoid": "8acc66", "10: Mesic Wet Herbaceous": "78c2c4", "11: Aquatic Herbaceous": "9efade", "12: Sparse/Unvegetated": "dfcbaf", "13: Water": "457dc7", "14: Snow/Ice": "ffffff", "15: Developed": "000000"};
       var CRvegTypeClassDict2 = {};
       Object.keys(CRvegTypeClassDict).map(function(k){CRvegTypeClassDict2[k.split(': ')[1]] = CRvegTypeClassDict[k]});
@@ -300,7 +313,7 @@ function runUSFS(){
     getMTBSandIDS(studyAreaName);
     var studyAreas = collectionDict[studyAreaName][4];
     studyAreas.map(function(studyArea){
-      Map2.addLayer(studyArea[1],null,studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
+      Map2.addLayer(studyArea[1],{layerType:'geeVector'},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
     // 
     })
 
@@ -615,22 +628,22 @@ function runUSFS(){
       var nizhoniFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Nizhoni_FirePerimeter');
       var seeleyFire = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/Seeley_FirePerimeter');
 
-      Map2.addLayer(canyonsProjectArea,{'strokeColor':'#AA0'},'Canyons Project Area',false,null,null,'','reference-layer-list');
-      Map2.addLayer(johnsonCreekProjectArea,{'strokeColor':'#AA0'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
-      Map2.addLayer(sageGrouseHomeRanges,{'strokeColor':'#ff6700'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
-      Map2.addLayer(sageGrouseSeasonalHabitat,{'strokeColor':'#ff6700'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
+      Map2.addLayer(canyonsProjectArea,{'strokeColor':'#AA0','layerType':'geeVector'},'Canyons Project Area',false,null,null,'','reference-layer-list');
+      Map2.addLayer(johnsonCreekProjectArea,{'strokeColor':'#AA0','layerType':'geeVector'},'Johnson Creek Project Area',false,null,null,'','reference-layer-list');
+      Map2.addLayer(sageGrouseHomeRanges,{'strokeColor':'#ff6700','layerType':'geeVector'},'Sage Grouse Home Ranges',false,null,null,'','reference-layer-list');
+      Map2.addLayer(sageGrouseSeasonalHabitat,{'strokeColor':'#ff6700','layerType':'geeVector'},'Sage Grouse Seasonal Habitat',false,null,null,'','reference-layer-list');
 
       var huc6 = ee.FeatureCollection("USGS/WBD/2017/HUC06").filterBounds(mls_study_area);
       var huc10 = ee.FeatureCollection("USGS/WBD/2017/HUC10").filterBounds(mls_study_area);
 
-      Map2.addLayer(huc6,{'strokeColor':'#0000ff'},'HUC06 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Basins','reference-layer-list');
-      Map2.addLayer(huc10,{'strokeColor':'#0000ff'},'HUC10 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Watersheds','reference-layer-list');
+      Map2.addLayer(huc6,{'strokeColor':'#0000ff','layerType':'geeVector'},'HUC06 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Basins','reference-layer-list');
+      Map2.addLayer(huc10,{'strokeColor':'#0000ff','layerType':'geeVector'},'HUC10 Boundaries',false,null,null,'USGS Watershed Boundary Dataset of Watersheds','reference-layer-list');
 
       var grazingAllotments = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLS_Allotments');
       var pastures = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/MLS/Ancillary/MLS_Pastures');
 
-      Map2.addLayer(grazingAllotments,{},'Allotment Boundaries',false,null,null,'','reference-layer-list'); //'RMU Dataset - area boundaries of livestock grazing allotments' 'min':1,'max':1,'palette':'#ff0000'
-      Map2.addLayer(pastures,{'strokeColor':'#ffbf00'},'Pasture Boundaries',false,null,null,'RMU Dataset - area boundaries of pastures within livestock grazing allotments','reference-layer-list');
+      Map2.addLayer(grazingAllotments,{'layerType':'geeVector'},'Allotment Boundaries',false,null,null,'','reference-layer-list'); //'RMU Dataset - area boundaries of livestock grazing allotments' 'min':1,'max':1,'palette':'#ff0000'
+      Map2.addLayer(pastures,{'strokeColor':'#ffbf00','layerType':'geeVector'},'Pasture Boundaries',false,null,null,'RMU Dataset - area boundaries of pastures within livestock grazing allotments','reference-layer-list');
       // print(pastures.getInfo())
     }
     
@@ -867,7 +880,10 @@ function runCONUS(){
       var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask').translate(15,-15);
       
       var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
+     if(analysisMode === 'advanced'){
       Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:0,max:3,palette:'a1a1a1,32681e,ffb88c,97ffff',addToClassLegend:true,classLegendDict:{'Tree':'32681e','Woody Wetland':'97ffff','Shrub':'ffb88c','Other':'a1a1a1'},queryDict:forestMaskQueryDict},'Landcover Mask Classes',false,null,null,'Landcover classes of 3 or more years. Any pixel that was tree 3 or more years is tree. Remaining pixels, any pixel that was woody wetland 3 or more years is woody wetland. Remaining pixels, any pixel that was shrub 3 or more years is shrub.  Remaining pixels are other. Both tree and woodywetland classes are included in the tree mask.');
+     }
+      
       treeMask = treeMask.eq(1).or(treeMask.eq(3)).selfMask();
       var treeClassLegendDict = {};
       treeClassLegendDict['Tree (3 or more years)'] = '32681e';
@@ -1228,7 +1244,7 @@ function runRaw(){
                   .select([0,1,2,3,4,5,6],['Land Cover Class','Land Use Class','Change Process','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
     
 
-    print(ts.getInfo());
+    // print(ts.getInfo());
 }
 function runSimple(){
   getLCMSVariables();

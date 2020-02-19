@@ -984,7 +984,7 @@ function reRun(){
   clearDownloadDropdown();
   google.maps.event.clearListeners(mapDiv, 'click');
 	run();
-  setupFSB();
+  // setupFSB();
 
 
 //     var whileCount = 0;
@@ -2048,7 +2048,7 @@ function initialize() {
    
   setGEERunID();
   run();
-  setupFSB();
+  // setupFSB();
 
   if(plotsOn){
     addPlotCollapse();

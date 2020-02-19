@@ -94,6 +94,10 @@ html, body{
   vertical-align:middle!important;
 
 }
+.info-page{
+  color:var(--deep-brown-70)!important;
+  padding-top:4em;
+}
 .simple-bg-black{
   background-color: var(--black)!important;
   color:var(--white)!important;
@@ -143,7 +147,7 @@ th{font-weight:  600!important}
 .sidebar-toggler:active {
   transform: translate(4px) translateY(4px);
 }
-
+.teal-hover:hover{color:var(--teal-100)!important;}
 .sidebar{
   overflow-y: auto;
   max-height:calc(100% - 1.7em);;

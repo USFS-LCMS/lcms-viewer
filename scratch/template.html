@@ -10,9 +10,8 @@
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="./css/style.css">
   <style>
- /* body {
+  body {
     font: 400 15px Lato, sans-serif;
     line-height: 1.8;
     color: #818181;
@@ -30,9 +29,9 @@
     color: #303030;
     font-weight: 400;
     margin-bottom: 30px;
-  }  */
+  }  
   .jumbotron {
-    background-color: var(--teal-100);
+    background-color: #f4511e;
     color: #fff;
     padding: 100px 25px;
     font-family: Montserrat, sans-serif;
@@ -104,7 +103,7 @@
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
   }
-/*  .panel-footer {
+  .panel-footer {
     background-color: white !important;
   }
   .panel-footer h3 {
@@ -118,8 +117,8 @@
     margin: 15px 0;
     background-color: #f4511e;
     color: #fff;
-  }*/
-/*  .navbar {
+  }
+  .navbar {
     margin-bottom: 0;
     background-color: #f4511e;
     z-index: 9999;
@@ -129,10 +128,10 @@
     letter-spacing: 4px;
     border-radius: 0;
     font-family: Montserrat, sans-serif;
-  }*/
-/*  .navbar li a, .navbar .navbar-brand {
+  }
+  .navbar li a, .navbar .navbar-brand {
     color: #fff !important;
-  }*/
+  }
   .navbar-nav li a:hover, .navbar-nav li.active a {
     color: #f4511e !important;
     background-color: #fff !important;
@@ -201,13 +200,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service">
+      <a class="navbar-brand" href="#myPage">Logo</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#about">ABOUT</a></li>
-        <li><a href="#services">MAP</a></li>
-        <li><a href="#portfolio">DOWNLOAD</a></li>
+        <li><a href="#services">SERVICES</a></li>
+        <li><a href="#portfolio">PORTFOLIO</a></li>
+        <li><a href="#pricing">PRICING</a></li>
         <li><a href="#contact">CONTACT</a></li>
       </ul>
     </div>
@@ -215,23 +215,24 @@
 </nav>
 
 <div class="jumbotron text-center">
-  <h1>Landscape Change Monitoring System</h1> 
-  <p>LCMS</p> 
+  <h1>Company</h1> 
+  <p>We specialize in blablabla</p> 
+  <form>
+    <div class="input-group">
+      <input type="email" class="form-control" size="50" placeholder="Email Address" required>
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-danger">Subscribe</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 <!-- Container (About Section) -->
 <div id="about" class="container-fluid">
   <div class="row">
     <div class="col-sm-8">
-      <h2>About</h2><br>
-      <h4>The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover and land use change across the US. Envisioned as a framework for
-
-Map of United States showing locations of LCMS studies in Maine, Pennsylvania/New Jersey, South Carolina, Minnesota, Colorado, and Oregon
-Map of pilot study locations
-integrating Landsat-based products and other datasets, LCMS  is producing spatially, temporally, and thematically comprehensive data and information from which landscape change can be consistently assessed, documented, and analyzed at the national scale. 
-LCMS is a direct outgrowth of two separate efforts: (1) the Monitoring Trends in Burn Severity (MTBS) program co-lead by the US Geological Survey (USGS) and the US Forest Service (USFS); and (2) the NASA-funded North American Forest Dynamics (NAFD) project which had significant involvement of the USFS, both in terms of science development and forest inventory applications. As an interagency USGS-USFS program, LCMS supports the change detection needs of a range of federal and non-federal land managers, and specifically targets the information needs of initiatives such as LANDFIRE, a joint USGS-USFS program for mapping vegetation, fire, and fuel characteristic for the US, and the National Land Cover Database (NLCD). When successfully implemented, LCMS could become the dominant provider of national-level Landsat-based change information for all lands of the US, with agency partners and specific programs augmenting the change products to suit their needs. LCMS is currently in development, with commitments for partial funding from the USFS to conduct pilot studies.
-
-The LCMS Science Team (LST) includes developers of diverse Landsat-based change detection algorithms that address different types and rates of change over a variety of cover types in the context of two pilot studies.</h4><br>
+      <h2>About Company Page</h2><br>
+      <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h4><br>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
       <br><button class="btn btn-default btn-lg">Get in Touch</button>
     </div>

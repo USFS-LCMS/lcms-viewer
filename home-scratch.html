@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com -->
+  <title>Landscape Change Monitoring System</title>
+  <link rel="icon" href="./images/usfslogo.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="./css/style.css">
+  
+</head>
+<body class = 'bg-black'>
+<script type="text/javascript">
+  var divList = ['about','map','download','contact']
+  function toggleDivs(name){
+    divList.map(function(n){$('#'+n+'-row').hide();$('#'+n+'-nav').removeClass('teal');});
+    $('#'+name+'-row').show();
+    $('#'+name+'-nav').addClass('teal');
+  }
+</script>
+<nav class="navbar navbar-inverse bg-black">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+
+      <a class="navbar-brand teal p-2" href="#">Landscape Change Monitoring System</a>
+      <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service">
+    </div>
+     <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right" >
+        <li><a class = 'teal-hover teal' id = 'about-nav' href="#about-row" onclick="toggleDivs('about')">ABOUT</a></li>
+          <li><a class = 'teal-hover'  id = 'map-nav' href="#map-row" onclick="toggleDivs('map')">MAP</a></li>
+          <li><a class = 'teal-hover'  id = 'download-nav' href="#download-row" onclick="toggleDivs('download')">DOWNLOAD</a></li>
+          <li><a class = 'teal-hover'  id = 'contact-nav' href="#contact-row" onclick="toggleDivs('contact')">CONTACT</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- <nav class="navbar navbar-default navbar-fixed-top bg-black">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service">
+     Landscape Change Monitoring System
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right ">
+        <li><a class = 'teal-hover' href="#about-row" onclick="toggleDivs('about-row')">ABOUT</a></li>
+        <li><a class = 'teal-hover' href="#map-row" onclick="toggleDivs('map-row')">MAP</a></li>
+        <li><a class = 'teal-hover' href="#download-row" onclick="toggleDivs('download-row')">DOWNLOAD</a></li>
+        <li><a class = 'teal-hover' href="#contact-row" onclick="toggleDivs('contact-row')">CONTACT</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+ -->
+<!-- <div class="jumbotron text-center bg-white">
+  <h1>Landscape Change Monitoring System</h1> 
+</div> -->
+
+<!-- Container (About Section) -->
+<div id="about-row" class="container-fluid bg-white info-page" >
+  <div class="row">
+    <h2 style = 'margin-left:0.5em;'>About</h2>
+    <div class="col-sm-12 col-lg-8">
+      
+      <h4>The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover and land use   change across the US. Envisioned as a framework for
+
+        Map of United States showing locations of LCMS studies in Maine, Pennsylvania/New Jersey, South Carolina, Minnesota, Colorado, and Oregon
+        Map of pilot study locations
+        integrating Landsat-based products and other datasets, LCMS  is producing spatially, temporally, and thematically comprehensive data and information from which landscape change can be consistently assessed, documented, and analyzed at the national scale. 
+        LCMS is a direct outgrowth of two separate efforts: (1) the Monitoring Trends in Burn Severity (MTBS) program co-lead by the US Geological Survey (USGS) and the US Forest Service (USFS); and (2) the NASA-funded North American Forest Dynamics (NAFD) project which had significant involvement of the USFS, both in terms of science development and forest inventory applications. As an interagency USGS-USFS program, LCMS supports the change detection needs of a range of federal and non-federal land managers, and specifically targets the information needs of initiatives such as LANDFIRE, a joint USGS-USFS program for mapping vegetation, fire, and fuel characteristic for the US, and the National Land Cover Database (NLCD). When successfully implemented, LCMS could become the dominant provider of national-level Landsat-based change information for all lands of the US, with agency partners and specific programs augmenting the change products to suit their needs. LCMS is currently in development, with commitments for partial funding from the USFS to conduct pilot studies.
+
+        The LCMS Science Team (LST) includes developers of diverse Landsat-based change detection algorithms that address different types and rates of change over a variety of cover types in the context of two pilot studies.</h4>
+              
+    
+    </div>
+    <div class = 'col-sm-12 col-lg-4 ' style = 'margin-bottom:2em;'>
+      <img  src="images/loss-example.png"  title="Click to learn more about the US Forest Service">
+    </div>
+  </div>
+</div>
+
+<div id="map-row" class="container-fluid bg-white info-page" style = 'display: none;'>
+  <div class="row">
+    <h2 style = 'margin-left:0.5em;'>Map</h2>
+    <div class="col-sm-12 col-lg-9">
+      
+      <!-- <iframe class = 'col-sm-12' style = 'height:500px;'src="index.html"></iframe> -->
+    </div>
+    <div class = 'col-sm-12 col-lg-3'>
+      The LCMS Data Explorer provides a web mapping application to visualize LCMS map products, summarize them across areas, and download the data.
+    </div>
+  </div>
+</div>
+<div id="download-row" class="container-fluid bg-white info-page" style = "display:none">
+  <div class="row">
+    <h2 style = 'margin-left:0.5em;'>Download</h2>
+    <div class="col-sm-12 col-lg-9">
+      
+      
+    </div>
+    <div class = 'col-sm-12 col-lg-3'>
+      The LCMS Data Explorer provides a web mapping application to visualize LCMS map products, summarize them across areas, and download the data.
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
