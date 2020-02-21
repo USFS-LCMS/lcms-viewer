@@ -120,8 +120,8 @@ function runUSFS(){
 
     var rnrThresh = thresholdChange(NFSRNR,lowerThresholdRecovery, upperThresholdRecovery, 1);
 
-    var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdDecline,upperThresholdDecline, 1);
-    var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdDecline,upperThresholdDecline, 1);
+    var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowLoss,upperThresholdSlowLoss, 1);
+    var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdFastLoss,upperThresholdFastLoss, 1);
 
     //Bring in reference data
     getHansen();
@@ -433,6 +433,9 @@ function runUSFS(){
 
     //----------Other Housekeeping & Prep for adding layers
     var declineNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdDecline.toString()+' and p <= '+upperThresholdDecline.toString()+')';
+    var slowLossNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdSlowLoss.toString()+' and p <= '+upperThresholdSlowLoss.toString()+')';
+    var fastLossNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdFastLoss.toString()+' and p <= '+upperThresholdFastLoss.toString()+')';
+    
     var recoveryNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdRecovery.toString()+' and p <= '+upperThresholdRecovery.toString()+')';
 
     var lcLayerName =  'Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
@@ -605,13 +608,13 @@ function runUSFS(){
            'Magnitude of snow cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
       }
 
-      Map2.addLayer(dndSlowThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-      Map2.addLayer(dndSlowThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
-      Map2.addLayer(dndSlowCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Slow Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
+      Map2.addLayer(dndSlowThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'loss ' +slowLossNameEnding);
+      Map2.addLayer(dndSlowThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + slowLossNameEnding);
+      Map2.addLayer(dndSlowCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Slow Loss Duration',false,'years',null,'Total duration of loss '+slowLossNameEnding);
 
-      Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Fast Loss Year',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-      Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Fast Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + declineNameEnding);
-      Map2.addLayer(dndFastCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Fast Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
+      Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Fast Loss Year',false,null,null,threshYearNameEnd+'loss ' +fastLossNameEnding);
+      Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Fast Loss Probability',false,null,null,threshProbNameEnd+ 'loss ' + fastLossNameEnding);
+      Map2.addLayer(dndFastCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Fast Loss Duration',false,'years',null,'Total duration of loss '+fastLossNameEnding);
 
     }
     

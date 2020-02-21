@@ -642,7 +642,7 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 	eval(`window.${variable} = '${valueOn}';`);
 	// console.log(valueDict);
 	
-	$('#'+containerDivID).append(`<div class = 'row' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+	$('#'+containerDivID).append(`<div class = 'row' id = '${radioID}-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
 		<label class="col-12 pb-0">${title} </label>
 		<div class = 'col-12 pt-0'>
 		<div  id = '#${radioID}'  class="toggle_radio p-0">

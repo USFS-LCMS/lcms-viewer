@@ -1,8 +1,5 @@
 //Load global variables
-var lowerThresholdDecline = 0.3;
-var upperThresholdDecline = 1.0;
-var lowerThresholdRecovery = 0.3;
-var upperThresholdRecovery = 1.0;
+
 
 var startYear = 1984;
 var endYear = 2019;
@@ -61,6 +58,8 @@ var studyAreaDict = {
                                                 center:[40.257866715877526,-114.51403372873794, 6],
                                                 crs:'EPSG:26912',
                                                 lossThresh:0.35,
+                                                lossFastThresh :0.3,
+                                                lossSlowThresh  :0.4,
                                                 gainThresh:0.4,
                                                 startYear:1985,
                                                 endYear:2019,
@@ -76,11 +75,23 @@ var studyAreaDict = {
                                             	popOver:"2019 LCMS Science Team CONUS-wide loss"}
                 };
 
-
+//Initialize parameters
 var defaultStudyArea = 'USFS Intermountain Region';
 var studyAreaName = studyAreaDict[defaultStudyArea].name;
 
+var lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
+var upperThresholdDecline = 1.0;
+var lowerThresholdRecovery = studyAreaDict[defaultStudyArea].gainThresh;
+var upperThresholdRecovery = 1.0;
 
+var lowerThresholdSlowLoss = studyAreaDict[defaultStudyArea].lossSlowThresh;
+var upperThresholdSlowLoss = 1.0;
+var lowerThresholdFastLoss = studyAreaDict[defaultStudyArea].lossFastThresh;
+var upperThresholdFastLoss = 1.0;
+if(lowerThresholdSlowLoss === undefined){lowerThresholdSlowLoss = lowerThresholdDecline}
+if(lowerThresholdFastLoss === undefined){lowerThresholdFastLoss = lowerThresholdDecline} 
+
+ 
 
 var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],
         [-169.215141654273, 15.643479915898974],

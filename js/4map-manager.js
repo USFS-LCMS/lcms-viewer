@@ -1707,7 +1707,20 @@ var resetStudyArea = function(whichOne){
     console.log('changing study area');
     console.log(whichOne);
     lowerThresholdDecline =  studyAreaDict[whichOne].lossThresh;
+    if(studyAreaDict[whichOne].lossSlowThresh !== undefined  && studyAreaDict[whichOne].lossSlowThresh !== null){
+      lowerThresholdSlowLoss = studyAreaDict[whichOne].lossSlowThresh;
+    }else{
+      lowerThresholdSlowLoss = lowerThresholdDecline;
+    }
+    if(studyAreaDict[whichOne].lossFastThresh !== undefined  && studyAreaDict[whichOne].lossFastThresh !== null){
+      lowerThresholdFastLoss = studyAreaDict[whichOne].lossFastThresh;
+    }else{
+      lowerThresholdFastLoss = lowerThresholdDecline;
+    }
+   
     upperThresholdDecline = 1;
+    upperThresholdSlowLoss = 1;
+    upperThresholdFastLoss = 1;
     lowerThresholdRecovery = studyAreaDict[whichOne].gainThresh;
     upperThresholdRecovery = 1;
     
@@ -1715,12 +1728,17 @@ var resetStudyArea = function(whichOne){
     endYear = studyAreaDict[whichOne].endYear;
     setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'decline-threshold-slider','decline-threshold-slider-update','null')
     setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'recovery-threshold-slider','recovery-threshold-slider-update','null')
+    
+    setUpRangeSlider('lowerThresholdSlowLoss','upperThresholdSlowLoss',0,1,lowerThresholdSlowLoss,upperThresholdSlowLoss,0.05,'slow-loss-threshold-slider','slow-loss-threshold-slider-update','null')
+    setUpRangeSlider('lowerThresholdFastLoss','upperThresholdFastLoss',0,1,lowerThresholdFastLoss,upperThresholdFastLoss,0.05,'fast-loss-threshold-slider','fast-loss-threshold-slider-update','null')
+    
     setUpRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
     
 
     var coords = studyAreaDict[whichOne].center;
     studyAreaName = studyAreaDict[whichOne].name;
-    if(studyAreaName === 'CONUS'){run = runCONUS}else{run = runUSFS};
+    if(studyAreaName === 'CONUS'){run = runCONUS;$('#viewBeta-radio-container').hide();$('#beta-params-container').hide();}
+    else{run = runUSFS;$('#viewBeta-radio-container').show();if(viewBeta === 'yes'){$('#beta-params-container').show();}};
     $('#export-crs').val(studyAreaDict[whichOne].crs)
     // exportCRS = studyAreaDict[whichOne][2];
     // $('#export-crs').val(exportCRS);
