@@ -66,6 +66,7 @@ window.mslStudyAreas = [['Manti-La Sal NF',mlsnf,'Boundary of Manti-La Sal Natio
                       ['Manti-La Sal LCMS Study Area',mls_study_area,'Boundary of Manti-La Sal National Forest buffered by 5km LCMS model calibration data were collected and applied']];
 window.R4StudyAreas = [
 // ['USFS Intermountain Region LCMS Study Area',R4_unofficial,'Boundary of the USFS Intermountain Region 4 with a 5km buffer and additional areas to include more of the Greater Yellowstone Ecosystem'],
+                        ['Monroe Mtn FACTS',ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/Monroe_Mtn_FACTS'),'Monroe Mtn FACTS data'],
                         ['USFS Intermountain Region 4',R4_official,'Boundary of the USFS Intermountain Region 4']];
 
 window.ckStudyAreas = [['HUC8 Boundaries',huc8.filterBounds(ck_study_area),'USGS Watershed Boundary Dataset of Watersheds'],
