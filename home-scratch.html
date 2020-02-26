@@ -12,18 +12,31 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="./css/style.css">
-  
+  <style type="text/css">
+    .navbar-inverse .navbar-nav > .active > a, 
+ .navbar-inverse .navbar-nav > .active > a:hover, 
+ .navbar-inverse .navbar-nav > .active > a:focus {
+      background:rgba(235, 235, 235, 0) !important;
+      color:var(--teal-100) !important;
+ }
+  </style>
 </head>
-<body class = 'bg-black'>
+
+<body  data-spy="scroll" data-target=".navbar" data-offset="10" class = 'bg-black'>
 <script type="text/javascript">
-  var divList = ['about','map','download','contact']
+  var divList = ['home','about','map','download','contact']
   function toggleDivs(name){
-    divList.map(function(n){$('#'+n+'-row').hide();$('#'+n+'-nav').removeClass('teal');});
-    $('#'+name+'-row').show();
-    $('#'+name+'-nav').addClass('teal');
+    // divList.map(function(n){
+      // $('#'+n+'-row').hide();
+      // $('#'+n+'-nav').removeClass('teal');
+    // });
+    // $('#'+name+'-row').show();
+    // $('#'+name+'-nav').addClass('teal');
   }
+
 </script>
-<nav class="navbar navbar-inverse bg-black">
+<script type="text/javascript" src="./js/10download_dict.js"></script>
+<nav class="navbar navbar-inverse bg-black navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -32,13 +45,15 @@
         <span class="icon-bar"></span>                        
       </button>
 
-      <a class="navbar-brand teal p-2" href="#">Landscape Change Monitoring System</a>
-      <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service">
+ 
+      <!-- <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service" style = 'font-size:5em;'> -->
+      <a class="navbar-brand" href="#">USDA Forest Service Landscape Change Monitoring System</a>
     </div>
      <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right" >
-        <li><a class = 'teal-hover teal' id = 'about-nav' href="#about-row" onclick="toggleDivs('about')">ABOUT</a></li>
-          <li><a class = 'teal-hover'  id = 'map-nav' href="#map-row" onclick="toggleDivs('map')">MAP</a></li>
+        <li><a class = 'teal-hover ' id = 'home-nav' href="#home-row" onclick="toggleDivs('home')">HOME</a></li>
+        <li><a class = 'teal-hover' id = 'about-nav' href="#about-row" onclick="toggleDivs('about')">ABOUT</a></li>
+          <li><a class = 'teal-hover'  id = 'map-nav' href="#map-row" onclick="toggleDivs('map')">INTERACTIVE VIEWER</a></li>
           <li><a class = 'teal-hover'  id = 'download-nav' href="#download-row" onclick="toggleDivs('download')">DOWNLOAD</a></li>
           <li><a class = 'teal-hover'  id = 'contact-nav' href="#contact-row" onclick="toggleDivs('contact')">CONTACT</a></li>
       </ul>
@@ -72,22 +87,80 @@
   <h1>Landscape Change Monitoring System</h1> 
 </div> -->
 
+<div id="home-row" class="container-fluid bg-black" >
+  <div class="row slideanim">
+   
+    
+      <a href = 'index.html'target = '_blank' title = 'Click here to open LCMS Data Explorer!'>
+      <div id="myCarousel" class="carousel slide"  data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel" data-slide-to="1"></li>
+          <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+          <div class="item active" style = 'height:200px;'>
+            
+            <div class="carousel-caption">
+              <h3>The Landscape Change Monitoring System (LCMS)</h3>
+              <p>LCMS is the USDA Forest Service change monitoring system for all US lands</p>
+            </div>
+          </div>
+
+          <div class="item"style = 'height:200px;'>
+            <div class="carousel-caption">
+              <h3>What does it do?</h3>
+              <p>LCMS monitors loss and gain in vegetation cover and changes in types of land cover for every year from 1984-present</p>
+            </div>
+          </div>
+        
+          <div class="item"style = 'height:200px;'>
+            <div class="carousel-caption">
+              <h3>Where does LCMS monitor?</h3>
+              <p>LCMS monitors all lands across the Conterminous United States</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      </a>
+   
+  </div>
+</div>
 <!-- Container (About Section) -->
 <div id="about-row" class="container-fluid bg-white info-page" >
-  <div class="row">
+  <div class="row slideanim">
     <h2 style = 'margin-left:0.5em;'>About</h2>
     <div class="col-sm-12 col-lg-8">
       
-      <h4>The Landscape Change Monitoring System (LCMS) is an emerging remote sensing-based system for mapping and monitoring land cover and land use   change across the US. Envisioned as a framework for
-
-        Map of United States showing locations of LCMS studies in Maine, Pennsylvania/New Jersey, South Carolina, Minnesota, Colorado, and Oregon
-        Map of pilot study locations
-        integrating Landsat-based products and other datasets, LCMS  is producing spatially, temporally, and thematically comprehensive data and information from which landscape change can be consistently assessed, documented, and analyzed at the national scale. 
-        LCMS is a direct outgrowth of two separate efforts: (1) the Monitoring Trends in Burn Severity (MTBS) program co-lead by the US Geological Survey (USGS) and the US Forest Service (USFS); and (2) the NASA-funded North American Forest Dynamics (NAFD) project which had significant involvement of the USFS, both in terms of science development and forest inventory applications. As an interagency USGS-USFS program, LCMS supports the change detection needs of a range of federal and non-federal land managers, and specifically targets the information needs of initiatives such as LANDFIRE, a joint USGS-USFS program for mapping vegetation, fire, and fuel characteristic for the US, and the National Land Cover Database (NLCD). When successfully implemented, LCMS could become the dominant provider of national-level Landsat-based change information for all lands of the US, with agency partners and specific programs augmenting the change products to suit their needs. LCMS is currently in development, with commitments for partial funding from the USFS to conduct pilot studies.
-
-        The LCMS Science Team (LST) includes developers of diverse Landsat-based change detection algorithms that address different types and rates of change over a variety of cover types in the context of two pilot studies.</h4>
-              
-    
+      <h4>The United States Forest Service (USFS) Rocky Mountain Research Station and Geospatial Technology and Applications Center are developing the Landscape Change Monitoring System (LCMS) to leverage freely available remote sensing data and Google Earth Engine to monitor changes across the US from 1984 to present. The goal of this project was to pilot the methods across several National Forests, work with land managers to utilize LCMS products to help inform their work, and develop a web map application to present, explore, and deliver products. 
+      LCMS utilizes annual growing season composites of Landsat TM , ETM+, and OLI. Metrics of change are provided by the LANDTRENDR and VERDET change algorithms. These metrics include the magnitude, duration, and slope of the fitted trajectories from each algorithm. Model calibration/validation data are provided from Timesync, a tool that allows analysts to manually inspect various sources of image time series data to attribute land cover, land use, and change processes for each year. 
+      Timesync data and the LANDTRENDR and VERDET change metrics are used in three Random Forest models to produce annual model confidence of vegetation cover loss and gain, and life-form level land cover classes. 
+      </h4>
+      <h3>Literature</h3>
+      <li>
+        <ul>
+          <a href = './literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' target = '_blank'>Healey et al 2018</a>      
+        </ul>
+        <ul>
+          <a href = './literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' target = '_blank'>Cohen et al 2017</a>
+        </ul>
+        <ul>
+          <a href = './literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target = '_blank'>Cohen et al 2018</a>
+        </ul>
+      </li>
     </div>
     <div class = 'col-sm-12 col-lg-4 ' style = 'margin-bottom:2em;'>
       <img  src="images/loss-example.png"  title="Click to learn more about the US Forest Service">
@@ -95,31 +168,133 @@
   </div>
 </div>
 
-<div id="map-row" class="container-fluid bg-white info-page" style = 'display: none;'>
-  <div class="row">
-    <h2 style = 'margin-left:0.5em;'>Map</h2>
-    <div class="col-sm-12 col-lg-9">
+<div id="map-row" class="container-fluid bg-white info-page" >
+  <div class="row slideanim">
+    <h2 style = 'margin-left:0.5em;'>INTERACTIVE VIEWER</h2>
+    
       
-      <!-- <iframe class = 'col-sm-12' style = 'height:500px;'src="index.html"></iframe> -->
-    </div>
-    <div class = 'col-sm-12 col-lg-3'>
-      The LCMS Data Explorer provides a web mapping application to visualize LCMS map products, summarize them across areas, and download the data.
-    </div>
+      <div id="myCarousel2" class="carousel slide"  data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel2" data-slide-to="1"></li>
+          <li data-target="#myCarousel2" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+          <div class="item active">
+            
+            <img src="./images/data-explorer-map-example.png" alt="Map" style="height:50%;" class = 'center'>
+           
+          </div>
+
+          <div class="item">
+            <img src="./images/data-explorer-chart-pixel-example.png" alt="Map"  style="height:50%;" class = 'center'>
+           
+          </div>
+        
+          <div class="item">
+            <img src="./images/data-explorer-chart-area-example.png" alt="Map"  style="height:50%;" class = 'center'>
+            
+          </div>
+
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel2" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+          <span class="sr-only">Next</span>
+        </a>
+       
+ 
+        <span  >
+          <a target = '_blank' href = 'index.html'>
+            <button style = 'width:100%;' class = 'center btn' target = '_blank' href = 'index.html'>Click here to Launch LCMS Data Explorer</button>
+          </a>
+           
+        </span>
+          
+        </a>
+      </div>
+
+   
   </div>
 </div>
-<div id="download-row" class="container-fluid bg-white info-page" style = "display:none">
-  <div class="row">
+<div id="download-row" class="container-fluid bg-white info-page" >
+  <div class="row slideanim">
     <h2 style = 'margin-left:0.5em;'>Download</h2>
-    <div class="col-sm-12 col-lg-9">
+    <div class = 'col-sm-12 col-lg-1'>
+      Select any of the available downloads
+    </div>
+    <div class="col-sm-12 col-lg-9" id = 'download-container'>
       
       
     </div>
-    <div class = 'col-sm-12 col-lg-3'>
-      The LCMS Data Explorer provides a web mapping application to visualize LCMS map products, summarize them across areas, and download the data.
-    </div>
+    
   </div>
 </div>
+<div id="contact-row" class="container-fluid bg-grey">
+  <h2 class="text-center">CONTACT</h2>
+  <div class="row">
+    <div class="col-sm-5">
+      <p><span class="glyphicon glyphicon-map-marker"></span> USDA Forest Service Geospatial Technology and Applications Center, Salt Lake City, US</p>
+      <a href="mailto: sm.fs.lcms@usda.gov"><span class="glyphicon glyphicon-envelope" ></span> sm.fs.lcms@usda.gov</a>
+     
+    </div>
+</div>
+<script>
+Object.keys(lcmsDownloadDict).map(function(k){
+  console.log(k)
+  $('#download-container').append(`<div class = 'col-lg-3 col-md-6 col-sm-12'>
+                                    ${k}
+                                    <li id = 'download-list-${k}'></li>
+                                  </div>`)
+  var l = lcmsDownloadDict[k];
+  l.map(function(path){
+    var label = path.split('/');
+    label = label[label.length-1];
+    $('#download-list-'+k).append(`<ul><a href = '${path}'>${label}</a></ul>`)
+  })
+})
+$(document).ready(function(){
+  // Add smooth scrolling to all links in navbar + footer link
+  $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== "") {
+      // Prevent default anchor click behavior
+      event.preventDefault();
 
+      // Store hash
+      var hash = this.hash;
 
+      // Using jQuery's animate() method to add smooth page scroll
+      // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 900, function(){
+   
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        window.location.hash = hash;
+      });
+    } // End if
+  });
+  
+  $(window).scroll(function() {
+    $(".slideanim").each(function(){
+      var pos = $(this).offset().top;
+
+      var winTop = $(window).scrollTop();
+        if (pos < winTop + 600) {
+          $(this).addClass("slide");
+        }
+    });
+  });
+})
+</script>
 </body>
 </html>

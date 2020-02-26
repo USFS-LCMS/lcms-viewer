@@ -968,7 +968,7 @@ function reRun(){
 	
   Object.values(featureObj).map(function(f){f.setMap(null)});
   featureObj = {};
-  map.overlayMapTypes.g.forEach(function(element,index){
+  map.overlayMapTypes.i.forEach(function(element,index){
                      map.overlayMapTypes.setAt(index,null);
                    
                 });
