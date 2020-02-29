@@ -608,8 +608,8 @@ function addStudyAreaToDropdown(name,toolTip){
 	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`)
   	$('#'+id).on('click',function(){
   		$('#summary-spinner').show();
-  		console.log('clicked')
   		$('#study-area-list').hide();
+        longStudyAreaName = this.name;
     	dropdownUpdateStudyArea(this.name);
  
     })
@@ -732,7 +732,7 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	
 	// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
-	$('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+	$('#'+containerDivID).append(`<div  id="${sliderID}-container"class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
 							        <div class='dual-range-slider-name py-2'>${title}</div>
 							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
 							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>

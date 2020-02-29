@@ -71,21 +71,23 @@ if(mode === 'LCMS'){
   $('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
   addDualRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery','upperThresholdRecovery',0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
-
+  $('#advanced-radio-container').append(`<div id = 'fast-slow-threshold-container' ></div>`);
+  addDualRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss','upperThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , upperThresholdSlowLoss, 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  $('#fast-slow-threshold-container').append(`<div class="dropdown-divider" ></div>`);
+  addDualRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss','upperThresholdFastLoss',0, 1, lowerThresholdFastLoss, upperThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   
-  addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
-  $('#advanced-radio-container').append(`<div id = 'beta-params-container' style = 'display:none;'>
-                                          <div class = 'dropdown-divider'></div>
-                                          Beta Product Parameters
-                                        </div>`);
-  addDualRangeSlider('beta-params-container','Choose slow loss threshold:','lowerThresholdSlowLoss','upperThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , upperThresholdSlowLoss, 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
-  addDualRangeSlider('beta-params-container','Choose fast loss threshold:','lowerThresholdFastLoss','upperThresholdFastLoss',0, 1, lowerThresholdFastLoss, upperThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
-  
-  $( "#viewBeta-radio-first_toggle_label" ).click(function() {$('#beta-params-container').slideUp()});
-  $( "#viewBeta-radio-second_toggle_label" ).click(function() {$('#beta-params-container').slideDown()});
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  // addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
+  // $('#advanced-radio-container').append(`<div id = 'beta-params-container' style = 'display:none;'>
+  //                                         <div class = 'dropdown-divider'></div>
+  //                                         Beta Product Parameters
+  //                                       </div>`);
+ 
+  // $( "#viewBeta-radio-first_toggle_label" ).click(function() {$('#beta-params-container').slideUp()});
+  // $( "#viewBeta-radio-second_toggle_label" ).click(function() {$('#beta-params-container').slideDown()});
+  // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   
   addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);

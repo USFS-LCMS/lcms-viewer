@@ -1737,8 +1737,15 @@ var resetStudyArea = function(whichOne){
 
     var coords = studyAreaDict[whichOne].center;
     studyAreaName = studyAreaDict[whichOne].name;
-    if(studyAreaName === 'CONUS'){run = runCONUS;$('#viewBeta-radio-container').hide();$('#beta-params-container').hide();}
-    else{run = runUSFS;$('#viewBeta-radio-container').show();if(viewBeta === 'yes'){$('#beta-params-container').show();}};
+    if(studyAreaName === 'CONUS'){run = runCONUS;}
+    else{run = runUSFS;};
+    console.log(studyAreaDict[whichOne].addFastSlow)
+    if(studyAreaDict[whichOne].addFastSlow){
+      $('#fast-slow-threshold-container').show();
+    }else{$('#fast-slow-threshold-container').hide();}
+    if(studyAreaDict[whichOne].addGainThresh){
+      $('#recovery-threshold-slider-container').show();
+    }else{$('#recovery-threshold-slider-container').hide();}
     $('#export-crs').val(studyAreaDict[whichOne].crs)
     // exportCRS = studyAreaDict[whichOne][2];
     // $('#export-crs').val(exportCRS);
@@ -2058,9 +2065,11 @@ function initialize() {
     }else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
     }else if(studyAreaName === 'CONUS'){
+      longStudyAreaName = cachedStudyAreaName;
       run = runCONUS;
     
     }else if(cachedStudyAreaName != null){
+      longStudyAreaName = cachedStudyAreaName;
       resetStudyArea(cachedStudyAreaName)
     } 
     else{run = runUSFS}

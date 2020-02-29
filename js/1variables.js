@@ -21,7 +21,11 @@ var studyAreaDict = {
                                                 gainThresh:0.45,
                                                 startYear:1985,
                                                 endYear:2019,
-                                            	popOver:"Flathead National Forest buffered along with Glacier National Park buffered by 1km"},
+                                            	popOver:"Flathead National Forest buffered along with Glacier National Park buffered by 1km",
+                                              addFastSlow:true,
+                                              addGainThresh:true
+                                            },
+                                              
                   'Bridger-Teton National Forest':{
                                                   name:'BTNF',
                                                   center:[43.4,-111.1,8],
@@ -32,7 +36,10 @@ var studyAreaDict = {
                                                   gainThresh:0.45,
                                                   startYear : 1985,
                                                   endYear : 2019,
-                                              	  popOver:"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley"},
+                                              	  popOver:"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley",
+                                                  addFastSlow:true,
+                                                  addGainThresh:true
+                                            },
                   'Manti-La Sal National Forest':{
                                                   name:'MLSNF',
                                                   center:[38.8,-111,8],
@@ -43,7 +50,10 @@ var studyAreaDict = {
                                                   gainThresh:0.3,
                                                   startYear: 1985,
                                                   endYear: 2019,
-                                              	  popOver:"Manti-La Sal National Forest"},
+                                              	  popOver:"Manti-La Sal National Forest",
+                                                  addFastSlow:true,
+                                                  addGainThresh:true
+                                            },
                   'Chugach National Forest - Kenai Peninsula':{
                                                 name:'CNFKP',
                                                 center:[60.4,-150.1, 9],
@@ -52,7 +62,10 @@ var studyAreaDict = {
                                                 gainThresh:0.45,
                                                 startYear:1985,
                                                 endYear:2019,
-                                            	popOver:"Chugach National Forest - Kenai Peninsula"},
+                                            	popOver:"Chugach National Forest - Kenai Peninsula",
+                                              addFastSlow:false,
+                                              addGainThresh:true
+                                            },
                   'USFS Intermountain Region':{
                                                 name:'R4',
                                                 center:[40.257866715877526,-114.51403372873794, 6],
@@ -63,7 +76,10 @@ var studyAreaDict = {
                                                 gainThresh:0.4,
                                                 startYear:1985,
                                                 endYear:2019,
-                                              popOver:"US Forest Service Intermountain Region 4"},
+                                              popOver:"US Forest Service Intermountain Region 4",
+                                              addFastSlow:true,
+                                              addGainThresh:true
+                                            },
                   'Science Team CONUS':{
                                                 name:'CONUS',
                                                 center:[37.5334105816903,-105.6787109375,5],
@@ -72,13 +88,17 @@ var studyAreaDict = {
                                                 gainThresh:0.30,
                                                 startYear:1985,
                                                 endYear:2019,
-                                            	popOver:"2019 LCMS Science Team CONUS-wide loss"}
+                                            	popOver:"2019 LCMS Science Team CONUS-wide loss",
+                                              addFastSlow:false,
+                                              addGainThresh:false
+                                            }
                 };
 
 //Initialize parameters
 var defaultStudyArea = 'USFS Intermountain Region';
 var studyAreaName = studyAreaDict[defaultStudyArea].name;
-
+var longStudyAreaName = defaultStudyArea;
+var viewBeta = 'yes';
 var lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
 var upperThresholdDecline = 1.0;
 var lowerThresholdRecovery = studyAreaDict[defaultStudyArea].gainThresh;
