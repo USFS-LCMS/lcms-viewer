@@ -20,7 +20,7 @@ function clearSelectedAreas(){
     $('.selected-features-list').empty();
     Object.keys(selectedFeaturesJSON).map(function(k){
         selectedFeaturesJSON[k].geoJSON.forEach(function(f){
-        	var name = f.i.selectionTrackingName;
+        	var name = f.j.selectionTrackingName;
 			console.log(name);
             delete selectedFeaturesJSON[k].rawGeoJSON[name]
         	selectedFeaturesJSON[k].geoJSON.remove(f)
@@ -37,9 +37,9 @@ function getSelectedAreasNameList(includeFeatureCollectionName){
 	Object.keys(selectedFeaturesJSON).map(function(k){
 		selectedFeaturesJSON[k].geoJSON.forEach(function(f){
 			if(includeFeatureCollectionName){
-				var n = k+' - ' +f.i.selectionTrackingName;
+				var n = k+' - ' +f.j.selectionTrackingName;
 			}else{
-				var n = f.i.selectionTrackingName;
+				var n = f.j.selectionTrackingName;
 			}
 			nameList.push(n)
 		})
@@ -77,7 +77,7 @@ function removeLastSelectArea(){
 		selectedFeaturesJSON[k].geoJSON.forEach(function(f){l++});
 		selectedFeaturesJSON[k].geoJSON.forEach(function(f){
 			if(i == l-1){
-				var name = f.i.selectionTrackingName;
+				var name = f.j.selectionTrackingName;
 				console.log(name);
                 delete selectedFeaturesJSON[k].rawGeoJSON[name];
 				selectedFeaturesJSON[k].geoJSON.remove(f);
@@ -450,24 +450,30 @@ var fsb;
 
 // var fieldName = 'FORESTNAME';
 // var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries';
+function populateChartDropdown(id,collectionDict,whichChartCollectionVar){
+	$('#'+id).empty();
+	var keys = Object.keys(collectionDict);
+	// console.log(keys)
+	eval(whichChartCollectionVar+' = keys[0]');
+	if(keys.length > 1){
+	    Object.keys(collectionDict).map(function(k){
+	    addDropdownItem(id,collectionDict[k].label,k,collectionDict[k].tooltip);
 
-function populateAreaChartDropdown(){
-  $('#area-collection-dropdown').empty();
-  var keys = Object.keys(areaChartCollections)
-  whichAreaChartCollection = keys[0];
-  if(keys.length > 1){
-    Object.keys(areaChartCollections).map(function(k){
-    addDropdownItem('area-collection-dropdown',areaChartCollections[k].label,k,areaChartCollections[k].tooltip);
-
-    });
-    $('#area-collection-dropdown-container').show();
-  }else{$('#area-collection-dropdown-container').hide();}
-  
+	    });
+	    $('#'+id+'-container').show();
+	}else{$('#'+id+'-container').hide();}
+	  
 }
-$('#area-collection-dropdown').change(function(){
-  console.log(whichAreaChartCollection);
-  setupFSB();
-})
+function populateAreaChartDropdown(){
+  populateChartDropdown('area-collection-dropdown',areaChartCollections,'whichAreaChartCollection')
+}
+function populatePixelChartDropdown(){
+  populateChartDropdown('pixel-collection-dropdown',pixelChartCollections,'whichPixelChartCollection')
+}
+// $('#area-collection-dropdown').change(function(){
+//   console.log(whichAreaChartCollection);
+//   // setupFSB();
+// })
 // var fieldName = 'PARKNAME';
 // var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries';
 function setupFSB(){
@@ -681,7 +687,7 @@ function chartUserDefinedArea(){
 		var userArea = [];
 		var anythingToChart = false;
 		Object.values(udpPolygonObj).map(function(v){
-			var coords = v.getPath().g;
+			var coords = v.getPath().i;
 			var f = [];
 			coords.map(function(coord){f.push([coord.lng(),coord.lat()])});
 		
@@ -1265,14 +1271,15 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 										  </div>
 										</div>
 										
+										</div>
 										<div class="dropdown">
 										  <div class=" dropdown-toggle"  id="chartTypeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										    Chart Type
 										  </div>
 										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
-										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart')">Graph</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');change('line',false,${steppedLine});">Line</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');change('line',true,${steppedLine});">Stacked Line</a>
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
-										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('both')">Graph and Table</a>
 										  </div>
 										</div>
 										`);
@@ -1316,7 +1323,7 @@ function change(newType,stacked,steppedLine) {
 			}
 
 			var datasets = config.data.datasets;
-			console.log(datasets);
+			// console.log(datasets);
 			datasets = datasets.map(function(dataset){
 				dataset['fill'] = true;
 				dataset['backgroundColor'] = dataset['borderColor'];
@@ -1330,10 +1337,11 @@ function change(newType,stacked,steppedLine) {
 				xAxes: [{ stacked: stacked }]
 			}
 			var datasets = config.data.datasets;
-			console.log(datasets);
+			// console.log(datasets);
 			datasets = datasets.map(function(dataset){
 				dataset['fill'] = false;
-				dataset['backgroundColor'] = null;
+				dataset['steppedLine'] = false;
+				// dataset['backgroundColor'] = null;
 				return dataset;
 			})
 			config.data.datasets = datasets;
@@ -1346,9 +1354,12 @@ function change(newType,stacked,steppedLine) {
 var chartTableDict;
 var testTable = JSON.parse('[["id","longitude","latitude","time","Raw NDVI","LANDTRENDR Fitted NDVI","Land Cover Class","Land Use Class","Loss Probability","Gain Probability"],["Landsat_Fmask_allL7_SR_medoid_1984_1986_190_250_1_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1985",-109.74183328494144,42.94571387213776,486432000000,0.6041558441558442,0.61475,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1985_1987_190_250_2_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1986",-109.74183328494144,42.94571387213776,517968000000,0.6490280777537797,0.6148,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1986_1988_190_250_3_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1987",-109.74183328494144,42.94571387213776,549504000000,0.6315240083507307,0.61485,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1987_1989_190_250_4_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1988",-109.74183328494144,42.94571387213776,581126400000,0.6315240083507307,0.6149,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1988_1990_190_250_5_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1989",-109.74183328494144,42.94571387213776,612662400000,0.6353887399463807,0.61495,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1989_1991_190_250_6_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1990",-109.74183328494144,42.94571387213776,644198400000,0.6176795580110498,0.615,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1990_1992_190_250_7_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1991",-109.74183328494144,42.94571387213776,675734400000,0.5684689236988377,0.61505,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1991_1993_190_250_8_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1992",-109.74183328494144,42.94571387213776,707356800000,0.5684689236988377,0.6151,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1992_1994_190_250_9_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1993",-109.74183328494144,42.94571387213776,738892800000,0.6082029141932002,0.61515,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1993_1995_190_250_10_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1994",-109.74183328494144,42.94571387213776,770428800000,0.5819209039548022,0.6152000000000001,0.699999988079071,0.30000001192092896,0.05000000074505806,0],["Landsat_Fmask_allL7_SR_medoid_1994_1996_190_250_11_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1995",-109.74183328494144,42.94571387213776,801964800000,0.6067796610169491,0.6152500000000001,0.699999988079071,0.30000001192092896,0.05000000074505806,0],["Landsat_Fmask_allL7_SR_medoid_1995_1997_190_250_12_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1996",-109.74183328494144,42.94571387213776,833587200000,0.6067796610169491,0.6153000000000001,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1996_1998_190_250_13_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1997",-109.74183328494144,42.94571387213776,865123200000,0.6450617283950617,0.6153500000000001,0.699999988079071,0.30000001192092896,0.03999999910593033,0.009999999776482582],["Landsat_Fmask_allL7_SR_medoid_1997_1999_190_250_14_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1998",-109.74183328494144,42.94571387213776,896659200000,0.6450617283950617,0.6154000000000001,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1998_2000_190_250_15_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1999",-109.74183328494144,42.94571387213776,928195200000,0.6054347826086957,0.61545,0.699999988079071,0.30000001192092896,0.07999999821186066,0],["Landsat_Fmask_allL7_SR_medoid_1999_2001_190_250_16_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2000",-109.74183328494144,42.94571387213776,959817600000,0.6196961760083813,0.6155,0.699999988079071,0.30000001192092896,0.10999999940395355,0],["Landsat_Fmask_allL7_SR_medoid_2000_2002_190_250_17_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2001",-109.74183328494144,42.94571387213776,991353600000,0.625,0.61555,0.699999988079071,0.30000001192092896,0.20999999344348907,0],["Landsat_Fmask_allL7_SR_medoid_2001_2003_190_250_18_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2002",-109.74183328494144,42.94571387213776,1022889600000,0.625,0.6156,0.699999988079071,0.30000001192092896,0.3700000047683716,0],["Landsat_Fmask_allL7_SR_medoid_2002_2004_190_250_19_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2003",-109.74183328494144,42.94571387213776,1054425600000,0.5976331360946746,0.61565,0.699999988079071,0.30000001192092896,0.30000001192092896,0],["Landsat_Fmask_allL7_SR_medoid_2003_2005_190_250_20_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2004",-109.74183328494144,42.94571387213776,1086048000000,0.6184004181913225,0.6157,0.699999988079071,0.30000001192092896,0.23999999463558197,0],["Landsat_Fmask_allL7_SR_medoid_2004_2006_190_250_21_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2005",-109.74183328494144,42.94571387213776,1117584000000,0.6023643202579259,0.6050375,0.699999988079071,0.30000001192092896,0.3799999952316284,0],["Landsat_Fmask_allL7_SR_medoid_2005_2007_190_250_22_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2006",-109.74183328494144,42.94571387213776,1149120000000,0.5668202764976958,0.594375,0.699999988079071,0.30000001192092896,0.3100000023841858,0],["Landsat_Fmask_allL7_SR_medoid_2006_2008_190_250_23_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2007",-109.74183328494144,42.94571387213776,1180656000000,0.5428024868483978,0.5837125000000001,0.699999988079071,0.30000001192092896,0.7099999785423279,0],["Landsat_Fmask_allL7_SR_medoid_2007_2009_190_250_24_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2008",-109.74183328494144,42.94571387213776,1212278400000,0.6413103831204887,0.5730500000000001,0.699999988079071,0.30000001192092896,0.5099999904632568,0],["Landsat_Fmask_allL7_SR_medoid_2008_2010_190_250_25_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2009",-109.74183328494144,42.94571387213776,1243814400000,0.5547407019381875,0.5623875,0.699999988079071,0.30000001192092896,0.8799999952316284,0],["Landsat_Fmask_allL7_SR_medoid_2009_2011_190_250_26_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2010",-109.74183328494144,42.94571387213776,1275350400000,0.5532495903877663,0.551725,0.699999988079071,0.30000001192092896,0.550000011920929,0],["Landsat_Fmask_allL7_SR_medoid_2010_2012_190_250_27_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2011",-109.74183328494144,42.94571387213776,1306886400000,0.5532495903877663,0.5410625,0.699999988079071,0.30000001192092896,0.5199999809265137,0],["Landsat_Fmask_allL7_SR_medoid_2011_2013_190_250_28_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2012",-109.74183328494144,42.94571387213776,1338508800000,0.5121196493037647,0.5304,0.699999988079071,0.30000001192092896,0.7799999713897705,0.019999999552965164],["Landsat_Fmask_allL7_SR_medoid_2012_2014_190_250_29_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2013",-109.74183328494144,42.94571387213776,1370044800000,0.5759870200108166,0.5492714285714286,0.699999988079071,0.30000001192092896,0.10999999940395355,0.15000000596046448],["Landsat_Fmask_allL7_SR_medoid_2013_2015_190_250_30_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2014",-109.74183328494144,42.94571387213776,1401580800000,0.5555555555555556,0.5681428571428572,0.699999988079071,0.30000001192092896,0.17000000178813934,0.09000000357627869],["Landsat_Fmask_allL7_SR_medoid_2014_2016_190_250_31_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2015",-109.74183328494144,42.94571387213776,1433116800000,0.6195835678109173,0.5870142857142857,0.699999988079071,0.30000001192092896,0.07999999821186066,0.029999999329447746],["Landsat_Fmask_allL7_SR_medoid_2015_2017_190_250_32_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2016",-109.74183328494144,42.94571387213776,1464739200000,0.6360619469026548,0.6058857142857144,0.699999988079071,0.30000001192092896,0.14000000059604645,0.14000000059604645],["Landsat_Fmask_allL7_SR_medoid_2016_2018_190_250_33_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2017",-109.74183328494144,42.94571387213776,1496275200000,0.6152263374485596,0.6247571428571429,0.699999988079071,0.30000001192092896,0.05000000074505806,0.11999999731779099],["Landsat_Fmask_allL7_SR_medoid_2017_2019_190_250_34_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2018",-109.74183328494144,42.94571387213776,1527811200000,0.656484727090636,0.6436285714285715,0.699999988079071,0.30000001192092896,0.17000000178813934,0.1899999976158142],["Landsat_Fmask_allL7_SR_medoid_2018_2020_190_250_35_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2019",-109.74183328494144,42.94571387213776,1559347200000,0.6271186440677967,0.6625,0.699999988079071,0.30000001192092896,0.1599999964237213,0.3199999928474426]]')
 function dataTableNumbersToNames(dataTable){
-	try{chartTableDict = chartCollection.get('chartTableDict').getInfo();}
-	catch(err){chartTableDict = null};
-
+	// try{chartTableDict = chartCollection.get('chartTableDict').getInfo();}
+	// catch(err){chartTableDict = null};
+	if(pixelChartCollections[whichPixelChartCollection].chartTableDict !== null && pixelChartCollections[whichPixelChartCollection].chartTableDict !== undefined){
+		chartTableDict = pixelChartCollections[whichPixelChartCollection].chartTableDict;
+	}else{chartTableDict = null;}
+	
 	
 	// console.log(chartTableDict)
 	var header = dataTable[0];
@@ -1565,6 +1576,11 @@ function startPixelChartCollection() {
 	mapHammer = new Hammer(document.getElementById('map'));
    
     mapHammer.on("doubletap", function(event) {
+    	chartCollection = pixelChartCollections[whichPixelChartCollection].collection;
+    	if(pixelChartCollections[whichPixelChartCollection].chartColors !== undefined && pixelChartCollections[whichPixelChartCollection].chartColors !== null){
+    		chartColors = pixelChartCollections[whichPixelChartCollection].chartColors;
+    	}
+    	
     	areaGeoJson = null;
     	$('#summary-spinner').slideDown();
     	map.setOptions({draggableCursor:'progress'});
@@ -1612,12 +1628,11 @@ function startPixelChartCollection() {
 			map.setOptions({draggableCursor:'help'});
 			addChartJS(values,uriName);
 			
-			var legends = chartCollection.get('legends').getInfo();
-			print(legends);
-			if(legends !== null){// && analysisMode === 'advanced'){
-				makeLegend(legends);
+			if(pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined){
+				makeLegend(pixelChartCollections[whichPixelChartCollection].legends);
 				toggleChartTable(localStorage.tableOrChart);
-				};
+			}
+			
    			}
 
 		icT.getRegion(plotBounds,plotScale).evaluate(function(values){

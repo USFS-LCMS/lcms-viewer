@@ -21,7 +21,15 @@ var studyAreaDict = {
                                                 gainThresh:0.45,
                                                 startYear:1985,
                                                 endYear:2019,
-                                            	popOver:"Flathead National Forest buffered along with Glacier National Park buffered by 1km"},
+                                            	popOver:"Flathead National Forest buffered along with Glacier National Park buffered by 1km",
+                                              addFastSlow:true,
+                                              addGainThresh:true,
+                                              compositeCollection:'projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7',
+                                              lcmsCollection:'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+                                              ltCollection:'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+                                              ltFormat:'landtrendr_vertex_format'
+                                            },
+                                              
                   'Bridger-Teton National Forest':{
                                                   name:'BTNF',
                                                   center:[43.4,-111.1,8],
@@ -32,7 +40,14 @@ var studyAreaDict = {
                                                   gainThresh:0.45,
                                                   startYear : 1985,
                                                   endYear : 2019,
-                                              	  popOver:"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley"},
+                                              	  popOver:"Bridger-Teton National Forest boundary buffered by 5km plus Star Valley",
+                                                  addFastSlow:true,
+                                                  addGainThresh:true,
+                                                  compositeCollection:'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+                                                  lcmsCollection:'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+                                                  ltCollection:'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+                                                  ltFormat:'landtrendr_vertex_format'
+                                            },
                   'Manti-La Sal National Forest':{
                                                   name:'MLSNF',
                                                   center:[38.8,-111,8],
@@ -43,7 +58,14 @@ var studyAreaDict = {
                                                   gainThresh:0.3,
                                                   startYear: 1985,
                                                   endYear: 2019,
-                                              	  popOver:"Manti-La Sal National Forest"},
+                                              	  popOver:"Manti-La Sal National Forest",
+                                                  addFastSlow:true,
+                                                  addGainThresh:true,
+                                                  compositeCollection:'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+                                                  lcmsCollection: 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+                                                  ltCollection:'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+                                                  ltFormat:'landtrendr_vertex_format'
+                                            },
                   'Chugach National Forest - Kenai Peninsula':{
                                                 name:'CNFKP',
                                                 center:[60.4,-150.1, 9],
@@ -52,7 +74,66 @@ var studyAreaDict = {
                                                 gainThresh:0.45,
                                                 startYear:1985,
                                                 endYear:2019,
-                                            	popOver:"Chugach National Forest - Kenai Peninsula"},
+                                            	popOver:"Chugach National Forest - Kenai Peninsula",
+                                              addFastSlow:false,
+                                              addGainThresh:true,
+                                              compositeCollection:'projects/USFS/LCMS-NFS/R10/CK/Composites/Composite-Collection-cloudScoreTDOM2',
+                                              lcmsCollection:'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+                                              ltCollection:'projects/USFS/LCMS-NFS/R10/CK/Base-Learners/LANDTRENDR-Collection2019',
+                                              ltFormat:'landtrendr_vertex_format',
+                                              lcmsSecondaryLandcoverCollection:'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover_Probability',
+                                              lcmsSecondaryLandcoverDict:{
+                                                          1: {'modelName': 'Trees',
+                                                                  'legendName': 'Trees',
+                                                                  'color': '005e00'},
+                                                          2: {'modelName': 'TallShrubs-Trees',
+                                                                  'legendName': 'Mixed Trees/Tall Shrubs',
+                                                                  'color': '008000'},
+                                                          3: {'modelName': 'Shrubs-Trees',
+                                                                  'legendName': 'Mixed Trees/Shrubs',
+                                                                  'color': '00cc00'},
+                                                          4: {'modelName': 'Grass-Trees',
+                                                                  'legendName': 'Mixed Trees/Grass',
+                                                                  'color': 'b3ff1a'},
+                                                          5: {'modelName': 'Barren-Trees',
+                                                                  'legendName': 'Mixed Trees/Barren',
+                                                                  'color': '99ff99'},
+                                                          6: {'modelName': 'TallShrubs',
+                                                                  'legendName': 'Tall Shrubs',
+                                                                  'color': 'b30000'},
+                                                          7: {'modelName': 'Grass-TallShrubs',
+                                                                  'legendName': 'Mixed Tall Shrubs/Grass',
+                                                                  'color': 'ff3333'},
+                                                          8: {'modelName': 'Barren-TallShrubs',
+                                                                  'legendName': 'Mixed Tall Shrubs/Barren',
+                                                                  'color': 'ffcccc'},               
+                                                          9: {'modelName': 'Shrubs',
+                                                                  'legendName': 'Shrubs',
+                                                                  'color': 'e68a00'},//'a33d00'},
+                                                          10: {'modelName': 'Grass-Shrubs',
+                                                                  'legendName': 'Mixed Shrubs/Grass',
+                                                                  'color': 'ffad33'},//'e26b00'},
+                                                          11: {'modelName': 'Barren-Shrubs',
+                                                                  'legendName': 'Mixed Shrubs/Barren',
+                                                                  'color': 'ffe0b3'},//'f49b00'},               
+                                                          12: {'modelName': 'Grass',
+                                                                  'legendName': 'Grass',
+                                                                  'color': 'ffff00'},
+                                                          13: {'modelName': 'Barren-Grass',
+                                                                  'legendName': 'Mixed Grass/Barren',
+                                                                  'color': 'e6e600'},
+                                                          14: {'modelName': 'Barren',
+                                                                  'legendName': 'Barren & Impervious',
+                                                                  'color': 'd3bf9b'},
+                                                          15: {'modelName': 'Snow',
+                                                                  'legendName': 'Snow/Ice',
+                                                                  'color': 'ffffff'},
+                                                          16: {'modelName': 'Water',
+                                                                  'legendName': 'Water',
+                                                                  'color': '4780f3'}
+                                                                },
+                                              lcmsSecondaryLandcoverTreeClassMax:5
+                                            },
                   'USFS Intermountain Region':{
                                                 name:'R4',
                                                 center:[40.257866715877526,-114.51403372873794, 6],
@@ -63,7 +144,49 @@ var studyAreaDict = {
                                                 gainThresh:0.4,
                                                 startYear:1985,
                                                 endYear:2019,
-                                              popOver:"US Forest Service Intermountain Region 4"},
+                                              popOver:"US Forest Service Intermountain Region 4",
+                                              addFastSlow:true,
+                                              addGainThresh:true,
+                                              compositeCollection:'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+                                              lcmsCollection:'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
+                                              ltCollection:'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+                                              ltFormat:'landtrendr_vertex_format',
+                                              lcmsSecondaryLandcoverCollection:'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/Landcover_Probability_epwt',
+                                              lcmsSecondaryLandcoverDict:{1: {'modelName': 'Trees',
+                                                                                  'legendName': 'Trees',
+                                                                                  'color': '005e00'},
+                                                                          2: {'modelName': 'Shrubs-Trees',
+                                                                                  'legendName': 'Mixed Trees/Shrubs',
+                                                                                  'color': '008000'},
+                                                                          3: {'modelName': 'Grass-Trees',
+                                                                                  'legendName': 'Mixed Trees/Grass',
+                                                                                  'color': 'b3ff1a'},
+                                                                          4: {'modelName': 'Barren-Trees',
+                                                                                  'legendName': 'Mixed Trees/Barren',
+                                                                                  'color': '99ff99'},
+                                                                          5: {'modelName': 'Shrubs',
+                                                                                  'legendName': 'Shrubs',
+                                                                                  'color': 'a33d00'},
+                                                                          6: {'modelName': 'Grass-Shrubs',
+                                                                                  'legendName': 'Mixed Shrubs/Grass',
+                                                                                  'color': 'e26b00'},
+                                                                          7: {'modelName': 'Barren-Shrubs',
+                                                                                  'legendName': 'Mixed Shrubs/Barren',
+                                                                                  'color': 'f49b00'},               
+                                                                          8: {'modelName': 'Grass',
+                                                                                  'legendName': 'Grass',
+                                                                                  'color': 'ffff00'},
+                                                                          9: {'modelName': 'Barren-Grass',
+                                                                                  'legendName': 'Mixed Grass/Barren',
+                                                                                  'color': 'e6e600'},
+                                                                          10: {'modelName': 'Barren',
+                                                                                  'legendName': 'Barren & Impervious',
+                                                                                  'color': 'd3bf9b'},
+                                                                          11: {'modelName': 'Water',
+                                                                                  'legendName': 'Water',
+                                                                                  'color': '4780f3'}},
+                                              lcmsSecondaryLandcoverTreeClassMax:4
+                                            },
                   'Science Team CONUS':{
                                                 name:'CONUS',
                                                 center:[37.5334105816903,-105.6787109375,5],
@@ -72,13 +195,20 @@ var studyAreaDict = {
                                                 gainThresh:0.30,
                                                 startYear:1985,
                                                 endYear:2019,
-                                            	popOver:"2019 LCMS Science Team CONUS-wide loss"}
+                                            	popOver:"2019 LCMS Science Team CONUS-wide loss",
+                                              addFastSlow:false,
+                                              addGainThresh:false,
+                                              compositeCollection:'projects/LCMS/CONUS_MEDOID',
+                                              lcmsCollection:'projects/LCMS/CONUS_Products/v20200120',
+                                              ltCollection:'projects/LCMS/CONUS_Products/LT20200120'
+                                            }
                 };
 
 //Initialize parameters
 var defaultStudyArea = 'USFS Intermountain Region';
 var studyAreaName = studyAreaDict[defaultStudyArea].name;
-
+var longStudyAreaName = defaultStudyArea;
+var viewBeta = 'yes';
 var lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
 var upperThresholdDecline = 1.0;
 var lowerThresholdRecovery = studyAreaDict[defaultStudyArea].gainThresh;
@@ -157,7 +287,7 @@ var outputURL;
 var tableConverter = null;
 var groundOverlayOn = false;
 
-var chartIncludeDate = true;var chartCollection;var areaChartCollections = {};var whichAreaChartCollection;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
+var chartIncludeDate = true;var chartCollection;var pixelChartCollections = {};var whichPixelChartCollection;var areaChartCollections = {};var whichAreaChartCollection;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
 var mouseLat;var mouseLng; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
 var updateArea;var updateDistance;var areaPolygonObj = {};var udpPolygonObj = {};var udpPolygonNumber = 1;var mapHammer;var chartMTBS;var chartMTBSByNLCD;var chartMTBSByAspect;
 var walkThroughAdded = false;

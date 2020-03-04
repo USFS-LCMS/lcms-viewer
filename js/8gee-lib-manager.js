@@ -23,7 +23,7 @@ window.recoveryProbPalette = 'F5DEB3,006400';
 window.declineDurPalette = 'BD1600,E2F400,0C2780';
 window.recoveryDurPalette = declineDurPalette;
 
-
+window.whichIndices = ['NDVI','NBR'];
 
 // LCMS Project Boundaries
 // var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
@@ -73,80 +73,95 @@ window.ckStudyAreas = [['HUC8 Boundaries',huc8.filterBounds(ck_study_area),'USGS
         ['Kenai Fjords National Park',kfnp,'Boundary of Kenai Fjords National Park'],
         ['Kenai National Wildlife Refuge',kenai_nwr,'Boundary of Kenai National Wildlife Refuge'],
         ['Chugach NF',cnf,'Boundary of Chugach National Forest'],
-                ['Chugach-Kenai LCMS Study Area',ck_study_area,'Area LCMS model calibration data were collected and applied']];
+        ['Chugach-Kenai LCMS Study Area',ck_study_area,'Area LCMS model calibration data were collected and applied']];
+
+studyAreaDict['Flathead National Forest'].studyAreas = fnfStudyAreas;
+studyAreaDict['Flathead National Forest'].studyAreaBoundary = fnf_study_area;
+
+studyAreaDict['Bridger-Teton National Forest'].studyAreas = btStudyAreas;
+studyAreaDict['Bridger-Teton National Forest'].studyAreaBoundary = bt_study_area;
+
+studyAreaDict['Manti-La Sal National Forest'].studyAreas = mslStudyAreas;
+studyAreaDict['Manti-La Sal National Forest'].studyAreaBoundary = mls_study_area;
+
+studyAreaDict['Chugach National Forest - Kenai Peninsula'].studyAreas = ckStudyAreas;
+studyAreaDict['Chugach National Forest - Kenai Peninsula'].studyAreaBoundary = ck_study_area;
+
+studyAreaDict['USFS Intermountain Region'].studyAreas = R4StudyAreas;
+studyAreaDict['USFS Intermountain Region'].studyAreaBoundary = R4_official;
 
 // var studyAreaName = 'FNF';
-window.collectionDict = {
-  'FNF': [
-          // 'projects/USFS/LCMS-NFS/R1/Composites/R1-Composite-Collection',
-          'projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7',
-          // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Change/Landcover-Change-Collection',
-          // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-R1',
-          'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
-          'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
-          // 'projects/USFS/LCMS-NFS/R1/Base-Learners/LANDTRENDR-Collection',
-          'projects/USFS/LCMS-NFS/R1/Base-Learners/Harmonic-Coefficients',
-          fnfStudyAreas,
-          'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table',
-          fnf_study_area,
-         'landtrendr_vertex_format'
-          ],
+// window.collectionDict = {
+//   'FNF': [
+//           // 'projects/USFS/LCMS-NFS/R1/Composites/R1-Composite-Collection',
+//           'projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7',
+//           // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Change/Landcover-Change-Collection',
+//           // 'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-R1',
+//           'projects/USFS/LCMS-NFS/R1/FNF/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+//           'projects/USFS/LCMS-NFS/R1/FNF/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+//           // 'projects/USFS/LCMS-NFS/R1/Base-Learners/LANDTRENDR-Collection',
+//           'projects/USFS/LCMS-NFS/R1/Base-Learners/Harmonic-Coefficients',
+//           fnfStudyAreas,
+//           'projects/USFS/LCMS-NFS/R1/FNF/TimeSync/FNF_Prob_Checks_TimeSync_Annualized_Table',
+//           fnf_study_area,
+//          'landtrendr_vertex_format'
+//           ],
 
-  'BTNF':[
-  // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
-        'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
-        // 'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-TRA',
-        'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
-        // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
-        btStudyAreas,
-        'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
-        // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
-        bt_study_area,
-        'landtrendr_vertex_format'
-        ],
+//   'BTNF':[
+//   // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+//         // 'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-TRA',
+//         'projects/USFS/LCMS-NFS/R4/BT/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+//         // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+//         'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
+//         btStudyAreas,
+//         'projects/USFS/LCMS-NFS/R4/BT/TimeSync/BT_Prob_Checks_TimeSync_Annualized_Table',
+//         // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+//         bt_study_area,
+//         'landtrendr_vertex_format'
+//         ],
 
-  'MLSNF':[
-        // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
-        'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
-        // 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
-        'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
-        // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
-        mslStudyAreas,
-        'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
-        // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
-        mls_study_area,
-        'landtrendr_vertex_format'
-        ],
-    'R4':[
-        // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
-        'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
-        // 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
-        'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
-        // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
-        'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
-        R4StudyAreas,
-        'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
-        // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
-        R4_official,
-        'landtrendr_vertex_format'
-        ],
-  'CNFKP':['projects/USFS/LCMS-NFS/R10/CK/Composites/Composite-Collection-cloudScoreTDOM2',
-            'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
-            'projects/USFS/LCMS-NFS/R10/CK/Base-Learners/LANDTRENDR-Collection2019',
-        //'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
-        'N/A',
-        ckStudyAreas,
-        'projects/USFS/LCMS-NFS/R10/CK/TimeSync/CK_TimeSync_Annualized_Table',
-        ck_study_area,
-        'landtrendr_vertex_format'
-        ]
+//   'MLSNF':[
+//         // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+//         // 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+//         'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection-v2019-3',
+//         // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+//         'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
+//         mslStudyAreas,
+//         'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
+//         // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+//         mls_study_area,
+//         'landtrendr_vertex_format'
+//         ],
+//     'R4':[
+//         // 'projects/USFS/LCMS-NFS/R4/Composites/R4-Composite-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7',
+//         // 'projects/USFS/LCMS-NFS/R4/MLS/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
+//         // 'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+//         'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7',
+//         'projects/USFS/LCMS-NFS/R4/Base-Learners/Harmonic-Coefficients',
+//         R4StudyAreas,
+//         'projects/USFS/LCMS-NFS/R4/MLS/TimeSync/MLS_TimeSync_Annualized_Table',
+//         // 'projects/USFS/LCMS-NFS/R4/BT/TetonRiskExtent'
+//         R4_official,
+//         'landtrendr_vertex_format'
+//         ],
+//   'CNFKP':['projects/USFS/LCMS-NFS/R10/CK/Composites/Composite-Collection-cloudScoreTDOM2',
+//             'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover-Landuse-Change-Collection',
+//             'projects/USFS/LCMS-NFS/R10/CK/Base-Learners/LANDTRENDR-Collection2019',
+//         //'projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection',
+//         'N/A',
+//         ckStudyAreas,
+//         'projects/USFS/LCMS-NFS/R10/CK/TimeSync/CK_TimeSync_Annualized_Table',
+//         ck_study_area,
+//         'landtrendr_vertex_format'
+//         ]
   
-}
+// }
 }
 //----------------------------------------------------------------------------------------------------------------
 //                                 Functions

@@ -71,26 +71,28 @@ if(mode === 'LCMS'){
   $('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
   addDualRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery','upperThresholdRecovery',0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
-
+  $('#advanced-radio-container').append(`<div id = 'fast-slow-threshold-container' ></div>`);
+  addDualRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss','upperThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , upperThresholdSlowLoss, 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  $('#fast-slow-threshold-container').append(`<div class="dropdown-divider" ></div>`);
+  addDualRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss','upperThresholdFastLoss',0, 1, lowerThresholdFastLoss, upperThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   
-  addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
-  $('#advanced-radio-container').append(`<div id = 'beta-params-container' style = 'display:none;'>
-                                          <div class = 'dropdown-divider'></div>
-                                          Beta Product Parameters
-                                        </div>`);
-  addDualRangeSlider('beta-params-container','Choose slow loss threshold:','lowerThresholdSlowLoss','upperThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , upperThresholdSlowLoss, 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
-  addDualRangeSlider('beta-params-container','Choose fast loss threshold:','lowerThresholdFastLoss','upperThresholdFastLoss',0, 1, lowerThresholdFastLoss, upperThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
-  
-  $( "#viewBeta-radio-first_toggle_label" ).click(function() {$('#beta-params-container').slideUp()});
-  $( "#viewBeta-radio-second_toggle_label" ).click(function() {$('#beta-params-container').slideDown()});
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  // addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
+  // $('#advanced-radio-container').append(`<div id = 'beta-params-container' style = 'display:none;'>
+  //                                         <div class = 'dropdown-divider'></div>
+  //                                         Beta Product Parameters
+  //                                       </div>`);
+ 
+  // $( "#viewBeta-radio-first_toggle_label" ).click(function() {$('#beta-params-container').slideUp()});
+  // $( "#viewBeta-radio-second_toggle_label" ).click(function() {$('#beta-params-container').slideDown()});
+  // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   
   addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
-  addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  // addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
+  // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
   //Set up layer lists
@@ -266,6 +268,8 @@ $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em soli
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTipHover);
 // if(mode !== 'TEST'){
   addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query '+mode+' Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTipHover);
+  addDropdown('pixel-chart-div','pixel-collection-dropdown','Choose which '+mode+' time series to chart','whichPixelChartCollection','Choose which '+mode+' time series to chart.');
+ 
 // }
 // $('#pixel-chart-div').append(staticTemplates.showChartButton);
 // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
@@ -275,11 +279,13 @@ if(mode === 'geeViz'){
 
 if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' ){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
-  $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
-  addDropdown('tools-accordian','area-collection-dropdown','Choose which '+mode+' product to summarize','whichAreaChartCollection','Choose which '+mode+' time series to summarize.');
-  $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+  addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Params', '',false,'')
+  
+  // $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+  addDropdown('area-chart-params-div','area-collection-dropdown','Choose which '+mode+' product to summarize','whichAreaChartCollection','Choose which '+mode+' time series to summarize.');
+  // $('#area-chart-params-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-  addMultiRadio('tools-accordian','area-summary-format','Area Units','areaChartFormat',{"Percentage":true,"Acres":false,"Hectares":false})
+  addMultiRadio('area-chart-params-div','area-summary-format','Area Units','areaChartFormat',{"Percentage":true,"Acres":false,"Hectares":false})
   $('#area-summary-format').prop('title','Choose how to summarize area- as a percentage of the area, acres, or hectares.')
   addSubAccordianCard('tools-accordian','user-defined-area-chart-label','user-defined-area-chart-div','User-Defined Area',staticTemplates.userDefinedAreaChartDiv,false,`toggleTool(toolFunctions.area.userDefined)`,staticTemplates.userDefinedAreaChartTipHover);
   addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTipHover);
