@@ -810,10 +810,12 @@ function runUSFS(){
     chartCollection =forCharting;
     // console.log(chartCollection.getInfo())
     pixelChartCollections['basic-'+whichIndex] = {'label':'Core LCMS Loss/Gain and '+whichIndex,
-                                    'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','Loss Probability','Gain Probability'])}
+                                    'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','Loss Probability','Gain Probability']),
+                                    'chartColors':chartColorsDict.coreLossGain}
     pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'All LCMS Loss/Gain and '+whichIndex,
-                                    'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability'])}
-    pixelChartCollections['all-'+'whichIndex'] = {'label':'LCMS Full Dataset and '+whichIndex,
+                                    'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+                                    'chartColors':chartColorsDict.allLossGain}
+    pixelChartCollections['all-'+whichIndex] = {'label':'All LCMS Loss/Gain/Land Cover/Land Use and '+whichIndex,
                                     'collection':chartCollection,
                                     'chartColors':chartColorsDict.advancedBeta,
                                     'chartTableDict':chartTableDict,
