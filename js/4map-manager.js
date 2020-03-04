@@ -938,7 +938,7 @@ function reRun(){
   layerChildID = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();
-  queryObj = {};areaChartCollections = {};
+  queryObj = {};areaChartCollections = {};pixelChartCollections = {};
   // if(analysisMode === 'advanced'){
   //   document.getElementById('threshold-container').style.display = 'inline-block';
   //   document.getElementById('advanced-radio-container').style.display = 'inline';
@@ -1739,7 +1739,7 @@ var resetStudyArea = function(whichOne){
     studyAreaName = studyAreaDict[whichOne].name;
     if(studyAreaName === 'CONUS'){run = runCONUS;}
     else{run = runUSFS;};
-    console.log(studyAreaDict[whichOne].addFastSlow)
+    // console.log(studyAreaDict[whichOne].addFastSlow)
     if(studyAreaDict[whichOne].addFastSlow){
       $('#fast-slow-threshold-container').show();
     }else{$('#fast-slow-threshold-container').hide();}
