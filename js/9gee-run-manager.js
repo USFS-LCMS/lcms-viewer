@@ -549,10 +549,7 @@ function runUSFS(){
         //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
     }
       
-      
-      
-    }
-    if(applyTreeMask === 'yes'){
+      if(applyTreeMask === 'yes'){
         // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
         var treeClassLegendDict = {};
         treeClassLegendDict['Tree ('+minTreeNumber+' or more consecutive years)'] = '32681e';
@@ -560,6 +557,9 @@ function runUSFS(){
         Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree ('+minTreeNumber+' or more consecutive years)'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more consecutive years from '+startYear.toString() + ' to '  + endYear.toString());
      
       }
+      
+    }
+    
 
      
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
@@ -809,17 +809,23 @@ function runUSFS(){
     forCharting = joinCollections(forCharting,NFSLCMSForCharting, false);
     chartCollection =forCharting;
     // console.log(chartCollection.getInfo())
-    pixelChartCollections['basic-'+whichIndex] = {'label':'Core LCMS Loss/Gain and '+whichIndex,
+    pixelChartCollections['basic-'+whichIndex] = {'label':'Standard Loss/Gain ',
                                     'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','Loss Probability','Gain Probability']),
-                                    'chartColors':chartColorsDict.coreLossGain}
-    pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'All LCMS Loss/Gain and '+whichIndex,
+                                    'chartColors':chartColorsDict.coreLossGain,
+                                    'xAxisProperty':'Year',
+                                    'yAxisProperty':'Model Confidence or Index Value'}
+    pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'Advanced Loss/Gain',
                                     'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
-                                    'chartColors':chartColorsDict.allLossGain}
-    pixelChartCollections['all-'+whichIndex] = {'label':'All LCMS Loss/Gain/Land Cover/Land Use and '+whichIndex,
+                                    'chartColors':chartColorsDict.allLossGain,
+                                    'xAxisProperty':'Year',
+                                    'yAxisProperty':'Model Confidence or Index Value'}
+    pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
                                     'collection':chartCollection,
                                     'chartColors':chartColorsDict.advancedBeta,
                                     'chartTableDict':chartTableDict,
-                                    'legends':{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)}}
+                                    'legends':{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)},
+                                    'xAxisProperty':'Year',
+                                    'yAxisProperty':'Model Confidence or Index Value'}
     
   })
       
@@ -852,12 +858,12 @@ function runUSFS(){
 
     getSelectLayers();
     
-    areaChartCollections['lg'] = {'label':'LCMS Standard Loss/Gain',
+    areaChartCollections['lg'] = {'label':'Standard Loss/Gain',
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
                                   'colors':chartColorsDict.advancedBeta.slice(4)};
-    areaChartCollections['lgSF'] = {'label':'LCMS Advanced Loss/Gain',
+    areaChartCollections['lgSF'] = {'label':'Advanced Loss/Gain',
                                   'collection':lossGainSlowFastAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
@@ -866,24 +872,26 @@ function runUSFS(){
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,nameList);
 
-      pixelChartCollections['secondarylc'] = {'label':'LCMS Landcover',
+      pixelChartCollections['secondarylc'] = {'label':'Land Cover',
                                     'collection':landcoverByYears,
-                                    'chartColors':colorList}
+                                    'chartColors':colorList,
+                                    'xAxisProperty':'Year',
+                                    'yAxisProperty':'Model Confidence'}
 
-      areaChartCollections['lc2'] = {'label':'LCMS Landcover',
+      areaChartCollections['lc2'] = {'label':'Land Cover',
                                   'collection':landcoverMaxByYearsStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
                                   'colors':colorList};
     }else{
-      areaChartCollections['lc'] = {'label':'LCMS Landcover',
+      areaChartCollections['lc'] = {'label':'Land Cover',
                                   'collection':lcStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
                                   'colors':Object.values(landcoverClassLegendDict)};
     }        
 
-      areaChartCollections['lu'] = {'label':'LCMS Landuse',
+      areaChartCollections['lu'] = {'label':'Land Use',
                                   'collection':luStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
@@ -1159,14 +1167,17 @@ function runCONUS(){
 
   getSelectLayers();
   // areaChartCollections = {};
-  areaChartCollections['lg'] = {'label':'LCMS Loss',
+  areaChartCollections['lg'] = {'label':'Loss',
                                 'stacked':false,
                                 'steppedLine':false,
                                 'collection':forAreaCharting,
                                 'colors':['F00']};
   whichIndices.map(function(whichIndex){
-    pixelChartCollections[whichIndex] = {'label':'LCMS Loss and LT '+whichIndex,
-                                    'collection':chartCollection.select([whichIndex+'.*','Loss Probability'])}
+    pixelChartCollections[whichIndex] = {'label':'Loss',
+                                    'collection':chartCollection.select([whichIndex+'.*','Loss Probability']),
+                                    'colors':chartColorsDict.coreLossGain,
+                                    'xAxisProperty':'Year',
+                                    'yAxisProperty':'Model Confidence or Index Value'}
   })
   
 

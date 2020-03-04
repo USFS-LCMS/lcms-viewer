@@ -1583,9 +1583,10 @@ function startPixelChartCollection() {
    
     mapHammer.on("doubletap", function(event) {
     	chartCollection = pixelChartCollections[whichPixelChartCollection].collection;
-    	if(pixelChartCollections[whichPixelChartCollection].chartColors !== undefined && pixelChartCollections[whichPixelChartCollection].chartColors !== null){
-    		chartColors = pixelChartCollections[whichPixelChartCollection].chartColors;
-    	}
+    
+    	// if(pixelChartCollections[whichPixelChartCollection].chartColors !== undefined && pixelChartCollections[whichPixelChartCollection].chartColors !== null){
+    	// 	chartColors = pixelChartCollections[whichPixelChartCollection].chartColors;
+    	// }
     	
     	areaGeoJson = null;
     	$('#summary-spinner').slideDown();
@@ -1632,8 +1633,8 @@ function startPixelChartCollection() {
 			values.unshift(header);
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
-			addChartJS(values,uriName);
-			
+			addChartJS(values,uriName,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisProperty,pixelChartCollections[whichPixelChartCollection].yAxisProperty);
+		
 			if(pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined){
 				makeLegend(pixelChartCollections[whichPixelChartCollection].legends);
 				toggleChartTable(localStorage.tableOrChart);

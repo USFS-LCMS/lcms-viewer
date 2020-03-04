@@ -23,7 +23,7 @@ window.recoveryProbPalette = 'F5DEB3,006400';
 window.declineDurPalette = 'BD1600,E2F400,0C2780';
 window.recoveryDurPalette = declineDurPalette;
 
-window.whichIndices = ['NDVI','NBR'];
+window.whichIndices = ['NBR'];
 
 // LCMS Project Boundaries
 // var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
