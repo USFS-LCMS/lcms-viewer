@@ -1279,6 +1279,8 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');change('line',false,${steppedLine});">Line</a>
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');change('line',true,${steppedLine});">Stacked Line</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');change('bar',false,${steppedLine});">Bar</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');change('bar',true,${steppedLine});">Stacked Bar</a>
 										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
 										  </div>
 										</div>
@@ -1315,12 +1317,16 @@ function change(newType,stacked,steppedLine) {
 		var config = chartJSChart.config;
 		chartJSChart.destroy();
 		config.type = newType;
-		
+
+		var currentScales = config.options.scales;
+		currentScales.xAxes[0].stacked = stacked;
+		currentScales.yAxes[0].stacked = stacked;
+		config.options.scales = currentScales;
 		if(stacked){
-			config.options.scales = {
-				yAxes: [{ stacked: stacked }],//,ticks:{min:0,max:100}}],
-				xAxes: [{ stacked: stacked }]
-			}
+			// config.options.scales = {
+			// 	yAxes: [{ stacked: stacked }],//,ticks:{min:0,max:100}}],
+			// 	xAxes: [{ stacked: stacked }]
+			// }
 
 			var datasets = config.data.datasets;
 			// console.log(datasets);
@@ -1332,10 +1338,10 @@ function change(newType,stacked,steppedLine) {
 			})
 			config.data.datasets = datasets;
 		}else{
-			config.options.scales = {
-				yAxes: [{ stacked: stacked }],
-				xAxes: [{ stacked: stacked }]
-			}
+			// config.options.scales = {
+			// 	yAxes: [{ stacked: stacked }],
+			// 	xAxes: [{ stacked: stacked }]
+			// }
 			var datasets = config.data.datasets;
 			// console.log(datasets);
 			datasets = datasets.map(function(dataset){

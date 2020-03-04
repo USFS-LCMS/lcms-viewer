@@ -1607,7 +1607,13 @@ var chartTableDict = {
 
 forCharting = forCharting.set('chartTableDict',chartTableDict)
 chartColors = chartColorsDict.ancillary;
-chartCollection = forCharting;
+// chartCollection = forCharting;
+pixelChartCollections['anc'] =  {
+    'label':'Ancillary',
+    'collection':forCharting,
+    'chartTableDict':chartTableDict
+}
+populatePixelChartDropdown();
 // addChartJS(d,'test1');
 }
 
@@ -2360,8 +2366,9 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       chartCollectionT = LTStack[2];
     }else{chartCollectionT = joinCollections(chartCollectionT,LTStack[2],false)}
   })
-  chartCollection = chartCollectionT;
-  
+  // chartCollection = chartCollectionT;
+  pixelChartCollections['landsat'] = {'label':'landsat','collection':chartCollectionT};
+  populatePixelChartDropdown();
   // var distDir = -1;
   // 
   // var ts = srCollection.select([indexName]);
@@ -2441,16 +2448,21 @@ function runMTBS(){
   // var years = ee.List.sequence(startYear,mtbs)
   
 
-  var chartTableDict = ee.Dictionary(nlcdLCObj.collection.get('chartTableDict')).combine(mtbsC.get('chartTableDict'));
-
+  var chartTableDict = ee.Dictionary(nlcdLCObj.collection.get('chartTableDict')).combine(mtbsC.get('chartTableDict')).getInfo();
+  
   var nlcdLCFilled =  batchFillCollection(nlcdLCObj.collection,ee.List.sequence(startYear,endYear).getInfo()).map(setSameDate);
   var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
   
-  forCharting = forCharting.set('chartTableDict',chartTableDict);
-  forCharting = forCharting.set('legends',chartTableDict) 
+  // forCharting = forCharting.set('chartTableDict',chartTableDict);
+  // forCharting = forCharting.set('legends',chartTableDict) 
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
-  chartCollection =forCharting;
+  // chartCollection =forCharting;
+  pixelChartCollections['mtbs'] = {'label':'MTBS Time Series',
+                                    'collection':forCharting,
+                                    'chartTableDict':chartTableDict,
+                                    'legends':chartTableDict}
   populateAreaChartDropdown();
+  populatePixelChartDropdown();
 
   getSelectLayers();
   
@@ -2765,12 +2777,14 @@ areaChartCollections['lg'] = {'label':'LCMS Runs',
                                   'stacked':false,
                                   'steppedLine':false,
                                   'colors':areaChartColors};
-chartCollection =chartCollectionT;
-chartColors = chartColorsT
+pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
+// chartCollection =chartCollectionT;
+// chartColors = chartColorsT
 // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
 // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
 
  getSelectLayers();
  populateAreaChartDropdown();   
+ populatePixelChartDropdown();
  // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')                              
 }
