@@ -132,7 +132,7 @@ function runUSFS(){
         var treesT = isTree.filter(ee.Filter.calendarRange(startYearT,endYearT,'year')).min();
         return treesT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
          })).max().selfMask().clip(boundary);
-      console.log(treeMask.getInfo());
+      // console.log(treeMask.getInfo());
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
@@ -536,18 +536,20 @@ function runUSFS(){
 
     //-----------------------------------Add LCMS Layers-------------------------------------------
     // Map2.addLayer(NFSCP.max().multiply(10),{min:0,max:4},'Change Process',false);
+    Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false);
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       Map2.addLayer(landcoverMaxByYears.mode(),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName,false);
     }else{
       Map2.addLayer(NFSLC.mode().multiply(10),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
     }
+
     if(analysisMode === 'advanced'){
       if (studyAreaName == 'CNFKP'){
         Map2.addLayer(maskCount.set('bounds',clientBoundary),{'min':1,'max':33,'palette':'0C2780,E2F400,BD1600'}, 'Number of Missing Data Years',false)
         //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
     }
       
-      Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
+      
       
     }
     if(applyTreeMask === 'yes'){
@@ -555,7 +557,7 @@ function runUSFS(){
         var treeClassLegendDict = {};
         treeClassLegendDict['Tree ('+minTreeNumber+' or more consecutive years)'] = '32681e';
 
-        Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree ('+minTreeNumber+' or more consecutive years)'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more consecutive years');
+        Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree ('+minTreeNumber+' or more consecutive years)'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more consecutive years from '+startYear.toString() + ' to '  + endYear.toString());
      
       }
 
@@ -576,6 +578,22 @@ function runUSFS(){
       Map2.addLayer(dndCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Loss Duration',false,'years',null,'Total duration of loss '+declineNameEnding);
     }
 
+    if(studyAreaDict[longStudyAreaName].addFastSlow){
+      Map2.addLayer(dndSlowThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'slow loss ' +slowLossNameEnding);
+      if(analysisMode === 'advanced'){
+        Map2.addLayer(dndSlowThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'slow loss ' + slowLossNameEnding);
+        Map2.addLayer(dndSlowCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Slow Loss Duration',false,'years',null,'Total duration of slow loss '+slowLossNameEnding);
+      }
+    }
+    
+    if(studyAreaDict[longStudyAreaName].addFastSlow){
+      Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Fast Loss Year',false,null,null,threshYearNameEnd+'fast loss ' +fastLossNameEnding);
+    if(analysisMode === 'advanced'){
+      Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Fast Loss Probability',false,null,null,threshProbNameEnd+ 'fast loss ' + fastLossNameEnding);
+      Map2.addLayer(dndFastCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Fast Loss Duration',false,'years',null,'Total duration of fast loss '+fastLossNameEnding);
+      }
+    }
+      
     Map2.addLayer(rnrThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
     if(analysisMode === 'advanced'){
       Map2.addLayer(rnrThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
@@ -641,22 +659,7 @@ function runUSFS(){
            'Magnitude of snow cover change related to the difference between the most common landcover for the first and last 5 years of the analysis period.');
       }
     }
-    if(studyAreaDict[longStudyAreaName].addFastSlow){
-      Map2.addLayer(dndSlowThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Slow Loss Year',false,null,null,threshYearNameEnd+'slow loss ' +slowLossNameEnding);
-      if(analysisMode === 'advanced'){
-        Map2.addLayer(dndSlowThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Slow Loss Probability',false,null,null,threshProbNameEnd+ 'slow loss ' + slowLossNameEnding);
-        Map2.addLayer(dndSlowCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Slow Loss Duration',false,'years',null,'Total duration of slow loss '+slowLossNameEnding);
-      }
-    }
     
-    if(studyAreaDict[longStudyAreaName].addFastSlow){
-      Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },'Fast Loss Year',false,null,null,threshYearNameEnd+'fast loss ' +fastLossNameEnding);
-    if(analysisMode === 'advanced'){
-      Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},'Fast Loss Probability',false,null,null,threshProbNameEnd+ 'fast loss ' + fastLossNameEnding);
-      Map2.addLayer(dndFastCount.set('bounds',clientBoundary),{'min':1,'max':5,'palette':declineDurPalette},'Fast Loss Duration',false,'years',null,'Total duration of fast loss '+fastLossNameEnding);
-      }
-    }
-      
     
     
     // Additional Layers for MLSNF
@@ -827,54 +830,41 @@ function runUSFS(){
     var lossGainAreaCharting = joinCollections(dndThresh,rnrThresh,false).select(['.*_change_year']);
     
 
-    if(analysisMode === 'advanced' && viewBeta === 'yes'){
-      lossGainAreaCharting = joinCollections(lossGainAreaCharting,dndSlowThresh,false).select(['.*_change_year']);
-      lossGainAreaCharting = joinCollections(lossGainAreaCharting,dndFastThresh,false).select(['.*_change_year']);
-      lossGainAreaCharting = lossGainAreaCharting.select([0,1,2,3],['Loss','Gain','Slow Loss','Fast Loss'])
-    }else{lossGainAreaCharting = lossGainAreaCharting.select([0,1],['Loss','Gain'])};
-
+    // if(analysisMode === 'advanced' && viewBeta === 'yes'){
+      var lossGainSlowFastAreaCharting = joinCollections(lossGainAreaCharting,dndSlowThresh,false).select(['.*_change_year']);
+      lossGainSlowFastAreaCharting = joinCollections(lossGainSlowFastAreaCharting,dndFastThresh,false).select(['.*_change_year']);
+      lossGainSlowFastAreaCharting = lossGainSlowFastAreaCharting.select([0,1,2,3],['Loss','Gain','Slow Loss','Fast Loss'])
+    // }else{
+      lossGainAreaCharting = lossGainAreaCharting.select([0,1],['Loss','Gain'])
+    // };
+    // console.log(lossGainSlowFastAreaCharting.getInfo());
     var lossGainAreaChartingGeo = lossGainAreaCharting.geometry();
     lossGainAreaCharting =lossGainAreaCharting.map(function(img){
       return img.mask().clip(lossGainAreaChartingGeo)
     });
-    
+    lossGainSlowFastAreaCharting =lossGainSlowFastAreaCharting.map(function(img){
+      return img.mask().clip(lossGainAreaChartingGeo)
+    });
     
     
 
     getSelectLayers();
     
-    // areaChartCollection = forAreaCharting;
-    // stackedAreaChart = false;
-    // areaChartCollections = {};
-    // var lColors = declineYearPalette.split(',');
-    // var gColors = recoveryYearPalette.split(',');
-    // var lColor = lColors[lColors.length-1];
-    // var gColor = gColors[gColors.length-1];
-    // var slColor = '808';//lColors[2];
-    // var flColor = 'f58231';//lColors[5];
-    areaChartCollections['lg'] = {'label':'LCMS Loss/Gain',
+    areaChartCollections['lg'] = {'label':'LCMS Standard Loss/Gain',
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
                                   'colors':chartColorsDict.advancedBeta.slice(4)};
-    // if(analysisMode === 'advanced'){
-      
-    // }
+    areaChartCollections['lgSF'] = {'label':'LCMS Advanced Loss/Gain',
+                                  'collection':lossGainSlowFastAreaCharting,
+                                  'stacked':false,
+                                  'steppedLine':false,
+                                  'colors':chartColorsDict.advancedBeta.slice(4)};
     
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
-      
-      // Map2.addLayer(isTreeConsecutive,{min:1,max:1,palette:'0F0'},'istree');
-
-      // var isTreeL = isTree.toList(10000,0);
-      // var isTreeLeft = isTreeL.slice(0,isTreeL.length().subtract(2));
-      // console.log(isTreeLeft.length().getInfo())
       var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,nameList);
 
-      // print(landcoverMaxByYearsStack.getInfo())
-      // Map2.addLayer(landcoverMaxByYears.mode(),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},'Landcover (mode)',false)
-      // console.log(landcoverMaxByYears.getInfo())
-      // Map2.addLayer(landcoverByYears,{},'lc2');
-      pixelChartCollections['secondarylc'] = {'label':'LCMS Secondary Landcover',
+      pixelChartCollections['secondarylc'] = {'label':'LCMS Landcover',
                                     'collection':landcoverByYears,
                                     'chartColors':colorList}
 
