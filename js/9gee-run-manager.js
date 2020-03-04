@@ -82,19 +82,63 @@ function runUSFS(){
 
     var NFSLCMSForCharting = NFSLCMS;
     var minTreeNumber = 3;
+    if((endYear-startYear) < minTreeNumber){minTreeNumber = endYear-startYear+1}
+      
+    if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
+      var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
+      var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
+      var colorList = Object.values(lc2Dict).map(function(v){return v.color});
+      var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
+      var lc2Lookup = {};var lc2LegendDict = {};
+      Object.keys(lc2Dict).map(function(k){lc2Lookup[k] = lc2Dict[k].modelName});
+      Object.values(lc2Dict).map(function(v){lc2LegendDict[v.legendName] = v.color});
+      
+      var lc2 = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection);
+     
+      var landcoverByYears = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(year){
+  
+        var landcoverOneYear = ee.Image(lc2.filter(ee.Filter.calendarRange(year, year, 'year')).toBands()).byte();
+    
+        // Pull the correct bands, simplify the band names, and order so that it matches the dictionary order and specified values
+        var landcoverOneYearBandNames = landcoverOneYear.bandNames().map(function(thisName){ return ee.String(thisName).split('_').get(1)});
+                landcoverOneYear = landcoverOneYear.select(landcoverOneYear.bandNames(), landcoverOneYearBandNames)
+                                              .select(nameList)
+                                              .set('year', year)
+                                              .set('system:time_start', ee.Date.fromYMD(year,6,1).millis());
+            return landcoverOneYear;//.clip(geometry);  
+        }));
+      var landcoverMaxByYears = landcoverByYears.map(function(img){
+        var classes = ee.Image(valueList);
+        var maxClass = img.reduce(ee.Reducer.max());
+        var isMaxClass = img.eq(maxClass);
+        return classes.updateMask(isMaxClass).reduce(ee.Reducer.max()).copyProperties(img,['system:time_start'])
+      });
+
+      var isTree = landcoverMaxByYears.map(function(img){return img.lte(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreeClassMax).unmask().copyProperties(img,['system:time_start'])});
+      // isTree = isTree.toArray();
+      
+    }else{
+      if (studyAreaName == 'CNFKP'){
+            var isTree = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees).or(img.eq(lcJSONFlipped['Tall Shrub'])).unmask().copyProperties(img,['system:time_start'])});//.sum().gte(minTreeNumber);
+          }else{
+            var isTree = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees).unmask().copyProperties(img,['system:time_start'])});//.sum().gte(minTreeNumber);
+          }
+   
+    }
+    var yearBuffer = Math.floor(minTreeNumber/2.);
+      var treeMask = ee.ImageCollection.fromImages(ee.List.sequence(startYear + yearBuffer,endYear - yearBuffer).map(function(yr){
+        yr = ee.Number(yr);
+        var startYearT = yr.subtract(yearBuffer);var endYearT =yr.add(yearBuffer);
+        var treesT = isTree.filter(ee.Filter.calendarRange(startYearT,endYearT,'year')).min();
+        return treesT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+         })).max().selfMask().clip(boundary);
+      console.log(treeMask.getInfo());
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
       // waterMask = waterMask.mask(waterMask).clip(boundary);
       
-      if((endYear-startYear) < minTreeNumber){minTreeNumber = endYear-startYear+1}
-       if (studyAreaName == 'CNFKP'){
-            var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees).or(img.eq(lcJSONFlipped['Tall Shrub']))}).sum().gte(minTreeNumber);
-          }else{
-            var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
-          }
-      //var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
-      treeMask = treeMask.mask(treeMask).clip(boundary);
+       
       
       NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask))});
 
@@ -492,23 +536,28 @@ function runUSFS(){
 
     //-----------------------------------Add LCMS Layers-------------------------------------------
     // Map2.addLayer(NFSCP.max().multiply(10),{min:0,max:4},'Change Process',false);
+    if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
+      Map2.addLayer(landcoverMaxByYears.mode(),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName,false);
+    }else{
+      Map2.addLayer(NFSLC.mode().multiply(10),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
+    }
     if(analysisMode === 'advanced'){
       if (studyAreaName == 'CNFKP'){
         Map2.addLayer(maskCount.set('bounds',clientBoundary),{'min':1,'max':33,'palette':'0C2780,E2F400,BD1600'}, 'Number of Missing Data Years',false)
         //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
     }
-      Map2.addLayer(NFSLC.mode().multiply(10),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
+      
       Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false); 
-      if(applyTreeMask === 'yes'){
+      
+    }
+    if(applyTreeMask === 'yes'){
         // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
         var treeClassLegendDict = {};
-        treeClassLegendDict['Tree ('+minTreeNumber+' or more years)'] = '32681e';
+        treeClassLegendDict['Tree ('+minTreeNumber+' or more consecutive years)'] = '32681e';
 
-        Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more years');
+        Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree ('+minTreeNumber+' or more consecutive years)'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more consecutive years');
      
       }
-    }
-    
 
      
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
@@ -809,78 +858,44 @@ function runUSFS(){
                                   'steppedLine':false,
                                   'colors':chartColorsDict.advancedBeta.slice(4)};
     // if(analysisMode === 'advanced'){
-      areaChartCollections['lc'] = {'label':'LCMS Landcover',
-                                  'collection':lcStack,
-                                  'stacked':true,
-                                  'steppedLine':steppedLineLC,
-                                  'colors':Object.values(landcoverClassLegendDict)};
-      areaChartCollections['lu'] = {'label':'LCMS Landuse',
-                                  'collection':luStack,
-                                  'stacked':true,
-                                  'steppedLine':steppedLineLC,
-                                  'colors':Object.values(landuseClassLegendDict)};
+      
     // }
     
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
-      var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
-      var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
-      var colorList = Object.values(lc2Dict).map(function(v){return v.color});
-      var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
-      var lc2Lookup = {};var lc2LegendDict = {};
-      Object.keys(lc2Dict).map(function(k){lc2Lookup[k] = lc2Dict[k].modelName});
-      Object.values(lc2Dict).map(function(v){lc2LegendDict[v.legendName] = v.color});
       
-      var lc2 = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection);
-     
-      var landcoverByYears = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(year){
-  
-        var landcoverOneYear = ee.Image(lc2.filter(ee.Filter.calendarRange(year, year, 'year')).toBands()).byte();
-    
-        // Pull the correct bands, simplify the band names, and order so that it matches the dictionary order and specified values
-        var landcoverOneYearBandNames = landcoverOneYear.bandNames().map(function(thisName){ return ee.String(thisName).split('_').get(1)});
-                landcoverOneYear = landcoverOneYear.select(landcoverOneYear.bandNames(), landcoverOneYearBandNames)
-                                              .select(nameList)
-                                              .set('year', year)
-                                              .set('system:time_start', ee.Date.fromYMD(year,6,1).millis());
-            return landcoverOneYear;//.clip(geometry);  
-        }));
-      var landcoverMaxByYears = landcoverByYears.map(function(img){
-        var classes = ee.Image(valueList);
-        var maxClass = img.reduce(ee.Reducer.max());
-        var isMaxClass = img.eq(maxClass);
-        return classes.updateMask(isMaxClass).reduce(ee.Reducer.max()).copyProperties(img,['system:time_start'])
-      });
+      // Map2.addLayer(isTreeConsecutive,{min:1,max:1,palette:'0F0'},'istree');
 
-      var isTree = landcoverMaxByYears.map(function(img){return img.lte(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreeClassMax).unmask().copyProperties(img,['system:time_start'])});
-      // isTree = isTree.toArray();
-      var yearBuffer = Math.floor(minTreeNumber/2.);
-      var isTreeConsecutive = ee.ImageCollection.fromImages(ee.List.sequence(startYear + yearBuffer,endYear - yearBuffer).map(function(yr){
-        yr = ee.Number(yr);
-        var startYearT = yr.subtract(yearBuffer);var endYearT =yr.add(yearBuffer);
-        var treesT = isTree.filter(ee.Filter.calendarRange(startYearT,endYearT,'year')).min();
-        return treesT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
-         })).max().selfMask();
-      Map2.addLayer(isTreeConsecutive,{min:1,max:1,palette:'0F0'},'istree');
-
-      var isTreeL = isTree.toList(10000,0);
-      var isTreeLeft = isTreeL.slice(0,isTreeL.length().subtract(2));
-      console.log(isTreeLeft.length().getInfo())
+      // var isTreeL = isTree.toList(10000,0);
+      // var isTreeLeft = isTreeL.slice(0,isTreeL.length().subtract(2));
+      // console.log(isTreeLeft.length().getInfo())
       var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,nameList);
 
       // print(landcoverMaxByYearsStack.getInfo())
-      Map2.addLayer(landcoverMaxByYears.mode(),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},'Landcover (mode)',false)
+      // Map2.addLayer(landcoverMaxByYears.mode(),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},'Landcover (mode)',false)
       // console.log(landcoverMaxByYears.getInfo())
       // Map2.addLayer(landcoverByYears,{},'lc2');
       pixelChartCollections['secondarylc'] = {'label':'LCMS Secondary Landcover',
                                     'collection':landcoverByYears,
                                     'chartColors':colorList}
 
-      areaChartCollections['lc2'] = {'label':'LCMS Secondary Landcover',
+      areaChartCollections['lc2'] = {'label':'LCMS Landcover',
                                   'collection':landcoverMaxByYearsStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
                                   'colors':colorList};
-    }                      
+    }else{
+      areaChartCollections['lc'] = {'label':'LCMS Landcover',
+                                  'collection':lcStack,
+                                  'stacked':true,
+                                  'steppedLine':steppedLineLC,
+                                  'colors':Object.values(landcoverClassLegendDict)};
+    }        
+
+      areaChartCollections['lu'] = {'label':'LCMS Landuse',
+                                  'collection':luStack,
+                                  'stacked':true,
+                                  'steppedLine':steppedLineLC,
+                                  'colors':Object.values(landuseClassLegendDict)};            
     populatePixelChartDropdown();
     populateAreaChartDropdown();
     // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
