@@ -55,7 +55,7 @@ function runUSFS(){
                   // .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
                   .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
                   .select(['LC','LU','DND','RNR','DND_Slow','DND_Fast'])
-                  .map(function(img){return ee.Image(additionBands(img,[0,1,0,0,0,0])).clip(boundary)})
+                  .map(function(img){return ee.Image(additionBands(img,[0,1,0,0,0,0]))})
                   .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.01,0.01,0.01,0.01])).float()})
                   .select([0,1,2,3,4,5],['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
     // var NFSLCMSold = ee.ImageCollection(collectionDict[studyAreaName][1])
@@ -64,7 +64,7 @@ function runUSFS(){
     //               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0]))})
     //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
-    
+
     var lcJSON = JSON.parse(NFSLCMS.get('landcoverJSON').getInfo());
     var luJSON = JSON.parse(NFSLCMS.get('landuseJSON').getInfo());
     
@@ -80,7 +80,14 @@ function runUSFS(){
                 .select([1],['LU'])
                 .map(function(img){return ee.Image(additionBands(img,[1]))});
 
-    var NFSLCMSForCharting = NFSLCMS;
+    var rawCForPixelCharting = rawC
+                              .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+                              .select([0,1,2,3,4,5],['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability'])
+                              .map(function(img){return img.multiply(ee.Image([0.1,0.1,0.01,0.01,0.01,0.01]))
+                                                            .add(ee.Image([0,1,0,0,0,0])).float()
+                                                              .copyProperties(img,['system:time_start'])
+                                                            })
+    var NFSLCMSForCharting = rawCForPixelCharting;//NFSLCMS;
     var minTreeNumber = 3;
     if((endYear-startYear) < minTreeNumber){minTreeNumber = endYear-startYear+1}
       
@@ -89,6 +96,7 @@ function runUSFS(){
       var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
       var colorList = Object.values(lc2Dict).map(function(v){return v.color});
       var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
+      var classesImg = ee.Image(valueList);
       var lc2Lookup = {};var lc2LegendDict = {};
       Object.keys(lc2Dict).map(function(k){lc2Lookup[k] = lc2Dict[k].modelName});
       Object.values(lc2Dict).map(function(v){lc2LegendDict[v.legendName] = v.color});
@@ -96,26 +104,41 @@ function runUSFS(){
       var lc2 = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection);
      
       var landcoverByYears = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(year){
-  
+      
         var landcoverOneYear = ee.Image(lc2.filter(ee.Filter.calendarRange(year, year, 'year')).toBands()).byte();
     
         // Pull the correct bands, simplify the band names, and order so that it matches the dictionary order and specified values
         var landcoverOneYearBandNames = landcoverOneYear.bandNames().map(function(thisName){ return ee.String(thisName).split('_').get(1)});
                 landcoverOneYear = landcoverOneYear.select(landcoverOneYear.bandNames(), landcoverOneYearBandNames)
                                               .select(nameList)
-                                              .set('year', year)
+                                              // .set('year', year)
                                               .set('system:time_start', ee.Date.fromYMD(year,6,1).millis());
             return landcoverOneYear;//.clip(geometry);  
         }));
+
       var landcoverMaxByYears = landcoverByYears.map(function(img){
-        var classes = ee.Image(valueList);
+        
         var maxClass = img.reduce(ee.Reducer.max());
         var isMaxClass = img.eq(maxClass);
-        return classes.updateMask(isMaxClass).reduce(ee.Reducer.max()).copyProperties(img,['system:time_start'])
+        return classesImg.updateMask(isMaxClass).reduce(ee.Reducer.max()).copyProperties(img,['system:time_start'])
       });
 
       var isTree = landcoverMaxByYears.map(function(img){return img.lte(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreeClassMax).unmask().copyProperties(img,['system:time_start'])});
       // isTree = isTree.toArray();
+      var firstYearTreeStack = 1986;var lastYearTreeStack = 2018;
+      if(startYear < firstYearTreeStack && endYear < firstYearTreeStack){
+        var startYearTreeStack = firstYearTreeStack;var endYearTreeStack = firstYearTreeStack;
+      }else if(startYear > lastYearTreeStack && endYear > lastYearTreeStack){
+        var startYearTreeStack = lastYearTreeStack;var endYearTreeStack = lastYearTreeStack;
+      }else{
+        var startYearTreeStack = startYear+1;var endYearTreeStack = endYear-1;
+      }
+      console.log(startYearTreeStack);console.log(endYearTreeStack)
+      var possibleYears = ee.List.sequence(startYearTreeStack,endYearTreeStack).map(function(yr){return ee.String('Tree_').cat(ee.Number(yr).int16().format())});
+      
+      var treeMaskStack = ee.Image(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreemask);
+      var treeMask = treeMaskStack.select(possibleYears).reduce(ee.Reducer.max()).selfMask();
+
       
     }else{
       if (studyAreaName == 'CNFKP'){
@@ -123,27 +146,56 @@ function runUSFS(){
           }else{
             var isTree = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees).unmask().copyProperties(img,['system:time_start'])});//.sum().gte(minTreeNumber);
           }
-   
-    }
     var yearBuffer = Math.floor(minTreeNumber/2.);
+    print(yearBuffer)
       var treeMask = ee.ImageCollection.fromImages(ee.List.sequence(startYear + yearBuffer,endYear - yearBuffer).map(function(yr){
         yr = ee.Number(yr);
         var startYearT = yr.subtract(yearBuffer);var endYearT =yr.add(yearBuffer);
         var treesT = isTree.filter(ee.Filter.calendarRange(startYearT,endYearT,'year')).min();
         return treesT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
-         })).max().selfMask().clip(boundary);
+         })).max().selfMask();//.clip(boundary);
       // console.log(treeMask.getInfo());
+    }
+    // var isTreeStack = isTree.toBands();
+    // var isTreeStackBns = isTreeStack.bandNames();
+    // var bnsLeft = isTreeStackBns.slice(0,-2);
+    // var bnsCenter = isTreeStackBns.slice(1,-1);
+    // var bnsRight = isTreeStackBns.slice(2,null);
+    // var isTreeConsecutive = isTreeStack.select(bnsLeft).and(isTreeStack.select(bnsCenter)).and(isTreeStack.select(bnsRight))
+    // // var isTreeStackLeft = 
+    // Map2.addLayer(isTreeConsecutive.reduce(ee.Reducer.max()).selfMask(),{min:1,max:1,palette:'080'},'Tree mask')
+    
     if(applyTreeMask === 'yes'){
       console.log('Applying tree mask');
       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
       // waterMask = waterMask.mask(waterMask).clip(boundary);
       
-       
+      var treeMaskStackImage = ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask)
       
-      NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask))});
+      NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(treeMaskStackImage)});
 
     }
     
+    // var lowerThresholdImage = ee.Image([lowerThresholdDecline,lowerThresholdRecovery,lowerThresholdSlowLoss,lowerThresholdFastLoss]);
+    // var upperThresholdImage = ee.Image([upperThresholdDecline,upperThresholdRecovery,upperThresholdSlowLoss,upperThresholdFastLoss]);
+    // // Map2.addLayer(lowerThresholdImage);
+    // // Map2.addLayer(upperThresholdImage);
+    // var bandNumbers = [2,3,4,5];
+    // var bandNames = ['Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability'];
+    // var yearBandNames = bandNames.map(function(s){return s + '-Year'});
+    // var allBandNames = ee.List(bandNames).cat(yearBandNames);
+    // var rawThresholded = ee.ImageCollection(rawC.select(bandNumbers,bandNames)
+    //                     .map(function(img){
+    //                           var t = img.get('system:time_start');
+    //                           img = img.divide(100);
+    //                           var threshed = img.gte(lowerThresholdImage).and(img.lte(upperThresholdImage));
+    //                           var yr = ee.Number(ee.Date(t).get('year'));
+    //                           var yearImage = ee.Image.constant(ee.List.repeat(yr,4)).updateMask(threshed)
+    //                           return yearImage;//img.updateMask(threshed)//.addBands(yearImage).rename(allBandNames).set('system:time_start',t)
+    //                       }));
+    // console.log(rawThresholded.getInfo())
+    // Map2.addLayer(rawThresholded)
+
     var NFSLC =  NFSLCMS.select([0]);
     var NFSLU =  NFSLCMS.select([1]);
     //var NFSCP =  NFSLCMS.select([2]);
@@ -549,7 +601,11 @@ function runUSFS(){
         //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
     }
       
-      if(applyTreeMask === 'yes'){
+     
+      
+    }
+    
+ if(applyTreeMask === 'yes'){
         // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
         var treeClassLegendDict = {};
         treeClassLegendDict['Tree ('+minTreeNumber+' or more consecutive years)'] = '32681e';
@@ -557,10 +613,6 @@ function runUSFS(){
         Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree ('+minTreeNumber+' or more consecutive years)'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more consecutive years from '+startYear.toString() + ' to '  + endYear.toString());
      
       }
-      
-    }
-    
-
      
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
@@ -812,20 +864,20 @@ function runUSFS(){
     pixelChartCollections['basic-'+whichIndex] = {'label':'Standard Loss/Gain ',
                                     'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','Loss Probability','Gain Probability']),
                                     'chartColors':chartColorsDict.coreLossGain,
-                                    'xAxisProperty':'Year',
-                                    'yAxisProperty':'Model Confidence or Index Value'}
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence or Index Value'}
     pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'Advanced Loss/Gain',
                                     'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
                                     'chartColors':chartColorsDict.allLossGain,
-                                    'xAxisProperty':'Year',
-                                    'yAxisProperty':'Model Confidence or Index Value'}
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence or Index Value'}
     pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
                                     'collection':chartCollection,
                                     'chartColors':chartColorsDict.advancedBeta,
                                     'chartTableDict':chartTableDict,
                                     'legends':{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)},
-                                    'xAxisProperty':'Year',
-                                    'yAxisProperty':'Model Confidence or Index Value'}
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence or Index Value'}
     
   })
       
@@ -848,10 +900,10 @@ function runUSFS(){
     // console.log(lossGainSlowFastAreaCharting.getInfo());
     var lossGainAreaChartingGeo = lossGainAreaCharting.geometry();
     lossGainAreaCharting =lossGainAreaCharting.map(function(img){
-      return img.mask().clip(lossGainAreaChartingGeo)
+      return img.mask()//.clip(lossGainAreaChartingGeo)
     });
     lossGainSlowFastAreaCharting =lossGainSlowFastAreaCharting.map(function(img){
-      return img.mask().clip(lossGainAreaChartingGeo)
+      return img.mask()//.clip(lossGainAreaChartingGeo)
     });
     
     
@@ -862,12 +914,14 @@ function runUSFS(){
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
-                                  'colors':chartColorsDict.advancedBeta.slice(4)};
+                                  'colors':chartColorsDict.advancedBeta.slice(4),
+                                  'xAxisLabel':'Year'};
     areaChartCollections['lgSF'] = {'label':'Advanced Loss/Gain',
                                   'collection':lossGainSlowFastAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
-                                  'colors':chartColorsDict.advancedBeta.slice(4)};
+                                  'colors':chartColorsDict.advancedBeta.slice(4),
+                                  'xAxisLabel':'Year'};
     
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,nameList);
@@ -875,27 +929,30 @@ function runUSFS(){
       pixelChartCollections['secondarylc'] = {'label':'Land Cover',
                                     'collection':landcoverByYears,
                                     'chartColors':colorList,
-                                    'xAxisProperty':'Year',
-                                    'yAxisProperty':'Model Confidence'}
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence'}
 
       areaChartCollections['lc2'] = {'label':'Land Cover',
                                   'collection':landcoverMaxByYearsStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
-                                  'colors':colorList};
+                                  'colors':colorList,
+                                  'xAxisLabel':'Year'};
     }else{
       areaChartCollections['lc'] = {'label':'Land Cover',
                                   'collection':lcStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
-                                  'colors':Object.values(landcoverClassLegendDict)};
+                                  'colors':Object.values(landcoverClassLegendDict),
+                                  'xAxisLabel':'Year'};
     }        
 
       areaChartCollections['lu'] = {'label':'Land Use',
                                   'collection':luStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
-                                  'colors':Object.values(landuseClassLegendDict)};            
+                                  'colors':Object.values(landuseClassLegendDict),
+                                  'xAxisLabel':'Year'};            
     populatePixelChartDropdown();
     populateAreaChartDropdown();
     // if(endYear === 2018 && warningShown === false){warningShown = true;showTip('<i class="text-dark fa fa-exclamation-triangle"></i> CAUTION','Including decline detected the last year of the time series (2018) can lead to high commission error rates.  Use with caution!')}
@@ -1171,13 +1228,14 @@ function runCONUS(){
                                 'stacked':false,
                                 'steppedLine':false,
                                 'collection':forAreaCharting,
-                                'colors':['F00']};
+                                'colors':['F00'],
+                            	 'xAxisLabel':'Year'};
   whichIndices.map(function(whichIndex){
     pixelChartCollections[whichIndex] = {'label':'Loss',
                                     'collection':chartCollection.select([whichIndex+'.*','Loss Probability']),
                                     'colors':chartColorsDict.coreLossGain,
-                                    'xAxisProperty':'Year',
-                                    'yAxisProperty':'Model Confidence or Index Value'}
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence or Index Value'}
   })
   
 
@@ -1950,7 +2008,7 @@ function runLT(){
     var fittedCollection = arrayToTimeSeries(ltFitted,ltYear,ee.List.sequence(startYear,endYear),'LT_Fitted_'+indexName);
     
     //Join raw time series with fitted
-    var joinedTS = joinCollections(rawTs,fittedCollection);
+    var joinedTS = joinCollections(rawTs,fittedCollection,false);
     
     return joinedTS;
     

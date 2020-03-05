@@ -1220,8 +1220,8 @@ function addLayer(layer){
             if(layer.viz.isSelectLayer){
                 
                 selectedFeaturesJSON[layer.name].geoJSON.addListener('click',function(event){
-                    // console.log(event);
-                    var name = event.feature.i.selectionTrackingName;
+                    console.log(event);
+                    var name = event.feature.j.selectionTrackingName;
                     delete selectedFeaturesJSON[layer.name].rawGeoJSON[name]
                     selectedFeaturesJSON[layer.name].geoJSON.remove(event.feature);
                     updateSelectedAreasNameList();

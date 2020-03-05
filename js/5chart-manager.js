@@ -782,7 +782,7 @@ function expandChart(){
 }
 function makeAreaChart(area,name,userDefined){
 	areaGeoJson = null;
-	console.log('making chart');console.log(userDefined);
+	console.log('making chart');//console.log(userDefined);
 	if(userDefined === undefined || userDefined === null){userDefined = false};
 	
 	areaChartingCount++;
@@ -1633,7 +1633,7 @@ function startPixelChartCollection() {
 			values.unshift(header);
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
-			addChartJS(values,uriName,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisProperty,pixelChartCollections[whichPixelChartCollection].yAxisProperty);
+			addChartJS(values,uriName,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisLabel,pixelChartCollections[whichPixelChartCollection].yAxisLabel);
 		
 			if(pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined){
 				makeLegend(pixelChartCollections[whichPixelChartCollection].legends);
