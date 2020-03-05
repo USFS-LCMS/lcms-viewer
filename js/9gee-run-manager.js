@@ -83,8 +83,9 @@ function runUSFS(){
     var rawCForPixelCharting = rawC
                               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
                               .select([0,1,2,3,4,5],['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability'])
-                              .map(function(img){return img.multiply(ee.Image([0.1,0.1,0.01,0.01,0.01,0.01]))
-                                                            .add(ee.Image([0,1,0,0,0,0])).float()
+                              .map(function(img){return img.add(ee.Image([0,1,0,0,0,0]))
+                                                            .multiply(ee.Image([0.1,0.1,0.01,0.01,0.01,0.01]))
+                                                            .float()
                                                               .copyProperties(img,['system:time_start'])
                                                             })
     var NFSLCMSForCharting = rawCForPixelCharting;//NFSLCMS;
@@ -601,18 +602,18 @@ function runUSFS(){
         //Map2.addLayer(missingYears,{'opacity': 0}, 'Number of Missing Data Years',false)
     }
       
-     
-      
-    }
-    
- if(applyTreeMask === 'yes'){
+     if(applyTreeMask === 'yes'){
         // Map2.addLayer(waterMask,{min:1,max:1,palette:'2a74b8'},'Water Mask',false);
         var treeClassLegendDict = {};
         treeClassLegendDict['Tree ('+minTreeNumber+' or more consecutive years)'] = '32681e';
 
         Map2.addLayer(treeMask.set('bounds',clientBoundary),{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree ('+minTreeNumber+' or more consecutive years)'}},'Tree Mask',false,null,null,'Mask of areas LCMS classified as tree cover for '+minTreeNumber.toString()+' or more consecutive years from '+startYear.toString() + ' to '  + endYear.toString());
      
-      }
+      } 
+      
+    }
+    
+
      
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
