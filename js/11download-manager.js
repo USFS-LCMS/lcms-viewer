@@ -23,9 +23,9 @@ function downloadSelectedArea(){
     print(link)
     link.click();
 
-    var urlAux = url + '.aux.xml';
-    print(urlAux)
-    var downloadNameAux = url.substr(url.lastIndexOf('/') + 1)+'.aux.xml';
+    // var urlAux = url + '.aux.xml';
+    // print(urlAux)
+    // var downloadNameAux = url.substr(url.lastIndexOf('/') + 1)+'.aux.xml';
     // link=document.createElement('a');
     // link.href = urlAux;
     // link.download = downloadNameAux;

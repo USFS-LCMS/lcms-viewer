@@ -132,11 +132,13 @@ function runUSFS(){
       }else if(startYear > lastYearTreeStack && endYear > lastYearTreeStack){
         var startYearTreeStack = lastYearTreeStack;var endYearTreeStack = lastYearTreeStack;
       }else{
-        var startYearTreeStack = startYear+1;var endYearTreeStack = endYear-1;
+        var startYearTreeStack = startYear;var endYearTreeStack = endYear;
       }
+      if(startYear <firstYearTreeStack){startYearTreeStack = firstYearTreeStack}
+      if(endYear > lastYearTreeStack){endYearTreeStack = lastYearTreeStack}
       console.log(startYearTreeStack);console.log(endYearTreeStack)
       var possibleYears = ee.List.sequence(startYearTreeStack,endYearTreeStack).map(function(yr){return ee.String('Tree_').cat(ee.Number(yr).int16().format())});
-      
+     
       var treeMaskStack = ee.Image(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreemask);
       var treeMask = treeMaskStack.select(possibleYears).reduce(ee.Reducer.max()).selfMask();
 
@@ -617,7 +619,6 @@ function runUSFS(){
      
     // Map2.addLayer(dndThreshMostRecent.select([1]),{'min':startYear,'max':endYear,'palette':'FF0,F00'},studyAreaName +' Decline Year',true,null,null,'Year of most recent decline ' +declineNameEnding);
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
-    
    
     Map2.addLayer(dndThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
     // if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
@@ -925,6 +926,7 @@ function runUSFS(){
                                   'xAxisLabel':'Year'};
     
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
+    
       var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,nameList);
 
       pixelChartCollections['secondarylc'] = {'label':'Land Cover',
