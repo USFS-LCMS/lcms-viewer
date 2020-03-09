@@ -1,7 +1,7 @@
 //Load global variables
 
 
-var startYear = 1984;
+var startYear = 1985;
 var endYear = 2019;
 var startJulian = 153;//190;
 var endJulian = 274;//250;
@@ -9,7 +9,7 @@ var layerObj = null;
 var queryObj = {};
 var initialCenter = [37.5334105816903,-105.6787109375];
 var initialZoomLevel = 5;
-var cachedStudyAreaName = null;
+
 var studyAreaDict = {
                   'Flathead National Forest':{
                                                 name:'FNF',
@@ -138,34 +138,34 @@ var studyAreaDict = {
                                                                   'legendName': 'Trees',
                                                                   'color': '005e00'},
                                                           2: {'modelName': 'TallShrubs-Trees',
-                                                                  'legendName': 'Mixed Trees/Tall Shrubs',
+                                                                  'legendName': 'Trees/Tall Shrubs Mix',
                                                                   'color': '008000'},
                                                           3: {'modelName': 'Shrubs-Trees',
-                                                                  'legendName': 'Mixed Trees/Shrubs',
+                                                                  'legendName': 'Trees/Shrubs Mix',
                                                                   'color': '00cc00'},
                                                           4: {'modelName': 'Grass-Trees',
-                                                                  'legendName': 'Mixed Trees/Grass',
+                                                                  'legendName': 'Trees/Grass Mix',
                                                                   'color': 'b3ff1a'},
                                                           5: {'modelName': 'Barren-Trees',
-                                                                  'legendName': 'Mixed Trees/Barren',
+                                                                  'legendName': 'Trees/Barren Mix',
                                                                   'color': '99ff99'},
                                                           6: {'modelName': 'TallShrubs',
                                                                   'legendName': 'Tall Shrubs',
                                                                   'color': 'b30055'},
                                                           7: {'modelName': 'Grass-TallShrubs',
-                                                                  'legendName': 'Mixed Tall Shrubs/Grass',
+                                                                  'legendName': 'Tall Shrubs/Grass Mix',
                                                                   'color': 'ff3355'},
                                                           8: {'modelName': 'Barren-TallShrubs',
-                                                                  'legendName': 'Mixed Tall Shrubs/Barren',
+                                                                  'legendName': 'Tall Shrubs/Barren Mix',
                                                                   'color': 'ffcccc'},               
                                                           9: {'modelName': 'Shrubs',
                                                                   'legendName': 'Shrubs',
                                                                   'color': 'e68a00'},//'a33d00'},
                                                           10: {'modelName': 'Grass-Shrubs',
-                                                                  'legendName': 'Mixed Shrubs/Grass',
+                                                                  'legendName': 'Shrubs/Grass Mix',
                                                                   'color': 'ffad33'},//'e26b00'},
                                                           11: {'modelName': 'Barren-Shrubs',
-                                                                  'legendName': 'Mixed Shrubs/Barren',
+                                                                  'legendName': 'Shrubs/Barren Mix',
                                                                   'color': 'ffe0b3'},//'f49b00'},               
                                                           12: {'modelName': 'Grass',
                                                                   'legendName': 'Grass',
@@ -208,28 +208,28 @@ var studyAreaDict = {
                                                                                   'legendName': 'Trees',
                                                                                   'color': '005e00'},
                                                                           2: {'modelName': 'Shrubs-Trees',
-                                                                                  'legendName': 'Mixed Trees/Shrubs',
+                                                                                  'legendName': 'Trees/Shrubs Mix',
                                                                                   'color': '008000'},
                                                                           3: {'modelName': 'Grass-Trees',
-                                                                                  'legendName': 'Mixed Trees/Grass',
+                                                                                  'legendName': 'Trees/Grass Mix',
                                                                                   'color': 'b3ff1a'},
                                                                           4: {'modelName': 'Barren-Trees',
-                                                                                  'legendName': 'Mixed Trees/Barren',
+                                                                                  'legendName': 'Trees/Barren Mix',
                                                                                   'color': '99ff99'},
                                                                           5: {'modelName': 'Shrubs',
                                                                                   'legendName': 'Shrubs',
                                                                                   'color': 'e68a00'},
                                                                           6: {'modelName': 'Grass-Shrubs',
-                                                                                  'legendName': 'Mixed Shrubs/Grass',
+                                                                                  'legendName': 'Shrubs/Grass Mix',
                                                                                   'color': 'ffad33'},
                                                                           7: {'modelName': 'Barren-Shrubs',
-                                                                                  'legendName': 'Mixed Shrubs/Barren',
+                                                                                  'legendName': 'Shrubs/Barren Mix',
                                                                                   'color': 'ffe0b3'},               
                                                                           8: {'modelName': 'Grass',
                                                                                   'legendName': 'Grass',
                                                                                   'color': 'FFFF00'},
                                                                           9: {'modelName': 'Barren-Grass',
-                                                                                  'legendName': 'Mixed Grass/Barren',
+                                                                                  'legendName': 'Grass/Barren Mix',
                                                                                   'color': 'AA7700'},
                                                                           10: {'modelName': 'Barren',
                                                                                   'legendName': 'Barren & Impervious',
@@ -260,6 +260,7 @@ var studyAreaDict = {
 var defaultStudyArea = 'USFS Intermountain Region';
 var studyAreaName = studyAreaDict[defaultStudyArea].name;
 var longStudyAreaName = defaultStudyArea;
+var cachedStudyAreaName = null;
 var viewBeta = 'yes';
 var lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
 var upperThresholdDecline = 1.0;

@@ -95,8 +95,10 @@ function runUSFS(){
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
       var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
+      var legendList = Object.values(lc2Dict).map(function(v){return v.legendName}); 
       var colorList = Object.values(lc2Dict).map(function(v){return v.color});
       var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
+
       var classesImg = ee.Image(valueList);
       var lc2Lookup = {};var lc2LegendDict = {};
       Object.keys(lc2Dict).map(function(k){lc2Lookup[k] = lc2Dict[k].modelName});
@@ -111,7 +113,7 @@ function runUSFS(){
         // Pull the correct bands, simplify the band names, and order so that it matches the dictionary order and specified values
         var landcoverOneYearBandNames = landcoverOneYear.bandNames().map(function(thisName){ return ee.String(thisName).split('_').get(1)});
                 landcoverOneYear = landcoverOneYear.select(landcoverOneYear.bandNames(), landcoverOneYearBandNames)
-                                              .select(nameList)
+                                              .select(nameList,legendList)
                                               // .set('year', year)
                                               .set('system:time_start', ee.Date.fromYMD(year,6,1).millis());
             return landcoverOneYear;//.clip(geometry);  
@@ -927,7 +929,7 @@ function runUSFS(){
     
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
     
-      var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,nameList);
+      var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,legendList);
 
       pixelChartCollections['secondarylc'] = {'label':'Land Cover',
                                     'collection':landcoverByYears,
@@ -941,7 +943,8 @@ function runUSFS(){
                                   'steppedLine':steppedLineLC,
                                   'colors':colorList,
                                   'xAxisLabel':'Year'};
-    }else{
+    }
+    else{
       areaChartCollections['lc'] = {'label':'Land Cover',
                                   'collection':lcStack,
                                   'stacked':true,
