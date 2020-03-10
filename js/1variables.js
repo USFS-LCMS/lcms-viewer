@@ -183,7 +183,7 @@ var studyAreaDict = {
                                                                   'legendName': 'Water',
                                                                   'color': '4780f3'}
                                                                 },
-                                              lcmsSecondaryLandcoverTreeClassMax:5
+                                              lcmsSecondaryLandcoverTreeClassMax:8
                                             },
                   'USFS Intermountain Region':{
                                                 name:'R4',
