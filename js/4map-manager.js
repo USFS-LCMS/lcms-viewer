@@ -1183,9 +1183,12 @@ function startArea(){
         function areaWrapper(key){
           // console.log('key');console.log(key);
         // print('Adding in: '+key.toString());
-        var pathT = areaPolygonObj[key].getPath().g
+        var pathT = areaPolygonObj[key].getPath().j
         if(pathT.length > 0){
-          clickCoords = pathT[pathT.length-1];
+
+          clickCoords =clickLngLat;//pathT[pathT.length-1];
+           console.log(clickCoords)
+           console.log(pathT)
           // console.log(clickCoords);console.log(pathT.length);
           area = google.maps.geometry.spherical.computeArea(areaPolygonObj[key].getPath());
           
@@ -1573,8 +1576,8 @@ function resetPolyline(e){
 // }
 updateDistance = function(){
     distance = google.maps.geometry.spherical.computeLength(distancePolyline.getPath());
-    var pathT = distancePolyline.getPath().g;
-    clickCoords = pathT[pathT.length-1];
+    var pathT = distancePolyline.getPath().j;
+    clickCoords = clickLngLat;//pathT[pathT.length-1];
     // console.log(clickCoords)
     
     var unitNames = unitNameDict[metricOrImperialDistance].distance;
