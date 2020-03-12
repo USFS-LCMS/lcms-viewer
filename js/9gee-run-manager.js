@@ -843,10 +843,12 @@ function runUSFS(){
     print(landtrendr_format)
     if (landtrendr_format == 'landtrendr_vertex_format'){
       var LTstackCollection = ee.ImageCollection(studyAreaDict[longStudyAreaName].ltCollection).filter(ee.Filter.eq('band',whichIndex))
-      var landtrendr = convertStack_To_DurFitMagSlope(LTstackCollection, 'LT');
-      var fittedAsset = landtrendr.map(function(img){return LT_VT_multBands(img, 0.0001)})
-                              .select([whichIndex+'_LT_fitted'],['LANDTRENDR Fitted '+ whichIndex]);
-      print(LTstackCollection.getInfo())
+      // var landtrendr = convertStack_To_DurFitMagSlope(LTstackCollection, 'LT');
+      // var fittedAsset = landtrendr.map(function(img){return LT_VT_multBands(img, 0.0001)})
+      //                         .select([whichIndex+'_LT_fitted'],['LANDTRENDR Fitted '+ whichIndex]);
+    
+      var fittedAsset = ltStackToFitted(LTstackCollection.mosaic(),startYear,endYear).select(['fitted'],['LANDTRENDR Fitted '+ whichIndex]);;
+      // console.log(fittedAsset.getInfo())
       // var fittedAsset = ee.ImageCollection(collectionDict[studyAreaName][2])
       //     .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
       //     .map(function(img){return multBands(img,1,0.0001)})
