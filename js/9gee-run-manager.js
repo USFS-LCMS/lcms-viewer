@@ -172,7 +172,7 @@ function runUSFS(){
     // // var isTreeStackLeft = 
     // Map2.addLayer(isTreeConsecutive.reduce(ee.Reducer.max()).selfMask(),{min:1,max:1,palette:'080'},'Tree mask')
     
-    if(applyTreeMask === 'yes'){
+    if( applyTreeMask === 'yes' || analysisMode == 'standard'){
       console.log('Applying tree mask');
       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
       // waterMask = waterMask.mask(waterMask).clip(boundary);
@@ -416,7 +416,7 @@ function runUSFS(){
     getMTBSandIDS(studyAreaName);
     var studyAreas = studyAreaDict[longStudyAreaName].studyAreas;
     studyAreas.map(function(studyArea){
-      Map2.addLayer(studyArea[1],{layerType:'geeVector'},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
+      Map2.addLayer(studyArea[1],{layerType:'geeVector',canQuery:false},studyArea[0],false,null,null,studyArea[2],'reference-layer-list')
     // 
     })
 
@@ -873,11 +873,13 @@ function runUSFS(){
     pixelChartCollections['basic-'+whichIndex] = {'label':'Standard Loss/Gain ',
                                     'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','Loss Probability','Gain Probability']),
                                     'chartColors':chartColorsDict.coreLossGain,
+                                    'tooltip':'Chart loss, gain and the '+whichIndex + ' vegetation index',
                                     'xAxisLabel':'Year',
                                     'yAxisLabel':'Model Confidence or Index Value'}
     pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'Advanced Loss/Gain',
                                     'collection':chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
                                     'chartColors':chartColorsDict.allLossGain,
+                                    'tooltip':'Chart loss, slow loss, fast loss, gain and the '+whichIndex + ' vegetation index',
                                     'xAxisLabel':'Year',
                                     'yAxisLabel':'Model Confidence or Index Value'}
 
@@ -887,11 +889,12 @@ function runUSFS(){
       
       var landcoverMaxByYearsForCharting = landcoverMaxByYears.map(function(img){return img.multiply(0.1).rename(['Land Cover Class']).copyProperties(img,['system:time_start'])})
       forCharting = joinCollections(forCharting.select([0,1,3,4,5,6,7]),landcoverMaxByYearsForCharting, false).select([0,1,7,2,3,4,5,6]);
-      console.log(forCharting.getInfo())
+      // console.log(forCharting.getInfo())
       chartTableDict['Land Cover Class'] = lc2ChartLookupDict
       pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
                                     'collection':forCharting,
                                     'chartColors':chartColorsDict.advancedBeta,
+                                    'tooltip':'Chart loss, slow loss, fast loss, gain, land cover, land use, and the '+whichIndex + ' vegetation index',
                                     'xAxisLabel':'Year',
                                     'yAxisLabel':'Model Confidence, Class, or Index Value',
                                     'chartTableDict':chartTableDict,
@@ -902,6 +905,7 @@ function runUSFS(){
           pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
                                     'collection':chartCollection,
                                     'chartColors':chartColorsDict.advancedBeta,
+                                    'tooltip':'Chart loss, slow loss, fast loss, gain, land cover, land use, and the '+whichIndex + ' vegetation index',
                                     'chartTableDict':chartTableDict,
                                     'legends':{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)},
                                     'xAxisLabel':'Year',
@@ -943,12 +947,14 @@ function runUSFS(){
                                   'collection':lossGainAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
+                                  'tooltip':'Summarize loss and gain for each year',
                                   'colors':chartColorsDict.advancedBeta.slice(4),
                                   'xAxisLabel':'Year'};
     areaChartCollections['lgSF'] = {'label':'Advanced Loss/Gain',
                                   'collection':lossGainSlowFastAreaCharting,
                                   'stacked':false,
                                   'steppedLine':false,
+                                  'tooltip':'Summarize loss, slow loss, fast loss, and gain for each year',
                                   'colors':chartColorsDict.advancedBeta.slice(4),
                                   'xAxisLabel':'Year'};
     
@@ -959,6 +965,7 @@ function runUSFS(){
       pixelChartCollections['secondarylc'] = {'label':'Land Cover Probability',
                                     'collection':landcoverByYears,
                                     'chartColors':colorList,
+                                    'tooltip':'Chart the raw modelled probability of each land cover class for each year',
                                     'xAxisLabel':'Year',
                                     'yAxisLabel':'Model Confidence'}
    
@@ -966,6 +973,7 @@ function runUSFS(){
                                   'collection':landcoverMaxByYearsStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
+                                  'tooltip':'Summarize land cover classes for each year',
                                   'colors':colorList,
                                   'xAxisLabel':'Year'};
     }
@@ -974,6 +982,7 @@ function runUSFS(){
                                   'collection':lcStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
+                                  'tooltip':'Summarize land cover classes for each year',
                                   'colors':Object.values(landcoverClassLegendDict),
                                   'xAxisLabel':'Year'};
     }        
@@ -982,6 +991,7 @@ function runUSFS(){
                                   'collection':luStack,
                                   'stacked':true,
                                   'steppedLine':steppedLineLC,
+                                  'tooltip':'Summarize land use classes for each year',
                                   'colors':Object.values(landuseClassLegendDict),
                                   'xAxisLabel':'Year'};            
     populatePixelChartDropdown();
@@ -1066,7 +1076,7 @@ function runCONUS(){
     var clientBoundary = clientBoundsDict.CONUS;//lossProb.geometry().bounds(1000).getInfo();
 
 
-    if(applyTreeMask === 'yes'){
+    if(applyTreeMask === 'yes' || analysisMode == 'standard'){
       console.log('Applying tree mask');
       // var treeMask = ee.Image('users/yang/CONUS_NLCD2016/CONUS_LCMS_ForestMask').translate(15,-15);
       // var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask');

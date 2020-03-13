@@ -457,7 +457,7 @@ function populateChartDropdown(id,collectionDict,whichChartCollectionVar){
 	eval(whichChartCollectionVar+' = keys[0]');
 	if(keys.length > 1){
 	    Object.keys(collectionDict).map(function(k){
-	    addDropdownItem(id,collectionDict[k].label,k,collectionDict[k].tooltip);
+	    	addDropdownItem(id,collectionDict[k].label,k,collectionDict[k].tooltip);
 
 	    });
 	    $('#'+id+'-container').show();
@@ -1368,7 +1368,7 @@ function dataTableNumbersToNames(dataTable){
 	
 	
 	// console.log(chartTableDict)
-	var header = dataTable[0];
+	var header = dataTable[0].map(function(i){return i.toProperCase()});
 	var outTable = [header];
 	dataTable.slice(1).map(function(r){
 		var row = [];

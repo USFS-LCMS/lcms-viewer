@@ -518,6 +518,11 @@ Array.prototype.min = function() {
   return Math.min.apply(null, this);
 };
 /////////////////////////////////////////////////////
+//Taken from: https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/6475125
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+/////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
 String.prototype.replaceAll = function(str1, str2, ignore) 
 {

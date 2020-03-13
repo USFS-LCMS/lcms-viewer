@@ -273,7 +273,7 @@ distanceDiv : `Click on map to measure distance`,
 distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
 areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
 areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
-queryDiv : "<div>Double-click on map to query values of displayed layers at a location</div>",
+queryDiv : "<div>Double-click on map to query values of displayed layers at that location</div>",
 queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
 pixelChartDiv : `<div>Double-click on map to query ${mode} data time series<br></div>`,
 pixelChartTip : 'Double-click on map to look at the full time series of '+mode+' outputs for a pixel.',
@@ -373,7 +373,7 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 }
 function addDropdownItem(dropdownID,label,value,tooltip){
     if(tooltip === undefined || tooltip === null){tooltip = ''};
-	$('#'+dropdownID).append(`<option title = "${tooltip}" value = "${value}">${label}</option>`)
+	$('#'+dropdownID).append(`<option title = '${tooltip}' value = "${value}">${label}</option>`)
 }
 	
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1373,7 +1373,7 @@ function addLayer(layer){
         }
 		incrementOutstandingGEERequests();
 		function addGeoJsonToMap(v){
-			decrementOutstandingGEERequests();
+			
 			
 			$('#' + spinnerID).hide();
 			$('#' + visibleLabelID).show();
@@ -1424,8 +1424,9 @@ function addLayer(layer){
 		      	}
   		}
   		if(layer.layerType === 'geeVector'){
+            decrementOutstandingGEERequests();
   			layer.item.evaluate(function(v){addGeoJsonToMap(v)})
-  		}else{addGeoJsonToMap(layer.item)}
+  		}else{decrementOutstandingGEERequests();addGeoJsonToMap(layer.item)}
 		
 	}else if(layer.layerType === 'tileMapService'){
 		layer.layer = new google.maps.ImageMapType({
