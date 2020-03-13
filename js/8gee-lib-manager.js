@@ -786,7 +786,42 @@ function fitStackToCollection(stack, maxSegments, startYear, endYear){
   }));
   return yrDurMagSlopeCleaned;
 }
-
+function ltStackToFitted(ltStack,startYear,endYear){
+  ltStack = ltStack.updateMask(ltStack.neq(0));
+  var yearImg = ltStack.select(['yrs_vert_.*']);
+  var fitImg = ltStack.select(['fit_vert_.*']);
+  
+  var segLength = yearImg.bandNames().length();
+  var segList = ee.List.sequence(0,segLength.subtract(1));
+  var segListLeft = segList.slice(0,-1);
+  var segListRight = segList.slice(1,null);
+  
+  var yearImgLeft = yearImg.select(segListLeft);
+  var yearImgRight = yearImg.select(segListRight);
+  
+  var fitImgLeft = fitImg.select(segListLeft);
+  var fitImgRight = fitImg.select(segListRight);
+  
+  var fitImgDiff = fitImgRight.subtract(fitImgLeft);
+  var yearImgDiff = yearImgRight.subtract(yearImgLeft);
+  
+  var slope = fitImgDiff.divide(yearImgDiff);
+  
+  var out = ee.List.sequence(startYear,endYear).map(function(yr){
+    yr = ee.Number(yr);
+    var yearMaskRight= yearImgRight.gte(yr);
+    var endVertexYear = yearImgRight.updateMask(yearMaskRight).reduce(ee.Reducer.min());
+   
+    var slopeT = slope.updateMask(yearImgRight.eq(endVertexYear)).reduce(ee.Reducer.firstNonNull());
+    var fitImgRightT= fitImgRight.updateMask(yearImgRight.eq(endVertexYear)).reduce(ee.Reducer.firstNonNull());
+    var yearDiff = endVertexYear.subtract(yr);
+    var diffFromVertex = yearDiff.multiply(slopeT);
+    var fitted = fitImgRightT.subtract(diffFromVertex);
+    return fitted.multiply(0.0001).rename('fitted').set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+  });
+  out = ee.ImageCollection.fromImages(out);
+  return out;
+}
 function setupDownloads(studyAreaName){
   // Prep downloads
     var downloads = lcmsDownloadDict[studyAreaName];
