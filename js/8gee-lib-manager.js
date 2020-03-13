@@ -789,7 +789,7 @@ function fitStackToCollection(stack, maxSegments, startYear, endYear){
 function ltStackToFitted(ltStack,startYear,endYear){
   ltStack = ltStack.updateMask(ltStack.neq(0));
   var yearImg = ltStack.select(['yrs_vert_.*']);
-  var fitImg = ltStack.select(['fit_vert_.*']);
+  var fitImg = ltStack.select(['fit_vert_.*']).multiply(0.0001);
   
   var segLength = yearImg.bandNames().length();
   var segList = ee.List.sequence(0,segLength.subtract(1));
@@ -807,17 +807,26 @@ function ltStackToFitted(ltStack,startYear,endYear){
   
   var slope = fitImgDiff.divide(yearImgDiff);
   
-  var out = ee.List.sequence(startYear,endYear).map(function(yr){
+  var out = ee.List.sequence(startYear+1,endYear).map(function(yr){
     yr = ee.Number(yr);
+    var yearMaskLeft= yearImgLeft.lte(yr);
     var yearMaskRight= yearImgRight.gte(yr);
+    var startVertexYear = yearImgLeft.updateMask(yearMaskLeft).reduce(ee.Reducer.max());
     var endVertexYear = yearImgRight.updateMask(yearMaskRight).reduce(ee.Reducer.min());
-   
+    
+    var segDur = endVertexYear.subtract(startVertexYear);
+    var segMag = fitImgDiff.updateMask(yearImgRight.eq(endVertexYear)).reduce(ee.Reducer.firstNonNull());
+    
     var slopeT = slope.updateMask(yearImgRight.eq(endVertexYear)).reduce(ee.Reducer.firstNonNull());
     var fitImgRightT= fitImgRight.updateMask(yearImgRight.eq(endVertexYear)).reduce(ee.Reducer.firstNonNull());
-    var yearDiff = endVertexYear.subtract(yr);
-    var diffFromVertex = yearDiff.multiply(slopeT);
-    var fitted = fitImgRightT.subtract(diffFromVertex);
-    return fitted.multiply(0.0001).rename('fitted').set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+    var yearDiffFromStart = ee.Image(yr).subtract(startVertexYear);
+    var yearDiffFromEnd = endVertexYear.subtract(yr);
+    
+    var diffFromVertexStart = yearDiffFromStart.multiply(slopeT);
+    var diffFromVertexEnd = yearDiffFromEnd.multiply(slopeT);
+    
+    var fitted = fitImgRightT.subtract(diffFromVertexEnd);
+    return segDur.rename(['dur']).addBands(fitted.rename('fit')).addBands(segMag.rename(['mag'])).addBands(slopeT.rename(['slope'])).addBands(diffFromVertexStart.rename(['diff'])).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
   });
   out = ee.ImageCollection.fromImages(out);
   return out;

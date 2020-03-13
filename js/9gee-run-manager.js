@@ -100,10 +100,12 @@ function runUSFS(){
       var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
 
       var classesImg = ee.Image(valueList);
-      var lc2Lookup = {};var lc2LegendDict = {};
+      var lc2Lookup = {};var lc2LegendDict = {};var lc2ChartLegendDict = {};var lc2ChartLookupDict = {};
       Object.keys(lc2Dict).map(function(k){lc2Lookup[k] = lc2Dict[k].modelName});
       Object.values(lc2Dict).map(function(v){lc2LegendDict[v.legendName] = v.color});
-      
+      Object.keys(lc2Dict).map(function(k){lc2ChartLegendDict[lc2Dict[k].legendName] = k/10.});
+      Object.keys(lc2Dict).map(function(k){lc2ChartLookupDict[k/10.] = lc2Dict[k].legendName});
+
       var lc2 = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection);
      
       var landcoverByYears = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(year){
@@ -847,7 +849,7 @@ function runUSFS(){
       // var fittedAsset = landtrendr.map(function(img){return LT_VT_multBands(img, 0.0001)})
       //                         .select([whichIndex+'_LT_fitted'],['LANDTRENDR Fitted '+ whichIndex]);
     
-      var fittedAsset = ltStackToFitted(LTstackCollection.mosaic(),startYear,endYear).select(['fitted'],['LANDTRENDR Fitted '+ whichIndex]);;
+      var fittedAsset = ltStackToFitted(LTstackCollection.mosaic(),startYear,endYear).select(['fit'],['LANDTRENDR Fitted '+ whichIndex]);;
       // console.log(fittedAsset.getInfo())
       // var fittedAsset = ee.ImageCollection(collectionDict[studyAreaName][2])
       //     .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
@@ -878,13 +880,33 @@ function runUSFS(){
                                     'chartColors':chartColorsDict.allLossGain,
                                     'xAxisLabel':'Year',
                                     'yAxisLabel':'Model Confidence or Index Value'}
-    pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
+
+    
+    if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
+    
+      
+      var landcoverMaxByYearsForCharting = landcoverMaxByYears.map(function(img){return img.multiply(0.1).rename(['Land Cover Class']).copyProperties(img,['system:time_start'])})
+      forCharting = joinCollections(forCharting.select([0,1,3,4,5,6,7]),landcoverMaxByYearsForCharting, false).select([0,1,7,2,3,4,5,6]);
+      console.log(forCharting.getInfo())
+      chartTableDict['Land Cover Class'] = lc2ChartLookupDict
+      pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
+                                    'collection':forCharting,
+                                    'chartColors':chartColorsDict.advancedBeta,
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence, Class, or Index Value',
+                                    'chartTableDict':chartTableDict,
+                                    'legends':{'Land Cover Class': JSON.stringify(lc2ChartLegendDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)},
+                                    
+                                  }
+        }else{
+          pixelChartCollections['all-'+whichIndex] = {'label':'Advanced Loss/Gain and Land Cover/Land Use',
                                     'collection':chartCollection,
                                     'chartColors':chartColorsDict.advancedBeta,
                                     'chartTableDict':chartTableDict,
                                     'legends':{'Land Cover Class': JSON.stringify(landcoverClassChartDict),'Land Use Class:':JSON.stringify(landuseClassChartDict)},
                                     'xAxisLabel':'Year',
-                                    'yAxisLabel':'Model Confidence or Index Value'}
+                                    'yAxisLabel':'Model Confidence, Class, or Index Value'}
+        }
     
   })
       
@@ -934,12 +956,12 @@ function runUSFS(){
     
       var landcoverMaxByYearsStack =formatAreaChartCollection(landcoverMaxByYears,valueList,legendList);
 
-      pixelChartCollections['secondarylc'] = {'label':'Land Cover',
+      pixelChartCollections['secondarylc'] = {'label':'Land Cover Probability',
                                     'collection':landcoverByYears,
                                     'chartColors':colorList,
                                     'xAxisLabel':'Year',
                                     'yAxisLabel':'Model Confidence'}
-
+   
       areaChartCollections['lc2'] = {'label':'Land Cover',
                                   'collection':landcoverMaxByYearsStack,
                                   'stacked':true,
