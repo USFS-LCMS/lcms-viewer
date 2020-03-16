@@ -535,7 +535,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
   Map2.addLayer(mtbsSummarized.select([0]).set('bounds',clientBoundsDict.All),severityViz,'MTBS Burn Severity',showSeverity,null,null,'MTBS '+mtbsSummaryMethod+' burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
   Map2.addLayer(mtbsSummarized.select([4]).set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Burn Year',false,null,null,'MTBS '+mtbsSummaryMethod+' burn year from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
-  Map2.addLayer(mtbsCount.set('bounds',clientBoundsDict.All),{min:1,max:5,palette:declineDurPalette.split(',').reverse().join(',')},'MTBS Burn Count',false,null,null,'MTBS number of burns mapped for a given area from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  Map2.addLayer(mtbsCount.set('bounds',clientBoundsDict.All),{min:1,max:5,palette:declineDurPalette.split(',').reverse().join(','),legendLabelLeft:'Count <=',legendLabelRight:'Count >='},'MTBS Burn Count',false,null,null,'MTBS number of burns mapped for a given area from '+startYear.toString() + '-' + mtbsEndYear.toString() + ' with a burn serverity class of low, moderate, or high',whichLayerList)  
   
   var chartTableDict = {
     'Burn Severity':mtbsQueryClassDict
