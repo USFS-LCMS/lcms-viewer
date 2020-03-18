@@ -1368,7 +1368,8 @@ function dataTableNumbersToNames(dataTable){
 	
 	
 	// console.log(chartTableDict)
-	var header = dataTable[0].map(function(i){return i.toProperCase()});
+	var header = dataTable[0];//.map(function(i){return i.toProperCase()});
+	header[0] = header[0].toProperCase();
 	var outTable = [header];
 	dataTable.slice(1).map(function(r){
 		var row = [];
@@ -1404,6 +1405,7 @@ function dataTableNumbersToNames(dataTable){
 				catch(err){};
 				tableValue =value ;
 			};
+			if(tableValue === null){tableValue = ''}
 			row.push(tableValue);
 		});
 		outTable.push(row);
