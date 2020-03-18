@@ -574,6 +574,9 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         } else if(label == null && viz.max != null){
             legend.max = viz.max;
         } 
+
+        if(viz.legendLabelLeft !== null && viz.legendLabelLeft !== undefined){legend.min = viz.legendLabelLeft + ' ' + viz.min}
+        if(viz.legendLabelRight !== null && viz.legendLabelRight !== undefined){legend.max = viz.legendLabelRight + ' ' + viz.max}
         if(legend.min ==null){legend.min = 'min'};
         if(legend.max ==null){legend.max = 'max'};
     
