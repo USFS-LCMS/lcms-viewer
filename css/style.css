@@ -91,7 +91,7 @@ html, body{
 .teal{
   color:var(--teal-100)!important;
 }
-
+.bg-teal{background-color: var(--teal-100)!important}
 .bg-black,.btn{
   background-color: var(--black)!important;
   margin:0px!important;
