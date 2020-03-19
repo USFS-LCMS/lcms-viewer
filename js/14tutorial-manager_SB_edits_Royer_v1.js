@@ -162,7 +162,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">You can provide a name if you would like.  Otherwise one will be automatically generated.</li>
                                       <li class="list-group-item">Once drawing is finished, click on the <kbd>Chart Selected Areas</kbd> button to create the chart.</li>
                                       <li class="list-group-item">It can take some time to summarize the area as it is done on-the-fly within Google Earth Engine.</li>
-                                      <li class="list-group-item">The selected area is tabulated and provided under the â€œTotal area selectedâ€ header. The charting of very large drawn areas (>10,000,000 Acres) is not fully supported at this time. Very large areas may not successfully create a chart.</li>
+                                      <li class="list-group-item">The selected area is tabulated and provided under the “Total area selected” header. The charting of very large drawn areas (>10,000,000 Acres) is not fully supported at this time. Very large areas may not successfully create a chart.</li>
                                       <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data with the "Download" dropdown menu in the bottom of the chart window</li>
@@ -239,7 +239,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">The third parameter is how the MTBS raster data are summarized.</li>
                                       <li class="list-group-item">The "MTBS Burn Severity" and "MTBS Burn Year" layers can only display a single severity value and year respectively. This parameter provides a method for choosing which value to show when multiple fires overlap.</li>
                                       <li class="list-group-item">The "Highest-Severity" method will display the severity and year corresponding to the area with the highest severity.</li>
-                                      <li class="list-group-item">The "Most-Recent" method will choose the severity and year corresponding to the most recently mapped fire.</li>
+                                      <li class="list-group-item">The "Most-Recent" method will choose the severity and year corresponding to the most recent mapped fire.</li>
                                       <li class="list-group-item">The "Oldest" method will choose the severity and year corresponding to the oldest mapped fire.</li>
                                       <li class="list-group-item">Once the parameters are adjusted, press the <kbd>Submit</kbd> button to update the map layers.</li>
                                     </ul>`
@@ -250,7 +250,6 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
 
                     
                     }
-
 var walkThroughAdded = false;
 
 $(window).resize(function(){
