@@ -833,15 +833,23 @@ function ltStackToFitted(ltStack,startYear,endYear){
 }
 function setupDownloads(studyAreaName){
   // Prep downloads
-    var downloads = lcmsDownloadDict[studyAreaName];
-    if(downloads !== undefined){
+    var saDict = lcmsDownloadDict[studyAreaName]
+    if(saDict !== undefined){
+      var downloads = saDict['downloads'];
+      var description = saDict['description'];
       downloads.map(function(url){
-      var name = url.substr(url.lastIndexOf('/') + 1);
-      addDownload(url,name);
-
-      })
+        var name = url.substr(url.lastIndexOf('/') + 1);
+        addDownload(url,name);
+      });
+      $('#product-descriptions').attr('href',description);
+      $('#product-descriptions').attr('title','Click here for a detailed description of products available for download for chosen area');
+    }else{
+      addDownload('','No downloads available for chosen study area');
+      $('#product-descriptions').attr('href',null);
+      $('#product-descriptions').attr('title','No product description available for chosen study area');
     }
-    else{addDownload('','No downloads available for chosen study area')}
+    
+
 }
 
 

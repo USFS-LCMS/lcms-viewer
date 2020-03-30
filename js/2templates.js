@@ -249,8 +249,10 @@ var staticTemplates = {
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
         reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
         reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
-    downloadDiv :`<div class = 'pb-2'>
-    				<label  for="downloadDropdown">Select product to download:</label>
+    downloadDiv :`<div class = 'py-2'>
+                    <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
+    				<div class = 'dropdown-divider'></div>
+                    <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
 					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
 				 </div>`,
 supportDiv :`<div class = 'p-0 pb-2' >
