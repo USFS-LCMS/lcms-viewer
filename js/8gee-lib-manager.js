@@ -275,15 +275,15 @@ function fillEmptyCollections(inCollection,dummyImage){
 }
 // --------Add MTBS and IDS Layers-------------------------------
 var idsStartYear = 1997;
-var idsEndYear = 2018;
+var idsEndYear = 2019;
 var idsMinYear = 1997;
-var idsMaxYear = 2018;
+var idsMaxYear = 2019;
 function getIDSCollection(){
-  if(startYear > idsMinYear && startYear < idsMaxYear){idsStartYear = startYear}
+  if(startYear > idsMinYear && startYear <= idsMaxYear){idsStartYear = startYear}
     else{idsStartYear = idsMinYear}
-  if(endYear < idsMaxYear && endYear > idsMinYear){idsEndYear = endYear}  
+  if(endYear < idsMaxYear && endYear >= idsMinYear){idsEndYear = endYear}  
     else{idsEndYear = idsMaxYear}
-
+  console.log('IDS Years:');console.log(idsStartYear);console.log(idsEndYear);
   var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  
