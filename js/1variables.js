@@ -6,7 +6,7 @@ var endYear = 2019;
 var startJulian = 153;//190;
 var endJulian = 274;//250;
 var layerObj = null;
-var queryObj = {};
+var queryObj = {};var timeLapseObj = {};
 var initialCenter = [37.5334105816903,-105.6787109375];
 var initialZoomLevel = 5;
 

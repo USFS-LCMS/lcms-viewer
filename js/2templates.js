@@ -984,6 +984,11 @@ function addLayer(layer){
 
 
 	if(layer.visible){checked = 'checked'}
+    
+    if(layer.viz.isTimeLapse){
+        // console.log(timeLapseObj[layer.viz.timeLapseID]);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.push(id)
+    }
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
 								           
 								           <div id="${opacityID}" class = 'simple-layer-opacity-range'></div>
@@ -1303,6 +1308,14 @@ function addLayer(layer){
             // console.log(eeLayer);
             // console.log('tile service created');
             $('#' + spinnerID).hide();
+            if(layer.viz.isTimeLapse){
+                timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(timeLapseLayerID => timeLapseLayerID !== id)
+                if(timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0){
+                    $('#'+layer.viz.timeLapseID+'-loading-spinner').hide();
+                    $('#'+layer.viz.timeLapseID+'-year-label').hide();
+                    timeLapseObj[layer.viz.timeLapseID].isReady = true;
+                };
+            }
             $('#' + visibleLabelID).show();
             
             if(layer.currentGEERunID === geeRunID){

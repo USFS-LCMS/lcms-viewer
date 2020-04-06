@@ -304,7 +304,203 @@ function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,which
   addToMap(item,viz,name,visible,label,fontColor,helpBox,'area-charting-select-layer-list',queryItem);
  
 }
+var intervalPeriod = 2000;
+var timeLapseID;
+var timeLapseFrame = 0;
+function pauseTimeLapse(id){
+  if(id === null || id === undefined){id = timeLapseID}
+    timeLapseID = id;
+  if(timeLapseObj[timeLapseID].isReady){
+      pauseAll();
+      clearActiveButtons();
+      $('#'+timeLapseID+'-pause-button').addClass('time-lapse-active');
+    }
+  } 
+function setFrameOpacity(frame,opacity){
+  var s = $('#'+frame).slider();
+  s.slider('option', 'value',opacity);
+  s.slider('option','slide').call(s,null,{ handle: $('.ui-slider-handle', s), value: opacity });
+}
+function selectFrame(id){
+  if(id === null || id === undefined){id = timeLapseID}
+  timeLapseID = id
 
+  if(timeLapseObj[timeLapseID].isReady){
+    var slidersT = timeLapseObj[timeLapseID].sliders;
+    if(timeLapseFrame > slidersT.length-1){timeLapseFrame = 0}
+    else if(timeLapseFrame < 0){timeLapseFrame = slidersT.length-1}
+
+    slidersT.map(function(s){
+      try{
+        setFrameOpacity(slidersT[s],0)
+      }catch(err){}
+      
+    })
+    var frame = slidersT[timeLapseFrame];
+    
+    try{
+        setFrameOpacity(frame,100);
+        var s = $('#'+timeLapseID+'-year-slider').slider();
+        s.slider('option', 'value',timeLapseObj[timeLapseID].years[timeLapseFrame]);
+        
+      }catch(err){}
+    $('#'+timeLapseID+'-year-label').show();
+    $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
+    timeLapseFrame++
+  }
+  
+}
+function pauseAll(){
+  Object.keys(timeLapseObj).map(function(k){
+    if(timeLapseObj[k].intervalValue !== null && timeLapseObj[k].intervalValue !== undefined){
+      window.clearInterval(timeLapseObj[k].intervalValue);
+    }
+    timeLapseObj[k].intervalValue = null;
+  })
+}
+function forwardOneFrame(id){
+    timeLapseID = id;
+    if(timeLapseObj[timeLapseID].isReady){
+      clearAllFrames();
+      pauseTimeLapse();
+      // year++;
+      selectFrame();
+    }
+  };
+function backOneFrame(id){
+    timeLapseID = id;
+    if(timeLapseObj[timeLapseID].isReady){
+      clearAllFrames();
+      pauseTimeLapse();
+
+      timeLapseFrame = timeLapseFrame-2;
+      selectFrame();
+    }
+  };
+function clearActiveButtons(){
+   Object.keys(timeLapseObj).map(function(k){
+    $('#'+k+'-pause-button').removeClass('time-lapse-active');
+    $('#'+k+'-play-button').removeClass('time-lapse-active');
+    if(k === timeLapseID){
+      $('#'+k+'-stop-button').removeClass('time-lapse-active');
+    }
+    
+   })
+};
+function clearAllFrames(){
+  Object.keys(timeLapseObj).map(function(k){
+    var slidersT = timeLapseObj[k].sliders;
+    $('#'+k+'-year-label').hide();
+    $('#'+k+'-stop-button').addClass('time-lapse-active');
+    $('#'+k+'-pause-button').removeClass('time-lapse-active');
+    $('#'+k+'-play-button').removeClass('time-lapse-active');
+    
+    slidersT.map(function(s){
+      try{setFrameOpacity(slidersT[s],0)}
+      catch(err){}
+      
+    })
+  })
+}
+function playTimeLapse(id){
+  timeLapseID = id;
+  if(timeLapseObj[timeLapseID].isReady){
+    clearAllFrames();
+    pauseAll();
+    
+    selectFrame();
+    if(timeLapseObj[id].intervalValue === null || timeLapseObj[id].intervalValue === undefined){
+        timeLapseObj[id].intervalValue =window.setInterval(selectFrame, intervalPeriod);
+      }
+      $('#'+id+'-stop-button').removeClass('time-lapse-active');
+      $('#'+id+'-pause-button').removeClass('time-lapse-active');
+      $('#'+id+'-play-button').addClass('time-lapse-active');
+  }
+}
+function stopTimeLapse(id){
+  pauseAll();
+  clearAllFrames();
+}
+
+function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+  
+
+  var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
+  legendDivID = legendDivID.replaceAll('/','-');
+  legendDivID = legendDivID.replaceAll('(','-');
+  legendDivID = legendDivID.replaceAll(')','-');
+  viz.canQuery = true;
+  viz.isSelectLayer = false;
+  viz.isTimeLapse = true;
+  viz.timeLapseID = legendDivID;
+  
+
+  timeLapseObj[legendDivID] = {}
+  if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}  
+
+  var startYearT = ee.Date(ee.Image(item.sort('system:time_start',true).first()).get('system:time_start')).get('year').getInfo();
+  var endYearT = ee.Date(ee.Image(item.sort('system:time_start',false).first()).get('system:time_start')).get('year').getInfo();
+  var yearsT = ee.List.sequence(startYearT,endYearT).getInfo();
+  timeLapseObj[legendDivID].years = yearsT;
+  timeLapseObj[legendDivID].loadingLayerIDs = [];
+  timeLapseObj[legendDivID].intervalValue = null;
+  timeLapseObj[legendDivID].isReady = false;
+  addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',name, '',false,'');
+  $('#'+legendDivID+'-collapse-label').append(`<div class = 'icon-bar col-lg-12 '>
+        
+        <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward"></i></button>
+          <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseTimeLapse("${legendDivID}")'><i class="fa fa-pause"></i></button>
+          <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
+          <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
+          <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
+          <p class = 'btn' id = '${legendDivID}-year-label'><i id = '${legendDivID}-loading-spinner' title = 'Time lapse loading' class="fa fa-spinner fa-spin"></i></p>
+
+          <div id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'></div>
+      </div>`);
+
+
+  // item = item.sort('system:time_start',false);
+  
+  var yr = endYearT;
+  ee.List.sequence(0,item.size().subtract(1)).reverse().evaluate(function(l){
+    var itemL = item.toList(10000,0);
+    l.map(function(i){
+      var img = ee.Image(itemL.get(i));
+      
+        var vizT = viz;
+        vizT.opacity = 0
+        addToMap(img,vizT,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
+        yr--;
+      
+    });
+    var sliders = $( "#"+legendDivID+'-collapse-div' ).find( ".ui-slider" );
+    sliders = sliders.map(function(s){return sliders[s].id})
+    
+    
+    timeLapseObj[legendDivID].sliders = sliders;
+
+
+    $('#'+legendDivID+'-year-slider').slider({
+        
+        min: startYearT,
+        max: endYearT,
+        step: 1,
+        value: startYearT,
+        slide: function(e,ui){
+          // console.log(e);
+          var yr = ui.value;
+          var i = yearsT.indexOf(yr);
+          timeLapseFrame = i;
+          if(timeLapseObj[legendDivID].isReady){
+            clearAllFrames();
+            pauseTimeLapse(legendDivID);
+            selectFrame(legendDivID);
+          }
+        }
+      })
+  });
+  
+}
 /////////////////////////////////////
 function addExport(eeImage,name,res,Export,metadataParams){
 
@@ -901,6 +1097,10 @@ function mp(){
   };
   this.addSelectLayer = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
+    
+  };
+  this.addTimeLapse = function(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+    addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem);
     
   };
   this.addREST = function(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList){

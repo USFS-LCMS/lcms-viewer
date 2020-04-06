@@ -100,6 +100,10 @@ html, body{
   vertical-align:middle!important;
 
 }
+.time-lapse-active{
+  background-color: var(--teal-100)!important;
+  color:var(--deep-brown-70)!important;
+}
 .info-page{
   color:var(--deep-brown-70)!important;
   padding-top:4em;
