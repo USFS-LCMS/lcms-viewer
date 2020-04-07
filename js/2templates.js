@@ -891,6 +891,7 @@ function addLegendCollapse(){
     $('#legend-collapse-div').append(`<div id="legend-layer-list"></div>`);
     $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`);
     $('#legend-collapse-div').append(`<div id="legend-fhp-div"></div>`);
+    $('#legend-collapse-div').append(`<div id="time-lapse-legend-list"></div>`);
     $('#legend-collapse-div').append(`<div id="legend-area-charting-select-layer-list"></div>`);
 }
 

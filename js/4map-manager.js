@@ -568,15 +568,19 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
       </div>`);
 
 
-  $('#legend-collapse-div').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
+  $('#time-lapse-legend-list').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
+  viz.opacity = 0;
+  viz.layerType = 'geeImage';
+  viz.legendTitle = name;
+
   yearsT.reverse().map(function(yr){
     var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
     
-    viz.opacity = 0;
-    viz.layerType = 'geeImage';
+
     if(yr !== yearsT[0]){
       viz.addToLegend = false;
       viz.addToClassLegend = false;
+      
     }
     // console.log(viz);
     addToMap(img,viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
@@ -873,7 +877,14 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       // legendItemContainer.insertBefore(legendBreak,legendItemContainer.firstChild);
 
         var legend ={};// document.createElement("ee-legend");
-        legend.name = name;
+         // console.log('here');console.log(viz)
+        if(viz.legendTitle !== null && viz.legendTitle !== undefined){
+         
+          legend.name = viz.legendTitle
+        }else{
+          legend.name = name;
+        }
+        
         legend.helpBoxMessage = helpBox
         if(viz.palette != null){
             var palette = viz.palette;
@@ -919,9 +930,17 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
 
     else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
+
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
-      var classLegendContainerID = legendDivID + '-class-container'
-      addClassLegendContainer(classLegendContainerID,legendDivID,name)
+      var classLegendContainerID = legendDivID + '-class-container';
+      var legendClassContainerName;
+      if(viz.legendTitle !== null && viz.legendTitle !== undefined){
+         
+          legendClassContainerName = viz.legendTitle
+        }else{
+          legendClassContainerName = name;
+        }
+      addClassLegendContainer(classLegendContainerID,legendDivID,legendClassContainerName)
       // var legendItemContainer = document.createElement("legend-item");
       // legendItemContainer.setAttribute("id", legendDivID);
       // var legendBreak = document.createElement("legend-break");
@@ -935,6 +954,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 
           var legend = {};//document.createElement("ee-class-legend");
           legend.name = name;
+          
           legend.helpBoxMessage = helpBox;
 
 
@@ -1273,7 +1293,13 @@ function reRun(){
   layerChildID = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();
+
+  stopTimeLapse();
   queryObj = {};areaChartCollections = {};pixelChartCollections = {};timeLapseObj = {};
+  intervalPeriod = 2000;
+  timeLapseID = null;
+  timeLapseFrame = 0;
+
   // if(analysisMode === 'advanced'){
   //   document.getElementById('threshold-container').style.display = 'inline-block';
   //   document.getElementById('advanced-radio-container').style.display = 'inline';
@@ -1293,7 +1319,7 @@ function reRun(){
   // }
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
-  ['layer-list','reference-layer-list','area-charting-select-layer-list','fhp-div'].map(function(l){
+  ['layer-list','reference-layer-list','area-charting-select-layer-list','fhp-div','time-lapse-legend-list'].map(function(l){
     $('#'+l).empty();
     $('#legend-'+l).empty();
   })

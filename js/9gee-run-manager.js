@@ -2832,6 +2832,16 @@ var landcoverClassQueryDict = {};
 
     var rnrThresh = thresholdChange(NFSRNR,lowerThresholdRecovery, upperThresholdRecovery, 1);
 
+    var lossGain = joinCollections(dndThresh.select([0]),rnrThresh.select([0]),false);
+    lossGain = lossGain.map(function(img){
+      var out = ee.Image(0);
+      out = out.where(img.select([0]).mask(),1)
+      out = out.where(img.select([1]).mask(),2)
+      out = out.selfMask().copyProperties(img,['system:time_start']);
+      return out
+    })
+    Map2.addTimeLapse(lossGain.limit(3),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+    
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowDecline,upperThresholdDecline, 1);
     var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdFastDecline,upperThresholdDecline, 1);
     var yrs = [1989,2002,2005,2019]
@@ -2840,8 +2850,8 @@ var landcoverClassQueryDict = {};
     var g = yrs.map(function(yr){return rnrThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
     g = ee.ImageCollection(g);
     // print(c.getInfo())
-    Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    Map2.addTimeLapse(g.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
+    // Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    // Map2.addTimeLapse(g.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
     // Map2.addTimeLapse(dndThresh.limit(5).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
     // Map2.addTimeLapse(rnrThresh.limit(5).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
     var stacked = joinCollections(dndThresh.select([0]),rnrThresh.select([0]), false);
