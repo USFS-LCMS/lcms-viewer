@@ -598,6 +598,7 @@ function runUSFS(){
     Map2.addLayer(NFSLU.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false);
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       Map2.addLayer(landcoverMaxByYears.mode().clip(boundary).set('bounds',clientBoundary),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName,false);
+      Map2.addTimeLapse(landcoverMaxByYears,{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName+ ' Time Lapse',false);
     }else{
       Map2.addLayer(NFSLC.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
     }
@@ -625,6 +626,8 @@ function runUSFS(){
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
    
     Map2.addLayer(dndThreshOut.select([1]).clip(boundary).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
+    Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:upperThresholdDecline,palette:declineProbPalette},'Loss Prob Time Lapse',false); 
+    
     // if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
     //   Map2.addLayer(dndThreshOutUnMasked.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
     // }
@@ -2820,8 +2823,16 @@ var landcoverClassQueryDict = {};
 
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowDecline,upperThresholdDecline, 1);
     var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdFastDecline,upperThresholdDecline, 1);
-    Map2.addTimeLapse(dndThresh.limit(8).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
-    Map2.addTimeLapse(rnrThresh.limit(8).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
+    var yrs = [1989,2002,2005,2019]
+    var l = yrs.map(function(yr){return dndThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
+    l = ee.ImageCollection(l);
+    var g = yrs.map(function(yr){return rnrThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
+    g = ee.ImageCollection(g);
+    // print(c.getInfo())
+    Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    Map2.addTimeLapse(g.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
+    // Map2.addTimeLapse(dndThresh.limit(5).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
+    // Map2.addTimeLapse(rnrThresh.limit(5).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
     var stacked = joinCollections(dndThresh.select([0]),rnrThresh.select([0]), false);
     stacked = joinCollections(stacked,dndSlowThresh.select([0]), false);
     stacked = joinCollections(stacked,dndFastThresh.select([0]), false);

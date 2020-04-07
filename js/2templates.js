@@ -988,6 +988,7 @@ function addLayer(layer){
     if(layer.viz.isTimeLapse){
         // console.log(timeLapseObj[layer.viz.timeLapseID]);
         timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.push(id);
+        timeLapseObj[layer.viz.timeLapseID].sliders.push(opacityID);
         timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
     }
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
@@ -1311,9 +1312,14 @@ function addLayer(layer){
             $('#' + spinnerID).hide();
             if(layer.viz.isTimeLapse){
                 timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(timeLapseLayerID => timeLapseLayerID !== id)
+                var prop = parseInt((1-timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length /timeLapseObj[layer.viz.timeLapseID].nFrames)*100);
+                $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');   
+                // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
                 if(timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0){
                     $('#'+layer.viz.timeLapseID+'-loading-spinner').hide();
                     $('#'+layer.viz.timeLapseID+'-year-label').hide();
+                    // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
+
                     $('#'+layer.viz.timeLapseID+'-icon-bar').show();
                     timeLapseObj[layer.viz.timeLapseID].isReady = true;
                 };
@@ -1347,11 +1353,23 @@ function addLayer(layer){
                             if(!tileIncremented){
                                 incrementGEETileLayersLoading();
                                 tileIncremented = true;
+                                if(layer.viz.isTimeLapse){
+                                    timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.push(id);
+
+                                }
                             }
                         }else{
                             $('#' + spinnerID+'2').hide();
                             decrementGEETileLayersLoading();
+                            if(layer.viz.isTimeLapse){
+                                    timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.filter(timeLapseLayerID => timeLapseLayerID !== id)
+                
+                                }
                             tileIncremented = false;
+                        }
+                        if(layer.viz.isTimeLapse){
+                            var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
+                            $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
                         }
                         updateProgress();
                         // console.log(event.count);

@@ -321,18 +321,20 @@ function setFrameOpacity(frame,opacity){
   s.slider('option', 'value',opacity);
   s.slider('option','slide').call(s,null,{ handle: $('.ui-slider-handle', s), value: opacity });
 }
-function selectFrame(id){
+function selectFrame(id,fromYearSlider){
   if(id === null || id === undefined){id = timeLapseID}
+  if(fromYearSlider === null || fromYearSlider === undefined){fromYearSlider = false}
   timeLapseID = id
-
+  
   if(timeLapseObj[timeLapseID].isReady){
+    turnOnTimeLapseLayers();
     var slidersT = timeLapseObj[timeLapseID].sliders;
     if(timeLapseFrame > slidersT.length-1){timeLapseFrame = 0}
     else if(timeLapseFrame < 0){timeLapseFrame = slidersT.length-1}
 
     slidersT.map(function(s){
       try{
-        setFrameOpacity(slidersT[s],0)
+        setFrameOpacity(s,0)
       }catch(err){}
       
     })
@@ -340,8 +342,14 @@ function selectFrame(id){
     
     try{
         setFrameOpacity(frame,100);
-        var s = $('#'+timeLapseID+'-year-slider').slider();
-        s.slider('option', 'value',timeLapseObj[timeLapseID].years[timeLapseFrame]);
+        if(!fromYearSlider){
+          Object.keys(timeLapseObj).map(function(k){
+            var s = $('#'+k+'-year-slider').slider();
+            s.slider('option', 'value',timeLapseObj[k].years[timeLapseFrame]);
+          })
+        }
+        
+        
         
       }catch(err){}
     $('#'+timeLapseID+'-year-label').show();
@@ -388,6 +396,7 @@ function clearActiveButtons(){
    })
 };
 function clearAllFrames(){
+  turnOffAllNonActiveTimeLapseLayers(); 
   Object.keys(timeLapseObj).map(function(k){
     var slidersT = timeLapseObj[k].sliders;
     $('#'+k+'-year-label').hide();
@@ -396,14 +405,23 @@ function clearAllFrames(){
     $('#'+k+'-play-button').removeClass('time-lapse-active');
     
     slidersT.map(function(s){
-      try{setFrameOpacity(slidersT[s],0)}
+      try{setFrameOpacity(s,0)}
       catch(err){}
       
     })
   })
 }
+function setSpeed(id,speed){
+  timeLapseID = id;
+  intervalPeriod = speed;
+  if(timeLapseObj[timeLapseID].isReady){
+    pauseAll();
+    playTimeLapse(id);
+  }
+}
 function playTimeLapse(id){
   timeLapseID = id;
+
   if(timeLapseObj[timeLapseID].isReady){
     clearAllFrames();
     pauseAll();
@@ -418,10 +436,13 @@ function playTimeLapse(id){
   }
 }
 function stopTimeLapse(id){
+  timeLapseID = null;
+  // turnOffAllTimeLapseLayers();
   pauseAll();
   clearAllFrames();
 }
 function toggleTimeLapseLayers(id){
+  if(id === null || id === undefined){id = timeLapseID}
   var visibleToggles = timeLapseObj[k].layerVisibleIDs;
   visibleToggles.map(function(i){$('#'+i).click()});
 }
@@ -435,12 +456,20 @@ function toggleAllTimeLapseLayers(){
 //     turnOnTimeLapseLayers(k)
 //   })
 // };
-// function turnOffAllTimeLapseLayers(){
-//   Object.keys(timeLapseObj).map(function(k){
-//     turnOffTimeLapseLayers(k)
-//   })
-// }
+function turnOffAllTimeLapseLayers(){
+  Object.keys(timeLapseObj).map(function(k){
+    turnOffTimeLapseLayers(k)
+  })
+}
+function turnOffAllNonActiveTimeLapseLayers(){
+  Object.keys(timeLapseObj).map(function(k){
+    if(k !== timeLapseID){
+      turnOffTimeLapseLayers(k);
+    }
+  })
+}
 function toggleTimeLapseLayers(id){
+  if(id === null || id === undefined){id = timeLapseID}
   if(timeLapseObj[id].isReady){
     timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).click()});
     if(timeLapseObj[id].visible){
@@ -448,12 +477,27 @@ function toggleTimeLapseLayers(id){
     }else{timeLapseObj[id].visible = true}
   }
 }
-// function turnOnTimeLapseLayers(id){
-//   timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).prop('checked',true)});
-// }
-// function turnOffTimeLapseLayers(id){
-//   timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).prop('checked',true)});
-// }
+function turnOnTimeLapseLayers(id){
+  if(id === null || id === undefined){id = timeLapseID}
+  if(timeLapseObj[id].isReady){
+    
+    if(timeLapseObj[id].visible === false){
+      timeLapseObj[id].visible = true;
+      timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).click()});
+    }
+  }
+}
+function turnOffTimeLapseLayers(id){
+  if(id === null || id === undefined){id = timeLapseID}
+  if(timeLapseObj[id].isReady){
+    
+    if(timeLapseObj[id].visible === true){
+      timeLapseObj[id].visible = false;
+      timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).click()});
+    }
+  }
+}
+
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   
   if(visible === undefined || visible === null){visible = true};
@@ -472,53 +516,64 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID] = {}
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}  
 
-  var startYearT = ee.Date(ee.Image(item.sort('system:time_start',true).first()).get('system:time_start')).get('year').getInfo();
-  var endYearT = ee.Date(ee.Image(item.sort('system:time_start',false).first()).get('system:time_start')).get('year').getInfo();
-  var yearsT = ee.List.sequence(startYearT,endYearT).getInfo();
+  // var startYearT = ee.Date(ee.Image(item.sort('system:time_start',true).first()).get('system:time_start')).get('year').getInfo();
+  // var endYearT = ee.Date(ee.Image(item.sort('system:time_start',false).first()).get('system:time_start')).get('year').getInfo();
+  // var yearsT = ee.List.sequence(startYearT,endYearT).getInfo();
+  var yearsT = item.sort('system:time_start',true).toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).getInfo();
+  var startYearT = yearsT[0];
+  var endYearT = yearsT[yearsT.length-1]
   timeLapseObj[legendDivID].years = yearsT;
+  timeLapseObj[legendDivID].frames = ee.List.sequence(0,yearsT.length-1).getInfo();
+  timeLapseObj[legendDivID].nFrames = yearsT.length;
   timeLapseObj[legendDivID].loadingLayerIDs = [];
+  timeLapseObj[legendDivID].loadingTilesLayerIDs = [];
   timeLapseObj[legendDivID].layerVisibleIDs = [];
+  timeLapseObj[legendDivID].sliders = [];
   timeLapseObj[legendDivID].intervalValue = null;
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
-  addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',name, '',false,'');
-  $('#'+legendDivID+'-collapse-label>').append(`<i  id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>`);
+  addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',
+                                                `<div class = 'layer-container'>
+                                                
+                                                <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
+                                                 ${name}
+                                                 <div id = '${legendDivID}-loading-progress-container' class="bg-black progress">
+                                                  <div id = '${legendDivID}-loading-progress' class="bg-teal  progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                                    0% loaded
+                                                  </div>
+                                                </div>
+                                                </div>`, '',false,'');
+  // $('#'+legendDivID+'-collapse-label>').append(``);
   $('#'+legendDivID+'-collapse-label').append(`
-        <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0' style = 'display:none;'>
+        <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0 pb-4' style = 'display:none;'>
 
-        <input  id="${legendDivID}-visible" type="checkbox" ${checked}  />
-        <label  id="${legendDivID}-visible-label" onclick = 'toggleTimeLapseLayers("${legendDivID}")' style = 'margin-bottom:0px;'  for="${legendDivID}-visible"></label>
-                            
+                             
         <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward"></i></button>
           <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseTimeLapse("${legendDivID}")'><i class="fa fa-pause"></i></button>
           <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
           <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
           <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
           <p class = 'btn' id = '${legendDivID}-year-label'></p>
-          <div id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'></div>
+          <div title = 'Frame Opacity' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'></div>
+          <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-layer-opacity-range'></div>
       </div>`);
 
 
-  // item = item.sort('system:time_start',false);
-  
-  var yr = endYearT;
-  ee.List.sequence(0,item.size().subtract(1)).reverse().evaluate(function(l){
-    var itemL = item.toList(10000,0);
-    l.map(function(i){
-      var img = ee.Image(itemL.get(i));
-      
-        var vizT = viz;
-        vizT.opacity = 0
-        addToMap(img,vizT,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
-        yr--;
-      
-    });
-    var sliders = $( "#"+legendDivID+'-collapse-div' ).find( ".ui-slider" );
-    sliders = sliders.map(function(s){return sliders[s].id})
+  $('#legend-collapse-div').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
+  yearsT.reverse().map(function(yr){
+    var img = item.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
     
-    
-    timeLapseObj[legendDivID].sliders = sliders;
-
+    viz.opacity = 0;
+    viz.layerType = 'geeImage';
+    if(yr !== yearsT[0]){
+      viz.addToLegend = false;
+      viz.addToClassLegend = false;
+    }
+    // console.log(viz);
+    addToMap(img,viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
+  })
+  timeLapseObj[legendDivID].years = timeLapseObj[legendDivID].years.reverse();
+    timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders.reverse();
 
     $('#'+legendDivID+'-year-slider').slider({
         
@@ -531,14 +586,37 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
           var yr = ui.value;
           var i = yearsT.indexOf(yr);
           timeLapseFrame = i;
+          Object.keys(timeLapseObj).map(function(k){
+            var s = $('#'+k+'-year-slider').slider();
+            s.slider('option', 'value',ui.value);
+          })
           if(timeLapseObj[legendDivID].isReady){
             clearAllFrames();
             pauseTimeLapse(legendDivID);
-            selectFrame(legendDivID);
+            selectFrame(legendDivID,true);
+          }
+        }
+      });
+    $('#'+legendDivID+'-speed-slider').slider({
+        min: 0.5,
+        max: 3,
+        step: 0.5,
+        value: 0.5,
+        slide: function(e,ui){
+          // console.log(e);
+          var speed = 1/ui.value*1000;
+          Object.keys(timeLapseObj).map(function(k){
+            var s = $('#'+k+'-speed-slider').slider();
+            s.slider('option', 'value',ui.value);
+          })
+           
+    // sliders = sliders.map(function(s){return sliders[s].id})
+          if(timeLapseObj[legendDivID].isReady){
+            setSpeed(legendDivID,speed)
           }
         }
       })
-  });
+ 
   
 }
 /////////////////////////////////////
@@ -769,6 +847,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     // else{layer.min = 0;}
     
     if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
+      // console.log('legend-'+whichLayerList)
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
         // var legendItemContainer = document.createElement("legend-item");
 
