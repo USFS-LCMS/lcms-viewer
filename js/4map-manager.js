@@ -1273,7 +1273,7 @@ function reRun(){
   layerChildID = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();
-  queryObj = {};areaChartCollections = {};pixelChartCollections = {};
+  queryObj = {};areaChartCollections = {};pixelChartCollections = {};timeLapseObj = {};
   // if(analysisMode === 'advanced'){
   //   document.getElementById('threshold-container').style.display = 'inline-block';
   //   document.getElementById('advanced-radio-container').style.display = 'inline';
