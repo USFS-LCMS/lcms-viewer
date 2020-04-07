@@ -1036,7 +1036,7 @@ function runCONUS(){
       .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
       .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
       .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
-  Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse');
+  Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse',false);
     // Map2.addTimeLapse(rnrThresh.limit(8).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
   var raw = composites.map(simpleAddIndices).select(whichIndices).map(setSameDate);
 
@@ -1104,7 +1104,7 @@ function runCONUS(){
     }
 
     var dndThresh = thresholdChange(lossProb,lowerThresholdDecline,upperThresholdDecline, 1);
-    Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:1,palette:declineProbPalette},'Loss Time Lapse');
+    Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:1,palette:declineProbPalette},'Loss Time Lapse',false);
   if(summaryMethod === 'year'){
     var dndThreshOut = dndThresh.qualityMosaic('Loss Probability_change_year');//.qualityMosaic('Decline_change');
     

@@ -421,10 +421,44 @@ function stopTimeLapse(id){
   pauseAll();
   clearAllFrames();
 }
-
+function toggleTimeLapseLayers(id){
+  var visibleToggles = timeLapseObj[k].layerVisibleIDs;
+  visibleToggles.map(function(i){$('#'+i).click()});
+}
+function toggleAllTimeLapseLayers(){
+  Object.keys(timeLapseObj).map(function(k){
+    toggleTimeLapseLayers(k)
+  })
+}
+// function turnOnAllTimeLapseLayers(){
+//   Object.keys(timeLapseObj).map(function(k){
+//     turnOnTimeLapseLayers(k)
+//   })
+// };
+// function turnOffAllTimeLapseLayers(){
+//   Object.keys(timeLapseObj).map(function(k){
+//     turnOffTimeLapseLayers(k)
+//   })
+// }
+function toggleTimeLapseLayers(id){
+  if(timeLapseObj[id].isReady){
+    timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).click()});
+    if(timeLapseObj[id].visible){
+      timeLapseObj[id].visible = false
+    }else{timeLapseObj[id].visible = true}
+  }
+}
+// function turnOnTimeLapseLayers(id){
+//   timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).prop('checked',true)});
+// }
+// function turnOffTimeLapseLayers(id){
+//   timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).prop('checked',true)});
+// }
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   
-
+  if(visible === undefined || visible === null){visible = true};
+  var checked = '';
+  if(visible){checked = 'checked'}
   var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
   legendDivID = legendDivID.replaceAll('/','-');
   legendDivID = legendDivID.replaceAll('(','-');
@@ -443,18 +477,24 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   var yearsT = ee.List.sequence(startYearT,endYearT).getInfo();
   timeLapseObj[legendDivID].years = yearsT;
   timeLapseObj[legendDivID].loadingLayerIDs = [];
+  timeLapseObj[legendDivID].layerVisibleIDs = [];
   timeLapseObj[legendDivID].intervalValue = null;
   timeLapseObj[legendDivID].isReady = false;
+  timeLapseObj[legendDivID].visible = visible;
   addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',name, '',false,'');
-  $('#'+legendDivID+'-collapse-label').append(`<div class = 'icon-bar col-lg-12 '>
-        
+  $('#'+legendDivID+'-collapse-label>').append(`<i  id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>`);
+  $('#'+legendDivID+'-collapse-label').append(`
+        <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0' style = 'display:none;'>
+
+        <input  id="${legendDivID}-visible" type="checkbox" ${checked}  />
+        <label  id="${legendDivID}-visible-label" onclick = 'toggleTimeLapseLayers("${legendDivID}")' style = 'margin-bottom:0px;'  for="${legendDivID}-visible"></label>
+                            
         <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward"></i></button>
           <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseTimeLapse("${legendDivID}")'><i class="fa fa-pause"></i></button>
           <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
           <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
           <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-          <p class = 'btn' id = '${legendDivID}-year-label'><i id = '${legendDivID}-loading-spinner' title = 'Time lapse loading' class="fa fa-spinner fa-spin"></i></p>
-
+          <p class = 'btn' id = '${legendDivID}-year-label'></p>
           <div id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'></div>
       </div>`);
 

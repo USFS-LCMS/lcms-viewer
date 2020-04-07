@@ -987,7 +987,8 @@ function addLayer(layer){
     
     if(layer.viz.isTimeLapse){
         // console.log(timeLapseObj[layer.viz.timeLapseID]);
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.push(id)
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.push(id);
+        timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
     }
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
 								           
@@ -1313,6 +1314,7 @@ function addLayer(layer){
                 if(timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0){
                     $('#'+layer.viz.timeLapseID+'-loading-spinner').hide();
                     $('#'+layer.viz.timeLapseID+'-year-label').hide();
+                    $('#'+layer.viz.timeLapseID+'-icon-bar').show();
                     timeLapseObj[layer.viz.timeLapseID].isReady = true;
                 };
             }
