@@ -626,7 +626,16 @@ function runUSFS(){
     // Map2.addLayer(dndThreshMostRecent.select([0]),{'min':lowerThresholdDecline,'max':upperThresholdDecline,'palette':'FF0,F00'},studyAreaName +' Decline Probability',false,null,null,'Most recent decline ' + declineNameEnding);
    
     Map2.addLayer(dndThreshOut.select([1]).clip(boundary).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
-    Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:upperThresholdDecline,palette:declineProbPalette},'Loss Prob Time Lapse',false); 
+    // Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:upperThresholdDecline,palette:declineProbPalette},'Loss Prob Time Lapse',false); 
+    var lossGain = joinCollections(dndThresh.select([0]),rnrThresh.select([0]),false);
+    lossGain = lossGain.map(function(img){
+      var out = ee.Image(0);
+      out = out.where(img.select([0]).mask(),1)
+      out = out.where(img.select([1]).mask(),2)
+      out = out.selfMask().copyProperties(img,['system:time_start']);
+      return out
+    })
+    Map2.addTimeLapse(lossGain,{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
     
     // if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
     //   Map2.addLayer(dndThreshOutUnMasked.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
@@ -656,6 +665,8 @@ function runUSFS(){
     }
       
     Map2.addLayer(rnrThreshOut.select([1]).clip(boundary).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},'Gain Year',false,null,null,threshYearNameEnd+'gain '+recoveryNameEnding);
+    // Map2.addTimeLapse(rnrThresh.select([0]),{min:lowerThresholdRecovery,max:upperThresholdRecovery,palette:recoveryProbPalette},'Gain Prob Time Lapse',false); 
+    
     if(analysisMode === 'advanced'){
       Map2.addLayer(rnrThreshOut.select([0]).clip(boundary).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},'Gain Probability',false,null,null,threshProbNameEnd+'gain '+recoveryNameEnding);
       Map2.addLayer(rnrCount.clip(boundary).set('bounds',clientBoundary),{'min':1,'max':5,'palette':recoveryDurPalette},'Gain Duration',false,'years',null,'Total duration of gain '+recoveryNameEnding);

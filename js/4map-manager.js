@@ -346,6 +346,7 @@ function selectFrame(id,fromYearSlider){
           Object.keys(timeLapseObj).map(function(k){
             var s = $('#'+k+'-year-slider').slider();
             s.slider('option', 'value',timeLapseObj[k].years[timeLapseFrame]);
+            $('#'+k+'-year-slider-handle-label').text( timeLapseObj[k].years[timeLapseFrame])
           })
         }
         
@@ -537,8 +538,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                                 
                                                 <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
                                                  ${name}
-                                                 <div id = '${legendDivID}-loading-progress-container' class="bg-black progress">
-                                                  <div id = '${legendDivID}-loading-progress' class="bg-teal  progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                                 <div id = '${legendDivID}-loading-progress-container' class="bg-white  progress">
+                                                  <div id = '${legendDivID}-loading-progress' class="bg-teal text-dark font-weight-bold progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
                                                     0% loaded
                                                   </div>
                                                 </div>
@@ -548,20 +549,28 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0 pb-4' style = 'display:none;'>
 
                              
-        <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward"></i></button>
+        <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
           <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseTimeLapse("${legendDivID}")'><i class="fa fa-pause"></i></button>
           <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
           <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
           <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
           <p class = 'btn' id = '${legendDivID}-year-label'></p>
-          <div title = 'Frame Opacity' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'></div>
-          <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-layer-opacity-range'></div>
+          <div title = 'Frame Opacity' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'>
+            <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+              <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${yearsT[0]}</div>
+            </div>
+          </div>
+          <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-layer-opacity-range'>
+            <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+              <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${1/(intervalPeriod/1000)}fps</div>
+            </div>
+          </div>
       </div>`);
 
 
   $('#legend-collapse-div').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
   yearsT.reverse().map(function(yr){
-    var img = item.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+    var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
     
     viz.opacity = 0;
     viz.layerType = 'geeImage';
@@ -589,6 +598,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
           Object.keys(timeLapseObj).map(function(k){
             var s = $('#'+k+'-year-slider').slider();
             s.slider('option', 'value',ui.value);
+            $('#'+k+'-year-slider-handle-label').text( ui.value )
           })
           if(timeLapseObj[legendDivID].isReady){
             clearAllFrames();
@@ -598,9 +608,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         }
       });
     $('#'+legendDivID+'-speed-slider').slider({
-        min: 0.5,
-        max: 3,
-        step: 0.5,
+        min: 0.2,
+        max: 4.05,
+        step: 0.1,
         value: 0.5,
         slide: function(e,ui){
           // console.log(e);
@@ -608,6 +618,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
           Object.keys(timeLapseObj).map(function(k){
             var s = $('#'+k+'-speed-slider').slider();
             s.slider('option', 'value',ui.value);
+            $('#'+k+'-speed-slider-handle-label').text(`${ui.value}fps`)
           })
            
     // sliders = sliders.map(function(s){return sliders[s].id})
@@ -615,7 +626,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
             setSpeed(legendDivID,speed)
           }
         }
-      })
+      });
+
+   
  
   
 }
