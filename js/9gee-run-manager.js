@@ -2842,8 +2842,8 @@ var landcoverClassQueryDict = {};
       out = out.selfMask().copyProperties(img,['system:time_start']);
       return out
     })
-    Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse',false);
-    Map2.addTimeLapse(lossGain,{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+    Map2.addTimeLapse(composites.limit(3),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse',false);
+    Map2.addTimeLapse(lossGain.limit(3),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
     // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
      
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowDecline,upperThresholdDecline, 1);

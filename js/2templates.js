@@ -1042,7 +1042,7 @@ function addLayer(layer){
 	}
 	function updateProgress(){
 		var pct = layer.percent;
-        // if(pct === 100){jitterZoom()}
+        if(pct === 100){jitterZoom()}
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
 	

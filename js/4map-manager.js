@@ -523,7 +523,8 @@ function jitterZoom(){
   }
   var tDiff = new Date() - lastJitter;
   var jittered = false;
-  if(tDiff > 2000){
+  if(tDiff > 2000 && geeTileLayersDownloading === 0){
+    console.log(tDiff)
     console.log('jittering zoom')
     var z = map.getZoom();
     map.setZoom(z-1);
@@ -672,9 +673,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         }
       });
     $('#'+legendDivID+'-speed-slider').slider({
-        min: 0.2,
-        max: 4.05,
-        step: 0.1,
+        min: 0.5,
+        max: 5.0,
+        step: 0.5,
         value: 0.5,
         slide: function(e,ui){
           // console.log(e);
@@ -2257,7 +2258,250 @@ function getInfoWindow(xOffset,yOffset){
   });
 } 
 function initialize() {
-  
+  // Create a new StyledMapType object, passing it an array of styles,
+        // and the name to be displayed on the map type control.
+        var styledMapType = new google.maps.StyledMapType(
+            [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#242f3e"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#746855"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#242f3e"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#263c3f"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#6b9a76"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#38414e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#212a37"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9ca5b3"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#746855"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#1f2835"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#f3d19c"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#2f3948"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#17263c"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#515c6d"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#17263c"
+      }
+    ]
+  }
+],
+            {name: 'Dark Mode'});
+
+     
   var mapOptions = {
     center: null,
     zoom: null,
@@ -2268,7 +2512,8 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.HYBRID,
     streetViewControl: true,
     fullscreenControl: false,
-    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT},
+    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT,mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
+                    'dark_mode']},
     // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
@@ -2276,8 +2521,12 @@ function initialize() {
     tilt:0,
     controlSize: 25,
     scaleControl: true,
-    clickableIcons:false
+    clickableIcons:false,
   };
+   
+
+       
+      
   var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
   var zoom = initialZoomLevel;//8;
 
@@ -2307,6 +2556,9 @@ function initialize() {
      
     map = new google.maps.Map(document.getElementById("map"),
                                   mapOptions);
+     //Associate the styled map with the MapTypeId and set it to display.
+    map.mapTypes.set('dark_mode', styledMapType);
+        
     marker=new google.maps.Circle({
     center:{lat:45,lng:-111},
     radius:5
