@@ -2673,6 +2673,8 @@ function runTest(){
     // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
   };
+  var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7');
+
   var chartColorsT;
   var areaChartColors;
   var colorOffset = 15;
@@ -2840,8 +2842,10 @@ var landcoverClassQueryDict = {};
       out = out.selfMask().copyProperties(img,['system:time_start']);
       return out
     })
-    Map2.addTimeLapse(lossGain.limit(3),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
-    
+    Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse',false);
+    Map2.addTimeLapse(lossGain,{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+    // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+     
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowDecline,upperThresholdDecline, 1);
     var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdFastDecline,upperThresholdDecline, 1);
     var yrs = [1989,2002,2005,2019]
@@ -2917,7 +2921,7 @@ var landcoverClassQueryDict = {};
     // Map2.addLayer(rnrThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},k+' Gain Year',false,null,null,k+ ' '+threshYearNameEnd+'gain '+recoveryNameEnding);
     // Map2.addLayer(rnrThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},k+ ' Gain Probability',false,null,null,k + ' ' +threshProbNameEnd+'gain '+recoveryNameEnding);
       
-
+    // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
   });
 areaChartCollections['lg'] = {'label':'LCMS Runs',
                                   'collection':areaCollection,
@@ -2930,7 +2934,7 @@ pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'c
 // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
 // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
 
- getSelectLayers();
+ // getSelectLayers();
  populateAreaChartDropdown();   
  populatePixelChartDropdown();
  // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')                              

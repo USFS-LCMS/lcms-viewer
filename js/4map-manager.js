@@ -347,6 +347,7 @@ function selectFrame(id,fromYearSlider){
             var s = $('#'+k+'-year-slider').slider();
             s.slider('option', 'value',timeLapseObj[k].years[timeLapseFrame]);
             $('#'+k+'-year-slider-handle-label').text( timeLapseObj[k].years[timeLapseFrame])
+
           })
         }
         
@@ -354,10 +355,25 @@ function selectFrame(id,fromYearSlider){
         
       }catch(err){}
     $('#'+timeLapseID+'-year-label').show();
-    $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
+    // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
+    $('#time-lapse-year-label').show();
+    $('#time-lapse-year-label').html(`Time lapse year: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`)
     timeLapseFrame++
   }
   
+}
+function pauseButtonFunction(id){
+
+  
+  timeLapseID = id;
+  if(timeLapseObj[timeLapseID].isReady){
+    timeLapseFrame--;
+    clearAllFrames();
+    pauseTimeLapse();
+    // year++;
+    selectFrame();
+  }
+
 }
 function pauseAll(){
   Object.keys(timeLapseObj).map(function(k){
@@ -437,6 +453,8 @@ function playTimeLapse(id){
   }
 }
 function stopTimeLapse(id){
+  $('#time-lapse-year-label').empty();
+  $('#time-lapse-year-label').hide();
   timeLapseID = null;
   // turnOffAllTimeLapseLayers();
   pauseAll();
@@ -498,7 +516,28 @@ function turnOffTimeLapseLayers(id){
     }
   }
 }
-
+var lastJitter;
+function jitterZoom(){
+  if(lastJitter === null || lastJitter === undefined){
+    lastJitter = new Date();
+  }
+  var tDiff = new Date() - lastJitter;
+  var jittered = false;
+  if(tDiff > 2000){
+    console.log('jittering zoom')
+    var z = map.getZoom();
+    map.setZoom(z-1);
+    map.setZoom(z);
+    jittered = true;
+    lastJitter = new Date();
+  }
+  
+  return jittered
+  
+}
+function toggleFrames(id){
+  $('#'+id+'-collapse-div').toggle();
+}
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   
   if(visible === undefined || visible === null){visible = true};
@@ -521,6 +560,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   // var endYearT = ee.Date(ee.Image(item.sort('system:time_start',false).first()).get('system:time_start')).get('year').getInfo();
   // var yearsT = ee.List.sequence(startYearT,endYearT).getInfo();
   var yearsT = item.sort('system:time_start',true).toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).getInfo();
+  // var dates = ee.Dictionary(item.aggregate_histogram('system:time_start')).keys().getInfo();
+  
   var startYearT = yearsT[0];
   var endYearT = yearsT[yearsT.length-1]
   timeLapseObj[legendDivID].years = yearsT;
@@ -533,29 +574,48 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].intervalValue = null;
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
-  addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',
-                                                `<div class = 'layer-container'>
+  $('#'+whichLayerList).append(`<div id = '${legendDivID}-collapse-label'>
+                                  <div class = 'layer-container'>
+                                    <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
+                                    ${name}
+                                    <div id = '${legendDivID}-loading-progress-container' class="bg-white  progress">
+                                    <div id = '${legendDivID}-loading-progress' class="bg-teal text-dark font-weight-bold progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                    0% loaded
+                                    </div>
+                                  </div>
+                                </div>
+                                </div>
+                                <hr>
+                                <div id = '${legendDivID}-collapse-div' style = 'display:none;'>
+                                <hr>
+                                </div>
+                                `)
+  // addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',
+  //                                               `<div class = 'layer-container'>
                                                 
-                                                <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
-                                                 ${name}
-                                                 <div id = '${legendDivID}-loading-progress-container' class="bg-white  progress">
-                                                  <div id = '${legendDivID}-loading-progress' class="bg-teal text-dark font-weight-bold progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                                                    0% loaded
-                                                  </div>
-                                                </div>
-                                                </div>`, '',false,'');
+  //                                               <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
+  //                                                ${name}
+  //                                                <div id = '${legendDivID}-loading-progress-container' class="bg-white  progress">
+  //                                                 <div id = '${legendDivID}-loading-progress' class="bg-teal text-dark font-weight-bold progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+  //                                                   0% loaded
+  //                                                 </div>
+  //                                               </div>
+  //                                               </div>`, '',false,'');
   // $('#'+legendDivID+'-collapse-label>').append(``);
+  $('#'+legendDivID+'-collapse-label').addClass('pb-4')
   $('#'+legendDivID+'-collapse-label').append(`
-        <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0 pb-4' style = 'display:none;'>
+        <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0 ' style = 'display:none;'>
 
                              
         <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
-          <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseTimeLapse("${legendDivID}")'><i class="fa fa-pause"></i></button>
+          <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
           <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
           <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
           <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-          <p class = 'btn' id = '${legendDivID}-year-label'></p>
-          <div title = 'Frame Opacity' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'>
+          <button class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
+          <button class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
+          
+          <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'>
             <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
               <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${yearsT[0]}</div>
             </div>
@@ -1033,8 +1093,11 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 }
 
 //////////////////////////////////////////////////////
-function standardTileURLFunction(url,xThenY){
-              if(xThenY === null || xThenY === undefined  ){xThenY  = false;}
+function standardTileURLFunction(url,xThenY,fileExtension,token){
+              if(xThenY === null || xThenY === undefined  ){xThenY  = false;};
+              if(token === null || token === undefined  ){token  = '';};
+              if(fileExtension === null || fileExtension === undefined  ){fileExtension  = '.png';}
+              else{token = 'token='+token}
               return function(coord, zoom) {
                     // "Wrap" x (logitude) at 180th meridian properly
                     // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib 
@@ -1046,9 +1109,9 @@ function standardTileURLFunction(url,xThenY){
                     // Wrap y (latitude) in a like manner if you want to enable vertical infinite scroll
                     // return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/" + zoom + "/" + x + "/" + coord.y + "?access_token=pk.eyJ1IjoiaWhvdXNtYW4iLCJhIjoiY2ltcXQ0cnljMDBwNHZsbTQwYXRtb3FhYiJ9.Sql6G9QR_TQ-OaT5wT6f5Q"
                     if(xThenY ){
-                        return url+ zoom + "/" + x + "/" + coord.y +".png?";
+                        return url+ zoom + "/" + x + "/" + coord.y +fileExtension+"?"+token;
                     }
-                    else{return url+ zoom + "/" + coord.y + "/" +x  +".png?";}//+ (new Date()).getTime();
+                    else{return url+ zoom + "/" + coord.y + "/" +x  +fileExtension+"?"+token;}//+ (new Date()).getTime();
                     
                 }
             }

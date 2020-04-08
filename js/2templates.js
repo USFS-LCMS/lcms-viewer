@@ -113,7 +113,9 @@ var staticTemplates = {
 			            <div class="input-group-prepend">
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
-			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">`,
+			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
+                        </div>
+                        <p style = 'display:none;' id = 'time-lapse-year-label'></p>`,
 	introModal:{'LCMS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -983,7 +985,7 @@ function addLayer(layer){
     var selectionID = id + '-selection-list-'+layer.ID;
 	var checked = '';
 
-
+    layer.wasJittered = false;
 	if(layer.visible){checked = 'checked'}
     
     if(layer.viz.isTimeLapse){
@@ -991,6 +993,7 @@ function addLayer(layer){
         timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.push(id);
         timeLapseObj[layer.viz.timeLapseID].sliders.push(opacityID);
         timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
+
     }
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
 								           
@@ -1039,6 +1042,7 @@ function addLayer(layer){
 	}
 	function updateProgress(){
 		var pct = layer.percent;
+        // if(pct === 100){jitterZoom()}
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
 	
@@ -1337,10 +1341,13 @@ function addLayer(layer){
                     layer.highWaterMark = 0;
                     var tileIncremented = false;
 
-                    // console.log(MAPID + TOKEN);
                     layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
-                    layer.layer.addTileCallback(function(event){
-                        // console.log(event.count);console.log(layer.highWaterMark);
+                    // layer.layer = new ee.layers.ImageOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
+                    // layer.layer =  new ee.layers.ImageOverlay(new ee.layers.EarthEngineTileSource('https://earthengine.googleapis.com/map', MAPID, TOKEN))
+                    layer.layer.addTileCallback(function(event,failure){
+                        // console.log(event);
+                        // console.log(failure);
+                        // console.log(layer.highWaterMark);
 
                         if(event.count > layer.highWaterMark){
                             layer.highWaterMark = event.count;
@@ -1371,6 +1378,11 @@ function addLayer(layer){
                         if(layer.viz.isTimeLapse){
                             var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
                             $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
+                            if(propTiles === 100){
+                                if(layer.wasJittered === false){
+                                    layer.wasJittered= jitterZoom();
+                                } 
+                            }
                         }
                         updateProgress();
                         // console.log(event.count);
@@ -1394,8 +1406,29 @@ function addLayer(layer){
                 
             }
         }
+        function geeAltService(eeLayer){
+            var url = 'https://earthengine.googleapis.com/map/'+eeLayer.mapid+'/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
+            console.log(url)
+            var fun = standardTileURLFunction(url,true,'',eeLayer.token);
+            // console.log(fun)
+            layer.layer = new google.maps.ImageMapType({
+                    getTileUrl:fun,
+                    tileSize: new google.maps.Size(256, 256),
+                    maxZoom: 15
+                })
+            if(layer.visible){
+                
+                layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+                layer.rangeOpacity = layer.opacity; 
+                layer.layer.setOpacity(layer.opacity); 
+                 }else{layer.rangeOpacity = 0;}
+                 $('#' + spinnerID).hide();
+                $('#' + visibleLabelID).show();
+                setRangeSliderThumbOpacity();
+        }
         function getGEEMapService(){
-            layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)})
+            layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
+            // layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
         };
         getGEEMapService();
 
