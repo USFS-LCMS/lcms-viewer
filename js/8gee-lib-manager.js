@@ -540,7 +540,9 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   var chartTableDict = {
     'Burn Severity':mtbsQueryClassDict
   }
-  return {'NLCD':nlcdObj,'MTBS':{'collection':mtbs.set('bounds',clientBoundsDict.All).select([0],['Burn Severity']).set('chartTableDict',chartTableDict)}};
+  return {'NLCD':nlcdObj,
+  'MTBS':{'collection':mtbs.set('bounds',clientBoundsDict.All).select([0],['Burn Severity']).set('chartTableDict',chartTableDict)},
+  'MTBSSeverityViz':severityViz};
 }
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
