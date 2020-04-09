@@ -499,7 +499,7 @@ function runUSFS(){
     // subtleGain = trend.updateMask(subtleGain);
     // Map2.addLayer(subtleGain,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Subtle Gain')
     // Map2.addLayer(trend,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Trend')
-    Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite Time Series',false);
+    Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite Time Lapse',false);
     if(analysisMode === 'advanced'){
       var lastYearAdded = false;
       ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
@@ -627,15 +627,18 @@ function runUSFS(){
    
     Map2.addLayer(dndThreshOut.select([1]).clip(boundary).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
     // Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:upperThresholdDecline,palette:declineProbPalette},'Loss Prob Time Lapse',false); 
-    var lossGain = joinCollections(dndThresh.select([0]),rnrThresh.select([0]),false);
+    var threshImage = ee.Image([lowerThresholdFastLoss,lowerThresholdSlowLoss,lowerThresholdRecovery]);
+    var lossGain = NFSLCMS.select([5,4,3]).map(function(img){
+      return img.updateMask(img.gte(threshImage))
+    })
     lossGain = lossGain.map(function(img){
-      var out = ee.Image(0);
-      out = out.where(img.select([0]).mask(),1)
-      out = out.where(img.select([1]).mask(),2)
-      out = out.selfMask().copyProperties(img,['system:time_start']);
+      var maxProb = img.reduce(ee.Reducer.max());
+      var out = ee.Image([1,2,3]).mask(img.eq(maxProb)).reduce(ee.Reducer.min())
+      
+      out = out.copyProperties(img,['system:time_start']);
       return out
     })
-    Map2.addTimeLapse(lossGain,{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+    Map2.addTimeLapse(lossGain,{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
     
     // if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
     //   Map2.addLayer(dndThreshOutUnMasked.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
@@ -2834,20 +2837,27 @@ var landcoverClassQueryDict = {};
 
     var rnrThresh = thresholdChange(NFSRNR,lowerThresholdRecovery, upperThresholdRecovery, 1);
 
-    var lossGain = joinCollections(dndThresh.select([0]),rnrThresh.select([0]),false);
-    lossGain = lossGain.map(function(img){
-      var out = ee.Image(0);
-      out = out.where(img.select([0]).mask(),1)
-      out = out.where(img.select([1]).mask(),2)
-      out = out.selfMask().copyProperties(img,['system:time_start']);
-      return out
-    })
-    Map2.addTimeLapse(composites.limit(3),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse',false);
-    Map2.addTimeLapse(lossGain.limit(3),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
-    // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
-     
+    
+    
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowDecline,upperThresholdDecline, 1);
     var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdFastDecline,upperThresholdDecline, 1);
+
+    var threshImage = ee.Image([lowerThresholdFastDecline,lowerThresholdSlowDecline,lowerThresholdRecovery]);
+    var lossGain = NFSLCMS.select([5,4,3]).map(function(img){
+      return img.updateMask(img.gte(threshImage))
+    })
+    lossGain = lossGain.map(function(img){
+      var maxProb = img.reduce(ee.Reducer.max());
+      var out = ee.Image([1,2,3]).mask(img.eq(maxProb)).reduce(ee.Reducer.min())
+      
+      out = out.copyProperties(img,['system:time_start']);
+      return out
+    })
+
+    Map2.addTimeLapse(composites.limit(4),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composites Time Lapse',false);
+    Map2.addTimeLapse(lossGain,{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+    // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+     
     var yrs = [1989,2002,2005,2019]
     var l = yrs.map(function(yr){return dndThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
     l = ee.ImageCollection(l);

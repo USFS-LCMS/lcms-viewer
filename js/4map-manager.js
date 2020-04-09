@@ -523,7 +523,7 @@ function jitterZoom(){
   }
   var tDiff = new Date() - lastJitter;
   var jittered = false;
-  if(tDiff > 2000 && geeTileLayersDownloading === 0){
+  if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 10000){
     console.log(tDiff)
     console.log('jittering zoom')
     var z = map.getZoom();
@@ -575,7 +575,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].intervalValue = null;
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
-  $('#'+whichLayerList).append(`<div id = '${legendDivID}-collapse-label'>
+  $('#'+whichLayerList).append(`<div class = 'dropdown-divider'></div>
+                                <div  id = '${legendDivID}-collapse-label'>
                                   <div class = 'layer-container'>
                                     <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
                                     ${name}
@@ -586,9 +587,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                   </div>
                                 </div>
                                 </div>
-                                <hr>
                                 <div id = '${legendDivID}-collapse-div' style = 'display:none;'>
-                                <hr>
+                                
                                 </div>
                                 `)
   // addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',
@@ -603,7 +603,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   //                                               </div>
   //                                               </div>`, '',false,'');
   // $('#'+legendDivID+'-collapse-label>').append(``);
-  $('#'+legendDivID+'-collapse-label').addClass('pb-4')
+  $('#'+legendDivID+'-collapse-label').addClass('pb-5')
   $('#'+legendDivID+'-collapse-label').append(`
         <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0 ' style = 'display:none;'>
 
@@ -613,8 +613,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
           <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
           <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
           <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-          <button class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
-          <button class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
+          <button style = 'display:none;' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
+          <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
           
           <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'>
             <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
@@ -674,7 +674,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
       });
     $('#'+legendDivID+'-speed-slider').slider({
         min: 0.5,
-        max: 5.0,
+        max: 5.0  ,
         step: 0.5,
         value: 0.5,
         slide: function(e,ui){

@@ -1141,8 +1141,8 @@ function addLayer(layer){
     }
     function vizToggleCleanup(){
         setRangeSliderThumbOpacity();
-        console.log('visible: ' +layer.visible);
-        console.log('opacity: '+layer.opacity);
+        // console.log('visible: ' +layer.visible);
+        // console.log('opacity: '+layer.opacity);
         layerObj[layer.name] = [layer.visible,layer.opacity];
        //  if(layer.layerType === 'geeVectorImage' && layer.viz.isSelectLayer){
        // //      layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
@@ -1319,6 +1319,7 @@ function addLayer(layer){
                 timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(timeLapseLayerID => timeLapseLayerID !== id)
                 var prop = parseInt((1-timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length /timeLapseObj[layer.viz.timeLapseID].nFrames)*100);
                 $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');   
+                
                 // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
                 if(timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0){
                     $('#'+layer.viz.timeLapseID+'-loading-spinner').hide();
@@ -1378,10 +1379,13 @@ function addLayer(layer){
                         if(layer.viz.isTimeLapse){
                             var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
                             $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
+                            $('#'+layer.viz.timeLapseID+ '-loading-spinner').show();
                             if(propTiles === 100){
-                                if(layer.wasJittered === false){
-                                    layer.wasJittered= jitterZoom();
-                                } 
+                                $('#'+layer.viz.timeLapseID+ '-loading-spinner').hide();
+                                // if(layer.wasJittered === false){
+                                    // layer.wasJittered= jitterZoom();
+
+                                // } 
                             }
                         }
                         updateProgress();
