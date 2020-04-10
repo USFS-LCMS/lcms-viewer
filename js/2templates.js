@@ -999,7 +999,7 @@ function addLayer(layer){
 								           
 								           <div id="${opacityID}" class = 'simple-layer-opacity-range'></div>
 								           <input  id="${visibleID}" type="checkbox" ${checked}  />
-								            <label  id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
+								            <label class = 'layer-checkbox' id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for layer service from Google Earth Engine'></i>
 								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
 								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
@@ -1194,6 +1194,10 @@ function addLayer(layer){
 
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
+    if(!layer.viz.isTimeLapse){
+        $('.layer-checkbox').on('turnOffAll',function(){turnOffAll()});
+        $('.layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+    }
     if(layer.layerType === 'geeVector' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geoJSONVector'){
         $('#'+visibleLabelID).addClass('vector-layer-checkbox');
         $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
@@ -1328,6 +1332,7 @@ function addLayer(layer){
                     // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
 
                     $('#'+layer.viz.timeLapseID+'-icon-bar').show();
+                    $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
                     $('#'+layer.viz.timeLapseID+'-toggle-checkbox-label').show();
                     
                     timeLapseObj[layer.viz.timeLapseID].isReady = true;

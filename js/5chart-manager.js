@@ -133,6 +133,9 @@ function updateUserDefinedAreaArea(){
 function turnOffVectorLayers(){
 	$(".vector-layer-checkbox").trigger("turnOffAll");
 }
+function turnOffLayers(){
+	$(".layer-checkbox").trigger("turnOffAll");
+}
 function turnOffSelectLayers(){
 	$(".select-layer-checkbox").trigger("turnOffAll");
 }
