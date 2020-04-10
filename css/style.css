@@ -290,7 +290,22 @@ font-size:0.9em;
   font-size:0.9em!important;
 }
 .layer-container{margin-bottom:1px;}
+.time-lapse-layer-range-container{
+  float:right;
+  width:30%;
+  margin-top:-0.8em;
 
+}
+.simple-time-lapse-layer-range{
+
+    /*height: 0.1rem;*/
+    
+    /*vertical-align:bottom;*/
+    /*display:inline-block;*/
+    /*vertical-align:bottom;*/
+    margin-top:2em;
+    cursor:pointer;
+  }
 .simple-layer-opacity-range{float:right;
 
     /*height: 0.1rem;*/

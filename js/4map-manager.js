@@ -372,6 +372,7 @@ function pauseButtonFunction(id){
     pauseTimeLapse();
     // year++;
     selectFrame();
+    alignTimeLapseCheckboxes();
   }
 
 }
@@ -390,6 +391,7 @@ function forwardOneFrame(id){
       pauseTimeLapse();
       // year++;
       selectFrame();
+      alignTimeLapseCheckboxes();
     }
   };
 function backOneFrame(id){
@@ -400,6 +402,7 @@ function backOneFrame(id){
 
       timeLapseFrame = timeLapseFrame-2;
       selectFrame();
+      alignTimeLapseCheckboxes();
     }
   };
 function clearActiveButtons(){
@@ -450,6 +453,7 @@ function playTimeLapse(id){
       $('#'+id+'-stop-button').removeClass('time-lapse-active');
       $('#'+id+'-pause-button').removeClass('time-lapse-active');
       $('#'+id+'-play-button').addClass('time-lapse-active');
+      alignTimeLapseCheckboxes();
   }
 }
 function stopTimeLapse(id){
@@ -536,6 +540,23 @@ function jitterZoom(){
   return jittered
   
 }
+function alignTimeLapseCheckboxes(){
+  Object.keys(timeLapseObj).map(function(k){
+    var checked = false;
+    if(timeLapseObj[k].visible){checked = true;}
+    $('#'+k+'-toggle-checkbox').prop('checked', checked)
+  })
+}
+function timeLapseCheckbox(id){
+  var v = timeLapseObj[id].visible;
+  if(!v){
+    pauseButtonFunction(id);
+
+  }else{
+    stopTimeLapse(id);
+  }
+  alignTimeLapseCheckboxes();
+}
 function toggleFrames(id){
   $('#'+id+'-collapse-div').toggle();
 }
@@ -576,57 +597,46 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
   $('#'+whichLayerList).append(`<div class = 'dropdown-divider'></div>
-                                <div  id = '${legendDivID}-collapse-label'>
-                                  <div class = 'layer-container'>
-                                    <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
-                                    ${name}
-                                    <div id = '${legendDivID}-loading-progress-container' class="bg-white  progress">
-                                    <div id = '${legendDivID}-loading-progress' class="bg-teal text-dark font-weight-bold progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                                    0% loaded
+                                <li   id = '${legendDivID}-collapse-label' class = 'layer-container'>
+                                 
+                                  
+
+                                  <div class = 'time-lapse-layer-range-container'>
+                                     
+                                    <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
+                                      <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                        <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${yearsT[0]}</div>
+                                      </div>
+                                    </div>
+                                  
+                                    <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-time-lapse-layer-range'>
+                                      <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                        <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${1/(intervalPeriod/1000)}fps</div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                                </div>
-                                <div id = '${legendDivID}-collapse-div' style = 'display:none;'>
-                                
-                                </div>
-                                `)
-  // addSubCollapse(whichLayerList,legendDivID+'-collapse-label',legendDivID+'-collapse-div',
-  //                                               `<div class = 'layer-container'>
-                                                
-  //                                               <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin"></i>
-  //                                                ${name}
-  //                                                <div id = '${legendDivID}-loading-progress-container' class="bg-white  progress">
-  //                                                 <div id = '${legendDivID}-loading-progress' class="bg-teal text-dark font-weight-bold progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-  //                                                   0% loaded
-  //                                                 </div>
-  //                                               </div>
-  //                                               </div>`, '',false,'');
-  // $('#'+legendDivID+'-collapse-label>').append(``);
-  $('#'+legendDivID+'-collapse-label').addClass('pb-5')
-  $('#'+legendDivID+'-collapse-label').append(`
-        <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-0 ' style = 'display:none;'>
 
-                             
-        <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
-          <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
-          <button class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
-          <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
-          <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-          <button style = 'display:none;' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
-          <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
-          
-          <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-layer-opacity-range'>
-            <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-              <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${yearsT[0]}</div>
-            </div>
-          </div>
-          <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-layer-opacity-range'>
-            <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-              <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${1/(intervalPeriod/1000)}fps</div>
-            </div>
-          </div>
-      </div>`);
+                                    
+                                  <input  id="${legendDivID}-toggle-checkbox" onchange = 'timeLapseCheckbox("${legendDivID}")' type="checkbox" ${checked}  />
+                                  <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
+         
+                                  <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
+                                  <span  class = 'layer-span'>${name}</span>
+                                  <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-4 pt-2' style = 'display:none;'>
+                                    <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
+                                    <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
+                                    <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
+                                    <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
+                                    <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
+                                    <button style = 'display:none;' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
+                                    <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
+                                
+                                  </div>
+                                </li>
+                                <li id = '${legendDivID}-collapse-div'  style = 'display:none;'></li>`)
+  
+  $('#'+legendDivID+'-collapse-label').addClass('pb-4')
+ 
 
 
   $('#time-lapse-legend-list').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
@@ -669,6 +679,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
             clearAllFrames();
             pauseTimeLapse(legendDivID);
             selectFrame(legendDivID,true);
+            alignTimeLapseCheckboxes();
           }
         }
       });
