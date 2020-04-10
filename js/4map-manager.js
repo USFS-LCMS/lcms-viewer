@@ -672,7 +672,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   viz.layerType = 'geeImage';
   viz.legendTitle = name;
 
-  yearsT.reverse().map(function(yr){
+  yearsT.map(function(yr){
     var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
     
 
@@ -684,8 +684,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
     // console.log(viz);
     addToMap(img,viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
   })
-  timeLapseObj[legendDivID].years = timeLapseObj[legendDivID].years.reverse();
-    timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders.reverse();
+  // timeLapseObj[legendDivID].years = timeLapseObj[legendDivID].years;
+    timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
 
     $('#'+legendDivID+'-year-slider').slider({
         
