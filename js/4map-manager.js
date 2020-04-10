@@ -660,7 +660,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                 </li>
                                 <li id = '${legendDivID}-collapse-div' style = 'display:none;' ></li>`)
   
-  $('#'+legendDivID+'-collapse-label').addClass('pb-4')
+  $('#'+legendDivID+'-collapse-label').addClass('pb-3')
  
   // addMultiRadio(legendDivID+'-collapse-label',legendDivID+'-cumulative-radio','',legendDivID'-cumulativeMode',{"Single-Year":!viz.cumulativeMode,"Cumulative":viz.cumulativeMode})
   // addRadio(legendDivID+'-cumulative-radio-container',legendDivID+'-cumulative-radio','','Single Year','Cumulative','cumulativeMode',false,true,'setCumulativeMode()','setCumulativeMode()','Toggle whether to show a single year or all years in the past along with current year')
@@ -1402,6 +1402,7 @@ function reRun(){
   intervalPeriod = 2000;
   timeLapseID = null;
   timeLapseFrame = 0;
+  cumulativeMode = false;
 
   // if(analysisMode === 'advanced'){
   //   document.getElementById('threshold-container').style.display = 'inline-block';
