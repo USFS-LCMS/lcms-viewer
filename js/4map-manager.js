@@ -572,10 +572,16 @@ function timeLapseCheckbox(id){
 function toggleFrames(id){
   $('#'+id+'-collapse-div').toggle();
 }
-function setCumulativeMode(){
-  cumulativeMode = eval(cumulativeMode);
-  if(cumulativeMode){$('.cumulative-on').click()}
-  else{$('.cumulative-off').click()}
+
+function toggleCumulativeMode(){
+  if(cumulativeMode){
+    $('.cumulativeToggler').removeClass('time-lapse-active');
+    cumulativeMode = false;
+  }else{
+    $('.cumulativeToggler').addClass('time-lapse-active');
+    cumulativeMode = true;
+  }
+  
 }
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = false}
@@ -638,7 +644,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                   <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
          
                                   <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
-                                  <span  class = 'layer-span'>${name}</span>
+                                  <span  onclick = 'timeLapseCheckbox("${legendDivID}")' class = 'layer-span'>${name}</span>
                                   <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-4 pt-2' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
                                     <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
@@ -647,6 +653,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
+                                    <button class = 'btn cumulativeToggler' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
                                     <div id = "${legendDivID}-cumulative-radio-container" class = 'pt-2'></div>
                                   </div>
                                 </li>
@@ -655,10 +662,10 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   $('#'+legendDivID+'-collapse-label').addClass('pb-4')
  
   // addMultiRadio(legendDivID+'-collapse-label',legendDivID+'-cumulative-radio','',legendDivID'-cumulativeMode',{"Single-Year":!viz.cumulativeMode,"Cumulative":viz.cumulativeMode})
-  addRadio(legendDivID+'-cumulative-radio-container',legendDivID+'-cumulative-radio','','Single Year','Cumulative','cumulativeMode',false,true,'setCumulativeMode()','setCumulativeMode()','Toggle whether to show a single year or all years in the past along with current year')
-  $('#'+legendDivID+'-cumulative-radio-first_toggle_label').addClass('cumulative-off');
-  $('#'+legendDivID+'-cumulative-radio-second_toggle_label').addClass('cumulative-on');
-  $('#'+legendDivID+'-cumulative-radio').addClass('pt-4');
+  // addRadio(legendDivID+'-cumulative-radio-container',legendDivID+'-cumulative-radio','','Single Year','Cumulative','cumulativeMode',false,true,'setCumulativeMode()','setCumulativeMode()','Toggle whether to show a single year or all years in the past along with current year')
+  // $('#'+legendDivID+'-cumulative-radio-first_toggle_label').addClass('cumulative-off');
+  // $('#'+legendDivID+'-cumulative-radio-second_toggle_label').addClass('cumulative-on');
+  // $('#'+legendDivID+'-cumulative-radio').addClass('pt-4');
   $('#time-lapse-legend-list').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
   viz.opacity = 0;
   viz.layerType = 'geeImage';
