@@ -556,6 +556,7 @@ function alignTimeLapseCheckboxes(){
   Object.keys(timeLapseObj).map(function(k){
     var checked = false;
     if(timeLapseObj[k].visible){checked = true;}
+    else{$('#'+k+'-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`)}
     $('#'+k+'-toggle-checkbox').prop('checked', checked)
   })
 }
@@ -642,8 +643,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     
                                   <input  id="${legendDivID}-toggle-checkbox" onchange = 'timeLapseCheckbox("${legendDivID}")' type="checkbox" ${checked}  />
                                   <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
-         
-                                  <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
+                                  <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
+                                  <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
                                   <span  onclick = 'timeLapseCheckbox("${legendDivID}")' class = 'layer-span'>${name}</span>
                                   <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-4 pt-2' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>

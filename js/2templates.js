@@ -1330,7 +1330,8 @@ function addLayer(layer){
                     $('#'+layer.viz.timeLapseID+'-loading-spinner').hide();
                     $('#'+layer.viz.timeLapseID+'-year-label').hide();
                     // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-
+                    $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`)
+                            
                     $('#'+layer.viz.timeLapseID+'-icon-bar').show();
                     $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
                     $('#'+layer.viz.timeLapseID+'-toggle-checkbox-label').show();
@@ -1387,10 +1388,10 @@ function addLayer(layer){
                         if(layer.viz.isTimeLapse){
                             var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
                             // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
-                            $('#'+layer.viz.timeLapseID+ '-loading-spinner').show();
+                            $('#'+layer.viz.timeLapseID+ '-loading-gear').show();
                             $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`)
                             if(propTiles === 100){
-                                $('#'+layer.viz.timeLapseID+ '-loading-spinner').hide();
+                                $('#'+layer.viz.timeLapseID+ '-loading-gear').hide();
                                 // if(layer.wasJittered === false){
                                     // layer.wasJittered= jitterZoom();
 
