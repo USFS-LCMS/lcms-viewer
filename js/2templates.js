@@ -1335,6 +1335,7 @@ function addLayer(layer){
                     $('#'+layer.viz.timeLapseID+'-icon-bar').show();
                     $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
                     $('#'+layer.viz.timeLapseID+'-toggle-checkbox-label').show();
+                    $('#'+layer.viz.timeLapseID+'-collapse-label').addClass('pb-3');
                     
                     timeLapseObj[layer.viz.timeLapseID].isReady = true;
                 };

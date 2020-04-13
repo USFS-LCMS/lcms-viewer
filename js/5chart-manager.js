@@ -986,7 +986,7 @@ function startQuery(){
 			
 			print('Map was double clicked');
 			var x =e.center.x;//clientX;
-        	var y = e.center.y;console.log(x);
+        	var y = e.center.y;//console.log(x);
         	center =point2LatLng(x,y);
 
 			
@@ -1004,7 +1004,7 @@ function startQuery(){
    		// // 	infowindow.setMap(null);
    		// 	clearQueryGeoJSON();
    		// })
-   		map.addListener("click", function(){infowindow.setMap(null);clearQueryGeoJSON();});
+   		// map.addListener("click", function(){infowindow.setMap(null);clearQueryGeoJSON();});
 	// document.getElementById('query-container').style.display = 'block';
 }
 function stopQuery(){

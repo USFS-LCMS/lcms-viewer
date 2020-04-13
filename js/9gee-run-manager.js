@@ -499,21 +499,22 @@ function runUSFS(){
     // subtleGain = trend.updateMask(subtleGain);
     // Map2.addLayer(subtleGain,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Subtle Gain')
     // Map2.addLayer(trend,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Trend')
-    Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite Time Lapse',false);
+    
     if(analysisMode === 'advanced'){
+      Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite Time Lapse',false);
       var lastYearAdded = false;
-      ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
-        var c = ee.Image(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-        Map2.addLayer(c.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+yr.toString(),false)
-        if(yr === endYear){lastYearAdded = true}
-      })
+      // ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
+      //   var c = ee.Image(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+      //   Map2.addLayer(c.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+yr.toString(),false)
+      //   if(yr === endYear){lastYearAdded = true}
+      // })
 
-      if(lastYearAdded === false){
-        // var c1 = ee.Image(composites.first());
-        var c2 = ee.Image(composites.sort('system:time_start',false).first());
-        // Map2.addLayer(c1,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+startYear.toString(),false)
-        Map2.addLayer(c2.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+endYear.toString(),false)
-      }
+      // if(lastYearAdded === false){
+      //   // var c1 = ee.Image(composites.first());
+      //   var c2 = ee.Image(composites.sort('system:time_start',false).first());
+      //   // Map2.addLayer(c1,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+startYear.toString(),false)
+      //   Map2.addLayer(c2.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+endYear.toString(),false)
+      // }
     }
 
 
@@ -2296,13 +2297,13 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     var changeDurationPalette = 'BD1600,E2F400,0C2780';
     
     //Set up viz params
-    var vizParamsLossYear = {'min':startYear,'max':endYear,'palette':lossYearPalette};
-    var vizParamsLossMag = {'min':-0.8*10000 ,'max':lossMagThresh*10000,'palette':lossMagPalette};
+    var vizParamsLossYear = {'min':startYear,'max':endYear,'palette':lossYearPalette,layerType:'geeImage'};
+    var vizParamsLossMag = {'min':-0.8*10000 ,'max':lossMagThresh*10000,'palette':lossMagPalette,layerType:'geeImage'};
     
-    var vizParamsGainYear = {'min':startYear,'max':endYear,'palette':gainYearPalette};
-    var vizParamsGainMag = {'min':gainMagThresh*10000,'max':0.8*10000,'palette':gainMagPalette};
+    var vizParamsGainYear = {'min':startYear,'max':endYear,'palette':gainYearPalette,layerType:'geeImage'};
+    var vizParamsGainMag = {'min':gainMagThresh*10000,'max':0.8*10000,'palette':gainMagPalette,layerType:'geeImage'};
     
-    var vizParamsDuration = {'min':1,'max':5,'palette':changeDurationPalette};
+    var vizParamsDuration = {'min':1,'max':5,'palette':changeDurationPalette,layerType:'geeImage'};
   
     // Map.addLayer(lt,{},'Raw LT',false);
     // Map.addLayer(joinedTS,{},'Time Series',false);
@@ -2449,6 +2450,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     
     var dummyImage = ee.Image(imgs.first());
   //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
+  var years = [];
   for(var year = startYear; year <= endYear; year++) {
       var imgsT = imgs.filter(ee.Filter.calendarRange(year-yearBuffer,year+yearBuffer,'year'));
       imgsT = fillEmptyCollections(imgsT,dummyImage);
@@ -2463,9 +2465,9 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       img = img.updateMask(count.gte(minObs)).set('system:time_start',ee.Date.fromYMD(year,6,1).millis());
       var nameEnd = (year-yearBuffer).toString() + '-'+ (year+yearBuffer).toString();
     // print(year);
-    if(year%5 ==0 || year === startYear || year === endYear){
-      Map2.addLayer(img,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red'},'Composite '+nameEnd,false);
-    }
+    // if(year%5 ==0 || year === startYear || year === endYear){
+    //   Map2.addLayer(img,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red'},'Composite '+nameEnd,false);
+    // }
     Map2.addExport(img.select(['blue','green','red','nir','swir1','swir2']).multiply(10000).int16(),'Landsat_Composite_'+ nameEnd,30,false,{});
     var tempCollection = ee.ImageCollection([img]);         
 
@@ -2474,14 +2476,17 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     } else {
       srCollection = srCollection.merge(tempCollection);
     }
+    years.push(year)
   };
-  Map2.addLayer(srCollection.select(['NDVI','NBR']),{min:0.2,max:0.6},'Landsat Time Series',false);
+  // console.log(srCollection.getInfo());
+  Map2.addTimeLapse(srCollection,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red',years:years},'Composite Time Lapse')
+  Map2.addLayer(srCollection.select(['NDVI','NBR']),{min:0.2,max:0.6,opacity:0},'Landsat Time Series',false);
   if(maskWater === 'Yes'){
     var jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
 
     jrcWater = jrcWater.updateMask(jrcWater.neq(0)).reproject('EPSG:4326',null,30);
 
-    Map2.addLayer(jrcWater,{min:0,max:1,'palette':'000,00F',addToClassLegend:true,classLegendDict:{'Water 50% time or more 1984-2018':'00F'},queryDict: {1:'Water 50% time or more 1984-2018'}},'JRC Water',false);
+    Map2.addLayer(jrcWater,{min:0,max:1,'palette':'000,00F',addToClassLegend:true,classLegendDict:{'Water 50% time or more 1984-2018':'00F'},queryDict: {1:'Water 50% time or more 1984-2018'},layerType:'geeImage'},'JRC Water',false);
     srCollection = srCollection.map(function(img){return img.updateMask(jrcWater.mask().not())})
   }
   srCollection = srCollection.map(addYearBand);

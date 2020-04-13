@@ -597,22 +597,23 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
   viz.timeLapseID = legendDivID;
+  viz.layerType = 'geeImage';
   
 
   timeLapseObj[legendDivID] = {}
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}  
 
-  // var startYearT = ee.Date(ee.Image(item.sort('system:time_start',true).first()).get('system:time_start')).get('year').getInfo();
-  // var endYearT = ee.Date(ee.Image(item.sort('system:time_start',false).first()).get('system:time_start')).get('year').getInfo();
-  // var yearsT = ee.List.sequence(startYearT,endYearT).getInfo();
-  var yearsT = item.sort('system:time_start',true).toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).getInfo();
-  // var dates = ee.Dictionary(item.aggregate_histogram('system:time_start')).keys().getInfo();
+  if(viz.years === null || viz.years === undefined){
+    console.log('start computing years')
+    viz.years = item.sort('system:time_start',true).toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).getInfo();
+    console.log('done computing years')
+  }
   
-  var startYearT = yearsT[0];
-  var endYearT = yearsT[yearsT.length-1]
-  timeLapseObj[legendDivID].years = yearsT;
-  timeLapseObj[legendDivID].frames = ee.List.sequence(0,yearsT.length-1).getInfo();
-  timeLapseObj[legendDivID].nFrames = yearsT.length;
+  var startYearT = viz.years[0];
+  var endYearT = viz.years[viz.years.length-1]
+  timeLapseObj[legendDivID].years = viz.years;
+  timeLapseObj[legendDivID].frames = ee.List.sequence(0,viz.years.length-1).getInfo();
+  timeLapseObj[legendDivID].nFrames = viz.years.length;
   timeLapseObj[legendDivID].loadingLayerIDs = [];
   timeLapseObj[legendDivID].loadingTilesLayerIDs = [];
   timeLapseObj[legendDivID].layerVisibleIDs = [];
@@ -620,7 +621,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].intervalValue = null;
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
-  $('#'+whichLayerList).append(`<div class = 'dropdown-divider'></div>
+  $('#'+whichLayerList).append(`
                                 <li   id = '${legendDivID}-collapse-label' class = 'layer-container'>
                                  
                                   
@@ -629,7 +630,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                      
                                     <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
                                       <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                        <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${yearsT[0]}</div>
+                                        <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${viz.years[0]}</div>
                                       </div>
                                     </div>
                                   
@@ -660,7 +661,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                 </li>
                                 <li id = '${legendDivID}-collapse-div' style = 'display:none;' ></li>`)
   
-  $('#'+legendDivID+'-collapse-label').addClass('pb-3')
+  
  
   // addMultiRadio(legendDivID+'-collapse-label',legendDivID+'-cumulative-radio','',legendDivID'-cumulativeMode',{"Single-Year":!viz.cumulativeMode,"Cumulative":viz.cumulativeMode})
   // addRadio(legendDivID+'-cumulative-radio-container',legendDivID+'-cumulative-radio','','Single Year','Cumulative','cumulativeMode',false,true,'setCumulativeMode()','setCumulativeMode()','Toggle whether to show a single year or all years in the past along with current year')
@@ -672,11 +673,11 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   viz.layerType = 'geeImage';
   viz.legendTitle = name;
 
-  yearsT.map(function(yr){
+  viz.years.map(function(yr){
     var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
     
 
-    if(yr !== yearsT[0]){
+    if(yr !== viz.years[0]){
       viz.addToLegend = false;
       viz.addToClassLegend = false;
       
@@ -696,7 +697,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         slide: function(e,ui){
           // console.log(e);
           var yr = ui.value;
-          var i = yearsT.indexOf(yr);
+          var i = viz.years.indexOf(yr);
           timeLapseFrame = i;
           Object.keys(timeLapseObj).map(function(k){
             var s = $('#'+k+'-year-slider').slider();
