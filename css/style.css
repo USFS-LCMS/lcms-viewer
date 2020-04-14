@@ -109,13 +109,13 @@ html, body{
     /*height: 1.6em;*/
     /*top: 50%;*/
     padding-top:1.1em;
-    margin-left:-1.5em;
+    margin-left:-2.2em;
     /*margin-top: .8em;*/
     /*margin-left: -.7em;*/
     font-size:0.7em;
     width:5em;
     color:var(--teal-100)!important;
-    /*text-align: center;*/
+    text-align: center;
     /*line-height: 1.6em;*/
   }
 .info-page{

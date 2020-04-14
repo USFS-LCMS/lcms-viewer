@@ -1390,8 +1390,17 @@ function addLayer(layer){
                             var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
                             // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
                             $('#'+layer.viz.timeLapseID+ '-loading-gear').show();
+                            
                             $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`)
-                            if(propTiles === 100){
+                            if(propTiles < 100){
+                                // console.log(propTiles)
+                                // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
+                                // pauseButtonFunction();  
+                                // }
+                            }else{
+                            // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
+                            //     playTimeLapse();
+                            // }
                                 $('#'+layer.viz.timeLapseID+ '-loading-gear').hide();
                                 // if(layer.wasJittered === false){
                                     // layer.wasJittered= jitterZoom();

@@ -304,7 +304,7 @@ function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,which
   addToMap(item,viz,name,visible,label,fontColor,helpBox,'area-charting-select-layer-list',queryItem);
  
 }
-var intervalPeriod = 2000;
+var intervalPeriod = 666.6666666666666;
 var timeLapseID;
 var timeLapseFrame = 0;
 var cumulativeMode = false;
@@ -322,12 +322,13 @@ function setFrameOpacity(frame,opacity){
   s.slider('option', 'value',opacity);
   s.slider('option','slide').call(s,null,{ handle: $('.ui-slider-handle', s), value: opacity });
 }
-function selectFrame(id,fromYearSlider){
+function selectFrame(id,fromYearSlider,advanceOne){
   if(id === null || id === undefined){id = timeLapseID}
   if(fromYearSlider === null || fromYearSlider === undefined){fromYearSlider = false}
+  if(advanceOne === null || advanceOne === undefined){advanceOne = true}
   timeLapseID = id
   
-  if(timeLapseObj[timeLapseID].isReady){
+  if(timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady){
     turnOffLayers();
     turnOnTimeLapseLayers();
     var slidersT = timeLapseObj[timeLapseID].sliders;
@@ -370,21 +371,22 @@ function selectFrame(id,fromYearSlider){
     // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $('#time-lapse-year-label').show();
     $('#time-lapse-year-label').html(`Time lapse year: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`)
-    timeLapseFrame++
+    if(advanceOne){timeLapseFrame++};
   }
   
 }
 function pauseButtonFunction(id){
-
+  if(id === null || id === undefined){id = timeLapseID}
   
   timeLapseID = id;
-  if(timeLapseObj[timeLapseID].isReady){
+  if(timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady){
     timeLapseFrame--;
     clearAllFrames();
     pauseTimeLapse();
     // year++;
     selectFrame();
     alignTimeLapseCheckboxes();
+    timeLapseObj[timeLapseID].state = 'paused';
   }
 
 }
@@ -429,13 +431,14 @@ function clearActiveButtons(){
 };
 function clearAllFrames(){
   turnOffAllNonActiveTimeLapseLayers(); 
+  
   Object.keys(timeLapseObj).map(function(k){
     var slidersT = timeLapseObj[k].sliders;
     $('#'+k+'-year-label').hide();
     $('#'+k+'-stop-button').addClass('time-lapse-active');
     $('#'+k+'-pause-button').removeClass('time-lapse-active');
     $('#'+k+'-play-button').removeClass('time-lapse-active');
-    
+    timeLapseObj[k].state = 'inactive';
     slidersT.map(function(s){
       try{setFrameOpacity(s,0)}
       catch(err){}
@@ -452,12 +455,13 @@ function setSpeed(id,speed){
   }
 }
 function playTimeLapse(id){
+   if(id === null || id === undefined){id = timeLapseID}
+  
   timeLapseID = id;
-
-  if(timeLapseObj[timeLapseID].isReady){
+  if(timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady){
     clearAllFrames();
     pauseAll();
-    
+    timeLapseObj[timeLapseID].state = 'play';
     selectFrame();
     if(timeLapseObj[id].intervalValue === null || timeLapseObj[id].intervalValue === undefined){
         timeLapseObj[id].intervalValue =window.setInterval(selectFrame, intervalPeriod);
@@ -582,6 +586,7 @@ function toggleCumulativeMode(){
     $('.cumulativeToggler').addClass('time-lapse-active');
     cumulativeMode = true;
   }
+  selectFrame(null,null,false);
   
 }
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
@@ -621,8 +626,10 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].intervalValue = null;
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
+  timeLapseObj[legendDivID].state = 'inactive';
+  var layerContainerTitle = 'Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.'
   $('#'+whichLayerList).append(`
-                                <li   id = '${legendDivID}-collapse-label' class = 'layer-container'>
+                                <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container'>
                                  
                                   
 
@@ -714,16 +721,16 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
       });
     $('#'+legendDivID+'-speed-slider').slider({
         min: 0.5,
-        max: 5.0  ,
+        max: 3.0  ,
         step: 0.5,
-        value: 0.5,
+        value: 1.5,
         slide: function(e,ui){
           // console.log(e);
           var speed = 1/ui.value*1000;
           Object.keys(timeLapseObj).map(function(k){
             var s = $('#'+k+'-speed-slider').slider();
             s.slider('option', 'value',ui.value);
-            $('#'+k+'-speed-slider-handle-label').text(`${ui.value}fps`)
+            $('#'+k+'-speed-slider-handle-label').text(`${ui.value.toFixed(1)}fps`)
           })
            
     // sliders = sliders.map(function(s){return sliders[s].id})
