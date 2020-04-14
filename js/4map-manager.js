@@ -322,7 +322,9 @@ function setFrameOpacity(frame,opacity){
   s.slider('option', 'value',opacity);
   s.slider('option','slide').call(s,null,{ handle: $('.ui-slider-handle', s), value: opacity });
 }
+
 function selectFrame(id,fromYearSlider,advanceOne){
+
   if(id === null || id === undefined){id = timeLapseID}
   if(fromYearSlider === null || fromYearSlider === undefined){fromYearSlider = false}
   if(advanceOne === null || advanceOne === undefined){advanceOne = true}
@@ -371,16 +373,20 @@ function selectFrame(id,fromYearSlider,advanceOne){
     // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $('#time-lapse-year-label').show();
     $('#time-lapse-year-label').html(`Time lapse year: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`)
-    if(advanceOne){timeLapseFrame++};
+    // if(advanceOne){timeLapseFrame++};
   }
   
+}
+function advanceOneFrame(){
+  timeLapseFrame++;
+  selectFrame()
 }
 function pauseButtonFunction(id){
   if(id === null || id === undefined){id = timeLapseID}
   
   timeLapseID = id;
   if(timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady){
-    timeLapseFrame--;
+    // timeLapseFrame--;
     clearAllFrames();
     pauseTimeLapse();
     // year++;
@@ -404,7 +410,7 @@ function forwardOneFrame(id){
       clearAllFrames();
       pauseTimeLapse();
       // year++;
-      selectFrame();
+      advanceOneFrame();
       alignTimeLapseCheckboxes();
     }
   };
@@ -414,7 +420,7 @@ function backOneFrame(id){
       clearAllFrames();
       pauseTimeLapse();
 
-      timeLapseFrame = timeLapseFrame-2;
+      timeLapseFrame--;
       selectFrame();
       alignTimeLapseCheckboxes();
     }
@@ -462,9 +468,9 @@ function playTimeLapse(id){
     clearAllFrames();
     pauseAll();
     timeLapseObj[timeLapseID].state = 'play';
-    selectFrame();
+    selectFrame(null,null,false);
     if(timeLapseObj[id].intervalValue === null || timeLapseObj[id].intervalValue === undefined){
-        timeLapseObj[id].intervalValue =window.setInterval(selectFrame, intervalPeriod);
+        timeLapseObj[id].intervalValue =window.setInterval(advanceOneFrame, intervalPeriod);
       }
       $('#'+id+'-stop-button').removeClass('time-lapse-active');
       $('#'+id+'-pause-button').removeClass('time-lapse-active');
@@ -605,7 +611,8 @@ function toggleCumulativeMode(){
     $('.cumulativeToggler').addClass('time-lapse-active');
     cumulativeMode = true;
   }
-  selectFrame(null,null,false);
+  // timeLapseFrame--;
+  selectFrame();
   
 }
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
@@ -770,7 +777,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
           if(timeLapseObj[legendDivID].isReady){
             clearAllFrames();
             pauseTimeLapse(legendDivID);
-            selectFrame(legendDivID,true);
+            selectFrame(legendDivID,true,false);
             alignTimeLapseCheckboxes();
           }
         }

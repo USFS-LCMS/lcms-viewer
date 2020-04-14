@@ -599,10 +599,10 @@ function runUSFS(){
     Map2.addLayer(NFSLU.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, luLayerName,false);
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       Map2.addLayer(landcoverMaxByYears.mode().clip(boundary).set('bounds',clientBoundary),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName,false);
-      Map2.addTimeLapse(landcoverMaxByYears,{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup,years:years},'Land Cover Time Lapse',false);
+    
     }else{
       Map2.addLayer(NFSLC.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
-      Map2.addTimeLapse(NFSLC.map(function(img){return img.multiply(10).copyProperties(img,['system:time_start'])}),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict},'Land Cover Time Lapse',false);
+  
     }
 
     if(analysisMode === 'advanced'){
@@ -640,7 +640,7 @@ function runUSFS(){
       out = out.copyProperties(img,['system:time_start']);
       return out
     })
-    Map2.addTimeLapse(lossGain,{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'},years:years},'Loss/Gain Time Lapse',false); 
+
     
     // if (studyAreaName == 'CNFKP' && analysisMode == 'advanced'){
     //   Map2.addLayer(dndThreshOutUnMasked.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year Unmasked',false,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
@@ -737,8 +737,12 @@ function runUSFS(){
       }
     }
     
-    
-    
+        Map2.addTimeLapse(lossGain,{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'},years:years},'Loss/Gain Time Lapse',false); 
+    if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
+      Map2.addTimeLapse(landcoverMaxByYears,{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup,years:years},'Land Cover Time Lapse',false);
+    }else{
+     Map2.addTimeLapse(NFSLC.map(function(img){return img.multiply(10).copyProperties(img,['system:time_start'])}),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict},'Land Cover Time Lapse',false);
+    }
     // Additional Layers for MLSNF
     if(studyAreaName === 'MLSNF'){
       
