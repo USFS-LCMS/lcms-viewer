@@ -307,7 +307,7 @@ function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,which
 var intervalPeriod = 666.6666666666666;
 var timeLapseID;
 var timeLapseFrame = 0;
-var cumulativeMode = false;
+var cumulativeMode = true;
 function pauseTimeLapse(id){
   if(id === null || id === undefined){id = timeLapseID}
     timeLapseID = id;
@@ -345,7 +345,7 @@ function selectFrame(id,fromYearSlider,advanceOne){
     }else{
       slidersT.slice(0,timeLapseFrame).map(function(s){
         try{
-          setFrameOpacity(s,100)
+          setFrameOpacity(s,timeLapseObj[timeLapseID].opacity)
         }catch(err){}
         
       })
@@ -354,7 +354,7 @@ function selectFrame(id,fromYearSlider,advanceOne){
     var frame = slidersT[timeLapseFrame];
     
     try{
-        setFrameOpacity(frame,100);
+        setFrameOpacity(frame,timeLapseObj[timeLapseID].opacity);
         if(!fromYearSlider){
           Object.keys(timeLapseObj).map(function(k){
             var s = $('#'+k+'-year-slider').slider();
@@ -543,7 +543,7 @@ function jitterZoom(){
   }
   var tDiff = new Date() - lastJitter;
   var jittered = false;
-  if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 10000){
+  if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 20000){
     console.log(tDiff)
     console.log('jittering zoom')
     var z = map.getZoom();
@@ -559,8 +559,19 @@ function jitterZoom(){
 function alignTimeLapseCheckboxes(){
   Object.keys(timeLapseObj).map(function(k){
     var checked = false;
-    if(timeLapseObj[k].visible){checked = true;}
-    else{$('#'+k+'-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`)}
+    if(timeLapseObj[k].visible){
+      checked = true;
+      $('#'+k+'-time-lapse-layer-range-container').slideDown();
+      $('#'+k+'-icon-bar').slideDown();
+      $('#'+k+'-collapse-label').addClass('time-lapse-label-container');
+    }
+    else{
+      $('#'+k+'-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+      $('#'+k+'-time-lapse-layer-range-container').slideUp();
+      $('#'+k+'-icon-bar').slideUp();
+      $('#'+k+'-collapse-label').removeClass('time-lapse-label-container');
+    }
+      
     $('#'+k+'-toggle-checkbox').prop('checked', checked)
   })
 }
@@ -577,7 +588,15 @@ function timeLapseCheckbox(id){
 function toggleFrames(id){
   $('#'+id+'-collapse-div').toggle();
 }
-
+function turnOffTimeLapseCheckboxes(){
+  Object.keys(timeLapseObj).map(function(k){
+    var v = timeLapseObj[k].visible;
+    if(v){
+      stopTimeLapse(k);
+    }
+  });
+  alignTimeLapseCheckboxes();
+}
 function toggleCumulativeMode(){
   if(cumulativeMode){
     $('.cumulativeToggler').removeClass('time-lapse-active');
@@ -590,8 +609,10 @@ function toggleCumulativeMode(){
   
 }
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
-  if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = false}
+  if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = true}
   if(visible === undefined || visible === null){visible = false};
+  if(viz.opacity === undefined || viz.opacity === null){viz.opacity = 1}
+   
   var checked = '';
   if(visible){checked = 'checked'}
   var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
@@ -627,23 +648,30 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].isReady = false;
   timeLapseObj[legendDivID].visible = visible;
   timeLapseObj[legendDivID].state = 'inactive';
+  timeLapseObj[legendDivID].opacity = viz.opacity*100;
   var layerContainerTitle = 'Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.'
   $('#'+whichLayerList).append(`
                                 <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container'>
                                  
                                   
 
-                                  <div id='${legendDivID}-time-lapse-layer-range-container' class = 'time-lapse-layer-range-container' style = 'display:none;'>
-                                     
-                                    <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
-                                      <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                        <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${viz.years[0]}</div>
+                                  <div class = 'time-lapse-layer-range-container' >
+                                    <div title = 'Opacity' id='${legendDivID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>
+                                      <div id='${legendDivID}-opacity-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                        <div style = 'display:none;' id='${legendDivID}-opacity-slider-handle-label' class = 'time-lapse-slider-handle-label'>${timeLapseObj[legendDivID].opacity/100}</div>
                                       </div>
                                     </div>
-                                  
-                                    <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-time-lapse-layer-range'>
-                                      <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                        <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${1/(intervalPeriod/1000)}fps</div>
+                                    <div id='${legendDivID}-time-lapse-layer-range-container' style = 'display:none;'>
+                                      <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
+                                        <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                          <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${viz.years[0]}</div>
+                                        </div>
+                                      </div>
+                                    
+                                      <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-time-lapse-layer-range'>
+                                        <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                          <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${(1/(intervalPeriod/1000)).toFixed(1)}fps</div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -653,7 +681,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                   <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
                                   <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
                                   <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
+
                                   <span  onclick = 'timeLapseCheckbox("${legendDivID}")' class = 'layer-span'>${name}</span>
+
                                   <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-4 pt-2' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
                                     <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
@@ -662,10 +692,12 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
-                                    <button class = 'btn cumulativeToggler' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
+                                    <button class = 'btn cumulativeToggler time-lapse-active' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
                                     <div id = "${legendDivID}-cumulative-radio-container" class = 'pt-2'></div>
                                   </div>
+
                                 </li>
+                                
                                 <li id = '${legendDivID}-collapse-div' style = 'display:none;' ></li>`)
   
   
@@ -676,10 +708,10 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   // $('#'+legendDivID+'-cumulative-radio-second_toggle_label').addClass('cumulative-on');
   // $('#'+legendDivID+'-cumulative-radio').addClass('pt-4');
   $('#time-lapse-legend-list').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
-  viz.opacity = 0;
+  // viz.opacity = 0;
   viz.layerType = 'geeImage';
   viz.legendTitle = name;
-
+  viz.opacity = 0;
   viz.years.map(function(yr){
     var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
     
@@ -694,7 +726,31 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   })
   // timeLapseObj[legendDivID].years = timeLapseObj[legendDivID].years;
     timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
-
+     $('#'+legendDivID+'-opacity-slider').slider({
+        
+        min: 0,
+        max: 1,
+        step: 0.05,
+        value: timeLapseObj[legendDivID].opacity/100,
+        slide: function(e,ui){
+          // console.log(e);
+          var opacity = ui.value;
+          var k = legendDivID;
+          // Object.keys(timeLapseObj).map(function(k){
+            var s = $('#'+k+'-opacity-slider').slider();
+            s.slider('option', 'value',ui.value);
+            $('#'+k+'-opacity-slider-handle-label').text(opacity);
+            timeLapseObj[k].opacity = opacity*100
+          // });
+          selectFrame(null,null,false)
+          // if(timeLapseObj[legendDivID].isReady){
+          //   clearAllFrames();
+          //   pauseTimeLapse(legendDivID);
+          //   selectFrame(legendDivID,true);
+          //   alignTimeLapseCheckboxes();
+          // }
+        }
+      });
     $('#'+legendDivID+'-year-slider').slider({
         
         min: startYearT,
@@ -1407,10 +1463,10 @@ function reRun(){
 
   stopTimeLapse();
   queryObj = {};areaChartCollections = {};pixelChartCollections = {};timeLapseObj = {};
-  intervalPeriod = 2000;
+  intervalPeriod = 666.6666666;
   timeLapseID = null;
   timeLapseFrame = 0;
-  cumulativeMode = false;
+  cumulativeMode = true;
 
   // if(analysisMode === 'advanced'){
   //   document.getElementById('threshold-container').style.display = 'inline-block';
@@ -2314,7 +2370,15 @@ function initialize() {
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#242f3e"
+        "color": "#212121"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
       }
     ]
   },
@@ -2322,7 +2386,7 @@ function initialize() {
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#746855"
+        "color": "#757575"
       }
     ]
   },
@@ -2330,13 +2394,30 @@ function initialize() {
     "elementType": "labels.text.stroke",
     "stylers": [
       {
-        "color": "#242f3e"
+        "color": "#212121"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
       }
     ]
   },
   {
     "featureType": "administrative.land_parcel",
-    "elementType": "labels",
     "stylers": [
       {
         "visibility": "off"
@@ -2348,16 +2429,7 @@ function initialize() {
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#d59563"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.text",
-    "stylers": [
-      {
-        "visibility": "off"
+        "color": "#bdbdbd"
       }
     ]
   },
@@ -2366,15 +2438,7 @@ function initialize() {
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#d59563"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.business",
-    "stylers": [
-      {
-        "visibility": "off"
+        "color": "#757575"
       }
     ]
   },
@@ -2383,43 +2447,61 @@ function initialize() {
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#263c3f"
+        "color": "#181818"
       }
     ]
   },
   {
     "featureType": "poi.park",
-    "elementType": "labels.text.fill",
+    "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#6b9a76"
+        "color": "#004000"
       }
     ]
   },
   {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#38414e"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "elementType": "geometry.stroke",
-    "stylers": [
-      {
-        "color": "#212a37"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
+    "featureType": "poi.park",
     "elementType": "labels.icon",
     "stylers": [
       {
-        "visibility": "off"
+        "color": "#004000"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "color": "#004000"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#1b1b1b"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#2c2c2c"
       }
     ]
   },
@@ -2428,15 +2510,16 @@ function initialize() {
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#9ca5b3"
+        "color": "#8a8a8a"
       }
     ]
   },
   {
     "featureType": "road.arterial",
+    "elementType": "geometry",
     "stylers": [
       {
-        "visibility": "off"
+        "color": "#373737"
       }
     ]
   },
@@ -2445,77 +2528,34 @@ function initialize() {
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#746855"
+        "color": "#3c3c3c"
       }
     ]
   },
   {
-    "featureType": "road.highway",
-    "elementType": "geometry.stroke",
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry",
     "stylers": [
       {
-        "color": "#1f2835"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "labels",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#f3d19c"
+        "color": "#4e4e4e"
       }
     ]
   },
   {
     "featureType": "road.local",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "road.local",
-    "elementType": "labels",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "transit",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "transit",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#2f3948"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#d59563"
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
       }
     ]
   },
@@ -2524,7 +2564,7 @@ function initialize() {
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#17263c"
+        "color": "#000000"
       }
     ]
   },
@@ -2533,16 +2573,7 @@ function initialize() {
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#515c6d"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "labels.text.stroke",
-    "stylers": [
-      {
-        "color": "#17263c"
+        "color": "#3d3d3d"
       }
     ]
   }

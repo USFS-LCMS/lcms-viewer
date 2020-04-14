@@ -136,6 +136,7 @@ function turnOffVectorLayers(){
 function turnOffLayers(){
 	$(".layer-checkbox").trigger("turnOffAll");
 }
+
 function turnOffSelectLayers(){
 	$(".select-layer-checkbox").trigger("turnOffAll");
 }

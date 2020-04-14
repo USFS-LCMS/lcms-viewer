@@ -296,6 +296,9 @@ font-size:0.9em;
   margin-top:-0.8em;
 
 }
+.time-lapse-label-container{
+  padding-bottom:2em;
+}
 .simple-time-lapse-layer-range{
 
     /*height: 0.1rem;*/
@@ -303,9 +306,20 @@ font-size:0.9em;
     /*vertical-align:bottom;*/
     /*display:inline-block;*/
     /*vertical-align:bottom;*/
-    margin-top:2em;
+    margin-top:1.8em;
     cursor:pointer;
   }
+  .simple-time-lapse-layer-range-first{
+
+    /*height: 0.1rem;*/
+    
+    /*vertical-align:bottom;*/
+    /*display:inline-block;*/
+    /*vertical-align:bottom;*/
+    margin-top:1.5em;
+    cursor:pointer;
+  }
+
 .simple-layer-opacity-range{float:right;
 
     /*height: 0.1rem;*/

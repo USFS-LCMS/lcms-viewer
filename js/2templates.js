@@ -115,7 +115,7 @@ var staticTemplates = {
 	  					</div>
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
                         </div>
-                        <p style = 'display:none;' id = 'time-lapse-year-label'></p>`,
+                        <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
 	introModal:{'LCMS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -1196,7 +1196,7 @@ function addLayer(layer){
 	
     if(!layer.viz.isTimeLapse){
         $('.layer-checkbox').on('turnOffAll',function(){turnOffAll()});
-        $('.layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+        // $('.layer-checkbox').on('turnOnAll',function(){turnOnAll()});
     }
     if(layer.layerType === 'geeVector' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geoJSONVector'){
         $('#'+visibleLabelID).addClass('vector-layer-checkbox');
@@ -1332,10 +1332,10 @@ function addLayer(layer){
                     // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
                     $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`)
                             
-                    $('#'+layer.viz.timeLapseID+'-icon-bar').show();
-                    $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
+                    // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
+                    // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
                     $('#'+layer.viz.timeLapseID+'-toggle-checkbox-label').show();
-                    $('#'+layer.viz.timeLapseID+'-collapse-label').addClass('pb-3');
+                    
                     
                     timeLapseObj[layer.viz.timeLapseID].isReady = true;
                 };
