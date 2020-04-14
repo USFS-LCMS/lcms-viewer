@@ -576,6 +576,8 @@ function alignTimeLapseCheckboxes(){
       $('#'+k+'-time-lapse-layer-range-container').slideUp();
       $('#'+k+'-icon-bar').slideUp();
       $('#'+k+'-collapse-label').removeClass('time-lapse-label-container');
+      $('#'+k+'-loading-spinner').hide();
+      $('#'+k+'-loading-gear').hide();
     }
       
     $('#'+k+'-toggle-checkbox').prop('checked', checked)
