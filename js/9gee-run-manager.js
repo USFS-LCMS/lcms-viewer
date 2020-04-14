@@ -1066,16 +1066,7 @@ function runCONUS(){
 
   var years = ee.List.sequence(startYear,endYear);
   var yearsCli = years.getInfo()
-  if(analysisMode === 'advanced'){
-    // ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
-    //   if(yr%5 == 0 || yr === startYear || yr === endYear){
-    //     var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
-    //     Map2.addLayer(composite.set('bounds',clientBoundary),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Landsat Composite '+yr.toString(),false)
-    //   }  
-    // });
-    Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:yearsCli},'Composites Time Lapse',false);
   
-  }
   // var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT');
   // var lt = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20191231');
   
@@ -1154,7 +1145,16 @@ function runCONUS(){
   // Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
 
   Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:1,palette:declineProbPalette,years:yearsCli},'Loss Time Lapse',false);
-
+  if(analysisMode === 'advanced'){
+    // ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
+    //   if(yr%5 == 0 || yr === startYear || yr === endYear){
+    //     var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
+    //     Map2.addLayer(composite.set('bounds',clientBoundary),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Landsat Composite '+yr.toString(),false)
+    //   }  
+    // });
+    Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:yearsCli},'Composites Time Lapse',false);
+  
+  }
   // Map2.addLayer(dndThreshOutOld.select([0]),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},studyAreaName +' Decline Old Probability',false,null,null,threshProbNameEnd+ 'decline ' + declineNameEnding);
   var dndYearForExport = dndThreshOut.select([1]).int16();//.subtract(1970).byte();
 
