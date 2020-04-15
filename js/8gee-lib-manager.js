@@ -610,6 +610,19 @@ function getHansen(whichLayerList){
   var hansenClientBoundary = {"type":"Polygon","coordinates":[[[-180,-90],[180,-90],[180,90],[-180,90],[-180,-90]]]};//hansen.geometry().bounds(1000).getInfo();
   // print(hansenClientBoundary);
   var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
+  var hansenStartYear = 2001;
+  var hansenEndYear = 2018;
+
+  if(startYear > hansenStartYear){hansenStartYear = startYear};
+  if(endYear < hansenEndYear){hansenEndYear = endYear};
+  var hansenYears = ee.List.sequence(hansenStartYear,hansenEndYear);
+  var hansenC =ee.ImageCollection.fromImages(hansenYears.map(function(yr){
+    yr = ee.Number(yr);
+    var t = ee.Image(yr).updateMask(hansenLoss.eq(yr)).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+    return t;
+  }));
+  var hansenYearsCli = hansenYears.getInfo();
+  Map2.addTimeLapse(hansenC,{min:startYear,max:endYear,palette:declineYearPalette,years:hansenYearsCli},'Hansen Loss Time Lapse',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList)
   var hansenGain = hansen.select(['gain']);
   hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));
   Map2.addLayer(hansenLoss.set('bounds',hansenClientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList);

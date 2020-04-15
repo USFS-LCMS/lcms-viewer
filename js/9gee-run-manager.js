@@ -1144,7 +1144,7 @@ function runCONUS(){
   Map2.addLayer(dndThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Loss Year',true,null,null,threshYearNameEnd+'loss ' +declineNameEnding);
   // Map2.addLayer(dndThreshOutOld.select([1]),{'min':startYear,'max':endYear,'palette':declineYearPalette },studyAreaName +' Decline Old Year',true,null,null,threshYearNameEnd+'decline ' +declineNameEnding);
 
-  Map2.addTimeLapse(dndThresh.select([0]),{min:lowerThresholdDecline,max:1,palette:declineProbPalette,years:yearsCli},'Loss Time Lapse',false);
+  Map2.addTimeLapse(dndThresh.select([1]),{min:startYear,max:endYear,palette:declineYearPalette,years:yearsCli},'Loss Year Time Lapse',false);
   if(analysisMode === 'advanced'){
     // ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
     //   if(yr%5 == 0 || yr === startYear || yr === endYear){
@@ -2867,8 +2867,8 @@ var landcoverClassQueryDict = {};
       return out
     })
 
-    Map2.addTimeLapse(composites.limit(4),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',opacity:0.5},'Composites Time Lapse',false);
-    Map2.addTimeLapse(lossGain.limit(4),{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+    // Map2.addTimeLapse(composites.limit(4),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',opacity:0.5},'Composites Time Lapse',false);
+    // Map2.addTimeLapse(lossGain.limit(4),{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
     // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
      
     var yrs = [1989,2002,2005,2019]
@@ -2936,6 +2936,12 @@ var landcoverClassQueryDict = {};
       
     
     Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
+
+    var years = ee.List.sequence(startYear,endYear).getInfo();
+    var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
+    //F80,e8edc4,54278f
+    Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
+    // getHansen('layer-list')
     // Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
 
     // Map2.addLayer(dndSlowThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Slow Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +slowDeclineNameEnding);

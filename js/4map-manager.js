@@ -564,23 +564,25 @@ function jitterZoom(){
 }
 function alignTimeLapseCheckboxes(){
   Object.keys(timeLapseObj).map(function(k){
-    var checked = false;
-    if(timeLapseObj[k].visible){
-      checked = true;
-      $('#'+k+'-time-lapse-layer-range-container').slideDown();
-      $('#'+k+'-icon-bar').slideDown();
-      $('#'+k+'-collapse-label').addClass('time-lapse-label-container');
+    if(timeLapseObj[k].isReady){
+      var checked = false;
+      if(timeLapseObj[k].visible){
+        checked = true;
+        $('#'+k+'-time-lapse-layer-range-container').slideDown();
+        $('#'+k+'-icon-bar').slideDown();
+        $('#'+k+'-collapse-label').addClass('time-lapse-label-container');
+      }
+      else{
+        $('#'+k+'-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+        $('#'+k+'-time-lapse-layer-range-container').slideUp();
+        $('#'+k+'-icon-bar').slideUp();
+        $('#'+k+'-collapse-label').removeClass('time-lapse-label-container');
+        $('#'+k+'-loading-spinner').hide();
+        $('#'+k+'-loading-gear').hide();
+      }
+        
+      $('#'+k+'-toggle-checkbox').prop('checked', checked);
     }
-    else{
-      $('#'+k+'-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
-      $('#'+k+'-time-lapse-layer-range-container').slideUp();
-      $('#'+k+'-icon-bar').slideUp();
-      $('#'+k+'-collapse-label').removeClass('time-lapse-label-container');
-      $('#'+k+'-loading-spinner').hide();
-      $('#'+k+'-loading-gear').hide();
-    }
-      
-    $('#'+k+'-toggle-checkbox').prop('checked', checked)
   })
 }
 function timeLapseCheckbox(id){
@@ -598,10 +600,12 @@ function toggleFrames(id){
 }
 function turnOffTimeLapseCheckboxes(){
   Object.keys(timeLapseObj).map(function(k){
-    var v = timeLapseObj[k].visible;
-    if(v){
-      stopTimeLapse(k);
+    if(timeLapseObj[k].isReady){
+      if(timeLapseObj[k].visible){
+        stopTimeLapse(k);
+      }
     }
+    
   });
   alignTimeLapseCheckboxes();
 }
@@ -619,7 +623,9 @@ function toggleCumulativeMode(){
 }
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = true}
-  if(visible === undefined || visible === null){visible = false};
+  // if(visible === undefined || visible === null){
+    var visible = false;
+  // };
   if(viz.opacity === undefined || viz.opacity === null){viz.opacity = 1}
    
   var checked = '';
@@ -707,7 +713,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 
                                 </li>
                                 
-                                <li id = '${legendDivID}-collapse-div' style = 'display:none;' ></li>`)
+                                <li id = '${legendDivID}-collapse-div' style = 'display:none;'></li>`)
   
   
  
@@ -721,18 +727,40 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   viz.layerType = 'geeImage';
   viz.legendTitle = name;
   viz.opacity = 0;
-  viz.years.map(function(yr){
-    var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-    
 
-    if(yr !== viz.years[0]){
-      viz.addToLegend = false;
-      viz.addToClassLegend = false;
+  if(viz.timeLapseType === 'tileMapService'){
+    viz.layerType = 'tileMapService';
+    viz.years.map(function(yr){
+      if(yr !== viz.years[0]){
+        viz.addToLegend = false;
+        viz.addToClassLegend = false;
+        
+      }
+        addToMap(standardTileURLFunction(item + yr.toString()+'/',true,''),viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem)
       
-    }
-    // console.log(viz);
-    addToMap(img,viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
-  })
+     }) 
+  }else{
+    viz.years.map(function(yr){
+      var img = ee.Image(item.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+      
+
+      if(yr !== viz.years[0]){
+        viz.addToLegend = false;
+        viz.addToClassLegend = false;
+        
+      }
+      // console.log(viz);
+      
+        
+        addToMap(img,viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
+     
+    })
+  }
+  if(viz.timeLapseType === 'tileMapService'){
+    timeLapseObj[legendDivID].isReady = true;
+    $('#'+legendDivID+'-toggle-checkbox-label').show();
+    $('#'+legendDivID+'-loading-spinner').hide();
+  }
   // timeLapseObj[legendDivID].years = timeLapseObj[legendDivID].years;
     timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
      $('#'+legendDivID+'-opacity-slider').slider({
@@ -1208,9 +1236,10 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 //////////////////////////////////////////////////////
 function standardTileURLFunction(url,xThenY,fileExtension,token){
               if(xThenY === null || xThenY === undefined  ){xThenY  = false;};
-              if(token === null || token === undefined  ){token  = '';};
+              if(token === null || token === undefined  ){token  = '';}
+              else{token = '?token='+token};
               if(fileExtension === null || fileExtension === undefined  ){fileExtension  = '.png';}
-              else{token = 'token='+token}
+              
               return function(coord, zoom) {
                     // "Wrap" x (logitude) at 180th meridian properly
                     // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib 
@@ -1222,9 +1251,9 @@ function standardTileURLFunction(url,xThenY,fileExtension,token){
                     // Wrap y (latitude) in a like manner if you want to enable vertical infinite scroll
                     // return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/" + zoom + "/" + x + "/" + coord.y + "?access_token=pk.eyJ1IjoiaWhvdXNtYW4iLCJhIjoiY2ltcXQ0cnljMDBwNHZsbTQwYXRtb3FhYiJ9.Sql6G9QR_TQ-OaT5wT6f5Q"
                     if(xThenY ){
-                        return url+ zoom + "/" + x + "/" + coord.y +fileExtension+"?"+token;
+                        return url+ zoom + "/" + x + "/" + coord.y +fileExtension+token;
                     }
-                    else{return url+ zoom + "/" + coord.y + "/" +x  +fileExtension+"?"+token;}//+ (new Date()).getTime();
+                    else{return url+ zoom + "/" + coord.y + "/" +x  +fileExtension+token;}//+ (new Date()).getTime();
                     
                 }
             }
