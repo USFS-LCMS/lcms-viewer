@@ -1107,6 +1107,9 @@ function addLayer(layer){
         vizToggleCleanup();
     }
     function turnOn(){
+        if(!layer.viz.isTimeLapse){
+            turnOffTimeLapseCheckboxes();
+        }
         if(layer.layerType === 'dynamicMapService'){
             layer.layer.setMap(map);
             layer.visible = true;

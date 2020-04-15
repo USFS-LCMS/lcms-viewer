@@ -54,7 +54,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>REFERENCE DATA</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">The REFERENCE DATA layers are related geospatial data that can help provide context for the ${mode} data products.</li>
-                                      <li class="list-group-item">They include <a href = "https://www.mrlc.gov/data" target = '_blank'>NLCD Landcover data</a> and 
+                                      <li class="list-group-item">They include <a href = "https://www.mrlc.gov/data" target = '_blank'>NLCD land cover data</a> and 
                                                                 <a href = "https://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/" target = '_blank'>NAIP data</a>.</li>
                                       <li class="list-group-item">Turning these layers on/off and adjusting the opacity is the same as for the ${mode} DATA layers.</li>
                                     </ul>`
@@ -103,7 +103,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">Once activated, anywhere you double-click will query the value of any visible layer.</li>
                                       <li class="list-group-item">The values will appear in a popup on the map.</li>
                                       <li class="list-group-item">It can take some time to query all visible layers as the query is done on-the-fly within Google Earth Engine.</li>
-                                      <li class="list-group-item">The popup window can be closed by clicking the <kbd>&times</kbd> in the upper right or by clicking on the map.</li>
+                                      <li class="list-group-item">The popup window can be closed by clicking the <kbd>&times</kbd> in the upper right.</li>
                                       <li class="list-group-item">To query the map again, double-click once more.</li>
                                     </ul>`
                         },
@@ -112,12 +112,12 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>TOOLS-Pixel Tools-Query ${mode} Time Series</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Query ${mode} Time Series" tool</li>
-                                      <li class="list-group-item">This tool allows you to query a single pixel from the ${mode} time series in conjunction with NLCD landcover data.</li>
+                                      <li class="list-group-item">This tool allows you to query a single pixel from the ${mode} time series in conjunction with NLCD land cover data.</li>
                                       <li class="list-group-item">This is helpful to understand what happened in a smaller area and to understand the suite of products available from ${mode}.</li>
                                       <li class="list-group-item">Once activated, anywhere you double-click will query the ${mode} time series.</li>
                                       <li class="list-group-item">It can take some time to query the ${mode} time series as the query is done on-the-fly within Google Earth Engine</li>
-                                      <li class="list-group-item">Once this is complete, a chart will apear</li>
-                                      <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
+                                      <li class="list-group-item">Once this is complete, a chart will appear</li>
+                                      <li class="list-group-item">You can display the data on various types of graphs or a table using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data from the "Download" dropdown menu in the bottom of the chart window</li>
                                       <li class="list-group-item">To query another area, close the chart using the <kbd>&times</kbd> button in the upper right or by clicking off the chart window. Then repeat the process by double-clicking anywhere on the map</li>
@@ -127,12 +127,12 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>TOOLS-Pixel Tools-Query ${mode} Time Series</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Activate the "Query ${mode} Time Series" tool</li>
-                                      <li class="list-group-item">This tool allows you to query a single pixel from the ${mode} time series as well as NLCD landcover.</li>
-                                      <li class="list-group-item">This is helpful to understand what happened in a smaller area and to understand the suite of products available from ${mode} in the context of NLCD landcover.</li>
+                                      <li class="list-group-item">This tool allows you to query a single pixel from the ${mode} time series as well as NLCD land cover.</li>
+                                      <li class="list-group-item">This is helpful to understand what happened in a smaller area and to understand the suite of products available from ${mode} in the context of NLCD land cover.</li>
                                       <li class="list-group-item">Once activated, anywhere you double-click will query the ${mode} and NLCD time series.</li>
                                       <li class="list-group-item">It can take some time to query the ${mode} and NLCD time series as the query is done on-the-fly within Google Earth Engine</li>
-                                      <li class="list-group-item">Once this is complete, a chart will apear</li>
-                                      <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
+                                      <li class="list-group-item">Once this is complete, a chart will appear</li>
+                                      <li class="list-group-item">You can display the data on various types of graphs or a table using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data with the "Download" dropdown menu in the bottom of the chart window</li>
                                       <li class="list-group-item">To query another area, close the chart using the <kbd>&times</kbd> button in the upper right or by clicking off the chart window. Then repeat the process by double-clicking anywhere on the map</li>
@@ -163,7 +163,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">Once drawing is finished, click on the <kbd>Chart Selected Areas</kbd> button to create the chart.</li>
                                       <li class="list-group-item">It can take some time to summarize the area as it is done on-the-fly within Google Earth Engine.</li>
                                       <li class="list-group-item">The selected area is tabulated and provided under the “Total area selected” header. The charting of very large drawn areas (>10,000,000 Acres) is not fully supported at this time. Very large areas may not successfully create a chart.</li>
-                                      <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
+                                      <li class="list-group-item">You can display the data on various types of graphs or a table using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data with the "Download" dropdown menu in the bottom of the chart window</li>
                                       <li class="list-group-item">To summarize another area, close the chart and draw another polygon.</li>
@@ -181,7 +181,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">Once the file is selected, click on the <kbd>Chart across chosen file</kbd> button to ingest chosen file and create chart.</li>
                                       <li class="list-group-item">Sometimes it can take some time upload the chosen file and summarize the area as it is done on-demand within Google Earth Engine.</li>
                                       <li class="list-group-item">Selecting a very large area may not successfully run.</li>
-                                      <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
+                                      <li class="list-group-item">You can display the data on various types of graphs or a table using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data in the "Download" dropdown menu in the bottom of the chart window</li>
                                       <li class="list-group-item">To summarize another area, close the chart and repeat this process.</li>
@@ -203,7 +203,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">If left blank, a name will be generated using the names of the selected areas.</li>
                                       <li class="list-group-item">Once all areas you would like to include are selected, press the <kbd>Chart Selected Areas</kbd> button at the bottom of the tool to summarize those areas and create a chart.</li>
                                       <li class="list-group-item">Selecting a very large area may not successfully run.</li>
-                                      <li class="list-group-item">You can display the data on a graph, table, or both using the "Chart Type" dropdown menu.</li>
+                                      <li class="list-group-item">You can display the data on various types of graphs or a table using the "Chart Type" dropdown menu.</li>
                                       <li class="list-group-item">Within the graph, each category/line in the graph can be turned off by clicking on it in the graph legend.</li>
                                       <li class="list-group-item">You can download a CSV or PNG of the extracted data with the "Download" dropdown menu at the bottom of the chart window.</li>
                                       <li class="list-group-item">To summarize another area, close the chart and repeat this process. You can continue selecting more areas, or clear your selected areas using the trash can button and start over.</li>

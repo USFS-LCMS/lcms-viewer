@@ -2553,7 +2553,7 @@ function runMTBS(){
   var nlcdLCObj = mtbsAndNLCD.NLCD;
   mtbsC = mtbsAndNLCD.MTBS.collection; 
   getNAIP();
-
+  var yearsCli = ee.List.sequence(startYear,endYear).getInfo();
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
   //   var stop = start + 999;
   //   var nameEnd = start.toString()+'_'+stop.toString();
@@ -2594,8 +2594,9 @@ function runMTBS(){
   
   var nlcdLCFilled =  batchFillCollection(nlcdLCObj.collection,ee.List.sequence(startYear,endYear).getInfo()).map(setSameDate);
   var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
-  
-  Map2.addTimeLapse(mtbsC,JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz)),'MTBS Burn Severity Time Lapse',false);
+  var timeLapseSeverityViz = JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz));
+  timeLapseSeverityViz.years = yearsCli;
+  Map2.addTimeLapse(mtbsC,timeLapseSeverityViz,'MTBS Burn Severity Time Lapse',false);
   // forCharting = forCharting.set('chartTableDict',chartTableDict);
   // forCharting = forCharting.set('legends',chartTableDict) 
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);

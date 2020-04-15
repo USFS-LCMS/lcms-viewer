@@ -478,7 +478,8 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
 
     
 
-   
+   Map2.addTimeLapse(nlcdObj.collection,{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict,years:nlcdObj.years},'NLCD Land Cover Time Lapse',false,null,null,'NLCD landcover classes ','reference-layer-list');
+          
    nlcdObj.years.map(function(nlcdYear){
       if(nlcdYear >= startYear  && nlcdYear <= mtbsEndYear){
         var nlcdT = nlcdObj.collection.filter(ee.Filter.calendarRange(nlcdYear,nlcdYear,'year')).mosaic();
@@ -490,7 +491,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
          mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
          var mtbsByNLCDStack = formatAreaChartCollection(mtbsByNLCD,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
           
-         Map2.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
+         // Map2.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
           
           areaChartCollections['mtbsNLCD'+nlcdYear.toString()] = {'collection':mtbsByNLCDStack,
                                         'colors':Object.values(mtbsClassDict),
@@ -532,10 +533,10 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   }
 
 // print(mtbsStack.getInfo());
-  var severityViz = {'queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
+  var severityViz = {layerType:'geeImage','queryDict': mtbsQueryClassDict,'min':1,'max':6,'palette':'006400,7fffd4,ffff00,ff0000,7fff00,ffffff',addToClassLegend: true,classLegendDict:mtbsClassDict}
   Map2.addLayer(mtbsSummarized.select([0]).set('bounds',clientBoundsDict.All),severityViz,'MTBS Burn Severity',showSeverity,null,null,'MTBS '+mtbsSummaryMethod+' burn severity mosaic from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)
-  Map2.addLayer(mtbsSummarized.select([4]).set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'MTBS Burn Year',false,null,null,'MTBS '+mtbsSummaryMethod+' burn year from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
-  Map2.addLayer(mtbsCount.set('bounds',clientBoundsDict.All),{min:1,max:5,palette:declineDurPalette.split(',').reverse().join(','),legendLabelLeft:'Count =',legendLabelRight:'Count >='},'MTBS Burn Count',false,null,null,'MTBS number of burns mapped for a given area from '+startYear.toString() + '-' + mtbsEndYear.toString() + ' with a burn serverity class of low, moderate, or high',whichLayerList)  
+  Map2.addLayer(mtbsSummarized.select([4]).set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'MTBS Burn Year',false,null,null,'MTBS '+mtbsSummaryMethod+' burn year from '+startYear.toString() + '-' + mtbsEndYear.toString(),whichLayerList)  
+  Map2.addLayer(mtbsCount.set('bounds',clientBoundsDict.All),{layerType:'geeImage',min:1,max:5,palette:declineDurPalette.split(',').reverse().join(','),legendLabelLeft:'Count =',legendLabelRight:'Count >='},'MTBS Burn Count',false,null,null,'MTBS number of burns mapped for a given area from '+startYear.toString() + '-' + mtbsEndYear.toString() + ' with a burn serverity class of low, moderate, or high',whichLayerList)  
   
   var chartTableDict = {
     'Burn Severity':mtbsQueryClassDict
@@ -599,7 +600,7 @@ function getNAIP(whichLayerList){
     
     var naipT = naip.filter(ee.Filter.calendarRange(yr[0],yr[1],'year')).mosaic().byte().set('bounds',clientBoundsDict.CONUS);
    
-    Map2.addLayer(naipT,{'addToLegend':false,'min':25,'max':225},'NAIP ' + yr[0].toString()+ '-'+yr[1].toString(),false,null,null,'The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the '+yr[0].toString()+' to the ' + yr[1].toString() +' agricultural growing season in the continental U.S.',whichLayerList);
+    Map2.addLayer(naipT,{'addToLegend':false,'min':25,'max':225,'layerType':'geeImage'},'NAIP ' + yr[0].toString()+ '-'+yr[1].toString(),false,null,null,'The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the '+yr[0].toString()+' to the ' + yr[1].toString() +' agricultural growing season in the continental U.S.',whichLayerList);
   });
 
 }
