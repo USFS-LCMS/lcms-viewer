@@ -112,7 +112,7 @@ function updateSelectedAreaArea(){
 		$('#select-features-area-spinner').show();
 		// selectedFeatures.evaluate(function(values){console.log(values)})
 		// ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0])
-		ee.Feature(selectedFeatures.union().first()).area()
+		ee.Feature(selectedFeatures.union().first()).area(1000)
 		.evaluate(function(values,error){
 			if(values === undefined){values = 0;console.log(error)};
         	$('#selected-features-area').html((values*0.0001).formatNumber() + ' hectares / '+(values*0.000247105).formatNumber() + ' acres');
@@ -811,7 +811,7 @@ function makeAreaChart(area,name,userDefined){
 	if(xAxisLabel === null || xAxisLabel == undefined){xAxisLabel = null};
 	if(yAxisLabel === null || yAxisLabel == undefined){yAxisLabel = '% Area'};
 	yAxisLabel = areaChartFormatDict[areaChartFormat].label;
-	var totalArea = area.area();
+	var totalArea = area.area(1000);
 	if(['Acres','Hectares'].indexOf(areaChartFormat)>-1){
 		multiplier =totalArea.multiply(areaChartFormatDict[areaChartFormat].mult);
 	}
@@ -935,6 +935,7 @@ function runShpDefinedCharting(){
 					}
 				};
 				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
+				
 				makeAreaChart(area,name);
 			})
 		
