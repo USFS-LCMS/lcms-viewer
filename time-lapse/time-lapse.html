@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+body{
+    min-height: 100vh;
+    padding: 0 10vh;
+    margin: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+input[type=range] {
+    -webkit-appearance: none;
+    margin: 20px 0;
+    width: 100%;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #888;
+}
+input[type=range]::-webkit-slider-thumb {
+    height: 20px;
+    width: 5px;
+    border-radius: 2%;
+    background: #fff;
+    box-shadow: 0 0 4px 0 rgba(0,0,0, 1);
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -8px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #888;
+}
+.range-wrap{
+    width: 500px;
+    position: relative;
+}
+.range-value{
+    position: absolute;
+    top: -50%;
+}
+.range-value span{
+    width: 35px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: #888;
+    color: #fff;
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 6px;
+}
+.range-value span:before{
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 10px solid #888;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -1px;
+}
+.active, .btn:hover {
+  background-color: #666;
+  color: white;
+}
+button:active {
+  color: white;
+  background-color: #666;
+  box-shadow: 0 1px #666;
+  transform: translateY(2px);
+}
+
+
+.legend div span {
+display: inline-block;
+height: 0.9em;
+margin-right: 0.3em;
+width: 0.9em;
+font-size:0.9em;
+}
+
+.legend-title {
+  text-align: left;
+  margin-bottom: 0.3em;
+  font-weight: bold;
+  font-size: 90%;
+  }
+.my-legend .legend-scale ul {
+  margin: 0;
+  margin-bottom: 0.3em;
+  padding: 0;
+  float: left;
+  list-style: none;
+  }
+.my-legend .legend-scale ul li {
+  font-size: 80%;
+  list-style: none;
+  margin-left: 0;
+  line-height: 1em;
+  margin-bottom: 0.3em;
+  }
+.my-legend ul.legend-labels li span {
+  display: block;
+  float: left;
+  height: 1em;
+  width: 2em;
+  margin-right: 0.3em;
+  margin-left: 0;
+  border: 1px solid #999;
+  }
+.my-legend .legend-source {
+  font-size: 70%;
+  color: #999;
+  clear: both;
+  }
+.my-legend a {
+  color: #777;
+  }
+body{background-color: #333;color:#FFF;}
+</style>
+</head>
+<body>
+
+<script type="text/javascript">
+  //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
+String.prototype.replaceAll = function(str1, str2, ignore) 
+{
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+}
+  var year = 1985;
+  var startYear = 1985;
+  var endYear = 2019;
+  var speed = 0.5;
+  var intervalPeriod = 1000/speed;
+  var intervalValue;
+
+  var studyAreas = ['chips_AshleyNF-Duchesne-District_burned', 'chips_AshleyNF-FlamingGorge-District_burned', 'chips_AshleyNF-Roosevelt-District_burned', 'chips_AshleyNF-Vernal-District_burned', 'chips_BoiseNF-Cascade-District_burned', 'chips_BoiseNF-Emmett-District_burned', 'chips_BoiseNF-IdahoCity-District_burned', 'chips_BoiseNF-Lowman-District_burned', 'chips_BoiseNF-MountainHome-District_burned', 'chips_Bridger-TetonNF-BigPiney-District_burned', 'chips_Bridger-TetonNF-Blackrock-District_burned', 'chips_Bridger-TetonNF-GreysRiver-District_burned', 'chips_Bridger-TetonNF-Jackson-District_burned', 'chips_Bridger-TetonNF-Kemmerer-District_burned', 'chips_Bridger-TetonNF-Pinedale-District_burned', 'chips_Caribou-TargheeNF-AshtonIslandPark-District_burned', 'chips_Caribou-TargheeNF-Dubois-District_burned', 'chips_Caribou-TargheeNF-Montpelier-District_burned', 'chips_Caribou-TargheeNF-Palisades-District_burned', 'chips_Caribou-TargheeNF-SodaSprings-District_burned', 'chips_Caribou-TargheeNF-TetonBasin-District_burned', 'chips_Caribou-TargheeNF-Westside-District_burned', 'chips_DixieNF-CedarCity-District_burned', 'chips_DixieNF-Escalante-District_burned', 'chips_DixieNF-PineValley-District_burned', 'chips_DixieNF-Powell-District_burned', 'chips_FishlakeNF-Beaver-District_burned', 'chips_FishlakeNF-Fillmore-District_burned', 'chips_FishlakeNF-FremontRiver-District_burned', 'chips_FishlakeNF-Richfield-District_burned', 'chips_Humboldt-ToiyabeNF-Austin-Tonopah-District_burned', 'chips_Humboldt-ToiyabeNF-Bridgeport-District_burned', 'chips_Humboldt-ToiyabeNF-Carson-District_burned', 'chips_Humboldt-ToiyabeNF-Ely-District_burned', 'chips_Humboldt-ToiyabeNF-MountainCity-RubyMountains-Jarbidge-District_burned', 'chips_Humboldt-ToiyabeNF-SantaRosa-District_burned', 'chips_Humboldt-ToiyabeNF-SpringMountainsNationalRecreationArea-District_burned', 'chips_Manti-LaSalNF-Ferron-District_burned', 'chips_Manti-LaSalNF-Moab-District_burned', 'chips_Manti-LaSalNF-Monticello-District_burned', 'chips_Manti-LaSalNF-Price-District_burned', 'chips_Manti-LaSalNF-Sanpete-District_burned', 'chips_PayetteNF-Council-District_burned', 'chips_PayetteNF-Krassell-District_burned', 'chips_PayetteNF-McCall-District_burned', 'chips_PayetteNF-NewMeadows-District_burned', 'chips_PayetteNF-Weiser-District_burned', 'chips_Region_04_2_burned', 'chips_Region_04_burned', 'chips_Salmon-ChallisNF-Challis-YankeeFork-District_burned', 'chips_Salmon-ChallisNF-Leadore-District_burned', 'chips_Salmon-ChallisNF-LostRiver-District_burned', 'chips_Salmon-ChallisNF-MiddleFork-District_burned', 'chips_Salmon-ChallisNF-NorthFork-District_burned', 'chips_Salmon-ChallisNF-Salmon-Cobalt-District_burned', 'chips_SawtoothNF-Fairfield-District_burned', 'chips_SawtoothNF-Ketchum-District_burned', 'chips_SawtoothNF-Minidoka-District_burned', 'chips_SawtoothNF-SawtoothNationalRecreationArea-District_burned', 'chips_Uinta-Wasatch-CacheNF-Evanston-MountainView-District_burned', 'chips_Uinta-Wasatch-CacheNF-Heber-Kamas-District_burned', 'chips_Uinta-Wasatch-CacheNF-Logan-District_burned', 'chips_Uinta-Wasatch-CacheNF-Ogden-District_burned', 'chips_Uinta-Wasatch-CacheNF-PleasantGrove-District_burned', 'chips_Uinta-Wasatch-CacheNF-SaltLake-District_burned', 'chips_Uinta-Wasatch-CacheNF-SpanishFork-District_burned'];
+  var sa = 'chips_Bridger-TetonNF-Blackrock-District_burned';
+  
+  function updateFrame(){
+ 
+    var newsrc = './pngs2/'+sa+'/Loss_Gain_'+year.toString()+'.png';
+    $('#img-pane').attr('src',newsrc);
+    $('#year-range').val(year);
+    // $('#slider-value').html(year.toString());
+    setValue();
+  }
+  function selectYr(yr){
+    if(yr === null || yr === undefined){
+      year++;
+
+    }else{year = yr};
+
+    if(year > endYear){year = startYear}
+    else if(year < startYear){year = endYear}
+    updateFrame();
+  }
+  function pause(){
+    if(intervalValue !== null && intervalValue !== undefined){
+      window.clearInterval(intervalValue);
+    }
+    intervalValue = null;
+    
+    $('#play-button').removeClass('active');
+    $('#pause-button').addClass('active');
+  }
+  function play(){
+    if(intervalValue === null || intervalValue === undefined){
+      intervalValue =window.setInterval(selectYr, intervalPeriod);
+    }
+    
+    $('#pause-button').removeClass('active');
+    $('#play-button').addClass('active');
+  }
+  function forward(){
+    pause();
+    // year++;
+    selectYr();
+  };
+  function backward(){
+    console.log(year)
+    pause();
+    year = year -2;
+    selectYr();
+  }
+play();
+
+function setSpeed(speedT){
+  speed = speedT;
+  $('#speed-value').html(speed.toString() + ' frames/second');
+  intervalPeriod = 1/speed*1000;
+  if(intervalValue !== null && intervalValue !== undefined){
+    pause();play();
+  }
+  setValue();
+  } 
+function selectStudyArea(s){
+  sa = s;
+  updateFrame();
+  $('#title-bar').html(sa.replaceAll('_',' ').replaceAll(' burned','').replaceAll('chips ',''));
+}
+
+function toggleControlPanel(){
+  $('#control-panel').toggle();
+  if($('#control-panel').is(':visible')){
+    $('#control-panel-toggler').addClass('active');
+  }else{$('#control-panel-toggler').removeClass('active')}
+  
+}
+
+</script>  
+<div class = 'container-fluid p-0'>
+  <div class = 'row col-md-12 pl-4'>
+    <h3 id = 'title-bar'></h3>
+  </div>
+  <div class = 'row'>
+    <div class = 'col-sm-12 col-md-8 col-lg-4 ' >
+      <img class="pt-2 col-md-12" id = 'img-pane'>
+
+      <div class="my-legend col-md-12 pt-2">
+        <div class="legend-scale">
+              <ul class="legend-labels" >
+                <li><span style="border: 1px solid #999;background:#2a91b7;"></span>Water</li>
+                <li><span style="border: 1px solid #999;background:#888;"></span>Non Tree</li>
+                <li><span style="border: 1px solid #999;background:#32681e;"></span>Stable Tree</li>
+                <li><span style="border: 1px solid #999;background:#e8edc4;"></span>Loss Tree</li>
+                <li><span style="border: 1px solid #999;background:#54278f;"></span>Gain Tree</li><li>
+              </ul>
+        </div>
+      </div>
+      <button title = 'Toggle control panel visibility' id = 'control-panel-toggler' onclick = 'toggleControlPanel()'><i class="fa fa-sliders"></i>  Toggle Control Panel</button>
+    </div>
+
+  
+   
+    <div class="py-2 row" href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top">
+                
+    <div class = 'col-sm-12 col-md-8 ' id = 'control-panel' style = 'display:none;'>
+      <div class = 'row py-2'>
+      <!-- <p class = 'col-md-4'> </p>     -->
+      <div class = 'icon-bar col-md-6 '>
+        <button title = 'Back one frame' id = 'backward-button' onclick = 'backward()'><i class="fa fa-backward"></i></button>
+          <button title = 'Pause animation' id = 'pause-button' onclick = 'pause()'><i class="fa fa-pause"></i></button>
+          <button title = 'Play animation' id = 'play-button' class = 'active' onclick = 'play()'><i class="fa fa-play"></i></button>
+          <button title = 'Forward one frame' id = 'forward-button' onclick = 'forward()'><i class="fa fa-forward"></i></button>
+      </div>
+    </div>
+      <div class = 'row pt-4'>
+       <p class = 'pr-2 col-md-3'>Year</p>
+        <div class="range-wrap col-md-9 col-sm-3 ">
+            <div class="range-value" id="year-range-value"></div>
+            <input id="year-range" type="range" min="1985" max="2019" value="1985" step="1" oninput="pause();selectYr(this.value)">
+        </div>
+      </div>
+
+      <div class = 'row pt-4'>
+        <p class = 'col-md-3'>Speed </p>
+        <div class="range-wrap col-md-9 col-sm-3 ">
+          <div class="range-value" id="speed-range-value"></div>
+          <input type="range" min="0.2" max="3" value="0.5" step = '0.1' class="slider " id="speed" oninput="setSpeed(this.value)">
+        </div>
+       </div>
+    
+    <div class = 'row pl-3'>
+    
+    <div class="form-group pt-2">
+      <label for="sel1">Select a study area:</label>
+      <select class="form-control" id="sel1"></select>
+    </div>
+  </div>
+    </div>
+  </div>
+  
+   
+  </div>
+
+
+
+
+
+</body>
+<script type="text/javascript">
+   $('#title-bar').html(sa.replaceAll('_',' ').replaceAll(' burned','').replaceAll('chips ',''));
+   studyAreas.map(function(sa){
+    $('#sel1').append($('<option></option>').val(sa).html(sa.replaceAll('_',' ').replaceAll(' burned','').replaceAll('chips ','')));
+  });
+   $('#sel1').val(sa);
+    $('#sel1').change(function(event){
+      console.log($('#sel1').val())
+    selectStudyArea($('#sel1').val())
+   });
+
+
+     const
+    yr = document.getElementById('year-range'),
+    yrv = document.getElementById('year-range-value'),
+    sr = document.getElementById('speed'),
+    srv = document.getElementById('speed-range-value'),
+    setValue = ()=>{
+        const
+            newValue = Number( (yr.value - yr.min) * 100 / (yr.max - yr.min) ),
+            newPosition = 17 - (newValue * 0.35);
+        yrv.innerHTML = `<span>${yr.value}</span>`;
+        yrv.style.left = `calc(${newValue}% + (${newPosition}px))`;
+        const
+            newValue2 = Number( (sr.value - sr.min) * 100 / (sr.max - sr.min) ),
+            newPosition2 = 17 - (newValue2 * 0.35);
+        srv.innerHTML = `<span>${sr.value}fps</span>`;
+        srv.style.left = `calc(${newValue2}% + (${newPosition2}px))`;
+    };
+document.addEventListener("DOMContentLoaded", setValue);
+// range.addEventListener('input', setValue);
+</script>
+</html>

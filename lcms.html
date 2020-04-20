@@ -14,63 +14,8 @@
           gtag('config', 'UA-155737118-1');
         </script>
 
-       <!--  <script type="text/javascript">
-           
-            // var ua = navigator.userAgent;
-            // var browser;
-            // if((MSIE\/)/i.test(ua)){browser = 'ie_old'}
-            // else if((Trident\/)/i.test(ua)){browser = 'ie_new'}
-            // else if((Edge\/)/i.test(ua)){browser = 'edge'}
-
-            // (MSIE|Trident\/|Edge\/)/i.test(ua)
-            // if(navigator.userAgent.indexOf("Chrome") === -1){
-            // alert('This app is designed to work with Google Chrome.  Please re-open in Chrome.')
-            // }
-
-            //Browser detection
-            //Taken from: https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-            // Opera 8.0+
-            // Object.filter = (obj, predicate) => 
-            //     Object.keys(obj)
-            //           .filter( key => predicate(obj[key]) )
-            //           .reduce( (res, key) => (res[key] = obj[key], res), {} );
-            var whichBrowser = {};
-            var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-            whichBrowser['Opera'] = isOpera;
-            // Firefox 1.0+
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            whichBrowser['Firefox'] = isFirefox;
-            // Safari 3.0+ "[object HTMLElementConstructor]" 
-            var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-            whichBrowser['Safari'] = isSafari;
-            // Internet Explorer 6-11
-            var isIE = /*@cc_on!@*/false || !!document.documentMode;
-            whichBrowser['IE'] = isIE;
-            // Edge 20+
-            var isEdge = !isIE && !!window.StyleMedia;
-            whichBrowser['Edge'] = isEdge;
-            // Chrome 1 - 71
-            var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-            whichBrowser['Chrome'] = isChrome;
-            // Blink engine detection
-            // var isBlink = (isChrome || isOpera) && !!window.CSS;
-            // whichBrowser['blink'] = isBlink;
-
-            var browser = Object.keys(Object.filter(whichBrowser, b => b === true))[0]
-            // if(!isChrome && isChrome !== undefined){
-                // alert('Detected browser is: ' + browser + '\nThis app is designed to work best with Google Chrome.\nPlease re-open in Chrome.')
-            // }
-            console.log(browser)
-
-        </script> -->
-        <!-- <title>LCMS Data Explorer</title> -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="icon" href="./images/usfslogo.png">
-        
-        
-        
-       
-        <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script> -->
         
         <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=places"></script>
         <script type="text/javascript" src="js/ee_api_js.js"></script>
@@ -102,18 +47,6 @@
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
         <link rel="stylesheet" href="./css/style.css">
 
-     <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.0.2/nouislider.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.0.2/nouislider.min.js"></script> -->
-
-        <!--[if IE]>
-
-        <script>alert('hello');</script>
-        <![endif]-->
-
-        <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-        <!-- <link rel="import" href="./elements/layer-list.html"> -->
-        <!-- <link rel="import" href="./elements/ee-layer.html"> -->
-        <!-- <link rel="import" href="./elements/variables.html"> -->
     </head>
 
 
@@ -135,17 +68,5 @@
         <script type="text/javascript" src="./js/12export-manager.js"></script>
         <script type="text/javascript" src="./js/13plot-manager.js"></script>
         <script type="text/javascript" src="./js/14tutorial-manager.js"></script>
-        
-        
-        
-        
     </body>
 </html>
-
-<!--OLD CODE
- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-<!--     <plot-container id="plot-container" style='position:absolute;left:0%;top:10%;width:200px;max-height:50%;overflow-y:auto;display:none;'>
-        <pt-project-list id="pt-project-list"></pt-project-list>
-        <pt-list id="pt-list"></pt-list>
-    </plot-container> -->
