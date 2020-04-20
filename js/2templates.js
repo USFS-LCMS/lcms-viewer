@@ -1184,7 +1184,8 @@ function addLayer(layer){
 		},delay)
 		
 	});
-	$('#'+ spanID).dblclick(function(){zoomFunction();
+	$('#'+ spanID).dblclick(function(){
+            zoomFunction();
 			prevent = true;
 			zoomFunction();
 			if(!layer.visible){$('#'+visibleID).click();}

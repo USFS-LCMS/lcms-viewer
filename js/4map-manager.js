@@ -697,7 +697,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                   <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
                                   <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
 
-                                  <span  onclick = 'timeLapseCheckbox("${legendDivID}")' class = 'layer-span'>${name}</span>
+                                  <span  id = '${legendDivID}-name-span'  class = 'layer-span'>${name}</span>
 
                                   <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-4 pt-3' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
@@ -723,6 +723,26 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   // $('#'+legendDivID+'-cumulative-radio-second_toggle_label').addClass('cumulative-on');
   // $('#'+legendDivID+'-cumulative-radio').addClass('pt-4');
   $('#time-lapse-legend-list').append(`<div id="legend-${legendDivID}-collapse-div"></div>`);
+  onclick = 'timeLapseCheckbox("${legendDivID}")'
+  var prevent = false;
+  var delay = 200;
+  $('#'+ legendDivID + '-name-span').click(function(){
+    // showMessage('test')
+    setTimeout(function(){
+      if(!prevent){
+        timeLapseCheckbox(legendDivID);
+      }
+    },delay)
+    
+  });
+  $('#'+ legendDivID + '-name-span').dblclick(function(){
+    showMessage('test')
+      // zoomFunction();
+      // prevent = true;
+      // zoomFunction();
+      // if(!timeLapseObj[legendDivID].visible){$('#'+legendDivID+'-toggle-checkbox').click();}
+      // setTimeout(function(){prevent = false},delay)
+    })
   // viz.opacity = 0;
   viz.layerType = 'geeImage';
   viz.legendTitle = name;
