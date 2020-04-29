@@ -96,6 +96,7 @@ function runUSFS(){
       var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
       var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
       var legendList = Object.values(lc2Dict).map(function(v){return v.legendName}); 
+      console.log(JSON.stringify(ee.Dictionary.fromLists(ee.List(legendList.map(function(s){return s.replaceAll(' ','_').toLowerCase()})),ee.List(nameList)).getInfo()))
       var colorList = Object.values(lc2Dict).map(function(v){return v.color});
       var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
 
@@ -1345,12 +1346,10 @@ var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
 var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
   .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
   .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
-ee.List.sequence(startYear,endYear,1).getInfo().map(function(yr){
-  if(yr%5 == 0 || yr === startYear || yr === endYear){
-    var composite = composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
-    Map2.addLayer(composite,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red'},'Composite '+yr.toString(),false)
-  }  
-})
+composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
+  return composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+}))
+Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse')
 
 
 function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fittedPrefix,sign,lossThresh,gainThresh){
@@ -1394,14 +1393,15 @@ function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fitte
   var gainMag = lossYearStack.select(['gain_mag.*']).reduce(ee.Reducer.max()).rename(['gain_mag']);
   var lossDur = lossYearStack.select(['loss_dur.*']).reduce(ee.Reducer.max()).rename(['loss_dur']);
   var gainDur = lossYearStack.select(['gain_dur.*']).reduce(ee.Reducer.max()).rename(['gain_dur']);
-  return lossYear.addBands(lossMag).addBands(lossDur).addBands(gainYear).addBands(gainMag).addBands(gainDur);
+  var out = lossYear.addBands(lossMag).addBands(lossDur).addBands(gainYear).addBands(gainMag).addBands(gainDur);
+  return out
 }
 Object.keys(whichIndices).map(function(k){
   var indexName = k;
   if(whichIndices[k]){
     var ltCONUST = ltCONUS.filter(ee.Filter.eq('timeSeries',indexName)).mosaic();
     var lossGainCONUS = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
-
+    Map2.addExport(lossGainCONUS.int16(),'CONUS LT Loss Gain Stack '+indexName ,30,false,{})
     Map2.addLayer(lossGainCONUS.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS LT Loss Year '+indexName,false);
     Map2.addLayer(lossGainCONUS.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'CONUS LT Loss Mag '+indexName,false);
     Map2.addLayer(lossGainCONUS.select(['loss_dur']),{min:1,max:5,palette:durPalette},'CONUS LT Loss Dur '+indexName,false);
@@ -1461,7 +1461,7 @@ var change = getChangeCCDC(ccdc,startYear,endYear,1,9,'S','_tStart','_tEnd','_tB
 Map2.addLayer(change.select(['change_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Change Year',false);
 Map2.addLayer(change.select(['change_prob']),{min:ccdcChangeProbThresh*100,max:100,palette:lossMagPalette},'CONUS CCDC Change Prob',false);
 
-
+Map2.addExport(change.int16(),'CONUS CCDC Change Stack',30,false,{})
 
 
 }
