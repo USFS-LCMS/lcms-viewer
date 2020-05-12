@@ -1349,7 +1349,7 @@ var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
 composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
   return composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
 }))
-Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse')
+
 
 
 function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fittedPrefix,sign,lossThresh,gainThresh){
@@ -1401,7 +1401,7 @@ Object.keys(whichIndices).map(function(k){
   if(whichIndices[k]){
     var ltCONUST = ltCONUS.filter(ee.Filter.eq('timeSeries',indexName)).mosaic();
     var lossGainCONUS = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
-    Map2.addExport(lossGainCONUS.int16(),'CONUS LT Loss Gain Stack '+indexName ,30,false,{})
+    Map2.addExport(lossGainCONUS.int16().unmask(-32768,false),'CONUS LT Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
     Map2.addLayer(lossGainCONUS.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS LT Loss Year '+indexName,false);
     Map2.addLayer(lossGainCONUS.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'CONUS LT Loss Mag '+indexName,false);
     Map2.addLayer(lossGainCONUS.select(['loss_dur']),{min:1,max:5,palette:durPalette},'CONUS LT Loss Dur '+indexName,false);
@@ -1412,7 +1412,35 @@ Object.keys(whichIndices).map(function(k){
 
   }
 });
+function getCCDCChange2(ccdcImg,changeDirBand,changeDir,tBreakEnding,magnitudeEnding,changeProbEnding,changeProbThresh,divideTimeBy,startYear,endYear){
+  if(changeDirBand === null || changeDirBand === undefined){changeDirBand = 'NDVI'}
+  if(changeDir === null || changeDir === undefined){changeDir = getImagesLib.changeDirDict[changeDirBand]}
+  if(magnitudeEnding === null || magnitudeEnding === undefined){magnitudeEnding = '_magnitude'}
+  if(tBreakEnding === null || tBreakEnding === undefined){tBreakEnding = '_tBreak'}
+  if(changeProbEnding === null || changeProbEnding === undefined){changeProbEnding = '_changeProb'}
+  if(changeProbThresh === null || changeProbThresh === undefined){changeProbThresh = 0.8}
+  if(divideTimeBy === null || divideTimeBy === undefined){divideTimeBy = 1}
+  if(startYear === null || startYear === undefined){startYear = 0}
+  if(endYear === null || endYear === undefined){endYear = 3000}
 
+  var changeProbs = ccdcImg.select(['.*'+changeProbEnding]).selfMask();
+  changeProbs = changeProbs.updateMask(changeProbs.gte(changeProbThresh));
+
+  var changeYears = ccdcImg.select(['.*'+tBreakEnding]).selfMask().divide(divideTimeBy);
+  changeYears = changeYears.updateMask(changeYears.gte(startYear).and(changeYears.lte(endYear)).and(changeProbs.mask()));
+  var diffs = ccdcImg.select(['.*'+changeDirBand+magnitudeEnding]).updateMask(changeYears.mask());
+  
+  //Pull out loss and gain
+  if(changeDir === 1){
+    diffs = diffs.multiply(-1);
+  }
+  var lossYears = changeYears.updateMask(diffs.lt(0));
+  var gainYears = changeYears.updateMask(diffs.gt(0));
+  var lossMags = diffs.updateMask(diffs.lt(0));
+  var gainMags = diffs.updateMask(diffs.gt(0));
+  
+  return {lossYears:lossYears,gainYears:gainYears,lossMags:lossMags,gainMags:gainMags};
+}
 // var lossGainR4 = getLossGainLT(ltR4,startYear,endYear,1,10,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh);
 // Map.addLayer(lossGainR4.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'R4 Loss Year',false);
 // Map.addLayer(lossGainR4.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'R4 Loss Mag',false);
@@ -1421,9 +1449,10 @@ Object.keys(whichIndices).map(function(k){
 
 var ccdc = ee.ImageCollection('projects/CCDC/USA')
           // .filterBounds(geometry)
-          .mosaic();
+          .mosaic()
+          // .reproject('EPSG:5070',null,30);
 
-
+console.log(ccdc.bandNames().getInfo())
 function getChangeCCDC(ccdcStack,startYear,endYear,startSeg,endSeg,segPrefix,tStartSuffix,tEndSuffix,tBreakSuffix,changeProbSuffix,divideTimeBy,changeProbThresh){
   var tStart = ccdcStack.select(['.*'+tStartSuffix]).divide(divideTimeBy);
   var tEnd = ccdcStack.select(['.*'+tEndSuffix]).divide(divideTimeBy);
@@ -1455,15 +1484,23 @@ function getChangeCCDC(ccdcStack,startYear,endYear,startSeg,endSeg,segPrefix,tSt
   return changeYear.addBands(changeProb);
 }
  
+var change = getCCDCChange2(ccdc,'B4',-1,'_tBreak','_MAG','_changeProb',ccdcChangeProbThresh,365.25,startYear,endYear);
+Map2.addExport(change.lossYears.reduce(ee.Reducer.max()).addBands(change.lossMags.reduce(ee.Reducer.max())).addBands(change.gainYears.reduce(ee.Reducer.max())).addBands(change.gainMags.reduce(ee.Reducer.max())).int16().unmask(-32768,false),'CONUS CCDC Loss Gain Stack '+ startYear.toString() + ' '+ endYear.toString() ,30,false,{})
+Map2.addLayer(change.lossYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Loss Year',false);
+Map2.addLayer(change.lossMags.reduce(ee.Reducer.max()).multiply(-1),{min:200,max:600,palette:lossMagPalette},'CONUS CCDC Loss Mag',false);
 
-var change = getChangeCCDC(ccdc,startYear,endYear,1,9,'S','_tStart','_tEnd','_tBreak','_changeProb',365.25,ccdcChangeProbThresh*100) 
-// Map.addLayer(change.select([0]),)
-Map2.addLayer(change.select(['change_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Change Year',false);
-Map2.addLayer(change.select(['change_prob']),{min:ccdcChangeProbThresh*100,max:100,palette:lossMagPalette},'CONUS CCDC Change Prob',false);
+Map2.addLayer(change.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CONUS CCDC Gain Year',false);
+Map2.addLayer(change.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CONUS CCDC Gain Mag',false);
 
-Map2.addExport(change.int16(),'CONUS CCDC Change Stack',30,false,{})
+// var change = getChangeCCDC(ccdc,startYear,endYear,1,9,'S','_tStart','_tEnd','_tBreak','_changeProb',365.25,ccdcChangeProbThresh*100) 
+// Map2.addLayer(ccdc)
 
+// Map2.addLayer(change.select(['change_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Change Year',false);
+// Map2.addLayer(change.select(['change_prob']),{min:ccdcChangeProbThresh*100,max:100,palette:lossMagPalette},'CONUS CCDC Change Prob',false);
 
+// Map2.addExport(change.int16(),'CONUS CCDC Change Stack',30,false,{})
+
+Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse')
 }
 function runRaw(){
   getLCMSVariables();

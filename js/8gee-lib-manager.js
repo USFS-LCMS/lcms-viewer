@@ -341,7 +341,7 @@ function getAspectObj(){
   return {'image':aspectBinned,'lookupDict':aspectLookupDict,'colorDict':colorDict}
 }
 function getNLCDObj(){
-  var nlcdYears = [1992,2001,2004,2006,2008,2011,2013,2016];
+  var nlcdYears = [2001,2004,2006,2008,2011,2013,2016];
   var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
   var nlcdLCMin = 0;//parseInt(nlcd.get('system:visualization_0_min').getInfo());
   var nlcdLCPalette = ["466b9f", "d1def8", "dec5c5", "d99282", "eb0000", "ab0000", "b3ac9f", "68ab5f", "1c5f2c", "b5c58f", "af963c", "ccb879", "dfdfc2", "d1d182", "a3cc51", "82ba9e", "dcd939", "ab6c28", "b8d9eb", "6c9fb8"];//nlcd.get('system:visualization_0_palette').getInfo().split(',');

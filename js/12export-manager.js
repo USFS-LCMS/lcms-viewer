@@ -340,7 +340,7 @@ function updateSpinner(){
 /////////////////////////////////////////////////////////////////////////////////////////////
 function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
     $('#summary-spinner').show();
-    eeImage = eeImage.clip(fc);
+    eeImage = eeImage.clip(fc).unmask(-32768,false);
     var imageJson = ee.Serializer.toJSON(eeImage);
     $('#export-message-container').text("Exporting:" + exportOutputName);
     outputURL = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+exportOutputName +'.tif'//Currently cannot handle multiple tile exports for very large exports

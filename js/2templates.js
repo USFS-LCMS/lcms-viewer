@@ -1104,6 +1104,8 @@ function addLayer(layer){
             }
             
         }
+        $('#'+spinnerID + '2').hide();
+        $('#'+spinnerID + '3').hide();
         vizToggleCleanup();
     }
     function turnOn(){
