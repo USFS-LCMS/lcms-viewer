@@ -1396,21 +1396,49 @@ function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fitte
   var out = lossYear.addBands(lossMag).addBands(lossDur).addBands(gainYear).addBands(gainMag).addBands(gainDur);
   return out
 }
+
 Object.keys(whichIndices).map(function(k){
   var indexName = k;
   if(whichIndices[k]){
     var ltCONUST = ltCONUS.filter(ee.Filter.eq('timeSeries',indexName)).mosaic();
-    var lossGainCONUS = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
-    Map2.addExport(lossGainCONUS.int16().unmask(-32768,false),'CONUS LT Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
-    Map2.addLayer(lossGainCONUS.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS LT Loss Year '+indexName,false);
-    Map2.addLayer(lossGainCONUS.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'CONUS LT Loss Mag '+indexName,false);
-    Map2.addLayer(lossGainCONUS.select(['loss_dur']),{min:1,max:5,palette:durPalette},'CONUS LT Loss Dur '+indexName,false);
+    var lossGainCONUSLT = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
+    Map2.addExport(lossGainCONUSLT.int16().unmask(-32768,false),'LANDTRENDR Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
+    Map2.addLayer(lossGainCONUSLT.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'LANDTRENDR Loss Year '+indexName,true);
+    Map2.addLayer(lossGainCONUSLT.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'LANDTRENDR Loss Mag '+indexName,false);
+    Map2.addLayer(lossGainCONUSLT.select(['loss_dur']),{min:1,max:5,palette:durPalette},'LANDTRENDR Loss Dur '+indexName,false);
 
-    Map2.addLayer(lossGainCONUS.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'CONUS LT Gain Year '+indexName,false);
-    Map2.addLayer(lossGainCONUS.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'CONUS LT Gain Mag '+indexName,false);
-    Map2.addLayer(lossGainCONUS.select(['gain_dur']),{min:1,max:5,palette:durPalette},'CONUS LT Gain Dur '+indexName,false);
+    Map2.addLayer(lossGainCONUSLT.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'LANDTRENDR Gain Year '+indexName,false);
+    Map2.addLayer(lossGainCONUSLT.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'LANDTRENDR Gain Mag '+indexName,false);
+    Map2.addLayer(lossGainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette},'LANDTRENDR Gain Dur '+indexName,false);
 
-  }
+    var gainLossC = ee.ImageCollection(ee.List.sequence(startYear,endYear).getInfo().map(function(yr){
+      var ltLossGainEndYear = lossGainCONUSLT.select(['loss_year','gain_year']);
+      var ltLossGainDur = lossGainCONUSLT.select(['loss_dur','gain_dur']);
+      var ltLossGainStartYear = ltLossGainEndYear.subtract(ltLossGainDur);
+      var ltLossGain = ee.Image([yr,yr]).gte(ltLossGainStartYear).and(ee.Image([yr,yr]).lte(ltLossGainEndYear)).rename(['LANDTRENDR '+indexName+' Loss','LANDTRENDR '+indexName+' Gain']);
+      // var ccdcLoss = CCDCchange.lossYears.eq(yr).reduce(ee.Reducer.max()).rename(['CCDC Loss']);
+      // var ccdcGain = CCDCchange.gainYears.eq(yr).reduce(ee.Reducer.max()).rename(['CCDC Gain']);
+      return ltLossGain
+      // .addBands(ccdcLoss).addBands(ccdcGain)
+      .set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+    
+    }))
+    pixelChartCollections['lg-'+indexName] =  {
+        'label':'LANDTRENDR '+indexName+' Loss Gain',
+        'collection':gainLossC,
+        'xAxisLabel':'Year',
+        'tooltip':'Query loss and gain for each year',
+        'colors':chartColorsDict.advancedBeta.slice(4)
+    };
+
+    areaChartCollections['lg-'+indexName] = {'label':'LANDTRENDR '+indexName+' Loss/Gain',
+                                      'collection':gainLossC,
+                                      'stacked':false,
+                                      'steppedLine':false,
+                                      'tooltip':'Summarize loss and gain for each year',
+                                      'colors':chartColorsDict.advancedBeta.slice(4),
+                                      'xAxisLabel':'Year'};
+      }
 });
 function getCCDCChange2(ccdcImg,changeDirBand,changeDir,tBreakEnding,magnitudeEnding,changeProbEnding,changeProbThresh,divideTimeBy,startYear,endYear){
   if(changeDirBand === null || changeDirBand === undefined){changeDirBand = 'NDVI'}
@@ -1441,18 +1469,13 @@ function getCCDCChange2(ccdcImg,changeDirBand,changeDir,tBreakEnding,magnitudeEn
   
   return {lossYears:lossYears,gainYears:gainYears,lossMags:lossMags,gainMags:gainMags};
 }
-// var lossGainR4 = getLossGainLT(ltR4,startYear,endYear,1,10,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh);
-// Map.addLayer(lossGainR4.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'R4 Loss Year',false);
-// Map.addLayer(lossGainR4.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'R4 Loss Mag',false);
-// Map.addLayer(lossGainR4.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'R4 Gain Year',false);
-// Map.addLayer(lossGainR4.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'R4 Gain Mag',false);
 
 var ccdc = ee.ImageCollection('projects/CCDC/USA')
           // .filterBounds(geometry)
           .mosaic()
           // .reproject('EPSG:5070',null,30);
 
-console.log(ccdc.bandNames().getInfo())
+// console.log(ccdc.bandNames().getInfo())
 function getChangeCCDC(ccdcStack,startYear,endYear,startSeg,endSeg,segPrefix,tStartSuffix,tEndSuffix,tBreakSuffix,changeProbSuffix,divideTimeBy,changeProbThresh){
   var tStart = ccdcStack.select(['.*'+tStartSuffix]).divide(divideTimeBy);
   var tEnd = ccdcStack.select(['.*'+tEndSuffix]).divide(divideTimeBy);
@@ -1484,23 +1507,24 @@ function getChangeCCDC(ccdcStack,startYear,endYear,startSeg,endSeg,segPrefix,tSt
   return changeYear.addBands(changeProb);
 }
  
-var change = getCCDCChange2(ccdc,'B4',-1,'_tBreak','_MAG','_changeProb',ccdcChangeProbThresh,365.25,startYear,endYear);
-Map2.addExport(change.lossYears.reduce(ee.Reducer.max()).addBands(change.lossMags.reduce(ee.Reducer.max())).addBands(change.gainYears.reduce(ee.Reducer.max())).addBands(change.gainMags.reduce(ee.Reducer.max())).int16().unmask(-32768,false),'CONUS CCDC Loss Gain Stack '+ startYear.toString() + ' '+ endYear.toString() ,30,false,{})
-Map2.addLayer(change.lossYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Loss Year',false);
-Map2.addLayer(change.lossMags.reduce(ee.Reducer.max()).multiply(-1),{min:200,max:600,palette:lossMagPalette},'CONUS CCDC Loss Mag',false);
+var CCDCchange = getCCDCChange2(ccdc,'B4',-1,'_tBreak','_MAG','_changeProb',ccdcChangeProbThresh,365.25,startYear,endYear);
+Map2.addExport(CCDCchange.lossYears.reduce(ee.Reducer.max()).addBands(CCDCchange.lossMags.reduce(ee.Reducer.max())).addBands(CCDCchange.gainYears.reduce(ee.Reducer.max())).addBands(CCDCchange.gainMags.reduce(ee.Reducer.max())).int16().unmask(-32768,false),'CCDC Loss Gain Stack '+ startYear.toString() + ' '+ endYear.toString() ,30,false,{})
+Map2.addLayer(CCDCchange.lossYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:lossYearPalette},'CCDC Loss Year',false);
+Map2.addLayer(CCDCchange.lossMags.reduce(ee.Reducer.max()).multiply(-1),{min:200,max:600,palette:lossMagPalette},'CCDC Loss Mag',false);
 
-Map2.addLayer(change.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CONUS CCDC Gain Year',false);
-Map2.addLayer(change.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CONUS CCDC Gain Mag',false);
+Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
+Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-// var change = getChangeCCDC(ccdc,startYear,endYear,1,9,'S','_tStart','_tEnd','_tBreak','_changeProb',365.25,ccdcChangeProbThresh*100) 
-// Map2.addLayer(ccdc)
+// Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
-// Map2.addLayer(change.select(['change_year']),{min:startYear,max:endYear,palette:lossYearPalette},'CONUS CCDC Change Year',false);
-// Map2.addLayer(change.select(['change_prob']),{min:ccdcChangeProbThresh*100,max:100,palette:lossMagPalette},'CONUS CCDC Change Prob',false);
 
-// Map2.addExport(change.int16(),'CONUS CCDC Change Stack',30,false,{})
 
-Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse')
+
+pixelChartCollections['composites'] =  {
+    'label':'Composites',
+    'collection':composites
+};
+populatePixelChartDropdown();populateAreaChartDropdown();getLCMSVariables();getSelectLayers();
 }
 function runRaw(){
   getLCMSVariables();
@@ -2688,6 +2712,8 @@ function getSelectLayers(){
   // Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests2',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   
   Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
+
+  Map2.addSelectLayer(otherLands,{strokeColor:'DD0',layerType:'geeVectorImage'},'Other Designated Lands',false,null,null,'A boundary within which National Forest System land parcels have managment or use limits placed on them by legal authority. Examples are: National Recreation Area, National Monument, and National Game Refuge. Turn on layer and click on any Park wanted to include in chart');
 
   Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
   

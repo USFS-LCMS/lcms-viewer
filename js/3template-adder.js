@@ -283,7 +283,7 @@ if(mode === 'geeViz'){
   $('#pixel-chart-label').remove();
 }
 
-if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' ){
+if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' || mode === 'lcms-base-learner' ){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Params', '',false,'')
   
