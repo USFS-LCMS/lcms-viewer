@@ -2663,7 +2663,7 @@ function initialize() {
    
 
        
-  console.log(initialCenter)
+  // console.log(initialCenter)
   var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
   var zoom = initialZoomLevel;//8;
 
@@ -2675,7 +2675,8 @@ function initialize() {
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
     studyAreaName = studyAreaDict[cachedStudyAreaName].name;
     longStudyAreaName = cachedStudyAreaName;
-
+    $('#study-area-label').text(longStudyAreaName);
+    $('#study-area-label').fitText(1.8);
     
     if(studyAreaSpecificPage == true){
       cachedSettingskey =  studyAreaName +"-settings";

@@ -29,7 +29,7 @@ $('#dontShowAgainCheckbox').change(function(){
 if(mode === 'LCMS'){
   $('#title-banner').append(staticTemplates.studyAreaDropdown);
   if(studyAreaSpecificPage){
-    $('#study-area-label').removeClass('dropdown-toggle')
+    $('#study-area-label').removeClass('dropdown-toggle');
   }else{
     Object.keys(studyAreaDict).map(function(k){addStudyAreaToDropdown(k,studyAreaDict[k].popOver);});
   }
