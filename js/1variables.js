@@ -1,6 +1,6 @@
 //Load global variables
 
-
+var cachedSettingskey = 'settings';
 var startYear = 1985;
 var endYear = 2019;
 var startJulian = 153;//190;
@@ -9,7 +9,7 @@ var layerObj = null;
 var queryObj = {};var timeLapseObj = {};
 var initialCenter = [37.5334105816903,-105.6787109375];
 var initialZoomLevel = 5;
-
+var studyAreaSpecificPage = false;
 var studyAreaDict = {
                   'Flathead National Forest':{
                                                 name:'FNF',

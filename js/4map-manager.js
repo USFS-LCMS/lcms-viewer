@@ -2663,7 +2663,7 @@ function initialize() {
    
 
        
-      
+  console.log(initialCenter)
   var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
   var zoom = initialZoomLevel;//8;
 
@@ -2672,9 +2672,19 @@ function initialize() {
 
   // var randomID = null;
   if(typeof(Storage) !== "undefined"){
-    settings = JSON.parse(localStorage.getItem("settings"));
-    layerObj =  null;//JSON.parse(localStorage.getItem("layerObj"));
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
+    studyAreaName = studyAreaDict[cachedStudyAreaName].name;
+    longStudyAreaName = cachedStudyAreaName;
+
+    
+    if(studyAreaSpecificPage == true){
+      cachedSettingskey =  studyAreaName +"-settings";
+      
+    }
+    settings = JSON.parse(localStorage.getItem(cachedSettingskey));
+    
+    layerObj =  null;//JSON.parse(localStorage.getItem("layerObj"));
+    
   }
 
   if(settings != null && settings.center != null && settings.zoom != null){
@@ -2687,7 +2697,7 @@ function initialize() {
 
  
 
-	
+	 // console.log(center);console.log(zoom);
     mapOptions.center = center;
     mapOptions.zoom = zoom;
      
@@ -2851,7 +2861,8 @@ function initialize() {
       eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
 
         if(typeof(Storage) == "undefined") return;
-        localStorage.setItem("settings",JSON.stringify({center:{lat:map.getCenter().lat(),lng:map.getCenter().lng()},zoom:map.getZoom()}));
+        
+        localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:map.getCenter().lat(),lng:map.getCenter().lng()},zoom:map.getZoom()}));
     });
 
     

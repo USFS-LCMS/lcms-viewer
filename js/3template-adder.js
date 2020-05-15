@@ -28,7 +28,12 @@ $('#dontShowAgainCheckbox').change(function(){
 });
 if(mode === 'LCMS'){
   $('#title-banner').append(staticTemplates.studyAreaDropdown);
-  Object.keys(studyAreaDict).map(function(k){addStudyAreaToDropdown(k,studyAreaDict[k].popOver);});
+  if(studyAreaSpecificPage){
+    $('#study-area-label').removeClass('dropdown-toggle')
+  }else{
+    Object.keys(studyAreaDict).map(function(k){addStudyAreaToDropdown(k,studyAreaDict[k].popOver);});
+  }
+
 }
 $('#title-banner').append(staticTemplates.placesSearchDiv);
 $('#title-banner').fitText(1.2);
