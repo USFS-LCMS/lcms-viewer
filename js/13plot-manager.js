@@ -43,8 +43,8 @@ function loadPlots(plotProjectObj){
   		f.properties.PLOTID = f.properties[plotProjectObj['plotIDField']];
 			addPlot(f)
   		});
-  		// console.log(json)  		
- 	Map2.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00'},plotProjectObj.name + ' Plots',true,null,null,'Plots for: '+plotProjectObj.name,'reference-layer-list')
+  		console.log(json)  		
+ 	// Map2.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00'},plotProjectObj.name + ' Plots',true,null,null,'Plots for: '+plotProjectObj.name,'reference-layer-list')
     // Create and append the li's to the ul
     })
   
@@ -75,7 +75,7 @@ var bt = {name:'Bridger-Teton',path:'./geojson/LCMS_Sample_1000k_BTNF_g_albers_3
 var fnf = {name:'Flathead',path:'./geojson/LCMS_Sample_1000k_FNF_GNP_g_albers_30m_box.json','plotIDField':'FID_1'};
 var lcmap = {name:'First 25k',path:'./geojson/conus_random_25k_s_30m_box.json','plotIDField':'LCMS_ID'};
 var conus1 = {name:'CONUS 2020',path:'./geojson/CONUS_plots_new_g_albers_30m_box.json','plotIDField': "PLOT_ID"}
-var plotsGeoJSONs =[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
+var plotsGeoJSONs =[r4PlotsJson]//[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
 // 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
 // })

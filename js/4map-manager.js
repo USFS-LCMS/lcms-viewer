@@ -2673,6 +2673,9 @@ function initialize() {
   // var randomID = null;
   if(typeof(Storage) !== "undefined"){
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
+    if(cachedStudyAreaName === null || cachedStudyAreaName === undefined){
+      cachedStudyAreaName = defaultStudyArea;
+    }
     studyAreaName = studyAreaDict[cachedStudyAreaName].name;
     longStudyAreaName = cachedStudyAreaName;
     $('#study-area-label').text(longStudyAreaName);
