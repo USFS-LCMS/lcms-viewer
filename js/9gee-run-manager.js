@@ -3024,27 +3024,36 @@ var landcoverClassQueryDict = {};
   var years  = ee.List.sequence(idsMinYear,idsMaxYear)
 
   /////////////////////////////////////////
-  lcms = years.map(function(yr){
-    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-    lcmsT = lcmsT.unmask(0);
-    lcmsT = ee.Image(multBands(lcmsT,1,[0.01])).float()
-    return lcmsT.rename(['Loss Probability']);
-  });
-  lcms = ee.ImageCollection.fromImages(lcms);   
+  // lcms = years.map(function(yr){
+  //   var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+  //   lcmsT = lcmsT.unmask(0);
+  //   lcmsT = ee.Image(multBands(lcmsT,1,[0.01])).float()
+  //   return lcmsT.rename(['Loss Probability']);
+  // });
+  // lcms = ee.ImageCollection.fromImages(lcms);   
   
-  var ids = ee.FeatureCollection(getIDSCollection().featureCollection);
+   var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+  var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  
-  var idsImgs = ee.ImageCollection(years.map(function(yr){
+  ids = ids.map(function(id){
+    var idsT = ee.FeatureCollection(id);
+    return idsT;
+  });
+  ids = ee.FeatureCollection(ids).flatten();
+ 
+  var idsImgs = ee.ImageCollection(years.getInfo().map(function(yr){
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    var lcmsT = ee.Image(lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).gte(0.3).unmask(0,false);
+    // console.log(yr);
+    // console.log(idsT.limit(100).size().getInfo())
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30).unmask(0);
     idsT = ee.Image().paint(idsT,null,2);
-    var out = lcmsT.unmask(0,false);
+    var out = lcmsT;
     out = out.where(idsT.mask(),2);
     out = out.selfMask()
     out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
   }))
- 
+  // console.log(idsImgs.getInfo())
   Map2.addTimeLapse(idsImgs,{years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse')
   // pixelChartCollections['test'] = {'label':'Test','collection':lcms,'colors':['00F']}   
    // populatePixelChartDropdown();              

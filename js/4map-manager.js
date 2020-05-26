@@ -549,7 +549,7 @@ function jitterZoom(){
   }
   var tDiff = new Date() - lastJitter;
   var jittered = false;
-  if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 20000){
+  if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 5000){
     console.log(tDiff)
     console.log('jittering zoom')
     var z = map.getZoom();
