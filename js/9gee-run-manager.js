@@ -3050,11 +3050,11 @@ var landcoverClassQueryDict = {};
     var out = lcmsT;
     out = out.where(idsT.mask(),2);
     out = out.selfMask()
-    out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+    // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
   }))
   // console.log(idsImgs.getInfo())
-  Map2.addTimeLapse(idsImgs,{years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse')
+  Map2.addTimeLapse(idsImgs,{min:1,max:2,palette:'FF0,0FF',years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse')
   // pixelChartCollections['test'] = {'label':'Test','collection':lcms,'colors':['00F']}   
    // populatePixelChartDropdown();              
 }
