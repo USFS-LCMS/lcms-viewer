@@ -1,3 +1,5 @@
+/*This script constructs the page depending on the chosen mode*/
+/*Put main elements on body*/
 $('body').append(staticTemplates.map);
 
 $('body').append(staticTemplates.mainContainer);
@@ -12,12 +14,9 @@ $('#main-container').append(staticTemplates.sidebarLeftToggler);
 
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
-// $('#title-banner').fitText(1.2);
-// $('#studyAreaDropdownLabel').fitText(0.5);
-
-
 $('#main-container').append(staticTemplates.introModal[mode]);
-
+/////////////////////////////////////////////////////////////////////
+/*Check to see if modals should be shown*/
 if(localStorage.showIntroModal == undefined){
   localStorage.showIntroModal = 'true';
   }
@@ -26,6 +25,8 @@ $('#dontShowAgainCheckbox').change(function(){
   console.log(this.checked)
   localStorage.showIntroModal  = !this.checked;
 });
+/////////////////////////////////////////////////////////////////////
+/*Add study area dropdown if LCMS*/
 if(mode === 'LCMS'){
   $('#title-banner').append(staticTemplates.studyAreaDropdown);
   if(studyAreaSpecificPage){
@@ -35,6 +36,7 @@ if(mode === 'LCMS'){
   }
 
 }
+
 $('#title-banner').append(staticTemplates.placesSearchDiv);
 $('#title-banner').fitText(1.2);
 $('#study-area-label').fitText(1.8);
@@ -48,10 +50,11 @@ function toggleAdvancedOff(){
     $("#threshold-container").slideUp();
     $("#advanced-radio-container").slideUp();  
 }
-
+/////////////////////////////////////////////////////////////////////
+/*Start adding elements to page based on chosen mode*/
 if(mode === 'LCMS'){
 
-
+  /*Construct panes in left sidebar*/
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
@@ -76,28 +79,19 @@ if(mode === 'LCMS'){
   // addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0,1,lowerThresholdRecovery,0.05,'decline-threshold-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
   
   // addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0,1,lowerThresholdDecline,0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than the specified threshold will be flagged as loss ") 
-  
-  addDualRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline','upperThresholdDecline',0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  // containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip
+  addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0, 1, lowerThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
-  addDualRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery','upperThresholdRecovery',0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ")
+  addRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery',0, 1, lowerThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability greater than or equal to this value will be flagged as gain ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   $('#advanced-radio-container').append(`<div id = 'fast-slow-threshold-container' ></div>`);
-  addDualRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss','upperThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , upperThresholdSlowLoss, 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  addRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#fast-slow-threshold-container').append(`<div class="dropdown-divider" ></div>`);
-  addDualRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss','upperThresholdFastLoss',0, 1, lowerThresholdFastLoss, upperThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  addRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss',0, 1, lowerThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
-  
-  // addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
-  // $('#advanced-radio-container').append(`<div id = 'beta-params-container' style = 'display:none;'>
-  //                                         <div class = 'dropdown-divider'></div>
-  //                                         Beta Product Parameters
-  //                                       </div>`);
  
-  // $( "#viewBeta-radio-first_toggle_label" ).click(function() {$('#beta-params-container').slideUp()});
-  // $( "#viewBeta-radio-second_toggle_label" ).click(function() {$('#beta-params-container').slideDown()});
-  // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   
   addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);

@@ -1632,8 +1632,7 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Estuarine and Marine Deepwater': '007c88',
                     'Other Freshwater wetland':'b28653'
                   }
-    Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},
-                   {baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+    Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
 // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
 //                 8,11,
@@ -2533,8 +2532,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     years.push(year)
   };
   // console.log(srCollection.getInfo());
-  Map2.addTimeLapse(srCollection,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red',years:years},'Composite Time Lapse')
-  Map2.addLayer(srCollection.select(['NDVI','NBR']),{min:0.2,max:0.6,opacity:0},'Landsat Time Series',false);
+  // Map2.addLayer(srCollection.select(['NDVI','NBR']),{min:0.2,max:0.6,opacity:0},'Landsat Time Series',false);
   if(maskWater === 'Yes'){
     var jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
 
@@ -2587,7 +2585,8 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 // run_params.timeSeries = srCollection;
 // Run the LandTrendr algorithm
 // var LTresult = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
-
+Map2.addTimeLapse(srCollection,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red',years:years},'Composite Time Lapse')
+  
 }
 var mtbsC;
 function runMTBS(){
@@ -2981,16 +2980,16 @@ var landcoverClassQueryDict = {};
     // Map2.addLayer(dndThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},k+' Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +declineNameEnding);
 
 
-      Map2.addLayer(dndThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},k+ ' Loss Probability',true,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + declineNameEnding);
+      // Map2.addLayer(dndThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},k+ ' Loss Probability',true,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + declineNameEnding);
       
       
     
-    Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
+    // Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
 
     var years = ee.List.sequence(startYear,endYear).getInfo();
     var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
     //F80,e8edc4,54278f
-    Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
+    // Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
     // getHansen('layer-list')
     // Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
 
@@ -3002,19 +3001,51 @@ var landcoverClassQueryDict = {};
       
     // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
   });
-areaChartCollections['lg'] = {'label':'LCMS Runs',
-                                  'collection':areaCollection,
-                                  'stacked':false,
-                                  'steppedLine':false,
-                                  'colors':areaChartColors};
-pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
+// areaChartCollections['lg'] = {'label':'LCMS Runs',
+                                  // 'collection':areaCollection,
+                                  // 'stacked':false,
+                                  // 'steppedLine':false,
+                                  // 'colors':areaChartColors};
+// pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
 // chartCollection =chartCollectionT;
 // chartColors = chartColorsT
 // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
 // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
 
  // getSelectLayers();
- populateAreaChartDropdown();   
- populatePixelChartDropdown();
- // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')                              
+ // populateAreaChartDropdown();   
+ // populatePixelChartDropdown();
+ // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')    
+
+
+ var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
+  
+  
+  var years  = ee.List.sequence(idsMinYear,idsMaxYear)
+
+  /////////////////////////////////////////
+  lcms = years.map(function(yr){
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+    lcmsT = lcmsT.unmask(0);
+    lcmsT = ee.Image(multBands(lcmsT,1,[0.01])).float()
+    return lcmsT.rename(['Loss Probability']);
+  });
+  lcms = ee.ImageCollection.fromImages(lcms);   
+  
+  var ids = ee.FeatureCollection(getIDSCollection().featureCollection);
+ 
+  var idsImgs = ee.ImageCollection(years.map(function(yr){
+    var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+    var lcmsT = ee.Image(lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).first()).gte(0.3).unmask(0,false);
+    idsT = ee.Image().paint(idsT,null,2);
+    var out = lcmsT.unmask(0,false);
+    out = out.where(idsT.mask(),2);
+    out = out.selfMask()
+    out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+  }))
+ 
+  Map2.addTimeLapse(idsImgs,{years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse')
+  // pixelChartCollections['test'] = {'label':'Test','collection':lcms,'colors':['00F']}   
+   // populatePixelChartDropdown();              
 }

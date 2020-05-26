@@ -1,8 +1,6 @@
-var dropdownI = 1;
-if(localStorage.lcmsViewerMode === null || localStorage.lcmsViewerMode === undefined){
-	localStorage.lcmsViewerMode = 'LCMS';
-}
-
+/*Templates for elements and various functions to create more pre-defined elements*/
+/////////////////////////////////////////////////////////////////////
+/*Provide titles to be shown for each mode*/
 var  titles = {
 	'LCMS': {
 		    leftWords: 'LCMS',
@@ -47,21 +45,25 @@ var  titles = {
             title:'geeViz Data Viewer'
             }     
 }
+/////////////////////////////////////////////////////////////////////
 $('head').append(`<title>${titles[mode].title}</title>`);
-$('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`)
+$('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
 var topBannerParams = titles[mode];
 var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 
 
-
+/////////////////////////////////////////////////////////////////////
+//Provide a bunch of templates to use for various elements
 var staticTemplates = {
-	map:`<div onclick = "$('#study-area-list').hide();" class = ' map' id = 'map'> </div>`,
+	map:`<div onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
 	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('collapse')"></div>`,
-	sidebarLeftContainer: `
+
+    sidebarLeftContainer: `
 						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >
 					        <div id = 'sidebar-left-header'></div>
+                            <div class="fa fa-location location-icon text-light">test</div>
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
 
@@ -251,95 +253,99 @@ var staticTemplates = {
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
         reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
         reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
-    downloadDiv :`<div class = 'py-2'>
-                    <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
-    				<div class = 'dropdown-divider'></div>
-                    <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
-					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
-				 </div>`,
-supportDiv :`<div class = 'p-0 pb-2' >
-				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
-					<br>
-					<i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i>
-					Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
-				<div class="dropdown-divider"></div>
-                <button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
-				<div class="dropdown-divider"></div>
-                <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
-				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
-			</div>`,
-walkThroughButton:`<div class = pb-2>
-                    <div class="dropdown-divider"></div>
-                    <label class = 'mt-2'>Run a walk-through of the ${mode} Data Explorer's features</label>
-                    <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()' title = 'Run interactive walk-through of the features of the ${mode} Data Explorer'>Run Walk-Through</button>
-                  </div>`,
-distanceDiv : `Click on map to measure distance`,
-distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
-areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
-areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
-queryDiv : "<div>Double-click on map to query values of displayed layers at that location</div>",
-queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
-pixelChartDiv : `<div>Double-click on map to query ${mode} data time series<br></div>`,
-pixelChartTip : 'Double-click on map to look at the full time series of '+mode+' outputs for a pixel.',
-userDefinedAreaChartDiv : `<div  id="user-defined" >
-                                    
-                                    <label>Provide name for area selected for charting (optional):</label>
-                                    <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                    <div class = 'dropdown-divider'></div>
-                                    <div>Total area selected: <i id = "user-defined-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
-                                    <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
-                                    <div id = 'user-defined-edit-toolbar'></div>
-                                    <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' rel="txtTooltip" title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
-                        
-		            			</div>
-                        	</div>`,
-showChartButton:`<div class = 'py-2'>
-                        <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
-                        </div>`,
-userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
+        downloadDiv :`<div class = 'py-2'>
+                        <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
+        				<div class = 'dropdown-divider'></div>
+                        <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
+    					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
+    				 </div>`,
+        supportDiv :`<div class = 'p-0 pb-2' >
+        				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
+        					<br>
+        					<i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i>
+        					Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
+        				<div class="dropdown-divider"></div>
+                        <button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
+        				<div class="dropdown-divider"></div>
+                        <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
+        				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
+        			</div>`,
+        walkThroughButton:`<div class = pb-2>
+                            <div class="dropdown-divider"></div>
+                            <label class = 'mt-2'>Run a walk-through of the ${mode} Data Explorer's features</label>
+                            <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()' title = 'Run interactive walk-through of the features of the ${mode} Data Explorer'>Run Walk-Through</button>
+                          </div>`,
+        distanceDiv : `Click on map to measure distance`,
+        distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
+        areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
+        areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
+        queryDiv : "<div>Double-click on map to query values of displayed layers at that location</div>",
+        queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',
+        pixelChartDiv : `<div>Double-click on map to query ${mode} data time series<br></div>`,
+        pixelChartTip : 'Double-click on map to look at the full time series of '+mode+' outputs for a pixel.',
+        userDefinedAreaChartDiv : `<div  id="user-defined" >
+                                            
+                                            <label>Provide name for area selected for charting (optional):</label>
+                                            <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                            <div class = 'dropdown-divider'></div>
+                                            <div>Total area selected: <i id = "user-defined-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                            <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
+                                            <div id = 'user-defined-edit-toolbar'></div>
+                                            <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' rel="txtTooltip" title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
+                                
+        		            			</div>
+                                	</div>`,
+        showChartButton:`<div class = 'py-2'>
+                                <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
+                                </div>`,
+        userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
 
-uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
-                        <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
-                        <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
-                        <div class = 'dropdown-divider'></div>
-                        <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Chart across chosen file</button>
-                        `,
-uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
-selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
-                    <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
-                    <div class = 'dropdown-divider'></div>`,
-selectAreaDropdownChartTip : 'Select from pre-defined areas to summarize products across.',
-selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map to select areas to include in chart</div>
+        uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
+                                <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
+                                <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                                 <div class = 'dropdown-divider'></div>
-                                <label>Provide name for area selected for charting (optional):</label>
-                                <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                <div class = 'dropdown-divider'></div>  
-                                <div id="area-charting-select-layer-list"></div>
-                                <div class = 'dropdown-divider'></div>
-                                <div>Selected area names:</div>
-                                <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
-                                <li class = 'selected-features-list' id = 'selected-features-list'></li>
-                                <div class = 'dropdown-divider'></div>
-                                <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
-                                <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
-                                <div id = 'select-features-edit-toolbar'></div>
-                                <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
-                                <div class = 'dropdown-divider'></div>`,
-selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.'
+                                <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Chart across chosen file</button>
+                                `,
+        uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .geojson file to summarize products across.',
+        selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
+                            <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
+                            <div class = 'dropdown-divider'></div>`,
+        selectAreaDropdownChartTip : 'Select from pre-defined areas to summarize products across.',
+        selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map to select areas to include in chart</div>
+                                        <div class = 'dropdown-divider'></div>
+                                        <label>Provide name for area selected for charting (optional):</label>
+                                        <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                        <div class = 'dropdown-divider'></div>  
+                                        <div id="area-charting-select-layer-list"></div>
+                                        <div class = 'dropdown-divider'></div>
+                                        <div>Selected area names:</div>
+                                        <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
+                                        <li class = 'selected-features-list' id = 'selected-features-list'></li>
+                                        <div class = 'dropdown-divider'></div>
+                                        <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                        <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
+                                        <div id = 'select-features-edit-toolbar'></div>
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
+                                        <div class = 'dropdown-divider'></div>`,
+        selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.'
 
 
 
         
 }
-
-
-// .replaceAll(`<kbd>`,'')
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Go through each tip and remove kbd tag for shoing in hover titles
 Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(function(t){
 	var tip = staticTemplates[t].replaceAll(`<kbd>`,``);
 	tip = tip.replaceAll(`</kbd>`,``);
 	staticTemplates[t+'Hover'] = tip
 })
 //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Start functions that add/remove and control elements
 function showToolTipsAgain(){
 	if(localStorage.showToolTipModal === 'false'){
 		localStorage.showToolTipModal = 'true';
@@ -350,17 +356,7 @@ function showToolTipsAgain(){
 	}
 	
 }
-// function getDropdown(id,label){return `<div class="dropdown text-center">
-// 					  <button class="btn btn-secondary dropdown-toggle" type="button" id="${id}-label" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-// 					    ${label}
-// 					  </button>
-// 					  <div id = "${id}" class="dropdown-menu" aria-labelledby="${id}-label"></div>
-// 					</div>`}
-
-
-// function addDropdownItem(id,label,onclick){
-// 	$('#' + id).append(`<button onclick = '${onclick}' class="dropdown-item" type="button">${label}</button>`)
-// }
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 	if(tooltip === undefined || tooltip === null){tooltip = ''}
 	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" data-toggle="tooltip" data-placement="top" title="${tooltip}">
@@ -391,6 +387,7 @@ function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction
 									</div>
 									<div class = 'dropdown-divider'></div>`);
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
 const setRadioValue =function(variable,value){
 	console.log(value)
 	window[variable] = value;
@@ -418,17 +415,16 @@ function getRadio(id,label,name1,name2,variable,value1,value2){
 	</div>
 	</div>`
 	}
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getDiv(containerID,divID,label,variable,value){
-	eval(`var ${variable} = ${value}`)
-	console.log('hello');
+	eval(`var ${variable} = ${value}`);
 	console.log(eval(variable));
 	var div = `<div id = "${divID}">${label}</div>`;
 	$('#'+containerID).append(div);
 	$('#'+ divID).click(function(){eval(`${variable}++`);console.log(eval(variable));$('#'+divID).append(eval(variable));})
 
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variable,checked){
 	if(checked === undefined || checked === null || checked === 'true' || checked === 'checked'){
 		checked = true;
@@ -437,11 +433,7 @@ function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variab
 		checked = false;
 	}
 
-	// var value;
 	var valueDict = {true:onValue,false:offValue};
-	// if(!checked){checked = true};
-	// if(checked === 'on'|| checked === 'true'|| checked === true){checked = 'checked';value = onValue}
-	// if(checked === 'off'|| checked === 'false' || checked === false){checked = '';value = offValue}
 
 	eval(`window.${variable} = valueDict[checked]`)
 	var toggle = `<input id = "${toggleID}" class = 'p-0 m-0' type="checkbox"  data-toggle="toggle" data-on="${onLabel}" data-off="${offLabel}" data-onstyle="toggle-on" data-offstyle="toggle-off"><br>`;
@@ -453,12 +445,10 @@ function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variab
 		var value = $('#'+toggleID).prop('checked');
 		console.log(value);
 		eval(`window.${variable} = valueDict[${value}]`)
-	// 	value = valueDict[value];
-	// 	console.log(valueDict);console.log(value)
-		// eval(`window.${variable} = ${value}`)
+
 	})
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function updateDistanceColor(jscolor) {
     distancePolylineOptions.strokeColor = '#' + jscolor;
     if(distancePolyline !== undefined){
@@ -485,9 +475,8 @@ function addColorPicker(containerID,pickerID,updateFunction,value){
 	$('#'+containerID).append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
 							    class=" fa fa-paint-brush text-dark color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
 							    ></button>`);
-    // $('#'+containerID).append(`<p id = '${pickerID}' class = 'pt-2'>Choose color:<input class="jscolor {onFineChange:'${updateFunction}(this)'}" value="${distancePolylineOptions.strokeColor}"></p>`)
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addModal(containerID,modalID,bodyOnly){
 	if(bodyOnly === null || bodyOnly === undefined){bodyOnly = false};
 	if(containerID === null || containerID === undefined){containerID = 'main-container'};
@@ -540,7 +529,7 @@ function clearModal(modalID){
 	$('.modal').modal('hide');
 	$('.modal-backdrop').remove()
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function showMessage(title,message,modalID,show){
 	if(title === undefined || title === null){title = ''}
 	if(message === undefined || message === null){message = ''}
@@ -554,7 +543,7 @@ function showMessage(title,message,modalID,show){
 	if(show){$('#'+modalID).modal();}
 
 };
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function showTip(title,message){
 	showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
 
@@ -566,12 +555,7 @@ function showTip(title,message){
                             		</div>
 								    
 								  
-								</form>`)
-	// .append(`
-	// 							<div class="form-check  pt-3 pb-0">
- //                                 <input type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
- //                                 <label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
- //                             </div>`)
+								</form>`);
 	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
 	  }
@@ -581,31 +565,9 @@ function showTip(title,message){
 	$('#dontShowTipAgainCheckbox').change(function(){
 	  console.log(this.checked)
 	  localStorage.showToolTipModal  = !this.checked;
-});
-	// var modalID = 'tip-modal'
-	//  // clearModal(modalID)
- //  	$('#'+modalID).empty();
-
- //  $('#main-container').append(`<div class="modal fade "  id="${modalID}" tabindex="-1" role="dialog" >
- //                <div class="modal-dialog modal-md " role="document">
- //                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
- //                        <button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
-                  
-
- //                        <div id = '${modalID}-body' class="modal-body">
- //                            <h3 class="mb-0 ">${title}</h3><p class="pb-3 ">${message}</p>
- //                        </div>
- //                        <div id = '${modalID}-footer' class = 'modal-footer'>
- //                            <div class="form-check  mr-0">
- //                                <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
- //                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
- //                            </div>
- //                        </div>
- //                    </div>
- //                </div>
- //            </div>`)
- //  $('#tip-modal').modal();
+    });
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addStudyAreaToDropdown(name,toolTip){
 	var id = name.replaceAll(' ','-');
 	// console.log(id);
@@ -619,6 +581,7 @@ function addStudyAreaToDropdown(name,toolTip){
     })
     
  }
+ //////////////////////////////////////////////////////////////////////////////////////////////
  function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction,tooltip){
     var valueDict = {true:valueOn,false:valueOff};
     var checked;
@@ -640,7 +603,7 @@ function addStudyAreaToDropdown(name,toolTip){
         eval(`${onChangeFunction}`); 
     })
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn,valueOff,onFunction,offFunction,tooltip){
 	// var valueDict = {true:valueOn,false:valueOff};
 	eval(`window.${variable} = '${valueOn}';`);
@@ -675,17 +638,12 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 		eval(`window.${variable} = '${valueOff}';`);
 		eval(`${offFunction}`);
 	})
-
-
 	
 }
- //////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addCheckboxes(containerID,checkboxID,title,variable,optionList){
-  
     $('#'+containerID).append(`<form  id = '${checkboxID}'>${title}<br></form>`);
-
     eval(`window.${variable} = []`);
-
     Object.keys(optionList).map(function(k){
       // console.log(k)
       var checkboxCheckboxID = k + '-checkbox';
@@ -707,31 +665,168 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
                                     });
     })
   }
-  function addMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
+//////////////////////////////////////////////////////////////////////////////////////////////
+function addMultiRadio(containerID,radioID,title,variable,optionList){
+$('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
 
-    eval(`window.${variable} = '';`);
-    Object.keys(optionList).map(function(k){
-      // console.log(k)
-      var radioCheckboxID = k + '-checkbox';
-      var radioLabelID = radioCheckboxID + '-label'
-      var checked = optionList[k];
-      if(checked){
-        checked = 'checked';
-        eval(`window.${variable} = "${k}"`)
-      }else{checked = ''};
-      
-      $('#'+radioID).append(`<div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
-                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
-                            </div>`);
-      $('#'+radioCheckboxID).change( function() {
-                                      var v = $(this).val();
-                                      eval(`window.${variable} = "${v}"`)
-                                    });
-    })
+eval(`window.${variable} = '';`);
+Object.keys(optionList).map(function(k){
+  // console.log(k)
+  var radioCheckboxID = k + '-checkbox';
+  var radioLabelID = radioCheckboxID + '-label'
+  var checked = optionList[k];
+  if(checked){
+    checked = 'checked';
+    eval(`window.${variable} = "${k}"`)
+  }else{checked = ''};
+  
+  $('#'+radioID).append(`<div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
+                          <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
+                        </div>`);
+  $('#'+radioCheckboxID).change( function() {
+                                  var v = $(this).val();
+                                  eval(`window.${variable} = "${v}"`)
+                                });
+})
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+function zeroPad(num, places) {
+  var zero = places - num.toString().length + 1;
+  return Array(+(zero > 0 && zero)).join("0") + num;
+}
+function formatDT(__dt) {
+    var year = __dt.getFullYear();
+    var month = zeroPad(__dt.getMonth()+1, 2);
+    var date = zeroPad(__dt.getDate(), 2);
+    // var hours = zeroPad(__dt.getHours(), 2);
+    // var minutes = zeroPad(__dt.getMinutes(), 2);
+    // var seconds = zeroPad(__dt.getSeconds(), 2);
+    return   month + '/'+ date + '/'+ year.toString().slice(2,4) //+ ' ' + hours + ':' + minutes + ':' + seconds;
+};
+function formatDTJulian(__dt) {
+    // var year = __dt.getFullYear();
+    var month = zeroPad(__dt.getMonth()+1, 2);
+    var date = zeroPad(__dt.getDate(), 2);
+    // var hours = zeroPad(__dt.getHours(), 2);
+    // var minutes = zeroPad(__dt.getMinutes(), 2);
+    // var seconds = zeroPad(__dt.getSeconds(), 2);
+    return  month + '/' + date ;//+ ' ' + hours + ':' + minutes + ':' + seconds;
+};
+
+Date.fromDayofYear= function(n, y){
+    if(!y) y= new Date().getFullYear();
+    var d= new Date(y, 0, 1);
+    return new Date(d.setMonth(0, n));
+}
+Date.prototype.dayofYear= function(){
+    var d= new Date(this.getFullYear(), 0, 0);
+    return Math.floor((this-d)/8.64e+7);
+}
+
+
+function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,updateID,mode){
+    // var dt_from = "2000/11/01";
+  // var dt_to = "2015/11/24";
+// $("#"+updateID +" .ui-slider .ui-slider-handle").css( {"width": '3px'} );
+  if(mode === undefined  || mode === null){mode = 'date'};
+  if(defaultMin === undefined  || defaultMin   === null){defaultMin  = min};
+  if(defaultMax === undefined  || defaultMax   === null){defaultMax  = max};
+  // if(step === undefined  || step === null){step = 1};
+
+  if(mode === 'date'){
+    min = new Date(min);
+    max = new Date(max);
+    step = step *24*60*60;
+    defaultMin   = new Date(defaultMin);
+    defaultMax   = new Date(defaultMax);
+    // step = step*60*60*24
+    $( "#"+updateID).html(formatDT(defaultMin)+ ' - ' + formatDT(defaultMax));
   }
-  //////////////////////////////////////////
+  else if(mode === 'julian'){
+    min = Date.fromDayofYear(min);
+    max = Date.fromDayofYear(max);
+    step = step *24*60*60;
+    defaultMin = Date.fromDayofYear(defaultMin);
+    defaultMax = Date.fromDayofYear(defaultMax);
+    $( "#"+updateID).html(formatDTJulian(defaultMin)+ ' - ' + formatDTJulian(defaultMax));
+  }
+  else{$( "#"+updateID).html(defaultMin.toString()+ ' - ' + defaultMax.toString());}
+  
+  
+  
+
+  
+  
+
+  if(mode === 'date' || mode === 'julian'){
+  var minVal = Date.parse(min)/1000;
+  var maxVal = Date.parse(max)/1000;
+  var minDefault = Date.parse(defaultMin)/1000;
+  var maxDefault = Date.parse(defaultMax)/1000;
+  }
+  else{
+    var minVal = min;
+    var maxVal = max;
+    var minDefault = defaultMin;
+    var maxDefault = defaultMax;
+  }
+
+      $("#"+sliderID).slider({
+        range:true,
+         min: minVal,
+    max: maxVal,
+    step: step,
+    values: [minDefault, maxDefault],
+
+    slide: function(e,ui){
+
+      if(mode === 'date'){
+      var value1 = ui.values[0]*1000;
+      var value2 = ui.values[1]*1000;
+
+      var value1Show  = formatDT(new Date(value1));
+      var value2Show  = formatDT(new Date(value2));
+
+      // value1 = new Date(value1);
+      // value2 = new Date(value2);
+      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+      
+      eval(var1 + '= new Date('+ value1.toString()+')');
+      eval(var2 + '= new Date('+ value2.toString()+')');
+        }
+      else if(mode === 'julian'){
+      var value1 = new Date(ui.values[0]*1000);
+      var value2 = new Date(ui.values[1]*1000);
+
+      var value1Show  = formatDTJulian(value1);
+      var value2Show  = formatDTJulian(value2);
+      value1 =value1.dayofYear();
+      value2 = value2.dayofYear();
+      
+$( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+      
+      eval(var1 + '= '+ value1.toString());
+      eval(var2 + '= '+ value2.toString());
+        }
+      else{
+      var value1 = ui.values[0];
+      var value2 = ui.values[1];
+
+      var value1Show  = value1;
+      var value2Show  = value2;
+
+      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+      
+      eval(var1 + '= '+ value1.toString());
+      eval(var2 + '= '+ value2.toString());
+      }
+    }
+      });
+    
+  
+  }
 function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip){
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	
@@ -741,15 +836,11 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
 							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
 							    </div>`);
-	setUpRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,sliderID+ '-update',mode)
+	setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,sliderID+ '-update',mode)
 
 }
-function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
-    $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
-                                    <div class='dual-range-slider-name py-2'>${title}</div>
-                                    <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
-                                    <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
-                                </div>`);
+//////////////////////////////////////////////////////////////////////////////////////////////
+function setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode){
     eval(`window.${variable} = ${defaultValue};`);
     $('#'+sliderID + '-update').html(defaultValue);
     $("#"+sliderID).slider({
@@ -764,8 +855,16 @@ function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,
         }
     })
 }
- //////////////////////////////////////////////
-//Functio to add tab to list
+function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
+    $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+                                    <div class='dual-range-slider-name py-2'>${title}</div>
+                                    <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
+                                    <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
+                                </div>`);
+    setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode);
+}
+ //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to add tab to list
 function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
   if(!tabToolTip){tabToolTip = ''};
   var show;
@@ -789,6 +888,7 @@ function addTabContainer(containerID,tabListID,divListID){
 //     <div class = 'tab-content card' id = '${divListID}'>
 //     </div>`);
 // }
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick,toolTip){
 	var collapsed;
 	if(toolTip === undefined || toolTip === null){toolTip = ''}
@@ -801,7 +901,7 @@ function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, colla
 	$('#'+containerID).append(collapseTitleDiv);
 	$('#'+containerID).append(collapseDiv);
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addSubCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick){
 	var collapsed;
 	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
@@ -817,11 +917,12 @@ function addSubCollapse(containerID,collapseLabelID,collapseID,collapseLabel, co
 	$('#'+containerID).append(collapseTitleDiv);
 	$('#'+containerID).append(collapseDiv);
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addAccordianContainer(parentContainerID,accordianContainerID){
   $('#' + parentContainerID).append(`<div class="accordion" id="${accordianContainerID}"></div>`);
     
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
 var panelCollapseI = 1;
 function addAccordianCard(accordianContainerID,accordianCardHeaderID, accordianCardBodyID,accordianCardHeaderContent,accordianCardBodyContent,show,onclick,toolTip){
   var collapsed;
@@ -848,7 +949,7 @@ function addAccordianCard(accordianContainerID,accordianCardHeaderID, accordianC
 	// });
   panelCollapseI++;
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordianCardBodyID,accordianCardHeaderContent,accordianCardBodyContent,show,onclick,toolTip){
   var collapsed;
   if(toolTip === undefined || toolTip === null){toolTip = '';}
@@ -874,6 +975,7 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
   
   panelCollapseI++;
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getWalkThroughCollapseContainerID(){
     var collapseContainer;
     if($(window).width() < 576){collapseContainer = 'sidebar-left' }
@@ -930,24 +1032,16 @@ function addColorRampLegendEntry(legendContainerID,obj){
 							            
 							        </li> `)
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 function regulateReRunButton(){
 	if(outstandingGEERequests > 0){
-
 		$('#reRun-button').prop('disabled',true);
-		// $('#study-area-dropdown').attr('data-toggle','');
-
-		// $('#study-area-dropdown').prop('title',staticTemplates.studyAreaDropdownButtonDisabledTooltip);
 		$('#reRun-button').prop('title',staticTemplates.reRunButtonDisabledTooltip);
 	}
 	else{
 		$('#reRun-button').prop('disabled',false);
-		// $('#study-area-dropdown').attr('data-toggle','dropdown');
-
-		// $('#study-area-dropdown').prop('title',staticTemplates.studyAreaDropdownButtonEnabledTooltip);
 		$('#reRun-button').prop('title',staticTemplates.reRunButtonEnabledTooltip);
 	}
-	
 } 
 function updateOutstandingGEERequests(){
 	$('#outstanding-gee-requests').html(outstandingGEERequests);
@@ -969,10 +1063,12 @@ function incrementGEETileLayersLoading(){
 function decrementGEETileLayersLoading(){
 	geeTileLayersDownloading--;updateGEETileLayersLoading();
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Function for adding map layers of various sorts to the map
+//Map layers can be ee objects, geojson, dynamic map services, and tile map services
 function addLayer(layer){
 
-	// console.log(layer);
+	
     layer.loadError = false;
 	var id = layer.legendDivID;
     var queryID = id + '-'+layer.ID;
@@ -1034,15 +1130,11 @@ function addLayer(layer){
 		}
 	})
 	function setRangeSliderThumbOpacity(){
-		// console.log(layer.opacity);
-		// var current;
 		$('#'+opacityID).css("background-color", 'rgba(55, 46, 44,'+layer.rangeOpacity+')')
-		// $( "#"+opacityID+" .ui-slider-range" ).css( "background-color", 'rgb(255,0,0)' );
-		// $('#'+opacityID+'> .ui-slider-handle').css("background-color", 'rgba(0,0,0,'+layer.rangeOpacity+')')
 	}
 	function updateProgress(){
 		var pct = layer.percent;
-        if(pct === 100){jitterZoom()}
+        if(pct === 100 && (layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection')){jitterZoom()}
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
 	
@@ -1146,15 +1238,8 @@ function addLayer(layer){
     }
     function vizToggleCleanup(){
         setRangeSliderThumbOpacity();
-        // console.log('visible: ' +layer.visible);
-        // console.log('opacity: '+layer.opacity);
         layerObj[layer.name] = [layer.visible,layer.opacity];
-       //  if(layer.layerType === 'geeVectorImage' && layer.viz.isSelectLayer){
-       // //      layer.queryGeoJSON.forEach(function(f){layer.queryGeoJSON.remove(f)});
-       //      if(layer.visible){
-       //          layer.queryGeoJSON.setMap(layer.map);
-       //      }else{layer.queryGeoJSON.setMap(null)};
-       //  }
+       
     }
 	function checkFunction(){
         if(!layer.loadError){
@@ -1202,7 +1287,6 @@ function addLayer(layer){
 	
     if(!layer.viz.isTimeLapse){
         $('.layer-checkbox').on('turnOffAll',function(){turnOffAll()});
-        // $('.layer-checkbox').on('turnOnAll',function(){turnOnAll()});
     }
     if(layer.layerType === 'geeVector' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geoJSONVector'){
         $('#'+visibleLabelID).addClass('vector-layer-checkbox');
@@ -1319,11 +1403,8 @@ function addLayer(layer){
         }
 		incrementOutstandingGEERequests();
 		
-		// console.log('adding tile map service');
-        function getGEEMapServiceCallback(eeLayer){
+		function getGEEMapServiceCallback(eeLayer){
             decrementOutstandingGEERequests();
-            // console.log(eeLayer);
-            // console.log('tile service created');
             $('#' + spinnerID).hide();
             if(layer.viz.isTimeLapse){
                 timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(timeLapseLayerID => timeLapseLayerID !== id)
@@ -1462,10 +1543,6 @@ function addLayer(layer){
         };
         getGEEMapService();
 
-        
-
-		
-
 	}else if(layer.layerType === 'geeVector' || layer.layerType === 'geoJSONVector'){
         if(layer.canQuery){
           queryObj[queryID] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType,'name':layer.name};  
@@ -1588,149 +1665,3 @@ function addLayer(layer){
 
 }
 
-
-function zeroPad(num, places) {
-  var zero = places - num.toString().length + 1;
-  return Array(+(zero > 0 && zero)).join("0") + num;
-}
-function formatDT(__dt) {
-    var year = __dt.getFullYear();
-    var month = zeroPad(__dt.getMonth()+1, 2);
-    var date = zeroPad(__dt.getDate(), 2);
-    // var hours = zeroPad(__dt.getHours(), 2);
-    // var minutes = zeroPad(__dt.getMinutes(), 2);
-    // var seconds = zeroPad(__dt.getSeconds(), 2);
-    return   month + '/'+ date + '/'+ year.toString().slice(2,4) //+ ' ' + hours + ':' + minutes + ':' + seconds;
-};
-function formatDTJulian(__dt) {
-    // var year = __dt.getFullYear();
-    var month = zeroPad(__dt.getMonth()+1, 2);
-    var date = zeroPad(__dt.getDate(), 2);
-    // var hours = zeroPad(__dt.getHours(), 2);
-    // var minutes = zeroPad(__dt.getMinutes(), 2);
-    // var seconds = zeroPad(__dt.getSeconds(), 2);
-    return  month + '/' + date ;//+ ' ' + hours + ':' + minutes + ':' + seconds;
-};
-
-Date.fromDayofYear= function(n, y){
-    if(!y) y= new Date().getFullYear();
-    var d= new Date(y, 0, 1);
-    return new Date(d.setMonth(0, n));
-}
-Date.prototype.dayofYear= function(){
-    var d= new Date(this.getFullYear(), 0, 0);
-    return Math.floor((this-d)/8.64e+7);
-}
-
-
-function setUpRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,updateID,mode){
-    // var dt_from = "2000/11/01";
-  // var dt_to = "2015/11/24";
-// $("#"+updateID +" .ui-slider .ui-slider-handle").css( {"width": '3px'} );
-  if(mode === undefined  || mode === null){mode = 'date'};
-  if(defaultMin === undefined  || defaultMin   === null){defaultMin  = min};
-  if(defaultMax === undefined  || defaultMax   === null){defaultMax  = max};
-  // if(step === undefined  || step === null){step = 1};
-
-  if(mode === 'date'){
-    min = new Date(min);
-    max = new Date(max);
-    step = step *24*60*60;
-    defaultMin   = new Date(defaultMin);
-    defaultMax   = new Date(defaultMax);
-    // step = step*60*60*24
-    $( "#"+updateID).html(formatDT(defaultMin)+ ' - ' + formatDT(defaultMax));
-  }
-  else if(mode === 'julian'){
-    min = Date.fromDayofYear(min);
-    max = Date.fromDayofYear(max);
-    step = step *24*60*60;
-    defaultMin = Date.fromDayofYear(defaultMin);
-    defaultMax = Date.fromDayofYear(defaultMax);
-    $( "#"+updateID).html(formatDTJulian(defaultMin)+ ' - ' + formatDTJulian(defaultMax));
-  }
-  else{$( "#"+updateID).html(defaultMin.toString()+ ' - ' + defaultMax.toString());}
-  
-  
-  
-
-  
-  
-
-  if(mode === 'date' || mode === 'julian'){
-  var minVal = Date.parse(min)/1000;
-  var maxVal = Date.parse(max)/1000;
-  var minDefault = Date.parse(defaultMin)/1000;
-  var maxDefault = Date.parse(defaultMax)/1000;
-  }
-  else{
-    var minVal = min;
-    var maxVal = max;
-    var minDefault = defaultMin;
-    var maxDefault = defaultMax;
-  }
-
-      $("#"+sliderID).slider({
-        range:true,
-         min: minVal,
-    max: maxVal,
-    step: step,
-    values: [minDefault, maxDefault],
-
-    slide: function(e,ui){
-
-      if(mode === 'date'){
-      var value1 = ui.values[0]*1000;
-      var value2 = ui.values[1]*1000;
-
-      var value1Show  = formatDT(new Date(value1));
-      var value2Show  = formatDT(new Date(value2));
-
-      // value1 = new Date(value1);
-      // value2 = new Date(value2);
-      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
-      
-      eval(var1 + '= new Date('+ value1.toString()+')');
-      eval(var2 + '= new Date('+ value2.toString()+')');
-        }
-      else if(mode === 'julian'){
-      var value1 = new Date(ui.values[0]*1000);
-      var value2 = new Date(ui.values[1]*1000);
-
-      var value1Show  = formatDTJulian(value1);
-      var value2Show  = formatDTJulian(value2);
-      value1 =value1.dayofYear();
-      value2 = value2.dayofYear();
-      
-$( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
-      
-      eval(var1 + '= '+ value1.toString());
-      eval(var2 + '= '+ value2.toString());
-        }
-      else{
-      var value1 = ui.values[0];
-      var value2 = ui.values[1];
-
-      var value1Show  = value1;
-      var value2Show  = value2;
-
-      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
-      
-      eval(var1 + '= '+ value1.toString());
-      eval(var2 + '= '+ value2.toString());
-      }
-
-
-      
-     
-    }
-    // ,
-    // stop: function(e,ui){reRun()}
-
-      });
-    
-    // $( " .ui-slider-range" ).css( "background-color", '#000' );
-
-    // $( " .ui-widget-content .ui-state-default" ).css( "background-color", "chartreuse" );
-
-  }

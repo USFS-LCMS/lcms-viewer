@@ -2318,13 +2318,14 @@ var resetStudyArea = function(whichOne){
     
     startYear = studyAreaDict[whichOne].startYear;
     endYear = studyAreaDict[whichOne].endYear;
-    setUpRangeSlider('lowerThresholdDecline','upperThresholdDecline',0,1,lowerThresholdDecline,upperThresholdDecline,0.05,'decline-threshold-slider','decline-threshold-slider-update','null')
-    setUpRangeSlider('lowerThresholdRecovery','upperThresholdRecovery',0,1,lowerThresholdRecovery,upperThresholdRecovery,0.05,'recovery-threshold-slider','recovery-threshold-slider-update','null')
+   
+    setUpRangeSlider('lowerThresholdDecline',0,1,lowerThresholdDecline,0.05,'decline-threshold-slider','null');
+    setUpRangeSlider('lowerThresholdRecovery',0,1,lowerThresholdRecovery,0.05,'recovery-threshold-slider','null');
     
-    setUpRangeSlider('lowerThresholdSlowLoss','upperThresholdSlowLoss',0,1,lowerThresholdSlowLoss,upperThresholdSlowLoss,0.05,'slow-loss-threshold-slider','slow-loss-threshold-slider-update','null')
-    setUpRangeSlider('lowerThresholdFastLoss','upperThresholdFastLoss',0,1,lowerThresholdFastLoss,upperThresholdFastLoss,0.05,'fast-loss-threshold-slider','fast-loss-threshold-slider-update','null')
+    setUpRangeSlider('lowerThresholdSlowLoss',0,1,lowerThresholdSlowLoss,0.05,'slow-loss-threshold-slider','null');
+    setUpRangeSlider('lowerThresholdFastLoss',0,1,lowerThresholdFastLoss,0.05,'fast-loss-threshold-slider','null');
     
-    setUpRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
+    setUpDualRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
     
 
     var coords = studyAreaDict[whichOne].center;
