@@ -3023,8 +3023,10 @@ var landcoverClassQueryDict = {};
 function runFHP(){
   var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
   
-  
+  var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+
   var years  = ee.List.sequence(idsMinYear,idsMaxYear);
+  // var years  = ee.List.sequence(2010,2013);
   var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  
@@ -3035,22 +3037,25 @@ function runFHP(){
   ids = ee.FeatureCollection(ids).flatten();
   ids = ids.map(function(f){return f.set('constant',1)})
   var idsLCMS = ee.ImageCollection(years.map(function(yr){
+    yr = ee.Number(yr).int16();
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
-    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30).unmask(0);
-    idsT = ee.Image().paint(idsT,null,2);
-    var out = lcmsT;
-    out = out.where(idsT.mask(),2);
-    out = out.selfMask()
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30);
+    var yrImg = ee.Image(yr).mask(lcmsT).visualize({min:idsMinYear,max:idsMaxYear,palette:lossYearPalette}).unmask(-32768);
+    idsT = ee.Image().paint(idsT,null,2).visualize({min:1,max:1,palette:'0FF'});
+    var out = yrImg;
+    out = out.where(idsT.mask(),idsT);
+    out = out.mask(out.neq(-32768))
     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
-    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
   }));
+  
   var idsLCMSTS = ee.ImageCollection(years.map(function(yr){
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
-    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100);
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100).unmask(0);
     idsT = idsT.reduceToImage(['constant'],ee.Reducer.first());
     var out = lcmsT.addBands(idsT).rename(['LCMS Loss Probability','IDS Polygon']);
  
@@ -3071,7 +3076,14 @@ function runFHP(){
   }));
  
   // Map2.addLayer(idsLCMSTS)
-  Map2.addTimeLapse(idsLCMS,{min:1,max:2,palette:'FF0,0FF',years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse');
+  var classLegendDict = {};
+  var lossYearPaletteStart = lossYearPalette.split(',')[0];
+  var lossYearPaletteEnd = lossYearPalette.split(',')[lossYearPalette.split(',').length-1];
+  classLegendDict['LCMS Loss '+idsMinYear.toString()] = lossYearPaletteStart;
+  classLegendDict['LCMS Loss '+idsMaxYear.toString()] = lossYearPaletteEnd;
+  classLegendDict['IDS Polygons'] = '0FF';
+  
+  Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Loss and IDS Time Lapse');
   getLCMSVariables();
   getSelectLayers();
   pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'colors':['FF0','0FF']};
