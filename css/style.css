@@ -168,9 +168,6 @@ th{font-weight:  600!important}
 .sidebar-toggler{
   position:absolute;top:1%;left:1%;z-index:5;font-size:1.9em!important;border-radius: 1px;
 }
-.location-icon{
-  position:absolute;top:2%;left:1%;z-index:5;font-size:1.9em!important;border-radius: 1px;
-}
 .sidebar-toggler:hover{font-size:1.9em!important;}
 .sidebar-toggler:active {
   transform: translate(4px) translateY(4px);

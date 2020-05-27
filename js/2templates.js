@@ -38,6 +38,12 @@ var  titles = {
             rightWords:'Explorer',
             title:'TEST Data Viewer'
             },
+    'FHP' : {
+            leftWords: 'FHP',
+            centerWords: 'DATA',
+            rightWords:'Explorer',
+            title:'Forest Health Protection Data Viewer'
+            },
     'geeViz': {
             leftWords: 'geeViz',
             centerWords: 'DATA',
@@ -63,7 +69,7 @@ var staticTemplates = {
     sidebarLeftContainer: `
 						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >
 					        <div id = 'sidebar-left-header'></div>
-                            <div class="fa fa-location location-icon text-light">test</div>
+                            
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
 
@@ -113,8 +119,10 @@ var staticTemplates = {
 			    `,
 	placesSearchDiv:`<div class="input-group px-4 pb-2 text-center"">
 			            <div class="input-group-prepend">
+                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-map-marker text-black "></i></button>
 	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
+
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
                         </div>
                         <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
@@ -346,15 +354,49 @@ Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(functi
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Start functions that add/remove and control elements
-function showToolTipsAgain(){
-	if(localStorage.showToolTipModal === 'false'){
-		localStorage.showToolTipModal = 'true';
-		showMessage('Success','Tool tips are re-activated')
-	}
-	else{
-		showMessage('Nothing to change','Tool tips are already active')
-	}
-	
+
+//Center map on user's location
+//Adapted from https://www.w3schools.com/html/html5_geolocation.asp
+function getLocation() {
+    if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, showLocationError);
+  } else { 
+    showMessage('Cannot acquire location','Geolocation is not supported by this browser.');
+  }
+}
+function showPosition(position) {
+    var pt = {lng:position.coords.longitude,lat:position.coords.latitude};
+    var locationMarker  = new google.maps.Marker({
+              map: map,
+              position: pt,
+              icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  scale: 5,
+                  strokeColor: '#FF0',
+                  map: map
+                }
+            });
+    map.setCenter(pt);
+    map.setZoom(10);
+    showMessage('Acquired location',"Latitude: " + position.coords.latitude + 
+  "<br>Longitude: " + position.coords.longitude)
+  
+}
+function showLocationError(error) {
+    switch(error.code) {
+    case error.PERMISSION_DENIED:
+        showMessage('Cannot acquire location','User denied the request for Geolocation.');
+        break;
+    case error.POSITION_UNAVAILABLE:
+        showMessage('Cannot acquire location','Location information is unavailable.');
+        break;
+    case error.TIMEOUT:
+        showMessage('Cannot acquire location','The request to get user location timed out.');
+        break;
+    case error.UNKNOWN_ERROR:
+        showMessage('Cannot acquire location','An unknown error occurred.');
+        break;
+  }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){

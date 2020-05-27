@@ -3018,21 +3018,14 @@ var landcoverClassQueryDict = {};
  // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')    
 
 
- var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
+             
+}
+function runFHP(){
+  var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
   
   
-  var years  = ee.List.sequence(idsMinYear,idsMaxYear)
-
-  /////////////////////////////////////////
-  // lcms = years.map(function(yr){
-  //   var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-  //   lcmsT = lcmsT.unmask(0);
-  //   lcmsT = ee.Image(multBands(lcmsT,1,[0.01])).float()
-  //   return lcmsT.rename(['Loss Probability']);
-  // });
-  // lcms = ee.ImageCollection.fromImages(lcms);   
-  
-   var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+  var years  = ee.List.sequence(idsMinYear,idsMaxYear);
+  var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  
   ids = ids.map(function(id){
@@ -3040,8 +3033,8 @@ var landcoverClassQueryDict = {};
     return idsT;
   });
   ids = ee.FeatureCollection(ids).flatten();
- 
-  var idsImgs = ee.ImageCollection(years.getInfo().map(function(yr){
+  ids = ids.map(function(f){return f.set('constant',1)})
+  var idsLCMS = ee.ImageCollection(years.map(function(yr){
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
@@ -3052,9 +3045,43 @@ var landcoverClassQueryDict = {};
     out = out.selfMask()
     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
-  }))
-  // console.log(idsImgs.getInfo())
-  Map2.addTimeLapse(idsImgs,{min:1,max:2,palette:'FF0,0FF',years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse')
-  // pixelChartCollections['test'] = {'label':'Test','collection':lcms,'colors':['00F']}   
-   // populatePixelChartDropdown();              
+  }));
+  var idsLCMSTS = ee.ImageCollection(years.map(function(yr){
+    var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+    // console.log(yr);
+    // console.log(idsT.limit(100).size().getInfo())
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100);
+    idsT = idsT.reduceToImage(['constant'],ee.Reducer.first());
+    var out = lcmsT.addBands(idsT).rename(['LCMS Loss Probability','IDS Polygon']);
+ 
+    // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
+  }));
+
+  var idsLCMSTSForArea = ee.ImageCollection(years.map(function(yr){
+    var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+    // console.log(yr);
+    // console.log(idsT.limit(100).size().getInfo())
+    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30).unmask(0);
+    idsT = idsT.reduceToImage(['constant'],ee.Reducer.first()).unmask(0);
+    var out = lcmsT.addBands(idsT).rename(['LCMS Loss Probability','IDS Polygon']);
+ 
+    // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
+  }));
+ 
+  // Map2.addLayer(idsLCMSTS)
+  Map2.addTimeLapse(idsLCMS,{min:1,max:2,palette:'FF0,0FF',years:years.getInfo(),addToClassLegend:true,classLegendDict:{'LCMS Loss':'FF0','IDS Polygons':'0FF'}},'LCMS Loss and IDS Time Lapse');
+  getLCMSVariables();
+  getSelectLayers();
+  pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'colors':['FF0','0FF']};
+
+  areaChartCollections['test'] = {'label':'LCMS and IDS Time Series',
+                                  'collection':idsLCMSTSForArea,
+                                  'stacked':false,
+                                  'steppedLine':false,
+                                  'tooltip':'Summarize loss IDS each year',
+                                  'colors':chartColorsDict.advancedBeta.slice(4),
+                                  'xAxisLabel':'Year'};
+   populatePixelChartDropdown();populateAreaChartDropdown();
 }
