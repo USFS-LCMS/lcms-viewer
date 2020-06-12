@@ -2989,7 +2989,7 @@ var landcoverClassQueryDict = {};
     var years = ee.List.sequence(startYear,endYear).getInfo();
     var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
     //F80,e8edc4,54278f
-    // Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
+    Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
     // getHansen('layer-list')
     // Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
 
@@ -3082,9 +3082,10 @@ function runFHP(){
   classLegendDict['LCMS Loss '+idsMinYear.toString()] = lossYearPaletteStart;
   classLegendDict['LCMS Loss '+idsMaxYear.toString()] = lossYearPaletteEnd;
   classLegendDict['IDS Polygons'] = '0FF';
-  
+
   Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Loss and IDS Time Lapse');
   getLCMSVariables();
+  Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
   getSelectLayers();
   pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'colors':['FF0','0FF']};
 

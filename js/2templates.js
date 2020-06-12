@@ -52,12 +52,11 @@ var  titles = {
             }     
 }
 /////////////////////////////////////////////////////////////////////
+/*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
 var topBannerParams = titles[mode];
 var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
-
-
 /////////////////////////////////////////////////////////////////////
 //Provide a bunch of templates to use for various elements
 var staticTemplates = {
@@ -354,7 +353,7 @@ Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(functi
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Start functions that add/remove and control elements
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 //Center map on user's location
 //Adapted from https://www.w3schools.com/html/html5_geolocation.asp
 function getLocation() {
@@ -399,6 +398,7 @@ function showLocationError(error) {
   }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to add a Bootstrap dropdown
 function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 	if(tooltip === undefined || tooltip === null){tooltip = ''}
 	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" data-toggle="tooltip" data-placement="top" title="${tooltip}">
@@ -407,18 +407,17 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 								</div>`)
 	
 	  $("select#"+dropdownID).on("change", function(value) {
-	  	// console.log('it changed');
-	  	// console.log($(this).val());
 	  	eval(`window.${variable} = $(this).val()`);
 	  });
 	
 }
+//Function to add an item to a dropdown
 function addDropdownItem(dropdownID,label,value,tooltip){
     if(tooltip === undefined || tooltip === null){tooltip = ''};
 	$('#'+dropdownID).append(`<option title = '${tooltip}' value = "${value}">${label}</option>`)
 }
-	
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to add a standard shape editor toolbar
 function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction,undoTip,deleteTip){
     if(undoTip === undefined || undoTip === null){undoTip = 'Click to undo last drawn point (ctrl z)'};
     if(deleteTip === undefined || deleteTip === null){deleteTip = 'Click to clear current drawing and start a new one (Delete, or Backspace)'};
@@ -430,13 +429,12 @@ function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction
 									<div class = 'dropdown-divider'></div>`);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to set up a custom toggle radio
 const setRadioValue =function(variable,value){
 	console.log(value)
 	window[variable] = value;
 	};
 function getRadio(id,label,name1,name2,variable,value1,value2){
-	
-	
 	return `<div class = 'container'><div id = '${id}-row' class = 'row'>
 		<label class="col-sm-4">${label}</label>
 		<div class = 'col-sm-8'>
@@ -464,7 +462,6 @@ function getDiv(containerID,divID,label,variable,value){
 	var div = `<div id = "${divID}">${label}</div>`;
 	$('#'+containerID).append(div);
 	$('#'+ divID).click(function(){eval(`${variable}++`);console.log(eval(variable));$('#'+divID).append(eval(variable));})
-
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variable,checked){
@@ -491,6 +488,7 @@ function getToggle(containerID,toggleID,onLabel,offLabel,onValue,offValue,variab
 	})
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Provide color picker and allow updating of drawn polygons
 function updateDistanceColor(jscolor) {
     distancePolylineOptions.strokeColor = '#' + jscolor;
     if(distancePolyline !== undefined){
@@ -519,6 +517,7 @@ function addColorPicker(containerID,pickerID,updateFunction,value){
 							    ></button>`);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Functions to add and change content of BS modals
 function addModal(containerID,modalID,bodyOnly){
 	if(bodyOnly === null || bodyOnly === undefined){bodyOnly = false};
 	if(containerID === null || containerID === undefined){containerID = 'main-container'};
@@ -572,6 +571,7 @@ function clearModal(modalID){
 	$('.modal-backdrop').remove()
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to plae a message in a BS modal and show it
 function showMessage(title,message,modalID,show){
 	if(title === undefined || title === null){title = ''}
 	if(message === undefined || message === null){message = ''}
@@ -586,6 +586,7 @@ function showMessage(title,message,modalID,show){
 
 };
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Show a basic tip BS modal
 function showTip(title,message){
 	showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
 
@@ -610,18 +611,16 @@ function showTip(title,message){
     });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to add a given study area to the study area dropdown
 function addStudyAreaToDropdown(name,toolTip){
 	var id = name.replaceAll(' ','-');
-	// console.log(id);
 	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`)
   	$('#'+id).on('click',function(){
   		$('#summary-spinner').show();
   		$('#study-area-list').hide();
         longStudyAreaName = this.name;
     	dropdownUpdateStudyArea(this.name);
- 
-    })
-    
+    }) 
  }
  //////////////////////////////////////////////////////////////////////////////////////////////
  function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction,tooltip){
@@ -683,6 +682,9 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 	
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to set up a checkbox list
+//Will set up an object under the variable name with the optionList that is updated
+//Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
 function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     $('#'+containerID).append(`<form  id = '${checkboxID}'>${title}<br></form>`);
     eval(`window.${variable} = []`);
@@ -708,32 +710,34 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     })
   }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Similar to the addCheckboxes only with radio buttons
+//The variable assumes the value of the key of the object that is selected instead of the entire optionList object
+//e.g. if optionList = {'hello':true,'there':false} then the variable = 'hello'
 function addMultiRadio(containerID,radioID,title,variable,optionList){
-$('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
+    $('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
 
-eval(`window.${variable} = '';`);
-Object.keys(optionList).map(function(k){
-  // console.log(k)
-  var radioCheckboxID = k + '-checkbox';
-  var radioLabelID = radioCheckboxID + '-label'
-  var checked = optionList[k];
-  if(checked){
-    checked = 'checked';
-    eval(`window.${variable} = "${k}"`)
-  }else{checked = ''};
-  
-  $('#'+radioID).append(`<div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
-                          <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
-                        </div>`);
-  $('#'+radioCheckboxID).change( function() {
-                                  var v = $(this).val();
-                                  eval(`window.${variable} = "${v}"`)
-                                });
+    eval(`window.${variable} = '';`);
+    Object.keys(optionList).map(function(k){
+      var radioCheckboxID = k + '-checkbox';
+      var radioLabelID = radioCheckboxID + '-label'
+      var checked = optionList[k];
+      if(checked){
+        checked = 'checked';
+        eval(`window.${variable} = "${k}"`)
+      }else{checked = ''};
+      
+      $('#'+radioID).append(`<div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
+                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
+                            </div>`);
+      $('#'+radioCheckboxID).change( function() {
+                                      var v = $(this).val();
+                                      eval(`window.${variable} = "${v}"`)
+                                    });
 })
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-
+//Some basic formatting functions
 function zeroPad(num, places) {
   var zero = places - num.toString().length + 1;
   return Array(+(zero > 0 && zero)).join("0") + num;
@@ -766,8 +770,10 @@ Date.prototype.dayofYear= function(){
     var d= new Date(this.getFullYear(), 0, 0);
     return Math.floor((this-d)/8.64e+7);
 }
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Create a dual range slider
+//Possible modes are : 'date','julian',or null
+//Default mode is 'date', must specify mode as null to use vanilla numbers
 function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,updateID,mode){
     // var dt_from = "2000/11/01";
   // var dt_to = "2015/11/24";
@@ -796,12 +802,6 @@ function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,slide
   }
   else{$( "#"+updateID).html(defaultMin.toString()+ ' - ' + defaultMax.toString());}
   
-  
-  
-
-  
-  
-
   if(mode === 'date' || mode === 'julian'){
   var minVal = Date.parse(min)/1000;
   var maxVal = Date.parse(max)/1000;
@@ -847,28 +847,27 @@ function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,slide
       value1 =value1.dayofYear();
       value2 = value2.dayofYear();
       
-$( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
-      
-      eval(var1 + '= '+ value1.toString());
-      eval(var2 + '= '+ value2.toString());
+    $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+          
+          eval(var1 + '= '+ value1.toString());
+          eval(var2 + '= '+ value2.toString());
+            }
+          else{
+          var value1 = ui.values[0];
+          var value2 = ui.values[1];
+
+          var value1Show  = value1;
+          var value2Show  = value2;
+
+          $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
+          
+          eval(var1 + '= '+ value1.toString());
+          eval(var2 + '= '+ value2.toString());
+          }
         }
-      else{
-      var value1 = ui.values[0];
-      var value2 = ui.values[1];
-
-      var value1Show  = value1;
-      var value2Show  = value2;
-
-      $( "#"+updateID ).html(value1Show.toString() + ' - ' + value2Show.toString());
-      
-      eval(var1 + '= '+ value1.toString());
-      eval(var2 + '= '+ value2.toString());
-      }
-    }
-      });
-    
-  
+          }); 
   }
+//Wrapper function to add a dual range slider
 function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip){
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	
@@ -882,6 +881,7 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to add single range slider
 function setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode){
     eval(`window.${variable} = ${defaultValue};`);
     $('#'+sliderID + '-update').html(defaultValue);
@@ -897,6 +897,7 @@ function setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode){
         }
     })
 }
+//Wrapper for single range slider
 function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
     $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
                                     <div class='dual-range-slider-name py-2'>${title}</div>
@@ -906,6 +907,7 @@ function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,
     setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode);
 }
  //////////////////////////////////////////////////////////////////////////////////////////////
+//More Bootstrap element creators
 //Function to add tab to list
 function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,tabToolTip,selected){  
   if(!tabToolTip){tabToolTip = ''};
@@ -1018,6 +1020,7 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
   panelCollapseI++;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Functions to run the walk through
 function getWalkThroughCollapseContainerID(){
     var collapseContainer;
     if($(window).width() < 576){collapseContainer = 'sidebar-left' }
@@ -1029,7 +1032,8 @@ function moveCollapse(baseID){
     $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
     $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Legend functions
 function addLegendCollapse(){
     var collapseContainer =getWalkThroughCollapseContainerID(); 
     addCollapse(collapseContainer,'legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
@@ -1040,8 +1044,6 @@ function addLegendCollapse(){
     $('#legend-collapse-div').append(`<div id="time-lapse-legend-list"></div>`);
     $('#legend-collapse-div').append(`<div id="legend-area-charting-select-layer-list"></div>`);
 }
-
-
 function addLegendContainer(legendContainerID,containerID,show,toolTip){
 	if(containerID === undefined || containerID === null){containerID = 'legend-collapse-div'}
 	if(show === undefined || show === null){show = true}
@@ -1075,6 +1077,7 @@ function addColorRampLegendEntry(legendContainerID,obj){
 							        </li> `)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
+//Function to disable rerun button when there are still outstanding GEE requests
 function regulateReRunButton(){
 	if(outstandingGEERequests > 0){
 		$('#reRun-button').prop('disabled',true);
@@ -1085,6 +1088,7 @@ function regulateReRunButton(){
 		$('#reRun-button').prop('title',staticTemplates.reRunButtonEnabledTooltip);
 	}
 } 
+//Function to help keep track of GEE requests
 function updateOutstandingGEERequests(){
 	$('#outstanding-gee-requests').html(outstandingGEERequests);
 	regulateReRunButton();
@@ -1108,9 +1112,9 @@ function decrementGEETileLayersLoading(){
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function for adding map layers of various sorts to the map
 //Map layers can be ee objects, geojson, dynamic map services, and tile map services
-function addLayer(layer){
 
-	
+function addLayer(layer){
+    //Initialize a bunch of variables
     layer.loadError = false;
 	var id = layer.legendDivID;
     var queryID = id + '-'+layer.ID;
@@ -1133,6 +1137,8 @@ function addLayer(layer){
         timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
 
     }
+
+    //Set up layer control container
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
 								           
 								           <div id="${opacityID}" class = 'simple-layer-opacity-range'></div>
@@ -1144,42 +1150,43 @@ function addLayer(layer){
                                             
 								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
 								       </li>`);
+    //Set up opacity slider
 	$("#"+opacityID).slider({
-        
-         min: 0,
-    max: 100,
-    step: 1,
-    value: layer.opacity*100,
-	slide: function(e,ui){
-		layer.opacity = ui.value/100;
-		// console.log(layer.opacity);
-		 if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
-            layer.layer.setOpacity(layer.opacity);
-            
-            
-          }else{
-	            var style = layer.layer.getStyle();
-	            style.strokeOpacity = layer.opacity;
-	            style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
-	            layer.layer.setStyle(style);
-	            if(layer.visible){layer.range}
-                }
-        if(layer.visible){
-        	layer.rangeOpacity = layer.opacity;
-        }     
-        layerObj[layer.name] = [layer.visible,layer.opacity];
-		setRangeSliderThumbOpacity();
-		}
+        min: 0,
+        max: 100,
+        step: 1,
+        value: layer.opacity*100,
+    	slide: function(e,ui){
+    		layer.opacity = ui.value/100;
+    		// console.log(layer.opacity);
+    		 if(layer.layerType !== 'geeVector' && layer.layerType !== 'geoJSONVector'){
+                layer.layer.setOpacity(layer.opacity);
+                
+                
+              }else{
+    	            var style = layer.layer.getStyle();
+    	            style.strokeOpacity = layer.opacity;
+    	            style.fillOpacity = layer.opacity/layer.viz.opacityRatio;
+    	            layer.layer.setStyle(style);
+    	            if(layer.visible){layer.range}
+                    }
+            if(layer.visible){
+            	layer.rangeOpacity = layer.opacity;
+            }     
+            layerObj[layer.name] = [layer.visible,layer.opacity];
+    		setRangeSliderThumbOpacity();
+    		}
 	})
 	function setRangeSliderThumbOpacity(){
 		$('#'+opacityID).css("background-color", 'rgba(55, 46, 44,'+layer.rangeOpacity+')')
 	}
+    //Progress bar controller
 	function updateProgress(){
 		var pct = layer.percent;
         if(pct === 100 && (layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection')){jitterZoom()}
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
-	
+	//Function for zooming to object
 	function zoomFunction(){
 
 		if(layer.layerType === 'geeVector' ){
@@ -1197,6 +1204,7 @@ function addLayer(layer){
             };
 		}
 	}
+    //Try to handle load failures
     function loadFailure(){
         layer.loadError = true;
         console.log('GEE Tile Service request failed for '+layer.name);
@@ -1204,6 +1212,7 @@ function addLayer(layer){
         $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
         // getGEEMapService();
     }
+    //Function to handle turning off of different types of layers
     function turnOff(){
         if(layer.layerType === 'dynamicMapService'){
             layer.layer.setMap(null);
@@ -1242,6 +1251,7 @@ function addLayer(layer){
         $('#'+spinnerID + '3').hide();
         vizToggleCleanup();
     }
+    //Function to handle turning on different layer types
     function turnOn(){
         if(!layer.viz.isTimeLapse){
             turnOffTimeLapseCheckboxes();
@@ -1278,10 +1288,10 @@ function addLayer(layer){
         }
         vizToggleCleanup();
     }
+    //Some functions to keep layers tidy
     function vizToggleCleanup(){
         setRangeSliderThumbOpacity();
-        layerObj[layer.name] = [layer.visible,layer.opacity];
-       
+        layerObj[layer.name] = [layer.visible,layer.opacity];  
     }
 	function checkFunction(){
         if(!layer.loadError){
@@ -1303,6 +1313,7 @@ function addLayer(layer){
     }
 	$("#"+ opacityID).val(layer.opacity * 100);
 
+    //Handle double clicking
 	var prevent = false;
 	var delay = 200;
 	$('#'+ spanID).click(function(){
@@ -1313,6 +1324,7 @@ function addLayer(layer){
 		},delay)
 		
 	});
+    //Try to zoom to layer if double clicked
 	$('#'+ spanID).dblclick(function(){
             zoomFunction();
 			prevent = true;
@@ -1321,12 +1333,13 @@ function addLayer(layer){
 			setTimeout(function(){prevent = false},delay)
 		})
 
-	
+	//If checkbox is toggled
 	$('#'+visibleID).change( function() {checkFunction();});
    
 
 	layerObj[layer.name] = [layer.visible,layer.opacity];
 	
+    //Handle different scenarios where all layers need turned off or on
     if(!layer.viz.isTimeLapse){
         $('.layer-checkbox').on('turnOffAll',function(){turnOffAll()});
     }
@@ -1335,7 +1348,9 @@ function addLayer(layer){
         $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
         $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
     }
+    //Handle different object types
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection'){
+        //Handle image colletions
         if(layer.layerType === 'geeImageCollection'){
             layer.imageCollection = layer.item;
 
@@ -1344,7 +1359,7 @@ function addLayer(layer){
             }
             var bandNames = ee.Image(layer.item.first()).bandNames();
             layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames);
-            
+        //Handle vectors
         } else if(layer.layerType === 'geeVectorImage' || layer.layerType === 'geeVector'){
             if(layer.viz.isSelectLayer){
                 
@@ -1364,9 +1379,7 @@ function addLayer(layer){
                 layer.item = ee.Image().paint(layer.item,null,layer.viz.strokeWeight);
                 layer.viz.palette = layer.viz.strokeColor;
             }
-            
-            
-            
+            //Add functionality for select layers to be clicked and selected
             if(layer.viz.isSelectLayer){
                 
                 selectedFeaturesJSON[layer.name].geoJSON.addListener('click',function(event){
@@ -1389,19 +1402,9 @@ function addLayer(layer){
 
                             var features = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
                             selectedFeaturesJSON[layer.name].eeFeatureCollection =selectedFeaturesJSON[layer.name].eeFeatureCollection.merge(features);
-                            // if(selectedFeatures === undefined){selectedFeatures = features}
-                            // else{selectedFeatures = ee.FeatureCollection([selectedFeatures,features]).flatten();}
                             
-                            
-                           
                             features.evaluate(function(values){
-                                // console.log(values)
-                                
-                                
-                    //             var infoContent = `<h5>${layer.name}</h5><table class="table table-hover bg-white"><tbody>`
                                 var features = values.features;
-                              
-                                
                                 var dummyNameI = 1;
                                 features.map(function(f){
                                     var name;
@@ -1412,11 +1415,6 @@ function addLayer(layer){
                                     if(name === undefined){name = dummyNameI.toString();dummyNameI++;}
                                     // console.log(name)
                                     if(name !== undefined){
-                                        // if(selectedFeaturesNames === undefined){
-                                        //     selectedFeaturesNames = name;
-                                        // }else{selectedFeaturesNames = selectedFeaturesNames + ' - '+ name;}
-                                    
-                                    
                                     }
                                     if(getSelectedAreasNameList(false).indexOf(name) !== -1){
                                         name += '-'+selectionUNID.toString();
@@ -1440,11 +1438,13 @@ function addLayer(layer){
                 })
             }   
         };
+        //Add layer to query object if it can be queried
         if(layer.canQuery){
           queryObj[queryID] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType,'name':layer.name};  
         }
 		incrementOutstandingGEERequests();
-		
+
+		//Handle creating GEE map services
 		function getGEEMapServiceCallback(eeLayer){
             decrementOutstandingGEERequests();
             $('#' + spinnerID).hide();
@@ -1476,19 +1476,15 @@ function addLayer(layer){
                     loadFailure();
                 }
                 else{
+                    //Set up GEE map service
                     var MAPID = eeLayer.mapid;
                     var TOKEN = eeLayer.token;
                     layer.highWaterMark = 0;
                     var tileIncremented = false;
 
                     layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
-                    // layer.layer = new ee.layers.ImageOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
-                    // layer.layer =  new ee.layers.ImageOverlay(new ee.layers.EarthEngineTileSource('https://earthengine.googleapis.com/map', MAPID, TOKEN))
+                    //Set up callback to keep track of tile downloading
                     layer.layer.addTileCallback(function(event,failure){
-                        // console.log(event);
-                        // console.log(failure);
-                        // console.log(layer.highWaterMark);
-
                         if(event.count > layer.highWaterMark){
                             layer.highWaterMark = event.count;
                         }
@@ -1515,6 +1511,7 @@ function addLayer(layer){
                                 }
                             tileIncremented = false;
                         }
+                        //Handle the setup of layers within a time lapse
                         if(layer.viz.isTimeLapse){
                             var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
                             // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
@@ -1527,14 +1524,7 @@ function addLayer(layer){
                                 // pauseButtonFunction();  
                                 // }
                             }else{
-                            // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
-                            //     playTimeLapse();
-                            // }
                                 $('#'+layer.viz.timeLapseID+ '-loading-gear').hide();
-                                // if(layer.wasJittered === false){
-                                    // layer.wasJittered= jitterZoom();
-
-                                // } 
                             }
                         }
                         updateProgress();
@@ -1559,6 +1549,7 @@ function addLayer(layer){
                 
             }
         }
+        //Handle alternative GEE tile service format
         function geeAltService(eeLayer){
             var url = 'https://earthengine.googleapis.com/map/'+eeLayer.mapid+'/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
             console.log(url)
@@ -1579,20 +1570,21 @@ function addLayer(layer){
                 $('#' + visibleLabelID).show();
                 setRangeSliderThumbOpacity();
         }
+        //Asynchronous wrapper function to get GEE map service
         function getGEEMapService(){
             layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
             // layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
         };
         getGEEMapService();
 
+    //Handle different vector formats
 	}else if(layer.layerType === 'geeVector' || layer.layerType === 'geoJSONVector'){
         if(layer.canQuery){
           queryObj[queryID] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType,'name':layer.name};  
         }
 		incrementOutstandingGEERequests();
+        //Handle adding geoJSON to map
 		function addGeoJsonToMap(v){
-			
-			
 			$('#' + spinnerID).hide();
 			$('#' + visibleLabelID).show();
 
@@ -1619,11 +1611,8 @@ function addLayer(layer){
                         infoContent +=`</tbody></table>`;
                         infowindow.setContent(infoContent);
                         infowindow.open(map);
-        
                     })  
                 }
-		      	
-				
 		      	featureObj[layer.name] = layer.layer
 		      	// console.log(this.viz);
 		      
@@ -1645,7 +1634,7 @@ function addLayer(layer){
             decrementOutstandingGEERequests();
   			layer.item.evaluate(function(v){addGeoJsonToMap(v)})
   		}else{decrementOutstandingGEERequests();addGeoJsonToMap(layer.item)}
-		
+	//Handle non GEE tile services	
 	}else if(layer.layerType === 'tileMapService'){
 		layer.layer = new google.maps.ImageMapType({
                 getTileUrl: layer.item,
@@ -1664,7 +1653,7 @@ function addLayer(layer){
 			$('#' + visibleLabelID).show();
 			setRangeSliderThumbOpacity();
                 
-		
+	//Handle dynamic map services
 	}else if(layer.layerType === 'dynamicMapService'){
 		function groundOverlayWrapper(){
 	      if(map.getZoom() > layer.item[1].minZoom){
@@ -1703,7 +1692,5 @@ function addLayer(layer){
 			$('#' + visibleLabelID).show();
 			setRangeSliderThumbOpacity();
 	}
-
-
 }
 
