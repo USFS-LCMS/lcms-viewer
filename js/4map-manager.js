@@ -521,11 +521,11 @@ function jitterZoom(){
   var tDiff = new Date() - lastJitter;
   var jittered = false;
   if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 10000){
-    console.log(tDiff)
-    console.log('jittering zoom')
+    // console.log(tDiff)
+    // console.log('jittering zoom')
     var z = map.getZoom();
-    map.setZoom(z-1);
-    map.setZoom(z);
+    // map.setZoom(z-1);
+    // map.setZoom(z);
     jittered = true;
     lastJitter = new Date();
   }
@@ -686,7 +686,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
                                     <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
                                     <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-                                    <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
+                                    <!--<button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>-->
                                     <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
                                     <button class = 'btn cumulativeToggler time-lapse-active' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
                                     <div id = "${legendDivID}-cumulative-radio-container" class = 'pt-2'></div>

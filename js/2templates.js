@@ -1481,10 +1481,15 @@ function addLayer(layer){
                     var TOKEN = eeLayer.token;
                     layer.highWaterMark = 0;
                     var tileIncremented = false;
-
-                    layer.layer = new ee.MapLayerOverlay('https://earthengine.googleapis.com/map', MAPID, TOKEN, {});
+                    var eeTileSource = new ee.layers.EarthEngineTileSource(eeLayer);
+                    layer.layer = new ee.layers.ImageOverlay(eeTileSource)
+                    var overlay = layer.layer;
                     //Set up callback to keep track of tile downloading
-                    layer.layer.addTileCallback(function(event,failure){
+                    overlay.addTileCallback(function(event){
+                        // console.log(event);
+                        // var c = layer.layer.getLoadingTilesCount();
+                        // console.log(c);
+                        event.count = event.loadingTileCount;
                         if(event.count > layer.highWaterMark){
                             layer.highWaterMark = event.count;
                         }
@@ -1551,15 +1556,21 @@ function addLayer(layer){
         }
         //Handle alternative GEE tile service format
         function geeAltService(eeLayer){
-            var url = 'https://earthengine.googleapis.com/map/'+eeLayer.mapid+'/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
+            var url = geeAPIURL+'/'+eeLayer.mapid+'/tiles/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
             console.log(url)
-            var fun = standardTileURLFunction(url,true,'',eeLayer.token);
+            var fun = standardTileURLFunction(url,true,'');
             // console.log(fun)
             layer.layer = new google.maps.ImageMapType({
                     getTileUrl:fun,
                     tileSize: new google.maps.Size(256, 256),
-                    maxZoom: 15
+                    maxZoom: 17
                 })
+            google.maps.event.addListener(layer.layer, 'tilesloaded', function(event) {
+                console.log('loaded');console.log(event)
+            });
+            google.maps.event.addListener(layer.layer, 'tilesloading', function(event) {
+                console.log('loading');console.log(event)
+            });
             if(layer.visible){
                 
                 layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
@@ -1574,6 +1585,10 @@ function addLayer(layer){
         function getGEEMapService(){
             layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
             // layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
+            // layer.item.getMap(layer.viz,function(eeLayer){
+                // console.log(eeLayer)
+                // console.log(ee.data.getTileUrl(eeLayer))
+            // })
         };
         getGEEMapService();
 
