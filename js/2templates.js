@@ -1109,6 +1109,10 @@ function incrementGEETileLayersLoading(){
 function decrementGEETileLayersLoading(){
 	geeTileLayersDownloading--;updateGEETileLayersLoading();
 }
+function updateGEETileLayersDownloading(){
+    geeTileLayersDownloading = Object.values(layerObj).filter(function(v){return v.loading}).length;
+    updateGEETileLayersLoading();
+}
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function for adding map layers of various sorts to the map
 //Map layers can be ee objects, geojson, dynamic map services, and tile map services
@@ -1117,6 +1121,7 @@ function addLayer(layer){
     //Initialize a bunch of variables
     layer.loadError = false;
 	var id = layer.legendDivID;
+    layer.id = id;
     var queryID = id + '-'+layer.ID;
 	var containerID = id + '-container-'+layer.ID;
 	var opacityID = id + '-opacity-'+layer.ID;
@@ -1126,8 +1131,9 @@ function addLayer(layer){
 	var spinnerID = id + '-spinner-'+layer.ID;
     var selectionID = id + '-selection-list-'+layer.ID;
 	var checked = '';
-
+    layerObj[id] = layer;
     layer.wasJittered = false;
+    layer.loading = false;
 	if(layer.visible){checked = 'checked'}
     
     if(layer.viz.isTimeLapse){
@@ -1173,7 +1179,8 @@ function addLayer(layer){
             if(layer.visible){
             	layer.rangeOpacity = layer.opacity;
             }     
-            layerObj[layer.name] = [layer.visible,layer.opacity];
+            layerObj[id].visible = layer.visible;
+            layerObj[id].opacity = layer.opacity;
     		setRangeSliderThumbOpacity();
     		}
 	})
@@ -1234,6 +1241,7 @@ function addLayer(layer){
             }
         }else{
             layer.visible = false;
+            
             layer.percent = 0;
             updateProgress();
             $('#'+layer.legendDivID).hide();
@@ -1247,6 +1255,9 @@ function addLayer(layer){
             }
             
         }
+        layer.loading = false;
+        updateGEETileLayersDownloading();
+            
         $('#'+spinnerID + '2').hide();
         $('#'+spinnerID + '3').hide();
         vizToggleCleanup();
@@ -1291,7 +1302,8 @@ function addLayer(layer){
     //Some functions to keep layers tidy
     function vizToggleCleanup(){
         setRangeSliderThumbOpacity();
-        layerObj[layer.name] = [layer.visible,layer.opacity];  
+        layerObj[id].visible = layer.visible;
+        layerObj[id].opacity = layer.opacity;
     }
 	function checkFunction(){
         if(!layer.loadError){
@@ -1337,7 +1349,8 @@ function addLayer(layer){
 	$('#'+visibleID).change( function() {checkFunction();});
    
 
-	layerObj[layer.name] = [layer.visible,layer.opacity];
+	layerObj[id].visible = layer.visible;
+    layerObj[id].opacity = layer.opacity;
 	
     //Handle different scenarios where all layers need turned off or on
     if(!layer.viz.isTimeLapse){
@@ -1482,13 +1495,12 @@ function addLayer(layer){
                     layer.highWaterMark = 0;
                     var tileIncremented = false;
                     var eeTileSource = new ee.layers.EarthEngineTileSource(eeLayer);
+                    // console.log(eeTileSource)
                     layer.layer = new ee.layers.ImageOverlay(eeTileSource)
                     var overlay = layer.layer;
                     //Set up callback to keep track of tile downloading
-                    overlay.addTileCallback(function(event){
-                        // console.log(event);
-                        // var c = layer.layer.getLoadingTilesCount();
-                        // console.log(c);
+                    layer.layer.addTileCallback(function(event){
+
                         event.count = event.loadingTileCount;
                         if(event.count > layer.highWaterMark){
                             layer.highWaterMark = event.count;
@@ -1498,6 +1510,7 @@ function addLayer(layer){
                         if(event.count ===0 && layer.highWaterMark !== 0){layer.highWaterMark = 0}
 
                         if(layer.percent !== 100){
+                            layer.loading = true;
                             $('#' + spinnerID+'2').show();
                             if(!tileIncremented){
                                 incrementGEETileLayersLoading();
@@ -1508,6 +1521,7 @@ function addLayer(layer){
                                 }
                             }
                         }else{
+                            layer.loading = false;
                             $('#' + spinnerID+'2').hide();
                             decrementGEETileLayersLoading();
                             if(layer.viz.isTimeLapse){
@@ -1518,11 +1532,16 @@ function addLayer(layer){
                         }
                         //Handle the setup of layers within a time lapse
                         if(layer.viz.isTimeLapse){
+                            var loadingTimelapseLayers = Object.values(layerObj).filter(function(v){return v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList});
+                            var loadingTimelapseLayersYears = loadingTimelapseLayers.map(function(f){return [f.viz.year,f.percent].join(':')}).join(', ');
+                            var notLoadingTimelapseLayers = Object.values(layerObj).filter(function(v){return !v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList});
+                            var notLoadingTimelapseLayersYears = notLoadingTimelapseLayers.map(function(f){return [f.viz.year,f.percent].join(':')}).join(', ');
+                            $('#'+layer.viz.timeLapseID + '-message-div').html('Loading:<br>'+loadingTimelapseLayersYears+'<hr>Not Loading:<br>'+notLoadingTimelapseLayersYears);
                             var propTiles = parseInt((1-(timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length/timeLapseObj[layer.viz.timeLapseID].nFrames))*100);
                             // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
                             $('#'+layer.viz.timeLapseID+ '-loading-gear').show();
                             
-                            $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`)
+                            $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`)
                             if(propTiles < 100){
                                 // console.log(propTiles)
                                 // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
@@ -1532,6 +1551,9 @@ function addLayer(layer){
                                 $('#'+layer.viz.timeLapseID+ '-loading-gear').hide();
                             }
                         }
+
+                        // var loadingLayers = Object.values(layerObj).filter(function(v){return v.loading});
+                        // console.log(loadingLayers);
                         updateProgress();
                         // console.log(event.count);
                         // console.log(inst.highWaterMark);
@@ -1554,37 +1576,121 @@ function addLayer(layer){
                 
             }
         }
+        function updateTimeLapseLoadingProgress(){
+            var loadingTimelapseLayers = Object.values(layerObj).filter(function(v){return v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList}).length;
+            var notLoadingTimelapseLayers = Object.values(layerObj).filter(function(v){return !v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList}).length;
+            var total = loadingTimelapseLayers+notLoadingTimelapseLayers
+            var propTiles = (1-(loadingTimelapseLayers/timeLapseObj[layer.viz.timeLapseID].nFrames))*100
+            
+            $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`)
+            if(propTiles < 100){
+                $('#'+layer.viz.timeLapseID+ '-loading-gear').show();
+                // console.log(propTiles)
+                // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
+                // pauseButtonFunction();  
+                // }
+            }else{
+                $('#'+layer.viz.timeLapseID+ '-loading-gear').hide();
+            }
+            }
         //Handle alternative GEE tile service format
         function geeAltService(eeLayer){
-            var url = geeAPIURL+'/'+eeLayer.mapid+'/tiles/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
-            console.log(url)
-            var fun = standardTileURLFunction(url,true,'');
-            // console.log(fun)
-            layer.layer = new google.maps.ImageMapType({
-                    getTileUrl:fun,
-                    tileSize: new google.maps.Size(256, 256),
-                    maxZoom: 17
-                })
-            google.maps.event.addListener(layer.layer, 'tilesloaded', function(event) {
-                console.log('loaded');console.log(event)
-            });
-            google.maps.event.addListener(layer.layer, 'tilesloading', function(event) {
-                console.log('loading');console.log(event)
-            });
-            if(layer.visible){
-                
-                layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
-                layer.rangeOpacity = layer.opacity; 
-                layer.layer.setOpacity(layer.opacity); 
-                 }else{layer.rangeOpacity = 0;}
-                 $('#' + spinnerID).hide();
-                $('#' + visibleLabelID).show();
-                setRangeSliderThumbOpacity();
+            decrementOutstandingGEERequests();
+            $('#' + spinnerID).hide();
+            if(layer.viz.isTimeLapse){
+                timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(timeLapseLayerID => timeLapseLayerID !== id)
+                var prop = parseInt((1-timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length /timeLapseObj[layer.viz.timeLapseID].nFrames)*100);
+                // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');   
+                $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`)
+                            
+                // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
+                if(timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0){
+                    $('#'+layer.viz.timeLapseID+'-loading-spinner').hide();
+                    $('#'+layer.viz.timeLapseID+'-year-label').hide();
+                    // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
+                    $('#'+layer.viz.timeLapseID+ '-collapse-label').css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`)
+                            
+                    // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
+                    // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
+                    $('#'+layer.viz.timeLapseID+'-toggle-checkbox-label').show();
+                    
+                    
+                    timeLapseObj[layer.viz.timeLapseID].isReady = true;
+                };
+            }
+            $('#' + visibleLabelID).show();
+            
+            if(layer.currentGEERunID === geeRunID){
+                if(eeLayer === undefined){
+                    loadFailure();
+                }
+                else{
+                    var url = geeAPIURL+'/v1alpha/'+eeLayer.mapid+'/tiles/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
+                    // console.log(url)
+                    var xThenY = true;
+                    layer.remainingTiles= 0;
+                    var getTileUrlFun = function(coord, zoom) {
+                    
+                    // "Wrap" x (logitude) at 180th meridian properly
+                    // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib 
+                    var tilesPerGlobe = 1 << zoom;
+                    var x = coord.x % tilesPerGlobe;
+                    if (x < 0) {
+                        x = tilesPerGlobe+x;
+                    }
+                    // Wrap y (latitude) in a like manner if you want to enable vertical infinite scroll
+                    // return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/" + zoom + "/" + x + "/" + coord.y + "?access_token=pk.eyJ1IjoiaWhvdXNtYW4iLCJhIjoiY2ltcXQ0cnljMDBwNHZsbTQwYXRtb3FhYiJ9.Sql6G9QR_TQ-OaT5wT6f5Q"
+                    var outUrl;
+                    if(xThenY ){
+                        outUrl= url+ zoom + "/" + x + "/" + coord.y ;
+                    }
+                    else{outUrl=  url+ zoom + "/" + coord.y + "/" +x  ;}//+ (new Date()).getTime();
+                    layer.remainingTiles ++;
+                    if(!layer.loading){
+                        layer.loading = true;
+                        layer.percent = 10;
+                        $('#' + spinnerID+'2').show();
+                        updateGEETileLayersDownloading();
+                        updateProgress();
+                        if(layer.viz.isTimeLapse){
+                            updateTimeLapseLoadingProgress();  
+                        }
+                    }
+                    
+                    return outUrl
+                }
+                    layer.layer = new google.maps.ImageMapType({
+                            getTileUrl:getTileUrlFun,
+                            tileSize: new google.maps.Size(256, 256),
+                            maxZoom: 17
+                        })
+                    layer.layer.addListener('tilesloaded',function(){
+                        layer.percent = 100;
+                        layer.loading = false;
+                        $('#' + spinnerID+'2').hide();
+                        updateGEETileLayersDownloading();
+                        updateProgress();
+                        if(layer.viz.isTimeLapse){
+                            updateTimeLapseLoadingProgress();  
+                        }
+                    })
+                    
+                    
+                    if(layer.visible){
+                        layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+                        layer.rangeOpacity = layer.opacity; 
+                        layer.layer.setOpacity(layer.opacity); 
+                         }else{layer.rangeOpacity = 0;}
+                         $('#' + spinnerID).hide();
+                        $('#' + visibleLabelID).show();
+                        setRangeSliderThumbOpacity();
+                }
+            }
         }
         //Asynchronous wrapper function to get GEE map service
         function getGEEMapService(){
-            layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
-            // layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
+            // layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
+            layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
             // layer.item.getMap(layer.viz,function(eeLayer){
                 // console.log(eeLayer)
                 // console.log(ee.data.getTileUrl(eeLayer))

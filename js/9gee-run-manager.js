@@ -2920,14 +2920,16 @@ var landcoverClassQueryDict = {};
     // Map2.addTimeLapse(lossGain.limit(4),{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
     // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
      
-    var yrs = [1989,2002,2005,2019]
+    var yrs = [1989,1990,1991,1992,1993,1994,2000,2001,2002,2005,2019]
     var l = yrs.map(function(yr){return dndThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
     l = ee.ImageCollection(l);
     var g = yrs.map(function(yr){return rnrThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
     g = ee.ImageCollection(g);
     // print(c.getInfo())
     Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    // Map2.addTimeLapse(g.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
+    // Map2.addLayer(l.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    Map2.addLayer(dndThresh.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    // Map2.addTimeLapse(rnrThresh.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
     // Map2.addTimeLapse(dndThresh.limit(5).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
     // Map2.addTimeLapse(rnrThresh.limit(5).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
     var stacked = joinCollections(dndThresh.select([0]),rnrThresh.select([0]), false);
@@ -2985,7 +2987,7 @@ var landcoverClassQueryDict = {};
       
     
     // Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
-    Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
+    // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
     var years = ee.List.sequence(startYear,endYear).getInfo();
     var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
     //F80,e8edc4,54278f

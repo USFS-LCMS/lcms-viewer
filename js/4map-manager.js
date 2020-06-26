@@ -520,12 +520,12 @@ function jitterZoom(){
   }
   var tDiff = new Date() - lastJitter;
   var jittered = false;
-  if((tDiff > 3000 && geeTileLayersDownloading === 0) || tDiff > 10000){
+  if((tDiff > 5000 && geeTileLayersDownloading === 0) || tDiff > 20000){
     // console.log(tDiff)
-    // console.log('jittering zoom')
+    console.log('jittering zoom')
     var z = map.getZoom();
-    // map.setZoom(z-1);
-    // map.setZoom(z);
+    map.setZoom(z-1);
+    map.setZoom(z);
     jittered = true;
     lastJitter = new Date();
   }
@@ -686,10 +686,10 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
                                     <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
                                     <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-                                    <!--<button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>-->
+                                    <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
                                     <button class = 'btn cumulativeToggler time-lapse-active' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
-                                    <div id = "${legendDivID}-cumulative-radio-container" class = 'pt-2'></div>
+                                    <div id = "${legendDivID}-message-div" class = 'pt-2'></div>
                                   </div>
 
                                 </li>
@@ -727,7 +727,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         viz.addToLegend = false;
         viz.addToClassLegend = false;
       }
-        addToMap(standardTileURLFunction(item + yr.toString()+'/',true,''),viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
+      var vizT = Object.assign({},viz);
+      vizT.year = yr
+        addToMap(standardTileURLFunction(item + yr.toString()+'/',true,''),vizT,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
      }) 
   }else{
     viz.years.map(function(yr){
@@ -735,8 +737,11 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
       if(yr !== viz.years[0]){
         viz.addToLegend = false;
         viz.addToClassLegend = false;
+        
       }
-      addToMap(img,viz,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
+      var vizT = Object.assign({},viz);
+      vizT.year = yr
+      addToMap(img,vizT,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
     })
   }
   //If its a tile map service, don't wait
@@ -948,12 +953,12 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
     
     var layerObjKeys = Object.keys(layerObj);
-    var nameIndex = layerObjKeys.indexOf(name);
+    var nameIndex = layerObjKeys.indexOf(legendDivID);
     if(nameIndex   != -1){
-      visible = layerObj[name][0];
-      viz.opacity = layerObj[name][1];
+      visible = layerObj[legendDivID].visible;
+      viz.opacity = layerObj[legendDivID].opacity;
       if(viz.layerType === 'geeVector' || viz.layerType === 'geoJSONVector'){
-        viz.strokeOpacity =  layerObj[name][1];
+        viz.strokeOpacity =  layerObj[legendDivID].opacity;
         viz.fillOpacity = viz.strokeOpacity / viz.opacityRatio;
 
       }
@@ -1353,7 +1358,7 @@ function reRun(){
   timeLapseID = null;
   timeLapseFrame = 0;
   cumulativeMode = true;
-
+  NEXT_LAYER_ID = 1;
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
   ['layer-list','reference-layer-list','area-charting-select-layer-list','fhp-div','time-lapse-legend-list'].map(function(l){
