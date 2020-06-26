@@ -514,13 +514,14 @@ function turnOffTimeLapseLayers(id){
 //Function to handle tiles getting stuck when requested from GEE
 //Currently the best method seems to be to jitter the zoom to re-request the tiles from GEE
 var lastJitter;
-function jitterZoom(){
+function jitterZoom(fromButton){
+  if(fromButton === null || fromButton === undefined){fromButton = false}
   if(lastJitter === null || lastJitter === undefined){
     lastJitter = new Date();
   }
   var tDiff = new Date() - lastJitter;
   var jittered = false;
-  if((tDiff > 5000 && geeTileLayersDownloading === 0) || tDiff > 20000){
+  if((tDiff > 5000 && geeTileLayersDownloading === 0) || tDiff > 20000 || fromButton){
     // console.log(tDiff)
     console.log('jittering zoom')
     var z = map.getZoom();
@@ -686,7 +687,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
                                     <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
                                     <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-                                    <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>
+                                    <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom(true)'><i class="fa fa-refresh"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
                                     <button class = 'btn cumulativeToggler time-lapse-active' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
                                     <div id = "${legendDivID}-message-div" class = 'pt-2'></div>
