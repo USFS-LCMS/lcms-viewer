@@ -7,7 +7,10 @@ $('body').append(staticTemplates.sidebarLeftContainer);
 
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
+if(mode !== 'geeViz'){
+  $('#contributor-logos').prepend(staticTemplates.shareButtons);
 
+}
 $('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
