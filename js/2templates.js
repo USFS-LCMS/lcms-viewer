@@ -336,32 +336,27 @@ var staticTemplates = {
                                         <div class = 'dropdown-divider'></div>`,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
         shareButtons : `<!-- LinkedIn -->
-                        <a title = 'Share via LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${document.URL}" target="_blank">
+                        <a title = 'Share on LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${document.URL}" target="_blank">
                             <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" />
                         </a>
                         
-                        <!-- Pinterest -->
-                        <a title = 'Share via Pinterest' href="javascript:void((function()%7Bvar%20e=document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('charset','UTF-8');e.setAttribute('src','http://assets.pinterest.com/js/pinmarklet.js?r='+Math.random()*99999999);document.body.appendChild(e)%7D)());">
-                            <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/pinterest.png" alt="Pinterest" />
-                        </a>
-
                         <!-- Email -->
                         <a title = 'Share via E-mail' href="mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ${document.URL}">
                             <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" />
                         </a>
 
                         <!-- Reddit -->
-                        <a title = 'Share via Reddit' href="http://reddit.com/submit?url=${document.URL}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
+                        <a title = 'Share on Reddit' href="http://reddit.com/submit?url=${document.URL}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
                             <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" />
                         </a>
 
                          <!-- Twitter -->
-                        <a title = 'Share via Twitter' href="https://twitter.com/share?url=${document.URL}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
+                        <a title = 'Share on Twitter' href="https://twitter.com/share?url=${document.URL}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
                             <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/twitter.png" alt="Twitter" />
                         </a>
 
                         <!-- Facebook -->
-                        <a  title = 'Share via Facebook' href="http://www.facebook.com/sharer.php?u=${document.URL}" target="_blank">
+                        <a  title = 'Share on Facebook' href="http://www.facebook.com/sharer.php?u=${document.URL}" target="_blank">
                             <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" />
                         </a>
                          
@@ -1657,27 +1652,13 @@ function addLayer(layer){
                     loadFailure();
                 }
                 else{
-                    var url = geeAPIURL+'/v1alpha/'+eeLayer.mapid+'/tiles/'///7/27/49?token=61211529cd40d8f682061f37650b5c68
-                    // console.log(url)
-                    var xThenY = true;
-                    layer.remainingTiles= 0;
-                    var getTileUrlFun = function(coord, zoom) {
+                    const tilesUrl = eeLayer.urlFormat;
                     
-                    // "Wrap" x (logitude) at 180th meridian properly
-                    // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib 
-                    var tilesPerGlobe = 1 << zoom;
-                    var x = coord.x % tilesPerGlobe;
-                    if (x < 0) {
-                        x = tilesPerGlobe+x;
-                    }
-                    // Wrap y (latitude) in a like manner if you want to enable vertical infinite scroll
-                    // return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/" + zoom + "/" + x + "/" + coord.y + "?access_token=pk.eyJ1IjoiaWhvdXNtYW4iLCJhIjoiY2ltcXQ0cnljMDBwNHZsbTQwYXRtb3FhYiJ9.Sql6G9QR_TQ-OaT5wT6f5Q"
-                    var outUrl;
-                    if(xThenY ){
-                        outUrl= url+ zoom + "/" + x + "/" + coord.y ;
-                    }
-                    else{outUrl=  url+ zoom + "/" + coord.y + "/" +x  ;}//+ (new Date()).getTime();
-                    layer.remainingTiles ++;
+                    var getTileUrlFun = function(coord, zoom) {
+                    let url = tilesUrl
+                                .replace('{x}', coord.x)
+                                .replace('{y}', coord.y)
+                                .replace('{z}', zoom);
                     if(!layer.loading){
                         layer.loading = true;
                         layer.percent = 10;
@@ -1689,12 +1670,10 @@ function addLayer(layer){
                         }
                     }
                     
-                    return outUrl
+                    return url
                 }
                     layer.layer = new google.maps.ImageMapType({
-                            getTileUrl:getTileUrlFun,
-                            tileSize: new google.maps.Size(256, 256),
-                            maxZoom: 17
+                            getTileUrl:getTileUrlFun
                         })
                     layer.layer.addListener('tilesloaded',function(){
                         layer.percent = 100;
