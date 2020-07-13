@@ -21,10 +21,10 @@ var  titles = {
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
-            leftWords: 'Landsat',
+            leftWords: 'LANDTRENDR',
             centerWords: 'DATA',
             rightWords:'Viewer',
-            title:'TimeSync Ancillary Data Viewer'
+            title:'LANDTRENDR Data Viewer'
             },
     'MTBS': {
             leftWords: 'MTBS',
@@ -337,27 +337,27 @@ var staticTemplates = {
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
         shareButtons : `<!-- LinkedIn -->
                         <a title = 'Share on LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${document.URL}" target="_blank">
-                            <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" />
+                            <img class = 'image-icon-bar' src="./images/linkedin.png" alt="LinkedIn" />
                         </a>
                         
                         <!-- Email -->
                         <a title = 'Share via E-mail' href="mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ${document.URL}">
-                            <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" />
+                            <img class = 'image-icon-bar' src="./images/email.png" alt="Email" />
                         </a>
 
                         <!-- Reddit -->
                         <a title = 'Share on Reddit' href="http://reddit.com/submit?url=${document.URL}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
-                            <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" />
+                            <img class = 'image-icon-bar' src="./images/reddit.png" alt="Reddit" />
                         </a>
 
                          <!-- Twitter -->
                         <a title = 'Share on Twitter' href="https://twitter.com/share?url=${document.URL}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
-                            <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/twitter.png" alt="Twitter" />
+                            <img class = 'image-icon-bar' src="./images/twitter.png" alt="Twitter" />
                         </a>
 
                         <!-- Facebook -->
                         <a  title = 'Share on Facebook' href="http://www.facebook.com/sharer.php?u=${document.URL}" target="_blank">
-                            <img class = 'image-icon-bar' src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" />
+                            <img class = 'image-icon-bar' src="./images/facebook.png" alt="Facebook" />
                         </a>
                          
                         
