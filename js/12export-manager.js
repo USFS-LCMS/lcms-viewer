@@ -158,7 +158,7 @@ cancelAllTasks = function(){
     var tasksCancelledList = '\nIDs:';
     var taskList = ee.data.getTaskList().tasks;
     taskList.map(function(task){
-        if((task.state === 'RUNNING' || task.state === 'READY') &&  Object.keys(cachedEEExports).indexOf(task.id) >-1){
+        if((task.state === 'RUNNING' || task.state === 'READY') &&  Object.keys(cachedEEExports).indexOf(task.description) >-1){
             print('Cancelling task: ' + task.id)
             ee.data.cancelTask(task.id);
             tasksCancelledList = tasksCancelledList +'\n'+ task.id;
@@ -250,8 +250,8 @@ function trackExports(){
         //     console.log('adding task to past ee export list')
         //     pastEEExports[t.id] = [t.state,false,t.description];
         //     }
-        if(Object.keys(cachedEEExports).indexOf(t.id) >-1){
-            var cachedEEExport = cachedEEExports[t.id]
+        if(Object.keys(cachedEEExports).indexOf(t.description) >-1){
+            var cachedEEExport = cachedEEExports[t.description]
 
             if(t.state === 'RUNNING' || t.state === 'READY'   ){
                 taskCount ++;
@@ -266,8 +266,8 @@ function trackExports(){
                 }
         else if(t.state === 'COMPLETED'  && cachedEEExport.downloaded === false ){
             
-            var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.id].outputName +'.tif'
-            downloadExport(tOutputName,cachedEEExports[t.id].outputName +'.tif')
+            var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.description].outputName +'.tif'
+            downloadExport(tOutputName,cachedEEExports[t.description].outputName +'.tif')
             // exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
             
             
@@ -275,11 +275,11 @@ function trackExports(){
             
             
             showMessage('SUCCESS!',
-                 '<p style = "margin:5px;">'+ cachedEEExports[t.id].outputName + ' has successfully downloaded! </p><p style = "margin:3px;">'
+                 '<p style = "margin:5px;">'+ cachedEEExports[t.description].outputName + ' has successfully downloaded! </p><p style = "margin:3px;">'
                  )  
              // sleep(2000);
               // window.open(tOutputName);
-              cachedEEExports[t.id]['downloaded'] = true;
+              cachedEEExports[t.description]['downloaded'] = true;
             }
             
         }
@@ -340,10 +340,13 @@ function updateSpinner(){
 /////////////////////////////////////////////////////////////////////////////////////////////
 function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
     $('#summary-spinner').show();
-    eeImage = eeImage.clip(fc);
-    var imageJson = ee.Serializer.toJSON(eeImage);
+    eeImage = ee.Image(eeImage.clip(fc).unmask(-32768,false));//.reproject(exportCRS,null,exportScale);
+    // var imageJson = ee.Serializer.toJSON(eeImage);
     $('#export-message-container').text("Exporting:" + exportOutputName);
+    
+
     outputURL = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+exportOutputName +'.tif'//Currently cannot handle multiple tile exports for very large exports
+    
     print('exporting')
     try{
        var region = JSON.stringify(fc.geometry().bounds().getInfo()); 
@@ -358,25 +361,30 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
         
     
     }
-   
-    //Set up parameter object
-    var params = {
-        json:imageJson,
-        type:'EXPORT_IMAGE',
-        description:exportOutputName,
-        region:region,
-        outputBucket:bucketName ,
-        outputPrefix: exportOutputName,
-        crs:exportCRS,
-        scale: exportScale,
-        maxPixels:1e13,
-        shardSize:256,
-        fileDimensions:256*75
-        }
+    
+    // //Set up parameter object
+    // var params = {
+    //     json:imageJson,
+    //     type:'EXPORT_IMAGE',
+    //     description:exportOutputName,
+    //     region:region,
+    //     outputBucket:bucketName ,
+    //     outputPrefix: exportOutputName,
+    //     crs:exportCRS,
+    //     crsTransform:null,
+    //     scale: exportScale,
+    //     maxPixels:1e13,
+    //     shardSize:256,
+    //     fileDimensions:256*75
+    //     }
 
-    //Set up a task and update the spinner
-    taskId = ee.data.newTaskId(1)
-    return {'id':taskId,'params':params}
+    // //Set up a task and update the spinner
+    // taskId = ee.data.newTaskId(1)
+
+    var task = ee.batch.Export.image.toCloudStorage(eeImage, exportOutputName, bucketName, exportOutputName, null, region, exportScale, exportCRS, null, 1e13, 256, 256*75);
+               
+
+    return task;
 }
 function googleMapPolygonToGEEPolygon(googleMapPolygon){
     var path = googleMapPolygon.getPath().i;
@@ -405,13 +413,15 @@ function exportImages(){
             
             if(exportObject['shouldExport'] === true){
                 exportsStarted ++;
-                exportsSubmitted += exportObject['name']+nowSuffix + '<br>'
-                var IDAndParams = getIDAndParams(exportObject['eeImage'],exportObject['name']+nowSuffix,exportCRS,exportObject['res'],fc);
-                print(IDAndParams)
-                //Start processing
-                ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
+                var exportName = exportObject['name']+nowSuffix;
+                exportsSubmitted +=  exportName+ '<br>';
+                var task = getIDAndParams(exportObject['eeImage'],exportName,exportCRS,exportObject['res'],fc);
                 
-
+                //Start processing
+                task.start();
+                // ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
+                
+                
                 // var metadataParams = exportObject['metadataParams']
                 meta_template_strT = '{}';//meta_template_str;
 
@@ -439,7 +449,7 @@ function exportImages(){
                 // meta_template_strT = meta_template_strT.replaceAll('OOB_ACCURACY',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_ACCURACY']);
                 // meta_template_strT = meta_template_strT.replaceAll('OOB_KAPPA',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_KAPPA']);
                 // meta_template_strT = meta_template_strT.replaceAll('CONFUSIONMATRIX',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_CONFUSIONMATRIX']);
-                cacheExport(IDAndParams['id'],exportObject['name']+nowSuffix,meta_template_strT);
+                cacheExport(exportName,exportName,meta_template_strT);
                 // exportMetadata(exportObject['name']+nowSuffix + '_metadata.html', meta_template_strT)
         
             }

@@ -1,3 +1,5 @@
+/*This script constructs the page depending on the chosen mode*/
+/*Put main elements on body*/
 $('body').append(staticTemplates.map);
 
 $('body').append(staticTemplates.mainContainer);
@@ -5,19 +7,19 @@ $('body').append(staticTemplates.sidebarLeftContainer);
 
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
+if(mode !== 'geeViz'){
+  $('#contributor-logos').prepend(staticTemplates.shareButtons);
 
+}
 $('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
 
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
-// $('#title-banner').fitText(1.2);
-// $('#studyAreaDropdownLabel').fitText(0.5);
-
-
 $('#main-container').append(staticTemplates.introModal[mode]);
-
+/////////////////////////////////////////////////////////////////////
+/*Check to see if modals should be shown*/
 if(localStorage.showIntroModal == undefined){
   localStorage.showIntroModal = 'true';
   }
@@ -26,10 +28,18 @@ $('#dontShowAgainCheckbox').change(function(){
   console.log(this.checked)
   localStorage.showIntroModal  = !this.checked;
 });
+/////////////////////////////////////////////////////////////////////
+/*Add study area dropdown if LCMS*/
 if(mode === 'LCMS'){
   $('#title-banner').append(staticTemplates.studyAreaDropdown);
-  Object.keys(studyAreaDict).map(function(k){addStudyAreaToDropdown(k,studyAreaDict[k].popOver);});
+  if(studyAreaSpecificPage){
+    $('#study-area-label').removeClass('dropdown-toggle');
+  }else{
+    Object.keys(studyAreaDict).map(function(k){addStudyAreaToDropdown(k,studyAreaDict[k].popOver);});
+  }
+
 }
+
 $('#title-banner').append(staticTemplates.placesSearchDiv);
 $('#title-banner').fitText(1.2);
 $('#study-area-label').fitText(1.8);
@@ -43,10 +53,11 @@ function toggleAdvancedOff(){
     $("#threshold-container").slideUp();
     $("#advanced-radio-container").slideUp();  
 }
-
+/////////////////////////////////////////////////////////////////////
+/*Start adding elements to page based on chosen mode*/
 if(mode === 'LCMS'){
 
-
+  /*Construct panes in left sidebar*/
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
@@ -71,28 +82,19 @@ if(mode === 'LCMS'){
   // addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0,1,lowerThresholdRecovery,0.05,'decline-threshold-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
   
   // addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0,1,lowerThresholdDecline,0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than the specified threshold will be flagged as loss ") 
-  
-  addDualRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline','upperThresholdDecline',0, 1, lowerThresholdDecline, upperThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  // containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip
+  addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0, 1, lowerThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
-  addDualRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery','upperThresholdRecovery',0, 1, lowerThresholdRecovery, upperThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability within the specified window will be flagged as gain ")
+  addRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery',0, 1, lowerThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability greater than or equal to this value will be flagged as gain ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   $('#advanced-radio-container').append(`<div id = 'fast-slow-threshold-container' ></div>`);
-  addDualRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss','upperThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , upperThresholdSlowLoss, 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  addRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#fast-slow-threshold-container').append(`<div class="dropdown-divider" ></div>`);
-  addDualRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss','upperThresholdFastLoss',0, 1, lowerThresholdFastLoss, upperThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability within the specified window will be flagged as loss ")
+  addRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss',0, 1, lowerThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
-  
-  // addRadio('advanced-radio-container','viewBeta-radio','View beta outputs:','No','Yes','viewBeta','no','yes','','','Whether to view products that are currently in beta development')
-  // $('#advanced-radio-container').append(`<div id = 'beta-params-container' style = 'display:none;'>
-  //                                         <div class = 'dropdown-divider'></div>
-  //                                         Beta Product Parameters
-  //                                       </div>`);
  
-  // $( "#viewBeta-radio-first_toggle_label" ).click(function() {$('#beta-params-container').slideUp()});
-  // $( "#viewBeta-radio-second_toggle_label" ).click(function() {$('#beta-params-container').slideDown()});
-  // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   
   addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
@@ -222,7 +224,7 @@ if(mode === 'LCMS'){
   $('#support-collapse-div').append(`<a href="https://www.mtbs.gov/contact" target="_blank" title = 'If you have any questions or comments, feel free to contact us'>Contact Us</a>`)
   $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   $('#introModal-body').append(staticTemplates.walkThroughButton);
-}else if(mode === 'TEST'){
+}else if(mode === 'TEST' || mode === 'FHP'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
 
@@ -248,8 +250,8 @@ $('body').append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-4 col-lg-3 c
 $('.legendDiv').css('bottom',$('.bottombar').height());
 $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
 addLegendCollapse();
-
-//Add tool tabs
+/////////////////////////////////////////////////////////////////
+//Construct tool options for different modes
  
 
 addAccordianContainer('tools-collapse-div','tools-accordian')
@@ -283,7 +285,7 @@ if(mode === 'geeViz'){
   $('#pixel-chart-label').remove();
 }
 
-if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' ){
+if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' || mode === 'lcms-base-learner' || mode === 'FHP'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Params', '',false,'')
   
@@ -301,15 +303,9 @@ if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' ){
   addShapeEditToolbar('user-defined-edit-toolbar', 'user-defined-area-icon-bar','undoUserDefinedAreaCharting()','restartUserDefinedAreaCarting()')
   addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
-  addShapeEditToolbar('select-features-edit-toolbar', 'select-area-interactive-chart-icon-bar','removeLastSelectArea()','clearSelectedAreas()','Click to unselect most recently selected polyogn','Click to clear all selected polygons')
-  
-  // $('#user-defined-area-chart-div').append(staticTemplates.showChartButton);
-  // $('#upload-area-chart-div').append(staticTemplates.showChartButton);
-  // $('#select-area-dropdown-chart-div').append(staticTemplates.showChartButton);
-  // $('#select-area-interactive-chart-div').append(staticTemplates.showChartButton);
-  // $('#tools-accordian').append(staticTemplates.showChartButton);
-
+  addShapeEditToolbar('select-features-edit-toolbar', 'select-area-interactive-chart-icon-bar','removeLastSelectArea()','clearSelectedAreas()','Click to unselect most recently selected polyogn','Click to clear all selected polygons');
 }
+//Add some logos for different modes
 if(mode === 'MTBS' || mode === 'Ancillary'){
   $('#contributor-logos').prepend(`<a href="https://www.usgs.gov/" target="_blank" >
                                     <img src="images/usgslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the US Geological Survey">
@@ -318,6 +314,7 @@ if(mode === 'MTBS' || mode === 'Ancillary'){
                                     <img src="images/mtbs-logo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the US Geological Survey">
                                   </a>`)
 }
+//Handle exporting if chosen
 if(canExport){
    $('#download-collapse-div').append(staticTemplates.exportContainer);
    if(localStorage.export_crs !== undefined && localStorage.export_crs !== null && localStorage.export_crs.indexOf('EPSG') > -1){
@@ -328,40 +325,5 @@ if(canExport){
    }
 }
 
-// addToggle('measure-distance-div','toggler-distance-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialDistance','imperial','metric','updateDistance()');
-// addToggle('measure-area-div','toggler-area-units','Toggle imperial or metric units: ',"Imperial",'Metric','true','metricOrImperialArea','imperial','metric','updateArea()');
 
-
-// $('#sidebar-left').append(`<button onclick="getLocation()">Try It</button><p id="demo"></p>`)
-// var x = document.getElementById("demo");
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition, showError);
-  } else { 
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude + 
-  "<br>Longitude: " + position.coords.longitude;
-}
-
-function showError(error) {
-  switch(error.code) {
-    case error.PERMISSION_DENIED:
-      x.innerHTML = "User denied the request for Geolocation."
-      break;
-    case error.POSITION_UNAVAILABLE:
-      x.innerHTML = "Location information is unavailable."
-      break;
-    case error.TIMEOUT:
-      x.innerHTML = "The request to get user location timed out."
-      break;
-    case error.UNKNOWN_ERROR:
-      x.innerHTML = "An unknown error occurred."
-      break;
-  }
-}
 

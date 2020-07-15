@@ -633,7 +633,9 @@ input[type=checkbox]:checked + label:before,input[type=radio].form-check-input:c
   height: .25em ;
   background:var(--deep-brown-100);           
 }
-
+.ui-slider-horizontal .ui-slider-handle .ui-state-focus{
+  border-radius: 0em!important;
+}
 /*
 .ui-slider-horizontal .ui-slider-handle {
 

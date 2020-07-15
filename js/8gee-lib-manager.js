@@ -37,7 +37,7 @@ window.ck_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R10/CK/CK_LC
 window.usfs_regions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Region_Boundaries');
 window.b = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
 window.nps = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries');
-
+window.otherLands = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/OtherNationalDesignatedArea');
 window.gtnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Grand Teton')).first());
 window.gnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Glacier')).first());
 window.kfnp = ee.Feature(nps.filter(ee.Filter.eq('PARKNAME','Kenai Fjords')).first());
@@ -341,7 +341,7 @@ function getAspectObj(){
   return {'image':aspectBinned,'lookupDict':aspectLookupDict,'colorDict':colorDict}
 }
 function getNLCDObj(){
-  var nlcdYears = [1992,2001,2004,2006,2008,2011,2013,2016];
+  var nlcdYears = [2001,2004,2006,2008,2011,2013,2016];
   var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
   var nlcdLCMin = 0;//parseInt(nlcd.get('system:visualization_0_min').getInfo());
   var nlcdLCPalette = ["466b9f", "d1def8", "dec5c5", "d99282", "eb0000", "ab0000", "b3ac9f", "68ab5f", "1c5f2c", "b5c58f", "af963c", "ccb879", "dfdfc2", "d1d182", "a3cc51", "82ba9e", "dcd939", "ab6c28", "b8d9eb", "6c9fb8"];//nlcd.get('system:visualization_0_palette').getInfo().split(',');
@@ -622,7 +622,7 @@ function getHansen(whichLayerList){
     return t;
   }));
   var hansenYearsCli = hansenYears.getInfo();
-  Map2.addTimeLapse(hansenC,{min:startYear,max:endYear,palette:declineYearPalette,years:hansenYearsCli},'Hansen Loss Time Lapse',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList)
+  // Map2.addTimeLapse(hansenC,{min:startYear,max:endYear,palette:declineYearPalette,years:hansenYearsCli},'Hansen Loss Time Lapse',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList)
   var hansenGain = hansen.select(['gain']);
   hansenLoss = hansenLoss.updateMask(hansenLoss.neq(2000).and(hansenLoss.gte(startYear)).and(hansenLoss.lte(endYear)));
   Map2.addLayer(hansenLoss.set('bounds',hansenClientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},'Hansen Loss Year',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList);

@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+var bodyScripts = ['1variables.js','2templates.js','3template-adder.js','4map-manager.js','5chart-manager.js','6parameters-manager.js','7tools-toggle-manager.js','8gee-lib-manager.js','9gee-run-manager.js','10download_dict.js','11download-manager.js','12export-manager.js','13plot-manager.js','14tutorial-manager.js'];
+var scriptsFolder = './js/';
+var headContent = [`<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
         
         <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -45,28 +44,45 @@
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         <script src = './js/jscolor.js'></script>
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="./css/style.css">`
+]
 
-    </head>
 
 
-    <body>
-        <script type="text/javascript" src="./js/1variables.js"></script>
-        <script type="text/javascript">
-            var mode = 'LCMS';
-        </script>
-        <script type="text/javascript" src="./js/2templates.js"></script>
-        <script type="text/javascript" src="./js/3template-adder.js"></script>
-        <script type="text/javascript" src="./js/4map-manager.js"></script>
-        <script type="text/javascript" src="./js/5chart-manager.js"></script>
-        <script type="text/javascript" src="./js/6parameters-manager.js"></script>
-        <script type="text/javascript" src="./js/7tools-toggle-manager.js"></script>
-        <script type="text/javascript" src="./js/8gee-lib-manager.js"></script>
-        <script type="text/javascript" src="./js/9gee-run-manager.js"></script>
-        <script type="text/javascript" src="./js/10download_dict.js"></script>
-        <script type="text/javascript" src="./js/11download-manager.js"></script>
-        <script type="text/javascript" src="./js/12export-manager.js"></script>
-        <script type="text/javascript" src="./js/13plot-manager.js"></script>
-        <script type="text/javascript" src="./js/14tutorial-manager.js"></script>
-    </body>
-</html>
+        
+
+
+      
+  
+//         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        
+//         
+
+
+//         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+//         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        
+//         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+       
+//         <!-- Latest compiled and minified JavaScript -->
+//         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+//         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+//         <script src = './js/jquery.fittext.js'></script>
+//         <!-- https://gitbrent.github.io/bootstrap4-toggle/ -->
+//         <!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+//         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
+//         <script src = './js/jscolor.js'></script>
+//         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+//         <link rel="stylesheet" href="./css/style.css">
+
+// headContent.map(function(content){
+    // $('head').append(content);
+// })
+
+$('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
+bodyScripts.map(function(script){
+    $('body').append(`<script type="text/javascript" src="${scriptsFolder}${script}"></script>`);
+})
+      
+        
+        

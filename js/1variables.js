@@ -1,6 +1,7 @@
-//Load global variables
+/*List global variables in this script for use throughout the viewers*/
 
-
+/*Load global variables*/
+var cachedSettingskey = 'settings';
 var startYear = 1985;
 var endYear = 2019;
 var startJulian = 153;//190;
@@ -9,7 +10,7 @@ var layerObj = null;
 var queryObj = {};var timeLapseObj = {};
 var initialCenter = [37.5334105816903,-105.6787109375];
 var initialZoomLevel = 5;
-
+var studyAreaSpecificPage = false;
 var studyAreaDict = {
                   'Flathead National Forest':{
                                                 name:'FNF',
@@ -83,56 +84,7 @@ var studyAreaDict = {
                                               ltFormat:'landtrendr_vertex_format',
                                               lcmsSecondaryLandcoverCollection:'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover_Probability',
                                               lcmsSecondaryLandcoverTreemask:'projects/USFS/LCMS-NFS/R10/CK/Landcover-Landuse-Change/Landcover_Probability_treemask_stack',
-                                              // lcmsSecondaryLandcoverDict:{
-                                              //             1: {'modelName': 'Trees',
-                                              //                     'legendName': 'Trees',
-                                              //                     'color': '005e00'},
-                                              //             2: {'modelName': 'TallShrubs-Trees',
-                                              //                     'legendName': 'Mixed Trees/Tall Shrubs',
-                                              //                     'color': '008000'},
-                                              //             3: {'modelName': 'Shrubs-Trees',
-                                              //                     'legendName': 'Mixed Trees/Shrubs',
-                                              //                     'color': '00cc00'},
-                                              //             4: {'modelName': 'Grass-Trees',
-                                              //                     'legendName': 'Mixed Trees/Grass',
-                                              //                     'color': 'b3ff1a'},
-                                              //             5: {'modelName': 'Barren-Trees',
-                                              //                     'legendName': 'Mixed Trees/Barren',
-                                              //                     'color': '99ff99'},
-                                              //             6: {'modelName': 'TallShrubs',
-                                              //                     'legendName': 'Tall Shrubs',
-                                              //                     'color': 'b30000'},
-                                              //             7: {'modelName': 'Grass-TallShrubs',
-                                              //                     'legendName': 'Mixed Tall Shrubs/Grass',
-                                              //                     'color': 'ff3333'},
-                                              //             8: {'modelName': 'Barren-TallShrubs',
-                                              //                     'legendName': 'Mixed Tall Shrubs/Barren',
-                                              //                     'color': 'ffcccc'},               
-                                              //             9: {'modelName': 'Shrubs',
-                                              //                     'legendName': 'Shrubs',
-                                              //                     'color': 'e68a00'},//'a33d00'},
-                                              //             10: {'modelName': 'Grass-Shrubs',
-                                              //                     'legendName': 'Mixed Shrubs/Grass',
-                                              //                     'color': 'ffad33'},//'e26b00'},
-                                              //             11: {'modelName': 'Barren-Shrubs',
-                                              //                     'legendName': 'Mixed Shrubs/Barren',
-                                              //                     'color': 'ffe0b3'},//'f49b00'},               
-                                              //             12: {'modelName': 'Grass',
-                                              //                     'legendName': 'Grass',
-                                              //                     'color': 'ffff00'},
-                                              //             13: {'modelName': 'Barren-Grass',
-                                              //                     'legendName': 'Mixed Grass/Barren',
-                                              //                     'color': 'e6e600'},
-                                              //             14: {'modelName': 'Barren',
-                                              //                     'legendName': 'Barren & Impervious',
-                                              //                     'color': 'd3bf9b'},
-                                              //             15: {'modelName': 'Snow',
-                                              //                     'legendName': 'Snow/Ice',
-                                              //                     'color': 'ffffff'},
-                                              //             16: {'modelName': 'Water',
-                                              //                     'legendName': 'Water',
-                                              //                     'color': '4780f3'}
-                                              //                   },
+                                          
                                               lcmsSecondaryLandcoverDict:{
                                                           1: {'modelName': 'Trees',
                                                                   'legendName': 'Trees',
@@ -249,8 +201,8 @@ var studyAreaDict = {
                                               ltCollection:'projects/LCMS/CONUS_Products/LT20200120'
                                             }
                 };
-
-//Initialize parameters
+////////////////////////////////////////////////////////////////////////////////
+/*Initialize parameters for loading study area when none is chosen or chached*/
 var defaultStudyArea = 'USFS Intermountain Region';
 var studyAreaName = studyAreaDict[defaultStudyArea].name;
 var longStudyAreaName = defaultStudyArea;
@@ -269,7 +221,7 @@ if(lowerThresholdSlowLoss === undefined){lowerThresholdSlowLoss = lowerThreshold
 if(lowerThresholdFastLoss === undefined){lowerThresholdFastLoss = lowerThresholdDecline} 
 
  
-
+/*Set up some boundaries of different areas to zoom to*/
 var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],
         [-169.215141654273, 15.643479915898974],
         [-63.043266654273, 15.643479915898974],
@@ -310,11 +262,7 @@ var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates"
   ]
 }
          }
-// var applyTreeMask = true;
-// var summaryMethod = 'recent';
-var whichIndex = 'NBR';
-// var viewBeta = false;
-// var fc;//Feature collection container for drawing on map and submitting tasks with user-defined vectors
+/*Initialize a bunch of variables*/
 var toExport;
 var exportArea;
 var taskCount = 0;//Keeping track of the number of export tasks each session submitted
@@ -325,10 +273,10 @@ var NEXT_LAYER_ID = 1;var layerChildID = 0;
 var layerCount = 0;var refreshNumber = 0;
 var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow;var queryGeoJSON;var marker;var mtbsSummaryMethod;
 
-// var selectedFeatures;
+
 var selectedFeaturesJSON = {};
 var selectionUNID = 1;
-// var selectedFeaturesNames;
+
 
 var outputURL;
 var tableConverter = null;
@@ -412,7 +360,7 @@ var featureObj = {};var geeRunID;var outstandingGEERequests = 0;var geeTileLayer
 var plotDictID = 1;
 var exportID = 1;
 
-// var metricOrImperial = 'metric';
+
 var unitMultiplierDict = {imperial:
 {area:[10.7639,0.000247105],distance:[3.28084,0.000621371]},
 metric:
@@ -434,67 +382,52 @@ var areaGeoJson;
 var areaChartingCount = 0;
 var center;var globalChartValues;
 
-var chartTextColor = '#FFF';
-var cssClassNames = {
-'headerRow': 'googleChartTable',
-'tableRow': 'googleChartTable',
-'oddTableRow': 'googleChartTable',
-'selectedTableRow': 'googleChartTable',
-'hoverTableRow': 'googleChartTable',
-'headerCell': 'googleChartTable',
-'tableCell': 'googleChartTable',
-'rowNumberCell': 'googleChartTable'};
-
-var expandedWidth = $(window).width()/3;
-var expandedHeight = $(window).height()/2;
-var chartOptions = {
-  title: uriName,
-  titleTextStyle: {
-	color: chartTextColor
-},
-  pointSize: 3,
-  legend: { position: 'bottom',textStyle:{color: chartTextColor,fontSize:'12'} },
-  dataOpacity: 1,
- hAxis:{title:'Year',
- 				titleTextStyle:{color: chartTextColor},
-				textStyle:{color: chartTextColor}
-			},
-	vAxis:{textStyle:{color: chartTextColor},titleTextStyle:{color: chartTextColor}},
-	legend: {
-        textStyle: {
-            color: chartTextColor
-        }
-    },
-
-   // width: 800, 
-   height:250,
-   bar: {groupWidth: "100%"},
-   explorer: {  actions: [] },
-    chartArea: {left:'5%',top:'10%',width:'75%',height:'70%'},
-    legendArea:{width:'20%'},
-   backgroundColor: { fill: "#1B1716" }
-
-};
-var tableOptions = {
-	// width: 800, 
-   // height:350,
-    'allowHtml': true,
-    'cssClassNames': cssClassNames};
-
-// function updateProgress(pct) {
-//     var elem = document.getElementById("Bar"); 
-//     elem.style.width = pct + '%'; 
-        
-// }
 
 
+//Chart color properties
+var chartColorI = 0;
+var chartColorsDict = {
+  'standard':['#050','#0A0','#e6194B','#14d4f4'],
+  'advanced':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4'],
+  'advancedBeta':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4','#808','#f58231'],
+  'coreLossGain':['#050','#0A0','#e6194B','#14d4f4'],
+  'allLossGain':['#050','#0A0','#e6194B','#808','#f58231','#14d4f4'],
+  'test':['#9A6324','#6f6f6f','#e6194B','#14d4f4','#880088','#f58231'],
+  'testArea':['#e6194B','#14d4f4','#880088','#f58231'],
+  'ancillary':['#cc0066','#660033','#9933ff','#330080','#ff3300','#47d147','#00cc99','#ff9966','#b37700']
+  }
+
+var chartColors = chartColorsDict.standard;
 
 
+//Dictionary of zoom level map scales
+var zoomDict = {20 : '1,128.49',
+                19 : '2,256.99',
+                18 : '4,513.98',
+                17 : '9,027.97',
+                16 : '18,055.95',
+                15 : '36,111.91',
+                14 : '72,223.82',
+                13 : '144,447.64',
+                12 : '288,895.28',
+                11 : '577,790.57',
+                10 : '1,155,581.15',
+                9  : '2,311,162.30',
+                8  : '4,622,324.61',
+                7  : '9,244,649.22',
+                6  : '18,489,298.45',
+                5  : '36,978,596.91',
+                4  : '73,957,193.82',
+                3  : '147,914,387.60',
+                2  : '295,828,775.30',
+                1  : '591,657,550.50'}
 
 
-
-var authProxyAPIURL = "https://rcr-ee-proxy.herokuapp.com/api";
-var geeAPIURL = "https://earthengine.googleapis.com/map";
+var authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
+// var geeAPIURL = "https://earthengine.googleapis.com/map";
+// var geeAPIURL = "https://earthengine.googleapis.com/map";
+var geeAPIURL = "https://earthengine.googleapis.com";
+// https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/
 // var widgetsOn = true;
 // var layersOn = true;
 // var legendOn = true;

@@ -4,8 +4,19 @@
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
         
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155737118-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-155737118-1');
+        </script>
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="icon" href="./images/usfslogo.png">
+        
         <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=places"></script>
         <script type="text/javascript" src="js/ee_api_js.js"></script>
         <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
@@ -25,7 +36,7 @@
         
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
        
-       
+        <!-- Latest compiled and minified JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
         <script src = './js/jquery.fittext.js'></script>
@@ -35,13 +46,18 @@
         <script src = './js/jscolor.js'></script>
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
         <link rel="stylesheet" href="./css/style.css">
+
     </head>
 
 
     <body>
         <script type="text/javascript" src="./js/1variables.js"></script>
         <script type="text/javascript">
-            var mode = 'TEST';
+            var mode = 'LCMS';
+            studyAreaSpecificPage = true;
+            initialCenter = studyAreaDict['Manti-La Sal National Forest'].center.slice(0,2);
+            initialZoomLevel  = studyAreaDict['Manti-La Sal National Forest'].center[2];
+            localStorage.setItem("cachedStudyAreaName",'Manti-La Sal National Forest')
         </script>
         <script type="text/javascript" src="./js/2templates.js"></script>
         <script type="text/javascript" src="./js/3template-adder.js"></script>

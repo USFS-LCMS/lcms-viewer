@@ -143,11 +143,13 @@
 <div id="about-row" class="container-fluid bg-white info-page" >
   <div class="row slideanim">
     <h2 style = 'margin-left:0.5em;'>About</h2>
-    <div class="col-sm-12 col-lg-8">
+    <div class="col-sm-12 col-lg-3">
       
-      <h4>The United States Forest Service (USFS) Rocky Mountain Research Station and Geospatial Technology and Applications Center are developing the Landscape Change Monitoring System (LCMS) to leverage freely available remote sensing data and Google Earth Engine to monitor changes across the US from 1984 to present. The goal of this project was to pilot the methods across several National Forests, work with land managers to utilize LCMS products to help inform their work, and develop a web map application to present, explore, and deliver products. 
-      LCMS utilizes annual growing season composites of Landsat TM , ETM+, and OLI. Metrics of change are provided by the LANDTRENDR and VERDET change algorithms. These metrics include the magnitude, duration, and slope of the fitted trajectories from each algorithm. Model calibration/validation data are provided from Timesync, a tool that allows analysts to manually inspect various sources of image time series data to attribute land cover, land use, and change processes for each year. 
-      Timesync data and the LANDTRENDR and VERDET change metrics are used in three Random Forest models to produce annual model confidence of vegetation cover loss and gain, and life-form level land cover classes. 
+      <h4>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS).
+
+LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. LCMS provides a “best available” map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
+
+
       </h4>
       <h3>Literature</h3>
       <li>
@@ -162,8 +164,9 @@
         </ul>
       </li>
     </div>
-    <div class = 'col-sm-12 col-lg-4 ' style = 'margin-bottom:2em;'>
-      <img  src="./images/loss-example.png"  title="Click to learn more about the US Forest Service">
+    <div class = 'col-sm-12 col-lg-9'>
+      <!-- <img  src="./images/loss-example.png"  height = '1000px' title="Click to learn more about the US Forest Service"> -->
+      <iframe src="./time-lapse/time-lapse.html" height = '500px' width  = '100%' title="Click to learn more about the US Forest Service"></iframe>
     </div>
   </div>
 </div>
@@ -254,7 +257,7 @@ Object.keys(lcmsDownloadDict).map(function(k){
                                     ${k}
                                     <li id = 'download-list-${k}'></li>
                                   </div>`)
-  var l = lcmsDownloadDict[k];
+  var l = lcmsDownloadDict[k].downloads;
   l.map(function(path){
     var label = path.split('/');
     label = label[label.length-1];
