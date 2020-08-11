@@ -190,6 +190,7 @@ th{font-weight:  600!important}
   color:var(--white);
   background-color: var(--black)!important;
   /*max-height:1.7em;*/
+  font-size:0.8em;
   z-index:2;
 }
 .image-icon-bar{

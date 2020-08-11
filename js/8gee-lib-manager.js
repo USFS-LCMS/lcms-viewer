@@ -283,7 +283,7 @@ function getIDSCollection(){
     else{idsStartYear = idsMinYear}
   if(endYear < idsMaxYear && endYear >= idsMinYear){idsEndYear = endYear}  
     else{idsEndYear = idsMaxYear}
-  console.log('IDS Years:');console.log(idsStartYear);console.log(idsEndYear);
+  // console.log('IDS Years:');console.log(idsStartYear);console.log(idsEndYear);
   var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  

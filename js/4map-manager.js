@@ -1379,7 +1379,10 @@ function reRun(){
   refreshNumber   ++;
 
   exportImageDict = {};
-  clearDownloadDropdown();
+  try{
+    clearDownloadDropdown();
+  }catch(err){}
+  
   google.maps.event.clearListeners(mapDiv, 'click');
 
   //Rerun the GEE code
@@ -2250,8 +2253,19 @@ function initialize() {
     layerObj = {};
   }
 
-  mapOptions.center = center;
-  mapOptions.zoom = zoom;
+  if(urlParams.lng !== undefined && urlParams.lng !== null && urlParams.lat !== undefined && urlParams.lat !== null ){
+    print('Setting center from URL')
+    mapOptions.center = {lng:parseFloat(urlParams.lng),lat:parseFloat(urlParams.lat)};
+  }else{
+    mapOptions.center = center;
+  }
+  if(urlParams.zoom !== undefined && urlParams.zoom !== null ){
+    print('Setting zoom from URL')
+    mapOptions.zoom = parseInt(urlParams.zoom);
+  }else{
+    mapOptions.zoom = zoom;
+  }
+  
      
   map = new google.maps.Map(document.getElementById("map"),mapOptions);
   //Associate the styled map with the MapTypeId and set it to display.
@@ -2316,6 +2330,7 @@ function initialize() {
     //Set up cursor info in bottom bar
     function updateMousePositionAndZoom(cLng,cLat,zoom,elevation){
             $('.legendDiv').css('bottom',$('.bottombar').height());
+            
             $( "#current-mouse-position" ).html( 'Lng: ' +cLng + ', Lat: ' + cLat +', '+elevation+ 'Zoom: ' +zoom +', 1:'+zoomDict[zoom]);
     }
      
@@ -2376,10 +2391,15 @@ function initialize() {
         console.log('zoom changed')
         updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
     })
-
+    
     //Keep track of map bounds for eeBoundsPoly object 
     google.maps.event.addListener(map,'bounds_changed',function(){
       zoom = map.getZoom();
+      var mapCenter = map.getCenter();
+      var mapCenterLng = mapCenter.lng();
+      var mapCenterLat = mapCenter.lat();
+      urlParams.lng = mapCenterLng;urlParams.lat = mapCenterLat;urlParams.zoom= zoom;
+      
       // console.log('bounds changed');
       var bounds = map.getBounds();
       var keys = Object.keys(bounds);
@@ -2388,7 +2408,7 @@ function initialize() {
       // console.log('b');console.log(bounds);
       eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
         if(typeof(Storage) == "undefined") return;
-        localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:map.getCenter().lat(),lng:map.getCenter().lng()},zoom:map.getZoom()}));
+        localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:mapCenter.lat(),lng:mapCenter.lng()},zoom:zoom}));
       });
 
     //Specify proxy server location

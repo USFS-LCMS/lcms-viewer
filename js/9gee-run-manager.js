@@ -96,7 +96,7 @@ function runUSFS(){
       var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
       var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
       var legendList = Object.values(lc2Dict).map(function(v){return v.legendName}); 
-      console.log(JSON.stringify(ee.Dictionary.fromLists(ee.List(legendList.map(function(s){return s.replaceAll(' ','_').toLowerCase()})),ee.List(nameList)).getInfo()))
+      // console.log(JSON.stringify(ee.Dictionary.fromLists(ee.List(legendList.map(function(s){return s.replaceAll(' ','_').toLowerCase()})),ee.List(nameList)).getInfo()))
       var colorList = Object.values(lc2Dict).map(function(v){return v.color});
       var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
 
@@ -141,7 +141,7 @@ function runUSFS(){
       }
       if(startYear <firstYearTreeStack){startYearTreeStack = firstYearTreeStack}
       if(endYear > lastYearTreeStack){endYearTreeStack = lastYearTreeStack}
-      console.log(startYearTreeStack);console.log(endYearTreeStack)
+      // console.log(startYearTreeStack);console.log(endYearTreeStack)
       var possibleYears = ee.List.sequence(startYearTreeStack,endYearTreeStack).map(function(yr){return ee.String('Tree_').cat(ee.Number(yr).int16().format())});
      
       var treeMaskStack = ee.Image(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreemask);
@@ -1867,7 +1867,10 @@ var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
 function runLT(){
   // var startYear = 1984;
   // var endYear   = 2019;
-  
+  startYear = parseInt(urlParams.startYear);
+  endYear = parseInt(urlParams.endYear);
+  startJulian = parseInt(urlParams.startJulian);
+  endJulian = parseInt(urlParams.endJulian);
   /////////////////////////////////////////////////////////////////
   //Function for only adding common indices
   function simpleAddIndices(in_image){
@@ -2673,12 +2676,15 @@ function getSelectLayers(){
   var wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
   var wilderness = wdpa.filter(ee.Filter.eq('DESIG', 'Wilderness'));
   var counties = ee.FeatureCollection('TIGER/2018/Counties');
+  var tiles  = ee.FeatureCollection("users/jdreynolds33/Zones_New");
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
   var ecoregions_subsections = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections');
   ecoregions_subsections = ecoregions_subsections.select(['MAP_UNIT_N'], ['NAME'], true);
   var ecoregions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions');
   ecoregions = ecoregions.select(['SECTION'],['NAME'])
   var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
+
+  // Map2.addSelectLayer(tiles,{strokeColor:'BB0',layerType:'geeVectorImage'},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
 
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
@@ -2926,9 +2932,9 @@ var landcoverClassQueryDict = {};
     var g = yrs.map(function(yr){return rnrThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
     g = ee.ImageCollection(g);
     // print(c.getInfo())
-    Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    // Map2.addLayer(l.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    Map2.addLayer(dndThresh.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    // Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    Map2.addLayer(l.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+    // Map2.addLayer(dndThresh.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
     // Map2.addTimeLapse(rnrThresh.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
     // Map2.addTimeLapse(dndThresh.limit(5).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
     // Map2.addTimeLapse(rnrThresh.limit(5).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')

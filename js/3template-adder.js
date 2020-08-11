@@ -135,12 +135,28 @@ if(mode === 'LCMS'){
   
 }else if(mode === 'LT'){
   canExport = true;
+  var minYear = startYear;var maxYear = endYear;
+  if(urlParams.startYear == null || urlParams.startYear == undefined){
+      urlParams.startYear = startYear;// = parseInt(urlParams.startYear);
+  }
+  if(urlParams.endYear == null || urlParams.endYear == undefined){
+     urlParams.endYear = endYear;// = parseInt(urlParams.endYear);
+  }
+  if(urlParams.startJulian == null || urlParams.startJulian == undefined){
+      urlParams.startJulian = 190;// = parseInt(urlParams.startYear);
+  }
+  if(urlParams.endJulian == null || urlParams.endJulian == undefined){
+     urlParams.endJulian = 250;// = parseInt(urlParams.endYear);
+  }
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort '+mode+' products');
   
-  addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'')
-  addDualRangeSlider('comp-params-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of '+mode+' data to include.')
+  addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'');
   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-  addDualRangeSlider('comp-params-div','Choose analysis date range:','startJulian','endJulian',1, 365, startJulian, endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
+  addDualRangeSlider('comp-params-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider2','null','Years of '+mode+' data to include.')
+  
+  // addDualRangeSlider('comp-params-div','Choose analysis year range:','startYear','endYear',minYear, maxYear, startYear, endYear, 1,'analysis-year-slider','null','Years of '+mode+' data to include.')
+  
+  addDualRangeSlider('comp-params-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
     addCheckboxes('comp-params-div','which-sensor-method-radio','Choose which Landsat platforms to include','whichPlatforms',{"L5":true,"L7-SLC-On":true,'L7-SLC-Off':false,'L8':true});
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);

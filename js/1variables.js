@@ -1,5 +1,39 @@
 /*List global variables in this script for use throughout the viewers*/
-
+var urlParamsObj = {};
+var urlParams = new Proxy(urlParamsObj, {
+  set: function (target, key, value) {
+      // console.log(`${key} set to ${value}`);
+      //
+      target[key] = value;
+      // console.log(urlParams);
+       var deepLink = [window.location.pathname,constructUrlSearch()].join('')
+            // console.log(deepLink)
+            var obj = { Title: 'test', Url: deepLink };
+            history.pushState(obj, obj.Title, obj.Url);
+      return true;
+  }
+});
+function parseUrlSearch(){
+  console.log(window.location.search == '')
+    var urlParamsStr = window.location.search;
+   
+    if(urlParamsStr !== ''){
+      urlParamsStr = urlParamsStr.split('?')[1].split('&');
+    
+    urlParamsStr.map(function(str){
+        urlParams[str.split('=')[0]] = str.split('=')[1]
+    })}
+    
+   
+}
+function constructUrlSearch(){
+  var outURL = '?';
+  Object.keys(urlParams).map(function(p){
+    outURL += p+'='+urlParams[p] + '&'
+  })
+  outURL = outURL.slice(0,outURL.length-1)
+  return outURL
+}
 /*Load global variables*/
 var cachedSettingskey = 'settings';
 var startYear = 1985;
@@ -8,6 +42,7 @@ var startJulian = 153;//190;
 var endJulian = 274;//250;
 var layerObj = null;
 var queryObj = {};var timeLapseObj = {};
+parseUrlSearch()
 var initialCenter = [37.5334105816903,-105.6787109375];
 var initialZoomLevel = 5;
 var studyAreaSpecificPage = false;
