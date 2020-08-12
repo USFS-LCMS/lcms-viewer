@@ -145,6 +145,8 @@ if(mode === 'LCMS'){
   
 }else if(mode === 'LT'){
   canExport = true;
+  startYear = 1984;endYear = 2020;startJulian = 152;endJulian = 273;
+
   var minYear = startYear;var maxYear = endYear;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
       urlParams.startYear = startYear;// = parseInt(urlParams.startYear);
@@ -153,10 +155,10 @@ if(mode === 'LCMS'){
      urlParams.endYear = endYear;// = parseInt(urlParams.endYear);
   }
   if(urlParams.startJulian == null || urlParams.startJulian == undefined){
-      urlParams.startJulian = 190;// = parseInt(urlParams.startYear);
+      urlParams.startJulian = startJulian;// = parseInt(urlParams.startYear);
   }
   if(urlParams.endJulian == null || urlParams.endJulian == undefined){
-     urlParams.endJulian = 250;// = parseInt(urlParams.endYear);
+     urlParams.endJulian = endJulian;// = parseInt(urlParams.endYear);
   }
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort '+mode+' products');
   
