@@ -1887,7 +1887,7 @@ var resetStudyArea = function(whichOne){
     setUpRangeSlider('lowerThresholdSlowLoss',0,1,lowerThresholdSlowLoss,0.05,'slow-loss-threshold-slider','null');
     setUpRangeSlider('lowerThresholdFastLoss',0,1,lowerThresholdFastLoss,0.05,'fast-loss-threshold-slider','null');
     
-    setUpDualRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
+    setUpDualRangeSlider('urlParams.startYear','urlParams.endYear',minYear,maxYear,urlParams.startYear,urlParams.endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
 
     var coords = studyAreaDict[whichOne].center;
     studyAreaName = studyAreaDict[whichOne].name;
@@ -2391,7 +2391,7 @@ function initialize() {
         console.log('zoom changed')
         updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
     })
-    
+
     //Keep track of map bounds for eeBoundsPoly object 
     google.maps.event.addListener(map,'bounds_changed',function(){
       zoom = map.getZoom();

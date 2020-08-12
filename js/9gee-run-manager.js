@@ -8,6 +8,8 @@ var warningShown = false;
 
 //------------Main Function to Run National Forest Products------------------------------------------------
 function runUSFS(){
+    startYear = parseInt(urlParams.startYear);
+    endYear = parseInt(urlParams.endYear);
     queryClassDict = {};
     var years = ee.List.sequence(startYear,endYear).getInfo();
 
@@ -1028,7 +1030,8 @@ function runUSFS(){
 //------------------------------Main Function to Run CONUS Product----------------------------------------------------------
 
 function runCONUS(){
-  
+  startYear = parseInt(urlParams.startYear);
+  endYear = parseInt(urlParams.endYear);
   getLCMSVariables();
   queryClassDict = {};
   setupDownloads(studyAreaName);

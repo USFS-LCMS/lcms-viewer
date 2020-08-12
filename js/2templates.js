@@ -63,7 +63,7 @@ var staticTemplates = {
 	map:`<div onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
-	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('collapse')"></div>`,
+	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = 'toggleSidebar()'></div>`,
 
     sidebarLeftContainer: `
 						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >

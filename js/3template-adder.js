@@ -56,7 +56,16 @@ function toggleAdvancedOff(){
 /////////////////////////////////////////////////////////////////////
 /*Start adding elements to page based on chosen mode*/
 if(mode === 'LCMS'){
-
+  var minYear = startYear;var maxYear = endYear;
+  // console.log(urlParams)  
+  if(urlParams.startYear == null || urlParams.startYear == undefined){
+      urlParams.startYear = startYear;
+  }
+  if(urlParams.endYear == null || urlParams.endYear == undefined){
+     urlParams.endYear = endYear;
+  }
+  // console.log(urlParams)
+ 
   /*Construct panes in left sidebar*/
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
@@ -73,7 +82,8 @@ if(mode === 'LCMS'){
   //Construct parameters form
   addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
-  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
+
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
 
   $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>
                                           <div id='threshold-container' style="display:none;width:100%"></div>
@@ -153,8 +163,6 @@ if(mode === 'LCMS'){
   addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'');
   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
   addDualRangeSlider('comp-params-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider2','null','Years of '+mode+' data to include.')
-  
-  // addDualRangeSlider('comp-params-div','Choose analysis year range:','startYear','endYear',minYear, maxYear, startYear, endYear, 1,'analysis-year-slider','null','Years of '+mode+' data to include.')
   
   addDualRangeSlider('comp-params-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
@@ -341,5 +349,20 @@ if(canExport){
    }
 }
 
+if(urlParams.showSidebar === undefined || urlParams.showSidebar === null){
+  urlParams.showSidebar = 'true'
+}
+
+function toggleSidebar(){
+  $('#sidebar-left').toggle('collapse');
+  if(urlParams.showSidebar === 'false'){
+    urlParams.showSidebar = 'true'
+  }else{
+    urlParams.showSidebar = 'false'
+  }
+};
+if(urlParams.showSidebar === 'false'){
+  $('#sidebar-left').hide();
+}
 
 
