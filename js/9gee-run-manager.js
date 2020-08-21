@@ -10,6 +10,7 @@ var warningShown = false;
 function runUSFS(){
     startYear = parseInt(urlParams.startYear);
     endYear = parseInt(urlParams.endYear);
+    analysisMode = urlParams.analysisMode;
     queryClassDict = {};
     var years = ee.List.sequence(startYear,endYear).getInfo();
 
@@ -503,22 +504,6 @@ function runUSFS(){
     // Map2.addLayer(subtleGain,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Subtle Gain')
     // Map2.addLayer(trend,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Trend')
     
-    if(analysisMode === 'advanced'){
-      Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red',years:years},'Landsat Composite Time Lapse',false);
-      var lastYearAdded = false;
-      // ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
-      //   var c = ee.Image(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-      //   Map2.addLayer(c.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+yr.toString(),false)
-      //   if(yr === endYear){lastYearAdded = true}
-      // })
-
-      // if(lastYearAdded === false){
-      //   // var c1 = ee.Image(composites.first());
-      //   var c2 = ee.Image(composites.sort('system:time_start',false).first());
-      //   // Map2.addLayer(c1,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+startYear.toString(),false)
-      //   Map2.addLayer(c2.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+endYear.toString(),false)
-      // }
-    }
 
 
     //----------Other Housekeeping & Prep for adding layers
@@ -740,6 +725,22 @@ function runUSFS(){
       }
     }
     
+    if(analysisMode === 'advanced'){
+      Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red',years:years},'Landsat Composite Time Lapse',false);
+      var lastYearAdded = false;
+      // ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
+      //   var c = ee.Image(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+      //   Map2.addLayer(c.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+yr.toString(),false)
+      //   if(yr === endYear){lastYearAdded = true}
+      // })
+
+      // if(lastYearAdded === false){
+      //   // var c1 = ee.Image(composites.first());
+      //   var c2 = ee.Image(composites.sort('system:time_start',false).first());
+      //   // Map2.addLayer(c1,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+startYear.toString(),false)
+      //   Map2.addLayer(c2.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+endYear.toString(),false)
+      // }
+    }
         Map2.addTimeLapse(lossGain,{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'},years:years},'Loss/Gain Time Lapse',false); 
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       Map2.addTimeLapse(landcoverMaxByYears,{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup,years:years},'Land Cover Time Lapse',false);
@@ -1032,6 +1033,7 @@ function runUSFS(){
 function runCONUS(){
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
+  analysisMode = urlParams.analysisMode;
   getLCMSVariables();
   queryClassDict = {};
   setupDownloads(studyAreaName);

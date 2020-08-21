@@ -336,27 +336,27 @@ var staticTemplates = {
                                         <div class = 'dropdown-divider'></div>`,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
         shareButtons : `<!-- LinkedIn -->
-                        <a title = 'Share on LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${document.URL}" target="_blank">
+                        <a title = 'Share on LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${pageUrl}" target="_blank">
                             <img class = 'image-icon-bar' src="./images/linkedin.png" alt="LinkedIn" />
                         </a>
                         
                         <!-- Email -->
-                        <a title = 'Share via E-mail' href="mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ${document.URL}">
+                        <a title = 'Share via E-mail' href="mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ${pageUrl}">
                             <img class = 'image-icon-bar' src="./images/email.png" alt="Email" />
                         </a>
 
                         <!-- Reddit -->
-                        <a title = 'Share on Reddit' href="http://reddit.com/submit?url=${document.URL}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
+                        <a title = 'Share on Reddit' href="http://reddit.com/submit?url=${pageUrl}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
                             <img class = 'image-icon-bar' src="./images/reddit.png" alt="Reddit" />
                         </a>
 
                          <!-- Twitter -->
-                        <a title = 'Share on Twitter' href="https://twitter.com/share?url=${document.URL}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
+                        <a title = 'Share on Twitter' href="https://twitter.com/share?url=${pageUrl}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
                             <img class = 'image-icon-bar' src="./images/twitter.png" alt="Twitter" />
                         </a>
 
                         <!-- Facebook -->
-                        <a  title = 'Share on Facebook' href="http://www.facebook.com/sharer.php?u=${document.URL}" target="_blank">
+                        <a  title = 'Share on Facebook' href="http://www.facebook.com/sharer.php?u=${pageUrl}" target="_blank">
                             <img class = 'image-icon-bar' src="./images/facebook.png" alt="Facebook" />
                         </a>
                          
@@ -1161,6 +1161,7 @@ function addLayer(layer){
     layerObj[id] = layer;
     layer.wasJittered = false;
     layer.loading = false;
+    layer.refreshNumber = refreshNumber;
 	if(layer.visible){checked = 'checked'}
     
     if(layer.viz.isTimeLapse){

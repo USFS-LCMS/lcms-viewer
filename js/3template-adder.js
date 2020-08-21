@@ -80,7 +80,14 @@ if(mode === 'LCMS'){
   // $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
 
   //Construct parameters form
-  addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
+ 
+  if(['standard','advanced'].indexOf(urlParams.analysisMode) === -1){
+    urlParams.analysisMode = 'standard'
+  }
+  var tAnalysisMode = urlParams.analysisMode;
+  addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','urlParams.analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
+
+  urlParams.analysisMode = tAnalysisMode ;
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
 
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
@@ -119,6 +126,10 @@ if(mode === 'LCMS'){
 
   $('#download-collapse-div').append(staticTemplates.downloadDiv);
   $('#support-collapse-div').append(staticTemplates.supportDiv);
+
+  if(tAnalysisMode === 'advanced'){
+    $('#analysis-mode-radio-second_toggle_label').click();
+  }
 
 }else if(mode === 'lcms-base-learner'){
   canExport = true;

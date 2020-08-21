@@ -1856,6 +1856,7 @@ function dropdownUpdateStudyArea(whichOne){
 //Function to set study area
 var resetStudyArea = function(whichOne){
     localStorage.setItem("cachedStudyAreaName",whichOne);
+    urlParams.studyAreaName = whichOne;
     $('#studyAreaDropdown').val(whichOne);
     $('#study-area-label').text(whichOne);
     console.log('changing study area');
@@ -2230,11 +2231,16 @@ function initialize() {
   //Set up caching of study area
   if(typeof(Storage) !== "undefined"){
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
-    if(cachedStudyAreaName === null || cachedStudyAreaName === undefined){
+    console.log(urlParams.studyAreaName)
+
+    if(urlParams.studyAreaName !== null && urlParams.studyAreaName !== undefined){
+      cachedStudyAreaName = decodeURIComponent(urlParams.studyAreaName);
+    }else if(cachedStudyAreaName === null || cachedStudyAreaName === undefined){
       cachedStudyAreaName = defaultStudyArea;
     }
     studyAreaName = studyAreaDict[cachedStudyAreaName].name;
     longStudyAreaName = cachedStudyAreaName;
+   
     $('#study-area-label').text(longStudyAreaName);
     $('#study-area-label').fitText(1.8);
     

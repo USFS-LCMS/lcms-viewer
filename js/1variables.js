@@ -1,5 +1,6 @@
 /*List global variables in this script for use throughout the viewers*/
 var urlParamsObj = {};
+var pageUrl = document.URL;
 var urlParams = new Proxy(urlParamsObj, {
   set: function (target, key, value) {
       // console.log(`${key} set to ${value}`);
@@ -10,6 +11,8 @@ var urlParams = new Proxy(urlParamsObj, {
             // console.log(deepLink)
             var obj = { Title: 'test', Url: deepLink };
             history.pushState(obj, obj.Title, obj.Url);
+            pageUrl = document.URL;
+            // console.log(pageUrl)
       return true;
   }
 });
