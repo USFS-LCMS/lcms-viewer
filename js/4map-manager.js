@@ -2199,7 +2199,10 @@ function initialize() {
       }
     ],
             {name: 'Dark Mode'});
-
+  var mapTypeIds = ['roadmap', 'satellite', 'hybrid', 'terrain'];
+  if(urlParams.mapTypeId  === undefined || urlParams.mapTypeId  === null &&urlParams.mapTypeId.indexOf(urlParams.mapTypeIds)  === -1 ){
+    urlParams.mapTypeId = 'hybrid'
+  }
   //Set up map options
   var mapOptions = {
     center: null,
@@ -2207,11 +2210,10 @@ function initialize() {
     minZoom: 2,
     disableDoubleClickZoom: true,
     // maxZoom: 15,
-    mapTypeId: google.maps.MapTypeId.HYBRID,
+    mapTypeId:urlParams.mapTypeId,
     streetViewControl: true,
     fullscreenControl: false,
-    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT,mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
-                    'dark_mode']},
+    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT,mapTypeIds: mapTypeIds},
     // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
@@ -2396,6 +2398,10 @@ function initialize() {
         var zoom = map.getZoom();
         console.log('zoom changed')
         updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
+    })
+    google.maps.event.addListener(map,'maptypeid_changed',function(){
+        console.log('map type id changed')
+        urlParams.mapTypeId = map.mapTypeId;
     })
 
     //Keep track of map bounds for eeBoundsPoly object 
