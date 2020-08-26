@@ -1831,10 +1831,13 @@ function addLayer(layer){
 	}
 }
 
-function TweetThis(preURL,postURL,openInNewTab){
+function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
     updatePageUrl();
     if(openInNewTab === undefined || openInNewTab === null){
         openInNewTab = false;
+    };
+    if(showMessageBox === undefined || showMessageBox === null){
+        showMessageBox = true;
     };
     if(preURL === undefined || preURL === null){
         preURL = '';
@@ -1854,7 +1857,7 @@ function TweetThis(preURL,postURL,openInNewTab){
             if(openInNewTab){
                var win = window.open(fullURL, '_blank');
                win.focus(); 
-            }else{
+            }else if(showMessageBox){
                 var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
                                 <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white"></button>
                                 <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:70%;" class = "form-control mx-1">
@@ -1868,9 +1871,10 @@ function TweetThis(preURL,postURL,openInNewTab){
                 $('#shareLinkMessageBox').append(staticTemplates.shareButtons);
 
                 }
-               setUrl(fullURL);
+               
 
             }
+            setUrl(fullURL);
             
         }
     );
