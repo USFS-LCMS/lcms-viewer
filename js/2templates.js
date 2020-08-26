@@ -118,8 +118,12 @@ var staticTemplates = {
 			    `,
 	placesSearchDiv:`<div class="input-group px-4 pb-2 text-center"">
 			            <div class="input-group-prepend">
+
+
                             <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-map-marker text-black "></i></button>
-	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
+	    					<button onclick = 'TweetThis()' title = 'Click to produce unique share link' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-share-alt text-black "></i></button>
+                            
+                            <span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
 
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
@@ -335,31 +339,28 @@ var staticTemplates = {
                                         <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
                                         <div class = 'dropdown-divider'></div>`,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
-        shareButtons : `<!-- LinkedIn -->
-                        <a title = 'Share on LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${pageUrl}" target="_blank">
-                            <img class = 'image-icon-bar' src="./images/linkedin.png" alt="LinkedIn" />
-                        </a>
+        shareButtons : `    
                         
                         <!-- Email -->
-                        <a title = 'Share via E-mail' href="mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ${pageUrl}">
+                        <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
                             <img class = 'image-icon-bar' src="./images/email.png" alt="Email" />
                         </a>
 
                         <!-- Reddit -->
-                        <a title = 'Share on Reddit' href="http://reddit.com/submit?url=${pageUrl}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
+                        <a title = 'Share on Reddit' onclick = 'TweetThis("http://reddit.com/submit?url=","&amp;title=USDA Forest Service Landscape Change Monitoring System",true)' >
                             <img class = 'image-icon-bar' src="./images/reddit.png" alt="Reddit" />
                         </a>
 
                          <!-- Twitter -->
-                        <a title = 'Share on Twitter' href="https://twitter.com/share?url=${pageUrl}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
+                        <a title = 'Share on Twitter' onclick = 'TweetThis("https://twitter.com/share?url=","&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS",true)' >
                             <img class = 'image-icon-bar' src="./images/twitter.png" alt="Twitter" />
                         </a>
 
                         <!-- Facebook -->
-                        <a  title = 'Share on Facebook' href="http://www.facebook.com/sharer.php?u=${pageUrl}" target="_blank">
+                        <a  title = 'Share on Facebook' onclick = 'TweetThis("http://www.facebook.com/sharer.php?u=","",true)' >
                             <img class = 'image-icon-bar' src="./images/facebook.png" alt="Facebook" />
                         </a>
-                         
+                            
                         
                         `
 
@@ -1830,3 +1831,58 @@ function addLayer(layer){
 	}
 }
 
+function TweetThis(preURL,postURL,openInNewTab){
+    updatePageUrl();
+    if(openInNewTab === undefined || openInNewTab === null){
+        openInNewTab = false;
+    };
+    if(preURL === undefined || preURL === null){
+        preURL = '';
+    };
+    if(postURL === undefined || postURL === null){
+        postURL = '';
+    }
+    $.get(
+        "http://tinyurl.com/api-create.php",
+        {url: pageUrl},
+        function(tinyURL){
+            var key = tinyURL.split('https://tinyurl.com/')[1];
+            var shareURL = pageUrl.split('?')[0] + '?id='+key;
+            var fullURL = preURL+shareURL+postURL ;
+
+            
+            if(openInNewTab){
+               var win = window.open(fullURL, '_blank');
+               win.focus(); 
+            }else{
+                var message = `<div class="input-group-prepend">
+                                <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0 fa fa-copy btn input-group-text bg-white"></button>
+                                <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:90%;" class = "form-control">
+                                
+                                
+                               </div>
+                               <div id = 'copiedMessageBox'</div>`
+               showMessage('Share link',message); 
+
+            }
+            
+        }
+    );
+}
+function copyText(id,messageBoxId){
+     /* Get the text field */
+  var copyText = document.getElementById(id);
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+    /* Alert the copied text */
+  if(messageBoxId !== null && messageBoxId !== undefined){
+    $('#'+messageBoxId).html("Copied text to clipboard")
+  }
+ 
+}

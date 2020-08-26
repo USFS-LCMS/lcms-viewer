@@ -1,23 +1,34 @@
 /*List global variables in this script for use throughout the viewers*/
 var urlParamsObj = {};
 var pageUrl = document.URL;
-var urlParams = new Proxy(urlParamsObj, {
-  set: function (target, key, value) {
-      // console.log(`${key} set to ${value}`);
-      //
-      target[key] = value;
-      // console.log(urlParams);
-       var deepLink = [window.location.pathname,constructUrlSearch()].join('')
-            // console.log(deepLink)
-            var obj = { Title: 'test', Url: deepLink };
-            history.pushState(obj, obj.Title, obj.Url);
-            pageUrl = document.URL;
-            // console.log(pageUrl)
-      return true;
-  }
-});
+var tinyURL = '';
+var urlParams = {};
+function eliminateSearchUrl(){
+  
+  var obj = { Title: 'test', Url: window.location.protocol + "//" + window.location.host  + window.location.pathname };
+    history.pushState(obj, obj.Title, obj.Url);
+}
+function updatePageUrl(){
+  pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch();
+}
+// new Proxy(urlParamsObj, {
+//   set: function (target, key, value) {
+//       // console.log(`${key} set to ${value}`);
+//       //
+//       target[key] = value;
+//       // console.log(urlParams);
+//        // var deepLink = [window.location.pathname,constructUrlSearch()].join('');
+//        pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch()
+//             // console.log(deepLink)
+//             // var obj = { Title: 'test', Url: deepLink };
+//             // history.pushState(obj, obj.Title, obj.Url);
+//             // pageUrl = document.URL;
+//             // console.log(pageUrl)
+//       return true;
+//   }
+// }); 
 function parseUrlSearch(){
-  console.log(window.location.search == '')
+  // console.log(window.location.search == '')
     var urlParamsStr = window.location.search;
    
     if(urlParamsStr !== ''){
@@ -26,7 +37,12 @@ function parseUrlSearch(){
     urlParamsStr.map(function(str){
         urlParams[str.split('=')[0]] = str.split('=')[1]
     })}
-    
+    if(urlParams.id !== undefined){
+      window.open("https://tinyurl.com/"+urlParams.id,"_self")
+    }
+    else{
+      eliminateSearchUrl();
+    }
    
 }
 function constructUrlSearch(){
