@@ -121,7 +121,7 @@ var staticTemplates = {
 
 
                             <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-map-marker text-black "></i></button>
-	    					<button onclick = 'TweetThis()' title = 'Click to produce unique share link' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-share-alt text-black "></i></button>
+	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-share-alt teal "></i></button>
                             
                             <span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
 	  					</div>
@@ -1855,20 +1855,27 @@ function TweetThis(preURL,postURL,openInNewTab){
                var win = window.open(fullURL, '_blank');
                win.focus(); 
             }else{
-                var message = `<div class="input-group-prepend">
-                                <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0 fa fa-copy btn input-group-text bg-white"></button>
-                                <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:90%;" class = "form-control">
+                var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
+                                <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white"></button>
+                                <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:70%;" class = "form-control mx-1">
                                 
                                 
                                </div>
-                               <div id = 'copiedMessageBox'</div>`
+                               <div id = 'copiedMessageBox' class = 'pl-4'</div>
+                               `
                showMessage('Share link',message); 
+               if(mode !== 'geeViz'){
+                $('#shareLinkMessageBox').append(staticTemplates.shareButtons);
+
+                }
+               setUrl(fullURL);
 
             }
             
         }
     );
 }
+//Adapted from W3 Schools
 function copyText(id,messageBoxId){
      /* Get the text field */
   var copyText = document.getElementById(id);

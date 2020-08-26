@@ -3,10 +3,12 @@ var urlParamsObj = {};
 var pageUrl = document.URL;
 var tinyURL = '';
 var urlParams = {};
+function setUrl(url){
+  var obj = { Title: 'test', Url: url };
+  history.pushState(obj, obj.Title, obj.Url);
+}
 function eliminateSearchUrl(){
-  
-  var obj = { Title: 'test', Url: window.location.protocol + "//" + window.location.host  + window.location.pathname };
-    history.pushState(obj, obj.Title, obj.Url);
+  setUrl(window.location.protocol + "//" + window.location.host  + window.location.pathname)
 }
 function updatePageUrl(){
   pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch();
