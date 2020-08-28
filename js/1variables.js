@@ -7,8 +7,11 @@ function setUrl(url){
   var obj = { Title: 'test', Url: url };
   history.pushState(obj, obj.Title, obj.Url);
 }
+function baseUrl(){
+  return window.location.protocol + "//" + window.location.host  + window.location.pathname
+}
 function eliminateSearchUrl(){
-  setUrl(window.location.protocol + "//" + window.location.host  + window.location.pathname)
+  setUrl(baseUrl())
 }
 function updatePageUrl(){
   pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch();
@@ -111,10 +114,20 @@ function parseUrlSearch(){
     if(urlParams.id !== undefined){
       
       window.open("https://tinyurl.com/"+urlParams.id,"_self");
-
+       if(typeof(Storage) !== "undefined"){
+        localStorage.setItem("cachedID",urlParams.id);
+      }
     }
     else{
-      TweetThis(null,null,false,false);
+      // TweetThis(null,null,false,false);
+      if(typeof(Storage) !== "undefined"){
+        var id = localStorage.getItem("cachedID");
+        if(id !== null && id !== undefined && id !== 'null'){
+          setUrl(baseUrl() + '?id='+id);
+          localStorage.setItem("cachedID",null)
+        }
+        
+      }
     }
    
 }
