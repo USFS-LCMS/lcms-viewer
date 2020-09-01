@@ -47,7 +47,7 @@ function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
         postURL = '';
     }
     $.get(
-        "http://tinyurl.com/api-create.php",
+        "https://tinyurl.com/api-create.php",
         {url: pageUrl},
         function(tinyURL){
             var key = tinyURL.split('https://tinyurl.com/')[1];
