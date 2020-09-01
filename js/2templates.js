@@ -1342,7 +1342,7 @@ function addLayer(layer){
         }
             
 	}
-    function turnOffAll(){
+    function turnOffAll(){  
         if(layer.visible){
             $('#'+visibleID).click();
         }
@@ -1390,6 +1390,8 @@ function addLayer(layer){
         $('#'+visibleLabelID).addClass('vector-layer-checkbox');
         $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
         $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+        $('.vector-layer-checkbox').on('turnOffAllVectors',function(){turnOffAll()});
+        $('.vector-layer-checkbox').on('turnOnAllVectors',function(){turnOnAll()});
     }
     //Handle different object types
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection'){
@@ -1831,69 +1833,4 @@ function addLayer(layer){
 	}
 }
 
-function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
-    updatePageUrl();
-    if(openInNewTab === undefined || openInNewTab === null){
-        openInNewTab = false;
-    };
-    if(showMessageBox === undefined || showMessageBox === null){
-        showMessageBox = true;
-    };
-    if(preURL === undefined || preURL === null){
-        preURL = '';
-    };
-    if(postURL === undefined || postURL === null){
-        postURL = '';
-    }
-    $.get(
-        "http://tinyurl.com/api-create.php",
-        {url: pageUrl},
-        function(tinyURL){
-            var key = tinyURL.split('https://tinyurl.com/')[1];
-            var shareURL = pageUrl.split('?')[0] + '?id='+key;
-            var fullURL = preURL+shareURL+postURL ;
 
-            
-            if(openInNewTab){
-               var win = window.open(fullURL, '_blank');
-               win.focus(); 
-            }else if(showMessageBox){
-                var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
-                                <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white"></button>
-                                <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:70%;" class = "form-control mx-1">
-                                
-                                
-                               </div>
-                               <div id = 'copiedMessageBox' class = 'pl-4'</div>
-                               `
-               showMessage('Share link',message); 
-               if(mode !== 'geeViz'){
-                $('#shareLinkMessageBox').append(staticTemplates.shareButtons);
-
-                }
-               
-
-            }
-            setUrl(fullURL);
-            
-        }
-    );
-}
-//Adapted from W3 Schools
-function copyText(id,messageBoxId){
-     /* Get the text field */
-  var copyText = document.getElementById(id);
-
-  /* Select the text field */
-  copyText.select();
-  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-
-  /* Copy the text inside the text field */
-  document.execCommand("copy");
-
-    /* Alert the copied text */
-  if(messageBoxId !== null && messageBoxId !== undefined){
-    $('#'+messageBoxId).html("Copied text to clipboard")
-  }
- 
-}
