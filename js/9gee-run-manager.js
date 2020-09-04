@@ -2774,8 +2774,16 @@ var lossYear = lcms.map(function(img){
   }).max()
 
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
-Map2.addLayer(lossYear,{min:startYear,max:endYear,palette:lossYearPalette},'Loss Year')
-pixelChartCollections['test'] = {'label':'Test','collection':joined,'colors':['0F0','FF0']}
+// Map2.addLayer(lossYear,{min:startYear,max:endYear,palette:lossYearPalette},'Loss Year')
+// pixelChartCollections['test'] = {'label':'Test','collection':joined,'colors':['0F0','FF0']}
+var ccdcImg = ee.Image('users/iwhousman/test/ChangeCollection/CCDC-Test3');
+Map2.addLayer(ccdcImg);
+var t  = ee.Image(ee.Array([[1,2,3],[4,5,6]]));
+console.log(t.getInfo());
+Map2.addLayer(t);
+// Map2.addLayer(lossYear)
+// console.log(lossYear.arrayDimensions())
+// console.log(lossYear.getInfo().bands[0].dimensions)
 // populatePixelChartDropdown();
 // Map2.addTimeLapse(tcc,{min:0,max:100,palette:palettes.crameri.bamako[50].reverse()},'TCC Time Lapse')
 //   // Map2.addLayer(ee.Image(1).clip(eeBoundsPoly),{},'Test Image',false);

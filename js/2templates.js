@@ -120,10 +120,10 @@ var staticTemplates = {
 			            <div class="input-group-prepend">
 
 
-                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-map-marker text-black "></i></button>
-	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-share-alt teal "></i></button>
+                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
+	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="share-button"><i class="fa fa-share-alt teal "></i></button>
                             
-                            <span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
+                            <span class="input-group-text bg-white search-box" id="search-icon"><i class="fa fa-search text-black "></i></span>
 	  					</div>
 
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
@@ -1706,13 +1706,24 @@ function addLayer(layer){
             }
         }
         //Asynchronous wrapper function to get GEE map service
+        layer.mapServiceTryNumber = 0;
         function getGEEMapService(){
             // layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
-            layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
+            layer.item.getMap(layer.viz,function(eeLayer){
+                if(eeLayer === undefined && layer.mapServiceTryNumber <=1){
+                    queryObj[queryID].queryItem = layer.item;
+                    layer.item = layer.item.visualize();
+                        getGEEMapService();
+                }else{
+                    geeAltService(eeLayer);
+                }  
+            });
+
             // layer.item.getMap(layer.viz,function(eeLayer){
                 // console.log(eeLayer)
                 // console.log(ee.data.getTileUrl(eeLayer))
             // })
+            layer.mapServiceTryNumber++;
         };
         getGEEMapService();
 

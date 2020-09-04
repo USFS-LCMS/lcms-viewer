@@ -7,10 +7,7 @@ $('body').append(staticTemplates.sidebarLeftContainer);
 
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
-if(mode !== 'geeViz'){
-  $('#shareLinkMessageBox').append(staticTemplates.shareButtons);
 
-}
 $('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
@@ -320,6 +317,7 @@ addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible M
 // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
 if(mode === 'geeViz'){
   $('#pixel-chart-label').remove();
+  $('#share-button').remove();
 }
 
 if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'TEST' || mode === 'lcms-base-learner' || mode === 'FHP'){
