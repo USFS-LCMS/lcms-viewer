@@ -1340,14 +1340,16 @@ function runCONUS(){
 function runBaseLearner(){
  // var startYear = 1984;
 // var endYear = 2019;
+var startYear = parseInt(urlParams.startYear);
+var endYear = parseInt(urlParams.endYear);
 
 var transform = [30,0,-2361915.0,0,-30,3177735.0];
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
-var lossThresh  = lossMagThresh *-10000;//2000;
-var gainThresh = gainMagThresh *10000;//2000;
+var lossThresh  = parseFloat(urlParams.lossMagThresh) *-10000;//2000;
+var gainThresh = parseFloat(urlParams.gainMagThresh) *10000;//2000;
 
 var crs  = 'EPSG:5070';
 var indexName = 'NBR';
@@ -1429,10 +1431,11 @@ function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fitte
   return out
 }
 
-Object.keys(whichIndices).map(function(k){
+Object.keys(whichIndices2).map(function(k){
   var indexName = k;
-  console.log(indexName);
-  if(whichIndices[k]){
+  
+  if(whichIndices2[k]){
+    console.log(indexName); 
     var ltCONUST = lt.filter(ee.Filter.eq('band',indexName)).mosaic();
 
     var lossGainCONUSLT = getLossGainLT(ltCONUST,startYear,endYear,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh);
