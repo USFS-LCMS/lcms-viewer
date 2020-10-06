@@ -97,6 +97,7 @@ function runUSFS(){
       
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
+
       var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
       var legendList = Object.values(lc2Dict).map(function(v){return v.legendName}); 
       // console.log(JSON.stringify(ee.Dictionary.fromLists(ee.List(legendList.map(function(s){return s.replaceAll(' ','_').toLowerCase()})),ee.List(nameList)).getInfo()))
@@ -110,6 +111,13 @@ function runUSFS(){
       Object.keys(lc2Dict).map(function(k){lc2ChartLegendDict[lc2Dict[k].legendName] = k/10.});
       Object.keys(lc2Dict).map(function(k){lc2ChartLookupDict[k/10.] = lc2Dict[k].legendName});
 
+     // var tDict = JSON.parse('{"Trees":"005e00","Trees/Shrubs Mix":"008000","Trees/Grass Mix":"b3ff1a","Trees/Barren Mix":"99ff99","Shrubs":"e68a00","Shrubs/Grass Mix":"ffad33","Shrubs/Barren Mix":"ffe0b3","Grass":"FFFF00","Grass/Barren Mix":"AA7700","Barren or Impervious":"d3bf9b","Snow/Ice":"ffffff","Water":"4780f3"}')
+     // var ttDictList = ['Trees','Shrubs','Grass','Barren or Impervious','Snow/Ice','Water']
+     // var ttDict = {};
+     // ttDictList.map(k => ttDict[k] = tDict[k]);
+     // console.log(ttDict)
+     //  Map2.addLayer(ee.Image(1),{addToClassLegend: true,classLegendDict:tDict},'test',true)
+     //  Map2.addLayer(ee.Image(1),{addToClassLegend: true,classLegendDict:ttDict},'test',true)
       var lc2 = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection);
      
       var landcoverByYears = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(year){
@@ -589,7 +597,15 @@ function runUSFS(){
       Map2.addLayer(landcoverMaxByYears.mode().clip(boundary).set('bounds',clientBoundary),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName,false);
     
     }else{
-      Map2.addLayer(NFSLC.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
+      // print(landcoverClassQueryDict)
+      // print(lcPalette);
+      // print(landcoverClassLegendDict)
+      // lcPalette = lcPalette.filter(i => i !== 'F0F')
+      // lcValues = lcValues.filter(i => i !== 3)
+      // lcPalette['Barren']
+      // delete landcoverClassQueryDict[3]
+      // delete landcoverClassLegendDict['Impervious']
+      Map2.addLayer(NFSLC.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName+'test',false); 
   
     }
 
@@ -1330,8 +1346,8 @@ var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
-var lossThresh  = lossMagThresh *-1000;//2000;
-var gainThresh = gainMagThresh *1000;//2000;
+var lossThresh  = lossMagThresh *-10000;//2000;
+var gainThresh = gainMagThresh *10000;//2000;
 
 var crs  = 'EPSG:5070';
 var indexName = 'NBR';
@@ -1342,8 +1358,11 @@ var gainMagPalette = 'F5DEB3,006400';
 var durPalette = 'BD1600,E2F400,0C2780';
 
 // Map: projects/LCMS/CONUS_Products/v20200120
-var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
-              
+// var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120');
+var ltCONUS = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/Base-Learners/LandTrendr-Collection-1984-2020');
+// var ltCONUS = ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7');
+var ltAK = ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection-1984-2020')
+var lt = ltCONUS.merge(ltAK);
 // var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask').translate(15,-15);
       
 // var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
@@ -1355,9 +1374,11 @@ var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
 // var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT').filter(ee.Filter.stringContains('system:index',indexName)).mosaic();
 // var ltR4  = ee.Image(ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7')
           // .filter(ee.Filter.eq('band',indexName)).first());
-var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
-  .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
-  .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+// var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
+//   .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
+//   .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites').merge(ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection'));
+
 composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
   return composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
 }))
@@ -1367,7 +1388,6 @@ composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(functi
 function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fittedPrefix,sign,lossThresh,gainThresh){
   var ltFitted = ltStack.select([fittedPrefix+'.*']).multiply(sign);
   var ltYrs = ltStack.select([yrsPrefix+'.*']);
-  
 
   var lossYearStack = ee.Image(ee.List.sequence(startSeg,endSeg).iterate(function(i,img){
     var i1 = ee.Number(i).byte().format();
@@ -1411,9 +1431,12 @@ function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fitte
 
 Object.keys(whichIndices).map(function(k){
   var indexName = k;
+  console.log(indexName);
   if(whichIndices[k]){
-    var ltCONUST = ltCONUS.filter(ee.Filter.eq('timeSeries',indexName)).mosaic();
-    var lossGainCONUSLT = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
+    var ltCONUST = lt.filter(ee.Filter.eq('band',indexName)).mosaic();
+
+    var lossGainCONUSLT = getLossGainLT(ltCONUST,startYear,endYear,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh);
+   
     Map2.addExport(lossGainCONUSLT.int16().unmask(-32768,false),'LANDTRENDR Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
     Map2.addLayer(lossGainCONUSLT.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'LANDTRENDR Loss Year '+indexName,true);
     Map2.addLayer(lossGainCONUSLT.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'LANDTRENDR Loss Mag '+indexName,false);
