@@ -57,7 +57,7 @@ var  titles = {
             title:'Storm Damage Viewer'
             }     
 }
-/////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
