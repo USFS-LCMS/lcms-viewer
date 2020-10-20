@@ -629,9 +629,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
   if(viz.years === null || viz.years === undefined){
-    console.log('start computing years')
+    console.log('start computing years');
     viz.years = item.sort('system:time_start',true).toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).getInfo();
-    console.log('done computing years')
+    console.log('done computing years');
   }
   
   //Set up time laps object entry
@@ -817,7 +817,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 /////////////////////////////////////////////////////
 //Wrapper to add an export
 function addExport(eeImage,name,res,Export,metadataParams){
-
+  
   var exportElement = {};
   if(metadataParams === null || metadataParams === undefined){
     metadataParams = {'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
@@ -1846,7 +1846,10 @@ function dropdownUpdateStudyArea(whichOne){
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
-    }else if(mode === 'lcms-base-learner'){
+    }else if( mode === 'STORM'){
+      run  = runStorm;
+    }
+    else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
     }
       else if(studyAreaName === 'CONUS'){
@@ -2446,6 +2449,8 @@ function initialize() {
         run = runFHP;
       }else if(mode === 'geeViz'){
         run = runGeeViz;
+      }else if( mode === 'STORM'){
+      run  = runStorm;
       }else if(mode === 'lcms-base-learner'){
         run = runBaseLearner
       }else if(studyAreaName === 'CONUS'){

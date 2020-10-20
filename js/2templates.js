@@ -49,6 +49,12 @@ var  titles = {
             centerWords: 'DATA',
             rightWords:'Viewer',
             title:'geeViz Data Viewer'
+            },
+    'STORM': {
+            leftWords: 'Storm',
+            centerWords: 'Damage',
+            rightWords:'Viewer',
+            title:'Storm Damage Viewer'
             }     
 }
 /////////////////////////////////////////////////////////////////////
