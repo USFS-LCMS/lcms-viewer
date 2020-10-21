@@ -3508,9 +3508,11 @@ function runStorm(){
     // Map.addLayer(c)
 
     c = c.map(function(img){
-      return img.addBands(GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500)).rename(['Wind','Damage']).updateMask(img.gte(windThreshold));
+      return img.addBands(GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500))
+      .addBands(hgt_array)
+      .rename(['Wind','Damage','Tree Height']).updateMask(img.gte(windThreshold));
     });
-    c  = c.map(function(img){return img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(img.get('system:index')),6,1).millis())})
+    // c  = c.map(function(img){return img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(img.get('system:index')),6,1).millis())})
    
     pixelChartCollections['basic'] = {'label':'Wind and Damage',
                                       'collection':c,
@@ -3520,22 +3522,13 @@ function runStorm(){
                                       'yAxisLabel':'Wind Speed (mph) or Damage',
                                       'simplifyDate':false}
     populatePixelChartDropdown();
-    // var cl = c.toList(100000);
-    // var iList = ee.List.sequence(0,cl.length().subtract(1));
-    // var years = iList.getInfo();
-    // cl = iList.map(function(i){
-    //   i = ee.Number(i)
-    //   var img = ee.Image(cl.get(i));
-    //   img = img.updateMask(img.select([0]).gt(windThreshold));
-
-    //   return img.set('system:time_start',ee.Date.fromYMD(i,6,1).millis())
-    // });
-    // cl = ee.ImageCollection.fromImages(cl);
     
     
     var max = c.qualityMosaic('Wind')
     // wind_array = wind_array.updateMask(wind_array.gt(windThreshold));
+
     Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' Max Wind',false);
+    Map2.addLayer(hgt_array,{min:1,max:30,legendLabelLeftAfter:'m',legendLabelRightAfter:'m',palette:palettes.crameri.bamako[50].reverse()},'LANDFIRE 2020 Tree Height (m)',false);
     //GALES Params
     //Wind speed in mps (Convert from mph to mps)
     //Height in meters
