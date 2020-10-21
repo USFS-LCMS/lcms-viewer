@@ -3527,8 +3527,9 @@ function runStorm(){
     var max = c.qualityMosaic('Wind')
     // wind_array = wind_array.updateMask(wind_array.gt(windThreshold));
 
-    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' Max Wind',false);
     Map2.addLayer(hgt_array,{min:1,max:30,legendLabelLeftAfter:'m',legendLabelRightAfter:'m',palette:palettes.crameri.bamako[50].reverse()},'LANDFIRE 2020 Tree Height (m)',false);
+    
+    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Max Wind',false);
     //GALES Params
     //Wind speed in mps (Convert from mph to mps)
     //Height in meters
@@ -3544,13 +3545,13 @@ function runStorm(){
     // var modRupture = 8500
     // GALES(wind_array.multiply(0.447), hgt_array, crown_hgt_array, spacing, modRupture);
     // var GALESOut = GALES(wind_array.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
-    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' Damage');
+    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage');
     
     // Map2.addTimeLapse(cl.select([0]),{min:75,max:160,palette:palettes.niccoli.isol[7],years:years},'Wind Time Lapse')
     // Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
-    // Map2.addExport(wind_array.int16(),name + '_'+year.toString()+'_Wind' ,30,true,{});
+    Map2.addExport(max.select([0]),name + '_'+year.toString()+'_Wind' ,30,true,{});
     
-    // Map2.addExport(GALESOut.int16(),name + '_'+year.toString()+'_Damage' ,30,true,{});
+    Map2.addExport(max.select([1]),name + '_'+year.toString()+'_Damage' ,30,true,{});
 
     // wind_array = wind_array.clip(studyArea).unmask(0,false).byte();
     // GALESOut = GALESOut.multiply(100).clip(studyArea).unmask(10001,false).int16();
