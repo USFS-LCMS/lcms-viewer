@@ -817,7 +817,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 /////////////////////////////////////////////////////
 //Wrapper to add an export
 function addExport(eeImage,name,res,Export,metadataParams){
-  
+
   var exportElement = {};
   if(metadataParams === null || metadataParams === undefined){
     metadataParams = {'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
@@ -1034,6 +1034,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 
         if(viz.legendLabelLeft !== null && viz.legendLabelLeft !== undefined){legend.min = viz.legendLabelLeft + ' ' + viz.min}
         if(viz.legendLabelRight !== null && viz.legendLabelRight !== undefined){legend.max = viz.legendLabelRight + ' ' + viz.max}
+        if(viz.legendLabelLeftAfter !== null && viz.legendLabelLeftAfter !== undefined){legend.min =  viz.min + ' '+viz.legendLabelLeftAfter }
+        if(viz.legendLabelRightAfter !== null && viz.legendLabelRightAfter !== undefined){legend.max = viz.max + ' '+ viz.legendLabelRightAfter }
         if(legend.min ==null){legend.min = 'min'};
         if(legend.max ==null){legend.max = 'max'};
     

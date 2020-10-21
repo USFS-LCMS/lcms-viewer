@@ -3508,9 +3508,10 @@ function runStorm(){
     // Map.addLayer(c)
 
     c = c.map(function(img){
-      return img.addBands(GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500)).rename(['Wind','Damage']);
+      return img.addBands(GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500)).rename(['Wind','Damage']).updateMask(img.gte(windThreshold));
     });
-    
+    c  = c.map(function(img){return img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(img.get('system:index')),6,1).millis())})
+   
     pixelChartCollections['basic'] = {'label':'Wind and Damage',
                                       'collection':c,
                                       'chartColors':chartColorsDict.coreLossGain,
@@ -3519,22 +3520,22 @@ function runStorm(){
                                       'yAxisLabel':'Wind Speed (mph) or Damage',
                                       'simplifyDate':false}
     populatePixelChartDropdown();
-    var cl = c.toList(100000);
-    var iList = ee.List.sequence(0,cl.length().subtract(1));
-    var years = iList.getInfo();
-    cl = iList.map(function(i){
-      i = ee.Number(i)
-      var img = ee.Image(cl.get(i));
-      img = img.updateMask(img.select([0]).gt(windThreshold));
+    // var cl = c.toList(100000);
+    // var iList = ee.List.sequence(0,cl.length().subtract(1));
+    // var years = iList.getInfo();
+    // cl = iList.map(function(i){
+    //   i = ee.Number(i)
+    //   var img = ee.Image(cl.get(i));
+    //   img = img.updateMask(img.select([0]).gt(windThreshold));
 
-      return img.set('system:time_start',ee.Date.fromYMD(i,6,1).millis())
-    });
-    cl = ee.ImageCollection.fromImages(cl);
+    //   return img.set('system:time_start',ee.Date.fromYMD(i,6,1).millis())
+    // });
+    // cl = ee.ImageCollection.fromImages(cl);
     
     
-    var wind_array  = ee.Image(c.select([0]).max());
-    wind_array = wind_array.updateMask(wind_array.gt(windThreshold));
-    Map2.addLayer(wind_array,{min:75,max:160,palette:palettes.niccoli.isol[7]},name+' Max Wind',false);
+    var max = c.qualityMosaic('Wind')
+    // wind_array = wind_array.updateMask(wind_array.gt(windThreshold));
+    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' Max Wind',false);
     //GALES Params
     //Wind speed in mps (Convert from mph to mps)
     //Height in meters
@@ -3549,14 +3550,14 @@ function runStorm(){
     // var spacing = 5;
     // var modRupture = 8500
     // GALES(wind_array.multiply(0.447), hgt_array, crown_hgt_array, spacing, modRupture);
-    var GALESOut = GALES(wind_array.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
-    Map2.addLayer(GALESOut,{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' Damage');
+    // var GALESOut = GALES(wind_array.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
+    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' Damage');
     
-    Map2.addTimeLapse(cl.select([0]),{min:75,max:160,palette:palettes.niccoli.isol[7],years:years},'Wind Time Lapse')
-    Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
-    Map2.addExport(wind_array.int16(),name + '_'+year.toString()+'_Wind' ,30,true,{});
+    // Map2.addTimeLapse(cl.select([0]),{min:75,max:160,palette:palettes.niccoli.isol[7],years:years},'Wind Time Lapse')
+    // Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
+    // Map2.addExport(wind_array.int16(),name + '_'+year.toString()+'_Wind' ,30,true,{});
     
-    Map2.addExport(GALESOut.int16(),name + '_'+year.toString()+'_Damage' ,30,true,{});
+    // Map2.addExport(GALESOut.int16(),name + '_'+year.toString()+'_Damage' ,30,true,{});
 
     // wind_array = wind_array.clip(studyArea).unmask(0,false).byte();
     // GALESOut = GALESOut.multiply(100).clip(studyArea).unmask(10001,false).int16();
