@@ -1,0 +1,74 @@
+10/6/2018	6:00:00 PM	17.80	-86.60	29	1006	Tropical Low
+10/6/2018	9:00:00 PM	17.95	-86.78	29	1005	Tropical Low
+10/7/2018	12:00:00 AM	18.10	-86.90	29	1004	Tropical Low
+10/7/2018	3:00:00 AM	18.24	-86.90	31	1004	Tropical Low
+10/7/2018	6:00:00 AM	18.40	-86.80	35	1004	Tropical Depression
+10/7/2018	9:00:00 AM	18.60	-86.65	37	1003	Tropical Depression
+10/7/2018	12:00:00 PM	18.80	-86.40	40	1003	Tropical Storm
+10/7/2018	3:00:00 PM	18.94	-86.03	46	1001	Tropical Storm
+10/7/2018	6:00:00 PM	19.10	-85.70	52	999	Tropical Storm
+10/7/2018	9:00:00 PM	19.38	-85.55	54	997	Tropical Storm
+10/8/2018	12:00:00 AM	19.70	-85.50	58	996	Tropical Storm
+10/8/2018	3:00:00 AM	19.94	-85.46	63	990	Tropical Storm
+10/8/2018	6:00:00 AM	20.20	-85.40	69	984	Tropical Storm
+10/8/2018	9:00:00 AM	20.53	-85.24	71	983	Tropical Storm
+10/8/2018	12:00:00 PM	20.90	-85.10	75	982	Category 1 Hurricane
+10/8/2018	3:00:00 PM	21.28	-85.07	81	979	Category 1 Hurricane
+10/8/2018	6:00:00 PM	21.70	-85.10	86	977	Category 1 Hurricane
+10/8/2018	9:00:00 PM	22.18	-85.11	92	974	Category 1 Hurricane
+10/9/2018	12:00:00 AM	22.70	-85.20	98	971	Category 2 Hurricane
+10/9/2018	3:00:00 AM	23.21	-85.48	98	972	Category 2 Hurricane
+10/9/2018	6:00:00 AM	23.70	-85.80	98	973	Category 2 Hurricane
+10/9/2018	9:00:00 AM	24.15	-86.03	100	970	Category 2 Hurricane
+10/9/2018	12:00:00 PM	24.60	-86.20	104	968	Category 2 Hurricane
+10/9/2018	3:00:00 PM	25.09	-86.32	109	964	Category 2 Hurricane
+10/9/2018	6:00:00 PM	25.60	-86.40	115	961	Category 3 Major Hurricane
+10/9/2018	9:00:00 PM	26.09	-86.46	121	956	Category 3 Major Hurricane
+10/10/2018	12:00:00 AM	26.60	-86.50	127	952	Category 3 Major Hurricane
+10/10/2018	3:00:00 AM	27.13	-86.58	132	948	Category 4 Major Hurricane
+10/10/2018	6:00:00 AM	27.70	-86.60	138	945	Category 4 Major Hurricane
+10/10/2018	9:00:00 AM	28.35	-86.52	140	939	Category 4 Major Hurricane
+10/10/2018	12:00:00 PM	29.00	-86.30	144	934	Category 4 Major Hurricane
+10/10/2018	3:00:00 PM	29.37	-85.93	153	925	Category 4 Major Hurricane
+10/10/2018	5:30:00 PM	30.00	-85.50	161	919	Category 5 Major Hurricane
+10/10/2018	6:00:00 PM	30.20	-85.40	155	920	Category 4 Major Hurricane
+10/10/2018	9:00:00 PM	31.01	-84.93	123	938	Category 3 Major Hurricane
+10/11/2018	12:00:00 AM	31.50	-84.50	92	957	Category 1 Hurricane
+10/11/2018	3:00:00 AM	32.15	-83.89	75	968	Category 1 Hurricane
+10/11/2018	6:00:00 AM	32.80	-83.20	58	979	Tropical Storm
+10/11/2018	9:00:00 AM	33.43	-82.48	54	983	Tropical Storm
+10/11/2018	12:00:00 PM	34.10	-81.70	52	987	Tropical Storm
+10/11/2018	3:00:00 PM	34.88	-80.91	52	989	Tropical Storm
+10/11/2018	6:00:00 PM	35.60	-80.00	52	991	Tropical Storm
+10/11/2018	9:00:00 PM	36.10	-78.92	54	989	Tropical Storm
+10/12/2018	12:00:00 AM	36.50	-77.70	58	988	Extratropical
+10/12/2018	3:00:00 AM	36.83	-76.50	63	985	Extratropical
+10/12/2018	6:00:00 AM	37.30	-75.00	69	983	Extratropical
+10/12/2018	9:00:00 AM	38.11	-72.94	69	981	Extratropical
+10/12/2018	12:00:00 PM	39.10	-70.60	69	980	Extratropical
+10/12/2018	3:00:00 PM	40.08	-68.36	69	978	Extratropical
+10/12/2018	6:00:00 PM	41.10	-66.10	69	977	Extratropical
+10/12/2018	9:00:00 PM	42.11	-63.89	71	976	Extratropical
+10/13/2018	12:00:00 AM	43.10	-61.50	75	975	Extratropical
+10/13/2018	3:00:00 AM	43.97	-58.80	75	975	Extratropical
+10/13/2018	6:00:00 AM	44.80	-55.70	75	975	Extratropical
+10/13/2018	9:00:00 AM	45.64	-52.08	75	975	Extratropical
+10/13/2018	12:00:00 PM	46.40	-48.20	75	975	Extratropical
+10/13/2018	3:00:00 PM	47.05	-44.45	75	975	Extratropical
+10/13/2018	6:00:00 PM	47.60	-40.70	75	975	Extratropical
+10/13/2018	9:00:00 PM	48.05	-36.86	75	975	Extratropical
+10/14/2018	12:00:00 AM	48.40	-33.10	75	975	Extratropical
+10/14/2018	3:00:00 AM	48.67	-29.44	75	975	Extratropical
+10/14/2018	6:00:00 AM	48.80	-26.10	75	975	Extratropical
+10/14/2018	9:00:00 AM	48.80	-23.20	71	975	Extratropical
+10/14/2018	12:00:00 PM	48.60	-20.70	69	975	Extratropical
+10/14/2018	3:00:00 PM	48.15	-18.36	66	976	Extratropical
+10/14/2018	6:00:00 PM	47.50	-16.40	63	978	Extratropical
+10/14/2018	9:00:00 PM	46.73	-14.79	63	980	Extratropical
+10/15/2018	12:00:00 AM	45.90	-13.50	63	982	Extratropical
+10/15/2018	3:00:00 AM	45.15	-12.32	60	985	Extratropical
+10/15/2018	6:00:00 AM	44.40	-11.40	58	989	Extratropical
+10/15/2018	9:00:00 AM	43.61	-10.72	48	992	Extratropical
+10/15/2018	12:00:00 PM	42.80	-10.30	40	996	Extratropical
+10/15/2018	3:00:00 PM	42.00	-10.09	40	998	Extratropical
+10/15/2018	6:00:00 PM	41.20	-10.00	40	1001	Extratropical
