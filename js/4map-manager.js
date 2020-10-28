@@ -816,6 +816,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 }
 /////////////////////////////////////////////////////
 //Wrapper to add an export
+
 function addExport(eeImage,name,res,Export,metadataParams){
 
   var exportElement = {};
@@ -847,16 +848,16 @@ function addExport(eeImage,name,res,Export,metadataParams){
   // var exportList = document.querySelector("export-list");
   $('#export-list').append(`<div class = 'input-group'>
                               <span  class="input-group-addon">
-                                <input  id = '${name}-checkbox' type="checkbox" ${checked} >
-                                <label  style = 'margin-bottom:0px;'  for='${name}-checkbox'></label>
+                                <input  id = '${name}-checkbox-${exportID}' type="checkbox" ${checked} >
+                                <label  style = 'margin-bottom:0px;'  for='${name}-checkbox-${exportID}'></label>
                               </span>
                               
-                              <input  id = '${name}-name' class="form-control export-name-input" type="text" value="${exportElement.name}" rel="txtTooltip" title = 'Change export name if needed'>
+                              <input  id = '${name}-name-${exportID}' class="form-control export-name-input" type="text" value="${exportElement.name}" rel="txtTooltip" title = 'Change export name if needed'>
                             </div>`)
-  $('#' + name + '-name').on('input', function() {
+  $('#' + name + '-name-'+exportID.toString()).on('input', function() {
     exportImageDict[exportElement.ID].name = $(this).val()
   })
-  $('#' + name + '-checkbox').on('change', function() {
+  $('#' + name + '-checkbox-'+exportID.toString()).on('change', function() {
    
     exportImageDict[exportElement.ID].shouldExport = this.checked
   })

@@ -318,23 +318,27 @@ else if(mode === 'STORM'){
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare storm outputs');
   
    $('#parameters-collapse-div').append(`
-    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a> . Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below.</label>
+    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below. <a href="./geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
     <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
     <hr>
     <label>Provide name for storm (optional):</label>
     <input rel="txtTooltip" title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm!" style='width:80%;'><hr>`)
-   addRangeSlider('parameters-collapse-div','Refinement iterations','refinementIterations',0, 5, 3, 1,'refinement-factor-slider','null',"Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations")
+   addRangeSlider('parameters-collapse-div','Refinement iterations','refinementIterations',0, 10, 5, 1,'refinement-factor-slider','null',"Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations")
    addRangeSlider('parameters-collapse-div','Max distance (km)','maxDistance',50, 500, 200, 50,'max-distance-slider','null',"Specify max distance in km from storm track to include in output")
    addRangeSlider('parameters-collapse-div','Min wind (mph)','minWind',0, 75, 30, 5,'min-wind-slider','null',"Specify min wind speed in mph to include in output")
       $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>
-      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' rel="txtTooltip" title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button><br>`);
+      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' rel="txtTooltip" title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button>
+      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' rel="txtTooltip" title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
    
     function ingestStormTrack() {
+      $('#summary-spinner').show();
           if(jQuery('#stormTrackUpload')[0].files.length > 0){
-               $('#summary-spinner').slideDown();
+               
             var fr=new FileReader(); 
             fr.onload=function(){ 
-                var rows = fr.result.split('\n'); 
+                var rows = fr.result.split('\n');
+                rows =rows.filter(row => row.split('\t').length > 5);
+                // console.log(fr.result) 
                 // console.log(rows)
                 rows = rows.map(function(row){
                   row = row.split('\t');
@@ -358,11 +362,15 @@ else if(mode === 'STORM'){
                 // rows = ee.FeatureCollection(rows).filterBounds(sa).getInfo().features;
                 // console.log(rows)
                 // Map2.addLayer(rows)
-                for(refinementIterations; refinementIterations > 0; refinementIterations--){
+                var iterations = refinementIterations;
+                while(iterations > 0 && rows.length < 1000){
                   console.log('Refining');
                   console.log(refinementIterations);
                   rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
+                  console.log(rows.length);
+                  iterations--
                 }
+                showMessage('Refinement finished','Refined '+ (refinementIterations-iterations).toString() +'/'+ refinementIterations.toString()+' iterations.\nTotal number of refined track points is: '+rows.length.toString())
                 // rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
 
                 var rowsLeft = rows.slice(0,rows.length-1);
@@ -383,11 +391,14 @@ else if(mode === 'STORM'){
                 // console.log(zipped)
                 // Map2.addLayer(rows)
                  $('#summary-spinner').slideUp();
+                 // console.log(zipped)
                 createHurricaneDamageWrapper(ee.FeatureCollection(zipped),true);
             } 
               
             fr.readAsText(jQuery('#stormTrackUpload')[0].files[0]);
-            }else{showMessage('No storm track provided','Please download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a> . Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table above.')}
+            }else{
+              $('#summary-spinner').hide();
+              showMessage('No storm track provided','Please download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a> . Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table above.')}
 
 
         } 

@@ -418,12 +418,15 @@ function exportImages(){
                 var task = getIDAndParams(exportObject['eeImage'],exportName,exportCRS,exportObject['res'],fc);
                 
                 //Start processing
-                task.start();
+                task.start(function(){
+                    meta_template_strT = '{}';
+                    cacheExport(exportName,exportName,meta_template_strT);
+                });
                 // ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
                 
                 
                 // var metadataParams = exportObject['metadataParams']
-                meta_template_strT = '{}';//meta_template_str;
+                // meta_template_strT = '{}';//meta_template_str;
 
                
                 // meta_template_strT = meta_template_strT.replaceAll('FILENAME_TITLE',exportObject['name']+nowSuffix + '.tif');
@@ -449,7 +452,7 @@ function exportImages(){
                 // meta_template_strT = meta_template_strT.replaceAll('OOB_ACCURACY',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_ACCURACY']);
                 // meta_template_strT = meta_template_strT.replaceAll('OOB_KAPPA',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_KAPPA']);
                 // meta_template_strT = meta_template_strT.replaceAll('CONFUSIONMATRIX',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_CONFUSIONMATRIX']);
-                cacheExport(exportName,exportName,meta_template_strT);
+                // cacheExport(exportName,exportName,meta_template_strT);
                 // exportMetadata(exportObject['name']+nowSuffix + '_metadata.html', meta_template_strT)
         
             }
