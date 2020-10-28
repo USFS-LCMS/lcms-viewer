@@ -316,10 +316,22 @@ else if(mode === 'STORM'){
         }
 
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare storm outputs');
-   $('#parameters-collapse-div').append(`<input type="file" name="inputfile"
-            id="inputfile">`)
-    $('#inputfile').change( function() { 
-              
+  
+   $('#parameters-collapse-div').append(`
+    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a> . Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below.</label>
+    <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
+    <hr>
+    <label>Provide name for storm (optional):</label>
+    <input rel="txtTooltip" title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm!" style='width:80%;'><hr>`)
+   addRangeSlider('parameters-collapse-div','Refinement iterations','refinementIterations',0, 5, 3, 1,'refinement-factor-slider','null',"Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations")
+   addRangeSlider('parameters-collapse-div','Max distance (km)','maxDistance',50, 500, 200, 50,'max-distance-slider','null',"Specify max distance in km from storm track to include in output")
+   addRangeSlider('parameters-collapse-div','Min wind (mph)','minWind',0, 75, 30, 5,'min-wind-slider','null',"Specify min wind speed in mph to include in output")
+      $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>
+      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' rel="txtTooltip" title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button><br>`);
+   
+    function ingestStormTrack() {
+          if(jQuery('#stormTrackUpload')[0].files.length > 0){
+               $('#summary-spinner').slideDown();
             var fr=new FileReader(); 
             fr.onload=function(){ 
                 var rows = fr.result.split('\n'); 
@@ -346,10 +358,11 @@ else if(mode === 'STORM'){
                 // rows = ee.FeatureCollection(rows).filterBounds(sa).getInfo().features;
                 // console.log(rows)
                 // Map2.addLayer(rows)
-                rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
-                rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
-                rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
-                rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
+                for(refinementIterations; refinementIterations > 0; refinementIterations--){
+                  console.log('Refining');
+                  console.log(refinementIterations);
+                  rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
+                }
                 // rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
 
                 var rowsLeft = rows.slice(0,rows.length-1);
@@ -369,85 +382,85 @@ else if(mode === 'STORM'){
                 })
                 // console.log(zipped)
                 // Map2.addLayer(rows)
+                 $('#summary-spinner').slideUp();
                 createHurricaneDamageWrapper(ee.FeatureCollection(zipped),true);
             } 
               
-            fr.readAsText(this.files[0]); 
-        }) 
+            fr.readAsText(jQuery('#stormTrackUpload')[0].files[0]);
+            }else{showMessage('No storm track provided','Please download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a> . Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table above.')}
+
+
+        } 
   //   $('#parameters-collapse-div').append(`<label>Provide storm track geoJSON:</label>
   //                                       <input rel="txtTooltip" title = 'Provide storm track geoJSON'  type="user-selected-area-name" class="form-control"  id="storm-track" placeholder="Provide storm track geoJSON" style='width:80%;'>`)
   
-  // $('#parameters-collapse-div').append(`
-  //   <label>Download storm track zipfile from <a href="https://www.nhc.noaa.gov/gis/archive_besttrack.php" target="_blank">here</a> . Unzip the zipfile and re-zip the shapefile with the "_pts.shp" ending. Then select it below and run it.</label>
-                                
-  //   <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;" title = "Download storm track from https://www.nhc.noaa.gov/gis/archive_besttrack.php">
-  //     <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrak()' rel="txtTooltip" title = 'Click to ingest .zip shapefile or .geojson storm track.'>Ingest Storm Track</button><br>`);
-  function ingestStormTrak(){
-      var months = {
-      'JAN' : '01',
-      'FEB' : '02',
-      'MAR' : '03',
-      'APR' : '04',
-      'MAY' : '05',
-      'JUN' : '06',
-      'JUL' : '07',
-      'AUG' : '08',
-      'SEP' : '09',
-      'OCT' : '10',
-      'NOV' : '11',
-      'DEC' : '12'
-      }
-    if(jQuery('#stormTrackUpload')[0].files.length > 0){
-      $('#summary-spinner').slideDown();
-      convertToGeoJSON('stormTrackUpload').done(function(converted){
+  
+  // function ingestStormTrak(){
+  //     var months = {
+  //     'JAN' : '01',
+  //     'FEB' : '02',
+  //     'MAR' : '03',
+  //     'APR' : '04',
+  //     'MAY' : '05',
+  //     'JUN' : '06',
+  //     'JUL' : '07',
+  //     'AUG' : '08',
+  //     'SEP' : '09',
+  //     'OCT' : '10',
+  //     'NOV' : '11',
+  //     'DEC' : '12'
+  //     }
+  //   if(jQuery('#stormTrackUpload')[0].files.length > 0){
+  //     $('#summary-spinner').slideDown();
+  //     convertToGeoJSON('stormTrackUpload').done(function(converted){
 
-        converted.features = converted.features.map(function(f){
-          f.properties.HR = parseFloat(f.properties['HHMM'].slice(0,2));
-          f.properties.MN = parseFloat(f.properties['HHMM'].slice(2));
-          if(Object.keys(months).indexOf(f.properties.MONTH) > -1){
-            f.properties.MONTH = months[f.properties.MONTH]
-          }
-          return f
-        })
-        console.log('successfully converted to JSON');
-        console.log(converted);
+  //       converted.features = converted.features.map(function(f){
+  //         f.properties.HR = parseFloat(f.properties['HHMM'].slice(0,2));
+  //         f.properties.MN = parseFloat(f.properties['HHMM'].slice(2));
+  //         if(Object.keys(months).indexOf(f.properties.MONTH) > -1){
+  //           f.properties.MONTH = months[f.properties.MONTH]
+  //         }
+  //         return f
+  //       })
+  //       console.log('successfully converted to JSON');
+  //       console.log(converted);
         
 
 
-        var iterations =0;
-        // var sa = ee.FeatureCollection("TIGER/2018/States").geometry();
-        var sa = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200').geometry();
-        // converted.features = ee.FeatureCollection(converted.features).filterBounds(sa).getInfo().features;
-        for(iterations; iterations > 0; iterations--){
-          converted.features = refineFeatures(converted.features,['LAT','LON','YEAR','MONTH','DAY','INTENSITY','MSLP','HR','MN']);
+  //       var iterations =0;
+  //       // var sa = ee.FeatureCollection("TIGER/2018/States").geometry();
+  //       var sa = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200').geometry();
+  //       // converted.features = ee.FeatureCollection(converted.features).filterBounds(sa).getInfo().features;
+  //       for(iterations; iterations > 0; iterations--){
+  //         converted.features = refineFeatures(converted.features,['LAT','LON','YEAR','MONTH','DAY','INTENSITY','MSLP','HR','MN']);
           
           
           
-          //{"date": "Aug 16:18:00 GMT", "lat": 10.9, "lon": -25.4, "wspd": 20.0, "pres": 0.0, "FO": "O"}
+  //         //{"date": "Aug 16:18:00 GMT", "lat": 10.9, "lon": -25.4, "wspd": 20.0, "pres": 0.0, "FO": "O"}
         
-        }
+  //       }
         
-        var rows = converted.features.map(function(f){
+  //       var rows = converted.features.map(function(f){
          
-          var props = f.properties;
-          f.properties.date = new Date(props.YEAR,props.MONTH-1,props.DAY,props.HR,props.MN)
-          f.properties.lat = props.LAT;
-          f.properties.lon = props.LON;
-          f.properties.wspd = props.INTENSITY
-          f.properties.pres = props.MSLP
-          f.properties.name = props.STORMNAME
-          f.properties.year = props.YEAR;
-          return f;//ee.Feature(f).buffer(10000)
-        });
+  //         var props = f.properties;
+  //         f.properties.date = new Date(props.YEAR,props.MONTH-1,props.DAY,props.HR,props.MN)
+  //         f.properties.lat = props.LAT;
+  //         f.properties.lon = props.LON;
+  //         f.properties.wspd = props.INTENSITY
+  //         f.properties.pres = props.MSLP
+  //         f.properties.name = props.STORMNAME
+  //         f.properties.year = props.YEAR;
+  //         return f;//ee.Feature(f).buffer(10000)
+  //       });
         
         
-        createHurricaneDamageWrapper(rows,true);
-        $('#summary-spinner').slideUp(); 
+  //       createHurricaneDamageWrapper(rows,true);
+  //       $('#summary-spinner').slideUp(); 
        
         
-          })
-    }else{showMessage('No storm track provided','Please select a .zip shapefile or a .geojson file to summarize across')}
-  }                     
+  //         })
+  //   }else{showMessage('No storm track provided','Please select a .zip shapefile or a .geojson file to summarize across')}
+  // }                     
   // $('#parameters-collapse-div').append(`<label>Provide storm track geoJSON:</label>
   //                                       <input rel="txtTooltip" title = 'Provide storm track geoJSON'  type="user-selected-area-name" class="form-control" value = '${JSON.stringify(rows)}' id="storm-track" placeholder="Provide storm track geoJSON" style='width:80%;'>`)
   

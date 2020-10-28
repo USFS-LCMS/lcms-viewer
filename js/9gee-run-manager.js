@@ -3255,7 +3255,7 @@ function getCoordGrid(lng,lat){
   var coords = ee.Image.pixelCoordinates(proj).float();
   var ptValues = ee.Image.constant(ee.List(ee.Dictionary(coords.reduceRegion(ee.Reducer.first(), pt, 1, crs)).values()));
   coords = coords.subtract(ptValues);
-  
+  coords = coords.updateMask(coords.lte(maxDistance*1000))
   return coords.multiply(ee.Image([1,-1]));//.reproject(crs,null,1);
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -3490,7 +3490,7 @@ function createHurricaneDamageWrapper(rows){
   // var palettes = require('users/gena/packages:palettes');
   var hgt_array = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200');
   hgt_array = hgt_array.updateMask(hgt_array.neq(-9999));
-  Map2.addLayer(rows,{},'Track',false);
+  
   var from = ee.List.sequence(101,199).getInfo();
   var to = ee.List.sequence(1,99).getInfo();
   hgt_array= hgt_array.remap(from,to);
@@ -3504,12 +3504,12 @@ function createHurricaneDamageWrapper(rows){
   // var name = rows[0].name;
   // var year = rows[0].year;
   // // console.log(rows[0]);
-  // if(name === undefined || name === null){
-  //   var name = $('#storm-name').val();
-  //   if(name === ''){
-  //     name = 'Michael';
-  //   }
-  // }
+  if(name === undefined || name === null){
+    var name = $('#storm-name').val();
+    if(name === ''){
+      name = jQuery('#stormTrackUpload')[0].files[0].name.split('.').slice(0, -1).join('.')
+    }
+  }
   // if(year === undefined || year === null){
   //   var year = stormYear;//2018;
   // }
@@ -3518,7 +3518,7 @@ function createHurricaneDamageWrapper(rows){
 
 
   //Define some other params
-  var windThreshold = 30;
+  var windThreshold = minWind;
 
 
   // // rows = rows.slice(108,160);
@@ -3556,7 +3556,12 @@ function createHurricaneDamageWrapper(rows){
     // wind_array = wind_array.updateMask(wind_array.gt(windThreshold));
 
     // Map2.addLayer(hgt_array,{min:1,max:30,legendLabelLeftAfter:'m',legendLabelRightAfter:'m',palette:palettes.crameri.bamako[50].reverse()},'LANDFIRE 2020 Tree Height (m)',false);
-    
+    var trackRows = rows.map(function(f){
+      var current = ee.Dictionary(f.get('current'))
+      f = f.set(current)
+      return f.buffer(50000)
+    })
+    Map2.addLayer(trackRows,{},name + ' ' +year.toString()+' Storm Track',false);
     Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Max Wind',false);
     //GALES Params
     //Wind speed in mps (Convert from mph to mps)
@@ -3577,9 +3582,9 @@ function createHurricaneDamageWrapper(rows){
     
   //   // Map2.addTimeLapse(cl.select([0]),{min:75,max:160,palette:palettes.niccoli.isol[7],years:years},'Wind Time Lapse')
   //   // Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
-  //   Map2.addExport(max.select([0]),name + '_'+year.toString()+'_Wind' ,30,true,{});
+    Map2.addExport(max.select([0]),name + '_'+year.toString()+'_Wind' ,30,true,{});
     
-  //   Map2.addExport(max.select([1]),name + '_'+year.toString()+'_Damage' ,30,true,{});
+    Map2.addExport(max.select([1]),name + '_'+year.toString()+'_Damage' ,30,true,{});
 
   //   // wind_array = wind_array.clip(studyArea).unmask(0,false).byte();
   //   // GALESOut = GALESOut.multiply(100).clip(studyArea).unmask(10001,false).int16();
