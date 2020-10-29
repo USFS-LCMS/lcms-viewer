@@ -2850,7 +2850,10 @@ function runTest(){
     // 'Equal':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_equal_annualized',
     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.5, 'gain': 0.45}},
     
-    'SEAK_Vertex':{'collection':'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast-VertexFormat',
+    'SEAK_Vert':{'collection':'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast-VertexFormat',
+    'thresholds':{'loss': 0.38333333333333336, 'slowLoss': 0.68, 'fastLoss': 0.31, 'gain': 0.35}},
+    'SEAK_Ann':
+    {'collection':'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast-AnnualizedFormat',
     'thresholds':{'loss': 0.38333333333333336, 'slowLoss': 0.68, 'fastLoss': 0.31, 'gain': 0.35}},
     // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
