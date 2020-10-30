@@ -2875,7 +2875,9 @@ function runTest(){
 
 //   var areaCollection;
 //   var chartCollectionT;
-  var clientBoundary = clientBoundsDict.Alaska
+  var clientBoundary = clientBoundsDict.Alaska;
+
+
   Object.keys(runs).map(function(k){
 //     if(chartColorsT === undefined){
 //       chartColorsT = chartColorsDict.test;
@@ -3108,49 +3110,50 @@ function runTest(){
     // Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, k+' '+luLayerName,false); 
     var treeClassLegendDict = {};
     treeClassLegendDict['Tree (3 or more consecutive years)'] = '32681e';
-    Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree (3 or more consecutive years)'}},k+' Tree Mask',false);
-    Map2.addLayer(dndThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},k+' Loss Year',true,null,null,k+ ' '+threshYearNameEnd+'loss ' +declineNameEnding);
+      Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree (3 or more consecutive years)'}},k+' Tree Mask',false);
+      Map2.addLayer(dndThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},k+' Loss Year',true,null,null,k+ ' '+threshYearNameEnd+'loss ' +declineNameEnding);
 
 
-      Map2.addLayer(dndThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},k+ ' Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + declineNameEnding);
+        Map2.addLayer(dndThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},k+ ' Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + declineNameEnding);
+        
+        
       
-      
-    
-    Map2.addLayer(dndFastThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
-    // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
-//     var years = ee.List.sequence(startYear,endYear).getInfo();
-//     var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
-//     //F80,e8edc4,54278f
-//     // Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
-//     // getHansen('layer-list')
-    Map2.addLayer(dndFastThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
+      Map2.addLayer(dndFastThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
+      // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
+  //     var years = ee.List.sequence(startYear,endYear).getInfo();
+  //     var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
+  //     //F80,e8edc4,54278f
+  //     // Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
+  //     // getHansen('layer-list')
+      Map2.addLayer(dndFastThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
 
-    Map2.addLayer(dndSlowThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Slow Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +slowDeclineNameEnding);
-    Map2.addLayer(dndSlowThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Slow Loss Probability',false,null,null,k+ ' ' +threshProbNameEnd+ 'loss ' + slowDeclineNameEnding);
+      Map2.addLayer(dndSlowThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Slow Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +slowDeclineNameEnding);
+      Map2.addLayer(dndSlowThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Slow Loss Probability',false,null,null,k+ ' ' +threshProbNameEnd+ 'loss ' + slowDeclineNameEnding);
 
-    Map2.addLayer(rnrThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},k+' Gain Year',false,null,null,k+ ' '+threshYearNameEnd+'gain '+recoveryNameEnding);
-    Map2.addLayer(rnrThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},k+ ' Gain Probability',false,null,null,k + ' ' +threshProbNameEnd+'gain '+recoveryNameEnding);
-      
-//     // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
-//   });
-// // areaChartCollections['lg'] = {'label':'LCMS Runs',
-//                                   // 'collection':areaCollection,
-//                                   // 'stacked':false,
-//                                   // 'steppedLine':false,
-//                                   // 'colors':areaChartColors};
-// // pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
-// // chartCollection =chartCollectionT;
-// // chartColors = chartColorsT
-// // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
-// // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
+      Map2.addLayer(rnrThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},k+' Gain Year',false,null,null,k+ ' '+threshYearNameEnd+'gain '+recoveryNameEnding);
+      Map2.addLayer(rnrThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},k+ ' Gain Probability',false,null,null,k + ' ' +threshProbNameEnd+'gain '+recoveryNameEnding);
+        
+      // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
+    });
+  // areaChartCollections['lg'] = {'label':'LCMS Runs',
+                                    // 'collection':areaCollection,
+                                    // 'stacked':false,
+                                    // 'steppedLine':false,
+                                    // 'colors':areaChartColors};
+  // pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
+  // chartCollection =chartCollectionT;
+  // chartColors = chartColorsT
+  // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
+  // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
 
-//  // getSelectLayers();
-//  // populateAreaChartDropdown();   
-//  // populatePixelChartDropdown();
-//  // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')    
+   // getSelectLayers();
+   // populateAreaChartDropdown();   
+   // populatePixelChartDropdown();
+   // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')    
 
-})
-             
+// })
+  var composites = ee.ImageCollection('projects/lcms-292214/assets/R10/CoastalAK/Composites/Composite-Collection');
+  Map2.addTimeLapse(composites,{min:500,max:7000,bands:'swir2,nir,red',gamma:1.6},'SEAK Composites',false)
 }
 function runFHP(){
   var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
