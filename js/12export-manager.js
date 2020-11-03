@@ -382,7 +382,7 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
     // taskId = ee.data.newTaskId(1)
 
     var task = ee.batch.Export.image.toCloudStorage(eeImage, exportOutputName, bucketName, exportOutputName, null, region, exportScale, exportCRS, null, 1e13, 256, 256*75);
-               
+    
 
     return task;
 }
