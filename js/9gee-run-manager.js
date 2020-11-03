@@ -3617,7 +3617,7 @@ function createHurricaneDamageWrapper(rows){
       return f.buffer(speed.multiply(500))
     })
     Map2.addLayer(trackRows,{},name + ' ' +year.toString()+' Storm Track',false);
-    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Max Wind',false);
+    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Wind Max',false);
     //GALES Params
     //Wind speed in mps (Convert from mph to mps)
     //Height in meters
@@ -3633,30 +3633,30 @@ function createHurricaneDamageWrapper(rows){
     // var modRupture = 8500
     // GALES(wind_array.multiply(0.447), hgt_array, crown_hgt_array, spacing, modRupture);
     // var GALESOut = GALES(wind_array.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
-    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage',false);
+    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Max',false);
     
-    var damageSum = c.select(['Damage_Sum']).sum();
+    var damageSum = c.select(['Damage_Sum']).sum().int16();
     Map2.addLayer(damageSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Sum',false)
     
-    var windSum = c.select(['Wind_Sum']).sum();
+    var windSum = c.select(['Wind_Sum']).sum().int16();
     Map2.addLayer(windSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Wind Sum',false)
     
-    var catSum = c.select(['Cat_Sum']).sum();
+    var catSum = c.select(['Cat_Sum']).sum().int16();
     Map2.addLayer(catSum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat Sum',false)
     
-    var cat1Sum = c.select(['Cat1_Sum']).sum();
+    var cat1Sum = c.select(['Cat1_Sum']).sum().int16();
     Map2.addLayer(cat1Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 1 Sum',false)
     
-    var cat2Sum = c.select(['Cat2_Sum']).sum();
+    var cat2Sum = c.select(['Cat2_Sum']).sum().int16();
     Map2.addLayer(cat2Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 2 Sum',false)
     
-    var cat3Sum = c.select(['Cat3_Sum']).sum();
+    var cat3Sum = c.select(['Cat3_Sum']).sum().int16();
     Map2.addLayer(cat3Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 3 Sum',false)
     
-    var cat4Sum = c.select(['Cat4_Sum']).sum();
+    var cat4Sum = c.select(['Cat4_Sum']).sum().int16();
     Map2.addLayer(cat4Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 4 Sum',false)
     
-    var cat5Sum = c.select(['Cat5_Sum']).sum();
+    var cat5Sum = c.select(['Cat5_Sum']).sum().int16();
     Map2.addLayer(cat5Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 5 Sum',false)
     
     var windStack = ee.Image.cat([max.select([0]),windSum,catSum,cat1Sum,cat2Sum,cat3Sum,cat4Sum,cat5Sum]).int16();
@@ -3664,9 +3664,21 @@ function createHurricaneDamageWrapper(rows){
 
   //   // Map2.addTimeLapse(cl.select([0]),{min:75,max:160,palette:palettes.niccoli.isol[7],years:years},'Wind Time Lapse')
   //   // Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
-    Map2.addExport(windStack,name + '_'+year.toString()+'_Wind_Stack' ,30,true,{});
     
-    Map2.addExport(damageStack,name + '_'+year.toString()+'_Damage_Stack' ,30,true,{});
+    Map2.addExport(max.select([0]).int16(),name + '_'+year.toString()+'_Wind_Max' ,30,true,{});
+    Map2.addExport(windSum,name + '_'+year.toString()+'_Wind_Sum' ,30,true,{});
+    
+    Map2.addExport(catSum,name + '_'+year.toString()+'_Cat_Sum' ,30,true,{});
+    Map2.addExport(cat1Sum,name + '_'+year.toString()+'_Cat1_Sum' ,30,true,{});
+    Map2.addExport(cat2Sum,name + '_'+year.toString()+'_Cat2_Sum' ,30,true,{});
+    Map2.addExport(cat3Sum,name + '_'+year.toString()+'_Cat3_Sum' ,30,true,{});
+    Map2.addExport(cat4Sum,name + '_'+year.toString()+'_Cat4_Sum' ,30,true,{});
+    Map2.addExport(cat5Sum,name + '_'+year.toString()+'_Cat5_Sum' ,30,true,{});
+    
+    Map2.addExport(max.select([1]).int16(),name + '_'+year.toString()+'_Damage_Max' ,30,true,{});
+    Map2.addExport(damageSum,name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
+    
+    // Map2.addExport(damageStack,name + '_'+year.toString()+'_Damage_Stack' ,30,true,{});
     // Map2.addExport(damageSum.int16(),name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
     Map2.addLayer(ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries'),{layerType:'geeVectorImage'},'USFS Boundaries',false);
  

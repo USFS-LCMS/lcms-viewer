@@ -241,7 +241,7 @@ function trackExports(){
     var taskIDList  = 'Exporting: ';
     taskCount = 0;
     var taskList = ee.data.getTaskList().tasks
-    if(taskList.length > 10){taskList = taskList.slice(0,20);}
+    if(taskList.length > 10){taskList = taskList.slice(0,40);}
     
 
     taskList.map(function(t){
