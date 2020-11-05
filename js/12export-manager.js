@@ -8,6 +8,29 @@ var eID = 1;
 var exportFC;
 // exportCapability = true;
 ///////////////////////////////////////////////////////////////////
+function downloadFiles(id){
+    $.ajax({
+        type: 'GET',
+        url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
+    }).done(function(json){
+        json = json.items
+        json.map(function(item){
+            if(item.id.indexOf(id)>-1){
+                var link = document.createElement("a");
+                link.setAttribute("href", item.mediaLink);
+                link.setAttribute("download", item.name);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                sleep(1000);
+                document.body.removeChild(link);
+                sleep(1000);
+            }
+        })
+        })
+                    
+}
+
 var cachedEEExports = null;
     if(typeof(Storage) !== "undefined"){
         cachedEEExports = JSON.parse(localStorage.getItem("cachedEEExports"));
@@ -266,8 +289,9 @@ function trackExports(){
                 }
         else if(t.state === 'COMPLETED'  && cachedEEExport.downloaded === false ){
             
-            var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.description].outputName +'.tif'
-            downloadExport(tOutputName,cachedEEExports[t.description].outputName +'.tif')
+            // var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.description].outputName +'.tif'
+            // downloadExport(tOutputName,cachedEEExports[t.description].outputName +'.tif')
+            downloadFiles(cachedEEExports[t.description].outputName)
             // exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
             
             
@@ -312,10 +336,14 @@ function trackExports(){
     // localStorage.setItem("pastEEExports",JSON.stringify(pastEEExports));
     $('#export-spinner').show();
     document.getElementById('export-spinner').title = taskIDList;
+    $('#export-count-div').html(taskIDList);
     $('#export-count').text(taskCount.toString())
     localStorage.setItem("cachedEEExports",JSON.stringify(cachedEEExports));
 
-    if(taskCount === 0){$('#export-spinner').hide();}
+    if(taskCount === 0){
+        $('#export-spinner').hide();
+        $('#export-count-div').html(``);
+    }
     // console.log('just ran export checker');
     // updateSpinner();
 }
@@ -338,9 +366,9 @@ function updateSpinner(){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc){
+function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc,noDataValue){
     $('#summary-spinner').show();
-    eeImage = ee.Image(eeImage.clip(fc).unmask(-32768,false));//.reproject(exportCRS,null,exportScale);
+    eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue,false));//.reproject(exportCRS,null,exportScale);
     // var imageJson = ee.Serializer.toJSON(eeImage);
     $('#export-message-container').text("Exporting:" + exportOutputName);
     
@@ -414,16 +442,25 @@ function exportImages(){
             if(exportObject['shouldExport'] === true){
                 exportsStarted ++;
                 var exportName = exportObject['name']+nowSuffix;
+                var noDataValue = exportObject['noDataValue'];
                 exportsSubmitted +=  exportName+ '<br>';
-                var task = getIDAndParams(exportObject['eeImage'],exportName,exportCRS,exportObject['res'],fc);
+                var task = getIDAndParams(exportObject['eeImage'],exportName,exportCRS,exportObject['res'],fc,noDataValue);
                 
                 //Start processing
-                task.start(function(){
-                    meta_template_strT = '{}';
-                    cacheExport(exportName,exportName,meta_template_strT);
-                });
+                function startTask(){
+                    console.log('Starting task');
+                    task.start(function(){
+                        console.log('here')
+                        meta_template_strT = '{}';
+                        cacheExport(exportName,exportName,meta_template_strT);
+                        },
+                    function(fail){
+                        console.log(fail);
+                        startTask();
+                    })};
+                startTask();
                 // ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
-                
+                    
                 
                 // var metadataParams = exportObject['metadataParams']
                 // meta_template_strT = '{}';//meta_template_str;
@@ -458,7 +495,8 @@ function exportImages(){
             }
         });
         if(exportsStarted === 0){showMessage('Nothing to Export!','No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again.')}
-        else{showMessage('Success!','<div class = "dropdown-divider"></div>The following exports were submitted:<br>'+exportsSubmitted+'<div class = "dropdown-divider"></div>They are now running. Once finished, they will automatically download. The current status of exports can be followed by hovering over the gear spinner in the bottom right corner of the <kbd>DOWNLOAD DATA</kbd> menu')}
+        else{$('#summary-spinner').show(); 
+            showMessage('Success!','<div class = "dropdown-divider"></div>The following exports were submitted:<br>'+exportsSubmitted+'<div class = "dropdown-divider"></div>They will start running shortly. Once finished, they will automatically download. The current status of exports can be followed by hovering over the gear spinner in the bottom right corner of the <kbd>DOWNLOAD DATA</kbd> menu')}
         $('#summary-spinner').hide(); 
     }
     

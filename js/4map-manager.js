@@ -817,14 +817,18 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 /////////////////////////////////////////////////////
 //Wrapper to add an export
 
-function addExport(eeImage,name,res,Export,metadataParams){
+function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 
   var exportElement = {};
   if(metadataParams === null || metadataParams === undefined){
-    metadataParams = {'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
+    metadataParams = {};//'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
   }
   if(Export === null || Export === undefined){
     Export = true;
+  }
+  if(noDataValue === null || noDataValue === undefined){
+ 
+    noDataValue = -32768;
   }
   var checked = '';
   if(Export){checked = 'checked'}
@@ -844,7 +848,7 @@ function addExport(eeImage,name,res,Export,metadataParams){
   exportElement.Export = Export;
   exportElement.ID = exportID;
   
-  exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'metadataParams':metadataParams}
+  exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'metadataParams':metadataParams,'noDataValue':noDataValue}
   // var exportList = document.querySelector("export-list");
   $('#export-list').append(`<div class = 'input-group'>
                               <span  class="input-group-addon">
