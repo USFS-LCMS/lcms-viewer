@@ -392,7 +392,7 @@ else if(mode === 'STORM'){
                 // Map2.addLayer(rows)
                  $('#summary-spinner').slideUp();
                  // console.log(zipped)
-                createHurricaneDamageWrapper(ee.FeatureCollection(zipped),true);
+                createHurricaneDamageWrapper(ee.FeatureCollection(zipped));
             } 
               
             fr.readAsText(jQuery('#stormTrackUpload')[0].files[0]);
@@ -484,7 +484,7 @@ else if(mode === 'STORM'){
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
-  
+ 
 }else{
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
@@ -574,6 +574,9 @@ if(canExport){
   }else{localStorage.export_crs = $('#export-crs').val()};
    function cacheCRS(){
     localStorage.export_crs = $('#export-crs').val();
+   }
+   if(mode === 'STORM'){
+     $('#export-area-drawing-div').append(`<hr><button class = 'btn' onclick = 'addTrackBounds()' rel="txtTooltip" title = 'Add bounds of storm track for export area.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Use storm track bound as area to download</button>`)
    }
 }
 

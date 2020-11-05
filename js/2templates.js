@@ -94,7 +94,7 @@ var staticTemplates = {
                               </div> 
                               
                             </form>
-                            <div class = 'py-2'>
+                            <div class = 'py-2' id = 'export-area-drawing-div'>
                                 <button class = 'btn' onclick = 'selectExportArea()' rel="txtTooltip" title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
                                 <a href="#" onclick = 'undoExportArea()' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' rel="txtTooltip" title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>

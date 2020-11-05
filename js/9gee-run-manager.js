@@ -3537,17 +3537,17 @@ function createHurricaneDamageWrapper(rows){
  //  if(name === undefined || name === null){
     name = $('#storm-name').val();
     if(name === ''){
- //      try{
+      try{
         name = jQuery('#stormTrackUpload')[0].files[0].name.split('.').slice(0, -1).join('.')
- //      }catch(err){
- //        console.log(err);
- //        name = 'Test'
- //      }
+      }catch(err){
+        console.log(err);
+        name = 'Test'
+      }
       
- //    }
-  }
+    }
+  // }
  // console.log('name');
- console.log(name);
+ // console.log(name);
  // console.log(jQuery('#stormTrackUpload')[0].files[0].name.split('.').slice(0, -1).join('.'))
   // if(year === undefined || year === null){
   //   var year = stormYear;//2018;
@@ -3677,15 +3677,18 @@ function createHurricaneDamageWrapper(rows){
   //   // Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
     
     var trackBounds = trackRows.geometry().bounds();
-    var trackBoundsCoords = trackBounds.getInfo().coordinates[0];
-   
+    var trackBoundsFeatures = trackBounds.getInfo()
+    var trackBoundsCoords =trackBoundsFeatures.coordinates[0];
+    // console.log(trackBounds.getInfo())
+
+
     windStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name +'_'+year.toString()+'_Wind_Quick_Look',
-                      scale:3000,
+                      scale:1800,
                       crs:'EPSG:5070',
                       region:trackBoundsCoords},
                       function(url1){
                         damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look',
-                          scale:3000,
+                          scale:1800,
                           crs:'EPSG:5070',
                           region:trackBoundsCoords},
                           function(url2){
@@ -3716,7 +3719,31 @@ function createHurricaneDamageWrapper(rows){
     Map2.addExport(damageStack,name + '_'+year.toString()+'_Damage_Stack' ,30,true,{});
     Map2.addExport(damageSum.int16(),name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
     Map2.addLayer(ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries'),{layerType:'geeVectorImage'},'USFS Boundaries',false);
- 
+     // exportArea = null;
+   
+     
+    window.addTrackBounds = function(){
+        try{
+      exportArea.setMap(null);
+    }catch(err){
+      console.log(err);
+    }
+    exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
+
+    trackBoundsCoords.map(function(coords){
+      var path = exportArea.getPath();
+        var out = {};
+        out.lng = function(){return coords[0]}
+        out.lat = function(){return coords[1]}
+        path.push(out);
+    })
+    exportArea.setMap(map);
+    synchronousCenterObject(trackBoundsFeatures);
+    }
+    // exportArea = new google.maps.Data({fillOpacity: 0,strokeColor:'#FF0'});
+    // exportArea.addGeoJson(ee.Feature(trackBounds).getInfo());
+    // exportArea.setMap(map);
+    
   //   // wind_array = wind_array.clip(studyArea).unmask(0,false).byte();
   //   // GALESOut = GALESOut.multiply(100).clip(studyArea).unmask(10001,false).int16();
     

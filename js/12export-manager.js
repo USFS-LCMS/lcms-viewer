@@ -109,7 +109,11 @@ function deleteExportArea(){
     google.maps.event.clearListeners(mapDiv, 'click');
     map.setOptions({draggableCursor:'hand'});
     map.setOptions({cursor:'hand'});
-    mapHammer.destroy()
+    try{mapHammer.destroy()}
+    catch(err){
+        var x  = err;
+    }
+    
     exportArea.setMap(null);
     exportArea = null;
 }
