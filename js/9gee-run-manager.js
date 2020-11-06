@@ -3681,27 +3681,29 @@ function createHurricaneDamageWrapper(rows){
     var trackBoundsCoords =trackBoundsFeatures.coordinates[0];
     // console.log(trackBounds.getInfo())
 
-
-    windStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name +'_'+year.toString()+'_Wind_Quick_Look',
-                      scale:1800,
-                      crs:'EPSG:5070',
-                      region:trackBoundsCoords},
-                      function(url1){
-                        damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look',
-                          scale:1800,
-                          crs:'EPSG:5070',
-                          region:trackBoundsCoords},
-                          function(url2){
-                            showMessage('Quick Look Outputs Ready',
-                              `<hr>
-                              <a  target="_blank" href = '${url1}'>Click to download wind stack</a>
-                              <hr>
-                              <a  target="_blank" href = '${url2}'>Click to download damage stack</a>`)
-                            
-                          })
-                        
-                      });
-    
+    window.downloadQuickLooks = function(){
+      $('#summary-spinner').slideDown();
+      windStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name +'_'+year.toString()+'_Wind_Quick_Look',
+                        scale:3000,
+                        crs:$('#export-crs').val(),
+                        region:trackBoundsCoords},
+                        function(url1){
+                          damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look',
+                            scale:3000,
+                            crs:$('#export-crs').val(),
+                            region:trackBoundsCoords},
+                            function(url2){
+                               $('#summary-spinner').slideUp();
+                              showMessage('Quick Look Outputs Ready',
+                                `<hr>
+                                <a  target="_blank" href = '${url1}'>Click to download wind stack</a>
+                                <hr>
+                                <a  target="_blank" href = '${url2}'>Click to download damage stack</a>`)
+                             
+                            })
+                          
+                        });
+    }
     Map2.addExport(max.select([0]).int16(),name + '_'+year.toString()+'_Wind_Max' ,30,true,{});
 
     Map2.addExport(windSum,name + '_'+year.toString()+'_Wind_Sum' ,30,true,{});

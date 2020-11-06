@@ -99,10 +99,12 @@ var staticTemplates = {
                                 <a href="#" onclick = 'undoExportArea()' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' rel="txtTooltip" title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
-                            <div class = 'dropdown-divider'></div>
-                            <div class = 'pt-1 pb-3'>
-                                <button class = 'btn' onclick = 'exportImages()' rel="txtTooltip" title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
-                                <button class = 'btn' onclick = 'cancelAllTasks()' rel="txtTooltip" title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                            <div class = 'dropdown-divider'></div>  
+                            <div class = 'pt-1 pb-3' >
+                                <div id = 'export-button-div'>
+                                    <button class = 'btn' onclick = 'exportImages()' rel="txtTooltip" title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' rel="txtTooltip" title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                </div>
                                 <div class = 'dropdown-divider'></div>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' data-toggle="tooltip"  title="">
 						    		<img rel="txtTooltip"   class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
