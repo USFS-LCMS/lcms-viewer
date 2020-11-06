@@ -579,9 +579,11 @@ if(canExport){
      $('#export-area-drawing-div').append(`<hr>
                                             <button class = 'btn' onclick = 'addTrackBounds()' rel="txtTooltip" title = 'Add bounds of storm track for export area.'><i class="pr-1 fa fa-square-o" aria-hidden="true"></i> Use storm track bound as area to download</button>
                                             `)
-     $('#export-button-div').append(`<hr>
-                                            <button class = 'btn' onclick = 'downloadQuickLooks()' rel="txtTooltip" title = 'Quickly download outputs at coarse resolution'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Download Quick Look Outputs</button>
+     $('#export-button-div').append(`<hr>`);
+     addRangeSlider('export-button-div','Quick look spatial resolution','quickLookRes',1200, 6000, 3000, 300,'quick-look-res-slider','null',"Specify spatial resolution for quick look downloads.")
+     $('#export-button-div').append(`<button class = 'btn' onclick = 'downloadQuickLooks()' rel="txtTooltip" title = 'Quickly download outputs at coarse resolution'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Download Quick Look Outputs</button>
                                             `)
+     
    }
 }
 

@@ -3684,12 +3684,12 @@ function createHurricaneDamageWrapper(rows){
     window.downloadQuickLooks = function(){
       $('#summary-spinner').slideDown();
       windStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name +'_'+year.toString()+'_Wind_Quick_Look',
-                        scale:3000,
+                        scale:quickLookRes,
                         crs:$('#export-crs').val(),
                         region:trackBoundsCoords},
                         function(url1){
                           damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look',
-                            scale:3000,
+                            scale:quickLookRes,
                             crs:$('#export-crs').val(),
                             region:trackBoundsCoords},
                             function(url2){
