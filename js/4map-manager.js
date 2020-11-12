@@ -600,7 +600,7 @@ function toggleCumulativeMode(){
 //Wrapper function to add a time lapse to the map
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
   if(viz !== null && viz !== undefined && viz.serialized !== null && viz.serialized !== undefined && viz.serialized === true){
-        item = ee.Deserializer.fromJSON(JSON.parse(JSON.stringify(item)));
+        item = ee.Deserializer.decode(item);
         viz.serialized = false;
     }
   if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = true}
@@ -872,7 +872,7 @@ function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 //Function to add ee object as well as client-side objects to map
 function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     if(viz !== null && viz !== undefined && viz.serialized !== null && viz.serialized !== undefined && viz.serialized === true){
-        item = ee.Deserializer.fromJSON(JSON.parse(JSON.stringify(item)));
+        item = ee.Deserializer.decode(item);
     }
     var currentGEERunID = geeRunID;
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
