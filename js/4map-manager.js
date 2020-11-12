@@ -629,9 +629,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
   if(viz.years === null || viz.years === undefined){
-    console.log('start computing years')
+    console.log('start computing years');
     viz.years = item.sort('system:time_start',true).toList(10000,0).map(function(img){return ee.Date(ee.Image(img).get('system:time_start')).get('year')}).getInfo();
-    console.log('done computing years')
+    console.log('done computing years');
   }
   
   //Set up time laps object entry
@@ -816,14 +816,19 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 }
 /////////////////////////////////////////////////////
 //Wrapper to add an export
-function addExport(eeImage,name,res,Export,metadataParams){
+
+function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 
   var exportElement = {};
   if(metadataParams === null || metadataParams === undefined){
-    metadataParams = {'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
+    metadataParams = {};//'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
   }
   if(Export === null || Export === undefined){
     Export = true;
+  }
+  if(noDataValue === null || noDataValue === undefined){
+ 
+    noDataValue = -32768;
   }
   var checked = '';
   if(Export){checked = 'checked'}
@@ -843,20 +848,20 @@ function addExport(eeImage,name,res,Export,metadataParams){
   exportElement.Export = Export;
   exportElement.ID = exportID;
   
-  exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'metadataParams':metadataParams}
+  exportImageDict[exportID] = {'eeImage':eeImage,'name':name,'res':res,'shouldExport':Export,'metadataParams':metadataParams,'noDataValue':noDataValue}
   // var exportList = document.querySelector("export-list");
   $('#export-list').append(`<div class = 'input-group'>
                               <span  class="input-group-addon">
-                                <input  id = '${name}-checkbox' type="checkbox" ${checked} >
-                                <label  style = 'margin-bottom:0px;'  for='${name}-checkbox'></label>
+                                <input  id = '${name}-checkbox-${exportID}' type="checkbox" ${checked} >
+                                <label  style = 'margin-bottom:0px;'  for='${name}-checkbox-${exportID}'></label>
                               </span>
                               
-                              <input  id = '${name}-name' class="form-control export-name-input" type="text" value="${exportElement.name}" rel="txtTooltip" title = 'Change export name if needed'>
+                              <input  id = '${name}-name-${exportID}' class="form-control export-name-input" type="text" value="${exportElement.name}" rel="txtTooltip" title = 'Change export name if needed'>
                             </div>`)
-  $('#' + name + '-name').on('input', function() {
+  $('#' + name + '-name-'+exportID.toString()).on('input', function() {
     exportImageDict[exportElement.ID].name = $(this).val()
   })
-  $('#' + name + '-checkbox').on('change', function() {
+  $('#' + name + '-checkbox-'+exportID.toString()).on('change', function() {
    
     exportImageDict[exportElement.ID].shouldExport = this.checked
   })
@@ -875,7 +880,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     if(name == null){
         name = "Layer "+NEXT_LAYER_ID;  
     }
-    //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageCollection,tileMapService,dynamicMapService
+    //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
     if(viz.layerType === null || viz.layerType === undefined){
       try{var t = item.bandNames();viz.layerType = 'geeImage'}
       catch(err2){
@@ -912,6 +917,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
        
         }
     }
+  
     if(viz.layerType === 'geoJSONVector'){viz.canQuery = false;}
     
     if(viz.layerType === 'geeVector' || viz.layerType === 'geoJSONVector'){
@@ -1033,6 +1039,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 
         if(viz.legendLabelLeft !== null && viz.legendLabelLeft !== undefined){legend.min = viz.legendLabelLeft + ' ' + viz.min}
         if(viz.legendLabelRight !== null && viz.legendLabelRight !== undefined){legend.max = viz.legendLabelRight + ' ' + viz.max}
+        if(viz.legendLabelLeftAfter !== null && viz.legendLabelLeftAfter !== undefined){legend.min =  viz.min + ' '+viz.legendLabelLeftAfter }
+        if(viz.legendLabelRightAfter !== null && viz.legendLabelRightAfter !== undefined){legend.max = viz.max + ' '+ viz.legendLabelRightAfter }
         if(legend.min ==null){legend.min = 'min'};
         if(legend.max ==null){legend.max = 'max'};
     
@@ -1379,7 +1387,10 @@ function reRun(){
   refreshNumber   ++;
 
   exportImageDict = {};
-  clearDownloadDropdown();
+  try{
+    clearDownloadDropdown();
+  }catch(err){}
+  
   google.maps.event.clearListeners(mapDiv, 'click');
 
   //Rerun the GEE code
@@ -1842,7 +1853,10 @@ function dropdownUpdateStudyArea(whichOne){
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
-    }else if(mode === 'lcms-base-learner'){
+    }else if( mode === 'STORM'){
+      run  = runStorm;
+    }
+    else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
     }
       else if(studyAreaName === 'CONUS'){
@@ -1853,6 +1867,7 @@ function dropdownUpdateStudyArea(whichOne){
 //Function to set study area
 var resetStudyArea = function(whichOne){
     localStorage.setItem("cachedStudyAreaName",whichOne);
+    urlParams.studyAreaName = whichOne;
     $('#studyAreaDropdown').val(whichOne);
     $('#study-area-label').text(whichOne);
     console.log('changing study area');
@@ -1884,7 +1899,7 @@ var resetStudyArea = function(whichOne){
     setUpRangeSlider('lowerThresholdSlowLoss',0,1,lowerThresholdSlowLoss,0.05,'slow-loss-threshold-slider','null');
     setUpRangeSlider('lowerThresholdFastLoss',0,1,lowerThresholdFastLoss,0.05,'fast-loss-threshold-slider','null');
     
-    setUpDualRangeSlider('startYear','endYear',startYear,endYear,startYear,endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
+    setUpDualRangeSlider('urlParams.startYear','urlParams.endYear',minYear,maxYear,urlParams.startYear,urlParams.endYear,1,'analysis-year-slider','analysis-year-slider-update','null')
 
     var coords = studyAreaDict[whichOne].center;
     studyAreaName = studyAreaDict[whichOne].name;
@@ -2195,7 +2210,10 @@ function initialize() {
       }
     ],
             {name: 'Dark Mode'});
-
+  var mapTypeIds = ['roadmap', 'satellite', 'hybrid', 'terrain'];
+  if(urlParams.mapTypeId  === undefined || urlParams.mapTypeId  === null &&urlParams.mapTypeId.indexOf(urlParams.mapTypeIds)  === -1 ){
+    urlParams.mapTypeId = 'hybrid'
+  }
   //Set up map options
   var mapOptions = {
     center: null,
@@ -2203,11 +2221,10 @@ function initialize() {
     minZoom: 2,
     disableDoubleClickZoom: true,
     // maxZoom: 15,
-    mapTypeId: google.maps.MapTypeId.HYBRID,
+    mapTypeId:urlParams.mapTypeId,
     streetViewControl: true,
     fullscreenControl: false,
-    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT,mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
-                    'dark_mode']},
+    mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT,mapTypeIds: mapTypeIds},
     // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
@@ -2227,11 +2244,16 @@ function initialize() {
   //Set up caching of study area
   if(typeof(Storage) !== "undefined"){
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
-    if(cachedStudyAreaName === null || cachedStudyAreaName === undefined){
+    console.log(urlParams.studyAreaName)
+
+    if(urlParams.studyAreaName !== null && urlParams.studyAreaName !== undefined){
+      cachedStudyAreaName = decodeURIComponent(urlParams.studyAreaName);
+    }else if(cachedStudyAreaName === null || cachedStudyAreaName === undefined){
       cachedStudyAreaName = defaultStudyArea;
     }
     studyAreaName = studyAreaDict[cachedStudyAreaName].name;
     longStudyAreaName = cachedStudyAreaName;
+   
     $('#study-area-label').text(longStudyAreaName);
     $('#study-area-label').fitText(1.8);
     
@@ -2250,8 +2272,19 @@ function initialize() {
     layerObj = {};
   }
 
-  mapOptions.center = center;
-  mapOptions.zoom = zoom;
+  if(urlParams.lng !== undefined && urlParams.lng !== null && urlParams.lat !== undefined && urlParams.lat !== null ){
+    print('Setting center from URL')
+    mapOptions.center = {lng:parseFloat(urlParams.lng),lat:parseFloat(urlParams.lat)};
+  }else{
+    mapOptions.center = center;
+  }
+  if(urlParams.zoom !== undefined && urlParams.zoom !== null ){
+    print('Setting zoom from URL')
+    mapOptions.zoom = parseInt(urlParams.zoom);
+  }else{
+    mapOptions.zoom = zoom;
+  }
+  
      
   map = new google.maps.Map(document.getElementById("map"),mapOptions);
   //Associate the styled map with the MapTypeId and set it to display.
@@ -2316,6 +2349,7 @@ function initialize() {
     //Set up cursor info in bottom bar
     function updateMousePositionAndZoom(cLng,cLat,zoom,elevation){
             $('.legendDiv').css('bottom',$('.bottombar').height());
+            
             $( "#current-mouse-position" ).html( 'Lng: ' +cLng + ', Lat: ' + cLat +', '+elevation+ 'Zoom: ' +zoom +', 1:'+zoomDict[zoom]);
     }
      
@@ -2376,10 +2410,19 @@ function initialize() {
         console.log('zoom changed')
         updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
     })
+    google.maps.event.addListener(map,'maptypeid_changed',function(){
+        console.log('map type id changed')
+        urlParams.mapTypeId = map.mapTypeId;
+    })
 
     //Keep track of map bounds for eeBoundsPoly object 
     google.maps.event.addListener(map,'bounds_changed',function(){
       zoom = map.getZoom();
+      var mapCenter = map.getCenter();
+      var mapCenterLng = mapCenter.lng();
+      var mapCenterLat = mapCenter.lat();
+      urlParams.lng = mapCenterLng;urlParams.lat = mapCenterLat;urlParams.zoom= zoom;
+      
       // console.log('bounds changed');
       var bounds = map.getBounds();
       var keys = Object.keys(bounds);
@@ -2388,7 +2431,7 @@ function initialize() {
       // console.log('b');console.log(bounds);
       eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
         if(typeof(Storage) == "undefined") return;
-        localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:map.getCenter().lat(),lng:map.getCenter().lng()},zoom:map.getZoom()}));
+        localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:mapCenter.lat(),lng:mapCenter.lng()},zoom:zoom}));
       });
 
     //Specify proxy server location
@@ -2413,6 +2456,8 @@ function initialize() {
         run = runFHP;
       }else if(mode === 'geeViz'){
         run = runGeeViz;
+      }else if( mode === 'STORM'){
+      run  = runStorm;
       }else if(mode === 'lcms-base-learner'){
         run = runBaseLearner
       }else if(studyAreaName === 'CONUS'){

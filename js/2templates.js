@@ -49,9 +49,15 @@ var  titles = {
             centerWords: 'DATA',
             rightWords:'Viewer',
             title:'geeViz Data Viewer'
+            },
+    'STORM': {
+            leftWords: 'Storm',
+            centerWords: 'Damage',
+            rightWords:'Viewer',
+            title:'Storm Damage Viewer'
             }     
 }
-/////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
@@ -63,7 +69,7 @@ var staticTemplates = {
 	map:`<div onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
-	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = "$('#sidebar-left').toggle('collapse')"></div>`,
+	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = 'toggleSidebar()'></div>`,
 
     sidebarLeftContainer: `
 						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >
@@ -88,19 +94,23 @@ var staticTemplates = {
                               </div> 
                               
                             </form>
-                            <div class = 'py-2'>
+                            <div class = 'py-2' id = 'export-area-drawing-div'>
                                 <button class = 'btn' onclick = 'selectExportArea()' rel="txtTooltip" title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
                                 <a href="#" onclick = 'undoExportArea()' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' rel="txtTooltip" title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
-                            <div class = 'dropdown-divider'></div>
-                            <div class = 'pt-1 pb-3'>
-                                <button class = 'btn' onclick = 'exportImages()' rel="txtTooltip" title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
-                                <button class = 'btn' onclick = 'cancelAllTasks()' rel="txtTooltip" title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                            <div class = 'dropdown-divider'></div>  
+                            <div class = 'pt-1 pb-3' >
+                                <div id = 'export-button-div'>
+                                    <button class = 'btn' onclick = 'exportImages()' rel="txtTooltip" title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' rel="txtTooltip" title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                </div>
+                                <div class = 'dropdown-divider'></div>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' data-toggle="tooltip"  title="">
 						    		<img rel="txtTooltip"   class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
 						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
 								</span>
+                                <div id = 'export-count-div'></div>
                             </div>
                             
                         </div>
@@ -118,8 +128,12 @@ var staticTemplates = {
 			    `,
 	placesSearchDiv:`<div class="input-group px-4 pb-2 text-center"">
 			            <div class="input-group-prepend">
-                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="basic-addon1"><i class="fa fa-map-marker text-black "></i></button>
-	    					<span class="input-group-text bg-white search-box" id="basic-addon1"><i class="fa fa-search text-black "></i></span>
+
+
+                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
+	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="share-button"><i class="fa fa-share-alt teal "></i></button>
+                            
+                            <span class="input-group-text bg-white search-box" id="search-icon"><i class="fa fa-search text-black "></i></span>
 	  					</div>
 
 			            <input id = 'pac-input' class="form-control bg-white search-box" type="text" placeholder="Search Places">
@@ -335,31 +349,28 @@ var staticTemplates = {
                                         <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
                                         <div class = 'dropdown-divider'></div>`,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
-        shareButtons : `<!-- LinkedIn -->
-                        <a title = 'Share on LinkedIn' href="http://www.linkedin.com/shareArticle?mini=true&amp;url=${document.URL}" target="_blank">
-                            <img class = 'image-icon-bar' src="./images/linkedin.png" alt="LinkedIn" />
-                        </a>
+        shareButtons : `    
                         
                         <!-- Email -->
-                        <a title = 'Share via E-mail' href="mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ${document.URL}">
+                        <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
                             <img class = 'image-icon-bar' src="./images/email.png" alt="Email" />
                         </a>
 
                         <!-- Reddit -->
-                        <a title = 'Share on Reddit' href="http://reddit.com/submit?url=${document.URL}&amp;title=USDA Forest Service Landscape Change Monitoring System" target="_blank">
+                        <a title = 'Share on Reddit' onclick = 'TweetThis("http://reddit.com/submit?url=","&amp;title=USDA Forest Service Landscape Change Monitoring System",true)' >
                             <img class = 'image-icon-bar' src="./images/reddit.png" alt="Reddit" />
                         </a>
 
                          <!-- Twitter -->
-                        <a title = 'Share on Twitter' href="https://twitter.com/share?url=${document.URL}&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS" target="_blank">
+                        <a title = 'Share on Twitter' onclick = 'TweetThis("https://twitter.com/share?url=","&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS",true)' >
                             <img class = 'image-icon-bar' src="./images/twitter.png" alt="Twitter" />
                         </a>
 
                         <!-- Facebook -->
-                        <a  title = 'Share on Facebook' href="http://www.facebook.com/sharer.php?u=${document.URL}" target="_blank">
+                        <a  title = 'Share on Facebook' onclick = 'TweetThis("http://www.facebook.com/sharer.php?u=","",true)' >
                             <img class = 'image-icon-bar' src="./images/facebook.png" alt="Facebook" />
                         </a>
-                         
+                            
                         
                         `
 
@@ -1161,6 +1172,7 @@ function addLayer(layer){
     layerObj[id] = layer;
     layer.wasJittered = false;
     layer.loading = false;
+    layer.refreshNumber = refreshNumber;
 	if(layer.visible){checked = 'checked'}
     
     if(layer.viz.isTimeLapse){
@@ -1340,7 +1352,7 @@ function addLayer(layer){
         }
             
 	}
-    function turnOffAll(){
+    function turnOffAll(){  
         if(layer.visible){
             $('#'+visibleID).click();
         }
@@ -1363,6 +1375,7 @@ function addLayer(layer){
 		},delay)
 		
 	});
+    $('#'+ spinnerID + '2').click(function(){$('#'+visibleID).click();});
     //Try to zoom to layer if double clicked
 	$('#'+ spanID).dblclick(function(){
             zoomFunction();
@@ -1387,6 +1400,8 @@ function addLayer(layer){
         $('#'+visibleLabelID).addClass('vector-layer-checkbox');
         $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
         $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+        $('.vector-layer-checkbox').on('turnOffAllVectors',function(){turnOffAll()});
+        $('.vector-layer-checkbox').on('turnOnAllVectors',function(){turnOnAll()});
     }
     //Handle different object types
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection'){
@@ -1690,22 +1705,35 @@ function addLayer(layer){
                     if(layer.visible){
                         layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
                         layer.rangeOpacity = layer.opacity; 
-                        layer.layer.setOpacity(layer.opacity); 
+                        layer.layer.setOpacity(layer.opacity);
+                        $('#'+layer.legendDivID).show();
                          }else{layer.rangeOpacity = 0;}
                          $('#' + spinnerID).hide();
                         $('#' + visibleLabelID).show();
+
                         setRangeSliderThumbOpacity();
                 }
             }
         }
         //Asynchronous wrapper function to get GEE map service
+        layer.mapServiceTryNumber = 0;
         function getGEEMapService(){
             // layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
-            layer.item.getMap(layer.viz,function(eeLayer){geeAltService(eeLayer)});
+            layer.item.getMap(layer.viz,function(eeLayer){
+                if(eeLayer === undefined && layer.mapServiceTryNumber <=1){
+                    queryObj[queryID].queryItem = layer.item;
+                    layer.item = layer.item.visualize();
+                        getGEEMapService();
+                }else{
+                    geeAltService(eeLayer);
+                }  
+            });
+
             // layer.item.getMap(layer.viz,function(eeLayer){
                 // console.log(eeLayer)
                 // console.log(ee.data.getTileUrl(eeLayer))
             // })
+            layer.mapServiceTryNumber++;
         };
         getGEEMapService();
 
@@ -1825,4 +1853,5 @@ function addLayer(layer){
 			setRangeSliderThumbOpacity();
 	}
 }
+
 

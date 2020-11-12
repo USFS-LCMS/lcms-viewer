@@ -8,6 +8,9 @@ var warningShown = false;
 
 //------------Main Function to Run National Forest Products------------------------------------------------
 function runUSFS(){
+    startYear = parseInt(urlParams.startYear);
+    endYear = parseInt(urlParams.endYear);
+    analysisMode = urlParams.analysisMode;
     queryClassDict = {};
     var years = ee.List.sequence(startYear,endYear).getInfo();
 
@@ -94,9 +97,10 @@ function runUSFS(){
       
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       var lc2Dict = studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverDict;
+
       var nameList = Object.values(lc2Dict).map(function(v){return v.modelName}); 
       var legendList = Object.values(lc2Dict).map(function(v){return v.legendName}); 
-      console.log(JSON.stringify(ee.Dictionary.fromLists(ee.List(legendList.map(function(s){return s.replaceAll(' ','_').toLowerCase()})),ee.List(nameList)).getInfo()))
+      // console.log(JSON.stringify(ee.Dictionary.fromLists(ee.List(legendList.map(function(s){return s.replaceAll(' ','_').toLowerCase()})),ee.List(nameList)).getInfo()))
       var colorList = Object.values(lc2Dict).map(function(v){return v.color});
       var valueList = Object.keys(lc2Dict).map(function(k){return parseInt(k)});
 
@@ -107,6 +111,13 @@ function runUSFS(){
       Object.keys(lc2Dict).map(function(k){lc2ChartLegendDict[lc2Dict[k].legendName] = k/10.});
       Object.keys(lc2Dict).map(function(k){lc2ChartLookupDict[k/10.] = lc2Dict[k].legendName});
 
+     // var tDict = JSON.parse('{"Trees":"005e00","Trees/Shrubs Mix":"008000","Trees/Grass Mix":"b3ff1a","Trees/Barren Mix":"99ff99","Shrubs":"e68a00","Shrubs/Grass Mix":"ffad33","Shrubs/Barren Mix":"ffe0b3","Grass":"FFFF00","Grass/Barren Mix":"AA7700","Barren or Impervious":"d3bf9b","Snow/Ice":"ffffff","Water":"4780f3"}')
+     // var ttDictList = ['Trees','Shrubs','Grass','Barren or Impervious','Snow/Ice','Water']
+     // var ttDict = {};
+     // ttDictList.map(k => ttDict[k] = tDict[k]);
+     // console.log(ttDict)
+     //  Map2.addLayer(ee.Image(1),{addToClassLegend: true,classLegendDict:tDict},'test',true)
+     //  Map2.addLayer(ee.Image(1),{addToClassLegend: true,classLegendDict:ttDict},'test',true)
       var lc2 = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection);
      
       var landcoverByYears = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(year){
@@ -141,7 +152,7 @@ function runUSFS(){
       }
       if(startYear <firstYearTreeStack){startYearTreeStack = firstYearTreeStack}
       if(endYear > lastYearTreeStack){endYearTreeStack = lastYearTreeStack}
-      console.log(startYearTreeStack);console.log(endYearTreeStack)
+      // console.log(startYearTreeStack);console.log(endYearTreeStack)
       var possibleYears = ee.List.sequence(startYearTreeStack,endYearTreeStack).map(function(yr){return ee.String('Tree_').cat(ee.Number(yr).int16().format())});
      
       var treeMaskStack = ee.Image(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverTreemask);
@@ -501,22 +512,6 @@ function runUSFS(){
     // Map2.addLayer(subtleGain,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Subtle Gain')
     // Map2.addLayer(trend,{'min':-0.05,'max':0.05,'palette':'F00,888,00F'},'Trend')
     
-    if(analysisMode === 'advanced'){
-      Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red',years:years},'Landsat Composite Time Lapse',false);
-      var lastYearAdded = false;
-      // ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
-      //   var c = ee.Image(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-      //   Map2.addLayer(c.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+yr.toString(),false)
-      //   if(yr === endYear){lastYearAdded = true}
-      // })
-
-      // if(lastYearAdded === false){
-      //   // var c1 = ee.Image(composites.first());
-      //   var c2 = ee.Image(composites.sort('system:time_start',false).first());
-      //   // Map2.addLayer(c1,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+startYear.toString(),false)
-      //   Map2.addLayer(c2.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+endYear.toString(),false)
-      // }
-    }
 
 
     //----------Other Housekeeping & Prep for adding layers
@@ -602,7 +597,15 @@ function runUSFS(){
       Map2.addLayer(landcoverMaxByYears.mode().clip(boundary).set('bounds',clientBoundary),{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup},lcLayerName,false);
     
     }else{
-      Map2.addLayer(NFSLC.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName,false); 
+      // print(landcoverClassQueryDict)
+      // print(lcPalette);
+      // print(landcoverClassLegendDict)
+      // lcPalette = lcPalette.filter(i => i !== 'F0F')
+      // lcValues = lcValues.filter(i => i !== 3)
+      // lcPalette['Barren']
+      // delete landcoverClassQueryDict[3]
+      // delete landcoverClassLegendDict['Impervious']
+      Map2.addLayer(NFSLC.mode().multiply(10).clip(boundary).set('bounds',clientBoundary),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict}, lcLayerName+'test',false); 
   
     }
 
@@ -738,6 +741,22 @@ function runUSFS(){
       }
     }
     
+    if(analysisMode === 'advanced'){
+      Map2.addTimeLapse(composites,{min:0.05,max:0.4,bands:'swir1,nir,red',years:years},'Landsat Composite Time Lapse',false);
+      var lastYearAdded = false;
+      // ee.List.sequence(startYear,endYear,10).getInfo().map(function(yr){
+      //   var c = ee.Image(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+      //   Map2.addLayer(c.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+yr.toString(),false)
+      //   if(yr === endYear){lastYearAdded = true}
+      // })
+
+      // if(lastYearAdded === false){
+      //   // var c1 = ee.Image(composites.first());
+      //   var c2 = ee.Image(composites.sort('system:time_start',false).first());
+      //   // Map2.addLayer(c1,{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+startYear.toString(),false)
+      //   Map2.addLayer(c2.set('bounds',clientBoundary),{min:0.05,max:0.4,bands:'swir1,nir,red'},'Landsat Composite '+endYear.toString(),false)
+      // }
+    }
         Map2.addTimeLapse(lossGain,{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'},years:years},'Loss/Gain Time Lapse',false); 
     if(studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== undefined && studyAreaDict[longStudyAreaName].lcmsSecondaryLandcoverCollection !== null){
       Map2.addTimeLapse(landcoverMaxByYears,{min:valueList[0],max:valueList[valueList.length-1],palette:colorList,addToClassLegend:true,classLegendDict:lc2LegendDict,queryDict:lc2Lookup,years:years},'Land Cover Time Lapse',false);
@@ -1028,7 +1047,9 @@ function runUSFS(){
 //------------------------------Main Function to Run CONUS Product----------------------------------------------------------
 
 function runCONUS(){
-  
+  startYear = parseInt(urlParams.startYear);
+  endYear = parseInt(urlParams.endYear);
+  analysisMode = urlParams.analysisMode;
   getLCMSVariables();
   queryClassDict = {};
   setupDownloads(studyAreaName);
@@ -1319,14 +1340,16 @@ function runCONUS(){
 function runBaseLearner(){
  // var startYear = 1984;
 // var endYear = 2019;
+var startYear = parseInt(urlParams.startYear);
+var endYear = parseInt(urlParams.endYear);
 
 var transform = [30,0,-2361915.0,0,-30,3177735.0];
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
-var lossThresh  = lossMagThresh *-1000;//2000;
-var gainThresh = gainMagThresh *1000;//2000;
+var lossThresh  = parseFloat(urlParams.lossMagThresh) *-10000;//2000;
+var gainThresh = parseFloat(urlParams.gainMagThresh) *10000;//2000;
 
 var crs  = 'EPSG:5070';
 var indexName = 'NBR';
@@ -1337,8 +1360,11 @@ var gainMagPalette = 'F5DEB3,006400';
 var durPalette = 'BD1600,E2F400,0C2780';
 
 // Map: projects/LCMS/CONUS_Products/v20200120
-var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
-              
+// var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120');
+var ltCONUS = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/Base-Learners/LandTrendr-Collection-1984-2020');
+// var ltCONUS = ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7');
+var ltAK = ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection-1984-2020')
+var lt = ltCONUS.merge(ltAK);
 // var treeMask = ee.Image('projects/LCMS/CONUS_Products/CONUS_LCMS_ForestMask').translate(15,-15);
       
 // var forestMaskQueryDict = {1:'Tree',3:'Woody Wetland',2:'Shrub',0:'Other'};
@@ -1350,9 +1376,11 @@ var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT20200120')
 // var ltCONUS = ee.ImageCollection('projects/LCMS/CONUS_Products/LT').filter(ee.Filter.stringContains('system:index',indexName)).mosaic();
 // var ltR4  = ee.Image(ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Base-Learners/LANDTRENDR-Collection-fmask-allL7')
           // .filter(ee.Filter.eq('band',indexName)).first());
-var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
-  .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
-  .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+// var composites = ee.ImageCollection('projects/LCMS/CONUS_MEDOID')
+//   .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
+//   .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites').merge(ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection'));
+
 composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
   return composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
 }))
@@ -1362,7 +1390,6 @@ composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(functi
 function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fittedPrefix,sign,lossThresh,gainThresh){
   var ltFitted = ltStack.select([fittedPrefix+'.*']).multiply(sign);
   var ltYrs = ltStack.select([yrsPrefix+'.*']);
-  
 
   var lossYearStack = ee.Image(ee.List.sequence(startSeg,endSeg).iterate(function(i,img){
     var i1 = ee.Number(i).byte().format();
@@ -1404,11 +1431,15 @@ function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fitte
   return out
 }
 
-Object.keys(whichIndices).map(function(k){
+Object.keys(whichIndices2).map(function(k){
   var indexName = k;
-  if(whichIndices[k]){
-    var ltCONUST = ltCONUS.filter(ee.Filter.eq('timeSeries',indexName)).mosaic();
-    var lossGainCONUSLT = getLossGainLT(ltCONUST,startYear,endYear,0,9,'doy','ftv',1,lossThresh,gainThresh);
+  
+  if(whichIndices2[k]){
+    console.log(indexName); 
+    var ltCONUST = lt.filter(ee.Filter.eq('band',indexName)).mosaic();
+
+    var lossGainCONUSLT = getLossGainLT(ltCONUST,startYear,endYear,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh);
+   
     Map2.addExport(lossGainCONUSLT.int16().unmask(-32768,false),'LANDTRENDR Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
     Map2.addLayer(lossGainCONUSLT.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'LANDTRENDR Loss Year '+indexName,true);
     Map2.addLayer(lossGainCONUSLT.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'LANDTRENDR Loss Mag '+indexName,false);
@@ -1867,7 +1898,10 @@ var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
 function runLT(){
   // var startYear = 1984;
   // var endYear   = 2019;
-  
+  startYear = parseInt(urlParams.startYear);
+  endYear = parseInt(urlParams.endYear);
+  startJulian = parseInt(urlParams.startJulian);
+  endJulian = parseInt(urlParams.endJulian);
   /////////////////////////////////////////////////////////////////
   //Function for only adding common indices
   function simpleAddIndices(in_image){
@@ -2673,12 +2707,15 @@ function getSelectLayers(){
   var wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
   var wilderness = wdpa.filter(ee.Filter.eq('DESIG', 'Wilderness'));
   var counties = ee.FeatureCollection('TIGER/2018/Counties');
+  var tiles  = ee.FeatureCollection("users/jdreynolds33/Zones_New");
   var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
   var ecoregions_subsections = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections');
   ecoregions_subsections = ecoregions_subsections.select(['MAP_UNIT_N'], ['NAME'], true);
   var ecoregions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions');
   ecoregions = ecoregions.select(['SECTION'],['NAME'])
   var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
+
+  // Map2.addSelectLayer(tiles,{strokeColor:'BB0',layerType:'geeVectorImage'},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
 
   Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
 
@@ -2706,79 +2743,170 @@ function getSelectLayers(){
 }
 
 function runTest(){
-  // Map2.addLayer(ee.Image(1).clip(eeBoundsPoly),{},'Test Image',false);
-  // var values = [1,2,3,4,3,2];
-  // var c = ee.ImageCollection(values.map(function(i){return ee.Image(i).byte()}))
+//   var tcc = ee.ImageCollection("projects/LCMS/TCC/Grids")
+
+// tcc = ee.List.sequence(1984,2018).map(function(yr){
+//   var t = tcc.filter(ee.Filter.eq('year',yr)).mosaic();
+// //   // Map.addLayer(t,{min:20,max:80,palette:'000,0F0'},yr.toString(),false)
+//   return t.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
+// })
+// tcc = ee.ImageCollection(tcc).select([0],['Tree Canopy Cover']);
+// var longStudyAreaName = 'Science Team CONUS'
+// var whichIndex = 'NBR'
+// var lcms  = ee.ImageCollection(studyAreaDict[longStudyAreaName].lcmsCollection).map(function(img){return img.translate(15,-15)});
   
-  // Map2.addLayer(c,{},'Test Collection wo time',false);
-  // var c = ee.ImageCollection(values.map(function(i){return ee.Image([i,i+1,i+2]).byte().set('system:time_start',ee.Date.fromYMD(2000,i,1).millis())}));
   
-  // // Map2.addLayer(c,{},'Test Collection w time',false);
-  // var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
-  //         // .filter(ee.Filter.calendarRange(190,250))
-  //         .filterBounds(eeBoundsPoly).select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
-  // l8 = l8.map(cFmaskCloud).map(cFmaskCloudShadow)
-  // Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']),{min:500,max:3500,bands:'swir2,nir,red'},'l8');
-  // Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']).sort('system:time_start',false).mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'l82');
   
-  // var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7')
-  // Map2.addLayer(composites,{min:500,max:3500,bands:'swir2,nir,red'},'composites',false);
-  // // Map2.addLayer(composites.mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'composites2',false);
-  // // var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  // // Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
-  // // Map2.addSerializedLayer('{"type":"Invocation","arguments":{"value":1},"functionName":"Image.constant"}',{},'testSerial');
-  var r4Runs = {
+// // //   /////////////////////////////////////////
+//   lcms = ee.List.sequence(startYear,endYear).map(function(yr){
+
+//     var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+//     lcmsT = lcmsT.unmask(0);
+//     // lcmsT = ee.IDSmage(multBands(lcmsT,1,[0.01])).float()
+//     return lcmsT.rename(['Loss Probability']).byte();
+//   });
+//   lcms = ee.ImageCollection.fromImages(lcms);
+
+// var joined = joinCollections(tcc,lcms,false);
+
+// var ltCONUS = ee.ImageCollection(studyAreaDict[longStudyAreaName].ltCollection)
+//                 .filter(ee.Filter.eq('timeSeries',whichIndex)).mosaic();
+  
+//     var yrNames = ee.List.sequence(1,11).map(function(i){return ee.String('yrs_').cat(ee.Number(i).byte().format())});
+//     var fitNames = ee.List.sequence(1,11).map(function(i){return ee.String('fit_').cat(ee.Number(i).byte().format())});
+
+//     var ltCONUSYr = ltCONUS.select(['doy.*'],yrNames);
+//     var ltCONUSFit = ltCONUS.select(['ftv.*'],fitNames);
+
+//     ltCONUS = ltCONUSYr.addBands(ltCONUSFit);
+//     var ltCONUSCT =fitStackToCollection(ltCONUS, 10, startYear, endYear).select(['fitted'],[whichIndex + '_LT_Fitted']).map(function(img){return multBands(img,-1,0.1)});
+    
+
+//     joined = joinCollections(joined,ltCONUSCT,false);
+
+//     var composites = ee.ImageCollection(studyAreaDict[longStudyAreaName].compositeCollection)
+//       .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+//       .select([0,1,2,3,4,5],['blue','green','red','nir','swir1','swir2'])
+//       .filter(ee.Filter.stringContains('system:index','ONUS_Medoid_Jun-Sept').not());
+//     // Map2.addTimeLapse(rnrThresh.limit(8).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
+//   var raw = composites.map(simpleAddIndices).select([whichIndex],[whichIndex + '_Composite']).map(function(img){
+//     img = multBands(img,1,100)
+//     return setSameDate(img)});
+
+//   joined = joinCollections(joined,raw,false);
+// var lossYear = lcms.map(function(img){
+//     var yr = ee.Number(ee.Date(img.get('system:time_start')).get('year'));
+//     return ee.Image(yr).updateMask(img.gte(30)).int16();
+//   }).max()
+
+// var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+// // Map2.addLayer(lossYear,{min:startYear,max:endYear,palette:lossYearPalette},'Loss Year')
+// // pixelChartCollections['test'] = {'label':'Test','collection':joined,'colors':['0F0','FF0']}
+// var ccdcImg = ee.Image('users/iwhousman/test/ChangeCollection/CCDC-Test3');
+// Map2.addLayer(ccdcImg);
+// var t  = ee.Image(ee.Array([[1,2,3],[4,5,6]]));
+// console.log(t.getInfo());
+// Map2.addLayer(t);
+// Map2.addLayer(lossYear)
+// console.log(lossYear.arrayDimensions())
+// console.log(lossYear.getInfo().bands[0].dimensions)
+// populatePixelChartDropdown();
+// Map2.addTimeLapse(tcc,{min:0,max:100,palette:palettes.crameri.bamako[50].reverse()},'TCC Time Lapse')
+//   // Map2.addLayer(ee.Image(1).clip(eeBoundsPoly),{},'Test Image',false);
+//   // var values = [1,2,3,4,3,2];
+//   // var c = ee.ImageCollection(values.map(function(i){return ee.Image(i).byte()}))
+  
+//   // Map2.addLayer(c,{},'Test Collection wo time',false);
+//   // var c = ee.ImageCollection(values.map(function(i){return ee.Image([i,i+1,i+2]).byte().set('system:time_start',ee.Date.fromYMD(2000,i,1).millis())}));
+  
+//   // // Map2.addLayer(c,{},'Test Collection w time',false);
+//   // var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+//   //         // .filter(ee.Filter.calendarRange(190,250))
+//   //         .filterBounds(eeBoundsPoly).select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
+//   // l8 = l8.map(cFmaskCloud).map(cFmaskCloudShadow)
+//   // Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']),{min:500,max:3500,bands:'swir2,nir,red'},'l8');
+//   // Map2.addLayer(l8.select(['blue','green','red','nir','swir1','swir2']).sort('system:time_start',false).mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'l82');
+  
+//   // var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R1/FNF/Composites/Composite-Collection-fmask-allL7')
+//   // Map2.addLayer(composites,{min:500,max:3500,bands:'swir2,nir,red'},'composites',false);
+//   // // Map2.addLayer(composites.mosaic(),{min:500,max:3500,bands:'swir2,nir,red'},'composites2',false);
+//   // // var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+//   // // Map2.addLayer(perims,{strokeColor:'00F',layerType:'geeVectorImage'},'MTBS Burn Perimeters',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Areas can have multiple mapped fires.')
+//   // // Map2.addSerializedLayer('{"type":"Invocation","arguments":{"value":1},"functionName":"Image.constant"}',{},'testSerial');
+//   var r4Runs = {
+//     // 'PR':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_pr_annualized',
+//     // 'thresholds' : {'loss': 0.35, 'slowLoss': 0.35, 'fastLoss': 0.6, 'gain': 0.35} },
+//     // 'Equal':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_equal_annualized',
+//     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.5, 'gain': 0.45}},
+    
+//     'EPWT':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
+//     'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.45, 'gain': 0.4}},
+//     // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
+//     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
+//   };
+  var runs = {
     // 'PR':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_pr_annualized',
     // 'thresholds' : {'loss': 0.35, 'slowLoss': 0.35, 'fastLoss': 0.6, 'gain': 0.35} },
     // 'Equal':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_equal_annualized',
     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.5, 'gain': 0.45}},
     
-    'EPWT':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epwt_annualized',
-    'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.45, 'gain': 0.4}},
+    'SEAK_Vert':
+    {'collection':'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast-VertexFormat',
+    'thresholds':{'loss': 0.38333333333333336, 'slowLoss': 0.68, 'fastLoss': 0.31, 'gain': 0.35},
+    'treeMask':ee.Image('projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/Landcover_Probability_Treemask_Stack').reduce(ee.Reducer.max()).selfMask()
+  },
+    'SEAK_Ann':
+    {'collection':'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast-AnnualizedFormat',
+    'thresholds':{'loss': 0.24, 'slowLoss': 0.15, 'fastLoss': 0.22, 'gain': 0.25},
+    'treeMask':ee.Image('projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/Landcover_Probability_Treemask_Stack').reduce(ee.Reducer.max()).selfMask()
+  },
     // 'EPM':{'collection':'projects/USFS/LCMS-NFS/R4/Landcover-Landuse-Change/R4_all_epm_annualized',
     // 'thresholds':{'loss': 0.35, 'slowLoss': 0.3, 'fastLoss': 0.4, 'gain': 0.35}}
   };
-  var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7');
+//   var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/R4/Composites/Composite-Collection-fmask-allL7');
 
-  var chartColorsT;
-  var areaChartColors;
-  var colorOffset = 15;
-  var colorOffsetDir = 1;
-  chartColors = chartColors.concat(chartColors.map(function(c){return LightenDarkenColor(c,-20)}))
-                .concat(chartColors.map(function(c){return LightenDarkenColor(c,30)}))
+  // var chartColorsT;
+  // var areaChartColors;
+//   var colorOffset = 15;
+//   var colorOffsetDir = 1;
+//   chartColors = chartColors.concat(chartColors.map(function(c){return LightenDarkenColor(c,-20)}))
+//                 .concat(chartColors.map(function(c){return LightenDarkenColor(c,30)}))
   getLCMSVariables();
 
-  var areaCollection;
-  var chartCollectionT;
-  var clientBoundary = clientBoundsDict.R4
-  Object.keys(r4Runs).map(function(k){
-    if(chartColorsT === undefined){
-      chartColorsT = chartColorsDict.test;
-      areaChartColors = chartColorsDict.testArea;
-      }else{
-        chartColorsT = chartColorsT.concat(chartColorsDict.test.map(function(c){return LightenDarkenColor(c,colorOffset*colorOffsetDir)}));
-        areaChartColors = areaChartColors.concat(chartColorsDict.testArea.map(function(c){return LightenDarkenColor(c,colorOffset*colorOffsetDir)}));
+//   var areaCollection;
+//   var chartCollectionT;
+  var clientBoundary = clientBoundsDict.Alaska;
+
+
+  Object.keys(runs).map(function(k){
+//     if(chartColorsT === undefined){
+//       chartColorsT = chartColorsDict.test;
+//       areaChartColors = chartColorsDict.testArea;
+//       }else{
+//         chartColorsT = chartColorsT.concat(chartColorsDict.test.map(function(c){return LightenDarkenColor(c,colorOffset*colorOffsetDir)}));
+//         areaChartColors = areaChartColors.concat(chartColorsDict.testArea.map(function(c){return LightenDarkenColor(c,colorOffset*colorOffsetDir)}));
         
-      };
-      colorOffset +=30;
-      if(colorOffsetDir === 1){colorOffsetDir = -1}
-        else{colorOffsetDir = 1}
-      // console.log(colorOffset)
-      // console.log(areaChartColors)
+//       };
+//       colorOffset +=30;
+//       if(colorOffsetDir === 1){colorOffsetDir = -1}
+//         else{colorOffsetDir = 1}
+//       // console.log(colorOffset)
+//       // console.log(areaChartColors)
    
 
-    // $('#layer-list').prepend(`<div class = 'dropdown-divider'></div>`)
-    var rawC = ee.ImageCollection(r4Runs[k].collection);
+//     // $('#layer-list').prepend(`<div class = 'dropdown-divider'></div>`)
+    var rawC = ee.ImageCollection(runs[k].collection);
     
-    // Map2.addLayer(rawC,{'opacity':0},k + ' Raw',false);
+    Map2.addLayer(rawC,{'opacity':0},k + ' Raw',false);
 
-    var thresholds = r4Runs[k].thresholds;
-    
+    var thresholds = runs[k].thresholds;
+    var treeMask = runs[k].treeMask;
     var lowerThresholdDecline =thresholds.loss;
     var lowerThresholdSlowDecline = thresholds.slowLoss;
     var lowerThresholdFastDecline = thresholds.fastLoss;
     var lowerThresholdRecovery = thresholds.gain;
-
+    var startYear = 1985;
+    var endYear = 2020;
     var NFSLCMS = rawC
                   // .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast'))
                   .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
@@ -2786,26 +2914,26 @@ function runTest(){
                   .map(function(img){return ee.Image(additionBands(img,[0,1,0,0,0,0]))})
                   .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.01,0.01,0.01,0.01])).float()})
                   .select([0,1,2,3,4,5],['Land Cover Class','Land Use Class','Loss Probability','Gain Probability','Slow Loss Probability','Fast Loss Probability']);
-    // var NFSLCMSold = ee.ImageCollection(collectionDict[studyAreaName][1])
-    //               .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast').not())
-    //               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-    //               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0]))})
-    //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
-    //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
-    var rawCT = NFSLCMS.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']).map(function(img){return img.unmask()})
-    if(chartCollectionT === undefined){
-      chartCollectionT = rawCT;
-    }
-    else{
-      chartCollectionT = joinCollections(chartCollectionT,rawCT,false)
-    }
-    var lcJSON = JSON.parse(NFSLCMS.get('landcoverJSON').getInfo());
-    var luJSON = JSON.parse(NFSLCMS.get('landuseJSON').getInfo());
+//     // var NFSLCMSold = ee.ImageCollection(collectionDict[studyAreaName][1])
+//     //               .filter(ee.Filter.stringContains('system:index','DNDSlow-DNDFast').not())
+//     //               .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+//     //               .map(function(img){return ee.Image(additionBands(img,[1,1,1,0,0]))})
+//     //               .map(function(img){return ee.Image(multBands(img,1,[0.1,0.1,0.1,0.01,0.01])).float()})
+//     //               .select([0,1,2,3,4],['Land Cover Class','Land Use Class','Change Process','Decline Probability','Recovery Probability']);
+//     var rawCT = NFSLCMS.select([0,1,2,3,4,5],[k+'_LC',k+'_LU',k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss']).map(function(img){return img.unmask()})
+//     if(chartCollectionT === undefined){
+//       chartCollectionT = rawCT;
+//     }
+//     else{
+//       chartCollectionT = joinCollections(chartCollectionT,rawCT,false)
+//     }
+//     var lcJSON = JSON.parse(NFSLCMS.get('landcoverJSON').getInfo());
+//     var luJSON = JSON.parse(NFSLCMS.get('landuseJSON').getInfo());
     
-    var lcJSONFlipped = {};
-    var luJSONFlipped = {};
-    Object.keys(lcJSON).map(function(k){lcJSONFlipped[lcJSON[k]['name']] = parseInt(k)});
-    Object.keys(luJSON).map(function(k){luJSONFlipped[luJSON[k]['name']] = parseInt(k)});
+//     var lcJSONFlipped = {};
+//     var luJSONFlipped = {};
+//     Object.keys(lcJSON).map(function(k){lcJSONFlipped[lcJSON[k]['name']] = parseInt(k)});
+//     Object.keys(luJSON).map(function(k){luJSONFlipped[luJSON[k]['name']] = parseInt(k)});
 
 
      //----------Other Housekeeping & Prep for adding layers
@@ -2814,73 +2942,73 @@ function runTest(){
     var fastDeclineNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdFastDecline.toString()+' and p <= '+upperThresholdDecline.toString()+')';
     var recoveryNameEnding = '('+startYear.toString() + '-' + endYear.toString()+') (p >= '+lowerThresholdRecovery.toString()+' and p <= '+upperThresholdRecovery.toString()+')';
 
-    var lcLayerName =  'Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
+//     var lcLayerName =  'Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
 
-    // var luPalette = "efff6b,ff2ff8,1b9d0c,97ffff,a1a1a1,c2b34a";
-    var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
+//     // var luPalette = "efff6b,ff2ff8,1b9d0c,97ffff,a1a1a1,c2b34a";
+//     var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
     
    
-    var landcoverClassLegendDict = {};var landcoverClassChartDict = {}
-    var lcPalette = Object.values(lcJSON).map(function(v){return v['color']});
-    var lcValues = Object.keys(lcJSON).map(function(i){return parseInt(i)});
+//     var landcoverClassLegendDict = {};var landcoverClassChartDict = {}
+//     var lcPalette = Object.values(lcJSON).map(function(v){return v['color']});
+//     var lcValues = Object.keys(lcJSON).map(function(i){return parseInt(i)});
    
-    Object.keys(lcJSON).map(function(k){landcoverClassLegendDict[lcJSON[k]['name']] = lcJSON[k]['color']});
-    Object.keys(lcJSON).map(function(k){landcoverClassChartDict[lcJSON[k]['name']] = k/10.});
+//     Object.keys(lcJSON).map(function(k){landcoverClassLegendDict[lcJSON[k]['name']] = lcJSON[k]['color']});
+//     Object.keys(lcJSON).map(function(k){landcoverClassChartDict[lcJSON[k]['name']] = k/10.});
 
-    var landuseClassLegendDict = {};var landuseClassChartDict = {}
-    var luPalette = Object.values(luJSON).map(function(v){return v['color']});
-    var luValues = Object.keys(luJSON).map(function(i){return parseInt(i)});
+//     var landuseClassLegendDict = {};var landuseClassChartDict = {}
+//     var luPalette = Object.values(luJSON).map(function(v){return v['color']});
+//     var luValues = Object.keys(luJSON).map(function(i){return parseInt(i)});
    
-    Object.keys(luJSON).map(function(k){landuseClassLegendDict[luJSON[k]['name']] = luJSON[k]['color']});
-    Object.keys(luJSON).map(function(k){landuseClassChartDict[luJSON[k]['name']] = k/10.});
+//     Object.keys(luJSON).map(function(k){landuseClassLegendDict[luJSON[k]['name']] = luJSON[k]['color']});
+//     Object.keys(luJSON).map(function(k){landuseClassChartDict[luJSON[k]['name']] = k/10.});
 
-var landcoverClassQueryDict = {};
-    Object.keys(landcoverClassChartDict).map(function(k){landcoverClassQueryDict[parseInt(landcoverClassChartDict[k]*10)] =k});
-    var landuseClassQueryDict = {};
-    Object.keys(landuseClassChartDict).map(function(k){landuseClassQueryDict[parseInt(landuseClassChartDict[k]*10)] =k})
-    var landcoverClassQueryDictDecimal = {};
-    Object.keys(landcoverClassQueryDict).map(function(k){landcoverClassQueryDictDecimal[k/10]= landcoverClassQueryDict[k]});
-    var landuseClassQueryDictDecimal = {};
-    Object.keys(landuseClassQueryDict).map(function(k){landuseClassQueryDictDecimal[k/10]= landuseClassQueryDict[k]});
-    var chartTableDict = {
-    'Land Cover Class':landcoverClassQueryDictDecimal,
-    'Land Use Class':landuseClassQueryDictDecimal
+// var landcoverClassQueryDict = {};
+//     Object.keys(landcoverClassChartDict).map(function(k){landcoverClassQueryDict[parseInt(landcoverClassChartDict[k]*10)] =k});
+//     var landuseClassQueryDict = {};
+//     Object.keys(landuseClassChartDict).map(function(k){landuseClassQueryDict[parseInt(landuseClassChartDict[k]*10)] =k})
+//     var landcoverClassQueryDictDecimal = {};
+//     Object.keys(landcoverClassQueryDict).map(function(k){landcoverClassQueryDictDecimal[k/10]= landcoverClassQueryDict[k]});
+//     var landuseClassQueryDictDecimal = {};
+//     Object.keys(landuseClassQueryDict).map(function(k){landuseClassQueryDictDecimal[k/10]= landuseClassQueryDict[k]});
+//     var chartTableDict = {
+//     'Land Cover Class':landcoverClassQueryDictDecimal,
+//     'Land Use Class':landuseClassQueryDictDecimal
     
 
-  }
+  
 
-    var rawLC = rawC
-                .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-                .select([0],['LC']);
-    var rawLU = rawC
-                .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-                .select([1],['LU'])
-                .map(function(img){return ee.Image(additionBands(img,[1]))});
+//     var rawLC = rawC
+//                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+//                 .select([0],['LC']);
+//     var rawLU = rawC
+//                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+//                 .select([1],['LU'])
+//                 .map(function(img){return ee.Image(additionBands(img,[1]))});
 
-    var NFSLCMSForCharting = NFSLCMS;
-    var minTreeNumber = 3;
-    var applyTreeMask = 'no'
-    if(applyTreeMask === 'yes'){
-      console.log('Applying tree mask');
-      // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
-      // waterMask = waterMask.mask(waterMask).clip(boundary);
+//     var NFSLCMSForCharting = NFSLCMS;
+//     var minTreeNumber = 3;
+//     var applyTreeMask = 'no'
+//     if(applyTreeMask === 'yes'){
+//       console.log('Applying tree mask');
+//       // var waterMask = rawLC.map(function(img){return img.eq(6)}).sum().gt(10);
+//       // waterMask = waterMask.mask(waterMask).clip(boundary);
       
-      if((endYear-startYear) < minTreeNumber){minTreeNumber = endYear-startYear+1}
-       if (studyAreaName == 'CNFKP'){
-            var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees).or(img.eq(lcJSONFlipped['Tall Shrub']))}).sum().gte(minTreeNumber);
-          }else{
-            var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
-          }
-      //var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
-      treeMask = treeMask.mask(treeMask).clip(boundary);
+//       if((endYear-startYear) < minTreeNumber){minTreeNumber = endYear-startYear+1}
+//        if (studyAreaName == 'CNFKP'){
+//             var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees).or(img.eq(lcJSONFlipped['Tall Shrub']))}).sum().gte(minTreeNumber);
+//           }else{
+//             var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
+//           }
+//       //var treeMask = rawLC.map(function(img){return img.eq(lcJSONFlipped.Trees)}).sum().gte(minTreeNumber);
+//       treeMask = treeMask.mask(treeMask).clip(boundary);
       
-      NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask))});
+//       NFSLCMS = NFSLCMS.map(function(img){return img.updateMask(ee.Image([1,1]).addBands(treeMask).addBands(treeMask).addBands(treeMask).addBands(treeMask))});
 
-    }
+//     }
     
-    var NFSLC =  NFSLCMS.select([0]);
-    var NFSLU =  NFSLCMS.select([1]);
-    //var NFSCP =  NFSLCMS.select([2]);
+//     var NFSLC =  NFSLCMS.select([0]);
+//     var NFSLU =  NFSLCMS.select([1]);
+//     //var NFSCP =  NFSLCMS.select([2]);
 
     var NFSDND = NFSLCMS.select([2]);
 
@@ -2904,44 +3032,45 @@ var landcoverClassQueryDict = {};
     var dndSlowThresh = thresholdChange(NFSDNDSlow,lowerThresholdSlowDecline,upperThresholdDecline, 1);
     var dndFastThresh = thresholdChange(NFSDNDFast,lowerThresholdFastDecline,upperThresholdDecline, 1);
 
-    var threshImage = ee.Image([lowerThresholdFastDecline,lowerThresholdSlowDecline,lowerThresholdRecovery]);
-    var lossGain = NFSLCMS.select([5,4,3]).map(function(img){
-      return img.updateMask(img.gte(threshImage))
-    })
-    lossGain = lossGain.map(function(img){
-      var maxProb = img.reduce(ee.Reducer.max());
-      var out = ee.Image([1,2,3]).mask(img.eq(maxProb)).reduce(ee.Reducer.min())
+//     var threshImage = ee.Image([lowerThresholdFastDecline,lowerThresholdSlowDecline,lowerThresholdRecovery]);
+//     var lossGain = NFSLCMS.select([5,4,3]).map(function(img){
+//       return img.updateMask(img.gte(threshImage))
+//     })
+//     lossGain = lossGain.map(function(img){
+//       var maxProb = img.reduce(ee.Reducer.max());
+//       var out = ee.Image([1,2,3]).mask(img.eq(maxProb)).reduce(ee.Reducer.min())
       
-      out = out.copyProperties(img,['system:time_start']);
-      return out
-    })
+//       out = out.copyProperties(img,['system:time_start']);
+//       return out
+//     })
 
-    // Map2.addTimeLapse(composites.limit(4),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',opacity:0.5},'Composites Time Lapse',false);
-    // Map2.addTimeLapse(lossGain.limit(4),{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
-    // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+//     // Map2.addTimeLapse(composites.limit(4),{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',opacity:0.5},'Composites Time Lapse',false);
+//     // Map2.addTimeLapse(lossGain.limit(4),{min:1,max:3,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'FF0','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
+//     // Map2.addTimeLapse(lossGain.limit(5),{min:1,max:2,palette:'F80,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'}},'Loss/Gain Time Lapse',false); 
      
-    var yrs = [1989,1990,1991,1992,1993,1994,2000,2001,2002,2005,2019]
-    var l = yrs.map(function(yr){return dndThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
-    l = ee.ImageCollection(l);
-    var g = yrs.map(function(yr){return rnrThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
-    g = ee.ImageCollection(g);
-    // print(c.getInfo())
-    Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    // Map2.addLayer(l.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    Map2.addLayer(dndThresh.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
-    // Map2.addTimeLapse(rnrThresh.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
-    // Map2.addTimeLapse(dndThresh.limit(5).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
-    // Map2.addTimeLapse(rnrThresh.limit(5).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
-    var stacked = joinCollections(dndThresh.select([0]),rnrThresh.select([0]), false);
-    stacked = joinCollections(stacked,dndSlowThresh.select([0]), false);
-    stacked = joinCollections(stacked,dndFastThresh.select([0]), false);
-    stacked = stacked.map(function(img){return img.mask()}).select([0,1,2,3],[k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss'])
-    if(areaCollection === undefined){
-      areaCollection = stacked;
-    }else{areaCollection = joinCollections(areaCollection,stacked, false);}
+//     var yrs = [1989,1990,1991,1992,1993,1994,2000,2001,2002,2005,2019]
+//     var l = yrs.map(function(yr){return dndThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
+//     l = ee.ImageCollection(l);
+//     var g = yrs.map(function(yr){return rnrThresh.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())})
+//     g = ee.ImageCollection(g);
+//     // print(c.getInfo())
+//     // Map2.addTimeLapse(l.select([0]),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+//     Map2.addLayer(l.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+//     // Map2.addLayer(dndThresh.select([0]).max(),{min:lowerThresholdDecline,max:1,palette:'FF0,F00'},'Loss');
+//     // Map2.addTimeLapse(rnrThresh.select([0]),{min:lowerThresholdRecovery,max:1,palette:'080,0F0'},'Gain');
+//     // Map2.addTimeLapse(dndThresh.limit(5).select([0]),{min:lowerThresholdDecline,max:100,palette:'FF0,F00'},'Loss');
+//     // Map2.addTimeLapse(rnrThresh.limit(5).select([0]),{min:lowerThresholdRecovery,max:100,palette:'080,0F0'},'Gain')
+//     var stacked = joinCollections(dndThresh.select([0]),rnrThresh.select([0]), false);
+//     stacked = joinCollections(stacked,dndSlowThresh.select([0]), false);
+//     stacked = joinCollections(stacked,dndFastThresh.select([0]), false);
+//     stacked = stacked.map(function(img){return img.mask()}).select([0,1,2,3],[k+'_Loss',k+'_Gain',k+'_Slow_Loss',k+'_Fast_Loss'])
+//     if(areaCollection === undefined){
+//       areaCollection = stacked;
+//     }else{areaCollection = joinCollections(areaCollection,stacked, false);}
     
     var summaryMethod = 'year';
     if(summaryMethod === 'year'){
+
       var dndThreshOut = dndThresh.qualityMosaic('Loss Probability_change_year');//.qualityMosaic('Decline_change');
       // var dndThreshOutOld = dndThreshOld.qualityMosaic('Decline Probability_change_year');//.qualityMosaic('Decline_change');
 
@@ -2953,23 +3082,24 @@ var landcoverClassQueryDict = {};
       var threshYearNameEnd = 'Most recent year of ';
       var threshProbNameEnd = 'Probability of most recent year of ';
       var exportSummaryMethodNameEnd = 'Most Recent';
+
     }
-    else{
-      var dndThreshOut = dndThresh.qualityMosaic('Loss Probability');//.qualityMosaic('Decline_change');
+//     else{
+//       var dndThreshOut = dndThresh.qualityMosaic('Loss Probability');//.qualityMosaic('Decline_change');
       
-      // var dndThreshOutOld = dndThreshOld.qualityMosaic('Decline Probability');//.qualityMosaic('Decline_change');
+//       // var dndThreshOutOld = dndThreshOld.qualityMosaic('Decline Probability');//.qualityMosaic('Decline_change');
       
 
-      var rnrThreshOut = rnrThresh.qualityMosaic('Gain Probability');//.qualityMosaic('Recovery_change');
+//       var rnrThreshOut = rnrThresh.qualityMosaic('Gain Probability');//.qualityMosaic('Recovery_change');
       
-      var dndSlowThreshOut = dndSlowThresh.qualityMosaic('Slow Loss Probability');//.qualityMosaic('Decline_change');
-      var dndFastThreshOut = dndFastThresh.qualityMosaic('Fast Loss Probability');//.qualityMosaic('Recovery_change');
+//       var dndSlowThreshOut = dndSlowThresh.qualityMosaic('Slow Loss Probability');//.qualityMosaic('Decline_change');
+//       var dndFastThreshOut = dndFastThresh.qualityMosaic('Fast Loss Probability');//.qualityMosaic('Recovery_change');
       
 
-      var threshYearNameEnd = 'Year of highest probability of ';
-      var threshProbNameEnd = 'Highest probability of ';
-      var exportSummaryMethodNameEnd = 'Highest Probability';
-    }
+//       var threshYearNameEnd = 'Year of highest probability of ';
+//       var threshProbNameEnd = 'Highest probability of ';
+//       var exportSummaryMethodNameEnd = 'Highest Probability';
+//     }
 
     var dndCount = dndThresh.select([0]).count();
     var rnrCount = rnrThresh.select([0]).count();
@@ -2978,49 +3108,52 @@ var landcoverClassQueryDict = {};
     var dndFastCount = dndFastThresh.select([0]).count();
     // Map2.addLayer(NFSLC.mode().multiply(10),{queryDict:landcoverClassQueryDict,'palette':lcPalette,'min':lcValues[0],'max':lcValues[lcValues.length-1],addToClassLegend: true,classLegendDict:landcoverClassLegendDict},  k+' '+lcLayerName,false); 
     // Map2.addLayer(NFSLU.mode().multiply(10),{queryDict:landuseClassQueryDict,'palette':luPalette,'min':1,'max':6,addToClassLegend: true,classLegendDict:landuseClassLegendDict}, k+' '+luLayerName,false); 
+    var treeClassLegendDict = {};
+    treeClassLegendDict['Tree (3 or more consecutive years)'] = '32681e';
+      Map2.addLayer(treeMask,{min:1,max:1,palette:'32681e',addToClassLegend: true,classLegendDict:treeClassLegendDict,queryDict:{1:'Tree (3 or more consecutive years)'}},k+' Tree Mask',false);
+      Map2.addLayer(dndThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},k+' Loss Year',true,null,null,k+ ' '+threshYearNameEnd+'loss ' +declineNameEnding);
 
-    // Map2.addLayer(dndThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette},k+' Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +declineNameEnding);
 
-
-      // Map2.addLayer(dndThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},k+ ' Loss Probability',true,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + declineNameEnding);
+        Map2.addLayer(dndThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':upperThresholdDecline ,'palette':declineProbPalette},k+ ' Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + declineNameEnding);
+        
+        
       
-      
-    
-    // Map2.addLayer(dndFastThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
-    // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
-    var years = ee.List.sequence(startYear,endYear).getInfo();
-    var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
-    //F80,e8edc4,54278f
-    // Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
-    // getHansen('layer-list')
-    // Map2.addLayer(dndFastThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
+      Map2.addLayer(dndFastThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Fast Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +fastDeclineNameEnding);
+      // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
+  //     var years = ee.List.sequence(startYear,endYear).getInfo();
+  //     var baseURL = 'https:\/\/storage.googleapis.com\/lcms-data-repository\/LCMS_R4_v2019-04_Loss_Gain_'
+  //     //F80,e8edc4,54278f
+  //     // Map2.addTimeLapse(baseURL,{timeLapseType :'tileMapService',years:years,addToClassLegend:true,classLegendDict:{'Fast Loss':'F80','Slow Loss':'e8edc4','Gain':'54278f'}},'Loss Gain Pre Computed Test')
+  //     // getHansen('layer-list')
+      Map2.addLayer(dndFastThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Fast Loss Probability',false,null,null,k + ' ' +threshProbNameEnd+ 'loss ' + fastDeclineNameEnding);
 
-    // Map2.addLayer(dndSlowThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Slow Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +slowDeclineNameEnding);
-    // Map2.addLayer(dndSlowThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Slow Loss Probability',false,null,null,k+ ' ' +threshProbNameEnd+ 'loss ' + slowDeclineNameEnding);
+      Map2.addLayer(dndSlowThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':declineYearPalette },k+' Slow Loss Year',false,null,null,k+ ' '+threshYearNameEnd+'loss ' +slowDeclineNameEnding);
+      Map2.addLayer(dndSlowThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdDecline,'max':0.8,'palette':declineProbPalette},k+' Slow Loss Probability',false,null,null,k+ ' ' +threshProbNameEnd+ 'loss ' + slowDeclineNameEnding);
 
-    // Map2.addLayer(rnrThreshOut.select([1]).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},k+' Gain Year',false,null,null,k+ ' '+threshYearNameEnd+'gain '+recoveryNameEnding);
-    // Map2.addLayer(rnrThreshOut.select([0]).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},k+ ' Gain Probability',false,null,null,k + ' ' +threshProbNameEnd+'gain '+recoveryNameEnding);
-      
-    // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
-  });
-// areaChartCollections['lg'] = {'label':'LCMS Runs',
-                                  // 'collection':areaCollection,
-                                  // 'stacked':false,
-                                  // 'steppedLine':false,
-                                  // 'colors':areaChartColors};
-// pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
-// chartCollection =chartCollectionT;
-// chartColors = chartColorsT
-// Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
-// Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
+      Map2.addLayer(rnrThreshOut.select([1]).updateMask(treeMask).set('bounds',clientBoundary),{'min':startYear,'max':endYear,'palette':recoveryYearPalette},k+' Gain Year',false,null,null,k+ ' '+threshYearNameEnd+'gain '+recoveryNameEnding);
+      Map2.addLayer(rnrThreshOut.select([0]).updateMask(treeMask).set('bounds',clientBoundary),{'min':lowerThresholdRecovery,'max':upperThresholdRecovery,'palette':recoveryProbPalette},k+ ' Gain Probability',false,null,null,k + ' ' +threshProbNameEnd+'gain '+recoveryNameEnding);
+        
+      // Map2.addLayer(ee.Image(1),{min:1,max:1,palette:'F00'})
+    });
+  // areaChartCollections['lg'] = {'label':'LCMS Runs',
+                                    // 'collection':areaCollection,
+                                    // 'stacked':false,
+                                    // 'steppedLine':false,
+                                    // 'colors':areaChartColors};
+  // pixelChartCollections['test'] = {'label':'Test','collection':chartCollectionT,'colors':chartColorsT}
+  // chartCollection =chartCollectionT;
+  // chartColors = chartColorsT
+  // Map2.addLayer(chartCollection,{opacity:0.5},'chartCollection',true);
+  // Map2.addLayer(areaCollection,{opacity:0.5},'areaCollection',true);
 
- // getSelectLayers();
- // populateAreaChartDropdown();   
- // populatePixelChartDropdown();
- // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')    
+   // getSelectLayers();
+   // populateAreaChartDropdown();   
+   // populatePixelChartDropdown();
+   // Map2.addLayer(ee.Image('USGS/NLCD/NLCD2016').select([0]),{'min':1,'max':90,'palette':'000,0F0'},'NLCD Landcover 2016')    
 
-
-             
+// })
+  var composites = ee.ImageCollection('projects/lcms-292214/assets/R10/CoastalAK/Composites/Composite-Collection');
+  Map2.addTimeLapse(composites,{min:500,max:7000,bands:'swir2,nir,red',gamma:1.6},'SEAK Composites',false)
 }
 function runFHP(){
   var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
@@ -3100,3 +3233,542 @@ function runFHP(){
                                   'xAxisLabel':'Year'};
    populatePixelChartDropdown();populateAreaChartDropdown();
 }
+///////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//Function for converting line from storm track table to an object
+function trackLineToObject(line){
+  var fields = line.split(',');
+  var wspd = fields[4].split('m')[0];
+  var pres = fields[5].split('m')[0];
+  return {'date':fields[0]+':'+fields[1],
+          'lat':parseFloat(fields[2]),
+          'lon':parseFloat(fields[3]),
+          'wspd':parseFloat(wspd),
+          'pres':parseFloat(pres),
+          'FO':fields[fields.length-1]
+    
+  };
+}
+////////////////////////////////////////////////////////////////////////////////
+function CalcStormMotion(y1,y2,x1,x2,dt){
+  y1 = ee.Number(y1).float();
+  y2 = ee.Number(y2).float();
+  x1 = ee.Number(x1).float();
+  x2 = ee.Number(x2).float();
+  dt = ee.Number(dt).float();
+  //return storm velocity components in meters per second
+  // V = (y2-y1) * 111. *1000/ float(dt)
+  var V = (y2.subtract(y1)).multiply(111).multiply(1000).divide(dt);
+
+  // U = (x2-x1) * math.cos(y1*math.pi/180.) * 111. *1000/ float(dt)
+  var U = (x2.subtract(x1)).multiply((y1.multiply(Math.PI/180)).cos()).multiply(111 *1000).divide(dt);
+  var out = ee.Dictionary({});
+  out = out.set('U',U);
+  out = out.set('V',V)
+  return ee.Dictionary(out);
+}
+////////////////////////////////////////////////////////////////////////////////
+function getCoordGrid(lng,lat){
+  var crs = 'EPSG:5070';
+  // var transform = null;//[30,0,-2361915.0,0,-30,3177735.0];
+  // var scale = 30;
+  var pt = ee.FeatureCollection([ee.Feature(ee.Geometry.Point([lng,lat]))]);
+  // Map.addLayer(pt)
+  var proj = ee.Projection(crs);
+  
+  var coords = ee.Image.pixelCoordinates(proj).float();
+  var ptValues = ee.Image.constant(ee.List(ee.Dictionary(coords.reduceRegion(ee.Reducer.first(), pt, 1, crs)).values()));
+  coords = coords.subtract(ptValues);
+  coords = coords.updateMask(coords.lte(maxDistance*1000))
+  return coords.multiply(ee.Image([1,-1]));//.reproject(crs,null,1);
+}
+////////////////////////////////////////////////////////////////////////////////
+//Function for creating wind fields from a pair of rows from a storm track table
+function createHurricaneWindFields(row){
+  row = ee.Feature(row);
+  // print(current)
+  // print(future)
+  // console.log(row.getInfo())
+  var current = ee.Dictionary(row.get('current'));
+  var future = ee.Dictionary(row.get('future'));
+
+  var currentDate = ee.Date(current.get('date'));
+  var futureDate = ee.Date(future.get('date'));
+  
+    
+  var tDiff = futureDate.difference(currentDate,'second');
+  
+  var CurrentLat = ee.Number(current.get('lat')).float();
+  var CurrentLon = ee.Number(current.get('lon')).float();
+  var FutureLat = ee.Number(future.get('lat')).float();
+  var FutureLon = ee.Number(future.get('lon')).float();
+  
+  var MaxWind = ee.Number(current.get('wspd')).float();
+  var CentralPressure =ee.Number(current.get('pres')).float();
+  var FutureMaxWind = ee.Number(future.get('wspd')).float();
+  var FutureCentralPressure =ee.Number(future.get('pres')).float();
+
+
+  var HurricaneMotion = ee.Dictionary(CalcStormMotion(CurrentLat,FutureLat,CurrentLon,FutureLon,tDiff));
+  var HurricaneMotionU = ee.Number(HurricaneMotion.get('U')).float();
+  var HurricaneMotionV = ee.Number(HurricaneMotion.get('V')).float();
+  
+  var Lat = CurrentLat;
+  var Lon = CurrentLon;
+  var Wind = MaxWind;
+  var Pressure = CentralPressure;
+  
+  //Not needed in GEE
+  //var xc, yc = convert2grid(Lat,Lon,topo_info)
+
+  // Pc   = Pressure * 100.
+  var Pc   = ee.Number(Pressure.multiply(100));
+  
+  //  Pe = 1013. *100.
+  var Pe = ee.Number(101300).float();
+  
+  //  if Pe <= Pc:Pe = Pc * 1.05
+  Pe = ee.Number(ee.Algorithms.If(Pe.lte(Pc),Pc.multiply(1.05),Pe));
+  
+  //deltaP = (Pe-Pc)/100.
+  var deltaP = (Pe.subtract(Pc)).divide(100.);
+  // deltaP = 49;
+  //  Rmax  = ( math.exp(2.636-0.00005086*deltaP**2+0.037842*28.)) * 1000.
+  var Rmax = ((ee.Number(2.636).subtract(ee.Number(0.00005086).multiply(deltaP.pow(2))).add(0.037842*28)).exp()).multiply(1000)
+  
+
+
+  //  HSpd = math.sqrt( HurricaneMotionU**2+HurricaneMotionV**2 )
+  var HSpd = HurricaneMotionU.hypot(HurricaneMotionV)
+
+  //  HDir = math.atan2( HurricaneMotionV, HurricaneMotionU )
+  var HDir = HurricaneMotionU.atan2(HurricaneMotionV);
+
+  //This is replaced by the getCoordGrid function
+  //     for d in range(1,5000):
+  //         pts = []
+  //         for x in (-d, d):
+  //             for y in range(-d,d+1):
+  //                 pts.append( (y,x) )
+  //         for y in (-d,d):
+  //             for x in range(-d+1,d):
+  //                 pts.append( (y,x) )
+  // var xyGrid =ee.Image([31579.875,-6701.25]).rename(['x','y']).float();// getCoordGrid(Lon,Lat);// ;
+  var xyGrid =getCoordGrid(Lon,Lat);
+
+  // Map.addLayer(xyGrid)
+  //Set up some constants
+  var umin = 1000;
+  var r = -1;
+  var r0 = 1200*1000;
+  var a = 0.25;
+  var m =1.6;
+  var n = 0.9;
+  
+  //No need to iterate here
+  //         for py,px in pts:
+  //             if 0<xc+px<nx and 0<yc+py<ny:
+  
+  //Convert to radius
+  //                 r = math.sqrt( py**2+px**2 ) * 30.
+  r = xyGrid.pow(2).reduce(ee.Reducer.sum()).sqrt();
+  // Map.addLayer(r,{min:0,max:1000})
+  
+  function calcVholland(r){
+    //  f1 = (Wind-HSpd)**2
+    var f1 = ee.Image(Wind.subtract(HSpd)).pow(2);
+   
+    //  f2 = ((r0-r)/(r0-Rmax))**2
+    var f2 = ((ee.Image(r0).subtract(r)).divide(ee.Image(ee.Number(r0).subtract(Rmax)))).pow(2);
+    
+    //  f3 = (r/Rmax)**2
+    var f3 = (r.divide(ee.Image(Rmax))).pow(2);
+    
+    // t1n = (1.-a)*(n+m)
+    var t1n = ee.Image((1-a)*(n+m));
+    
+    //  t1d = n+  m*     (r/Rmax)**(2.*(n+m))
+    var t1d = ee.Image(n).add(ee.Image(m).multiply((r.divide(Rmax)).pow(2*(n+m))));
+  
+    //   t2n = a*(1.+2.*m)
+    var t2n = ee.Image(a*(1+2*m));
+    
+    //  t2d = 1.+2.*m*(r/Rmax)**(2.*(m+1.))
+    var t2d = ee.Image(1).add(ee.Image(2*m).multiply((r.divide(Rmax)).pow(2*(m+1))));
+  
+    // Vholland=math.sqrt(f1*f2*f3*(t1n/t1d+t2n/t2d))
+    var Vholland=(f1.multiply(f2).multiply(f3).multiply(t1n.divide(t1d).add(t2n.divide(t2d)))).sqrt();
+    
+    return Vholland;
+  }
+  //   //                 if r > 0:
+  //     //                 else:
+  // //                     Vholland = 0.
+ 
+  var vHolland = ee.Image(0).where(r.gt(0),calcVholland(r));
+  
+  // Beta = -HDir - math.atan2(py,px)
+  var Beta = ee.Image(HDir.multiply(-1)).subtract(xyGrid.select(['x']).atan2(xyGrid.select(['y'])));
+  var rotation = (ee.Image(HSpd).multiply((Beta.multiply(-1)).sin()));
+
+  var u = vHolland.add(rotation).set({'system:time_start':currentDate.millis(),
+  'tDiff':tDiff});;// 0.44704
+  
+  // u = u.updateMask(u.gte(windThreshold))
+  // var uWrong = vHolland.add(rotationWrong);// 0.44704
+  // uWrong = uWrong.updateMask(uWrong.gte(windThreshold))
+  // Map.addLayer(u,{min:150,max:160,palette:palettes.cmocean.Speed[7]},'Max Wind');
+  // Map.addLayer(uWrong,{min:150,max:160,palette:palettes.cmocean.Speed[7]},'Max Wind Wrong');
+  
+  // Map2.addLayer(u,{min:0,max:100});
+  return u
+  // // umin = min(umin,u)
+  // // umin = ee.Image.cat([ee.Image(umin),u]).reduce(ee.Reducer.min());
+}
+////////////////////////////////////////////////////////////////////////////////
+function GALES(WindSpeed, Hgt, CrownDepth, Spacing, ModRupture){
+  if(ModRupture === undefined || ModRupture === null){ModRupture = 8500}
+  Spacing = ee.Image(Spacing);
+  function GALESFun(){
+    
+    // Z = 1.3;
+    var Z = 1.3;
+    
+    // b = 2.*CrownDepth/Hgt
+    var b = CrownDepth.divide(Hgt).multiply(2);
+    
+    // l = b*CrownDepth/Spacing*0.5
+    var l = b.multiply(CrownDepth).divide(Spacing).multiply(0.5);
+    
+    // G35 = (1.-math.exp(-math.sqrt(15*l)))/math.sqrt(15*l)
+    var G35 = (ee.Image(1).subtract(l.multiply(15).sqrt().multiply(-1).exp())).divide((l.multiply(15)).sqrt());
+  
+    // D = Hgt*(1.-G35)
+    var D = Hgt.multiply(ee.Image(1).subtract(G35));
+    
+    //UstarRatio = min(0.3, math.sqrt(0.003+0.3*l))
+    var UstarRatio = ee.Image.cat([ee.Image(0.3),((l.multiply(0.3)).add(0.003)).sqrt()]).reduce(ee.Reducer.min());
+   
+    // PsiH = 0.193
+    var PsiH = 0.193;
+    
+    // Z0H = G35*math.exp(-0.4/UstarRatio-PsiH)
+    var Z0H = G35.multiply(((ee.Image(-0.4).divide(UstarRatio)).subtract(PsiH)).exp());
+    
+    // HD = Spacing / Hgt
+    var HD = ee.Image(Spacing).divide(Hgt);
+    
+    // z0 = Z0H * Hgt
+    var z0 = Z0H.multiply(Hgt);
+   
+    // BMmean = 0.68*HD-0.0385+(-0.68*HD+0.4785)*(1.7239*HD+0.0316)**(5)
+    var BMmean = HD.multiply(0.68).subtract(0.0385).add(((HD.multiply(-0.68)).add(0.4785)).multiply(((HD.multiply(1.7239)).add(0.0316)).pow(5)));
+   
+    // BMmax  = 2.7193*HD-0.061+(1.273*HD+0.9701)*(1.1127*HD+0.0311)**5
+    var BMmax = HD.multiply(2.7193).subtract(0.061).add(((HD.multiply(1.273)).add(0.9701)).multiply(((HD.multiply(1.1127)).add(0.0311)).pow(5)));
+    
+    // G = BMmax/BMmean
+    var G = BMmax.divide(BMmean);
+    
+    // MOR = ModRupture*6894.757
+    var MOR = ee.Image(ModRupture*6894.757);
+    
+    // Mcrit = 0.00358811*MOR
+    var Mcrit = MOR.multiply(0.00358811);
+
+    // try:
+    
+    //M =(Spacing.multiply(WindSpeed).multiply(0.4)).divide(((Hgt.subtract(D)).divide(z0)).log()).pow(2)
+    var M = (D.subtract(Z)).multiply(1.22).multiply(1.226).multiply(G).multiply((Spacing.multiply(WindSpeed).multiply(0.4)).divide(((Hgt.subtract(D)).divide(z0)).log()).pow(2))
+   
+    // except:
+    //     print(Hgt,Spacing, WindSpeed)
+    //     print(D, Z, G, Spacing, WindSpeed, Hgt, z0)
+    // if M<0:
+    //     print('Negative M: ', BMmax, BMmean, Hgt, Spacing, WindSpeed, CBH)
+    
+    // R = M/Mcrit - 1.
+    var R = M.divide(Mcrit).subtract(1);
+   
+    // return ( int(100. * math.exp(R) / (math.exp(R)+1.) ) - 50) *2
+    var out = ((R.exp().multiply(100).divide((R.exp().add(1)))).int32().subtract(50)).multiply(2);
+   
+    return out;
+  }
+    // if Spacing > 0  and Hgt > 0: #Hgt > 0 and Spacing > 0 and Hgt - CBH>0:
+    // else:
+    //     return 0
+    var GALESOut = ee.Image(0).where(Spacing.gt(0).and(Hgt.gt(0)),GALESFun());
+    GALESOut = GALESOut.updateMask(Hgt.mask().and(WindSpeed.mask()));
+    
+    return GALESOut;
+    
+}
+    
+////////////////////////////////////////////////////////////////////////////////
+function createHurricaneDamageWrapper(rows){
+  console.log('Running storm model');
+  // console.log(rows.getInfo())
+  //Original Python implementation written by: Scott Goodrick
+  //GEE implementation written by: Ian Housman and Robert Chastain
+  //////////////////////////////////////////////////////////////
+  // var palettes = require('users/gena/packages:palettes');
+  var hgt_array = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200');
+  hgt_array = hgt_array.updateMask(hgt_array.neq(-9999));
+  
+  var from = ee.List.sequence(101,199).getInfo();
+  var to = ee.List.sequence(1,99).getInfo();
+  hgt_array= hgt_array.remap(from,to);
+  // var year = ee.Feature(rows.first()).get('year').getInfo();
+  var year = ee.Dictionary(ee.Feature(rows.first()).get('current')).get('year').getInfo();
+
+  // var wind = ee.ImageCollection(rows.map(createHurricaneWindFields)).max();
+  // wind = wind.updateMask(wind.gte(30))  ;//(ee.Feature(rows.first()))
+  // Map2.addLayer(wind,{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]})
+  //Define export params
+  // var studyArea = geometry;
+  // var name = rows[0].name;
+  // var year = rows[0].year;
+  // // console.log(rows[0]);
+ 
+ //  if(name === undefined || name === null){
+    name = $('#storm-name').val();
+    if(name === ''){
+      try{
+        name = jQuery('#stormTrackUpload')[0].files[0].name.split('.').slice(0, -1).join('.')
+      }catch(err){
+        console.log(err);
+        name = 'Test'
+      }
+      
+    }
+  // }
+ // console.log('name');
+ // console.log(name);
+ // console.log(jQuery('#stormTrackUpload')[0].files[0].name.split('.').slice(0, -1).join('.'))
+  // if(year === undefined || year === null){
+  //   var year = stormYear;//2018;
+  // }
+  // var driveFolder = 'GALES-Model-Outputs';
+  // // var crs = 'EPSG:32616';
+
+
+  //Define some other params
+  var windThreshold = minWind;
+
+
+  // // rows = rows.slice(108,160);
+  // // var rows = JSON.parse($('#storm-track').val())
+  // // rows = rows.slice(120,122);
+
+
+  //   var left = rows.slice(0,rows.length-1);
+
+  //   var right = rows.slice(1,rows.length);
+  //   var paired = ee.List(left).zip(right).getInfo();
+  //   // console.log(paired)
+    var c = ee.ImageCollection(rows.map(createHurricaneWindFields));
+  //   }));
+  //   // Map.addLayer(c)
+
+  var speeds = [30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500];
+  var categories = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5];
+
+ // console.log(c.limit(2).getInfo())
+    c = c.map(function(img){
+      var tDiff = ee.Image(ee.Number(img.get('tDiff'))).divide(60*60).float()
+      var cats = img.int16().remap(speeds,categories);
+      var damage = GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
+      var damageSum = damage.add(100).clamp(0,200).multiply(tDiff);
+      var windSum = img.multiply(tDiff);
+      var catSum = cats.multiply(tDiff);
+      var cat1Sum = cats.updateMask(cats.eq(1)).multiply(tDiff);
+      var cat2Sum = cats.updateMask(cats.eq(2)).multiply(tDiff);
+      var cat3Sum = cats.updateMask(cats.eq(3)).multiply(tDiff);
+      var cat4Sum = cats.updateMask(cats.eq(4)).multiply(tDiff);
+      var cat5Sum = cats.updateMask(cats.eq(5)).multiply(tDiff);
+      return img.addBands(damage)
+      .addBands(cats)
+      .addBands(hgt_array)
+      .addBands(damageSum)
+      .addBands(windSum)
+      .addBands(catSum)
+      .addBands(cat1Sum)
+      .addBands(cat2Sum)
+      .addBands(cat3Sum)
+      .addBands(cat4Sum)
+      .addBands(cat5Sum)
+      .rename(['Wind','Damage','Category','Tree Height','Damage_Sum','Wind_Sum','Cat_Sum','Cat1_Sum','Cat2_Sum','Cat3_Sum','Cat4_Sum','Cat5_Sum']).updateMask(img.gte(windThreshold)).float();
+    });
+    
+    // console.log(c.limit(2).getInfo())
+    // c  = c.map(function(img){return img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(img.get('system:index')),6,1).millis())})
+   
+    pixelChartCollections['basic'] = {'label':'Wind and Damage',
+                                      'collection':c.select(['Wind','Damage','Tree Height']),
+                                      'chartColors':chartColorsDict.coreLossGain,
+                                      'tooltip':'Chart wind speed and damage acros time',
+                                      'xAxisLabel':'Time',
+                                      'yAxisLabel':'Wind Speed (mph) or Damage',
+                                      'simplifyDate':false}
+    populatePixelChartDropdown();
+    
+    
+    var max = c.qualityMosaic('Wind')
+    // wind_array = wind_array.updateMask(wind_array.gt(windThreshold));
+
+    // Map2.addLayer(hgt_array,{min:1,max:30,legendLabelLeftAfter:'m',legendLabelRightAfter:'m',palette:palettes.crameri.bamako[50].reverse()},'LANDFIRE 2020 Tree Height (m)',false);
+    var trackRows = rows.map(function(f){
+      var current = ee.Dictionary(f.get('current'));
+      var speed = ee.Number(current.get('wspd'))
+      f = f.set(current)
+      return f.buffer(speed.multiply(600))
+    })
+    Map2.addLayer(trackRows,{},name + ' ' +year.toString()+' Storm Track',false);
+    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Wind Max',false);
+    //GALES Params
+    //Wind speed in mps (Convert from mph to mps)
+    //Height in meters
+    //Crown height in meters (currently assumes top third of tree height is crown)
+    //Tree spacing in meters (currently set to constant of 5m)
+    //Modulus of rupture in mks (currently for Loblolly or Long Leaf Pine)
+    //MMCrit[j,i] = GALES(0.447*wind_array[j,i], 0.1*hgt_array[j,i], 0.33*0.1*hgt_array[j,i], 5.0, ModRupture=8500.)
+    
+    // var wind_array = ee.Image(150);
+    // var hgt_array = ee.Image(20);
+    // var crown_hgt_array = hgt_array.multiply(0.33);
+    // var spacing = 5;
+    // var modRupture = 8500
+    // GALES(wind_array.multiply(0.447), hgt_array, crown_hgt_array, spacing, modRupture);
+    // var GALESOut = GALES(wind_array.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
+    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Max',false);
+    
+    var damageSum = c.select(['Damage_Sum']).sum().int16();
+    Map2.addLayer(damageSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Sum',false)
+    
+    var windSum = c.select(['Wind_Sum']).sum().int16();
+    Map2.addLayer(windSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Wind Sum',false)
+    
+    var catSum = c.select(['Cat_Sum']).sum().int16();
+    Map2.addLayer(catSum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat Sum',false)
+    
+    var cat1Sum = c.select(['Cat1_Sum']).sum().int16();
+    Map2.addLayer(cat1Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 1 Sum',false)
+    
+    var cat2Sum = c.select(['Cat2_Sum']).sum().int16();
+    Map2.addLayer(cat2Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 2 Sum',false)
+    
+    var cat3Sum = c.select(['Cat3_Sum']).sum().int16();
+    Map2.addLayer(cat3Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 3 Sum',false)
+    
+    var cat4Sum = c.select(['Cat4_Sum']).sum().int16();
+    Map2.addLayer(cat4Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 4 Sum',false)
+    
+    var cat5Sum = c.select(['Cat5_Sum']).sum().int16();
+    Map2.addLayer(cat5Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 5 Sum',false)
+    
+    var windStack = ee.Image.cat([max.select([0]).rename(['Wind_Max']),windSum,catSum,cat1Sum,cat2Sum,cat3Sum,cat4Sum,cat5Sum]).int16();
+    var damageStack = ee.Image.cat([max.select([1]).rename(['Damage_Max']),damageSum]).int16();
+
+  //   // Map2.addTimeLapse(cl.select([0]),{min:75,max:160,palette:palettes.niccoli.isol[7],years:years},'Wind Time Lapse')
+  //   // Map2.addTimeLapse(cl.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7],years:years},'Damage Time Lapse')
+    
+    var trackBounds = trackRows.geometry().bounds();
+    var trackBoundsFeatures = trackBounds.getInfo()
+    var trackBoundsCoords =trackBoundsFeatures.coordinates[0];
+    // console.log(trackBounds.getInfo())
+
+    window.downloadQuickLooks = function(){
+      $('#summary-spinner').slideDown();
+      windStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name +'_'+year.toString()+'_Wind_Quick_Look',
+                        scale:quickLookRes,
+                        crs:$('#export-crs').val(),
+                        region:trackBoundsCoords},
+                        function(url1){
+                          damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look',
+                            scale:quickLookRes,
+                            crs:$('#export-crs').val(),
+                            region:trackBoundsCoords},
+                            function(url2){
+                               $('#summary-spinner').slideUp();
+                              showMessage('Quick Look Outputs Ready',
+                                `<hr>
+                                <a  target="_blank" href = '${url1}'>Click to download wind stack</a>
+                                <hr>
+                                <a  target="_blank" href = '${url2}'>Click to download damage stack</a>`)
+                             
+                            })
+                          
+                        });
+    }
+    Map2.addExport(max.select([0]).int16(),name + '_'+year.toString()+'_Wind_Max' ,30,true,{});
+
+    Map2.addExport(windSum,name + '_'+year.toString()+'_Wind_Sum' ,30,true,{});
+    
+    Map2.addExport(catSum,name + '_'+year.toString()+'_Cat_Sum' ,30,true,{});
+    Map2.addExport(cat1Sum,name + '_'+year.toString()+'_Cat1_Sum' ,30,true,{});
+    Map2.addExport(cat2Sum,name + '_'+year.toString()+'_Cat2_Sum' ,30,true,{});
+    Map2.addExport(cat3Sum,name + '_'+year.toString()+'_Cat3_Sum' ,30,true,{});
+    Map2.addExport(cat4Sum,name + '_'+year.toString()+'_Cat4_Sum' ,30,true,{});
+    Map2.addExport(cat5Sum,name + '_'+year.toString()+'_Cat5_Sum' ,30,true,{});
+    
+    Map2.addExport(max.select([1]).int16(),name + '_'+year.toString()+'_Damage_Max' ,30,true,{});
+    Map2.addExport(damageSum,name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
+    
+    Map2.addExport(damageStack,name + '_'+year.toString()+'_Damage_Stack' ,30,true,{});
+    Map2.addExport(damageSum.int16(),name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
+    Map2.addLayer(ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries'),{layerType:'geeVectorImage'},'USFS Boundaries',false);
+     // exportArea = null;
+   
+     
+    window.addTrackBounds = function(){
+        try{
+      exportArea.setMap(null);
+    }catch(err){
+      console.log(err);
+    }
+    exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
+
+    trackBoundsCoords.map(function(coords){
+      var path = exportArea.getPath();
+        var out = {};
+        out.lng = function(){return coords[0]}
+        out.lat = function(){return coords[1]}
+        path.push(out);
+    })
+    exportArea.setMap(map);
+    synchronousCenterObject(trackBoundsFeatures);
+    }
+    // exportArea = new google.maps.Data({fillOpacity: 0,strokeColor:'#FF0'});
+    // exportArea.addGeoJson(ee.Feature(trackBounds).getInfo());
+    // exportArea.setMap(map);
+    
+  //   // wind_array = wind_array.clip(studyArea).unmask(0,false).byte();
+  //   // GALESOut = GALESOut.multiply(100).clip(studyArea).unmask(10001,false).int16();
+    
+  //   // var outRegion = studyArea.bounds();//.transform('EPSG:4326', 100);
+  //   // print('Exporting:',outRegion);
+  //   // Export.image.toDrive(wind_array, name + '-wind', driveFolder, name + '-wind', null, outRegion, scale, crs, transform, 1e13);
+  //   // Export.image.toDrive(GALESOut, name + '-GALES', driveFolder, name + '-GALES', null, outRegion, scale, crs, transform, 1e13);
+
+  
+}
+///////////////////////////////////////////////////////////
+function runStorm(){
+  // rows = {"type":"FeatureCollection","columns":{"current":"Dictionary<Object>","future":"Dictionary<Object>","system:index":"String"},"features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.4,25.6]},"id":"0","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539129600000,"lat":25.6,"lon":-86.4,"pres":961,"wspd":115,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539130950000,"lat":25.661250000000003,"lon":-86.4075,"pres":960.375,"wspd":115.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.4075,25.661250000000003]},"id":"1","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539130950000,"lat":25.661250000000003,"lon":-86.4075,"pres":960.375,"wspd":115.75,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539132300000,"lat":25.7225,"lon":-86.415,"pres":959.75,"wspd":116.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.415,25.7225]},"id":"2","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539132300000,"lat":25.7225,"lon":-86.415,"pres":959.75,"wspd":116.5,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539133650000,"lat":25.783749999999998,"lon":-86.42250000000001,"pres":959.125,"wspd":117.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.42250000000001,25.783749999999998]},"id":"3","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539133650000,"lat":25.783749999999998,"lon":-86.42250000000001,"pres":959.125,"wspd":117.25,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539135000000,"lat":25.845,"lon":-86.43,"pres":958.5,"wspd":118,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.43,25.845]},"id":"4","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539135000000,"lat":25.845,"lon":-86.43,"pres":958.5,"wspd":118,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539136350000,"lat":25.90625,"lon":-86.4375,"pres":957.875,"wspd":118.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.4375,25.90625]},"id":"5","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539136350000,"lat":25.90625,"lon":-86.4375,"pres":957.875,"wspd":118.75,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539137700000,"lat":25.9675,"lon":-86.445,"pres":957.25,"wspd":119.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.445,25.9675]},"id":"6","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539137700000,"lat":25.9675,"lon":-86.445,"pres":957.25,"wspd":119.5,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539139050000,"lat":26.028750000000002,"lon":-86.45249999999999,"pres":956.625,"wspd":120.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.45249999999999,26.028750000000002]},"id":"7","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539139050000,"lat":26.028750000000002,"lon":-86.45249999999999,"pres":956.625,"wspd":120.25,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539140400000,"lat":26.09,"lon":-86.46,"pres":956,"wspd":121,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.46,26.09]},"id":"8","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539140400000,"lat":26.09,"lon":-86.46,"pres":956,"wspd":121,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539141750000,"lat":26.153750000000002,"lon":-86.465,"pres":955.5,"wspd":121.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.465,26.153750000000002]},"id":"9","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539141750000,"lat":26.153750000000002,"lon":-86.465,"pres":955.5,"wspd":121.75,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539143100000,"lat":26.2175,"lon":-86.47,"pres":955,"wspd":122.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.47,26.2175]},"id":"10","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539143100000,"lat":26.2175,"lon":-86.47,"pres":955,"wspd":122.5,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539144450000,"lat":26.28125,"lon":-86.475,"pres":954.5,"wspd":123.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.475,26.28125]},"id":"11","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539144450000,"lat":26.28125,"lon":-86.475,"pres":954.5,"wspd":123.25,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539145800000,"lat":26.345,"lon":-86.47999999999999,"pres":954,"wspd":124,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.47999999999999,26.345]},"id":"12","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539145800000,"lat":26.345,"lon":-86.47999999999999,"pres":954,"wspd":124,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539147150000,"lat":26.408749999999998,"lon":-86.48499999999999,"pres":953.5,"wspd":124.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.48499999999999,26.408749999999998]},"id":"13","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539147150000,"lat":26.408749999999998,"lon":-86.48499999999999,"pres":953.5,"wspd":124.75,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539148500000,"lat":26.4725,"lon":-86.49,"pres":953,"wspd":125.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.49,26.4725]},"id":"14","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539148500000,"lat":26.4725,"lon":-86.49,"pres":953,"wspd":125.5,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539149850000,"lat":26.536250000000003,"lon":-86.495,"pres":952.5,"wspd":126.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.495,26.536250000000003]},"id":"15","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539149850000,"lat":26.536250000000003,"lon":-86.495,"pres":952.5,"wspd":126.25,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539151200000,"lat":26.6,"lon":-86.5,"pres":952,"wspd":127,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.5,26.6]},"id":"16","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539151200000,"lat":26.6,"lon":-86.5,"pres":952,"wspd":127,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539152550000,"lat":26.66625,"lon":-86.50999999999999,"pres":951.5,"wspd":127.625,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.50999999999999,26.66625]},"id":"17","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539152550000,"lat":26.66625,"lon":-86.50999999999999,"pres":951.5,"wspd":127.625,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539153900000,"lat":26.7325,"lon":-86.52,"pres":951,"wspd":128.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.52,26.7325]},"id":"18","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539153900000,"lat":26.7325,"lon":-86.52,"pres":951,"wspd":128.25,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539155250000,"lat":26.798750000000002,"lon":-86.53,"pres":950.5,"wspd":128.875,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.53,26.798750000000002]},"id":"19","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539155250000,"lat":26.798750000000002,"lon":-86.53,"pres":950.5,"wspd":128.875,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539156600000,"lat":26.865000000000002,"lon":-86.53999999999999,"pres":950,"wspd":129.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.53999999999999,26.865000000000002]},"id":"20","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539156600000,"lat":26.865000000000002,"lon":-86.53999999999999,"pres":950,"wspd":129.5,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539157950000,"lat":26.931250000000002,"lon":-86.55,"pres":949.5,"wspd":130.125,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.55,26.931250000000002]},"id":"21","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539157950000,"lat":26.931250000000002,"lon":-86.55,"pres":949.5,"wspd":130.125,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539159300000,"lat":26.997500000000002,"lon":-86.56,"pres":949,"wspd":130.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.56,26.997500000000002]},"id":"22","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539159300000,"lat":26.997500000000002,"lon":-86.56,"pres":949,"wspd":130.75,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539160650000,"lat":27.06375,"lon":-86.57,"pres":948.5,"wspd":131.375,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.57,27.06375]},"id":"23","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539160650000,"lat":27.06375,"lon":-86.57,"pres":948.5,"wspd":131.375,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539162000000,"lat":27.13,"lon":-86.58,"pres":948,"wspd":132,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.58,27.13]},"id":"24","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539162000000,"lat":27.13,"lon":-86.58,"pres":948,"wspd":132,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539163350000,"lat":27.20125,"lon":-86.58250000000001,"pres":947.625,"wspd":132.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.58250000000001,27.20125]},"id":"25","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539163350000,"lat":27.20125,"lon":-86.58250000000001,"pres":947.625,"wspd":132.75,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539164700000,"lat":27.2725,"lon":-86.58500000000001,"pres":947.25,"wspd":133.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.58500000000001,27.2725]},"id":"26","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539164700000,"lat":27.2725,"lon":-86.58500000000001,"pres":947.25,"wspd":133.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539166050000,"lat":27.34375,"lon":-86.5875,"pres":946.875,"wspd":134.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.5875,27.34375]},"id":"27","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539166050000,"lat":27.34375,"lon":-86.5875,"pres":946.875,"wspd":134.25,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539167400000,"lat":27.415,"lon":-86.59,"pres":946.5,"wspd":135,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.59,27.415]},"id":"28","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539167400000,"lat":27.415,"lon":-86.59,"pres":946.5,"wspd":135,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539168750000,"lat":27.48625,"lon":-86.5925,"pres":946.125,"wspd":135.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.5925,27.48625]},"id":"29","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539168750000,"lat":27.48625,"lon":-86.5925,"pres":946.125,"wspd":135.75,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539170100000,"lat":27.557499999999997,"lon":-86.595,"pres":945.75,"wspd":136.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.595,27.557499999999997]},"id":"30","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539170100000,"lat":27.557499999999997,"lon":-86.595,"pres":945.75,"wspd":136.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539171450000,"lat":27.628749999999997,"lon":-86.5975,"pres":945.375,"wspd":137.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.5975,27.628749999999997]},"id":"31","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539171450000,"lat":27.628749999999997,"lon":-86.5975,"pres":945.375,"wspd":137.25,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539172800000,"lat":27.7,"lon":-86.6,"pres":945,"wspd":138,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.6,27.7]},"id":"32","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539172800000,"lat":27.7,"lon":-86.6,"pres":945,"wspd":138,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539174150000,"lat":27.78125,"lon":-86.59,"pres":944.25,"wspd":138.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.59,27.78125]},"id":"33","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539174150000,"lat":27.78125,"lon":-86.59,"pres":944.25,"wspd":138.25,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539175500000,"lat":27.862499999999997,"lon":-86.58,"pres":943.5,"wspd":138.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.58,27.862499999999997]},"id":"34","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539175500000,"lat":27.862499999999997,"lon":-86.58,"pres":943.5,"wspd":138.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539176850000,"lat":27.943749999999998,"lon":-86.57,"pres":942.75,"wspd":138.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.57,27.943749999999998]},"id":"35","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539176850000,"lat":27.943749999999998,"lon":-86.57,"pres":942.75,"wspd":138.75,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539178200000,"lat":28.025,"lon":-86.56,"pres":942,"wspd":139,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.56,28.025]},"id":"36","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539178200000,"lat":28.025,"lon":-86.56,"pres":942,"wspd":139,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539179550000,"lat":28.10625,"lon":-86.55,"pres":941.25,"wspd":139.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.55,28.10625]},"id":"37","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539179550000,"lat":28.10625,"lon":-86.55,"pres":941.25,"wspd":139.25,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539180900000,"lat":28.1875,"lon":-86.53999999999999,"pres":940.5,"wspd":139.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.53999999999999,28.1875]},"id":"38","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539180900000,"lat":28.1875,"lon":-86.53999999999999,"pres":940.5,"wspd":139.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539182250000,"lat":28.26875,"lon":-86.53,"pres":939.75,"wspd":139.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.53,28.26875]},"id":"39","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539182250000,"lat":28.26875,"lon":-86.53,"pres":939.75,"wspd":139.75,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539183600000,"lat":28.35,"lon":-86.52,"pres":939,"wspd":140,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.52,28.35]},"id":"40","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539183600000,"lat":28.35,"lon":-86.52,"pres":939,"wspd":140,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539184950000,"lat":28.431250000000002,"lon":-86.4925,"pres":938.375,"wspd":140.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.4925,28.431250000000002]},"id":"41","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539184950000,"lat":28.431250000000002,"lon":-86.4925,"pres":938.375,"wspd":140.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539186300000,"lat":28.512500000000003,"lon":-86.465,"pres":937.75,"wspd":141,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.465,28.512500000000003]},"id":"42","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539186300000,"lat":28.512500000000003,"lon":-86.465,"pres":937.75,"wspd":141,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539187650000,"lat":28.59375,"lon":-86.4375,"pres":937.125,"wspd":141.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.4375,28.59375]},"id":"43","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539187650000,"lat":28.59375,"lon":-86.4375,"pres":937.125,"wspd":141.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539189000000,"lat":28.675,"lon":-86.41,"pres":936.5,"wspd":142,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.41,28.675]},"id":"44","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539189000000,"lat":28.675,"lon":-86.41,"pres":936.5,"wspd":142,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539190350000,"lat":28.75625,"lon":-86.3825,"pres":935.875,"wspd":142.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.3825,28.75625]},"id":"45","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539190350000,"lat":28.75625,"lon":-86.3825,"pres":935.875,"wspd":142.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539191700000,"lat":28.8375,"lon":-86.35499999999999,"pres":935.25,"wspd":143,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.35499999999999,28.8375]},"id":"46","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539191700000,"lat":28.8375,"lon":-86.35499999999999,"pres":935.25,"wspd":143,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539193050000,"lat":28.91875,"lon":-86.32749999999999,"pres":934.625,"wspd":143.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.32749999999999,28.91875]},"id":"47","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539193050000,"lat":28.91875,"lon":-86.32749999999999,"pres":934.625,"wspd":143.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539194400000,"lat":29,"lon":-86.3,"pres":934,"wspd":144,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.3,29]},"id":"48","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539194400000,"lat":29,"lon":-86.3,"pres":934,"wspd":144,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539195750000,"lat":29.04625,"lon":-86.25375,"pres":932.875,"wspd":145.125,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.25375,29.04625]},"id":"49","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539195750000,"lat":29.04625,"lon":-86.25375,"pres":932.875,"wspd":145.125,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539197100000,"lat":29.0925,"lon":-86.20750000000001,"pres":931.75,"wspd":146.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.20750000000001,29.0925]},"id":"50","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539197100000,"lat":29.0925,"lon":-86.20750000000001,"pres":931.75,"wspd":146.25,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539198450000,"lat":29.13875,"lon":-86.16125000000001,"pres":930.625,"wspd":147.375,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.16125000000001,29.13875]},"id":"51","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539198450000,"lat":29.13875,"lon":-86.16125000000001,"pres":930.625,"wspd":147.375,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539199800000,"lat":29.185000000000002,"lon":-86.11500000000001,"pres":929.5,"wspd":148.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.11500000000001,29.185000000000002]},"id":"52","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539199800000,"lat":29.185000000000002,"lon":-86.11500000000001,"pres":929.5,"wspd":148.5,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539201150000,"lat":29.231250000000003,"lon":-86.06875000000001,"pres":928.375,"wspd":149.625,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.06875000000001,29.231250000000003]},"id":"53","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539201150000,"lat":29.231250000000003,"lon":-86.06875000000001,"pres":928.375,"wspd":149.625,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539202500000,"lat":29.277500000000003,"lon":-86.02250000000001,"pres":927.25,"wspd":150.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.02250000000001,29.277500000000003]},"id":"54","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539202500000,"lat":29.277500000000003,"lon":-86.02250000000001,"pres":927.25,"wspd":150.75,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539203850000,"lat":29.323750000000004,"lon":-85.97625000000001,"pres":926.125,"wspd":151.875,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.97625000000001,29.323750000000004]},"id":"55","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539203850000,"lat":29.323750000000004,"lon":-85.97625000000001,"pres":926.125,"wspd":151.875,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539205200000,"lat":29.37,"lon":-85.93,"pres":925,"wspd":153,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.93,29.37]},"id":"56","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539205200000,"lat":29.37,"lon":-85.93,"pres":925,"wspd":153,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539206325000,"lat":29.448750000000004,"lon":-85.87625,"pres":924.25,"wspd":154,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.87625,29.448750000000004]},"id":"57","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539206325000,"lat":29.448750000000004,"lon":-85.87625,"pres":924.25,"wspd":154,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539207450000,"lat":29.527500000000003,"lon":-85.8225,"pres":923.5,"wspd":155,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.8225,29.527500000000003]},"id":"58","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539207450000,"lat":29.527500000000003,"lon":-85.8225,"pres":923.5,"wspd":155,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539208575000,"lat":29.606250000000003,"lon":-85.76875000000001,"pres":922.75,"wspd":156,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.76875000000001,29.606250000000003]},"id":"59","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539208575000,"lat":29.606250000000003,"lon":-85.76875000000001,"pres":922.75,"wspd":156,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539209700000,"lat":29.685000000000002,"lon":-85.715,"pres":922,"wspd":157,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.715,29.685000000000002]},"id":"60","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539209700000,"lat":29.685000000000002,"lon":-85.715,"pres":922,"wspd":157,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539210825000,"lat":29.76375,"lon":-85.66125,"pres":921.25,"wspd":158,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.66125,29.76375]},"id":"61","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539210825000,"lat":29.76375,"lon":-85.66125,"pres":921.25,"wspd":158,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539211950000,"lat":29.8425,"lon":-85.6075,"pres":920.5,"wspd":159,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.6075,29.8425]},"id":"62","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539211950000,"lat":29.8425,"lon":-85.6075,"pres":920.5,"wspd":159,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539213075000,"lat":29.92125,"lon":-85.55375000000001,"pres":919.75,"wspd":160,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.55375000000001,29.92125]},"id":"63","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539213075000,"lat":29.92125,"lon":-85.55375000000001,"pres":919.75,"wspd":160,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539214200000,"lat":30,"lon":-85.5,"pres":919,"wspd":161,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.5,30]},"id":"64","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539214200000,"lat":30,"lon":-85.5,"pres":919,"wspd":161,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539214425000,"lat":30.025,"lon":-85.4875,"pres":919.125,"wspd":160.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.4875,30.025]},"id":"65","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539214425000,"lat":30.025,"lon":-85.4875,"pres":919.125,"wspd":160.25,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539214650000,"lat":30.05,"lon":-85.475,"pres":919.25,"wspd":159.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.475,30.05]},"id":"66","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539214650000,"lat":30.05,"lon":-85.475,"pres":919.25,"wspd":159.5,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539214875000,"lat":30.075000000000003,"lon":-85.4625,"pres":919.375,"wspd":158.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.4625,30.075000000000003]},"id":"67","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539214875000,"lat":30.075000000000003,"lon":-85.4625,"pres":919.375,"wspd":158.75,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539215100000,"lat":30.1,"lon":-85.45,"pres":919.5,"wspd":158,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.45,30.1]},"id":"68","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539215100000,"lat":30.1,"lon":-85.45,"pres":919.5,"wspd":158,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539215325000,"lat":30.125,"lon":-85.4375,"pres":919.625,"wspd":157.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.4375,30.125]},"id":"69","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539215325000,"lat":30.125,"lon":-85.4375,"pres":919.625,"wspd":157.25,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539215550000,"lat":30.15,"lon":-85.42500000000001,"pres":919.75,"wspd":156.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.42500000000001,30.15]},"id":"70","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539215550000,"lat":30.15,"lon":-85.42500000000001,"pres":919.75,"wspd":156.5,"year":2018},"future":{"category":"Category 5 Major Hurricane\r","date":1539215775000,"lat":30.174999999999997,"lon":-85.41250000000001,"pres":919.875,"wspd":155.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.41250000000001,30.174999999999997]},"id":"71","properties":{"current":{"category":"Category 5 Major Hurricane\r","date":1539215775000,"lat":30.174999999999997,"lon":-85.41250000000001,"pres":919.875,"wspd":155.75,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539216000000,"lat":30.2,"lon":-85.4,"pres":920,"wspd":155,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.4,30.2]},"id":"72","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539216000000,"lat":30.2,"lon":-85.4,"pres":920,"wspd":155,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539217350000,"lat":30.30125,"lon":-85.34125,"pres":922.25,"wspd":151,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.34125,30.30125]},"id":"73","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539217350000,"lat":30.30125,"lon":-85.34125,"pres":922.25,"wspd":151,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539218700000,"lat":30.4025,"lon":-85.2825,"pres":924.5,"wspd":147,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.2825,30.4025]},"id":"74","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539218700000,"lat":30.4025,"lon":-85.2825,"pres":924.5,"wspd":147,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539220050000,"lat":30.50375,"lon":-85.22375,"pres":926.75,"wspd":143,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.22375,30.50375]},"id":"75","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539220050000,"lat":30.50375,"lon":-85.22375,"pres":926.75,"wspd":143,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539221400000,"lat":30.605,"lon":-85.165,"pres":929,"wspd":139,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.165,30.605]},"id":"76","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539221400000,"lat":30.605,"lon":-85.165,"pres":929,"wspd":139,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539222750000,"lat":30.70625,"lon":-85.10625000000002,"pres":931.25,"wspd":135,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.10625000000002,30.70625]},"id":"77","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539222750000,"lat":30.70625,"lon":-85.10625000000002,"pres":931.25,"wspd":135,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539224100000,"lat":30.8075,"lon":-85.04750000000001,"pres":933.5,"wspd":131,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-85.04750000000001,30.8075]},"id":"78","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539224100000,"lat":30.8075,"lon":-85.04750000000001,"pres":933.5,"wspd":131,"year":2018},"future":{"category":"Category 4 Major Hurricane\r","date":1539225450000,"lat":30.90875,"lon":-84.98875000000001,"pres":935.75,"wspd":127,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.98875000000001,30.90875]},"id":"79","properties":{"current":{"category":"Category 4 Major Hurricane\r","date":1539225450000,"lat":30.90875,"lon":-84.98875000000001,"pres":935.75,"wspd":127,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539226800000,"lat":31.01,"lon":-84.93,"pres":938,"wspd":123,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.93,31.01]},"id":"80","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539226800000,"lat":31.01,"lon":-84.93,"pres":938,"wspd":123,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539228150000,"lat":31.07125,"lon":-84.87625,"pres":940.375,"wspd":119.125,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.87625,31.07125]},"id":"81","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539228150000,"lat":31.07125,"lon":-84.87625,"pres":940.375,"wspd":119.125,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539229500000,"lat":31.1325,"lon":-84.8225,"pres":942.75,"wspd":115.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.8225,31.1325]},"id":"82","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539229500000,"lat":31.1325,"lon":-84.8225,"pres":942.75,"wspd":115.25,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539230850000,"lat":31.19375,"lon":-84.76875000000001,"pres":945.125,"wspd":111.375,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.76875000000001,31.19375]},"id":"83","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539230850000,"lat":31.19375,"lon":-84.76875000000001,"pres":945.125,"wspd":111.375,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539232200000,"lat":31.255000000000003,"lon":-84.715,"pres":947.5,"wspd":107.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.715,31.255000000000003]},"id":"84","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539232200000,"lat":31.255000000000003,"lon":-84.715,"pres":947.5,"wspd":107.5,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539233550000,"lat":31.316250000000004,"lon":-84.66125,"pres":949.875,"wspd":103.625,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.66125,31.316250000000004]},"id":"85","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539233550000,"lat":31.316250000000004,"lon":-84.66125,"pres":949.875,"wspd":103.625,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539234900000,"lat":31.3775,"lon":-84.6075,"pres":952.25,"wspd":99.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.6075,31.3775]},"id":"86","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539234900000,"lat":31.3775,"lon":-84.6075,"pres":952.25,"wspd":99.75,"year":2018},"future":{"category":"Category 3 Major Hurricane\r","date":1539236250000,"lat":31.43875,"lon":-84.55375000000001,"pres":954.625,"wspd":95.875,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.55375000000001,31.43875]},"id":"87","properties":{"current":{"category":"Category 3 Major Hurricane\r","date":1539236250000,"lat":31.43875,"lon":-84.55375000000001,"pres":954.625,"wspd":95.875,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539237600000,"lat":31.5,"lon":-84.5,"pres":957,"wspd":92,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.5,31.5]},"id":"88","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539237600000,"lat":31.5,"lon":-84.5,"pres":957,"wspd":92,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539238950000,"lat":31.58125,"lon":-84.42375,"pres":958.375,"wspd":89.875,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.42375,31.58125]},"id":"89","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539238950000,"lat":31.58125,"lon":-84.42375,"pres":958.375,"wspd":89.875,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539240300000,"lat":31.6625,"lon":-84.3475,"pres":959.75,"wspd":87.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.3475,31.6625]},"id":"90","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539240300000,"lat":31.6625,"lon":-84.3475,"pres":959.75,"wspd":87.75,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539241650000,"lat":31.74375,"lon":-84.27125,"pres":961.125,"wspd":85.625,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.27125,31.74375]},"id":"91","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539241650000,"lat":31.74375,"lon":-84.27125,"pres":961.125,"wspd":85.625,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539243000000,"lat":31.825,"lon":-84.195,"pres":962.5,"wspd":83.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.195,31.825]},"id":"92","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539243000000,"lat":31.825,"lon":-84.195,"pres":962.5,"wspd":83.5,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539244350000,"lat":31.90625,"lon":-84.11874999999999,"pres":963.875,"wspd":81.375,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.11874999999999,31.90625]},"id":"93","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539244350000,"lat":31.90625,"lon":-84.11874999999999,"pres":963.875,"wspd":81.375,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539245700000,"lat":31.987499999999997,"lon":-84.04249999999999,"pres":965.25,"wspd":79.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.04249999999999,31.987499999999997]},"id":"94","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539245700000,"lat":31.987499999999997,"lon":-84.04249999999999,"pres":965.25,"wspd":79.25,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539247050000,"lat":32.068749999999994,"lon":-83.96625,"pres":966.625,"wspd":77.125,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.96625,32.068749999999994]},"id":"95","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539247050000,"lat":32.068749999999994,"lon":-83.96625,"pres":966.625,"wspd":77.125,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539248400000,"lat":32.15,"lon":-83.89,"pres":968,"wspd":75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.89,32.15]},"id":"96","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539248400000,"lat":32.15,"lon":-83.89,"pres":968,"wspd":75,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539249750000,"lat":32.23125,"lon":-83.80375000000001,"pres":969.375,"wspd":72.875,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.80375000000001,32.23125]},"id":"97","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539249750000,"lat":32.23125,"lon":-83.80375000000001,"pres":969.375,"wspd":72.875,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539251100000,"lat":32.3125,"lon":-83.7175,"pres":970.75,"wspd":70.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.7175,32.3125]},"id":"98","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539251100000,"lat":32.3125,"lon":-83.7175,"pres":970.75,"wspd":70.75,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539252450000,"lat":32.39375,"lon":-83.63125,"pres":972.125,"wspd":68.625,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.63125,32.39375]},"id":"99","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539252450000,"lat":32.39375,"lon":-83.63125,"pres":972.125,"wspd":68.625,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539253800000,"lat":32.474999999999994,"lon":-83.545,"pres":973.5,"wspd":66.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.545,32.474999999999994]},"id":"100","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539253800000,"lat":32.474999999999994,"lon":-83.545,"pres":973.5,"wspd":66.5,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539255150000,"lat":32.55624999999999,"lon":-83.45875000000001,"pres":974.875,"wspd":64.375,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.45875000000001,32.55624999999999]},"id":"101","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539255150000,"lat":32.55624999999999,"lon":-83.45875000000001,"pres":974.875,"wspd":64.375,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539256500000,"lat":32.637499999999996,"lon":-83.3725,"pres":976.25,"wspd":62.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.3725,32.637499999999996]},"id":"102","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539256500000,"lat":32.637499999999996,"lon":-83.3725,"pres":976.25,"wspd":62.25,"year":2018},"future":{"category":"Category 1 Hurricane\r","date":1539257850000,"lat":32.71875,"lon":-83.28625,"pres":977.625,"wspd":60.125,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.28625,32.71875]},"id":"103","properties":{"current":{"category":"Category 1 Hurricane\r","date":1539257850000,"lat":32.71875,"lon":-83.28625,"pres":977.625,"wspd":60.125,"year":2018},"future":{"category":"Tropical Storm\r","date":1539259200000,"lat":32.8,"lon":-83.2,"pres":979,"wspd":58,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.2,32.8]},"id":"104","properties":{"current":{"category":"Tropical Storm\r","date":1539259200000,"lat":32.8,"lon":-83.2,"pres":979,"wspd":58,"year":2018},"future":{"category":"Tropical Storm\r","date":1539260550000,"lat":32.87875,"lon":-83.11000000000001,"pres":979.5,"wspd":57.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.11000000000001,32.87875]},"id":"105","properties":{"current":{"category":"Tropical Storm\r","date":1539260550000,"lat":32.87875,"lon":-83.11000000000001,"pres":979.5,"wspd":57.5,"year":2018},"future":{"category":"Tropical Storm\r","date":1539261900000,"lat":32.957499999999996,"lon":-83.02000000000001,"pres":980,"wspd":57,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.02000000000001,32.957499999999996]},"id":"106","properties":{"current":{"category":"Tropical Storm\r","date":1539261900000,"lat":32.957499999999996,"lon":-83.02000000000001,"pres":980,"wspd":57,"year":2018},"future":{"category":"Tropical Storm\r","date":1539263250000,"lat":33.036249999999995,"lon":-82.93,"pres":980.5,"wspd":56.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.93,33.036249999999995]},"id":"107","properties":{"current":{"category":"Tropical Storm\r","date":1539263250000,"lat":33.036249999999995,"lon":-82.93,"pres":980.5,"wspd":56.5,"year":2018},"future":{"category":"Tropical Storm\r","date":1539264600000,"lat":33.114999999999995,"lon":-82.84,"pres":981,"wspd":56,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.84,33.114999999999995]},"id":"108","properties":{"current":{"category":"Tropical Storm\r","date":1539264600000,"lat":33.114999999999995,"lon":-82.84,"pres":981,"wspd":56,"year":2018},"future":{"category":"Tropical Storm\r","date":1539265950000,"lat":33.193749999999994,"lon":-82.75,"pres":981.5,"wspd":55.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.75,33.193749999999994]},"id":"109","properties":{"current":{"category":"Tropical Storm\r","date":1539265950000,"lat":33.193749999999994,"lon":-82.75,"pres":981.5,"wspd":55.5,"year":2018},"future":{"category":"Tropical Storm\r","date":1539267300000,"lat":33.272499999999994,"lon":-82.66,"pres":982,"wspd":55,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.66,33.272499999999994]},"id":"110","properties":{"current":{"category":"Tropical Storm\r","date":1539267300000,"lat":33.272499999999994,"lon":-82.66,"pres":982,"wspd":55,"year":2018},"future":{"category":"Tropical Storm\r","date":1539268650000,"lat":33.35124999999999,"lon":-82.57,"pres":982.5,"wspd":54.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.57,33.35124999999999]},"id":"111","properties":{"current":{"category":"Tropical Storm\r","date":1539268650000,"lat":33.35124999999999,"lon":-82.57,"pres":982.5,"wspd":54.5,"year":2018},"future":{"category":"Tropical Storm\r","date":1539270000000,"lat":33.43,"lon":-82.48,"pres":983,"wspd":54,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.48,33.43]},"id":"112","properties":{"current":{"category":"Tropical Storm\r","date":1539270000000,"lat":33.43,"lon":-82.48,"pres":983,"wspd":54,"year":2018},"future":{"category":"Tropical Storm\r","date":1539271350000,"lat":33.51375,"lon":-82.3825,"pres":983.5,"wspd":53.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.3825,33.51375]},"id":"113","properties":{"current":{"category":"Tropical Storm\r","date":1539271350000,"lat":33.51375,"lon":-82.3825,"pres":983.5,"wspd":53.75,"year":2018},"future":{"category":"Tropical Storm\r","date":1539272700000,"lat":33.5975,"lon":-82.285,"pres":984,"wspd":53.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.285,33.5975]},"id":"114","properties":{"current":{"category":"Tropical Storm\r","date":1539272700000,"lat":33.5975,"lon":-82.285,"pres":984,"wspd":53.5,"year":2018},"future":{"category":"Tropical Storm\r","date":1539274050000,"lat":33.68125,"lon":-82.1875,"pres":984.5,"wspd":53.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.1875,33.68125]},"id":"115","properties":{"current":{"category":"Tropical Storm\r","date":1539274050000,"lat":33.68125,"lon":-82.1875,"pres":984.5,"wspd":53.25,"year":2018},"future":{"category":"Tropical Storm\r","date":1539275400000,"lat":33.765,"lon":-82.09,"pres":985,"wspd":53,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-82.09,33.765]},"id":"116","properties":{"current":{"category":"Tropical Storm\r","date":1539275400000,"lat":33.765,"lon":-82.09,"pres":985,"wspd":53,"year":2018},"future":{"category":"Tropical Storm\r","date":1539276750000,"lat":33.84875,"lon":-81.9925,"pres":985.5,"wspd":52.75,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.9925,33.84875]},"id":"117","properties":{"current":{"category":"Tropical Storm\r","date":1539276750000,"lat":33.84875,"lon":-81.9925,"pres":985.5,"wspd":52.75,"year":2018},"future":{"category":"Tropical Storm\r","date":1539278100000,"lat":33.932500000000005,"lon":-81.89500000000001,"pres":986,"wspd":52.5,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.89500000000001,33.932500000000005]},"id":"118","properties":{"current":{"category":"Tropical Storm\r","date":1539278100000,"lat":33.932500000000005,"lon":-81.89500000000001,"pres":986,"wspd":52.5,"year":2018},"future":{"category":"Tropical Storm\r","date":1539279450000,"lat":34.01625,"lon":-81.79750000000001,"pres":986.5,"wspd":52.25,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.79750000000001,34.01625]},"id":"119","properties":{"current":{"category":"Tropical Storm\r","date":1539279450000,"lat":34.01625,"lon":-81.79750000000001,"pres":986.5,"wspd":52.25,"year":2018},"future":{"category":"Tropical Storm\r","date":1539280800000,"lat":34.1,"lon":-81.7,"pres":987,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.7,34.1]},"id":"120","properties":{"current":{"category":"Tropical Storm\r","date":1539280800000,"lat":34.1,"lon":-81.7,"pres":987,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539282150000,"lat":34.197500000000005,"lon":-81.60125,"pres":987.25,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.60125,34.197500000000005]},"id":"121","properties":{"current":{"category":"Tropical Storm\r","date":1539282150000,"lat":34.197500000000005,"lon":-81.60125,"pres":987.25,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539283500000,"lat":34.295,"lon":-81.5025,"pres":987.5,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.5025,34.295]},"id":"122","properties":{"current":{"category":"Tropical Storm\r","date":1539283500000,"lat":34.295,"lon":-81.5025,"pres":987.5,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539284850000,"lat":34.3925,"lon":-81.40375,"pres":987.75,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.40375,34.3925]},"id":"123","properties":{"current":{"category":"Tropical Storm\r","date":1539284850000,"lat":34.3925,"lon":-81.40375,"pres":987.75,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539286200000,"lat":34.49,"lon":-81.305,"pres":988,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.305,34.49]},"id":"124","properties":{"current":{"category":"Tropical Storm\r","date":1539286200000,"lat":34.49,"lon":-81.305,"pres":988,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539287550000,"lat":34.587500000000006,"lon":-81.20625000000001,"pres":988.25,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.20625000000001,34.587500000000006]},"id":"125","properties":{"current":{"category":"Tropical Storm\r","date":1539287550000,"lat":34.587500000000006,"lon":-81.20625000000001,"pres":988.25,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539288900000,"lat":34.685,"lon":-81.1075,"pres":988.5,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.1075,34.685]},"id":"126","properties":{"current":{"category":"Tropical Storm\r","date":1539288900000,"lat":34.685,"lon":-81.1075,"pres":988.5,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539290250000,"lat":34.7825,"lon":-81.00874999999999,"pres":988.75,"wspd":52,"year":2018}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-81.00874999999999,34.7825]},"id":"127","properties":{"current":{"category":"Tropical Storm\r","date":1539290250000,"lat":34.7825,"lon":-81.00874999999999,"pres":988.75,"wspd":52,"year":2018},"future":{"category":"Tropical Storm\r","date":1539291600000,"lat":34.88,"lon":-80.91,"pres":989,"wspd":52,"year":2018}}}]}
+  // rows = ee.FeatureCollection(rows.features);
+     
+  // createHurricaneDamageWrapper(rows);
+ // addExport(ee.Image(1).byte(),'test',30,true,{} )
+ // createHurricaneDamageWrapper(rows,true);
+// fetch(".geojson/michael-2018.txt")
+  // .then((resp) => console.log(resp.json())) // Transform the data into json
+    // .then(function(json) {
+    //   console.log(json)
+      
+    //   });
+    } 
+  
