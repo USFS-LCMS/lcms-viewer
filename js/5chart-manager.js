@@ -998,7 +998,7 @@ function startQuery(){
 			var pt = ee.Geometry.Point([center.lng(),center.lat()]);
 			var plotBounds = pt.buffer(plotRadius).bounds();
 	   		addClickMarker(plotBounds)
-
+	   		
 			marker.setMap(map);
 
 			getQueryImages(center.lng(),center.lat());
@@ -1629,6 +1629,9 @@ function startPixelChartCollection() {
 				  
 				  if(pixelChartCollections[whichPixelChartCollection].simplifyDate === false){
 				  	var y = new Date(d).toGMTString();
+				  }
+				  else if(pixelChartCollections[whichPixelChartCollection].semiSimpleDate === true){
+				  	var y = `${new Date(d).getFullYear()}-${new Date(d).getMonth()+1}-${new Date(d).getDate()}`
 				  }else{
 				  	var y = (new Date(d).getYear()+1900).toString();
 				  }
