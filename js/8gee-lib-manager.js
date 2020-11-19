@@ -212,11 +212,12 @@ function additionBands(img,howMuch){
     return out;
 }
 
-function simpleAddIndices(in_image){
-    in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'red']).select([0],['NDVI']));
-    in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'swir2']).select([0],['NBR']));
-    in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'swir1']).select([0],['NDMI']));
-    in_image = in_image.addBands(in_image.normalizedDifference(['green', 'swir1']).select([0],['NDSI']));  
+function simpleAddIndices(in_image,mult){
+  if(mult === undefined || mult === null){mult = 1}
+    in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'red']).select([0],['NDVI']).multiply(mult));
+    in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'swir2']).select([0],['NBR']).multiply(mult));
+    in_image = in_image.addBands(in_image.normalizedDifference(['nir', 'swir1']).select([0],['NDMI']).multiply(mult));
+    in_image = in_image.addBands(in_image.normalizedDifference(['green', 'swir1']).select([0],['NDSI']).multiply(mult));  
     return in_image;
 }
 function batchFillCollection(c,expectedYears){

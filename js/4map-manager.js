@@ -1434,9 +1434,9 @@ function padZero(str, len) {
     return (zeros + str).slice(-len);
 }
 function randomColor(){
-  var r = getRandomInt(100, 255);
-  var g = getRandomInt(0, 255);
-  var b = getRandomInt(0, 50);
+  var r = getRandomInt(100, 200);
+  var g = getRandomInt(100, 200);
+  var b = getRandomInt(100, 255);
   var c = rgbToHex(r,g,b)
   return c
 }

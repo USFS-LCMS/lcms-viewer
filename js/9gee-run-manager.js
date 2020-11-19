@@ -1384,7 +1384,7 @@ var lt = ltCONUS.merge(ltAK);
 var composites = ee.ImageCollection('projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites').merge(ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection'));
 
 composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
-  return composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+  return simpleAddIndices(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()),10000);
 }))
 
 
@@ -1433,43 +1433,51 @@ function getLossGainLT(ltStack,startYear,endYear,startSeg,endSeg,yrsPrefix,fitte
   return out
 }
 
-function simpleFit(ltStack,startYear,endYear){
+function simpleFit(ltStack,startYear,endYear,indexName){
   var yrs = ltStack.select('yrs_.*').selfMask();
   var fit = ltStack.select('fit_.*').updateMask(yrs.mask());
-  // Map.addLayer(yrs,{},'yrs',false)
-  // Map.addLayer(fit,{},'fit',false)
-  // Map.addLayer(fit.reduce(ee.Reducer.count()),{min:1,max:5},'count')
+  
   var out = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(yr){
     yr = ee.Number(yr);
-    var startYrMask = yrs.lte(yr);
-    var endYrMask = yrs.gte(yr);
-   
-    // Map.addLayer(yrMsk,{},yr.toString(),false)
+    var startYrMask =  ee.Image(ee.Algorithms.If(yr.eq(startYear), yrs.lte(yr), yrs.lt(yr)));
+    var endYrMask = ee.Image(ee.Algorithms.If(yr.eq(startYear), yrs.gt(yr), yrs.gte(yr))) ;
+    // Map.addLayer(startYrMask,{},'start'+yr.getInfo().toString(),false)
+    // Map.addLayer(endYrMask,{},'end'+yr.getInfo().toString(),false)
     var fitStart = fit.updateMask(startYrMask).reduce(ee.Reducer.lastNonNull());
     var fitEnd = fit.updateMask(endYrMask).reduce(ee.Reducer.firstNonNull());
-    
+    // Map.addLayer(fitStart,{},'fitStart'+yr.getInfo().toString(),false)
+    // Map.addLayer(fitEnd,{},'fitEnd'+yr.getInfo().toString(),false)
     var yearStart = yrs.updateMask(startYrMask).reduce(ee.Reducer.lastNonNull());
     var yearEnd = yrs.updateMask(endYrMask).reduce(ee.Reducer.firstNonNull());
-    
+    // Map.addLayer(yearStart,{},'yearStart'+yr.getInfo().toString(),false)
+    // Map.addLayer(yearEnd,{},'yearEnd'+yr.getInfo().toString(),false)
     var segDiff = fitEnd.subtract(fitStart);
     var segDur = yearEnd.subtract(yearStart);
-    var tDiff = ee.Image(yr).subtract(yearStart);
     
-    var fitDiff = segDiff.divide(segDur).multiply(tDiff)
+    // Map.addLayer(segDur,{},'segDur'+yr.getInfo().toString(),false)
+    var tDiff = ee.Image(yr).subtract(yearStart);
+    var segSlope = segDiff.divide(segDur);
+    var fitDiff = segSlope.multiply(tDiff);
     var fitted = fitStart.add(fitDiff);
-    return fitted
-    // .addBands(fitDiff)
-    // .addBands(segDur)
-    .rename(['Fitted'])
-    .set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
-  }))
-  return out
+   
+    return segDur
+    .addBands(fitted)
+    .addBands(segDiff)
+    .addBands(segSlope)
+    .addBands(fitDiff)
+    
+    .rename([indexName +'_LT_dur',indexName +'_LT_fitted',indexName +'_LT_mag',indexName +'_LT_slope',indexName +'_LT_diff'])
+    .set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+  }));
+  return out;
 }
 var fittedTS;
+var indicesUsed = []
 Object.keys(whichIndices2).map(function(k){
   var indexName = k;
   
   if(whichIndices2[k]){
+    indicesUsed.push(k)
     console.log(indexName); 
     var ltCONUST = lt.filter(ee.Filter.eq('band',indexName)).mosaic();
 
@@ -1520,9 +1528,9 @@ Object.keys(whichIndices2).map(function(k){
     //     'colors':chartColorsDict.advancedBeta.slice(4)
     // };
     if(fittedTS === undefined){
-      fittedTS = simpleFit(ltCONUST,startYear,endYear).select([0],[indexName + ' Fitted'])
+      fittedTS = simpleFit(ltCONUST,startYear,endYear,indexName).select(['.*_LT_fitted'])
     }else{
-      fittedTS = joinCollections(fittedTS,simpleFit(ltCONUST,startYear,endYear).select([0],[indexName + ' Fitted']), false);
+      fittedTS = joinCollections(fittedTS,simpleFit(ltCONUST,startYear,endYear,indexName).select(['.*_LT_fitted']), false);
     };
     
     
@@ -1538,12 +1546,17 @@ Object.keys(whichIndices2).map(function(k){
       }
 
 });
-pixelChartCollections['fit-'+indexName] =  {
+fittedTS = joinCollections(fittedTS,composites.select(indicesUsed), false);
+var ltPalette =palettes.niccoli.isol[7].reverse() 
+var ltFitColors = ee.List.sequence(0,6,7/indicesUsed.length).getInfo().map(function(i){i = Math.floor(i);return ltPalette[i%7]})
+ltFitColors.map(function(c){ltFitColors.push(invertColor(c))})
+// console.log(ltFitColors)
+pixelChartCollections['LT_Fit'] =  {
         'label':'LANDTRENDR Fitted Time Series',
         'collection':fittedTS,
         'xAxisLabel':'Year',
         'tooltip':'Query LANDTRENDR fitted value for each year',
-        'colors':chartColorsDict.advancedBeta
+        'chartColors':ltFitColors
     };
 /////////////////////////////////////////////////////////////////////////////
 //-------------------- BEGIN CCDC Helper Functions -------------------//
@@ -1744,12 +1757,15 @@ function ccdcChangeDetection(ccdcImg,bandName){
 //           // .filterBounds(geometry)
 //           .mosaic()
 //           // .reproject('EPSG:5070',null,30);
+var ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb'].concat(Object.keys(whichIndices3).filter(i => whichIndices3[i]).map(function(i){return i+'_.*'}));
+print(ccdcIndicesSelector)
 var ccdcImg =  ee.ImageCollection("projects/CCDC/USA_V2")
           .filter(ee.Filter.eq('spectral', 'SR'))
-          .select(['tStart','tEnd','tBreak','changeProb',
-                      'NDVI_.*','wetness_.*','nir_.*','swir2_.*']);;
+          .select(ccdcIndicesSelector);
+var ccdcAK =  ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Learners/CCDC-Collection')
+            .select(ccdcIndicesSelector)
 var f= ee.Image(ccdcImg.first());
-ccdcImg = ee.Image(ccdcImg.mosaic().copyProperties(f));
+ccdcImg = ee.Image(ccdcImg.merge(ccdcAK).mosaic().copyProperties(f));
 
 
 //Specify which harmonics to use when predicting the CCDC model
@@ -1794,12 +1810,14 @@ predicted = predicted.map(function(img){
   return img.addBands(masked)
 })
 // Map2.addLayer(predicted,{opacity:0},'CCDC Time Series');
+var ccdcFitColors = ee.List.sequence(0,6,7/2).getInfo().map(function(i){i = Math.floor(i);return ltPalette[i%7]})
+ccdcFitColors.map(function(c){ccdcFitColors.push(invertColor(c))})
 pixelChartCollections['ccdcTS'] =  {
         'label':'CCDC Fitted Time Series',
         'collection':predicted,
         'xAxisLabel':'Date',
         'tooltip':'Query CCDC time series',
-        'colors':chartColorsDict.advancedBeta,
+        'chartColors':ccdcFitColors,
           'semiSimpleDate':true
     };
 // function simpleGetTimeImageCollection(startYear,endYear,step){
@@ -1811,18 +1829,18 @@ pixelChartCollections['ccdcTS'] =  {
 // Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
 // Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-// // Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+// Map2.addTimeLapse(composites,{min:500,max:[3500,5500,3500],bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
-function getTerraPulseTileFunction(url){
-  return function(coord, zoom) {
-                    var tilesPerGlobe = 1 << zoom;
-                    var x = coord.x % tilesPerGlobe;
-                    if (x < 0) {
-                        x = tilesPerGlobe+x;
-                    }
-                    return url+ zoom + "/" + x + "/-" + coord.y +".png";
-                    }
-} 
+// function getTerraPulseTileFunction(url){
+//   return function(coord, zoom) {
+//                     var tilesPerGlobe = 1 << zoom;
+//                     var x = coord.x % tilesPerGlobe;
+//                     if (x < 0) {
+//                         x = tilesPerGlobe+x;
+//                     }
+//                     return url+ zoom + "/" + x + "/-" + coord.y +".png";
+//                     }
+// } 
 // Map2.addLayer(getTerraPulseTileFunction('https://tpts01.terrapulse.com:8090/map/tcc_83_global_2015/'),{layerType:'tileMapService'},'Terra Pulse Tree Cover',true)
 // Map2.addLayer(getTerraPulseTileFunction('https://tpts01.terrapulse.com:8090/map/loss_2010_2015_30p/'),{layerType:'tileMapService',addToClassLegend:true,classLegendDict:{'Loss':'F00'}},'Terra Pulse Loss',true)
 // var hansen = ee.Image("UMD/hansen/global_forest_change_2019_v1_7").select([0])

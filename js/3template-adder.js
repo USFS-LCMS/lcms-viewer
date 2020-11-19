@@ -155,7 +155,8 @@ if(mode === 'LCMS'){
   addRangeSlider('lt-params-div','Gain Magnitude Threshold','urlParams.gainMagThresh',0.05,0.8,urlParams.gainMagThresh,0.05,'gain-mag-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any difference for a given segement greater than this threshold will be flagged as gain') 
   addCheckboxes('lt-params-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices2',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':false,'NDMI':false,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false})
   
-  addRangeSlider('ccdc-params-div','Change Probability Threshold','ccdcChangeProbThresh',0,1,0.8,0.1,'ccdc-change-prob-thresh-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
+  addCheckboxes('ccdc-params-div','ccdc-index-choice-checkboxes','Choose which indices to include in CCDC fitted charts','whichIndices3',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':true,'NDMI':false,'wetness':false})
+  // addRangeSlider('ccdc-params-div','Change Probability Threshold','ccdcChangeProbThresh',0,1,0.8,0.1,'ccdc-change-prob-thresh-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
   
   // $('#lt-params-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);

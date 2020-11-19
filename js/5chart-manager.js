@@ -1610,7 +1610,7 @@ function startPixelChartCollection() {
    		addClickMarker(plotBounds)
 		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 		
-		uriName =  mode+'_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
+		uriName =  pixelChartCollections[whichPixelChartCollection].label.replaceAll(' ','_')+'_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
 		csvName = uriName + '.csv'
 		
 

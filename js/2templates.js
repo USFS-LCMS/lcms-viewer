@@ -728,8 +728,8 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     eval(`window.${variable} = []`);
     Object.keys(optionList).map(function(k){
       // console.log(k)
-      var checkboxCheckboxID = k + '-checkbox';
-      var checkboxLabelID = checkboxCheckboxID + '-label'
+      var checkboxCheckboxID = variable+k + '-checkbox';
+      var checkboxLabelID = variable+checkboxCheckboxID + '-label'
       var checked = optionList[k];
       if(checked){checked = 'checked';}
         else{checked = ''};
