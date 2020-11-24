@@ -217,6 +217,17 @@ function printImage(message){print(message)};
 function print(message){
     console.log(message)
 }
+function printEE(obj){
+  console.log(obj.getInfo(function(success,failure){
+    if(success !== undefined){
+      console.log(success);
+    }
+    else{
+      console.log(failure)
+    }
+
+  }))
+}
 /////////////////////////////////////////////////////
 //Get random number within specified range
 function getRandomArbitrary(min, max) {
@@ -1408,6 +1419,22 @@ function padLeft(nr, n, str){
 }
 function rgbToHex(r,g,b) {
     return "#"+("00000"+(r<<16|g<<8|b).toString(16)).slice(-6);
+}
+//Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+function offsetColor(hex,offset){
+  obj = hexToRgb(hex)
+  obj.r = (obj.r+offset)%255
+  obj.g = (obj.g+offset)%255
+  obj.b = (obj.b+offset)%255
+  return rgbToHex(obj.r,obj.g,obj.b) 
 }
 function invertColor(hex) {
     if (hex.indexOf('#') === 0) {

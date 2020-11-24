@@ -398,7 +398,7 @@ var  getQueryImages = function(lng,lat){
 					
 				}
 				var getRegionCall = c.sort('system:time_start',false).getRegion(plotBounds,plotScale);
-				getRegionCall.evaluate(function(values){
+				getRegionCall.evaluate(function(values,failure){
 					// console.log('values');
 					// console.log(values);
 					if(values !== undefined && values !== null){
@@ -407,7 +407,7 @@ var  getQueryImages = function(lng,lat){
 						keyI++;
 						makeQueryTable(null,q,k);
 					}
-					
+					if(failure !== undefined && failure !== null){showMessage('Error',failure)}
 				})
 				// c.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){keyI++;makeQueryTable(value,q,k);})
 			}else if(q.type === 'geeVectorImage' || q.type === 'geeVector'){
@@ -1660,12 +1660,13 @@ function startPixelChartCollection() {
 			
    			}
 
-		icT.getRegion(plotBounds,plotScale).evaluate(function(values){
+		icT.getRegion(plotBounds,plotScale).evaluate(function(values,failure){
 			$('#summary-spinner').slideUp();
-			if(values === undefined ||  values === null){
-				showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
-			}
-			else if(values.length > 1){
+			// if(values === undefined ||  values === null){
+			// 	showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
+			// }
+			if(failure !== undefined && failure !== null){showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',failure)}
+			if(values !== undefined && values !== null && values.length > 1){
 				var expectedLength = icT.size().getInfo()+1
 				if(values.length > expectedLength){
 					console.log('reducing number of inputs');
