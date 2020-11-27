@@ -1218,7 +1218,9 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 			        'borderColor':color,
 			        'lineTension':0,
 			        'borderWidth':2,
-			        'steppedLine':steppedLine
+			        'steppedLine':steppedLine,
+			        'showLine':true,
+			        'spanGaps':true
 			    	};
 		if(stacked){
 			out['fill'] = true;

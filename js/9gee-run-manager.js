@@ -1856,24 +1856,28 @@ var annualPredicted = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).
 // Map2.addLayer(annualPredicted,{opacity:0},'annual predicted')
 var fraction = ee.Number(ee.Date.fromYMD(1900,9,1).getFraction('year'));
 var outBns = ee.Image(predicted.first()).bandNames().map(function(bn){return ee.String(bn).cat('_Annualized')})
-// predicted = predicted.map(function(img){
-//   var f = ee.Number(ee.Date(img.get('system:time_start')).getFraction('year'));
-//   var m = ee.Image(fraction.subtract(f).abs().lt(0.01))
-//   var masked = img.updateMask(m).rename(outBns);
+predicted = predicted.map(function(img){
+  var f = ee.Number(ee.Date(img.get('system:time_start')).getFraction('year'));
+  var m = ee.Image(fraction.subtract(f).abs().lt(0.01))
+  var masked = img.updateMask(m).rename(outBns);
   
-//   return img.addBands(masked)
-// })
-// Map2.addLayer(predicted,{opacity:0},'CCDC Time Series');
+  return masked.addBands(img).copyProperties(img,['system:time_start'])
+})
+// Map2.addLayer(maskedPredicted.select(['.*_Annualized']),{opacity:0},'CCDC Time Series');
 
     fittedLTCCDCTS = joinCollections(fittedTS,annualPredicted.map(setSameDate), false);
-    var ltCCDCPalette =palettes.niccoli.isol[7].reverse() 
-    var ltCCDCFitColors = ee.List.sequence(0,6,7/(indicesUsed.length)).getInfo().map(function(i){i = Math.floor(i);return ltPalette[i%7]})
+    // var ltCCDCPalette =palettes.niccoli.isol[7].reverse() 
+    // var ltCCDCFitColors = ee.List.sequence(0,6,7/(indicesUsed.length)).getInfo().map(function(i){i = Math.floor(i);return ltPalette[i%7]})
     
-    var ltCCDCFitColorsFull = ltCCDCFitColors;
+    // var ltCCDCFitColorsFull = ltCCDCFitColors;
+    // // console.log(ltCCDCFitColorsFull)
+    // var opposites = ltCCDCFitColors.map(invertColor)
+    // var offsetOpposites = opposites.map(function(hex){return offsetColor(hex,25)});
+    // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(opposites);
+    // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(offsetOpposites);
+    // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(ltCCDCFitColors.map(function(hex){return offsetColor(hex,10)}))
     // console.log(ltCCDCFitColorsFull)
-    ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(ltCCDCFitColors.map(function(hex){return offsetColor(hex,10)}))
-    // console.log(ltCCDCFitColorsFull)
-    ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(ltCCDCFitColors.map(function(hex){return offsetColor(hex,20)}))
+    // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(ltCCDCFitColors.map(function(hex){return offsetColor(hex,20)}))
     // console.log(ltCCDCFitColorsFull)
     // ltCCDCFitColors.map(function(c){ltCCDCFitColors.push(invertColor(c))}) 
   // printEE(fittedLTCCDCTS.limit(2));
@@ -1882,7 +1886,7 @@ var outBns = ee.Image(predicted.first()).bandNames().map(function(bn){return ee.
           'collection':fittedLTCCDCTS,
           'xAxisLabel':'Year',
           'tooltip':'Query LANDTRENDR and CCDC fitted value for each year',
-          'chartColors':ltCCDCFitColorsFull
+          'chartColors':palettes.colorbrewer.Set1[indicesUsed.length*3]
       };
 
     var ccdcFitColors = ee.List.sequence(0,6,7/2).getInfo().map(function(i){i = Math.floor(i);return ltPalette[i%7]})
@@ -1905,7 +1909,7 @@ pixelChartCollections['ccdcTS'] =  {
 // Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
 // Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+// Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
 // function getTerraPulseTileFunction(url){
 //   return function(coord, zoom) {
