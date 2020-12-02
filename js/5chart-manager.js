@@ -1153,8 +1153,9 @@ if(localStorage.tableOrChart === undefined || localStorage.tableOrChart === null
 }
 
 addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel){
+function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel,fieldsHidden){
 	var displayXAxis = true;var displayYAxis = true;
+	if(fieldsHidden === null || fieldsHidden === undefined){fieldsHidden = null};
 	if(xAxisLabel === null || xAxisLabel === undefined){xAxisLabel = '';displayXAxis = false};
 	if(yAxisLabel === null || yAxisLabel === undefined){yAxisLabel = '';displayYAxis = false};
 	if(colors === null || colors === undefined){colors = chartColors};
@@ -1193,6 +1194,10 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
     var columns = range(1,columnN);
     console.log('starting to convert to chart')
     var datasets = columns.map(function(i){
+    	var fieldHidden = false;
+    	if(fieldsHidden !== null){
+    		fieldHidden = fieldsHidden[i-1]
+    	}
         var col = arrayColumn(dt,i);
         var label = col[0];
         var data = col.slice(1);
@@ -1220,7 +1225,8 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 			        'borderWidth':2,
 			        'steppedLine':steppedLine,
 			        'showLine':true,
-			        'spanGaps':true
+			        'spanGaps':true,
+			        'hidden': fieldHidden
 			    	};
 		if(stacked){
 			out['fill'] = true;
@@ -1655,7 +1661,7 @@ function startPixelChartCollection() {
 			values.unshift(header);
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
-			addChartJS(values,chartTitle,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisLabel,pixelChartCollections[whichPixelChartCollection].yAxisLabel);
+			addChartJS(values,chartTitle,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisLabel,pixelChartCollections[whichPixelChartCollection].yAxisLabel,pixelChartCollections[whichPixelChartCollection].fieldsHidden);
 		
 			if(pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined){
 				makeLegend(pixelChartCollections[whichPixelChartCollection].legends);

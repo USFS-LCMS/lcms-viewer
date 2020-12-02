@@ -24,7 +24,7 @@ function combineChange(changeC,year,gain_thresh,slow_loss_thresh,fast_loss_thres
   return out.set('system:time_start',ee.Date.fromYMD(year,6,1).millis())
 }
 ///////////////////////////////////////////
-function combineLandCover(lcC,year,numbers,names,format){
+function combineLandCover(lcC,year,numbers,names,format,mult){
   var dummyImage = ee.Image(lcC.first());
 
   year = ee.Number(year).int16();
@@ -41,7 +41,7 @@ function combineLandCover(lcC,year,numbers,names,format){
   }else{
     var lcC = lcC.filter(ee.Filter.calendarRange(year,year,'year')).mosaic().select(names);
   }
-
+  lcC = lcC.multiply(mult);
   var maxConf = lcC.reduce(ee.Reducer.max());
   var maxConfMask = lcC.eq(maxConf).selfMask();
   var maxClass = ee.Image(numbers).updateMask(maxConfMask).reduce(ee.Reducer.max()).rename(['maxClass']);
@@ -122,14 +122,14 @@ function runGTAC(){
   luNumbers.map(function(k){luQueryDict[k] = luClassDict[k].legendName});
 
   var combinedLC = ee.ImageCollection(years.map(function(yr){
-    var conusCombined = combineLandCover(conusLC,yr,lcNumbers,lcModelNames,'collection');
-    var akCombined = combineLandCover(akLC,yr,lcNumbers,lcModelNames,'stack');
+    var conusCombined = combineLandCover(conusLC,yr,lcNumbers,lcModelNames,'collection',0.01);
+    var akCombined = combineLandCover(akLC,yr,lcNumbers,lcModelNames,'stack',0.01);
     return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
   })).select(lcModelNames.concat(['maxClass']),lcLegendNames.concat(['maxClass']));
 
   var combinedLU = ee.ImageCollection(years.map(function(yr){
-    var conusCombined = combineLandCover(conusLU,yr,luNumbers,luModelNames,'collection');
-    var akCombined = combineLandCover(akLU,yr,luNumbers,luModelNames,'stack');
+    var conusCombined = combineLandCover(conusLU,yr,luNumbers,luModelNames,'collection',0.01);
+    var akCombined = combineLandCover(akLU,yr,luNumbers,luModelNames,'stack',0.01);
     return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
   })).select(luModelNames.concat(['maxClass']),luLegendNames.concat(['maxClass']));
 
@@ -194,7 +194,8 @@ function runGTAC(){
                                   'chartColors':chartColorsDict.allLossGain2,
                                   'tooltip':'Chart slow loss, fast loss, gain and the '+whichIndex + ' vegetation index',
                                   'xAxisLabel':'Year',
-                                  'yAxisLabel':'Model Confidence or Index Value'}
+                                  'yAxisLabel':'Model Confidence or Index Value',
+                                  'fieldsHidden':[true,true,true,false,false,false]}
   var lcForPixelCharting = combinedLC;
   var bns = ee.Image(combinedLC.first()).bandNames();
   bns = bns.slice(0,bns.length().subtract(1));
