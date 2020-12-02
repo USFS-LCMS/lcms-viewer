@@ -339,8 +339,43 @@ var studyAreaDict = {
                                               compositeCollection:'projects/LCMS/CONUS_MEDOID',
                                               lcmsCollection:'projects/LCMS/CONUS_Products/v20200120',
                                               ltCollection:'projects/LCMS/CONUS_Products/LT20200120'
-                                            }
+                                            },
+                    'LCMS-GTAC-v2020-5':{
+                      name:'LCMS-GTAC-v2020-5',
+                      center:[37.5334105816903,-105.6787109375,5],
+                      crs:'EPSG:5070',
+                      startYear:1985,
+                      endYear:2020,
+
+                      conusComposites:'projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites',
+                      conusChange :'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast_InitialRun',
+                      conusLC : 'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landcover_Probability_InitialRun',
+                      conusLU :  'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landuse_Probability_InitialRun',
+                      conusLT : 'projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020',
+                      conusCCDC : "projects/CCDC/USA_V2",
+
+                      conusLossThresh : 0.23,
+                      conusFastLossThresh : 0.29,
+                      conusSlowLossThresh : 0.18,
+                      conusGainThresh : 0.29,
+
+                      hiComposites:'',
+                      otherComposites:'',
+
+                      akComposites:'projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection',
+                      akChange : 'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/DND-RNR-DNDSlow-DNDFast-revisedSlowPlots',
+                      akLC : 'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/Landcover_Probability',
+                      akLU : 'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/Landuse_Probability',
+                      akLT: 'projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection-1984-2020',
+                      akCCDC: 'projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Learners/CCDC-Collection',
+                      akLossThresh : 0.26,
+                      akFastLossThresh : 0.34,
+                      akSlowLossThresh : 0.17,
+                      akGainThresh : 0.24,
+                    
+                    }                        
                 };
+
 // New Land Cover JSONs, Nov. 2020 (in Python format):
 // lcJSONdict = OrderedDict()
 // if outputChangeCollection == paramDict[studyArea]['landcoverCollection'] and (studyArea == 'COASTAL_AK' or studyArea =='CK'): 
@@ -572,6 +607,7 @@ var chartColorsDict = {
   'advancedBeta':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4','#808','#f58231'],
   'coreLossGain':['#050','#0A0','#e6194B','#14d4f4'],
   'allLossGain':['#050','#0A0','#e6194B','#808','#f58231','#14d4f4'],
+  'allLossGain2':['#050','#0A0','#0E0','#e6194B','#808','#f58231','#14d4f4'],
   'test':['#9A6324','#6f6f6f','#e6194B','#14d4f4','#880088','#f58231'],
   'testArea':['#e6194B','#14d4f4','#880088','#f58231'],
   'ancillary':['#cc0066','#660033','#9933ff','#330080','#ff3300','#47d147','#00cc99','#ff9966','#b37700']

@@ -218,6 +218,7 @@ function print(message){
     console.log(message)
 }
 function printEE(obj){
+  print('Getting info about ee object')
   console.log(obj.getInfo(function(success,failure){
     if(success !== undefined){
       console.log(success);
@@ -1880,6 +1881,8 @@ function dropdownUpdateStudyArea(whichOne){
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
+    }else if( mode === 'LCMS2'){
+      run  = runGTAC;
     }else if( mode === 'STORM'){
       run  = runStorm;
     }
@@ -2473,7 +2476,9 @@ function initialize() {
       }
       if(mode === 'Ancillary'){
         run = runSimple;
-      } else if( mode === 'LT'){
+      } else if( mode === 'LCMS2'){
+        run  = runGTAC;
+      }else if( mode === 'LT'){
         run  = runLT;
       } else if(mode === 'MTBS'){
         run = runMTBS;

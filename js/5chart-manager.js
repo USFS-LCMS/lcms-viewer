@@ -1082,17 +1082,17 @@ function getDataTable(pt){
 	return forChart
 }
 
-function changeChartType(newType,showExpanded){
-	if(!showExpanded){showExpanded = false};
-	newType.checked = true;
-	$(newType).checked = true;
-	chartType = newType.value;
-	uriName = mode+'_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
-	csvName = uriName + '.csv'
-	document.getElementById('curve_chart').style.display = 'none';
-	// setTimeout(function(){updateProgress(80);},0);
-	Chart(showExpanded);
-}
+// function changeChartType(newType,showExpanded){
+// 	if(!showExpanded){showExpanded = false};
+// 	newType.checked = true;
+// 	$(newType).checked = true;
+// 	chartType = newType.value;
+// 	uriName = mode+'_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
+// 	csvName = uriName + '.csv'
+// 	document.getElementById('curve_chart').style.display = 'none';
+// 	// setTimeout(function(){updateProgress(80);},0);
+// 	Chart(showExpanded);
+// }
 
 //////////////////////////////////////////////////////////////////
 //ChartJS code
@@ -1613,6 +1613,8 @@ function startPixelChartCollection() {
 		var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 		
 		uriName =  pixelChartCollections[whichPixelChartCollection].label.replaceAll(' ','_')+'_lng_' +center.lng().toFixed(4).toString() + '_lat_' + center.lat().toFixed(4).toString();
+		chartTitle =  pixelChartCollections[whichPixelChartCollection].label+' (lng: ' +center.lng().toFixed(4).toString() + ' lat: ' + center.lat().toFixed(4).toString() + ')';
+		
 		csvName = uriName + '.csv'
 		
 
@@ -1653,7 +1655,7 @@ function startPixelChartCollection() {
 			values.unshift(header);
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
-			addChartJS(values,uriName,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisLabel,pixelChartCollections[whichPixelChartCollection].yAxisLabel);
+			addChartJS(values,chartTitle,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisLabel,pixelChartCollections[whichPixelChartCollection].yAxisLabel);
 		
 			if(pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined){
 				makeLegend(pixelChartCollections[whichPixelChartCollection].legends);

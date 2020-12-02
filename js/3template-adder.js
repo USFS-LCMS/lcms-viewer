@@ -27,7 +27,7 @@ $('#dontShowAgainCheckbox').change(function(){
 });
 /////////////////////////////////////////////////////////////////////
 /*Add study area dropdown if LCMS*/
-if(mode === 'LCMS'){
+if(mode === 'LCMS' || mode === 'LCMS2'){
   $('#title-banner').append(staticTemplates.studyAreaDropdown);
   if(studyAreaSpecificPage){
     $('#study-area-label').removeClass('dropdown-toggle');
@@ -52,7 +52,7 @@ function toggleAdvancedOff(){
 }
 /////////////////////////////////////////////////////////////////////
 /*Start adding elements to page based on chosen mode*/
-if(mode === 'LCMS'){
+if(mode === 'LCMS' || mode === 'LCMS2'){
   var minYear = startYear;var maxYear = endYear;
   // console.log(urlParams)  
   if(urlParams.startYear == null || urlParams.startYear == undefined){
@@ -81,7 +81,11 @@ if(mode === 'LCMS'){
   if(['standard','advanced'].indexOf(urlParams.analysisMode) === -1){
     urlParams.analysisMode = 'standard'
   }
+  if(['year','prob'].indexOf(urlParams.summaryMethod) === -1){
+    urlParams.summaryMethod = 'year'
+  }
   var tAnalysisMode = urlParams.analysisMode;
+
   addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','urlParams.analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
 
   urlParams.analysisMode = tAnalysisMode ;
@@ -109,8 +113,10 @@ if(mode === 'LCMS'){
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
  
-  
-  addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold')
+  var tSummaryMethod = urlParams.summaryMethod;
+  addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','urlParams.summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold');
+  urlParams.summaryMethod = tSummaryMethod;
+
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   // addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
   // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
@@ -126,6 +132,9 @@ if(mode === 'LCMS'){
 
   if(tAnalysisMode === 'advanced'){
     $('#analysis-mode-radio-second_toggle_label').click();
+  }
+  if(tSummaryMethod === 'prob'){
+    $('#summaryMethod-radio-second_toggle_label').click();
   }
 
 }else if(mode === 'lcms-base-learner'){
@@ -150,7 +159,7 @@ if(mode === 'LCMS'){
 addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices2',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':false,'NDMI':false,'wetness':false})
   
   addSubCollapse('parameters-collapse-div','lt-params-label','lt-params-div','LANDTRENDR Params', '',false,'')
-  addSubCollapse('parameters-collapse-div','ccdc-params-label','ccdc-params-div','CCDC Params', '',false,'')
+  // addSubCollapse('parameters-collapse-div','ccdc-params-label','ccdc-params-div','CCDC Params', '',false,'')
   
   addRangeSlider('lt-params-div','Loss Magnitude Threshold','urlParams.lossMagThresh',-0.8,-0.05,urlParams.lossMagThresh,0.05,'loss-mag-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any difference for a given segement less than this threshold will be flagged as loss') 
   addRangeSlider('lt-params-div','Gain Magnitude Threshold','urlParams.gainMagThresh',0.05,0.8,urlParams.gainMagThresh,0.05,'gain-mag-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any difference for a given segement greater than this threshold will be flagged as gain') 
