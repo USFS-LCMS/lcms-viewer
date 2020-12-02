@@ -217,6 +217,39 @@ function runGTAC(){
                                   'tooltip':'Chart land use model confidence for each individual class',
                                   'xAxisLabel':'Year',
                                   'yAxisLabel':'Model Confidence'}
+
+  var changeForAreaCharting = combinedChange.select(['.*_Mask']).map(function(img){
+    var change = img.unmask().select([2,1,0],['Fast Tree Loss','Slow Tree Loss','Tree Gain']);
+    var notChange = img.mask().reduce(ee.Reducer.max()).not().rename(['Stable Tree'])
+    return notChange.addBands(change).copyProperties(img,['system:time_start']);
+  })
+  var lcForAreaCharting = formatAreaChartCollection(combinedLC.select(['maxClass']),lcNumbers,lcLegendNames);
+  var luForAreaCharting = formatAreaChartCollection(combinedLU.select(['maxClass']),luNumbers,luLegendNames);
+  
+  getSelectLayers(true);
+  
+   areaChartCollections['change'] = {'label':'LCMS Change',
+                                  'collection':changeForAreaCharting,
+                                  'stacked':false,
+                                  'steppedLine':false,
+                                  'tooltip':'Summarize change classes for each year',
+                                  'colors':chartColorsDict.allLossGain2Area,
+                                  'xAxisLabel':'Year'};
+   areaChartCollections['lc'] = {'label':'LCMS Land Cover',
+                                  'collection':lcForAreaCharting,
+                                  'stacked':true,
+                                  'steppedLine':false,
+                                  'tooltip':'Summarize land cover classes for each year',
+                                  'colors':lcLegendColors,
+                                  'xAxisLabel':'Year'};
+     areaChartCollections['lu'] = {'label':'LCMS Land Use',
+                                  'collection':luForAreaCharting,
+                                  'stacked':true,
+                                  'steppedLine':false,
+                                  'tooltip':'Summarize land use classes for each year',
+                                  'colors':luLegendColors,
+                                  'xAxisLabel':'Year'};
+  
   populatePixelChartDropdown();
-    // populateAreaChartDropdown();
+    populateAreaChartDropdown();
 }

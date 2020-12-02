@@ -546,7 +546,7 @@ if(mode === 'geeViz'){
   $('#share-button').remove();
 }
 
-if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP'){
+if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP' || mode === 'LCMS2'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Params', '',false,'')
   

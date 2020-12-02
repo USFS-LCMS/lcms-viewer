@@ -160,7 +160,7 @@ function chartSelectedAreas(){
     	var title = $('#user-selected-area-name').val();
     	if(title === ''){title = getSelectedAreasNameList(false).join(' - ');}
     	$('#summary-spinner').slideDown();
-        makeAreaChart(selectedFeatures,title + ' ' + mode + ' Summary',true)
+        makeAreaChart(selectedFeatures,title + ' ' + areaChartCollections[whichAreaChartCollection].label + ' Summary',true)
     }else{showMessage('Error!','Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button.')}
     try{}
     catch(err){
@@ -693,7 +693,7 @@ function chartUserDefinedArea(){
 		var userArea = [];
 		var anythingToChart = false;
 		Object.values(udpPolygonObj).map(function(v){
-			var coords = v.getPath().i;
+			var coords = v.getPath().getArray();
 			var f = [];
 			coords.map(function(coord){f.push([coord.lng(),coord.lat()])});
 		

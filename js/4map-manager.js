@@ -1547,7 +1547,8 @@ function startArea(){
         function areaWrapper(key){
           // console.log('key');console.log(key);
         // print('Adding in: '+key.toString());
-        var pathT = areaPolygonObj[key].getPath().j
+        var pathT = areaPolygonObj[key].getPath().getArray();
+        
         if(pathT.length > 0){
 
           clickCoords =clickLngLat;//pathT[pathT.length-1];
