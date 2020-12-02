@@ -372,6 +372,30 @@ var studyAreaDict = {
                       akFastLossThresh : 0.34,
                       akSlowLossThresh : 0.17,
                       akGainThresh : 0.24,
+
+
+                      lcClassDict :{1: {'modelName': 'TREES','legendName': 'Trees','color': '005e00'},
+                                  2: {'modelName': 'TS-TREES','legendName': 'Tall Shrubs & Trees Mix','color': '008000'},
+                                  3: {'modelName': 'SHRUBS-TRE','legendName': 'Shrubs & Trees Mix','color': '00cc00'},
+                                  4: {'modelName': 'GRASS-TREE','legendName': 'Grass/Forb/Herb & Trees Mix','color': 'b3ff1a'},
+                                  5: {'modelName': 'BARREN-TRE','legendName': 'Barren & Trees Mix','color': '99ff99'},
+                                  6: {'modelName': 'TS','legendName': 'Tall Shrubs','color': 'b30000'},
+                                  7: {'modelName': 'SHRUBS','legendName': 'Shrubs','color': 'e68a00'},
+                                  8: {'modelName': 'GRASS-SHRU','legendName': 'Grass/Forb/Herb & Shrubs Mix','color': 'ffad33'},
+                                  9: {'modelName': 'BARREN-SHR','legendName': 'Barren & Shrubs Mix','color': 'ffe0b3'},
+                                  10: {'modelName': 'GRASS','legendName': 'Grass/Forb/Herb','color': 'ffff00'},
+                                  11: {'modelName': 'BARREN-GRA','legendName': 'Barren & Grass/Forb/Herb Mix','color': 'AA7700'},
+                                  12: {'modelName': 'BARREN-IMP','legendName': 'Barren or Impervious','color': 'd3bf9b'},
+                                  13: {'modelName': 'SNOW','legendName': 'Snow or Ice','color': 'ffffff'},
+                                  14: {'modelName': 'WATER','legendName': 'Water','color': '4780f3'}},
+
+                      luClassDict :{1: {'modelName': 'Agriculture','legendName': 'Agriculture','color': 'efff6b'},
+                                2: {'modelName': 'Developed','legendName': 'Developed','color': 'ff2ff8'},
+                                3: {'modelName': 'Forest','legendName': 'Forest','color': '1b9d0c'},
+                                4: {'modelName': 'Non_Forest_Wetland','legendName': 'Non-Forest Wetland','color': '97ffff'},
+                                5: {'modelName': 'Other','legendName': 'Other','color': 'a1a1a1'},
+                                6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}}
+                 
                     
                     }                        
                 };
@@ -681,4 +705,8 @@ String.prototype.replaceAll = function(str1, str2, ignore)
 Number.prototype.formatNumber = function(n){
   if(n === undefined || n === null){n = 2}
   return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+}
+//Taken from: https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript 
+String.prototype.toTitle = function() {
+  return this.replace(/(^|\s)\S/g, function(t) { return t.toUpperCase() });
 }

@@ -23,14 +23,39 @@ function combineChange(changeC,year,gain_thresh,slow_loss_thresh,fast_loss_thres
   var out = ee.Image.cat([stack,maxConfMask, yearMask]).rename(['Gain_Prob','Slow_Loss_Prob','Fast_Loss_Prob','Gain_Mask','Slow_Loss_Mask','Fast_Loss_Mask','Gain_Year','Slow_Loss_Year','Fast_Loss_Year']);
   return out.set('system:time_start',ee.Date.fromYMD(year,6,1).millis())
 }
+///////////////////////////////////////////
+function combineLandCover(lcC,year,numbers,names,format){
+  var dummyImage = ee.Image(lcC.first());
+
+  year = ee.Number(year).int16();
+  if(format !== 'stack'){
+      lcC = lcC.filter(ee.Filter.eq('year',year));
+      
+      lcC = ee.ImageCollection(names.map(function(nm){
+       
+        return fillEmptyCollections(lcC.filter(ee.Filter.eq('model',nm)),dummyImage).mosaic()
+      })).toBands().rename(names)
+
+  
+
+  }else{
+    var lcC = lcC.filter(ee.Filter.calendarRange(year,year,'year')).mosaic().select(names);
+  }
+
+  var maxConf = lcC.reduce(ee.Reducer.max());
+  var maxConfMask = lcC.eq(maxConf).selfMask();
+  var maxClass = ee.Image(numbers).updateMask(maxConfMask).reduce(ee.Reducer.max()).rename(['maxClass']);
+  return lcC.addBands(maxClass).set('system:time_start',ee.Date.fromYMD(year,6,1).millis())
+}
 ////////////////////////////////////////////////////////////////////////
 function runGTAC(){
+  //Set up some params
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
   analysisMode = urlParams.analysisMode;
   queryClassDict = {};
   var years = ee.List.sequence(startYear,endYear).getInfo();
-  summaryMethod = urlParams.summaryMethod;
+  summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
   // setupDownloads(studyAreaName);
   var clientBoundary = clientBoundsDict.All;
@@ -58,80 +83,139 @@ function runGTAC(){
   var composites = ee.ImageCollection(conusComposites).merge(ee.ImageCollection(akComposites));
 
   composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
-    return simpleGetTasseledCap(simpleAddIndices(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()),1));
+    return simpleAddIndices(composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()),1);
   }));
 
+  //Combine different change outputs
+  var combinedChange = ee.ImageCollection(years.map(function(yr){
 
-var combinedChange = ee.ImageCollection(years.map(function(yr){
+    var akCombined = combineChange(akChange,yr,studyAreaDict[studyAreaName].akGainThresh,studyAreaDict[studyAreaName].akSlowLossThresh,studyAreaDict[studyAreaName].akFastLossThresh,'stack',0.01);
 
-  var akCombined = combineChange(akChange,yr,studyAreaDict[studyAreaName].akGainThresh,studyAreaDict[studyAreaName].akSlowLossThresh,studyAreaDict[studyAreaName].akFastLossThresh,'stack',0.01);
-
-  var conusCombined = combineChange(conusChange,yr,studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].conusSlowLossThresh,studyAreaDict[studyAreaName].conusFastLossThresh,'collection',0.01);
-  return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
-  
-  }));
-  // printEE(combinedChange)
-// if(summaryMethod)
-if(summaryMethod === 'year'){
-  var combinedGain = combinedChange.select(['Gain.*']).qualityMosaic('Gain_Year');
-  var combinedSlowLoss = combinedChange.select(['Slow_Loss_.*']).qualityMosaic('Slow_Loss_Year');
-  var combinedFastLoss = combinedChange.select(['Fast_Loss_.*']).qualityMosaic('Fast_Loss_Year');
-}else{
-  var combinedGain = combinedChange.select(['Gain.*']).qualityMosaic('Gain_Prob');
-  var combinedSlowLoss = combinedChange.select(['Slow_Loss_.*']).qualityMosaic('Slow_Loss_Prob');
-  var combinedFastLoss = combinedChange.select(['Fast_Loss_.*']).qualityMosaic('Fast_Loss_Prob');
-}
-
-Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{min: startYear, max: endYear, palette: declineYearPalette},'Slow Tree Loss Year')
-
-if(analysisMode === 'advanced'){
-  Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{min: minSlowLossProb, max: 80, palette: declineProbPalette},'Slow Tree Loss Probability',false);
-  Map2.addLayer(combinedChange.select(['Slow_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{min: 1, max: 5, palette: declineDurPalette},'Slow Tree Loss Duration',false);
-  
-}
-Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Year']).set('bounds',clientBoundary),{min: startYear, max: endYear, palette: declineYearPalette},'Fast Tree Loss Year');
-
-if(analysisMode === 'advanced'){
-Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Prob']).updateMask(combinedFastLoss.select(['Fast_Loss_Year']).mask()).set('bounds',clientBoundary),{min: minFastLossProb, max: 80, palette: declineProbPalette},'Fast Tree Loss Probability',false);
-  Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{min: 1, max: 5, palette: declineDurPalette},'Fast Tree Loss Duration',false);
-}
-Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{min: startYear, max: endYear, palette: recoveryYearPalette},'Tree Gain Year',false);
-if(analysisMode === 'advanced'){
-Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{min: minGainProb, max: 80, palette: recoveryProbPalette},'Tree Gain Probability',false);
-  Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{min: 1, max: 5, palette: recoveryDurPalette},'Tree Gain Duration',false);
-}
-
-    var whichIndex = whichIndices[0];
-    var ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb','NBR_.*','NDVI_.*'];
-
-    akCCDC = akCCDC.select(ccdcIndicesSelector);
-    conusCCDC = conusCCDC.select(ccdcIndicesSelector);
-    var f= ee.Image(conusCCDC.first());
-    var ccdcImg = ee.Image(conusCCDC.merge(akCCDC).mosaic().copyProperties(f));
-    var whichHarmonics = [1,2,3];
-    var fillGaps = true;
-    var fraction = 0.6657534246575343;
-    var annualImages = simpleGetTimeImageCollection(ee.Number(startYear+fraction),ee.Number(endYear+1+fraction),1);
-
-    var fittedCCDC = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).select(['NBR_predicted'],['CCDC Fitted NBR']).map(setSameDate);
+    var conusCombined = combineChange(conusChange,yr,studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].conusSlowLossThresh,studyAreaDict[studyAreaName].conusFastLossThresh,'collection',0.01);
+    return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
     
+    }));
 
-    var lt = conusLT.filter(ee.Filter.eq('band',whichIndex)).merge(akLT.filter(ee.Filter.eq('band',whichIndex))).mosaic()
+  //Summarize change
+  var combinedGain = combinedChange.select(['Gain.*']).qualityMosaic('Gain_'+summaryMethod);
+  var combinedSlowLoss = combinedChange.select(['Slow_Loss_.*']).qualityMosaic('Slow_Loss_'+ summaryMethod);
+  var combinedFastLoss = combinedChange.select(['Fast_Loss_.*']).qualityMosaic('Fast_Loss_'+ summaryMethod);
 
-    var fittedAsset = ltStackToFitted(lt,1984,2020).filter(ee.Filter.calendarRange(startYear,endYear,'year')).select(['fit'],['LANDTRENDR Fitted '+ whichIndex]);
-   
-    var changePixelChartCollection = joinCollections(composites.select([whichIndex],['Raw '+whichIndex]),fittedAsset,false);
-    changePixelChartCollection = joinCollections(changePixelChartCollection,fittedCCDC,false);
+   //Set up land cover and land use
+  var lcClassDict = studyAreaDict[studyAreaName].lcClassDict
+  var luClassDict = studyAreaDict[studyAreaName].luClassDict
 
-    var probCollection = combinedChange.select(['.*_Prob']).select(['Fast_Loss_Prob','Slow_Loss_Prob','Gain_Prob'],['Fast Tree Loss Probability','Slow Tree Loss Probability','Tree Gain Probability'])
-    changePixelChartCollection = joinCollections(changePixelChartCollection,probCollection,false)
-    pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'LCMS Change Time Series',
-                                    'collection':changePixelChartCollection,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
-                                    'chartColors':chartColorsDict.allLossGain2,
-                                    'tooltip':'Chart slow loss, fast loss, gain and the '+whichIndex + ' vegetation index',
-                                    'xAxisLabel':'Year',
-                                    'yAxisLabel':'Model Confidence or Index Value'}
+  var lcNumbers = Object.keys(lcClassDict).map(function(n){return parseInt(n)});
+  var lcModelNames = lcNumbers.map(function(key){return lcClassDict[key]['modelName']});
+  var lcLegendNames = lcNumbers.map(function(key){return lcClassDict[key]['legendName']});
+  var lcLegendColors = lcNumbers.map(function(key){return lcClassDict[key]['color']});
 
-    populatePixelChartDropdown();
+  var luNumbers = Object.keys(luClassDict).map(function(n){return parseInt(n)});
+  var luModelNames = luNumbers.map(function(key){return luClassDict[key]['modelName']});
+  var luLegendNames = luNumbers.map(function(key){return luClassDict[key]['legendName']});
+  var luLegendColors = luNumbers.map(function(key){return luClassDict[key]['color']});
+  
+  var lcLegendDict = {};var lcQueryDict = {};var luLegendDict = {};var luQueryDict = {};
+  lcNumbers.map(function(k){lcLegendDict[lcClassDict[k].legendName] = lcClassDict[k].color});
+  lcNumbers.map(function(k){lcQueryDict[k] = lcClassDict[k].legendName});
+  luNumbers.map(function(k){luLegendDict[luClassDict[k].legendName] = luClassDict[k].color});
+  luNumbers.map(function(k){luQueryDict[k] = luClassDict[k].legendName});
+
+  var combinedLC = ee.ImageCollection(years.map(function(yr){
+    var conusCombined = combineLandCover(conusLC,yr,lcNumbers,lcModelNames,'collection');
+    var akCombined = combineLandCover(akLC,yr,lcNumbers,lcModelNames,'stack');
+    return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+  })).select(lcModelNames.concat(['maxClass']),lcLegendNames.concat(['maxClass']));
+
+  var combinedLU = ee.ImageCollection(years.map(function(yr){
+    var conusCombined = combineLandCover(conusLU,yr,luNumbers,luModelNames,'collection');
+    var akCombined = combineLandCover(akLU,yr,luNumbers,luModelNames,'stack');
+    return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+  })).select(luModelNames.concat(['maxClass']),luLegendNames.concat(['maxClass']));
+
+  var lcLayerName =  'Land Cover (mode) '+ startYear.toString() + '-'+ endYear.toString();
+  var luLayerName =  'Land Use (mode) '+ startYear.toString() + '-'+ endYear.toString();
+    
+  Map2.addLayer(combinedLU.select(['maxClass']).mode().set('bounds',clientBoundary),{min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
+  Map2.addLayer(combinedLC.select(['maxClass']).mode().set('bounds',clientBoundary),{min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
+
+
+  //Bring change layers into viewer
+  Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{min: startYear, max: endYear, palette: declineYearPalette},'Slow Tree Loss Year')
+
+  if(analysisMode === 'advanced'){
+    Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{min: minSlowLossProb, max: 80, palette: declineProbPalette},'Slow Tree Loss Probability',false);
+    Map2.addLayer(combinedChange.select(['Slow_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{min: 1, max: 5, palette: declineDurPalette},'Slow Tree Loss Duration',false);
+  }
+
+  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Year']).set('bounds',clientBoundary),{min: startYear, max: endYear, palette: declineYearPalette},'Fast Tree Loss Year');
+
+  if(analysisMode === 'advanced'){
+  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Prob']).updateMask(combinedFastLoss.select(['Fast_Loss_Year']).mask()).set('bounds',clientBoundary),{min: minFastLossProb, max: 80, palette: declineProbPalette},'Fast Tree Loss Probability',false);
+    Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{min: 1, max: 5, palette: declineDurPalette},'Fast Tree Loss Duration',false);
+  }
+
+  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{min: startYear, max: endYear, palette: recoveryYearPalette},'Tree Gain Year',false);
+  if(analysisMode === 'advanced'){
+  Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{min: minGainProb, max: 80, palette: recoveryProbPalette},'Tree Gain Probability',false);
+    Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{min: 1, max: 5, palette: recoveryDurPalette},'Tree Gain Duration',false);
+  }
+
+ 
+  //Set up pixel charting change time series
+  var whichIndex = 'NBR';
+
+  //Set up CCDC
+  var ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb',whichIndex+'_.*','NDVI_.*'];
+  akCCDC = akCCDC.select(ccdcIndicesSelector);
+  conusCCDC = conusCCDC.select(ccdcIndicesSelector);
+  var f= ee.Image(conusCCDC.first());
+  var ccdcImg = ee.Image(conusCCDC.merge(akCCDC).mosaic().copyProperties(f));
+  var whichHarmonics = [1,2,3];
+  var fillGaps = true;
+  var fraction = 0.6657534246575343;
+  var annualImages = simpleGetTimeImageCollection(ee.Number(startYear+fraction),ee.Number(endYear+1+fraction),1);
+  var fittedCCDC = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).select([whichIndex+'_predicted'],['CCDC Fitted '+whichIndex]).map(setSameDate);
+  
+  //Set up LANDTRENDR
+  var lt = conusLT.filter(ee.Filter.eq('band',whichIndex)).merge(akLT.filter(ee.Filter.eq('band',whichIndex))).mosaic();
+  var fittedAsset = ltStackToFitted(lt,1984,2020).filter(ee.Filter.calendarRange(startYear,endYear,'year')).select(['fit'],['LANDTRENDR Fitted '+ whichIndex]);
+ 
+  //Join raw time series to lt fitted and ccdc fitted
+  var changePixelChartCollection = joinCollections(composites.select([whichIndex],['Raw '+whichIndex]),fittedAsset,false);
+  changePixelChartCollection = joinCollections(changePixelChartCollection,fittedCCDC,false);
+
+  //Set up change prob outputs for pixel charting
+  var probCollection = combinedChange.select(['.*_Prob']).select(['Fast_Loss_Prob','Slow_Loss_Prob','Gain_Prob'],['Fast Tree Loss Probability','Slow Tree Loss Probability','Tree Gain Probability'])
+  changePixelChartCollection = joinCollections(changePixelChartCollection,probCollection,false);
+
+  pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'LCMS Change Time Series',
+                                  'collection':changePixelChartCollection,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+                                  'chartColors':chartColorsDict.allLossGain2,
+                                  'tooltip':'Chart slow loss, fast loss, gain and the '+whichIndex + ' vegetation index',
+                                  'xAxisLabel':'Year',
+                                  'yAxisLabel':'Model Confidence or Index Value'}
+  var lcForPixelCharting = combinedLC;
+  var bns = ee.Image(combinedLC.first()).bandNames();
+  bns = bns.slice(0,bns.length().subtract(1));
+  lcForPixelCharting = lcForPixelCharting.select(bns) ;                       
+  pixelChartCollections['land-cover'] = {'label':'LCMS Land Cover Time Series',
+                                  'collection':lcForPixelCharting,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+                                  'chartColors':lcLegendColors,
+                                  'tooltip':'Chart land cover model confidence for each individual class',
+                                  'xAxisLabel':'Year',
+                                  'yAxisLabel':'Model Confidence'}
+  
+  var luForPixelCharting = combinedLU;
+  var bns = ee.Image(combinedLU.first()).bandNames();
+  bns = bns.slice(0,bns.length().subtract(1));
+  luForPixelCharting = luForPixelCharting.select(bns) ;                       
+  pixelChartCollections['land-use'] = {'label':'LCMS Land Use Time Series',
+                                  'collection':luForPixelCharting,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+                                  'chartColors':luLegendColors,
+                                  'tooltip':'Chart land use model confidence for each individual class',
+                                  'xAxisLabel':'Year',
+                                  'yAxisLabel':'Model Confidence'}
+  populatePixelChartDropdown();
     // populateAreaChartDropdown();
 }
