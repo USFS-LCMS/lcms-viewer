@@ -1392,7 +1392,7 @@ function reRun(){
 	
   Object.values(featureObj).map(function(f){f.setMap(null)});
   featureObj = {};
-  map.overlayMapTypes.i.forEach(function(element,index){
+  map.overlayMapTypes.getArray().forEach(function(element,index){
                      map.overlayMapTypes.setAt(index,null);   
                 });
 
@@ -1548,7 +1548,7 @@ function startArea(){
           // console.log('key');console.log(key);
         // print('Adding in: '+key.toString());
         var pathT = areaPolygonObj[key].getPath().getArray();
-        
+
         if(pathT.length > 0){
 
           clickCoords =clickLngLat;//pathT[pathT.length-1];

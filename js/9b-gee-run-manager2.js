@@ -3,7 +3,7 @@
 //Format can equal 'stack' or 'collection'
 function combineChange(changeC,year,gain_thresh,slow_loss_thresh,fast_loss_thresh,format,mult){
   year = ee.Number(year).int16();
-  
+  var dummyImage = ee.Image(changeC.first());
   // print('here')
   if(format !== 'stack'){
       changeC = changeC.filter(ee.Filter.eq('year',year));
@@ -57,8 +57,9 @@ function runGTAC(){
   var years = ee.List.sequence(startYear,endYear).getInfo();
   summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
+  // getMTBSandIDS();
   // setupDownloads(studyAreaName);
-  var clientBoundary = clientBoundsDict.All;
+  var clientBoundary = clientBoundsDict.CONUS_SEAK;
   
   //Bring in assets
   var conusComposites = ee.ImageCollection(studyAreaDict[studyAreaName].conusComposites)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));
@@ -252,4 +253,5 @@ function runGTAC(){
   
   populatePixelChartDropdown();
     populateAreaChartDropdown();
+
 }

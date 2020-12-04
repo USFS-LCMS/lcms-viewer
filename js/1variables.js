@@ -104,7 +104,7 @@ function copyText(id,messageBoxId){
 function parseUrlSearch(){
   // console.log(window.location.search == '')
     var urlParamsStr = window.location.search;
-   
+      console.log(urlParamsStr)
     if(urlParamsStr !== ''){
       urlParamsStr = urlParamsStr.split('?')[1].split('&');
     
@@ -379,7 +379,7 @@ var studyAreaDict = {
                                   3: {'modelName': 'SHRUBS-TRE','legendName': 'Shrubs & Trees Mix','color': '00cc00'},
                                   4: {'modelName': 'GRASS-TREE','legendName': 'Grass/Forb/Herb & Trees Mix','color': 'b3ff1a'},
                                   5: {'modelName': 'BARREN-TRE','legendName': 'Barren & Trees Mix','color': '99ff99'},
-                                  6: {'modelName': 'TS','legendName': 'Tall Shrubs','color': 'b30000'},
+                                  6: {'modelName': 'TS','legendName': 'Tall Shrubs','color': 'b30088'},//'b30000'},
                                   7: {'modelName': 'SHRUBS','legendName': 'Shrubs','color': 'e68a00'},
                                   8: {'modelName': 'GRASS-SHRU','legendName': 'Grass/Forb/Herb & Shrubs Mix','color': 'ffad33'},
                                   9: {'modelName': 'BARREN-SHR','legendName': 'Barren & Shrubs Mix','color': 'ffe0b3'},
@@ -470,6 +470,7 @@ var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates"
         [-168.91542059099993, 52.67867842404269],
         [-129.54042059099993, 52.67867842404269],
         [-129.54042059099993, 71.62680009186087]]]},
+                    'CONUS_SEAK':{"type":"Polygon","coordinates":[[[171.00872335506813,59.78242951494817],[171.00872335506813,26.87020622017523],[-53.99127664493189,26.87020622017523],[-53.99127664493189,59.78242951494817],[171.00872335506813,59.78242951494817]]]},
                     'Hawaii':{"geodesic": false,"type": "Polygon","coordinates": [[[-162.7925163471209,18.935659110261664],[-152.2511345111834,18.935659110261664],[-152.2511345111834,22.134763696750557],[-162.7925163471209,22.134763696750557],[-162.7925163471209,18.935659110261664]]]},
                     'Puerto-Rico':{"geodesic": false,"type": "Polygon","coordinates": [[[-67.98169635150003,17.751237971831113],[-65.34635089251566,17.751237971831113],[-65.34635089251566,18.532938160084615],[-67.98169635150003,18.532938160084615],[-67.98169635150003,17.751237971831113]]]},
                     'R4':{
