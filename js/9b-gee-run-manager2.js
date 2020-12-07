@@ -13,7 +13,10 @@ function combineChange(changeC,year,gain_thresh,slow_loss_thresh,fast_loss_thres
     var stack = ee.Image.cat([gain,slowLoss,fastLoss]);
 
   }else{
-    var stack = changeC.filter(ee.Filter.calendarRange(year,year,'year')).mosaic().select(['RNR','DND_Slow','DND_Fast']);
+    var stack = changeC
+                .filter(ee.Filter.calendarRange(year,year,'year'))
+                .filter(ee.Filter.neq('model','STABLE'))
+                .mosaic().select(['RNR','DND_Slow','DND_Fast']);
   } 
   stack = stack.multiply(mult);
   var maxConf = stack.reduce(ee.Reducer.max());
