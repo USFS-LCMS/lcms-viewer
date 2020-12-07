@@ -883,6 +883,8 @@ function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 /////////////////////////////////////////////////////
 //Function to add ee object as well as client-side objects to map
 function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
+  
+    // $('#layer-list-collapse-label-message').html(`Loading: ${name}`)
     if(viz !== null && viz !== undefined && viz.serialized !== null && viz.serialized !== undefined && viz.serialized === true){
         item = ee.Deserializer.decode(item);
     }
@@ -984,7 +986,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
 
 
-    if(helpBox == null){helpBox = ''};
+    if(helpBox == null || viz.title == null || viz.title == undefined){helpBox = ''};
+    if(viz.title !== null && viz.title !== undefined){helpBox = viz.title};
     var layer = {};//document.createElement("ee-layer");
     
     layer.ID = NEXT_LAYER_ID;
@@ -1882,8 +1885,10 @@ function dropdownUpdateStudyArea(whichOne){
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
-    }else if( mode === 'LCMS2'){
+    }else if( mode === 'LCMS'){
       run  = runGTAC;
+    }else if( mode === 'LCMS-pilot'){
+      run  = runUSFS;
     }else if( mode === 'STORM'){
       run  = runStorm;
     }
@@ -2477,7 +2482,7 @@ function initialize() {
       }
       if(mode === 'Ancillary'){
         run = runSimple;
-      } else if( mode === 'LCMS2'){
+      } else if( mode === 'LCMS'){
         run  = runGTAC;
       }else if( mode === 'LT'){
         run  = runLT;

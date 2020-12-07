@@ -340,8 +340,8 @@ var studyAreaDict = {
                                               lcmsCollection:'projects/LCMS/CONUS_Products/v20200120',
                                               ltCollection:'projects/LCMS/CONUS_Products/LT20200120'
                                             },
-                    'LCMS-GTAC-v2020-5':{
-                      name:'LCMS-GTAC-v2020-5',
+                    'USFS LCMS 1984-2020':{
+                      name:'USFS LCMS 1984-2020',
                       center:[37.5334105816903,-105.6787109375,5],
                       crs:'EPSG:5070',
                       startYear:1985,

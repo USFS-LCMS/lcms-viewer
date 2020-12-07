@@ -2,13 +2,13 @@
 /////////////////////////////////////////////////////////////////////
 /*Provide titles to be shown for each mode*/
 var  titles = {
-	'LCMS': {
+	'LCMS-pilot': {
 		    leftWords: 'LCMS',
 		    centerWords: 'DATA',
 		    rightWords:'Explorer',
 		    title:'LCMS Data Explorer'
 			},
-    'LCMS2': {
+    'LCMS': {
             leftWords: 'LCMS',
             centerWords: 'DATA',
             rightWords:'Explorer',
@@ -983,7 +983,7 @@ function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, colla
 	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
 	var collapseTitleDiv = `<div   rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}" class="panel-heading px-3 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	<h5 class="p-0 m-0 panel-title  ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}"> <a class = 'collapse-title' >
-	${collapseLabelIcon} ${collapseLabel} </a></h5></div>`;
+	${collapseLabelIcon} ${collapseLabel} </a></h5><span id="${collapseLabelID}-message"</span></div>`;
 
 	var collapseDiv =`<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-5 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
 	$('#'+containerID).append(collapseTitleDiv);
@@ -1162,6 +1162,7 @@ function updateGEETileLayersDownloading(){
 //Map layers can be ee objects, geojson, dynamic map services, and tile map services
 
 function addLayer(layer){
+
     //Initialize a bunch of variables
     layer.loadError = false;
 	var id = layer.legendDivID;

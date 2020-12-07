@@ -27,7 +27,7 @@ $('#dontShowAgainCheckbox').change(function(){
 });
 /////////////////////////////////////////////////////////////////////
 /*Add study area dropdown if LCMS*/
-if(mode === 'LCMS' || mode === 'LCMS2'){
+if(mode === 'LCMS-pilot' ){
   $('#title-banner').append(staticTemplates.studyAreaDropdown);
   if(studyAreaSpecificPage){
     $('#study-area-label').removeClass('dropdown-toggle');
@@ -52,7 +52,7 @@ function toggleAdvancedOff(){
 }
 /////////////////////////////////////////////////////////////////////
 /*Start adding elements to page based on chosen mode*/
-if(mode === 'LCMS' || mode === 'LCMS2'){
+if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   var minYear = startYear;var maxYear = endYear;
   // console.log(urlParams)  
   if(urlParams.startYear == null || urlParams.startYear == undefined){
@@ -546,7 +546,7 @@ if(mode === 'geeViz'){
   $('#share-button').remove();
 }
 
-if(mode === 'LCMS' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP' || mode === 'LCMS2'){
+if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP' || mode === 'LCMS'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Params', '',false,'')
   
