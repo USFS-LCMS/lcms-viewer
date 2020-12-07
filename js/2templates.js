@@ -132,7 +132,7 @@ var staticTemplates = {
 		                </div>
 		            </li>
 			    `,
-	placesSearchDiv:`<div class="input-group px-4 pb-2 text-center"">
+	placesSearchDiv:`<div id = 'search-share-div' class="input-group px-4 pb-2 text-center"">
 			            <div class="input-group-prepend">
 
 
