@@ -1885,7 +1885,7 @@ function dropdownUpdateStudyArea(whichOne){
       run = runSimple;
     } else if( mode === 'LT'){
       run  = runLT;
-    }else if( mode === 'LCMS' || studyAreaDict[longStudyAreaName].isPilot == false){
+    }else if( mode === 'LCMS'|| (mode === 'LCMS-pilot' && studyAreaDict[longStudyAreaName].isPilot == false)){
       run  = runGTAC;
     }else if( mode === 'LCMS-pilot'){
       run  = runUSFS;
@@ -1940,7 +1940,7 @@ var resetStudyArea = function(whichOne){
     var coords = studyAreaDict[whichOne].center;
     studyAreaName = studyAreaDict[whichOne].name;
     if(studyAreaName === 'CONUS'){run = runCONUS;}
-    else if(mode === 'LCMS' || studyAreaDict[longStudyAreaName].isPilot == false){
+    else if( mode === 'LCMS'|| (mode === 'LCMS-pilot' && studyAreaDict[longStudyAreaName].isPilot == false)){
       run = runGTAC;
     }
     else{run = runUSFS;};
@@ -2485,7 +2485,7 @@ function initialize() {
       }
       if(mode === 'Ancillary'){
         run = runSimple;
-      } else if( mode === 'LCMS'|| studyAreaDict[longStudyAreaName].isPilot == false){
+      } else if( mode === 'LCMS'|| (mode === 'LCMS-pilot' && studyAreaDict[longStudyAreaName].isPilot == false)){
         run  = runGTAC;
       }else if( mode === 'LT'){
         run  = runLT;
