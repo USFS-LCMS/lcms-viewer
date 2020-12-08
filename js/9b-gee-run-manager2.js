@@ -150,20 +150,20 @@ function runGTAC(){
   Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' vegetation cover loss long-term trend',min: startYear, max: endYear, palette: declineYearPalette},'Disturbance Trend Year')
 
   if(analysisMode === 'advanced'){
-    Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' vegetation cover loss long-term trend',min: minSlowLossProb, max: 80, palette: declineProbPalette},'Disturbance trend Probability',false);
+    Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' vegetation cover loss long-term trend',min: minSlowLossProb, max: 0.8, palette: declineProbPalette},'Disturbance trend Probability',false);
     Map2.addLayer(combinedChange.select(['Slow_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Vegetation cover loss long-term trend duration',min: 1, max: 5, palette: declineDurPalette},'Disturbance Trend Duration',false);
   }
 
   Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' vegetation cover loss event or alterations due to changes in water cover', min: startYear, max: endYear, palette: declineYearPalette},'Disturbance Event Year');
 
   if(analysisMode === 'advanced'){
-  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Prob']).updateMask(combinedFastLoss.select(['Fast_Loss_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' vegetation cover loss event or alterations due to changes in water cover',min: minFastLossProb, max: 80, palette: declineProbPalette},'Disturbance Event Probability',false);
+  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Prob']).updateMask(combinedFastLoss.select(['Fast_Loss_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' vegetation cover loss event or alterations due to changes in water cover',min: minFastLossProb, max: 0.8, palette: declineProbPalette},'Disturbance Event Probability',false);
     Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Duration of vegetation cover loss event or alterations due to changes in water cover', min: 1, max: 5, palette: declineDurPalette},'Disturbance Event Duration',false);
   }
 
   Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance growth',min: startYear, max: endYear, palette: recoveryYearPalette},'Growth Year',false);
   if(analysisMode === 'advanced'){
-  Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance growth', min: minGainProb, max: 80, palette: recoveryProbPalette},'Growth Probability',false);
+  Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance growth', min: minGainProb, max: 0.8, palette: recoveryProbPalette},'Growth Probability',false);
     Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Duration of post disturbance growth', min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
   }
 
