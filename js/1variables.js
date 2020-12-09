@@ -401,46 +401,6 @@ var studyAreaDict = {
                     }                        
                 };
 
-// New Land Cover JSONs, Nov. 2020 (in Python format):
-// lcJSONdict = OrderedDict()
-// if outputChangeCollection == paramDict[studyArea]['landcoverCollection'] and (studyArea == 'COASTAL_AK' or studyArea =='CK'): 
-//   lcJSONdict['1'] = {'modelName': 'TREES','simpleLegendName': 'Trees','legendName': "<p>Trees</p>",'color': '005e00'}
-//   lcJSONdict['2'] = {'modelName': 'TS-TREES','simpleLegendName': 'Tall Shrubs & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Tall Shrubs<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': '008000'}
-//   lcJSONdict['3'] = {'modelName': 'SHRUBS-TRE','simpleLegendName': 'Shrubs & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Shrubs<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': '00cc00'}
-//   lcJSONdict['4'] = {'modelName': 'GRASS-TREE','simpleLegendName': 'Grass/Forb/Herb & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Grass/Forb/Herb<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': 'b3ff1a'}
-//   lcJSONdict['5'] = {'modelName': 'BARREN-TRE','simpleLegendName': 'Barren & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Barren<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': '99ff99'}
-//   lcJSONdict['6'] = {'modelName': 'TS','simpleLegendName': 'Tall Shrubs','legendName': "<p>Tall Shrubs</p>",'color': 'b30000'}
-//   lcJSONdict['7'] = {'modelName': 'SHRUBS','simpleLegendName': 'Shrubs','legendName': "<p>Shrubs</p>",'color': 'e68a00'}
-//   lcJSONdict['8'] = {'modelName': 'GRASS-SHRU','simpleLegendName': 'Grass/Forb/Herb & Shrubs Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Grass/Forb/Herb<sub>1</sub> & Shrubs<sub>2</sub> Mix</p>",'color': 'ffad33'}
-//   lcJSONdict['9'] = {'modelName': 'BARREN-SHR','simpleLegendName': 'Barren & Shrubs Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Barren<sub>1</sub> & Shrubs<sub>2</sub> Mix</p>",'color': 'ffe0b3'}
-//   lcJSONdict['10'] = {'modelName': 'GRASS','simpleLegendName': 'Grass/Forb/Herb','legendName': "<p>Grass/Forb/Herb</p>", 'color': 'ffff00'}
-//   lcJSONdict['11'] = {'modelName': 'BARREN-GRA','simpleLegendName': 'Barren & Grass/Forb/Herb Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Barren<sub>1</sub> & Grass/Forb/Herb<sub>2</sub> Mix</p>",'color': 'AA7700'}
-//   lcJSONdict['12'] = {'modelName': 'BARREN-IMP','simpleLegendName': 'Barren or Impervious','legendName': "<p>Barren or Impervious</p>", 'color': 'd3bf9b'}
-//   lcJSONdict['13'] = {'modelName': 'SNOW','simpleLegendName': 'Snow or Ice','legendName': "<p>Snow or Ice</p>",'color': 'ffffff'}
-//   lcJSONdict['14'] = {'modelName': 'WATER','simpleLegendName': 'Water','legendName': "<p>Water</p>",'color': '4780f3'}
-// elif outputChangeCollection == paramDict[studyArea]['landcoverCollection']: 
-//   lcJSONdict['1'] = {'modelName': 'TREES','simpleLegendName': 'Trees','legendName': "<p>Trees</p>",'color': '005e00'}
-//   lcJSONdict['2'] = {'modelName': 'SHRUBS-TRE','simpleLegendName': 'Shrubs & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Shrubs<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': '00cc00'}
-//   lcJSONdict['3'] = {'modelName': 'GRASS-TREE','simpleLegendName': 'Grass/Forb/Herb & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Grass/Forb/Herb<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': 'b3ff1a'}
-//   lcJSONdict['4'] = {'modelName': 'BARREN-TRE','simpleLegendName': 'Barren & Trees Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Barren<sub>1</sub> & Trees<sub>2</sub> Mix</p>",'color': '99ff99'}
-//   lcJSONdict['5'] = {'modelName': 'SHRUBS','simpleLegendName': 'Shrubs','legendName': "<p>Shrubs</p>",'color': 'e68a00'}
-//   lcJSONdict['6'] = {'modelName': 'GRASS-SHRU','simpleLegendName': 'Grass/Forb/Herb & Shrubs Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Grass/Forb/Herb<sub>1</sub> & Shrubs<sub>2</sub> Mix</p>",'color': 'ffad33'}
-//   lcJSONdict['7'] = {'modelName': 'BARREN-SHR','simpleLegendName': 'Barren & Shrubs Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Barren<sub>1</sub> & Shrubs<sub>2</sub> Mix</p>",'color': 'ffe0b3'}
-//   lcJSONdict['8'] = {'modelName': 'GRASS','simpleLegendName': 'Grass/Forb/Herb','legendName': "<p>Grass/Forb/Herb</p>", 'color': 'ffff00'}
-//   lcJSONdict['9'] = {'modelName': 'BARREN-GRA','simpleLegendName': 'Barren & Grass/Forb/Herb Mix','legendName': "<p title = '1 subscript denotes primary cover type. 2 subscript denotes secondary cover type'>Barren<sub>1</sub> & Grass/Forb/Herb<sub>2</sub> Mix</p>",'color': 'e6e600'}
-//   lcJSONdict['10'] = {'modelName': 'BARREN-IMP','simpleLegendName': 'Barren or Impervious','legendName': "<p>Barren or Impervious</p>", 'color': 'd3bf9b'}
-//   lcJSONdict['11'] = {'modelName': 'SNOW','simpleLegendName': 'Snow or Ice','legendName': "<p>Snow or Ice</p>",'color': 'ffffff'}
-//   lcJSONdict['12'] = {'modelName': 'WATER','simpleLegendName': 'Water','legendName': "<p>Water</p>",'color': '4780f3'}
-
-// luJSONdict = OrderedDict()
-// if outputChangeCollection == paramDict[studyArea]['landuseCollection']:
-//   luJSONdict['1'] = {'modelName': 'Agriculture','simpleLegendName': 'Agriculture','legendName': "<p>Agriculture</p>",'color': 'efff6b'}
-//   luJSONdict['2'] = {'modelName': 'Developed','simpleLegendName': 'Developed','legendName': "<p>Developed</p>",'color': 'ff2ff8'}
-//   luJSONdict['3'] = {'modelName': 'Forest','simpleLegendName': 'Forest','legendName': "<p>Forest</p>",'color': '1b9d0c'}
-//   luJSONdict['4'] = {'modelName': 'Non-forest Wetland','simpleLegendName': 'Non-Forest Wetland','legendName': "<p>Non-Forest Wetland</p>",'color': '97ffff'}
-//   luJSONdict['5'] = {'modelName': 'Other','simpleLegendName': 'Other','legendName': "<p>Other</p>",'color': 'a1a1a1'}
-//   luJSONdict['6'] = {'modelName': 'Rangeland','simpleLegendName': 'Rangeland or Pasture','legendName': "<p>Rangeland or Pasture</p>",'color': 'c2b34a'}
-
 ////////////////////////////////////////////////////////////////////////////////
 /*Initialize parameters for loading study area when none is chosen or chached*/
 var defaultStudyArea = 'USFS Intermountain Region';

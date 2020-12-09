@@ -640,12 +640,13 @@ function getNAIP(whichLayerList){
 }
 function getHansen(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
-  var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6');
+  var hansen = ee.Image("UMD/hansen/global_forest_change_2019_v1_7");
+
   var hansenClientBoundary = {"type":"Polygon","coordinates":[[[-180,-90],[180,-90],[180,90],[-180,90],[-180,-90]]]};//hansen.geometry().bounds(1000).getInfo();
   // print(hansenClientBoundary);
   var hansenLoss = hansen.select(['lossyear']).add(2000).int16();
   var hansenStartYear = 2001;
-  var hansenEndYear = 2018;
+  var hansenEndYear = 2019;
 
   if(startYear > hansenStartYear){hansenStartYear = startYear};
   if(endYear < hansenEndYear){hansenEndYear = endYear};

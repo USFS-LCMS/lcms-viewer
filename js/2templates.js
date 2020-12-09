@@ -84,7 +84,7 @@ var staticTemplates = {
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
 
-	geeSpinner : `<img rel="txtTooltip" data-toggle="tooltip"  title="Background processing is occurring in Google Earth Engine"id='summary-spinner' class="fa fa-spin" src="images/GEE_logo_transparent.png" alt="" style='position:absolute;display: none;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;'>`,
+	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img   title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
 
 
 	exportContainer:`<div class = 'dropdown-divider'></div>
@@ -1258,11 +1258,11 @@ function addLayer(layer){
 		}
 	}
     //Try to handle load failures
-    function loadFailure(){
+    function loadFailure(failure){
         layer.loadError = true;
         console.log('GEE Tile Service request failed for '+layer.name);
         $('#'+containerID).css('background-color','red');
-        $('#'+containerID).attr('title','Layer failed to load. Try zooming in to a smaller extent and then hitting the "Submit" button in the "PARAMETERS" menu.')
+        $('#'+containerID).attr('title','Layer failed to load. Error message: "'+failure + '"')
         // getGEEMapService();
     }
     //Function to handle turning off of different types of layers
@@ -1643,7 +1643,7 @@ function addLayer(layer){
             }
             }
         //Handle alternative GEE tile service format
-        function geeAltService(eeLayer){
+        function geeAltService(eeLayer,failure){
             decrementOutstandingGEERequests();
             $('#' + spinnerID).hide();
             if(layer.viz.isTimeLapse){
@@ -1670,13 +1670,16 @@ function addLayer(layer){
             $('#' + visibleLabelID).show();
             
             if(layer.currentGEERunID === geeRunID){
-                if(eeLayer === undefined){
-                    loadFailure();
+                if(eeLayer === undefined || failure !== undefined){
+                    loadFailure(failure);
                 }
                 else{
                     const tilesUrl = eeLayer.urlFormat;
                     
                     var getTileUrlFun = function(coord, zoom) {
+                        var t = [coord,zoom];
+                        
+                        
                     let url = tilesUrl
                                 .replace('{x}', coord.x)
                                 .replace('{y}', coord.y)
@@ -1697,9 +1700,12 @@ function addLayer(layer){
                     layer.layer = new google.maps.ImageMapType({
                             getTileUrl:getTileUrlFun
                         })
+
                     layer.layer.addListener('tilesloaded',function(){
                         layer.percent = 100;
                         layer.loading = false;
+                        
+                        
                         $('#' + spinnerID+'2').hide();
                         updateGEETileLayersDownloading();
                         updateProgress();
@@ -1726,13 +1732,14 @@ function addLayer(layer){
         layer.mapServiceTryNumber = 0;
         function getGEEMapService(){
             // layer.item.getMap(layer.viz,function(eeLayer){getGEEMapServiceCallback(eeLayer)});
-            layer.item.getMap(layer.viz,function(eeLayer){
+            layer.item.getMap(layer.viz,function(eeLayer,failure){
+             
                 if(eeLayer === undefined && layer.mapServiceTryNumber <=1){
                     queryObj[queryID].queryItem = layer.item;
                     layer.item = layer.item.visualize();
-                        getGEEMapService();
+                    getGEEMapService();
                 }else{
-                    geeAltService(eeLayer);
+                    geeAltService(eeLayer,failure);
                 }  
             });
 
