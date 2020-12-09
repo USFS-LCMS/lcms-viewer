@@ -170,7 +170,7 @@ function runGTAC(){
     Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Post disturbance vegetation cover gain duration.', min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
   }
   var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
-  // Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:0,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Stable':changePalette[0],'Slow Disturbance':changePalette[1],'Fast Disturbance':changePalette[2],'Growth':changePalette[3]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth'},'years':years},'LCMS Change Time Lapse',false);
+  Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:0,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Stable':changePalette[0],'Slow Disturbance':changePalette[1],'Fast Disturbance':changePalette[2],'Growth':changePalette[3]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth'},'years':years},'LCMS Change Time Lapse',false);
    
   //Set up pixel charting change time series
   var whichIndex = 'NBR';
