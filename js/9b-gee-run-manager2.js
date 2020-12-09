@@ -163,14 +163,14 @@ function runGTAC(){
     Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Duration of rapid vegetation cover change/loss from an external event such as fire/harvest, water inundation or desiccation, etc.', min: 1, max: 5, palette: declineDurPalette},'Fast Disturbance Duration',false);
   }
 
-  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.',min: startYear, max: endYear, palette: gainYearPaletteA},'Growth Year a',false);
+  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.',min: startYear, max: endYear, palette: gainYearPaletteA},'Growth Year',false);
   // Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.',min: startYear, max: endYear, palette: gainYearPaletteB},'Growth Year b',false);
   if(analysisMode === 'advanced'){
   Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.', min: minGainProb, max: 0.8, palette: recoveryProbPalette},'Growth Probability',false);
     Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Post disturbance vegetation cover gain duration.', min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
   }
   var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
-  Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:0,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Stable':changePalette[0],'Slow Disturbance':changePalette[1],'Fast Disturbance':changePalette[2],'Growth':changePalette[3]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth'},'years':years},'LCMS Change Time Lapse',false);
+  // Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:0,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Stable':changePalette[0],'Slow Disturbance':changePalette[1],'Fast Disturbance':changePalette[2],'Growth':changePalette[3]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth'},'years':years},'LCMS Change Time Lapse',false);
    
   //Set up pixel charting change time series
   var whichIndex = 'NBR';
