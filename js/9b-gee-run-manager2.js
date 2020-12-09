@@ -10,20 +10,21 @@ function combineChange(changeC,year,gain_thresh,slow_loss_thresh,fast_loss_thres
     var gain = changeC.filter(ee.Filter.eq('model','RNR')).mosaic();
     var slowLoss = changeC.filter(ee.Filter.eq('model','DND_Slow')).mosaic();
     var fastLoss = changeC.filter(ee.Filter.eq('model','DND_Fast')).mosaic();
-    var stack = ee.Image.cat([gain,slowLoss,fastLoss]);
+    var stack = ee.Image.cat([slowLoss,fastLoss,gain]);
 
   }else{
     var stack = changeC
                 .filter(ee.Filter.calendarRange(year,year,'year'))
                 .filter(ee.Filter.neq('model','STABLE'))
-                .mosaic().select(['RNR','DND_Slow','DND_Fast']);
+                .mosaic().select(['DND_Slow','DND_Fast','RNR']);
   } 
   stack = stack.multiply(mult);
   var maxConf = stack.reduce(ee.Reducer.max());
-  var maxConfMask = stack.eq(maxConf).and(stack.gte(ee.Image([gain_thresh,slow_loss_thresh,fast_loss_thresh]))).selfMask();
+  var maxConfMask = stack.eq(maxConf).and(stack.gte(ee.Image([slow_loss_thresh,fast_loss_thresh,gain_thresh]))).selfMask();
   var yearMask = ee.Image([year,year,year]).updateMask(maxConfMask).int16();
   // stack = stack.updateMask(maxConfMask)
-  var out = ee.Image.cat([stack,maxConfMask, yearMask]).rename(['Gain_Prob','Slow_Loss_Prob','Fast_Loss_Prob','Gain_Mask','Slow_Loss_Mask','Fast_Loss_Mask','Gain_Year','Slow_Loss_Year','Fast_Loss_Year']);
+  var maxClass = ee.Image([1,2,3]).updateMask(maxConfMask).reduce(ee.Reducer.max()).rename(['maxClass']);
+  var out = ee.Image.cat([stack,maxConfMask, yearMask,maxClass]).rename(['Slow_Loss_Prob','Fast_Loss_Prob','Gain_Prob','Slow_Loss_Mask','Fast_Loss_Mask','Gain_Mask','Slow_Loss_Year','Fast_Loss_Year','Gain_Year','maxClass']);
   return out.set('system:time_start',ee.Date.fromYMD(year,6,1).millis())
 }
 ///////////////////////////////////////////
@@ -162,13 +163,15 @@ function runGTAC(){
     Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Duration of rapid vegetation cover change/loss from an external event such as fire/harvest, water inundation or desiccation, etc.', min: 1, max: 5, palette: declineDurPalette},'Fast Disturbance Duration',false);
   }
 
-  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.',min: startYear, max: endYear, palette: recoveryYearPalette},'Growth Year',false);
+  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.',min: startYear, max: endYear, palette: gainYearPaletteA},'Growth Year a',false);
+  // Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: 'Year '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.',min: startYear, max: endYear, palette: gainYearPaletteB},'Growth Year b',false);
   if(analysisMode === 'advanced'){
   Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{title: 'Model confidence '+ summaryMethodDescriptionDict[summaryMethod] +' post disturbance vegetation cover gain.', min: minGainProb, max: 0.8, palette: recoveryProbPalette},'Growth Probability',false);
     Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Post disturbance vegetation cover gain duration.', min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
   }
-
- 
+  var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
+  Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:0,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Stable':changePalette[0],'Slow Disturbance':changePalette[1],'Fast Disturbance':changePalette[2],'Growth':changePalette[3]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth'},'years':years},'LCMS Change Time Lapse',false);
+   
   //Set up pixel charting change time series
   var whichIndex = 'NBR';
 
@@ -193,13 +196,13 @@ function runGTAC(){
   changePixelChartCollection = joinCollections(changePixelChartCollection,fittedCCDC,false);
 
   //Set up change prob outputs for pixel charting
-  var probCollection = combinedChange.select(['.*_Prob']).select(['Fast_Loss_Prob','Slow_Loss_Prob','Gain_Prob'],['Fast Disturbance Probability','Slow Disturbance Probability','Growth Probability'])
+  var probCollection = combinedChange.select(['.*_Prob']).select(['Slow_Loss_Prob','Fast_Loss_Prob','Gain_Prob'],['Slow Disturbance Probability','Fast Disturbance Probability','Growth Probability'])
   changePixelChartCollection = joinCollections(changePixelChartCollection,probCollection,false);
 
   pixelChartCollections['all-loss-gain-'+whichIndex] = {'label':'LCMS Change Time Series',
                                   'collection':changePixelChartCollection,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
                                   'chartColors':chartColorsDict.allLossGain2,
-                                  'tooltip':'Chart fast disturbance, slow disturbance, growth and the '+whichIndex + ' vegetation index',
+                                  'tooltip':'Chart slow disturbance, fast disturbance, growth and the '+whichIndex + ' vegetation index',
                                   'xAxisLabel':'Year',
                                   'yAxisLabel':'Model Confidence or Index Value',
                                   'fieldsHidden':[true,true,true,false,false,false]}
@@ -226,7 +229,7 @@ function runGTAC(){
                                   'yAxisLabel':'Model Confidence'}
 
   var changeForAreaCharting = combinedChange.select(['.*_Mask']).map(function(img){
-    var change = img.unmask().select([2,1,0],['Fast Disturbance','Slow Disturbance','Growth']);
+    var change = img.unmask().select([0,1,2],['Slow Disturbance','Fast Disturbance','Growth']);
     var notChange = img.mask().reduce(ee.Reducer.max()).not().rename(['Stable'])
     return notChange.addBands(change).copyProperties(img,['system:time_start']);
   })
