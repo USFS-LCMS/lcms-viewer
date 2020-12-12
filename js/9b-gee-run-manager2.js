@@ -73,8 +73,9 @@ function runGTAC(){
   var years = ee.List.sequence(startYear,endYear).getInfo();
   summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
+  getHansen();
   getMTBSandIDS();
-  // getHansen()
+  
   // setupDownloads(studyAreaName);
   var clientBoundary = clientBoundsDict.CONUS_SEAK;
   
@@ -185,7 +186,7 @@ function runGTAC(){
     Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: 'Post disturbance vegetation cover gain duration.', min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
   }
   var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
-  // Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(2008,2012,'year')),{min:0,max:4,palette:changePalette,addToClassLegend: true,classLegendDict:{'Stable':changePalette[0],'Slow Disturbance':changePalette[1],'Fast Disturbance':changePalette[2],'Growth':changePalette[3],'No data (cloud/cloud shadow)':changePalette[4]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth',4:'No data (cloud/cloud shadow)'}},'LCMS Change Time Lapse',false);
+  Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
   
   // Map2.addLayer(SA ,{layerType:'geeVectorImage'},'Study Area Boundaries',true,null,null,'Boundaries of study areas LCMS data are available within.','reference-layer-list');
 //   var geometry = ee.Geometry.MultiPoint(
