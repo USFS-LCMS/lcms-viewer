@@ -986,7 +986,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
 
 
-    if(helpBox == null || viz.title == null || viz.title == undefined){helpBox = ''};
+    if(helpBox == null || helpBox === undefined){helpBox = ''};
     if(viz.title !== null && viz.title !== undefined){helpBox = viz.title};
     var layer = {};//document.createElement("ee-layer");
     
@@ -1407,7 +1407,7 @@ function reRun(){
   }catch(err){}
   
   google.maps.event.clearListeners(mapDiv, 'click');
-  
+
   //Rerun the GEE code
 	run();
   setupAreaLayerSelection();
