@@ -1407,10 +1407,10 @@ function reRun(){
   }catch(err){}
   
   google.maps.event.clearListeners(mapDiv, 'click');
-
+  
   //Rerun the GEE code
 	run();
-  
+  setupAreaLayerSelection();
   $('#summary-spinner').hide(); 
 }
 ////////////////////////////////////////////////////////////////////////
@@ -2513,6 +2513,7 @@ function initialize() {
      
     setGEERunID();
     run();
+    setupAreaLayerSelection();
     // setupFSB();
     //Bring in plots of they're turned on
     if(plotsOn){

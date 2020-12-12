@@ -96,11 +96,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>
                                           <div id='threshold-container' style="display:none;width:100%"></div>
                                           <div id='advanced-radio-container' style="display: none;"></div>`)
-  // console.log('here')
-  // addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0,1,lowerThresholdRecovery,0.05,'decline-threshold-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
-  
-  // addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0,1,lowerThresholdDecline,0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than the specified threshold will be flagged as loss ") 
-  // containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip
+
+  if( mode === 'LCMS-pilot' ){
   addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0, 1, lowerThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
   addRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery',0, 1, lowerThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability greater than or equal to this value will be flagged as gain ")
@@ -110,11 +107,12 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#fast-slow-threshold-container').append(`<div class="dropdown-divider" ></div>`);
   addRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss',0, 1, lowerThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
- 
+ }
   var tSummaryMethod = urlParams.summaryMethod;
-  addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest probability','urlParams.summaryMethod','year','prob','','','How to choose which value for loss and gain to display/export.  Choose the value with the highest probability or from the most recent year above the specified threshold');
+  addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest prob','urlParams.summaryMethod','year','prob','','','How to choose which value for disturbance and growth to display.  Choose the value with the highest model confidence or from the most recent year above the threshold.');
   urlParams.summaryMethod = tSummaryMethod;
 
   $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);

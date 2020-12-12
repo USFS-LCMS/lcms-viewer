@@ -348,6 +348,7 @@ var studyAreaDict = {
                       startYear:1985,
                       endYear:2020,
 
+                      conusSA : 'projects/lcms-292214/assets/CONUS-Ancillary-Data/conus',
                       conusComposites:'projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites',
                       conusChange :'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/DND-RNR-DNDSlow-DNDFast',//'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast_InitialRun',
                       conusLC : 'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landcover_Probability',//'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landcover_Probability_InitialRun',
@@ -363,6 +364,7 @@ var studyAreaDict = {
                       hiComposites:'',
                       otherComposites:'',
 
+                      akSA :  'projects/lcms-292214/assets/R10/CoastalAK/TCC_Boundary',//'projects/lcms-292214/assets/R10/CoastalAK/CoastalAK_Simple_StudyArea',
                       akComposites:'projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection',
                       akChange : 'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/DND-RNR-DNDSlow-DNDFast-revisedSlowPlots',
                       akLC : 'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/Landcover_Probability',
@@ -476,6 +478,8 @@ var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow;va
 
 
 var selectedFeaturesJSON = {};
+var selectionTracker = {};
+
 var selectionUNID = 1;
 
 
@@ -594,7 +598,7 @@ var chartColorsDict = {
   'coreLossGain':['#050','#0A0','#e6194B','#14d4f4'],
   'allLossGain':['#050','#0A0','#e6194B','#808','#f58231','#14d4f4'],
   'allLossGain2':['#050','#0A0','#0E0','f39268','d54309','00a398'],
-  'allLossGain2Area':['#050','f39268','d54309','00a398'],
+  'allLossGain2Area':['f39268','d54309','00a398','ffbe2e'],
   'test':['#9A6324','#6f6f6f','#e6194B','#14d4f4','#880088','#f58231'],
   'testArea':['#e6194B','#14d4f4','#880088','#f58231'],
   'ancillary':['#cc0066','#660033','#9933ff','#330080','#ff3300','#47d147','#00cc99','#ff9966','#b37700']

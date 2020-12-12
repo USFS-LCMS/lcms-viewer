@@ -26,7 +26,8 @@ window.recoveryDurPalette = declineDurPalette;
 
 window.gainYearPaletteA = 'c5ee93,0f6460';
 // window.gainYearPaletteB = 'e0e0ff,4a50c4';
-window.changePalette = ['ffbe2eAA','f6bd9c','d54309','00a398'];
+
+window.changePalette = ['3d4551','f39268','d54309','00a398','ffbe2e'];
 window.whichIndices = ['NBR'];
 
 // LCMS Project Boundaries

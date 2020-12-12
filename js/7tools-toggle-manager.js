@@ -73,6 +73,19 @@ var toolFunctions = {'measuring':
                       },
                     }
                   }
+function getActiveTools(){
+  var out = [];
+  Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){
+                                                                        var state = toolFunctions[t][tt]['state'];
+                                                                        var title = toolFunctions[t][tt]['title'];
+                                                                        if(state){
+                                                                          out.push(title)
+                                                                          
+                                                                        } 
+                                                                        
+                                                                      })});
+  return out;
+}
 function updateToolStatusBar(){
   var somethingShown = false;
   $('#current-tool-selection').empty();
