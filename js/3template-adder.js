@@ -246,7 +246,12 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 }else if(mode === 'MTBS'){
   startYear = 1984;
   endYear = 2018;
-  
+  if(urlParams.startYear == null || urlParams.startYear == undefined){
+      urlParams.startYear = startYear;
+  }
+  if(urlParams.endYear == null || urlParams.endYear == undefined){
+     urlParams.endYear = endYear;
+  }
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
   
@@ -260,7 +265,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   });
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   
-  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','startYear','endYear',startYear, endYear, startYear, endYear, 1,'analysis-year-slider','null','Years of MTBS data to include')
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',startYear, endYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of MTBS data to include')
   addMultiRadio('parameters-collapse-div','mtbs-summary-method-radio','How to summarize MTBS data','mtbsSummaryMethod',{"Highest-Severity":true,"Most-Recent":false,"Oldest":false})
 
   $('#mtbs-summary-method-radio').prop('title','Select how to summarize MTBS raster data in areas with multiple fires.  Each summary method is applied on a pixel basis. "Highest-Severity" will show the severity and fire year corresponding to the highest severity. "Most-Recent" will show the severity and fire year corresponding to the most recently mapped fire. "Oldest" will show the severity and fire year corresponding to the oldest mapped fire.')

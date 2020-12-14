@@ -2824,6 +2824,8 @@ Map2.addTimeLapse(srCollection,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red',
 }
 var mtbsC;
 function runMTBS(){
+  startYear = parseInt(urlParams.startYear);
+  endYear = parseInt(urlParams.endYear);
   chartMTBS = true;
   chartMTBSByNLCD = true;
   chartMTBSByAspect = true;
@@ -2847,18 +2849,27 @@ function runMTBS(){
   //     // Create and append the li's to the ul
   //   })
   // })
-  var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  var perims = ee.FeatureCollection('projects/gtac-mtbs/assets/perimeters/mtbs_perims_DD');//ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  var inFields  = ['Incid_Name','Incid_Type','Event_ID','irwinID','Ignition Date','BurnBndAc','Asmnt_Type'];
+  var outFields = ['Incident Name','Incident Type','MTBS Event ID','IRWIN ID','Ignition Date','Acres','Assessment Type'];
+  perims = perims.map(function(f){
+    var d = ee.Date(f.get('Ig_Date'));
+    var formatted = d.format('YYYY-MM-dd');
+    return f.set({'Year':d.get('year'),'Ignition Date':formatted});
+  })
+
   perims = perims.filter(ee.Filter.gte('Year',startYear));
   perims = perims.filter(ee.Filter.lte('Year',endYear));
-
-  perims = perims.map(function(f){
-    f = ee.Feature(f);
-    var d = ee.Number(f.get('StartDay')).format('%02d');
-    var m = ee.Number(f.get('StartMonth')).format('%02d');
-    var y = ee.Number(f.get('Year')).format();
-    var out = y.cat('-').cat(m).cat('-').cat(d);
-    return f.select(['Fire_Name','Fire_ID','Fire_Type','Acres'],['1_Fire_Name','2_Fire_ID','3_Fire_Type','4_Acres']).set('5_Start_Date',out);
-  });
+  
+  perims = perims.select(inFields,outFields);
+  // perims = perims.map(function(f){
+  //   f = ee.Feature(f);
+  //   var d = ee.Number(f.get('StartDay')).format('%02d');
+  //   var m = ee.Number(f.get('StartMonth')).format('%02d');
+  //   var y = ee.Number(f.get('Year')).format();
+  //   var out = y.cat('-').cat(m).cat('-').cat(d);
+  //   return f.select(['Fire_Name','Fire_ID','Fire_Type','Acres'],['1_Fire_Name','2_Fire_ID','3_Fire_Type','4_Acres']).set('5_Start_Date',out);
+  // });
   // perims = ee.FeatureCollection(perims);
   perims = perims.set('bounds',clientBoundsDict.All);
   // console.log(perims.get('bounds').getInfo())

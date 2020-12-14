@@ -1103,53 +1103,14 @@ function ccdcChangeDetection(ccdcImg,bandName){
   };
   
 }
-function getSelectLayers(){
-  var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
-  // console.log(perims.get('bounds').getInfo())
-  perims = perims.filter(ee.Filter.gte('Year',startYear));
-  perims = perims.filter(ee.Filter.lte('Year',endYear));
-  var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
-  var huc8 = ee.FeatureCollection('USGS/WBD/2017/HUC08');
-  var huc12 = ee.FeatureCollection('USGS/WBD/2017/HUC12');
-  var wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
-  var wilderness = wdpa.filter(ee.Filter.eq('DESIG', 'Wilderness'));
-  var counties = ee.FeatureCollection('TIGER/2018/Counties');
-  var tiles  = ee.FeatureCollection("users/jdreynolds33/Zones_New");
-  var bia = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017');
-  var ecoregions_subsections = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections');
-  ecoregions_subsections = ecoregions_subsections.select(['MAP_UNIT_N'], ['NAME'], true);
-  var ecoregions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions');
-  ecoregions = ecoregions.select(['SECTION'],['NAME'])
-  var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
 
-  // Map2.addSelectLayer(tiles,{strokeColor:'BB0',layerType:'geeVectorImage'},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
-
-  Map2.addSelectLayer(bia,{strokeColor:'0F0',layerType:'geeVectorImage'},'BIA Boundaries',false,null,null,'BIA boundaries. Turn on layer and click on any area wanted to include in chart');
-
-  Map2.addSelectLayer(huc12,{strokeColor:'00F',layerType:'geeVectorImage'},'HUC 12',false,null,null,'HUC 12 watershed boundaries. Turn on layer and click on any HUC 12 wanted to include in chart');
-  
-  Map2.addSelectLayer(ecoregions,{strokeColor:'8F8',layerType:'geeVectorImage'},"Baileys Ecoregions Sections",false,null,null,'Baileys ecoregion sections. Turn on layer and click on any ecoregion wanted to include in chart');
-  
-  Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'Baileys ecoregions subsections. Turn on layer and click on any ecoregion wanted to include in chart');
-  Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
-  
-  // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
-
-  Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
-  
-  // Map2.addSelectLayer(wilderness,{strokeColor:'80F',layerType:'geeVectorImage'},'Wilderness',false,null,null,'Wilderness boundaries. Turn on layer and click on any winderness wanted to include in chart');
-  
-  // Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests2',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
-  
-  Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
-
-  Map2.addSelectLayer(otherLands,{strokeColor:'DD0',layerType:'geeVectorImage'},'Other Designated Lands',false,null,null,'A boundary within which National Forest System land parcels have managment or use limits placed on them by legal authority. Examples are: National Recreation Area, National Monument, and National Game Refuge. Turn on layer and click on any Park wanted to include in chart');
-
-  Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
-  
-}function getSelectLayers(short){
-  var perims = ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+function getSelectLayers(short){
+  var perims = ee.FeatureCollection('projects/gtac-mtbs/assets/perimeters/mtbs_perims_DD');//ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  perims = perims.map(function(f){
+    var d = ee.Date(f.get('Ig_Date'));
+    
+    return f.set({'Year':d.get('year')})
+  })
   // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
   // console.log(perims.get('bounds').getInfo())
   perims = perims.filter(ee.Filter.gte('Year',startYear));
