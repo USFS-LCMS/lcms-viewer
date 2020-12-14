@@ -245,7 +245,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
 }else if(mode === 'MTBS'){
   startYear = 1984;
-  endYear = 2017;
+  endYear = 2018;
   
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');

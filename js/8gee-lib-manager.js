@@ -425,10 +425,10 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   if(showSeverity === null || showSeverity === undefined){showSeverity = false};
   if(mtbsSummaryMethod === null || mtbsSummaryMethod === undefined){mtbsSummaryMethod = 'Highest-Severity'}
  
-    var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
+    var mtbs_path = 'projects/gtac-mtbs/assets/burn_severity_mosaics/MTBS';//'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
  
   var mtbsEndYear = endYear;
-  if(endYear > 2017){mtbsEndYear = 2017}
+  if(endYear > 2018){mtbsEndYear = 2018}
 
   var mtbsYears = ee.List.sequence(1984,mtbsEndYear);
   var mtbs = ee.ImageCollection(mtbs_path);
