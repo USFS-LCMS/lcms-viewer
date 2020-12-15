@@ -144,7 +144,7 @@ html, body{
 .text-black{
   color:var(--black)!important;
 }
-
+table {border: none!important;}
 /*///////////////////////////////////////////////////////*/
 
 .main-container{

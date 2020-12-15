@@ -151,9 +151,13 @@ function runGTAC(){
     return ee.ImageCollection([akCombined,conusCombined]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
   }));
 
-  var lcLayerName =  'Land Cover (mode)';//+ startYear.toString() + '-'+ endYear.toString();
-  var luLayerName =  'Land Use (mode)';// startYear.toString() + '-'+ endYear.toString();
-    
+  var lcLayerName =  'Land Cover';//+ startYear.toString() + '-'+ endYear.toString();
+  var luLayerName =  'Land Use';// startYear.toString() + '-'+ endYear.toString();
+  
+  SA = SA.map(function(f){return f.set({'constant':1})})
+  // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'1B1716DD',addToLegend:false})
+  // Map2.addLayer(SA.reduceToImage(['constant'],ee.Reducer.first()),{min:1,max:1,palette:'372E2C',addToLegend:false})
+  
   Map2.addLayer(combinedLU.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
   Map2.addLayer(combinedLC.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
 
@@ -181,11 +185,12 @@ function runGTAC(){
   }
   var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
   
-  // Map2.addTimeLapse('https://storage.googleapis.com/lcms-tile-outputs/LCMS_2020-5_Change_',{timeLapseType :'tileMapService',years:years,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]}},'LCMS Change Time Lapse',false)
- 
-  // Map2.addTimeLapse(combinedLU.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
+  // Map2.addTimeLapse('https://storage.googleapis.com/lcms-tile-outputs/LCMS_2020-5_Change_',{timeLapseType :'tileMapService',years:[1985,1986,1987],addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]}},'LCMS Change Time Lapse',false)
+  
+  // Map2.addLayer(ee.Image().paint(SA,null,1),{min:1,max:1,palette:'00BFA5',addToLegend:false})
+  Map2.addTimeLapse(combinedLU.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
   // Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},'LCMS Land Cover Time Lapse',false);
-  Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
+  // Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
   
    // var combinedChangeCT =combinedChange.filter(ee.Filter.calendarRange(startYear,endYear,'year')).map(function(img){
    //  var maxClass = img.select(['maxClass']);

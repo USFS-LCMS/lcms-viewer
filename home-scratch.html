@@ -42,12 +42,12 @@
      
  
       <!-- <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service" style = 'font-size:5em;'> -->
-      <h1 class="navbar-btn pull-left teal-study-area-label" href="#"><img style = 'filter: invert(1);' height = '35px' src="images/cumulative_icon.png"> Landscape Change Monitoring System </h1>
+      <h1 class="navbar-btn pull-left teal-study-area-label" href="#"><img style = 'filter: invert(0);' height = '35px' src="images/usfslogo.png"> Landscape Change Monitoring System </h1>
     </div>
      <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right" >
         <li><a class = 'teal-hover ' id = 'home-nav' href="#home-row" onclick="toggleDivs('home')">HOME</a></li>
-        <li><a class = 'teal-hover' id = 'about-nav' href="#about-row" onclick="toggleDivs('about')">ABOUT</a></li>
+        <li><a class = 'teal-hover' id = 'about-nav' href="#background" onclick="toggleDivs('background')">Background</a></li>
           <li><a class = 'teal-hover'  id = 'map-nav' href="#map-row" onclick="toggleDivs('map')">INTERACTIVE VIEWER</a></li>
           <li><a class = 'teal-hover'  id = 'download-nav' href="#download-row" onclick="toggleDivs('download')">DOWNLOAD</a></li>
           <li><a class = 'teal-hover'  id = 'contact-nav' href="#contact-row" onclick="toggleDivs('contact')">CONTACT</a></li>
@@ -83,62 +83,141 @@
 </div> -->
 
 <div id="home-row" class="container-fluid bg-black" >
+
   <div class="row slideanim">
    
     
-      <a href = 'index.html'target = '_blank' title = 'Click here to open LCMS Data Explorer!'>
-      <div id="myCarousel" class="carousel slide"  data-ride="carousel">
+      
+      <div id="myCarousel1" class="carousel slide"  data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#myCarousel" data-slide-to="1"></li>
-          <li data-target="#myCarousel" data-slide-to="2"></li>
+          <li data-target="#myCarousel1" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel1" data-slide-to="1"></li>
+          <li data-target="#myCarousel1" data-slide-to="2"></li>
+          <li data-target="#myCarousel1" data-slide-to="3"></li>
+          <li data-target="#myCarousel1" data-slide-to="4"></li>
         </ol>
 
         <!-- Wrapper for slides -->
         <div class="carousel-inner">
-          <div class="item active" style = 'height:200px;'>
+          <div class="item active" style = 'height:600px;'>
             
             <div class="carousel-caption">
               <h3>The Landscape Change Monitoring System (LCMS)</h3>
-              <p>LCMS is the USDA Forest Service change monitoring system for all US lands</p>
+              <p>LCMS is the USDA Forest Service landscape change monitoring system for US lands</p>
+              <img height = '400px' src="./images/study_area_map_simple.png">
             </div>
           </div>
 
-          <div class="item"style = 'height:200px;'>
+          <div class="item"style = 'height:600px;'>
             <div class="carousel-caption">
-              <h3>What does it do?</h3>
-              <p>LCMS monitors loss and gain in vegetation cover and changes in types of land cover for every year from 1984-present</p>
+              <h3>What does it monitor?</h3>
+              <p>Vegetation cover disturbance and regrowth from 1985-present</p>
+              <img height = '400px' src="./images/study_area_map_change.png">
+            </div>
+          </div>
+          <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>What does it monitor?</h3>
+              <p>Land cover transitions from 1985-present</p>
+              <img height = '400px' src="./images/study_area_map_land_cover.png">
+            </div>
+          </div>
+          <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>What does it monitor?</h3>
+              <p>Land use transitions for each year from 1985-present</p>
+              <img height = '400px' src="./images/study_area_map_land_use.png">
             </div>
           </div>
         
-          <div class="item"style = 'height:200px;'>
+          <div class="item"style = 'height:600px;'>
             <div class="carousel-caption">
               <h3>Where does LCMS monitor?</h3>
-              <p>LCMS monitors all lands across the Conterminous United States</p>
+              <p>LCMS monitors all lands across the conterminous United States and southeastern Alaska</p>
+              <img height = '400px' src="./images/study_area_map_simple.png">
             </div>
           </div>
-        </div>
+    
 
+        </div>
         <!-- Left and right controls -->
-        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <a class="left carousel-control" href="#myCarousel1" data-slide="prev">
           <span class="glyphicon glyphicon-chevron-left"></span>
           <span class="sr-only">Previous</span>
         </a>
-        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <a class="right carousel-control" href="#myCarousel1" data-slide="next">
           <span class="glyphicon glyphicon-chevron-right"></span>
           <span class="sr-only">Next</span>
         </a>
       </div>
-      </a>
+     
+      <hr>
+      <div id="myCarousel2" class="carousel slide"  data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel2" data-slide-to="1"></li>
+          <li data-target="#myCarousel2" data-slide-to="2"></li>
+          <li data-target="#myCarousel2" data-slide-to="3"></li>
+     
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+         
+    
+        <div class="item active"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor trends of urban expansion.</p>
+              <img height = '400px' src="./images/land_use_annimation_Denver.gif">
+            </div>
+          </div>
+        
+
+        <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor tree mortality from insects and disease.</p>
+              <img height = '400px' src="./images/change_annimation_slow.gif">
+            </div>
+          </div>
+
+        <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor cumulative tree harvest and regrowth.</p>
+              <img height = '400px' src="./images/change_annimation_SE_harvest.gif">
+            </div>
+          </div>
+
+        <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor glacial recession.</p>
+              <img height = '400px' src="./images/change_annimation_AK_glacier1.gif">
+            </div>
+          </div>
+        </div>
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel2" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
    
   </div>
 </div>
 <!-- Container (About Section) -->
-<div id="about-row" class="container-fluid bg-white info-page" >
+<div id="background" class="container-fluid bg-white info-page" >
   <div class="row slideanim">
-    <h2 style = 'margin-left:0.5em;'>About</h2>
-    <div class="col-sm-12 col-lg-3">
+    <h2 style = 'margin-left:0.5em;'>Background</h2>
+    <div class="col-sm-12 col-lg-7">
       
       <h4>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS).
 
@@ -159,7 +238,7 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
         </ul>
       </li>
     </div>
-    <div class = 'col-sm-12 col-lg-9'>
+    <div class = 'col-sm-12 col-lg-3'>
       <!-- <img  src="./images/loss-example.png"  height = '1000px' title="Click to learn more about the US Forest Service"> -->
       <img src="https://data.fs.usda.gov/geodata/rastergateway/LCMS/BridgerTeton-BlackrockANIM_nographs2.gif" height = '500px'  title="Click to learn more about the US Forest Service"></img>
     </div>
@@ -171,12 +250,12 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
     <h2 style = 'margin-left:0.5em;'>INTERACTIVE VIEWER</h2>
     
       
-      <div id="myCarousel2" class="carousel slide"  data-ride="carousel">
+      <div id="myCarousel3" class="carousel slide"  data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-          <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
-          <li data-target="#myCarousel2" data-slide-to="1"></li>
-          <li data-target="#myCarousel2" data-slide-to="2"></li>
+          <li data-target="#myCarousel3" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel3" data-slide-to="1"></li>
+          <li data-target="#myCarousel3" data-slide-to="2"></li>
         </ol>
 
         <!-- Wrapper for slides -->
@@ -200,11 +279,11 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
         </div>
 
         <!-- Left and right controls -->
-        <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
+        <a class="left carousel-control" href="#myCarousel3" data-slide="prev">
           <span class="glyphicon glyphicon-chevron-left"></span>
           <span class="sr-only">Previous</span>
         </a>
-        <a class="right carousel-control" href="#myCarousel2" data-slide="next">
+        <a class="right carousel-control" href="#myCarousel3" data-slide="next">
           <span class="glyphicon glyphicon-chevron-right"></span>
           <span class="sr-only">Next</span>
         </a>
@@ -226,17 +305,64 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
 <div id="download-row" class="container-fluid bg-white info-page" >
   <div class="row slideanim">
     <h2 style = 'margin-left:0.5em;'>Download</h2>
-    <div class = 'col-sm-12 col-lg-1'>
-      Select any of the available downloads
-    </div>
+
     <div class="col-sm-12 col-lg-9" id = 'download-container'>
-      
+      <table border="1" class="lcmsTableHEADER" width="100%">
+        <tbody><tr class = 'bg-black'>
+            <td class = 'bg-white' style="border:none!important;"></td>
+            <td colspan="3" class = 'teal' align="center" style="font-size:1.15em;">LCMS Product Category</td>
+        </tr>
+        <tr class = 'bg-black '>
+            <td width="40%" class = 'teal' style="font-size:1.15em;">LCMS Study Area</td>
+            <td width="20%">Change</td>
+            <td width="20%">Land Cover</td>
+            <td width="20%">Land Use</td>
+        </tr>
+        </tbody></table>
+        <table border="1" class="lcmsTable" width="100%">
+            <tbody><tr>
+                <td width="40%"><strong>Conterminous United States</strong><br><a class="descriptionLink" onclick="this.blur();" title="Click to show detailed description of all products" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_Science-Team-CONUS_v2019-01_Descriptions.html">Detailed Product Description</a></td>
+                <td width="20%"><a title="Click to download product (LCMS_Science-Team-CONUS_v2019-01_Change_Loss_Annual.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_Science-Team-CONUS_v2019-01_Change_Loss_Annual.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_Science-Team-CONUS_v2019-01_Change_Loss_Annual.zip&#39;);">Download (Loss Annual)</a><br><p>3.6 GB</p><hr><a title="Click to download product (LCMS_Science-Team-CONUS_v2019-01_Change_Loss_Summary.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_Science-Team-CONUS_v2019-01_Change_Loss_Summary.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_Science-Team-CONUS_v2019-01_Change_Loss_Summary.zip&#39;);">Download (Loss Summary)</a><br><p>2.6 GB</p></td>
+                <td width="20%"><a title="Product Not available">Not Available</a></td>
+                <td width="20%"><a title="Product Not available">Not Available</a></td>
+            </tr>
+            <tr>
+                <td width="40%"><strong>USFS Intermountain Region</strong><br><a class="descriptionLink" onclick="this.blur();" title="Click to show detailed description of all products" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Descriptions.html">Detailed Product Description</a></td>
+                <td width="20%"><a title="Click to download product (LCMS_R4_v2019-04_Change.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Change.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_R4_v2019-04_Change.zip&#39;);">Download (All)</a><br><p>941.3 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_R4_v2019-04_Land_Cover.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Land_Cover.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_R4_v2019-04_Land_Cover.zip&#39;);">Download (All)</a><br><p>8.6 GB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_R4_v2019-04_Land_Use.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_R4_v2019-04_Land_Use.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_R4_v2019-04_Land_Use.zip&#39;);">Download (All)</a><br><p>2.7 GB</p></td>
+            </tr>
+            <tr>
+                <td width="40%"><strong>Chugach National Forest-Kenai Peninsula</strong><br><a class="descriptionLink" onclick="this.blur();" title="Click to show detailed description of all products" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_CNFKP_v2019-04_Descriptions.html">Detailed Product Description</a></td>
+                <td width="20%"><a title="Click to download product (LCMS_CNFKP_v2019-04_Change.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_CNFKP_v2019-04_Change.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_CNFKP_v2019-04_Change.zip&#39;);">Download (All)</a><br><p>126.7 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_CNFKP_v2019-04_Land_Cover.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_CNFKP_v2019-04_Land_Cover.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_CNFKP_v2019-04_Land_Cover.zip&#39;);">Download (All)</a><br><p>471.1 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_CNFKP_v2019-04_Land_Use.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_CNFKP_v2019-04_Land_Use.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_CNFKP_v2019-04_Land_Use.zip&#39;);">Download (All)</a><br><p>284.1 MB</p></td>
+            </tr>
+            <tr>
+                <td width="40%"><strong>Flathead National Forest</strong><br><a class="descriptionLink" onclick="this.blur();" title="Click to show detailed description of all products" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_FNF_v2019-03_Descriptions.html">Detailed Product Description</a></td>
+                <td width="20%"><a title="Click to download product (LCMS_FNF_v2019-03_Change.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_FNF_v2019-03_Change.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_FNF_v2019-03_Change.zip&#39;);">Download (All)</a><br><p>81.2 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_FNF_v2019-03_Land_Cover.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_FNF_v2019-03_Land_Cover.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_FNF_v2019-03_Land_Cover.zip&#39;);">Download (All)</a><br><p>112.0 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_FNF_v2019-03_Land_Use.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_FNF_v2019-03_Land_Use.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_FNF_v2019-03_Land_Use.zip&#39;);">Download (All)</a><br><p>70.5 MB</p></td>
+            </tr>
+            <tr>
+                <td width="40%"><strong>Bridger-Teton National Forest</strong><br><a class="descriptionLink" onclick="this.blur();" title="Click to show detailed description of all products" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_BTNF_v2019-03_Descriptions.html">Detailed Product Description</a></td>
+                <td width="20%"><a title="Click to download product (LCMS_BTNF_v2019-03_Change.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_BTNF_v2019-03_Change.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_BTNF_v2019-03_Change.zip&#39;);">Download (All)</a><br><p>145.9 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_BTNF_v2019-03_Land_Cover.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_BTNF_v2019-03_Land_Cover.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_BTNF_v2019-03_Land_Cover.zip&#39;);">Download (All)</a><br><p>573.2 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_BTNF_v2019-03_Land_Use.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_BTNF_v2019-03_Land_Use.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_BTNF_v2019-03_Land_Use.zip&#39;);">Download (All)</a><br><p>401.4 MB</p></td>
+            </tr>
+            <tr>
+                <td width="40%"><strong>Manti-La Sal National Forest</strong><br><a class="descriptionLink" onclick="this.blur();" title="Click to show detailed description of all products" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_MLSNF_v2019-03_Descriptions.html">Detailed Product Description</a></td>
+                <td width="20%"><a title="Click to download product (LCMS_MLSNF_v2019-03_Change.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_MLSNF_v2019-03_Change.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_MLSNF_v2019-03_Change.zip&#39;);">Download (All)</a><br><p>22.8 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_MLSNF_v2019-03_Land_Cover.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_MLSNF_v2019-03_Land_Cover.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_MLSNF_v2019-03_Land_Cover.zip&#39;);">Download (All)</a><br><p>95.5 MB</p></td>
+                <td width="20%"><a title="Click to download product (LCMS_MLSNF_v2019-03_Land_Use.zip)" target="_blank" href="https://data.fs.usda.gov/geodata/LCMS/LCMS_MLSNF_v2019-03_Land_Use.zip" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;RasterData_Downloads&#39;, &#39;LCMS&#39;, &#39;LCMS_MLSNF_v2019-03_Land_Use.zip&#39;);">Download (All)</a><br><p>60.8 MB</p></td>
+            </tr>
+        </tbody></table>
       
     </div>
     
   </div>
 </div>
-<div id="contact-row" class="container-fluid bg-grey">
+<div id="contact-row" class="container-fluid bg-black">
   <h2 class="text-center">CONTACT</h2>
   <div class="row">
     <div class="col-sm-12">
@@ -268,19 +394,19 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
     </div>
 </div>
 <script>
-Object.keys(lcmsDownloadDict).map(function(k){
-  console.log(k)
-  $('#download-container').append(`<div class = 'col-lg-3 col-md-6 col-sm-12'>
-                                    ${k}
-                                    <li id = 'download-list-${k}'></li>
-                                  </div>`)
-  var l = lcmsDownloadDict[k].downloads;
-  l.map(function(path){
-    var label = path.split('/');
-    label = label[label.length-1];
-    $('#download-list-'+k).append(`<ul><a href = '${path}'>${label}</a></ul>`)
-  })
-})
+// Object.keys(lcmsDownloadDict).map(function(k){
+//   console.log(k)
+//   $('#download-container').append(`<div class = 'col-lg-3 col-md-6 col-sm-12'>
+//                                     ${k}
+//                                     <li id = 'download-list-${k}'></li>
+//                                   </div>`)
+//   var l = lcmsDownloadDict[k].downloads;
+//   l.map(function(path){
+//     var label = path.split('/');
+//     label = label[label.length-1];
+//     $('#download-list-'+k).append(`<ul><a href = '${path}'>${label}</a></ul>`)
+//   })
+// })
 $(document).ready(function(){
   // Add smooth scrolling to all links in navbar + footer link
   $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
@@ -314,6 +440,10 @@ $(document).ready(function(){
         }
     });
   });
+})
+
+$('.carousel').carousel({
+  interval: 3000
 })
 </script>
 </body>

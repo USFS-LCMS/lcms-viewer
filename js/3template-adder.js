@@ -606,6 +606,7 @@ if(urlParams.showSidebar === undefined || urlParams.showSidebar === null){
 
 function toggleSidebar(){
   $('#sidebar-left').toggle('collapse');
+  // $('#title-banner').toggle('collapse');
   if(urlParams.showSidebar === 'false'){
     urlParams.showSidebar = 'true'
   }else{
