@@ -23,7 +23,7 @@ window.recoveryProbPalette = 'F5DEB3,006400';
 window.declineDurPalette = 'BD1600,E2F400,0C2780';
 window.recoveryDurPalette = declineDurPalette;
 
-
+// window.gainYearPaletteA = 'c5ee93,0f6460';
 window.gainYearPaletteA = 'c5ee93,00a398';
 // window.gainYearPaletteB = 'e0e0ff,4a50c4';
 window.changePaletteFull = ['3d4551','f39268','d54309','00a398','ffbe2e'];

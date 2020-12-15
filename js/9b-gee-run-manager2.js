@@ -26,13 +26,8 @@ function combineChange(changeC,year,gain_thresh,slow_loss_thresh,fast_loss_thres
   var maxConf = stack.reduce(ee.Reducer.max());
   var maxConfMask = stack.eq(maxConf).and(stack.gte(ee.Image([slow_loss_thresh,fast_loss_thresh,gain_thresh]))).selfMask();
   var yearMask = ee.Image([year,year,year]).updateMask(maxConfMask).int16();
-  // stack = stack.updateMask(maxConfMask)
   var maxClass = ee.Image([1,2,3]).updateMask(maxConfMask).reduce(ee.Reducer.max()).rename(['maxClass']);
-  // var maxClassM = maxClass.mask();
-  // maxClass = maxClass.unmask(0);
-  // maxClass = maxClass.where(processingMask.not(),4)
-  // maxClass = maxClass.where(studyAreaMask.not(),5)
-  // maxClass = maxClass.updateMask(maxClass.neq(5))
+
   var out = ee.Image.cat([stack,maxConfMask, yearMask,maxClass,processingMask]).rename(['Slow_Loss_Prob','Fast_Loss_Prob','Gain_Prob','Slow_Loss_Mask','Fast_Loss_Mask','Gain_Mask','Slow_Loss_Year','Fast_Loss_Year','Gain_Year','maxClass','processingMask']);
   return out.set('system:time_start',ee.Date.fromYMD(year,6,1).millis())
 }
@@ -73,8 +68,7 @@ function runGTAC(){
   var years = ee.List.sequence(startYear,endYear).getInfo();
   summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
-  getHansen();
-  getMTBSandIDS();
+  
   
   // setupDownloads(studyAreaName);
   var clientBoundary = clientBoundsDict.CONUS_SEAK;
@@ -160,32 +154,37 @@ function runGTAC(){
   var lcLayerName =  'Land Cover (mode)';//+ startYear.toString() + '-'+ endYear.toString();
   var luLayerName =  'Land Use (mode)';// startYear.toString() + '-'+ endYear.toString();
     
-  Map2.addLayer(combinedLU.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
-  Map2.addLayer(combinedLC.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
+  Map2.addLayer(combinedLU.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
+  Map2.addLayer(combinedLC.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
 
 
   //Bring change layers into viewer
-  Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend disturbance event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,min: startYear, max: endYear, palette: declineYearPalette},`Slow Disturbance Year`)
+  Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend disturbance event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: declineYearPalette},`Slow Disturbance Year`)
 
   if(analysisMode === 'advanced'){
-    Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend disturbance event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,min: minSlowLossProb, max: 0.5, palette: declineProbPalette},'Slow Disturbance Probability',false);
-    Map2.addLayer(combinedChange.select(['Slow_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Duration of vegetation cover loss from a long-term trend disturbance event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,min: 1, max: 5, palette: declineDurPalette},'Slow Disturbance Duration',false);
+    Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend disturbance event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: minSlowLossProb, max: 0.5, palette: declineProbPalette},'Slow Disturbance Probability',false);
+    Map2.addLayer(combinedChange.select(['Slow_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Duration of vegetation cover loss from a long-term trend disturbance event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: 1, max: 5, palette: declineDurPalette},'Slow Disturbance Duration',false);
   }
 
-  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`, min: startYear, max: endYear, palette: declineYearPalette},'Fast Disturbance Year');
+  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage', min: startYear, max: endYear, palette: declineYearPalette},'Fast Disturbance Year');
 
   if(analysisMode === 'advanced'){
-  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Prob']).updateMask(combinedFastLoss.select(['Fast_Loss_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,min: minFastLossProb, max: 0.5, palette: declineProbPalette},'Fast Disturbance Probability',false);
-    Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Duration of rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`, min: 1, max: 5, palette: declineDurPalette},'Fast Disturbance Duration',false);
+  Map2.addLayer(combinedFastLoss.select(['Fast_Loss_Prob']).updateMask(combinedFastLoss.select(['Fast_Loss_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: minFastLossProb, max: 0.5, palette: declineProbPalette},'Fast Disturbance Probability',false);
+    Map2.addLayer(combinedChange.select(['Fast_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Duration of rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage', min: 1, max: 5, palette: declineDurPalette},'Fast Disturbance Duration',false);
   }
 
-  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} post disturbance vegetation cover gain from ${startYear} to ${endYear}.`,min: startYear, max: endYear, palette: gainYearPaletteA},'Growth Year',false);
+  Map2.addLayer(combinedGain.select(['Gain_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} post disturbance vegetation cover gain from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: gainYearPaletteA},'Growth Year',false);
  
   if(analysisMode === 'advanced'){
-  Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} post disturbance vegetation cover gain from ${startYear} to ${endYear}.`, min: minGainProb, max: 0.8, palette: recoveryProbPalette},'Growth Probability',false);
-    Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Post disturbance vegetation cover gain duration from ${startYear} to ${endYear}.`, min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
+  Map2.addLayer(combinedGain.select(['Gain_Prob']).updateMask(combinedGain.select(['Gain_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} post disturbance vegetation cover gain from ${startYear} to ${endYear}.`,layerType : 'geeImage', min: minGainProb, max: 0.8, palette: recoveryProbPalette},'Growth Probability',false);
+    Map2.addLayer(combinedChange.select(['Gain_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Post disturbance vegetation cover gain duration from ${startYear} to ${endYear}.`,layerType : 'geeImage', min: 1, max: 5, palette: recoveryDurPalette},'Growth Duration',false);
   }
   var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
+  
+  // Map2.addTimeLapse('https://storage.googleapis.com/lcms-tile-outputs/LCMS_2020-5_Change_',{timeLapseType :'tileMapService',years:years,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]}},'LCMS Change Time Lapse',false)
+ 
+  // Map2.addTimeLapse(combinedLU.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
+  // Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},'LCMS Land Cover Time Lapse',false);
   Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]},queryDict: {0:'Stable',1:'Slow Disturbance',2:'Fast Disturbance',3:'Growth',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
   
    // var combinedChangeCT =combinedChange.filter(ee.Filter.calendarRange(startYear,endYear,'year')).map(function(img){
@@ -296,7 +295,8 @@ function runGTAC(){
                                   'tooltip':'Summarize land use classes for each year',
                                   'colors':luLegendColors,
                                   'xAxisLabel':'Year'};
-  
+  getHansen();
+  getMTBSandIDS();
   populatePixelChartDropdown();
     populateAreaChartDropdown();
     
