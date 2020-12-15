@@ -46,11 +46,11 @@
     </div>
      <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right" >
-        <li><a class = 'teal-hover ' id = 'home-nav' href="#home-row" onclick="toggleDivs('home')">HOME</a></li>
-        <li><a class = 'teal-hover' id = 'about-nav' href="#background" onclick="toggleDivs('background')">Background</a></li>
-          <li><a class = 'teal-hover'  id = 'map-nav' href="#map-row" onclick="toggleDivs('map')">INTERACTIVE VIEWER</a></li>
-          <li><a class = 'teal-hover'  id = 'download-nav' href="#download-row" onclick="toggleDivs('download')">DOWNLOAD</a></li>
-          <li><a class = 'teal-hover'  id = 'contact-nav' href="#contact-row" onclick="toggleDivs('contact')">CONTACT</a></li>
+        <li><a class = 'teal-hover ' id = 'intro-nav' href="#intro" >INTRODUCTION</a></li>
+        <li><a class = 'teal-hover' id = 'about-nav' href="#background" >BACKGROUND</a></li>
+          <li><a class = 'teal-hover'  id = 'map-nav' href="#map" >INTERACTIVE VIEWER</a></li>
+          <li><a class = 'teal-hover'  id = 'download-nav' href="#download" >DOWNLOAD</a></li>
+          <li><a class = 'teal-hover'  id = 'contact-nav' href="#contact" >CONTACT</a></li>
       </ul>
     </div>
   </div>
@@ -82,7 +82,7 @@
   <h1>Landscape Change Monitoring System</h1> 
 </div> -->
 
-<div id="home-row" class="container-fluid bg-black" >
+<div id="intro" class="container-fluid bg-black" >
 
   <div class="row slideanim">
    
@@ -105,7 +105,7 @@
             <div class="carousel-caption">
               <h3>The Landscape Change Monitoring System (LCMS)</h3>
               <p>LCMS is the USDA Forest Service landscape change monitoring system for US lands</p>
-              <img height = '400px' src="./images/study_area_map_simple.PNG">
+              <img height = '400px' src="./images/change_annimation_All_change.gif">
             </div>
           </div>
 
@@ -160,27 +160,58 @@
           <li data-target="#myCarousel2" data-slide-to="1"></li>
           <li data-target="#myCarousel2" data-slide-to="2"></li>
           <li data-target="#myCarousel2" data-slide-to="3"></li>
+          <li data-target="#myCarousel2" data-slide-to="4"></li>
+          <li data-target="#myCarousel2" data-slide-to="5"></li>
+          <li data-target="#myCarousel2" data-slide-to="6"></li>
      
         </ol>
 
         <!-- Wrapper for slides -->
         <div class="carousel-inner">
          
-    
         <div class="item active"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor tree mortality from insects and disease, fire, and harvest.</p>
+              <img height = '400px' src="./images/change_annimation_San_Juans.gif">
+              <p>San Juans, CO</p>
+            </div>
+          </div>
+        <div class="item"style = 'height:600px;'>
             <div class="carousel-caption">
               <h3>How is it useful?</h3>
               <p>Monitor trends of urban expansion.</p>
               <img height = '400px' src="./images/land_use_annimation_Denver.gif">
+              <p>Denver, CO</p>
             </div>
           </div>
-        
 
         <div class="item"style = 'height:600px;'>
             <div class="carousel-caption">
               <h3>How is it useful?</h3>
               <p>Monitor tree mortality from insects and disease.</p>
               <img height = '400px' src="./images/change_annimation_slow.gif">
+              <p>Sangre De Cristo Mts, CO</p>
+            </div>
+          </div>
+
+        <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor trends of urban expansion.</p>
+              <img height = '400px' src="./images/land_use_annimation_Las_Vegas.gif">
+              <p>Las Vegas, NV</p>
+            </div>
+          </div>
+
+        
+
+        <div class="item"style = 'height:600px;'>
+            <div class="carousel-caption">
+              <h3>How is it useful?</h3>
+              <p>Monitor fluctuations in water cover.</p>
+              <img height = '400px' src="./images/land_cover_annimation_Lake_Powell.gif">
+              <p>Lake Powell, UT</p>
             </div>
           </div>
 
@@ -189,17 +220,20 @@
               <h3>How is it useful?</h3>
               <p>Monitor cumulative tree harvest and regrowth.</p>
               <img height = '400px' src="./images/change_annimation_SE_harvest.gif">
+              <p>Southeastern US harvest cycles, SC</p>
             </div>
           </div>
+
 
         <div class="item"style = 'height:600px;'>
             <div class="carousel-caption">
               <h3>How is it useful?</h3>
               <p>Monitor glacial recession.</p>
               <img height = '400px' src="./images/change_annimation_AK_glacier1.gif">
+              <p>AK</p>
             </div>
           </div>
-        </div>
+        </di  v>
         <!-- Left and right controls -->
         <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
           <span class="glyphicon glyphicon-chevron-left"></span>
@@ -245,7 +279,7 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
   </div>
 </div>
 
-<div id="map-row" class="container-fluid bg-black info-page" >
+<div id="map" class="container-fluid bg-black info-page" >
   <div class="row slideanim">
     <h2 style = 'margin-left:0.5em;'>INTERACTIVE VIEWER</h2>
     
@@ -302,7 +336,7 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
    
   </div>
 </div>
-<div id="download-row" class="container-fluid bg-white info-page" >
+<div id="download" class="container-fluid bg-white info-page" >
   <div class="row slideanim">
     <h2 style = 'margin-left:0.5em;'>Download</h2>
 
@@ -362,7 +396,7 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
     
   </div>
 </div>
-<div id="contact-row" class="container-fluid bg-black">
+<div id="contact" class="container-fluid bg-black">
   <h2 class="text-center">CONTACT</h2>
   <div class="row">
     <div class="col-sm-12">
@@ -443,7 +477,7 @@ $(document).ready(function(){
 })
 
 $('.carousel').carousel({
-  interval: 3000
+  interval: 5000
 })
 </script>
 </body>
