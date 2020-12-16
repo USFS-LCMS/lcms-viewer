@@ -39,7 +39,7 @@
         <ul class="nav navbar-nav navbar-right" >
           <li title = 'What is LCMS'><a class = 'teal-hover ' id = 'intro-nav' href="#intro" >INTRODUCTION</a></li>
           <li title = 'Why is LCMS needed'><a class = 'teal-hover' id = 'about-nav' href="#background" >BACKGROUND</a></li>
-            <li title = 'How to visualize and explor LCMS data'><a class = 'teal-hover'  id = 'map-nav' href="#exploration" >INTERACTIVE DATA EXPLORATION</a></li>
+            <li title = 'How to visualize and explor LCMS data'><a class = 'teal-hover'  id = 'map-nav' href="#data-explorer" >DATA EXPLORER</a></li>
             <li title = 'Download LCMS products for your analyses'><a class = 'teal-hover'  id = 'download-nav' href="#download" >DOWNLOAD</a></li>
             <li title = 'Contact us with any questions'><a class = 'teal-hover'  id = 'contact-nav' href="#contact" >CONTACT</a></li>
         </ul>
@@ -129,6 +129,9 @@
             <li data-target="#myCarousel2" data-slide-to="4"></li>
             <li data-target="#myCarousel2" data-slide-to="5"></li>
             <li data-target="#myCarousel2" data-slide-to="6"></li>
+            <li data-target="#myCarousel2" data-slide-to="7"></li>
+            <li data-target="#myCarousel2" data-slide-to="8"></li>
+            <li data-target="#myCarousel2" data-slide-to="9"></li>
        
           </ol>
 
@@ -146,8 +149,24 @@
           <div class="item"style = 'height:600px;'>
               <div class="carousel-caption">
                 <h3>How is it useful?</h3>
+                <p>Quantify tree mortality from insects and disease, fire, and harvest.</p>
+                <img class = 'carousel-img'  src="./images/San Juans LCMS Change Summary.png">
+                <p>San Juans, CO</p>
+              </div>
+            </div>
+          <div class="item"style = 'height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
                 <p>Monitor trends of urban expansion.</p>
                 <img class = 'carousel-img'  src="./images/land_use_annimation_Denver.gif">
+                <p>Denver, CO</p>
+              </div>
+            </div>
+            <div class="item"style = 'height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Quantify trends of urban expansion.</p>
+                <img class = 'carousel-img'  src="./images/Denver, CO LCMS Land Use Summary.png">
                 <p>Denver, CO</p>
               </div>
             </div>
@@ -170,7 +189,14 @@
               </div>
             </div>
 
-          
+          <div class="item"style = 'height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Quantify trends of urban expansion.</p>
+                <img class = 'carousel-img'  src="./images/Las Vegas, NV LCMS Land Use Summary.png">
+                <p>Las Vegas, NV</p>
+              </div>
+            </div>
 
           <div class="item"style = 'height:600px;'>
               <div class="carousel-caption">
@@ -239,9 +265,9 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
     </div>
   </div>
 
-  <div id="exploration" class="container-fluid bg-black info-page" >
+  <div id="data-explorer" class="container-fluid bg-black info-page" >
     <div class="row slideanim">
-      <h2 style = 'margin-left:0.5em;'>INTERACTIVE DATA EXPLORERS</h2>
+      <h2 style = 'margin-left:0.5em;'>Data Explorers</h2>
     
       
         
@@ -439,7 +465,7 @@ $(document).ready(function(){
 })
 
 $('.carousel').carousel({
-  interval: 5000
+  interval: 8000
 })
 </script>
 </body>
