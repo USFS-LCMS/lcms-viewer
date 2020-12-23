@@ -419,7 +419,7 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc,noData
     return task;
 }
 function googleMapPolygonToGEEPolygon(googleMapPolygon){
-    var path = googleMapPolygon.getPath().i;
+    var path = googleMapPolygon.getPath().getArray();
     path = path.map(function(p){return [p.lng(),p.lat()]});
     var geePolygon = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(path))]);
     // print(geePolygon);

@@ -18,40 +18,46 @@
  .navbar-inverse .navbar-nav > .active > a:focus {
       background:rgba(235, 235, 235, 0) !important;
       color:var(--teal-80) !important;
+
  }
- .carousel-img { width: 100%; max-width:600px;max-height:400px; }
+ .carousel-img { width: 100%; max-width:600px;max-height:500px; }
   </style>
 </head>
 
-<body  data-spy="scroll" data-target=".navbar" data-offset="10" class = 'bg-black'>
+<body  data-spy="scroll" data-target=".navbar" data-offset="10" class = 'bg-solid-black'>
 
 <div class = 'container-fluid '>
 
-  <nav class="navbar navbar-inverse bg-black navbar-fixed-top">
+  <nav class="navbar navbar-inverse bg-gray navbar-fixed-top">
     <div class="container-fluid">
-      <div class="navbar-header">
+      <div class="navbar-header ">
        
    
         <!-- <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service" style = 'font-size:5em;'> -->
-        <h1 class="navbar-btn pull-left teal-study-area-label" href="#"><img style = 'filter: invert(0);' height = '35px' src="images/usfslogo.png"> Landscape Change Monitoring System </h1>
+        <h2 class=" pull-left teal-study-area-label " href="#" style = 'margin-left:1em;'><img style = 'margin:0px!important;padding:0px!important;filter: invert(0);' height = '35px' src="images/usfslogo.png"> LANDSCAPE <span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">CHANGE</span> MONITORING SYSTEM </h2>
+      
       </div>
-       <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="nav navbar-nav navbar-right" >
-          <li title = 'What is LCMS'><a class = 'teal-hover ' id = 'intro-nav' href="#intro" >INTRODUCTION</a></li>
-          <li title = 'Why is LCMS needed'><a class = 'teal-hover' id = 'about-nav' href="#background" >BACKGROUND</a></li>
+       <div class="collapse navbar-collapse vcenter" id="myNavbar">
+        <ul class="nav navbar-nav pull-right" >
+          <li title = 'What is LCMS?'><a class = 'teal-hover ' id = 'intro-nav' href="#intro" >INTRODUCTION</a></li>
+          <li title = 'How can LCMS data be used?'><a class = 'teal-hover' id = 'applications-nav' href="#applications" >APPLICATIONS</a></li>
+          <li title = 'What are LCMS map outputs?'><a class = 'teal-hover' id = 'applications-nav' href="#products" >PRODUCTS</a></li>
+          
             <li title = 'How to visualize and explor LCMS data'><a class = 'teal-hover'  id = 'map-nav' href="#data-explorer" >DATA EXPLORER</a></li>
             <li title = 'Download LCMS products for your analyses'><a class = 'teal-hover'  id = 'download-nav' href="#download" >DOWNLOAD</a></li>
+            <li title = 'Why is LCMS needed?'><a class = 'teal-hover' id = 'about-nav' href="#background" >BACKGROUND</a></li>
             <li title = 'Contact us with any questions'><a class = 'teal-hover'  id = 'contact-nav' href="#contact" >CONTACT</a></li>
         </ul>
       </div>
     </div>
+   
   </nav>
 
 
-  <div id="intro" class="container-fluid bg-black" >
+  <div id="intro" class="container-fluid bg-solid-black" >
 
-    <div class="row slideanim">
-      
+    <div class="row slideanim info-page">
+      <h2 style = 'margin-left:1em;'>INTRODUCTION</h2>
       
         
         <div id="myCarousel1" class="carousel slide"  data-ride="carousel">
@@ -66,7 +72,7 @@
 
           <!-- Wrapper for slides -->
           <div class="carousel-inner">
-            <div class="item active " style = 'height:600px;'>
+            <div class="item active " style = 'min-height: 600px;'>
               
               <div class="carousel-caption">
                 <h3>The Landscape Change Monitoring System (LCMS)</h3>
@@ -75,32 +81,35 @@
               </div>
             </div>
 
-            <div class="item"style = 'height:600px;'>
+            <div class="item"style = 'min-height: 500px;'>
               <div class="carousel-caption">
-                <h3>What does it monitor?</h3>
-                <p>Vegetation cover disturbance and regrowth from 1985-present</p>
+                <h3>What does LCMS monitor?</h3>
+                <p>Vegetation cover loss and gain</p>
                 <img class = 'carousel-img' src="./images/study_area_map_change.PNG">
+                <p>Annual vegetation cover loss and gain maps from 1985-present</p>
               </div>
             </div>
-            <div class="item"style = 'height:600px;'>
+            <div class="item"style = 'min-height: 500px;'>
               <div class="carousel-caption">
-                <h3>What does it monitor?</h3>
-                <p>Land cover transitions from 1985-present</p>
+                <h3>What does LCMS monitor?</h3>
+                <p>Land cover transitions</p>
                 <img class = 'carousel-img' src="./images/study_area_map_land_cover.PNG">
+                <p>Annual land cover maps from 1985-present</p>
               </div>
             </div>
-            <div class="item"style = 'height:600px;'>
+            <div class="item"style = 'min-height: 550px;'>
               <div class="carousel-caption">
-                <h3>What does it monitor?</h3>
-                <p>Land use transitions for each year from 1985-present</p>
+                <h3>What does LCMS monitor?</h3>
+                <p>Land use transitions</p>
                 <img class = 'carousel-img' src="./images/study_area_map_land_use.PNG">
+                <p>Annual land use maps for each year from 1985-present</p>
               </div>
             </div>
           
-            <div class="item"style = 'height:600px;'>
+            <div class="item"style = 'min-height: 500px;'>
               <div class="carousel-caption">
                 <h3>Where does LCMS monitor?</h3>
-                <p>LCMS monitors all lands across the conterminous United States and southeastern Alaska</p>
+                <p>LCMS monitors all lands across the conterminous United States and southeastern Alaska on an annual basis</p>
                 <img class = 'carousel-img' src="./images/study_area_map_simple.PNG">
               </div>
             </div>
@@ -117,8 +126,14 @@
             <span class="sr-only">Next</span>
           </a>
         </div>
-       
-        <hr>
+      </div>
+      <hr>
+
+  </div>
+  <div id="applications" class="container-fluid bg-solid-black" >
+
+    <div class="row slideanim info-page">
+      <h2 style = 'margin-left:1em;'>APPLICATIONS</h2>
         <div id="myCarousel2" class="carousel slide"  data-ride="carousel">
           <!-- Indicators -->
           <ol class="carousel-indicators">
@@ -239,35 +254,54 @@
      
     </div>
   </div>
-  <div id="background" class="container-fluid bg-white info-page">
-    <h2 style = 'margin-left:0.5em;'>Background</h2>
-    <div class="col-sm-12 col-lg-6">
-      <h4>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS).
+  
+  <div id="products" class="container-fluid bg-white info-page" >
 
-LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. LCMS provides a “best available” map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
-      </h4>
-      <h3>Literature</h3>
-      <li>
-        <ul>
-          <a href = './literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' target = '_blank'>Healey et al 2018</a>      
-        </ul>
-        <ul>
-          <a href = './literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' target = '_blank'>Cohen et al 2017</a>
-        </ul>
-        <ul>
-          <a href = './literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target = '_blank'>Cohen et al 2018</a>
-        </ul>
-      </li>
-    </div>
-    <div class = 'col-sm-12 col-lg-6 ' >
-      <img src="./images/change_annimation_San_Juans.gif" class = 'img-responsive' ></img>
-      <hr>
+    <div style = 'margin:1em;' class="row slideanim ">
+      <h2 >PRODUCTS</h2>
+      <table class="table bg-gray">
+        <thead class = 'teal80 '>
+          <tr>
+            <th scope="col">Product Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Example</th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr>
+            <th>Change</th>
+            <td>
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Class Name</th>
+                    <th scope="col">Class Description</th>
+                    <th scope="col">Class Color</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>test</td>
+                    <td>test</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td><img width = '250px'src="./images/land_cover_annimation_Lake_Powell.gif"></td>
+          </tr>
+          
+            <th>Land Cover</th>
+            <td>Loss of vedddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddde</td>
+            <td><img width = '250px'src="./images/land_cover_annimation_Lake_Powell.gif"></td>
+          </tr>
+         
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <div id="data-explorer" class="container-fluid bg-black info-page" >
+  <div id="data-explorer" class="container-fluid bg-solid-black info-page" >
     <div class="row slideanim">
-      <h2 style = 'margin-left:0.5em;'>Data Explorers</h2>
+      <h2 style = 'margin-left:1em;'>DATA EXPLORER</h2>
     
       
         
@@ -282,8 +316,8 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
           <div class="carousel-inner" >
             <div class="item active" style = 'height:600px;'>
               <div class="carousel-caption">
-                <a href="./index.html" target="_blank">
-                  <h3>Explore LCMS products in an interactive environment</h3>
+                <a class = 'teal' href="./index.html" target="_blank">
+                  <h2 >Click here to explore LCMS products interactively</h2>
                   <img class = 'img-responsive'  src="./images/data-explorer-map-example.PNG">
                 </a>
               </div>
@@ -291,8 +325,8 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
 
             <div class="item" style = 'height:600px;'>
               <div class="carousel-caption">
-                <a href="./lcms-base-learner.html" target="_blank">
-                  <h3>Explore LCMS model inputs in an interactive environment</h3>
+                <a class = 'teal' href="./lcms-base-learner.html" target="_blank">
+                  <h2>Click here to explore LCMS model inputs interactively</h2>
                   <img class = 'img-responsive'  src="./images/base-learner-explorer-map-example.PNG" >
                 </a>
               </div>
@@ -321,21 +355,21 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
      
     </div>
   </div>
-  <div id="download" class="container-fluid bg-white info-page" >
+  <div id="download" class="container-fluid bg-white info-page " >
     <div class="row slideanim">
-      <h2 style = 'margin-left:0.5em;'>Download</h2>
+      <h2 style = 'margin-left:1em;'>DOWNLOAD</h2>
 
-      <div class="col-sm-12 col-lg-9" id = 'download-container'>
+      <div style = 'margin-left:1em;'class="col-sm-12 col-lg-9" id = 'download-container'>
         <table border="1" class="lcmsTableHEADER" width="100%">
-          <tbody><tr class = 'bg-black'>
+          <tbody><tr class = 'bg-solid-black'>
               <td class = 'bg-white' style="border:none!important;"></td>
-              <td colspan="3" class = 'teal' align="center" style="font-size:1.15em;">LCMS Product Category</td>
+              <td colspan="3" class = 'teal80' align="center" style="font-size:1.6em;">LCMS Product Category</td>
           </tr>
-          <tr class = 'bg-black '>
-              <td width="40%" class = 'teal' style="font-size:1.15em;">LCMS Study Area</td>
-              <td width="20%" class = 'teal'>Change</td>
-              <td width="20%" class = 'teal'>Land Cover</td>
-              <td width="20%" class = 'teal'>Land Use</td>
+          <tr class = 'bg-solid-black 'style="font-size:1.5em;">
+              <td width="40%" class = 'teal80' >LCMS Study Area</td>
+              <td width="20%" class = 'teal80'>Change</td>
+              <td width="20%" class = 'teal80'>Land Cover</td>
+              <td width="20%" class = 'teal80'>Land Use</td>
           </tr>
           </tbody></table>
           <table border="1" class="lcmsTable" width="100%">
@@ -381,10 +415,37 @@ LCMS is a remote sensing-based system for mapping and monitoring landscape chang
       
     </div>
   </div>
-  <div id="contact" class="container-fluid bg-black">
-    <h2 class="text-center">CONTACT</h2>
+
+  <div id="background" class="container-fluid bg-white info-page">
+    <h2 style = 'margin-left:0.5em;'>BACKGROUND</h2>
+    <div class="col-sm-12 col-lg-6">
+      <h4>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS).
+
+LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. LCMS provides a “best available” map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
+      </h4>
+      <h3>Literature</h3>
+      <li>
+        <ul>
+          <a href = './literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' target = '_blank'>Healey et al 2018</a>      
+        </ul>
+        <ul>
+          <a href = './literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' target = '_blank'>Cohen et al 2017</a>
+        </ul>
+        <ul>
+          <a href = './literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target = '_blank'>Cohen et al 2018</a>
+        </ul>
+      </li>
+    </div>
+    <div class = 'col-sm-12 col-lg-6 ' >
+      <img src="./images/change_annimation_San_Juans.gif" class = 'img-responsive' ></img>
+      <hr>
+    </div>
+  </div>
+
+  <div id="contact" class="container-fluid bg-solid-black">
+    <h2 style = 'margin-left:0.5em;'>CONTACT</h2>
     <div class="row">
-      <div class="col-sm-12">
+      <div style = 'margin-left:1em;'class="col-sm-12">
         
         
         <p>Geospatial Technology and Applications Center (GTAC)</p>

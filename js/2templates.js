@@ -241,17 +241,16 @@ var staticTemplates = {
                     <span class = 'px-2'  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></span>
                     <span class = 'px-2'  id='current-mouse-position'  ></span>
                     <span id = 'contributor-logos' > 
+                        <a href="https://earthengine.google.com/" target="_blank">
+                            <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
+                        </a>
+                        
+                       
                         <a href="http://www.fs.fed.us//" target="_blank">
                             <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"   title="Click to learn more about the US Forest Service">
                         </a>
-                        <a href="https://www.fs.fed.us/gstc/" target="_blank">
-                            <img src="images/GTAC_Logo.png" class = 'image-icon-bar' alt="GTAC Logo"  href="#"  title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
-                        </a>
-                        <a href="https://www.redcastleresources.com/" target="_blank">
-                            <img src="images/RCR-logo.jpg"  class = 'image-icon-bar'alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
-                        </a>
-                        <a href="https://earthengine.google.com/" target="_blank">
-                            <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
+                        <a href="http://www.usda.gov" target="_blank">
+                            <img src="images/usdalogo.png" class = 'image-icon-bar'  href="#"   title="Click to learn more about the USDA">
                         </a>
                     </span>
 
@@ -286,17 +285,75 @@ var staticTemplates = {
                         <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
-        supportDiv :`<div class = 'p-0 pb-2' >
-        				<a style = 'color:var(--deep-brown-100)!important;' rel="txtTooltip" data-toggle="tooltip" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
-        					<br>
-        					<i class="fa fa-envelope" style = 'color:var(--deep-brown-100)!important;'aria-hidden="true"></i>
-        					Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
-        				<div class="dropdown-divider"></div>
-                        <button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
-        				<div class="dropdown-divider"></div>
-                        <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
-        				<button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>
+        supportDiv :`<div class = 'p-0 pb-2 col-lg-12' >
+                        <div class = 'row pt-2'>
+                            <h3 class = ' text-capitalize'>Tutorial</h3>
+                        </div>
+                        <div class = 'row p-2'>
+                            <div class = 'col-lg-3 p-0 m-0'>
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' src = './images/information--v2.png'></a> 
+                            </div>
+                            <div class = 'col-lg-9'>
+                                <a class = 'support-text' onclick = 'downloadTutorial()'>
+                                Click to launch a tutorial that explains how to utilize the Data Explorer</a>
+                            </div>
+                        </div>
+                        <hr>
+                       
+                        <div class = 'row'>
+                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
+                        </div>
+                        <div class = 'row p-2'>
+                            <div class = 'col-lg-3 p-0 m-0'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                            <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#"  title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                        </a>
+                            </div>
+                            <div class = 'col-lg-9'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <div class = 'row p-2'>
+                            <div class = 'col-lg-3 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-9'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. - transforming images into information. RedCastle Resources is the on-site contractor that has provided all technical expertise for LCMS' operational production,documentation, and delivery at GTAC.</p>
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                        
+                        <div class = 'row'>
+                            <h3 class = ' text-capitalize'>Contact</h3>
+                        </div>
+                   
+                        <div class = 'row p-2'>
+                            <div class = 'col-lg-3 p-0 m-0'>
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' src = './images/email.png'></a> 
+                            </div>
+                            <div class = 'col-lg-9'>
+                                <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
+                                Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
+                            </div>
+                        </div>
+                         
+                        
+                        
+        				
+        			
+                       
         			</div>`,
+                    tooltipToggle:` <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
+                        <button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>`,
         walkThroughButton:`<div class = pb-2>
                             <div class="dropdown-divider"></div>
                             <label class = 'mt-2'>Run a walk-through of the ${mode} Data Explorer's features</label>

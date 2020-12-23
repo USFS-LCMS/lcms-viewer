@@ -351,8 +351,8 @@ var studyAreaDict = {
                       conusSA : 'projects/lcms-292214/assets/CONUS-Ancillary-Data/conus',
                       conusComposites:'projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites',
                       conusChange :'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/DND-RNR-DNDSlow-DNDFast',//'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/LC-LU-DND-RNR-DNDSlow-DNDFast_InitialRun',
-                      conusLC : 'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landcover_Probability',//'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landcover_Probability_InitialRun',
-                      conusLU :   'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landuse_Probability',//'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landuse_Probability_InitialRun',
+                      conusLC : 'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landcover_Probability',
+                      conusLU :   'projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/Landuse_Probability',
                       conusLT : 'projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020',
                       conusCCDC : "projects/CCDC/USA_V2",
 

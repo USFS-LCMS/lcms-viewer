@@ -2258,7 +2258,7 @@ function initialize() {
     center: null,
     zoom: null,
     minZoom: 2,
-     disableDefaultUI: true,
+     disableDefaultUI: false,
     disableDoubleClickZoom: true,
     // maxZoom: 15,
     mapTypeId:urlParams.mapTypeId,
