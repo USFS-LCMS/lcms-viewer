@@ -1348,7 +1348,7 @@ var endYear = parseInt(urlParams.endYear);
 
 var transform = [30,0,-2361915.0,0,-30,3177735.0];
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
-var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
+var gainYearPalette = 'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
 var lossThresh  = parseFloat(urlParams.lossMagThresh) *-10000;//2000;
@@ -1615,7 +1615,8 @@ var ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb'].concat(ccdcInd
 var ccdcIndicesSelectorPrediction = ['tStart','tEnd','tBreak','changeProb'].concat(ccdcOriginalIndices.map(function(i){return i+'_.*'}));
 
 
-
+var fraction = 0.6657534246575343;
+var tEndExtrapolationPeriod = 1;//Period in years to extrapolate if needed
 var ccdcImg =  ee.ImageCollection("projects/CCDC/USA_V2")
           .filter(ee.Filter.eq('spectral', 'SR'))
           .select(ccdcIndicesSelector);
@@ -1624,7 +1625,13 @@ var ccdcAK =  ee.ImageCollection('projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Lear
 var f= ee.Image(ccdcImg.first());
 ccdcImg = ee.Image(ccdcImg.merge(ccdcAK).mosaic().copyProperties(f));
 
-
+//Fix end date issue
+var finalTEnd = ccdcImg.select('tEnd');
+finalTEnd = finalTEnd.arraySlice(0,-1,null).rename('tEnd').arrayGet(0).add(tEndExtrapolationPeriod).toArray(0);
+var tEnds = ccdcImg.select('tEnd');
+tEnds = tEnds.arraySlice(0,0,-1).arrayCat(finalTEnd,0).rename('tEnd');
+var keepBands = ccdcImg.bandNames().remove('tEnd');
+ccdcImg = ccdcImg.select(keepBands).addBands(tEnds);
 //Specify which harmonics to use when predicting the CCDC model
 //CCDC exports the first 3 harmonics (1 cycle/yr, 2 cycles/yr, and 3 cycles/yr)
 //If you only want to see yearly patterns, specify [1]
@@ -1657,12 +1664,21 @@ Map2.addLayer(changeObj.highestMag.gain.mag,{min:0.05,max:0.2,palette:gainMagPal
 
 var yearImages = simpleGetTimeImageCollection(ee.Number(startYear),ee.Number(endYear+1),1/24);
 var predicted = predictCCDC(ccdcImg,yearImages,fillGaps,whichHarmonics).select(ccdcAnnualBnsFrom,ccdcAnnualBnsTo);
-// Map2.addLayer(predicted,{opacity:0},'all predicted')
 
-var fraction = 0.6657534246575343;
+
 var annualImages = simpleGetTimeImageCollection(ee.Number(startYear+fraction),ee.Number(endYear+1+fraction),1);
 // console.log(ccdcIndicesSelectorPrediction)
 var annualPredicted = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).select(ccdcAnnualBnsFrom,ccdcAnnualBnsTo).map(function(img){return ee.Image(multBands(img,1,10000)).int16()});
+Map2.addLayer(ee.Image(annualPredicted.filter(ee.Filter.calendarRange(2020,2020,'year')).first()),{},'ccdc 2020')
+Map2.addLayer(ccdcImg,{opacity:0},'CCDC Img')
+var recent = ccdcImg.select('tEnd');
+recent = recent.arraySlice(0,-1,null).rename('tEnd').arrayGet(0)
+var missing2020 = recent.lte(2020+fraction).and(recent.gte(2020));
+Map2.addLayer(missing2020,{min:0,max:1},'missing2020');
+var missing2019 = recent.lte(2019+fraction).and(recent.gte(2019));
+Map2.addLayer(missing2019,{min:0,max:1},'missing2019');
+var missing2018 = recent.lte(2018+fraction).and(recent.gte(2018));
+Map2.addLayer(missing2018,{min:0,max:1},'missing2018');
 // Map2.addLayer(annualPredicted,{opacity:0},'annual predicted')
 var fraction = ee.Number(ee.Date.fromYMD(1900,9,1).getFraction('year'));
 var outBns = ee.Image(predicted.first()).bandNames().map(function(bn){return ee.String(bn).cat('_Annualized')})
@@ -1719,7 +1735,7 @@ pixelChartCollections['ccdcTS'] =  {
 // Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
 // Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+// Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
 // function getTerraPulseTileFunction(url){
 //   return function(coord, zoom) {

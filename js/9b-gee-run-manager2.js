@@ -161,7 +161,7 @@ function runGTAC(){
   Map2.addLayer(combinedLU.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
   Map2.addLayer(combinedLC.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
 
-
+  // Map2.addLayer(ee.Image(),{addToClassLegend:true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]}},'Change')
   //Bring change layers into viewer
   Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: declineYearPalette},`Slow Loss Year`)
 
@@ -189,8 +189,8 @@ function runGTAC(){
   
   // Map2.addLayer(ee.Image().paint(SA,null,1),{min:1,max:1,palette:'00BFA5',addToLegend:false})
   // Map2.addTimeLapse(combinedLU.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
-  Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},'LCMS Land Cover Time Lapse',false);
-  Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {0:'Stable',1:'Slow Loss',2:'Fast Loss',3:'Gain',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
+  // Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},'LCMS Land Cover Time Lapse',false);
+  // Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {0:'Stable',1:'Slow Loss',2:'Fast Loss',3:'Gain',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
   
   // var bucket = 'gs://lcms-cogtifs/LCMS_SEAK_v2020-5/LCMS_CONUSTest_v2020-5';
   // var cogChangeC = ee.ImageCollection(years.map(function(yr){

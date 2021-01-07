@@ -2011,6 +2011,24 @@ function initSearchBox() {
         bounds.extend(place.geometry.location);
       }
     });
+    var boundsBounds = {
+      south : [-85,85],
+      west : [-179,179],
+      north : [-85,85],
+      east : [-179,179]
+    }
+    
+    bounds = bounds.toJSON();
+ 
+    Object.keys(bounds).map(function(key){
+      var coord = bounds[key];
+      var min =  boundsBounds[key][0];
+      var max = boundsBounds[key][1];
+      if(coord < min){bounds[key] = min;showMessage('Search coords tip!','Search coords format is lat lng (e.g. 45 -111)')}
+      if(coord > max){bounds[key] = max;showMessage('Search coords tip!','Search coords format is lat lng (e.g. 45 -111)')}
+
+    });
+    console.log(bounds)
     map.fitBounds(bounds);
   });
   }
@@ -2273,7 +2291,7 @@ function initialize() {
     tilt:0,
     controlSize: 25,
     scaleControl: true,
-    clickableIcons:false,
+    clickableIcons:false
   };
    
   var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
@@ -2330,7 +2348,7 @@ function initialize() {
   map = new google.maps.Map(document.getElementById("map"),mapOptions);
   //Associate the styled map with the MapTypeId and set it to display.
   map.mapTypes.set('dark_mode', styledMapType);
-        
+ 
   marker=new google.maps.Circle({
     center:{lat:45,lng:-111},
     radius:5
