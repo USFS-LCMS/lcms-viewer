@@ -1669,16 +1669,16 @@ var predicted = predictCCDC(ccdcImg,yearImages,fillGaps,whichHarmonics).select(c
 var annualImages = simpleGetTimeImageCollection(ee.Number(startYear+fraction),ee.Number(endYear+1+fraction),1);
 // console.log(ccdcIndicesSelectorPrediction)
 var annualPredicted = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).select(ccdcAnnualBnsFrom,ccdcAnnualBnsTo).map(function(img){return ee.Image(multBands(img,1,10000)).int16()});
-Map2.addLayer(ee.Image(annualPredicted.filter(ee.Filter.calendarRange(2020,2020,'year')).first()),{},'ccdc 2020')
-Map2.addLayer(ccdcImg,{opacity:0},'CCDC Img')
-var recent = ccdcImg.select('tEnd');
-recent = recent.arraySlice(0,-1,null).rename('tEnd').arrayGet(0)
-var missing2020 = recent.lte(2020+fraction).and(recent.gte(2020));
-Map2.addLayer(missing2020,{min:0,max:1},'missing2020');
-var missing2019 = recent.lte(2019+fraction).and(recent.gte(2019));
-Map2.addLayer(missing2019,{min:0,max:1},'missing2019');
-var missing2018 = recent.lte(2018+fraction).and(recent.gte(2018));
-Map2.addLayer(missing2018,{min:0,max:1},'missing2018');
+// Map2.addLayer(ee.Image(annualPredicted.filter(ee.Filter.calendarRange(2020,2020,'year')).first()),{},'ccdc 2020')
+// Map2.addLayer(ccdcImg,{opacity:0},'CCDC Img')
+// var recent = ccdcImg.select('tEnd');
+// recent = recent.arraySlice(0,-1,null).rename('tEnd').arrayGet(0)
+// var missing2020 = recent.lte(2020+fraction).and(recent.gte(2020));
+// Map2.addLayer(missing2020,{min:0,max:1},'missing2020');
+// var missing2019 = recent.lte(2019+fraction).and(recent.gte(2019));
+// Map2.addLayer(missing2019,{min:0,max:1},'missing2019');
+// var missing2018 = recent.lte(2018+fraction).and(recent.gte(2018));
+// Map2.addLayer(missing2018,{min:0,max:1},'missing2018');
 // Map2.addLayer(annualPredicted,{opacity:0},'annual predicted')
 var fraction = ee.Number(ee.Date.fromYMD(1900,9,1).getFraction('year'));
 var outBns = ee.Image(predicted.first()).bandNames().map(function(bn){return ee.String(bn).cat('_Annualized')})
@@ -1735,7 +1735,7 @@ pixelChartCollections['ccdcTS'] =  {
 // Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
 // Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-// Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir2,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
 // function getTerraPulseTileFunction(url){
 //   return function(coord, zoom) {
