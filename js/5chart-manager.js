@@ -355,7 +355,7 @@ var  getQueryImages = function(lng,lat){
 			var clickPt = ee.Geometry.Point(lngLat);
 			if(q.type === 'geeImage'){
 				var img = ee.Image(q.queryItem);
-				img.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(values){
+				img.reduceRegion(ee.Reducer.first(),clickPt,30,'EPSG:5070',null,true,1e13,1).evaluate(function(values){
 					keyI++;
 					
 					makeQueryTable(values,q,k);
@@ -772,7 +772,7 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier){
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
-				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,30,'EPSG:5070',null,true,1e13,4);
+				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,30,'EPSG:5070',null,true,1e13,1);
 				    var xAxisLabel = img.get(xAxisProperty);
 				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
 				    // var lossT = t.slice(0,2,null);
@@ -851,12 +851,17 @@ function makeAreaChart(area,name,userDefined){
 	
 	var tableT;
 	function evalTable(){
+		console.log('Evaluating area chart table');
 		table.evaluate(function(tableT, failure){
 			print(iteration);
 			print(tableT);
 			print(failure);
 			print(areaChartingCount);
-			if(failure !== undefined && iteration < maxIterations && failure.indexOf('aggregations') > -1){evalTable()}
+			if(failure !== undefined && iteration < maxIterations ){
+				// $('#area-charting-message-box').empty();
+				// $('#area-charting-message-box').html(failure	);
+				evalTable()
+			}
 			else if(failure === undefined) {
 				// tableT.unshift(['year','Loss %','Gain %']);
 				tableT.unshift(bandNames)
@@ -872,12 +877,15 @@ function makeAreaChart(area,name,userDefined){
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});
 				// if(whichAreaDrawingMethod === '#user-defined'){
-					area.evaluate(function(i){
+					area.evaluate(function(i,failure){
 						areaGeoJson = i;
 						areaGeoJson[name] = tableT;
-						if(areaGeoJson !== undefined && areaGeoJson !== null){
+						if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
 					    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
-					   }});
+					   }else{
+					   	showMessage('Error','Could not convert summary area to geoJSON '+failure)
+					   }
+					});
 				// }
 				areaChartingCount--;
 			}

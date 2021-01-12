@@ -1131,6 +1131,10 @@ function getSelectLayers(short){
   var ecoregions = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions');
   ecoregions = ecoregions.select(['SECTION'],['NAME'])
   var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
+  var district_boundaries = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries');
+  district_boundaries = district_boundaries.select(['DISTRICTNA'],['name']);
+  var msas = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019');
+
   if(short === null || short === undefined || short === false){
     // Map2.addSelectLayer(tiles,{strokeColor:'BB0',layerType:'geeVectorImage'},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
 
@@ -1156,8 +1160,12 @@ function getSelectLayers(short){
 
   }
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
+
+  Map2.addSelectLayer(counties,{strokeColor:'88F',layerType:'geeVectorImage'},'US Census Metro Stat Areas',false,null,null,'TIGER, 2019, U.S. Current Metropolitan Statistical Area/Micropolitan Statistical Area (CBSA). Turn on layer and click on any county wanted to include in chart');
+  Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
-    
+  
+  Map2.addSelectLayer(district_boundaries,{strokeColor:'80F',layerType:'geeVectorImage'},'National Forest Districts',false,null,null,'National Forest District boundaries. Turn on layer and click on any Forest wanted to include in chart');
   Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
   
 }
