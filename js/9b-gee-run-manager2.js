@@ -65,7 +65,7 @@ function runGTAC(){
   endYear = parseInt(urlParams.endYear);
   analysisMode = urlParams.analysisMode;
   queryClassDict = {};
-  var years = ee.List.sequence(startYear,endYear).getInfo();
+  var years = range(startYear,endYear+1);
   summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
   

@@ -8,7 +8,7 @@ $('body').append(staticTemplates.sidebarLeftContainer);
 $('body').append(staticTemplates.geeSpinner);
 $('body').append(staticTemplates.bottomBar);
 
-$('#summary-spinner').show();
+// $('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
 

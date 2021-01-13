@@ -1366,12 +1366,14 @@ function setGEERunID(){
 //Function to rerun all GEE code
 //Clears out current map, exports, and legends and then reruns
 function reRun(){
-  $('#summary-spinner').show();
+  // $('#summary-spinner').show(); 
+  showMessage('Loading',staticTemplates.loadingModal);
+  // showMessage('Loading',staticTemplates.loadingModal)
   setGEERunID();
 
   //Clean out current map, legend, etc
   clearSelectedAreas();
-
+  clearUploadedAreas();
   layerChildID = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();
@@ -1405,13 +1407,18 @@ function reRun(){
   try{
     clearDownloadDropdown();
   }catch(err){}
-  
   google.maps.event.clearListeners(mapDiv, 'click');
+  
 
   //Rerun the GEE code
-	run();
-  setupAreaLayerSelection();
-  $('#summary-spinner').hide(); 
+  setTimeout(function() { run();  $('#close-modal-button').click();setupAreaLayerSelection();}, 1500);
+	
+  
+  
+  // $('#error-modal').toggleClass('show');
+  // $('#summary-spinner').hide(); 
+
+  
 }
 ////////////////////////////////////////////////////////////////////////
 //Helper functions
@@ -2498,6 +2505,16 @@ function initialize() {
     //RCR appspot proxy costs $$
 	 // ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
     //Initialize GEE
+    
+    setTimeout(function() { 
+      if(localStorage.showIntroModal === 'true'){
+        $('#introModal').modal().show();
+      }else{
+        showMessage('Loading',staticTemplates.loadingModal)
+      }
+      
+    });
+
     ee.initialize(authProxyAPIURL,geeAPIURL,function(){
       //Set up the correct GEE run function
       if(cachedStudyAreaName === null){
@@ -2530,21 +2547,25 @@ function initialize() {
       } 
       else{run = runUSFS}
 
-     
-    setGEERunID();
-    run();
-    setupAreaLayerSelection();
-    // setupFSB();
-    //Bring in plots of they're turned on
-    if(plotsOn){
-      addPlotCollapse();
-      loadAllPlots();
-    }
     
-    $('#summary-spinner').hide();
-    if(localStorage.showIntroModal === 'true'){
-      $('#introModal').modal().show();
-    }
+    setGEERunID();
+
+    setTimeout(function() { 
+       run();
+    
+      setupAreaLayerSelection();
+      // setupFSB();
+      //Bring in plots of they're turned on
+      if(plotsOn){
+        addPlotCollapse();
+        loadAllPlots();
+      }
+      $('#close-modal-button').click();
+      $('#intro-modal-loading-div').hide();
+      $('#summary-spinner').hide();
+      
+    }, 1500);
+   
   	});
 
 }

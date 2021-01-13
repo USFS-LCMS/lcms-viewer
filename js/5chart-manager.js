@@ -16,6 +16,11 @@ function downloadURI() {
 	  // document.body.removeChild(link);
 	    delete link;
 }}
+
+function clearUploadedAreas(){
+	turnOffSelectLayers()
+	$('#area-charting-shp-layer-list').empty();
+}
 function clearSelectedAreas(){
   
 
@@ -814,14 +819,11 @@ function makeAreaChart(area,name,userDefined){
 	// closeChart();
 	// document.getElementById('curve_chart_big').style.display = 'none';
 	var fColor = randomColor().slice(1,7);
-	if(userDefined === false){
-		
-		Map2.addLayer(area,{},name,true,null,null,name + ' for area summarizing','reference-layer-list');
-	}
+	
 	
 	// updateProgress(50);
 	area = area.set('source','LCMS_data_explorer');
-	// centerObject(area);
+	centerObject(area);
 	area = area.geometry();
 
 	var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
@@ -928,7 +930,7 @@ function fixGeoJSONZ(f){
 	return f
 }
 function runShpDefinedCharting(){
-
+		clearUploadedAreas();
 		if(jQuery('#areaUpload')[0].files.length > 0){
 			try{udp.setMap(null);}
 			catch(err){console.log(err)};
@@ -965,6 +967,8 @@ function runShpDefinedCharting(){
 				};
 				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 				
+				Map2.addLayer(area,{},name,true,null,null,name + ' for area summarizing','area-charting-shp-layer-list');
+	
 				makeAreaChart(area,name);
 			})
 		

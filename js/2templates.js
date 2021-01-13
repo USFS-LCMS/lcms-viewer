@@ -156,10 +156,18 @@ var staticTemplates = {
                         <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
                         	<button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
+
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
-                        
-						<div class="form-check  mr-0">
+                        <div class = 'col-lg-9 ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. Thank you for your patience!
+                             </p>
+                        </div>
+                        <hr>
+						<div class="col-lg-3 form-check  mr-0">
+
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
@@ -234,6 +242,15 @@ var staticTemplates = {
                 </div>
             </div>`
         },
+    loadingModal:`<p>
+                  <img style="width:2.1em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                    Creating map services within Google Earth Engine. 
+                  <br>
+                   <img style="width:2.1em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                    This can take some time. Thank you for your patience!
+                   <div id = 'loading-number-box'></div>
+                 </p>
+                  `,
 	bottomBar:`<div class = 'bottombar'  id = 'bottombar' >
                    
         			<span class = 'px-2'  id='current-tool-selection' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Any tool that is currently active is shown here."></span>
@@ -290,10 +307,10 @@ var staticTemplates = {
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </div>
                         <div class = 'row p-2'>
-                            <div class = 'col-lg-3 p-0 m-0'>
+                            <div class = 'col-lg-2 p-0 m-0'>
                                 <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' src = './images/information--v2.png'></a> 
                             </div>
-                            <div class = 'col-lg-9'>
+                            <div class = 'col-lg-10'>
                                 <a class = 'support-text' onclick = 'downloadTutorial()'>
                                 Click to launch a tutorial that explains how to utilize the Data Explorer</a>
                             </div>
@@ -304,12 +321,12 @@ var staticTemplates = {
                             <h3 class = ' text-capitalize'>Acknowledgements</h3>
                         </div>
                         <div class = 'row p-2'>
-                            <div class = 'col-lg-3 p-0 m-0'>
+                            <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.fed.us/gstc/" target="_blank">
                             <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#"  title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
                         </a>
                             </div>
-                            <div class = 'col-lg-9'>
+                            <div class = 'col-lg-10'>
                                 <a href="https://www.fs.fed.us/gstc/" target="_blank">
                                     <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
                                 </a>
@@ -318,15 +335,15 @@ var staticTemplates = {
                         
                         <hr>
                         <div class = 'row p-2'>
-                            <div class = 'col-lg-3 p-0 m-0'>
+                            <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
                                     <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
                                     
                                 </a>
                             </div>
-                            <div class = 'col-lg-9'>
+                            <div class = 'col-lg-10'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. - transforming images into information. RedCastle Resources is the on-site contractor that has provided all technical expertise for LCMS' operational production,documentation, and delivery at GTAC.</p>
+                                    <p class = 'support-text'>RedCastle Resources Inc. - transforming images into information. RedCastle Resources is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
                                 </a>
                             </div>
                         </div>
@@ -337,10 +354,10 @@ var staticTemplates = {
                         </div>
                    
                         <div class = 'row p-2'>
-                            <div class = 'col-lg-3 p-0 m-0'>
+                            <div class = 'col-lg-2 p-0 m-0'>
                                 <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' src = './images/email.png'></a> 
                             </div>
-                            <div class = 'col-lg-9'>
+                            <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
                                 Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions or comments about LCMS products, the LCMS program, or feedback on the LCMS Data Explorer</a>
                             </div>
@@ -385,8 +402,11 @@ var staticTemplates = {
         userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
 
         uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
-                                <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Summarize across chosen file" button below to produce chart.</label>
+                                <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Chart across chosen file" button below to produce chart.</label>
                                 <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
+                                <div class = 'dropdown-divider'></div>
+                                <div>Uploaded areas:</div>
+                                <div id="area-charting-shp-layer-list"></div>
                                 <div class = 'dropdown-divider'></div>
                                 <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile or .geojson.'>Chart across chosen file</button>
                                 `,
@@ -631,7 +651,7 @@ function addModal(containerID,modalID,bodyOnly){
             		<div class="modal-content bg-white">
             			
 	            		<div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
-	            			<button style = 'float:right;' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
+	            			<button style = 'float:right;' id = 'close-modal-button' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
 	            		</div>
 	      				<div id ="${modalID}-body" class="modal-body bg-white " ></div>
 			          	
@@ -687,6 +707,7 @@ function showMessage(title,message,modalID,show){
 	if(show){$('#'+modalID).modal();}
 
 };
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Show a basic tip BS modal
 function showTip(title,message){
@@ -718,7 +739,7 @@ function addStudyAreaToDropdown(name,toolTip){
 	var id = name.replaceAll(' ','-');
 	$('#study-area-list').append(`<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`)
   	$('#'+id).on('click',function(){
-  		$('#summary-spinner').show();
+  		// $('#summary-spinner').show();
   		$('#study-area-list').hide();
         longStudyAreaName = this.name;
     	dropdownUpdateStudyArea(this.name);
@@ -1192,6 +1213,7 @@ function regulateReRunButton(){
 } 
 //Function to help keep track of GEE requests
 function updateOutstandingGEERequests(){
+    // $('#loading-number-box').html(outstandingGEERequests)
 	$('#outstanding-gee-requests').html(outstandingGEERequests);
 	regulateReRunButton();
 }
