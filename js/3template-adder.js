@@ -357,6 +357,7 @@ else if(mode === 'STORM'){
    addRangeSlider('parameters-collapse-div','Refinement iterations','refinementIterations',0, 10, 5, 1,'refinement-factor-slider','null',"Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations")
    addRangeSlider('parameters-collapse-div','Max distance (km)','maxDistance',50, 500, 200, 50,'max-distance-slider','null',"Specify max distance in km from storm track to include in output")
    addRangeSlider('parameters-collapse-div','Min wind (mph)','minWind',0, 75, 30, 5,'min-wind-slider','null',"Specify min wind speed in mph to include in output")
+   addRangeSlider('parameters-collapse-div','Mod of Rupture','modRupture',2000, 20000, 8500, 100,'mod-rupture-slider','null',"Specify the modulus of rupture for the GALES model")
       $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' rel="txtTooltip" title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button>
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' rel="txtTooltip" title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
@@ -394,7 +395,7 @@ else if(mode === 'STORM'){
                 // console.log(rows)
                 // Map2.addLayer(rows)
                 var iterations = refinementIterations;
-                while(iterations > 0 && rows.length < 1000){
+                while(iterations > 0 && rows.length*2 < 1500){
                   console.log('Refining');
                   console.log(refinementIterations);
                   rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);

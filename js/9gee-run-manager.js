@@ -3763,7 +3763,7 @@ function createHurricaneDamageWrapper(rows){
     c = c.map(function(img){
       var tDiff = ee.Image(ee.Number(img.get('tDiff'))).divide(60*60).float()
       var cats = img.int16().remap(speeds,categories);
-      var damage = GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
+      var damage = GALES(img.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, modRupture);
       var damageSum = damage.add(100).clamp(0,200).multiply(tDiff);
       var windSum = img.multiply(tDiff);
       var catSum = cats.multiply(tDiff);
@@ -3826,10 +3826,10 @@ function createHurricaneDamageWrapper(rows){
     // var modRupture = 8500
     // GALES(wind_array.multiply(0.447), hgt_array, crown_hgt_array, spacing, modRupture);
     // var GALESOut = GALES(wind_array.multiply(0.447), hgt_array, hgt_array.multiply(0.33), 5.0, 8500);
-    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Max',false);
+    Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Max '+modRupture.toString(),false);
     
     var damageSum = c.select(['Damage_Sum']).sum().int16();
-    Map2.addLayer(damageSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Sum',false)
+    Map2.addLayer(damageSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Sum '+modRupture.toString(),false)
     
     var windSum = c.select(['Wind_Sum']).sum().int16();
     Map2.addLayer(windSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Wind Sum',false)
@@ -3869,18 +3869,23 @@ function createHurricaneDamageWrapper(rows){
                         scale:quickLookRes,
                         crs:$('#export-crs').val(),
                         region:trackBoundsCoords},
-                        function(url1){
-                          damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look',
+                        function(url1,failure1){
+                          damageStack.clip(trackBounds).unmask(-32768,false).int16().getDownloadURL({name:name+'_'+year.toString()+'_Damage_Quick_Look_'+modRupture.toString(),
                             scale:quickLookRes,
                             crs:$('#export-crs').val(),
                             region:trackBoundsCoords},
-                            function(url2){
+                            function(url2,failure2){
                                $('#summary-spinner').slideUp();
+                               if(failure1 === undefined){failure1 = 'No errors'};
+                               if(failure2 === undefined){failure2 = 'No errors'};
                               showMessage('Quick Look Outputs Ready',
                                 `<hr>
                                 <a  target="_blank" href = '${url1}'>Click to download wind stack</a>
+                                <p title = 'If there are errors, you may need to specify a larger "Quick look spatial resolution"'>Errors: ${failure1}</p>
                                 <hr>
-                                <a  target="_blank" href = '${url2}'>Click to download damage stack</a>`)
+                                <a  target="_blank" href = '${url2}'>Click to download damage stack</a>
+                                <p title = 'If there are errors, you may need to specify a larger "Quick look spatial resolution"'>Errors: ${failure2}</p>
+                                `)
                              
                             })
                           
@@ -3897,11 +3902,11 @@ function createHurricaneDamageWrapper(rows){
     Map2.addExport(cat4Sum,name + '_'+year.toString()+'_Cat4_Sum' ,30,true,{});
     Map2.addExport(cat5Sum,name + '_'+year.toString()+'_Cat5_Sum' ,30,true,{});
     
-    Map2.addExport(max.select([1]).int16(),name + '_'+year.toString()+'_Damage_Max' ,30,true,{});
-    Map2.addExport(damageSum,name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
+    Map2.addExport(max.select([1]).int16(),name + '_'+year.toString()+'_Damage_Max_'+modRupture.toString() ,30,true,{});
+    Map2.addExport(damageSum,name + '_'+year.toString()+'_Damage_Sum_'+modRupture.toString()  ,30,true,{});
     
-    Map2.addExport(damageStack,name + '_'+year.toString()+'_Damage_Stack' ,30,true,{});
-    Map2.addExport(damageSum.int16(),name + '_'+year.toString()+'_Damage_Sum' ,30,true,{});
+    // Map2.addExport(damageStack,name + '_'+year.toString()+'_Damage_Stack_'+modRupture.toString() ,30,true,{});
+    // Map2.addExport(damageSum.int16(),name + '_'+year.toString()+'_Damage_Sum_'+modRupture.toString() ,30,true,{});
     Map2.addLayer(ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries'),{layerType:'geeVectorImage'},'USFS Boundaries',false);
      // exportArea = null;
    
