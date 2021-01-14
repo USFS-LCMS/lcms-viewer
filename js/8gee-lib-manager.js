@@ -27,8 +27,8 @@ window.recoveryDurPalette = declineDurPalette;
 window.gainYearPaletteA = 'c5ee93,00a398';
 // window.gainYearPaletteB = 'e0e0ff,4a50c4';
 // window.changePaletteFull = ['3d4551','f39268','d54309','00a398','ffbe2e'];
-window.changePaletteFull = ['372E2C','f39268','d54309','00a398','372E2C','1B1716DD'];
-
+// window.changePaletteFull = ['372E2C','f39268','d54309','00a398','372E2C','1B1716DD'];
+window.changePaletteFull =['#3d4551','#f39268','#d54309','#00a398','#222222']
 // window.changePaletteFull = ['3d4551','f39268','d54309','0f6460','ffbe2e'];
 window.changePalette = ['f39268','d54309','00a398'];
 window.whichIndices = ['NBR'];

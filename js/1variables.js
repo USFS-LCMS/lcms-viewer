@@ -357,6 +357,11 @@ var studyAreaDict = {
                       conusLT : 'projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020',
                       conusCCDC : "projects/CCDC/USA_V2",
 
+                      conusChangeFinal : 'projects/lcms-292214/assets/Final_Outputs/2020-5/CONUS/Change',
+                      conusLCFinal : 'projects/lcms-292214/assets/Final_Outputs/2020-5/CONUS/Land_Cover',
+                      conusLUFinal :'projects/lcms-292214/assets/Final_Outputs/2020-5/CONUS/Land_Use',
+
+
                       conusLossThresh : 0.23,
                       conusFastLossThresh : 0.29,
                       conusSlowLossThresh : 0.18,
@@ -372,6 +377,9 @@ var studyAreaDict = {
                       akLU : 'projects/lcms-292214/assets/R10/CoastalAK/Landcover-Landuse-Change/Landuse_Probability',
                       akLT: 'projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection-1984-2020',
                       akCCDC: 'projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Learners/CCDC-Collection',
+                      akChangeFinal :'projects/lcms-292214/assets/Final_Outputs/2020-5/SEAK/Change',
+                      akLCFinal : 'projects/lcms-292214/assets/Final_Outputs/2020-5/SEAK/Land_Cover',
+                      akLUFinal : 'projects/lcms-292214/assets/Final_Outputs/2020-5/SEAK/Land_Use',
                       akLossThresh : 0.26,
                       akFastLossThresh : 0.34,
                       akSlowLossThresh : 0.17,

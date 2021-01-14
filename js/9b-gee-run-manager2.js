@@ -82,6 +82,11 @@ function runGTAC(){
   var conusLT = ee.ImageCollection(studyAreaDict[studyAreaName].conusLT)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
   var conusCCDC = ee.ImageCollection(studyAreaDict[studyAreaName].conusCCDC).filter(ee.Filter.eq('spectral', 'SR'));
 
+  var conusChangeFinal = ee.ImageCollection(studyAreaDict[studyAreaName].conusChangeFinal).filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+  var conusLCFinal = ee.ImageCollection(studyAreaDict[studyAreaName].conusLCFinal).filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+  var conusLUFinal = ee.ImageCollection(studyAreaDict[studyAreaName].conusLUFinal).filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+
+
   var akSA = ee.FeatureCollection(studyAreaDict[studyAreaName].akSA);
   var akComposites = ee.ImageCollection(studyAreaDict[studyAreaName].akComposites)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
   var akChange = ee.ImageCollection(studyAreaDict[studyAreaName].akChange)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
@@ -89,6 +94,10 @@ function runGTAC(){
   var akLU = ee.ImageCollection(studyAreaDict[studyAreaName].akLU)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
   var akLT = ee.ImageCollection(studyAreaDict[studyAreaName].akLT)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
   var akCCDC = ee.ImageCollection(studyAreaDict[studyAreaName].akCCDC);
+
+  var akChangeFinal = ee.ImageCollection(studyAreaDict[studyAreaName].akChangeFinal).filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+  var akLCFinal = ee.ImageCollection(studyAreaDict[studyAreaName].akLCFinal).filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+  var akLUFinal = ee.ImageCollection(studyAreaDict[studyAreaName].akLUFinal).filter(ee.Filter.calendarRange(startYear,endYear,'year'));
 
   var SA = conusSA.merge(akSA);
   var minGainProb = [studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].akGainThresh].min();
@@ -108,7 +117,9 @@ function runGTAC(){
     var akCombined = combineChange(akChange,yr,studyAreaDict[studyAreaName].akGainThresh,studyAreaDict[studyAreaName].akSlowLossThresh,studyAreaDict[studyAreaName].akFastLossThresh,'stack',0.01).clip(akSA.geometry().bounds());
 
     var conusCombined = combineChange(conusChange,yr,studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].conusSlowLossThresh,studyAreaDict[studyAreaName].conusFastLossThresh,'collection',0.01).clip(conusSA.geometry().bounds());
-    return ee.ImageCollection.fromImages(ee.List([akCombined,conusCombined])).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+    return ee.ImageCollection.fromImages(ee.List([conusCombined,akCombined])).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+    
+    // return conusCombined.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
     
     }));
 
@@ -139,6 +150,39 @@ function runGTAC(){
   luNumbers.map(function(k){luLegendDict[luClassDict[k].legendName] = luClassDict[k].color});
   luNumbers.map(function(k){luQueryDict[k] = luClassDict[k].legendName});
 
+  var LCmax = lcNumbers.max();
+  var LUmax = luNumbers.max();
+  
+  function combineOutputs(c1,c2,years){
+    var dummyImage = ee.Image(c2.first());
+    var out = years.map(function(yr){
+      var i1 = c1.filter(ee.Filter.calendarRange(yr,yr,'year'));
+      var i2 = c2.filter(ee.Filter.calendarRange(yr,yr,'year'));
+
+      i1 = ee.Image(fillEmptyCollections(i1,dummyImage).first());
+      i2 = ee.Image(fillEmptyCollections(i2,dummyImage).first());
+      return ee.Image.cat([i1,i2]).reduce(ee.Reducer.max()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+    })
+    return ee.ImageCollection(out);
+  }
+
+  var changeFinal = combineOutputs(conusChangeFinal,akChangeFinal,years);
+  var luFinal = combineOutputs(conusLUFinal,akLUFinal,years);
+  var lcFinal = combineOutputs(conusLCFinal,akLCFinal,years);
+  changeFinal = changeFinal.map(function(img){
+    return img.updateMask(img.gt(1).and(img.lt(5)))}) ;
+  
+  lcFinal = lcFinal.map(function(img){return img.updateMask(img.gt(LCmax).not())});
+  luFinal = luFinal.map(function(img){return img.updateMask(img.gt(LUmax).not())});
+
+  var slow_loss  = changeFinal.map(function(img){
+    var yr = ee.Date(img.get('system:time_start')).get('year');
+    var cls = img.eq(2).selfMask();
+    return ee.Image(yr).updateMask(cls).int16().copyProperties(img,['system:time_start'])
+  })
+
+  var conusLUFinal = ee.ImageCollection(studyAreaDict[studyAreaName].conusLUFinal);
+
   var combinedLC = ee.ImageCollection(years.map(function(yr){
     var conusCombined = combineLandCover(conusLC,yr,lcNumbers,lcModelNames,'collection',0.01);
     var akCombined = combineLandCover(akLC,yr,lcNumbers,lcModelNames,'stack',0.01);
@@ -158,13 +202,13 @@ function runGTAC(){
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'1B1716DD',addToLegend:false})
   // Map2.addLayer(SA.reduceToImage(['constant'],ee.Reducer.first()),{min:1,max:1,palette:'372E2C',addToLegend:false})
   
-  Map2.addLayer(combinedLU.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
-  Map2.addLayer(combinedLC.select(['maxClass']).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
+  Map2.addLayer(luFinal.mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
+  Map2.addLayer(lcFinal.mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
 
   // Map2.addLayer(ee.Image(),{addToClassLegend:true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]}},'Change')
   //Bring change layers into viewer
   Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: declineYearPalette},`Slow Loss Year`)
-
+  // Map2.addLayer(slow_loss.max().set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: declineYearPalette},`Slow Loss Year Fast`)
   if(analysisMode === 'advanced'){
     Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Prob']).updateMask(combinedSlowLoss.select(['Slow_Loss_Year']).mask()).set('bounds',clientBoundary),{title: `Model confidence ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: minSlowLossProb, max: 0.5, palette: declineProbPalette},'Slow Loss Probability',false);
     Map2.addLayer(combinedChange.select(['Slow_Loss_Year']).reduce(ee.Reducer.count()).set('bounds',clientBoundary),{title: `Duration of vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: 1, max: 5, palette: declineDurPalette},'Slow Loss Duration',false);
@@ -189,7 +233,7 @@ function runGTAC(){
   
   // Map2.addLayer(ee.Image().paint(SA,null,1),{min:1,max:1,palette:'00BFA5',addToLegend:false})
   // Map2.addTimeLapse(combinedLU.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
-  
+
   window.addLCMSTimeLapses = function(){
     if(urlParams.addLCMSTimeLapsesOn === 'yes'){
 
@@ -199,8 +243,8 @@ function runGTAC(){
       },5);
        setTimeout(function() { 
         // urlParams.addLCMSTimeLapsesOn = 'Yes';
-        Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {0:'Stable',1:'Slow Loss',2:'Fast Loss',3:'Gain',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
-        Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,'years':years},'LCMS Land Cover Time Lapse',false);
+        Map2.addTimeLapse(changeFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:5,palette:changePaletteFull,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {1:'Stable',2:'Slow Loss',3:'Fast Loss',4:'Gain',5:'No data (cloud/cloud shadow)'},years:years},'LCMS Change Time Lapse',false);
+        Map2.addTimeLapse(lcFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,years:years},'LCMS Land Cover Time Lapse',false);
         
         // setTimeout(function() { 
           $('#close-modal-button').click();
