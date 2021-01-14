@@ -189,9 +189,32 @@ function runGTAC(){
   
   // Map2.addLayer(ee.Image().paint(SA,null,1),{min:1,max:1,palette:'00BFA5',addToLegend:false})
   // Map2.addTimeLapse(combinedLU.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
-  // Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},'LCMS Land Cover Time Lapse',false);
-  // Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {0:'Stable',1:'Slow Loss',2:'Fast Loss',3:'Gain',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
   
+  window.addLCMSTimeLapses = function(){
+    if(urlParams.addLCMSTimeLapsesOn === 'yes'){
+
+      setTimeout(function() { 
+        urlParams.addLCMSTimeLapsesOn = 'yes';
+        showMessage('Loading Time Lapses',staticTemplates.loadingModal) 
+      },5);
+       setTimeout(function() { 
+        // urlParams.addLCMSTimeLapsesOn = 'Yes';
+        Map2.addTimeLapse(combinedChangeC.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:3,palette:changePalette,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {0:'Stable',1:'Slow Loss',2:'Fast Loss',3:'Gain',4:'No data (cloud/cloud shadow)'},'years':years},'LCMS Change Time Lapse',false);
+        Map2.addTimeLapse(combinedLC.select(['maxClass']).filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,'years':years},'LCMS Land Cover Time Lapse',false);
+        
+        // setTimeout(function() { 
+          $('#close-modal-button').click();
+        // })
+      }, 2500);
+    }
+    // else{urlParams.addLCMSTimeLapsesOn = 'no';}
+  }
+  if(urlParams.addLCMSTimeLapsesOn === 'yes'){
+    // addLCMSTimeLapsesOn = 'yes'
+
+    // $('#addTimeLapses-radio-second_toggle_label').click();
+    addLCMSTimeLapses();
+  }
   // var bucket = 'gs://lcms-cogtifs/LCMS_SEAK_v2020-5/LCMS_CONUSTest_v2020-5';
   // var cogChangeC = ee.ImageCollection(years.map(function(yr){
   //   var img = ee.Image.loadGeoTIFF(bucket + '_Change_'+yr.toString()+'.tif');

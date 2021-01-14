@@ -61,6 +61,11 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
+  if(urlParams.addLCMSTimeLapsesOn == null || urlParams.addLCMSTimeLapsesOn == undefined){
+     urlParams.addLCMSTimeLapsesOn = 'no';
+  }
+
+  
   // console.log(urlParams)
  
   /*Construct panes in left sidebar*/
@@ -84,14 +89,26 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(['year','prob'].indexOf(urlParams.summaryMethod) === -1){
     urlParams.summaryMethod = 'year'
   }
-  var tAnalysisMode = urlParams.analysisMode;
 
+  var tAnalysisMode = urlParams.analysisMode;
+  var tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
+  if(mode === 'LCMS'){
+    $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+    // $('#parameters-collapse-div').append(`<p>Additional Functionality:</p>`);
+  // $('#parameters-collapse-div').append(staticTemplates.addTimelapsesButton);
+  addRadio('parameters-collapse-div','addTimeLapses-radio','Add LCMS Time Lapses:','No','Yes','urlParams.addLCMSTimeLapsesOn','no','yes','','','Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading');
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  if(tAddLCMSTimeLapsesOn === 'yes'){
+    $('#addTimeLapses-radio-second_toggle_label').click();
+  }
+  }
   addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','urlParams.analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
 
   urlParams.analysisMode = tAnalysisMode ;
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
 
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
+  
 
   $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>
                                           <div id='threshold-container' style="display:none;width:100%"></div>
@@ -119,6 +136,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
   // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
+
 
   //Set up layer lists
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);

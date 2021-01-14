@@ -1367,7 +1367,7 @@ function setGEERunID(){
 //Clears out current map, exports, and legends and then reruns
 function reRun(){
   // $('#summary-spinner').show(); 
-  showMessage('Loading',staticTemplates.loadingModal);
+  showMessage('Loading Updated Layers',staticTemplates.loadingModal);
   // showMessage('Loading',staticTemplates.loadingModal)
   setGEERunID();
 

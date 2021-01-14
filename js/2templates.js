@@ -296,6 +296,7 @@ var staticTemplates = {
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
         reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
         reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
+        addTimelapsesButton:`<button id = 'addTimelapses-button' onclick = 'addLCMSTimeLapses()' class = 'mb-1 ml-1 btn ' title="Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading">Add LCMS Time Lapses To Map</button>`,
         downloadDiv :`<div class = 'py-2'>
                         <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
         				<div class = 'dropdown-divider'></div>

@@ -53,7 +53,7 @@ function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
             var key = tinyURL.split('https://tinyurl.com/')[1];
             var shareURL = pageUrl.split('?')[0] + '?id='+key;
             var fullURL = preURL+shareURL+postURL ;
-
+            console.log(fullURL);
             
             if(openInNewTab){
                var win = window.open(fullURL, '_blank');
@@ -147,6 +147,7 @@ var startJulian = 153;//190;
 var endJulian = 274;//250;
 var layerObj = null;
 var queryObj = {};var timeLapseObj = {};
+var addLCMSTimeLapsesOn;
 parseUrlSearch()
 var initialCenter = [37.5334105816903,-105.6787109375];
 var initialZoomLevel = 5;
@@ -410,6 +411,7 @@ var studyAreaName = studyAreaDict[defaultStudyArea].name;
 var longStudyAreaName = defaultStudyArea;
 var cachedStudyAreaName = null;
 var viewBeta = 'yes';
+
 var lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
 var upperThresholdDecline = 1.0;
 var lowerThresholdRecovery = studyAreaDict[defaultStudyArea].gainThresh;
