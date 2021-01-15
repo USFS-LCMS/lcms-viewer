@@ -1133,8 +1133,8 @@ function getSelectLayers(short){
   var ecoregionsEPAL4 = ee.FeatureCollection('EPA/Ecoregions/2013/L4');
   var district_boundaries = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries');
   district_boundaries = district_boundaries.select(['DISTRICTNA'],['name']);
-  var msas = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019');
-
+  var msas = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_Urban_Areas_2018');
+  var msas2 = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019')
   if(short === null || short === undefined || short === false){
     // Map2.addSelectLayer(tiles,{strokeColor:'BB0',layerType:'geeVectorImage'},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
 
@@ -1161,7 +1161,8 @@ function getSelectLayers(short){
   }
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
 
-  Map2.addSelectLayer(counties,{strokeColor:'88F',layerType:'geeVectorImage'},'US Census Metro Stat Areas',false,null,null,'TIGER, 2019, U.S. Current Metropolitan Statistical Area/Micropolitan Statistical Area (CBSA). Turn on layer and click on any county wanted to include in chart');
+  Map2.addSelectLayer(msas,{strokeColor:'88F',layerType:'geeVectorImage'},'US Census Urban Areas',false,null,null,'TIGER, 2018, U.S. Urban Areas (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart');
+  // Map2.addSelectLayer(msas2,{strokeColor:'88F',layerType:'geeVectorImage'},'US Census Urban Areas',false,null,null,'TIGER, 2018, U.S. MSAs  (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart');
   Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   

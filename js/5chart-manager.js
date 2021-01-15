@@ -102,7 +102,7 @@ function setupAreaLayerSelection(){
 	            		var selectedFeaturesT = selectedFeaturesJSON[k].eeObject
 	            			.filterBounds(ee.Geometry.Point(coords));
 	            		
-	            		var namesList = ee.List(ee.Dictionary(selectedFeaturesT.aggregate_histogram('name')).keys());
+	            		var namesList = ee.List(selectedFeaturesT.aggregate_array('name'));
 	            		namesList.evaluate(function(nms,failure){
 	            			if(failure !== undefined){showMessage('Error',failure)}
         					else{

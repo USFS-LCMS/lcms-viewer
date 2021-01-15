@@ -294,7 +294,7 @@ function addSelectLayerToMap(item,viz,name,visible,label,fontColor,helpBox,which
 var intervalPeriod = 666.6666666666666;
 var timeLapseID;
 var timeLapseFrame = 0;
-var cumulativeMode = true;
+var cumulativeMode = false;
 function pauseTimeLapse(id){
   if(id === null || id === undefined){id = timeLapseID}
     timeLapseID = id;
@@ -615,7 +615,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         item = ee.Deserializer.decode(item);
         viz.serialized = false;
     }
-  if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = true}
+  if(viz.cumulativeMode === null || viz.cumulativeMode === undefined){viz.cumulativeMode = false}
     //Force time lapses to be turned off on load to speed up loading
     var visible = false;
   if(viz.opacity === undefined || viz.opacity === null){viz.opacity = 1}
@@ -701,7 +701,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                     <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
                                     <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom(true)'><i class="fa fa-refresh"></i></button>
                                     <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
-                                    <button class = 'btn cumulativeToggler time-lapse-active' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
+                                    <button class = 'btn cumulativeToggler' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="images/cumulative_icon.png"></button>
                                     <div id = "${legendDivID}-message-div" class = 'pt-2'></div>
                                   </div>
 
@@ -966,6 +966,10 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     legendDivID = legendDivID.replaceAll('/','-');
     legendDivID = legendDivID.replaceAll('(','-');
     legendDivID = legendDivID.replaceAll(')','-');
+    legendDivID = legendDivID.replaceAll('&','-');
+    legendDivID = legendDivID.replaceAll(',','-');
+    legendDivID = legendDivID.replaceAll('.','-');
+
     if(visible == null){
         visible = true;
     }
@@ -1383,7 +1387,7 @@ function reRun(){
   intervalPeriod = 666.6666666;
   timeLapseID = null;
   timeLapseFrame = 0;
-  cumulativeMode = true;
+  cumulativeMode = false;
   NEXT_LAYER_ID = 1;
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
