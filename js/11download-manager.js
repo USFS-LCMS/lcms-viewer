@@ -16,7 +16,7 @@ function downloadByUrl(url){
     
 
     // link.download ='hello';// downloadName;
-    // link.setAttribute('download',downloadName);
+    link.setAttribute('download',downloadName);
 
     print(link)
     link.click();
