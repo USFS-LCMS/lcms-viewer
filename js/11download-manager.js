@@ -6,10 +6,8 @@ function clearDownloadDropdown(){
   addDownload('','Choose a product to download');
 }
 clearDownloadDropdown()
-function downloadSelectedArea(){
-  var url = $('#downloadDropdown').val();
-  if(url !== ''){
-    print('downloading');
+function downloadByUrl(url){
+  print('downloading');
     print(url);
     var link=document.createElement('a');
     link.href = url;
@@ -22,6 +20,8 @@ function downloadSelectedArea(){
 
     print(link)
     link.click();
+    
+    
     ga('send', 'event', 'lcms-download', 'download', downloadName);
     // var urlAux = url + '.aux.xml';
     // print(urlAux)
@@ -31,8 +31,25 @@ function downloadSelectedArea(){
     // link.download = downloadNameAux;
     // link.click();
 
-    showMessage('SUCCESS','Your download of ' + downloadName + ' should complete shortly!');
+    showMessage('Download Started','Your download of ' + downloadName + ' has started.');
+    return downloadName
+}
+function downloadSelectedArea(id){
+  if(id === undefined || id === null){id = downloadDropdown}
+  var url = $('#'+id).val();
+  if(url !== ''){
+    downloadByUrl(url)
   }
+}
+function downloadSelectedAreas(id){
+  var urls =  $('#'+id).val();
+  if(urls !== ''){
+    var downloadNames = urls.map(downloadByUrl);
+    showMessage('Downloads Started','The following downloads have started:<hr> <li><ul class = "m-0">' + downloadNames.join('</ul><ul class = "m-0">') + '</ul></li>');
+  }
+  // var urlList = `<li>`
+
+  
 }
 function downloadTutorial(){
   var link = document.createElement("a");

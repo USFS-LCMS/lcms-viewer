@@ -455,6 +455,18 @@ font-size:0.9em;
 }
 /*///////////////////////////////////////////////////////*/
 /*Scroll bar styling*/
+::-webkit-scrollbar {
+    width: 0.7em;
+}
+
+::-webkit-scrollbar-track {
+     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--deep-brown-70); 
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
 .flexcroll::-webkit-scrollbar {
     width: 0.7em;
 }
@@ -698,16 +710,24 @@ ul, #myUL {
 
 /* Create the caret/arrow with a unicode, and style it */
 .caret::before {
-  content: "\25B6";
-  color: var(--deep-brown-100);
+  font-family: FontAwesome;
+  content:"\f07b";
+  -webkit-animation: fadeIn 0.5s;
+  animation: fadeIn 0.5s;
+  color: var(--teal-100);
   display: inline-block;
-  margin-right: 6px;
+  margin-right: 0.2em;
+  /*padding-left:0.5em;*/
 }
 
 /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
 .caret-down::before {
-  transform: rotate(90deg) ;
-  transition: transform 0.5s; 
+  font-family: FontAwesome;
+  content:"\f07c";
+  color: var(--teal-100);
+  /*transform: rotate(90deg) ;*/
+  -webkit-animation: fadeIn 0.5s;
+  animation: fadeIn 0.5s;
 }
 
 /* Hide the nested list */
@@ -720,6 +740,7 @@ ul, #myUL {
 /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
 .active {
    display: block;
+   padding-left:1.2em;
     -webkit-animation: fadeIn 0.5s;
     animation: fadeIn 0.5s;
 }

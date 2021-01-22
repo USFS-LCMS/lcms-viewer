@@ -143,11 +143,13 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
 
 
-  $('#download-collapse-div').append(staticTemplates.downloadDiv);
+  
 
   if(mode === 'LCMS'){
-    $('#download-collapse-div').append(`<ul id="myUL">
-                                          <li><span class="caret">Conterminous United States</span>
+    $('#download-collapse-div').append(`
+
+                                        <ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS downloads.'>
+                                          <li class = 'pl-0'><span class="caret">Conterminous United States</span>
                                             <ul class="nested">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -198,6 +200,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       });
     }
 
+  }else{
+    $('#download-collapse-div').append(staticTemplates.downloadDiv);
   }
   $('#support-collapse-div').append(staticTemplates.supportDiv);
 
