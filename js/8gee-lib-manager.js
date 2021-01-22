@@ -175,36 +175,77 @@ studyAreaDict['USFS Intermountain Region'].studyAreaBoundary = R4_official;
 //                                 Functions
 //---------------------------------------------------------------------------------------------------------------
 //----------Helper Functions-----------------------------------------
-function formatAreaChartCollection(collection,classCodes,classNames,unmask){
-  if(unmask === undefined || unmask === null){unmask = false};
-  var imageIndexes = ee.List.sequence(0,collection.size().subtract(1)).getInfo();
-  var collectionL = collection.toList(100,0);
-  classCodes = classCodes.map(function(c){return parseInt(c)})
-  // print(classCodes)
-  var stack = imageIndexes.map(function(i){
-      var ic = ee.Image(collectionL.get(i));
-      // var d = ee.Date(ic.get('system:time_start'));
-      var img;
-      classCodes.map(function(c){
-        // console.log(i);console.log(c);
-        var m = ic.mask();
-        var ci = ic.eq(c).byte().rename(['c_'+ parseInt((c)).toString()]);
-        //Unmask if in AK
-        if(studyAreaName === 'CNFKP' || unmask){
-          ci = ci.mask(ee.Image(1));
-          ci = ci.where(m.not(),0);
-        }
+// function formatAreaChartCollection(collection,classCodes,classNames,unmask){
+//   if(unmask === undefined || unmask === null){unmask = false};
+//   var imageIndexes = ee.List.sequence(0,collection.size().subtract(1)).getInfo();
+//   var collectionL = collection.toList(100,0);
+//   classCodes = classCodes.map(function(c){return parseInt(c)})
+//   // print(classCodes)
+//   var stack = imageIndexes.map(function(i){
+//       var ic = ee.Image(collectionL.get(i));
+//       // var d = ee.Date(ic.get('system:time_start'));
+//       var img;
+//       classCodes.map(function(c){
+//         // console.log(i);console.log(c);
+//         var m = ic.mask();
+//         var ci = ic.eq(c).byte().rename(['c_'+ parseInt((c)).toString()]);
+//         //Unmask if in AK
+//         if(studyAreaName === 'CNFKP' || unmask){
+//           ci = ci.mask(ee.Image(1));
+//           ci = ci.where(m.not(),0);
+//         }
         
-        if(img === undefined){img = ci}
-          else{img = img.addBands(ci)};
+//         if(img === undefined){img = ci}
+//           else{img = img.addBands(ci)};
+//       })
+//       // print(img.getInfo())
+//       img = img.copyProperties(ic);
+//       img = img.copyProperties(ic,['system:time_start'])
+//       return ee.Image(img).rename(classNames);
+//     });
+//     stack = ee.ImageCollection(stack);
+//     return stack;
+// }
+function computeThematicChange(c,numbers,legendColors, legendDict,queryDict,startYear,endYear){
+    var period = 3;
+    var changeColor = '7d2702'
+    var cEarly = c.filter(ee.Filter.calendarRange(startYear,startYear+period,'year')).mode();
+    var cLate = c.filter(ee.Filter.calendarRange(endYear-period,endYear,'year')).mode();
+    var cNeq = cEarly.neq(cLate);
+
+    var pairs = [];
+    numbers.map(function(n1){
+      numbers.map(function(n2){
+        if(n1 !== n2){pairs.push(parseInt(n1.toString()+n2.toString()))}
       })
-      // print(img.getInfo())
-      img = img.copyProperties(ic);
-      img = img.copyProperties(ic,['system:time_start'])
-      return ee.Image(img).rename(classNames);
     });
-    stack = ee.ImageCollection(stack);
-    return stack;
+    console.log(pairs)
+    var cChange = cLate;
+    cChange = cChange.where(cNeq,numbers.max()+1);
+    changeLegendColors = copyArray(legendColors);
+    changeLegendColors.push(changeColor);
+    cChange = cChange.updateMask(cChange.eq(numbers.max()+1));
+    changeLegendDict = copyObj(legendDict);
+    changeLegendDict['Conversion/Change'] = changeColor;
+
+    var changeViz = {title: `Most common class from ${startYear} to ${endYear} with change added.`,layerType : 'geeImage',min:numbers.min(),max:numbers.max()+1,palette:changeLegendColors,addToClassLegend:true,classLegendDict:changeLegendDict,queryDict:queryDict};
+    return {'change':cChange,'viz':changeViz}
+  }
+function formatAreaChartCollection(collection,classCodes,classNames,unmask){
+  if(unmask === undefined || unmask === null){unmask = true};
+  function unstacker(img,code){
+    return img.eq(code)
+  }
+  function codeWrapper(img){
+    t = ee.ImageCollection( classCodes.map(function(code){return unstacker(img,code)})).toBands()
+    return t.rename(classNames).copyProperties(img,['system:time_start'])
+  }
+  out = ee.ImageCollection(collection.map(codeWrapper))
+
+  if(unmask){
+    out = out.map(function(img){return img.unmask(0,false)})
+  }
+  return out
 }
 function multBands(img,distDir,by){
     var out = img.multiply(ee.Image(distDir).multiply(by));
@@ -893,6 +934,7 @@ function ltStackToFitted(ltStack,startYear,endYear){
 }
 function setupDownloads(studyAreaName){
   // Prep downloads
+  console.log('setting up downloads')
     var saDict = lcmsDownloadDict[studyAreaName]
     if(saDict !== undefined){
       var downloads = saDict['downloads'];
@@ -911,7 +953,50 @@ function setupDownloads(studyAreaName){
     
 
 }
-
+function setupDropdownTreeDownloads(studyAreaName){
+  var studyAreas = ['CONUS','SEAK'];
+  var products = {'change':['annual','summary'],'land_cover':['annual'],'land_use':['annual']};
+  var saDict = lcmsDownloadDict[studyAreaName]
+  if(saDict !== undefined){
+    var downloads = saDict['downloads'];
+    studyAreas.map(function(sa){
+      Object.keys(products).map(function(product){
+        products[product].map(function(m){
+          var download_list = downloads[sa][product][m];
+          console.log(download_list)
+          var id = `#${sa}-${product}-${m}-downloads`;
+          console.log(id)
+          download_list.map(function(url){
+            var name = url.substr(url.lastIndexOf('/') + 1);
+            $(id).append(`<li>
+                          <a target="_blank" href="${url}">
+                            ${name}
+                          </a>
+                        </li>`)
+          })
+          
+        
+        })
+      })
+    })
+  }
+  // var saDict = lcmsDownloadDict[studyAreaName]
+  //   if(saDict !== undefined){
+  //     var downloads = saDict['downloads'];
+  //     console.log(downloads)
+  //     var description = saDict['description'];
+  //     // downloads.map(function(url){
+  //     //   var name = url.substr(url.lastIndexOf('/') + 1);
+  //     //   addDownload(url,name);
+  //     // });
+  //     // $('#product-descriptions').attr('href',description);
+  //     // $('#product-descriptions').attr('title','Click here for a detailed description of products available for download for chosen area');
+  //   }else{
+  //     addDownload('','No downloads available for chosen study area');
+  //     $('#product-descriptions').attr('href',null);
+  //     $('#product-descriptions').attr('title','No product description available for chosen study area');
+  //   }
+}
 
 /////////////////////////////////////////////////////////////////////////////
 //-------------------- BEGIN CCDC Helper Functions -------------------//

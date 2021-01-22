@@ -144,6 +144,61 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
 
   $('#download-collapse-div').append(staticTemplates.downloadDiv);
+
+  if(mode === 'LCMS'){
+    $('#download-collapse-div').append(`<ul id="myUL">
+                                          <li><span class="caret">Conterminous United States</span>
+                                            <ul class="nested">
+                                              <li><span class="caret">Change</span>
+                                                <ul class="nested">
+                                                  <li><span class="caret">Summary</span>
+                                                    <ul class="nested" id = 'CONUS-change-summary-downloads'></ul>
+                                                  </li>
+                                                  <li><span class="caret">Annual</span>
+                                                    <ul class="nested" id = 'CONUS-change-annual-downloads'></ul>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                              <li><span class="caret">Land Cover</span>
+                                                <ul class="nested" id = 'CONUS-land_cover-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret">Land Use</span>
+                                                <ul class="nested" id = 'CONUS-land_use-annual-downloads'></ul>
+                                              </li>
+                                            </ul>
+                                          </li>
+                                          <li><span class="caret">Southeastern Alaska</span>
+                                            <ul class="nested">
+                                              <li><span class="caret">Change</span>
+                                                <ul class="nested">
+                                                  <li><span class="caret">Summary</span>
+                                                    <ul class="nested" id = 'SEAK-change-summary-downloads'></ul>
+                                                  </li>
+                                                  <li><span class="caret">Annual</span>
+                                                    <ul class="nested" id = 'SEAK-change-annual-downloads'></ul>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                              <li><span class="caret">Land Cover</span>
+                                                <ul class="nested" id = 'SEAK-land_cover-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret">Land Use</span>
+                                                <ul class="nested" id = 'SEAK-land_use-annual-downloads'></ul>
+                                              </li>
+                                            </ul>
+                                          </li>
+                                        </ul>`)
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+      toggler[i].addEventListener("click", function() {
+        this.parentElement.querySelector(".nested").classList.toggle("active");
+        this.classList.toggle("caret-down");
+      });
+    }
+
+  }
   $('#support-collapse-div').append(staticTemplates.supportDiv);
 
   if(tAnalysisMode === 'advanced'){

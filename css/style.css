@@ -33,7 +33,14 @@
   --slider-border-radius:2px;
 }
 /*///////////////////////////////////////////////////////*/
-
+@-webkit-keyframes fadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}
 html, body{
         height: 100%;
         margin: 0;
@@ -668,6 +675,53 @@ input[type=checkbox]:checked + label:before,input[type=radio].form-check-input:c
 }
 .ui-slider-horizontal .ui-slider-handle .ui-state-focus{
   border-radius: 0em!important;
+}
+/*///////////////////////////////////////////////////////////*/
+/*Tree dropdown styling*/
+/*Taken from https://www.w3schools.com/howto/howto_js_treeview.asp*/
+/* Remove default bullets */
+ul, #myUL {
+  list-style-type: none;
+}
+
+/* Remove margins and padding from the parent ul */
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "\25B6";
+  color: var(--deep-brown-100);
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+  transform: rotate(90deg) ;
+  transition: transform 0.5s; 
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+  -webkit-animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+   display: block;
+    -webkit-animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s;
 }
 /*
 .ui-slider-horizontal .ui-slider-handle {

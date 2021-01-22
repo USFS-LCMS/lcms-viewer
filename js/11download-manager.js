@@ -22,12 +22,7 @@ function downloadSelectedArea(){
 
     print(link)
     link.click();
-    ga('send', {
-      hitType: 'event',
-      eventCategory: 'lcms-download',
-      eventAction: 'download',
-      eventLabel: downloadName
-    });
+    ga('send', 'event', 'lcms-download', 'download', downloadName);
     // var urlAux = url + '.aux.xml';
     // print(urlAux)
     // var downloadNameAux = url.substr(url.lastIndexOf('/') + 1)+'.aux.xml';

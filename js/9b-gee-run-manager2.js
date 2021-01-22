@@ -60,16 +60,22 @@ function combineLandCover(lcC,year,numbers,names,format,mult){
 }
 ////////////////////////////////////////////////////////////////////////
 function runGTAC(){
+
   //Set up some params
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
+
   analysisMode = urlParams.analysisMode;
   queryClassDict = {};
   var years = range(startYear,endYear+1);
   summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
+  setupDropdownTreeDownloads(studyAreaName);
   
-  
+  ga('send', 'event', 'lcms-gtac-viewer-run', 'year_range', `${startYear}_${endYear}`);
+  ga('send', 'event', 'lcms-gtac-viewer-run', 'analysis_mode', analysisMode);
+  ga('send', 'event', 'lcms-gtac-viewer-run', 'timelapse_on', urlParams.addLCMSTimeLapsesOn);
+  ga('send', 'event', 'lcms-gtac-viewer-run', 'summary_method', summaryMethod);
   // setupDownloads(studyAreaName);
   var clientBoundary = clientBoundsDict.CONUS_SEAK;
   
@@ -161,7 +167,7 @@ function runGTAC(){
 
       i1 = ee.Image(fillEmptyCollections(i1,dummyImage).first());
       i2 = ee.Image(fillEmptyCollections(i2,dummyImage).first());
-      return ee.Image.cat([i1,i2]).reduce(ee.Reducer.max()).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+      return ee.ImageCollection([i1,i2]).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
     })
     return ee.ImageCollection(out);
   }
@@ -202,9 +208,25 @@ function runGTAC(){
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'1B1716DD',addToLegend:false})
   // Map2.addLayer(SA.reduceToImage(['constant'],ee.Reducer.first()),{min:1,max:1,palette:'372E2C',addToLegend:false})
   
-  Map2.addLayer(luFinal.mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
-  Map2.addLayer(lcFinal.mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
+  // var lcChangeObj = computeThematicChange(lcFinal,lcNumbers,lcLegendColors, lcLegendDict,lcQueryDict, startYear,endYear);
+  // var luChangeObj = computeThematicChange(luFinal,luNumbers,luLegendColors, luLegendDict,luQueryDict, startYear,endYear);
+  // console.log(lcChangeObj)
+  var thematicChangeYearBuffer = 5
+  if(analysisMode === 'advanced'){
+    Map2.addLayer(luFinal.filter(ee.Filter.calendarRange(startYear,startYear + thematicChangeYearBuffer,'year')).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${startYear+thematicChangeYearBuffer}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName + ' Start',false);
+    Map2.addLayer(luFinal.filter(ee.Filter.calendarRange(endYear-thematicChangeYearBuffer,endYear,'year')).mode().set('bounds',clientBoundary),{title: `Most common land use class from ${endYear-thematicChangeYearBuffer} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName + ' End',false);
 
+      Map2.addLayer(lcFinal.filter(ee.Filter.calendarRange(startYear,startYear + thematicChangeYearBuffer,'year')).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${startYear+thematicChangeYearBuffer}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName + ' Start',false);
+    Map2.addLayer(lcFinal.filter(ee.Filter.calendarRange(endYear-thematicChangeYearBuffer,endYear,'year')).mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${endYear-thematicChangeYearBuffer} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName + ' End',false);
+    // Map2.addLayer(lcChangeObj.change.set('bounds',clientBoundary),lcChangeObj.viz,lcLayerName + ' Change' ,false);
+    // Map2.addLayer(luChangeObj.change.set('bounds',clientBoundary),luChangeObj.viz,luLayerName + ' Change' ,false);
+  }else{
+    Map2.addLayer(luFinal.mode().set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},luLayerName,false);
+    Map2.addLayer(lcFinal.mode().set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,layerType : 'geeImage',min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict},lcLayerName,false);
+
+  }
+  
+  
   // Map2.addLayer(ee.Image(),{addToClassLegend:true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]}},'Change')
   //Bring change layers into viewer
   Map2.addLayer(combinedSlowLoss.select(['Slow_Loss_Year']).set('bounds',clientBoundary),{title: `Year ${summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: declineYearPalette},`Slow Loss Year`)
@@ -246,7 +268,7 @@ function runGTAC(){
         // urlParams.addLCMSTimeLapsesOn = 'Yes';
         Map2.addTimeLapse(changeFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{min:1,max:5,palette:changePaletteFull,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {1:'Stable',2:'Slow Loss',3:'Fast Loss',4:'Gain',5:'No data (cloud/cloud shadow)'},years:years},'LCMS Change Time Lapse',false);
         Map2.addTimeLapse(lcFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,years:years},'LCMS Land Cover Time Lapse',false);
-          Map2.addTimeLapse(luFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict},'LCMS Land Use Time Lapse',false);
+          Map2.addTimeLapse(luFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict,years:years},'LCMS Land Use Time Lapse',false);
         setTimeout(function() { 
           $('#close-modal-button').click();
         })

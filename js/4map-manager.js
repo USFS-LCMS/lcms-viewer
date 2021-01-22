@@ -61,7 +61,26 @@ var mapDiv = document.getElementById('map');
 
 
 
+function copyObj(mainObj) {
+  let objCopy = {}; // objCopy will store a copy of the mainObj
+  let key;
 
+  for (key in mainObj) {
+    objCopy[key] = mainObj[key]; // copies each property to the objCopy object
+  }
+  return objCopy;
+};
+function copyArray(array) {
+  var arrayCopy = []; 
+ 
+
+  array.map(function(i){
+    arrayCopy.push(i)
+  })
+    
+  
+  return arrayCopy;
+};
 ///////////////////////////////////////////////////////////////////
 //Function to compute range list on client side
 function range(start, stop, step){
