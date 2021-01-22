@@ -45,7 +45,13 @@ function downloadSelectedAreas(id){
   var urls =  $('#'+id).val();
   if(urls !== ''){
     var downloadNames = urls.map(downloadByUrl);
-    showMessage('Downloads Started','The following downloads have started:<hr> <li><ul class = "m-0">' + downloadNames.join('</ul><ul class = "m-0">') + '</ul></li>');
+    var message = '<li class = "m-0">';
+    urls.map(function(url){
+      var downloadName = url.substr(url.lastIndexOf('/') + 1);
+      message += `<ul class = "m-0"><a href = "${url}" target = "_blank">${downloadName}</a></ul>`
+    })
+    message += '</li>'
+    showMessage('Downloads Started','The following downloads have started. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<hr>' + message + '</ul></li>');
   }
   // var urlList = `<li>`
 

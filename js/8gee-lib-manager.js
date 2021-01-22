@@ -977,13 +977,13 @@ function setupDropdownTreeDownloads(studyAreaName){
           
           $('#'+id).append(`
             <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
-                            <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-gray" multiple ></select>
-                            
-                            <button class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Dowload</button>
+                            <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                            <br>
+                            <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Dowload</button>
                             <hr>`)
           download_list.map(function(url){
             var name = url.substr(url.lastIndexOf('v2020-5_') + 8);
-            $('#'+dropdownID).append(`<option class = 'bg-gray' value = "${url}">${name}</option>`);
+            $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
               // $('#'+id).append(`<li>
               //             <a target="_blank" href="${url}">
               //               ${name}

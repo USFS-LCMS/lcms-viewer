@@ -510,7 +510,17 @@ font-size:0.9em;
   color:#000!important;
   outline:none!important;
 }
-
+.bg-download-select{
+  
+  background-color: var(--deep-brown-10)!important;
+  margin:0px!important;
+  color:var(--teal-100)!important;
+  outline:none!important;
+}
+.bg-download-select::selection {
+  color: red; 
+  background: yellow;
+}
 .panel-title > a:after {
     float: right !important;
     font-family: FontAwesome;
