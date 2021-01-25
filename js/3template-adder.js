@@ -195,13 +195,14 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
     for (i = 0; i < toggler.length; i++) {
       toggler[i].addEventListener("click", function() {
-        console.log(this)
+        // console.log(this)
         this.parentElement.querySelector(".nested").classList.toggle("active");
         // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
         this.classList.toggle("caret-down");
         // this.classList.toggle("treeOff");
       });
     }
+   
 
   }else{
     $('#download-collapse-div').append(staticTemplates.downloadDiv);

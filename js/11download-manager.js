@@ -64,3 +64,5 @@ function downloadTutorial(){
   link.click();
   // link.setAttribute("download", filename);
 }
+
+if(mode === 'LCMS'){ setupDropdownTreeDownloads(studyAreaName);}

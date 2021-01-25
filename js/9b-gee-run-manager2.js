@@ -70,7 +70,7 @@ function runGTAC(){
   var years = range(startYear,endYear+1);
   summaryMethod = urlParams.summaryMethod.toTitle();
   getLCMSVariables();
-  setupDropdownTreeDownloads(studyAreaName);
+  
   
   ga('send', 'event', 'lcms-gtac-viewer-run', 'year_range', `${startYear}_${endYear}`);
   ga('send', 'event', 'lcms-gtac-viewer-run', 'analysis_mode', analysisMode);
