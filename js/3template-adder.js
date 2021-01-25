@@ -70,7 +70,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
  
   /*Construct panes in left sidebar*/
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.1em;margin-left:-0.1em' class='image-icon mr-1' src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
   

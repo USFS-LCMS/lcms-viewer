@@ -9,7 +9,7 @@ var  titles = {
 		    title:'LCMS Data Explorer'
 			},
     'LCMS': {
-            leftWords: 'LCMS',
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/lcms-icon.png">LCMS`,
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'LCMS Data Explorer'
@@ -75,7 +75,7 @@ var staticTemplates = {
 	map:`<div onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </div>`,
 
 	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
-	sidebarLeftToggler:`<div href="#" class="fa fa-bars m-0 px-1 py-2 m-0 sidebar-toggler " onclick = 'toggleSidebar()'></div>`,
+	sidebarLeftToggler:`<div href="#" class="fa fa-bars  px-1 py-2  sidebar-toggler " style = 'margin-left:-0.2em;margin-top:-0.1em;' onclick = 'toggleSidebar()'></div>`,
 
     sidebarLeftContainer: `
 						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-5 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >
