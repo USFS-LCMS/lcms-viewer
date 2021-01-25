@@ -967,7 +967,7 @@ function setupDropdownTreeDownloads(studyAreaName){
           var id = `${sa}-${product}-${m}-downloads`;
           var dropdownID = id + '-d';
           // console.log(dropdownID)
-          // $(id).empty();
+          $('#'+id).empty();
           // console.log(id)
           // $('#'+id).append(`<label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select product to download:</label>
           //     <select class="form-control" id = "${dropdownID}" onchange = "downloadSelectedArea('${dropdownID}')">
@@ -979,7 +979,7 @@ function setupDropdownTreeDownloads(studyAreaName){
             <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
                             <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
                             <br>
-                            <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Dowload</button>
+                            <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                             <hr>`)
           download_list.map(function(url){
             var name = url.substr(url.lastIndexOf('v2020-5_') + 8);
