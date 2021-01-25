@@ -303,6 +303,48 @@ var staticTemplates = {
                         <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
+        lcmsProductionDownloadDiv:`<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
+                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States</span>
+                                            <ul class="nested active">
+                                              <li><span class="caret">Change</span>
+                                                <ul class="nested">
+                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
+                                                    <ul class="nested" id = 'CONUS-change-summary-downloads'></ul>
+                                                  </li>
+                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
+                                                    <ul class="nested" id = 'CONUS-change-annual-downloads'></ul>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
+                                                <ul class="nested" id = 'CONUS-land_cover-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
+                                                <ul class="nested" id = 'CONUS-land_use-annual-downloads'></ul>
+                                              </li>
+                                            </ul>
+                                          </li>
+                                          <li><span class="caret caret-down">Southeastern Alaska</span>
+                                            <ul class="nested active">
+                                              <li><span class="caret">Change</span>
+                                                <ul class="nested">
+                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
+                                                    <ul class="nested" id = 'SEAK-change-summary-downloads'></ul>
+                                                  </li>
+                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
+                                                    <ul class="nested" id = 'SEAK-change-annual-downloads'></ul>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
+                                                <ul class="nested" id = 'SEAK-land_cover-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
+                                                <ul class="nested" id = 'SEAK-land_use-annual-downloads'></ul>
+                                              </li>
+                                            </ul>
+                                          </li>
+                                        </ul>`,
         supportDiv :`<div class = 'p-0 pb-2 col-lg-12' >
                         <div class = 'row pt-2'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>

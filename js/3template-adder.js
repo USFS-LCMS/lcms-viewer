@@ -70,7 +70,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
  
   /*Construct panes in left sidebar*/
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,'LCMS DATA layers to view on map');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.1em;margin-left:-0.1em' class='image-icon mr-1' src="images/lcms-icon.PNG">`,true,null,'LCMS DATA layers to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
   
@@ -96,7 +96,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
     // $('#parameters-collapse-div').append(`<p>Additional Functionality:</p>`);
   // $('#parameters-collapse-div').append(staticTemplates.addTimelapsesButton);
-  addRadio('parameters-collapse-div','addTimeLapses-radio','Add LCMS Time Lapses:','No','Yes','urlParams.addLCMSTimeLapsesOn','no','yes','','','Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading');
+  addRadio('parameters-collapse-div','addTimeLapses-radio','Add LCMS Time Lapses:','No','Yes','urlParams.addLCMSTimeLapsesOn','no','yes','','','Add interactive time lapse of LCMS Change, Land Cover, and Land Use products. This will slow down the map loading');
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   if(tAddLCMSTimeLapsesOn === 'yes'){
     $('#addTimeLapses-radio-second_toggle_label').click();
@@ -146,50 +146,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   
 
   if(mode === 'LCMS'){
-    $('#download-collapse-div').append(`
-
-                                        <ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret">Summary</span>
-                                                    <ul class="nested" id = 'CONUS-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret">Annual</span>
-                                                    <ul class="nested" id = 'CONUS-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret">Land Cover</span>
-                                                <ul class="nested" id = 'CONUS-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret">Land Use</span>
-                                                <ul class="nested" id = 'CONUS-land_use-annual-downloads'></ul>
-                                              </li>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Southeastern Alaska</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret">Summary</span>
-                                                    <ul class="nested" id = 'SEAK-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret">Annual</span>
-                                                    <ul class="nested" id = 'SEAK-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret">Land Cover</span>
-                                                <ul class="nested" id = 'SEAK-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret">Land Use</span>
-                                                <ul class="nested" id = 'SEAK-land_use-annual-downloads'></ul>
-                                              </li>
-                                            </ul>
-                                          </li>
-                                        </ul>`)
+    $('#download-collapse-div').append(staticTemplates.lcmsProductionDownloadDiv);
     var toggler = document.getElementsByClassName("caret");
     var i;
 
@@ -202,7 +159,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
         // this.classList.toggle("treeOff");
       });
     }
-   
+
 
   }else{
     $('#download-collapse-div').append(staticTemplates.downloadDiv);
