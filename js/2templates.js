@@ -524,12 +524,15 @@ Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(functi
 function getLocation() {
     if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, showLocationError);
+    
   } else { 
     showMessage('Cannot acquire location','Geolocation is not supported by this browser.');
+    ga('send', 'event', mode + '-getLocation', 'failure', 'failure');
   }
 }
 function showPosition(position) {
     var pt = {lng:position.coords.longitude,lat:position.coords.latitude};
+    ga('send', 'event', mode + '-getLocation', 'success', JSON.stringify(pt));
     var locationMarker  = new google.maps.Marker({
               map: map,
               position: pt,

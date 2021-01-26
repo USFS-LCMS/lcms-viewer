@@ -22,7 +22,7 @@ function downloadByUrl(url){
     link.click();
     
     
-    ga('send', 'event', 'lcms-download', 'download', downloadName);
+    ga('send', 'event',mode+'-download', 'download', downloadName);
     // var urlAux = url + '.aux.xml';
     // print(urlAux)
     // var downloadNameAux = url.substr(url.lastIndexOf('/') + 1)+'.aux.xml';
@@ -62,7 +62,8 @@ function downloadTutorial(){
   link.href = './tutorials/LCMS_Data_Explorer_Overview_20200317.pdf';
     link.target = '_blank';
   link.click();
+  ga('send', 'event',mode+'-download', 'download', 'tutorial');
   // link.setAttribute("download", filename);
 }
 
-if(mode === 'LCMS'){ setupDropdownTreeDownloads(studyAreaName);}
+if(mode === 'LCMS'){ setupDropdownTreeDownloads(studyAreaName);populateLCMSDownloads();}

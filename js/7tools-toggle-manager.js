@@ -75,6 +75,7 @@ var toolFunctions = {'measuring':
                   }
 function getActiveTools(){
   var out = [];
+
   Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){
                                                                         var state = toolFunctions[t][tt]['state'];
                                                                         var title = toolFunctions[t][tt]['title'];
@@ -100,6 +101,10 @@ function updateToolStatusBar(){
                                                                         
                                                                       })});
   if(!somethingShown){$('#current-tool-selection').append(`No active tools`)}
+    else{
+    
+      ga('send', 'event','tool-active', mode, $('#current-tool-selection').html().split(': ')[1]);
+    }
 }
 function toggleTool(tool){
 

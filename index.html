@@ -3,31 +3,8 @@
     <head>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
-        
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-    <!--     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155737118-1"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-155737118-1');
-        </script> -->
-
-      
-        <!-- Google Analytics -->
-        <!--From https://developers.google.com/analytics/devguides/collection/analyticsjs-->
-        <!-- Google Analytics -->
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-188090968-1', 'auto');
-ga('send', 'pageview');
-</script>
-<!-- End Google Analytics -->
+       
+        <script type="text/javascript" src="js/analytics.js"></script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="icon" href="./images/lcms-icon.png">
@@ -75,6 +52,7 @@ ga('send', 'pageview');
             startYear = studyAreaDict['USFS LCMS 1984-2020'].startYear;
             endYear = studyAreaDict['USFS LCMS 1984-2020'].endYear    ;
             localStorage.setItem("cachedStudyAreaName",'USFS LCMS 1984-2020')
+            ga('send', 'event','load', mode, 'USFS LCMS 1984-2020');
         </script>
         <script type="text/javascript" src="./js/2templates.js"></script>
         <script type="text/javascript" src="./js/3template-adder.js"></script>

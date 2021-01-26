@@ -46,6 +46,7 @@ function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
     if(postURL === undefined || postURL === null){
         postURL = '';
     }
+
     $.get(
         "https://tinyurl.com/api-create.php",
         {url: pageUrl},
@@ -53,8 +54,9 @@ function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
             var key = tinyURL.split('https://tinyurl.com/')[1];
             var shareURL = pageUrl.split('?')[0] + '?id='+key;
             var fullURL = preURL+shareURL+postURL ;
-            console.log(fullURL);
-            
+            // console.log(fullURL);
+            ga('send', 'event', mode + '-share', pageUrl, shareURL);
+            console.log('shared')
             if(openInNewTab){
                var win = window.open(fullURL, '_blank');
                win.focus(); 

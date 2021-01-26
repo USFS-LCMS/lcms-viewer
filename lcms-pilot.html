@@ -4,15 +4,7 @@
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
         
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155737118-1"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-155737118-1');
-        </script>
+        <script type="text/javascript" src="js/analytics.js"></script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="icon" href="./images/usfslogo.png">
@@ -54,6 +46,7 @@
         <script type="text/javascript" src="./js/1variables.js"></script>
         <script type="text/javascript">
             var mode = 'LCMS';
+            ga('send', 'event','load', mode, 'LCMS-pilot');
         </script>
         <script type="text/javascript" src="./js/2templates.js"></script>
         <script type="text/javascript" src="./js/3template-adder.js"></script>

@@ -873,6 +873,7 @@ function makeAreaChart(area,name,userDefined){
 				var colors = areaChartCollections[whichAreaChartCollection].colors;
 				var chartType = areaChartCollections[whichAreaChartCollection].chartType
 				if(chartType === null || chartType === undefined){chartType = 'line'}
+				ga('send', 'event', mode, 'areaChart', whichAreaChartCollection);
 				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel);
 		
 				// areaChartingTabSelect(whichAreaDrawingMethod);
@@ -1193,6 +1194,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 	if(chartType === null || chartType === undefined){chartType = 'line'};
 	if(stacked === null || stacked === undefined){stacked = false};
 	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
+
 	console.log('starting convert to table')
 	dataTable = dataTableNumbersToNames(dt);
 	console.log('finished convert to table')
@@ -1692,6 +1694,7 @@ function startPixelChartCollection() {
 			values.unshift(header);
 			$('#summary-spinner').slideUp();
 			map.setOptions({draggableCursor:'help'});
+			ga('send', 'event', mode, 'pixelChart', whichPixelChartCollection);
 			addChartJS(values,chartTitle,'line',false,false,pixelChartCollections[whichPixelChartCollection].chartColors,pixelChartCollections[whichPixelChartCollection].xAxisLabel,pixelChartCollections[whichPixelChartCollection].yAxisLabel,pixelChartCollections[whichPixelChartCollection].fieldsHidden);
 		
 			if(pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined){

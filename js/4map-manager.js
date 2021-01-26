@@ -2013,11 +2013,13 @@ function initSearchBox() {
 
     // For each place, get the icon, name and location.
     var bounds = new google.maps.LatLngBounds();
+    var formattedAddresses = [];
     places.forEach(function(place) {
       if (!place.geometry) {
         console.log("Returned place contains no geometry");
         return;
       }
+      formattedAddresses.push(place.formatted_address);
       var icon = {
         url: place.icon,
         size: new google.maps.Size(71, 71),
@@ -2059,6 +2061,8 @@ function initSearchBox() {
 
     });
     console.log(bounds)
+    console.log(formattedAddresses.join(','))
+    ga('send', 'event', 'places-search', JSON.stringify(bounds), formattedAddresses.join(','));
     map.fitBounds(bounds);
   });
   }

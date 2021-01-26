@@ -146,8 +146,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   
 
   if(mode === 'LCMS'){
-    $('#download-collapse-div').append(staticTemplates.lcmsProductionDownloadDiv);
-    var toggler = document.getElementsByClassName("caret");
+    function populateLCMSDownloads(){
+      var toggler = document.getElementsByClassName("caret");
     var i;
 
     for (i = 0; i < toggler.length; i++) {
@@ -159,6 +159,9 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
         // this.classList.toggle("treeOff");
       });
     }
+    }
+    $('#download-collapse-div').append(staticTemplates.lcmsProductionDownloadDiv);
+    
 
 
   }else{
