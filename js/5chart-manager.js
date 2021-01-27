@@ -155,7 +155,7 @@ function turnOffLayers(){
 }
 
 function turnOffSelectLayers(){
-	$(".select-layer-checkbox").trigger("turnOffAll");
+	$(".select-layer-checkbox").trigger("turnOffAllSelectLayers");
 }
 function turnOffSelectGeoJSON(){
 	// Object.keys(selectedFeaturesJSON).map(function(k){
@@ -358,6 +358,7 @@ var  getQueryImages = function(lng,lat){
 
 		if(q.visible){
 			var clickPt = ee.Geometry.Point(lngLat);
+			ga('send', 'event', mode, 'pixelQuery-'+q.type, q.name);
 			if(q.type === 'geeImage'){
 				var img = ee.Image(q.queryItem);
 				img.reduceRegion(ee.Reducer.first(),clickPt,30,'EPSG:5070',null,true,1e13,1).evaluate(function(values){
@@ -1134,8 +1135,8 @@ function downloadChartJS(chart,name){
 	link.href = chart.toBase64Image();
 	link.click();
 	delete link;
+	ga('send', 'event', mode, getActiveTools()[0] +'-chartDownload', 'png');
 }
-
 Chart.pluginService.register({
     beforeDraw: function (chart, easing) {
         if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
@@ -1782,6 +1783,7 @@ function exportJSON(filename,json){
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        ga('send', 'event', mode, getActiveTools()[0] +'-chartDownload', 'geoJSON');
     }
 }
 function exportToCsv(filename, rows) {
@@ -1822,6 +1824,7 @@ function exportToCsv(filename, rows) {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                ga('send', 'event', mode, getActiveTools()[0] +'-chartDownload', 'csv');
             }
         }
     }

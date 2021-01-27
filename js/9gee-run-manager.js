@@ -1348,7 +1348,7 @@ var endYear = parseInt(urlParams.endYear);
 
 var transform = [30,0,-2361915.0,0,-30,3177735.0];
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
-var gainYearPalette = 'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
+var gainYearPalette = 'c5ee93,00a398';//'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
 var lossThresh  = parseFloat(urlParams.lossMagThresh) *-10000;//2000;
@@ -1357,7 +1357,7 @@ var gainThresh = parseFloat(urlParams.gainMagThresh) *10000;//2000;
 var crs  = 'EPSG:5070';
 var indexName = 'NBR';
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
-var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
+var gainYearPalette = 'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
 var lossMagPalette = 'F5DEB3,D00';
 var gainMagPalette = 'F5DEB3,006400';
 var durPalette = 'BD1600,E2F400,0C2780';

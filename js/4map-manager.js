@@ -646,7 +646,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   legendDivID = legendDivID.replaceAll('(','-');
   legendDivID = legendDivID.replaceAll(')','-');
   
-  viz.canQuery = true;
+  viz.canQuery = false;
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
   viz.timeLapseID = legendDivID;

@@ -1559,6 +1559,8 @@ function addLayer(layer){
                 // selectedFeaturesJSON[layer.name].geoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
                 // layer.queryVector = layer.item;  
                 $('#'+visibleLabelID).addClass('select-layer-checkbox');
+                $('.select-layer-checkbox').on('turnOffAllSelectLayers',function(){turnOffAll()});
+                $('.select-layer-checkbox').on('turnOnAllSelectLayers',function(){turnOnAll()});
                 $('.select-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
                 $('.select-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
             }
