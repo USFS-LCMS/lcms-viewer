@@ -22,7 +22,7 @@ function downloadByUrl(url){
     link.click();
     
     
-    ga('send', 'event',mode+'-download', 'download', downloadName);
+    ga('send', 'event',mode+'-download', 'image-download', downloadName);
     // var urlAux = url + '.aux.xml';
     // print(urlAux)
     // var downloadNameAux = url.substr(url.lastIndexOf('/') + 1)+'.aux.xml';
@@ -59,11 +59,11 @@ function downloadSelectedAreas(id){
 }
 function downloadTutorial(){
   var link = document.createElement("a");
-  link.href = './tutorials/LCMS_Data_Explorer_Overview_20200317.pdf';
+  var tutorial_name ='LCMS_Data_Explorer_Overview_20200317.pdf';
+  link.href = './tutorials/'+tutorial_name;
     link.target = '_blank';
   link.click();
-  ga('send', 'event',mode+'-download', 'download', 'tutorial');
+  ga('send', 'event',mode+'-download', 'tutorial-download', tutorial_name);
   // link.setAttribute("download", filename);
 }
 
-if(mode === 'LCMS'){ setupDropdownTreeDownloads(studyAreaName);populateLCMSDownloads();}
