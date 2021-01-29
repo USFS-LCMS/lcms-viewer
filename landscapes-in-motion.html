@@ -1,0 +1,142 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>LCMS Data Annimations</title>
+  <link rel="icon" href="./images/lcms-icon.png">
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/dark/main.css" />
+  <script src="https://js.arcgis.com/4.18/"></script>
+  <style type="text/css">
+    .esri-view-height-less-than-medium .esri-popup__main-container {
+    max-height: 90%;
+}
+/*.esri-view-width-medium .esri-popup__main-container {
+    width: 50%;
+}*/
+.esri-feature__size-container{height:100%;width:80%;}
+  </style>
+  <script>
+    require(["esri/Map", "esri/layers/GeoJSONLayer", "esri/views/MapView"], function (
+      Map,
+      GeoJSONLayer,
+      MapView
+    ) {
+      // If GeoJSON files are not on the same domain as your website, a CORS enabled server
+      // or a proxy is required.
+      const url = './geojson/usfs_boundaries.json';//"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
+
+      // Paste the url into a browser's address bar to download and view the attributes
+      // in the GeoJSON file. These attributes include:
+      // * mag - magnitude
+      // * type - earthquake or other event such as nuclear test
+      // * place - location of the event
+      // * time - the time of the event
+      // Use the Arcade Date() function to format time field into a human-readable format
+
+      const template = {
+        title: "{FORESTNAME}",
+        content:  [{
+          // The following creates a piechart in addition to an image. The chart is
+          // also set  up to work with related tables.
+          // Autocasts as new MediaContent()
+          type: "media",
+          // Autocasts as array of MediaInfo objects
+          mediaInfos: [ 
+          {
+            title: null,
+            type: "image", // Autocasts as new ImageMediaInfo object
+            // Autocasts as new ImageMediaInfoValue object
+            value: {
+              "sourceURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMECHANGE}',
+              "linkURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMECHANGE}',
+            }
+          },
+          {
+            title: null,
+            type: "image", // Autocasts as new ImageMediaInfo object
+            // Autocasts as new ImageMediaInfoValue object
+            value: {
+              "sourceURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDCOVER}',
+              "linkURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDCOVER}',
+            }
+          },
+          {
+            title: null,
+            type: "image", // Autocasts as new ImageMediaInfo object
+            // Autocasts as new ImageMediaInfoValue object
+            value: {
+              "sourceURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDUSE}',
+              "linkURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDUSE}',
+            }
+          }
+          ]
+        }]
+        
+      };
+
+      const renderer = {
+        type: "simple",
+        field: "mag",
+        symbol: {
+          type: "simple-marker",
+          color: "dark-green",
+          outline: {
+            color: "white"
+          }
+        },
+        visualVariables: [{
+          type: "size",
+          field: "mag",
+          stops: [{
+              value: 2.5,
+              size: "4px"
+            },
+            {
+              value: 8,
+              size: "40px"
+            }
+          ]
+        }]
+      };
+
+      const geojsonLayer = new GeoJSONLayer({
+        url: url,
+        copyright: "USFS LCMS",
+        popupTemplate: template,
+        // renderer: renderer //optional
+      });
+
+      const map = new Map({
+        basemap: "hybrid",
+        layers: [geojsonLayer]
+      });
+
+      const view = new MapView({
+        container: "viewDiv",
+        center: [-103, 38],
+        zoom: 4,
+        map: map
+      });
+    });
+
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
