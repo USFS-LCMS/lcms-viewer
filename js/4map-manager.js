@@ -213,7 +213,7 @@ function createColorRamp(styleName, colorList, width,height){
 ///////////////////////////////////////////////////////////////////
 //Function to convert csv, kml, shp to geoJSON using ogre.adc4gis.com
 function convertToGeoJSON(formID){
-  var url = 'https://ogre.adc4gis.com/convert'
+  var url = 'https://ogre.adc4gis.compute/convert'
 
   var data = new FormData();
   data.append("targetSrs","EPSG:4326");
@@ -2319,7 +2319,7 @@ function initialize() {
     mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_RIGHT,
       mapTypeIds: mapTypeIds},
     // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
-    streetViewControlOptions:{position: null},//google.maps.ControlPosition.RIGHT_TOP},
+    streetViewControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     tilt:0,
@@ -2327,7 +2327,7 @@ function initialize() {
     scaleControl: true,
     clickableIcons:false
   };
-   
+
   var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
   var zoom = initialZoomLevel;//8;
 
@@ -2382,7 +2382,29 @@ function initialize() {
   map = new google.maps.Map(document.getElementById("map"),mapOptions);
   //Associate the styled map with the MapTypeId and set it to display.
   map.mapTypes.set('dark_mode', styledMapType);
- 
+  
+  //Listen for street view use
+  //Adapted from: https://stackoverflow.com/questions/7251738/detecting-google-maps-streetview-mode
+  var thePanorama = map.getStreetView();
+  google.maps.event.addListener(thePanorama, 'visible_changed', function() {
+
+      if (thePanorama.getVisible()) {
+        console.log('street view in use')
+        $('#sidebar-left-container').hide();
+        $('.sidebar-toggler').hide();
+        $('#legendDiv').hide();
+          // Display your street view visible UI
+
+      } else {
+        console.log('street view not in use')
+        $('#sidebar-left-container').show();
+        $('.sidebar-toggler').show();
+        $('#legendDiv').show();
+          // Display your original UI
+
+      }
+
+  });
   marker=new google.maps.Circle({
     center:{lat:45,lng:-111},
     radius:5
