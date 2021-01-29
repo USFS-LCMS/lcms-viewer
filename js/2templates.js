@@ -346,12 +346,12 @@ var staticTemplates = {
                                           </li>
                                         </ul>`,
         supportDiv :`<div class = 'p-0 pb-2 col-lg-12' >
-                        <div class = 'row pt-2'>
+                        <div class = 'row pt-2' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </div>
-                        <div class = 'row p-2'>
+                        <div class = 'row p-2' title = 'Open LCMS Data Explorer tutorial'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' src = './images/information--v2.png'></a> 
+                                <img class = 'support-icons' src = './images/information--v2.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' onclick = 'downloadTutorial()'>
@@ -359,6 +359,20 @@ var staticTemplates = {
                             </div>
                         </div>
                         <hr>
+                         <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                            <h3 class = ' text-capitalize'>LCMS Methods</h3>
+                        </div>
+                        <div class = 'row p-2' title = 'Open in-depth LCMS methods documentation'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' src = './images/methods-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a class = 'support-text' onclick = 'downloadMethods()'>
+                                Click to open in-depth LCMS methods document.</a>
+                            </div>
+                        </div>
+                        <hr>
+                        
                        
                         <div class = 'row'>
                             <h3 class = ' text-capitalize'>Acknowledgements</h3>

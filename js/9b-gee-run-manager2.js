@@ -251,8 +251,8 @@ function runGTAC(){
   }
   var combinedChangeC = combinedChange.select(['maxClass']);//.map(function(img){return img.unmask(0)})
   
-  Map2.addTimeLapse('https://storage.googleapis.com/lcms-final-tile-outputs/LCMS_v2020-5_Change_',{timeLapseType :'tileMapService',years:years,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]}},'LCMS Change Time Lapse',false)
-  Map2.addTimeLapse('https://storage.googleapis.com/lcms-final-tile-outputs/LCMS_v2020-5_Land_Cover_',{timeLapseType :'tileMapService',years:years,addToClassLegend: true,classLegendDict:lcLegendDict},'LCMS Land Cover Time Lapse',false)
+  // Map2.addTimeLapse('https://storage.googleapis.com/lcms-final-tile-outputs/LCMS_v2020-5_Change_',{timeLapseType :'tileMapService',years:years,addToClassLegend: true,classLegendDict:{'Slow Disturbance':changePalette[0],'Fast Disturbance':changePalette[1],'Growth':changePalette[2]}},'LCMS Change Time Lapse',false)
+  // Map2.addTimeLapse('https://storage.googleapis.com/lcms-final-tile-outputs/LCMS_v2020-5_Land_Cover_',{timeLapseType :'tileMapService',years:years,addToClassLegend: true,classLegendDict:lcLegendDict},'LCMS Land Cover Time Lapse',false)
   
   // Map2.addLayer(ee.Image().paint(SA,null,1),{min:1,max:1,palette:'00BFA5',addToLegend:false})
 
