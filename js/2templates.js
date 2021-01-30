@@ -1407,6 +1407,7 @@ function addLayer(layer){
     }
     //Function to handle turning off of different types of layers
     function turnOff(){
+        ga('send', 'event', 'layer-off', layer.layerType,layer.name);
         if(layer.layerType === 'dynamicMapService'){
             layer.layer.setMap(null);
             layer.visible = false;
@@ -1450,6 +1451,7 @@ function addLayer(layer){
     }
     //Function to handle turning on different layer types
     function turnOn(){
+        ga('send', 'event', 'layer-on', layer.layerType,layer.name);
         if(!layer.viz.isTimeLapse){
             turnOffTimeLapseCheckboxes();
         }

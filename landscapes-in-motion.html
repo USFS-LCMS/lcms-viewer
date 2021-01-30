@@ -18,21 +18,32 @@
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/dark/main.css" />
+  <link rel="stylesheet" href="./css/style.css">
   <script src="https://js.arcgis.com/4.18/"></script>
   <style type="text/css">
-    .esri-view-height-less-than-medium .esri-popup__main-container {
-    max-height: 90%;
+    .esri-view-width-xlarge .esri-popup__main-container {
+    width: 500px;
 }
-/*.esri-view-width-medium .esri-popup__main-container {
-    width: 50%;
-}*/
-.esri-feature__size-container{height:100%;width:80%;}
+.esri-view-height-less-than-medium  .esri-popup__main-container {
+    max-height: 800px;
+}
+.esri-feature__content-element{
+      padding-bottom: 0px;
+}
+
   </style>
   <script>
-    require(["esri/Map", "esri/layers/GeoJSONLayer", "esri/views/MapView"], function (
+    require(["esri/Map", 
+            "esri/widgets/BasemapGallery",
+            "esri/layers/GeoJSONLayer", 
+            "esri/views/MapView",
+            
+            ], function (
       Map,
+      Basemap,
       GeoJSONLayer,
-      MapView
+      MapView,
+      BasemapGallery
     ) {
       // If GeoJSON files are not on the same domain as your website, a CORS enabled server
       // or a proxy is required.
@@ -45,9 +56,10 @@
       // * place - location of the event
       // * time - the time of the event
       // Use the Arcade Date() function to format time field into a human-readable format
-
+      const gif_dir ='http://lcms.forestry.oregonstate.edu/landscapes-in-motion/';
+      // const gif_dir = 'https://storage.googleapis.com/lcms-gifs/';
       const template = {
-        title: "{FORESTNAME}",
+        title: null,
         content:  [{
           // The following creates a piechart in addition to an image. The chart is
           // also set  up to work with related tables.
@@ -60,8 +72,8 @@
             type: "image", // Autocasts as new ImageMediaInfo object
             // Autocasts as new ImageMediaInfoValue object
             value: {
-              "sourceURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMECHANGE}',
-              "linkURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMECHANGE}',
+              "sourceURL": gif_dir+'{GIFNAMECHANGE}',
+              "linkURL":  gif_dir+'{GIFNAMECHANGE}',
             }
           },
           {
@@ -69,8 +81,8 @@
             type: "image", // Autocasts as new ImageMediaInfo object
             // Autocasts as new ImageMediaInfoValue object
             value: {
-              "sourceURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDCOVER}',
-              "linkURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDCOVER}',
+              "sourceURL":  gif_dir+'{GIFNAMELANDCOVER}',
+              "linkURL":  gif_dir+'{GIFNAMELANDCOVER}',
             }
           },
           {
@@ -78,8 +90,8 @@
             type: "image", // Autocasts as new ImageMediaInfo object
             // Autocasts as new ImageMediaInfoValue object
             value: {
-              "sourceURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDUSE}',
-              "linkURL": 'https://storage.googleapis.com/lcms-gifs/{GIFNAMELANDUSE}',
+              "sourceURL": gif_dir+'{GIFNAMELANDUSE}',
+              "linkURL":  gif_dir+'{GIFNAMELANDUSE}',
             }
           }
           ]
@@ -87,35 +99,23 @@
         
       };
 
-      const renderer = {
-        type: "simple",
-        field: "mag",
-        symbol: {
-          type: "simple-marker",
-          color: "dark-green",
-          outline: {
-            color: "white"
-          }
-        },
-        visualVariables: [{
-          type: "size",
-          field: "mag",
-          stops: [{
-              value: 2.5,
-              size: "4px"
-            },
-            {
-              value: 8,
-              size: "40px"
+      var renderer = {
+          type: "simple",  // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: [ 255, 128, 0, 0 ],
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0,
+              color: "white"
             }
-          ]
-        }]
-      };
+          }
+        };
 
       const geojsonLayer = new GeoJSONLayer({
         url: url,
         copyright: "USFS LCMS",
         popupTemplate: template,
+        legendEnabled:true,
         // renderer: renderer //optional
       });
 
@@ -132,6 +132,13 @@
       });
     });
 
+//     var basemapGallery = new BasemapGallery({
+//   view: view
+// });
+// // Add widget to the top right corner of the view
+// view.ui.add(basemapGallery, {
+//   position: "top-right"
+// });
   </script>
 </head>
 

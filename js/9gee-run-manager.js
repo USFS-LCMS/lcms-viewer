@@ -2847,6 +2847,8 @@ function runMTBS(){
   chartMTBSByAspect = true;
   getLCMSVariables();
 
+  ga('send', 'event', 'mtbs-viewer-run', 'year_range', `${startYear}_${endYear}`);
+
   var mtbsAndNLCD = getMTBSAndNLCD('anc','layer-list',true);
   
   var nlcdLCObj = mtbsAndNLCD.NLCD;

@@ -276,7 +276,7 @@ function addWalkThroughCollapse(){
     $('.modal-backdrop').remove();
     $('#legendDiv').removeClass('col-xl-2');
     $('#legendDiv').removeClass('col-lg-3');
-
+    ga('send', 'event', mode , 'walk-through-run', 'walk-through-run');
     var collapseContainer =getWalkThroughCollapseContainerID(); 
     addCollapse(collapseContainer,'walk-through-collapse-label','walk-through-collapse-div','TUTORIAL','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Walk through the features of the '+mode+' Data Explorer')
     $('#walk-through-collapse-div').append(staticTemplates.walkThroughPopup);
@@ -316,6 +316,7 @@ function previousWalkThrough(){
     showWalkThroughI();
 }
 function showWalkThroughI(){
+    ga('send', 'event', mode , 'walk-through-slide-show', walkThroughKeyI);
     $('#legendDiv').scrollTop(0);
     
     $('.sub-sub-panel-title').addClass('collapsed');

@@ -293,7 +293,11 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
-  
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us');
+  $('#support-collapse-div').append(staticTemplates.walkThroughButton);
+  $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
+  $('#support-collapse-div').append(`<p>If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" title = 'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us'> contact us</a></p>`)
+  $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
   
   var mtbsZoomToDict ={"All":true,"CONUS":false,"Alaska":false,"Hawaii":false,"Puerto-Rico":false};
@@ -317,15 +321,11 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
-  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
-
+  
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
   $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
   
-  $('#support-collapse-div').append(staticTemplates.walkThroughButton);
-  $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
-  $('#support-collapse-div').append(`<a href="https://www.mtbs.gov/contact" target="_blank" title = 'If you have any questions or comments, feel free to contact us'>Contact Us</a>`)
-  $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
+ 
   $('#introModal-body').append(staticTemplates.walkThroughButton);
 }else if(mode === 'TEST' || mode === 'FHP'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
