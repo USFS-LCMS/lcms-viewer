@@ -459,7 +459,7 @@ var staticTemplates = {
         userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
 
         uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
-                                <label>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Chart across chosen file" button below to produce chart.</label>
+                                <label title = 'Powered by: https://ogre.adc4gis.com/'>Choose a zipped shapefile or geoJSON file to summarize across.  Then hit "Chart across chosen file" button below to produce chart.</label>
                                 <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json" style="display: inline-block;">
                                 <div class = 'dropdown-divider'></div>
                                 <div>Uploaded areas:</div>
