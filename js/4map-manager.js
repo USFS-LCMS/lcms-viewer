@@ -213,7 +213,7 @@ function createColorRamp(styleName, colorList, width,height){
 ///////////////////////////////////////////////////////////////////
 //Function to convert csv, kml, shp to geoJSON using ogre.adc4gis.com
 function convertToGeoJSON(formID){
-  var url = 'https://ogre.adc4gis.compute/convert'
+  var url = 'https://ogre.adc4gis.com/convert'
 
   var data = new FormData();
   data.append("targetSrs","EPSG:4326");

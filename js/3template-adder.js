@@ -293,7 +293,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
-  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us');
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT & FEEDBACK',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us');
   $('#support-collapse-div').append(staticTemplates.walkThroughButton);
   $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
   $('#support-collapse-div').append(`<p>If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" title = 'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us'> contact us</a></p>`)
@@ -593,7 +593,7 @@ if(mode === 'geeViz'){
 if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
 if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP' || mode === 'LCMS'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
-  addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Params', '',false,'')
+  addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
   
   // $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
   addDropdown('area-chart-params-div','area-collection-dropdown','Choose which '+mode+' product to summarize','whichAreaChartCollection','Choose which '+mode+' time series to summarize.');
