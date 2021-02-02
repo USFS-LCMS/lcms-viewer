@@ -293,10 +293,10 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
-  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT & FEEDBACK',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us');
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT & FEEDBACK',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'');
   $('#support-collapse-div').append(staticTemplates.walkThroughButton);
   $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
-  $('#support-collapse-div').append(`<p>If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" title = 'If you have any issues with this tool or if you would like to let us know ways you think it could be improved, please Contact Us'> contact us</a></p>`)
+  $('#support-collapse-div').append(`<p>If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a></p>`)
   $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
   

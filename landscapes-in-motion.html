@@ -5,6 +5,10 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>LCMS Data Annimations</title>
   <link rel="icon" href="./images/lcms-icon.png">
+  <script type="text/javascript" src="js/analytics.js"></script>
+  <script type="text/javascript">
+    ga('send', 'event','load', 'lcms-gif-viewer', 'lcms-gif-viewer');
+  </script>
   <style>
     html,
     body,
@@ -32,15 +36,15 @@
 }
 
   </style>
+
   <script>
     require(["esri/Map", 
-            "esri/widgets/BasemapGallery",
             "esri/layers/GeoJSONLayer", 
             "esri/views/MapView",
+
             
             ], function (
       Map,
-      Basemap,
       GeoJSONLayer,
       MapView,
       BasemapGallery
@@ -103,20 +107,41 @@
           type: "simple",  // autocasts as new SimpleRenderer()
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: [ 255, 128, 0, 0 ],
+            color: [ 0, 122, 0, 0.5 ],
             outline: {  // autocasts as new SimpleLineSymbol()
-              width: 0,
-              color: "white"
+              width: 0.8,
+              color: '#1B1716'
             }
           }
         };
 
+      const labelClass = {  // autocasts as new LabelClass()
+  symbol: {
+    type: "text",  // autocasts as new TextSymbol()
+    color: "#B2ECE4",
+    haloColor:  "#372E2C",
+    haloSize: 0.8,
+    font: {  // autocast as new Font()
+       family: "Ubuntu Mono",
+       size: 12,
+       // weight: "bold"
+     }
+  },
+  labelPlacement: "above-right",
+  labelExpressionInfo: {
+    expression: "$feature.FORESTNAME"
+  },
+  // maxScale: 0,
+  // minScale: 30000000,
+  
+};
       const geojsonLayer = new GeoJSONLayer({
         url: url,
         copyright: "USFS LCMS",
         popupTemplate: template,
         legendEnabled:true,
-        // renderer: renderer //optional
+        renderer: renderer, //optional
+        labelingInfo: [labelClass]
       });
 
       const map = new Map({
@@ -127,7 +152,7 @@
       const view = new MapView({
         container: "viewDiv",
         center: [-103, 38],
-        zoom: 4,
+        zoom: 5,
         map: map
       });
     });
