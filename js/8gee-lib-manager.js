@@ -604,7 +604,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
          });
          mtbsByAspect = ee.ImageCollection(mtbsByAspect);
          var mtbsByAspectStack = formatAreaChartCollection(mtbsByAspect,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
-         console.log(mtbsByAspectStack.getInfo())
+         // console.log(mtbsByAspectStack.getInfo())
           // print(mtbsByAspectStack.getInfo())
     //      Map2.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
           

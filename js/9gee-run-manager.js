@@ -1537,7 +1537,7 @@ Object.keys(whichIndices2).map(function(k){
 
     Map2.addLayer(gainCONUSLT.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'LANDTRENDR Gain Year '+indexName,false);
     Map2.addLayer(gainCONUSLT.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'LANDTRENDR Gain Mag '+indexName,false);
-    Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'years',legendLabelRightAfter:'years'},'LANDTRENDR Gain Dur '+indexName,false);
+    Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years'},'LANDTRENDR Gain Dur '+indexName,false);
 
     var gainLossC = ee.ImageCollection(ee.List.sequence(startYear,endYear).getInfo().map(function(yr){
       var ltLossGainEndYear = lossGainCONUSLT.select(['loss_year','gain_year']);
@@ -2606,7 +2606,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     var vizParamsGainYear = {'min':startYear,'max':endYear,'palette':gainYearPalette,layerType:'geeImage'};
     var vizParamsGainMag = {'min':gainMagThresh,'max':0.8,'palette':gainMagPalette,layerType:'geeImage'};
     
-    var vizParamsDuration = {'min':1,'max':5,'palette':changeDurationPalette,layerType:'geeImage'};
+    var vizParamsDuration = {'min':1,'max':5,'palette':changeDurationPalette,layerType:'geeImage',legendLabelLeftAfter:'year',legendLabelRightAfter:'years'};
   
     // Map.addLayer(lt,{},'Raw LT',false);
     // Map.addLayer(joinedTS,{},'Time Series',false);
