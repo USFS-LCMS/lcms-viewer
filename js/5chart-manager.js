@@ -18,7 +18,13 @@ function downloadURI() {
 }}
 
 function clearUploadedAreas(){
-	turnOffSelectLayers()
+	if(selectionTracker.uploadedLayerIndices === undefined || selectionTracker.uploadedLayerIndices === null){
+		selectionTracker.uploadedLayerIndices = [];
+	}
+	// selectionTracker.uploadedLayerIndices.reverse().map(function(index){
+ //    	map.overlayMapTypes.setAt(index,null)
+ //    });
+    turnOffUploadedLayers();
 	$('#area-charting-shp-layer-list').empty();
 }
 function clearSelectedAreas(){
@@ -155,7 +161,16 @@ function turnOffLayers(){
 }
 
 function turnOffSelectLayers(){
-	$(".select-layer-checkbox").trigger("turnOffAllSelectLayers");
+	$(".vector-layer-checkbox").trigger("turnOffAllSelectLayers");
+}
+function turnOnSelectedLayers(){
+	$(".vector-layer-checkbox").trigger("turnOnAllSelectedLayers");
+}
+function turnOffUploadedLayers(){
+	$(".vector-layer-checkbox").trigger("turnOffAllUploadedLayers");
+}
+function turnOnUploadedLayers(){
+	$(".vector-layer-checkbox").trigger("turnOnAllUploadedLayers");
 }
 function turnOffSelectGeoJSON(){
 	// Object.keys(selectedFeaturesJSON).map(function(k){
@@ -946,6 +961,7 @@ function runShpDefinedCharting(){
 			}
 			map.setOptions({draggableCursor:'progress'});
 			map.setOptions({cursor:'progress'});
+			
 			convertToGeoJSON('areaUpload').done(function(converted){
 				console.log('successfully converted to JSON');
 				console.log(converted);
@@ -969,7 +985,7 @@ function runShpDefinedCharting(){
 				};
 				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 				
-				Map2.addLayer(area,{},name,true,null,null,name + ' for area summarizing','area-charting-shp-layer-list');
+				Map2.addLayer(area,{isUploadedLayer:true},name,true,null,null,name + ' for area summarizing','area-charting-shp-layer-list');
 	
 				makeAreaChart(area,name);
 			})
@@ -977,6 +993,12 @@ function runShpDefinedCharting(){
 	}else{showMessage('No Summary Area Selected','Please select a .zip shapefile or a .geojson file to summarize across')}
 }
 function startShpDefinedCharting(){
+	// clearUploadedAreas();
+	turnOnUploadedLayers();
+	if(selectionTracker.uploadedLayerIndices === undefined || selectionTracker.uploadedLayerIndices === null){
+		selectionTracker.uploadedLayerIndices = [];
+	}
+	
 	// $('#areaUpload').change(function(){runShpDefinedCharting()})
 };
 function stopAreaCharting(){

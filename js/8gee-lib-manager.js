@@ -234,23 +234,23 @@ function computeThematicChange(c,numbers,legendColors, legendDict,queryDict,star
 function formatAreaChartCollection(collection,classCodes,classNames,unmask){
   if(unmask === undefined || unmask === null){unmask = true};
   function unstacker(img,code){
-    return img.eq(code)
+    return img.eq(parseInt(code))
   }
   function codeWrapper(img){
     t = ee.ImageCollection( classCodes.map(function(code){return unstacker(img,code)})).toBands()
-    return t.rename(classNames).copyProperties(img,['system:time_start'])
+    return t.rename(classNames).copyProperties(img,['system:time_start']).copyProperties(img)
   }
   out = ee.ImageCollection(collection.map(codeWrapper))
 
   if(unmask){
-    out = out.map(function(img){return img.unmask(0,false)})
+    out = ee.ImageCollection(out.map(function(img){return img.unmask(0,false)}));
   }
-  return out
+  return ee.ImageCollection(out)
 }
 function multBands(img,distDir,by){
     var out = img.multiply(ee.Image(distDir).multiply(by));
     out  = out.copyProperties(img,['system:time_start'])
-              .copyProperties(img);
+              .copyProperties(img);formatAreaChartCollection
     return out;
 }
 
@@ -524,6 +524,9 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
 
   if(chartMTBS === true){
     var mtbsStack = formatAreaChartCollection(mtbs.select([0]),Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+    // console.log(mtbs.select([0]).getInfo())
+    // console.log(Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict))
+    // Map2.addLayer(mtbsStack,{},'mtbs stack')
     areaChartCollections['mtbs'] = {'collection':mtbsStack,
                                   'colors':Object.values(mtbsClassDict),
                                   'label':'MTBS Burn Severity by Year',
@@ -601,6 +604,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
          });
          mtbsByAspect = ee.ImageCollection(mtbsByAspect);
          var mtbsByAspectStack = formatAreaChartCollection(mtbsByAspect,Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict),true);
+         console.log(mtbsByAspectStack.getInfo())
           // print(mtbsByAspectStack.getInfo())
     //      Map2.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
           

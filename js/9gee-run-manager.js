@@ -1349,7 +1349,7 @@ var endYear = parseInt(urlParams.endYear);
 var transform = [30,0,-2361915.0,0,-30,3177735.0];
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'c5ee93,00a398';//'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
-var lossMagPalette = 'F5DEB3,D00';
+var lossMagPalette = 'D00,F5DEB3';
 var gainMagPalette = 'F5DEB3,006400';
 var lossThresh  = parseFloat(urlParams.lossMagThresh) *-10000;//2000;
 var gainThresh = parseFloat(urlParams.gainMagThresh) *10000;//2000;
@@ -1358,7 +1358,7 @@ var crs  = 'EPSG:5070';
 var indexName = 'NBR';
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
-var lossMagPalette = 'F5DEB3,D00';
+var lossMagPalette = 'D00,F5DEB3';
 var gainMagPalette = 'F5DEB3,006400';
 var durPalette = 'BD1600,E2F400,0C2780';
 
@@ -1532,12 +1532,12 @@ Object.keys(whichIndices2).map(function(k){
 
     Map2.addExport(lossCONUSLT.addBands(gainCONUSLT).int16().unmask(-32768,false),'LANDTRENDR Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
     Map2.addLayer(lossCONUSLT.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'LANDTRENDR Loss Year '+indexName,true);
-    Map2.addLayer(lossCONUSLT.select(['loss_mag']),{min:lossThresh,max:lossThresh*3,palette:lossMagPalette},'LANDTRENDR Loss Mag '+indexName,false);
-    Map2.addLayer(lossCONUSLT.select(['loss_dur']),{min:1,max:5,palette:durPalette},'LANDTRENDR Loss Dur '+indexName,false);
+    Map2.addLayer(lossCONUSLT.select(['loss_mag']).multiply(-0.0001),{max:lossThresh/10000*-1,min:lossThresh*3/10000*-1,palette:lossMagPalette},'LANDTRENDR Loss Mag '+indexName,false);
+    Map2.addLayer(lossCONUSLT.select(['loss_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years'},'LANDTRENDR Loss Dur '+indexName,false);
 
     Map2.addLayer(gainCONUSLT.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'LANDTRENDR Gain Year '+indexName,false);
     Map2.addLayer(gainCONUSLT.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'LANDTRENDR Gain Mag '+indexName,false);
-    Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette},'LANDTRENDR Gain Dur '+indexName,false);
+    Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'years',legendLabelRightAfter:'years'},'LANDTRENDR Gain Dur '+indexName,false);
 
     var gainLossC = ee.ImageCollection(ee.List.sequence(startYear,endYear).getInfo().map(function(yr){
       var ltLossGainEndYear = lossGainCONUSLT.select(['loss_year','gain_year']);
@@ -2592,7 +2592,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   
   if(addToMap){
     var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
-    var gainYearPalette = 'AFDEA8,80C476,308023,145B09';
+    var gainYearPalette = 'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
 
     var lossMagPalette = 'D00,F5DEB3';
     var gainMagPalette = 'F5DEB3,006400';
@@ -2601,10 +2601,10 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     
     //Set up viz params
     var vizParamsLossYear = {'min':startYear,'max':endYear,'palette':lossYearPalette,layerType:'geeImage'};
-    var vizParamsLossMag = {'min':-0.8*10000 ,'max':lossMagThresh*10000,'palette':lossMagPalette,layerType:'geeImage'};
+    var vizParamsLossMag = {'min':-0.8 ,'max':lossMagThresh,'palette':lossMagPalette,layerType:'geeImage'};
     
     var vizParamsGainYear = {'min':startYear,'max':endYear,'palette':gainYearPalette,layerType:'geeImage'};
-    var vizParamsGainMag = {'min':gainMagThresh*10000,'max':0.8*10000,'palette':gainMagPalette,layerType:'geeImage'};
+    var vizParamsGainMag = {'min':gainMagThresh,'max':0.8,'palette':gainMagPalette,layerType:'geeImage'};
     
     var vizParamsDuration = {'min':1,'max':5,'palette':changeDurationPalette,layerType:'geeImage'};
   
@@ -2626,11 +2626,11 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       Map2.addExport(gainStackI.int16(),indexName +'_LANDTRENDR_Gain_Stack_'+iName+'_'+LTSortBy+'_change' ,30,shouldExport,{});
 
       Map2.addLayer(lossStackI.select(['loss_yr.*']),vizParamsLossYear,indexName +' '+iName+ ' '+LTSortBy+' Loss Year',shouldShowLossYear);
-      Map2.addLayer(lossStackI.select(['loss_mag.*']),vizParamsLossMag,indexName +' '+iName+ ' '+LTSortBy+' Loss Magnitude',false);
+      Map2.addLayer(lossStackI.select(['loss_mag.*']).divide(10000),vizParamsLossMag,indexName +' '+iName+ ' '+LTSortBy+' Loss Magnitude',false);
       Map2.addLayer(lossStackI.select(['loss_dur.*']),vizParamsDuration,indexName +' '+iName+ ' '+LTSortBy+' Loss Duration',false);
       
       Map2.addLayer(gainStackI.select(['gain_yr.*']),vizParamsGainYear,indexName +' '+iName+ ' '+LTSortBy+' Gain Year',false);
-      Map2.addLayer(gainStackI.select(['gain_mag.*']),vizParamsGainMag,indexName +' '+iName+ ' '+LTSortBy+' Gain Magnitude',false);
+      Map2.addLayer(gainStackI.select(['gain_mag.*']).divide(10000),vizParamsGainMag,indexName +' '+iName+ ' '+LTSortBy+' Gain Magnitude',false);
       Map2.addLayer(gainStackI.select(['gain_dur.*']),vizParamsDuration,indexName +' '+iName+ ' '+LTSortBy+' Gain Duration',false);
     });
   }
@@ -2835,7 +2835,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 // run_params.timeSeries = srCollection;
 // Run the LandTrendr algorithm
 // var LTresult = ee.Algorithms.TemporalSegmentation.LandTrendr(run_params);
-Map2.addTimeLapse(srCollection,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red',years:years},'Composite Time Lapse')
+// Map2.addTimeLapse(srCollection,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red',years:years},'Composite Time Lapse')
   
 }
 var mtbsC;

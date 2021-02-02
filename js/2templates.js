@@ -15,7 +15,7 @@ var  titles = {
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
-            leftWords: 'LCMS',
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.4em' class='image-icon mr-1' src="images/lcms-icon.png">LCMS`,
             centerWords: 'Base-Learner',
             rightWords:'Explorer',
             title:'LCMS Base Learner Explorer'
@@ -27,16 +27,16 @@ var  titles = {
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
-            leftWords: 'LANDTRENDR',
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/lcms-icon.png">LANDTRENDR`,
             centerWords: 'DATA',
             rightWords:'Viewer',
             title:'LANDTRENDR Data Viewer'
             },
     'MTBS': {
-            leftWords: 'MTBS',
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/mtbs-logo.png">MTBS`,
             centerWords: 'DATA',
             rightWords:'Explorer',
-            title:'TimeSync Ancillary Data Viewer'
+            title:'MTBS Data Explorer'
             },
     'TEST': {
             leftWords: 'TEST',
@@ -1551,7 +1551,15 @@ function addLayer(layer){
         $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
         $('.vector-layer-checkbox').on('turnOffAllVectors',function(){turnOffAll()});
         $('.vector-layer-checkbox').on('turnOnAllVectors',function(){turnOnAll()});
+
+        if(layer.viz.isUploadedLayer){
+            $('#'+visibleLabelID).addClass('uploaded-layer-checkbox');
+            selectionTracker.uploadedLayerIndices.push(layer.layerId)
+            $('.vector-layer-checkbox').on('turnOffAllUploadedLayers',function(){turnOffAll()});
+            $('.vector-layer-checkbox').on('turnOnAllUploadedLayers',function(){turnOnAll()});
+        }
     }
+
     //Handle different object types
 	if(layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection'){
         //Handle image colletions
@@ -1565,6 +1573,7 @@ function addLayer(layer){
             layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames);
         //Handle vectors
         } else if(layer.layerType === 'geeVectorImage' || layer.layerType === 'geeVector'){
+
             if(layer.viz.isSelectLayer){
                 
                 selectedFeaturesJSON[layer.name] = {'layerName':layer.name,'filterList':[],'geoJSON':new google.maps.Data(),'id':layer.id,'rawGeoJSON':{},'selection':ee.FeatureCollection([])}
@@ -1575,10 +1584,10 @@ function addLayer(layer){
                 // selectedFeaturesJSON[layer.name].geoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
                 // layer.queryVector = layer.item;  
                 $('#'+visibleLabelID).addClass('select-layer-checkbox');
-                $('.select-layer-checkbox').on('turnOffAllSelectLayers',function(){turnOffAll()});
-                $('.select-layer-checkbox').on('turnOnAllSelectLayers',function(){turnOnAll()});
-                $('.select-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
-                $('.select-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
+                $('.vector-layer-checkbox').on('turnOffAllSelectLayers',function(){turnOffAll()});
+                $('.vector-layer-checkbox').on('turnOnAllSelectLayers',function(){turnOnAll()});
+                $('.vector-layer-checkbox').on('turnOffAll',function(){turnOffAll()});
+                $('.vector-layer-checkbox').on('turnOnAll',function(){turnOnAll()});
             }
             layer.queryItem = layer.item;
             if(layer.layerType === 'geeVectorImage'){
@@ -1603,8 +1612,13 @@ function addLayer(layer){
             }
             if(layer.viz.isSelectedLayer){
                 $('#'+visibleLabelID).addClass('selected-layer-checkbox');
+                $('.vector-layer-checkbox').on('turnOffAllSelectLayers',function(){turnOffAll()});
+                $('.vector-layer-checkbox').on('turnOnAllSelectLayers',function(){turnOnAll()});
+                $('.vector-layer-checkbox').on('turnOffAllSelectedLayers',function(){turnOffAll()});
+                $('.vector-layer-checkbox').on('turnOnAllSelectedLayers',function(){turnOnAll()});
                 selectionTracker.seletedFeatureLayerIndices.push(layer.layerId)
             }
+            
             //     // selectedFeaturesJSON[layer.name].geoJSON.addListener('click',function(event){
             //     //     console.log(event);
             //     //     var name = event.feature.j.selectionTrackingName;

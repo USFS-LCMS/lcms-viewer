@@ -9,6 +9,8 @@ function stopAllTools(){
   clearQueryGeoJSON();
   // clearQueryGeoJSON();
   // clearSelectedAreas();
+  turnOffUploadedLayers();
+
   turnOffSelectLayers();
   turnOffSelectGeoJSON();
 
@@ -66,7 +68,7 @@ var toolFunctions = {'measuring':
                         'title': 'Area Tools-Select an Area from Dropdown'
                       },
                       'selectInteractive':{
-                        'on':'stopAllTools();turnOffVectorLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
+                        'on':'stopAllTools();turnOffVectorLayers();turnOnSelectedLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
                         'off':'stopAllTools();turnOffSelectLayers();',
                         'state':false,
                         'title': 'Area Tools-Select an Area on map'

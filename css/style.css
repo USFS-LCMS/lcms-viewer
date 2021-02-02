@@ -525,7 +525,9 @@ font-size:0.9em;
     float: right !important;
     content:"\f067";
 }
-
+.sub-panel-title{
+  padding-top:0.8em;
+}
 .sub-panel-title > a:after {
   float: left !important;
   font-family: FontAwesome;
