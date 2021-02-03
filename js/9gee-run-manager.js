@@ -3340,13 +3340,24 @@ function runTest(){
   Map2.addTimeLapse(composites,{min:500,max:7000,bands:'swir2,nir,red',gamma:1.6},'SEAK Composites',false)
 }
 function runFHP(){
+  var studyAreaName = 'USFS LCMS 1984-2020'
+  ga('send', 'event', 'lcms-gtac-fhp-viewer-run', 'year_range', `${idsMinYear}_${idsMaxYear}`);
+  getLCMSVariables();
   var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
+  var lcmsCONUS = ee.ImageCollection(studyAreaDict[studyAreaName].conusChangeFinal);
+  var lcmsSEAK = ee.ImageCollection(studyAreaDict[studyAreaName].akChangeFinal);
+
+  var akChange = ee.ImageCollection(studyAreaDict[studyAreaName].akChange)
+  var conusChange = ee.ImageCollection(studyAreaDict[studyAreaName].conusChange)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
+  var conusSA = ee.FeatureCollection(studyAreaDict[studyAreaName].conusSA);
+  var akSA = ee.FeatureCollection(studyAreaDict[studyAreaName].akSA);
   
   var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 
   var years  = ee.List.sequence(idsMinYear,idsMaxYear);
   // var years  = ee.List.sequence(2010,2013);
-  var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+  // var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+  var idsFolder = 'projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS';
   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  
   ids = ids.map(function(id){
@@ -3358,62 +3369,83 @@ function runFHP(){
   var idsLCMS = ee.ImageCollection(years.map(function(yr){
     yr = ee.Number(yr).int16();
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+    idsT = ee.Image().paint(idsT,null,2).visualize({min:1,max:1,palette:'0FF'});
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
     var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30);
-    var yrImg = ee.Image(yr).mask(lcmsT).visualize({min:idsMinYear,max:idsMaxYear,palette:lossYearPalette}).unmask(-32768);
-    idsT = ee.Image().paint(idsT,null,2).visualize({min:1,max:1,palette:'0FF'});
-    var out = yrImg;
+    var lcmsCONUST = ee.Image(lcmsCONUS.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+    var lcmsSEAKT = ee.Image(lcmsSEAK.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+    var lcmsT = ee.ImageCollection([lcmsCONUST,lcmsSEAKT]).mosaic()
+    lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)))
+    lcmsT = lcmsT.visualize({min:2,max:4,palette:changePalette});//,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]}})
+    // var yrImg = ee.Image(yr).mask(lcmsT).visualize({min:idsMinYear,max:idsMaxYear,palette:lossYearPalette}).unmask(-32768);
+    
+    var out = lcmsT.unmask(-32768);
     out = out.where(idsT.mask(),idsT);
     out = out.mask(out.neq(-32768))
     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
   }));
-  
+  var lcmsChangeClasses = ee.ImageCollection(years.map(function(yr){
+    var lcmsCONUST = ee.Image(lcmsCONUS.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+    var lcmsSEAKT = ee.Image(lcmsSEAK.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+    var lcmsT = ee.ImageCollection([lcmsCONUST,lcmsSEAKT]).mosaic()
+    lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)))
+    return lcmsT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
+  }))
   var idsLCMSTS = ee.ImageCollection(years.map(function(yr){
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
-    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100).unmask(0);
+    // var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100).unmask(0);
+    var akCombined = combineChange(akChange,yr,studyAreaDict[studyAreaName].akGainThresh,studyAreaDict[studyAreaName].akSlowLossThresh,studyAreaDict[studyAreaName].akFastLossThresh,'stack',0.01).clip(akSA.geometry().bounds());
+
+    var conusCombined = combineChange(conusChange,yr,studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].conusSlowLossThresh,studyAreaDict[studyAreaName].conusFastLossThresh,'collection',0.01).clip(conusSA.geometry().bounds());
+
+    var lcmsT = ee.ImageCollection.fromImages(ee.List([conusCombined,akCombined])).mosaic().select(['.*_Prob']).unmask(0);
     idsT = idsT.reduceToImage(['constant'],ee.Reducer.first());
-    var out = lcmsT.addBands(idsT).rename(['LCMS Loss Probability','IDS Polygon']);
+    var out = lcmsT.addBands(idsT).rename(['LCMS Slow Loss Probability','LCMS Fast Loss Probability','LCMS Gain Probability','IDS Polygon']);
  
     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
   }));
-
+  
+var lcmsChangeClassesForArea = formatAreaChartCollection(lcmsChangeClasses,[2,3,4],['Slow Loss','Fast Loss','Gain']);
   var idsLCMSTSForArea = ee.ImageCollection(years.map(function(yr){
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
-    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30).unmask(0);
+    var lcmsT = ee.Image(lcmsChangeClassesForArea.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
     idsT = idsT.reduceToImage(['constant'],ee.Reducer.first()).unmask(0);
-    var out = lcmsT.addBands(idsT).rename(['LCMS Loss Probability','IDS Polygon']);
+    var out = lcmsT.addBands(idsT).rename(['LCMS Slow Loss','LCMS Fast Loss','LCMS Gain','IDS Polygon']);
  
     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
   }));
- 
+
   // Map2.addLayer(idsLCMSTS)
   var classLegendDict = {};
-  var lossYearPaletteStart = lossYearPalette.split(',')[0];
-  var lossYearPaletteEnd = lossYearPalette.split(',')[lossYearPalette.split(',').length-1];
-  classLegendDict['LCMS Loss '+idsMinYear.toString()] = lossYearPaletteStart;
-  classLegendDict['LCMS Loss '+idsMaxYear.toString()] = lossYearPaletteEnd;
+  // var lossYearPaletteStart = lossYearPalette.split(',')[0];
+  // var lossYearPaletteEnd = lossYearPalette.split(',')[lossYearPalette.split(',').length-1];
+  // classLegendDict['LCMS Loss '+idsMinYear.toString()] = lossYearPaletteStart;
+  // classLegendDict['LCMS Loss '+idsMaxYear.toString()] = lossYearPaletteEnd;
+  classLegendDict['Slow Loss']= changePalette[0]
+  classLegendDict['Fast Loss']= changePalette[1]
+  classLegendDict['Gain']= changePalette[2]
   classLegendDict['IDS Polygons'] = '0FF';
 
-  Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Loss and IDS Time Lapse');
-  getLCMSVariables();
+  Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Change and IDS Time Lapse');
+  
   Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
-  getSelectLayers();
-  pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'colors':['FF0','0FF']};
+  // getSelectLayers();
+  pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'chartColors':['f39268','d54309','00a398','0FF']};
 
   areaChartCollections['test'] = {'label':'LCMS and IDS Time Series',
                                   'collection':idsLCMSTSForArea,
                                   'stacked':false,
                                   'steppedLine':false,
                                   'tooltip':'Summarize loss IDS each year',
-                                  'colors':chartColorsDict.advancedBeta.slice(4),
+                                  'colors':['f39268','d54309','00a398','0FF'],
                                   'xAxisLabel':'Year'};
    populatePixelChartDropdown();populateAreaChartDropdown();
 }
