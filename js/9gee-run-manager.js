@@ -3437,7 +3437,7 @@ var lcmsChangeClassesForArea = formatAreaChartCollection(lcmsChangeClasses,[2,3,
   Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Change and IDS Time Lapse');
   
   Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
-  // getSelectLayers();
+  getSelectLayers();
   pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'chartColors':['f39268','d54309','00a398','0FF']};
 
   areaChartCollections['test'] = {'label':'LCMS and IDS Time Series',
