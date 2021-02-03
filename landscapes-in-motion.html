@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>LCMS Data Annimations</title>
+  <title>LCMS Data Animations</title>
   <link rel="icon" href="./images/lcms-icon.png">
   <script type="text/javascript" src="js/analytics.js"></script>
   <script type="text/javascript">
@@ -116,25 +116,25 @@
         };
 
       const labelClass = {  // autocasts as new LabelClass()
-  symbol: {
-    type: "text",  // autocasts as new TextSymbol()
-    color: "#B2ECE4",
-    haloColor:  "#372E2C",
-    haloSize: 0.8,
-    font: {  // autocast as new Font()
-       family: "Ubuntu Mono",
-       size: 12,
-       // weight: "bold"
-     }
-  },
-  labelPlacement: "above-right",
-  labelExpressionInfo: {
-    expression: "$feature.FORESTNAME"
-  },
-  // maxScale: 0,
-  // minScale: 30000000,
-  
-};
+                          symbol: {
+                            type: "text",  // autocasts as new TextSymbol()
+                            color: "#B2ECE4",
+                            haloColor:  "#372E2C",
+                            haloSize: 0.8,
+                            font: {  // autocast as new Font()
+                               family: "Ubuntu Mono",
+                               size: 12,
+                               // weight: "bold"
+                             }
+                          },
+                          // labelPlacement: "above-right",
+                          labelExpressionInfo: {
+                            expression: "$feature.FORESTNAME"
+                          },
+                          // maxScale: 0,
+                          // minScale: 30000000,
+                          
+                        };
       const geojsonLayer = new GeoJSONLayer({
         url: url,
         copyright: "USFS LCMS",
