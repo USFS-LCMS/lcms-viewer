@@ -3365,12 +3365,12 @@ function runFHP(){
     return idsT;
   });
   ids = ee.FeatureCollection(ids).flatten();
-  Map2.addLayer(ids,{strokeColor:'0DD',layerType:'geeVectorImage'},'IDS Polygons',true,null,null,'IDS Polygons');
+  Map2.addLayer(ids,{strokeColor:'0DD',strokeWeight:1,layerType:'geeVectorImage'},'IDS Polygons',true,null,null,'IDS Polygons');
   ids = ids.map(function(f){return f.set('constant',1)})
   var idsLCMS = ee.ImageCollection(years.map(function(yr){
     yr = ee.Number(yr).int16();
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    idsT = ee.Image().paint(idsT,null,2).visualize({min:1,max:1,palette:'0FF'});
+    idsT = ee.Image().paint(idsT,null,1).visualize({min:1,max:1,palette:'0FF'});
     // console.log(yr);
     // console.log(idsT.limit(100).size().getInfo())
     var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30);
