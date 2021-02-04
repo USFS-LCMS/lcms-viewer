@@ -3365,6 +3365,7 @@ function runFHP(){
     return idsT;
   });
   ids = ee.FeatureCollection(ids).flatten();
+  Map2.addLayer(ids,{strokeColor:'0DD',layerType:'geeVectorImage'},'IDS Polygons',true,null,null,'IDS Polygons');
   ids = ids.map(function(f){return f.set('constant',1)})
   var idsLCMS = ee.ImageCollection(years.map(function(yr){
     yr = ee.Number(yr).int16();
