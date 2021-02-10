@@ -36,7 +36,7 @@ var  titles = {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/mtbs-logo.png">MTBS`,
             centerWords: 'DATA',
             rightWords:'Explorer',
-            title:'MTBS Data Explorerrrrr'
+            title:'MTBS Data Explorer'
             },
     'TEST': {
             leftWords: 'TEST',

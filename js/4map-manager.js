@@ -744,9 +744,11 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
     },delay)
     
   });
-  $('#'+ legendDivID + '-name-span').dblclick(function(){
-    showMessage('test')
-    })
+  // $('#'+ legendDivID + '-name-span').dblclick(function(){
+  //   // showMessage('test',item.get('bounds').getInfo())
+  //   // printEE(item.get('bounds'))
+  //   // synchronousCenterObject(item.get('bounds'))
+  //   })
 
   //Add in layers
   viz.layerType = 'geeImage';
