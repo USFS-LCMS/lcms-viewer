@@ -532,7 +532,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
     var mtbs_path = 'projects/gtac-mtbs/assets/burn_severity_mosaics/MTBS';//'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
  
   var mtbsEndYear = endYear;
-  if(endYear > 2018){mtbsEndYear = 2018}
+  if(endYear > 2019){mtbsEndYear = 2019}
 
   var mtbsYears = ee.List.sequence(1984,mtbsEndYear);
   var mtbs = ee.ImageCollection(mtbs_path);
@@ -627,7 +627,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
    Map2.addTimeLapse(nlcdObj.collection,{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict,years:nlcdObj.years},'NLCD Land Cover Time Lapse',false,null,null,'NLCD landcover classes ','reference-layer-list');
           
    nlcdObj.years.map(function(nlcdYear){
-      if(nlcdYear >= startYear  && nlcdYear <= mtbsEndYear){
+      // if(nlcdYear >= startYear  && nlcdYear <= mtbsEndYear){
         var nlcdT = nlcdObj.collection.filter(ee.Filter.calendarRange(nlcdYear,nlcdYear,'year')).mosaic();
         var mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function(k){
           var name = nlcdObj.queryDict[k];
@@ -648,7 +648,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
                                         'xAxisProperty':'nlcd_landcover_class',
                                         'xAxisLabel':'NLCD '+nlcdYear.toString() + ' Class',
                                         'tooltip':'Chart MTBS burn severity by each NLCD '+nlcdYear.toString() + ' landcover class'}
-          }
+          // }
       
        })
   }
