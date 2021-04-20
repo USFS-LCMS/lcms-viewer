@@ -2906,7 +2906,7 @@ function runMTBS(){
   var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
   var timeLapseSeverityViz = JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz));
   timeLapseSeverityViz.years = yearsCli;
-  // Map2.addTimeLapse(mtbsC,timeLapseSeverityViz,'MTBS Burn Severity Time Lapse',false);
+  Map2.addTimeLapse(mtbsC,timeLapseSeverityViz,'MTBS Burn Severity Time Lapse',false);
   // forCharting = forCharting.set('chartTableDict',chartTableDict);
   // forCharting = forCharting.set('legends',chartTableDict) 
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
