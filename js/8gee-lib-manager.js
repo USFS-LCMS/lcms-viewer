@@ -733,7 +733,8 @@ function getNAIP(whichLayerList){
                 [2008,2008],
                 [2009,2011],
                 [2012,2014],
-                [2015,2017]];
+                [2015,2017],
+                [2018,2020]];
 
   var naip = ee.ImageCollection("USDA/NAIP/DOQQ").select([0,1,2],['R','G','B']);
   // naip = naip.map(function(img){
@@ -1309,6 +1310,8 @@ function getSelectLayers(short){
     Map2.addSelectLayer(ecoregions,{strokeColor:'8F8',layerType:'geeVectorImage'},"Baileys Ecoregions Sections",false,null,null,'Baileys ecoregion sections. Turn on layer and click on any ecoregion wanted to include in chart');
     
     Map2.addSelectLayer(ecoregions_subsections,{strokeColor:'8F0',layerType:'geeVectorImage'},"Baileys Ecoregions Subsections",false,null,null,'Baileys ecoregions subsections. Turn on layer and click on any ecoregion wanted to include in chart');
+    Map2.addSelectLayer(ee.FeatureCollection("EPA/Ecoregions/2013/L3"),{strokeColor:'8F8',layerType:'geeVectorImage'},"Level 3 EPA Ecoregions",false,null,null,'Omernik and Griffith 2014 Level 3 EPA Ecoregions. Turn on layer and click on any ecoregion wanted to include in chart');
+    Map2.addSelectLayer(ee.FeatureCollection("EPA/Ecoregions/2013/L4"),{strokeColor:'8FD',layerType:'geeVectorImage'},"Level 4 EPA Ecoregions",false,null,null,'Omernik and Griffith 2014 Level 4 EPA Ecoregions. Turn on layer and click on any ecoregion wanted to include in chart');
     
     
     // Map2.addSelectLayer(usfs_regions,{strokeColor:'0F0',layerType:'geeVectorImage'},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
@@ -1318,10 +1321,12 @@ function getSelectLayers(short){
     
     // Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests2',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
     
-    Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
+    // Map2.addSelectLayer(nps,{strokeColor:'F0F',layerType:'geeVectorImage'},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
+
+    
 
     Map2.addSelectLayer(otherLands,{strokeColor:'DD0',layerType:'geeVectorImage'},'Other Designated Lands',false,null,null,'A boundary within which National Forest System land parcels have managment or use limits placed on them by legal authority. Examples are: National Recreation Area, National Monument, and National Game Refuge. Turn on layer and click on any Park wanted to include in chart');
-
+    Map2.addSelectLayer(ee.FeatureCollection("TIGER/2018/States"),{strokeColor:'AD0',layerType:'geeVectorImage'},'US States and Territories',false,null,null,'2018 TIGER state and territory boundaries for the United States. Turn on layer and click on any state/territory wanted to include in chart');
   }
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
 
