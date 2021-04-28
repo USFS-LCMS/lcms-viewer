@@ -79,6 +79,7 @@ html, body{
   }
 }
 /*///////////////////////////////////////////////////////*/
+.custom-hidden {display: none;}
 .center {
   display: block;
   margin-left: auto;

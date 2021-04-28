@@ -14,6 +14,7 @@ var analyticsObj = {'LCMS':'UA-188090968-1',
 					'Ancillary':'UA-188090968-4',
 					'STORM':'UA-188090968-5',
 					'dev-viewer':'UA-188090968-6'}
+if(window.document.documentMode){alert('This website will not work with Microsoft Internet Explorer. Please switch to a browser such as Chrome, Firefox, Edge, Safari, etc')}
 
 if(window.location.search.indexOf('analytics=dev') !== -1){
 	console.log('Using dev analytics')

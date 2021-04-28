@@ -435,7 +435,9 @@ var staticTemplates = {
                           </div>`,
         distanceDiv : `Click on map to measure distance`,
         distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
-        areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>`,
+        areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
+        <i id = 'rectangle-drawing-btn' class="fa fa-square-o btn custom-hidden"></i>
+        <i id = 'polygon-drawing-btn' class="fa fa-pencil btn custom-hidden"></i>`,
         areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
         queryDiv : "<div>Double-click on map to query values of displayed layers at that location</div>",
         queryTip : 'Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.',

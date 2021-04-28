@@ -2397,7 +2397,29 @@ function initialize() {
   map = new google.maps.Map(document.getElementById("map"),mapOptions);
   //Associate the styled map with the MapTypeId and set it to display.
   map.mapTypes.set('dark_mode', styledMapType);
-  
+  // const drawingManager = new google.maps.drawing.DrawingManager({
+  //   drawingMode: google.maps.drawing.OverlayType.MARKER,
+  //   drawingControl: true,
+  //   drawingControlOptions: {
+  //     position: google.maps.ControlPosition.TOP_CENTER,
+  //     drawingModes: [
+   
+  //       google.maps.drawing.OverlayType.RECTANGLE,
+  //       google.maps.drawing.OverlayType.POLYGON,
+        
+  //     ],
+  //   },
+    
+    
+  // });
+  // drawingManager.setMap(map);
+ //  $("#rectangle-drawing-btn").click( function(){
+ //      drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
+ // });
+
+ //  $("#polygon-drawing-btn")square-drawing-btn.click( function(){
+ //        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+ //   });
   //Listen for street view use
   //Adapted from: https://stackoverflow.com/questions/7251738/detecting-google-maps-streetview-mode
   var thePanorama = map.getStreetView();

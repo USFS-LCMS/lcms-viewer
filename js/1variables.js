@@ -3,6 +3,7 @@ var urlParamsObj = {};
 var pageUrl = document.URL;
 var tinyURL = '';
 var urlParams = {};
+
 function setUrl(url){
   var obj = { Title: 'test', Url: url };
   history.pushState(obj, obj.Title, obj.Url);
