@@ -509,7 +509,7 @@ function getNLCDObj(){
   // console.log(nlcdLCQueryDict);
   var nlcdLegendDictReverse = {};
   Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]});
-  var nlcd = ee.ImageCollection('USGS/NLCD').select([0],['NLCD Landcover']);
+  var nlcd = ee.ImageCollection('USGS/NLCD_RELEASES/2016_REL').select([0],['NLCD Landcover']);
 
   var nlcdC = nlcdYears.map(function(nlcdYear){
       // if(nlcdYear >= startYear  && nlcdYear <= endYear){
@@ -703,7 +703,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   // var ned = ee.Image('USGS/NED');
   // var hillshade = ee.Terrain.hillshade(ned);
   // Map2.addLayer(hillshade,{min:0,max:255},'hillshade')
-  var nlcd = ee.ImageCollection('USGS/NLCD');
+  var nlcd = ee.ImageCollection('USGS/NLCD_RELEASES/2016_REL');
   // Map2.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
   [2016].map(function(yr){
     var tcc = nlcd.filter(ee.Filter.calendarRange(yr,yr,'year')).select(['percent_tree_cover']).mosaic();
@@ -780,9 +780,9 @@ function getHansen(whichLayerList){
 
 }
 function getNLCD(){
-  var nlcd = ee.ImageCollection('USGS/NLCD').select([0]);
+  var nlcd = ee.ImageCollection('USGS/NLCD_RELEASES/2016_REL').select([0]);
 
-  var nlcdForClasses = ee.Image('USGS/NLCD/NLCD2011');
+  var nlcdForClasses = ee.Image('USGS/NLCD_RELEASES/2016_REL/2011');
   var names = nlcdForClasses.get('landcover_class_names');
   var palette = nlcdForClasses.get('landcover_class_palette');
   var values = nlcdForClasses.get('landcover_class_values').getInfo().map(function(i){return i.toString()});

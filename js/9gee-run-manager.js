@@ -1788,11 +1788,12 @@ function runRaw(){
     // print(ts.getInfo());
 
 }
-function runSimple(){
+function runAncillary(){
+
   getLCMSVariables();
   Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false)
   
-  var nlcd = ee.ImageCollection('USGS/NLCD');
+  var nlcd = ee.ImageCollection('USGS/NLCD_RELEASES/2016_REL');
 
 
   var nlcdLCMS  = ee.ImageCollection('users/yang/CONUS_NLCD2016');
@@ -1994,6 +1995,143 @@ var pdsiDict = {
   1:'severe drought',     // -3.99--3   == -4
   0:'extreme drought'}
 var idsCollection = mtbsIDS[1].select([1,0],['IDS Type','IDS DCA']);
+
+
+//PRVI layers
+var vi_2007 = ee.Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007")
+              .add(48).byte()
+              .set('system:time_start',ee.Date.fromYMD(2007,6,1).millis());
+              
+var pr_1991 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_PR_1991')
+              .set('system:time_start',ee.Date.fromYMD(1991,6,1).millis());
+
+var pr_2000 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_PR_2000')
+              .set('system:time_start',ee.Date.fromYMD(2000,6,1).millis());
+
+var vi_2000 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_VI_2000')
+              .set('system:time_start',ee.Date.fromYMD(2000,6,1).millis());
+var mona = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_Mona_2008')
+              .set('system:time_start',ee.Date.fromYMD(2008,6,1).millis());
+var pr_2010 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Landcover_2010_PR_CCAP') 
+              .add(28).byte()
+              .set('system:time_start',ee.Date.fromYMD(2010,6,1).millis());
+              
+
+
+var pr_2000 = ee.ImageCollection([pr_2000,mona,vi_2000]).mosaic()
+              .set('system:time_start',ee.Date.fromYMD(2000,6,1).millis());
+
+var prvi_lc_collection = ee.ImageCollection.fromImages(
+  [pr_1991, pr_2000, vi_2007, pr_2010]);
+prvi_lc_collection = prvi_lc_collection.map(function(img){return img.add(1).copyProperties(img,['system:time_start'])});
+
+var prvi_lc_dict = {
+  0: {'Name': 'Background/water', 'Color': '476ba1'},           // 1991, 2000 and 2008 PR LC
+  1: {'Name': 'High-Medium Density Urban', 'Color': 'ab0000'},
+  2: {'Name': 'Low-Medium Density Urban', 'Color': 'd99482'},
+  3: {'Name': 'Herbaceous Agriculture - Cultivated Lands', 'Color': 'ffff00'},
+  4: {'Name': 'Active Sun Coffee and Mixed Woody Agriculture', 'Color': 'ffcc00'},
+  5: {'Name': 'Pasture, Hay or Inactive Agriculture (e.g. abandoned sugar cane)', 'Color': 'ffff66'},
+  6: {'Name': 'Pasture, Hay or other Grassy Areas (e.g. soccer fields)', 'Color': 'ffcc66'},
+  7: {'Name': 'Drought Deciduous Open Woodland',  'Color': '00cc00'},
+  8: {'Name': 'Drought Deciduous Dense Woodland', 'Color': '006600'},
+  9: {'Name': 'Deciduous, Evergreen Coastal and Mixed Forest or Shrubland with Succulents', 'Color': '9900ff'},
+  10: {'Name': 'Semi-Deciduous and Drought Deciduous Forest on Alluvium and Non-Carbonate Substrates', 'Color': '66ff66'},
+  11: {'Name': 'Semi-Deciduous and Drought Deciduous Forest on Karst (includes semi-evergreen forest)', 'Color': '003300'},
+  12: {'Name': 'Drought Deciduous, Semi-deciduous and Seasonal Evergreen Forest on Serpentine', 'Color': '66ff33'},
+  13: {'Name': 'Seasonal Evergreen and Semi-Deciduous Forest on Karst', 'Color': '3333ff'},
+  14: {'Name': 'Seasonal Evergreen and Evergreen Forest', 'Color': '3333cc'},
+  15: {'Name': 'Seasonal Evergreen Forest with Coconut Palm', 'Color': '6666ff'},
+  16: {'Name': 'Evergreen and Seasonal Evergreen Forest on Karst', 'Color': '333399'},
+  17: {'Name': 'Evergreen Forest on Serpentine', 'Color': '6600ff'},
+  18: {'Name': 'Elfin, Sierra Palm, Transitional and Tall Cloud Forest', 'Color': '66ffcc'},
+  19: {'Name': 'Emergent Wetlands Including Seasonally Flooded Pasture', 'Color': '00ffff'},
+  20: {'Name': 'Salt or Mud Flats', 'Color': '999966'},
+  21: {'Name': 'Mangrove', 'Color': '006666'},
+  22: {'Name': 'Seaonally Flooded Savannahs and Woodlands', 'Color': '006699'},
+  23: {'Name': 'Pterocarpus Swamp', 'Color': '0099cc'},
+  24: {'Name': 'Tidally Flooded Evergreen Dwarf-Shrubland and Forb Vegetation', 'Color': '33cccc'},
+  25: {'Name': 'Quarries', 'Color': '996633'},
+  26: {'Name': 'Coastal Sand and Rock', 'Color': 'cc9900'},
+  27: {'Name': 'Bare Soil (including bulldozed land)', 'Color': '996600'},
+  28: {'Name': 'Water - Permanent', 'Color': '476ba1'},
+  29: {'Name': 'Developed, High Intensity','Color': 'f2f2f2'},               // 2010 PR LC CCAP
+  30: {'Name': 'Developed, Medium Intensity', 'Color': 'a899a8'},
+  31: {'Name': 'Developed, Low Intensity', 'Color': '8e757c'},
+  32: {'Name': 'Developed, Open Space', 'Color': 'c1cc38'},
+  33: {'Name': 'Cultivated Crops', 'Color': '542100'},
+  34: {'Name': 'Pasture/Hay', 'Color': 'c1a04f'},
+  35: {'Name': 'Grassland/Herbaceous', 'Color': 'f2ba87'},
+  36: {'Name': 'Deciduous Forest', 'Color': '00f200'},
+  37: {'Name': 'Evergreen Forest', 'Color': '003a00'},
+  38: {'Name': 'Mixed Forest', 'Color': '07a03a'},
+  39: {'Name': 'Scrub/Shrub', 'Color': '6d6d00'},
+  40: {'Name': 'Palustrine Forested Wetland', 'Color': '005b5b'},
+  41: {'Name': 'Palustrine Scrub/Shrub Wetland', 'Color': 'f26d00'},
+  42: {'Name': 'Palustrine Emergent Wetland (Persistent)', 'Color': 'f200f2'},
+  43: {'Name': 'Estuarine Forested Wetland', 'Color': '3d003d'},
+  44: {'Name': 'Estuarine Scrub/Shrub Wetland', 'Color': '6d006d'},
+  45: {'Name': 'Estuarine Emergent Wetland', 'Color': 'af00af'},
+  46: {'Name': 'Unconsolidated Shore', 'Color': '00f2f2'},
+  47: {'Name': 'Barren Land', 'Color': 'f2f200'},
+  48: {'Name': 'Open Water', 'Color': '000077'},
+  49: {'Name': 'Palustrine Aquatic Bed', 'Color': '0000f2'},
+  50: {'Name': 'Ocean','Color': '000000'},                                   // 2007 USVI LC 
+  51: {'Name': 'Dry Allucial Evergreen Gallery Forest','Color': '61381c'},
+  52: {'Name': 'Dry Alluvial Semideciduous Forest','Color': '783d2e'},
+  53: {'Name': 'Dry Alluvial Shrubland', 'Color': '856924'},
+  54: {'Name': 'Dry Alluvial Open Shrubland', 'Color': 'dea354'},
+  55: {'Name': 'Dry Alluvial Woodland', 'Color': 'db7d24'},
+  56: {'Name': 'Dry Limestone Evergreen Gallery Forest', 'Color': '66571a'},
+  57: {'Name': 'Dry Limestone Semideciduous Forest', 'Color': '6e593b'},
+  58: {'Name': 'Dry Limestone Shrubland', 'Color': '807a26'},
+  59: {'Name': 'Dry Limestone Open Shrubland', 'Color': 'ebcf47'},
+  60: {'Name': 'Dry Limestone Woodland', 'Color': 'c7a138'},
+  61: {'Name': 'Dry Noncalcareous Evergreen Gallery Forest', 'Color': '59591a'},
+  62: {'Name': 'Dry Noncalcareous Semideciduous Forest', 'Color': '616e3b'},
+  63: {'Name': 'Dry Noncalcareous Shrubland', 'Color': '788026'},
+  64: {'Name': 'Dry Noncalcareous Open Shrubland', 'Color': 'bfc969'},
+  65: {'Name': 'Dry Noncalcareous Woodland', 'Color': '9ead52'},
+  66: {'Name': 'Lowland Moist Alluvial Evergreen Gallery Forest', 'Color': '003d00'},
+  67: {'Name': 'Lowland Moist Noncalcareous Evergreen Forest', 'Color': '004d00'},
+  68: {'Name': 'Lowland Moist Noncalcareous Evergreen Gallery Forest', 'Color': '2e361c'},
+  69: {'Name': 'Lowland Moist Noncalcareous Shrubland', 'Color': '5c630f'},
+  70: {'Name': 'Lowland Moist Noncalcareous Open Shrubland', 'Color': '96a33b'},
+  71: {'Name': 'Lowland Moist Noncalcareous Woodland', 'Color': '4f5c26'},
+  72: {'Name': 'Seasonally Flooded Nonsaline Forest', 'Color': '2e5c54'},
+  73: {'Name': 'Seasonally Flooded Nonsaline Shrubland','Color': '3b736b'},
+  74: {'Name': 'Seasonally Flooded Saline Forest','Color': '70294a'},
+  75: {'Name': 'Seasonally Flooded Saline Shrubland', 'Color': 'a62470'},
+  76: {'Name': 'Mangrove Forest and Shrubland', 'Color': '6b2e6b'},
+  77: {'Name': 'Dry Grassland and Pastures', 'Color': 'f5f5db'},
+  78: {'Name': 'Moist Grassland and Pastures', 'Color': 'd9d978'},
+  79: {'Name': 'Seasonally Flooded Herbaceous Nonsaline Wetlands', 'Color': '85c7a1'},
+  80: {'Name': 'Seasonally Flooded Herbaceous Saline Wetlands', 'Color': 'e3adba'},
+  81: {'Name': 'Emergent Herbaceous Saline Wetlands', 'Color': '5cb582'},
+  82: {'Name': 'Emergent Herbaceous Nonsaline Wetlands', 'Color': 'd68594'},
+  83: {'Name': 'Hay and Row Crops', 'Color': 'ffbd42'},
+  84: {'Name': 'Woody Agriculture and Plantations', 'Color': 'e6a159'},
+  85: {'Name': 'Artificial Barrens', 'Color': '6e121c'},
+  86: {'Name': 'Fine to Medium Grained Sandy Beaches', 'Color': 'ffff00'},
+  87: {'Name': 'Gravel Beaches', 'Color': 'bfbfbf'},
+  88: {'Name': 'Mixed Sand and Gravel Beaches', 'Color': 'dbdb00'},
+  89: {'Name': 'Riparian and Other Natural Barrens', 'Color': '055e26'},
+  90: {'Name': 'Riprap', 'Color': '545457'},
+  91: {'Name': 'Rocky Cliffs and Shelves', 'Color': '808080'},
+  92: {'Name': 'Salt and Mudflats', 'Color': 'd9d9d9'},
+  93: {'Name': 'Maintained Grassland', 'Color': 'c7ded6'},
+  94: {'Name': 'Low-density Urban Development', 'Color': 'e00054'},
+  95: {'Name': 'Medium-density Urban Development', 'Color': 'bd0000'},
+  96: {'Name': 'High-density Urban Development', 'Color': '822447'},
+  97: {'Name': 'Aquaculture', 'Color': '0da1f2'},
+  98: {'Name': 'Fresh Water', 'Color': '0000ff'},
+  99: {'Name': 'Salt Water', 'Color': '360aa6'}
+};
+var prvi_lc_lookup = {}
+Object.keys(prvi_lc_dict).map(function(k){
+  prvi_lc_lookup[parseInt(k)+1] = prvi_lc_dict[k]['Name']
+})
+// console.log(prvi_lc_lookup)
 // print(idsCollection.getInfo())
 // var mortType = idsCollection.select(['IDS Mort Type']).max();
 // var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
@@ -2014,14 +2152,17 @@ mtbs = batchFillCollection(mtbs,years).map(setSameDate);
 cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
 nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
+prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
 
-var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), cdl.select([0],['Cropland Data']),false);
-forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
-forCharting  = joinCollections(forCharting,idsCollection, false);
+
+var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), annualPDSI.select([0],['PDSI']),false)//cdl.select([0],['Cropland Data']),false);
+// forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
+// forCharting  = joinCollections(forCharting,idsCollection, false);
 forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover']), false);
 // forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
 forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
 forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
+forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
 
 
 
@@ -2034,7 +2175,8 @@ var chartTableDict = {
   'NLCD Landcover':nlcdLCQueryDict,
   'NLCD LCMS Landcover':nlcdLCQueryDict,
   'Cropland Data':cdlQueryDict,
-  'PDSI':pdsiDict
+  'PDSI':pdsiDict,
+  'PRVI Landcover':prvi_lc_lookup
 }
 
 forCharting = forCharting.set('chartTableDict',chartTableDict)

@@ -1927,7 +1927,7 @@ function dropdownUpdateStudyArea(whichOne){
   var coords = studyAreaDict[whichOne].center;
   centerMap(coords[1],coords[0],coords[2]);
     if(mode === 'Ancillary'){
-      run = runSimple;
+      run = runAncillary;
     } else if( mode === 'LT'){
       run  = runLT;
     }else if( mode === 'LCMS'|| (mode === 'LCMS-pilot' && studyAreaDict[longStudyAreaName].isPilot == false)){
@@ -2609,7 +2609,7 @@ function initialize() {
         $('#study-area-label').text(defaultStudyArea);
       }
       if(mode === 'Ancillary'){
-        run = runSimple;
+        run = runAncillary;
       } else if( mode === 'LCMS'|| (mode === 'LCMS-pilot' && studyAreaDict[longStudyAreaName].isPilot == false)){
         run  = runGTAC;
       }else if( mode === 'LT'){
