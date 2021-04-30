@@ -1999,7 +1999,7 @@ var idsCollection = mtbsIDS[1].select([1,0],['IDS Type','IDS DCA']);
 
 //PRVI layers
 var vi_2007 = ee.Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007")
-              .add(48).byte()
+              .add(50).byte()
               .set('system:time_start',ee.Date.fromYMD(2007,6,1).millis());
               
 var pr_1991 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_PR_1991')
