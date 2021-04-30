@@ -2013,7 +2013,7 @@ var vi_2000 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCov
 var mona = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_Mona_2008')
               .set('system:time_start',ee.Date.fromYMD(2008,6,1).millis());
 var pr_2010 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Landcover_2010_PR_CCAP') 
-              .add(28).byte()
+              .add(27).byte()
               .set('system:time_start',ee.Date.fromYMD(2010,6,1).millis());
               
 
@@ -2127,10 +2127,15 @@ var prvi_lc_dict = {
   98: {'Name': 'Fresh Water', 'Color': '0000ff'},
   99: {'Name': 'Salt Water', 'Color': '360aa6'}
 };
-var prvi_lc_lookup = {}
+var prvi_lc_lookup = {};
+var prvi_lc_legend = {};
+var prvi_lc_palette = [];
 Object.keys(prvi_lc_dict).map(function(k){
   prvi_lc_lookup[parseInt(k)+1] = prvi_lc_dict[k]['Name']
+  prvi_lc_legend[prvi_lc_dict[k]['Name']] = prvi_lc_dict[k]['Color']
+  prvi_lc_palette.push(prvi_lc_dict[k]['Color'])
 })
+Map2.addTimeLapse(prvi_lc_collection,{min:1,max:100,palette:prvi_lc_palette,addToClassLegend:true,classLegendDict:prvi_lc_legend}, 'PRVI LC Time Lapse')
 // console.log(prvi_lc_lookup)
 // print(idsCollection.getInfo())
 // var mortType = idsCollection.select(['IDS Mort Type']).max();
