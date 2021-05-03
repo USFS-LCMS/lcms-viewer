@@ -2135,7 +2135,46 @@ Object.keys(prvi_lc_dict).map(function(k){
   prvi_lc_legend[prvi_lc_dict[k]['Name']] = prvi_lc_dict[k]['Color']
   prvi_lc_palette.push(prvi_lc_dict[k]['Color'])
 })
-Map2.addTimeLapse(prvi_lc_collection,{min:1,max:100,palette:prvi_lc_palette,addToClassLegend:true,classLegendDict:prvi_lc_legend}, 'PRVI LC Time Lapse')
+var prvi_bounds = {
+  "geodesic": false,
+  "type": "Polygon",
+  "coordinates": [
+    [
+      [
+        -67.9754761385265,
+        17.64336610970855
+      ],
+      [
+        -64.53643398488734,
+        17.64336610970855
+      ],
+      [
+        -64.53643398488734,
+        18.54626790365004
+      ],
+      [
+        -67.9754761385265,
+        18.54626790365004
+      ],
+      [
+        -67.9754761385265,
+        17.64336610970855
+      ]
+    ]
+  ]
+};
+Map2.addTimeLapse(prvi_lc_collection.set('bounds',prvi_bounds),{years:[1991, 2000, 2007, 2010],min:1,max:100,palette:prvi_lc_palette,addToClassLegend:true,classLegendDict:prvi_lc_legend}, 'PRVI LC Time Lapse')
+var prvi_winds = ee.ImageCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Hurricane_Wind_Images');
+var hurricane_years = [2004,2007,2008,2009,2010,2011,2012,2013,2014,2015,2017,2018];//all.aggregate_histogram('year').keys().getInfo();
+
+prvi_winds = ee.ImageCollection(hurricane_years.map(function(yr){
+  return prvi_winds.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().addBands(ee.Image(yr).rename(['year'])).float().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+})
+);
+
+Map2.addTimeLapse(prvi_winds.select([0]),{years:hurricane_years,min: 30, max: 160, palette: palettes.niccoli.isol[7]}, 'PRVI Wind Time Lapse')
+
+var maxWinds = prvi_winds.qualityMosaic('Max_Wind_MPH');
 // console.log(prvi_lc_lookup)
 // print(idsCollection.getInfo())
 // var mortType = idsCollection.select(['IDS Mort Type']).max();
@@ -2158,7 +2197,7 @@ cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
 nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
 prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
-
+prvi_winds = batchFillCollection(prvi_winds,years).map(setSameDate);
 
 var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), annualPDSI.select([0],['PDSI']),false)//cdl.select([0],['Cropland Data']),false);
 // forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
@@ -2168,7 +2207,7 @@ forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover'])
 forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
 forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
 forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
-
+forCharting  = joinCollections(forCharting,prvi_winds, false);
 
 
 // console.log(forCharting.getInfo())
