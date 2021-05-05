@@ -216,6 +216,8 @@ function convertToGeoJSON(formID){
   var url = 'https://ogre.adc4gis.com/convert'
 
   var data = new FormData();
+  // data.append("sourceSrs","EPSG:5070");
+   
   data.append("targetSrs","EPSG:4326");
   jQuery.each(jQuery('#'+formID)[0].files, function (i, file) {
     data.append("upload", file);
@@ -225,11 +227,44 @@ function convertToGeoJSON(formID){
     url: url,
     data: data,
     processData: false,
-    contentType: false
+    contentType: false,
+    error: function (err) {
+        // console.log("AJAX error in request: " + JSON.stringify(err, null, 2));
+        showMessage('Error!', 'Error converting file: <hr>'+err.responseJSON.msg.replace('\n','<br>'));
+        $('#summary-spinner').hide();
+    }
   });
   return out;
 }
-
+function compressGeoJSON(geoJSON,reductionFactor){
+  if(reductionFactor === undefined || reductionFactor === null){reductionFactor = 2}
+  geoJSON.features = geoJSON.features.map(function(f){
+    
+    if(f.geometry.type.indexOf('Multi')> -1){
+      f.geometry.coordinates = f.geometry.coordinates.map(function(poly){
+        return poly.map(function(pts){
+          if(pts.length>100){
+            pts = pts.filter((element, index) => {return index % reductionFactor === 0;})
+          }
+          return pts//.map(function(pt){
+          //   return [parseFloat(pt[0].toFixed(decimalPlaces)),parseFloat(pt[1].toFixed(decimalPlaces))]
+          // })
+        })
+      })
+    }else{
+      f.geometry.coordinates = f.geometry.coordinates.map(function(poly){
+        if(poly.length>100){
+          poly = poly.filter((element, index) => {return index % reductionFactor === 0;});
+        }
+        return poly//.map(function(pt){
+          // return [parseFloat(pt[0].toFixed(decimalPlaces)),parseFloat(pt[1].toFixed(decimalPlaces))]
+        // })
+      })
+    }
+   return f
+  })
+  return geoJSON
+}
 //////////////////////////////////////////////////////
 //Wrappers for printing and printing to console
 function printImage(message){print(message)};
@@ -916,8 +951,21 @@ function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 
 /////////////////////////////////////////////////////
 //Function to add ee object as well as client-side objects to map
+function getLookupDicts(image,bandName,layerType){
+  if(layerType == 'geeImageCollection'){image = ee.Image(image.first())}
+  if(bandName === null || bandName === undefined){
+    bandName = ee.Image(image).bandNames().getInfo()[0]
+  }
+  values = ee.List([image.get(bandName+'_class_values'),image.get(bandName+'_class_names'),image.get(bandName+'_class_palette')]).getInfo()
+  value_name = zip(values[0],values[1]).map(function(i){return i.join('- ')})
+  // console.log(value_name)
+  legendDict = toObj(value_name,values[2])
+  queryDict = toObj(values[0],value_name)
+  return {'classLegendDict':legendDict,'queryDict':queryDict}
+}
+var typeLookup = {'Image':'geeImage','ImageCollection':'geeImageCollection','Feature':'geeVectorImage','FeatureCollection':'geeVectorImage'}
 function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
-  
+    
     // $('#layer-list-collapse-label-message').html(`Loading: ${name}`)
     if(viz !== null && viz !== undefined && viz.serialized !== null && viz.serialized !== undefined && viz.serialized === true){
         item = ee.Deserializer.decode(item);
@@ -930,42 +978,57 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
     //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
     if(viz.layerType === null || viz.layerType === undefined){
-      try{var t = item.bandNames();viz.layerType = 'geeImage'}
-      catch(err2){
-        try{
-          var t = ee.Image(item.first()).bandNames().getInfo();
-          // print(t.getInfo())
-          viz.layerType = 'geeImageCollection';
+      console.log(name);
+      var eeType = ee.Algorithms.ObjectType(item).getInfo();
+      if(eeType === 'Feature'){
+        item = ee.FeatureCollection([item])
+        eeType = ee.Algorithms.ObjectType(item).getInfo();
+      }else if(eeType === 'Geometry'){
+        showMessage('Error adding ' + name + ' layer',name + ' was found to be a Geometry. Geometries are currently not supported. Please convert to a feature or featureCollection before adding to the map.');
+        return
+      }
+      viz.layerType =typeLookup[eeType]; 
+      console.log(eeType)
+      
+      // try{
+      //     var t = ee.Image(item.first()).bandNames().getInfo();
+          
+      //     viz.layerType = 'geeImageCollection';
         
-        }
-        //Check if its a geometry
-        catch(err3){
-          try{
-             var t = item.geometry().getInfo();
+      //   }
+      // catch(err2){
+      //   // console.log(err2)
+      //   try{var t = ee.Image(item).bandNames();console.log(t.getInfo());viz.layerType = 'geeImage'}
+      //   //Check if its a geometry
+      //   catch(err3){
+      //     try{
+      //        var t = item.geometry().getInfo();
             
-          }catch(err4){
-            // console.log('geo');
-            item = ee.FeatureCollection(item);
-            viz.canQuery = false;
-          }
-          //Check if its a feature or featureCollection
-          // try{
-          //   var n = item.limit(501).size().getInfo();
-          //   if(n > 500){
-          //     viz.layerType = 'geeVectorImage';
-          //   }
-          //   // console.log('featureCollection')
-          // }catch(err5){
-          //   // console.log('feature')
-          //   item = ee.FeatureCollection([item])
-          // }
-          viz.layerType = 'geeVector';
-        }
+      //     }catch(err4){
+      //       // console.log('geo');
+      //       item = ee.FeatureCollection(item);
+      //       viz.canQuery = false;
+      //     }
+      //     //Check if its a feature or featureCollection
+      //     // try{
+      //     //   var n = item.limit(501).size().getInfo();
+      //     //   if(n > 500){
+      //     //     viz.layerType = 'geeVectorImage';
+      //     //   }
+      //     //   // console.log('featureCollection')
+      //     // }catch(err5){
+      //     //   // console.log('feature')
+      //     //   item = ee.FeatureCollection([item])
+      //     // }
+      //     viz.layerType = 'geeVector';
+      //   }
         
        
-        }
+      //   }
     }
-  
+    
+    console.log(viz.layerType)
+    // console.log(item.bandNames())
     if(viz.layerType === 'geoJSONVector'){viz.canQuery = false;}
     
     if(viz.layerType === 'geeVector' || viz.layerType === 'geoJSONVector'){
@@ -1048,8 +1111,14 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.queryItem = queryItem;
     layer.layerType = viz.layerType;
 
+    //AutoViz if specified
+    if(viz.autoViz){
+      dicts =getLookupDicts(item,null,viz.layerType)
+      viz.classLegendDict = dicts.classLegendDict;
+      viz.queryDict = dicts.queryDict
+    }
     //Construct legend
-    if(viz != null && viz.bands == null && viz.addToLegend != false && viz.addToClassLegend != true){
+    if(viz != null && viz.bands == null && viz.addToLegend != false && (viz.classLegendDict == undefined || viz.classLegendDict == null)){
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       
       var legend ={};
@@ -1096,14 +1165,14 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
         if(viz.legendLabelRightAfter !== null && viz.legendLabelRightAfter !== undefined){legend.max = viz.max + ' '+ viz.legendLabelRightAfter }
         if(legend.min ==null){legend.min = 'min'};
         if(legend.max ==null){legend.max = 'max'};
-    
-    if(fontColor != null){legend.fontColor = "color:#" +fontColor + ";" }
-        else{legend.fontColor    = "color:#DDD;"}
-     addColorRampLegendEntry(legendDivID,legend)
+   
+      if(fontColor != null){legend.fontColor = "color:#" +fontColor + ";" }
+          else{legend.fontColor    = "color:#DDD;"}
+       addColorRampLegendEntry(legendDivID,legend)
     }
 
-    else if(viz != null && viz.bands == null && viz.addToClassLegend == true){
-
+    else if(viz != null && viz.bands == null && viz.addToClassLegend !== false &&  viz.classLegendDict !== undefined  &&  viz.classLegendDict !== null){
+      
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       var classLegendContainerID = legendDivID + '-class-container';
       var legendClassContainerName;
@@ -2352,7 +2421,7 @@ function initialize() {
   //Set up caching of study area
   if(typeof(Storage) !== "undefined"){
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
-    console.log(urlParams.studyAreaName)
+    // console.log(urlParams.studyAreaName)
 
     if(urlParams.studyAreaName !== null && urlParams.studyAreaName !== undefined){
       cachedStudyAreaName = decodeURIComponent(urlParams.studyAreaName);

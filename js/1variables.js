@@ -690,3 +690,7 @@ Number.prototype.formatNumber = function(n){
 String.prototype.toTitle = function() {
   return this.replace(/(^|\s)\S/g, function(t) { return t.toUpperCase() });
 }
+
+
+//Taken from https://stackoverflow.com/questions/22015684/how-do-i-zip-two-arrays-in-javascript
+const zip = (a, b) => a.map((k, i) => [k, b[i]]);
