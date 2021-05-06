@@ -393,6 +393,20 @@ var staticTemplates = {
                         <hr>
                         <div class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                            <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                        </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                    <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.</p>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <div class = 'row p-2'>
+                            <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
                                     <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
                                     
@@ -419,7 +433,6 @@ var staticTemplates = {
                                 Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about LCMS or have feedback on the LCMS Data Explorer.</a>
                             </div>
                         </div>
-                         
                         
                         
         				
@@ -471,7 +484,7 @@ var staticTemplates = {
                                 <div class = 'dropdown-divider'></div>
                                 <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>
                                 `,
-        uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml, or .geojson file to summarize products across.',
+        uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml (If the .kmz or .kml has embedded pngs or any other non vector data, the conversion will likely fail.), or .geojson file to summarize products across.',
         selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                             <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
                             <div class = 'dropdown-divider'></div>`,
@@ -793,9 +806,12 @@ function showTip(title,message){
 	  $('#tip-modal').modal().show();
 	}
 	$('#dontShowTipAgainCheckbox').change(function(){
-	  console.log(this.checked)
-	  localStorage.showToolTipModal  = !this.checked;
+    console.log(this.checked)
+    localStorage.showToolTipModal  = !this.checked;
+    if(localStorage.showToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
+    else if(localStorage.showToolTipModal === 'true'){$('#tooltip-radio-first_toggle_label').click();};
     });
+
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a given study area to the study area dropdown

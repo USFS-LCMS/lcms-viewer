@@ -1008,7 +1008,7 @@ function runShpDefinedCharting(){
 						err = err.toString();
 						console.log(err)
 						if(err.indexOf('413')>-1){
-							showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Selected study area is too large. Limited to vectors ~ 500kb. Try increasing the vertex reduction slider by one.')
+							showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.')
 						}else{
 							showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',err)
 						}
@@ -1020,7 +1020,7 @@ function runShpDefinedCharting(){
 				else{
 					
 					if(err.indexOf('413')>-1){
-							showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Selected study area is too large. Limited to vectors ~ 500kb.')
+							showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.')
 						}else{
 							showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',err)
 						}

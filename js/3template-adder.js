@@ -25,6 +25,7 @@ $('#dontShowAgainCheckbox').change(function(){
   console.log(this.checked)
   localStorage.showIntroModal  = !this.checked;
 });
+
 /////////////////////////////////////////////////////////////////////
 /*Add study area dropdown if LCMS*/
 if(mode === 'LCMS-pilot' ){
@@ -80,6 +81,14 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
 
   // $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
+
+  //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 
   //Construct parameters form
  
@@ -194,6 +203,14 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
+  //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>`);
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
 addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices2',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':false,'NDMI':false,'wetness':false})
   
@@ -233,9 +250,17 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
      urlParams.endJulian = endJulian;// = parseInt(urlParams.endYear);
   }
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort '+mode+' products');
-  
+  //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
   addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'');
   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+
+
   addDualRangeSlider('comp-params-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider2','null','Years of '+mode+' data to include.')
   
   addDualRangeSlider('comp-params-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
@@ -299,7 +324,14 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#support-collapse-div').append(`<p>If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a></p>`)
   $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
-  
+  //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>`);
   var mtbsZoomToDict ={"All":true,"CONUS":false,"Alaska":false,"Hawaii":false,"Puerto-Rico":false};
 
   addMultiRadio('parameters-collapse-div','mtbs-zoom-to-radio','Zoom to MTBS Mapping Area','mtbsMappingArea',mtbsZoomToDict)
@@ -370,7 +402,14 @@ else if(mode === 'STORM'){
         }
 
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare storm outputs');
-  
+  //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
+  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>`);
    $('#parameters-collapse-div').append(`
     <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below. <a href="./geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
     <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
@@ -605,7 +644,7 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadAreaChartDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTipHover);
   // addSubAccordianCard('tools-accordian','select-area-dropdown-chart-label','select-area-dropdown-chart-div','Select an Area from Dropdown',staticTemplates.selectAreaDropdownChartDiv,false,'toggleTool(toolFunctions.area.selectDropdown)',staticTemplates.selectAreaDropdownChartTipHover);
   addSubAccordianCard('tools-accordian','select-area-interactive-chart-label','select-area-interactive-chart-div','Select an Area on Map',staticTemplates.selectAreaInteractiveChartDiv,false,'toggleTool(toolFunctions.area.selectInteractive)',staticTemplates.selectAreaInteractiveChartTipHover);
-  addRangeSlider('upload-reduction-factor-container','Choose factor to reduce uploaded vector by:','uploadReductionFactor',1, 5, 1 , 1,'upload-reduction-factor-slider','null',"Every n vertex in uploaded file will be kept for polygons > 100 vertices (E.g. if 3 is chosen, every third vertex remains). This is intended to help enable use of uploaded areas that may have failed due to its size.")
+  addRangeSlider('upload-reduction-factor-container','Vertex Reduction Factor','uploadReductionFactor',1, 5, 1 , 1,'upload-reduction-factor-slider','null',"Every n vertex in uploaded file will be kept for polygons > 100 vertices (E.g. if 3 is chosen, every third vertex remains). This is intended to help enable use of uploaded areas that may have failed due to its size.")
   
   addShapeEditToolbar('user-defined-edit-toolbar', 'user-defined-area-icon-bar','undoUserDefinedAreaCharting()','restartUserDefinedAreaCarting()')
   addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
@@ -659,5 +698,4 @@ function toggleSidebar(){
 if(urlParams.showSidebar === 'false'){
   $('#sidebar-left').hide();
 }
-
 

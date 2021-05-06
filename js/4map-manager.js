@@ -702,12 +702,14 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   //Assumes the provided image collection has time property under system:time_start property
   if(viz.years === null || viz.years === undefined){
     console.log('start computing years');
-    viz.years = item.sort('system:time_start',true).toList(10000,0).map(function(img){
+    viz.years = unique(item.sort('system:time_start',true).toList(10000,0).map(function(img){
       var d = ee.Date(ee.Image(img).get('system:time_start'))
       return ee.Number.parse(d.format(viz.dateFormat)).int32()
-    }).getInfo();
+    }).getInfo());
+
     console.log('done computing years');
     console.log(viz.years);
+    console.log(viz)
   }
   
   //Set up time laps object entry
