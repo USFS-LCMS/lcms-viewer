@@ -682,6 +682,14 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   legendDivID = legendDivID.replaceAll('(','-');
   legendDivID = legendDivID.replaceAll(')','-');
   
+  //AutoViz if specified
+  if(viz.autoViz){
+    dicts =getLookupDicts(ee.Image(item.first()),null,'eeImage')
+    viz.classLegendDict = dicts.classLegendDict;
+    viz.queryDict = dicts.queryDict;
+    viz.autoViz = false;
+  }
+  
   viz.canQuery = false;
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;

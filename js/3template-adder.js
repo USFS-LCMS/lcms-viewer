@@ -82,14 +82,6 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
   // $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
 
-  //Sync tooltip toggle
-  var tShowToolTipModal = true
-  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
-    tShowToolTipModal = localStorage.showToolTipModal
-  }
-  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
-  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
-
   //Construct parameters form
  
   if(['standard','advanced'].indexOf(urlParams.analysisMode) === -1){
@@ -178,6 +170,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
   $('#support-collapse-div').append(staticTemplates.supportDiv);
 
+ 
   if(tAnalysisMode === 'advanced'){
     $('#analysis-mode-radio-second_toggle_label').click();
   }
@@ -203,14 +196,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
-  //Sync tooltip toggle
-  var tShowToolTipModal = true
-  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
-    tShowToolTipModal = localStorage.showToolTipModal
-  }
-  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
-  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>`);
+
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
 addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices2',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':false,'NDMI':false,'wetness':false})
   
@@ -250,13 +236,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
      urlParams.endJulian = endJulian;// = parseInt(urlParams.endYear);
   }
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort '+mode+' products');
-  //Sync tooltip toggle
-  var tShowToolTipModal = true
-  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
-    tShowToolTipModal = localStorage.showToolTipModal
-  }
-  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
-  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
+  
   addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'');
   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
 
@@ -324,14 +304,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#support-collapse-div').append(`<p>If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a></p>`)
   $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
-  //Sync tooltip toggle
-  var tShowToolTipModal = true
-  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
-    tShowToolTipModal = localStorage.showToolTipModal
-  }
-  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
-  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>`);
+ 
   var mtbsZoomToDict ={"All":true,"CONUS":false,"Alaska":false,"Hawaii":false,"Puerto-Rico":false};
 
   addMultiRadio('parameters-collapse-div','mtbs-zoom-to-radio','Zoom to MTBS Mapping Area','mtbsMappingArea',mtbsZoomToDict)
@@ -402,14 +375,7 @@ else if(mode === 'STORM'){
         }
 
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare storm outputs');
-  //Sync tooltip toggle
-  var tShowToolTipModal = true
-  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
-    tShowToolTipModal = localStorage.showToolTipModal
-  }
-  addRadio('parameters-collapse-div','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
-  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>`);
+
    $('#parameters-collapse-div').append(`
     <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below. <a href="./geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
     <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
@@ -650,6 +616,15 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
   addShapeEditToolbar('select-features-edit-toolbar', 'select-area-interactive-chart-icon-bar','removeLastSelectArea()','clearSelectedAreas()','Click to unselect most recently selected polyogn','Click to clear all selected polygons');
+  $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+   //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('tools-accordian','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
+
 }
 //Add some logos for different modes
 if(mode === 'MTBS' || mode === 'Ancillary'){
