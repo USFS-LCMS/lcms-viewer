@@ -1792,7 +1792,7 @@ function runAncillary(){
 
   getLCMSVariables();
   Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false)
-  Map2.addLayer(standardTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/',false,''),{layerType:'tileMapService','addToLegend':false},'PR 2019 15cm',false);
+  Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
   Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
   
   var prUSVI_ch_2018 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/PR_USVI_2018_CHM_1m')
