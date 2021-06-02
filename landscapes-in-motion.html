@@ -21,23 +21,29 @@
       height: 100%;
       width: 100%;
     }
-
+    
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/dark/main.css" />
   <link rel="stylesheet" href="./css/style.css">
   <script src="https://js.arcgis.com/4.18/"></script>
   <style type="text/css">
-    .esri-view-width-xlarge .esri-popup__main-container {
-    width: 800px;
+  @media only screen and (max-width: 576px) {
+  .esri-view-width-xlarge .esri-popup__main-container {
+    width: 200px;
 }
 .esri-view-height-less-than-medium  .esri-popup__main-container {
-    max-height: 700px;
+    max-height: 200px;
 }
 .esri-feature__content-element{
       padding-bottom: 0px;
 }
-img {max-height: 600px;}
+img{max-width:100px!important;
+      max-height:100px!important;
+        
+      }
+}
+    
   </style>
 
   <script>

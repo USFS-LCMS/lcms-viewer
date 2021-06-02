@@ -342,7 +342,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
-  
+ 
+
 }
 else if(mode === 'STORM'){
   canExport = true;
@@ -594,6 +595,14 @@ addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible M
 if(mode === 'geeViz'){
   $('#pixel-chart-label').remove();
   $('#share-button').remove();
+   $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+   //Sync tooltip toggle
+  var tShowToolTipModal = true
+  if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
+    tShowToolTipModal = localStorage.showToolTipModal
+  }
+  addRadio('tools-accordian','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
+  if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 }
 if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
 if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP' || mode === 'LCMS'){

@@ -199,6 +199,11 @@ function centerObject(fc){
     });
   }
   catch(err){
+    try{
+      fc.bounds().evaluate(function(feature){synchronousCenterObject(feature);
+    })}catch(err){
+      console.log(err);
+    }
     console.log(err);
   }
 }
@@ -973,7 +978,7 @@ function getLookupDicts(image,bandName,layerType){
   queryDict = toObj(values[0],value_name)
   return {'classLegendDict':legendDict,'queryDict':queryDict}
 }
-var typeLookup = {'Image':'geeImage','ImageCollection':'geeImageCollection','Feature':'geeVectorImage','FeatureCollection':'geeVectorImage'}
+var typeLookup = {'Image':'geeImage','ImageCollection':'geeImageCollection','Feature':'geeVectorImage','FeatureCollection':'geeVectorImage','Geometry':'geeVectorImage'}
 function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
     
     // $('#layer-list-collapse-label-message').html(`Loading: ${name}`)
@@ -993,10 +998,11 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       if(eeType === 'Feature'){
         item = ee.FeatureCollection([item])
         eeType = ee.Algorithms.ObjectType(item).getInfo();
-      }else if(eeType === 'Geometry'){
-        showMessage('Error adding ' + name + ' layer',name + ' was found to be a Geometry. Geometries are currently not supported. Please convert to a feature or featureCollection before adding to the map.');
-        return
       }
+      // else if(eeType === 'Geometry'){
+        // showMessage('Error adding ' + name + ' layer',name + ' was found to be a Geometry. Geometries are currently not supported. Please convert to a feature or featureCollection before adding to the map.');
+        // return
+      // }
       viz.layerType =typeLookup[eeType]; 
       console.log(eeType)
       
@@ -1128,7 +1134,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       viz.queryDict = dicts.queryDict
     }
     //Construct legend
-    if(viz != null && viz.bands == null && viz.addToLegend != false && (viz.classLegendDict == undefined || viz.classLegendDict == null)){
+    if(viz != null && viz.bands == null && viz.addToLegend != false && (viz.addToClassLegend === undefined || viz.addToClassLegend === null || viz.addToClassLegend === false) &&(viz.classLegendDict == undefined || viz.classLegendDict == null )){
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       
       var legend ={};
@@ -1181,7 +1187,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
        addColorRampLegendEntry(legendDivID,legend)
     }
 
-    else if(viz != null && viz.bands == null && viz.addToClassLegend !== false &&  viz.classLegendDict !== undefined  &&  viz.classLegendDict !== null){
+    else if(viz != null && viz.bands == null  &&  ((viz.classLegendDict !== undefined  &&  viz.classLegendDict !== null) || viz.addToClassLegend === true)){
       
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       var classLegendContainerID = legendDivID + '-class-container';
@@ -1256,10 +1262,12 @@ function standardTileURLFunction(url,xThenY,fileExtension,token){
               if(fileExtension === null || fileExtension === undefined  ){fileExtension  = '.png';}
               
               return function(coord, zoom) {
+                    
                     // "Wrap" x (logitude) at 180th meridian properly
                     // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib 
                     var tilesPerGlobe = 1 << zoom;
                     var x = coord.x % tilesPerGlobe;
+                    console.log(coord,zoom,x)
                     if (x < 0) {
                         x = tilesPerGlobe+x;
                     }
@@ -1272,6 +1280,7 @@ function standardTileURLFunction(url,xThenY,fileExtension,token){
                     
                 }
             }
+function superSimpleTileURLFunction(url){return function(coord, zoom) {return url + zoom+'/' + coord.y+'/'+coord.x}}
 /////////////////////////////////////////////////////
 //Function to add ee object ot map
 function addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerList){
