@@ -198,30 +198,10 @@ function runGTAC(){
   // Map2.addLayer(ee.Image().paint(SA,null,1),{min:1,max:1,palette:'00BFA5',addToLegend:false})
 
 
-  window.addLCMSTimeLapses = function(){
-    if(urlParams.addLCMSTimeLapsesOn === 'yes'){
-
-      setTimeout(function() { 
-        urlParams.addLCMSTimeLapsesOn = 'yes';
-        showMessage('Loading Time Lapses',staticTemplates.loadingModal) 
-      },5);
-       setTimeout(function() { 
-        // urlParams.addLCMSTimeLapsesOn = 'Yes';
-        Map2.addTimeLapse(changeFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{min:1,max:5,palette:changePaletteFull,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {1:'Stable',2:'Slow Loss',3:'Fast Loss',4:'Gain',5:'No data (cloud/cloud shadow)'},years:years},'LCMS Change Time Lapse',false);
-        Map2.addTimeLapse(lcFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,years:years},'LCMS Land Cover Time Lapse',false);
-          Map2.addTimeLapse(luFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict,years:years},'LCMS Land Use Time Lapse',false);
-        setTimeout(function() { 
-          $('#close-modal-button').click();
-        })
-      }, 2500);
-    }
-    // else{urlParams.addLCMSTimeLapsesOn = 'no';}
-  }
   if(urlParams.addLCMSTimeLapsesOn === 'yes'){
-    // addLCMSTimeLapsesOn = 'yes'
-
-    // $('#addTimeLapses-radio-second_toggle_label').click();
-    addLCMSTimeLapses();
+    Map2.addTimeLapse(changeFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{min:1,max:5,palette:changePaletteFull,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]},queryDict: {1:'Stable',2:'Slow Loss',3:'Fast Loss',4:'Gain',5:'No data (cloud/cloud shadow)'},years:years},'LCMS Change Time Lapse',false);
+    Map2.addTimeLapse(lcFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,years:years},'LCMS Land Cover Time Lapse',false);
+    Map2.addTimeLapse(luFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict,years:years},'LCMS Land Use Time Lapse',false);
   }
   // var bucket = 'gs://lcms-cogtifs/LCMS_SEAK_v2020-5/LCMS_CONUSTest_v2020-5';
   // var cogChangeC = ee.ImageCollection(years.map(function(yr){

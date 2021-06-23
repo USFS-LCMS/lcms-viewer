@@ -1969,7 +1969,7 @@ cdlNames.zip(cdlPalette).getInfo().map(function(l){cdlLegendDict[l[0]] = l[1]});
 
 // Terra-Climate
 var pdsiStartYear = 1984;
-var pdsiEndYear = 2019;
+var pdsiEndYear = 2020;
 var terra = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE')
    .filter(ee.Filter.calendarRange(pdsiStartYear-1, pdsiEndYear,'year'));
 var terra_pdsi = terra.select('pdsi').map(function(img) {return img.multiply(0.01).copyProperties(img,['system:time_start']).copyProperties(img)});
@@ -3114,7 +3114,7 @@ function runMTBS(){
   populatePixelChartDropdown();
 
   getSelectLayers();
-
+  toggleCumulativeMode();
   // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
   // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
 
