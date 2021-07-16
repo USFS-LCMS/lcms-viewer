@@ -188,7 +188,12 @@ var staticTemplates = {
                         	
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
-                      
+                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
 						<div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
@@ -210,7 +215,12 @@ var staticTemplates = {
                             
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
-                      
+                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
                         <div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
@@ -232,7 +242,12 @@ var staticTemplates = {
                             
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
-                      
+                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
                         <div class="form-check  mr-0">
                                 <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
@@ -419,7 +434,30 @@ var staticTemplates = {
                             </div>
                         </div>
                         <hr>
-                        
+                        <div class = 'row p-2'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <h2>"..."</h2>
+                            </div>
+                            <div class = 'col-lg-10  support-text'>
+                              
+                                    Suggested citation: 
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2021). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    </p>
+                                    <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white" id = 'copiedCitationMessageBox'>
+                                        
+                                    </button> 
+                                    
+                                        
+                                   
+                                    
+                              
+                                
+                                  
+                                
+                            </div>
+                        </div>
+                        <hr>
+                    
                         <div class = 'row'>
                             <h3 class = ' text-capitalize'>Contact</h3>
                         </div>

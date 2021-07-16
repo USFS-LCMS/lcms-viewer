@@ -314,14 +314,14 @@ function runGTAC(){
                                   'xAxisLabel':'Year'};
    areaChartCollections['lc'] = {'label':'LCMS Land Cover',
                                   'collection':lcForAreaCharting,
-                                  'stacked':true,
+                                  'stacked':false,
                                   'steppedLine':false,
                                   'tooltip':'Summarize land cover classes for each year',
                                   'colors':lcLegendColors,
                                   'xAxisLabel':'Year'};
      areaChartCollections['lu'] = {'label':'LCMS Land Use',
                                   'collection':luForAreaCharting,
-                                  'stacked':true,
+                                  'stacked':false,
                                   'steppedLine':false,
                                   'tooltip':'Summarize land use classes for each year',
                                   'colors':luLegendColors,
@@ -334,3 +334,60 @@ function runGTAC(){
     $('#summary-spinner').hide();
 
 }
+
+
+
+// function runGTAC(){};
+// function runGTAC(){
+
+//   //Set up some params
+//   startYear = parseInt(urlParams.startYear);
+//   endYear = parseInt(urlParams.endYear);
+
+//   analysisMode = urlParams.analysisMode;
+//   queryClassDict = {};
+//   var years = range(startYear,endYear+1);
+//   summaryMethod = urlParams.summaryMethod.toTitle();
+//   getLCMSVariables();
+  
+  
+//   ga('send', 'event', 'lcms-gtac-viewer-run', 'year_range', `${startYear}_${endYear}`);
+//   ga('send', 'event', 'lcms-gtac-viewer-run', 'analysis_mode', analysisMode);
+//   ga('send', 'event', 'lcms-gtac-viewer-run', 'timelapse_on', urlParams.addLCMSTimeLapsesOn);
+//   ga('send', 'event', 'lcms-gtac-viewer-run', 'summary_method', summaryMethod);
+
+//   var lcmsRun = {};
+//   var lcmsRunFuns = {};
+
+//   lcmsRunFuns.getMaskedWYr = function(c, code){
+//     return c.map(function(img) {
+//       var yr = ee.Date(img.get('system:time_start')).get('year');
+//       var yrImg = ee.Image(yr).int16().rename(['Year']);
+//       return img.addBands(yrImg).updateMask(img.select([0]).eq(code))
+//         .copyProperties(img,['system:time_start']);
+//     });
+//   }
+//   lcmsRun.lcms = ee.ImageCollection('USFS/GTAC/LCMS/v2020-5')
+//             .filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+
+//   lcmsRun.f = ee.Image(lcmsRun.lcms.first())
+
+  
+//   Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).mode().copyProperties(lcmsRun.f),{autoViz:true,layerType:'geeImage'},'Land Cover',false);
+//   Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).mode().copyProperties(lcmsRun.f),{autoViz:true,layerType:'geeImage'},'Land Use',false);
+
+//   lcmsRun.slowLoss = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(['Change','Change_Raw_Probability_Slow_Loss'],['Change','Prob']),2).qualityMosaic(summaryMethod)
+//   lcmsRun.fastLoss = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(['Change','Change_Raw_Probability_Fast_Loss'],['Change','Prob']),3).qualityMosaic(summaryMethod)
+//   lcmsRun.gain = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(['Change','Change_Raw_Probability_Fast_Loss'],['Change','Prob']),4).qualityMosaic(summaryMethod)
+  
+//   Map2.addLayer(lcmsRun.fastLoss.select(['Year']),{min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'Fast Loss Year');
+
+//   Map2.addLayer(lcmsRun.fastLoss.select(['Prob']).divide(100),{min:0.3,max:0.5,palette:declineProbPalette,layerType:'geeImage'},'Fast Loss Probability');
+
+//   Map2.addLayer(lcmsRun.slowLoss.select(['Year']),{min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'Slow Loss Year');
+//   Map2.addLayer(lcmsRun.slowLoss.select(['Prob']).divide(100),{min:0.2,max:0.5,palette:declineProbPalette,layerType:'geeImage'},'Slow Loss Probability');
+
+//   Map2.addLayer(lcmsRun.gain.select(['Year']),{min:startYear,max:endYear,palette:gainYearPaletteA,layerType:'geeImage'},'Gain Year');
+
+
+//   }
