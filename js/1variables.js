@@ -492,6 +492,9 @@ var selectionTracker = {};
 
 var selectionUNID = 1;
 
+var updateViewList = true;
+var viewList = [];
+var viewIndex = 0;
 
 var outputURL;
 var tableConverter = null;
