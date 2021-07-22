@@ -606,6 +606,7 @@ font-size:0.9em;
 .btn:active{background-color: var(--teal-100)!important;
             transform: scale3d(1.05, 1, 1);}
 .btn:hover{font-weight: 300}
+
 .color-button{
   border-radius:0.2em;
   height:2.1em;

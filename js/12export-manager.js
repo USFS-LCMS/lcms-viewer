@@ -3,7 +3,7 @@ var cancelAllTasks = function(){console.log('yay')};//showMessage('Completed','T
 var downloadMetadata = function(){console.log('yay')};
 var downloadTraining = function(){console.log('yay')};
 var list = [];
-var bucketName = 'test-bucket-housman2';//Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
+var bucketName = 'viewer-exports';//Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
 var eID = 1;
 var exportFC;
 // exportCapability = true;
@@ -434,7 +434,7 @@ function exportImages(){
         var fc = googleMapPolygonToGEEPolygon(exportArea);
         var exportCRS = $('#export-crs').val();
        // closePopup();
-        console.log(exportImageDict);
+        // console.log(exportImageDict);
         // console.log('yay');
         var now = Date().split(' ');
         var nowSuffix = '_'+now[2]+'_'+now[1]+'_'+now[3]+'_'+now[4];
@@ -454,7 +454,7 @@ function exportImages(){
                 function startTask(){
                     console.log('Starting task');
                     task.start(function(){
-                        console.log('here')
+                        // console.log('here')
                         meta_template_strT = '{}';
                         cacheExport(exportName,exportName,meta_template_strT);
                         },
