@@ -3928,7 +3928,7 @@ function createHurricaneDamageWrapper(rows){
   //GEE implementation written by: Ian Housman and Robert Chastain
   //////////////////////////////////////////////////////////////
   // var palettes = require('users/gena/packages:palettes');
-  var hgt_array = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200');
+  var hgt_array = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/lf_evh_us_prvi_2020_2016');
   hgt_array = hgt_array.updateMask(hgt_array.neq(-9999));
   
   var from = ee.List.sequence(101,199).getInfo();
