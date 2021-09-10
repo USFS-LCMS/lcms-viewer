@@ -391,8 +391,8 @@ else if(mode === 'STORM'){
    // addRangeSlider('parameters-collapse-div','Mod of Rupture','modRupture',2000, 20000, 8500, 100,'mod-rupture-slider','null',"Specify the modulus of rupture for the GALES model")
      
       $('#parameters-collapse-div').append(`
-   
-        <label style = 'width:90%'>The MOD of Rupture is intended to indicate how much force it takes to snap a tree. A single value can be provided by providing a constant image (e.g. ee.Image(1)). If different MOD of Rupture values are needed for different tree types, you can provide an EE image that may have tree classes or land cover classes that can then be cross-walked to a MOD of Rupture image with different values for different tree/land cover classes (e.g. ee.Image( "USGS/NLCD_RELEASES/2016_REL/2016" ).select([ 0 ]) with a lookup of {41:8500,42:2000,43:5000,90:4000}</label>
+        <hr>
+        <label style = 'width:90%'>The MOD of Rupture is intended to indicate how much force it takes to snap a tree. A single value can be provided by providing a constant image (e.g. ee.Image(1)) and a simple lookup to convert that image to a desired MOD of Rupture (e.g. {1:8500}). If different MOD of Rupture values are needed for different tree types, you can provide an EE image that may have tree classes or land cover classes that can then be cross-walked to a MOD of Rupture image with different values for different tree/land cover classes (e.g. ee.Image( "USGS/NLCD_RELEASES/2016_REL/2016" ).select([ 0 ]) with a lookup of {41:8500,42:2000,43:5000,90:4000}</label>
         <hr>
         <label>MOD of Rupture Image</label>
         <textarea   title = 'Provide an image with relevant land cover/tree classes. Provide a constant raster (ee.Image(1)) if you would like to use a constant'   class="form-control" id="mod-image"   oninput="auto_grow(this)" style='width:90%;'>ee.Image("USGS/NLCD_RELEASES/2016_REL/2016").select([0])</textarea>
