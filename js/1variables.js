@@ -406,9 +406,9 @@ var studyAreaDict = {
                                 3: {'modelName': 'Forest','legendName': 'Forest','color': '1b9d0c'},
                                 4: {'modelName': 'Non_Forest_Wetland','legendName': 'Non-Forest Wetland','color': '97ffff'},
                                 5: {'modelName': 'Other','legendName': 'Other','color': 'a1a1a1'},
-                                6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}}
+                                6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}},
                  
-                    
+                      final_collections  : ['USFS/GTAC/LCMS/v2020-5','projects/lcms-292214/assets/Final_Outputs/2020-6/LCMS']
                     }                        
                 };
 
