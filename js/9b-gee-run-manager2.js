@@ -390,7 +390,7 @@ function runGTAC(){
   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f))).flatten())
                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'));
-  console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
+  // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
   lcmsRun.f = ee.Image(lcmsRun.lcms.first());
 
   //Mosaic all study areas
@@ -458,20 +458,128 @@ function runGTAC(){
   }
   
 
-  // if(urlParams.addLCMSTimeLapsesOn === 'yes'){
-  //   var props = lcms
-  //   printEE(lcmsRun.lcms.select(['Change']).limit(2).set('bounds',clientBoundary))
-    lcmsRun.tlChange = lcmsRun.lcms.select(['Change']).map(function(img){return img.updateMask(img.gte(2).and(img.lt(5))).copyProperties(img)})
-  //   // Map2.addTimeLapse(lcmsRun.tlChange.limit(2),{min:2,max:4,palette:changePalette,classLegendDict:},'LCMS Change Time Lapse',false);
-  //   // Map2.addTimeLapse(lcFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{title: `Annual land cover class from ${startYear} to ${endYear}.`,min:lcNumbers.min(),max:lcNumbers.max(),palette:lcLegendColors,addToClassLegend:true,classLegendDict:lcLegendDict,queryDict:lcQueryDict,years:years},'LCMS Land Cover Time Lapse',false);
-  //   // Map2.addTimeLapse(luFinal.filter(ee.Filter.calendarRange(startYear,endYear,'year')).set('bounds',clientBoundary),{title: `Annual land use class from ${startYear} to ${endYear}.`,min:luNumbers.min(),max:luNumbers.max(),palette:luLegendColors,addToClassLegend:true,classLegendDict:luLegendDict,queryDict:luQueryDict,years:years},'LCMS Land Use Time Lapse',false);
-  // // }
+  //Bring in time lapses
+
+  //Mask out stable and non processing area mask for change time lapse
+  lcmsRun.tlChange = lcmsRun.lcms.select(['Change']).map(function(img){return img.updateMask(img.gte(2).and(img.lt(5))).copyProperties(img)});
+  lcmsRun.tlLC = lcmsRun.lcms.select(['Land_Cover']);//.map(function(img){return img.updateMask(img.lt(15)).copyProperties(img)});
+  lcmsRun.tlLU = lcmsRun.lcms.select(['Land_Use']);//.map(function(img){return img.updateMask(img.lt(7)).copyProperties(img)});
+ 
   if(urlParams.addLCMSTimeLapsesOn === 'yes'){
     Map2.addTimeLapse(lcmsRun.tlChange  ,{autoViz:true,years:lcmsRun.years},'LCMS Change Time Lapse',false)
-    Map2.addTimeLapse(lcmsRun.lcms.select(['Land_Cover'])  ,{autoViz:true,years:lcmsRun.years},'LCMS Land Cover Time Lapse',false)
-    Map2.addTimeLapse(lcmsRun.lcms.select(['Land_Use']) ,{autoViz:true,years:lcmsRun.years},'LCMS Land Use Time Lapse',false)
+    Map2.addTimeLapse(lcmsRun.tlLC  ,{autoViz:true,years:lcmsRun.years},'LCMS Land Cover Time Lapse',false)
+    Map2.addTimeLapse(lcmsRun.tlLU  ,{autoViz:true,years:lcmsRun.years},'LCMS Land Use Time Lapse',false)
   }
-  getHansen();
-//   getMTBSandIDS();
 
+  //Set up pixel charting change time series
+  lcmsRun.whichIndex = 'NBR';
+
+
+  //Bring in composites
+  lcmsRun.composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map(f => ee.ImageCollection(f))).flatten())
+
+  lcmsRun.composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
+    return simpleAddIndices(lcmsRun.composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()),1);
+  }));
+  
+  //Set up CCDC
+  lcmsRun.ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb',lcmsRun.whichIndex+'_.*','NDVI_.*'];
+  lcmsRun.ccdc = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].ccdc_collections.map(f => ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector))).flatten());
+                
+  
+
+  var f= ee.Image(lcmsRun.ccdc.first());
+  var ccdcImg = ee.Image(lcmsRun.ccdc.mosaic().copyProperties(f));
+  // printEE(ccdcImg.bandNames())
+  var whichHarmonics = [1,2,3];
+  var fillGaps = true;
+  var fraction = 0.6657534246575343;
+  var annualImages = simpleGetTimeImageCollection(ee.Number(startYear+fraction),ee.Number(endYear+1+fraction),1);
+  lcmsRun.fittedCCDC = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).select([lcmsRun.whichIndex+'_predicted'],['CCDC Fitted '+lcmsRun.whichIndex]).map(setSameDate);
+  
+  //Set up LANDTRENDR
+  lcmsRun.lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f).filter(ee.Filter.eq('band',lcmsRun.whichIndex)))).flatten()).mosaic();
+//   var lt = conusLT.filter(ee.Filter.eq('band',whichIndex)).merge(akLT.filter(ee.Filter.eq('band',whichIndex))).mosaic();
+  lcmsRun.fittedAsset = ltStackToFitted(lcmsRun.lt,1984,2020).filter(ee.Filter.calendarRange(startYear,endYear,'year')).select(['fit'],['LANDTRENDR Fitted '+ lcmsRun.whichIndex]);
+  
+  //Join raw time series to lt fitted and ccdc fitted
+  lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.composites.select([lcmsRun.whichIndex],['Raw '+lcmsRun.whichIndex]),lcmsRun.fittedAsset,false);
+  lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection,lcmsRun.fittedCCDC,false);
+
+  //Set up change prob outputs for pixel charting
+  lcmsRun.probCollection = lcmsRun.lcms.select(['Change_Raw_Probability_.*'],['Slow Loss Probability','Fast Loss Probability','Gain Probability']).map(function(img){return img.divide(100).copyProperties(img,['system:time_start'])})
+
+  lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection,lcmsRun.probCollection,false);
+  
+  pixelChartCollections['all-loss-gain-'+lcmsRun.whichIndex] = {'label':'LCMS Change Time Series',
+                                  'collection':lcmsRun.changePixelChartCollection,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+                                  'chartColors':chartColorsDict.allLossGain2,
+                                  'tooltip':'Chart slow loss, fast loss, gain and the '+lcmsRun.whichIndex + ' vegetation index',
+                                  'xAxisLabel':'Year',
+                                  'yAxisLabel':'Model Confidence or Index Value',
+                                  'fieldsHidden':[true,true,true,false,false,false]}
+  lcmsRunFuns.addPixelChartClass = function(bn){
+    var bnTitle = bn.replaceAll('_',' ')
+    var chartC = lcmsRun.lcms.select([`${bn}_Raw_Probability_.*`]);
+    var fromBns = chartC.first().bandNames();
+    var toBns = fromBns.map(function(bn){
+      bn = ee.String(bn).split('_');
+      return bn.get(bn.length().subtract(1))});
+    var colors = ee.List(lcmsRun.lcms.first().get(`${bn}_class_palette`)).getInfo();
+    chartC = chartC.select(fromBns, toBns)
+    pixelChartCollections[bn] = {'label':`LCMS ${bnTitle} Time Series`,
+                                    'collection':chartC,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+                                    'chartColors':colors,
+                                    'tooltip':`Chart ${bnTitle} model confidence for each individual class`,
+                                    'xAxisLabel':'Year',
+                                    'yAxisLabel':'Model Confidence'}
+  }
+  
+  lcmsRunFuns.addPixelChartClass('Land_Cover');
+  lcmsRunFuns.addPixelChartClass('Land_Use');
+
+
+  //Populate area charting
+
+  lcmsRun.changeForAreaCharting = formatAreaChartCollection(lcmsRun.lcms.select(['Change']).map(function(img){return img.unmask(0)}),[2,3,4,5],['Slow Loss','Fast Loss','Gain','Non-Processing Area Mask']);
+
+  lcmsRunFuns.addAreaChartClass = function(bn){
+    var c = lcmsRun.lcms.select([bn]);
+    var names = ee.List(lcmsRun.lcms.first().get(`${bn}_class_names`)).getInfo();
+    var numbers = ee.List(lcmsRun.lcms.first().get(`${bn}_class_values`)).getInfo();
+    var colors = ee.List(lcmsRun.lcms.first().get(`${bn}_class_palette`)).getInfo();
+    names = names.map(nm => nm.replaceAll(' (SEAK Only)',''))
+    var areaC = formatAreaChartCollection(c,numbers,names);
+    // printEE(areaC)
+    var bnTitle = bn.replaceAll('_',' ')
+    areaChartCollections[bn] = {'label':`LCMS ${bnTitle}`,
+                                  'collection':areaC,
+                                  'stacked':false,
+                                  'steppedLine':false,
+                                  'tooltip':`Summarize ${bnTitle} classes for each year`,
+                                  'colors':colors,
+                                  'xAxisLabel':'Year'};
+  }
+  
+
+
+
+   // areaChartCollections['change'] = {'label':'LCMS Change',
+   //                                'collection':lcmsRun.changeForAreaCharting,
+   //                                'stacked':false,
+   //                                'steppedLine':false,
+   //                                'tooltip':'Summarize change classes for each year',
+   //                                'colors':chartColorsDict.allLossGain2Area,
+   //                                'xAxisLabel':'Year'};
+  lcmsRunFuns.addAreaChartClass('Change');
+  lcmsRunFuns.addAreaChartClass('Land_Cover');
+  lcmsRunFuns.addAreaChartClass('Land_Use');
+
+  getSelectLayers(true);
+  populatePixelChartDropdown();
+  populateAreaChartDropdown();
+  getHansen();
+  getMTBSandIDS();
+// $('#query-label').click()
+// $('#area-chart-label').click();
   }
