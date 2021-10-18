@@ -50,7 +50,7 @@ function runGTAC(){
   }
 
   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
-  lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f))).flatten())
+  lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
                 .filter(ee.Filter.calendarRange(startYear,endYear,'year'));
   // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
   lcmsRun.f = ee.Image(lcmsRun.lcms.first());
