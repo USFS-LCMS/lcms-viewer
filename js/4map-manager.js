@@ -670,6 +670,14 @@ function toggleCumulativeMode(){
   selectFrame();
   
 }
+
+//Fill empty collections
+function fillEmptyCollections(inCollection,dummyImage){                       
+  var dummyCollection = ee.ImageCollection([dummyImage.mask(ee.Image(0))]);
+  var imageCount = inCollection.toList(1).length();
+  return ee.ImageCollection(ee.Algorithms.If(imageCount.gt(0),inCollection,dummyCollection));
+
+}
 //////////////////////////////////////////////////////////////////////////
 //Wrapper function to add a time lapse to the map
 function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,queryItem){
@@ -829,11 +837,12 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         addToMap(standardTileURLFunction(item + yr.toString()+'/',true,''),vizT,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
      }) 
   }else{
+    var dummyImage = ee.Image(item.first());
     viz.years.map(function(yr){
 
       var d = ee.Date.parse(viz.dateFormat,yr.toString())
-
-      var img = ee.Image(item.filterDate(d,d.advance(1,viz.advanceInterval)).first()).set('system:time_start',d.millis());
+      var img = fillEmptyCollections(item.filterDate(d,d.advance(1,viz.advanceInterval)),dummyImage);
+      var img = ee.Image(img.first()).set('system:time_start',d.millis());
       if(yr !== viz.years[0]){
         viz.addToLegend = false;
         viz.addToClassLegend = false;

@@ -291,7 +291,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
 }else if(mode === 'MTBS'){
   startYear = 1984;
-  endYear = 2019;
+  endYear = 2020;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
       urlParams.startYear = startYear;
   }

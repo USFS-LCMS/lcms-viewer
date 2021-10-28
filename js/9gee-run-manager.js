@@ -1795,11 +1795,11 @@ function runAncillary(){
   Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
   Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
   
-  var prUSVI_ch_2018 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/PR_USVI_2018_CHM_1m')
-                        .set('system:time_start',ee.Date.fromYMD(2018,6,1).millis())
-                        .rename(['Canopy Height'])
-                        .selfMask()
-  Map2.addLayer(prUSVI_ch_2018,{min:1,max:15,palette:palettes.crameri.bamako[50].reverse(),legendLabelLeftAfter:'(m)',legendLabelRightAfter:'(m)'},'PRUSVI 2018 Canopy Height',false);
+  // var prUSVI_ch_2018 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/PR_USVI_2018_CHM_1m')
+  //                       .set('system:time_start',ee.Date.fromYMD(2018,6,1).millis())
+  //                       .rename(['Canopy Height'])
+  //                       .selfMask()
+  // Map2.addLayer(prUSVI_ch_2018,{min:1,max:15,palette:palettes.crameri.bamako[50].reverse(),legendLabelLeftAfter:'(m)',legendLabelRightAfter:'(m)'},'PRUSVI 2018 Canopy Height',false);
   var nlcd = ee.ImageCollection('USGS/NLCD_RELEASES/2016_REL');
 
 
@@ -2206,7 +2206,7 @@ nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
 nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
 prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
 prvi_winds = batchFillCollection(prvi_winds.select([0,1,2]),years).map(setSameDate);
-prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
+// prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
 var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), annualPDSI.select([0],['PDSI']),false)//cdl.select([0],['Cropland Data']),false);
 // forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
 // forCharting  = joinCollections(forCharting,idsCollection, false);
@@ -2216,7 +2216,7 @@ forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Cano
 forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervious']), false);
 forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
 forCharting  = joinCollections(forCharting,prvi_winds, false);
-forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);
+// forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);
 
 
 // console.log(forCharting.getInfo())
