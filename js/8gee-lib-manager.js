@@ -532,7 +532,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
     var mtbs_path = 'projects/gtac-mtbs/assets/burn_severity_mosaics/MTBS';//'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
  
   var mtbsEndYear = endYear;
-  if(endYear > 2019){mtbsEndYear = 2019}
+  if(endYear > 2020){mtbsEndYear = 2020}
 
   var mtbsYears = ee.List.sequence(1984,mtbsEndYear);
   var mtbs = ee.ImageCollection(mtbs_path);
