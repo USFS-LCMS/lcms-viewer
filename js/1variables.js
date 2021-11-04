@@ -409,7 +409,7 @@ var studyAreaDict = {
                                 6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}},
                  
                       final_collections  : ['USFS/GTAC/LCMS/v2020-5','projects/lcms-292214/assets/Final_Outputs/2020-6/LCMS'],
-                      composite_collections : ['projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection', 'projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020-V2'],
+                      composite_collections : ['projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection', 'projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020'],
                       lt_collections: ['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection-1984-2020','projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/LandTrendr-Collection-1984-2020'],
                       ccdc_collections:['projects/USFS/LCMS-NFS/R10/CoastalAK/Base-Learners/CCDC-Collection',"projects/CCDC/USA_V2",'projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020']
                     }                        
@@ -649,7 +649,9 @@ var zoomDict = {20 : '1,128.49',
 var authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
-var geeAPIURL = "https://earthengine.googleapis.com";
+// var geeAPIURL = "https://earthengine.googleapis.com";
+var geeAPIURL = "https://earthengine-highvolume.googleapis.com";
+
 // https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/
 // var widgetsOn = true;
 // var layersOn = true;
