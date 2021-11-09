@@ -649,8 +649,8 @@ var zoomDict = {20 : '1,128.49',
 var authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
-// var geeAPIURL = "https://earthengine.googleapis.com";
-var geeAPIURL = "https://earthengine-highvolume.googleapis.com";
+var geeAPIURL = "https://earthengine.googleapis.com";
+// var geeAPIURL = "https://earthengine-highvolume.googleapis.com";
 
 // https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/
 // var widgetsOn = true;

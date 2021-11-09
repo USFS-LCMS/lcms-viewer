@@ -364,6 +364,26 @@ var staticTemplates = {
                                               </li>
                                             </ul>
                                           </li>
+                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands</span>
+                                            <ul class="nested active">
+                                              <li><span class="caret">Change</span>
+                                                <ul class="nested">
+                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
+                                                    <ul class="nested" id = 'PRUSVI-change-summary-downloads'></ul>
+                                                  </li>
+                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
+                                                    <ul class="nested" id = 'PRUSVI-change-annual-downloads'></ul>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
+                                                <ul class="nested" id = 'PRUSVI-land_cover-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
+                                                <ul class="nested" id = 'PRUSVI-land_use-annual-downloads'></ul>
+                                              </li>
+                                            </ul>
+                                          </li>
                                         </ul>`,
         supportDiv :`<div class = 'p-0 pb-2 col-lg-12' >
                         <div class = 'row pt-2' title = 'Open LCMS Data Explorer tutorial'>

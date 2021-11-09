@@ -2604,7 +2604,10 @@ function initialize() {
       else{run = runUSFS}
 
     //Bring in downloads if needed
-    if(mode === 'LCMS'){ setupDropdownTreeDownloads(studyAreaName);populateLCMSDownloads();}
+    if(mode === 'LCMS'){ 
+      setupDropdownTreeDownloads(studyAreaName);
+      populateLCMSDownloads();
+    }
 
     setGEERunID();
 

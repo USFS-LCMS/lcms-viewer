@@ -1728,7 +1728,7 @@ function startPixelChartCollection() {
 		function chartValues(values){
 			
 			if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
-			print('Extracted valuessss:');
+			print('Extracted values:');
 			print(values);
 			var header = values[0].slice(startColumn);
 			values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);

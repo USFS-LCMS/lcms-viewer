@@ -1019,7 +1019,7 @@ function setupDownloads(studyAreaName){
 
 }
 function setupDropdownTreeDownloads(studyAreaName){
-  var studyAreas = ['CONUS','SEAK'];
+  var studyAreas = ['CONUS','SEAK','PRUSVI'];
   var products = {'change':['annual','summary'],'land_cover':['annual'],'land_use':['annual']};
   var saDict = lcmsDownloadDict[studyAreaName]
   if(saDict !== undefined){
@@ -1047,7 +1047,7 @@ function setupDropdownTreeDownloads(studyAreaName){
                             <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                             <hr>`)
           download_list.map(function(url){
-            var name = url.substr(url.lastIndexOf('v2020-5_') + 8);
+            var name = url.substr(url.lastIndexOf('v20') + 8);
             $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
               // $('#'+id).append(`<li>
               //             <a target="_blank" href="${url}">
