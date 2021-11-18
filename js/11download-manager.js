@@ -59,16 +59,16 @@ function downloadSelectedAreas(id){
 }
 function downloadTutorial(){
   var link = document.createElement("a");
-  var tutorial_name ='LCMS_v2020-5_Data_Explorer_Overview.pdf';
+  var tutorial_name ='LCMS_v2020-6_Data_Explorer_Overview.pdf';
   link.href = './tutorials/'+tutorial_name;
     link.target = '_blank';
   link.click();
   ga('send', 'event',mode+'-download', 'tutorial-download', tutorial_name);
   // link.setAttribute("download", filename);
 }
-function downloadMethods(){
+function downloadMethods(version){
   var link = document.createElement("a");
-  var methods_name ='LCMS_v2020-5_Methods.pdf';
+  var methods_name ='LCMS_'+version+'_Methods.pdf';
   link.href = './tutorials/'+methods_name;
     link.target = '_blank';
   link.click();

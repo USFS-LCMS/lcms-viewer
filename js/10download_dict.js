@@ -5,24 +5,5 @@ lcmsDownloadDict = {"R4": {"downloads": ["https://data.fs.usda.gov/geodata/LCMS/
 }
 							}
 						}
-								// ['http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Change_Annual_1985_1989.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Change_Annual_1990_1999.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Change_Annual_2000_2009.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Change_Annual_2010_2019.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Change_Annual_2020_2020.zip',
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Change_Summary.zip',
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Cover_Annual_1985_1989.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Cover_Annual_1990_1999.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Cover_Annual_2000_2009.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Cover_Annual_2010_2019.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Cover_Annual_2020_2020.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Use_Annual_1985_1989.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Use_Annual_1990_1999.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Use_Annual_2000_2009.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Use_Annual_2010_2019.zip', 
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_CONUS_v2020-5_Land_Use_Annual_2020_2020.zip',
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_SEAK_v2020-5_Change_Annual.zip',
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_SEAK_v2020-5_Change_Summary.zip',
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_SEAK_v2020-5_Land_Cover_Annual.zip',
-								// 	'http://lcms.forestry.oregonstate.edu/downloads/LCMS_SEAK_v2020-5_Land_Use_Annual.zip']
+								
 								

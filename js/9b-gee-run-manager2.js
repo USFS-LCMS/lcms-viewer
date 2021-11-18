@@ -217,13 +217,18 @@ function runGTAC(){
     var areaC = formatAreaChartCollection(c,numbers,names);
 
     var bnTitle = bn.replaceAll('_',' ')
+    var fieldsHidden;
+    if(bn === 'Change'){
+      fieldsHidden =[true,false,false,false,true];
+    }
     areaChartCollections[bn] = {'label':`LCMS ${bnTitle}`,
                                   'collection':areaC,
                                   'stacked':false,
                                   'steppedLine':false,
                                   'tooltip':`Summarize ${bnTitle} classes for each year`,
                                   'colors':colors,
-                                  'xAxisLabel':'Year'};
+                                  'xAxisLabel':'Year',
+                                  'fieldsHidden':fieldsHidden};
   }
   
   lcmsRunFuns.addAreaChartClass('Change');

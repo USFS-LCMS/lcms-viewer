@@ -407,8 +407,13 @@ var staticTemplates = {
                                 <img class = 'support-icons' src = './images/methods-icon.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                                <a class = 'support-text' onclick = 'downloadMethods()'>
-                                Click to open in-depth LCMS methods document.</a>
+                                Click to open in-depth methods document:
+                                <li>
+                                    <a class = 'support-text' onclick = 'downloadMethods("v2020-5")' title = 'Open in-depth LCMS v2020.5 methods documentation'>Version 2020.5 (CONUS and SEAK)</a>
+                                </li>
+                                <li>
+                                    <a class = 'support-text' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                </li>   
                             </div>
                         </div>
                         <hr>
@@ -466,9 +471,9 @@ var staticTemplates = {
                             <div class = 'col-lg-10  support-text'>
                               
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2021). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2021). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
-                                    <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white" id = 'copiedCitationMessageBox'>
+                                    <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" id = 'copiedCitationMessageBox'>
                                         
                                     </button> 
                                     

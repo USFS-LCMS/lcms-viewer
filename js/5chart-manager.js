@@ -892,9 +892,10 @@ function makeAreaChart(area,name,userDefined){
 				var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;
 				var colors = areaChartCollections[whichAreaChartCollection].colors;
 				var chartType = areaChartCollections[whichAreaChartCollection].chartType
+				var fieldsHidden = areaChartCollections[whichAreaChartCollection].fieldsHidden
 				if(chartType === null || chartType === undefined){chartType = 'line'}
 				ga('send', 'event', mode, 'areaChart', whichAreaChartCollection);
-				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel);
+				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel,fieldsHidden);
 		
 				// areaChartingTabSelect(whichAreaDrawingMethod);
 				// map.setOptions({draggableCursor:'hand'});
