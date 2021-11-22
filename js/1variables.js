@@ -109,7 +109,17 @@ function parseUrlSearch(){
       urlParamsStr = urlParamsStr.split('?')[1].split('&');
     
     urlParamsStr.map(function(str){
+
+      if(str.indexOf('OBJECT---')>-1){
+        var strT = str.split('---');
+        if(urlParams[strT[1]] === undefined){
+          urlParams[strT[1]] = {};
+        }
+        urlParams[strT[1]][strT[2].split('=')[0]] = strT[2].split('=')[1];
+        
+      }else{
         urlParams[str.split('=')[0]] = str.split('=')[1]
+      }
     })}
     if(urlParams.id !== undefined){
       
@@ -134,7 +144,14 @@ function parseUrlSearch(){
 function constructUrlSearch(){
   var outURL = '?';
   Object.keys(urlParams).map(function(p){
-    outURL += p+'='+urlParams[p] + '&'
+    if(typeof(urlParams[p]) == 'object'){
+      var tObj = {};
+      Object.keys(urlParams[p]).map(k => tObj['OBJECT---'+p+'---'+k] = urlParams[p][k]);
+      outURL += new URLSearchParams(tObj).toString() + '&';
+    }else{
+      outURL += p+'='+urlParams[p] + '&';
+    }
+    
   })
   outURL = outURL.slice(0,outURL.length-1)
   return outURL

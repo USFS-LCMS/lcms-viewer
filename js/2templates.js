@@ -957,12 +957,15 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
 function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     $('#'+containerID).append(`<form  id = '${checkboxID}'>${title}<br></form>`);
-    eval(`window.${variable} = []`);
+    eval(`if(window.${variable} === undefined){window.${variable} = []}`);
     Object.keys(optionList).map(function(k){
       // console.log(k)
       var checkboxCheckboxID = variable+k + '-checkbox';
       var checkboxLabelID = variable+checkboxCheckboxID + '-label'
+      if(optionList[k] === 'true'){optionList[k] = true}
+      else  if(optionList[k] === 'false'){optionList[k] = false}
       var checked = optionList[k];
+      optionList[k] = checked;
       if(checked){checked = 'checked';}
         else{checked = ''};
         eval(`window.${variable} = optionList`)
@@ -973,9 +976,11 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
 
       $('#'+checkboxCheckboxID).change( function() {
                                       var v = $(this).val();
+
                                       var checked = $(this)[0].checked;
                                       optionList[v] = checked;
                                       eval(`window.${variable} = optionList`)
+                                      console.log('Checkbox change');console.log(optionList);
                                     });
     })
   }
@@ -986,10 +991,10 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
 function addMultiRadio(containerID,radioID,title,variable,optionList){
     $('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
 
-    eval(`window.${variable} = '';`);
+    eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
     Object.keys(optionList).map(function(k){
       var radioCheckboxID = k + '-checkbox';
-      var radioLabelID = radioCheckboxID + '-label'
+      var radioLabelID = radioCheckboxID + '-label';
       var checked = optionList[k];
       if(checked){
         checked = 'checked';

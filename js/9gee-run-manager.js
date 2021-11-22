@@ -2313,6 +2313,15 @@ function runLT(){
   endYear = parseInt(urlParams.endYear);
   startJulian = parseInt(urlParams.startJulian);
   endJulian = parseInt(urlParams.endJulian);
+  yearBuffer = parseInt(urlParams.yearBuffer);
+  minObs = parseInt(urlParams.minObs);
+  LTSortBy = urlParams.LTSortBy;
+  lossMagThresh = parseFloat(urlParams.lossMagThresh);
+  lossSlopeThresh = parseFloat(urlParams.lossSlopeThresh);
+  gainMagThresh = parseFloat(urlParams.gainMagThresh);
+  gainSlopeThresh = parseFloat(urlParams.gainSlopeThresh);
+  howManyToPull = parseInt(urlParams.howManyToPull);
+  maxSegments = parseInt(urlParams.maxSegments);
   /////////////////////////////////////////////////////////////////
   //Function for only adding common indices
   function simpleAddIndices(in_image){
@@ -2899,9 +2908,9 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     var platformObj = {'L5':l5,'L7-SLC-On':l7SLCOn,'L7-SLC-Off':l7SLCOff,'L8':l8}
     var imgs;
 
-    Object.keys(whichPlatforms).map(function(k){
+    Object.keys(urlParams.whichPlatforms).map(function(k){
       // console.log(k);console.log(whichPlatforms[k]);console.log(platformObj[k].getInfo())
-      if(whichPlatforms[k]){
+      if(urlParams.whichPlatforms[k] || urlParams.whichPlatforms[k] === 'true'){
         if(imgs === undefined){imgs = platformObj[k];
         }else{imgs = imgs.merge(platformObj[k])
         }
@@ -2954,7 +2963,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       imgsT = fillEmptyCollections(imgsT,dummyImage);
       var count = imgsT.select([0]).count();
       var img;
-      if(compMethod === 'Median'){
+      if(urlParams.compMethod === 'Median'){
         img = imgsT.median();
       }else{
         img = medoidMosaicMSD(imgsT,['nir','swir1','swir2']);
@@ -2978,7 +2987,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   };
   // console.log(srCollection.getInfo());
   // Map2.addLayer(srCollection.select(['NDVI','NBR']),{min:0.2,max:0.6,opacity:0},'Landsat Time Series',false);
-  if(maskWater === 'Yes'){
+  if(urlParams.maskWater === 'Yes'){
     var jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
 
     jrcWater = jrcWater.updateMask(jrcWater.neq(0)).reproject('EPSG:4326',null,30);
@@ -2987,7 +2996,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     srCollection = srCollection.map(function(img){return img.updateMask(jrcWater.mask().not())})
   }
   srCollection = srCollection.map(addYearBand);
-  
+  Map2.addTimeLapse(srCollection,{min:0.15,max:0.45,bands:'swir1,nir,red'},'Composite Timelapse')
   // print(ee.Image(srCollection.first()).bandNames().getInfo())
   var indexList = [];
   Object.keys(whichIndices).map(function(index){if(whichIndices[index]){indexList.push(index)}})

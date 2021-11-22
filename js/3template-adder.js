@@ -220,7 +220,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
 }else if(mode === 'LT'){
   canExport = true;
-  startYear = 1984;endYear = 2020;startJulian = 152;endJulian = 273;
+  startYear = 1984;endYear = 2021;startJulian = 152;endJulian = 273;
 
   var minYear = startYear;var maxYear = endYear;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
@@ -235,6 +235,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   if(urlParams.endJulian == null || urlParams.endJulian == undefined){
      urlParams.endJulian = endJulian;// = parseInt(urlParams.endYear);
   }
+
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort '+mode+' products');
   
   addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'');
@@ -245,17 +246,49 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
   addDualRangeSlider('comp-params-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-    addCheckboxes('comp-params-div','which-sensor-method-radio','Choose which Landsat platforms to include','whichPlatforms',{"L5":true,"L7-SLC-On":true,'L7-SLC-Off':false,'L8':true});
+
+  if(urlParams.whichPlatforms === null || urlParams.whichPlatforms === undefined){
+    urlParams.whichPlatforms = {"L5": true,"L7-SLC-On": true,"L7-SLC-Off": false,"L8": true}
+  }
+  addCheckboxes('comp-params-div','which-sensor-method-radio','Choose which Landsat platforms to include','whichPlatforms',urlParams.whichPlatforms);
+  
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-    addRangeSlider('comp-params-div','Composite Year Buffer','yearBuffer',0,2,0,1,'year-buffer-slider','','The number of adjacent years to include in a given year composite. (E.g. a value of 1 would mean the 2015 composite would have imagery from 2015 +- 1 year - 2014 to 2016)') 
+
+    if(urlParams.yearBuffer === null || urlParams.yearBuffer === undefined){
+      urlParams.yearBuffer = 0
+    }
+    addRangeSlider('comp-params-div','Composite Year Buffer','urlParams.yearBuffer',0,2,urlParams.yearBuffer,1,'year-buffer-slider','','The number of adjacent years to include in a given year composite. (E.g. a value of 1 would mean the 2015 composite would have imagery from 2015 +- 1 year - 2014 to 2016)') 
    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-   addRangeSlider('comp-params-div','Minimum Number of Observations','minObs',0,5,3,1,'min-obs-slider','','Minimum number of observations needed for a pixel to be included. This helps reduce noise in composites. Any number less than 3 can result in poor composite quality') 
+
+   if(urlParams.minObs === null || urlParams.minObs === undefined){
+      urlParams.minObs = 3
+    }
+   addRangeSlider('comp-params-div','Minimum Number of Observations','urlParams.minObs',1,5,urlParams.minObs,1,'min-obs-slider','','Minimum number of observations needed for a pixel to be included. This helps reduce noise in composites. Any number less than 3 can result in poor composite quality') 
     $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-  addMultiRadio('comp-params-div','comp-method-radio','Compositing method','compMethod',{"Median":false,"Medoid":true})
+
+  var compMethodDict = {"Median":false,"Medoid":true};
+  if(urlParams.compMethod !== null && urlParams.compMethod !== undefined){
+    Object.keys(compMethodDict).map(k => compMethodDict[k] = false);
+    compMethodDict[urlParams.compMethod] = true;
+
+  }
+  addMultiRadio('comp-params-div','comp-method-radio','Compositing method','urlParams.compMethod',compMethodDict)
    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-  addCheckboxes('comp-params-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',{'fMask-Snow':true,'cloudScore':false,'fMask-Cloud':true,'TDOM':false,'fMask-Cloud-Shadow':true})
+
+
+  if(urlParams.whichCloudMasks === null || urlParams.whichCloudMasks === undefined){
+    urlParams.whichCloudMasks = {'fMask-Snow':true,'cloudScore':false,'fMask-Cloud':true,'TDOM':false,'fMask-Cloud-Shadow':true};
+  }
+  addCheckboxes('comp-params-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',urlParams.whichCloudMasks)
    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
-  addMultiRadio('comp-params-div','water-mask-radio','Mask out water','maskWater',{"No":false,"Yes":true})
+
+  var maskWaterDict = {"No":false,"Yes":true};
+  if(urlParams.maskWater !== null && urlParams.maskWater !== undefined){
+    Object.keys(maskWaterDict).map(k => maskWaterDict[k] = false);
+    maskWaterDict[urlParams.maskWater] = true;
+
+  }
+  addMultiRadio('comp-params-div','water-mask-radio','Mask out water','urlParams.maskWater',maskWaterDict)
   
   // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   // addRadio('parameters-collapse-div','cloudScore-cloud-radio','Apply CloudScore','No','Yes','applyCloudScore','no','yes','','',"Whether to apply Google's Landsat CloudScore algorithm")
@@ -267,19 +300,51 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
  
   
   addSubCollapse('parameters-collapse-div','lt-params-label','lt-params-div','LANDTRENDR Params', '',false,'')
-    
-  addCheckboxes('lt-params-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',{'NBR':true,'NDVI':false,'NDMI':false,'NDSI':false,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false})
+  
+  if(urlParams.whichIndices === null || urlParams.whichIndices === undefined){
+    urlParams.whichIndices = {'NBR':true,'NDVI':false,'NDMI':false,'NDSI':false,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false};
+  }
+  addCheckboxes('lt-params-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',urlParams.whichIndices)
   $('#lt-params-div').append(`<div class="dropdown-divider" ></div>`);
-  addMultiRadio('lt-params-div','lt-sort-radio','Choose method to summarize LANDTRENDR change','LTSortBy',{"largest":true,"steepest":false,"newest":false, "oldest":false,  "shortest":false, "longest":false})
-   
-  addRangeSlider('lt-params-div','Loss Magnitude Threshold','lossMagThresh',-0.8,0,-0.15,0.01,'loss-mag-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any difference between start and end values for a given segement less than this threshold will be flagged as loss') 
-  addRangeSlider('lt-params-div','Loss Slope Threshold','lossSlopeThresh',-0.8,0,-0.10,0.01,'loss-slope-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any slope of a given segement less than this threshold will be flagged as loss') 
+
+  var LTSortByDict = {"largest":true,"steepest":false,"newest":false, "oldest":false,  "shortest":false, "longest":false};
+  if(urlParams.LTSortBy !== null && urlParams.LTSortBy !== undefined){
+    Object.keys(LTSortByDict).map(k => LTSortByDict[k] = false);
+    LTSortByDict[urlParams.LTSortBy] = true;
+
+  }
+  addMultiRadio('lt-params-div','lt-sort-radio','Choose method to summarize LANDTRENDR change','urlParams.LTSortBy',LTSortByDict)
   
-  addRangeSlider('lt-params-div','Gain Magnitude Threshold','gainMagThresh',0.01,0.8,0.1,0.01,'gain-mag-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any difference between start and end values for a given segement greater than this threshold will be flagged as gain') 
-  addRangeSlider('lt-params-div','Gain Slope Threshold','gainSlopeThresh',0.01,0.8,0.1,0.01,'gain-slope-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any slope of a given segement greater than this threshold will be flagged as gain') 
+
+  if(urlParams.lossMagThresh === null || urlParams.lossMagThresh === undefined){
+      urlParams.lossMagThresh = -0.15;
+    }
+  addRangeSlider('lt-params-div','Loss Magnitude Threshold','urlParams.lossMagThresh',-0.8,0,urlParams.lossMagThresh,0.01,'loss-mag-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any difference between start and end values for a given segement less than this threshold will be flagged as loss') 
+
+  if(urlParams.lossSlopeThresh === null || urlParams.lossSlopeThresh === undefined){
+      urlParams.lossSlopeThresh = -0.10;
+    }
+  addRangeSlider('lt-params-div','Loss Slope Threshold','urlParams.lossSlopeThresh',-0.8,0,urlParams.lossSlopeThresh,0.01,'loss-slope-thresh-slider','','The threshold to detect loss for each LANDTRENDR segment.  Any slope of a given segement less than this threshold will be flagged as loss') 
   
-  addRangeSlider('lt-params-div','How Many','howManyToPull',1,3,2,1,'how-many-slider','','The number of gains and losses to show. Typically an area only experiences a single loss/gain event, but in the cases where there are multiple above the specified thresholds, they can be shown.') 
-  addRangeSlider('lt-params-div','Max LANDTRENDR Segments','maxSegments',1,8,6,1,'max-segments-slider','','The max number of segments LANDTRENDR can break time series into.  Generally 3-6 works well. Use a smaller number of characterizing long-term trends is the primary focus and a larger number if characterizing every little change is the primary focus.') 
+  if(urlParams.gainMagThresh === null || urlParams.gainMagThresh === undefined){
+      urlParams.gainMagThresh = 0.10;
+    }
+  addRangeSlider('lt-params-div','Gain Magnitude Threshold','urlParams.gainMagThresh',0.01,0.8,urlParams.gainMagThresh,0.01,'gain-mag-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any difference between start and end values for a given segement greater than this threshold will be flagged as gain');
+
+  if(urlParams.gainSlopeThresh === null || urlParams.gainSlopeThresh === undefined){
+      urlParams.gainSlopeThresh = 0.10;
+    }
+  addRangeSlider('lt-params-div','Gain Slope Threshold','urlParams.gainSlopeThresh',0.01,0.8,urlParams.gainSlopeThresh,0.01,'gain-slope-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any slope of a given segement greater than this threshold will be flagged as gain') 
+  
+  if(urlParams.howManyToPull === null || urlParams.howManyToPull === undefined){
+      urlParams.howManyToPull = 2;
+    }
+  addRangeSlider('lt-params-div','How Many','urlParams.howManyToPull',1,3,urlParams.howManyToPull,1,'how-many-slider','','The number of gains and losses to show. Typically an area only experiences a single loss/gain event, but in the cases where there are multiple above the specified thresholds, they can be shown.');
+
+  if(urlParams.maxSegments === null || urlParams.maxSegments === undefined){
+      urlParams.maxSegments = 6;
+    }
+  addRangeSlider('lt-params-div','Max LANDTRENDR Segments','urlParams.maxSegments',1,8,urlParams.maxSegments,1,'max-segments-slider','','The max number of segments LANDTRENDR can break time series into.  Generally 3-6 works well. Use a smaller number of characterizing long-term trends is the primary focus and a larger number if characterizing every little change is the primary focus.') 
   
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
