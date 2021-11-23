@@ -2887,7 +2887,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
                 .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
    var l7SLCOn = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
                 .filterBounds(aoi)
-                .filterDate(ee.Date.fromYMD(1998,1,1),ee.Date.fromYMD(2003,5,31))
+                .filterDate(ee.Date.fromYMD(1998,1,1),ee.Date.fromYMD(2003,5,31).advance(1,'day'))
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .filter(ee.Filter.lte('WRS_ROW',120))
@@ -2996,7 +2996,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     srCollection = srCollection.map(function(img){return img.updateMask(jrcWater.mask().not())})
   }
   srCollection = srCollection.map(addYearBand);
-  Map2.addTimeLapse(srCollection,{min:0.15,max:0.45,bands:'swir1,nir,red'},'Composite Timelapse')
+  
   // print(ee.Image(srCollection.first()).bandNames().getInfo())
   var indexList = [];
   Object.keys(whichIndices).map(function(index){if(whichIndices[index]){indexList.push(index)}})
@@ -3007,7 +3007,8 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     if(chartCollectionT === undefined){
       chartCollectionT = LTStack[2];
     }else{chartCollectionT = joinCollections(chartCollectionT,LTStack[2],false)}
-  })
+  });
+  Map2.addTimeLapse(srCollection,{min:0.05,max:0.5,bands:'swir1,nir,red'},'Composite Timelapse');
   // chartCollection = chartCollectionT;
   pixelChartCollections['landsat'] = {'label':'landsat','collection':chartCollectionT};
   populatePixelChartDropdown();

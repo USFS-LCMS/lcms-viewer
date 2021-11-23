@@ -221,7 +221,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 }else if(mode === 'LT'){
   canExport = true;
   startYear = 1984;endYear = 2021;startJulian = 152;endJulian = 273;
-
+  initialZoomLevel = 9;
+  initialCenter = [37.64109979850402,-107.6917775643849];
   var minYear = startYear;var maxYear = endYear;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
       urlParams.startYear = startYear;// = parseInt(urlParams.startYear);

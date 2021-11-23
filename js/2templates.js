@@ -27,10 +27,10 @@ var  titles = {
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/lcms-icon.png">LANDTRENDR`,
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/lcms-icon.png">LandTrendr`,
             centerWords: 'DATA',
             rightWords:'Viewer',
-            title:'LANDTRENDR Data Viewer'
+            title:'LandTrendr Data Viewer'
             },
     'MTBS': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/mtbs-logo.png">MTBS`,
@@ -212,11 +212,20 @@ var staticTemplates = {
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
                         <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
                         <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the Landsat Data Explorer!</h3>
+                            <h3 class="mb-0 ">Welcome to the LandTrendr Data Viewer!</h3>
                         </div>
 
                         <div class="modal-body" id = 'introModal-body' >
-                            <p class="pb-2 ">This tool is intended to allow for quick exploration of the Landsat time series and long-term trends. Any area on earth can be mapped.</p>
+                            <li>
+                                <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr change detection algorithm</a>. Any area on earth can be mapped.</p>
+                            </li>
+                            <li>
+                                <p class="pb-2 ">LandTrendr will run across the entire extent of the map when it is loaded. If you would like to map a different area, move to the view extent you would like to map, and then press the <kbd>Submit</kbd> button at the bottom of the <kbd>PARAMETERS</kbd> collapse menu.</p>
+                            </li>
+                             <li>
+                                <p class="pb-2 ">All Landsat image processing and LandTrendr algorithm application is being performed on-the-fly. This can take some time to run. If you try to run this tool across a very large extent (zoom level < 9), it may not run.</p>
+                            </li>
+
                             
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
