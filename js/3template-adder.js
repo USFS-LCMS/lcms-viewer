@@ -180,7 +180,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
 }else if(mode === 'lcms-base-learner'){
   canExport = true;
-  startYear = 1984;endYear = 2020;
+  startYear = 1984;endYear = 2021;
   var minYear = startYear;var maxYear = endYear;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
       urlParams.startYear = startYear;// = parseInt(urlParams.startYear);
@@ -194,11 +194,15 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.gainMagThresh == null || urlParams.gainMagThresh == undefined){
      urlParams.gainMagThresh = 0.1;// = parseInt(urlParams.endYear);
   }
+
+  if(urlParams.whichIndices2 == null || urlParams.whichIndices2 == undefined){
+     urlParams.whichIndices2 = {'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':false};
+  }
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
 
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
-addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices2',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':false,'NDMI':false,'wetness':false})
+addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices2',urlParams.whichIndices2)
   
   addSubCollapse('parameters-collapse-div','lt-params-label','lt-params-div','LANDTRENDR Params', '',false,'')
   // addSubCollapse('parameters-collapse-div','ccdc-params-label','ccdc-params-div','CCDC Params', '',false,'')
@@ -338,7 +342,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   addRangeSlider('lt-params-div','Gain Slope Threshold','urlParams.gainSlopeThresh',0.01,0.8,urlParams.gainSlopeThresh,0.01,'gain-slope-thresh-slider','','The threshold to detect gain for each LANDTRENDR segment.  Any slope of a given segement greater than this threshold will be flagged as gain') 
   
   if(urlParams.howManyToPull === null || urlParams.howManyToPull === undefined){
-      urlParams.howManyToPull = 2;
+      urlParams.howManyToPull = 1;
     }
   addRangeSlider('lt-params-div','How Many','urlParams.howManyToPull',1,3,urlParams.howManyToPull,1,'how-many-slider','','The number of gains and losses to show. Typically an area only experiences a single loss/gain event, but in the cases where there are multiple above the specified thresholds, they can be shown.');
 

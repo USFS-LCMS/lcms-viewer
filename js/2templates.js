@@ -217,7 +217,7 @@ var staticTemplates = {
 
                         <div class="modal-body" id = 'introModal-body' >
                             <li>
-                                <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr change detection algorithm</a>. Any area on earth can be mapped.</p>
+                                <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr temporal segmentation algorithm</a>. Any area on earth can be mapped.</p>
                             </li>
                             <li>
                                 <p class="pb-2 ">LandTrendr will run across the entire extent of the map when it is loaded. If you would like to map a different area, move to the view extent you would like to map, and then press the <kbd>Submit</kbd> button at the bottom of the <kbd>PARAMETERS</kbd> collapse menu.</p>

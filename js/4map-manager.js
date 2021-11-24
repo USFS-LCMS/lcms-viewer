@@ -2569,7 +2569,7 @@ function initialize() {
         showMessage('Loading',staticTemplates.loadingModal)
       }
       
-    });
+    },1000);
 
     ee.initialize(authProxyAPIURL,geeAPIURL,function(){
       //Set up the correct GEE run function

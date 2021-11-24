@@ -145,7 +145,8 @@ function runGTAC(){
   lcmsRun.composites = ee.ImageCollection(ee.List.sequence(startYear,endYear,1).map(function(yr){
     return simpleAddIndices(lcmsRun.composites.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()),1);
   }));
-  
+  // Map2.addTimeLapse(lcmsRun.composites.limit(5),{min:500,max:5000,bands:'swir1,nir,red'},'Composite Time Lapse');
+
   //Set up CCDC
   lcmsRun.ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb',lcmsRun.whichIndex+'_.*','NDVI_.*'];
   lcmsRun.ccdc = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].ccdc_collections.map(f => ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector))).flatten());
@@ -241,5 +242,5 @@ function runGTAC(){
   getHansen();
   getMTBSandIDS();
 // $('#query-label').click()
-$('#pixel-chart-label').click();
+// $('#pixel-chart-label').click();
   }
