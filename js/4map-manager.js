@@ -797,7 +797,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 
                                 </li>
                                 
-                                <li id = '${legendDivID}-collapse-div' style = 'display:none;'></li>`)
+                                <div id = '${legendDivID}-collapse-div' style = 'display:none;'></div>`)
   
   
   //Add legend
