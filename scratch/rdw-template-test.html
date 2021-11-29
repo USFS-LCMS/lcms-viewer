@@ -1,0 +1,16 @@
+<head>
+  <script src="rdw-template.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+  function onLoad(){
+    Object.keys(rdwTemplate).map(function(k){
+      const d = document.createElement("div");
+      d.innerHTML = rdwTemplate[k]
+      document.body.appendChild(d); 
+    })
+  }
+  window.onload = onLoad;
+</script>
+</body>
+
