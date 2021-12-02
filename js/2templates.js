@@ -482,9 +482,13 @@ var staticTemplates = {
                                     Suggested citation: 
                                     <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2021). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
-                                    <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" id = 'copiedCitationMessageBox'>
-                                        
-                                    </button> 
+                                    <span>
+                                        <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
+                                        </button>
+                                        <p id = 'copiedCitationMessageBox'></p>
+                                    </span>
+                                    
+
                                     
                                         
                                    
@@ -518,8 +522,7 @@ var staticTemplates = {
         			</div>`,
                     tooltipToggle:` <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
                         <button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>`,
-        walkThroughButton:`<div class = pb-2>
-                            <div class="dropdown-divider"></div>
+        walkThroughButton:`<div >
                             <label class = 'mt-2'>Run a walk-through of the ${mode} Data Explorer's features</label>
                             <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()' title = 'Run interactive walk-through of the features of the ${mode} Data Explorer'>Run Walk-Through</button>
                           </div>`,

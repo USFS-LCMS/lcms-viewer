@@ -324,8 +324,8 @@ font-size:0.9em;
   font-size:0.9em!important;
 }
 .layer-container{margin-bottom:1px;}
-#layer-list li:last-child {padding-bottom: 0px;}
-#reference-layer-list li:last-child {padding-bottom: 0px;}
+.layer-list{padding-bottom: 1px;padding-top :1px;}
+
 .time-lapse-layer-range-container{
   float:right;
   width:30%;

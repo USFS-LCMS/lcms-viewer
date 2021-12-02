@@ -140,8 +140,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
 
   //Set up layer lists
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
-  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list" class = "layer-list"></div>`);
 
 
   
@@ -218,7 +218,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS BASE LEARNER DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
   
@@ -354,7 +354,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
@@ -373,8 +373,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
     $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
   $('#support-collapse-div').append(`<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`)
   $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
-  $('#support-collapse-div').append(`<p>If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a></p>`)
-  $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
+  $('#support-collapse-div').append(`<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a></p>`)
+  // $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
  
   var mtbsZoomToDict ={"All":true,"CONUS":false,"Alaska":false,"Hawaii":false,"Puerto-Rico":false};
@@ -399,20 +399,20 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
-  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list" class = "layer-list"></div>`);
   
  
   $('#introModal-body').append(staticTemplates.walkThroughButton);
 }else if(mode === 'TEST' || mode === 'FHP'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
 }else if(mode === 'geeViz'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
  
 
@@ -626,7 +626,7 @@ else if(mode === 'STORM'){
   // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   // $('#parameters-collapse-div').append(staticTemplates.reRunButton);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
  
@@ -636,8 +636,8 @@ else if(mode === 'STORM'){
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
-  $('#layer-list-collapse-div').append(`<div id="layer-list"></div>`);
-  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list" class = "layer-list"></div>`);
   plotsOn = true;
 }
 
@@ -650,7 +650,7 @@ addLegendCollapse();
  
 
 addAccordianContainer('tools-collapse-div','tools-accordian')
-$('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Measuring Tools</h5>`);
+$('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`);
 // $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
 addSubAccordianCard('tools-accordian','measure-distance-label','measure-distance-div','Distance Measuring',staticTemplates.distanceDiv,false,`toggleTool(toolFunctions.measuring.distance)`,staticTemplates.distanceTipHover);
 
