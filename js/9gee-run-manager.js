@@ -1791,7 +1791,11 @@ function runRaw(){
 function runAncillary(){
 
   getLCMSVariables();
-  Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false)
+  Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
+  var hi_veg = ee.FeatureCollection('projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED')
+Map2.addLayer(hi_veg,{strokeColor:'808',layerType:'geeVectorImage'},'HI Veg',false,null,null, 'HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1');
+  
+
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
   
@@ -1896,7 +1900,6 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
 var years = ee.List.sequence(1984,2019).getInfo();
 var dummyNLCDImage = ee.Image(nlcdLC.first());
 var cdl = ee.ImageCollection('USDA/NASS/CDL').select([0],['cdl']);
-
 
 
 
