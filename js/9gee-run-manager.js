@@ -1791,7 +1791,7 @@ function runRaw(){
 function runAncillary(){
 
   getLCMSVariables();
-  Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
+  // Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
   var hi_veg = ee.FeatureCollection('projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED')
 Map2.addLayer(hi_veg,{strokeColor:'808',layerType:'geeVectorImage'},'HI Veg',false,null,null, 'HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1');
   
@@ -1891,7 +1891,10 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Estuarine and Marine Deepwater': '007c88',
                     'Other Freshwater wetland':'b28653'
                   }
-    Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+                  
+
+    // Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+  Map2.addLayer([{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
 
 // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
@@ -3011,7 +3014,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
       chartCollectionT = LTStack[2];
     }else{chartCollectionT = joinCollections(chartCollectionT,LTStack[2],false)}
   });
-  Map2.addTimeLapse(srCollection,{min:0.05,max:0.5,bands:'swir1,nir,red'},'Composite Timelapse');
+  // Map2.addTimeLapse(srCollection,{min:0.05,max:0.5,bands:'swir1,nir,red'},'Composite Time Lapse');
   // chartCollection = chartCollectionT;
   pixelChartCollections['landsat'] = {'label':'landsat','collection':chartCollectionT};
   populatePixelChartDropdown();
