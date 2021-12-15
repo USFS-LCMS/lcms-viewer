@@ -570,6 +570,7 @@ function turnOnTimeLapseLayers(id){
       timeLapseObj[id].visible = true;
       timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).click()});
     }
+    queryObj[id].visible = timeLapseObj[id].visible;
   }
 }
 function turnOffTimeLapseLayers(id){
@@ -580,6 +581,7 @@ function turnOffTimeLapseLayers(id){
       timeLapseObj[id].visible = false;
       timeLapseObj[id].layerVisibleIDs.map(function(i){$('#'+i).click()});
     }
+    queryObj[id].visible = timeLapseObj[id].visible;
   }
 }
 //Function to handle tiles getting stuck when requested from GEE
@@ -721,6 +723,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID] = {}
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}  
 
+ 
+  
   //Pull out years if not provided
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
@@ -751,6 +755,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].visible = visible;
   timeLapseObj[legendDivID].state = 'inactive';
   timeLapseObj[legendDivID].opacity = viz.opacity*100;
+ 
+  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name};  
+  
   var layerContainerTitle = 'Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.'
   
   //Set up container for time lapse
