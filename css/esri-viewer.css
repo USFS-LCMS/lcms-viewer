@@ -1,0 +1,19 @@
+ html,
+body,
+#viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.esri-view-width-xlarge .esri-popup__main-container {
+width: 700px;
+}
+.esri-view-height-less-than-medium  .esri-popup__main-container {
+    max-height: 600px;
+}
+.esri-feature__content-element{
+      padding-bottom: 0px;
+}
+img {max-height: 550px;}

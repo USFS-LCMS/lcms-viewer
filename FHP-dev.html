@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
     <head>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
         
+         <script type="text/javascript">
+            var mode = 'FHP';
+        </script>
         <script type="text/javascript" src="js/analytics.js"></script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="USDA Forest Service Landscape Change Monitoring System (LCMS) and Insects and Disease Survey Data Explorer ">
+        <meta name="keywords" content="Landscape, Change, Forestry, USDA, Forest Service, Remote Sensing, Earth Engine, Forest Health">
+        <meta name="author" content="Ian Housman">
+
         <link rel="icon" href="./images/usfslogo.png">
         
         <script async src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCEfhh_56VLoQEYIczNxJlrsPRWNYQ5NJE&libraries=places"></script>
@@ -45,8 +52,10 @@
     <body>
         <script type="text/javascript" src="./js/1variables.js"></script>
         <script type="text/javascript">
-            var mode = 'LCMS';
-            ga('send', 'event','load', mode, 'LCMS-pilot');
+            studyAreaSpecificPage = false;
+            initialCenter = studyAreaDict['USFS LCMS 1984-2020'].center.slice(0,2);
+            initialZoomLevel  = studyAreaDict['USFS LCMS 1984-2020'].center[2];
+            localStorage.setItem("cachedStudyAreaName",'USFS LCMS 1984-2020')
         </script>
         <script type="text/javascript" src="./js/2templates.js"></script>
         <script type="text/javascript" src="./js/3template-adder.js"></script>
