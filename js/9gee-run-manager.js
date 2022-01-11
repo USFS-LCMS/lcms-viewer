@@ -1891,10 +1891,19 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Estuarine and Marine Deepwater': '007c88',
                     'Other Freshwater wetland':'b28653'
                   }
-                  
+  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/HI_wetlands");
+  nwi_hi = nwi_hi.map(function(f){return f.set('WETLAND_TY_NO',f.get('WETLAND_TY'))});
+  var props =nwi_hi.aggregate_histogram('WETLAND_TY_NO').keys();
+  var props_nos = ee.List.sequence(1,props.length());
+  nwi_hi = nwi_hi.remap(props,props_nos,'WETLAND_TY_NO');
+  // var nwi_dict = ee.Dictionary.fromLists(props_nos.map((n)=>ee.Number(n).byte().format()),props).getInfo();
+  var nwi_dict = {1: 'Estuarine and Marine Deepwater', 2: 'Estuarine and Marine Wetland', 3: 'Freshwater Emergent Wetland', 4: 'Freshwater Forested/Shrub Wetland', 5: 'Freshwater Pond', 6: 'Lake', 7: 'Riverine'};
+  var nwi_palette = ['007c88','66c2a5','7fc31c','008836','688cc0','13007c','0190bf'];
+  var nwi_hi_rast = nwi_hi.reduceToImage(['WETLAND_TY_NO'], ee.Reducer.first()).rename(['NWI']).set('system:time_start',ee.Date.fromYMD(2019,6,1).millis());
+  Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'NWI');                
 
     // Map2.addLayer([{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
-  Map2.addLayer([{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+  // Map2.addLayer([{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
 
 // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
@@ -2210,6 +2219,8 @@ mtbs = batchFillCollection(mtbs,years).map(setSameDate);
 cdl = batchFillCollection(cdl,years).map(setSameDate);
 nlcdTCC = batchFillCollection(nlcdTCC,years).map(setSameDate);
 nlcdImpv = batchFillCollection(nlcdImpv,years).map(setSameDate);
+
+nwi_hi_rast = batchFillCollection(ee.ImageCollection([nwi_hi_rast]),years).map(setSameDate);
 // prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
 // prvi_winds = batchFillCollection(prvi_winds.select([0,1,2]),years).map(setSameDate);
 // prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
@@ -2223,7 +2234,7 @@ forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervio
 // forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
 // forCharting  = joinCollections(forCharting,prvi_winds, false);
 // forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);
-
+forCharting  = joinCollections(forCharting,nwi_hi_rast, false);
 
 // console.log(forCharting.getInfo())
 
@@ -2235,7 +2246,8 @@ var chartTableDict = {
   'NLCD LCMS Landcover':nlcdLCQueryDict,
   'Cropland Data':cdlQueryDict,
   'PDSI':pdsiDict,
-  'PRVI Landcover':prvi_lc_lookup
+  'PRVI Landcover':prvi_lc_lookup,
+  'NWI':nwi_dict
 }
 
 forCharting = forCharting.set('chartTableDict',chartTableDict)

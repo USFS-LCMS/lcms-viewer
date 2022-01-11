@@ -313,6 +313,7 @@ var  getQueryImages = function(lng,lat){
 				        format: 'png'
 				    }
 				}
+			console.log(value.table)
 			Plotly.newPlot(containerID, value.table,plotLayout,buttonOptions);
 
 		}else if(q.type === 'geeVectorImage' || q.type === 'geeVector'){
