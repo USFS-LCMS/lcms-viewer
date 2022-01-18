@@ -159,6 +159,7 @@ color:var(--white)!important;}
   color:var(--black)!important;
 }
 table {border: none!important;}
+.dropdown-divider{margin-top:0.2em;margin-bottom:0em;padding-top:0.2em;padding-bottom:0.2em;}
 /*///////////////////////////////////////////////////////*/
 
 .main-container{
@@ -324,7 +325,7 @@ font-size:0.9em;
   font-size:0.9em!important;
 }
 .layer-container{margin-bottom:1px;}
-.layer-list{padding-bottom: 1px;padding-top :1px;}
+.layer-list{padding-bottom: 1px;padding-top :1px;padding-left:0px;margin-bottom:0px;}
 
 .time-lapse-layer-range-container{
   float:right;

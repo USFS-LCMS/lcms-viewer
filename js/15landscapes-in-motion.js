@@ -11,7 +11,7 @@ require(["esri/Map",
     ) {
       // If GeoJSON files are not on the same domain as your website, a CORS enabled server
       // or a proxy is required.
-      const url = 'https://raw.githack.com/USFS-LCMS/lcms-viewer/prod-viewer/geojson/usfs_boundaries.json';
+      const url = 'https://cdn.jsdelivr.net/gh/USFS-LCMS/lcms-viewer@prod-viewer/geojson/usfs_boundaries.json';
 
       // Paste the url into a browser's address bar to download and view the attributes
       // in the GeoJSON file. These attributes include:

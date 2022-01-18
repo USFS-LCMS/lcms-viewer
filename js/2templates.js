@@ -9,13 +9,13 @@ var  titles = {
 		    title:'LCMS Data Explorer'
 			},
     'LCMS': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/lcms-icon.png">LCMS`,
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.4em' class='image-icon mr-1' src="images/lcms-icon.png">LCMS`,
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.4em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
             centerWords: 'Base-Learner',
             rightWords:'Explorer',
             title:'LCMS Base Learner Explorer'
@@ -27,13 +27,13 @@ var  titles = {
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/lcms-icon.png">LandTrendr`,
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LandTrendr`,
             centerWords: 'DATA',
             rightWords:'Viewer',
             title:'LandTrendr Data Viewer'
             },
     'MTBS': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' src="images/mtbs-logo.png">MTBS`,
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="MTBS icon" src="images/mtbs-logo.png">MTBS`,
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'MTBS Data Explorer'
@@ -72,19 +72,19 @@ var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-tog
 /////////////////////////////////////////////////////////////////////
 //Provide a bunch of templates to use for various elements
 var staticTemplates = {
-	map:`<div onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </div>`,
+	map:`<div aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </div>`,
 
-	mainContainer: `<div class = 'container main-container' id = 'main-container'></div>`,
-	sidebarLeftToggler:`<div href="#" class="fa fa-bars  px-1 py-2  sidebar-toggler " style = 'margin-left:-0.2em;margin-top:-0.1em;' onclick = 'toggleSidebar()'></div>`,
+	mainContainer: `<div aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></div>`,
+	sidebarLeftToggler:`<div href="#" class="fa fa-bars  px-1 py-2  sidebar-toggler " style = 'margin-left:-0.2em;margin-top:-0.1em;' onclick = 'toggleSidebar()' title = 'Click to toggle sidebar visibility'></div>`,
 
     sidebarLeftContainer: `
-						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container' >
+						<div onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 					        <div id = 'sidebar-left-header'></div>
                             
 					        <div id = 'sidebar-left'></div>
 					    </div>`,
 
-	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img   title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
+	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
 
 
 	exportContainer:`<div class = 'dropdown-divider'></div>
@@ -101,19 +101,19 @@ var staticTemplates = {
                               
                             </form>
                             <div class = 'py-2' id = 'export-area-drawing-div'>
-                                <button class = 'btn' onclick = 'selectExportArea()' rel="txtTooltip" title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
-                                <a href="#" onclick = 'undoExportArea()' rel="txtTooltip" title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
-                                <a href="#" onclick = 'deleteExportArea()' rel="txtTooltip" title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
+                                <button class = 'btn' onclick = 'selectExportArea()' title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
+                                <a href="#" onclick = 'undoExportArea()' title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
+                                <a href="#" onclick = 'deleteExportArea()' title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
                             <div class = 'dropdown-divider'></div>  
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
-                                    <button class = 'btn' onclick = 'exportImages()' rel="txtTooltip" title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
-                                    <button class = 'btn' onclick = 'cancelAllTasks()' rel="txtTooltip" title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
                                 </div>
                                 <div class = 'dropdown-divider'></div>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' data-toggle="tooltip"  title="">
-						    		<img rel="txtTooltip"   class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
+						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
 						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
 								</span>
                                 <div id = 'export-count-div'></div>
@@ -160,13 +160,13 @@ var staticTemplates = {
 
                         <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
-                        	<button class = 'btn' onclick = 'downloadTutorial()' rel="txtTooltip" data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
+                        	<button class = 'btn' onclick = 'downloadTutorial()' data-toggle="tooltip" title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
 
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
                             <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                                 Creating map services within Google Earth Engine. 
                              </p>
                         </div>
@@ -195,7 +195,7 @@ var staticTemplates = {
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
                             <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                                 Creating map services within Google Earth Engine. 
                              </p>
                         </div>
@@ -231,7 +231,7 @@ var staticTemplates = {
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
                             <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                                 Creating map services within Google Earth Engine. 
                              </p>
                         </div>
@@ -258,7 +258,7 @@ var staticTemplates = {
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
                             <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                                 Creating map services within Google Earth Engine. 
                              </p>
                         </div>
@@ -272,19 +272,19 @@ var staticTemplates = {
             </div>`
         },
     loadingModal:`<p>
-                  <img style="width:2.1em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                  <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                     Creating map services within Google Earth Engine. 
                   <br>
-                   <img style="width:2.1em;" class="image-icon fa-spin mr-1" src="images/GEE_logo_transparent.png">
+                   <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                     This can take some time. Thank you for your patience!
                    <div id = 'loading-number-box'></div>
                  </p>
                   `,
 	bottomBar:`<div class = 'bottombar'  id = 'bottombar' >
                    
-        			<span class = 'px-2'  id='current-tool-selection' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Any tool that is currently active is shown here."></span>
-        			<span class = 'px-2'  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
-                    <span class = 'px-2'  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></span>
+        			<span class = 'px-2'  id='current-tool-selection' title="Any tool that is currently active is shown here."></span>
+        			<span class = 'px-2' title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
+                    <span class = 'px-2' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></span>
                     <span class = 'px-2'  id='current-mouse-position'  ></span>
                     <span id = 'contributor-logos' > 
                         <a href="https://earthengine.google.com/" target="_blank">
@@ -293,10 +293,10 @@ var staticTemplates = {
                         
                        
                         <a href="http://www.fs.fed.us//" target="_blank">
-                            <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"   title="Click to learn more about the US Forest Service">
+                            <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  alt= "USDA Forest Service logo" title="Click to learn more about the US Forest Service">
                         </a>
                         <a href="http://www.usda.gov" target="_blank">
-                            <img src="images/usdalogo.png" class = 'image-icon-bar'  href="#"   title="Click to learn more about the USDA">
+                            <img src="images/usdalogo.png" class = 'image-icon-bar'  href="#"   alt= "USDA logo" title="Click to learn more about the USDA">
                         </a>
                     </span>
 
@@ -324,7 +324,7 @@ var staticTemplates = {
         studyAreaDropdownButtonDisabledTooltip:`Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
         reRunButtonDisabledTooltip:`Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
-        reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="">Submit</button>`,
+        reRunButton:`<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' title="">Submit</button>`,
         addTimelapsesButton:`<button id = 'addTimelapses-button' onclick = 'addLCMSTimeLapses()' class = 'mb-1 ml-1 btn ' title="Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading">Add LCMS Time Lapses To Map</button>`,
         downloadDiv :`<div class = 'py-2'>
                         <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
@@ -400,7 +400,7 @@ var staticTemplates = {
                         </div>
                         <div class = 'row p-2' title = 'Open LCMS Data Explorer tutorial'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' src = './images/information--v2.png'></a> 
+                                <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' onclick = 'downloadTutorial()'>
@@ -413,7 +413,7 @@ var staticTemplates = {
                         </div>
                         <div class = 'row p-2' title = 'Open in-depth LCMS methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' src = './images/methods-icon.png'></a> 
+                                <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
@@ -434,7 +434,7 @@ var staticTemplates = {
                         <div class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.fed.us/gstc/" target="_blank">
-                            <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#"  title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                            <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
                         </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -462,7 +462,7 @@ var staticTemplates = {
                         <div class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#" alt = "RedCastle Resources logo"  title="Click to learn more about RedCastle Resources Inc.">
                                     
                                 </a>
                             </div>
@@ -507,7 +507,7 @@ var staticTemplates = {
                    
                         <div class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' src = './images/email.png'></a> 
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './images/email.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
@@ -528,7 +528,7 @@ var staticTemplates = {
                           </div>`,
         distanceDiv : `Click on map to measure distance`,
         distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",
-        areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
+        areaDiv : `Click on map to measure area<variable-radio onclick1 = 'updateArea()' onclick2 = 'updateArea()' var='metricOrImperialArea' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' title='Toggle between imperial or metric units'></variable-radio>
        `,
         areaTip : "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
         queryDiv : "<div>Double-click on map to query values of displayed layers at that location</div>",
@@ -538,17 +538,17 @@ var staticTemplates = {
         userDefinedAreaChartDiv : `<div  id="user-defined" >
                                             
                                             <label>Provide name for area selected for charting (optional):</label>
-                                            <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                            <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
                                             <div class = 'dropdown-divider'></div>
                                             <div>Total area selected: <i id = "user-defined-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                             <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                             <div id = 'user-defined-edit-toolbar'></div>
-                                            <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' rel="txtTooltip" title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
+                                            <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
                                 
         		            			</div>
                                 	</div>`,
         showChartButton:`<div class = 'py-2'>
-                                <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' rel="txtTooltip" data-toggle="tooltip" title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
+                                <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                                 </div>`,
         userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
 
@@ -561,17 +561,17 @@ var staticTemplates = {
                                 <div>Uploaded areas:</div>
                                 <div id="area-charting-shp-layer-list"></div>
                                 <div class = 'dropdown-divider'></div>
-                                <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' rel="txtTooltip" title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>
+                                <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>
                                 `,
         uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml (If the .kmz or .kml has embedded pngs or any other non vector data, the conversion will likely fail.), or .geojson file to summarize products across.',
-        selectAreaDropdownChartDiv : `<i rel="txtTooltip" data-toggle="tooltip"  title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
+        selectAreaDropdownChartDiv : `<i title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                             <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
                             <div class = 'dropdown-divider'></div>`,
         selectAreaDropdownChartTip : 'Select from pre-defined areas to summarize products across.',
         selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                         <div class = 'dropdown-divider'></div>
                                         <label>Provide name for area selected for charting (optional):</label>
-                                        <input rel="txtTooltip" title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                        <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
                                         <div class = 'dropdown-divider'></div>  
                                         <div id="area-charting-select-layer-list"></div>
                                         <div class = 'dropdown-divider'></div>
@@ -679,7 +679,7 @@ function showLocationError(error) {
 //Function to add a Bootstrap dropdown
 function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 	if(tooltip === undefined || tooltip === null){tooltip = ''}
-	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" title="${tooltip}">
 								  <label for="${dropdownID}">${dropdownLabel}:</label>
 								  <select class="form-control" id="${dropdownID}"></select>
 								</div>`)
@@ -701,8 +701,8 @@ function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction
     if(deleteTip === undefined || deleteTip === null){deleteTip = 'Click to clear current drawing and start a new one (Delete, or Backspace)'};
 	$('#'+containerID).append(`<div class = 'dropdown-divider'></div>
 								    <div id = '${toolbarID}' class="icon-bar ">
-								    	<a href="#" onclick = '${undoFunction}' rel="txtTooltip" title = '${undoTip}''><i class="btn fa fa-undo"></i></a>
-									  	<a href="#" onclick = '${restartFunction}' rel="txtTooltip" title = '${deleteTip}'><i class="btn fa fa-trash"></i></a>
+								    	<a href="#" onclick = '${undoFunction}' title = '${undoTip}''><i class="btn fa fa-undo"></i></a>
+									  	<a href="#" onclick = '${restartFunction}' title = '${deleteTip}'><i class="btn fa fa-trash"></i></a>
 									</div>
 									<div class = 'dropdown-divider'></div>`);
 }
@@ -919,7 +919,7 @@ function addStudyAreaToDropdown(name,toolTip){
     // 	console.log('Adding toggle error: ' + err);
     // }
     
-    $('#'+containerDivID).append(`<div data-toggle="tooltip" data-placement="top" title="${tooltip}" >${title}<input  id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" ></div>`)
+    $('#'+containerDivID).append(`<div title="${tooltip}" >${title}<input  id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" ></div>`)
     $('#'+toggleID).change(function(){
         var value = valueDict[$('#'+toggleID).prop('checked')];
         eval(`window.${variable} = value;`);
@@ -932,7 +932,7 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 	eval(`window.${variable} = '${valueOn}';`);
 	// console.log(valueDict);
 	
-	$('#'+containerDivID).append(`<div class = 'row' id = '${radioID}-container' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+	$('#'+containerDivID).append(`<div class = 'row' id = '${radioID}-container' title="${tooltip}">
 		<label class="col-12 pb-0">${title} </label>
 		<div class = 'col-12 pt-0'>
 		<div  id = '#${radioID}'  class="toggle_radio p-0">
@@ -1159,7 +1159,7 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	
 	// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
-	$('#'+containerDivID).append(`<div  id="${sliderID}-container"class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+	$('#'+containerDivID).append(`<div  id="${sliderID}-container"class='dual-range-slider-container px-1' title="${tooltip}">
 							        <div class='dual-range-slider-name py-2'>${title}</div>
 							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
 							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
@@ -1186,7 +1186,7 @@ function setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode){
 }
 //Wrapper for single range slider
 function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
-    $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="${tooltip}">
+    $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' title="${tooltip}">
                                     <div class='dual-range-slider-name py-2'>${title}</div>
                                     <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
                                     <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
@@ -1201,9 +1201,9 @@ function addTab(tabTitle,tabListID, divListID,tabID, divID,tabOnClick,divHTML,ta
   var show;
   if(selected || selected === 'true'){show = 'active show'}else{show = ''};
 
-  $("#" + tabListID ).append(`<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-left text-dark tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}">${tabTitle}</a></li>`);
+  $("#" + tabListID ).append(`<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-left text-dark tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" title="${tabToolTip}">${tabTitle}</a></li>`);
 
-  $('#'+divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" rel="txtTooltip" data-toggle="tooltip"  title="${tabToolTip}"></div>`).append(divHTML))
+  $('#'+divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`).append(divHTML))
 
     };
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1224,7 +1224,7 @@ function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, colla
 	var collapsed;
 	if(toolTip === undefined || toolTip === null){toolTip = ''}
 	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
-	var collapseTitleDiv = `<div   rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}" class="panel-heading px-3 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
+	var collapseTitleDiv = `<div title="${toolTip}" class="panel-heading px-3 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	<h5 class="p-0 m-0 panel-title  ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}"> <a class = 'collapse-title' >
 	${collapseLabelIcon} ${collapseLabel} </a></h5><span id="${collapseLabelID}-message"</span></div>`;
 
@@ -1263,12 +1263,12 @@ function addAccordianCard(accordianContainerID,accordianCardHeaderID, accordianC
     <div>
       <div class=" px-0 py-2 sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
         aria-expanded="false" aria-controls="${accordianCardBodyID}" onclick = '${onclick}'>
-      <a class = 'collapse-title' rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}"  >
+      <a class = 'collapse-title' title="${toolTip}"  >
         ${accordianCardHeaderContent} </a>
       </div>
       <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} super-panel-collapse panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
         data-parent="#${accordianContainerID}">
-        <div rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}">${accordianCardBodyContent}</div>
+        <div title="${toolTip}">${accordianCardBodyContent}</div>
       </div>
     </div>`)
   // $('#'+accordianCardBodyID+'.super-panel-collapse').on('hidden.bs.collapse', function () {
@@ -1289,12 +1289,12 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
     <div>
       <div class=" px-0 py-2 sub-sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
         aria-expanded="false" aria-controls="${accordianCardBodyID}" onclick = '${onclick}'>
-      <a class = 'collapse-title' rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}"  >
+      <a class = 'collapse-title' title="${toolTip}"  >
         ${accordianCardHeaderContent} </a>
       </div>
       <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} toggle-collapse panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
         data-parent="#${accordianContainerID}">
-        <div rel="txtTooltip" data-toggle="tooltip"  title="${toolTip}">${accordianCardBodyContent}</div>
+        <div title="${toolTip}">${accordianCardBodyContent}</div>
       </div>
     </div>`)
  //  $('.panel-collapse.toggle-collapse').on('hidden.bs.collapse', function () {
@@ -1336,7 +1336,7 @@ function addLegendContainer(legendContainerID,containerID,show,toolTip){
 	if(show === undefined || show === null){show = true}
 	if(show){show = 'block'}
 	else{show = 'none'}
-	$('#' + containerID).prepend(`<div class = 'py-2 row' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+	$('#' + containerID).prepend(`<div class = 'py-2 row' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
 								</div>`);
 }
 
@@ -1353,7 +1353,7 @@ function addClassLegendEntry(classLegendContainerID,obj){
 }
 
 function addColorRampLegendEntry(legendContainerID,obj){
-	$('#'+legendContainerID).append(`<li class = 'legend-colorRamp' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title= '${obj.helpBoxMessage}'>
+	$('#'+legendContainerID).append(`<li class = 'legend-colorRamp' title= '${obj.helpBoxMessage}'>
 							            <div class = 'legend-title'>${obj.name}</div>
 							            <div class = 'colorRamp'style='${obj.colorRamp};'></div>
 							            <div>
@@ -1435,14 +1435,14 @@ function addLayer(layer){
     }
 
     //Set up layer control container
-	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container' rel="txtTooltip" data-toggle="tooltip"  title= '${layer.helpBoxMessage}'>
+	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}'class = 'layer-container'  title= '${layer.helpBoxMessage}'>
 								           
-								           <div id="${opacityID}" class = 'simple-layer-opacity-range'></div>
-								           <input  id="${visibleID}" type="checkbox" ${checked}  />
+								           <div id="${opacityID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
+								           <input  id="${visibleID}" aria-hidden="true" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
-								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for layer service from Google Earth Engine'></i>
-								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
-								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" rel="txtTooltip" data-toggle="tooltip"  title='Waiting for map tiles from Google Earth Engine'></i>
+								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" aria-hidden="true" title='Waiting for layer service from Google Earth Engine'></i>
+								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" aria-hidden="true" title='Waiting for map tiles from Google Earth Engine'></i>
+								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" aria-hidden="true" title='Waiting for map tiles from Google Earth Engine'></i>
                                             
 								            <span id = '${spanID}' class = 'layer-span'>${layer.name}</span>
 								       </li>`);

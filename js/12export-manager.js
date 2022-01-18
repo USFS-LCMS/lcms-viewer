@@ -19,7 +19,7 @@ function downloadFiles(id){
                 var link = document.createElement("a");
                 link.setAttribute("href", item.mediaLink);
                 link.setAttribute("download", item.name);
-                link.style.visibility = 'hidden';
+                link.style.visibility = 'hidden';    
                 document.body.appendChild(link);
                 link.click();
                 sleep(1000);

@@ -71,9 +71,9 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
  
   /*Construct panes in left sidebar*/
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
-  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
+  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
@@ -94,7 +94,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   var tAnalysisMode = urlParams.analysisMode;
   var tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
   if(mode === 'LCMS'){
-    $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+    // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
     // $('#parameters-collapse-div').append(`<p>Additional Functionality:</p>`);
   // $('#parameters-collapse-div').append(staticTemplates.addTimelapsesButton);
   addRadio('parameters-collapse-div','addTimeLapses-radio','Add LCMS Time Lapses:','No','Yes','urlParams.addLCMSTimeLapsesOn','no','yes','','','Add interactive time lapse of LCMS Change, Land Cover, and Land Use products. This will slow down the map loading');
@@ -140,8 +140,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
 
   //Set up layer lists
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
-  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list" class = "layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
 
 
   
@@ -217,8 +217,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS BASE LEARNER DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS BASE LEARNER DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
   
@@ -353,8 +353,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layer icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
@@ -394,25 +394,25 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' src="images/mtbs-logo.png">`,true,null,mode+' DATA layers to view on map');
-  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="MTBS logo" src="images/mtbs-logo.png">`,true,null,mode+' DATA layers to view on map');
+  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
-  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list" class = "layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
   
  
   $('#introModal-body').append(staticTemplates.walkThroughButton);
 }else if(mode === 'TEST' || mode === 'FHP'){
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
 }else if(mode === 'geeViz'){
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
  
 
@@ -454,7 +454,7 @@ else if(mode === 'STORM'){
     <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
     <hr>
     <label>Provide name for storm (optional):</label>
-    <input rel="txtTooltip" title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm!" style='width:80%;'><hr>`)
+    <input title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm!" style='width:80%;'><hr>`)
    addRangeSlider('parameters-collapse-div','Refinement iterations','refinementIterations',0, 10, 5, 1,'refinement-factor-slider','null',"Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations")
    addRangeSlider('parameters-collapse-div','Max distance (km)','maxDistance',50, 500, 200, 50,'max-distance-slider','null',"Specify max distance in km from storm track to include in output")
    addRangeSlider('parameters-collapse-div','Min wind (mph)','minWind',0, 75, 30, 5,'min-wind-slider','null',"Specify min wind speed in mph to include in output")
@@ -473,8 +473,8 @@ else if(mode === 'STORM'){
 
 
        $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>
-      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' rel="txtTooltip" title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button>
-      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' rel="txtTooltip" title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
+      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button>
+      <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
     function ingestStormTrack() {
       $('#summary-spinner').show();
           if(jQuery('#stormTrackUpload')[0].files.length > 0){
@@ -625,19 +625,19 @@ else if(mode === 'STORM'){
   // addRangeSlider('parameters-collapse-div','Choose storm year','stormYear',1980, 2030, 2018, 1,'storm-year-slider','null',"Specify year of storm")
   // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
   // $('#parameters-collapse-div').append(staticTemplates.reRunButton);
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
  
 }else{
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
-  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
-  $('#layer-list-collapse-div').append(`<div id="layer-list" class = "layer-list"></div>`);
-  $('#reference-layer-list-collapse-div').append(`<div id="reference-layer-list" class = "layer-list"></div>`);
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
   plotsOn = true;
 }
 
@@ -722,10 +722,10 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
 //Add some logos for different modes
 if(mode === 'MTBS' || mode === 'Ancillary'){
   $('#contributor-logos').prepend(`<a href="https://www.usgs.gov/" target="_blank" >
-                                    <img src="images/usgslogo.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the US Geological Survey">
+                                    <img src="images/usgslogo.png" class = 'image-icon-bar' alt="USGS logo" title="Click to learn more about the US Geological Survey">
                                   </a>`)
   $('#contributor-logos').prepend(`<a href="https://www.mtbs.gov/" target="_blank" >
-                                    <img src="images/mtbs-logo-large.png" class = 'image-icon-bar'  href="#"  rel="txtTooltip" data-toggle="tooltip" data-placement="top" title="Click to learn more about the US Geological Survey">
+                                    <img src="images/mtbs-logo-large.png" class = 'image-icon-bar' alt="MTBS logo" title="Click to learn more about MTBS">
                                   </a>`)
 }
 //Handle exporting if chosen
@@ -740,11 +740,11 @@ if(canExport){
    }
    if(mode === 'STORM'){
      $('#export-area-drawing-div').append(`<hr>
-                                            <button class = 'btn' onclick = 'addTrackBounds()' rel="txtTooltip" title = 'Add bounds of storm track for export area.'><i class="pr-1 fa fa-square-o" aria-hidden="true"></i> Use storm track bound as area to download</button>
+                                            <button class = 'btn' onclick = 'addTrackBounds()' title = 'Add bounds of storm track for export area.'><i class="pr-1 fa fa-square-o" aria-hidden="true"></i> Use storm track bound as area to download</button>
                                             `)
      $('#export-button-div').append(`<hr>`);
      addRangeSlider('export-button-div','Quick look spatial resolution','quickLookRes',1200, 6000, 3000, 300,'quick-look-res-slider','null',"Specify spatial resolution for quick look downloads.")
-     $('#export-button-div').append(`<button class = 'btn' onclick = 'downloadQuickLooks()' rel="txtTooltip" title = 'Quickly download outputs at coarse resolution'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Download Quick Look Outputs</button>
+     $('#export-button-div').append(`<button class = 'btn' onclick = 'downloadQuickLooks()'  title = 'Quickly download outputs at coarse resolution'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Download Quick Look Outputs</button>
                                             `)
      
    }
