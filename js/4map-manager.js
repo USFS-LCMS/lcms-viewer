@@ -2054,6 +2054,7 @@ function dropdownUpdateStudyArea(whichOne){
       else if(studyAreaName === 'CONUS'){
       run = runCONUS
     }else{run = runUSFS};
+
     reRun();
 };
 //Function to set study area
@@ -2609,7 +2610,7 @@ function initialize() {
         resetStudyArea(cachedStudyAreaName)
       } 
       else{run = runUSFS}
-
+      // run = function(){};
     //Bring in downloads if needed
     if(mode === 'LCMS'){ 
       setupDropdownTreeDownloads(studyAreaName);
