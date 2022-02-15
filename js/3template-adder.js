@@ -189,7 +189,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
      urlParams.endYear = endYear;// = parseInt(urlParams.endYear);
   }
   if(urlParams.lossMagThresh == null || urlParams.lossMagThresh == undefined){
-     urlParams.lossMagThresh = -0.2;// = parseInt(urlParams.endYear);
+     urlParams.lossMagThresh = -0.15;// = parseInt(urlParams.endYear);
   }
   if(urlParams.gainMagThresh == null || urlParams.gainMagThresh == undefined){
      urlParams.gainMagThresh = 0.1;// = parseInt(urlParams.endYear);
