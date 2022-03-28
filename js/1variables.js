@@ -722,7 +722,7 @@ Date.prototype.toStringFormat = function(){
   var day = this.getDate();
   return `${day} ${month} ${yr}`
 }
-
+//
 //Taken from: https://stackoverflow.com/questions/22015684/how-do-i-zip-two-arrays-in-javascript
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
