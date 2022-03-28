@@ -159,7 +159,7 @@ function constructUrlSearch(){
 /*Load global variables*/
 var cachedSettingskey = 'settings';
 var startYear = 1985;
-var endYear = 2020;
+var endYear = 2021;
 var startJulian = 153;//190;
 var endJulian = 274;//250;
 var layerObj = null;
@@ -364,7 +364,7 @@ var studyAreaDict = {
                       center:[37.5334105816903,-105.6787109375,5],
                       crs:'EPSG:5070',
                       startYear:1985,
-                      endYear:2020,
+                      endYear:2021,
 
                       conusSA : 'projects/lcms-292214/assets/CONUS-Ancillary-Data/conus',
                       conusComposites:'projects/USFS/LCMS-NFS/CONUS-LCMS/Composites/LCMS-TCC-Composites',
@@ -425,8 +425,8 @@ var studyAreaDict = {
                                 5: {'modelName': 'Other','legendName': 'Other','color': 'a1a1a1'},
                                 6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}},
                  
-                      final_collections  : ['USFS/GTAC/LCMS/v2020-5','USFS/GTAC/LCMS/v2020-6'],
-                      composite_collections : ['projects/USFS/LCMS-NFS/R10/CoastalAK/Composites/Composite-Collection', 'projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020'],
+                      final_collections  : ['USFS/GTAC/LCMS/v2020-6','projects/lcms-292214/assets/Final_Outputs/2021-7/LCMS'],
+                      composite_collections : ['projects/lcms-292214/assets/R10/CoastalAK/Composites/Composite-Collection', 'projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020'],
                       lt_collections: ['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection','projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/LandTrendr-Collection-1984-2020'],
                       ccdc_collections:['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/CCDC-Collection','projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2021','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020']
                     }                        
