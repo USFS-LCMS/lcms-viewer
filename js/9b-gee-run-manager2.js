@@ -170,7 +170,7 @@ function runGTAC(){
   //Set up LANDTRENDR
   lcmsRun.lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f).filter(ee.Filter.eq('band',lcmsRun.whichIndex)))).flatten()).mosaic();
 //   var lt = conusLT.filter(ee.Filter.eq('band',whichIndex)).merge(akLT.filter(ee.Filter.eq('band',whichIndex))).mosaic();
-  lcmsRun.fittedAsset = ltStackToFitted(lcmsRun.lt,1984,2020).filter(ee.Filter.calendarRange(startYear,endYear,'year')).select(['fit'],['LANDTRENDR Fitted '+ lcmsRun.whichIndex]);
+  lcmsRun.fittedAsset = ltStackToFitted(lcmsRun.lt,1984,2021).filter(ee.Filter.calendarRange(startYear,endYear,'year')).select(['fit'],['LANDTRENDR Fitted '+ lcmsRun.whichIndex]);
   
   //Join raw time series to lt fitted and ccdc fitted
   lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.composites.select([lcmsRun.whichIndex],['Raw '+lcmsRun.whichIndex]),lcmsRun.fittedAsset,false);

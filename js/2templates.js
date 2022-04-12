@@ -418,7 +418,7 @@ var staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'support-text' onclick = 'downloadMethods("v2020-5")' title = 'Open in-depth LCMS v2020.5 methods documentation'>Version 2020.5 (CONUS and SEAK)</a>
+                                    <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>Version 2021.7 (CONUS and SEAK)</a>
                                 </li>
                                 <li>
                                     <a class = 'support-text' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>

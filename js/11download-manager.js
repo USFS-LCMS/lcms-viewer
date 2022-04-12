@@ -69,7 +69,8 @@ function downloadTutorial(){
 function downloadMethods(version){
   var link = document.createElement("a");
   var methods_name ='LCMS_'+version+'_Methods.pdf';
-  link.href = 'https://data.fs.usda.gov/geodata/rastergateway/LCMS/'+methods_name;
+  link.href = './tutorials/'+methods_name;
+  // link.href = 'https://data.fs.usda.gov/geodata/rastergateway/LCMS/'+methods_name;
     link.target = '_blank';
   link.click();
   ga('send', 'event',mode+'-download', 'methods-download', methods_name);
