@@ -55,10 +55,10 @@ function runGTAC(){
   //Get properties image
   lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(['Change_class_names'])).first());
   lcmsRun.props = lcmsRun.f.getInfo().properties;
-  console.log(lcmsRun.props)
+  // console.log(lcmsRun.props)
 
   lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,endYear,'year'));
-  console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
+  // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
   
 
   

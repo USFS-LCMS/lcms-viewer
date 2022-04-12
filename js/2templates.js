@@ -333,7 +333,7 @@ var staticTemplates = {
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
         lcmsProductionDownloadDiv:`<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2020.5)</span>
+                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2021.7)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -353,7 +353,7 @@ var staticTemplates = {
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Southeastern Alaska (v2020.5)</span>
+                                          <li><span class="caret caret-down">Southeastern Alaska (v2021.7)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">

@@ -2478,36 +2478,21 @@ function initialize() {
     }
      
     //Set up elevation api
-    // var elevationAPIKey = 'AIzaSyBiTunmJOy6JFGYWy2ms4_ScCOqK4rFf3w';
-    // var elevationAPIKey = 'AIzaSyCXwPx9_pOQsvd-b_bG8ueGI82JnJO2mess';
+   
     var elevator = new google.maps.ElevationService;
     var lastElevation = 0;
     var elevationCheckTime = 0
     function getElevation(center){
-    mouseLat = center.lat().toFixed(4).toString();
-    elevator.getElevationForLocations({
-    'locations': [center]
-    }, function(results, status) {
-        if(status === 'OVER_QUERY_LIMIT'){
-          lastElevation = '';
-          updateMousePositionAndZoom(mouseLng,mouseLat,zoom,'');
-        }
-        else if (status === 'OK') {
-        // Retrieve the first result
-        if (results[0]) {
-          // Open the infowindow indicating the elevation at the clicked position.
-          var thisElevation = results[0].elevation.toFixed(1);
-          var thisElevationFt = (thisElevation*3.28084).toFixed(1);
-          lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
-          updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
-        } else {
-          updateMousePositionAndZoom(mouseLng,mouseLat,zoom,'No results found');
-        }
-      } 
-      else {
-      updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation);
-      }
-    });
+      mouseLat = center.lat().toFixed(4).toString();
+      mouseLng = center.lng().toFixed(4).toString();
+      var elevation = ee.Image("USGS/SRTMGL1_003").reduceRegion(ee.Reducer.first(),ee.Geometry.Point([center.lng(), center.lat()])).get('elevation');
+      elevation.evaluate(function(thisElevation){
+        var thisElevationFt = parseInt(thisElevation*3.28084);
+        lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
+        updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
+      })
+    
+   
     }
     //Listen for mouse movement and update bottom bar
     google.maps.event.addDomListener(mapDiv,'mousemove',function(event){
@@ -2521,7 +2506,7 @@ function initialize() {
         var now = new Date().getTime()
         var dt = now - elevationCheckTime  ;
         
-        if(dt > 2000){
+        if(dt > 1000){
           getElevation(center);
           elevationCheckTime = now;
         }
