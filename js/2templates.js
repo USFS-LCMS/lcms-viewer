@@ -351,6 +351,9 @@ var staticTemplates = {
                                               <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
                                                 <ul class="nested" id = 'CONUS-land_use-annual-downloads'></ul>
                                               </li>
+                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
+                                                <ul class="nested" id = 'CONUS-qa_bits-annual-downloads'></ul>
+                                              </li>
                                             </ul>
                                           </li>
                                           <li><span class="caret caret-down">Southeastern Alaska (v2021.7)</span>
@@ -370,6 +373,9 @@ var staticTemplates = {
                                               </li>
                                               <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
                                                 <ul class="nested" id = 'SEAK-land_use-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
+                                                <ul class="nested" id = 'SEAK-qa_bits-annual-downloads'></ul>
                                               </li>
                                             </ul>
                                           </li>
@@ -572,7 +578,9 @@ var staticTemplates = {
                                         <div class = 'dropdown-divider'></div>
                                         <label>Provide name for area selected for charting (optional):</label>
                                         <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                        <div class = 'dropdown-divider'></div>  
+                                        <div class = 'dropdown-divider'></div>
+                                        <div id = 'simplify-error-range-container'></div>
+                                        <div class = 'dropdown-divider'></div>
                                         <div id="area-charting-select-layer-list"></div>
                                         <div class = 'dropdown-divider'></div>
                                         <div>Selected areas:</div>
@@ -1728,7 +1736,7 @@ function addLayer(layer){
         };
         //Add layer to query object if it can be queried
         if(layer.canQuery){
-          queryObj[queryID] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType,'name':layer.name};  
+          queryObj[queryID] = {'visible':layer.visible,'queryItem':layer.queryItem,'queryDict':layer.viz.queryDict,'type':layer.layerType,'name':layer.name,'queryDateFormat':layer.viz.queryDateFormat};  
         }
 		incrementOutstandingGEERequests();
 

@@ -109,13 +109,23 @@ function setupAreaLayerSelection(){
 	            			.filterBounds(ee.Geometry.Point(coords));
 	            		
 	            		var namesList = ee.List(selectedFeaturesT.aggregate_array('name'));
+
 	            		namesList.evaluate(function(nms,failure){
 	            			if(failure !== undefined){showMessage('Error',failure)}
         					else{
         						if(nms.length > 0){
         							console.log('names '+nms)
+        							if(simplifyMaxError !== 0){
+				            			selectedFeaturesT = ee.FeatureCollection(selectedFeaturesT.map(function(f){return ee.Feature(f).simplify(simplifyMaxError, crs)}));
+				            		}
         							selectionTracker.selectedFeatures.push(selectedFeaturesT);
-        							Map2.addLayer(selectedFeaturesT,{layerType:'geeVectorImage',isSelectedLayer :true},'Selected '+selectedFeaturesJSON[k].layerName+' '+ nms.join('-').replaceAll('&','-'),true,null,null,null,'area-charting-selected-layer-list');
+
+        						
+        							var layerName = 'Selected '+selectedFeaturesJSON[k].layerName+' '+ nms.join('-').replaceAll('&','-');
+        							if(simplifyMaxError !== 0){
+        								layerName = 'Simplified ('+simplifyMaxError.toString()+'m)- '+layerName 
+        							}
+        							Map2.addLayer(selectedFeaturesT,{layerType:'geeVectorImage',isSelectedLayer :true},layerName,true,null,null,null,'area-charting-selected-layer-list');
         						}	updateSelectedAreasNameList();updateSelectedAreaArea();
         					}
 	            		})	
@@ -187,7 +197,8 @@ function chartSelectedAreas(){
     // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
     // console.log(selectedFeatures);
     // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
-    var selectedFeatures  = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten()
+    var selectedFeatures  = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
+
     $('#summary-spinner').slideDown();
     selectedFeatures.size().evaluate(function(size,failure){
     	if(failure !== undefined){showMessage('Error',failure)}
@@ -227,7 +238,7 @@ var  getQueryImages = function(lng,lat){
 							<li id = 'query-list-container'></li>
 							
 						</div>`
-	 infowindow.setOptions({maxWidth:300});
+	 infowindow.setOptions({maxWidth:350});
 			
 	infowindow.setContent(queryContent);
 	infowindow.open(map);
@@ -291,7 +302,7 @@ var  getQueryImages = function(lng,lat){
 	 			margin: {
 				    l: 50,
 				    r: 10,
-				    b: 30,
+				    b: 80,
 				    t: 80,
 				    pad: 0
 				  },
@@ -301,6 +312,8 @@ var  getQueryImages = function(lng,lat){
     				text:q.name
     			},
     			xaxis: {
+    				tickangle:45,
+    				tickfont:{size:12},
 				    title: {
 				      text: value.xLabel
 				  }}
@@ -383,6 +396,8 @@ var  getQueryImages = function(lng,lat){
 					makeQueryTable(values,q,k);
 				})
 			}else if(q.type === 'geeImageCollection'){
+				var dateFormat = q.queryDateFormat;
+				if(dateFormat===null||dateFormat===undefined){dateFormat = 'YYYY-MM-dd'}
 				var c = ee.ImageCollection(q.queryItem);
 				var plotBounds = clickPt.buffer(plotRadius).bounds();
 				function getCollectionValues(values){
@@ -409,14 +424,15 @@ var  getQueryImages = function(lng,lat){
 						var xColumn;
 						var xLabel;
 						if(hasTime){
-							xColumn = arrayColumn(values,timeColumnN).map(function(d){
-								var date = new Date(d);
-								var day = date.getDate().toString().padStart(2,'0');
-								var month = (date.getMonth()+1).toString().padStart(2,'0');
-								var year = date.getFullYear().toString();
-								return year + '-' + month + '-' + day;
-							});
-							xLabel = 'Time'}
+							// xColumn = arrayColumn(values,timeColumnN).map(function(d){
+							// 	// var date = new Date(d);
+							// 	// var day = date.getDate().toString().padStart(2,'0');
+							// 	// var month = (date.getMonth()+1).toString().padStart(2,'0');
+							// 	// var year = date.getFullYear().toString();
+							// 	return d;//year + '-' + month + '-' + day;
+							// });
+							xColumn = arrayColumn(values,timeColumnN);
+							xLabel = 'Time';}
 						else{xColumn = arrayColumn(values,idColumnN);xLabel = 'ID'}
 						// var yColumns = ee.Image(c.first()).bandNames().getInfo();
 						var yColumnNames = 	header.slice(4);
@@ -438,10 +454,14 @@ var  getQueryImages = function(lng,lat){
 					}else{console.log('no data');makeQueryTable(null,q,k);}
 					
 				}
-				var getRegionCall = c.sort('system:time_start',false).getRegion(plotBounds,plotScale);
+				if(c.first().propertyNames().getInfo().indexOf('system:time_start')>-1){
+					c = c.sort('system:time_start').map(function(img){return img.set('system:time_start',img.date().format(dateFormat))});
+				};
+				
+				var getRegionCall = c.getRegion(plotBounds,plotScale);
 				getRegionCall.evaluate(function(values,failure){
 					// console.log('values');
-					// console.log(values);
+					console.log(values);
 					if(values !== undefined && values !== null){
 						getCollectionValues(values);
 					}else{
@@ -779,23 +799,29 @@ function chartChosenArea(){
   // console.log('Charting ' + chosenArea);
 }
 
-function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier){
+function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,dateFormat,crs,transform,scale){
 	if(xAxisProperty === null || xAxisProperty === undefined){xAxisProperty = 'year'};
 	if(multiplier === null || multiplier === undefined){multiplier = 100};
+	if(dateFormat === null || dateFormat === undefined){dateFormat = 'YYYY'};
+	if(crs === null || crs === undefined){crs = 'EPSG:5070'};
+	// if(transform === null || transform === undefined){transform = null};
+	// if((scale === null || scale === undefined) && transform === null){scale = 30}
+	// else{scale = null};
+	// console.log([scale,transform])
 	// var test = ee.Image(areaChartCollection.first());
 	// test= test.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,null,null,null,true,1e13,2);
 	// print(test.getInfo());
 	if(xAxisProperty === 'year'){
-		areaChartCollection = areaChartCollection.map(function(img){return img.set('year',ee.Number(ee.Date(img.get('system:time_start')).get('year')).format())});
+		areaChartCollection = areaChartCollection.map(function(img){return img.set('year',img.date().format(dateFormat))});
 		
 	}
-
+	
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames();
 	
 	return areaChartCollection.toList(10000,0).map(function(img){
 						img = ee.Image(img);
 				    // img = ee.Image(img).clip(area);
-				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,30,'EPSG:5070',null,true,1e13,4);
+				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,scale,crs,transform,true,1e13,4);
 				    var xAxisLabel = img.get(xAxisProperty);
 				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
 				    // var lossT = t.slice(0,2,null);
@@ -829,6 +855,10 @@ function expandChart(){
 	closeChart();
 }
 var currentChartID = 0;
+function cancelMakeAreaChart(){
+	currentChartID++;
+	$('#summary-spinner').slideUp();
+}
 function makeAreaChart(area,name,userDefined){
 	currentChartID++;
 	var thisChartID = currentChartID;
@@ -851,6 +881,7 @@ function makeAreaChart(area,name,userDefined){
 	var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
 	var xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
 	var yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
+	var dateFormat = areaChartCollections[whichAreaChartCollection].dateFormat;
 	if(xAxisProperty === null || xAxisProperty == undefined){xAxisProperty = 'year'};
 	if(xAxisLabel === null || xAxisLabel == undefined){xAxisLabel = null};
 	if(yAxisLabel === null || yAxisLabel == undefined){yAxisLabel = '% Area'};
@@ -866,26 +897,33 @@ function makeAreaChart(area,name,userDefined){
 	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
 	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' '+areaChartFormatDict[areaChartFormat].label});
 	bandNames.unshift(xAxisProperty)
-	var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier);
+	
+
+
+	var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,dateFormat,crs,transform,scale);
 	// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
 	var iteration = 0;
 	var maxIterations = 60;
 	var success = false;
-	
+	var maxTime = 10000;
+	var startTime = new Date();
 	var tableT;
 	function evalTable(){
-		console.log('Evaluating area chart table');
+		console.log('Evaluating area chart tables');
 		table.evaluate(function(tableT, failure){
 			print(iteration);
 			print(tableT);
 			print(failure);
 			print(areaChartingCount);
-			if(failure !== undefined && iteration < maxIterations && currentChartID === thisChartID){
+			var endTime = new Date();
+			var dt = endTime-startTime;
+			console.log('dt: '+dt.toString())
+			if(failure !== undefined && iteration < maxIterations && currentChartID === thisChartID && dt < maxTime){
 				// $('#area-charting-message-box').empty();
 				// $('#area-charting-message-box').html(failure	);
 				evalTable()
 			}
-			else if(failure === undefined) {
+			else if(failure === undefined && currentChartID === thisChartID) {
 				// tableT.unshift(['year','Loss %','Gain %']);
 				tableT.unshift(bandNames)
 				$('#summary-spinner').slideUp();
@@ -914,7 +952,7 @@ function makeAreaChart(area,name,userDefined){
 				// }
 				areaChartingCount--;
 			}
-			else{
+			else if(failure !== undefined){
 				$('#summary-spinner').slideUp();
 				// map.setOptions({draggableCursor:'hand'});
 				// map.setOptions({cursor:'hand'});

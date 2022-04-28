@@ -234,7 +234,8 @@ function runGTAC(){
                                   'tooltip':`Summarize ${bnTitle} classes for each year`,
                                   'colors':colors,
                                   'xAxisLabel':'Year',
-                                  'fieldsHidden':fieldsHidden};
+                                  'fieldsHidden':fieldsHidden,
+                                  'dateFormat':'YYYY'};
   }
   
   lcmsRunFuns.addAreaChartClass('Change');
@@ -246,6 +247,24 @@ function runGTAC(){
   populateAreaChartDropdown();
   getHansen();
   getMTBSandIDS();
+  
 // $('#query-label').click()
 // $('#pixel-chart-label').click();
   }
+
+  // function runGTAC(){
+  //   var lcmsRun = {};
+  //   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
+  // lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
+
+  // Map2.addLayer(lcmsRun.lcms.select([0,1,2]),{qusdaseryDateFormat:'YYYY-MM-dd-HH'});
+
+
+  // // pixelChartCollections['test'] = {'label':'test',
+  // //                                 'collection':lcmsRun.lcms,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+  // //                                 'xAxisLabel':'Year',
+  // //                                 'yAxisLabel':'Model Confidence or Index Value'}
+
+  // // populatePixelChartDropdown();
+  // $('#query-label').click();
+  // }

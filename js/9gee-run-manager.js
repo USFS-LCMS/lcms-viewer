@@ -3136,7 +3136,7 @@ function runMTBS(){
   var forCharting = joinCollections(mtbsC,nlcdLCFilled, false);
   var timeLapseSeverityViz = JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz));
   timeLapseSeverityViz.years = yearsCli;
-  Map2.addTimeLapse(mtbsC,timeLapseSeverityViz,'MTBS Burn Severity Time Lapse',false);
+  // Map2.addTimeLapse(mtbsC,timeLapseSeverityViz,'MTBS Burn Severity Time Lapse',false);
   // forCharting = forCharting.set('chartTableDict',chartTableDict);
   // forCharting = forCharting.set('legends',chartTableDict) 
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
@@ -3152,7 +3152,8 @@ function runMTBS(){
   toggleCumulativeMode();
   // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
   // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
-
+  $('#select-area-interactive-chart-label').click();
+  $('#tools-collapse-label-label').click();
 }
 
 

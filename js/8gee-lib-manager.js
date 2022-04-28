@@ -484,7 +484,7 @@ function getAspectObj(){
   return {'image':aspectBinned,'lookupDict':aspectLookupDict,'colorDict':colorDict}
 }
 function getNLCDObj(){
-  var nlcdYears = [2001,2004,2006,2008,2011,2013,2016];
+  var nlcdYears = [2001,2004,2006,2008,2011,2013,2016,2019];
   var nlcdLCMax = 95;//parseInt(nlcd.get('system:visualization_0_max').getInfo());
   var nlcdLCMin = 0;//parseInt(nlcd.get('system:visualization_0_min').getInfo());
   var nlcdLCPalette = ["466b9f", "d1def8", "dec5c5", "d99282", "eb0000", "ab0000", "b3ac9f", "68ab5f", "1c5f2c", "b5c58f", "af963c", "ccb879", "dfdfc2", "d1d182", "a3cc51", "82ba9e", "dcd939", "ab6c28", "b8d9eb", "6c9fb8"];//nlcd.get('system:visualization_0_palette').getInfo().split(',');
@@ -509,8 +509,9 @@ function getNLCDObj(){
   // console.log(nlcdLCQueryDict);
   var nlcdLegendDictReverse = {};
   Object.keys(nlcdLegendDict).reverse().map(function(k){nlcdLegendDictReverse[k] = nlcdLegendDict[k]});
-  var nlcd = ee.ImageCollection('USGS/NLCD_RELEASES/2016_REL').select([0],['NLCD Landcover']);
-
+  var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2019_REL/NLCD").select(['landcover'],['NLCD Landcover'])
+            // .map(function(img){return img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(img.id()),6,1).millis())})
+            .sort('system:time_start');
   var nlcdC = nlcdYears.map(function(nlcdYear){
       // if(nlcdYear >= startYear  && nlcdYear <= endYear){
         var nlcdT = nlcd.filter(ee.Filter.calendarRange(nlcdYear,nlcdYear,'year')).mosaic();
@@ -518,6 +519,7 @@ function getNLCDObj(){
         return nlcdT;
       });
   nlcdC = ee.ImageCollection(nlcdC);
+  // console.log(nlcdC.getInfo());
   var chartTableDict = {
     'NLCD Landcover':nlcdLCQueryDict
   }
@@ -754,13 +756,13 @@ function getNAIP(whichLayerList){
 }
 function getHansen(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
-  var hansen = ee.Image("UMD/hansen/global_forest_change_2019_v1_7").reproject('EPSG:4326',null,30);
+  var hansen = ee.Image("UMD/hansen/global_forest_change_2020_v1_8").reproject('EPSG:4326',null,30);
 
   var hansenClientBoundary = {"type":"Polygon","coordinates":[[[-180,-90],[180,-90],[180,90],[-180,90],[-180,-90]]]};//hansen.geometry().bounds(1000).getInfo();
   // print(hansenClientBoundary);
   var hansenLoss = hansen.select(['lossyear']).selfMask().add(2000).int16();
   var hansenStartYear = 2001;
-  var hansenEndYear = 2019;
+  var hansenEndYear = 2020;
 
   if(startYear > hansenStartYear){hansenStartYear = startYear};
   if(endYear < hansenEndYear){hansenEndYear = endYear};
@@ -1020,41 +1022,32 @@ function setupDownloads(studyAreaName){
 }
 function setupDropdownTreeDownloads(studyAreaName){
   var studyAreas = ['CONUS','SEAK','PRUSVI'];
-  var products = {'change':['annual','summary'],'land_cover':['annual'],'land_use':['annual']};
+  var products = {'change':['annual','summary'],'land_cover':['annual'],'land_use':['annual'],'qa_bits':['annual']};
   var saDict = lcmsDownloadDict[studyAreaName]
   if(saDict !== undefined){
     var downloads = saDict['downloads'];
     studyAreas.map(function(sa){
       Object.keys(products).map(function(product){
         products[product].map(function(m){
-          var download_list = downloads[sa][product][m];
-          // console.log(download_list)
-          var id = `${sa}-${product}-${m}-downloads`;
-          var dropdownID = id + '-d';
-          // console.log(dropdownID)
-          $('#'+id).empty();
-          // console.log(id)
-          // $('#'+id).append(`<label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select product to download:</label>
-          //     <select class="form-control" id = "${dropdownID}" onchange = "downloadSelectedArea('${dropdownID}')">
-          //       <option value="">Choose a product to download</option>
-          //     </select>`
-          //   )
-          
-          $('#'+id).append(`
-            <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
-                            <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
-                            <br>
-                            <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
-                            <hr>`)
-          download_list.map(function(url){
-            var name = url.substr(url.lastIndexOf('v20') + 8);
-            $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
-              // $('#'+id).append(`<li>
-              //             <a target="_blank" href="${url}">
-              //               ${name}
-              //             </a>
-              //           </li>`)
-          })
+          try{
+            var download_list = downloads[sa][product][m];
+            // console.log(download_list)
+            var id = `${sa}-${product}-${m}-downloads`;
+            var dropdownID = id + '-d';
+            // console.log(dropdownID)
+            $('#'+id).empty();
+            // console.log(id)
+            $('#'+id).append(`
+              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+                              <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                              <br>
+                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                              <hr>`)
+            download_list.map(function(url){
+              var name = url.substr(url.lastIndexOf('v20') + 8);
+              $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
+            })
+          }catch(err){console.log(err)}
         })
       })
     })

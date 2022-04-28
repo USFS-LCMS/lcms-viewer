@@ -195,12 +195,12 @@ function synchronousCenterObject(feature){
 }
 function centerObject(fc){
   try{
-    fc.geometry().bounds().evaluate(function(feature){synchronousCenterObject(feature);
+    fc.geometry().bounds(100).evaluate(function(feature){synchronousCenterObject(feature);
     });
   }
   catch(err){
     try{
-      fc.bounds().evaluate(function(feature){synchronousCenterObject(feature);
+      fc.bounds(100).evaluate(function(feature){synchronousCenterObject(feature);
     })}catch(err){
       console.log(err);
     }
@@ -2479,16 +2479,24 @@ function initialize() {
      
     //Set up elevation api
    
-    var elevator = new google.maps.ElevationService;
+    // var elevator = new google.maps.ElevationService;
     var lastElevation = 0;
-    var elevationCheckTime = 0
+    var elevationCheckTime = 0;
+
     function getElevation(center){
       mouseLat = center.lat().toFixed(4).toString();
       mouseLng = center.lng().toFixed(4).toString();
       var elevation = ee.Image("USGS/SRTMGL1_003").reduceRegion(ee.Reducer.first(),ee.Geometry.Point([center.lng(), center.lat()])).get('elevation');
       elevation.evaluate(function(thisElevation){
-        var thisElevationFt = parseInt(thisElevation*3.28084);
-        lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
+        
+        if(thisElevation !== null){
+          var thisElevationFt = parseInt(thisElevation*3.28084);
+          lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
+        }else{
+          var thisElevationFt = 'NA';
+          lastElevation = 'Elevation: NA,';
+        };
+        
         updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
       })
     
