@@ -21,4 +21,4 @@ Leah Campbell- leah.campbell@usda.gov
 * It is designed to allow for quick visualization of any Google Earth Engine data or tile or dynamic map service.
 * It has been tested in Chrome, Firefox, and Edge
  
-teamcity test
+
