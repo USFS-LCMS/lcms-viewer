@@ -252,19 +252,23 @@ function runGTAC(){
 // $('#pixel-chart-label').click();
   }
 
-  // function runGTAC(){
-  //   var lcmsRun = {};
-  //   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
-  // lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
+//   function runGTAC(){
+//     var lcmsRun = {};
+//     lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
+//   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
+//   // Map2.addLayer(ee.Image(1))
+//     Map2.addFeatureView('USGS/WBD/2017/HUC08_FeatureView',{
+//   color: '808080',
+//   lineWidth: 1,
+// },'Feature View Test')
+//   // Map2.addLayer(lcmsRun.lcms.select([0,1,2]),{qusdaseryDateFormat:'YYYY-MM-dd-HH'});
 
-  // Map2.addLayer(lcmsRun.lcms.select([0,1,2]),{qusdaseryDateFormat:'YYYY-MM-dd-HH'});
 
+//   // pixelChartCollections['test'] = {'label':'test',
+//   //                                 'collection':lcmsRun.lcms,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
+//   //                                 'xAxisLabel':'Year',
+//   //                                 'yAxisLabel':'Model Confidence or Index Value'}
 
-  // // pixelChartCollections['test'] = {'label':'test',
-  // //                                 'collection':lcmsRun.lcms,//chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
-  // //                                 'xAxisLabel':'Year',
-  // //                                 'yAxisLabel':'Model Confidence or Index Value'}
-
-  // // populatePixelChartDropdown();
-  // $('#query-label').click();
-  // }
+//   // populatePixelChartDropdown();
+//   // $('#query-label').click();
+//   }

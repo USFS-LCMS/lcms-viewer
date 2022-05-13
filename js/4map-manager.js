@@ -1363,9 +1363,9 @@ function point2LatLng(x,y) {
 }
 //////////////////////////////////////////////////////
 //Wrapper function to get a dynamic map service
-function getGroundOverlay(baseUrl,minZoom){
+function getGroundOverlay(baseUrl,minZoom,ending){
   if(map.getZoom()>=minZoom){
-
+  if(ending === undefined || ending === null){ending = ''};
   var mapHeight = $('#map').height();
   var mapWidth = $('#map').width();
 
@@ -1373,20 +1373,20 @@ function getGroundOverlay(baseUrl,minZoom){
   var keys = Object.keys(bounds);
   var keysX = Object.keys(bounds[keys[0]]);
   var keysY = Object.keys(bounds[keys[1]]);
-       // console.log('b');console.log(bounds);
-        eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+  
+  eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
 
-  var ulxy = [bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]]];
-  var lrxy = [bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]];
+  var ulx = bounds[keys[1]][keysX[0]];
+  var lrx = bounds[keys[1]][keysX[1]];
+  // if(ulx > lrx){ulx = -180;}
+  var ulxy = [ulx,bounds[keys[0]][keysY[0]]];
+  var lrxy = [lrx,bounds[keys[0]][keysY[1]]];
+  // console.log('b');console.log(ulxy);console.log(lrxy);
   var ulxyMercator = llToNAD83(ulxy[0],ulxy[1]);
   var lrxyMercator = llToNAD83(lrxy[0],lrxy[1]);
   
-  var url = baseUrl+
-  
-  ulxyMercator.x.toString()+'%2C'+lrxyMercator.y.toString()+
-  '%2C'+
-  lrxyMercator.x.toString()+'%2C'+ulxyMercator.y.toString()+
-  '&bboxSR=3857&imageSR=3857&size='+mapWidth.toString()+'%2C'+mapHeight.toString()+'&f=image'
+  var url = baseUrl+ulxyMercator.x.toString()+'%2C'+lrxyMercator.y.toString()+'%2C'+lrxyMercator.x.toString()+'%2C'+ulxyMercator.y.toString()+
+  '&bboxSR=102100&imageSR=102100&size='+mapWidth.toString()+'%2C'+mapHeight.toString()+'&f=image'+ending
 
   overlay = new google.maps.GroundOverlay(url,bounds);
   return overlay
@@ -1400,7 +1400,7 @@ else{
 //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //Function to add dynamic object mapping service to map
-function addDynamicToMap(baseUrl1,baseUrl2, minZoom1,minZoom2,name,visible,helpBox,whichLayerList){
+function addDynamicToMap(baseUrl1,baseUrl2, ending1,ending2,minZoom1,minZoom2,name,visible,helpBox,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     var viz = {};var item = ee.Image();
     if(name === null || name === undefined){
@@ -1412,10 +1412,10 @@ function addDynamicToMap(baseUrl1,baseUrl2, minZoom1,minZoom2,name,visible,helpB
     if(helpBox == null){helpBox = ''};
     function groundOverlayWrapper(){
       if(map.getZoom() > minZoom2){
-        return getGroundOverlay(baseUrl2,minZoom2)
+        return getGroundOverlay(baseUrl2,minZoom2,ending1)
       }
       else{
-        return getGroundOverlay(baseUrl1,minZoom1)
+        return getGroundOverlay(baseUrl1,minZoom1,ending2)
       }
       }
     var layer = document.createElement("dynamic-layer");
@@ -1454,6 +1454,20 @@ function addFeatureToMap(item,viz,name,visible,label,fontColor,helpBox,whichLaye
     // map.overlayMapTypes.setAt(this.layerId, v);
   })
 }
+function addFeatureView(assetId,visParams,name,visible,maxZoom,helpBox,whichLayerList){
+  ee.data.getFeatureViewTilesKey({
+          'assetId': assetId,
+          'visParams':visParams
+        },
+  function(tokens){
+    console.log(tokens)
+    var url = 'https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/featureViews/'+tokens.token+'/tiles/'
+    
+    tileURLFunction =  function(coord, zoom) {return url + zoom+'/' + coord.x+'/'+coord.y}
+    addToMap(tileURLFunction,{layerType:'tileMapService'},name,visible)
+    
+  })
+}
 /////////////////////////////////////////////////////////////////////////////////////
 //Set up Map2 object
 function mp(){
@@ -1483,12 +1497,16 @@ function mp(){
   };
   this.addPlot = function(nameLngLat){
     addPlot(nameLngLat);
-  }
+  };
+  this.addFeatureView = function(assetId,visParams,name,visible,maxZoom,helpBox,whichLayerList){
+    addFeatureView(assetId,visParams,name,visible,maxZoom,helpBox,whichLayerList);
+  };
   this.centerObject = function(fc){
     centerObject(fc);
   }
 }
 var Map2 = new mp();
+
 ////////////////////////////////////////////////////////////////////////
 //Some helper functions
 function sleep(delay) {

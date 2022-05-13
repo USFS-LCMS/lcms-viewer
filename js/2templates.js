@@ -433,7 +433,24 @@ var staticTemplates = {
                         </div>
                         <hr>
                         
-                       
+                        
+                    
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize' title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow">Other LCMS Viewers</h3>
+                        </header>
+                   
+                        <section class = 'row p-2'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './images/lcms-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a class = 'support-text' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+                                <hr>
+                                <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "landscapes-in-motion.html" target="_blank">Landscapes in Motion</a>
+                            </div>
+                            
+                        </section>
+                        <hr>
                         <header class = 'row'>
                             <h3 class = ' text-capitalize'>Acknowledgements</h3>
                         </header>
@@ -451,6 +468,21 @@ var staticTemplates = {
                         </section>
                         
                         <hr>
+                        
+                        <section class = 'row p-2'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
                         <section class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
@@ -467,14 +499,14 @@ var staticTemplates = {
                         <hr>
                         <section class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#" alt = "RedCastle Resources logo"  title="Click to learn more about RedCastle Resources Inc.">
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
-                                <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. - transforming images into information. RedCastle Resources is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
                                 </a>
                             </div>
                         </section>
@@ -486,7 +518,7 @@ var staticTemplates = {
                             <div class = 'col-lg-10  support-text'>
                               
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2021). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2022). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -505,12 +537,12 @@ var staticTemplates = {
                                 
                             </div>
                         </section>
+                       
                         <hr>
                     
                         <header class = 'row'>
                             <h3 class = ' text-capitalize'>Contact</h3>
                         </header>
-                   
                         <section class = 'row p-2'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './images/email.png'></a> 
@@ -520,8 +552,6 @@ var staticTemplates = {
                                 Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about LCMS or have feedback on the LCMS Data Explorer.</a>
                             </div>
                         </section>
-                        
-                        
         				
         			
                        
@@ -2083,10 +2113,10 @@ function addLayer(layer){
 	}else if(layer.layerType === 'dynamicMapService'){
 		function groundOverlayWrapper(){
 	      if(map.getZoom() > layer.item[1].minZoom){
-	        return getGroundOverlay(layer.item[1].baseURL,layer.item[1].minZoom)
+	        return getGroundOverlay(layer.item[1].baseURL,layer.item[1].minZoom,layer.item[1].ending)
 	      }
 	      else{
-	        return getGroundOverlay(layer.item[0].baseURL,layer.item[0].minZoom)
+	        return getGroundOverlay(layer.item[0].baseURL,layer.item[0].minZoom,layer.item[0].ending)
 	      }
 	      };
 	      function updateGroundOverlay(){

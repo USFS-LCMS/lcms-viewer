@@ -79,7 +79,7 @@ var coastalAK = {name:'Coastal AK 2020',path:'./geojson/CoastalAK_sample_NEW_g_a
 var prviPractice = {name:'PRVI Practice',path:'./geojson/PR_USVI_Random_Sample_100_proj_g_albers_30m_box.json','plotIDField':'PLOTID'}
 var prviFinal = {name:'PRVI Final',path:'./geojson/PR_sample_1100_11strata_make_ordered_chipping_g_albers_30m_box.json','plotIDField':'PLOTID'}
 var hiFinal = {name:'HI',path:'./geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.geojson','plotIDField':'PLOTID'}
-var plotsGeoJSONs =[hiFinal];//[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
+var plotsGeoJSONs =[conus1,coastalAK,prviFinal,hiFinal];//[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
 // 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
 // })
