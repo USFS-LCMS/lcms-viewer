@@ -1012,57 +1012,17 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     }
     //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
     if(viz.layerType === null || viz.layerType === undefined){
-      console.log(name);
       var eeType = ee.Algorithms.ObjectType(item).getInfo();
       if(eeType === 'Feature'){
         item = ee.FeatureCollection([item])
         eeType = ee.Algorithms.ObjectType(item).getInfo();
       }
-      // else if(eeType === 'Geometry'){
-        // showMessage('Error adding ' + name + ' layer',name + ' was found to be a Geometry. Geometries are currently not supported. Please convert to a feature or featureCollection before adding to the map.');
-        // return
-      // }
+   
       viz.layerType =typeLookup[eeType]; 
-      console.log(eeType)
-      
-      // try{
-      //     var t = ee.Image(item.first()).bandNames().getInfo();
-          
-      //     viz.layerType = 'geeImageCollection';
-        
-      //   }
-      // catch(err2){
-      //   // console.log(err2)
-      //   try{var t = ee.Image(item).bandNames();console.log(t.getInfo());viz.layerType = 'geeImage'}
-      //   //Check if its a geometry
-      //   catch(err3){
-      //     try{
-      //        var t = item.geometry().getInfo();
-            
-      //     }catch(err4){
-      //       // console.log('geo');
-      //       item = ee.FeatureCollection(item);
-      //       viz.canQuery = false;
-      //     }
-      //     //Check if its a feature or featureCollection
-      //     // try{
-      //     //   var n = item.limit(501).size().getInfo();
-      //     //   if(n > 500){
-      //     //     viz.layerType = 'geeVectorImage';
-      //     //   }
-      //     //   // console.log('featureCollection')
-      //     // }catch(err5){
-      //     //   // console.log('feature')
-      //     //   item = ee.FeatureCollection([item])
-      //     // }
-      //     viz.layerType = 'geeVector';
-      //   }
-        
-       
-      //   }
+     
     }
     
-    console.log(viz.layerType)
+    console.log(name + ': '+viz.layerType)
     // console.log(item.bandNames())
     if(viz.layerType === 'geoJSONVector'){viz.canQuery = false;}
     
@@ -1454,6 +1414,7 @@ function addFeatureToMap(item,viz,name,visible,label,fontColor,helpBox,whichLaye
     // map.overlayMapTypes.setAt(this.layerId, v);
   })
 }
+var featureViewObj = {};
 function addFeatureView(assetId,visParams,name,visible,maxZoom,helpBox,whichLayerList){
   ee.data.getFeatureViewTilesKey({
           'assetId': assetId,
@@ -1467,6 +1428,20 @@ function addFeatureView(assetId,visParams,name,visible,maxZoom,helpBox,whichLaye
     addToMap(tileURLFunction,{layerType:'tileMapService'},name,visible)
     
   })
+
+  var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
+  legendDivID = legendDivID.replaceAll('/','-');
+  legendDivID = legendDivID.replaceAll('(','-');
+  legendDivID = legendDivID.replaceAll(')','-');
+  legendDivID = legendDivID.replaceAll('&','-');
+  legendDivID = legendDivID.replaceAll(',','-');
+  legendDivID = legendDivID.replaceAll('.','-');
+
+  NEXT_LAYER_ID++;
+  featureViewObj[legendDivID] = {
+    name:name,
+    assetId:assetId
+  }
 }
 /////////////////////////////////////////////////////////////////////////////////////
 //Set up Map2 object
@@ -2504,19 +2479,26 @@ function initialize() {
     function getElevation(center){
       mouseLat = center.lat().toFixed(4).toString();
       mouseLng = center.lng().toFixed(4).toString();
-      var elevation = ee.Image("USGS/SRTMGL1_003").reduceRegion(ee.Reducer.first(),ee.Geometry.Point([center.lng(), center.lat()])).get('elevation');
-      elevation.evaluate(function(thisElevation){
-        
-        if(thisElevation !== null){
-          var thisElevationFt = parseInt(thisElevation*3.28084);
-          lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
-        }else{
-          var thisElevationFt = 'NA';
-          lastElevation = 'Elevation: NA,';
-        };
-        
+      try{
+        var elevation = ee.Image("USGS/SRTMGL1_003").reduceRegion(ee.Reducer.first(),ee.Geometry.Point([center.lng(), center.lat()])).get('elevation');
+        elevation.evaluate(function(thisElevation){
+          
+          if(thisElevation !== null){
+            var thisElevationFt = parseInt(thisElevation*3.28084);
+            lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
+          }else{
+            var thisElevationFt = 'NA';
+            lastElevation = 'Elevation: NA,';
+          };
+          
+          updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
+        })
+      }catch(err){
+        var thisElevationFt = 'NA';
+        lastElevation = 'Elevation: NA,';
         updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)
-      })
+      }
+      
     
    
     }
@@ -2582,7 +2564,7 @@ function initialize() {
     //Initialize GEE
     
     setTimeout(function() { 
-      if(localStorage.showIntroModal === 'true'){
+      if(localStorage['showIntroModal-'+mode] === 'true'){
         $('#introModal').modal().show();
       }else{
         showMessage('Loading',staticTemplates.loadingModal)

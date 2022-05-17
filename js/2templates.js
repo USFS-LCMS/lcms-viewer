@@ -29,8 +29,8 @@ var  titles = {
     'LT': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LandTrendr`,
             centerWords: 'DATA',
-            rightWords:'Viewer',
-            title:'LandTrendr Data Viewer'
+            rightWords:'Explorer',
+            title:'LandTrendr Data Explorer'
             },
     'MTBS': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="MTBS icon" src="images/mtbs-logo.png">MTBS`,
@@ -180,6 +180,42 @@ var staticTemplates = {
                     </div>
                 </div>
             </div>`,
+            'lcms-base-learner':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-md " role="document">
+                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                        <div class = 'modal-header'>
+                            <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Base-Learner Explorer!</h3>
+                        </div>
+
+                        <div class="modal-body" id = 'introModal-body'>
+                            <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>
+                            <hr>
+                            <p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+                            </p>
+                            <hr>
+                            <p>Please contact the LCMS help desk
+                                <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS Base-Learner Explorer.</p>
+                            
+
+                        </div>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
+                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
+                        <hr>
+                        <div class="form-check  mr-0">
+
+                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
             'Ancillary':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -212,12 +248,12 @@ var staticTemplates = {
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
                         <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
                         <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the LandTrendr Data Viewer!</h3>
+                            <h3 class="mb-0 ">Welcome to the LandTrendr Data Explorer!</h3>
                         </div>
 
                         <div class="modal-body" id = 'introModal-body' >
                             <li>
-                                <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr temporal segmentation algorithm</a>. Any area on earth can be mapped.</p>
+                                <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr temporal segmentation algorithm</a>. While this tool can run across any area on earth, the quality of the output will be related to the availability of cloud-free Landsat observations.</p>
                             </li>
                             <li>
                                 <p class="pb-2 ">LandTrendr will run across the entire extent of the map when it is loaded. If you would like to map a different area, move to the view extent you would like to map, and then press the <kbd>Submit</kbd> button at the bottom of the <kbd>PARAMETERS</kbd> collapse menu.</p>

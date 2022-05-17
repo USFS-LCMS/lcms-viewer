@@ -1534,12 +1534,12 @@ Object.keys(whichIndices2).map(function(k){
     Map2.addLayer(gainCONUSLT.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'LandTrendr Gain Year '+indexName,false);
     Map2.addLayer(gainCONUSLT.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'LandTrendr Gain Mag '+indexName,false);
     Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years'},'LandTrendr Gain Dur '+indexName,false);
-
-    var gainLossC = ee.ImageCollection(ee.List.sequence(startYear,endYear).getInfo().map(function(yr){
+    var lossGainNames = ['LandTrendr '+indexName+' Loss','LandTrendr '+indexName+' Gain'];
+    var gainLossC = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(yr){
       var ltLossGainEndYear = lossGainCONUSLT.select(['loss_year','gain_year']);
       var ltLossGainDur = lossGainCONUSLT.select(['loss_dur','gain_dur']);
       var ltLossGainStartYear = ltLossGainEndYear.subtract(ltLossGainDur);
-      var ltLossGain = ee.Image([yr,yr]).gte(ltLossGainStartYear).and(ee.Image([yr,yr]).lte(ltLossGainEndYear)).rename(['LandTrendr '+indexName+' Loss','LandTrendr '+indexName+' Gain']);
+      var ltLossGain = ee.Image([yr,yr]).gte(ltLossGainStartYear).and(ee.Image([yr,yr]).lte(ltLossGainEndYear)).rename(lossGainNames);
       ltLossGain = ltLossGain.unmask(0)
       // var ccdcLoss = CCDCchange.lossYears.eq(yr).reduce(ee.Reducer.max()).rename(['CCDC Loss']);
       // var ccdcGain = CCDCchange.gainYears.eq(yr).reduce(ee.Reducer.max()).rename(['CCDC Gain']);
@@ -2271,29 +2271,12 @@ populatePixelChartDropdown();
 // addChartJS(d,'test1');
 }
 
-var fmaskBitDict = {'cloud' : 32, 'shadow': 8,'snow':16};
-
-  // LSC updated 4/15/19 to add medium and high confidence cloud masks
-  // Supported fmaskClass options: 'cloud', 'shadow', 'snow', 'high_confidence_cloud', 'med_confidence_cloud'
-  function cFmask(img,fmaskClass){
-    var m;
-    var qa = img.select('pixel_qa').int16();
-    if (fmaskClass == 'high_confidence_cloud'){
-      m = qa.bitwiseAnd(1 << 6).neq(0).and(qa.bitwiseAnd(1 << 7).neq(0))
-    }else if (fmaskClass == 'med_confidence_cloud'){
-      m = qa.bitwiseAnd(1 << 7).neq(0)
-    }else{
-      m = qa.bitwiseAnd(fmaskBitDict[fmaskClass]).neq(0);
-    }
-    return img.updateMask(m.not());
-  }
-
-  function cFmaskCloud(img){
-    return cFmask(img,'cloud');
-  }
-  function cFmaskCloudShadow(img){
-    return cFmask(img,'shadow');
-  }
+function applyBitMask(img,bit,bitMaskBandName){
+  if(bitMaskBandName === undefined || bitMaskBandName === null){bitMaskBandName = 'QA_PIXEL'}
+  var m = img.select([bitMaskBandName]).uint16();
+  m = m.bitwiseAnd(ee.Image(1<<bit)).neq(0);
+  return img.updateMask(m.not());
+}
   ////////////////////////////////////////////////////////////////////////////////
   // Function for finding dark outliers in time series.
   // Original concept written by Carson Stam and adapted by Ian Housman.
@@ -2879,8 +2862,8 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 
 //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
-  var hansen = ee.Image('UMD/hansen/global_forest_change_2018_v1_6').select(['lossyear']).selfMask().add(2000);
-  Map2.addLayer(hansen,{min:1985,max:2018,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},'Hansen Forest Loss',false);
+  var hansen = ee.Image('UMD/hansen/global_forest_change_2020_v1_8').select(['lossyear']).selfMask().add(2000);
+  Map2.addLayer(hansen,{min:startYear,max:endYear,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},'Hansen Loss Year',false);
 
   
   //Bring in CONUS ccdc
@@ -2905,33 +2888,48 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
   ///////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   var aoi = eeBoundsPoly;
-  
-   var l5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+  var descriptiveBandNames = ['blue','green','red','nir','swir1','temp', 'swir2','QA_PIXEL'];
+  var landsat_C2_L2_rescale_dict = {
+  'C1':{'refl_mult':0.0001,'refl_add':0,'temp_mult':0.1,'temp_add':0},
+  'C2':{'refl_mult':0.0000275,'refl_add':-0.2,'temp_mult':0.00341802,'temp_add':149.0},
+  };
+  //////////////////////////////////////////////////////////////////
+  // Method for rescaling reflectance and surface temperature data to 0-1 and Kelvin respectively
+  // This was adapted from the method provided by Google for rescaling Collection 2:
+  // https://code.earthengine.google.com/?scriptPath=Examples%3ADatasets%2FLANDSAT_LC08_C02_T1_L2
+  function applyScaleFactors(image,landsatCollectionVersion){
+    var factor_dict = landsat_C2_L2_rescale_dict[landsatCollectionVersion];
+    var opticalBands = image.select('blue','green','red','nir','swir1','swir2').multiply(factor_dict['refl_mult']).add(factor_dict['refl_add']).float();
+    var thermalBands = image.select('temp').multiply(factor_dict['temp_mult']).add(factor_dict['temp_add']).float();
+    return image.addBands(opticalBands, null, true)
+                .addBands(thermalBands, null, true);
+  }
+   var l5 = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')
                 .filterBounds(aoi)
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .filter(ee.Filter.lte('WRS_ROW',120))
-                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
-   var l7SLCOn = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+                .select(['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','ST_B6','SR_B7','QA_PIXEL'],descriptiveBandNames);
+   var l7SLCOn = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')
                 .filterBounds(aoi)
                 .filterDate(ee.Date.fromYMD(1998,1,1),ee.Date.fromYMD(2003,5,31).advance(1,'day'))
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .filter(ee.Filter.lte('WRS_ROW',120))
-                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
-    var l7SLCOff = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+                .select(['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','ST_B6','SR_B7','QA_PIXEL'],descriptiveBandNames);
+    var l7SLCOff = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')
                 .filterBounds(aoi)
                 .filterDate(ee.Date.fromYMD(2003,6,1),ee.Date.fromYMD(3000,1,1))
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .filter(ee.Filter.lte('WRS_ROW',120))
-                .select([0,1,2,3,4,5,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
-    var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+                .select(['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','ST_B6','SR_B7','QA_PIXEL'],descriptiveBandNames);
+    var l8 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
                 .filterBounds(aoi)
                 .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .filter(ee.Filter.lte('WRS_ROW',120))
-                .select([1,2,3,4,5,7,6,'pixel_qa'],['blue','green','red','nir','swir1','temp','swir2','pixel_qa']);
+                .select(['SR_B2','SR_B3','SR_B4','SR_B5','SR_B6','ST_B10','SR_B7','QA_PIXEL'],descriptiveBandNames);
     var platformObj = {'L5':l5,'L7-SLC-On':l7SLCOn,'L7-SLC-Off':l7SLCOff,'L8':l8}
     var imgs;
 
@@ -2945,12 +2943,9 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
     })
     
 
-    imgs = imgs.map(function(img){
-      var out =img.multiply( ee.Image([0.0001,0.0001,0.0001,0.0001,0.0001,0.1,0.0001,1]));
-      out  = out.copyProperties(img,['system:time_start']);
-      return out;
+    imgs = imgs.map(function(img){return applyScaleFactors(img,'C2')
     });
-     
+    
     Object.keys(whichCloudMasks).map(function(k){
       if(whichCloudMasks[k]){
         if(k  === 'cloudScore'){
@@ -2959,16 +2954,16 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
         }
         else if(k  === 'fMask-Cloud'){
           console.log('applying Fmask cloud');
-          imgs = imgs.map(cFmaskCloud);
+          imgs = imgs.map(function(img){return applyBitMask(img,3)});
         }
         else if(k  === 'fMask-Cloud-Shadow'){
           console.log('applying Fmask cloud shadow');
-          imgs = imgs.map(cFmaskCloudShadow)
+          imgs = imgs.map(function(img){return applyBitMask(img,4)});
         }
         else if(k  === 'fMask-Snow'){
           console.log('applying Fmask snow');
          
-          imgs = imgs.map(function(img){return cFmask(img,'snow')});
+          imgs = imgs.map(function(img){return applyBitMask(img,5)});
         }
         else if(k  === 'TDOM'){
           console.log('applying TDOM');
@@ -3576,112 +3571,112 @@ function runFHP(){
   var studyAreaName = 'USFS LCMS 1984-2020'
   ga('send', 'event', 'lcms-gtac-fhp-viewer-run', 'year_range', `${idsMinYear}_${idsMaxYear}`);
   getLCMSVariables();
-  var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
-  var lcmsCONUS = ee.ImageCollection(studyAreaDict[studyAreaName].conusChangeFinal);
-  var lcmsSEAK = ee.ImageCollection(studyAreaDict[studyAreaName].akChangeFinal);
+//   var lcms  = ee.ImageCollection(studyAreaDict['Science Team CONUS'].lcmsCollection).map(function(img){return img.translate(15,-15)});
+//   var lcmsCONUS = ee.ImageCollection(studyAreaDict[studyAreaName].conusChangeFinal);
+//   var lcmsSEAK = ee.ImageCollection(studyAreaDict[studyAreaName].akChangeFinal);
 
-  var akChange = ee.ImageCollection(studyAreaDict[studyAreaName].akChange)
-  var conusChange = ee.ImageCollection(studyAreaDict[studyAreaName].conusChange)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
-  var conusSA = ee.FeatureCollection(studyAreaDict[studyAreaName].conusSA);
-  var akSA = ee.FeatureCollection(studyAreaDict[studyAreaName].akSA);
+//   var akChange = ee.ImageCollection(studyAreaDict[studyAreaName].akChange)
+//   var conusChange = ee.ImageCollection(studyAreaDict[studyAreaName].conusChange)//.filter(ee.Filter.calendarRange(startYear,endYear,'year'));;
+//   var conusSA = ee.FeatureCollection(studyAreaDict[studyAreaName].conusSA);
+//   var akSA = ee.FeatureCollection(studyAreaDict[studyAreaName].akSA);
   
-  var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+//   var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 
-  var years  = ee.List.sequence(idsMinYear,idsMaxYear);
-  // var years  = ee.List.sequence(2010,2013);
-  // var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
-  var idsFolder = 'projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS';
-  var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
+//   var years  = ee.List.sequence(idsMinYear,idsMaxYear);
+//   // var years  = ee.List.sequence(2010,2013);
+//   // var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+//   var idsFolder = 'projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS';
+//   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
  
-  ids = ids.map(function(id){
-    var idsT = ee.FeatureCollection(id);
-    return idsT;
-  });
-  ids = ee.FeatureCollection(ids).flatten();
-  Map2.addLayer(ids,{strokeColor:'0DD',strokeWeight:1,layerType:'geeVectorImage'},'IDS Polygons',true,null,null,'IDS Polygons');
-  ids = ids.map(function(f){return f.set('constant',1)})
-  var idsLCMS = ee.ImageCollection(years.map(function(yr){
-    yr = ee.Number(yr).int16();
-    var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    idsT = ee.Image().paint(idsT,null,1).visualize({min:1,max:1,palette:'0FF'});
-    // console.log(yr);
-    // console.log(idsT.limit(100).size().getInfo())
-    var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30);
-    var lcmsCONUST = ee.Image(lcmsCONUS.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-    var lcmsSEAKT = ee.Image(lcmsSEAK.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-    var lcmsT = ee.ImageCollection([lcmsCONUST,lcmsSEAKT]).mosaic()
-    lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)))
-    lcmsT = lcmsT.visualize({min:2,max:4,palette:changePalette});//,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]}})
-    // var yrImg = ee.Image(yr).mask(lcmsT).visualize({min:idsMinYear,max:idsMaxYear,palette:lossYearPalette}).unmask(-32768);
+//   ids = ids.map(function(id){
+//     var idsT = ee.FeatureCollection(id);
+//     return idsT;
+//   });
+//   ids = ee.FeatureCollection(ids).flatten();
+//   Map2.addLayer(ids,{strokeColor:'0DD',strokeWeight:1,layerType:'geeVectorImage'},'IDS Polygons',true,null,null,'IDS Polygons');
+//   ids = ids.map(function(f){return f.set('constant',1)})
+//   var idsLCMS = ee.ImageCollection(years.map(function(yr){
+//     yr = ee.Number(yr).int16();
+//     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+//     idsT = ee.Image().paint(idsT,null,1).visualize({min:1,max:1,palette:'0FF'});
+//     // console.log(yr);
+//     // console.log(idsT.limit(100).size().getInfo())
+//     var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().gte(30);
+//     var lcmsCONUST = ee.Image(lcmsCONUS.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+//     var lcmsSEAKT = ee.Image(lcmsSEAK.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+//     var lcmsT = ee.ImageCollection([lcmsCONUST,lcmsSEAKT]).mosaic()
+//     lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)))
+//     lcmsT = lcmsT.visualize({min:2,max:4,palette:changePalette});//,addToClassLegend: true,classLegendDict:{'Slow Loss':changePalette[0],'Fast Loss':changePalette[1],'Gain':changePalette[2]}})
+//     // var yrImg = ee.Image(yr).mask(lcmsT).visualize({min:idsMinYear,max:idsMaxYear,palette:lossYearPalette}).unmask(-32768);
     
-    var out = lcmsT.unmask(-32768);
-    out = out.where(idsT.mask(),idsT);
-    out = out.mask(out.neq(-32768))
-    // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
-    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
-  }));
-  var lcmsChangeClasses = ee.ImageCollection(years.map(function(yr){
-    var lcmsCONUST = ee.Image(lcmsCONUS.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-    var lcmsSEAKT = ee.Image(lcmsSEAK.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-    var lcmsT = ee.ImageCollection([lcmsCONUST,lcmsSEAKT]).mosaic()
-    lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)))
-    return lcmsT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
-  }))
-  var idsLCMSTS = ee.ImageCollection(years.map(function(yr){
-    var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    // console.log(yr);
-    // console.log(idsT.limit(100).size().getInfo())
-    // var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100).unmask(0);
-    var akCombined = combineChange(akChange,yr,studyAreaDict[studyAreaName].akGainThresh,studyAreaDict[studyAreaName].akSlowLossThresh,studyAreaDict[studyAreaName].akFastLossThresh,'stack',0.01).clip(akSA.geometry().bounds());
+//     var out = lcmsT.unmask(-32768);
+//     out = out.where(idsT.mask(),idsT);
+//     out = out.mask(out.neq(-32768))
+//     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+//     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
+//   }));
+//   var lcmsChangeClasses = ee.ImageCollection(years.map(function(yr){
+//     var lcmsCONUST = ee.Image(lcmsCONUS.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+//     var lcmsSEAKT = ee.Image(lcmsSEAK.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+//     var lcmsT = ee.ImageCollection([lcmsCONUST,lcmsSEAKT]).mosaic()
+//     lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)))
+//     return lcmsT.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).byte()
+//   }))
+//   var idsLCMSTS = ee.ImageCollection(years.map(function(yr){
+//     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+//     // console.log(yr);
+//     // console.log(idsT.limit(100).size().getInfo())
+//     // var lcmsT = lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic().divide(100).unmask(0);
+//     var akCombined = combineChange(akChange,yr,studyAreaDict[studyAreaName].akGainThresh,studyAreaDict[studyAreaName].akSlowLossThresh,studyAreaDict[studyAreaName].akFastLossThresh,'stack',0.01).clip(akSA.geometry().bounds());
 
-    var conusCombined = combineChange(conusChange,yr,studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].conusSlowLossThresh,studyAreaDict[studyAreaName].conusFastLossThresh,'collection',0.01).clip(conusSA.geometry().bounds());
+//     var conusCombined = combineChange(conusChange,yr,studyAreaDict[studyAreaName].conusGainThresh,studyAreaDict[studyAreaName].conusSlowLossThresh,studyAreaDict[studyAreaName].conusFastLossThresh,'collection',0.01).clip(conusSA.geometry().bounds());
 
-    var lcmsT = ee.ImageCollection.fromImages(ee.List([conusCombined,akCombined])).mosaic().select(['.*_Prob']).unmask(0);
-    idsT = idsT.reduceToImage(['constant'],ee.Reducer.first());
-    var out = lcmsT.addBands(idsT).rename(['LCMS Slow Loss Probability','LCMS Fast Loss Probability','LCMS Gain Probability','IDS Polygon']);
+//     var lcmsT = ee.ImageCollection.fromImages(ee.List([conusCombined,akCombined])).mosaic().select(['.*_Prob']).unmask(0);
+//     idsT = idsT.reduceToImage(['constant'],ee.Reducer.first());
+//     var out = lcmsT.addBands(idsT).rename(['LCMS Slow Loss Probability','LCMS Fast Loss Probability','LCMS Gain Probability','IDS Polygon']);
  
-    // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
-    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
-  }));
+//     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+//     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
+//   }));
   
-var lcmsChangeClassesForArea = formatAreaChartCollection(lcmsChangeClasses,[2,3,4],['Slow Loss','Fast Loss','Gain']);
-  var idsLCMSTSForArea = ee.ImageCollection(years.map(function(yr){
-    var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    // console.log(yr);
-    // console.log(idsT.limit(100).size().getInfo())
-    var lcmsT = ee.Image(lcmsChangeClassesForArea.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
-    idsT = idsT.reduceToImage(['constant'],ee.Reducer.first()).unmask(0);
-    var out = lcmsT.addBands(idsT).rename(['LCMS Slow Loss','LCMS Fast Loss','LCMS Gain','IDS Polygon']);
+// var lcmsChangeClassesForArea = formatAreaChartCollection(lcmsChangeClasses,[2,3,4],['Slow Loss','Fast Loss','Gain']);
+//   var idsLCMSTSForArea = ee.ImageCollection(years.map(function(yr){
+//     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
+//     // console.log(yr);
+//     // console.log(idsT.limit(100).size().getInfo())
+//     var lcmsT = ee.Image(lcmsChangeClassesForArea.filter(ee.Filter.calendarRange(yr,yr,'year')).first());
+//     idsT = idsT.reduceToImage(['constant'],ee.Reducer.first()).unmask(0);
+//     var out = lcmsT.addBands(idsT).rename(['LCMS Slow Loss','LCMS Fast Loss','LCMS Gain','IDS Polygon']);
  
-    // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
-    return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
-  }));
+//     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
+//     return out.set('system:time_start',ee.Date.fromYMD(yr,6,1).millis()).float()
+//   }));
 
-  // Map2.addLayer(idsLCMSTS)
-  var classLegendDict = {};
-  // var lossYearPaletteStart = lossYearPalette.split(',')[0];
-  // var lossYearPaletteEnd = lossYearPalette.split(',')[lossYearPalette.split(',').length-1];
-  // classLegendDict['LCMS Loss '+idsMinYear.toString()] = lossYearPaletteStart;
-  // classLegendDict['LCMS Loss '+idsMaxYear.toString()] = lossYearPaletteEnd;
-  classLegendDict['Slow Loss']= changePalette[0]
-  classLegendDict['Fast Loss']= changePalette[1]
-  classLegendDict['Gain']= changePalette[2]
-  classLegendDict['IDS Polygons'] = '0FF';
+//   // Map2.addLayer(idsLCMSTS)
+//   var classLegendDict = {};
+//   // var lossYearPaletteStart = lossYearPalette.split(',')[0];
+//   // var lossYearPaletteEnd = lossYearPalette.split(',')[lossYearPalette.split(',').length-1];
+//   // classLegendDict['LCMS Loss '+idsMinYear.toString()] = lossYearPaletteStart;
+//   // classLegendDict['LCMS Loss '+idsMaxYear.toString()] = lossYearPaletteEnd;
+//   classLegendDict['Slow Loss']= changePalette[0]
+//   classLegendDict['Fast Loss']= changePalette[1]
+//   classLegendDict['Gain']= changePalette[2]
+//   classLegendDict['IDS Polygons'] = '0FF';
 
-  Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Change and IDS Time Lapse');
+//   Map2.addTimeLapse(idsLCMS,{years:years.getInfo(),addToClassLegend:true,classLegendDict:classLegendDict},'LCMS Change and IDS Time Lapse');
   
-  Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
-  getSelectLayers();
-  pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'chartColors':['f39268','d54309','00a398','0FF']};
+//   Map2.addSelectLayer(ids,{strokeColor:'D0D',layerType:'geeVectorImage'},'IDS Polygons',false,null,null,'IDS Select Polygons. Turn on layer and click on any area wanted to include in chart');
+//   getSelectLayers();
+//   pixelChartCollections['test'] = {'label':'LCMS and IDS Time Series','collection':idsLCMSTS,'chartColors':['f39268','d54309','00a398','0FF']};
 
-  areaChartCollections['test'] = {'label':'LCMS and IDS Time Series',
-                                  'collection':idsLCMSTSForArea,
-                                  'stacked':false,
-                                  'steppedLine':false,
-                                  'tooltip':'Summarize loss IDS each year',
-                                  'colors':['f39268','d54309','00a398','0FF'],
-                                  'xAxisLabel':'Year'};
-   populatePixelChartDropdown();populateAreaChartDropdown();
+//   areaChartCollections['test'] = {'label':'LCMS and IDS Time Series',
+//                                   'collection':idsLCMSTSForArea,
+//                                   'stacked':false,
+//                                   'steppedLine':false,
+//                                   'tooltip':'Summarize loss IDS each year',
+//                                   'colors':['f39268','d54309','00a398','0FF'],
+//                                   'xAxisLabel':'Year'};
+//    populatePixelChartDropdown();populateAreaChartDropdown();
 }
 ///////////////////////////////////////////////////////////////
 

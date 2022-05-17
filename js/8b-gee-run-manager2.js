@@ -261,6 +261,7 @@ function runGTAC(){
 //   color: '808080',
 //   lineWidth: 1,
 // },'Feature View Test')
+//     console.log(ee.Image(1).getInfo())
 //   // Map2.addLayer(lcmsRun.lcms.select([0,1,2]),{qusdaseryDateFormat:'YYYY-MM-dd-HH'});
 
 

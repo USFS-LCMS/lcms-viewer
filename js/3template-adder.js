@@ -17,13 +17,13 @@ $('#sidebar-left-header').append(staticTemplates.topBanner);
 $('#main-container').append(staticTemplates.introModal[mode]);
 /////////////////////////////////////////////////////////////////////
 /*Check to see if modals should be shown*/
-if(localStorage.showIntroModal == undefined){
-  localStorage.showIntroModal = 'true';
+if(localStorage['showIntroModal-'+mode] == undefined){
+  localStorage['showIntroModal-'+mode] = 'true';
   }
 
 $('#dontShowAgainCheckbox').change(function(){
   console.log(this.checked)
-  localStorage.showIntroModal  = !this.checked;
+  localStorage['showIntroModal-'+mode]  = !this.checked;
 });
 
 /////////////////////////////////////////////////////////////////////
@@ -224,7 +224,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
 }else if(mode === 'LT'){
   canExport = true;
-  startYear = 1984;endYear = 2021;startJulian = 152;endJulian = 273;
+  startYear = 1984;endYear = new Date().getYear()+1900;startJulian = 152;endJulian = 273;
   initialZoomLevel = 9;
   initialCenter = [37.64109979850402,-107.6917775643849];
   var minYear = startYear;var maxYear = endYear;
