@@ -179,7 +179,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
 
 }else if(mode === 'lcms-base-learner'){
-  canExport = true;
+  canExport = false;
   startYear = 1984;endYear = 2021;
   var minYear = startYear;var maxYear = endYear;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
@@ -220,7 +220,9 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS BASE LEARNER DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
-  addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
+  if(canExport){
+    addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
+  }
   
 }else if(mode === 'LT'){
   canExport = true;

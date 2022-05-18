@@ -1550,7 +1550,9 @@ function reRun(){
   //Rerun the GEE code
   setTimeout(function() { 
     run();  
-    $('#close-modal-button').click();
+    
+    $('.modal').modal('hide');
+    $('.modal-backdrop').remove();
     setupAreaLayerSelection();
     addLabelOverlay();
   }, 1500);
@@ -2622,9 +2624,14 @@ function initialize() {
         addPlotCollapse();
         loadAllPlots();
       }
-      $('#close-modal-button').click();
-      $('#intro-modal-loading-div').hide();
-      $('#summary-spinner').hide();
+      if(localStorage['showIntroModal-'+mode] !== 'true'){
+        $('.modal').modal('hide');
+        $('.modal-backdrop').remove();
+      }else{
+        $('#intro-modal-loading-div').hide();
+        $('#summary-spinner').hide();
+      };
+      
       addLabelOverlay();
     }, 1500);
    

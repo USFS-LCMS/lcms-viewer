@@ -1454,7 +1454,7 @@ function simpleFit(ltStack,startYear,endYear,indexName){
   
   //Iterate across each year to find the values for that year
   var out = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(yr){
-    yr = ee.Number(yr);
+    yr = ee.Number(yr).int16();
     
     //Find the segment the year belongs to
     //Handle whether the year is the same as the first vertex year
@@ -1506,7 +1506,8 @@ function simpleFit(ltStack,startYear,endYear,indexName){
 }
 
 var fittedTS;
-var indicesUsed = []
+var indicesUsed = [];
+
 Object.keys(whichIndices2).map(function(k){
   var indexName = k;
   
@@ -1515,7 +1516,7 @@ Object.keys(whichIndices2).map(function(k){
     console.log(indexName); 
     var ltCONUST = lt.filter(ee.Filter.eq('band',indexName)).mosaic();
 
-    var lossGainCONUSLT = ee.Image(getLossGainLT(ltCONUST,1984,2020,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh));
+    var lossGainCONUSLT = ee.Image(getLossGainLT(ltCONUST,1984,2021,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh));
 
     var lossYrMask = lossGainCONUSLT.select(['loss_year']);
     lossYrMask = lossYrMask.gte(startYear).and(lossYrMask.lte(endYear)).selfMask();
@@ -1526,16 +1527,17 @@ Object.keys(whichIndices2).map(function(k){
     lossCONUSLT = lossGainCONUSLT.select(['loss_.*']).mask(lossYrMask);
     gainCONUSLT = lossGainCONUSLT.select(['gain_.*']).mask(gainYrMask);
 
-    Map2.addExport(lossCONUSLT.addBands(gainCONUSLT).int16().unmask(-32768,false),'LandTrendr Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
-    Map2.addLayer(lossCONUSLT.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette},'LandTrendr Loss Year '+indexName,true);
-    Map2.addLayer(lossCONUSLT.select(['loss_mag']).multiply(-0.0001),{max:lossThresh/10000*-1,min:lossThresh*3/10000*-1,palette:lossMagPalette},'LandTrendr Loss Mag '+indexName,false);
-    Map2.addLayer(lossCONUSLT.select(['loss_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years'},'LandTrendr Loss Dur '+indexName,false);
+    // Map2.addExport(lossCONUSLT.addBands(gainCONUSLT).int16().unmask(-32768,false),'LandTrendr Loss Gain Stack '+indexName +' '+ startYear.toString() + ' '+ endYear.toString(),30,false,{})
+    Map2.addLayer(lossCONUSLT.select(['loss_year']),{min:startYear,max:endYear,palette:lossYearPalette,layerType:'geeImage'},'LandTrendr Loss Year '+indexName,true);
+    Map2.addLayer(lossCONUSLT.select(['loss_mag']).multiply(-0.0001),{max:lossThresh/10000*-1,min:lossThresh*3/10000*-1,palette:lossMagPalette,layerType:'geeImage'},'LandTrendr Loss Mag '+indexName,false);
+    Map2.addLayer(lossCONUSLT.select(['loss_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years',layerType:'geeImage'},'LandTrendr Loss Dur '+indexName,false);
 
-    Map2.addLayer(gainCONUSLT.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette},'LandTrendr Gain Year '+indexName,false);
-    Map2.addLayer(gainCONUSLT.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette},'LandTrendr Gain Mag '+indexName,false);
-    Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years'},'LandTrendr Gain Dur '+indexName,false);
+    Map2.addLayer(gainCONUSLT.select(['gain_year']),{min:startYear,max:endYear,palette:gainYearPalette,layerType:'geeImage'},'LandTrendr Gain Year '+indexName,false);
+    Map2.addLayer(gainCONUSLT.select(['gain_mag']),{min:-gainThresh,max:-gainThresh*3,palette:gainMagPalette,layerType:'geeImage'},'LandTrendr Gain Mag '+indexName,false);
+    Map2.addLayer(gainCONUSLT.select(['gain_dur']),{min:1,max:5,palette:durPalette,legendLabelLeftAfter:'year',legendLabelRightAfter:'years',layerType:'geeImage'},'LandTrendr Gain Dur '+indexName,false);
     var lossGainNames = ['LandTrendr '+indexName+' Loss','LandTrendr '+indexName+' Gain'];
     var gainLossC = ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(yr){
+      yr = ee.Number(yr).int16();
       var ltLossGainEndYear = lossGainCONUSLT.select(['loss_year','gain_year']);
       var ltLossGainDur = lossGainCONUSLT.select(['loss_dur','gain_dur']);
       var ltLossGainStartYear = ltLossGainEndYear.subtract(ltLossGainDur);
@@ -1567,14 +1569,8 @@ Object.keys(whichIndices2).map(function(k){
       fittedTS = joinCollections(fittedTS,simpleFit(ltCONUST,startYear,endYear,indexName).select(['.*_LT_fitted']), false);
     };
     
+   
     
-    areaChartCollections['lg-'+indexName] = {'label':'LandTrendr '+indexName+' Loss/Gain',
-                                      'collection':gainLossC,
-                                      'stacked':false,
-                                      'steppedLine':false,
-                                      'tooltip':'Summarize loss and gain for each year',
-                                      'colors':chartColorsDict.advancedBeta.slice(4),
-                                      'xAxisLabel':'Year'};
         // console.log(gainLossCCombined.getInfo())
       // Map2.addTimeLapse(gainLossCCombined,{min:1,max:2,palette:'F80,FF0,80F',addToClassLegend:true,classLegendDict:{'Loss':'F80','Gain':'80F'},years:ee.List.sequence(startYear,endYear).getInfo()},'LANDTRENDR '+indexName+' Loss/Gain Time Lapse');
       }
@@ -1655,10 +1651,10 @@ changeObj.highestMag.loss.mag = changeObj.highestMag.loss.mag.mask(changeObj.hig
 changeObj.highestMag.gain.year = changeObj.highestMag.gain.year.mask(changeObj.highestMag.gain.year.gte(startYear).and(changeObj.highestMag.gain.year.lte(endYear)).selfMask())
 changeObj.highestMag.gain.mag = changeObj.highestMag.gain.mag.mask(changeObj.highestMag.gain.year.gte(startYear).and(changeObj.highestMag.gain.year.lte(endYear)).selfMask())
 
-Map2.addLayer(changeObj.highestMag.loss.year,{min:startYear,max:endYear,palette:lossYearPalette},'CCDC Loss Year');
-Map2.addLayer(changeObj.highestMag.loss.mag,{min:-0.5,max:-0.1,palette:lossMagPalette},'CCDC Loss Mag',false);
-Map2.addLayer(changeObj.highestMag.gain.year,{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
-Map2.addLayer(changeObj.highestMag.gain.mag,{min:0.05,max:0.2,palette:gainMagPalette},'CCDC Gain Mag',false);
+Map2.addLayer(changeObj.highestMag.loss.year,{min:startYear,max:endYear,palette:lossYearPalette,layerType:'geeImage'},'CCDC Loss Year');
+Map2.addLayer(changeObj.highestMag.loss.mag,{min:-0.5,max:-0.1,palette:lossMagPalette,layerType:'geeImage'},'CCDC Loss Mag',false);
+Map2.addLayer(changeObj.highestMag.gain.year,{min:startYear,max:endYear,palette:gainYearPalette,layerType:'geeImage'},'CCDC Gain Year',false);
+Map2.addLayer(changeObj.highestMag.gain.mag,{min:0.05,max:0.2,palette:gainMagPalette,layerType:'geeImage'},'CCDC Gain Mag',false);
 
 var yearImages = simpleGetTimeImageCollection(ee.Number(startYear),ee.Number(endYear+1),1/24);
 var predicted = predictCCDC(ccdcImg,yearImages,fillGaps,whichHarmonics).select(ccdcAnnualBnsFrom,ccdcAnnualBnsTo);
@@ -1678,6 +1674,45 @@ var annualPredicted = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).
 // var missing2018 = recent.lte(2018+fraction).and(recent.gte(2018));
 // Map2.addLayer(missing2018,{min:0,max:1},'missing2018');
 // Map2.addLayer(annualPredicted,{opacity:0},'annual predicted')
+var lossGainLT = ee.Image(getLossGainLT(lt.filter(ee.Filter.eq('band',indexName)).mosaic(),1984,2021,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh));
+
+var areaImage = ee.Image.cat([lossGainLT.select(['loss_year','gain_year']),changeObj.highestMag.loss.year,changeObj.highestMag.gain.year]).rename(['LT_Loss','LT_Gain','CCDC_Loss','CCDC_Gain']).unmask(0).int16();
+var scenarios = {'LT & CCDC Loss':[1,0,1,0],
+                  'LT Loss':[1,0,0,0],
+                  'CCDC Loss':[0,0,1,0],
+                  'LT & CCDC Gain':[0,1,0,1],
+                  // 'LT Loss & CCDC Gain': [1,0,0,1],
+                  // 'LT Gain & CCDC Loss':[0,1,1,0],
+                  
+                  'LT Gain': [0,1,0,0],
+                  
+                  'CCDC Gain': [0,0,0,1]};
+
+var areaC =ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(yr){
+      yr = ee.Number(yr).int16();
+      var yrImg = ee.ImageCollection(Object.keys(scenarios).map(function(k){
+        var t = areaImage.eq(ee.Image.constant(yr).int16())
+                .eq(ee.Image.constant(scenarios[k]).byte())
+                .reduce(ee.Reducer.min());
+        return t
+      })).toBands().byte();
+      yrImg = yrImg.rename(Object.keys(scenarios)).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+      return yrImg
+    }))
+
+
+// Map2.addLayer(ee.Image(areaImage),{'opacity':0},'area image')
+// Map2.addLayer(areaC,{'opacity':0},'area collection')
+areaChartCollections['lg-'+indexName] = {'label':'LandTrendr and CCDC Loss/Gain',
+                                      'collection':areaC,
+                                      'stacked':false,
+                                      'steppedLine':false,
+                                      'tooltip':'Summarize loss and gain for each year from LandTrendr and CCDC',
+                                      'colors':palettes.colorbrewer.RdBu[6],
+                                      'xAxisLabel':'Year',
+                                      'dateFormat':'YYYY'};
+
+
 var fraction = ee.Number(ee.Date.fromYMD(1900,9,1).getFraction('year'));
 var outBns = ee.Image(predicted.first()).bandNames().map(function(bn){return ee.String(bn).cat('_Annualized')})
 predicted = predicted.map(function(img){
@@ -1735,7 +1770,7 @@ pixelChartCollections['ccdcTS'] =  {
 // Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
 // Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir1,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+// Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir1,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
 // function getTerraPulseTileFunction(url){
 //   return function(coord, zoom) {
@@ -4216,7 +4251,7 @@ function createHurricaneDamageWrapper(rows){
 }
 ///////////////////////////////////////////////////////////
 function runStorm(){
-  console.log('here')
+  var x = 0;//console.log('here')
  
   // rows = ee.FeatureCollection(rows.features);
      

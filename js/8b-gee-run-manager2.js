@@ -246,6 +246,15 @@ function runGTAC(){
   populatePixelChartDropdown();
   populateAreaChartDropdown();
   getHansen();
+
+  var whp = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential').mosaic().rename(['whp']);
+  var names = ['Very Low','Low','Moderate','High','Very High','Non-burnable','Water'];
+  var palette = ['38A800','D1FF73','FFFF00','FFAA00','FF0000','B2B2B2','0070FF'];
+  var values = [1,2,3,4,5,6,7];
+  whp = whp.set({'whp_class_names':names,'whp_class_palette':palette,'whp_class_values':values});
+
+  Map2.addLayer(whp,{autoViz:true},'Wildfire Hazard Potential 2020',false,null,null,'The wildfire hazard potential (WHP) map is a raster geospatial product produced by the USDA Forest Service, Fire Modeling Institute that can help to inform evaluations of wildfire hazard or prioritization of fuels management needs across very large landscapes','reference-layer-list');
+
   getMTBSandIDS();
   
 // $('#query-label').click()
