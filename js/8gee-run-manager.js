@@ -1675,8 +1675,14 @@ var annualPredicted = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).
 // Map2.addLayer(missing2018,{min:0,max:1},'missing2018');
 // Map2.addLayer(annualPredicted,{opacity:0},'annual predicted')
 var lossGainLT = ee.Image(getLossGainLT(lt.filter(ee.Filter.eq('band',indexName)).mosaic(),1984,2021,1,6,'yrs_vert_','fit_vert_',-1,lossThresh,gainThresh));
+var lossGainLTEndYear = lossGainLT.select(['loss_year','gain_year']).rename(['LT_loss_endYear','LT_gain_endYear']);
+var lossGainLTStartYear = lossGainLT.select(['loss_year','gain_year']).subtract( lossGainLT.select(['loss_dur','gain_dur'])).rename(['LT_loss_startYear','LT_gain_startYear']);
 
-var areaImage = ee.Image.cat([lossGainLT.select(['loss_year','gain_year']),changeObj.highestMag.loss.year,changeObj.highestMag.gain.year]).rename(['LT_Loss','LT_Gain','CCDC_Loss','CCDC_Gain']).unmask(0).int16();
+var ccdcStartYear = ee.Image.cat([changeObj.highestMag.loss.year,changeObj.highestMag.gain.year]).subtract(1).rename(['CCDC_loss_startYear','CCDC_gain_startYear']);
+var ccdcEndYear = ee.Image.cat([changeObj.highestMag.loss.year,changeObj.highestMag.gain.year]).rename(['CCDC_loss_endYear','CCDC_gain_endYear']);
+
+var areaImage = ee.Image.cat([lossGainLTStartYear,ccdcStartYear,lossGainLTEndYear,ccdcEndYear]).unmask(0).int16();
+console.log(areaImage.getInfo());
 var scenarios = {'LT & CCDC Loss':[1,0,1,0],
                   'LT Loss':[1,0,0,0],
                   'CCDC Loss':[0,0,1,0],
@@ -1687,22 +1693,33 @@ var scenarios = {'LT & CCDC Loss':[1,0,1,0],
                   'LT Gain': [0,1,0,0],
                   
                   'CCDC Gain': [0,0,0,1]};
-
+function getCondYrMsk(yr){
+  var yrConstImg = ee.Image.constant(yr).int16();
+  var t = areaImage.select([0,1,2,3]).lt(yrConstImg)
+  .and(areaImage.select([4,5,6,7]).gte(yrConstImg));
+  return t
+}
+// var t = getCondYrMsk(2016);
+// Map2.addLayer(t,{},'t const')
 var areaC =ee.ImageCollection(ee.List.sequence(startYear,endYear).map(function(yr){
       yr = ee.Number(yr).int16();
+      var yrCondImg = getCondYrMsk(yr);
       var yrImg = ee.ImageCollection(Object.keys(scenarios).map(function(k){
-        var t = areaImage.eq(ee.Image.constant(yr).int16())
-                .eq(ee.Image.constant(scenarios[k]).byte())
+        var t = yrCondImg.eq(ee.Image.constant(scenarios[k]).byte())
                 .reduce(ee.Reducer.min());
         return t
       })).toBands().byte();
-      yrImg = yrImg.rename(Object.keys(scenarios)).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
+      yrImg = yrImg
+      .rename(Object.keys(scenarios))
+      .set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
       return yrImg
     }))
 
 
 // Map2.addLayer(ee.Image(areaImage),{'opacity':0},'area image')
-// Map2.addLayer(areaC,{'opacity':0},'area collection')
+// Map2.addLayer(areaC,{'opacity':0},'area collection');
+// $('#query-label').click();
+
 areaChartCollections['lg-'+indexName] = {'label':'LandTrendr and CCDC Loss/Gain',
                                       'collection':areaC,
                                       'stacked':false,

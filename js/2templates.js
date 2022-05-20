@@ -164,14 +164,14 @@ var staticTemplates = {
 
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
-                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
-                            <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
-                             </p>
-                        </div>
-                        <hr>
-						<div class="form-check  mr-0">
+                            <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                                <p>
+                                  <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                                    Creating map services within Google Earth Engine. 
+                                 </p>
+                            </div>
+                            <hr>
+    						<div class="form-check  mr-0">
 
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
@@ -482,7 +482,7 @@ var staticTemplates = {
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
                                 <hr>
-                                <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "landscapes-in-motion.html" target="_blank">Landscapes in Motion</a>
+                                <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS in Motion</a>
                             </div>
                             
                         </section>

@@ -155,7 +155,9 @@ color:var(--white)!important;}
   padding-right:0px;
   /*color:var(--white)!important;*/
 }
-
+hr{
+  border: 0; border-top: 1px solid #00897B;
+}
 .text-black{
   color:var(--black)!important;
 }

@@ -1,4 +1,34 @@
-var zoomToFullLayerExtent;
+var zoomToFullLayerExtent;var layerTotal = 0;var maxLayers=0;
+function closeSplash(){
+  $('#splash').hide();
+}
+function showSplash(){
+  $('#splash').show();
+}
+function updateProgress(val) {
+  var el = document.querySelector('.progressbar span');
+  el.style.width = val + '%';
+  el.innerText = val + '%';
+};
+function updateBottomBar(){
+  if(maxLayers < layerTotal){maxLayers = layerTotal}
+  var pct = parseInt((1-layerTotal/maxLayers)*100);
+  updateProgress(pct);
+ if(layerTotal === 0){
+  $('#loading-spinner-logo').removeClass('fa-spin')
+  $('#loading-spinner').hide();
+  if(localStorage['showIntroModal-landscapes-in-motion']  !== 'true'){
+    $('#splash').hide();
+  }else{
+    $('#intro-divider').hide();
+  }
+ 
+ }else{
+  $('#loading-spinner').show();
+ }
+  
+  // $('div.esri-attribution__sources').html(html)
+}
 require(["esri/Map", 
             "esri/layers/GeoJSONLayer", 
             "esri/views/MapView",
@@ -8,7 +38,8 @@ require(["esri/Map",
             "esri/layers/FeatureLayer",
             "esri/core/watchUtils",
             "esri/config",
-            
+            "esri/layers/ImageryLayer",
+            "esri/widgets/Legend",
             ], function (
       Map,
       GeoJSONLayer,
@@ -18,7 +49,9 @@ require(["esri/Map",
       Expand,
       FeatureLayer,
       watchUtils,
-      esriConfig
+      esriConfig,
+      ImageryLayer,
+      Legend
     ) {
       // If GeoJSON files are not on the same domain as your website, a CORS enabled server
       // or a proxy is required.
@@ -27,6 +60,7 @@ require(["esri/Map",
       const layerList = [];
       let isFirstLayer = true;
       var firstLayer;
+      
       function addGifAreas(path,name,labelFieldname,outlineColor,fillColor,isFeatureService){
         const gif_dir = 'https://storage.googleapis.com/lcms-gifs/';
         const template = {
@@ -126,19 +160,56 @@ require(["esri/Map",
           labelingInfo: [labelClass]
       
       })};
-
+        layerTotal++;
         layerList.push(layer);
         if(isFirstLayer){
           firstLayer = layer;
         }
         isFirstLayer = false;
-      };
 
-      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.5 ],false);
-      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.5 ],false);
+         layer.when(()=>{
+          console.log(name+ ' loaded')
+          layerTotal--;
+          updateBottomBar();
+        })
+      };
+      function addImageryLayer(path,name,visible){
+        console.log(name)
+        var layer = new ImageryLayer({
+          url: path,
+          id: name,
+          title:name,
+          visible: visible,
+          opacity: 1 ,
+          copyright:'USDA Forest Service' 
+        });
+        layer.when(()=>{
+          console.log(name+ ' loaded')
+          layerTotal--;
+          updateBottomBar();
+        })
+        layerTotal++;
+        layerList.push(layer);
+      }
+      ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
+        if(nm === 'PuertoRico_USVI'){
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
+        }else{
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,true)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
+        }
+        
+      })
+      
+      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
+      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
+
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.5 ],true);
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RangerDistricts_01/MapServer','USFS Districts','DISTRICTNAME','#1B171A',[ 0, 122, 122, 0.5 ],true);
       
+     
       const map = new Map({
         basemap: "hybrid",
         layers: layerList
@@ -151,7 +222,17 @@ require(["esri/Map",
 
 
       view.when(()=>{
-
+          
+          $('#dontShowAgainCheckbox').change(function(){
+            console.log(this.checked)
+            localStorage['showIntroModal-landscapes-in-motion']  = !this.checked;
+          });
+          if(localStorage['showIntroModal-landscapes-in-motion']  === undefined || localStorage['showIntroModal-landscapes-in-motion']  === null){
+            localStorage['showIntroModal-landscapes-in-motion']  = 'true'
+          }
+          if(localStorage['showIntroModal-landscapes-in-motion']  === 'true'){
+            $('#intro-div').show();
+          }
           if(localStorage.initView !== undefined && localStorage.initView !== null && localStorage.initView !== 'null'){
             view.goTo(JSON.parse(localStorage.initView));
           }
@@ -180,7 +261,8 @@ require(["esri/Map",
               view: view
             }),
             view:view,
-            expanded :false
+            expanded :false,
+            expandTooltip: "Basemaps"
           })
           // Add widget to the top right corner of the view
           view.ui.add(basemapGallery, {
@@ -257,7 +339,24 @@ require(["esri/Map",
       var bgExpand = new Expand({
         view: view,
         content: layerList,
-        expanded :false
+        expanded :false,
+        expandTooltip: "Layers",
+      });
+    
+      // Add the expand instance to the ui
+      view.ui.add(bgExpand, "top-left");
+
+      // typical usage
+      let legend = new Legend({
+        view: view
+      });
+
+      var bgExpand = new Expand({
+        view: view,
+        content: legend,
+        expandIconClass: "esri-icon-key",
+        expandTooltip: "Legends",
+        expanded :true
       });
     
       // Add the expand instance to the ui

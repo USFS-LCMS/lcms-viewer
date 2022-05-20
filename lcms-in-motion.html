@@ -1,0 +1,75 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="description" content="USDA Forest Service Landscape Change Monitoring System (LCMS) Data Explorer ">
+  <meta name="keywords" content="Landscape, Change, Forestry, USDA, Forest Service, Remote Sensing, Earth Engine">
+  <meta name="author" content="Ian Housman">
+  <title>LCMS in Motion | LCMS Data Animations</title>
+  <link rel="icon" href="./images/lcms-icon.png">
+  <script type="text/javascript" src="./js/0analytics.js"></script>
+  <script type="text/javascript">
+    ga('send', 'event','load', 'lcms-gif-viewer', 'lcms-gif-viewer');
+  </script>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.23/esri/themes/dark/main.css" />
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="https://js.arcgis.com/4.23/"></script>
+  <link rel="stylesheet" href="./css/esri-viewer.css">
+
+  <script src="./js/14lcms-in-motion.js"></script>
+</head>
+
+<body>
+  
+  <div id="viewDiv"></div>
+  
+  <div id = 'splash' class = 'md-8' >
+    
+    <div id = 'intro-div' style = 'display:none;'>
+      <button type="button" onclick="closeSplash()" class = 'close-button' >&times;</button>
+      
+      <span>
+        <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+        <h2 class = 'splash-title'>  Welcome to the Landscape Change Monitoring System (LCMS) in Motion - Data Animation Explorer!</h2>
+      </span>
+      <hr>
+      <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
+      <p>By clicking on a Forest or Forest District boundary, a gif animation will popup. This animation illustrates how the selected area has changed over the past 37 years.</p>
+      <hr>
+      <div>
+        <input  type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+        <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+            
+      </div>
+      <hr id = 'intro-divider'>            
+    </div>
+    
+      
+      <div id = 'loading-spinner' style = 'display:none;' title = 'Layers loading'>
+        <p>Loading Layers - this can take some time. Please be patient.</p>
+        
+        <span  style = 'display: flex;  '>
+          <img id = 'loading-spinner-logo' class = 'fa-spin px-2' src="./images/lcms-icon.png" height="20"  alt="LCMS logo image">
+         
+          <div class="progressbar">
+            <span style="width: 0%;">0%</span>
+          </div>
+        </span>
+        
+      </div>
+  </div>
+  <div id = 'banner'>
+    <img style = 'padding-right:1em;'class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+    <h1 id = 'title-banner' title="" class = 'gray text-center pr-2 mb-1' style="font-weight:100;font-family: 'Roboto';"><span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">LCMS </span> in <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> MOTION</span></h1>
+  </div>
+
+</body>
+
+</html>
