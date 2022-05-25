@@ -191,6 +191,9 @@ var staticTemplates = {
                         <div class="modal-body" id = 'introModal-body'>
                             <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>
                             <hr>
+                            <p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
+                            </p>
+                            <hr>
                             <p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
                             <hr>
@@ -234,7 +237,7 @@ var staticTemplates = {
                             </p>
                             <hr>
                             <p>Please contact the LCMS help desk
-                                <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS Base-Learner Explorer.</p>
+                                <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS IDS Explorer.</p>
                             
 
                         </div>
