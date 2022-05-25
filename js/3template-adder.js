@@ -406,7 +406,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
  
   $('#introModal-body').append(staticTemplates.walkThroughButton);
-}else if(mode === 'TEST' || mode === 'FHP'){
+}else if(mode === 'TEST' || mode === 'IDS'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
@@ -691,7 +691,7 @@ if(mode === 'geeViz'){
   if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 }
 if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
-if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'FHP' || mode === 'LCMS'){
+if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'IDS' || mode === 'LCMS'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
   $('#area-chart-params-label').prop('title', 'Click here to select which LCMS products to chart, and change which area units are used. ')

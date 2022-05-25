@@ -2589,8 +2589,8 @@ function initialize() {
         run = runMTBS;
       }else if(mode === 'TEST'){
         run = runTest;
-      }else if(mode === 'FHP'){
-        run = runFHP;
+      }else if(mode === 'IDS'){
+        run = runIDS;
       }else if(mode === 'geeViz'){
         run = runGeeViz;
       }else if( mode === 'STORM'){

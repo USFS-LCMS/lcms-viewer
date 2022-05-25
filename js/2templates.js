@@ -44,11 +44,11 @@ var  titles = {
             rightWords:'Explorer',
             title:'TEST Data Viewer'
             },
-    'FHP' : {
-            leftWords: 'FHP',
+    'IDS' : {
+            leftWords: 'IDS',
             centerWords: 'DATA',
             rightWords:'Explorer',
-            title:'Forest Health Protection Data Viewer'
+            title:'Insect and Disease Detection Survey Data Viewer'
             },
     'geeViz': {
             leftWords: 'geeViz',
@@ -75,7 +75,7 @@ var staticTemplates = {
 	map:`<section aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </section>`,
 
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
-	sidebarLeftToggler:`<button href="#" class="fa fa-bars  px-1 py-2  sidebar-toggler"  onclick = 'toggleSidebar()' title = 'Click to toggle sidebar visibility'></buttom>`,
+	sidebarLeftToggler:`<button href="#" class="fa fa-bars  p-1 mt-1  sidebar-toggler"  onclick = 'toggleSidebar()' title = 'Click to toggle sidebar visibility'></buttom>`,
 
     sidebarLeftContainer: `
 						<nav onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
@@ -192,6 +192,45 @@ var staticTemplates = {
                             <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>
                             <hr>
                             <p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+                            </p>
+                            <hr>
+                            <p>Please contact the LCMS help desk
+                                <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS Base-Learner Explorer.</p>
+                            
+
+                        </div>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
+                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
+                        <hr>
+                        <div class="form-check  mr-0">
+
+                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            'IDS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-md " role="document">
+                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                        <div class = 'modal-header'>
+                            <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!</h3>
+                        </div>
+
+                        <div class="modal-body" id = 'introModal-body'>
+                            <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class = 'support-text' href='https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a> outputs.</p>
+                            <hr>
+                            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
+                            </p>
+                            <hr>
+                            <p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how LCMS products are created.   
                             </p>
                             <hr>
                             <p>Please contact the LCMS help desk
@@ -436,11 +475,11 @@ var staticTemplates = {
                                             </ul>
                                           </li>
                                         </ul>`,
-        supportDiv :`<div role ='list' class = 'p-0 pb-2 col-lg-12' >
-                        <header class = 'row pt-2' title = 'Open LCMS Data Explorer tutorial'>
+        supportDiv :`<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
-                        <div class = 'row p-2' title = 'Open LCMS Data Explorer tutorial'>
+                        <div class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
                             </div>
@@ -453,7 +492,7 @@ var staticTemplates = {
                          <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
                             <h3 class = ' text-capitalize'>LCMS Methods</h3>
                         </header>
-                        <div class = 'row p-2' title = 'Open in-depth LCMS methods documentation'>
+                        <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
                             </div>
@@ -475,14 +514,14 @@ var staticTemplates = {
                             <h3 class = ' text-capitalize' title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow">Other LCMS Viewers</h3>
                         </header>
                    
-                        <section class = 'row p-2'>
+                        <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './images/lcms-icon.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
                                 <hr>
-                                <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS in Motion</a>
+                                <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             </div>
                             
                         </section>
@@ -490,7 +529,7 @@ var staticTemplates = {
                         <header class = 'row'>
                             <h3 class = ' text-capitalize'>Acknowledgements</h3>
                         </header>
-                        <section class = 'row p-2'>
+                        <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.fed.us/gstc/" target="_blank">
                                 <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
@@ -505,7 +544,7 @@ var staticTemplates = {
                         
                         <hr>
                         
-                        <section class = 'row p-2'>
+                        <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
                                     <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
@@ -519,7 +558,7 @@ var staticTemplates = {
                             </div>
                         </section>
                         <hr>
-                        <section class = 'row p-2'>
+                        <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
                                 <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
@@ -533,7 +572,7 @@ var staticTemplates = {
                         </section>
                         
                         <hr>
-                        <section class = 'row p-2'>
+                        <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://earthengine.google.com/" target="_blank">
                                     <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
@@ -547,7 +586,7 @@ var staticTemplates = {
                             </div>
                         </section>
                         <hr>
-                        <section class = 'row p-2'>
+                        <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <h2>"..."</h2>
                             </div>
@@ -561,16 +600,6 @@ var staticTemplates = {
                                         </button>
                                         <p id = 'copiedCitationMessageBox'></p>
                                     </span>
-                                    
-
-                                    
-                                        
-                                   
-                                    
-                              
-                                
-                                  
-                                
                             </div>
                         </section>
                        
@@ -579,7 +608,7 @@ var staticTemplates = {
                         <header class = 'row'>
                             <h3 class = ' text-capitalize'>Contact</h3>
                         </header>
-                        <section class = 'row p-2'>
+                        <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './images/email.png'></a> 
                             </div>

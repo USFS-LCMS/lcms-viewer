@@ -82,9 +82,9 @@ body,
 width: 700px;
 max-height: 700px;
 }
-.esri-view-height-less-than-medium  .esri-popup__main-container {
+/*.esri-view-height-less-than-medium  .esri-popup__main-container {
     max-height: 500;
-}
+}*/
 .esri-feature__content-element{
       padding-bottom: 0px;
 }

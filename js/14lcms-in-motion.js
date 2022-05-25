@@ -65,20 +65,23 @@ require(["esri/Map",
         const gif_dir = 'https://storage.googleapis.com/lcms-gifs/';
         const template = {
           title: null,
+          docked:true,
           content:  [{
             // The following creates a piechart in addition to an image. The chart is
             // also set  up to work with related tables.
             // Autocasts as new MediaContent()
             type: "media",
+            medianInfosTooltip: "Legends",
             // Autocasts as array of MediaInfo objects
             mediaInfos: [ 
-            {
+            { tooltip: "Test",
               title: null,
               type: "image", // Autocasts as new ImageMediaInfo object
               // Autocasts as new ImageMediaInfoValue object
               value: {
                 "sourceURL": gif_dir+'{GIFNAMECHANGE}',
                 "linkURL":  gif_dir+'{GIFNAMECHANGE}',
+
               }
             },
             {
@@ -142,7 +145,7 @@ require(["esri/Map",
           url: path,
           title: name,
           visible:isFirstLayer,
-          copyright: "USFS LCMS",
+          copyright: "USDA Forest Service LCMS | Google Earth Engine",
           popupTemplate: template,
           legendEnabled:true,
           renderer: renderer, //optional
@@ -153,7 +156,7 @@ require(["esri/Map",
           url: path,
           title: name,
           visible:isFirstLayer,
-          copyright: "USFS LCMS",
+          copyright: "USDA Forest Service LCMS | Google Earth Engine",
           popupTemplate: template,
           legendEnabled:true,
           renderer: renderer, //optional
@@ -181,7 +184,7 @@ require(["esri/Map",
           title:name,
           visible: visible,
           opacity: 1 ,
-          copyright:'USDA Forest Service' 
+          copyright:'USDA Forest Service LCMS | Google Earth Engine' 
         });
         layer.when(()=>{
           console.log(name+ ' loaded')
@@ -356,7 +359,7 @@ require(["esri/Map",
         content: legend,
         expandIconClass: "esri-icon-key",
         expandTooltip: "Legends",
-        expanded :true
+        expanded :false
       });
     
       // Add the expand instance to the ui
