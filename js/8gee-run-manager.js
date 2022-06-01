@@ -3649,7 +3649,7 @@ function runIDS(){
   var idsLCMS = ee.ImageCollection(years.map(function(yr){
     yr = ee.Number(yr).int16();
     var idsT = ids.filter(ee.Filter.eq('SURVEY_YEA',yr));
-    idsT = ee.Image().paint(idsT,null,2).visualize({min:1,max:1,palette:idsColor}).unmask(256);
+    idsT = ee.Image().paint(idsT,null,1.5).visualize({min:1,max:1,palette:idsColor}).unmask(256);
     // Map2.addLayer(idsT,{},'IDS ' +yr.getInfo().toString(),false)
     var lcmsT = lcmsC.filter(ee.Filter.calendarRange(yr,yr,'year')).first().select(['Change']);
 

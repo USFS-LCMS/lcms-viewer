@@ -1,9 +1,11 @@
-var zoomToFullLayerExtent;var layerTotal = 0;var maxLayers=0;
+var zoomToFullLayerExtent;var layerTotal = 0;var maxLayers=0;var h;var w;
 function closeSplash(){
   $('#splash').hide();
 }
 function showSplash(){
   $('#splash').show();
+  $('#intro-div').show();
+  
 }
 function updateProgress(val) {
   var el = document.querySelector('.progressbar span');
@@ -19,16 +21,55 @@ function updateBottomBar(){
   $('#loading-spinner').hide();
   if(localStorage['showIntroModal-landscapes-in-motion']  !== 'true'){
     $('#splash').hide();
+    $('#dontShowAgainCheckbox').click();
   }else{
     $('#intro-divider').hide();
   }
  
  }else{
   $('#loading-spinner').show();
- }
-  
-  // $('div.esri-attribution__sources').html(html)
+ };
+    resizeWindow();
 }
+//Function to handle resizing the windows properly
+function resizeWindow(){
+    console.log('resized');
+    var margin = 5;
+    h = window.innerHeight-margin;
+    w = window.innerWidth;
+    $('#splash').css({'max-height':h-50})
+    $('.esri-popup__main-container').css({'max-height':h-50})
+    // $('.esri-popup__main-container').css({'width':w-50})
+    // var headerHeight = $('#headerDiv').height();
+    // var bottomHeight = $('#bottomDiv').height();
+    // // $('#selected-area-list').css({'height':h/3*2-100});
+    // // $('#selected-area-div').css({'height':h/3*2-100});
+    
+    // if(w>h){
+    //   $('#headerDiv').css({'left':$('#nameDiv').width()+$('.esri-zoom').width()+20})
+    //   $('.entire').css({'float':'left','width':'45%'});
+    //   $('.left').css({'float':'left','width':'10%'});
+    //   $('.right').css({'float':'right','width':'45%'});
+    //   // $('.bottom').css({'position': 'absolute','bottom': '0'});
+    //   $("#viewDiv").height(h);
+    //   $("#chartDiv").height(h);
+    //   $("#nameDiv").height(h);
+    //   // $('#legend-div').css({'float':'top','max-height':h/3});
+    //   // $('#selected-area-div').css({'float':'bottom','height':h-$('#legend-div').height()-100});
+    // }else{
+    //   $("#viewDiv").height((window.innerHeight-(headerHeight*1.2))/2);
+    //   $("#chartDiv").height((window.innerHeight-(headerHeight*1.2))/2);
+    //   $('.left').css({'float':'top','width':'100%'});
+    //   $('.right').css({'float':'bottom','width':'100%'});
+    // }
+    // $('#lcms-icon').height($('#dashboard-title').innerHeight()*0.6);
+
+    // $('#chartDiv').css('overflow-y','visible');
+  }
+///////////////////////////////////////////////////////////////////////
+
+  // $('div.esri-attribution__sources').html(html)
+
 require(["esri/Map", 
             "esri/layers/GeoJSONLayer", 
             "esri/views/MapView",
@@ -40,6 +81,7 @@ require(["esri/Map",
             "esri/config",
             "esri/layers/ImageryLayer",
             "esri/widgets/Legend",
+            "esri/widgets/Slider",
             ], function (
       Map,
       GeoJSONLayer,
@@ -51,7 +93,8 @@ require(["esri/Map",
       watchUtils,
       esriConfig,
       ImageryLayer,
-      Legend
+      Legend,
+      Slider
     ) {
       // If GeoJSON files are not on the same domain as your website, a CORS enabled server
       // or a proxy is required.
@@ -65,47 +108,70 @@ require(["esri/Map",
         const gif_dir = 'https://storage.googleapis.com/lcms-gifs/';
         const template = {
           title: null,
-          docked:true,
-          content:  [{
-            // The following creates a piechart in addition to an image. The chart is
-            // also set  up to work with related tables.
-            // Autocasts as new MediaContent()
-            type: "media",
-            medianInfosTooltip: "Legends",
-            // Autocasts as array of MediaInfo objects
-            mediaInfos: [ 
-            { tooltip: "Test",
-              title: null,
-              type: "image", // Autocasts as new ImageMediaInfo object
-              // Autocasts as new ImageMediaInfoValue object
-              value: {
-                "sourceURL": gif_dir+'{GIFNAMECHANGE}',
-                "linkURL":  gif_dir+'{GIFNAMECHANGE}',
+          docked:false,
+          content:  `<ul>
+                      <li>
+                        <a class = 'gif-image' href='${gif_dir}{GIFNAMECHANGE}' target="_blank" title="Click to open {GIFNAMECHANGE} in a new tab">
+                          <img  src='${gif_dir}{GIFNAMECHANGE}'  alt='{GIFNAMECHANGE}'>
+                        </a>
+                      </li>
+                      <hr>
+                      <li>
+                        <a class = 'gif-image' href='${gif_dir}{GIFNAMELANDCOVER}' target="_blank" title="Click to open {GIFNAMELANDCOVER} in a new tab">
+                          <img  src='${gif_dir}{GIFNAMELANDCOVER}'  alt='{GIFNAMELANDCOVER}'>
+                        </a>
+                      </li>
+                      <hr>
+                      <li>
+                        <a class = 'gif-image' href='${gif_dir}{GIFNAMELANDUSE}' target="_blank" title="Click to open {GIFNAMELANDUSE} in a new tab">
+                          <img  src='${gif_dir}{GIFNAMELANDUSE}'  alt='{GIFNAMELANDUSE}'>
+                        </a>
+                      </li>
+                    </ul>`
+        }
+        // const template = {
+        //   title: null,
+        //   docked:true,
+        //   content:  [{
+        //     // The following creates a piechart in addition to an image. The chart is
+        //     // also set  up to work with related tables.
+        //     // Autocasts as new MediaContent()
+        //     type: "media",
+        //     medianInfosTooltip: "Legends",
+        //     // Autocasts as array of MediaInfo objects
+        //     mediaInfos: [ 
+        //     { tooltip: "Test",
+        //       title: null,
+        //       type: "image", // Autocasts as new ImageMediaInfo object
+        //       // Autocasts as new ImageMediaInfoValue object
+        //       value: {
+        //         "sourceURL": gif_dir+'{GIFNAMECHANGE}',
+        //         "linkURL":  gif_dir+'{GIFNAMECHANGE}',
 
-              }
-            },
-            {
-              title: null,
-              type: "image", // Autocasts as new ImageMediaInfo object
-              // Autocasts as new ImageMediaInfoValue object
-              value: {
-                "sourceURL":  gif_dir+'{GIFNAMELANDCOVER}',
-                "linkURL":  gif_dir+'{GIFNAMELANDCOVER}',
-              }
-            },
-            {
-              title: null,
-              type: "image", // Autocasts as new ImageMediaInfo object
-              // Autocasts as new ImageMediaInfoValue object
-              value: {
-                "sourceURL": gif_dir+'{GIFNAMELANDUSE}',
-                "linkURL":  gif_dir+'{GIFNAMELANDUSE}',
-              }
-            }
-            ]
-          }]
+        //       }
+        //     },
+        //     {
+        //       title: null,
+        //       type: "image", // Autocasts as new ImageMediaInfo object
+        //       // Autocasts as new ImageMediaInfoValue object
+        //       value: {
+        //         "sourceURL":  gif_dir+'{GIFNAMELANDCOVER}',
+        //         "linkURL":  gif_dir+'{GIFNAMELANDCOVER}',
+        //       }
+        //     },
+        //     {
+        //       title: null,
+        //       type: "image", // Autocasts as new ImageMediaInfo object
+        //       // Autocasts as new ImageMediaInfoValue object
+        //       value: {
+        //         "sourceURL": gif_dir+'{GIFNAMELANDUSE}',
+        //         "linkURL":  gif_dir+'{GIFNAMELANDUSE}',
+        //       }
+        //     }
+        //     ]
+        //   }]
           
-        };
+        // };
 
         var renderer = {
             type: "simple",  // autocasts as new SimpleRenderer()
@@ -194,20 +260,20 @@ require(["esri/Map",
         layerTotal++;
         layerList.push(layer);
       }
-      ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
-        if(nm === 'PuertoRico_USVI'){
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
-        }else{
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,true)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
-        }
+      // ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
+      //   if(nm === 'PuertoRico_USVI'){
+      //     addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
+      //     addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
+      //   }else{
+      //     addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
+      //     addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,true)
+      //     addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
+      //   }
         
-      })
+      // })
       
       addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
-      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
+      // addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
 
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.5 ],true);
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RangerDistricts_01/MapServer','USFS Districts','DISTRICTNAME','#1B171A',[ 0, 122, 122, 0.5 ],true);
@@ -365,7 +431,11 @@ require(["esri/Map",
       // Add the expand instance to the ui
       view.ui.add(bgExpand, "top-left");
 
+      $(document).ready(function() {
+          window.addEventListener('resize',resizeWindow)
+        resizeWindow();
 
+      });
       })
     });
 
