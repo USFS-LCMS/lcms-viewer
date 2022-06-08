@@ -412,6 +412,19 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
+}else if(mode === 'LAMDA'){
+
+addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LAMDA products');
+var defaultYear = 2022;
+addRangeSlider('parameters-collapse-div','Year','year',2021,2022,defaultYear,1,'year-slider','','Year of LAMDA products to show');
+$('#parameters-collapse-div').append(staticTemplates.reRunButton);
+
+ addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
+  addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+
+
 }else if(mode === 'geeViz'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
@@ -690,6 +703,7 @@ if(mode === 'geeViz'){
   addRadio('tools-accordian','tooltip-radio','Show tool tips','Yes','No','localStorage.showToolTipModal','true','false','','','Whether to show tool tips to help explain how to use the tools.');
   if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 }
+if(mode==='LAMDA'){$('#pixel-chart-label').remove();}
 if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
 if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'IDS' || mode === 'LCMS'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);

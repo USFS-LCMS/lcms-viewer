@@ -61,6 +61,12 @@ var  titles = {
             centerWords: 'Damage',
             rightWords:'Viewer',
             title:'Storm Damage Viewer'
+            },
+    'LAMDA': {
+            leftWords: 'LAMDA',
+            centerWords: 'DATA',
+            rightWords:'Explorer',
+            title:'LAMDA Data Explorer'
             }     
 }
 //////////////////////////////////////////////////////////////////////
@@ -341,6 +347,37 @@ var staticTemplates = {
                              </p>
                         </div>
                         <div class="form-check  mr-0">
+                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            'LAMDA':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+                <div class="modal-dialog modal-md " role="document">
+                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
+                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                        <div class = 'modal-header'>
+                            <h3 class="mb-0 ">Welcome to the LAndscape Monitoring and Detection Application (LAMDA) Data Explorer!</h3>
+                        </div>
+
+                        <div class="modal-body" id = 'introModal-body'>
+                            <p>LAMDA is a near real-time landscape change detection program developed by the USDA Forest Service to provide a rough sense of where changes in vegetation cover may be occurring. This application is designed to provide a visualization of the change detection algorithm outputs.</p>
+                            
+                            
+
+                        </div>
+                        <div class = 'modal-footer' id = 'introModal-footer'>
+                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <p>
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
+                        <hr>
+                        <div class="form-check  mr-0">
+
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>

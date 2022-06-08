@@ -2042,6 +2042,8 @@ function dropdownUpdateStudyArea(whichOne){
       run  = runUSFS;
     }else if( mode === 'STORM'){
       run  = runStorm;
+    }else if( mode === 'LAMDA'){
+      run  = runLAMDA;
     }
     else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
@@ -2593,6 +2595,8 @@ function initialize() {
         run = runIDS;
       }else if(mode === 'geeViz'){
         run = runGeeViz;
+      }else if( mode === 'LAMDA'){
+      run  = runLAMDA;
       }else if( mode === 'STORM'){
       run  = runStorm;
       }else if(mode === 'lcms-base-learner'){
