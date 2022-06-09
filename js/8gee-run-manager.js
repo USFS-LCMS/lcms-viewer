@@ -4269,22 +4269,25 @@ function runLAMDA(){
   var getDate = function(name,jd_split_string = '_jd'){
     var yr = name.split(jd_split_string)[0]
     yr = parseInt(yr.slice(yr.length-4,yr.length))
-    var day = parseInt(name.split(jd_split_string)[1].split('-')[0])
+    var day = parseInt(name.split(jd_split_string)[1].split('-')[1])
     
     var d = ee.Date.fromYMD(yr,1,1).advance(day-1,'day')
     return d.millis()
    }
    var year = parseInt(urlParams.year);
    $('#layer-list-collapse-label-label:first-child').html('LAMDA Data: '+year.toString());
-  
+
   var bucketName = 'lamda-products';
   var study_areas = ['CONUS','AK'];
   var output_types = ['Z','TDD'];
   var output_type_stretch = {'Z':{'scale_factor':1000,
-                  'stretch' : -2.5*-2
+                  'stretch' : -2.5*-2,
+                  'legendLabel':'stdDev'
+
                   },
                 'TDD':{'scale_factor':10000,
-                  'stretch' : -0.05*-2
+                  'stretch' : -0.05*-2,
+                  'legendLabel':'/yr'
                   }
               }
 
@@ -4308,9 +4311,9 @@ function runLAMDA(){
                 output_types.map(function(output_type){
 
                   var eight_bit_viz = {'min':0,'max':254,'palette':continuous_palette_chastain,'dateFormat':'YYYYMMdd','advanceInterval':'day'};
-              var raw_viz = {'min':output_type_stretch[output_type]['stretch']*-1,'max':output_type_stretch[output_type]['stretch'],'palette':continuous_palette_chastain,'dateFormat':'YYYYMMdd','advanceInterval':'day'};
+              var raw_viz = {'min':output_type_stretch[output_type]['stretch']*-1,'max':output_type_stretch[output_type]['stretch'],'palette':continuous_palette_chastain,'dateFormat':'YYYYMMdd','advanceInterval':'day',legendLabelLeftAfter:output_type_stretch[output_type]['legendLabel'],legendLabelRightAfter:output_type_stretch[output_type]['legendLabel']};
               
-              var persistence_viz = {'min':0,'max':3,'palette':'e1e1e1,ffaa00,e10000,e100c5','dateFormat':'YYYYMMdd','advanceInterval':'day','classLegendDict':{'0 Detections':'e1e1e1','1 Detection':'ffaa00','2 Detections':'e10000','3 or More Detections':'e100c5'}};
+              // var persistence_viz = {'min':0,'max':3,'palette':'e1e1e1,ffaa00,e10000,e100c5','dateFormat':'YYYYMMdd','advanceInterval':'day','classLegendDict':{'0 Detections':'e1e1e1','1 Detection':'ffaa00','2 Detections':'e10000','3 or More Detections':'e100c5'}};
 
               var persistence_viz = {'min':1,'max':3,'palette':'ffaa00,e10000,e100c5','dateFormat':'YYYYMMdd','advanceInterval':'day','classLegendDict':{'1 Detection':'ffaa00','2 Detections':'e10000','3 or More Detections':'e100c5'}};
                   var namesT = names.filter(n => n.indexOf(study_area)== 0)
