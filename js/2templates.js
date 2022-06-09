@@ -359,11 +359,11 @@ var staticTemplates = {
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
                         <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
                         <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the LAndscape Monitoring and Detection Application (LAMDA) Data Explorer!</h3>
+                            <h3 class="mb-0 ">Welcome to the Landscape Automated Monitoring and Detection Algorithm (LAMDA) Data Explorer!</h3>
                         </div>
 
                         <div class="modal-body" id = 'introModal-body'>
-                            <p>LAMDA is a near real-time landscape change detection program developed by the USDA Forest Service to provide a rough sense of where changes in vegetation cover may be occurring. This application is designed to provide a visualization of the change detection algorithm outputs.</p>
+                            <p>LAMDA is a near real-time landscape-scale change detection program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide a visualization of LAMDA outputs.</p>
                             
                             
 

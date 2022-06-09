@@ -4274,8 +4274,9 @@ function runLAMDA(){
     var d = ee.Date.fromYMD(yr,1,1).advance(day-1,'day')
     return d.millis()
    }
-   // showMessage('Loading',staticTemplates.loadingModal);
+   var year = parseInt(urlParams.year);
    $('#layer-list-collapse-label-label:first-child').html('LAMDA Data: '+year.toString());
+  
   var bucketName = 'lamda-products';
   var study_areas = ['CONUS','AK'];
   var output_types = ['Z','TDD'];

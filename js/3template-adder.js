@@ -415,8 +415,14 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 }else if(mode === 'LAMDA'){
 
 addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LAMDA products');
-var defaultYear = 2022;
-addRangeSlider('parameters-collapse-div','Year','year',2021,2022,defaultYear,1,'year-slider','','Year of LAMDA products to show');
+  var startYear = 2021;
+  var endYear = new Date().getYear()+1900;
+  
+  if(urlParams.year == null || urlParams.year == undefined){
+        urlParams.year = endYear;
+    }
+
+addRangeSlider('parameters-collapse-div','Year','urlParams.year',startYear,endYear,urlParams.year,1,'year-slider','','Year of LAMDA products to show');
 $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
