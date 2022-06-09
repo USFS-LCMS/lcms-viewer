@@ -81,8 +81,8 @@
 		  		<div class='form-group nav bg-black'>
 		  			<label for = 'year-selection' class = 'pr-2'>Year:  </label>
 			  		<select class="bg-black" id = 'year-selection' onchange =  'load_available_lamda()' aria-label="year selection">
-					  <option selected value = '2022'>2022</option>
-					  <option value="2021">2021</option>
+					  
+					  
 					</select>	
 		  		</div>
 		  		
@@ -102,6 +102,14 @@
 	 
 
 	    <script type="text/javascript">
+	    	var startYear = 2021;
+	    	var endYear = new Date().getYear()+1900;
+	    	
+	    	for(var year = startYear;year<endYear;year++){
+	    		$('#year-selection').append(`<option value="${year}">${year}</option>`);
+	    	}
+	    	$('#year-selection').append(`<option selected value = '${endYear}'>${endYear}</option>`);
+	    	console.log(endYear);
 	    	$('#loading-label').show();
 	    	$('#title-label').hide();
 	    	
