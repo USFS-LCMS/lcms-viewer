@@ -252,7 +252,6 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                     
                     }
 
-var walkThroughAdded = false;
 
 $(window).resize(function(){
     

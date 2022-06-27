@@ -1,4 +1,4 @@
- /*This script constructs the page depending on the chosen mode*/
+/*This script constructs the page depending on the chosen mode*/
 /*Put main elements on body*/
 $('body').append(staticTemplates.map);
 
@@ -415,8 +415,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 }else if(mode === 'LAMDA'){
 
 addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LAMDA products');
-  var startYear = 2021;
-  var endYear = new Date().getYear()+1900;
+  startYear = 2021;
+  endYear = new Date().getYear()+1900;
   
   if(urlParams.year == null || urlParams.year == undefined){
         urlParams.year = endYear;

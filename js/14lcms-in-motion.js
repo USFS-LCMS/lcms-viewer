@@ -82,6 +82,7 @@ require(["esri/Map",
             "esri/layers/ImageryLayer",
             "esri/widgets/Legend",
             "esri/widgets/Slider",
+            "esri/widgets/TimeSlider"
             ], function (
       Map,
       GeoJSONLayer,
@@ -94,7 +95,8 @@ require(["esri/Map",
       esriConfig,
       ImageryLayer,
       Legend,
-      Slider
+      Slider,
+      TimeSlider
     ) {
       // If GeoJSON files are not on the same domain as your website, a CORS enabled server
       // or a proxy is required.
@@ -257,16 +259,22 @@ require(["esri/Map",
           layerTotal--;
           updateBottomBar();
         })
+
+     
+
         layerTotal++;
         layerList.push(layer);
+        
       }
       ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
+        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,`LCMS Land Cover (${nm})`,false)
+        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,`LCMS Land Use (${nm})`,false)
         if(nm === 'PuertoRico_USVI'){
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,false)
           addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
         }else{
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,true)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,false)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,false)
           addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
         }
         
@@ -289,7 +297,7 @@ require(["esri/Map",
         map: map
       });
 
-
+     
       view.when(()=>{
           
           $('#dontShowAgainCheckbox').change(function(){
@@ -306,6 +314,35 @@ require(["esri/Map",
             view.goTo(JSON.parse(localStorage.initView));
           }
 
+          // time slider widget initialization
+          // users can visualize daily wind information
+          // for the month of Oct 2011 using time slider
+          const timeSlider = new TimeSlider({
+            mode: "instant",
+            view: view,
+            timeVisible: true,
+            // Oct 1 - Oct 31
+            fullTimeExtent: {
+              start: new Date('1985-12-31'), 
+              end: new Date('2021-12-31') 
+            },
+            stops: {
+              interval: {
+                value: 1,
+                unit: "years"
+              }
+            }
+          });
+          const tsExpand = new Expand({
+            view: view,
+            content: timeSlider.container,
+            expandIconClass: "esri-icon-play-circled",
+            expandTooltip: "Timelapse Slider",
+            expanded :true
+          });
+        
+          // Add the expand instance to the ui
+          view.ui.add(timeSlider, "bottom-right");
           
 
           firstLayer.when(()=>{

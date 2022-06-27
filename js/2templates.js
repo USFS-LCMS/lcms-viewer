@@ -1,7 +1,7 @@
 /*Templates for elements and various functions to create more pre-defined elements*/
 /////////////////////////////////////////////////////////////////////
 /*Provide titles to be shown for each mode*/
-var  titles = {
+const  titles = {
 	'LCMS-pilot': {
 		    leftWords: 'LCMS',
 		    centerWords: 'DATA',
@@ -73,27 +73,22 @@ var  titles = {
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
-var topBannerParams = titles[mode];
-var  studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
+let topBannerParams = titles[mode];
+let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
 //Provide a bunch of templates to use for various elements
-var staticTemplates = {
+const staticTemplates = {
 	map:`<section aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </section>`,
-
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
 	sidebarLeftToggler:`<button href="#" class="fa fa-bars  p-1 mt-1  sidebar-toggler"  onclick = 'toggleSidebar()' title = 'Click to toggle sidebar visibility'></buttom>`,
-
     sidebarLeftContainer: `
 						<nav onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 					        <header id = 'sidebar-left-header'></header>
                             
 					        <div role="list" id = 'sidebar-left'></div>
 					    </nav>`,
-
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
-
-
-	exportContainer:`<div class = 'dropdown-divider'></div>
+    exportContainer:`<div class = 'dropdown-divider'></div>
                     <div class = 'py-2' id = 'export-list-container'>
                         <h5>Choose which images to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
@@ -103,8 +98,7 @@ var staticTemplates = {
                               <label for="export-crs">Projection: </label>
                               <div class="form-group pl-1">
                                 <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
-                              </div> 
-                              
+                              </div>
                             </form>
                             <div class = 'py-2' id = 'export-area-drawing-div'>
                                 <button class = 'btn' onclick = 'selectExportArea()' title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
@@ -123,32 +117,22 @@ var staticTemplates = {
 						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
 								</span>
                                 <div id = 'export-count-div'></div>
-                            </div>
-                            
+                            </div>  
                         </div>
                         
                     </div>`,
-
-	topBanner:`<h1 id = 'title-banner' title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>
-		        
-		        `,
+	topBanner:`<h1 id = 'title-banner' title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>`,
 	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
-		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'  ></h5> 
-		                <div class="dropdown-menu" id="study-area-list"  >  
+		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
+		                <div class="dropdown-menu" id="study-area-list">  
 		                </div>
-		            </li>
-			    `,
+		            </li>`,
 	placesSearchDiv:`<section id = 'search-share-div' class="input-group px-4 pb-2 text-center"">
 			            <div role='list' class="input-group-prepend">
-
-
                             <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
 	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="share-button"><i class="fa fa-share-alt teal "></i></button>
-                            
                             <buttom class="input-group-text bg-white search-box" id="search-icon"><i class="fa fa-search text-black "></i></buttom>
-                            
 	  					</div>
-
 			            <input id = 'pac-input' class="form-control bg-white search-box" title = 'Search for places on the map' type="text" placeholder="Search Places">
                         <div class="input-group-prepend">
                             <button onclick = 'backView()' title = 'Click to go back a view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="back-view-button"><i class="fa fa-arrow-left teal "></i></button>
@@ -163,11 +147,9 @@ var staticTemplates = {
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
                         	<button class = 'btn' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
-
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                             <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -178,7 +160,6 @@ var staticTemplates = {
                             </div>
                             <hr>
     						<div class="form-check  mr-0">
-
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
@@ -186,14 +167,13 @@ var staticTemplates = {
                     </div>
                 </div>
             </div>`,
-            'lcms-base-learner':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+            'lcms-base-learner':`<div class="modal fade" id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
                         <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Base-Learner Explorer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body'>
                             <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>
                             <hr>
@@ -205,8 +185,6 @@ var staticTemplates = {
                             <hr>
                             <p>Please contact the LCMS help desk
                                 <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS Base-Learner Explorer.</p>
-                            
-
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -217,7 +195,6 @@ var staticTemplates = {
                         </div>
                         <hr>
                         <div class="form-check  mr-0">
-
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
@@ -232,7 +209,6 @@ var staticTemplates = {
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body'>
                             <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class = 'support-text' href='https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a> outputs.</p>
                             <hr>
@@ -244,8 +220,6 @@ var staticTemplates = {
                             <hr>
                             <p>Please contact the LCMS help desk
                                 <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS IDS Explorer.</p>
-                            
-
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -256,7 +230,6 @@ var staticTemplates = {
                         </div>
                         <hr>
                         <div class="form-check  mr-0">
-
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
@@ -271,10 +244,8 @@ var staticTemplates = {
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the TimeSync Ancillary Data Viewer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-2 ">This viewer is intended to provide an efficient way of looking at ancillary data to help with responses for the TimeSync tool.</p>
-                        	
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -298,7 +269,6 @@ var staticTemplates = {
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the LandTrendr Data Explorer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body' >
                             <li>
                                 <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr temporal segmentation algorithm</a>. While this tool can run across any area on earth, the quality of the output will be related to the availability of cloud-free Landsat observations.</p>
@@ -308,9 +278,7 @@ var staticTemplates = {
                             </li>
                              <li>
                                 <p class="pb-2 ">All Landsat image processing and LandTrendr algorithm application is being performed on-the-fly. This can take some time to run. If you try to run this tool across a very large extent (zoom level < 9), it may not run.</p>
-                            </li>
-
-                            
+                            </li> 
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -334,10 +302,8 @@ var staticTemplates = {
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the MTBS Data Explorer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body'>
                             <p class="pb-2 ">This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.</p>
-                            
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -361,12 +327,8 @@ var staticTemplates = {
                         <div class = 'modal-header'>
                             <h3 class="mb-0 ">Welcome to the Landscape Automated Monitoring and Detection Algorithm (LAMDA) Data Explorer!</h3>
                         </div>
-
                         <div class="modal-body" id = 'introModal-body'>
                             <p>LAMDA is a near real-time landscape-scale change detection program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide a visualization of LAMDA outputs.</p>
-                            
-                            
-
                         </div>
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
@@ -377,7 +339,6 @@ var staticTemplates = {
                         </div>
                         <hr>
                         <div class="form-check  mr-0">
-
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
@@ -396,7 +357,6 @@ var staticTemplates = {
                  </p>
                   `,
 	bottomBar:`<footer class = 'bottombar'  id = 'bottombar' >
-                   
         			<span class = 'px-2'  id='current-tool-selection' title="Any tool that is currently active is shown here."></span>
         			<span class = 'px-2' title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
                     <span class = 'px-2' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></span>
@@ -405,8 +365,6 @@ var staticTemplates = {
                         <a href="https://earthengine.google.com/" target="_blank">
                             <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
                         </a>
-                        
-                       
                         <a href="http://www.fs.fed.us//" target="_blank">
                             <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  alt= "USDA Forest Service logo" title="Click to learn more about the US Forest Service">
                         </a>
@@ -414,15 +372,8 @@ var staticTemplates = {
                             <img src="images/usdalogo.png" class = 'image-icon-bar'  href="#"   alt= "USDA logo" title="Click to learn more about the USDA">
                         </a>
                     </span>
-
-                    
-                 
-                    
-            </footer>`,
-        walkThroughPopup:`
-                    
-                    	<div class = 'walk-through-popup'>
-                          
+                </footer>`,
+        walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<div class = 'dropdown-divider'></div>
 		                        <div class="icon-bar py-1 ">
@@ -430,11 +381,8 @@ var staticTemplates = {
 								  <a onclick = 'nextWalkThrough()'  title = 'Next tutorial slide'><i class="fa fa-chevron-right text-black"></i></a>
 								  <a id = 'walk-through-popup-progress'></a>
                                   <a onclick = 'removeWalkThroughCollapse()' style = 'float:right;'  title = 'Turn off Walk-Through'><i class="fa fa-stop text-black" aria-hidden="true"></i></a>
-                                  
                                 </div>
-						</div>
-	                       
-                    	`,
+						</div>`,
         studyAreaDropdownButtonEnabledTooltip:`Choose your study area`,
         studyAreaDropdownButtonDisabledTooltip:`Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
         reRunButtonEnabledTooltip:`Once finished changing parameters, press this button to refresh map layers`,
@@ -547,13 +495,9 @@ var staticTemplates = {
                             </div>
                         </div>
                         <hr>
-                        
-                        
-                    
                         <header class = 'row'>
                             <h3 class = ' text-capitalize' title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow">Other LCMS Viewers</h3>
                         </header>
-                   
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './images/lcms-icon.png'></a> 
@@ -563,7 +507,6 @@ var staticTemplates = {
                                 <hr>
                                 <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             </div>
-                            
                         </section>
                         <hr>
                         <header class = 'row'>
@@ -581,14 +524,11 @@ var staticTemplates = {
                                 </a>
                             </div>
                         </section>
-                        
                         <hr>
-                        
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc.">
-                                    
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -631,7 +571,6 @@ var staticTemplates = {
                                 <h2>"..."</h2>
                             </div>
                             <div class = 'col-lg-10  support-text'>
-                              
                                     Suggested citation: 
                                     <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2022). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
@@ -642,11 +581,9 @@ var staticTemplates = {
                                     </span>
                             </div>
                         </section>
-                       
                         <hr>
-                    
-                        <header class = 'row'>
-                            <h3 class = ' text-capitalize'>Contact</h3>
+                        <header class ='row'>
+                            <h3 class ='text-capitalize'>Contact</h3>
                         </header>
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
@@ -657,9 +594,6 @@ var staticTemplates = {
                                 Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about LCMS or have feedback on the LCMS Data Explorer.</a>
                             </div>
                         </section>
-        				
-        			
-                       
         			</div>`,
                     tooltipToggle:` <label class = 'mt-2'>If you turned off tool tips, but want them back:</label>
                         <button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>`,
@@ -677,7 +611,6 @@ var staticTemplates = {
         pixelChartDiv : `<div>Double-click on map to query ${mode} data time series<br></div>`,
         pixelChartTip : 'Double-click on map to look at the full time series of '+mode+' outputs for a pixel.',
         userDefinedAreaChartDiv : `<div  id="user-defined" >
-                                            
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
                                             <div class = 'dropdown-divider'></div>
@@ -685,14 +618,12 @@ var staticTemplates = {
                                             <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                             <div id = 'user-defined-edit-toolbar'></div>
                                             <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'chartUserDefinedArea()' title = 'Click to summarize across drawn polygons'>Chart Selected Areas</button>
-                                
         		            			</div>
                                 	</div>`,
         showChartButton:`<div class = 'py-2'>
                                 <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                                 </div>`,
         userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
-
         uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
                                 <label title = 'Powered by: https://ogre.adc4gis.com/'>Choose a zipped shapefile, kml, kmz, or geoJSON file to summarize across. Then hit "Chart across chosen file" button below to produce chart.</label>
                                 <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json,.kmz,.kml" style="display: inline-block;">
@@ -702,8 +633,7 @@ var staticTemplates = {
                                 <div>Uploaded areas:</div>
                                 <div id="area-charting-shp-layer-list"></div>
                                 <div class = 'dropdown-divider'></div>
-                                <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>
-                                `,
+                                <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>`,
         uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml (If the .kmz or .kml has embedded pngs or any other non vector data, the conversion will likely fail.), or .geojson file to summarize products across.',
         selectAreaDropdownChartDiv : `<i title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                             <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
@@ -729,41 +659,26 @@ var staticTemplates = {
                                         <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
                                         <div class = 'dropdown-divider'></div>`,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
-        shareButtons : `    
-                        
-                        <!-- Email -->
+        shareButtons : `<!-- Email -->
                         <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
                             <img class = 'image-icon-bar' src="./images/email.png" alt="Email" />
                         </a>
-
-                        <!-- Reddit -->
                         <a title = 'Share on Reddit' onclick = 'TweetThis("http://reddit.com/submit?url=","&amp;title=USDA Forest Service Landscape Change Monitoring System",true)' >
                             <img class = 'image-icon-bar' src="./images/reddit.png" alt="Reddit" />
                         </a>
-
-                         <!-- Twitter -->
                         <a title = 'Share on Twitter' onclick = 'TweetThis("https://twitter.com/share?url=","&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS",true)' >
                             <img class = 'image-icon-bar' src="./images/twitter.png" alt="Twitter" />
                         </a>
-
-                        <!-- Facebook -->
                         <a  title = 'Share on Facebook' onclick = 'TweetThis("http://www.facebook.com/sharer.php?u=","",true)' >
                             <img class = 'image-icon-bar' src="./images/facebook.png" alt="Facebook" />
-                        </a>
-                            
-                        
-                        `
-
-
-
-        
+                        </a>`
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Go through each tip and remove kbd tag for shoing in hover titles
 Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(function(t){
-	var tip = staticTemplates[t].replaceAll(`<kbd>`,``);
+	let tip = staticTemplates[t].replaceAll(`<kbd>`,``);
 	tip = tip.replaceAll(`</kbd>`,``);
-	staticTemplates[t+'Hover'] = tip
+	staticTemplates[t+'Hover'] = tip;
 })
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -777,16 +692,15 @@ Object.keys(staticTemplates).filter(word => word.indexOf('Tip') > -1).map(functi
 function getLocation() {
     if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, showLocationError);
-    
-  } else { 
+  }else{ 
     showMessage('Cannot acquire location','Geolocation is not supported by this browser.');
     ga('send', 'event', mode + '-getLocation', 'failure', 'failure');
-  }
+  };
 }
 function showPosition(position) {
-    var pt = {lng:position.coords.longitude,lat:position.coords.latitude};
+    const pt = {lng:position.coords.longitude,lat:position.coords.latitude};
     ga('send', 'event', mode + '-getLocation', 'success', JSON.stringify(pt));
-    var locationMarker  = new google.maps.Marker({
+    let locationMarker  = new google.maps.Marker({
               map: map,
               position: pt,
               icon: {
@@ -798,11 +712,9 @@ function showPosition(position) {
             });
     map.setCenter(pt);
     map.setZoom(10);
-    showMessage('Acquired location',"Latitude: " + position.coords.latitude + 
-  "<br>Longitude: " + position.coords.longitude)
-  
+    showMessage('Acquired location',"Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude);
 }
-function showLocationError(error) {
+function showLocationError(error){
     switch(error.code) {
     case error.PERMISSION_DENIED:
         showMessage('Cannot acquire location','User denied the request for Geolocation.');
@@ -825,12 +737,10 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" title="${tooltip}">
 								  <label for="${dropdownID}">${dropdownLabel}:</label>
 								  <select class="form-control" id="${dropdownID}"></select>
-								</div>`)
-	
+								</div>`);
 	  $("select#"+dropdownID).on("change", function(value) {
 	  	eval(`window.${variable} = $(this).val()`);
 	  });
-	
 }
 //Function to add an item to a dropdown
 function addDropdownItem(dropdownID,label,value,tooltip){
@@ -856,26 +766,21 @@ const setRadioValue =function(variable,value){
 	window[variable] = value;
 	};
 function getRadio(id,label,name1,name2,variable,value1,value2){
-	return `<div class = 'container'><div id = '${id}-row' class = 'row'>
-		<label class="col-sm-4">${label}</label>
-		<div class = 'col-sm-8'>
-		<div  id = '${id}' class="toggle_radio">
-
-	  	
-	    <input type="radio" checked class="toggle_option first_toggle" id="first_toggle${id}" name="toggle_option" onclick="setRadioValue('${variable}','${value1}')"  >
-	    <input type="radio"  class="toggle_option second_toggle" id="second_toggle${id}" name="toggle_option" onclick="setRadioValue('${variable}','${value2}')"  >
-	    
-	    <label for="first_toggle${id}"><p>${name1}</p></label>
-	    <label for="second_toggle${id}"><p>${name2}</p></label>
-	    
-	    <div class="toggle_option_slider">
-	    </div>
-	    </div>
- 
-	</div>
-	</div>
-	</div>`
-	}
+	return `<div class = 'container'>
+                <div id = '${id}-row' class = 'row'>
+            		<label class="col-sm-4">${label}</label>
+            		<div class = 'col-sm-8'>
+                		<div  id = '${id}' class="toggle_radio">
+                            <input type="radio" checked class="toggle_option first_toggle" id="first_toggle${id}" name="toggle_option" onclick="setRadioValue('${variable}','${value1}')"  >
+                	       <input type="radio"  class="toggle_option second_toggle" id="second_toggle${id}" name="toggle_option" onclick="setRadioValue('${variable}','${value2}')">
+                	       <label for="first_toggle${id}"><p>${name1}</p></label>
+                	       <label for="second_toggle${id}"><p>${name2}</p></label>
+                	       <div class="toggle_option_slider"></div>
+            	        </div>
+            	   </div>
+        	   </div>
+        	</div>`
+}
 //////////////////////////////////////////////////////////////////////////////////////////////
 function getDiv(containerID,divID,label,variable,value){
 	eval(`var ${variable} = ${value}`);
@@ -924,16 +829,14 @@ function updateUDPColor(jscolor) {
 }
 function updateAreaColor(jscolor) {
     areaPolygonOptions.strokeColor = '#' + jscolor;
-
     Object.keys(areaPolygonObj).map(function(k){
-    	areaPolygonObj[k].setOptions(areaPolygonOptions) ;
-
+    	areaPolygonObj[k].setOptions(areaPolygonOptions);
     	console.log(areaPolygonObj[k])
     })
 }
 function addColorPicker(containerID,pickerID,updateFunction,value){
-	if(value === undefined	|| value === null){value = 'FFFF00'}
-	$('#'+containerID).append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
+    if(value === undefined	|| value === null){value = 'FFFF00'}
+	   $('#'+containerID).append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
 							    class=" fa fa-paint-brush text-dark color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
 							    ></button>`);
 }
@@ -945,21 +848,19 @@ function addModal(containerID,modalID,bodyOnly){
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
 	$('#'+modalID).remove();
 	if(bodyOnly){
-	$('#'+ containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
+	   $('#'+ containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-md ">
             		<div class="modal-content bg-white">
-            			
 	            		<div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
 	            			<button style = 'float:right;' id = 'close-modal-button' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
 	            		</div>
 	      				<div id ="${modalID}-body" class="modal-body bg-white " ></div>
-			          	
         			</div>
         		</div> 
         	</div>`
-        	)
+        	);
 	}else{
-	$('#'+ containerID).append(`
+	   $('#'+ containerID).append(`
             <div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-lg ">
             		<div class="modal-content bg-black">
@@ -970,14 +871,12 @@ function addModal(containerID,modalID,bodyOnly){
         			</div>
         		</div> 
         	</div>`
-        	)
+        	);
 	}
 }
 function addModalTitle(modalID,title){
 	if(modalID === null || modalID === undefined){modalID = 'modal-id'};
-	// $('#'+modalID+' .modal-title').html('');
-	$('#'+modalID+' .modal-header').prepend(`<h4 class="modal-title" id = '${modalID}-title'>${title}</h4>`);
-
+	   $('#'+modalID+' .modal-header').prepend(`<h4 class="modal-title" id = '${modalID}-title'>${title}</h4>`);
 }
 
 function clearModal(modalID){
@@ -1013,13 +912,10 @@ function showTip(title,message){
 	showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
 
 	$('#tip-modal-body').append(`<form class="form-inline pt-3 pb-0">
-								  
 								  <div class="form-check  mr-0">
                                 	<input role="option" type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 	<label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
                             		</div>
-								    
-								  
 								</form>`);
 	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
 	  localStorage.showToolTipModal = 'true';
@@ -1045,7 +941,7 @@ function addStudyAreaToDropdown(name,toolTip){
   		$('#study-area-list').hide();
         longStudyAreaName = this.name;
     	dropdownUpdateStudyArea(this.name);
-    }) 
+    }); 
  }
  //////////////////////////////////////////////////////////////////////////////////////////////
  function addToggle(containerDivID,toggleID,title,onLabel,offLabel,on,variable,valueOn,valueOff,onChangeFunction,tooltip){
@@ -1054,15 +950,8 @@ function addStudyAreaToDropdown(name,toolTip){
     if(tooltip === undefined || tooltip === null){tooltip = ''}
     if(on === null || on === undefined || on === 'checked' || on === 'true'){on = true;checked = 'checked';}
     else {on = false;checked = ''};
-    // console.log('on');console.log(on);console.log(valueDict[on]);
     eval(`window.${variable} = valueDict[on];`);
-    // try{
-    // 	eval(`${onChangeFunction}`);
-    // }catch(err){
-    // 	console.log('Adding toggle error: ' + err);
-    // }
-    
-    $('#'+containerDivID).append(`<div title="${tooltip}" >${title}<input  id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" role="option" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" ></div>`)
+    $('#'+containerDivID).append(`<div title="${tooltip}" >${title}<input  id = "${toggleID}" data-onstyle="dark" data-offstyle="light" data-style="border" role="option" type="checkbox" data-on="${onLabel}" data-off="${offLabel}"  ${checked} data-toggle="toggle" data-width="100" data-onstyle="dark" data-offstyle="light" data-style="border" data-size="small" ></div>`);
     $('#'+toggleID).change(function(){
         var value = valueDict[$('#'+toggleID).prop('checked')];
         eval(`window.${variable} = value;`);
@@ -1071,38 +960,29 @@ function addStudyAreaToDropdown(name,toolTip){
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn,valueOff,onFunction,offFunction,tooltip){
-	// var valueDict = {true:valueOn,false:valueOff};
 	eval(`window.${variable} = '${valueOn}';`);
-	// console.log(valueDict);
-	
 	$('#'+containerDivID).append(`<row class = 'row' id = '${radioID}-container' title="${tooltip}">
 		<h3 class="col-12 pb-0 h3">${title} </h3>
 		<div class = 'col-12 pt-0'>
     		<div  id = '#${radioID}'  class="toggle_radio p-0">
                 <input type="radio" class = "first_toggle" checked class="toggle_option" id="${radioID}-first_toggle" name="${radioID}-toggle_option"  value="1" >
     	       <input type="radio" class="toggle_option second_toggle" id="${radioID}-second_toggle" name="${radioID}-toggle_option"  value="2" >
-    	    
     	       <label for="${radioID}-first_toggle" id = '${radioID}-first_toggle_label'><p>${onLabel}</p></label>
     	       <label for="${radioID}-second_toggle"  id = '${radioID}-second_toggle_label'><p>${offLabel}</p></label>
-    	    
     	       <div class="toggle_option_slider">
     	    </div>
 	    </div>
- 
 	</div>
-	</row>`)
+	</row>`);
 
 	$('#'+radioID + '-first_toggle').change(function(){
-		// console.log('first');
 		eval(`window.${variable} = '${valueOn}';`);
 		eval(`${onFunction}`);
 	})
 	$('#'+radioID + '-second_toggle').change(function(){
-		// console.log('second');
 		eval(`window.${variable} = '${valueOff}';`);
 		eval(`${offFunction}`);
 	})
-	
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to set up a checkbox list
@@ -1113,25 +993,20 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     eval(`if(window.${variable} === undefined){window.${variable} = []}`);
     Object.keys(optionList).map(function(k){
       // console.log(k)
-      var checkboxCheckboxID = variable+k + '-checkbox';
-      var checkboxLabelID = variable+checkboxCheckboxID + '-label'
+      const checkboxCheckboxID = variable+k + '-checkbox';
+      const checkboxLabelID = variable+checkboxCheckboxID + '-label'
       if(optionList[k] === 'true'){optionList[k] = true}
-      else  if(optionList[k] === 'false'){optionList[k] = false}
-      var checked = optionList[k];
+      else  if(optionList[k] === 'false'){optionList[k] = false};
+      let checked = optionList[k];
       optionList[k] = checked;
       if(checked){checked = 'checked';}
         else{checked = ''};
         eval(`window.${variable} = optionList`)
-      $('#'+checkboxID).append(`
-                                 <input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
-                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${k}</label>
-                               `)
+      $('#'+checkboxID).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${k}</label>`);
 
       $('#'+checkboxCheckboxID).change( function() {
-                                      var v = $(this).val();
-
-                                      var checked = $(this)[0].checked;
-                                      optionList[v] = checked;
+                                      optionList[$(this).val()] = $(this)[0].checked;
                                       eval(`window.${variable} = optionList`)
                                       console.log('Checkbox change');console.log(optionList);
                                     });

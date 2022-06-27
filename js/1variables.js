@@ -1,88 +1,52 @@
 /*List global variables in this script for use throughout the viewers*/
-var urlParamsObj = {};
-var pageUrl = document.URL;
-var tinyURL = '';
-var urlParams = {};
+let urlParamsObj = {};pageUrl = document.URL;tinyURL = '';urlParams = {};
 
 function setUrl(url){
-  var obj = { Title: 'test', Url: url };
+  const obj = { Title: 'test', Url: url };
   history.pushState(obj, obj.Title, obj.Url);
 }
 function baseUrl(){
-  return window.location.protocol + "//" + window.location.host  + window.location.pathname
+  return window.location.protocol + "//" + window.location.host  + window.location.pathname;
 }
 function eliminateSearchUrl(){
-  setUrl(baseUrl())
+  setUrl(baseUrl());
 }
 function updatePageUrl(){
   pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch();
 }
-// new Proxy(urlParamsObj, {
-//   set: function (target, key, value) {
-//       // console.log(`${key} set to ${value}`);
-//       //
-//       target[key] = value;
-//       // console.log(urlParams);
-//        // var deepLink = [window.location.pathname,constructUrlSearch()].join('');
-//        pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch()
-//             // console.log(deepLink)
-//             // var obj = { Title: 'test', Url: deepLink };
-//             // history.pushState(obj, obj.Title, obj.Url);
-//             // pageUrl = document.URL;
-//             // console.log(pageUrl)
-//       return true;
-//   }
-// }); 
-function TweetThis(preURL,postURL,openInNewTab,showMessageBox){
+
+function TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=true){
     updatePageUrl();
-    if(openInNewTab === undefined || openInNewTab === null){
-        openInNewTab = false;
-    };
-    if(showMessageBox === undefined || showMessageBox === null){
-        showMessageBox = true;
-    };
-    if(preURL === undefined || preURL === null){
-        preURL = '';
-    };
-    if(postURL === undefined || postURL === null){
-        postURL = '';
-    }
+    
 
     $.get(
         "https://tinyurl.com/api-create.php",
         {url: pageUrl},
         function(tinyURL){
-            var key = tinyURL.split('https://tinyurl.com/')[1];
-            var shareURL = pageUrl.split('?')[0] + '?id='+key;
-            var fullURL = preURL+shareURL+postURL ;
+            let key = tinyURL.split('https://tinyurl.com/')[1];
+            let shareURL = pageUrl.split('?')[0] + '?id='+key;
+            let fullURL = preURL+shareURL+postURL;
             // console.log(fullURL);
             ga('send', 'event', mode + '-share', pageUrl, shareURL);
-            console.log('shared')
+            console.log('shared');
             if(openInNewTab){
-               var win = window.open(fullURL, '_blank');
+               let win = window.open(fullURL, '_blank');
                win.focus(); 
             }else if(showMessageBox){
                 var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
                                 <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white"></button>
                                 <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:70%;" class = "form-control mx-1">
-                                
-                                
                                </div>
                                <div id = 'copiedMessageBox' class = 'pl-4'</div>
                                `
                showMessage('Share link',message); 
                if(mode !== 'geeViz'){
                 $('#shareLinkMessageBox').append(staticTemplates.shareButtons);
-
                 }
-               
-
             }
             if(openInNewTab === false){
               setUrl(fullURL);
             }
-            
-            
         }
     );
 }
@@ -98,31 +62,29 @@ function copyText(element,messageBoxId) {
     $temp.remove();
      /* Alert the copied text */
     if(messageBoxId !== null && messageBoxId !== undefined){
-      $('#'+messageBoxId).html("Copied text to clipboard")
+      $('#'+messageBoxId).html("Copied text to clipboard");
     }
 }
 function parseUrlSearch(){
   // console.log(window.location.search == '')
-    var urlParamsStr = window.location.search;
-      console.log(urlParamsStr)
+    let urlParamsStr = window.location.search;
+      console.log(urlParamsStr);
     if(urlParamsStr !== ''){
       urlParamsStr = urlParamsStr.split('?')[1].split('&');
     
-    urlParamsStr.map(function(str){
-
-      if(str.indexOf('OBJECT---')>-1){
-        var strT = str.split('---');
-        if(urlParams[strT[1]] === undefined){
-          urlParams[strT[1]] = {};
+      urlParamsStr.map(function(str){
+        if(str.indexOf('OBJECT---')>-1){
+          var strT = str.split('---');
+          if(urlParams[strT[1]] === undefined){
+            urlParams[strT[1]] = {};
+          }
+          urlParams[strT[1]][strT[2].split('=')[0]] = strT[2].split('=')[1];
+          
+        }else{
+          urlParams[str.split('=')[0]] = str.split('=')[1];
         }
-        urlParams[strT[1]][strT[2].split('=')[0]] = strT[2].split('=')[1];
-        
-      }else{
-        urlParams[str.split('=')[0]] = str.split('=')[1]
-      }
     })}
     if(urlParams.id !== undefined){
-      
       window.open("https://tinyurl.com/"+urlParams.id,"_self");
        if(typeof(Storage) !== "undefined"){
         localStorage.setItem("cachedID",urlParams.id);
@@ -157,23 +119,22 @@ function constructUrlSearch(){
   return outURL
 }
 /*Load global variables*/
-var cachedSettingskey = 'settings';
-var startYear = 1985;
-var endYear = 2021;
-var startJulian = 153;//190;
-var endJulian = 274;//250;
-var layerObj = null;
-var crs = 'EPSG:5070';
-var transform = null;
-var scale = 30;
-var queryObj = {};var timeLapseObj = {};
-var addLCMSTimeLapsesOn;
-parseUrlSearch()
-var initialCenter = [37.5334105816903,-105.6787109375];
-var initialZoomLevel = 5;
-var studyAreaSpecificPage = false;
-var studyAreaDict = {
-                 
+let cachedSettingskey = 'settings';
+let startYear = 1985;
+let endYear = 2021;
+let startJulian = 153;//190;
+let endJulian = 274;//250;
+let layerObj = null;
+let crs = 'EPSG:5070';
+let transform = null;
+let scale = 30;
+let queryObj = {},timeLapseObj = {};
+let addLCMSTimeLapsesOn;
+parseUrlSearch();
+let initialCenter = [37.5334105816903,-105.6787109375];
+let initialZoomLevel = 5;
+let studyAreaSpecificPage = false;
+const studyAreaDict = {
                     'USFS LCMS 1984-2020':{
                       isPilot: false,
                       name:'USFS LCMS 1984-2020',
@@ -181,25 +142,16 @@ var studyAreaDict = {
                       crs:'EPSG:5070',
                       startYear:1985,
                       endYear:2021,
-
                       conusSA : 'projects/lcms-292214/assets/CONUS-Ancillary-Data/conus',
-                      
-
-
                       conusLossThresh : 0.23,
                       conusFastLossThresh : 0.29,
                       conusSlowLossThresh : 0.18,
                       conusGainThresh : 0.29,
-
-                     
                       akSA :  'projects/lcms-292214/assets/R10/CoastalAK/TCC_Boundary',//'projects/lcms-292214/assets/R10/CoastalAK/CoastalAK_Simple_StudyArea',
-                      
                       akLossThresh : 0.26,
                       akFastLossThresh : 0.34,
                       akSlowLossThresh : 0.17,
                       akGainThresh : 0.24,
-
-
                       lcClassDict :{1: {'modelName': 'TREES','legendName': 'Trees','color': '005e00'},
                                   2: {'modelName': 'TS-TREES','legendName': 'Tall Shrubs & Trees Mix','color': '008000'},
                                   3: {'modelName': 'SHRUBS-TRE','legendName': 'Shrubs & Trees Mix','color': '00cc00'},
@@ -214,44 +166,42 @@ var studyAreaDict = {
                                   12: {'modelName': 'BARREN-IMP','legendName': 'Barren or Impervious','color': 'd3bf9b'},
                                   13: {'modelName': 'SNOW','legendName': 'Snow or Ice','color': 'ffffff'},
                                   14: {'modelName': 'WATER','legendName': 'Water','color': '4780f3'}},
-
                       luClassDict :{1: {'modelName': 'Agriculture','legendName': 'Agriculture','color': 'efff6b'},
                                 2: {'modelName': 'Developed','legendName': 'Developed','color': 'ff2ff8'},
                                 3: {'modelName': 'Forest','legendName': 'Forest','color': '1b9d0c'},
                                 4: {'modelName': 'Non_Forest_Wetland','legendName': 'Non-Forest Wetland','color': '97ffff'},
                                 5: {'modelName': 'Other','legendName': 'Other','color': 'a1a1a1'},
                                 6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}},
-                 
                       final_collections  : ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2021-7'],
                       composite_collections : ['projects/lcms-292214/assets/R10/CoastalAK/Composites/Composite-Collection', 'projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020'],
                       lt_collections: ['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection','projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/LandTrendr-Collection-1984-2020'],
                       ccdc_collections:['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/CCDC-Collection','projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2021','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020']
                     }                        
-                };
+                }
 
 ////////////////////////////////////////////////////////////////////////////////
 /*Initialize parameters for loading study area when none is chosen or chached*/
-var defaultStudyArea = 'USFS LCMS 1984-2020';
-var studyAreaName = studyAreaDict[defaultStudyArea].name;
-var longStudyAreaName = defaultStudyArea;
-var cachedStudyAreaName = null;
-var viewBeta = 'yes';
+let defaultStudyArea = 'USFS LCMS 1984-2020';
+let studyAreaName = studyAreaDict[defaultStudyArea].name;
+let longStudyAreaName = defaultStudyArea;
+let cachedStudyAreaName = null;
+let viewBeta = 'yes';
 
-var lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
-var upperThresholdDecline = 1.0;
-var lowerThresholdRecovery = studyAreaDict[defaultStudyArea].gainThresh;
-var upperThresholdRecovery = 1.0;
+let lowerThresholdDecline = studyAreaDict[defaultStudyArea].lossThresh;
+let upperThresholdDecline = 1.0;
+let lowerThresholdRecovery = studyAreaDict[defaultStudyArea].gainThresh;
+let upperThresholdRecovery = 1.0;
 
-var lowerThresholdSlowLoss = studyAreaDict[defaultStudyArea].lossSlowThresh;
-var upperThresholdSlowLoss = 1.0;
-var lowerThresholdFastLoss = studyAreaDict[defaultStudyArea].lossFastThresh;
-var upperThresholdFastLoss = 1.0;
+let lowerThresholdSlowLoss = studyAreaDict[defaultStudyArea].lossSlowThresh;
+let upperThresholdSlowLoss = 1.0;
+let lowerThresholdFastLoss = studyAreaDict[defaultStudyArea].lossFastThresh;
+let upperThresholdFastLoss = 1.0;
 if(lowerThresholdSlowLoss === undefined){lowerThresholdSlowLoss = lowerThresholdDecline}
 if(lowerThresholdFastLoss === undefined){lowerThresholdFastLoss = lowerThresholdDecline} 
 
  
 /*Set up some boundaries of different areas to zoom to*/
-var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],
+const clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],
         [-169.215141654273, 15.643479915898974],
         [-63.043266654273, 15.643479915898974],
         [-63.043266654273, 71.75307977193499]]]},
@@ -293,36 +243,37 @@ var clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates"
 }
          }
 /*Initialize a bunch of variables*/
-var toExport;
-var exportArea;
-var taskCount = 0;//Keeping track of the number of export tasks each session submitted
-var canAddToMap = true;//Set whether addToMap function can add to the map
-var canExport = false;//Set whether exports are allowed
-var colorRampIndex = 1;
-var NEXT_LAYER_ID = 1;var layerChildID = 0;
-var layerCount = 0;var refreshNumber = 0;
-var uri;var uriName;var csvName;var dataTable;var chartOptions;var infowindow;var queryGeoJSON;var marker;var mtbsSummaryMethod;
+let toExport;
+let exportArea;
+let taskCount = 0;//Keeping track of the number of export tasks each session submitted
+let canAddToMap = true;//Set whether addToMap function can add to the map
+let canExport = false;//Set whether exports are allowed
+let colorRampIndex = 1;
+let NEXT_LAYER_ID = 1,layerChildID = 0;
+let layerCount = 0,refreshNumber = 0;
+let uri,uriName,csvName,dataTable,chartOptions,infowindow,queryGeoJSON,marker,mtbsSummaryMethod;
 
 
-var selectedFeaturesJSON = {};
-var selectionTracker = {};
+const selectedFeaturesJSON = {};
+const selectionTracker = {};
 
-var selectionUNID = 1;
+let selectionUNID = 1;
 
-var updateViewList = true;
-var viewList = [];
-var viewIndex = 0;
+let updateViewList = true;
+let viewList = [];
+let viewIndex = 0;
 
-var outputURL;
-var tableConverter = null;
-var groundOverlayOn = false;
+let outputURL;
+let tableConverter = null;
+let groundOverlayOn = false;
 
-var chartIncludeDate = true;var chartCollection;var pixelChartCollections = {};var whichPixelChartCollection;var areaChartCollections = {};var whichAreaChartCollection;var queryClassDict = {};var exportImage;var exportVizParams;var eeBoundsPoly;var shapesMap;
-var mouseLat;var mouseLng; var area = 0;var distance = 0;var areaPolygon; var markerList = [];var distancePolylineT;var clickCoords;var distanceUpdater;
-var updateArea;var updateDistance;var areaPolygonObj = {};var udpPolygonObj = {};var udpPolygonNumber = 1;var mapHammer;var chartMTBS;var chartMTBSByNLCD;var chartMTBSByAspect;
-var walkThroughAdded = false;
-var distancePolyline;
-var distancePolylineOptions = {
+let chartIncludeDate = true,chartCollection,pixelChartCollections = {},whichPixelChartCollection,areaChartCollections = {},whichAreaChartCollection,queryClassDict = {},exportImage,exportVizParams,eeBoundsPoly,shapesMap;
+let mouseLat,mouseLng,area = 0,distance = 0,areaPolygon,markerList = [],distancePolylineT,clickCoords,distanceUpdater;
+let updateArea,updateDistance,areaPolygonObj = {},udpPolygonObj = {},udpPolygonNumber = 1,mapHammer,chartMTBS,chartMTBSByNLCD,chartMTBSByAspect;
+
+let walkThroughAdded = false;
+let distancePolyline;
+const distancePolylineOptions = {
               strokeColor: '#FF0',
               icons: [{
                 icon:  {
@@ -340,11 +291,10 @@ var distancePolylineOptions = {
               geodesic:true
             };
 
-var polyNumber = 1;
-var polyOn = false;
+let polyNumber = 1,polyOn = false;
 
 
-var areaPolygonOptions = {
+const areaPolygonOptions = {
               strokeColor:'#FF0',
                 fillOpacity:0.2,
               strokeOpacity: 1,
@@ -356,9 +306,9 @@ var areaPolygonOptions = {
             
             };
 
-var userDefinedI = 1;
+let userDefinedI = 1;
 
-var udpOptions = {
+const udpOptions = {
           strokeColor:'#FF0',
             fillOpacity:0.2,
           strokeOpacity: 1,
@@ -368,7 +318,7 @@ var udpOptions = {
           geodesic:true,
           polyNumber: 1
         };
-var exportAreaPolylineOptions = {
+const exportAreaPolylineOptions = {
           strokeColor:'#FF0',
             fillOpacity:0.2,
           strokeOpacity: 1,
@@ -378,7 +328,7 @@ var exportAreaPolylineOptions = {
           geodesic:true,
           polyNumber: 1
         };
-var exportAreaPolygonOptions = {
+const exportAreaPolygonOptions = {
           strokeColor:'#FF0',
             fillOpacity:0.2,
           strokeOpacity: 1,
@@ -388,40 +338,38 @@ var exportAreaPolygonOptions = {
           geodesic:true,
           polyNumber: 1
         };
-var exportImageDict = {};
-var canExport = false;
-var featureObj = {};var geeRunID;var outstandingGEERequests = 0;var geeTileLayersDownloading = 0;
+let exportImageDict = {};
+let featureObj = {},geeRunID,outstandingGEERequests = 0,geeTileLayersDownloading = 0;
 
-var plotDictID = 1;
-var exportID = 1;
+let plotDictID = 1,exportID = 1;
 
 
-var unitMultiplierDict = {imperial:
+const unitMultiplierDict = {imperial:
 {area:[10.7639,0.000247105],distance:[3.28084,0.000621371]},
 metric:
 {area:[1,0.0001],distance:[1,0.001]}};
 
-var unitNameDict = {imperial:
+const unitNameDict = {imperial:
 {area:['ft<sup>2</sup>','acres'],distance:['ft','miles']},
 metric:
 {area:['m<sup>2</sup>','hectares'],distance:['m','km']}};
 
 
 //Chart variables
-var plotRadius = 15;
-var plotScale = 30;
-var areaChartFormat = 'Percentage';
-var areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
+let plotRadius = 15;
+let plotScale = 30;
+let areaChartFormat = 'Percentage';
+const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
 
-var areaGeoJson;
-var areaChartingCount = 0;
-var center;var globalChartValues;
+let areaGeoJson;
+let areaChartingCount = 0;
+let center;let globalChartValues;
 
 
 
 //Chart color properties
-var chartColorI = 0;
-var chartColorsDict = {
+let chartColorI = 0;
+const chartColorsDict = {
   'standard':['#050','#0A0','#e6194B','#14d4f4'],
   'advanced':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4'],
   'advancedBeta':['#050','#0A0','#9A6324','#6f6f6f','#e6194B','#14d4f4','#808','#f58231'],
@@ -434,11 +382,11 @@ var chartColorsDict = {
   'ancillary':['#cc0066','#660033','#9933ff','#330080','#ff3300','#47d147','#00cc99','#ff9966','#b37700']
   }
 
-var chartColors = chartColorsDict.standard;
+const chartColors = chartColorsDict.standard;
 
 
 //Dictionary of zoom level map scales
-var zoomDict = {20 : '1,128.49',
+const zoomDict = {20 : '1,128.49',
                 19 : '2,256.99',
                 18 : '4,513.98',
                 17 : '9,027.97',
@@ -460,25 +408,13 @@ var zoomDict = {20 : '1,128.49',
                 1  : '591,657,550.50'}
 
 
-var authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
+const authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
-var geeAPIURL = "https://earthengine.googleapis.com";
+const geeAPIURL = "https://earthengine.googleapis.com";
 // var geeAPIURL = "https://earthengine-highvolume.googleapis.com";
 
-// https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/
-// var widgetsOn = true;
-// var layersOn = true;
-// var legendOn = true;
-// var chartingOn = false;
-// var distanceOn = false;
-// var areaOn = false;
-// var drawing = false;
-var plotsOn = false;
-// var helpOn = false;
-// var queryOn = false;
-// var areaChartingOn = false;
-// var studyAreaName = 'BTNF'
+const plotsOn = false;
 
 /////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript
@@ -501,9 +437,8 @@ String.prototype.replaceAll = function(str1, str2, ignore)
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 } 
 
-Number.prototype.formatNumber = function(n){
-  if(n === undefined || n === null){n = 2}
-  return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+Number.prototype.formatNumber = function(n=2){
+  return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 //Taken from: https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript 
 String.prototype.toTitle = function() {
@@ -512,12 +447,11 @@ String.prototype.toTitle = function() {
 
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function(){
-  var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-  var yr = this.getFullYear();
-  var month = months[this.getMonth()];
-  var day = this.getDate();
-  return `${day} ${month} ${yr}`
+  const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const yr = this.getFullYear();
+  const month = months[this.getMonth()];
+  const day = this.getDate();
+  return `${day} ${month} ${yr}`;
 }
 //
 //Taken from: https://stackoverflow.com/questions/22015684/how-do-i-zip-two-arrays-in-javascript
@@ -525,8 +459,8 @@ const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
 //Taken from: https://stackoverflow.com/questions/11688692/how-to-create-a-list-of-unique-items-in-javascript
 function unique(arr) {
-    var u = {}, a = [];
-    for(var i = 0, l = arr.length; i < l; ++i){
+    let u = {}, a = [];
+    for(let i = 0, l = arr.length; i < l; ++i){
         if(!u.hasOwnProperty(arr[i])) {
             a.push(arr[i]);
             u[arr[i]] = 1;

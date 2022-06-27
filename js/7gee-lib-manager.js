@@ -273,9 +273,9 @@ function fillEmptyCollections(inCollection,dummyImage){
 }
 // --------Add MTBS and IDS Layers-------------------------------
 var idsStartYear = 1997;
-var idsEndYear = 2020;
+var idsEndYear = 2021;
 var idsMinYear = 1997;
-var idsMaxYear = 2020;
+var idsMaxYear = 2021;
 function getIDSCollection(){
   if(startYear > idsMinYear && startYear <= idsMaxYear){idsStartYear = startYear}
     else{idsStartYear = idsMinYear}
