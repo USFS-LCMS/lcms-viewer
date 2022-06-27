@@ -270,10 +270,10 @@ require(["esri/Map",
         addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,`LCMS Land Cover (${nm})`,false)
         addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,`LCMS Land Use (${nm})`,false)
         if(nm === 'PuertoRico_USVI'){
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,false)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
           addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
         }else{
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,false)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
           addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,false)
           addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
         }
@@ -323,8 +323,8 @@ require(["esri/Map",
             timeVisible: true,
             // Oct 1 - Oct 31
             fullTimeExtent: {
-              start: new Date('1985-12-31'), 
-              end: new Date('2021-12-31') 
+              start: new Date('1985-7-1'), 
+              end: new Date('2021-7-1') 
             },
             stops: {
               interval: {
