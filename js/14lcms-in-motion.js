@@ -1,4 +1,4 @@
-var zoomToFullLayerExtent;var layerTotal = 0;var maxLayers=0;var h;var w;
+let zoomToFullLayerExtent,layerTotal = 0,maxLayers=0,h,w,defaultView={"center":[-113.55467677113408,45.68161957233809],"zoom":3},timeLapseVisible = {};
 function closeSplash(){
   $('#splash').hide();
 }
@@ -34,7 +34,7 @@ function updateBottomBar(){
 //Function to handle resizing the windows properly
 function resizeWindow(){
     console.log('resized');
-    var margin = 5;
+    const margin = 5;
     h = window.innerHeight-margin;
     w = window.innerWidth;
     $('#splash').css({'max-height':h-50})
@@ -102,7 +102,7 @@ require(["esri/Map",
       // or a proxy is required.
       esriConfig.request.trustedServers.push("*");
       
-      const layerList = [];
+      let layerList = [];
       let isFirstLayer = true;
       var firstLayer;
       
@@ -175,7 +175,7 @@ require(["esri/Map",
           
         // };
 
-        var renderer = {
+        const renderer = {
             type: "simple",  // autocasts as new SimpleRenderer()
             symbol: {
               type: "simple-fill",  // autocasts as new SimpleFillSymbol()
@@ -244,7 +244,13 @@ require(["esri/Map",
           updateBottomBar();
         })
       };
-      function addImageryLayer(path,name,visible){
+      function checkTimeLapseVisible(){
+        let anyVisible = Object.values(timeLapseVisible).filter((k)=>k).length>0;
+        if(anyVisible){
+          $('#timeSlider').show();
+        }else{$('#timeSlider').hide();}
+      }
+      function addImageryLayer(path,name,visible,isTimeLapse=false){
         console.log(name)
         var layer = new ImageryLayer({
           url: path,
@@ -260,26 +266,33 @@ require(["esri/Map",
           updateBottomBar();
         })
 
-     
+        if(isTimeLapse){
+          timeLapseVisible[name]=visible;
+          watchUtils.watch(layer, 'visible', function (event) { 
+            console.log('Layer visibility changed: '+name+event);
+            timeLapseVisible[name]=event;
+            checkTimeLapseVisible();
+          });
+        }
 
         layerTotal++;
         layerList.push(layer);
         
       }
       ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
-        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,`LCMS Land Cover (${nm})`,false)
-        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,`LCMS Land Use (${nm})`,false)
+        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,`LCMS Land Cover (${nm})`,false,true);
+        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,`LCMS Land Use (${nm})`,false,true);
         if(nm === 'PuertoRico_USVI'){
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true);
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false);
         }else{
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,false)
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false)
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true);
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,false);
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false);
         }
         
       })
-      
+      checkTimeLapseVisible();
       addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
       addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
 
@@ -319,6 +332,7 @@ require(["esri/Map",
           // for the month of Oct 2011 using time slider
           const timeSlider = new TimeSlider({
             mode: "instant",
+            container:"timeSlider",
             view: view,
             timeVisible: true,
             // Oct 1 - Oct 31
@@ -342,23 +356,27 @@ require(["esri/Map",
           });
         
           // Add the expand instance to the ui
-          view.ui.add(timeSlider, "bottom-right");
+          // view.ui.add(timeSlider, "bottom-right");
+          function setExtent(){
+            // firstLayer.when(()=>{
+              // zoomToFullLayerExtent = function(){
+              //     view.extent = firstLayer.fullExtent;
+              // }
+              if(localStorage.initView === undefined || localStorage.initView === null || localStorage.initView === 'null'){
+                  console.log('setting extent');
+                // zoomToFullLayerExtent();
+                view.goTo(defaultView);
+              }
+              watchUtils.whenTrue(view, "stationary",function(evt){
+                console.log('stationary');
+                localStorage.initView = JSON.stringify({center:[view.center.longitude,view.center.latitude],zoom:view.zoom});
+              });
+
+            // }
+          }
           
-
-          firstLayer.when(()=>{
-            zoomToFullLayerExtent = function(){
-                view.extent = firstLayer.fullExtent;
-            }
-            if(localStorage.initView === undefined || localStorage.initView === null || localStorage.initView === 'null'){
-                console.log('setting extent');
-              zoomToFullLayerExtent();
-            }
-            watchUtils.whenTrue(view, "stationary",function(evt){
-              console.log('stationary');
-              localStorage.initView = JSON.stringify({center:[view.center.longitude,view.center.latitude],zoom:view.zoom})
-            })
-
-          })
+          setExtent();
+          
             
             
           // });
@@ -375,7 +393,7 @@ require(["esri/Map",
             position: "top-left"
           });
 
-          var layerList = new LayerList({
+          let layerListObj = new LayerList({
           view: view,
           listItemCreatedFunction: function (event) {
 
@@ -411,7 +429,7 @@ require(["esri/Map",
         });
       // Event listener that fires each time an action is triggered
 
-        layerList.on("trigger-action", function (event) {
+        layerListObj.on("trigger-action", function (event) {
             console.log(event)
             // The layer visible in the view at the time of the trigger.
             var visibleLayer = event.item.layer;
@@ -444,7 +462,7 @@ require(["esri/Map",
     
       var bgExpand = new Expand({
         view: view,
-        content: layerList,
+        content: layerListObj,
         expanded :false,
         expandTooltip: "Layers",
       });

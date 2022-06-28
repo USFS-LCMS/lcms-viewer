@@ -2258,7 +2258,7 @@ function toggleLabelOverlay(){
   }else{addLabelOverlay()}
 }
 var labelsMapType;
-
+var geeAuthenticated = false;
 //Initialize map
 function initialize() {
   labelsMapType = new google.maps.StyledMapType([
@@ -2578,6 +2578,10 @@ function initialize() {
 
     ee.initialize(authProxyAPIURL,geeAPIURL,function(){
       //Set up the correct GEE run function
+      geeAuthenticated = true;
+      if(geeAuthenticated){
+        $('#main-container').append(staticTemplates.introModal[mode]);
+      }
       if(cachedStudyAreaName === null){
         $('#study-area-label').text(defaultStudyArea);
       }
@@ -2639,7 +2643,16 @@ function initialize() {
       addLabelOverlay();
     }, 1500);
    
-  	});
+  	},function(failure){
+      if(mode === 'LCMS'){ 
+        setupDropdownTreeDownloads(studyAreaName);
+        populateLCMSDownloads();
+      }
+      showMessage('Google Earth Engine Authentication Error',`<p>Failed to successfully authenticate to GEE</p>
+                                                              <p>Most map layers and data exploration tools rely on GEE</p>
+                                                              <p>Try <a class = 'support-text' title = "A more basic LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a non-GEE-based LCMS product viewer.</p>
+                                                              <p>Please contact the LCMS help desk<a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback.</p>`);
+  });
 
 }
 ///////////////////////////////////////////////////////////////

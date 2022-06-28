@@ -8,9 +8,10 @@ body,
 }
 #timeSlider {
 	position: absolute;
-	left: 5%;
-	right: 5%;
+	
+	right:5px;
 	bottom: 20px;
+	width:150px;
 }
 #banner{
 	position:absolute;

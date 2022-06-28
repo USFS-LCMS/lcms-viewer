@@ -1682,7 +1682,7 @@ var ccdcStartYear = ee.Image.cat([changeObj.highestMag.loss.year,changeObj.highe
 var ccdcEndYear = ee.Image.cat([changeObj.highestMag.loss.year,changeObj.highestMag.gain.year]).rename(['CCDC_loss_endYear','CCDC_gain_endYear']);
 
 var areaImage = ee.Image.cat([lossGainLTStartYear,ccdcStartYear,lossGainLTEndYear,ccdcEndYear]).unmask(0).int16();
-console.log(areaImage.getInfo());
+// console.log(areaImage.getInfo());
 var scenarios = {'LT & CCDC Loss':[1,0,1,0],
                   'LT Loss':[1,0,0,0],
                   'CCDC Loss':[0,0,1,0],

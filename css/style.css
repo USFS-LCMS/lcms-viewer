@@ -92,6 +92,9 @@ html, body{
     float: none;
 }
 /*Colors*/
+.white{
+  color:var(--deep-brown-20);
+}
 .gray{
   color:var(--deep-brown-70);
 }

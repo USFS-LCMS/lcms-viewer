@@ -407,8 +407,10 @@ const zoomDict = {20 : '1,128.49',
                 2  : '295,828,775.30',
                 1  : '591,657,550.50'}
 
-
-const authProxyAPIURL = "https://rcr-ee-proxy-2.herokuapp.com";
+if(urlParams.geeAuthProxyURL == null || urlParams.geeAuthProxyURL == undefined){
+    urlParams.geeAuthProxyURL = "https://rcr-ee-proxy-2.herokuapp.com";
+}
+const authProxyAPIURL = urlParams.geeAuthProxyURL;
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
 // var geeAPIURL = "https://earthengine.googleapis.com/map";
 const geeAPIURL = "https://earthengine.googleapis.com";

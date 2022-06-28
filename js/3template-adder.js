@@ -14,7 +14,8 @@ $('#main-container').append(staticTemplates.sidebarLeftToggler);
 
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
-$('#main-container').append(staticTemplates.introModal[mode]);
+
+
 /////////////////////////////////////////////////////////////////////
 /*Check to see if modals should be shown*/
 if(localStorage['showIntroModal-'+mode] == undefined){
@@ -39,7 +40,7 @@ if(mode === 'LCMS-pilot' ){
 }
 
 $('#title-banner').append(staticTemplates.placesSearchDiv);
-$('#title-banner').fitText(1.2);
+$('#title-banner').fitText(1.4);
 $('#study-area-label').fitText(1.8);
 
 

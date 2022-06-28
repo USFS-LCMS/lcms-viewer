@@ -14,7 +14,7 @@
   </script>
 
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-  
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
@@ -29,7 +29,7 @@
 <body>
   
   <div id="viewDiv"></div>
-  
+  <div id="timeSlider" style = 'display:none;' title='If any time-enabled layers are turned on, this time slider will appear. Use it to change what year is shown.'></div>
   <div id = 'splash' class = 'md-8' >
     
     <div id = 'intro-div' style = 'display:none;'>
@@ -45,7 +45,9 @@
       <br>
       Click on the animation to open it in a new tab for a larger view.
       <br>
-      You can download the gif by right clicking and selecting <kbd>Save image as..</kbd></p>
+      You can download the gif by right clicking and selecting <kbd>Save image as..</kbd>
+      <br>
+      When any land cover and/or land use map layers are turned on, a time lapse slider will appear in the lower right corner that allows for different years to be shown.</p>
       <hr>
       <div>
         <input  type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>

@@ -5,19 +5,19 @@ const  titles = {
 	'LCMS-pilot': {
 		    leftWords: 'LCMS',
 		    centerWords: 'DATA',
-		    rightWords:'Explorer',
+		    rightWords:'EXPLORER',
 		    title:'LCMS Data Explorer'
 			},
     'LCMS': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
             centerWords: 'DATA',
-            rightWords:'Explorer',
+            rightWords:'EXPLORER',
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.4em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
             centerWords: 'Base-Learner',
-            rightWords:'Explorer',
+            rightWords:'EXPLORER',
             title:'LCMS Base Learner Explorer'
             },
 	'Ancillary': {
@@ -29,13 +29,13 @@ const  titles = {
     'LT': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LandTrendr`,
             centerWords: 'DATA',
-            rightWords:'Explorer',
+            rightWords:'EXPLORER',
             title:'LandTrendr Data Explorer'
             },
     'MTBS': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="MTBS icon" src="images/mtbs-logo.png">MTBS`,
             centerWords: 'DATA',
-            rightWords:'Explorer',
+            rightWords:'EXPLORER',
             title:'MTBS Data Explorer'
             },
     'TEST': {
@@ -47,7 +47,7 @@ const  titles = {
     'IDS' : {
             leftWords: 'IDS',
             centerWords: 'DATA',
-            rightWords:'Explorer',
+            rightWords:'EXPLORER',
             title:'Insect and Disease Detection Survey Data Viewer'
             },
     'geeViz': {
@@ -65,7 +65,7 @@ const  titles = {
     'LAMDA': {
             leftWords: 'LAMDA',
             centerWords: 'DATA',
-            rightWords:'Explorer',
+            rightWords:'EXPLORER',
             title:'LAMDA Data Explorer'
             }     
 }
@@ -121,7 +121,7 @@ const staticTemplates = {
                         </div>
                         
                     </div>`,
-	topBanner:`<h1 id = 'title-banner' title="" class = 'gray pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>`,
+	topBanner:`<h1 id = 'title-banner' title="" class = 'white pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>`,
 	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
 		                <div class="dropdown-menu" id="study-area-list">  
