@@ -2567,18 +2567,24 @@ function initialize() {
 	 // ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
     //Initialize GEE
     
-    setTimeout(function() { 
-      if(localStorage['showIntroModal-'+mode] === 'true'){
-        $('#introModal').modal().show();
-      }else{
-        showMessage('Loading',staticTemplates.loadingModal)
-      }
-      
-    },1000);
+  
 
     ee.initialize(authProxyAPIURL,geeAPIURL,function(){
       //Set up the correct GEE run function
       geeAuthenticated = true;
+        setTimeout(function() { 
+        if(localStorage['showIntroModal-'+mode] === 'true'){
+          $('#introModal').modal().show();
+        }else{
+          showMessage('Loading',staticTemplates.loadingModal)
+        }
+
+        $('#dontShowAgainCheckbox').change(function(){
+          console.log(this.checked)
+          localStorage['showIntroModal-'+mode]  = !this.checked;
+        });
+        
+      },1000);
       if(geeAuthenticated){
         $('#main-container').append(staticTemplates.introModal[mode]);
       }
@@ -2648,10 +2654,10 @@ function initialize() {
         setupDropdownTreeDownloads(studyAreaName);
         populateLCMSDownloads();
       }
-      showMessage('Google Earth Engine Authentication Error',`<p>Failed to successfully authenticate to GEE</p>
-                                                              <p>Most map layers and data exploration tools rely on GEE</p>
-                                                              <p>Try <a class = 'support-text' title = "A more basic LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a non-GEE-based LCMS product viewer.</p>
-                                                              <p>Please contact the LCMS help desk<a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback.</p>`);
+      
+     
+
+      showMessage('Map Loading Error',staticTemplates['authErrorMessage']);
   });
 
 }

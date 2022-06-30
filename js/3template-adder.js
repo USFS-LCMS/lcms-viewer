@@ -22,10 +22,6 @@ if(localStorage['showIntroModal-'+mode] == undefined){
   localStorage['showIntroModal-'+mode] = 'true';
   }
 
-$('#dontShowAgainCheckbox').change(function(){
-  console.log(this.checked)
-  localStorage['showIntroModal-'+mode]  = !this.checked;
-});
 
 /////////////////////////////////////////////////////////////////////
 /*Add study area dropdown if LCMS*/
@@ -39,9 +35,14 @@ if(mode === 'LCMS-pilot' ){
 
 }
 
-$('#title-banner').append(staticTemplates.placesSearchDiv);
-$('#title-banner').fitText(1.4);
-$('#study-area-label').fitText(1.8);
+$('#sidebar-left-header').append(staticTemplates.placesSearchDiv);
+
+// function fitTestCustom(fitID,desiredWidth){
+//   while($('#title-banner').width())
+// }
+// fitTestCustom('title-banner',$('#title-banner').width()-50)
+// $('#title-banner').fitText(1.8);
+// $('#study-area-label').fitText(1.8);
 
 
 function toggleAdvancedOn(){

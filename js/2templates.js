@@ -9,13 +9,13 @@ const  titles = {
 		    title:'LCMS Data Explorer'
 			},
     'LCMS': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
+            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.4em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
+            leftWords: `<img style = 'height:0.9em;margin-top:-0.2rem;margin-left:0.4rem' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
             centerWords: 'Base-Learner',
             rightWords:'EXPLORER',
             title:'LCMS Base Learner Explorer'
@@ -70,6 +70,10 @@ const  titles = {
             }     
 }
 //////////////////////////////////////////////////////////////////////
+let lcmsSpecificAuthErrorMessage = `<p>Try <a class = 'support-text' title = "A more basic LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a non-GEE-based LCMS product viewer.</p>
+                                <p>The <kbd>DOWNLOAD DATA</kbd> menu on the left is still available for downloading LCMS data.`
+if(mode !== 'LCMS'){lcmsSpecificAuthErrorMessage = ``}
+//////////////////////////////////////////////////////////////////////
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
@@ -83,11 +87,19 @@ const staticTemplates = {
 	sidebarLeftToggler:`<button href="#" class="fa fa-bars  p-1 mt-1  sidebar-toggler"  onclick = 'toggleSidebar()' title = 'Click to toggle sidebar visibility'></buttom>`,
     sidebarLeftContainer: `
 						<nav onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
-					        <header id = 'sidebar-left-header'></header>
+
+					        <header id = 'sidebar-left-header'>
+                                
+                                </header>
                             
 					        <div role="list" id = 'sidebar-left'></div>
 					    </nav>`,
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
+    authErrorMessage:`<p>Failed to successfully authenticate to Google Earth Engine (GEE)</p>
+                                                              <p>Most map layers and data exploration tools rely on GEE</p>
+                                                              ${lcmsSpecificAuthErrorMessage} 
+                                                              <p>Please contact the LCMS help desk<a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>
+    `,
     exportContainer:`<div class = 'dropdown-divider'></div>
                     <div class = 'py-2' id = 'export-list-container'>
                         <h5>Choose which images to export:</h5>
@@ -121,13 +133,16 @@ const staticTemplates = {
                         </div>
                         
                     </div>`,
-	topBanner:`<h1 id = 'title-banner' title="" class = 'white pl-4 pb-0 m-0 text-center' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span>${topBannerParams.rightWords} </h1>`,
+	topBanner:`<h1 id = 'title-banner' title="" class = 'white  text-center title-banner' >
+                    <img style = 'height:1em;margin-top:-0.2em'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
+                    <div class="vl"></div>
+                    ${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span>${topBannerParams.rightWords}</h1>`,
 	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
 		                <div class="dropdown-menu" id="study-area-list">  
 		                </div>
 		            </li>`,
-	placesSearchDiv:`<section id = 'search-share-div' class="input-group px-4 pb-2 text-center"">
+	placesSearchDiv:`<section id = 'search-share-div' class="input-group pr-4 pt-0 pb-2 text-center" style = 'padding-left:3rem;'>
 			            <div role='list' class="input-group-prepend">
                             <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
 	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="share-button"><i class="fa fa-share-alt teal "></i></button>
@@ -140,30 +155,66 @@ const staticTemplates = {
                         </div>
                     </section>
                     <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
-	introModal:{'LCMS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
+	introModal:{'LCMS':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
-                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                        <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</h3>
-                        </div>
+                    <div class="modal-content text-dark modal-content-full-screen-styling" >
+                       
                         <div class="modal-body" id = 'introModal-body'>
-                            <p class="pb-3 ">LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.</p>
-                        	<button class = 'btn' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">Launch Tutorial</button>
-                        </div>
-                        <div class = 'modal-footer' id = 'introModal-footer'>
-                            <div class = ' ml-0' id = 'intro-modal-loading-div'>
+                            <span>
+                                <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">LCMS<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">DATA</span>EXPLORER</h1>
+                            </span>
+                         
+                        <p>
+                            <span  style="font-weight:bold">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</span>
+                            <br>
+                            LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.
+                        </p>
+                            
+                                <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+                                <div class = 'logo vl2'></div>
+                            
+                            
+                            <ul class="intro-list">
+                              <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+                              </li>
+                              <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+                              </li>
+                              <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
+                              </li>
+                            </ul>
+                          
+                      
+                    
+                                
+                            <br>
+                            <div>
+                        	   <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
+                                <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                                <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+                            </div>
+                            <br>
+                            <p>Other LCMS EXPLORERS:
+                                <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+                                <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                                
+                            </p>
+
+                             <div class = ' ml-0' id = 'intro-modal-loading-div'>
                                 <p>
                                   <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                                     Creating map services within Google Earth Engine. 
                                  </p>
                             </div>
-                            <hr>
-    						<div class="form-check  mr-0">
+                           
+                            <div class="form-check  px-0">
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
                         </div>
+                        
+                           
+                        
                     </div>
                 </div>
             </div>`,
@@ -840,7 +891,7 @@ function addColorPicker(containerID,pickerID,updateFunction,value){
 							    class=" fa fa-paint-brush text-dark color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
 							    ></button>`);
 }
-//////////////////////////////////////////////////////////////////////////////////////////////
+
 //Functions to add and change content of BS modals
 function addModal(containerID,modalID,bodyOnly){
 	if(bodyOnly === null || bodyOnly === undefined){bodyOnly = false};
@@ -850,11 +901,11 @@ function addModal(containerID,modalID,bodyOnly){
 	if(bodyOnly){
 	   $('#'+ containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-md ">
-            		<div class="modal-content bg-white">
+            		<div class="modal-content modal-content-not-full-screen-styling">
 	            		<div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
 	            			<button style = 'float:right;' id = 'close-modal-button' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
 	            		</div>
-	      				<div id ="${modalID}-body" class="modal-body bg-white " ></div>
+	      				<div id ="${modalID}-body" class="modal-body " ></div>
         			</div>
         		</div> 
         	</div>`
