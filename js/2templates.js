@@ -164,7 +164,7 @@ const staticTemplates = {
                     </section>
                     <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
 	introModal:{'LCMS':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content text-dark modal-content-full-screen-styling" >
                        
                         <div class="modal-body" id = 'introModal-body'>

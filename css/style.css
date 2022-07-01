@@ -697,7 +697,7 @@ textarea {
     transform: rotate(-45deg);
 }*/
 .close{color:#FFF;}
-.modal-dialog{
+.modal-md{
   max-width:550px;
 }
 .modal-content{
