@@ -74,7 +74,7 @@ let gcpWorking = false;
 ee.initialize(authProxyAPIURL,geeAPIURL,()=>{gcpWorking=true;})
 const introDivContent = {'true':`<span>
                             <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
-                            <h2 class = 'splash-title'>Welcome to the LCMS in Motion!</h2>
+                            <h2 class = 'splash-title'>Welcome to LCMS in Motion!</h2>
                           </span>
                           <hr>
                           <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
@@ -88,7 +88,7 @@ const introDivContent = {'true':`<span>
                         'false':
                                 `<span>
                                   <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
-                                  <h2 class = 'splash-title'>Welcome to the LCMS in Motion!</h2>
+                                  <h2 class = 'splash-title'>Welcome to LCMS in Motion!</h2>
                                 </span>
                                 <hr>
                                 <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed.</p>

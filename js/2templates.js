@@ -103,7 +103,7 @@ const staticTemplates = {
 					    </nav>`,
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
     authErrorMessage:`<p>Failed to successfully authenticate to Google Earth Engine (GEE)</p>
-                                                              <p>Most map layers and data exploration tools rely on GEE and therfore cannot be used at this time. We are aware of this issue.</p>
+                                                              <p>Most map layers and data exploration tools rely on GEE and therfore cannot be used at this time. We are aware of this issue and are working to resolve it.</p>
                                                               ${specificAuthErrorMessage} 
                                                               ${authErrorMessageContact}
     `,
@@ -143,7 +143,7 @@ const staticTemplates = {
 	topBanner:`<h1 id = 'title-banner' title="" class = 'white  text-center title-banner' >
                     <img style = 'height:1em;margin-top:-0.2em'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
                     <div class="vl"></div>
-                    ${topBannerParams.leftWords}<span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span>${topBannerParams.rightWords}</h1>`,
+                    ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</h1>`,
 	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
 		                <div class="dropdown-menu" id="study-area-list">  
@@ -169,7 +169,7 @@ const staticTemplates = {
                         <div class="modal-body" id = 'introModal-body'>
                             <span>
                                 <img class = 'logo' src="./images/lcms-icon.png"   alt="LCMS logo image">
-                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">LCMS<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">DATA</span>EXPLORER</h1>
+                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">LCMS<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER</h1>
                             </span>
                          
                         <p>
