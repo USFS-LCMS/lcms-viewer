@@ -68,7 +68,7 @@ function resizeWindow(){
   }
 ///////////////////////////////////////////////////////////////////////
 // Check to see if gifs can be viewed
-const authProxyAPIURL ="https://rcr-ee-proxy-3.herokuapp.com";
+const authProxyAPIURL ="https://rcr-ee-proxy-2.herokuapp.com";
 const geeAPIURL = "https://earthengine.googleapis.com";
 let gcpWorking = false;
 ee.initialize(authProxyAPIURL,geeAPIURL,()=>{gcpWorking=true;})
