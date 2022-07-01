@@ -80,14 +80,10 @@ body,
 	background-color: #00897B;
 }
 
-.logo{
-	float:left;
-	
-}
+
 .splash-title{
-	overflow: hidden;
-	padding-left:1em;
-	padding-right:1em;
+	padding-left:1rem;
+	padding-right:1rem;
 }
 
 

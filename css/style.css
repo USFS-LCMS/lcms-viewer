@@ -211,9 +211,10 @@ button {
 .vl {
   border-left: 1px solid var(--deep-brown-20);
   height: 1.2rem;
-  vertical-align: middle;
+  vertical-align: none;
   display: inline-block;
   margin-left: 0rem;
+  margin-right:0rem;
 }
 .vl2 {
   border-left: 1px solid var(--deep-brown-100);
@@ -231,7 +232,7 @@ button {
   margin-right:1rem;
   margin-bottom:0rem;
   margin-top:0.5rem;
-  font-size:1.6rem;
+  font-size:1.5rem;
 }
 /*///////////////////////////////////////////////////////////*/
 /*Bottombar styling*/
@@ -696,6 +697,9 @@ textarea {
     transform: rotate(-45deg);
 }*/
 .close{color:#FFF;}
+.modal-dialog{
+  max-width:550px;
+}
 .modal-content{
   border-radius: 0!important;
 }
@@ -710,7 +714,7 @@ textarea {
   height:3rem;
   display: inline;
   vertical-align: top;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 .splash-title{
   overflow: hidden;
@@ -735,7 +739,7 @@ textarea {
   color:var(--black)!important;
 }
 .intro-list li{
-  display: inline-block;
+  display: block;
 }
 .modal-content-not-full-screen-styling {
   background-color:rgba(230,230,230,0.8);

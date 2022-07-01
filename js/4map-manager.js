@@ -2542,7 +2542,12 @@ function initialize() {
       var keysY = Object.keys(bounds[keys[1]]);
       // console.log('b');console.log(bounds);
       updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation);
-      eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+      try{
+        eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+      }
+      catch(err){
+        const x = 1;
+      }
       if(typeof(Storage) == "undefined") return;
       localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:mapCenterLat,lng:mapCenterLng},zoom:zoom}));
       updateViewList = true;
@@ -2656,7 +2661,7 @@ function initialize() {
       }
       
      
-
+      ga('send', 'event', mode + '-gee-auth-error', 'failure', 'failure');
       showMessage('Map Loading Error',staticTemplates['authErrorMessage']);
   });
 

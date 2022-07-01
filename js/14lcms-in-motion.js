@@ -73,10 +73,10 @@ const geeAPIURL = "https://earthengine.googleapis.com";
 let gcpWorking = false;
 ee.initialize(authProxyAPIURL,geeAPIURL,()=>{gcpWorking=true;})
 const introDivContent = {'true':`<span>
-                            <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+                            <img class = 'logo'  src="./images/lcms-icon.png" style='vertical-align:middle;' alt="LCMS logo image">
                             <h2 class = 'splash-title'>Welcome to LCMS in Motion!</h2>
                           </span>
-                          <hr>
+                          <hr style='margin-top:0.75rem;margin-bottom:0.75rem;'>
                           <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
                           <p>By clicking on a Forest or Forest District boundary, a gif animation will pop up. This animation illustrates how the selected area has changed over the past 37 years. 
                           <br>
@@ -87,10 +87,10 @@ const introDivContent = {'true':`<span>
                           When any land cover and/or land use map layers are turned on, a time lapse slider will appear in the lower right corner that allows for different years to be shown.</p>`,
                         'false':
                                 `<span>
-                                  <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+                                  <img class = 'logo'   src="./images/lcms-icon.png" style='vertical-align:none;'  alt="LCMS logo image">
                                   <h2 class = 'splash-title'>Welcome to LCMS in Motion!</h2>
                                 </span>
-                                <hr>
+                                <hr style='margin-top:0.75rem;margin-bottom:0.75rem;'>
                                 <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed.</p>
                                 
                               

@@ -70,9 +70,10 @@ const  titles = {
             }     
 }
 //////////////////////////////////////////////////////////////////////
-let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title = "A more basic LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a non-GEE-based LCMS product viewer.</p>
-                                <p>The <kbd>DOWNLOAD DATA</kbd> menu on the left is still available for downloading LCMS data.`,
-                                'MTBS':`<p>Try <a class = 'support-text' title = "MTBS Interactive Data Viewer" href = "https://www.mtbs.gov/viewer/?region=all" target="_blank">this viewer</a> for a non-GEE-based MTBS product viewer.</p>`         
+let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title = "A simple LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a simple visualization of LCMS data products.</p>
+                                <p>The <kbd>DOWNLOAD DATA</kbd> menu on the left (of this page) is still available for downloading LCMS data.</p>
+                                <p>For more information on LCMS please visit the <a class = 'support-text' title = "LCMS Clearinghouse Page" href = "https://data.fs.usda.gov/geodata/rastergateway/LCMS/" target="_blank">LCMS Clearinghouse Page</a>.</p>`,
+                                'MTBS':`<p>Try <a class = 'support-text' title = "MTBS Interactive Data Viewer" href = "https://www.mtbs.gov/viewer/?region=all" target="_blank">this viewer</a> for a simple MTBS product viewer.</p>`         
                                 }
 let specificAuthErrorMessage =specificAuthErrorMessages[mode];
 if(specificAuthErrorMessage === undefined){specificAuthErrorMessage=``;}
@@ -102,8 +103,8 @@ const staticTemplates = {
 					        <div role="list" id = 'sidebar-left'></div>
 					    </nav>`,
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
-    authErrorMessage:`<p>Failed to successfully authenticate to Google Earth Engine (GEE)</p>
-                                                              <p>Most map layers and data exploration tools rely on GEE and therfore cannot be used at this time. We are aware of this issue and are working to resolve it.</p>
+    authErrorMessage:`<p>---  Error --- Map Loading Error ---</p>
+                                                              <p>Map data did not load correctly and can not be used at this time. We apologize for this inconvenience and are working to resolve this issue.</p>
                                                               ${specificAuthErrorMessage} 
                                                               ${authErrorMessageContact}
     `,
@@ -163,7 +164,7 @@ const staticTemplates = {
                     </section>
                     <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
 	introModal:{'LCMS':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-md " role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content text-dark modal-content-full-screen-styling" >
                        
                         <div class="modal-body" id = 'introModal-body'>
@@ -175,14 +176,14 @@ const staticTemplates = {
                         <p>
                             <span  style="font-weight:bold">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</span>
                             <br>
-                            LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.
+                            LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide an interactive visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.
                         </p>
                             <div >
-                                <div style ='float:left;width:20%;'>
+                                <div style ='float:left;'>
                                     <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
                                     
                                 </div>
-                                <div style ='float:left;width:80%'>
+                                <div style ='float:left;'>
                                     <ul class="intro-list">
                                       <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
                                       </li>
@@ -192,12 +193,12 @@ const staticTemplates = {
                                       </li>
                                     </ul>
                                 </div>
-                          
+                            
                             </div>
                     
                                 
                             <br>
-                            <div>
+                            <div style='display:inline-block;padding-bottom:0.75rem;padding-top:0.75rem;'>
                         	   <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
                                 <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
                                 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
