@@ -12,6 +12,8 @@
   <script type="text/javascript">
     ga('send', 'event','load', 'lcms-gif-viewer', 'lcms-gif-viewer');
   </script>
+  <!-- Google Earth Engine API - only used to see if GEE is up and running so we can use cloudStorage for the gifs-->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/google/earthengine-api@v0.1.309/javascript/build/ee_api_js.js"></script>
 
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
@@ -34,20 +36,7 @@
     
     <div id = 'intro-div' style = 'display:none;'>
       <button type="button" onclick="closeSplash()" class = 'close-button' >&times;</button>
-      
-      <span>
-        <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
-        <h2 class = 'splash-title'>Welcome to the Landscape Change Monitoring System (LCMS) in Motion - Data Animation Explorer!</h2>
-      </span>
-      <hr>
-      <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
-      <p>By clicking on a Forest or Forest District boundary, a gif animation will pop up. This animation illustrates how the selected area has changed over the past 37 years. 
-      <br>
-      Click on the animation to open it in a new tab for a larger view.
-      <br>
-      You can download the gif by right clicking and selecting <kbd>Save image as..</kbd>
-      <br>
-      When any land cover and/or land use map layers are turned on, a time lapse slider will appear in the lower right corner that allows for different years to be shown.</p>
+      <div id='intro-div-content'></div>
       <hr>
       <div>
         <input  type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
@@ -73,7 +62,7 @@
   </div>
   <div id = 'banner' onclick="showSplash();">
     <img style = 'padding-right:1em;'class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image" >
-    <h1 id = 'title-banner' title="" class = 'gray text-center pr-2 mb-1' style="font-weight:100;font-family: 'Roboto';"><span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">LCMS </span> in <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> MOTION</span></h1>
+    <h1 id = 'title-banner' title="" class = ' text-center pr-2 mb-1' style="font-weight:100;font-family: 'Roboto';"><span class = 'white' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">LCMS</span><span class = 'white' style="font-family: 'Roboto Black', sans-serif;">IN</span><span class = 'white' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">MOTION</span></h1>
   </div>
 
 </body>

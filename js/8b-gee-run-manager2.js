@@ -261,7 +261,7 @@ function runGTAC(){
 // $('#pixel-chart-label').click();
   }
 
-  // function runGTAC(){
+//   function runGTAC(){
 //     var lcmsRun = {};
 //     lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 //   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
@@ -281,4 +281,4 @@ function runGTAC(){
 
 //   // populatePixelChartDropdown();
 //   // $('#query-label').click();
-  // }
+//   }

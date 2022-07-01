@@ -67,9 +67,38 @@ function resizeWindow(){
     // $('#chartDiv').css('overflow-y','visible');
   }
 ///////////////////////////////////////////////////////////////////////
+// Check to see if gifs can be viewed
+const authProxyAPIURL ="https://rcr-ee-proxy-3.herokuapp.com";
+const geeAPIURL = "https://earthengine.googleapis.com";
+let gcpWorking = false;
+ee.initialize(authProxyAPIURL,geeAPIURL,()=>{gcpWorking=true;})
+const introDivContent = {'true':`<span>
+                            <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+                            <h2 class = 'splash-title'>Welcome to the LCMS in Motion!</h2>
+                          </span>
+                          <hr>
+                          <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
+                          <p>By clicking on a Forest or Forest District boundary, a gif animation will pop up. This animation illustrates how the selected area has changed over the past 37 years. 
+                          <br>
+                          Click on the animation to open it in a new tab for a larger view.
+                          <br>
+                          You can download the gif by right clicking and selecting <kbd>Save image as..</kbd>
+                          <br>
+                          When any land cover and/or land use map layers are turned on, a time lapse slider will appear in the lower right corner that allows for different years to be shown.</p>`,
+                        'false':
+                                `<span>
+                                  <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+                                  <h2 class = 'splash-title'>Welcome to the LCMS in Motion!</h2>
+                                </span>
+                                <hr>
+                                <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed.</p>
+                                
+                              
+                                <p>When any land cover and/or land use map layers are turned on, a time lapse slider will appear in the lower right corner that allows for different years to be shown.</p>`
 
-  // $('div.esri-attribution__sources').html(html)
+}
 
+///////////////////////////////////////////////////////////////////////
 require(["esri/Map", 
             "esri/layers/GeoJSONLayer", 
             "esri/views/MapView",
@@ -293,8 +322,12 @@ require(["esri/Map",
         
       })
       checkTimeLapseVisible();
-      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
-      addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
+
+      if(gcpWorking){
+        addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
+        addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
+      }
+      
 
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.5 ],true);
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RangerDistricts_01/MapServer','USFS Districts','DISTRICTNAME','#1B171A',[ 0, 122, 122, 0.5 ],true);
@@ -312,7 +345,7 @@ require(["esri/Map",
 
      
       view.when(()=>{
-          
+          $('#intro-div-content').append(introDivContent[gcpWorking.toString()])
           $('#dontShowAgainCheckbox').change(function(){
             console.log(this.checked)
             localStorage['showIntroModal-landscapes-in-motion']  = !this.checked;

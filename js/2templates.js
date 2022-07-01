@@ -70,9 +70,16 @@ const  titles = {
             }     
 }
 //////////////////////////////////////////////////////////////////////
-let lcmsSpecificAuthErrorMessage = `<p>Try <a class = 'support-text' title = "A more basic LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a non-GEE-based LCMS product viewer.</p>
-                                <p>The <kbd>DOWNLOAD DATA</kbd> menu on the left is still available for downloading LCMS data.`
-if(mode !== 'LCMS'){lcmsSpecificAuthErrorMessage = ``}
+let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title = "A more basic LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a non-GEE-based LCMS product viewer.</p>
+                                <p>The <kbd>DOWNLOAD DATA</kbd> menu on the left is still available for downloading LCMS data.`,
+                                'MTBS':`<p>Try <a class = 'support-text' title = "MTBS Interactive Data Viewer" href = "https://www.mtbs.gov/viewer/?region=all" target="_blank">this viewer</a> for a non-GEE-based MTBS product viewer.</p>`         
+                                }
+let specificAuthErrorMessage =specificAuthErrorMessages[mode];
+if(specificAuthErrorMessage === undefined){specificAuthErrorMessage=``;}
+let authErrorMessageContact =`<p>Please contact the LCMS help desk<a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>`;
+if(mode==='MTBS'){
+    authErrorMessageContact = `<p style = "margin-bottom:0px;">If you have any further questions about this, please <a class = 'support-text' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
+}
 //////////////////////////////////////////////////////////////////////
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
@@ -96,9 +103,9 @@ const staticTemplates = {
 					    </nav>`,
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
     authErrorMessage:`<p>Failed to successfully authenticate to Google Earth Engine (GEE)</p>
-                                                              <p>Most map layers and data exploration tools rely on GEE</p>
-                                                              ${lcmsSpecificAuthErrorMessage} 
-                                                              <p>Please contact the LCMS help desk<a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>
+                                                              <p>Most map layers and data exploration tools rely on GEE and therfore cannot be used at this time. We are aware of this issue.</p>
+                                                              ${specificAuthErrorMessage} 
+                                                              ${authErrorMessageContact}
     `,
     exportContainer:`<div class = 'dropdown-divider'></div>
                     <div class = 'py-2' id = 'export-list-container'>
@@ -161,7 +168,7 @@ const staticTemplates = {
                        
                         <div class="modal-body" id = 'introModal-body'>
                             <span>
-                                <img class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image">
+                                <img class = 'logo' src="./images/lcms-icon.png"   alt="LCMS logo image">
                                 <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">LCMS<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">DATA</span>EXPLORER</h1>
                             </span>
                          
@@ -170,21 +177,23 @@ const staticTemplates = {
                             <br>
                             LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the Landscape Change products, related geospatial data, and provide a portal to download the data.
                         </p>
-                            
-                                <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
-                                <div class = 'logo vl2'></div>
-                            
-                            
-                            <ul class="intro-list">
-                              <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
-                              </li>
-                              <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
-                              </li>
-                              <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
-                              </li>
-                            </ul>
+                            <div >
+                                <div style ='float:left;width:20%;'>
+                                    <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+                                    
+                                </div>
+                                <div style ='float:left;width:80%'>
+                                    <ul class="intro-list">
+                                      <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+                                      </li>
+                                      <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+                                      </li>
+                                      <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
+                                      </li>
+                                    </ul>
+                                </div>
                           
-                      
+                            </div>
                     
                                 
                             <br>
