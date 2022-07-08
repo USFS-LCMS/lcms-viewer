@@ -5,7 +5,7 @@ import glob,os
 js_folder = 'js'
 js_min_folder = 'js-min'
 which_ones =['1variables.js','2templates.js','3template-adder.js','4map-manager.js','5chart-manager.js','6tools-toggle-manager.js','7gee-lib-manager.js']
-combined_filename = 'js/combined.js'
+combined_filename = r"A:\GEE\gee_py_modules_package\geeViz\geeView\js\lcms-viewer.min.js"
 ##############################################
 # if not os.path.exists(js_min_folder):os.makedirs(js_min_folder)
 

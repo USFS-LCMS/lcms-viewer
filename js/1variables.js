@@ -407,14 +407,20 @@ const zoomDict = {20 : '1,128.49',
                 2  : '295,828,775.30',
                 1  : '591,657,550.50'}
 
+// See https://github.com/google/earthengine-api/blob/327fd96cf4fefda30c8a0d5da62d18c1d6844ea5/javascript/src/ee.js#L76 for param info for initializing to GEE
+// Allow GEE to be initialized either using a server-side proxy or an access token
 if(urlParams.geeAuthProxyURL == null || urlParams.geeAuthProxyURL == undefined){
     urlParams.geeAuthProxyURL = "https://rcr-ee-proxy-2.herokuapp.com";
 }
-const authProxyAPIURL = urlParams.geeAuthProxyURL;
-// var geeAPIURL = "https://earthengine.googleapis.com/map";
-// var geeAPIURL = "https://earthengine.googleapis.com/map";
-const geeAPIURL = "https://earthengine.googleapis.com";
-// var geeAPIURL = "https://earthengine-highvolume.googleapis.com";
+let authProxyAPIURL = urlParams.geeAuthProxyURL;
+let geeAPIURL = "https://earthengine.googleapis.com";
+
+if(urlParams.accessToken !== null && urlParams.accessToken !== undefined && urlParams.accessToken !== 'null' && urlParams.accessToken !== 'None'){
+    authProxyAPIURL = null;
+    geeAPIURL = null;
+    ee.data.setAuthToken('', 'Bearer', urlParams.accessToken, 3600, [], undefined, false);
+}
+
 
 const plotsOn = false;
 

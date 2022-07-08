@@ -712,7 +712,7 @@ if(mode === 'geeViz'){
   if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 }
 if(mode==='LAMDA'){$('#pixel-chart-label').remove();}
-if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
+// if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
 if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mode === 'IDS' || mode === 'LCMS'){
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')

@@ -104,7 +104,7 @@ const staticTemplates = {
 					    </nav>`,
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
     authErrorMessage:`<p>---  Error --- Map Loading Error ---</p>
-                                                              <p>Map data did not load correctly and can not be used at this time. We apologize for this inconvenience and are working to resolve this issue.</p>
+                                                              <p>Map data did not load correctly and cannot be used at this time. We apologize for this inconvenience and are working to resolve this issue.</p>
                                                               ${specificAuthErrorMessage} 
                                                               ${authErrorMessageContact}
     `,
