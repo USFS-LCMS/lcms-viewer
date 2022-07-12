@@ -254,8 +254,11 @@ function runGTAC(){
   whp = whp.set({'whp_class_names':names,'whp_class_palette':palette,'whp_class_values':values});
 
   Map2.addLayer(whp,{autoViz:true},'Wildfire Hazard Potential 2020',false,null,null,'The wildfire hazard potential (WHP) map is a raster geospatial product produced by the USDA Forest Service, Fire Modeling Institute that can help to inform evaluations of wildfire hazard or prioritization of fuels management needs across very large landscapes','reference-layer-list');
-
-  getMTBSandIDS();
+  try{
+    getMTBSandIDS();
+  }catch(err){
+    console.log(err)
+  }
   
 // $('#query-label').click()
 // $('#pixel-chart-label').click();

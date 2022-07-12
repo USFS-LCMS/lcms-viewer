@@ -267,7 +267,8 @@ let outputURL;
 let tableConverter = null;
 let groundOverlayOn = false;
 
-let chartIncludeDate = true,chartCollection,pixelChartCollections = {},whichPixelChartCollection,areaChartCollections = {},whichAreaChartCollection,queryClassDict = {},exportImage,exportVizParams,eeBoundsPoly,shapesMap;
+let chartIncludeDate = true,chartCollection,pixelChartCollections = {},areaChartCollections = {},queryClassDict = {},exportImage,exportVizParams,eeBoundsPoly,shapesMap;
+var whichPixelChartCollection,whichAreaChartCollection;
 let mouseLat,mouseLng,area = 0,distance = 0,areaPolygon,markerList = [],distancePolylineT,clickCoords,distanceUpdater;
 let updateArea,updateDistance,areaPolygonObj = {},udpPolygonObj = {},udpPolygonNumber = 1,mapHammer,chartMTBS,chartMTBSByNLCD,chartMTBSByAspect;
 
