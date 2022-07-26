@@ -162,6 +162,46 @@ function formatAreaChartCollection(collection,classCodes,classNames,unmask){
   }
   return ee.ImageCollection(out)
 }
+function getTransitionClasses(collection,periods,values,summary_band_name,viz = {'autoViz':true}){
+  collection = collection.select(summary_band_name)
+  let stackC = [];
+  let value_combos = [];
+  values.map(i1=>values.map(i2=>value_combos.push([i1,i2])));
+  // console.log(value_combos);
+  for(var i=0;i< periods.length-1;i++){
+    const startPeriod = periods[i];
+    const endPeriod = periods[i+1];
+
+   const startPeriod_str = startPeriod.join('-');
+   const endPeriod_str = endPeriod.join('-');
+   const period_name = `${startPeriod_str}_${endPeriod_str}`;
+
+   
+   const start = collection.filter(ee.Filter.calendarRange(startPeriod[0],startPeriod[1],'year')).mode();
+   const end = collection.filter(ee.Filter.calendarRange(endPeriod[0],endPeriod[1],'year')).mode();
+    // Map2.addLayer(start.copyProperties(collection.first()),viz,'Start {}'.format(startPeriod_str),False)
+    // Map2.addLayer(end.copyProperties(collection.first()),viz,'End {}'.format(endPeriod_str),False)
+
+
+    let stack = []
+    let bandNames = []
+    value_combos.map(value_combo=>{
+      const start_value = value_combo[0];
+      const end_value = value_combo[1];
+      const t = start.eq(start_value).and(end.eq(end_value));
+      const str_combo =`${period_name}---${summary_band_name}---${start_value}-${end_value}`;
+      stack.push(t);
+      bandNames.push(str_combo);
+      });
+
+    stack = ee.ImageCollection(stack).toBands().int16().rename(bandNames);
+    
+    stackC.push(stack);
+  }
+  stackC = ee.Image.cat(stackC)
+  // Map.addLayer(stackC,{'opacity':0},'Transition Combos')
+  return stackC
+}
 function multBands(img,distDir,by){
     var out = img.multiply(ee.Image(distDir).multiply(by));
     out  = out.copyProperties(img,['system:time_start'])
@@ -590,7 +630,11 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   }
   
   var mtbs =getMTBSAndNLCD(studyAreaName,whichLayerList).MTBS.collection
-  return [mtbs,idsCollections.imageCollection,idsCollections.featureCollection]
+  if(idsCollections!==undefined){return [mtbs,idsCollections.imageCollection,idsCollections.featureCollection]}
+    else{
+      return [mtbs,undefined,undefined]
+    }
+  
 }
 function getNAIP(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};

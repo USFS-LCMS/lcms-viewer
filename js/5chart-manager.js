@@ -860,6 +860,7 @@ function cancelMakeAreaChart(){
 	$('#summary-spinner').slideUp();
 }
 function makeAreaChart(area,name,userDefined){
+	let maxError = 500;
 	currentChartID++;
 	var thisChartID = currentChartID;
 	areaGeoJson = null;
@@ -877,101 +878,339 @@ function makeAreaChart(area,name,userDefined){
 	centerObject(area);
 	area = area.geometry();
 
-	var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
-	var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
-	var xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
-	var yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
-	var dateFormat = areaChartCollections[whichAreaChartCollection].dateFormat;
-	if(xAxisProperty === null || xAxisProperty == undefined){xAxisProperty = 'year'};
-	if(xAxisLabel === null || xAxisLabel == undefined){xAxisLabel = null};
-	if(yAxisLabel === null || yAxisLabel == undefined){yAxisLabel = '% Area'};
-	yAxisLabel = areaChartFormatDict[areaChartFormat].label;
-	var totalArea = area.area(1000);
-	if(['Acres','Hectares'].indexOf(areaChartFormat)>-1){
-		multiplier =totalArea.multiply(areaChartFormatDict[areaChartFormat].mult);
-	}
-	else{
-		multiplier = areaChartFormatDict[areaChartFormat].mult;
-	}
-	
-	var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
-	bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' '+areaChartFormatDict[areaChartFormat].label});
-	bandNames.unshift(xAxisProperty)
-	
-
-
-	var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,dateFormat,crs,transform,scale);
-	// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
-	var iteration = 0;
-	var maxIterations = 60;
-	var success = false;
-	var maxTime = 10000;
-	var startTime = new Date();
-	var tableT;
-	function evalTable(){
-		console.log('Evaluating area chart tables');
-		table.evaluate(function(tableT, failure){
-			print(iteration);
-			print(tableT);
-			print(failure);
-			print(areaChartingCount);
-			var endTime = new Date();
-			var dt = endTime-startTime;
-			console.log('dt: '+dt.toString())
-			if(failure !== undefined && iteration < maxIterations && currentChartID === thisChartID && dt < maxTime){
-				// $('#area-charting-message-box').empty();
-				// $('#area-charting-message-box').html(failure	);
-				evalTable()
-			}
-			else if(failure === undefined && currentChartID === thisChartID) {
-				// tableT.unshift(['year','Loss %','Gain %']);
-				tableT.unshift(bandNames)
-				$('#summary-spinner').slideUp();
-				var stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
-				var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;
-				var colors = areaChartCollections[whichAreaChartCollection].colors;
-				var chartType = areaChartCollections[whichAreaChartCollection].chartType
-				var fieldsHidden = areaChartCollections[whichAreaChartCollection].fieldsHidden
-				if(chartType === null || chartType === undefined){chartType = 'line'}
-				ga('send', 'event', mode, 'areaChart', whichAreaChartCollection);
-				addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel,fieldsHidden);
-		
-				// areaChartingTabSelect(whichAreaDrawingMethod);
-				// map.setOptions({draggableCursor:'hand'});
-				// map.setOptions({cursor:'hand'});
-				// if(whichAreaDrawingMethod === '#user-defined'){
-					area.evaluate(function(i,failure){
-						areaGeoJson = i;
-						areaGeoJson[name] = tableT;
-						if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
-					    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
-					   }else{
-					   	showMessage('Error','Could not convert summary area to geoJSON '+failure)
-					   }
-					});
-				// }
-				areaChartingCount--;
-			}
-			else if(failure !== undefined){
-				$('#summary-spinner').slideUp();
-				// map.setOptions({draggableCursor:'hand'});
-				// map.setOptions({cursor:'hand'});
-				
-				// areaChartingTabSelect(whichAreaDrawingMethod);
-				if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1 || failure.indexOf("Array: Parameter 'values' is required.")> -1){
-					failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
-				}
-				showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',failure)};
-			iteration ++;
+	if(areaChartCollections[whichAreaChartCollection].type === 'transition'){
+		// console.log('here');console.log(area);
+		$('#summary-spinner').slideDown();
 		
 
-		
+		var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
+	    let bounds = area.bounds(maxError,crs).transform(crs,maxError);
+
+	    let img = ee.Image(areaChartCollections[whichAreaChartCollection].stack).clip(area);
+	    
+	    let table = img.reduceRegion(ee.Reducer.fixedHistogram(0, 3, 3),bounds,scale,crs,transform,true,1e13,4);
+
+	    table.evaluate((t)=>{
+
+		    let classes = unique(Object.keys(t).map(i=>i.split('---').slice(1,3).join('---'))).sort();
+		    // console.log(classes);
+	      	let periods = unique(Object.keys(t).map(k=>k.split('---')[0]).sort());
+	      	// console.log(periods)
+	      	let out_table = {'years':periods.join(',')}
+	      
+	      	let total_area = null;
+	      	classes.map(c=>{
+	      		// console.log(c)
+	      		let tList = [];
+	      		periods.map(period=>{
+					v = t[`${period}---${c}`];
+					
+		        	if(total_area === null){
+		        		total_area = v.slice(0,2).map(i=>i[1]).reduce((a, b) => a + b, 0);
+		        		// console.log(v);console.log(v[1][1]);console.log(total_area)
+		        	}
+
+	            
+	          		tList.push(v[1][1]);
+	        
+	      //   # print(c,period,v,total_area,out_table[c])
+	      		});
+	      		// console.log(tList);
+	      		out_table[c] = tList.join(',');
+	     
+	      	})
+	     
+	      out_table['total_area'] = parseFloat(total_area);
+	      out_table['scale'] = scale;
+	      out_table['max_error']=maxError;
+	      let results = {};
+	      results.features = [{}];
+	      results.features[0].attributes = out_table;
+
+	      let years = results.features[0].attributes.years.split(',').sort();
+	      // console.log(results)
+
+	      var tableDict = {};
+	      var fieldNames = Object.keys(results.features[0].attributes).filter(v=>v.indexOf(areaChartCollections[whichAreaChartCollection].bandName)>-1).sort();
+	      // console.log(fieldNames)
+	      fieldNames.map((fn)=>{
+	        let total_area = 0;
+	        let total = [];
+	        results.features.map((f)=>{
+	          let t = f.attributes[fn].split(',');
+	          let scale = f.attributes.scale;
+	          
+	          total.push(f.attributes[fn].split(',').map(n => parseFloat(n)*scale**2));
+	          var total_areaF = parseFloat(f.attributes.total_area);
+	          total_area = total_area + total_areaF*scale**2;
+	        });
+	        
+
+	        var colSums = [];
+	        for(var col = 0;col < total[0].length;col++){
+	          var colSum = 0;
+	          for(var row = 0;row < total.length;row++){
+	            colSum = colSum + total[row][col];
+	          }
+	          colSums.push(colSum);
+	        };
+	        //Convert from sq m to chosen area unit
+	        if(areaChartFormat === 'Percentage'){
+	          colSums = colSums.map((n)=>n/total_area*100);
+	        }else{
+	          colSums = colSums.map((n)=>n*chartFormatDict[areaChartFormat].mult);
+	        }
+	        if(Math.max(...colSums)>-1){tableDict[fn]=colSums}
+	      });
+
+	      
+	      
+
+
+	      var yri = 0;
+	      var data = [];
+	      var sankey_dict = {source:[],target:[],value:[]};
+	      var sankeyPalette = [];
+	      var labels = [];
+	      var label_code_dict = {};
+	      var label_code_i = 0;
+	      var allYears = years.map((yr)=>{return yr.split('_')[0]});
+	      allYears.push(years[years.length-1].split('_')[1]);
+	      // console.log(allYears)
+	      allYears.map((yr)=>{
+	        
+	        areaChartCollections[whichAreaChartCollection].names.map((nm)=>{
+	          var outNm = yr+' '+nm;
+	          labels.push(outNm);
+	          label_code_dict[outNm] = label_code_i;
+	          label_code_i++;
+	        });
+	        areaChartCollections[whichAreaChartCollection].colors.map((nm)=>{sankeyPalette.push(nm)});
+	         
+	      });
+	      // console.log(tableDict)
+	      // console.log(label_code_dict);
+	      // console.log(tableDict);
+	      dataTable = [['Transition Class',chartFormatDict[areaChartFormat].label]];
+	      
+
+	      years.map((yr)=>{
+	        var startRange = yr.split('_')[0];
+	        var endRange = yr.split('_')[1];
+	        
+	        Object.keys(tableDict).map((k)=>{
+	          var transitionClass = k.split('---')[1];
+	          var transitionFromClassI = parseInt(transitionClass.split('-')[0])-1;
+	          var transitionToClassI = parseInt(transitionClass.split('-')[1])-1;
+	          var transitionFromClassName = areaChartCollections[whichAreaChartCollection].names[transitionFromClassI];
+	          var transitionToClassName = areaChartCollections[whichAreaChartCollection].names[transitionToClassI];
+	          var v = tableDict[k][yri];
+	          var fromLabel = startRange+' '+transitionFromClassName;
+	          var toLabel = endRange+' '+transitionToClassName
+	          
+	          dataTable.push([fromLabel+' - '+toLabel,v])
+	          sankey_dict.source.push(label_code_dict[fromLabel]);
+	          sankey_dict.target.push(label_code_dict[toLabel]);
+	          sankey_dict.value.push(v);
+	         })
+	        yri++;
+	      });
+
+	      sankey_dict.hovertemplate='%{value}'+chartFormatDict[areaChartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
+
+	          var data = {
+	            type: "sankey",
+	            orientation: "h",
+	            node: {
+	              pad: 25,
+	              thickness: 20,
+	              line: {
+	                color: "black",
+	                width: 0.5
+	              },
+	             label: labels,
+	             color: sankeyPalette,
+	             hovertemplate:'%{value}'+chartFormatDict[areaChartFormat].label+' %{label}<extra></extra>'
+	                },
+
+	            link: sankey_dict,
+
+	          }
+
+	          var data = [data]
+
+	          var layout = {
+	            title: name,
+	            font: {
+	              size: 10
+	            },
+	            margin: {
+	              l: 25,
+	              r: 25,
+	              b: 25,
+	              t: 50,
+	              pad: 4
+	            },
+	            paper_bgcolor: '#DDD',
+	            plot_bgcolor: '#DDD'
+	          }
+	          var config = {
+				  toImageButtonOptions: {
+				    format: 'png', // one of png, svg, jpeg, webp
+				    filename: name,
+				    width:1000,height:600
+				  },
+				  scrollZoom: true,
+				  displayModeBar: false
+				};
+
+			configChartModal();
+
 			
-	});
+
+	        plotlyDownloadChartObject = Plotly.newPlot('chart-canvas', data, layout,config)
+	    
+	     	$('#chart-download-dropdown').empty();
+	    	$('#chart-modal-footer').append(`<div class="dropdown">
+										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										    Download
+										  </div>
+										  <div id = 'chart-download-dropdown' class="dropdown-menu px-2" aria-labelledby="chartDownloadDropdown">
+										    <a class="dropdown-item" href="#" onclick = "downloadPlotly(plotlyDownloadChartObject,'${name}.png')">PNG</a>
+										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${name}.csv', dataTable)">CSV</a>
+										  </div>
+										</div>
+										
+										</div>
+										<div class="dropdown">
+										  <div class=" dropdown-toggle"  id="chartTypeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										    Chart Type
+										  </div>
+										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');">Sankey Chart</a>
+										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
+										  </div>
+										</div>
+										
+										`);
+			      
+			
+	      var chartTableHTML = htmlTable(dataTable);
+	    $('#chart-table').append(chartTableHTML);
+	    toggleChartTable(localStorage.tableOrChart)
+	    	area.evaluate(function(i,failure){
+							areaGeoJson = i;
+							areaGeoJson[name] = tableT;
+							if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
+						    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+						   }else{
+						   	showMessage('Error','Could not convert summary area to geoJSON '+failure)
+						   }
+						});
+	    	$('#chart-modal').modal();
+	    	$('#summary-spinner').slideUp();
+
+	    },(f)=>{showMessage('Transition Chart Error',f)
+	    });
+
+	}else{
 		
-	}
-	evalTable();
-	
+
+		var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
+		var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
+		var xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
+		var yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
+		var dateFormat = areaChartCollections[whichAreaChartCollection].dateFormat;
+		if(xAxisProperty === null || xAxisProperty == undefined){xAxisProperty = 'year'};
+		if(xAxisLabel === null || xAxisLabel == undefined){xAxisLabel = null};
+		if(yAxisLabel === null || yAxisLabel == undefined){yAxisLabel = '% Area'};
+		yAxisLabel = areaChartFormatDict[areaChartFormat].label;
+		var totalArea = area.area(1000);
+		if(['Acres','Hectares'].indexOf(areaChartFormat)>-1){
+			multiplier =totalArea.multiply(areaChartFormatDict[areaChartFormat].mult);
+		}
+		else{
+			multiplier = areaChartFormatDict[areaChartFormat].mult;
+		}
+		
+		var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
+		bandNames = bandNames.map(function(bn){return bn.replaceAll('_',' ') + ' '+areaChartFormatDict[areaChartFormat].label});
+		bandNames.unshift(xAxisProperty);
+		
+
+
+		var table = getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,dateFormat,crs,transform,scale);
+		// var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
+		var iteration = 0;
+		var maxIterations = 60;
+		var success = false;
+		var maxTime = 10000;
+		var startTime = new Date();
+		var tableT;
+		function evalTable(){
+			console.log('Evaluating area chart tables');
+			table.evaluate(function(tableT, failure){
+				print(iteration);
+				print(tableT);
+				print(failure);
+				print(areaChartingCount);
+				var endTime = new Date();
+				var dt = endTime-startTime;
+				console.log('dt: '+dt.toString())
+				if(failure !== undefined && iteration < maxIterations && currentChartID === thisChartID && dt < maxTime){
+					// $('#area-charting-message-box').empty();
+					// $('#area-charting-message-box').html(failure	);
+					evalTable()
+				}
+				else if(failure === undefined && currentChartID === thisChartID) {
+					// tableT.unshift(['year','Loss %','Gain %']);
+					tableT.unshift(bandNames)
+					$('#summary-spinner').slideUp();
+					var stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
+					var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;
+					var colors = areaChartCollections[whichAreaChartCollection].colors;
+					var chartType = areaChartCollections[whichAreaChartCollection].chartType
+					var fieldsHidden = areaChartCollections[whichAreaChartCollection].fieldsHidden
+					if(chartType === null || chartType === undefined){chartType = 'line'}
+					ga('send', 'event', mode, 'areaChart', whichAreaChartCollection);
+					addChartJS(tableT,name,chartType,stackedAreaChart,steppedLine,colors,xAxisLabel,yAxisLabel,fieldsHidden);
+			
+					// areaChartingTabSelect(whichAreaDrawingMethod);
+					// map.setOptions({draggableCursor:'hand'});
+					// map.setOptions({cursor:'hand'});
+					// if(whichAreaDrawingMethod === '#user-defined'){
+						area.evaluate(function(i,failure){
+							areaGeoJson = i;
+							areaGeoJson[name] = tableT;
+							if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
+						    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+						   }else{
+						   	showMessage('Error','Could not convert summary area to geoJSON '+failure)
+						   }
+						});
+					// }
+					areaChartingCount--;
+				}
+				else if(failure !== undefined){
+					$('#summary-spinner').slideUp();
+					// map.setOptions({draggableCursor:'hand'});
+					// map.setOptions({cursor:'hand'});
+					
+					// areaChartingTabSelect(whichAreaDrawingMethod);
+					if(failure.indexOf('Dictionary.toArray: Unable to convert dictionary to array')>-1 || failure.indexOf("Array: Parameter 'values' is required.")> -1){
+						failure = 'Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>'+failure;
+					}
+					showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',failure)};
+				iteration ++;
+			
+
+			
+				
+		});
+			
+		}
+		evalTable();
+	};
 	
 
 
@@ -1244,6 +1483,21 @@ function downloadChartJS(chart,name){
 	delete link;
 	ga('send', 'event', mode, getActiveTools()[0] +'-chartDownload', 'png');
 }
+function downloadPlotly(plotlyDownloadChartObject,name){
+				plotlyDownloadChartObject.then((chart)=>{
+					Plotly.toImage(chart,{width:1000,height:600})
+				         .then(
+				             function(url){
+				         	var link = document.createElement("a");
+							link.download = name;
+							link.href = url;
+							link.click();
+							delete link;
+						}
+				         )	
+				})
+	    		
+	    	}
 Chart.pluginService.register({
     beforeDraw: function (chart, easing) {
         if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
@@ -1282,7 +1536,7 @@ var dataToTable = function (dataset) {
 
     return html;
 };
-var chartJSChart;
+var chartJSChart,plotlyDownloadChartObject;
 var chartType;
 if(localStorage.tableOrChart === undefined || localStorage.tableOrChart === null){
 	// if(mode === 'MTBS'){localStorage.tableOrChart = 'table'}
@@ -1292,20 +1546,9 @@ if(localStorage.tableOrChart === undefined || localStorage.tableOrChart === null
 	
 }
 
-addModal('main-container','chart-modal');//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel,fieldsHidden){
-	var displayXAxis = true;var displayYAxis = true;
-	if(fieldsHidden === null || fieldsHidden === undefined){fieldsHidden = null};
-	if(xAxisLabel === null || xAxisLabel === undefined){xAxisLabel = '';displayXAxis = false};
-	if(yAxisLabel === null || yAxisLabel === undefined){yAxisLabel = '';displayYAxis = false};
-	if(colors === null || colors === undefined){colors = chartColors};
-	if(chartType === null || chartType === undefined){chartType = 'line'};
-	if(stacked === null || stacked === undefined){stacked = false};
-	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
-
-	console.log('starting convert to table')
-	dataTable = dataTableNumbersToNames(dt);
-	console.log('finished convert to table')
+addModal('main-container','chart-modal');
+//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
+function configChartModal(){
 	var h = $(document).height();
 	var w = $(document).width();
 	if(h/w > 1){
@@ -1321,12 +1564,35 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 	// $('#'+modalID).html('');
 	clearModal('chart-modal');
 	// if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
-	
+
 	$('#chart-modal-body').append(`<div id = 'chart-modal-graph-table-container' class = 'flexcroll chart-table-graph-container'></div>`);
-    $('#chart-modal-graph-table-container').append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
-    													<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>
-    												</div>`);
+    if(areaChartCollections[whichAreaChartCollection].type !== 'transition'){
+		$('#chart-modal-graph-table-container').append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
+	    													<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>
+	    												</div>`);
+	}else{
+		$('#chart-modal-graph-table-container').append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
+	    													<div id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></div>
+	    												</div>`);
+	}
+    
     $('#chart-modal-graph-table-container').append(`<div id="chart-table" style = 'display:none;' width="${canvasWidth}" height = "${canvasHeight}" ></div>`);
+}
+function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAxisLabel,fieldsHidden){
+	var displayXAxis = true;var displayYAxis = true;
+	if(fieldsHidden === null || fieldsHidden === undefined){fieldsHidden = null};
+	if(xAxisLabel === null || xAxisLabel === undefined){xAxisLabel = '';displayXAxis = false};
+	if(yAxisLabel === null || yAxisLabel === undefined){yAxisLabel = '';displayYAxis = false};
+	if(colors === null || colors === undefined){colors = chartColors};
+	if(chartType === null || chartType === undefined){chartType = 'line'};
+	if(stacked === null || stacked === undefined){stacked = false};
+	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
+
+	console.log('starting convert to table')
+	dataTable = dataTableNumbersToNames(dt);
+	console.log('finished convert to table')
+	configChartModal();
+
     var data = dt.slice(1);
     // console.log(data);
     var firstColumn = arrayColumn(data,0);

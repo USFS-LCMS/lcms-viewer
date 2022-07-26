@@ -1555,6 +1555,7 @@ function reRun(){
     $('.modal-backdrop').remove();
     setupAreaLayerSelection();
     addLabelOverlay();
+
   }, 1500);
 	
   
@@ -2634,8 +2635,8 @@ function initialize() {
     setGEERunID();
 
     setTimeout(function() { 
-       run();
-    
+      run();
+      
       setupAreaLayerSelection();
       // setupFSB();
       //Bring in plots of they're turned on
@@ -2652,6 +2653,7 @@ function initialize() {
       };
       
       addLabelOverlay();
+      
     }, 1500);
    
   	},function(failure){

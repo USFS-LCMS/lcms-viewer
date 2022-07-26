@@ -359,7 +359,7 @@ metric:
 //Chart variables
 let plotRadius = 15;
 let plotScale = 30;
-let areaChartFormat = 'Percentage';
+var areaChartFormat = 'Percentage';
 const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
 
 let areaGeoJson;

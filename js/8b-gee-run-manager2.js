@@ -227,7 +227,7 @@ function runGTAC(){
     if(bn === 'Change'){
       fieldsHidden =[true,false,false,false,true];
     }
-    areaChartCollections[bn] = {'label':`LCMS ${bnTitle}`,
+    areaChartCollections[bn] = {'label':`LCMS ${bnTitle} Annual`,
                                   'collection':areaC,
                                   'stacked':false,
                                   'steppedLine':false,
@@ -238,10 +238,27 @@ function runGTAC(){
                                   'dateFormat':'YYYY'};
   }
   
+  
+  function addSankey(bn,periods,values,names,palette){
+      var bnTitle = bn.replaceAll('_',' ')
+      let transitionClasses = getTransitionClasses(lcmsRun.lcms,periods,values,bn);
+      
+      areaChartCollections[`${bn}-transition`] = {'label':`LCMS ${bnTitle} Transition`,
+                                  'type':'transition',
+                                  'stack':transitionClasses,
+                                  'bandName':bn,
+                                  'tooltip':`Summarize ${bnTitle} transition classes between the start and end periods. Results are displayed using a Sankey diagram.`,
+                                  'colors':palette,
+                                  'names':names};
+    }
+  if(urlParams.sankey==='true' || urlParams.beta ==='true'){
+    addSankey('Land_Cover',[[startYear,startYear+2],[endYear-2,endYear]],lcmsRun.props.Land_Cover_class_values,lcmsRun.props.Land_Cover_class_names,lcmsRun.props.Land_Cover_class_palette);
+    addSankey('Land_Use',[[startYear,startYear+2],[endYear-2,endYear]],lcmsRun.props.Land_Use_class_values,lcmsRun.props.Land_Use_class_names,lcmsRun.props.Land_Use_class_palette);
+  }
   lcmsRunFuns.addAreaChartClass('Change');
   lcmsRunFuns.addAreaChartClass('Land_Cover');
   lcmsRunFuns.addAreaChartClass('Land_Use');
-
+    
   getSelectLayers(true);
   populatePixelChartDropdown();
   populateAreaChartDropdown();
@@ -264,7 +281,20 @@ function runGTAC(){
 // $('#pixel-chart-label').click();
   }
 
-//   function runGTAC(){
+  // function runGTAC(){
+  //   let lcmsRun = {};
+  //   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
+  //   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
+  //   lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.eq('study_area','CONUS'))
+  //   lcmsRun.props = lcmsRun.lcms.first().toDictionary().getInfo();
+  //   console.log(lcmsRun.lcms.getInfo());
+    
+
+
+
+    
+    
+
 //     var lcmsRun = {};
 //     lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 //   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
@@ -284,4 +314,14 @@ function runGTAC(){
 
 //   // populatePixelChartDropdown();
 //   // $('#query-label').click();
-//   }
+  // }
+  var tArea = ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-112.39559829249136, 40.91964721357786],
+                  [-112.39559829249136, 40.76588947692689],
+                  [-112.18685805811636, 40.76588947692689],
+                  [-112.18685805811636, 40.91964721357786]]], null, false),
+            {
+              "system:index": "0"
+            })]);
