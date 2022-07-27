@@ -2,3 +2,4 @@
 *.stg
 *Thumbs.db
 *.exe
+.vscode

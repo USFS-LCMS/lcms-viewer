@@ -890,227 +890,162 @@ function makeAreaChart(area,name,userDefined){
 	    
 	    let table = img.reduceRegion(ee.Reducer.fixedHistogram(0, 3, 3),bounds,scale,crs,transform,true,1e13,4);
 
-	    table.evaluate((t)=>{
+	    table.evaluate((t,failure)=>{
+	    	if(failure !== undefined && currentChartID === thisChartID ){
+	    		showMessage('Charting Error',failure);
+	    	}else{
+	    		
+	    	  const total_area = Object.values(t)[0].slice(0,2).map(i=>i[1]).reduce((a, b) => a + b, 0);
+	    		
+		      const sankey_dict = {source:[],target:[],value:[]};
+		      let sankeyPalette = [];
+		      let labels = [];
+		      let label_code_dict = {};
+		      let label_code_i = 0;
+		      let years = [];
+		      Object.keys(t).map(k=>years.push(k.split('---')[0].split('--')[0],k.split('---')[1].split('--')[0]));
+		      years = unique(years);
+	
+		      years.map((yr)=>{
+		        
+		        areaChartCollections[whichAreaChartCollection].names.map((nm)=>{
+		          const outNm = yr+' '+nm;
+		          labels.push(outNm);
+		          label_code_dict[outNm] = label_code_i;
+		          label_code_i++;
+		        });
+		        areaChartCollections[whichAreaChartCollection].colors.map((nm)=>{sankeyPalette.push(nm)});
+		         
+		      });
+		
+		      dataTable = [['From Class','To Class',chartFormatDict[areaChartFormat].label]];
+		 		let mult;
+		 		if(areaChartFormat === 'Percentage'){
+			          mult = 1/total_area*100;
+			        }else{
+			          mult = chartFormatDict[areaChartFormat].mult;
+			        }
+		        Object.keys(t).map((k)=>{
+		          const startRange = k.split('---')[0].split('--')[0];
+		          const endRange = k.split('---')[1].split('--')[0];
 
-		    let classes = unique(Object.keys(t).map(i=>i.split('---').slice(1,3).join('---'))).sort();
-		    // console.log(classes);
-	      	let periods = unique(Object.keys(t).map(k=>k.split('---')[0]).sort());
-	      	// console.log(periods)
-	      	let out_table = {'years':periods.join(',')}
-	      
-	      	let total_area = null;
-	      	classes.map(c=>{
-	      		// console.log(c)
-	      		let tList = [];
-	      		periods.map(period=>{
-					v = t[`${period}---${c}`];
-					
-		        	if(total_area === null){
-		        		total_area = v.slice(0,2).map(i=>i[1]).reduce((a, b) => a + b, 0);
-		        		// console.log(v);console.log(v[1][1]);console.log(total_area)
-		        	}
+		          const transitionFromClassI = parseInt(k.split('---')[0].split('--')[1])-1;
+		          const transitionToClassI = parseInt(k.split('---')[1].split('--')[1])-1;
+		          const transitionFromClassName = areaChartCollections[whichAreaChartCollection].names[transitionFromClassI];
+		          const transitionToClassName = areaChartCollections[whichAreaChartCollection].names[transitionToClassI];
+		          const v = t[k][1][1]*mult;
+		         
+		          const fromLabel = startRange+' '+transitionFromClassName;
+		          const toLabel = endRange+' '+transitionToClassName
+		          
+		          dataTable.push([fromLabel,toLabel,v])
+		          sankey_dict.source.push(label_code_dict[fromLabel]);
+		          sankey_dict.target.push(label_code_dict[toLabel]);
+		          sankey_dict.value.push(v);
+		         })
+		  
 
-	            
-	          		tList.push(v[1][1]);
-	        
-	      //   # print(c,period,v,total_area,out_table[c])
-	      		});
-	      		// console.log(tList);
-	      		out_table[c] = tList.join(',');
-	     
-	      	})
-	     
-	      out_table['total_area'] = parseFloat(total_area);
-	      out_table['scale'] = scale;
-	      out_table['max_error']=maxError;
-	      let results = {};
-	      results.features = [{}];
-	      results.features[0].attributes = out_table;
+		      sankey_dict.hovertemplate='%{value}'+chartFormatDict[areaChartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
 
-	      let years = results.features[0].attributes.years.split(',').sort();
-	      // console.log(results)
+		          var data = {
+		            type: "sankey",
+		            orientation: "h",
+		            node: {
+		              pad: 25,
+		              thickness: 20,
+		              line: {
+		                color: "black",
+		                width: 0.5
+		              },
+		             label: labels,
+		             color: sankeyPalette,
+		             hovertemplate:'%{value}'+chartFormatDict[areaChartFormat].label+' %{label}<extra></extra>'
+		                },
 
-	      var tableDict = {};
-	      var fieldNames = Object.keys(results.features[0].attributes).filter(v=>v.indexOf(areaChartCollections[whichAreaChartCollection].bandName)>-1).sort();
-	      // console.log(fieldNames)
-	      fieldNames.map((fn)=>{
-	        let total_area = 0;
-	        let total = [];
-	        results.features.map((f)=>{
-	          let t = f.attributes[fn].split(',');
-	          let scale = f.attributes.scale;
-	          
-	          total.push(f.attributes[fn].split(',').map(n => parseFloat(n)*scale**2));
-	          var total_areaF = parseFloat(f.attributes.total_area);
-	          total_area = total_area + total_areaF*scale**2;
-	        });
-	        
+		            link: sankey_dict,
 
-	        var colSums = [];
-	        for(var col = 0;col < total[0].length;col++){
-	          var colSum = 0;
-	          for(var row = 0;row < total.length;row++){
-	            colSum = colSum + total[row][col];
-	          }
-	          colSums.push(colSum);
-	        };
-	        //Convert from sq m to chosen area unit
-	        if(areaChartFormat === 'Percentage'){
-	          colSums = colSums.map((n)=>n/total_area*100);
-	        }else{
-	          colSums = colSums.map((n)=>n*chartFormatDict[areaChartFormat].mult);
-	        }
-	        if(Math.max(...colSums)>-1){tableDict[fn]=colSums}
-	      });
+		          }
 
-	      
-	      
+		          var data = [data]
+		          configChartModal();
+		          let h = parseInt($('#chart-modal-body').width()*0.5);
+		          let w = $('#chart-modal-body').width();
+		          console.log(h);console.log(w);
+		          var layout = {
+		            title: name,
+		            font: {
+		              size: 10
+		            },
+		            width: w,
+  					height: h,
+		            margin: {
+		              l: 25,
+		              r: 25,
+		              b: 25,
+		              t: 50,
+		              pad: 4
+		            },
+		            paper_bgcolor: '#DDD',
+		            plot_bgcolor: '#DDD'
+		          }
+		          var config = {
+					  toImageButtonOptions: {
+					    format: 'png', // one of png, svg, jpeg, webp
+					    filename: name,
+					    width:1000,height:600
+					  },
+					  scrollZoom: true,
+					  displayModeBar: false
+					};
 
+				
 
-	      var yri = 0;
-	      var data = [];
-	      var sankey_dict = {source:[],target:[],value:[]};
-	      var sankeyPalette = [];
-	      var labels = [];
-	      var label_code_dict = {};
-	      var label_code_i = 0;
-	      var allYears = years.map((yr)=>{return yr.split('_')[0]});
-	      allYears.push(years[years.length-1].split('_')[1]);
-	      // console.log(allYears)
-	      allYears.map((yr)=>{
-	        
-	        areaChartCollections[whichAreaChartCollection].names.map((nm)=>{
-	          var outNm = yr+' '+nm;
-	          labels.push(outNm);
-	          label_code_dict[outNm] = label_code_i;
-	          label_code_i++;
-	        });
-	        areaChartCollections[whichAreaChartCollection].colors.map((nm)=>{sankeyPalette.push(nm)});
-	         
-	      });
-	      // console.log(tableDict)
-	      // console.log(label_code_dict);
-	      // console.log(tableDict);
-	      dataTable = [['Transition Class',chartFormatDict[areaChartFormat].label]];
-	      
+				
 
-	      years.map((yr)=>{
-	        var startRange = yr.split('_')[0];
-	        var endRange = yr.split('_')[1];
-	        
-	        Object.keys(tableDict).map((k)=>{
-	          var transitionClass = k.split('---')[1];
-	          var transitionFromClassI = parseInt(transitionClass.split('-')[0])-1;
-	          var transitionToClassI = parseInt(transitionClass.split('-')[1])-1;
-	          var transitionFromClassName = areaChartCollections[whichAreaChartCollection].names[transitionFromClassI];
-	          var transitionToClassName = areaChartCollections[whichAreaChartCollection].names[transitionToClassI];
-	          var v = tableDict[k][yri];
-	          var fromLabel = startRange+' '+transitionFromClassName;
-	          var toLabel = endRange+' '+transitionToClassName
-	          
-	          dataTable.push([fromLabel+' - '+toLabel,v])
-	          sankey_dict.source.push(label_code_dict[fromLabel]);
-	          sankey_dict.target.push(label_code_dict[toLabel]);
-	          sankey_dict.value.push(v);
-	         })
-	        yri++;
-	      });
-
-	      sankey_dict.hovertemplate='%{value}'+chartFormatDict[areaChartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
-
-	          var data = {
-	            type: "sankey",
-	            orientation: "h",
-	            node: {
-	              pad: 25,
-	              thickness: 20,
-	              line: {
-	                color: "black",
-	                width: 0.5
-	              },
-	             label: labels,
-	             color: sankeyPalette,
-	             hovertemplate:'%{value}'+chartFormatDict[areaChartFormat].label+' %{label}<extra></extra>'
-	                },
-
-	            link: sankey_dict,
-
-	          }
-
-	          var data = [data]
-
-	          var layout = {
-	            title: name,
-	            font: {
-	              size: 10
-	            },
-	            margin: {
-	              l: 25,
-	              r: 25,
-	              b: 25,
-	              t: 50,
-	              pad: 4
-	            },
-	            paper_bgcolor: '#DDD',
-	            plot_bgcolor: '#DDD'
-	          }
-	          var config = {
-				  toImageButtonOptions: {
-				    format: 'png', // one of png, svg, jpeg, webp
-				    filename: name,
-				    width:1000,height:600
-				  },
-				  scrollZoom: true,
-				  displayModeBar: false
-				};
-
-			configChartModal();
-
-			
-
-	        plotlyDownloadChartObject = Plotly.newPlot('chart-canvas', data, layout,config)
-	    
-	     	$('#chart-download-dropdown').empty();
-	    	$('#chart-modal-footer').append(`<div class="dropdown">
-										  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										    Download
-										  </div>
-										  <div id = 'chart-download-dropdown' class="dropdown-menu px-2" aria-labelledby="chartDownloadDropdown">
-										    <a class="dropdown-item" href="#" onclick = "downloadPlotly(plotlyDownloadChartObject,'${name}.png')">PNG</a>
-										    <a class="dropdown-item" href="#" onclick = "exportToCsv('${name}.csv', dataTable)">CSV</a>
-										  </div>
-										</div>
-										
-										</div>
-										<div class="dropdown">
-										  <div class=" dropdown-toggle"  id="chartTypeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										    Chart Type
-										  </div>
-										  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
-										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');">Sankey Chart</a>
-										    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
-										  </div>
-										</div>
-										
-										`);
-			      
-			
-	      var chartTableHTML = htmlTable(dataTable);
-	    $('#chart-table').append(chartTableHTML);
-	    toggleChartTable(localStorage.tableOrChart)
-	    	area.evaluate(function(i,failure){
-							areaGeoJson = i;
-							areaGeoJson[name] = tableT;
-							if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
-						    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
-						   }else{
-						   	showMessage('Error','Could not convert summary area to geoJSON '+failure)
-						   }
-						});
-	    	$('#chart-modal').modal();
-	    	$('#summary-spinner').slideUp();
-
-	    },(f)=>{showMessage('Transition Chart Error',f)
+		        plotlyDownloadChartObject = Plotly.newPlot('chart-canvas', data, layout,config)
+		    
+		     	$('#chart-download-dropdown').empty();
+		    	$('#chart-modal-footer').append(`<div class="dropdown">
+											  <div class=" dropdown-toggle"  id="chartDownloadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											    Download
+											  </div>
+											  <div id = 'chart-download-dropdown' class="dropdown-menu px-2" aria-labelledby="chartDownloadDropdown">
+											    <a class="dropdown-item" href="#" onclick = "downloadPlotly(plotlyDownloadChartObject,'${name}.png')">PNG</a>
+											    <a class="dropdown-item" href="#" onclick = "exportToCsv('${name}.csv', dataTable)">CSV</a>
+											  </div>
+											</div>
+											
+											</div>
+											<div class="dropdown">
+											  <div class=" dropdown-toggle"  id="chartTypeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											    Chart Type
+											  </div>
+											  <div id = 'chart-type-dropdown' class="dropdown-menu px-2" aria-labelledby="chartTypeDropdown">
+											    <a class="dropdown-item" href="#" onclick = "toggleChartTable('chart');">Sankey Chart</a>
+											    <a class="dropdown-item" href="#" onclick = "toggleChartTable('table')">Table</a>
+											  </div>
+											</div>
+											
+											`);
+				      
+				
+		      var chartTableHTML = htmlTable(dataTable);
+		    $('#chart-table').append(chartTableHTML);
+		    toggleChartTable(localStorage.tableOrChart)
+		    	area.evaluate(function(i,failure){
+								areaGeoJson = i;
+								areaGeoJson[name] = tableT;
+								if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
+							    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+							   }else{
+							   	showMessage('Error','Could not convert summary area to geoJSON '+failure)
+							   }
+							});
+		    	ga('send', 'event', mode, 'sankeyAreaChart', whichAreaChartCollection);
+		    	$('#chart-modal').modal();
+		    	
+		    }
+		    $('#summary-spinner').slideUp();
 	    });
 
 	}else{
@@ -1494,7 +1429,8 @@ function downloadPlotly(plotlyDownloadChartObject,name){
 							link.click();
 							delete link;
 						}
-				         )	
+				         )
+				         ga('send', 'event', mode, getActiveTools()[0] +'-sankey-chartDownload', 'png');	
 				})
 	    		
 	    	}
@@ -1572,7 +1508,7 @@ function configChartModal(){
 	    												</div>`);
 	}else{
 		$('#chart-modal-graph-table-container').append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
-	    													<div id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></div>
+	    													<div id="chart-canvas" ></div>
 	    												</div>`);
 	}
     
