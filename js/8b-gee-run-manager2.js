@@ -83,8 +83,8 @@ function runGTAC(){
     // Map2.addLayer(lcChangeObj.change.set('bounds',clientBoundary),lcChangeObj.viz,lcLayerName + ' Change' ,false);
     // Map2.addLayer(luChangeObj.change.set('bounds',clientBoundary),luChangeObj.viz,luLayerName + ' Change' ,false);
   }else{
-    // Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,autoViz:true,layerType:'geeImage'},'Land Cover',false);
-    // Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,autoViz:true,layerType:'geeImage'},'Land Use',false);
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,autoViz:true,layerType:'geeImage'},'Land Cover',false);
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,autoViz:true,layerType:'geeImage'},'Land Use',false);
 
 
   }
@@ -102,7 +102,7 @@ function runGTAC(){
   lcmsRun.gainCount = lcmsRun.gain.select(['Year']).count();
   lcmsRun.gain = lcmsRun.gain.qualityMosaic(summaryMethod);
   
-  // Map2.addLayer(lcmsRun.fastLoss.select(['Year']).set('bounds',clientBoundary),{title: `Year ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'Fast Loss Year');
+  Map2.addLayer(lcmsRun.fastLoss.select(['Year']).set('bounds',clientBoundary),{title: `Year ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'Fast Loss Year');
 
   if(analysisMode === 'advanced'){
     Map2.addLayer(lcmsRun.fastLoss.select(['Prob']).set('bounds',clientBoundary).divide(100),{title: `Model confidence ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} rapid vegetation cover loss from an external event such as fire/harvest, or change from water inundation/desiccation, etc. from ${startYear} to ${endYear}.`,min:lcmsRun.minFastLossProb,max:0.5,palette:declineProbPalette,layerType:'geeImage'},'Fast Loss Probability',false);
@@ -110,7 +110,7 @@ function runGTAC(){
     }
 
 
-  // Map2.addLayer(lcmsRun.slowLoss.select(['Year']).set('bounds',clientBoundary),{title: `Year ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'Slow Loss Year');
+  Map2.addLayer(lcmsRun.slowLoss.select(['Year']).set('bounds',clientBoundary),{title: `Year ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,min:startYear,max:endYear,palette:declineYearPalette,layerType:'geeImage'},'Slow Loss Year');
   
   if(analysisMode === 'advanced'){
     Map2.addLayer(lcmsRun.slowLoss.select(['Prob']).divide(100).set('bounds',clientBoundary),{title: `Model confidence ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from ${startYear} to ${endYear}.`,min:lcmsRun.minSlowLossProb,max:0.5,palette:declineProbPalette,layerType:'geeImage'},'Slow Loss Probability',false);
@@ -119,7 +119,7 @@ function runGTAC(){
 
 
 
-  // Map2.addLayer(lcmsRun.gain.select(['Year']).set('bounds',clientBoundary),{title: `Year ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} vegetation cover gain from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: gainYearPaletteA},'Gain Year',false);
+  Map2.addLayer(lcmsRun.gain.select(['Year']).set('bounds',clientBoundary),{title: `Year ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} vegetation cover gain from ${startYear} to ${endYear}.`,layerType : 'geeImage',min: startYear, max: endYear, palette: gainYearPaletteA},'Gain Year',false);
   if(analysisMode === 'advanced'){
     Map2.addLayer(lcmsRun.gain.select(['Prob']).set('bounds',clientBoundary),{title: `Model confidence ${lcmsRun.summaryMethodDescriptionDict[summaryMethod]} vegetation cover gain from ${startYear} to ${endYear}.`,layerType : 'geeImage', min: lcmsRun.minGainProb, max: 0.8, palette: recoveryProbPalette},'Gain Probability',false);
 
@@ -271,23 +271,23 @@ function runGTAC(){
   }
   ['Change','Land_Cover','Land_Use'].map(bn=>{lcmsRunFuns.addAreaChartClass(bn);});
     
-  // getSelectLayers(true);
+  getSelectLayers(true);
   populatePixelChartDropdown();
   populateAreaChartDropdown();
-  // getHansen();
+  getHansen();
 
-  // var whp = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential').mosaic().rename(['whp']);
-  // var names = ['Very Low','Low','Moderate','High','Very High','Non-burnable','Water'];
-  // var palette = ['38A800','D1FF73','FFFF00','FFAA00','FF0000','B2B2B2','0070FF'];
-  // var values = [1,2,3,4,5,6,7];
-  // whp = whp.set({'whp_class_names':names,'whp_class_palette':palette,'whp_class_values':values});
+  var whp = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential').mosaic().rename(['whp']);
+  var names = ['Very Low','Low','Moderate','High','Very High','Non-burnable','Water'];
+  var palette = ['38A800','D1FF73','FFFF00','FFAA00','FF0000','B2B2B2','0070FF'];
+  var values = [1,2,3,4,5,6,7];
+  whp = whp.set({'whp_class_names':names,'whp_class_palette':palette,'whp_class_values':values});
 
-  // Map2.addLayer(whp,{autoViz:true},'Wildfire Hazard Potential 2020',false,null,null,'The wildfire hazard potential (WHP) map is a raster geospatial product produced by the USDA Forest Service, Fire Modeling Institute that can help to inform evaluations of wildfire hazard or prioritization of fuels management needs across very large landscapes','reference-layer-list');
-  // try{
-  //   getMTBSandIDS();
-  // }catch(err){
-  //   console.log(err)
-  // }
+  Map2.addLayer(whp,{autoViz:true},'Wildfire Hazard Potential 2020',false,null,null,'The wildfire hazard potential (WHP) map is a raster geospatial product produced by the USDA Forest Service, Fire Modeling Institute that can help to inform evaluations of wildfire hazard or prioritization of fuels management needs across very large landscapes','reference-layer-list');
+  try{
+    getMTBSandIDS();
+  }catch(err){
+    console.log(err)
+  }
   
 // $('#query-label').click()
 // $('#pixel-chart-label').click();
