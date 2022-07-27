@@ -264,8 +264,7 @@ function runGTAC(){
       let yearRangesPairs = yearRanges.slice(0,yearRanges.length-1).map(yr=>[yr,yr+yearBuffer]);
       yearRangesPairs.push([yearRanges[yearRanges.length-1]-yearBuffer,yearRanges[yearRanges.length-1]])
       console.log(yearRangesPairs);
-      // ['Change','Land_Cover','Land_Use']
-      ['Land_Cover'].map(bn=>{addSankey(bn,yearRangesPairs);});
+      ['Land_Cover','Land_Use','Change'].map(bn=>{addSankey(bn,yearRangesPairs);});
   };
    
   }
