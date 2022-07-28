@@ -182,7 +182,7 @@ const staticTemplates = {
 
                             </p>
                             <p class='my-2'>
-                            This Data Explorer provides the ability to view, analyze, summarize and download LCMS data. 
+                            This Data Explorer provides the ability to view, analyze, summarize, and download LCMS data. 
                             </p>
                         </div>
                             <div style='display:inline-block;margin-top:0.5rem;'>

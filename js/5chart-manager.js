@@ -950,7 +950,7 @@ function makeAreaChart(area,name,userDefined){
 				dataMatrix.push([''])
 			});
 			dataMatrix = dataMatrix.slice(0,dataMatrix.length-1);
-			console.log(dataMatrix);
+			// console.log(dataMatrix);
 			
 		      dataTable = dataMatrix;//[['From Class','To Class',chartFormatDict[areaChartFormat].label]];
 		 		
@@ -995,10 +995,10 @@ function makeAreaChart(area,name,userDefined){
 		          }
 
 		          var data = [data]
-		          configChartModal();
-		          let h = parseInt($('#chart-modal-body').width()*0.5);
-		          let w = $('#chart-modal-body').width();
-		          console.log(h);console.log(w);
+		          configChartModal('Plotly');
+		          // let h = parseInt($('#chart-modal-body').width()*0.5);
+		          // let w = $('#chart-modal-body').width();
+		          // console.log(h);console.log(w);
 		          var layout = {
 		            title: name,
 		            font: {
@@ -1448,7 +1448,13 @@ function downloadChartJS(chart,name){
 }
 function downloadPlotly(plotlyDownloadChartObject,name){
 
-	Plotly.update('chart-download-canvas', null, {font: {size: 20}})
+	Plotly.update('chart-download-canvas', null, {font: {size: 20},margin: {
+		              l: 50,
+		              r: 50,
+		              b: 50,
+		              t: 75,
+		              pad: 4
+		            }})
 				plotlyDownloadChartObject.then((chart)=>{
 					Plotly.toImage(chart,{width:2000,height:1000})
 				         .then(
@@ -1514,7 +1520,7 @@ if(localStorage.tableOrChart === undefined || localStorage.tableOrChart === null
 
 addModal('main-container','chart-modal');
 //addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
-function configChartModal(){
+function configChartModal(chartPlatform='chartJS'){
 	var h = $(document).height();
 	var w = $(document).width();
 	if(h/w > 1){
@@ -1532,7 +1538,8 @@ function configChartModal(){
 	// if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
 
 	$('#chart-modal-body').append(`<div id = 'chart-modal-graph-table-container' class = 'flexcroll chart-table-graph-container'></div>`);
-    if(areaChartCollections[whichAreaChartCollection].type !== 'transition'){
+   
+    if(chartPlatform === 'chartJS'){
 		$('#chart-modal-graph-table-container').append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
 	    													<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>
 	    												</div>`);
