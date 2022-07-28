@@ -1226,9 +1226,9 @@ function getSelectLayers(short){
     
 
     Map2.addSelectLayer(otherLands,{strokeColor:'DD0',layerType:'geeVectorImage'},'Other Designated Lands',false,null,null,'A boundary within which National Forest System land parcels have managment or use limits placed on them by legal authority. Examples are: National Recreation Area, National Monument, and National Game Refuge. Turn on layer and click on any Park wanted to include in chart');
-    
+    Map2.addSelectLayer(ee.FeatureCollection("TIGER/2018/States"),{strokeColor:'AD0',layerType:'geeVectorImage'},'US States and Territories',false,null,null,'2018 TIGER state and territory boundaries for the United States. Turn on layer and click on any state/territory wanted to include in chart');
   }
-  Map2.addSelectLayer(ee.FeatureCollection("TIGER/2018/States"),{strokeColor:'AD0',layerType:'geeVectorImage'},'US States and Territories',false,null,null,'2018 TIGER state and territory boundaries for the United States. Turn on layer and click on any state/territory wanted to include in chart');
+  
   Map2.addSelectLayer(counties,{strokeColor:'08F',layerType:'geeVectorImage'},'US Counties',false,null,null,'US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart');
 
   Map2.addSelectLayer(msas,{strokeColor:'88F',layerType:'geeVectorImage'},'US Census Urban Areas',false,null,null,'TIGER, 2018, U.S. Urban Areas (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart');
