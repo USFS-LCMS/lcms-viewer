@@ -900,12 +900,15 @@ function makeAreaChart(area,name,userDefined){
 		      const sankey_dict = {source:[],target:[],value:[]};
 		      let sankeyPalette = [];
 		      let labels = [];
+		      let raw_labels = [];
 		      let label_code_dict = {};
 		      let label_code_i = 0;
 		      let years = [];
 		      Object.keys(t).map(k=>years.push(k.split('---')[0].split('--')[0],k.split('---')[1].split('--')[0]));
+		      Object.keys(t).map(k=>raw_labels.push(k.split('---')[0].split('--')[1],k.split('---')[1].split('--')[1]));
 		      years = unique(years);
-	
+			  raw_labels = unique(raw_labels).map(n=>parseInt(n)).sort((a, b)=>{return a - b;});
+
 		      years.map((yr)=>{
 		        
 		        areaChartCollections[whichAreaChartCollection].names.map((nm)=>{
@@ -917,14 +920,40 @@ function makeAreaChart(area,name,userDefined){
 		        areaChartCollections[whichAreaChartCollection].colors.map((nm)=>{sankeyPalette.push(nm)});
 		         
 		      });
-		
-		      dataTable = [['From Class','To Class',chartFormatDict[areaChartFormat].label]];
-		 		let mult;
-		 		if(areaChartFormat === 'Percentage'){
-			          mult = 1/total_area*100;
-			        }else{
-			          mult = chartFormatDict[areaChartFormat].mult;
-			        }
+
+		    let mult;
+	 		if(areaChartFormat === 'Percentage'){
+		          mult = 1/total_area*100;
+		        }else{
+		          mult = chartFormatDict[areaChartFormat].mult;
+		        }
+			let dataMatrix = [];
+			let yri = 1;
+			years.slice(0,years.length-1).map(yr=>{
+				let startYearPair = yr;
+				let endYearPair = years[yri];
+				yri++;
+				let dataMatrixHeader = [''];
+				raw_labels.map(l=>dataMatrixHeader.push(endYearPair+' '+areaChartCollections[whichAreaChartCollection].names[l-1]));
+				dataMatrix.push(dataMatrixHeader);
+
+				raw_labels.map(from=>{
+					let row = [startYearPair+' '+areaChartCollections[whichAreaChartCollection].names[from-1]];
+					raw_labels.map(to=>{
+						let k = `${startYearPair}--${from}---${endYearPair}--${to}`;
+						let v = t[k][1][1]*mult;
+						row.push(v);
+					});
+					dataMatrix.push(row)
+
+				});
+				dataMatrix.push([''])
+			});
+			dataMatrix = dataMatrix.slice(0,dataMatrix.length-1);
+			console.log(dataMatrix);
+			
+		      dataTable = dataMatrix;//[['From Class','To Class',chartFormatDict[areaChartFormat].label]];
+		 		
 		        Object.keys(t).map((k)=>{
 		          const startRange = k.split('---')[0].split('--')[0];
 		          const endRange = k.split('---')[1].split('--')[0];
@@ -938,7 +967,6 @@ function makeAreaChart(area,name,userDefined){
 		          const fromLabel = startRange+' '+transitionFromClassName;
 		          const toLabel = endRange+' '+transitionToClassName
 		          
-		          dataTable.push([fromLabel,toLabel,v])
 		          sankey_dict.source.push(label_code_dict[fromLabel]);
 		          sankey_dict.target.push(label_code_dict[toLabel]);
 		          sankey_dict.value.push(v);
@@ -976,8 +1004,7 @@ function makeAreaChart(area,name,userDefined){
 		            font: {
 		              size: 10
 		            },
-		            width: w,
-  					height: h,
+		            autosize: true,
 		            margin: {
 		              l: 25,
 		              r: 25,
@@ -1002,7 +1029,8 @@ function makeAreaChart(area,name,userDefined){
 
 				
 
-		        plotlyDownloadChartObject = Plotly.newPlot('chart-canvas', data, layout,config)
+		        Plotly.newPlot('chart-canvas', data, layout,config);
+		        plotlyDownloadChartObject = Plotly.newPlot('chart-download-canvas', data, layout,config)
 		    
 		     	$('#chart-download-dropdown').empty();
 		    	$('#chart-modal-footer').append(`<div class="dropdown">
@@ -1419,8 +1447,10 @@ function downloadChartJS(chart,name){
 	ga('send', 'event', mode, getActiveTools()[0] +'-chartDownload', 'png');
 }
 function downloadPlotly(plotlyDownloadChartObject,name){
+
+	Plotly.update('chart-download-canvas', null, {font: {size: 20}})
 				plotlyDownloadChartObject.then((chart)=>{
-					Plotly.toImage(chart,{width:1000,height:600})
+					Plotly.toImage(chart,{width:2000,height:1000})
 				         .then(
 				             function(url){
 				         	var link = document.createElement("a");
@@ -1508,7 +1538,8 @@ function configChartModal(){
 	    												</div>`);
 	}else{
 		$('#chart-modal-graph-table-container').append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
-	    													<div id="chart-canvas" ></div>
+	    													<div id="chart-canvas"></div>
+	    													<div id="chart-download-canvas" style="display:none;"></div>
 	    												</div>`);
 	}
     

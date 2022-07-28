@@ -164,27 +164,29 @@ const staticTemplates = {
                     </section>
                     <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
 	introModal:{'LCMS':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-lg" role="document">
+                <div style='max-width:700px;' class="modal-dialog" role="document">
                     <div class="modal-content text-dark modal-content-full-screen-styling" >
                        
                         <div class="modal-body" id = 'introModal-body'>
+                        <button type="button" class="close m-0 ml-auto text-dark" data-dismiss="modal">&times;</button>
                             <span>
                                 <img class = 'logo' src="./images/lcms-icon.png"   alt="LCMS logo image">
                                 <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">LCMS<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER</h1>
                             </span>
                          
-                        <p style = 'block'>
+                        <div style = 'block;margin-top:0.5rem;'>
                             <span  style="font-weight:bold">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</span>
-                            <br>
                             
-                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
+                            <p class='my-2'>
+                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
 
-                            <br>
-
-                            The LCMS Data Explorer is a web-based application that provides users the ability to view, analyze, summarize and download LCMS data. A user-friendly set of tools allows users to upload an area of interest and perform pixel- and area-based summaries with a charting feature displaying the results of all LCMS outputs.
-                        </p>
-                            <div style='display:inline-block;'>
-                                <div style ='float:left;'>
+                            </p>
+                            <p class='my-2'>
+                            This Data Explorer provides the ability to view, analyze, summarize and download LCMS data. 
+                            </p>
+                        </div>
+                            <div style='display:inline-block;margin-top:0.5rem;'>
+                                <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
                                     <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
                                     
                                 </div>
@@ -203,26 +205,26 @@ const staticTemplates = {
                     
                                 
                            
-                            <div class ='py-2'>
+                            <div class ='my-3'>
                         	   <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
                                 <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
                                 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                             </div>
                             
-                            <div class ='py-2'>Other LCMS EXPLORERS:
+                            <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
                                 <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
                                 <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                                 
                             </div>
 
-                             <div class = ' ml-0 pb-0' id = 'intro-modal-loading-div'>
-                                <p style = 'margin-top:1rem;'>
+                             <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
+                                <p >
                                   <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                                     Creating map services within Google Earth Engine. 
                                  </p>
                             </div>
                            
-                            <div class="form-check  pl-0 py-2">
+                            <div class="form-check  pl-0 mt-3 mb-2">
                                 <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
                                 <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                             </div>
