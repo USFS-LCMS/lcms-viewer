@@ -904,6 +904,7 @@ function makeAreaChart(area,name,userDefined){
 		      let label_code_dict = {};
 		      let label_code_i = 0;
 		      let years = [];
+		      let geojsonT = {};
 		      Object.keys(t).map(k=>years.push(k.split('---')[0].split('--')[0],k.split('---')[1].split('--')[0]));
 		      Object.keys(t).map(k=>raw_labels.push(k.split('---')[0].split('--')[1],k.split('---')[1].split('--')[1]));
 		      years = unique(years);
@@ -967,6 +968,7 @@ function makeAreaChart(area,name,userDefined){
 		          const fromLabel = startRange+' '+transitionFromClassName;
 		          const toLabel = endRange+' '+transitionToClassName
 		          
+		          geojsonT[k]=v
 		          sankey_dict.source.push(label_code_dict[fromLabel]);
 		          sankey_dict.target.push(label_code_dict[toLabel]);
 		          sankey_dict.value.push(v);
@@ -1062,7 +1064,7 @@ function makeAreaChart(area,name,userDefined){
 		    toggleChartTable(localStorage.tableOrChart)
 		    	area.evaluate(function(i,failure){
 								areaGeoJson = i;
-								areaGeoJson[name] = tableT;
+								areaGeoJson['properties'] = geojsonT;
 								if(failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null){
 							    	$('#chart-download-dropdown').append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
 							   }else{
