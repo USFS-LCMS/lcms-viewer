@@ -202,6 +202,36 @@ function getTransitionClasses(collection,periods,values,summary_band_name,viz = 
   // Map.addLayer(stackC,{'opacity':0},'Transition Combos')
   return stackC
 }
+function addSankey(lcmsRun,bn){
+      var values = lcmsRun.props[bn+'_class_values'];
+      var names = lcmsRun.props[bn+'_class_names'];
+      var palette = lcmsRun.props[bn+'_class_palette'];
+      var bnTitle = bn.replaceAll('_',' ')
+      
+      // console.log(transitionClasses.bandNames().getInfo())
+      areaChartCollections[`${bn}-transition`] = {'label':`LCMS ${bnTitle} Transition`,
+                                  'type':'transition',
+                                  'collection':lcmsRun.lcms,
+                                  'bandName':bn,
+                                  'tooltip':`Summarize ${bnTitle} transition classes from different periods of time. Results are displayed using a Sankey diagram.`,
+                                  'values':values,
+                                  'colors':palette,
+                                  'names':names};
+    }
+function getSankeyPeriods(startYear,endYear,yearRangeFrequency=15,yearBuffer=2){
+  // console.log('getting sankey periods');console.log([startYear,endYear]);
+  if(endYear-startYear < yearRangeFrequency){
+    return [[startYear,startYear+yearBuffer],[endYear-yearBuffer,endYear]]
+  }else{
+    let yearRanges = range(startYear,endYear,yearRangeFrequency);
+      if(endYear-yearRanges[yearRanges.length-1]< parseInt(yearRangeFrequency/2)){yearRanges.pop();}
+      if(yearRanges.indexOf(endYear)===-1){yearRanges.push(endYear)}
+      let yearRangesPairs = yearRanges.slice(0,yearRanges.length-1).map(yr=>[yr,yr+yearBuffer]);
+      yearRangesPairs.push([yearRanges[yearRanges.length-1]-yearBuffer,yearRanges[yearRanges.length-1]])
+      return yearRangesPairs
+  }
+  
+  }
 function multBands(img,distDir,by){
     var out = img.multiply(ee.Image(distDir).multiply(by));
     out  = out.copyProperties(img,['system:time_start'])

@@ -194,9 +194,17 @@ button {
 }
 
 .sidebar-toggler{
-  position:absolute;top:1%;left:1%;z-index:5;font-size:1.9em!important;border-radius: 1px;
-  margin-left:-0.2em;margin-top:-0.1em;border-width:0;background-color: transparent;
+  position:absolute;
+  top:0%;
+  left:0%;
+  z-index:5;
+  /*margin-left:-0.1rem;*/
+  margin-top:-0.2rem;
+  height:3rem;
+  /*border: none;*/
+  /*background: none;*/
 }
+
 .sidebar-toggler:hover{font-size:1.9em!important;}
 .sidebar-toggler:active {
   transform: translate(4px) translateY(4px);
@@ -231,8 +239,16 @@ button {
   margin-left:2.5rem;
   margin-right:1rem;
   margin-bottom:0.25rem;
-  margin-top:0.25rem;
+  margin-top:0.5rem;
   font-size:1.5rem;
+}
+.search-bar{
+  padding-left:2.75rem;
+  padding-right:1rem;
+  padding-bottom:0.25rem;
+  padding-top:0.25rem;
+  font-size:1.5rem;
+  display: flex;
 }
 /*///////////////////////////////////////////////////////////*/
 /*Bottombar styling*/
@@ -266,29 +282,32 @@ button {
   max-height:3em;
 }
 .support-text{
-  color: var(--teal-100)!important;
+  color: var(--deep-brown-100)!important;
+}
+.support-text:hover{
+  color:var(--teal-100)!important;
 }
 .text-capitalize { text-transform: uppercase!important; }
 
 .table-bordered td{    border-right: 1px solid #000!important;border-left: 1px solid #000!important;}
 .chart-table  {
-  max-height:30em;
-  max-width:90em;
+  max-height:30rem;
+  max-width:90rem;
   overflow-y:auto; 
   overflow-x:auto; 
-  font-size: 0.8em;
+  font-size: 0.8rem;
 
 }
 .chart-table-graph-container {
-  max-height:50em;
-  max-width:90em;
+  max-height:50rem;
+  max-width:90rem;
   overflow-x:auto; 
   overflow-y:auto; 
 
 
 }
-.chart-table-first-row { position: sticky!important; top: 0!important;}
-.chart-table-first-column { position: sticky; left: 0;}
+.chart-table-first-row { position: sticky!important; top: 0!important;z-index: 1;}
+.chart-table-first-column { position: sticky!important; left: 0;z-index: 0;}
 
 /*///////////////////////////////////////////////////////////*/
 /*Legend div styling*/

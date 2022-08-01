@@ -9,7 +9,7 @@ const  titles = {
 		    title:'LCMS Data Explorer'
 			},
     'LCMS': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
+            leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/logo_icon_lcms-data-viewer.svg">LCMS`,
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LCMS Data Explorer'
@@ -92,7 +92,7 @@ let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-togg
 const staticTemplates = {
 	map:`<section aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </section>`,
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
-	sidebarLeftToggler:`<button href="#" class="fa fa-bars  p-1 mt-1  sidebar-toggler"  onclick = 'toggleSidebar()' title = 'Click to toggle sidebar visibility'></buttom>`,
+	sidebarLeftToggler:`<img style='height:3rem' title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
     sidebarLeftContainer: `
 						<nav onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 
@@ -142,15 +142,22 @@ const staticTemplates = {
                         
                     </div>`,
 	topBanner:`<h1 id = 'title-banner' title="" class = 'white  text-center title-banner' >
-                    <img style = 'height:1em;margin-top:-0.2em'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
+                    <img style = 'height:2rem;margin-top:-0.3rem'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
                     <div class="vl"></div>
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</h1>`,
+//     topBanner:`<svg width="300" height="180"
+//     style="border:solid 6px"
+//     xmlns="http://www.w3.org/2000/svg">
+//     <g>
+//         <text y="50%" textLength="436" lengthAdjust="spacingAndGlyphs"  class = 'white text-center title-banner'>UGLY TEXT</text>
+//     </g>
+// </svg>`,
 	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
 		                <div class="dropdown-menu" id="study-area-list">  
 		                </div>
 		            </li>`,
-	placesSearchDiv:`<section id = 'search-share-div' class="input-group pr-4 pt-0 pb-2 text-center" style = 'padding-left:3rem;'>
+	placesSearchDiv:`<section id = 'search-share-div' class="input-group  text-center search-bar" '>
 			            <div role='list' class="input-group-prepend">
                             <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
 	    					<button onclick = 'TweetThis()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="share-button"><i class="fa fa-share-alt teal "></i></button>
@@ -198,7 +205,10 @@ const staticTemplates = {
                                       </li>
                                       <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
                                       </li>
+                                      <li title = 'LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+                                      </li>
                                     </ul>
+                                    
                                 </div>
                             
                             </div>
@@ -577,63 +587,7 @@ const staticTemplates = {
                             </div>
                         </section>
                         <hr>
-                        <header class = 'row'>
-                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
-                        </header>
-                        <section class = 'row'>
-                            <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
-                                <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
-                                </a>
-                            </div>
-                            <div class = 'col-lg-10'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
-                                </a>
-                            </div>
-                        </section>
-                        <hr>
-                        <section class = 'row '>
-                            <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
-                                </a>
-                            </div>
-                            <div class = 'col-lg-10'>
-                                <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
-                                </a>
-                            </div>
-                        </section>
-                        <hr>
-                        <section class = 'row '>
-                            <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
-                                </a>
-                            </div>
-                            <div class = 'col-lg-10'>
-                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                    <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.</p>
-                                </a>
-                            </div>
-                        </section>
                         
-                        <hr>
-                        <section class = 'row'>
-                            <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://earthengine.google.com/" target="_blank">
-                                    <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
-                                    
-                                </a>
-                            </div>
-                            <div class = 'col-lg-10'>
-                                <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
-                                </a>
-                            </div>
-                        </section>
-                        <hr>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <h2>"..."</h2>
@@ -1270,7 +1224,7 @@ function setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode){
 }
 //Wrapper for single range slider
 function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
-    $('#'+containerDivID).append(`<div  class='dual-range-slider-container px-1' title="${tooltip}">
+    $('#'+containerDivID).append(`<div  id="${sliderID}-container" class='dual-range-slider-container px-1' title="${tooltip}">
                                     <div class='dual-range-slider-name pt-2 pb-3'>${title}</div>
                                     <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
                                     <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>

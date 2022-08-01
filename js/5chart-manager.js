@@ -881,19 +881,27 @@ function makeAreaChart(area,name,userDefined){
 	if(areaChartCollections[whichAreaChartCollection].type === 'transition'){
 		// console.log('here');console.log(area);
 		$('#summary-spinner').slideDown();
+		let startYear = areaChartCollections[whichAreaChartCollection].collection.sort('system:time_start').first().date().get('year').getInfo();
+		let endYear = areaChartCollections[whichAreaChartCollection].collection.sort('system:time_start',false).first().date().get('year').getInfo();
+		
+		let transitionPeriods = getSankeyPeriods(startYear,endYear,transitionChartYearInterval,yearBuffer=2);
+		
+		let transitionClasses = getTransitionClasses(areaChartCollections[whichAreaChartCollection].collection,transitionPeriods,areaChartCollections[whichAreaChartCollection].values,areaChartCollections[whichAreaChartCollection].bandName);
+		
+		
 		
 
 		var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
 	    let bounds = area.bounds(maxError,crs).transform(crs,maxError);
 
-	    let img = ee.Image(areaChartCollections[whichAreaChartCollection].stack).clip(area);
+	    let img = ee.Image(transitionClasses).clip(area);
 	    
 	    let table = img.reduceRegion(ee.Reducer.fixedHistogram(0, 3, 3),bounds,scale,crs,transform,true,1e13,4);
 
 	    table.evaluate((t,failure)=>{
 	    	if(failure !== undefined && currentChartID === thisChartID ){
 	    		showMessage('Charting Error',failure);
-	    	}else{
+	    	}else if(currentChartID === thisChartID){
 	    		
 	    	  const total_area = Object.values(t)[0].slice(0,2).map(i=>i[1]).reduce((a, b) => a + b, 0);
 	    		
@@ -974,65 +982,66 @@ function makeAreaChart(area,name,userDefined){
 		          sankey_dict.value.push(v);
 		         })
 		  
+		       function getSankeyPlot(canvasID,thickness=20,nodePad = 25,fontSize=10){
+			      sankey_dict.hovertemplate='%{value}'+chartFormatDict[areaChartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
 
-		      sankey_dict.hovertemplate='%{value}'+chartFormatDict[areaChartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
+			          var data = {
+			            type: "sankey",
+			            orientation: "h",
+			            node: {
+			              pad: nodePad,
+			              thickness: thickness,
+			              line: {
+			                color: "black",
+			                width: 0.5
+			              },
+			             label: labels,
+			             color: sankeyPalette,
+			             hovertemplate:'%{value}'+chartFormatDict[areaChartFormat].label+' %{label}<extra></extra>'
+			                },
 
-		          var data = {
-		            type: "sankey",
-		            orientation: "h",
-		            node: {
-		              pad: 25,
-		              thickness: 20,
-		              line: {
-		                color: "black",
-		                width: 0.5
-		              },
-		             label: labels,
-		             color: sankeyPalette,
-		             hovertemplate:'%{value}'+chartFormatDict[areaChartFormat].label+' %{label}<extra></extra>'
-		                },
+			            link: sankey_dict,
 
-		            link: sankey_dict,
+			          }
 
-		          }
-
-		          var data = [data]
-		          configChartModal('Plotly');
-		          // let h = parseInt($('#chart-modal-body').width()*0.5);
-		          // let w = $('#chart-modal-body').width();
-		          // console.log(h);console.log(w);
-		          var layout = {
-		            title: name,
-		            font: {
-		              size: 10
-		            },
-		            autosize: true,
-		            margin: {
-		              l: 25,
-		              r: 25,
-		              b: 25,
-		              t: 50,
-		              pad: 4
-		            },
-		            paper_bgcolor: '#DDD',
-		            plot_bgcolor: '#DDD'
-		          }
-		          var config = {
-					  toImageButtonOptions: {
-					    format: 'png', // one of png, svg, jpeg, webp
-					    filename: name,
-					    width:1000,height:600
-					  },
-					  scrollZoom: true,
-					  displayModeBar: false
-					};
+			          var data = [data]
+			          
+			          // let h = parseInt($('#chart-modal-body').width()*0.5);
+			          // let w = $('#chart-modal-body').width();
+			          // console.log(h);console.log(w);
+			          var layout = {
+			            title: name,
+			            font: {
+			              size: fontSize
+			            },
+			            autosize: true,
+			            margin: {
+			              l: 25,
+			              r: 25,
+			              b: 25,
+			              t: 50,
+			              pad: 4
+			            },
+			            paper_bgcolor: '#DDD',
+			            plot_bgcolor: '#DDD'
+			          }
+			          var config = {
+						  toImageButtonOptions: {
+						    format: 'png', // one of png, svg, jpeg, webp
+						    filename: name,
+						    width:1000,height:600
+						  },
+						  scrollZoom: true,
+						  displayModeBar: false
+						};
+					return Plotly.newPlot(canvasID, data, layout,config);
+				}	
 
 				
-
-				
-
-		        Plotly.newPlot('chart-canvas', data, layout,config);
-		        plotlyDownloadChartObject = Plotly.newPlot('chart-download-canvas', data, layout,config)
+				configChartModal('Plotly');
+		        getSankeyPlot('chart-canvas',thickness=20,nodePad=25,fontSize=10);
+		        
+		        plotlyDownloadChartObject = getSankeyPlot('chart-download-canvas',thickness=40,nodePad=20,fontSize=20);
 		    
 		     	$('#chart-download-dropdown').empty();
 		    	$('#chart-modal-footer').append(`<div class="dropdown">
@@ -1826,8 +1835,9 @@ function htmlTable(table){
 
     table.slice(1).map(function(r){
 		html += '<tr>';
-		var columnI = 0;
-		r.map(function(value){
+		html += '<td class = "chart-table-first-column bg-black">' +  r[0] + '</td>';
+		var columnI = 1;
+		r.slice(1).map(function(value){
 			html += '<td>' +  value + '</td>';
 			columnI++;
 		})	

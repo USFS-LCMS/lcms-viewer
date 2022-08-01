@@ -239,34 +239,21 @@ function runGTAC(){
   }
   
   
-  function addSankey(bn,periods){
-      var values = lcmsRun.props[bn+'_class_values'];
-      var names = lcmsRun.props[bn+'_class_names'];
-      var palette = lcmsRun.props[bn+'_class_palette'];
-      var bnTitle = bn.replaceAll('_',' ')
-      let transitionClasses = getTransitionClasses(lcmsRun.lcms,periods,values,bn);
-      // console.log(transitionClasses.bandNames().getInfo())
-      areaChartCollections[`${bn}-transition`] = {'label':`LCMS ${bnTitle} Transition`,
-                                  'type':'transition',
-                                  'stack':transitionClasses,
-                                  'bandName':bn,
-                                  'tooltip':`Summarize ${bnTitle} transition classes between the start and end periods. Results are displayed using a Sankey diagram.`,
-                                  'colors':palette,
-                                  'names':names};
-    }
-  if(urlParams.sankey==='true' || urlParams.beta ==='true'){
-    let yearRangeFrequency = 15;
-    let yearBuffer = 2;
-    if(endYear-startYear >= 5){
-      let yearRanges = range(startYear,endYear,yearRangeFrequency);
-      if(endYear-yearRanges[yearRanges.length-1]< parseInt(yearRangeFrequency/2)){yearRanges.pop();}
-      if(yearRanges.indexOf(endYear)===-1){yearRanges.push(endYear)}
-      let yearRangesPairs = yearRanges.slice(0,yearRanges.length-1).map(yr=>[yr,yr+yearBuffer]);
-      yearRangesPairs.push([yearRanges[yearRanges.length-1]-yearBuffer,yearRanges[yearRanges.length-1]])
-      console.log(yearRangesPairs);
-      ['Land_Cover','Land_Use','Change'].map(bn=>{addSankey(bn,yearRangesPairs);});
-  };
+
+  if(urlParams.sankey==='true' || urlParams.beta ==='true' && endYear-startYear >= 5){
+    activeStartYear = startYear;activeEndYear=endYear;
+    $('#transition-year-interval-slider-container').show();
+    $('#transition-periods-container').show();
+    updateSankeyPeriods(transitionChartYearInterval);
+
+    
+      ['Land_Cover','Land_Use','Change'].map(bn=>{addSankey(lcmsRun,bn);});
+
    
+  }else if((urlParams.sankey==='true' || urlParams.beta ==='true')&& endYear-startYear<5){
+    $('#transition-year-interval-slider-container').hide();
+    $('#transition-periods-container').hide();
+    
   }
   ['Change','Land_Cover','Land_Use'].map(bn=>{lcmsRunFuns.addAreaChartClass(bn);});
     
