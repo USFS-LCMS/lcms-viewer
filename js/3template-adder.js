@@ -72,15 +72,15 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // console.log(urlParams)
  
   /*Construct panes in left sidebar*/
-  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
+  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS DATA',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS DATA layers to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
-  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
+  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img class='panel-title-svg-lg'  alt="Layers icon" src="./Icons_svg/data-layers_ffffff.svg">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
   
-  addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+  addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<img class='panel-title-svg-lg'  alt="Tools icon" src="./Icons_svg/tools_ffffff.svg">`,false,'','Tools to measure and chart data provided on the map');
 
-  addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download LCMS products for further analysis');
-  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<i role="img" class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,false,``,'If you need any help');
+  addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
   // $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
 
@@ -96,11 +96,11 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   var tAnalysisMode = urlParams.analysisMode;
   var tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
   if(mode === 'LCMS'){
-    // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+    // $('#parameters-collapse-div').append(`<hr>`);
     // $('#parameters-collapse-div').append(`<p>Additional Functionality:</p>`);
   // $('#parameters-collapse-div').append(staticTemplates.addTimelapsesButton);
   addRadio('parameters-collapse-div','addTimeLapses-radio','Add LCMS Time Lapses:','No','Yes','urlParams.addLCMSTimeLapsesOn','no','yes','','','Add interactive time lapse of LCMS Change, Land Cover, and Land Use products. This will slow down the map loading');
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#parameters-collapse-div').append(`<hr>`);
   if(tAddLCMSTimeLapsesOn === 'yes'){
     $('#addTimeLapses-radio-second_toggle_label').click();
   }
@@ -108,36 +108,36 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addRadio('parameters-collapse-div','analysis-mode-radio','Choose which mode:','Standard','Advanced','urlParams.analysisMode','standard','advanced','toggleAdvancedOff()','toggleAdvancedOn()','Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options')
 
   urlParams.analysisMode = tAnalysisMode ;
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#parameters-collapse-div').append(`<hr>`);
 
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain')
   
 
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider"></div>
+  $('#parameters-collapse-div').append(`<hr>
                                           <div id='threshold-container' style="display:none;width:100%"></div>
                                           <div id='advanced-radio-container' style="display: none;"></div>`)
 
   if( mode === 'LCMS-pilot' ){
   addRangeSlider('threshold-container','Choose loss threshold:','lowerThresholdDecline',0, 1, lowerThresholdDecline, 0.05,'decline-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
-  $('#threshold-container').append(`<div class="dropdown-divider" ></div>`);
+  $('#threshold-container').append(`<hr>`);
   addRangeSlider('threshold-container','Choose gain threshold:','lowerThresholdRecovery',0, 1, lowerThresholdRecovery, 0.05,'recovery-threshold-slider','null',"Threshold window for detecting gain.  Any gain probability greater than or equal to this value will be flagged as gain ")
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  $('#advanced-radio-container').append(`<hr>`);
   $('#advanced-radio-container').append(`<div id = 'fast-slow-threshold-container' ></div>`);
   addRangeSlider('fast-slow-threshold-container','Choose slow loss threshold:','lowerThresholdSlowLoss',0, 1, lowerThresholdSlowLoss , 0.05,'slow-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
-  $('#fast-slow-threshold-container').append(`<div class="dropdown-divider" ></div>`);
+  $('#fast-slow-threshold-container').append(`<hr>`);
   addRangeSlider('fast-slow-threshold-container','Choose fast loss threshold:','lowerThresholdFastLoss',0, 1, lowerThresholdFastLoss, 0.05,'fast-loss-threshold-slider','null',"Threshold window for detecting loss.  Any loss probability greater than or equal to this value will be flagged as loss ")
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  $('#advanced-radio-container').append(`<hr>`);
 
   addRadio('advanced-radio-container','treemask-radio','Constrain analysis to areas with trees:','Yes','No','applyTreeMask','yes','no','','','Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas.')
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  $('#advanced-radio-container').append(`<hr>`);
  }
   var tSummaryMethod = urlParams.summaryMethod;
   addRadio('advanced-radio-container','summaryMethod-radio','Summary method:','Most recent year','Highest prob','urlParams.summaryMethod','year','prob','','','How to choose which value for disturbance and growth to display.  Choose the value with the highest model confidence or from the most recent year above the threshold.');
   urlParams.summaryMethod = tSummaryMethod;
 
-  $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  $('#advanced-radio-container').append(`<hr>`);
   // addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
-  // $('#advanced-radio-container').append(`<div class="dropdown-divider" ></div>`);
+  // $('#advanced-radio-container').append(`<hr>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
 
@@ -215,8 +215,8 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   // addCheckboxes('ccdc-params-div','ccdc-index-choice-checkboxes','Choose which indices to include in CCDC fitted charts','whichIndices3',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':true,'NDMI':false,'wetness':false})
   // addRangeSlider('ccdc-params-div','Change Probability Threshold','ccdcChangeProbThresh',0,1,0.8,0.1,'ccdc-change-prob-thresh-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change') 
   
-  // $('#lt-params-div').append(`<div class="dropdown-divider" ></div>`);
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // $('#lt-params-div').append(`<hr>`);
+  $('#parameters-collapse-div').append(`<hr>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS BASE LEARNER DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">`,true,null,'LCMS DATA layers to view on map');
@@ -248,32 +248,32 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort '+mode+' products');
   
   addSubCollapse('parameters-collapse-div','comp-params-label','comp-params-div','Landsat Composite Params', '',false,'');
-  $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#comp-params-div').append(`<hr>`);
 
 
   addDualRangeSlider('comp-params-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider2','null','Years of '+mode+' data to include.')
   
   addDualRangeSlider('comp-params-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
-    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+    $('#comp-params-div').append(`<hr>`);
 
   if(urlParams.whichPlatforms === null || urlParams.whichPlatforms === undefined){
     urlParams.whichPlatforms = {"L5": true,"L7-SLC-On": true,"L7-SLC-Off": false,"L8": true}
   }
   addCheckboxes('comp-params-div','which-sensor-method-radio','Choose which Landsat platforms to include','whichPlatforms',urlParams.whichPlatforms);
   
-    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+    $('#comp-params-div').append(`<hr>`);
 
     if(urlParams.yearBuffer === null || urlParams.yearBuffer === undefined){
       urlParams.yearBuffer = 0
     }
     addRangeSlider('comp-params-div','Composite Year Buffer','urlParams.yearBuffer',0,2,urlParams.yearBuffer,1,'year-buffer-slider','','The number of adjacent years to include in a given year composite. (E.g. a value of 1 would mean the 2015 composite would have imagery from 2015 +- 1 year - 2014 to 2016)') 
-   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+   $('#comp-params-div').append(`<hr>`);
 
    if(urlParams.minObs === null || urlParams.minObs === undefined){
       urlParams.minObs = 3
     }
    addRangeSlider('comp-params-div','Minimum Number of Observations','urlParams.minObs',1,5,urlParams.minObs,1,'min-obs-slider','','Minimum number of observations needed for a pixel to be included. This helps reduce noise in composites. Any number less than 3 can result in poor composite quality') 
-    $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+    $('#comp-params-div').append(`<hr>`);
 
   var compMethodDict = {"Median":false,"Medoid":true};
   if(urlParams.compMethod !== null && urlParams.compMethod !== undefined){
@@ -282,14 +282,14 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 
   }
   addMultiRadio('comp-params-div','comp-method-radio','Compositing method','urlParams.compMethod',compMethodDict)
-   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+   $('#comp-params-div').append(`<hr>`);
 
 
   if(urlParams.whichCloudMasks === null || urlParams.whichCloudMasks === undefined){
     urlParams.whichCloudMasks = {'fMask-Snow':true,'cloudScore':false,'fMask-Cloud':true,'TDOM':false,'fMask-Cloud-Shadow':true};
   }
   addCheckboxes('comp-params-div','cloud-masking-checkboxes','Choose which cloud masking methods to use','whichCloudMasks',urlParams.whichCloudMasks)
-   $('#comp-params-div').append(`<div class="dropdown-divider" ></div>`);
+   $('#comp-params-div').append(`<hr>`);
 
   var maskWaterDict = {"No":false,"Yes":true};
   if(urlParams.maskWater !== null && urlParams.maskWater !== undefined){
@@ -299,11 +299,11 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   }
   addMultiRadio('comp-params-div','water-mask-radio','Mask out water','urlParams.maskWater',maskWaterDict)
   
-  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // $('#parameters-collapse-div').append(`<hr>`);
   // addRadio('parameters-collapse-div','cloudScore-cloud-radio','Apply CloudScore','No','Yes','applyCloudScore','no','yes','','',"Whether to apply Google's Landsat CloudScore algorithm")
-  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // $('#parameters-collapse-div').append(`<hr>`);
   // addRadio('parameters-collapse-div','fmask-cloud-radio','Apply Fmask cloud mask','Yes','No','applyFmaskCloud','yes','no','','','Whether to apply Fmask cloud mask')
-  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // $('#parameters-collapse-div').append(`<hr>`);
   // addRadio('parameters-collapse-div','fmask-cloud-shadow-radio','Apply Fmask cloud shadow mask','Yes','No','applyFmaskCloudShadow','yes','no','','','Whether to apply Fmask cloud shadow mask')
   
  
@@ -314,7 +314,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
     urlParams.whichIndices = {'NBR':true,'NDVI':false,'NDMI':false,'NDSI':false,'brightness':false,'greenness':false,'wetness':false,'tcAngleBG':false};
   }
   addCheckboxes('lt-params-div','index-choice-checkboxes','Choose which indices to analyze','whichIndices',urlParams.whichIndices)
-  $('#lt-params-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#lt-params-div').append(`<hr>`);
 
   var LTSortByDict = {"largest":true,"steepest":false,"newest":false, "oldest":false,  "shortest":false, "longest":false};
   if(urlParams.LTSortBy !== null && urlParams.LTSortBy !== undefined){
@@ -355,7 +355,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
     }
   addRangeSlider('lt-params-div','Max LANDTRENDR Segments','urlParams.maxSegments',1,8,urlParams.maxSegments,1,'max-segments-slider','','The max number of segments LANDTRENDR can break time series into.  Generally 3-6 works well. Use a smaller number of characterizing long-term trends is the primary focus and a larger number if characterizing every little change is the primary focus.') 
   
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#parameters-collapse-div').append(`<hr>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layer icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
@@ -374,10 +374,10 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   }
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT & FEEDBACK',`<i role="img" class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'');
   $('#support-collapse-div').append(staticTemplates.walkThroughButton);
-    $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
+    $('#support-collapse-div').append(`<hr>`);
   $('#support-collapse-div').append(`<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`)
-  $('#support-collapse-div').append(`<div class="dropdown-divider"</div>`);
-  $('#support-collapse-div').append(`<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a></p>`)
+  $('#support-collapse-div').append(`<hr>`);
+  $('#support-collapse-div').append(`<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`)
   // $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
  
@@ -389,13 +389,13 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
     console.log(mtbsMappingArea);
     synchronousCenterObject(clientBoundsDict[mtbsMappingArea])
   });
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#parameters-collapse-div').append(`<hr>`);
   
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',startYear, endYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of MTBS data to include')
   addMultiRadio('parameters-collapse-div','mtbs-summary-method-radio','How to summarize MTBS data','mtbsSummaryMethod',{"Highest-Severity":true,"Most-Recent":false,"Oldest":false})
 
   $('#mtbs-summary-method-radio').prop('title','Select how to summarize MTBS raster data in areas with multiple fires.  Each summary method is applied on a pixel basis. "Highest-Severity" will show the severity and fire year corresponding to the highest severity. "Most-Recent" will show the severity and fire year corresponding to the most recently mapped fire. "Oldest" will show the severity and fire year corresponding to the oldest mapped fire.')
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  $('#parameters-collapse-div').append(`<hr>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="MTBS logo" src="images/mtbs-logo.png">`,true,null,mode+' DATA layers to view on map');
@@ -495,13 +495,14 @@ else if(mode === 'STORM'){
        `);
 
 
-       $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>
+       $('#parameters-collapse-div').append(`<hr>
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button>
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
     function ingestStormTrack() {
-      $('#summary-spinner').show();
+
+      
           if(jQuery('#stormTrackUpload')[0].files.length > 0){
-               
+                
             var fr=new FileReader(); 
             fr.onload=function(){ 
                 var rows = fr.result.split('\n');
@@ -531,6 +532,7 @@ else if(mode === 'STORM'){
                 // console.log(rows)
                 // Map2.addLayer(rows)
                 var iterations = refinementIterations;
+                var initialN = rows.length;
                 while(iterations > 0 && rows.length*2 < 1500){
                   console.log('Refining');
                   console.log(refinementIterations);
@@ -538,7 +540,10 @@ else if(mode === 'STORM'){
                   console.log(rows.length);
                   iterations--
                 }
-                showMessage('Refinement finished','Refined '+ (refinementIterations-iterations).toString() +'/'+ refinementIterations.toString()+' iterations.\nTotal number of refined track points is: '+rows.length.toString())
+                setTimeout(function(){
+                  showMessage('Track ingestion finished','Refined '+ (refinementIterations-iterations).toString() +'/'+ refinementIterations.toString()+' iterations.<br>Total number of raw track points is: '+initialN.toString()+'<br>Total number of refined track points is: '+rows.length.toString())
+                },1000)
+                
                 // rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
 
                 var rowsLeft = rows.slice(0,rows.length-1);
@@ -646,7 +651,7 @@ else if(mode === 'STORM'){
   // $('#parameters-collapse-div').append(`<label>Provide name for storm (optional):</label>
   //                                       <input rel="txtTooltip" title = 'Provide a name for the storm. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name" value = 'Michael' placeholder="Name your storm!" style='width:80%;'>`)
   // addRangeSlider('parameters-collapse-div','Choose storm year','stormYear',1980, 2030, 2018, 1,'storm-year-slider','null',"Specify year of storm")
-  // $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // $('#parameters-collapse-div').append(`<hr>`);
   // $('#parameters-collapse-div').append(staticTemplates.reRunButton);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
@@ -702,7 +707,7 @@ addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible M
 if(mode === 'geeViz'){
   $('#pixel-chart-label').remove();
   $('#share-button').remove();
-   $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+   $('#tools-accordian').append(`<hr>`);
    //Sync tooltip toggle
   var tShowToolTipModal = true
   if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
@@ -717,10 +722,10 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
   $('#area-chart-params-label').prop('title', 'Click here to select which LCMS products to chart, and change which area units are used. ')
-  // $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+  // $('#tools-accordian').append(`<hr>`);
   addDropdown('area-chart-params-div','area-collection-dropdown','Choose which '+mode+' product to summarize','whichAreaChartCollection','Choose which '+mode+' time series to summarize.');
-  // $('#area-chart-params-div').append(`<div class="dropdown-divider" ></div>`);
-  $('#parameters-collapse-div').append(`<div class="dropdown-divider" ></div>`);
+  // $('#area-chart-params-div').append(`<hr>`);
+  $('#parameters-collapse-div').append(`<hr>`);
   addMultiRadio('area-chart-params-div','area-summary-format','Area Units','areaChartFormat',{"Percentage":true,"Acres":false,"Hectares":false})
   if(mode==='LCMS' && (urlParams.sankey==='true' || urlParams.beta ==='true')){
     var activeStartYear=urlParams.startYear;
@@ -756,7 +761,7 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   addColorPicker('user-defined-area-icon-bar','user-defined-color-picker','updateUDPColor',udpOptions.strokeColor);
 
   addShapeEditToolbar('select-features-edit-toolbar', 'select-area-interactive-chart-icon-bar','removeLastSelectArea()','clearSelectedAreas()','Click to unselect most recently selected polyogn','Click to clear all selected polygons');
-  $('#tools-accordian').append(`<div class="dropdown-divider" ></div>`);
+  $('#tools-accordian').append(`<hr>`);
    //Sync tooltip toggle
   var tShowToolTipModal = true
   if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){

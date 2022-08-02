@@ -1504,7 +1504,20 @@ function setGEERunID(){
 //Clears out current map, exports, and legends and then reruns
 function reRun(){
   // $('#summary-spinner').show(); 
-  showMessage('Loading Updated Layers',staticTemplates.loadingModal);
+  if(staticTemplates.loadingModal[mode]===undefined){
+            if(mode==='MTBS'){
+              showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Updating'));
+            }else if(mode==='STORM'){
+              showMessage('',staticTemplates.loadingModal['all']('','Updating'));
+            }else{
+              showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Updating'));
+            }
+              
+          }else{
+            showMessage('Loading Updated Layers',staticTemplates.loadingModal[mode]);
+          }
+          
+  // showMessage('Loading Updated Layers',staticTemplates.loadingModal);
   // showMessage('Loading',staticTemplates.loadingModal)
   setGEERunID();
 
@@ -2584,11 +2597,24 @@ function initialize() {
         if(localStorage['showIntroModal-'+mode] === 'true'){
           $('#introModal').modal().show();
         }else{
-          showMessage('Loading',staticTemplates.loadingModal)
+          if(staticTemplates.loadingModal[mode]===undefined){
+            if(mode==='MTBS'){
+              showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Creating'));
+            }else if(mode==='STORM'){
+              showMessage('',staticTemplates.loadingModal['all']('','Creating'));
+            }else{
+              showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Creating'));
+            }
+            
+
+          }else{
+            showMessage('Loading',staticTemplates.loadingModal[mode]);
+          }
+          
         }
 
         $('#dontShowAgainCheckbox').change(function(){
-          console.log(this.checked)
+          console.log(this.checked);
           localStorage['showIntroModal-'+mode]  = !this.checked;
         });
         

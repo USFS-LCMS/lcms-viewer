@@ -10,60 +10,70 @@ const  titles = {
 			},
     'LCMS': {
             leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/logo_icon_lcms-data-viewer.svg">LCMS`,
+            leftWordsSimple:'LCMS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
-            leftWords: `<img style = 'height:0.9em;margin-top:-0.2rem;margin-left:0.4rem' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LCMS`,
+            leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/logo_icon_lcms-data-viewer.svg">LCMS`,
+            leftWordsSimple:'LCMS',
             centerWords: 'Base-Learner',
             rightWords:'EXPLORER',
             title:'LCMS Base Learner Explorer'
             },
 	'Ancillary': {
 		    leftWords: 'Ancillary',
+            leftWordsSimple:'Ancillary',
 		    centerWords: 'DATA',
 		    rightWords:'Viewer',
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
             leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LandTrendr`,
+            leftWordsSimple:'LandTrendr',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LandTrendr Data Explorer'
             },
     'MTBS': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="MTBS icon" src="images/mtbs-logo.png">MTBS`,
+            leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem' class='image-icon ' alt="MTBS icon" src="images/mtbs-logo.png">MTBS`,
+            leftWordsSimple:'MTBS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'MTBS Data Explorer'
             },
     'TEST': {
             leftWords: 'TEST',
+            leftWordsSimple:'TEST',
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'TEST Data Viewer'
             },
     'IDS' : {
             leftWords: 'IDS',
+            leftWordsSimple:'IDS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'Insect and Disease Detection Survey Data Viewer'
             },
     'geeViz': {
             leftWords: 'geeViz',
+            leftWordsSimple:'geeViz',
             centerWords: 'DATA',
             rightWords:'Viewer',
             title:'geeViz Data Viewer'
             },
     'STORM': {
             leftWords: 'Storm',
+            leftWordsSimple:'Storm',
             centerWords: 'Damage',
             rightWords:'Viewer',
             title:'Storm Damage Viewer'
             },
     'LAMDA': {
             leftWords: 'LAMDA',
+            leftWordsSimple: 'LAMDA',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LAMDA Data Explorer'
@@ -89,6 +99,43 @@ let topBannerParams = titles[mode];
 let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
 //Provide a bunch of templates to use for various elements
+function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText){
+    return `<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
+                <div style='max-width:700px;' class="modal-dialog" role="document">
+                    <div class="modal-content text-dark modal-content-full-screen-styling" >
+                       
+                        <div class="modal-body" id = 'introModal-body'>
+                        <button type="button" class="close m-0 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                            <span>
+                                <img class = 'logo' src="${iconPath}"   alt="logo image">
+                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">${titles[mode].leftWordsSimple}<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${titles[mode].centerWords} </span>${titles[mode].rightWords}</h1>
+                            </span>
+                         
+                        <div style = 'block;margin-top:0.5rem;'>
+                            <span  style="font-weight:bold">${welcomeText}</span>
+                            ${topText}
+                        </div>
+                        ${middleText}
+                        ${bottomText}
+                        <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
+                            <p >
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                                Creating map services within Google Earth Engine. 
+                             </p>
+                        </div>
+                       
+                        <div class="form-check  pl-0 mt-3 mb-2">
+                            <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                            <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                        </div>
+                    </div>
+                        
+                           
+                        
+                </div>
+                </div>
+            </div>`
+}
 const staticTemplates = {
 	map:`<section aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </section>`,
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
@@ -108,11 +155,11 @@ const staticTemplates = {
                                                               ${specificAuthErrorMessage} 
                                                               ${authErrorMessageContact}
     `,
-    exportContainer:`<div class = 'dropdown-divider'></div>
+    exportContainer:`<hr>
                     <div class = 'py-2' id = 'export-list-container'>
                         <h5>Choose which images to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
-                        <div class = 'dropdown-divider'></div>
+                        <hr>
                         <div class = 'pl-3'>
                             <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
                               <label for="export-crs">Projection: </label>
@@ -125,13 +172,13 @@ const staticTemplates = {
                                 <a href="#" onclick = 'undoExportArea()' title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
-                            <div class = 'dropdown-divider'></div>  
+                            <hr>  
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
                                     <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
                                     <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
                                 </div>
-                                <div class = 'dropdown-divider'></div>
+                                <hr>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
 						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
 						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
@@ -165,121 +212,71 @@ const staticTemplates = {
 	  					</div>
 			            <input id = 'pac-input' class="form-control bg-white search-box" title = 'Search for places on the map' type="text" placeholder="Search Places">
                         <div class="input-group-prepend">
-                            <button onclick = 'backView()' title = 'Click to go back a view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="back-view-button"><i class="fa fa-arrow-left teal "></i></button>
-                            <button onclick = 'forwardView()' title = 'Click to go forward a view' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="forward-view-button"><i class="fa fa-arrow-right teal "></i></button>
+                            <button onclick = 'backView()' title = 'Click to go back a view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="back-view-button"><i class="fa fa-chevron-left teal "></i></button>
+                            <button onclick = 'forwardView()' title = 'Click to go forward a view' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
                         </div>
                     </section>
                     <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
-	introModal:{'LCMS':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
-                <div style='max-width:700px;' class="modal-dialog" role="document">
-                    <div class="modal-content text-dark modal-content-full-screen-styling" >
-                       
-                        <div class="modal-body" id = 'introModal-body'>
-                        <button type="button" class="close m-0 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                            <span>
-                                <img class = 'logo' src="./images/lcms-icon.png"   alt="LCMS logo image">
-                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">LCMS<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DATA </span>EXPLORER</h1>
-                            </span>
-                         
-                        <div style = 'block;margin-top:0.5rem;'>
-                            <span  style="font-weight:bold">Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!</span>
-                            
-                            <p class='my-2'>
+	introModal:{'LCMS':getIntroModal('./images/lcms-icon.png',
+                                    'Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!',
+                                    `<p class='my-2'>
                             LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
 
                             </p>
                             <p class='my-2'>
                             This Data Explorer provides the ability to view, analyze, summarize, and download LCMS data. 
-                            </p>
-                        </div>
-                            <div style='display:inline-block;margin-top:0.5rem;'>
-                                <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
-                                    <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
-                                    
-                                </div>
-                                <div style ='float:left;'>
-                                    <ul class="intro-list">
-                                      <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
-                                      </li>
-                                      <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
-                                      </li>
-                                      <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
-                                      </li>
-                                      <li title = 'LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
-                                      </li>
-                                    </ul>
-                                    
-                                </div>
-                            
-                            </div>
-                    
+                            </p>`,
+                            `<div style='display:inline-block;margin-top:0.5rem;'>
+                            <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
+                                <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
                                 
-                           
+                            </div>
+                            <div style ='float:left;'>
+                                <ul class="intro-list">
+                                  <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+                                  </li>
+                                  <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+                                  </li>
+                                  <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
+                                  </li>
+                                  <li title = 'LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+                                  </li>
+                                </ul>
+                                
+                            </div>
+                        
+                        </div>`,
+                        `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+                        <div class ='my-3'>
+                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+                        </div>
+                        
+                        <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
+                            <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+                            <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                            
+                        </div>`),
+            'lcms-base-learner':getIntroModal('./images/lcms-icon.png',
+                                    'Welcome to the Landscape Change Monitoring System (LCMS) Base-Learner Explorer!',
+                                    `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
+                                    `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
+                                    </p>`,
+                                    `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+                            </p>
+                            <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                        	   <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
-                                <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
-                                <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-                            </div>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+                        </div>
+                        
+                        <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
+                            <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+                            <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             
-                            <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
-                                <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
-                                <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
-                                
-                            </div>
-
-                             <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
-                                <p >
-                                  <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                    Creating map services within Google Earth Engine. 
-                                 </p>
-                            </div>
-                           
-                            <div class="form-check  pl-0 mt-3 mb-2">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                        
-                           
-                        
-                    </div>
-                </div>
-            </div>`,
-            'lcms-base-learner':`<div class="modal fade" id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-md " role="document">
-                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                        <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Base-Learner Explorer!</h3>
-                        </div>
-                        <div class="modal-body" id = 'introModal-body'>
-                            <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>
-                            <hr>
-                            <p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
-                            </p>
-                            <hr>
-                            <p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
-                            </p>
-                            <hr>
-                            <p>Please contact the LCMS help desk
-                                <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS Base-Learner Explorer.</p>
-                        </div>
-                        <div class = 'modal-footer' id = 'introModal-footer'>
-                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
-                            <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
-                             </p>
-                        </div>
-                        <hr>
-                        <div class="form-check  mr-0">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`,
+                        </div>`
+                ),
             'IDS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -378,6 +375,7 @@ const staticTemplates = {
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
                         <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
                         <div class = 'modal-header'>
+                            <img class = 'logo' src="./images/mtbs-logo.png"   alt="MTBS logo image">
                             <h3 class="mb-0 ">Welcome to the MTBS Data Explorer!</h3>
                         </div>
                         <div class="modal-body" id = 'introModal-body'>
@@ -423,9 +421,80 @@ const staticTemplates = {
                         </div>
                     </div>
                 </div>
-            </div>`
+            </div>`,
+            'STORM':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
+                <div style='max-width:700px;' class="modal-dialog" role="document">
+                    <div class="modal-content text-dark modal-content-full-screen-styling" >
+                       
+                        <div class="modal-body" id = 'introModal-body'>
+                        <button type="button" class="close m-0 ml-auto text-dark" data-dismiss="modal">&times;</button>
+                            <span>
+                                <img class = 'logo' src="./Icons_svg/logo_gtac_color-wt.svg"   alt="GTAC logo">
+                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">STORM<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DAMAGE </span>VIEWER</h1>
+                            </span>
+                         
+                        <div style = 'block;margin-top:0.5rem;'>
+                            <span  style="font-weight:bold">Welcome to the Storm Damage Viewer!</span>
+                            
+                            <p class='my-2'>
+                            This tool is intended to provide an interactive ability to upload storm tracks and produce modeled wind fields and tree damage.
+
+                            </p>
+                           
+                        </div>
+                            <div style='display:inline-block;margin-top:0.5rem;'>
+                                <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
+                                    <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+                                    
+                                </div>
+                                
+                            
+                            </div>
+                    
+                                
+                           <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+                            
+
+                             <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
+                                <p >
+                                  <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                                    Creating map services within Google Earth Engine. 
+                                 </p>
+                            </div>
+                           
+                            <div class="form-check  pl-0 mt-3 mb-2">
+                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
+                            </div>
+                        </div>
+                        
+                           
+                        
+                    </div>
+                </div>
+            </div>`,
         },
-    loadingModal:`<p>
+    loadingModal:{'all':function(logoPath,word){
+                                    let logoLine= `<img class = 'logo' src="./images/${logoPath}"   alt="${mode} logo image">`;
+                                    if(logoPath === '' || logoPath === null || logoPath === undefined){
+                                        logoLine=``
+                                    }
+                                    return `<span>
+                                                           ${logoLine} 
+                                                            <h2 id = 'intro-modal-title-banner' title="" class = 'splash-title' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWordsSimple}<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span> ${topBannerParams.rightWords}</h2>
+                                                        </span>
+
+                            
+
+                        <p style = 'margin-top:1rem;'>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+                <p style='font-weight:bold;margin-top:1rem;' title='Creating map services within Google Earth Engine. This can take some time. Thank you for your patience!'>
+                  <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+                    ${word} map services within Google Earth Engine. This can take some time.
+                  
+                 </p>
+                  `},
+                  'geeViz':`
+                <p>
                   <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
                     Creating map services within Google Earth Engine. 
                   <br>
@@ -433,7 +502,7 @@ const staticTemplates = {
                     This can take some time. Thank you for your patience!
                    <div id = 'loading-number-box'></div>
                  </p>
-                  `,
+                  `},
 	bottomBar:`<footer class = 'bottombar'  id = 'bottombar' >
         			<span class = 'px-2'  id='current-tool-selection' title="Any tool that is currently active is shown here."></span>
         			<span class = 'px-2' title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
@@ -453,7 +522,7 @@ const staticTemplates = {
                 </footer>`,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
-	                       		<div class = 'dropdown-divider'></div>
+	                       		<hr>
 		                        <div class="icon-bar py-1 ">
 								  <a onclick = 'previousWalkThrough()' title = 'Previous tutorial slide'><i class="fa fa-chevron-left text-black"></i></a>
 								  <a onclick = 'nextWalkThrough()'  title = 'Next tutorial slide'><i class="fa fa-chevron-right text-black"></i></a>
@@ -469,7 +538,7 @@ const staticTemplates = {
         addTimelapsesButton:`<button id = 'addTimelapses-button' onclick = 'addLCMSTimeLapses()' class = 'mb-1 ml-1 btn ' title="Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading">Add LCMS Time Lapses To Map</button>`,
         downloadDiv :`<div class = 'py-2'>
                         <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
-        				<div class = 'dropdown-divider'></div>
+        				<hr>
                         <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
@@ -587,14 +656,70 @@ const staticTemplates = {
                             </div>
                         </section>
                         <hr>
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
+                        </header>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                    <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.</p>
+                                </a>
+                            </div>
+                        </section>
                         
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <h2>"..."</h2>
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text'>Forest Service, U.S. Department of Agriculture (2022). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2022). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -635,7 +760,7 @@ const staticTemplates = {
         userDefinedAreaChartDiv : `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                            <div class = 'dropdown-divider'></div>
+                                            <hr>
                                             <div>Total area selected: <i id = "user-defined-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                             <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                             <div id = 'user-defined-edit-toolbar'></div>
@@ -646,40 +771,40 @@ const staticTemplates = {
                                 <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                                 </div>`,
         userDefinedAreaChartTip : 'Click on map to select an area to summarize '+mode+' products across. Press <kbd>ctrl+z</kbd> to undo most recent point.  Press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to start over. Double-click to finish polygon. Any number of polygons can be defined by repeating this process. Once finished defining areas, click on the <kbd>Chart Selected Areas</kbd> button to create chart.',
-        uploadAreaChartDiv : `<div class = 'dropdown-divider'></div>
+        uploadAreaChartDiv : `<hr>
                                 <label title = 'Powered by: https://ogre.adc4gis.com/'>Choose a zipped shapefile, kml, kmz, or geoJSON file to summarize across. Then hit "Chart across chosen file" button below to produce chart.</label>
                                 <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json,.kmz,.kml" style="display: inline-block;">
-                                <div class = 'dropdown-divider'></div>
+                                <hr>
                                 <div id = 'upload-reduction-factor-container'></div>
-                                <div class = 'dropdown-divider'></div>
+                                <hr>
                                 <div>Uploaded areas:</div>
                                 <div id="area-charting-shp-layer-list"></div>
-                                <div class = 'dropdown-divider'></div>
+                                <hr>
                                 <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>`,
         uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml (If the .kmz or .kml has embedded pngs or any other non vector data, the conversion will likely fail.), or .geojson file to summarize products across.',
         selectAreaDropdownChartDiv : `<i title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                             <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
-                            <div class = 'dropdown-divider'></div>`,
+                            <hr>`,
         selectAreaDropdownChartTip : 'Select from pre-defined areas to summarize products across.',
         selectAreaInteractiveChartDiv : `<div>Choose from layers below and click on map to select areas to include in chart</div>
-                                        <div class = 'dropdown-divider'></div>
+                                        <hr>
                                         <label>Provide name for area selected for charting (optional):</label>
                                         <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                        <div class = 'dropdown-divider'></div>
+                                        <hr>
                                         <div id = 'simplify-error-range-container'></div>
-                                        <div class = 'dropdown-divider'></div>
+                                        <hr>
                                         <div id="area-charting-select-layer-list"></div>
-                                        <div class = 'dropdown-divider'></div>
+                                        <hr>
                                         <div>Selected areas:</div>
                                         <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
                                         <li class = 'selected-features-list' id = 'selected-features-list'></li>
                                         <div id="area-charting-selected-layer-list"></div>
-                                        <div class = 'dropdown-divider'></div>
+                                        <hr>
                                         <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                         <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                         <div id = 'select-features-edit-toolbar'></div>
                                         <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
-                                        <div class = 'dropdown-divider'></div>`,
+                                        <hr>`,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
         shareButtons : `<!-- Email -->
                         <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
@@ -774,12 +899,12 @@ function addDropdownItem(dropdownID,label,value,tooltip){
 function addShapeEditToolbar(containerID, toolbarID,undoFunction,restartFunction,undoTip,deleteTip){
     if(undoTip === undefined || undoTip === null){undoTip = 'Click to undo last drawn point (ctrl z)'};
     if(deleteTip === undefined || deleteTip === null){deleteTip = 'Click to clear current drawing and start a new one (Delete, or Backspace)'};
-	$('#'+containerID).append(`<div class = 'dropdown-divider'></div>
+	$('#'+containerID).append(`<hr>
 								    <div id = '${toolbarID}' class="icon-bar ">
 								    	<a href="#" onclick = '${undoFunction}' title = '${undoTip}''><i class="btn fa fa-undo"></i></a>
 									  	<a href="#" onclick = '${restartFunction}' title = '${deleteTip}'><i class="btn fa fa-trash"></i></a>
 									</div>
-									<div class = 'dropdown-divider'></div>`);
+									<hr>`);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to set up a custom toggle radio
@@ -922,10 +1047,12 @@ function showMessage(title,message,modalID,show){
 	
 	clearModal(modalID);
 	addModal('main-container',modalID,true);
-	addModalTitle(modalID,title);
+    if(title !== '' && title !== undefined && title !== null){
+        addModalTitle(modalID,title);
+    }
+	
 	$('#'+modalID+'-body').append(message);
 	if(show){$('#'+modalID).modal();}
-
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////

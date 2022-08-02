@@ -2656,6 +2656,7 @@ function GALES(WindSpeed, Hgt, CrownDepth, Spacing, ModRupture){
 ////////////////////////////////////////////////////////////////////////////////
 function createHurricaneDamageWrapper(rows){
   console.log('Running storm model');
+
   // console.log(rows.getInfo())
   //Original Python implementation written by: Scott Goodrick
   //GEE implementation written by: Ian Housman and Robert Chastain
@@ -2729,7 +2730,7 @@ function createHurricaneDamageWrapper(rows){
     var from = modLookup.map(n => n[0]);
     var to = modLookup.map(n => n[1]);
     modImage = modImage.remap(from,to)
-    Map2.addLayer(modImage,{min:to.min(),max:to.max()},'MOD Image',false)
+    Map2.addLayer(modImage,{layerType:'geeImage',min:to.min(),max:to.max()},'MOD Image',false)
  // console.log(c.limit(2).getInfo())
     c = c.map(function(img){
       var tDiff = ee.Image(ee.Number(img.get('tDiff'))).divide(60*60).float()
@@ -2780,8 +2781,8 @@ function createHurricaneDamageWrapper(rows){
       f = f.set(current)
       return f.buffer(speed.multiply(600))
     })
-    Map2.addLayer(trackRows,{},name + ' ' +year.toString()+' Storm Track',false);
-    Map2.addLayer(max.select([0]),{min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Wind Max',false);
+    Map2.addLayer(trackRows,{layerType:'geeVectorImage'},name + ' ' +year.toString()+' Storm Track',false);
+    Map2.addLayer(max.select([0]),{layerType:'geeImage', min:30,max:160,legendLabelLeftAfter:'mph',legendLabelRightAfter:'mph',palette:palettes.niccoli.isol[7]},name+' ' +year.toString()+' Wind Max',false);
     //GALES Params
     //Wind speed in mps (Convert from mph to mps)
     //Height in meters
@@ -2800,28 +2801,28 @@ function createHurricaneDamageWrapper(rows){
     Map2.addLayer(max.select([1]),{min:-100,max:100,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Max',false);
     
     var damageSum = c.select(['Damage_Sum']).sum().int16();
-    Map2.addLayer(damageSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Sum',false)
+    Map2.addLayer(damageSum,{layerType:'geeImage',min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Damage Sum',false)
     
     var windSum = c.select(['Wind_Sum']).sum().int16();
-    Map2.addLayer(windSum,{min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Wind Sum',false)
+    Map2.addLayer(windSum,{layerType:'geeImage',min:50,max:500,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Wind Sum',false)
     
     var catSum = c.select(['Cat_Sum']).sum().int16();
-    Map2.addLayer(catSum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat Sum',false)
+    Map2.addLayer(catSum,{layerType:'geeImage',min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat Sum',false)
     
     var cat1Sum = c.select(['Cat1_Sum']).sum().int16();
-    Map2.addLayer(cat1Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 1 Sum',false)
+    Map2.addLayer(cat1Sum,{layerType:'geeImage',min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 1 Sum',false)
     
     var cat2Sum = c.select(['Cat2_Sum']).sum().int16();
-    Map2.addLayer(cat2Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 2 Sum',false)
+    Map2.addLayer(cat2Sum,{layerType:'geeImage',min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 2 Sum',false)
     
     var cat3Sum = c.select(['Cat3_Sum']).sum().int16();
-    Map2.addLayer(cat3Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 3 Sum',false)
+    Map2.addLayer(cat3Sum,{layerType:'geeImage',min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 3 Sum',false)
     
     var cat4Sum = c.select(['Cat4_Sum']).sum().int16();
-    Map2.addLayer(cat4Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 4 Sum',false)
+    Map2.addLayer(cat4Sum,{layerType:'geeImage',min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 4 Sum',false)
     
     var cat5Sum = c.select(['Cat5_Sum']).sum().int16();
-    Map2.addLayer(cat5Sum,{min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 5 Sum',false)
+    Map2.addLayer(cat5Sum,{layerType:'geeImage',min:0,max:10,palette:palettes.niccoli.isol[7]},name +' ' +year.toString()+' Cat 5 Sum',false)
     
     var windStack = ee.Image.cat([max.select([0]).rename(['Wind_Max']),windSum,catSum,cat1Sum,cat2Sum,cat3Sum,cat4Sum,cat5Sum]).int16();
     var damageStack = ee.Image.cat([max.select([1]).rename(['Damage_Max']),damageSum]).int16();

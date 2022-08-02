@@ -98,6 +98,9 @@ html, body{
 .gray{
   color:var(--deep-brown-70);
 }
+.dark-gray{
+  color:var(--deep-brown-10);
+}
 .teal{
   color:var(--teal-100)!important;
 }
@@ -159,7 +162,7 @@ color:var(--white)!important;}
   /*color:var(--white)!important;*/
 }
 hr{
-  border: 0; border-top: 1px solid #00897B;
+  border: 0; border-top: 1px solid var(--deep-brown-100);;
 }
 .text-black{
   color:var(--black)!important;
@@ -285,7 +288,8 @@ button {
   color: var(--deep-brown-100)!important;
 }
 .support-text:hover{
-  color:var(--teal-100)!important;
+  /*color:var(--teal-100)!important;*/
+  font-weight: bold;
 }
 .text-capitalize { text-transform: uppercase!important; }
 
@@ -580,6 +584,22 @@ font-size:0.9em;
     font-family: FontAwesome;
     content:"\f068";
     padding-right: 5px;   
+}
+.panel-title-svg-lg{
+  width:3rem;
+  height:3rem;
+  margin-right:-0.5rem;
+  margin-left:-1.0rem;
+  margin-top:-1.25rem;
+  margin-bottom:-1rem;
+}
+.panel-title-svg-sm{
+  width:2rem;
+  height:2rem;
+  margin-right:0rem;
+  margin-left:-0.5rem;
+  margin-top:-0.75rem;
+  margin-bottom:-0.5rem;
 }
 .panel-title.collapsed > a:after {
     float: right !important;
