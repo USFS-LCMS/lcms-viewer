@@ -24,7 +24,7 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                                       <li class="list-group-item">All map layers can be turned on or off with the radio button on the left or with a single click on the name.</li>
                                       <li class="list-group-item">The slider on the right controls the opacity of the layer. This is useful for overlaying different layers to see how they relate.</li>
                                       <li class="list-group-item">If you do not see the layer when you turn it on, you can  double-click on the layer name to zoom to the extent of the layer.</li>
-                                      <li class="list-group-item">All map layers are created on-the-fly within <span><a href="https://earthengine.google.com/" target="_blank">Google Earth Engine (GEE) </a></span>, which can cause a delay in the loading of the layers. The number of layers still being created within GEE can be viewed on the bottom bar under "Queue length for maps from GEE:". The number of layers that are currently being displayed can be seen under "Number of map layers loading tiles."</li>
+                                      <li class="list-group-item">All map layers are created on-the-fly within <span><a class = 'intro-modal-links' href="https://earthengine.google.com/" target="_blank">Google Earth Engine (GEE) </a></span>, which can cause a delay in the loading of the layers. The number of layers still being created within GEE can be viewed on the bottom bar under "Queue length for maps from GEE:". The number of layers that are currently being displayed can be seen under "Number of map layers loading tiles."</li>
                                       <li class="list-group-item">When a layer is turned on, if appropriate, an entry in the LEGEND on the bottom-right side (above this tutorial window) will appear.</li>  
                                     </ul>`
                         },
@@ -42,9 +42,9 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>REFERENCE DATA</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">The REFERENCE DATA layers are related geospatial data that can help provide context for the ${mode} data products</li>
-                                      <li class="list-group-item">They include the <a href = "https://earthenginepartners.appspot.com/science-2013-global-forest" target = '_blank'>Hansen Global Forest Change data</a>, 
-                                                                <a href = "https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml" target = "_blank">US Forest Service Insect and Disease Survey (IDS) data</a>,
-                                                                 <a href = "https://mtbs.gov/" target = '_blank'>Monitoring Trends in Burn Severity (MTBS)</a> data, along with related boundary data</li>
+                                      <li class="list-group-item">They include the <a class="intro-modal-links" href = "https://earthenginepartners.appspot.com/science-2013-global-forest" target = '_blank'>Hansen Global Forest Change data</a>, 
+                                                                <a class="intro-modal-links" href = "https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml" target = "_blank">US Forest Service Insect and Disease Survey (IDS) data</a>,
+                                                                 <a class="intro-modal-links" href = "https://mtbs.gov/" target = '_blank'>Monitoring Trends in Burn Severity (MTBS)</a> data, along with related boundary data</li>
                                       <li class="list-group-item">Some study areas include additional data such as mid-level vegetation maps.</li>
                                       <li class="list-group-item">Turning these layers on/off and adjusting the opacity is the same as the ${mode} DATA.</li>
                                     </ul>`
@@ -54,8 +54,8 @@ walkThroughDict = {     'intro':{message:`<h5 class = 'list-group-title'>${mode}
                             message:`<h5 class = 'list-group-title'>REFERENCE DATA</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">The REFERENCE DATA layers are related geospatial data that can help provide context for the ${mode} data products.</li>
-                                      <li class="list-group-item">They include <a href = "https://www.mrlc.gov/data" target = '_blank'>NLCD land cover data</a> and 
-                                                                <a href = "https://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/" target = '_blank'>NAIP data</a>.</li>
+                                      <li class="list-group-item">They include <a class="intro-modal-links" href = "https://www.mrlc.gov/data" target = '_blank'>NLCD land cover data</a> and 
+                                                                <a class="intro-modal-links" href = "https://naip-usdaonline.hub.arcgis.com/" target = '_blank'>NAIP data</a>.</li>
                                       <li class="list-group-item">Turning these layers on/off and adjusting the opacity is the same as for the ${mode} DATA layers.</li>
                                     </ul>`
                         },

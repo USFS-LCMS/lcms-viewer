@@ -87,9 +87,9 @@ let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title 
                                 }
 let specificAuthErrorMessage =specificAuthErrorMessages[mode];
 if(specificAuthErrorMessage === undefined){specificAuthErrorMessage=``;}
-let authErrorMessageContact =`<p>Please contact the LCMS help desk<a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>`;
+let authErrorMessageContact =`<p>Please contact the LCMS help desk<a class = 'intro-modal-links' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>`;
 if(mode==='MTBS'){
-    authErrorMessageContact = `<p style = "margin-bottom:0px;">If you have any further questions about this, please <a class = 'support-text' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
+    authErrorMessageContact = `<p style = "margin-bottom:0px;">If you have any further questions about this, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
 }
 //////////////////////////////////////////////////////////////////////
 /*Add anything to head not already there*/
@@ -233,7 +233,7 @@ const staticTemplates = {
                             </div>
                             <div style ='float:left;'>
                                 <ul class="intro-list">
-                                  <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+                                  <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
                                   </li>
                                   <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
                                   </li>
@@ -277,41 +277,26 @@ const staticTemplates = {
                             
                         </div>`
                 ),
-            'IDS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-md " role="document">
-                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                        <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!</h3>
-                        </div>
-                        <div class="modal-body" id = 'introModal-body'>
-                            <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class = 'support-text' href='https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a> outputs.</p>
-                            <hr>
-                            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
-                            </p>
-                            <hr>
-                            <p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>methods document</a> for more information about how LCMS products are created.   
-                            </p>
-                            <hr>
-                            <p>Please contact the LCMS help desk
-                                <a class = 'support-text' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about LCMS or have feedback on the LCMS IDS Explorer.</p>
-                        </div>
-                        <div class = 'modal-footer' id = 'introModal-footer'>
-                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
-                            <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
-                             </p>
-                        </div>
-                        <hr>
-                        <div class="form-check  mr-0">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`,
+            'IDS':getIntroModal('./images/lcms-icon.png',
+            'Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!',
+           `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
+           <hr>
+           <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
+           </p>`,
+            `
+    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+    <div class ='my-3'>
+    <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+    <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+</div>
+
+<div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
+    <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    
+</div>`,''
+)
+,
             'Ancillary':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -337,65 +322,77 @@ const staticTemplates = {
                     </div>
                 </div>
             </div>`,
-            'LT':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-md " role="document">
-                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                        <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the LandTrendr Data Explorer!</h3>
-                        </div>
-                        <div class="modal-body" id = 'introModal-body' >
-                            <li>
-                                <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr temporal segmentation algorithm</a>. While this tool can run across any area on earth, the quality of the output will be related to the availability of cloud-free Landsat observations.</p>
-                            </li>
-                            <li>
-                                <p class="pb-2 ">LandTrendr will run across the entire extent of the map when it is loaded. If you would like to map a different area, move to the view extent you would like to map, and then press the <kbd>Submit</kbd> button at the bottom of the <kbd>PARAMETERS</kbd> collapse menu.</p>
-                            </li>
-                             <li>
-                                <p class="pb-2 ">All Landsat image processing and LandTrendr algorithm application is being performed on-the-fly. This can take some time to run. If you try to run this tool across a very large extent (zoom level < 9), it may not run.</p>
-                            </li> 
-                        </div>
-                        <div class = 'modal-footer' id = 'introModal-footer'>
-                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
-                            <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
-                             </p>
-                        </div>
-                        <div class="form-check  mr-0">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`,
-            'MTBS':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-md " role="document">
-                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                        <div class = 'modal-header'>
-                            <img class = 'logo' src="./images/mtbs-logo.png"   alt="MTBS logo image">
-                            <h3 class="mb-0 ">Welcome to the MTBS Data Explorer!</h3>
-                        </div>
-                        <div class="modal-body" id = 'introModal-body'>
-                            <p class="pb-2 ">This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.</p>
-                        </div>
-                        <div class = 'modal-footer' id = 'introModal-footer'>
-                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
-                            <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
-                             </p>
-                        </div>
-                        <div class="form-check  mr-0">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`,
+            'LT':getIntroModal('./images/lcms-icon.png',
+            'Welcome to the LandTrendr Data Explorer!',
+           `<li>
+           <p class="pb-2 ">This tool allows for quick exploration of significant changes visible in the Landsat time series using the <a class = 'intro-modal-links' href="https://emapr.github.io/LT-GEE/" target="_blank">LandTrendr temporal segmentation algorithm</a>. While this tool can run across any area on earth, the quality of the output will be related to the availability of cloud-free Landsat observations.</p>
+       </li>
+       <li>
+           <p class="pb-2 ">LandTrendr will run across the entire extent of the map when it is loaded. If you would like to map a different area, move to the view extent you would like to map, and then press the <kbd>Submit</kbd> button at the bottom of the <kbd>PARAMETERS</kbd> collapse menu.</p>
+       </li>
+        <li>
+           <p class="pb-2 ">All Landsat image processing and LandTrendr algorithm application is being performed on-the-fly. This can take some time to run. If you try to run this tool across a very large extent (zoom level < 9), it may not run.</p>
+       </li>`,
+            `
+    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+    <div class ='my-3'>
+    <a class="intro-modal-links" href="https://emapr.github.io/LT-GEE/" target="_blank" title="Open additional LandTrendr resources">LandTrendr Guide</a>
+    <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+</div>
+
+<div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
+    <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    
+</div>`,''
+),
+            'MTBS':getIntroModal('./images/mtbs-logo.png',
+            'Welcome to the MTBS Data Explorer!',
+            `<p class='my-2'>
+            Monitoring Trends in Burn Severity (MTBS) is a multiagency program designed to consistently map the burn severity and perimeters of fires across all lands of the United States from 1984 and beyond.
+    </p>
+    <p class='my-2'>
+    MTBS maps prescribed fires that meet defined fire size thresholds of 1,000 acres in the Western US and 500 acres in the Eastern US. Prescribed fire plays an important role in forest and ecosystem health.
+    </p>
+    <p class='my-2'>
+    MTBS burn severity data are used to assess the impacts to landscape health and can be used to monitor trends in wildfire over time.
+    </p>
+    <p class='my-2'>This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.
+    </p>`,
+    `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+        <br>
+        <img class = 'logo' style = 'margin-left:0.3rem;height:2.5rem;' alt="USGS icon" src="images/USGS_logo_green.svg">
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          <li title = 'The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.'><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
+          </li>
+          <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for MTBS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+          </li>
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+        </ul>
+        
+    </div>
+
+</div>`,
+`<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<div class ='my-3'>
+   <a  class = 'intro-modal-links' onclick = 'toggleWalkThroughCollapse()' title="Run interactive walk-through of the features of the MTBS Data Explorer">Run Walk-Through</a>
+
+    <a class = "intro-modal-links" title = "Contact us" href="https://www.mtbs.gov/contact" target="_blank"  >CONTACT</a> 
+</div>
+
+<div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other MTBS EXPLORER:
+    <a class = 'intro-modal-links' title = "View MTBS outputs" href = "https://www.mtbs.gov/viewer/index.html" target="_blank">MTBS Interactive Viewer</a>
+    
+    
+</div>`),
             'LAMDA':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -667,7 +664,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.fed.us/gstc/" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today’s land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
                                 </a>
                             </div>
                         </section>
@@ -746,7 +743,7 @@ const staticTemplates = {
                         <button  class = 'btn  bg-black' onclick = 'showToolTipsAgain()'>Show tooltips</button>`,
         walkThroughButton:`<div >
                             <label class = 'mt-2'>Run a walk-through of the ${mode} Data Explorer's features</label>
-                            <button  class = 'btn  bg-black' onclick = 'toggleWalkThroughCollapse()' title = 'Run interactive walk-through of the features of the ${mode} Data Explorer'>Run Walk-Through</button>
+                            <a  class = 'intro-modal-links ' onclick = 'toggleWalkThroughCollapse()' title = 'Run interactive walk-through of the features of the ${mode} Data Explorer'>Run Walk-Through</a>
                           </div>`,
         distanceDiv : `Click on map to measure distance`,
         distanceTip : "Click on map to measure distance. Press <kbd>ctrl+z</kbd> to undo most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear measurment and start over.",

@@ -375,9 +375,9 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT & FEEDBACK',`<i role="img" class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,true,``,'');
   $('#support-collapse-div').append(staticTemplates.walkThroughButton);
     $('#support-collapse-div').append(`<hr>`);
-  $('#support-collapse-div').append(`<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`)
+  $('#support-collapse-div').append(`<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a class = 'intro-modal-links' href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`)
   $('#support-collapse-div').append(`<hr>`);
-  $('#support-collapse-div').append(`<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`)
+  $('#support-collapse-div').append(`<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`)
   // $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort MTBS products');
  
@@ -398,7 +398,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   $('#parameters-collapse-div').append(`<hr>`);
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
-  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.2em;height:1.1em;margin-top:-0.2em;margin-left:-0.1em' class='image-icon mr-1' alt="MTBS logo" src="images/mtbs-logo.png">`,true,null,mode+' DATA layers to view on map');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'height: 1.5rem;margin-top: -0.3rem;margin-left: -0.3rem;' class='image-icon mr-1' alt="MTBS logo" src="images/mtbs-logo.png">`,true,null,mode+' DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
   
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');

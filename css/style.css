@@ -777,6 +777,10 @@ textarea {
   margin-right:0.3rem;
   color:var(--black)!important;
 }
+.intro-modal-links:active {
+  transform: translate(4px) translateY(4px);
+}
+.intro-modal-links:hover{font-weight: 1000}
 .intro-list li{
   display: block;
 }
