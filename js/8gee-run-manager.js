@@ -1865,7 +1865,7 @@ function runMTBS(){
   populatePixelChartDropdown();
 
   getSelectLayers();
-  toggleCumulativeMode();
+  // toggleCumulativeMode();
   // Map2.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
   // Map2.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
   // $('#select-area-interactive-chart-label').click();
