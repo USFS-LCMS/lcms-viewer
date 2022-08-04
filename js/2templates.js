@@ -219,12 +219,13 @@ const staticTemplates = {
 	introModal:{'LCMS':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!',
                                     `<p class='my-2'>
+                                    This Data Explorer provides the ability to view, analyze, summarize, and download LCMS data. 
+                                    </p>
+                                    <p class='my-2'>
                             LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
 
                             </p>
-                            <p class='my-2'>
-                            This Data Explorer provides the ability to view, analyze, summarize, and download LCMS data. 
-                            </p>`,
+                            `,
                             `<div style='display:inline-block;margin-top:0.5rem;'>
                             <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
                                 <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
@@ -279,7 +280,7 @@ const staticTemplates = {
             'IDS':getIntroModal('./images/lcms-icon.png',
             'Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!',
            `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
-           <hr>
+           
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
             `
@@ -348,17 +349,15 @@ const staticTemplates = {
 ),
             'MTBS':getIntroModal('./images/mtbs-logo.png',
             'Welcome to the MTBS Data Explorer!',
-            `<p class='my-2'>
-            Monitoring Trends in Burn Severity (MTBS) is a multiagency program designed to consistently map the burn severity and perimeters of fires across all lands of the United States from 1984 and beyond.
-    </p>
-    <p class='my-2'>
-    MTBS maps prescribed fires that meet defined fire size thresholds of 1,000 acres in the Western US and 500 acres in the Eastern US. Prescribed fire plays an important role in forest and ecosystem health.
+            `<p class='my-2'>This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.
+            </p>
+            <p class='my-2'>
+            Monitoring Trends in Burn Severity (MTBS) is a multiagency program designed to consistently map the burn severity and perimeters of fires across all lands of the United States from 1984 and beyond. MTBS maps wildland and prescribed fires greater than 1,000 acres in the Western US and 500 acres in the Eastern US. 
     </p>
     <p class='my-2'>
     MTBS burn severity data are used to assess the impacts to landscape health and can be used to monitor trends in wildfire over time.
     </p>
-    <p class='my-2'>This tool is intended to allow for interactive exploration of the Monitoring Trends in Burn Severity (MTBS) data record.
-    </p>`,
+    `,
     `<div style='display:inline-block;margin-top:0.5rem;'>
     <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
         <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
@@ -385,11 +384,7 @@ const staticTemplates = {
     <a class = "intro-modal-links" title = "Contact us" href="https://www.mtbs.gov/contact" target="_blank"  >CONTACT</a> 
 </div>
 
-<div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other MTBS EXPLORER:
-    <a class = 'intro-modal-links' title = "View MTBS outputs" href = "https://www.mtbs.gov/viewer/index.html" target="_blank">MTBS Interactive Viewer</a>
-    
-    
-</div>`),
+`),
             'LAMDA':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
                 <div class="modal-dialog modal-md " role="document">
                     <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
@@ -432,6 +427,8 @@ const staticTemplates = {
           </li>
           <li title = 'The Southern Research Station provided the original methods for this data explorer.'><a class="intro-modal-links" href="https://www.srs.fs.usda.gov/" target="_blank">SRS</a> Southern Research Station
                                   </li>
+            <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+            </li>
           <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
         </ul>
