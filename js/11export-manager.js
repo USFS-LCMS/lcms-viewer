@@ -3,7 +3,13 @@ var cancelAllTasks = function(){console.log('yay')};//showMessage('Completed','T
 var downloadMetadata = function(){console.log('yay')};
 var downloadTraining = function(){console.log('yay')};
 var list = [];
-var bucketName = 'viewer-exports';//Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
+var bucketName;//Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
+if(urlParams.bucketName === null || urlParams.bucketName === undefined){
+    bucketName = 'viewer-exports';
+}else{
+    bucketName = urlParams.bucketName;
+}
+
 var eID = 1;
 var exportFC;
 // exportCapability = true;
@@ -373,7 +379,7 @@ function updateSpinner(){
 function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc,noDataValue){
     $('#summary-spinner').show();
     eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue,false));//.reproject(exportCRS,null,exportScale);
-    // var imageJson = ee.Serializer.toJSON(eeImage);
+    // var imageJson = eeImage.serialize();//ee.Serializer.toJSON(eeImage);
     $('#export-message-container').text("Exporting:" + exportOutputName);
     
 
@@ -394,29 +400,30 @@ function getIDAndParams(eeImage,exportOutputName,exportCRS,exportScale,fc,noData
     
     }
     
-    // //Set up parameter object
-    // var params = {
-    //     json:imageJson,
-    //     type:'EXPORT_IMAGE',
-    //     description:exportOutputName,
-    //     region:region,
-    //     outputBucket:bucketName ,
-    //     outputPrefix: exportOutputName,
-    //     crs:exportCRS,
-    //     crsTransform:null,
-    //     scale: exportScale,
-    //     maxPixels:1e13,
-    //     shardSize:256,
-    //     fileDimensions:256*75
-    //     }
+    //Set up parameter object
+    var params = {
+        element:eeImage,
+        type:'EXPORT_IMAGE',
+        description:exportOutputName,
+        region:region,
+        outputBucket:bucketName ,
+        outputPrefix: exportOutputName,
+        crs:exportCRS,
+        crsTransform:null,
+        scale: exportScale,
+        maxPixels:1e13,
+        shardSize:256,
+        fileDimensions:256*75,
+        fileFormat :'GEO_TIFF'
+        }
 
-    // //Set up a task and update the spinner
-    // taskId = ee.data.newTaskId(1)
-
-    var task = ee.batch.Export.image.toCloudStorage(eeImage, exportOutputName, bucketName, exportOutputName, null, region, exportScale, exportCRS, null, 1e13, 256, 256*75);
+    //Set up a task and update the spinner
+    taskId = ee.data.newTaskId(1)
+    return {taskID:taskId,params:params}
+    // var task = ee.batch.Export.image.toCloudStorage(eeImage, exportOutputName, bucketName, exportOutputName, null, region, exportScale, exportCRS, null, 1e13, 256, 256*75);
     
 
-    return task;
+    // return task;
 }
 function googleMapPolygonToGEEPolygon(googleMapPolygon){
     var path = googleMapPolygon.getPath().getArray();
@@ -448,22 +455,26 @@ function exportImages(){
                 var exportName = exportObject['name']+nowSuffix;
                 var noDataValue = exportObject['noDataValue'];
                 exportsSubmitted +=  exportName+ '<br>';
-                var task = getIDAndParams(exportObject['eeImage'],exportName,exportCRS,exportObject['res'],fc,noDataValue);
+                var IDAndParams = getIDAndParams(exportObject['eeImage'],exportName,exportCRS,exportObject['res'],fc,noDataValue);
                 
                 //Start processing
-                function startTask(){
-                    console.log('Starting task');
-                    task.start(function(){
-                        // console.log('here')
-                        meta_template_strT = '{}';
-                        cacheExport(exportName,exportName,meta_template_strT);
-                        },
-                    function(fail){
-                        console.log(fail);
-                        startTask();
-                    })};
-                startTask();
-                // ee.data.startProcessing(IDAndParams['id'], IDAndParams['params']);
+                // function startTask(){
+                //     console.log('Starting task');
+                //     task.start(function(){
+                //         // console.log('here')
+                //         meta_template_strT = '{}';
+                //         cacheExport(exportName,exportName,meta_template_strT);
+                //         },
+                //     function(fail){
+                //         console.log(fail);
+                //         startTask();
+                //     })};
+                // startTask();
+                console.log(IDAndParams)
+                ee.data.startProcessing(IDAndParams['taskId'], IDAndParams['params'],()=>{
+                    meta_template_strT = '{}';
+                    cacheExport(exportName,exportName,meta_template_strT);
+                });
                     
                 
                 // var metadataParams = exportObject['metadataParams']

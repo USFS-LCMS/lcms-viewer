@@ -155,8 +155,7 @@ const staticTemplates = {
                                                               ${specificAuthErrorMessage} 
                                                               ${authErrorMessageContact}
     `,
-    exportContainer:`<hr>
-                    <div class = 'py-2' id = 'export-list-container'>
+    exportContainer:`<div class = 'py-2' id = 'export-list-container'>
                         <h5>Choose which images to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
@@ -233,7 +232,7 @@ const staticTemplates = {
                             </div>
                             <div style ='float:left;'>
                                 <ul class="intro-list">
-                                  <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+                                  <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
                                   </li>
                                   <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
                                   </li>
@@ -368,11 +367,11 @@ const staticTemplates = {
     </div>
     <div style ='float:left;'>
         <ul class="intro-list">
-          <li title = 'The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.'><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.""><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
           </li>
-          <li title = 'The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.'><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
+          <li title = "The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.""><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
           </li>
-          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          <li title = "This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.""><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
         </ul>
         
@@ -417,57 +416,41 @@ const staticTemplates = {
                     </div>
                 </div>
             </div>`,
-            'STORM':`<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
-                <div style='max-width:700px;' class="modal-dialog" role="document">
-                    <div class="modal-content text-dark modal-content-full-screen-styling" >
-                       
-                        <div class="modal-body" id = 'introModal-body'>
-                        <button type="button" class="close m-0 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                            <span>
-                                <img class = 'logo' src="./Icons_svg/logo_gtac_color-wt.svg"   alt="GTAC logo">
-                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">STORM<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> DAMAGE </span>VIEWER</h1>
-                            </span>
-                         
-                        <div style = 'block;margin-top:0.5rem;'>
-                            <span  style="font-weight:bold">Welcome to the Storm Damage Viewer!</span>
-                            
-                            <p class='my-2'>
-                            This tool is intended to provide an interactive ability to upload storm tracks and produce modeled wind fields and tree damage.
+            'STORM':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
+            'Welcome to the Storm Damage Viewer!',
+            `<p class='my-2'>
+                            This tool provides an interactive ability to upload storm tracks and produce modeled wind fields and tree damage. These outputs can then be downloaded for further analysis.
 
-                            </p>
-                           
-                        </div>
-                            <div style='display:inline-block;margin-top:0.5rem;'>
-                                <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
-                                    <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
-                                    
-                                </div>
-                                
-                            
-                            </div>
-                    
-                                
-                           <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
-                            
+                            </p>`,
+    `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          <li title = 'The Southern Research Station provided the original methods for this data explorer.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">SRS</a> Southern Research Station
+                                  </li>
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+        </ul>
+        
+    </div>
 
-                             <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
-                                <p >
-                                  <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                    Creating map services within Google Earth Engine. 
-                                 </p>
-                            </div>
-                           
-                            <div class="form-check  pl-0 mt-3 mb-2">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                        
-                           
-                        
-                    </div>
-                </div>
-            </div>`,
+</div>`,
+`<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+
+<div class ='my-3'>
+    <a class = "intro-modal-links" title = "Report highlighting a project that used this tool" href = "https://apps.fs.usda.gov/gtac/publications/2022/tree-structure-damage-impact-predictive-trees-dip-modeling-phase-ii" target="_blank" >PROJECT REPORT</a>
+    <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+</div>
+<div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
+    <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    
+</div>`)
         },
     loadingModal:{'all':function(logoPath,word){
                                     let logoLine= `<img class = 'logo' src="./images/${logoPath}"   alt="${mode} logo image">`;

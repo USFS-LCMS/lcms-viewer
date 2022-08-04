@@ -2918,7 +2918,7 @@ function createHurricaneDamageWrapper(rows){
 ///////////////////////////////////////////////////////////
 function runStorm(){
   var x = 0;//console.log('here')
- 
+  // Map2.addExport(ee.Image(1).int16(),'test' ,30,true,{});
   // rows = ee.FeatureCollection(rows.features);
      
   // createHurricaneDamageWrapper(rows);
