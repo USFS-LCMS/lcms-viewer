@@ -1227,8 +1227,11 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     layer.layerId = layerCount;
     layer.currentGEERunID = currentGEERunID;
     //Add the layer
+    
     addLayer(layer);
-    layerCount ++;   
+    layerCount ++;
+    
+       
 }
 
 //////////////////////////////////////////////////////
@@ -1481,6 +1484,12 @@ function mp(){
   }
 }
 var Map2 = new mp();
+
+if(urlParams.addLayer==='false'){
+  Object.keys(Map2).filter(k=>k.indexOf('add')>-1).map(k=>{
+    Map2[k]=function(){}
+  })
+}
 
 ////////////////////////////////////////////////////////////////////////
 //Some helper functions

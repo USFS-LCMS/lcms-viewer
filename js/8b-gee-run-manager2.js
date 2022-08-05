@@ -227,6 +227,8 @@ function runGTAC(){
     if(bn === 'Change'){
       fieldsHidden =[true,false,false,false,true];
     }
+
+    convertToStack(areaC,xAxisProperty='year',dateFormat='YYYY')
     areaChartCollections[bn] = {'label':`LCMS ${bnTitle} Annual`,
                                   'collection':areaC,
                                   'stacked':false,
@@ -242,16 +244,17 @@ function runGTAC(){
 
   if(urlParams.sankey==='true' || urlParams.beta ==='true' && endYear-startYear >= 5){
     activeStartYear = startYear;activeEndYear=endYear;
-    $('#transition-year-interval-slider-container').show();
+    // $('#transition-year-interval-slider-container').show();
+    setupTransitionPeriodUI();
     $('#transition-periods-container').show();
-    updateSankeyPeriods(transitionChartYearInterval);
+    // updateSankeyPeriods(transitionChartYearInterval);
 
     
       ['Land_Cover','Land_Use','Change'].map(bn=>{addSankey(lcmsRun,bn);});
 
    
   }else if((urlParams.sankey==='true' || urlParams.beta ==='true')&& endYear-startYear<5){
-    $('#transition-year-interval-slider-container').hide();
+    // $('#transition-year-interval-slider-container').hide();
     $('#transition-periods-container').hide();
     
   }
