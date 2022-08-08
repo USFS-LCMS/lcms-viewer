@@ -221,11 +221,12 @@ button {
 }
 .vl {
   border-left: 1px solid var(--deep-brown-20);
-  height: 1.2rem;
-  vertical-align: none;
+  height: 1.25rem;
+  vertical-align: middle;
   display: inline-block;
-  margin-left: 0rem;
-  margin-right:0rem;
+  margin-left: 0.1rem;
+  margin-right:0.25rem;
+  margin-top:0.5rem;
 }
 .vl2 {
   border-left: 1px solid var(--deep-brown-100);
@@ -240,10 +241,11 @@ button {
   font-weight:100;
   font-family: 'Roboto';
   margin-left:2.5rem;
-  margin-right:1rem;
-  margin-bottom:0.25rem;
-  margin-top:0.5rem;
+  margin-right:0.5rem;
+  margin-bottom:0.0rem;
+  margin-top:0.25rem;
   font-size:1.5rem;
+  display:flex;
 }
 .search-bar{
   padding-left:2.75rem;

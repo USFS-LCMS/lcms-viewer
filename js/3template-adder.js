@@ -41,9 +41,16 @@ $('#sidebar-left-header').append(staticTemplates.placesSearchDiv);
 //   while($('#title-banner').width())
 // }
 // fitTestCustom('title-banner',$('#title-banner').width()-50)
-$('#title-banner').fitText(1.7);
-// $('#study-area-label').fitText(1.8);
 
+// $('#study-area-label').fitText(1.8);
+if(['LCMS','lcms-base-learner','Ancillary','LT','IDS'].indexOf(mode)>-1){
+  $('#title-banner-icon-right').attr('src','images/logo_icon_lcms-data-viewer.svg');
+}else if(mode==='MTBS'){
+  $('#title-banner-icon-right').attr('src','images/mtbs-logo.png')
+}else{
+  $('#title-banner-icon-right').hide();
+}
+$('#title-banner').fitText(1.55);
 
 function toggleAdvancedOn(){
     $("#threshold-container").slideDown();

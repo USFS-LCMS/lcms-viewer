@@ -9,14 +9,14 @@ const  titles = {
 		    title:'LCMS Data Explorer'
 			},
     'LCMS': {
-            leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/logo_icon_lcms-data-viewer.svg">LCMS`,
+            leftWords: `LCMS`,
             leftWordsSimple:'LCMS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
-            leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem;margin-right:0.1rem;' alt="LCMS icon" src="images/logo_icon_lcms-data-viewer.svg">LCMS`,
+            leftWords: `LCMS`,
             leftWordsSimple:'LCMS',
             centerWords: 'Base-Learner',
             rightWords:'EXPLORER',
@@ -30,14 +30,14 @@ const  titles = {
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
-            leftWords: `<img style = 'width:1.0em;height:0.9em;margin-top:-0.2em;margin-left:0.2em' class='image-icon mr-1' alt="LCMS icon" src="images/lcms-icon.png">LandTrendr`,
+            leftWords: `LandTrendr`,
             leftWordsSimple:'LandTrendr',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LandTrendr Data Explorer'
             },
     'MTBS': {
-            leftWords: `<img style = 'width:2rem;height:1.8rem;margin-top:-0.5rem;margin-left:0.1rem' class='image-icon ' alt="MTBS icon" src="images/mtbs-logo.png">MTBS`,
+            leftWords: `MTBS`,
             leftWordsSimple:'MTBS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
@@ -187,17 +187,14 @@ const staticTemplates = {
                         </div>
                         
                     </div>`,
-	topBanner:`<h1 id = 'title-banner' title="" class = 'white  text-center title-banner' >
-                    <img style = 'height:2rem;margin-top:-0.3rem'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
+	topBanner:` <div id = 'title-banner' class = 'white  title-banner '>
+                    <img id='title-banner-icon-left' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
                     <div class="vl"></div>
-                    ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</h1>`,
-//     topBanner:`<svg width="300" height="180"
-//     style="border:solid 6px"
-//     xmlns="http://www.w3.org/2000/svg">
-//     <g>
-//         <text y="50%" textLength="436" lengthAdjust="spacingAndGlyphs"  class = 'white text-center title-banner'>UGLY TEXT</text>
-//     </g>
-// </svg>`,
+                    <img id='title-banner-icon-right' style = 'width:1.6rem;height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' alt="LCMS icon">
+                    <div  class='my-0' title=""  >
+                    ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
+                </div>`,
+
 	studyAreaDropdown:`<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
 		                <div class="dropdown-menu" id="study-area-list">  
@@ -2267,38 +2264,43 @@ function getTransitionRowData(){
       let row = [];
       let colI = 0;
       $(this).find("td").each(function(){
-        
         $(this).find("input").each(function(){
           let v = parseInt($(this).val());
-          if(v !==''&&  periods[rowI-1][colI] < v){
-            row.push(v);
-          }else if(v===''){
-
-            showMessage('Invalid Transition Periods',`Please ensure all transition periods have values`);
-            periodsValid=false;
-          }else{
-            showMessage('Invalid Transition Periods',`Please ensure all transition periods have values and are in succession of one another`);
-            periodsValid=false;
-          };
-          
-          
+          row.push(v);
           });
           colI++;
          });
-      if(row.length==2){
         periods.push(row);
-      }else if(row.length===1){
-        showMessage('Invalid Transition Periods ','One or more row only has a single value provided or have the same year as a row above');
-        periodsValid=false;
-      }else if(row[0]> row[1]){
-        showMessage('Invalid Transition Periods ','One or more row, the second value less than the first value');
-        periodsValid=false;
-      }
-      
-      rowI++;
-  });
+        rowI++;
+    });
     periods.push([parseInt($('#last-transition-row td input:first').val()),
                   parseInt($('#last-transition-row td input:last').val())]);
+    var errorDict = {
+        'blank':'One or more blank value found',
+        'outsideYearRange':`Found years outside available year range. Please ensure all years are >= ${activeStartYear} and <= ${activeEndYear}.`,
+        'backwards':'One or more row has a first year that is greater than the last year',
+        'overlap':'Please ensure all transition periods have values and are in succession of one another and do not overlap'
+
+    };
+    var errorList = [];
+    rowI = 0
+    periods.map(row=>{
+        row.map(n=>{
+            if(isNaN(n)){errorList.push('blank');}
+            if(n < activeStartYear || n > activeEndYear){errorList.push('outsideYearRange')}
+        })
+        if(row[1]<row[0]){errorList.push('backwards')}
+        if(rowI>0){
+            let previousRow = periods[rowI-1];
+            if(previousRow[1]>=row[0]){errorList.push('overlap')}
+        }
+        rowI++
+    });
+    if(errorList.length>0){
+        let errorMessage = 'The following errors were found:<br>'+unique(errorList).map(e=>errorDict[e]).join('<br>');
+        showMessage('Invalid Transition Periods Provided',errorMessage);
+        periodsValid=false;
+    }   
     if(periodsValid){
       return periods;
     }else{
