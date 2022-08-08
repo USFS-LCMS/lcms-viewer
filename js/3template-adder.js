@@ -746,116 +746,16 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
     //     "slide", 
     //     function( event, ui ) {updateSankeyPeriods(ui.value)} 
     // );
-    function getTransitionRowData(){
-      var periods = [];
-      var periodsValid = true;
-      periods.push([parseInt($('#first-transition-row td input:first').val()),
-                    parseInt($('#first-transition-row td input:last').val())]);
+
     
-    
-      let rowI = 1
-      $('#added-transition-rows tr').each(function() {
-        let row = [];
-        let colI = 0;
-        $(this).find("td").each(function(){
-          
-          $(this).find("input").each(function(){
-            let v = parseInt($(this).val());
-            if(v !==''&&  periods[rowI-1][colI] < v){
-              console.log([rowI,colI,periods[rowI-1][colI],v]);
-              row.push(v);
-            }else{
 
-              showMessage('Invalid Transition Periods 1',`${$(this).val()} Please ensure all transition periods are in succession of one another`);
-              periodsValid=false;
-            }
-            
-            
-            });
-            colI++;
-           });
-        if(row.length==2){
-          periods.push(row);
-        }else if(row.length===1){
-          showMessage('Invalid Transition Periods ','One or more row only has a single value provided');
-        }else if(row[0]> row[1]){
-          showMessage('Invalid Transition Periods ','One or more row, the second value less than the first value');
-        }
-        
-        rowI++;
-    });
-      periods.push([parseInt($('#last-transition-row td input:first').val()),
-                    parseInt($('#last-transition-row td input:last').val())]);
-      if(periodsValid){
-        return periods;
-      }else{
-        return null;
-      }
-      
-    }
-  function setupTransitionPeriodUI(){
-
-    $('#transition-periods-container').empty();
-    $('#transition-periods-container').append(`
-    <hr>
-    <div class="row pb-2" title='Select Periods for Transition Area Charting'>
-		<div style='padding-left:0.5rem;padding-right:0.5rem;width:100%;'>
-    <p style='font-size:1.25rem;' >Transition Charting Periods</p>
-			<table class="table " id="transition-period-table">
-				<thead>
-					<tr>
-						
-						<th class="text-center">
-							First Year
-						</th>
-						<th class="text-center">
-							Last Year
-						</th>
-						
-					</tr>
-				</thead>
-				<tbody id='default-transition-start'> </tbody>
-        <tbody id='added-transition-rows'></tbody>
-        <tbody id='default-transition-end'></tbody>
-       
-			</table>
-
-    <div class="input-group-prepend pl-2">
-                            <button title = 'Click to add a transition period' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="add-transition-row"><i class="fa fa-plus teal "></i></button>
-                            <button title = 'Click to remove a transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="remove-transition-row"><i class="fa fa-minus teal "></i></button>
-                        </div>
-		</div>
-    
-	</div>
-	
-`);
-var transitionRowI=0;
-var defaultTransitionYears = [activeStartYear,activeEndYear-2];
-
-function addRow(containerID,rowID,yr1,yr2){
-  $(`#${containerID}`).append(`<tr id='${rowID}'>
+// $("#add-transition-row").click();
+// $("#remove-transition-row").click(function(){
   
-  <td>
-  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr1}' placeholder='Enter Year' class="form-control"/>
-  </td>
-  <td>
-  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr2}'  placeholder='Enter Year' class="form-control"/>
-  </td>
-  
-</tr>`)
+// });
 
-}
-$("#add-transition-row").click(function(){
-  addRow('added-transition-rows',`transition-row-${transitionRowI}`,'','');
-  transitionRowI++; 
-});
-$("#remove-transition-row").click(function(){
-  $('#added-transition-rows tr:last').remove();
-});
-addRow('default-transition-start','first-transition-row',activeStartYear,activeStartYear+2);
-addRow('default-transition-end','last-transition-row',activeEndYear-2,activeEndYear);
 // $("#add_row").click();//$("#add_row").click();
-  }
+  
   }
  
   $('#area-summary-format').prop('title','Choose how to summarize area- as a percentage of the area, acres, or hectares.')
