@@ -69,7 +69,7 @@ const  titles = {
             title:'LAMDA Data Explorer'
             }     
 }
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title = "A simple LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a simple visualization of LCMS data products.</p>
                                 <p>The <kbd>DOWNLOAD DATA</kbd> menu on the left (of this page) is still available for downloading LCMS data.</p>
                                 <p>For more information on LCMS please visit the <a class = 'support-text' title = "LCMS Clearinghouse Page" href = "https://data.fs.usda.gov/geodata/rastergateway/LCMS/" target="_blank">LCMS Clearinghouse Page</a>.</p>`,
