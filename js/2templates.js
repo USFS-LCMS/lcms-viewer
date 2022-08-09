@@ -77,7 +77,7 @@ let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title 
                                 }
 let specificAuthErrorMessage =specificAuthErrorMessages[mode];
 if(specificAuthErrorMessage === undefined){specificAuthErrorMessage=``;}
-let authErrorMessageContact =`<p>Please contact the LCMS help desk<a class = 'intro-modal-links' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>`;
+let authErrorMessageContact =`<p>Please contact the LCMS help desk <a class = 'intro-modal-links' href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</a> if you have questions/comments about the ${mode} viewer or have feedback.</p>`;
 if(mode==='MTBS'){
     authErrorMessageContact = `<p style = "margin-bottom:0px;">If you have any further questions about this, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
 }
