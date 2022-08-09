@@ -250,7 +250,7 @@ button {
 .search-bar{
   padding-left:2.75rem;
   padding-right:1rem;
-  padding-bottom:0.25rem;
+  padding-bottom:0.5rem;
   padding-top:0.25rem;
   font-size:1.5rem;
   display: flex;
@@ -556,8 +556,8 @@ font-size:0.9em;
 /*///////////////////////////////////////////////////////////*/
 /*Panel styling*/
 .panel-heading{
-  border-top: 0.04em solid var(--deep-brown-10);
-  border-bottom: 0.04em solid var(--deep-brown-10);
+  border-top: 0.05rem solid var(--deep-brown-10);
+  /* border-bottom: 0.04em solid var(--deep-brown-10); */
   background-color: var(--transparent)!important;
   color:var(--white)!important;
 }
@@ -772,7 +772,7 @@ textarea {
   border-style: none;
 }
 
-.intro-modal-links{
+.intro-modal-links, .links{
   text-decoration: underline!important;
   font-size: 1.0rem;
   font-weight: bold;
@@ -795,32 +795,32 @@ textarea {
 /*Dual slider styling*/
 
 .ui-slider{
-  height: .15em ;
+  height: .15rem ;
 }
 .ui-slider-horizontal .ui-slider-handle {
   
-  top: -.45em ; 
-  border-radius:0em ;
-  margin-left: -0.3em ;
-  width: 0.6em ;
-  height: 1em ;
-  border: 0.1em solid var(--deep-brown-100); 
+  top: -.45rem ; 
+  border-radius:0rem ;
+  margin-left: -0.3rem ;
+  width: 0.6rem ;
+  height: 1rem ;
+  border: 0.1rem solid var(--deep-brown-100); 
 
 }
  .ui-widget-content .ui-state-default {
     background: var(--deep-brown-100)!important;  
 }
 .ui-slider-horizontal{ 
-  height: .15em ;
+  height: .15rem ;
   background:var(--deep-brown-70);  
-  border: 0.05em solid var(--deep-brown-100);          
+  border: 0.05rem solid var(--deep-brown-100);          
 }
 .ui-slider-horizontal .ui-slider-range{ 
-  height: .25em ;
+  height: .15rem ;
   background:var(--deep-brown-100);           
 }
 .ui-slider-horizontal .ui-slider-handle .ui-state-focus{
-  border-radius: 0em!important;
+  border-radius: 0rem!important;
 }
 /*///////////////////////////////////////////////////////////*/
 /*Tree dropdown styling*/

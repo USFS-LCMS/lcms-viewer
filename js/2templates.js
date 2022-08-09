@@ -10,70 +10,60 @@ const  titles = {
 			},
     'LCMS': {
             leftWords: `LCMS`,
-            leftWordsSimple:'LCMS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LCMS Data Explorer'
             },
     'lcms-base-learner': {
             leftWords: `LCMS`,
-            leftWordsSimple:'LCMS',
             centerWords: 'Base-Learner',
             rightWords:'EXPLORER',
             title:'LCMS Base Learner Explorer'
             },
 	'Ancillary': {
 		    leftWords: 'Ancillary',
-            leftWordsSimple:'Ancillary',
 		    centerWords: 'DATA',
 		    rightWords:'Viewer',
 		    title:'TimeSync Ancillary Data Viewer'
 			},
     'LT': {
             leftWords: `LandTrendr`,
-            leftWordsSimple:'LandTrendr',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LandTrendr Data Explorer'
             },
     'MTBS': {
             leftWords: `MTBS`,
-            leftWordsSimple:'MTBS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'MTBS Data Explorer'
             },
     'TEST': {
             leftWords: 'TEST',
-            leftWordsSimple:'TEST',
             centerWords: 'DATA',
             rightWords:'Explorer',
             title:'TEST Data Viewer'
             },
     'IDS' : {
             leftWords: 'IDS',
-            leftWordsSimple:'IDS',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'Insect and Disease Detection Survey Data Viewer'
             },
     'geeViz': {
             leftWords: 'geeViz',
-            leftWordsSimple:'geeViz',
             centerWords: 'DATA',
             rightWords:'Viewer',
             title:'geeViz Data Viewer'
             },
     'STORM': {
             leftWords: 'Storm',
-            leftWordsSimple:'Storm',
             centerWords: 'Damage',
             rightWords:'Viewer',
             title:'Storm Damage Viewer'
             },
     'LAMDA': {
             leftWords: 'LAMDA',
-            leftWordsSimple: 'LAMDA',
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LAMDA Data Explorer'
@@ -108,7 +98,7 @@ function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText){
                         <button type="button" class="close m-0 ml-auto text-dark" data-dismiss="modal">&times;</button>
                             <span>
                                 <img class = 'logo' src="${iconPath}"   alt="logo image">
-                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">${titles[mode].leftWordsSimple}<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${titles[mode].centerWords} </span>${titles[mode].rightWords}</h1>
+                                <h1 id = 'intro-modal-title-banner' title="" class = '  splash-title' style="font-weight:100;font-family: 'Roboto';">${titles[mode].leftWords}<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${titles[mode].centerWords} </span>${titles[mode].rightWords}</h1>
                             </span>
                          
                         <div style = 'block;margin-top:0.5rem;'>
@@ -190,8 +180,8 @@ const staticTemplates = {
 	topBanner:` <div id = 'title-banner' class = 'white  title-banner '>
                     <img id='title-banner-icon-left' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
                     <div class="vl"></div>
-                    <img id='title-banner-icon-right' style = 'width:1.6rem;height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' alt="LCMS icon">
-                    <div  class='my-0' title=""  >
+                    <img id='title-banner-icon-right' style = 'width:1.6rem;height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
+                    <div  class='my-0'>
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
                 </div>`,
 
@@ -453,7 +443,7 @@ const staticTemplates = {
                                     }
                                     return `<span>
                                                            ${logoLine} 
-                                                            <h2 id = 'intro-modal-title-banner' title="" class = 'splash-title' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWordsSimple}<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span> ${topBannerParams.rightWords}</h2>
+                                                            <h2 id = 'intro-modal-title-banner' title="" class = 'splash-title' style="font-weight:100;font-family: 'Roboto';">${topBannerParams.leftWords}<span  style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> ${topBannerParams.centerWords} </span> ${topBannerParams.rightWords}</h2>
                                                         </span>
 
                             
@@ -591,7 +581,7 @@ const staticTemplates = {
                                 <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                                <a class = 'support-text' onclick = 'downloadTutorial()'>
+                                <a class = 'links' onclick = 'downloadTutorial()'>
                                 Click to launch a tutorial that explains how to utilize the Data Explorer</a>
                             </div>
                         </div>
@@ -606,10 +596,10 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'support-text' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>Version 2021.7 (CONUS and SEAK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>Version 2021.7 (CONUS and SEAK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'support-text' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
                                 </li>   
                             </div>
                         </div>
@@ -622,9 +612,9 @@ const staticTemplates = {
                                 <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './images/lcms-icon.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                                <a class = 'support-text' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+                                <a class = 'links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
                                 <hr>
-                                <a class = 'support-text' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                                <a class = 'links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             </div>
                         </section>
                         <hr>
@@ -1612,7 +1602,9 @@ function addLayer(layer){
     		}
 	})
 	function setRangeSliderThumbOpacity(){
-		$('#'+opacityID).css("background-color", 'rgba(55, 46, 44,'+layer.rangeOpacity+')')
+        console.log([opacityID,layer.rangeOpacity].join('-'))
+		$(`#${opacityID}`).css("background-color", `rgba(55, 46, 44,${layer.rangeOpacity})!important`)
+        
 	}
     //Progress bar controller
 	function updateProgress(){

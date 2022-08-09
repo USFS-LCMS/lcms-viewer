@@ -45,8 +45,10 @@ $('#sidebar-left-header').append(staticTemplates.placesSearchDiv);
 // $('#study-area-label').fitText(1.8);
 if(['LCMS','lcms-base-learner','Ancillary','LT','IDS'].indexOf(mode)>-1){
   $('#title-banner-icon-right').attr('src','images/logo_icon_lcms-data-viewer.svg');
+  $('#title-banner-icon-right').attr('alt','LCMS icon');
 }else if(mode==='MTBS'){
-  $('#title-banner-icon-right').attr('src','images/mtbs-logo.png')
+  $('#title-banner-icon-right').attr('src','images/mtbs-logo.png');
+  $('#title-banner-icon-right').attr('alt','MTBS icon')
 }else{
   $('#title-banner-icon-right').hide();
 }
