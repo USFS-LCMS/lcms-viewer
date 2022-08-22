@@ -1538,7 +1538,7 @@ function reRun(){
   updateGEETileLayersLoading();
 
   stopTimeLapse();
-  queryObj = {};areaChartCollections = {};pixelChartCollections = {};timeLapseObj = {};
+  queryObj = {};areaChartCollections = {};pixelChartCollections = {};timeLapseObj = {};dashboardObj={};
   intervalPeriod = 666.6666666;
   timeLapseID = null;
   timeLapseFrame = 0;
@@ -2654,6 +2654,8 @@ function initialize() {
       run  = runStorm;
       }else if(mode === 'lcms-base-learner'){
         run = runBaseLearner
+      }else if(mode === 'lcms-dashboard'){
+        run = runDashboard
       }else if(studyAreaName === 'CONUS'){
         longStudyAreaName = cachedStudyAreaName;
         run = runCONUS;
@@ -2697,6 +2699,7 @@ function initialize() {
     }, 1500);
    
   	},function(failure){
+      console.log(`Failed to authenticate to GEE: ${failure}`)
       if(mode === 'LCMS'){ 
         setupDropdownTreeDownloads(studyAreaName);
         populateLCMSDownloads();

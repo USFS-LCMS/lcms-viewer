@@ -67,6 +67,12 @@ const  titles = {
             centerWords: 'DATA',
             rightWords:'EXPLORER',
             title:'LAMDA Data Explorer'
+            },
+    'lcms-dashboard': {
+            leftWords: 'LCMS',
+            centerWords: 'DATA',
+            rightWords:'DASHBOARD',
+            title:'LAMDA Data Dashboard'
             }     
 }
 ///////////////////////////////////////////////////////////////////////
@@ -372,32 +378,26 @@ const staticTemplates = {
 </div>
 
 `),
-            'LAMDA':`<div class="modal fade "  id="introModal" tabindex="-1" role="dialog" >
-                <div class="modal-dialog modal-md " role="document">
-                    <div class="modal-content text-dark" style = 'background-color:rgba(230,230,230,0.95);'>
-                        <button type="button" class="close p-2 ml-auto text-dark" data-dismiss="modal">&times;</button>
-                        <div class = 'modal-header'>
-                            <h3 class="mb-0 ">Welcome to the Landscape Automated Monitoring and Detection Algorithm (LAMDA) Data Explorer!</h3>
-                        </div>
-                        <div class="modal-body" id = 'introModal-body'>
-                            <p>LAMDA is a near real-time landscape-scale change detection program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide a visualization of LAMDA outputs.</p>
-                        </div>
-                        <div class = 'modal-footer' id = 'introModal-footer'>
-                        <div class = ' ml-0' id = 'intro-modal-loading-div'>
-                            <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
-                             </p>
-                        </div>
-                        <hr>
-                        <div class="form-check  mr-0">
-                                <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`,
+            'LAMDA':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
+            'Welcome to the Landscape Automated Monitoring and Detection Algorithm (LAMDA) Data Explorer!',
+           `<li>
+           <p class="pb-2 ">LAMDA is a near real-time landscape-scale change detection program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide a visualization of LAMDA outputs.</p>
+       </li>
+       `,
+            `
+    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+    <div class ='my-3'>
+    <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
+    <a class="intro-modal-links" href="./lamda-downloads.html" target="_blank" title="LAMDA product download page">Download LAMDA Data</a>
+    <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+</div>
+<div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
+    <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    
+</div>`,''
+),
             'STORM':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
             'Welcome to the Storm Damage Viewer!',
             `<p class='my-2'>
@@ -1674,7 +1674,11 @@ function addLayer(layer){
             if(layer.layerType === 'geeVector' && layer.canQuery){
                 queryObj[queryID].visible = layer.visible;
             }
-            
+            if(layer.viz.dashboardSummaryLayer){
+                Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(null)));
+                updateDashboardCharts();
+                
+            }
         }
         layer.loading = false;
         updateGEETileLayersDownloading();
@@ -1718,6 +1722,11 @@ function addLayer(layer){
             if(layer.layerType === 'geeVector' && layer.canQuery){
                 queryObj[queryID].visible = layer.visible;
             }
+            if(layer.viz.dashboardSummaryLayer){
+                
+                Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(map)));
+                updateDashboardCharts();
+            }   
         }
         vizToggleCleanup();
     }
@@ -2152,7 +2161,7 @@ function addLayer(layer){
                         infowindow.setPosition(event.latLng);
                         var infoContent = `<table class="table table-hover bg-white">
                             <tbody>`
-                        var info = event.feature.h;
+                        var info = event.feature.j;
                         Object.keys(info).map(function(name){
                             var value = info[name];
                             infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
@@ -2161,6 +2170,81 @@ function addLayer(layer){
                         infowindow.setContent(infoContent);
                         infowindow.open(map);
                     })  
+                }
+                if(layer.viz.dashboardSummaryLayer){
+                    
+                    layer.dashboardSelectedFeatures = {};
+                    layer.layer.addListener('click', function(event) {
+                        console.log(`${layer.name} clicked`);
+                        
+                        
+                        event.feature.toGeoJson((r)=>{
+                            // console.log(r);
+                            let featureName = r.properties[layer.viz.dashboardFieldName];
+                            if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
+                                layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
+                            
+                            
+                                function getCoords(c){
+                                    if(c.type === 'Polygon'){
+                                        
+                                        c.coordinates.map(c2=>{
+                                            let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
+                                            layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
+                                                strokeColor:'#0FF',
+                                                fillColor:'#0FF',
+                                                fillOpacity:0.2,
+                                                strokeOpacity: 0,
+                                                strokeWeight: 0,
+                                                path:polyCoordsT,
+                                                zIndex:-999
+                                            }));
+                                        })
+                                            
+                                    }else if(c.type === 'MultiPolygon'){
+                                        // console.log(c);
+                                        c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
+                                    }else if(c.type === 'GeometryCollection'){
+                                        c.geometries.map(g=>getCoords(g))
+                                    }
+                                }
+                                getCoords(r.geometry);
+                                
+                                
+                                // var infoContent = `<table class="table table-hover bg-white">
+                                // <tbody>`
+                            
+                                // Object.keys(info).map(function(name){
+                                //     var value = info[name];
+                                //     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                                // });
+                                // infoContent +=`</tbody></table>`;
+                                
+                                
+                                
+                                layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
+                                
+                            }else{
+                                console.log(`Removing ${featureName}`)
+                                layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+                                delete layer.dashboardSelectedFeatures[featureName];
+                            }
+                            
+                            let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(',');
+                            // $('#dashboard-results-collapse-div').append(selectedNames);
+                            updateDashboardCharts();
+                        })
+
+                       
+                        
+                        
+                        
+                        
+                        // console.log(polyPath);
+                        // var prop = event.feature.getProperty(layer.viz.dashboardFieldName);
+                        // console.log(prop)
+                        
+                    })
                 }
 		      	featureObj[layer.name] = layer.layer
 		      	// console.log(this.viz);

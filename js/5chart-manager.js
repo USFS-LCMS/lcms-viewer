@@ -882,7 +882,214 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 	// 			    return values;
 	// 			})
 }
+function makeSankeyDashboardCharts(layer,whichOne){
+	// console.log(layer)
+	var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
+	var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
+	var showPairwiseDiff = false;
+	var annualOrTransition = 'transition';
 
+	var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
+						'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
+						'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
+	var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
+				'Land_Cover':["Trees",
+	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
+				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
+				}
+	let total_area_fieldname = 'total_area';
+	var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
+	var chartWhich = ['Change','Land_Cover','Land_Use'];
+	if(annualOrTransition === 'transition'){
+	
+	names['Land_Cover'] = ['Trees','Tall Shrubs','Shrubs','Grass/Forb/Herb','Barren or Impervious','Snow or Ice','Water','Non-Processing Area Mask'];
+	colors['Land_Cover'] = ['#005e00','#b30088','#e68a00','#ffff00','#d3bf9b',"#ffffff","#4780f3","#1B1716"]
+	}
+
+	var stacked= false;
+	var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
+	var chartID = `chart-canvas-${layer.id}-${whichOne}`;
+	var colorsI = 0;
+	var selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
+	// console.log(selectedFeatureNames)
+	if(selectedFeatureNames.length>3){
+		var area_names = 'LCMS Summary for '+selectedFeatureNames.length.toString()+ ' areas'
+	}else{
+		var area_names = selectedFeatureNames.join(', ');
+	}
+	
+	
+	var name =layer.name+ ' '+area_names + ' - '+whichOne.replace('_',' ');
+	///////////////////////////////////////////////////////////////////////
+	//Iterate across each field name and add up totals 
+	//First get 2-d array of all areas for each then sum the columns and divide by total area
+	
+	var t1 = new Date();
+	let results = {};
+	results.features = selectedFeatureNames.map(nm=>layer.dashboardSelectedFeatures[nm].geojson)
+	var years = results.features[0].properties.years.split(',').sort();
+	// console.log(years)
+	// console.log(results.features)
+	if(annualOrTransition === 'transition'){
+		var tableDict = {};
+		var fieldNames = Object.keys(results.features[0].properties).filter(v=>v.indexOf(whichOne)>-1).sort();
+		
+		fieldNames.map((fn)=>{
+		var total_area = 0;
+		var total = [];
+		results.features.map((f)=>{
+			var t = f.properties[fn].split(',');
+			var scale = f.properties.scale;
+			
+			total.push(f.properties[fn].split(',').map(n => parseFloat(n)*scale**2));
+			var total_areaF = parseFloat(f.properties[total_area_fieldname]);
+			total_area = total_area + total_areaF*scale**2;
+		});
+		
+
+		var colSums = [];
+		for(var col = 0;col < total[0].length;col++){
+			var colSum = 0;
+			for(var row = 0;row < total.length;row++){
+			colSum = colSum + total[row][col];
+			}
+			colSums.push(colSum);
+		};
+		//Convert from sq m to chosen area unit
+		if(chartFormat === 'Percentage'){
+			colSums = colSums.map((n)=>n/total_area*100);
+		}else{
+			colSums = colSums.map((n)=>n*chartFormatDict[chartFormat].mult);
+		}
+		if(Math.max(...colSums)>-1){tableDict[fn]=colSums}
+		});
+		// console.log(tableDict);
+		
+		// console.log(whichOne);console.log(fieldNames)
+		//Clean out existing chart  
+		
+		$(`#${chartID}`).remove();  
+		//Add new chart
+		$('#dashboard-results-collapse-div').append(`<div class = "chart" id="${chartID}"><div>`);
+		// $('#chartDiv').append('<hr>');
+		//Set up chart object
+		// var chartJSChart = new Chart($(`#${chartID}`),{
+		// add data
+		var yri = 0;
+		var data = [];
+		var sankey_dict = {source:[],target:[],value:[]};
+		var sankeyPalette = [];
+		var labels = [];
+		var label_code_dict = {};
+		var label_code_i = 0;
+		var allYears = years.map((yr)=>{return yr.split('_')[0]});
+		allYears.push(years[years.length-1].split('_')[1]);
+		// console.log(allYears)
+		allYears.map((yr)=>{
+		
+		names[whichOne].map((nm)=>{
+			var outNm = yr+' '+nm;
+			labels.push(outNm);
+			label_code_dict[outNm] = label_code_i;
+			label_code_i++;
+		});
+		colors[whichOne].map((nm)=>{sankeyPalette.push(nm)});
+			
+		});
+		// console.log(tableDict)
+		// console.log(label_code_dict);
+		years.map((yr)=>{
+		var startRange = yr.split('_')[0];
+		var endRange = yr.split('_')[1];
+		
+		Object.keys(tableDict).map((k)=>{
+			var transitionClass = k.split('---')[1];
+			var transitionFromClassI = parseInt(transitionClass.split('-')[0])-1;
+			var transitionFromClassName = names[whichOne][transitionFromClassI];
+			var transitionToClassName = names[whichOne][parseInt(transitionClass.split('-')[1])-1];
+			var v = tableDict[k][yri];
+			var fromLabel = startRange+' '+transitionFromClassName;
+			var toLabel = endRange+' '+transitionToClassName
+			
+			
+			sankey_dict.source.push(label_code_dict[fromLabel]);
+			sankey_dict.target.push(label_code_dict[toLabel]);
+			sankey_dict.value.push(v);
+			
+		
+			
+			
+
+		})
+		yri++;
+		})
+
+
+		// console.log(sankey_dict)
+		sankey_dict.hovertemplate='%{value}'+chartFormatDict[chartFormat].label+' %{source.label}-%{target.label}<extra></extra>'
+
+		var data = {
+		type: "sankey",
+		orientation: "h",
+		node: {
+			pad: 25,
+			thickness: 20,
+			line: {
+			color: "black",
+			width: 0.5
+			},
+			label: labels,
+			color: sankeyPalette,
+			hovertemplate:'%{value}'+chartFormatDict[chartFormat].label+' %{label}<extra></extra>'
+			},
+
+		link: sankey_dict,
+
+		}
+
+		var data = [data]
+
+		var layout = {
+		title: name,
+		font: {
+			size: 10
+		},
+		margin: {
+			l: 25,
+			r: 25,
+			b: 25,
+			t: 50,
+			pad: 4
+		},
+		paper_bgcolor: '#D6D1CA',
+		plot_bgcolor: '#D6D1CA'
+		}
+		var config = {
+			toImageButtonOptions: {
+				format: 'png', // one of png, svg, jpeg, webp
+				filename: name,
+				width:1000,height:600
+			},
+			scrollZoom: true,
+			displayModeBar: true
+			};
+		Plotly.newPlot(`${chartID}`, data, layout,config);
+	
+
+	}
+}
+function updateDashboardCharts(){
+	$('#dashboard-results-collapse-div').empty();
+	chartWhich = ['Land_Cover','Land_Use'];
+	Object.keys(layerObj).map(k=>{
+		let layer = layerObj[k];
+		// console.log(layer.visible);
+		if(layer.visible && Object.keys(layer.dashboardSelectedFeatures).length > 0){
+			chartWhich.map((w) => makeSankeyDashboardCharts(layer,w));
+		}
+	})
+	
+}
 function expandChart(){
 	console.log('expanding');
 	$('#curve_chart_big').slideDown();
@@ -1322,7 +1529,7 @@ function runShpDefinedCharting(){
 				// var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 				
 				Map2.addLayer(area,{isUploadedLayer:true},name,true,null,null,name + ' for area summarizing','area-charting-shp-layer-list');
-	
+				
 				makeAreaChart(area,name);
 			})
 		

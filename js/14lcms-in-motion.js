@@ -71,7 +71,7 @@ function resizeWindow(){
 const authProxyAPIURL ="https://rcr-ee-proxy-2.herokuapp.com";
 const geeAPIURL = "https://earthengine.googleapis.com";
 let gcpWorking = false;
-ee.initialize(authProxyAPIURL,geeAPIURL,()=>{gcpWorking=true;})
+
 const introDivContent = {'true':`<span>
                             <img class = 'logo'  src="./images/lcms-icon.png" style='vertical-align:middle;' alt="LCMS logo image">
                             <h2 class = 'splash-title'>Welcome to LCMS in Motion!</h2>
@@ -308,40 +308,50 @@ require(["esri/Map",
         layerList.push(layer);
         
       }
-      ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
-        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,`LCMS Land Cover (${nm})`,false,true);
-        addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,`LCMS Land Use (${nm})`,false,true);
-        if(nm === 'PuertoRico_USVI'){
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true);
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false);
-        }else{
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true);
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,false);
-          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false);
-        }
+      
+      
         
-      })
-      checkTimeLapseVisible();
 
-      if(gcpWorking){
-        addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
-        addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
-      }
+        function load(){
+        ['PuertoRico_USVI','Southeast_Alaska','CONUS'].map(function(nm){
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,`LCMS Land Cover (${nm})`,false,true);
+          addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,`LCMS Land Use (${nm})`,false,true);
+          if(nm === 'PuertoRico_USVI'){
+            addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true);
+            addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false);
+          }else{
+            addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,`LCMS Fast Loss Year (${nm})`,true);
+            addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,`LCMS Slow Loss Year (${nm})`,false);
+            addImageryLayer(`https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,`LCMS Gain Year (${nm})`,false);
+          }
+          
+        })
+        checkTimeLapseVisible();
+  
+        if(gcpWorking){
+          addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_boundaries.geojson','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.3 ],false);
+          addGifAreas('https://storage.googleapis.com/lcms-gifs/usfs_district_boundaries.geojson','USFS Districts','districtna','#1B171A',[ 0, 122, 122, 0.3 ],false);
+        }
+
+        const map = new Map({
+          basemap: "hybrid",
+          layers: layerList
+        });
+  
+        const view = new MapView({
+          container: "viewDiv",
+          map: map
+        });
+      
+      
+      
       
 
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.5 ],true);
       // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RangerDistricts_01/MapServer','USFS Districts','DISTRICTNAME','#1B171A',[ 0, 122, 122, 0.5 ],true);
       
      
-      const map = new Map({
-        basemap: "hybrid",
-        layers: layerList
-      });
-
-      const view = new MapView({
-        container: "viewDiv",
-        map: map
-      });
+      
 
      
       view.when(()=>{
@@ -525,6 +535,7 @@ require(["esri/Map",
 
       });
       })
-    });
-
+    }
+      ee.initialize(authProxyAPIURL,geeAPIURL,()=>{gcpWorking=true;load()},()=>{load()});
+})
     

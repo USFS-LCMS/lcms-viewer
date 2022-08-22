@@ -3063,3 +3063,52 @@ function runLAMDA(){
 
           })
 }
+///////////////////////////////////////////////////////////
+function runDashboard(){
+  console.log('running dashboard');
+  let summaryAreas = {'US Counties':{'path':'https://storage.googleapis.com/lcms-dashboard/Counties_compressed.geojson',
+                                      'color':'#00E',
+                                        'unique_fieldname':'outID',
+                                    },
+                      'Planning Units':{'path':'https://storage.googleapis.com/lcms-dashboard/LMPU_compressed.geojson',
+                                      'color':'#E00',
+                                      'unique_fieldname':'LMPU_NAME'
+                                    },
+                      'LTAs':{'path':'https://storage.googleapis.com/lcms-dashboard/LTA_compressed.geojson',
+                                      'color':'#E0E',
+                                       'unique_fieldname':'TCA_ID'
+                                    },                       
+}
+let addedLayerCount=0;
+$('#summary-spinner').slideDown();
+Object.keys(summaryAreas).map(k=>{
+  let path = summaryAreas[k].path;
+  fetch(summaryAreas[k].path)
+	.then((resp) => resp.json()) // Transform the data into json
+  	.then(function(json) {
+      $('#summary-spinner').slideDown();
+  		// console.log(json)
+      Map2.addLayer(json,{dashboardSummaryLayer:true,dashboardFieldName:summaryAreas[k].unique_fieldname,layerType:'geoJSONVector',strokeColor:summaryAreas[k].color,strokeWeight:1.5,fillOpacity:0},k,true,null,null,'Summary areas: '+k)
+      addedLayerCount++;
+      if(addedLayerCount===Object.keys(summaryAreas).length){
+        $('#summary-spinner').slideUp();
+      }
+    })
+})
+
+
+  // fetch(plotProjectObj.path)
+	// .then((resp) => resp.json()) // Transform the data into json
+  // 	.then(function(json) {
+  // 		// console.log(json)
+  // 		json.features.map(function(f){
+  // 		f.name = plotProjectObj.name;
+  // 		f.properties.PLOTID = f.properties[plotProjectObj['plotIDField']];
+	// 		addPlot(f)
+  // 		});
+  // 		// console.log(json)  		
+ 	// Map2.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00'},plotProjectObj.name + ' Plots',true,null,null,'Plots for: '+plotProjectObj.name,'reference-layer-list')
+  //   // Create and append the li's to the ul
+  //   })
+  // geoJSONVector
+}

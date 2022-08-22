@@ -43,7 +43,7 @@ $('#sidebar-left-header').append(staticTemplates.placesSearchDiv);
 // fitTestCustom('title-banner',$('#title-banner').width()-50)
 
 // $('#study-area-label').fitText(1.8);
-if(['LCMS','lcms-base-learner','Ancillary','LT','IDS'].indexOf(mode)>-1){
+if(['LCMS','lcms-base-learner','Ancillary','LT','IDS','lcms-dashboard'].indexOf(mode)>-1){
   $('#title-banner-icon-right').attr('src','images/logo_icon_lcms-data-viewer.svg');
   $('#title-banner-icon-right').attr('alt','LCMS icon');
 }else if(mode==='MTBS'){
@@ -188,6 +188,28 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(tSummaryMethod === 'prob'){
     $('#summaryMethod-radio-second_toggle_label').click();
   }
+
+}else if(mode === 'lcms-dashboard'){
+  if(urlParams.startYear == null || urlParams.startYear == undefined){
+    urlParams.startYear = startYear;// = parseInt(urlParams.startYear);
+  }
+  if(urlParams.endYear == null || urlParams.endYear == undefined){
+    urlParams.endYear = endYear;// = parseInt(urlParams.endYear);
+  }
+  // addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products');
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS DATA layers to view on map');
+  // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
+  // addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img class='panel-title-svg-lg'  alt="Layers icon" src="./Icons_svg/data-layers_ffffff.svg">`,false,null,'Additional relevant layers to view on map intended to provide context for LCMS DATA');
+  
+  // addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<img class='panel-title-svg-lg'  alt="Tools icon" src="./Icons_svg/tools_ffffff.svg">`,false,'','Tools to measure and chart data provided on the map');
+
+  // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
+
+  
+    
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
 
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
@@ -819,6 +841,15 @@ if(canExport){
    }
 }
 
+if(mode === 'lcms-dashboard'){
+  
+  var collapseContainer =getWalkThroughCollapseContainerID(); 
+  $(`#${collapseContainer}`).removeClass('col-xl-2');
+  $(`#${collapseContainer}`).removeClass('col-lg-3');
+  $('.legendDiv').css('max-height','100%');
+  $('.legendDiv').css('max-width','40%')
+  addCollapse(collapseContainer,'dashboard-results-collapse-label','dashboard-results-collapse-div','RESULTS','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Dashboard results')
+}
 if(urlParams.showSidebar === undefined || urlParams.showSidebar === null){
   urlParams.showSidebar = 'true'
 }

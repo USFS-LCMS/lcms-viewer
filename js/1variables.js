@@ -128,7 +128,7 @@ let layerObj = null;
 let crs = 'EPSG:5070';
 let transform = null;
 let scale = 30;
-let queryObj = {},timeLapseObj = {};
+let queryObj = {},timeLapseObj = {};dashboardObj={};
 let addLCMSTimeLapsesOn;
 parseUrlSearch();
 let initialCenter = [37.5334105816903,-105.6787109375];
@@ -412,6 +412,7 @@ const zoomDict = {20 : '1,128.49',
 // Allow GEE to be initialized either using a server-side proxy or an access token
 if(urlParams.geeAuthProxyURL == null || urlParams.geeAuthProxyURL == undefined){
     urlParams.geeAuthProxyURL = "https://rcr-ee-proxy-2.herokuapp.com";
+    
 }
 let authProxyAPIURL = urlParams.geeAuthProxyURL;
 let geeAPIURL = "https://earthengine.googleapis.com";
@@ -423,7 +424,7 @@ if(urlParams.accessToken !== null && urlParams.accessToken !== undefined && urlP
 }
 
 
-const plotsOn = false;
+var plotsOn = false;
 
 /////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript
