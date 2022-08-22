@@ -3066,49 +3066,95 @@ function runLAMDA(){
 ///////////////////////////////////////////////////////////
 function runDashboard(){
   console.log('running dashboard');
-  let summaryAreas = {'US Counties':{'path':'https://storage.googleapis.com/lcms-dashboard/Counties_compressed.geojson',
+  let tryDirs = ['./geojson/','https://storage.googleapis.com/lcms-dashboard-fast/'];
+  let tryDirI = 0;
+  let summaryAreas = {
+                  'US Counties':{'path':'Counties_compressed.geojson',
                                       'color':'#00E',
                                         'unique_fieldname':'outID',
                                     },
-                      'Planning Units':{'path':'https://storage.googleapis.com/lcms-dashboard/LMPU_compressed.geojson',
+                      'Planning Units':{'path':'LMPU_compressed.geojson',
                                       'color':'#E00',
                                       'unique_fieldname':'LMPU_NAME'
                                     },
-                      'LTAs':{'path':'https://storage.googleapis.com/lcms-dashboard/LTA_compressed.geojson',
+                      'LTAs':{'path':'LTA_compressed.geojson',
                                       'color':'#E0E',
                                        'unique_fieldname':'TCA_ID'
-                                    },                       
+                                    },   
+                      'Grid-30km':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
+                                      'color':'#EE0',
+                                       'unique_fieldname':'outID'
+                                    },                     
 }
 let addedLayerCount=0;
-$('#summary-spinner').slideDown();
-Object.keys(summaryAreas).map(k=>{
-  let path = summaryAreas[k].path;
-  fetch(summaryAreas[k].path)
-	.then((resp) => resp.json()) // Transform the data into json
+
+function loadGeoJson(summaryAreaObj,k){
+  let path = `${tryDirs[tryDirI]}${summaryAreaObj.path}`;
+  console.log(path)
+  fetch(path)
+	.then((resp) =>{if(resp.ok){
+    return resp.json();
+  }else{
+    return null
+  }
+  }) // Transform the data into json
   	.then(function(json) {
-      $('#summary-spinner').slideDown();
-  		// console.log(json)
-      Map2.addLayer(json,{dashboardSummaryLayer:true,dashboardFieldName:summaryAreas[k].unique_fieldname,layerType:'geoJSONVector',strokeColor:summaryAreas[k].color,strokeWeight:1.5,fillOpacity:0},k,true,null,null,'Summary areas: '+k)
-      addedLayerCount++;
-      if(addedLayerCount===Object.keys(summaryAreas).length){
-        $('#summary-spinner').slideUp();
+      if(json !== null){
+        console.log(json)
+        Map2.addLayer(json,{dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,layerType:'geoJSONVector',strokeColor:summaryAreaObj.color,strokeWeight:1.5,fillOpacity:0},k,true,null,null,'Summary areas: '+k)
+        addedLayerCount++;
+        if(addedLayerCount===Object.keys(summaryAreas).length){
+          if(localStorage['showIntroModal-'+mode] !== 'true'){
+            $('.modal').modal('hide');
+            $('.modal-backdrop').remove();
+          }else{
+            $('#intro-modal-loading-div').hide();
+            $('#summary-spinner').hide();
+          };
+        }
+      }else{
+        tryDirI=1
+        loadGeoJson(summaryAreaObj,k)
       }
+  		
     })
+}
+Object.keys(summaryAreas).map(k=>{
+  loadGeoJson(summaryAreas[k],k)
 })
+let lcmsRun={}
+lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
+  lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
 
+  //Get properties image
+  lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(['Change_class_names'])).first());
+  lcmsRun.props = lcmsRun.f.getInfo().properties;
+  // console.log(lcmsRun.props)
 
-  // fetch(plotProjectObj.path)
-	// .then((resp) => resp.json()) // Transform the data into json
-  // 	.then(function(json) {
-  // 		// console.log(json)
-  // 		json.features.map(function(f){
-  // 		f.name = plotProjectObj.name;
-  // 		f.properties.PLOTID = f.properties[plotProjectObj['plotIDField']];
-	// 		addPlot(f)
-  // 		});
-  // 		// console.log(json)  		
- 	// Map2.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00'},plotProjectObj.name + ' Plots',true,null,null,'Plots for: '+plotProjectObj.name,'reference-layer-list')
-  //   // Create and append the li's to the ul
-  //   })
-  // geoJSONVector
+  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+  // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
+  
+
+  
+  //Mosaic all study areas
+  lcmsRun.lcms = ee.List.sequence(startYear,endYear).map(function(yr){
+    var t = lcmsRun.lcms.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic()
+    return t.copyProperties(lcmsRun.f).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis())
+  });
+  lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms)  
+
+  
+  let firstComparisonLayerI 
+  ['Land_Cover','Land_Use'].map(nm=>{
+    console.log(nm)
+    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,startYear+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYear-2,endYear,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+
+    Map2.addLayer(pre,{'autoViz':true},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
+    Map2.addLayer(post,{'autoViz':true,opacity:0.5},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
+
+    firstComparisonLayerI = false;
+  })
+  
+
 }

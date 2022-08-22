@@ -1572,9 +1572,11 @@ function reRun(){
   //Rerun the GEE code
   setTimeout(function() { 
     run();  
+    if(mode !== 'lcms-dashboard'){
+      $('.modal').modal('hide');
+      $('.modal-backdrop').remove();
+    }
     
-    $('.modal').modal('hide');
-    $('.modal-backdrop').remove();
     setupAreaLayerSelection();
     addLabelOverlay();
     if((urlParams.sankey==='true' || urlParams.beta ==='true') && urlParams.endYear-urlParams.startYear < 5){
@@ -2611,7 +2613,9 @@ function initialize() {
               showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Creating'));
             }else if(mode==='STORM'){
               showMessage('',staticTemplates.loadingModal['all']('','Creating'));
-            }else{
+            }else if(mode==='lcms-dashboard'){
+            showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Loading','LCMS summary areas'));
+          }else{
               showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Creating'));
             }
             
@@ -2683,13 +2687,16 @@ function initialize() {
         addPlotCollapse();
         loadAllPlots();
       }
-      if(localStorage['showIntroModal-'+mode] !== 'true'){
-        $('.modal').modal('hide');
-        $('.modal-backdrop').remove();
-      }else{
-        $('#intro-modal-loading-div').hide();
-        $('#summary-spinner').hide();
-      };
+      if(mode !== 'lcms-dashboard'){
+        if(localStorage['showIntroModal-'+mode] !== 'true'){
+          $('.modal').modal('hide');
+          $('.modal-backdrop').remove();
+        }else{
+          $('#intro-modal-loading-div').hide();
+          $('#summary-spinner').hide();
+        };
+      }
+      
       
       addLabelOverlay();
       

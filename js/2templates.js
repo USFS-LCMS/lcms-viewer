@@ -70,9 +70,9 @@ const  titles = {
             },
     'lcms-dashboard': {
             leftWords: 'LCMS',
-            centerWords: 'DATA',
-            rightWords:'DASHBOARD',
-            title:'LAMDA Data Dashboard'
+            centerWords: 'DASHBOARD',
+            rightWords:'',
+            title:'LCMS Dashboard'
             }     
 }
 ///////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ let topBannerParams = titles[mode];
 let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
 //Provide a bunch of templates to use for various elements
-function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText){
+function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText,loadingText='Creating map services within Google Earth Engine'){
     return `<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
                 <div style='max-width:700px;' class="modal-dialog" role="document">
                     <div class="modal-content text-dark modal-content-full-screen-styling" >
@@ -116,7 +116,7 @@ function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText){
                         <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
                             <p >
                               <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                                Creating map services within Google Earth Engine. 
+                                ${loadingText}. 
                              </p>
                         </div>
                        
@@ -269,6 +269,23 @@ const staticTemplates = {
                             <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             
                         </div>`
+                ),
+                'lcms-dashboard':getIntroModal('./images/lcms-icon.png',
+                                    'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
+                                    `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
+                                    `<p>Pre-calculated summary areas are available for generating custom reports
+                                    </p>`,
+                                    `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+                            <div class ='my-3'>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+                        </div>
+                        
+                        <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
+                            <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+                            <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                            
+                        </div>`,'Loading LCMS summary areas. This can take some time'
                 ),
             'IDS':getIntroModal('./images/lcms-icon.png',
             'Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!',
@@ -436,7 +453,7 @@ const staticTemplates = {
     
 </div>`)
         },
-    loadingModal:{'all':function(logoPath,word){
+    loadingModal:{'all':function(logoPath,word,whatIsLoading='map services within Google Earth Engine'){
                                     let logoLine= `<img class = 'logo' src="./images/${logoPath}"   alt="${mode} logo image">`;
                                     if(logoPath === '' || logoPath === null || logoPath === undefined){
                                         logoLine=``
@@ -451,7 +468,7 @@ const staticTemplates = {
                         <p style = 'margin-top:1rem;'>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                 <p style='font-weight:bold;margin-top:1rem;' title='Creating map services within Google Earth Engine. This can take some time. Thank you for your patience!'>
                   <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
-                    ${word} map services within Google Earth Engine. This can take some time.
+                    ${word} ${whatIsLoading}. This can take some time.
                   
                  </p>
                   `},
@@ -1347,7 +1364,7 @@ function addTabContainer(containerID,tabListID,divListID){
 //     </div>`);
 // }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick,toolTip){
+function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, collapseLabelIcon,show,onclick,toolTip,mode='append'){
 	var collapsed;
 	if(toolTip === undefined || toolTip === null){toolTip = ''}
 	if(show === true || show === 'true' || show === 'show'){show = 'show';collapsed = ''; }else{show = '';collapsed='collapsed'}
@@ -1356,7 +1373,11 @@ function addCollapse(containerID,collapseLabelID,collapseID,collapseLabel, colla
 	${collapseLabelIcon} ${collapseLabel} </a></h2><span id="${collapseLabelID}-message"</span></header>`;
 
 	var collapseDiv =`<section id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-5 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></section>`;
-    $('#'+containerID).append(`<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`)
+    if(mode==='append'){
+        $('#'+containerID).append(`<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`);
+    }else{
+        $('#'+containerID).prepend(`<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`)
+    }
 	$(`#${collapseLabelID}-${collapseID}`).append(collapseTitleDiv);
 	$(`#${collapseLabelID}-${collapseID}`).append(collapseDiv);
 }
@@ -1546,6 +1567,7 @@ function addLayer(layer){
 	var spanID = id + '-span-'+layer.ID;
 	var visibleLabelID = visibleID + '-label-'+layer.ID;
 	var spinnerID = id + '-spinner-'+layer.ID;
+    var eraserID = `${id}-eraser-${layer.ID}`;
     var selectionID = id + '-selection-list-'+layer.ID;
 	var checked = '';
     layerObj[id] = layer;
@@ -1570,7 +1592,7 @@ function addLayer(layer){
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" title='Waiting for layer service from Google Earth Engine'></i>
 								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
 								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
-                                            
+                                            <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser teal" style="display:none;"></i>
 								            <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span'>${layer.name}</span>
 								       </li>`);
     //Set up opacity slider
@@ -1602,7 +1624,7 @@ function addLayer(layer){
     		}
 	})
 	function setRangeSliderThumbOpacity(){
-        console.log([opacityID,layer.rangeOpacity].join('-'))
+        // console.log([opacityID,layer.rangeOpacity].join('-'))
 		$(`#${opacityID}`).css("background-color", `rgba(55, 46, 44,${layer.rangeOpacity})!important`)
         
 	}
@@ -2172,7 +2194,17 @@ function addLayer(layer){
                     })  
                 }
                 if(layer.viz.dashboardSummaryLayer){
-                    
+                    function deleteAllSelected(){
+                        if(layer.visible){
+                            Object.keys(layer.dashboardSelectedFeatures).map(fn=>{
+                                layer.dashboardSelectedFeatures[fn].polyList.map(p=>p.setMap(null));
+                                delete layer.dashboardSelectedFeatures[fn];
+                            });
+                            updateDashboardCharts();
+                        }
+                    }
+                    $(`#${eraserID}`).show();
+                    $(`#${eraserID}`).click(deleteAllSelected)
                     layer.dashboardSelectedFeatures = {};
                     layer.layer.addListener('click', function(event) {
                         console.log(`${layer.name} clicked`);
@@ -2180,7 +2212,7 @@ function addLayer(layer){
                         
                         event.feature.toGeoJson((r)=>{
                             // console.log(r);
-                            let featureName = r.properties[layer.viz.dashboardFieldName];
+                            let featureName = r.properties[layer.viz.dashboardFieldName].toString();
                             if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
                                 layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
                             

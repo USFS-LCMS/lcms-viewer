@@ -1084,7 +1084,7 @@ function updateDashboardCharts(){
 	Object.keys(layerObj).map(k=>{
 		let layer = layerObj[k];
 		// console.log(layer.visible);
-		if(layer.visible && Object.keys(layer.dashboardSelectedFeatures).length > 0){
+		if(layer.viz.dashboardSummaryLayer && layer.visible && Object.keys(layer.dashboardSelectedFeatures).length > 0){
 			chartWhich.map((w) => makeSankeyDashboardCharts(layer,w));
 		}
 	})
