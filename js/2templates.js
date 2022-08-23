@@ -208,7 +208,7 @@ const staticTemplates = {
                             <button onclick = 'forwardView()' title = 'Click to go forward a view' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
                         </div>
                     </section>
-                    <p class = 'mt-0 mb-1' style = 'display:none;font-size:0.8em;font-weight:bold' id = 'time-lapse-year-label'></p>`,
+                    <p class = 'mt-0 mb-1 text-center white' style = 'display:none;font-size:1.25rem;font-weight:bold' id = 'time-lapse-year-label'></p>`,
 	introModal:{'LCMS':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Explorer!',
                                     `<p class='my-2'>
@@ -1592,7 +1592,7 @@ function addLayer(layer){
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" title='Waiting for layer service from Google Earth Engine'></i>
 								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
 								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
-                                            <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser teal" style="display:none;"></i>
+                                            <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser eraser" style="display:none;"></i>
 								            <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span'>${layer.name}</span>
 								       </li>`);
     //Set up opacity slider

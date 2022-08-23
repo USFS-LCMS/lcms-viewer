@@ -822,65 +822,66 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 	if((scale === null || scale === undefined) && transform === null){scale = 30}
 	// else{scale = null};
 	
-	var stack = convertToStack(areaChartCollection,xAxisProperty,dateFormat);
+	// Newer stack-based method
+	// var stack = convertToStack(areaChartCollection,xAxisProperty,dateFormat);
 	
 	
-	var t2 = stack.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,scale,crs,transform,true,1e13,4);
-	// console.log(t2)
-	// console.log(ee.List(ee.Dictionary(t2).values()).get(0).getInfo())
-	var xProps = ee.List(stack.get('xProps'));
-	var bns = ee.List(stack.get('bns'));
-	var sum = ee.Array(t2.values().get(0)).slice(1,1,2).project([0]).reduce(ee.Reducer.sum(),[0]).get([0]);
-	// console.log(sum.getInfo());
-	var t2Formatted = xProps.map(xProp=>{
-		var row = bns.map(bn=>{
-			var a = t2.get(ee.String(xProp).cat('---').cat(bn));
-			a = ee.Array(a).slice(1,1,2).project([0]);
-			// var sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
-			a = ee.Number(a.toList().get(1));
-			var pct = a.divide(sum).multiply(multiplier);
-			return pct;
-		})
-		return ee.List([xProp]).cat(row);
-	});
+	// var t2 = stack.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,scale,crs,transform,true,1e13,4);
+	// // console.log(t2)
+	// // console.log(ee.List(ee.Dictionary(t2).values()).get(0).getInfo())
+	// var xProps = ee.List(stack.get('xProps'));
+	// var bns = ee.List(stack.get('bns'));
+	// var sum = ee.Array(t2.values().get(0)).slice(1,1,2).project([0]).reduce(ee.Reducer.sum(),[0]).get([0]);
+	// // console.log(sum.getInfo());
+	// var t2Formatted = xProps.map(xProp=>{
+	// 	var row = bns.map(bn=>{
+	// 		var a = t2.get(ee.String(xProp).cat('---').cat(bn));
+	// 		a = ee.Array(a).slice(1,1,2).project([0]);
+	// 		// var sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
+	// 		a = ee.Number(a.toList().get(1));
+	// 		var pct = a.divide(sum).multiply(multiplier);
+	// 		return pct;
+	// 	})
+	// 	return ee.List([xProp]).cat(row);
+	// });
 
-	return t2Formatted;
+	// return t2Formatted;
 
 	// Older area charting method
-	// if(xAxisProperty === 'year'){
-	// 	areaChartCollection = areaChartCollection.map(function(img){return img.set('year',img.date().format(dateFormat))});
+	if(xAxisProperty === 'year'){
+		areaChartCollection = areaChartCollection.map(function(img){return img.set('year',img.date().format(dateFormat))});
 		
-	// }
-	// var bandNames = ee.Image(areaChartCollection.first()).bandNames();
+	}
+	var bandNames = ee.Image(areaChartCollection.first()).bandNames();
 	
-	// return areaChartCollection.toList(10000,0).map(function(img){
-	// 					img = ee.Image(img);
-	// 			    // img = ee.Image(img).clip(area);
-	// 			    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,scale,crs,transform,true,1e13,4);
-	// 			    var xAxisLabel = img.get(xAxisProperty);
-	// 			    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
-	// 			    // var lossT = t.slice(0,2,null);
-	// 			    // var gainT = t.slice(0,0,2);
-	// 			    // var lossSum = lossT.reduce(ee.Reducer.sum(),[0]).get([0]);
-	// 			    // var gainSum = gainT.reduce(ee.Reducer.sum(),[0]).get([0]);
-	// 			    // var lossPct = ee.Number.parse(lossT.get([1]).divide(lossSum).multiply(100).format('%.2f'));
-	// 			    // var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
-	// 			    // return [year,lossPct,gainPct];//ee.List([lossSum]);
-	// 			    t = ee.Dictionary(t);
-	// 			    // var values = t.values();
-	// 			    // var keys = t.keys();
-	// 			    var sum;
-	// 			    values = bandNames.map(function(bn){
-	// 			      var a = t.get(bn);
-	// 			      a = ee.Array(a).slice(1,1,2).project([0]);
-	// 			      sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
-	// 			      a = ee.Number(a.toList().get(1));
-	// 			      var pct = a.divide(sum).multiply(multiplier);
-	// 			      return pct;
-	// 			    });
-	// 			    values = ee.List([xAxisLabel]).cat(values);
-	// 			    return values;
-	// 			})
+	return areaChartCollection.toList(10000,0).map(function(img){
+						img = ee.Image(img);
+				    // img = ee.Image(img).clip(area);
+				    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,scale,crs,transform,true,1e13,4);
+				    var xAxisLabel = img.get(xAxisProperty);
+				    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
+				    // var lossT = t.slice(0,2,null);
+				    // var gainT = t.slice(0,0,2);
+				    // var lossSum = lossT.reduce(ee.Reducer.sum(),[0]).get([0]);
+				    // var gainSum = gainT.reduce(ee.Reducer.sum(),[0]).get([0]);
+				    // var lossPct = ee.Number.parse(lossT.get([1]).divide(lossSum).multiply(100).format('%.2f'));
+				    // var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
+				    // return [year,lossPct,gainPct];//ee.List([lossSum]);
+				    t = ee.Dictionary(t);
+				    // var values = t.values();
+				    // var keys = t.keys();
+				    var sum;
+				    values = bandNames.map(function(bn){
+				      var a = t.get(bn);
+				      a = ee.Array(a).slice(1,1,2).project([0]);
+				      sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
+				      a = ee.Number(a.toList().get(1));
+				      var pct = a.divide(sum).multiply(multiplier);
+				      return pct;
+				    });
+				    values = ee.List([xAxisLabel]).cat(values);
+				    return values;
+				})
 }
 function makeSankeyDashboardCharts(layer,whichOne){
 	// console.log(layer)

@@ -3073,18 +3073,22 @@ function runDashboard(){
                                       'color':'#00E',
                                         'unique_fieldname':'outID',
                                     },
-                      'Planning Units':{'path':'LMPU_compressed.geojson',
-                                      'color':'#E00',
-                                      'unique_fieldname':'LMPU_NAME'
-                                    },
-                      'LTAs':{'path':'LTA_compressed.geojson',
-                                      'color':'#E0E',
-                                       'unique_fieldname':'TCA_ID'
-                                    },   
-                      'Grid-30km':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
-                                      'color':'#EE0',
-                                       'unique_fieldname':'outID'
-                                    },                     
+                      // 'Planning Units':{'path':'LMPU_compressed.geojson',
+                      //                 'color':'#E00',
+                      //                 'unique_fieldname':'LMPU_NAME'
+                      //               },
+                      // 'LTAs':{'path':'LTA_compressed.geojson',
+                      //                 'color':'#E0E',
+                      //                  'unique_fieldname':'TCA_ID'
+                      //               },   
+                      //               'HUC12':{'path':'HUC12_compressed.geojson',
+                      //               'color':'#EEF',
+                      //                'unique_fieldname':'huc12'
+                      //             },
+                      // 'Grid-30km':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
+                      //                 'color':'#EE0',
+                      //                  'unique_fieldname':'outID'
+                      //               },                     
 }
 let addedLayerCount=0;
 
@@ -3150,8 +3154,8 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
     let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,startYear+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
     let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYear-2,endYear,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.5},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
+    Map2.addLayer(pre,{'autoViz':true,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
+    Map2.addLayer(post,{'autoViz':true,opacity:0.5,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
 
     firstComparisonLayerI = false;
   })

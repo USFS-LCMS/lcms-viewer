@@ -121,7 +121,13 @@ color:var(--deep-brown-20)!important;}
   vertical-align:middle!important;
 
 }
-
+.eraser{
+  color: var(--deep-brown-100)!important; 
+}
+.eraser:active {
+  transform: translate(3px) translateY(0px);
+  color:var(--teal-100)!important;
+}
 .bg-solid-black{background-color: var(--solid-black)!important;
 color:var(--white)!important;}
 .time-lapse-active{
@@ -209,9 +215,10 @@ button {
 }
 
 .sidebar-toggler:hover{font-size:1.9em!important;}
-.sidebar-toggler:active {
+.sidebar-toggler:active{
   transform: translate(4px) translateY(4px);
 }
+
 .teal-hover:hover{color:var(--teal-100)!important;}
 .sidebar{
   overflow-y: auto;

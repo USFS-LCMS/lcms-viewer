@@ -856,6 +856,8 @@ if(mode === 'lcms-dashboard'){
   $('.legendDiv').css('max-width','40%')
   addCollapse(collapseContainer,'dashboard-results-collapse-label','dashboard-results-collapse-div','RESULTS','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Dashboard results','prepend');
   // $('#support-collapse-div').append(staticTemplates.supportDiv);
+
+  
 }
 if(urlParams.showSidebar === undefined || urlParams.showSidebar === null){
   urlParams.showSidebar = 'true'

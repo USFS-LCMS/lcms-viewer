@@ -415,7 +415,7 @@ function selectFrame(id,fromYearSlider,advanceOne){
     $('#'+timeLapseID+'-year-label').show();
     // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $('#time-lapse-year-label').show();
-    $('#time-lapse-year-label').html(`Time lapse year: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`)
+    $('#time-lapse-year-label').html(`Time lapse date: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`)
     // if(advanceOne){timeLapseFrame++};
   }
   
@@ -2389,6 +2389,9 @@ function initialize() {
   urlParams.lng =  mapOptions.center.lng;urlParams.lat = mapOptions.center.lat;urlParams.zoom= mapOptions.zoom;
   // trackView()  
   map = new google.maps.Map(document.getElementById("map"),mapOptions);
+
+  
+  
   //Associate the styled map with the MapTypeId and set it to display.
   // map.mapTypes.set('dark_mode', styledMapType);
   // const drawingManager = new google.maps.drawing.DrawingManager({
