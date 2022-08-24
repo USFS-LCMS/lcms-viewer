@@ -2063,12 +2063,13 @@ const dragBox = {}
     
   });
   
-  
+  dragBox.listeners={'click':[],'mousemove':[]};
   dragBox.dragBoxPath = [];
   dragBox.clickI=0;
   dragBox.startDragBoxLocation,dragBox.currentDragLocation;
   dragBox.stop = function(e){
-    dragBox.listenTo.map(o=>google.maps.event.clearListeners(o, "mousemove"));
+    dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
+    dragBox.listeners.mousemove = [];
   }
   dragBox.expand = function(e){
  
@@ -2086,8 +2087,9 @@ const dragBox = {}
     dragBox.startDragBoxLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
     dragBox.polygon.setMap(map);
 
-    dragBox.listenTo.map(o=>google.maps.event.addListener(o, "mousemove", dragBox.expand));
-    
+    Object.keys(dragBox.listenTo).map(k=>{
+      dragBox.listeners.mousemove.push(google.maps.event.addListener(dragBox.listenTo[k], "mousemove", dragBox.expand));
+    });
     
   }
   dragBox.click = function(e){
@@ -2100,15 +2102,18 @@ const dragBox = {}
   }
   dragBox.startListening=function(){
     if(dragBox.listenTo===undefined){
-      dragBox.listenTo = [map,dragBox.polygon]
-      Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.listenTo.push(v.layer))
+      dragBox.listenTo = {'map':map,'box':dragBox.polygon}
+      Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.listenTo[v.id]=v.layer)
     }
-    dragBox.listenTo.map(o=>google.maps.event.addListener(o, "click", dragBox.click));
+    Object.keys(dragBox.listenTo).map(k=>{
+      dragBox.listeners.click.push(google.maps.event.addListener(dragBox.listenTo[k], "click", dragBox.click));
+    });
   }
   dragBox.stopListening=function(){
     dragBox.polygon.setMap(null);
-    dragBox.listenTo.map(o=>google.maps.event.clearListeners(o, "click"));
-    dragBox.listenTo.map(o=>google.maps.event.clearListeners(o, "mousemove"));
+    dragBox.listeners.click.map(e=>google.maps.event.removeListener(e));
+    dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
+    dragBox.listeners={'click':[],'mousemove':[]};
   }
 ////////////////////////////////////////////////////////////////
 //Setup study areas and run functions
