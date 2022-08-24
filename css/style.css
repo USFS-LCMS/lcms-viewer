@@ -691,9 +691,9 @@ font-size:0.9em;
 
 
 .btn{padding:0.3em;}
-.btn:active{background-color: var(--teal-100)!important;
+.btn:active,.drawing-mode-selector:active{background-color: var(--teal-100)!important;
             transform: scale3d(1.05, 1, 1);}
-.btn:hover{font-weight: 300}
+.btn:hover,.drawing-mode-selector:hover{font-weight: 300}
 
 .color-button{
   border-radius:0.2em;
@@ -701,7 +701,8 @@ font-size:0.9em;
   width:2.1em;
   border:0.1em solid black;
   vertical-align: middle!important;
-}}
+}
+/* .drawing-mode-selector{} */
 /*///////////////////////////////////////////////////////////*/
 /*Dropdown styling*/
 

@@ -202,7 +202,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.endYear == null || urlParams.endYear == undefined){
     urlParams.endYear = endYear;// = parseInt(urlParams.endYear);
   }
-  // addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products');
+  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS summary areas to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','LCMS DATA',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,false,null,'LCMS DATA layers to view on map');
@@ -212,8 +212,30 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
+  addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'Click':true,'Drag-Box':false});
+
   
-    
+  $('#summary-area-selection-radio').change(()=>{
+    console.log(dashboardAreaSelectionMode)
+    if(dashboardAreaSelectionMode==='Drag-Box'){
+      dragBox.startListening();
+    }else{
+      dragBox.stopListening();
+    }
+
+});
+//   let selectionMode;
+//   $('#parameters-collapse-div').append(`<div id='drawing-mode-selection' class="btn-group btn-group-justified" title='Choose how to select areas'>
+//                                           <button type="button" id = 'click-drawing-mode' value='click' class="btn btn-primary drawing-mode-selector">Click</button>
+//                                           <button type="button" id = 'drag-drawing-mode' value = 'drag' class="btn btn-primary drawing-mode-selector">Drag</button>
+//                                         </div>`)
+// $('.drawing-mode-selector').on('click',function(e){
+//   selectionMode=this.value;
+// })
+// $('#click-drawing-mode').click();
+  // let selectionModeDiv = `<div><i class="fa fa-draw-polygon"></i>
+  //                         </div>`
+  // $('#parameters-collapse-div').append(selectionModeDiv);
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
 

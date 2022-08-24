@@ -2050,8 +2050,66 @@ updateDistance = function(){
 // layer2.setMap(map);
     
 //     }
+////////////////////////////////////////////////////////////////
+//Setup drag box selection object
+const dragBox = {}
+  dragBox.polygon = new google.maps.Polygon({
+    strokeColor:'#0FF',
+    fillColor:'#0FF',
+    fillOpacity:0.2,
+    strokeOpacity: 1,
+    strokeWeight: 2,
+    zIndex:999
+    
+  });
+  
+  
+  dragBox.dragBoxPath = [];
+  dragBox.clickI=0;
+  dragBox.startDragBoxLocation,dragBox.currentDragLocation;
+  dragBox.stop = function(e){
+    dragBox.listenTo.map(o=>google.maps.event.clearListeners(o, "mousemove"));
+  }
+  dragBox.expand = function(e){
+ 
+      dragBox.currentDragLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
+      let second = {lng:dragBox.startDragBoxLocation.lng,lat:dragBox.currentDragLocation.lat};
+      let fourth = {lat:dragBox.startDragBoxLocation.lat,lng:dragBox.currentDragLocation.lng};
+      dragBox.dragBoxPath = [dragBox.startDragBoxLocation,second,dragBox.currentDragLocation,fourth];
+      dragBox.polygon.setPath(dragBox.dragBoxPath);
+    
+    
+  }
+  dragBox.start = function(e){
+    
+    dragBox.polygon.setMap(null);
+    dragBox.startDragBoxLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
+    dragBox.polygon.setMap(map);
 
-
+    dragBox.listenTo.map(o=>google.maps.event.addListener(o, "mousemove", dragBox.expand));
+    
+    
+  }
+  dragBox.click = function(e){
+    if(dragBox.clickI%2===0){
+      dragBox.start(e);
+    }else{
+      dragBox.stop(e);
+    }
+    dragBox.clickI++
+  }
+  dragBox.startListening=function(){
+    if(dragBox.listenTo===undefined){
+      dragBox.listenTo = [map,dragBox.polygon]
+      Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.listenTo.push(v.layer))
+    }
+    dragBox.listenTo.map(o=>google.maps.event.addListener(o, "click", dragBox.click));
+  }
+  dragBox.stopListening=function(){
+    dragBox.polygon.setMap(null);
+    dragBox.listenTo.map(o=>google.maps.event.clearListeners(o, "click"));
+    dragBox.listenTo.map(o=>google.maps.event.clearListeners(o, "mousemove"));
+  }
 ////////////////////////////////////////////////////////////////
 //Setup study areas and run functions
 function dropdownUpdateStudyArea(whichOne){
