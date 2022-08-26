@@ -3069,26 +3069,47 @@ function runDashboard(){
   let tryDirs = ['./geojson/','https://storage.googleapis.com/lcms-dashboard-fast/'];
   let tryDirI = 0;
   let summaryAreas = {
-                  'US Counties':{'path':'Counties_compressed.geojson',
-                                      'color':'#00E',
+                  'US Counties Transition':{'path':'Counties_compressed.geojson',
+                                      'color':'#50E',
                                         'unique_fieldname':'outID',
+                                        'summary_mode':'transition',
+                                        'visible':true
                                     },
-                      // 'Planning Units':{'path':'LMPU_compressed.geojson',
-                      //                 'color':'#E00',
-                      //                 'unique_fieldname':'LMPU_NAME'
-                      //               },
-                      // 'LTAs':{'path':'LTA_compressed.geojson',
-                      //                 'color':'#E0E',
-                      //                  'unique_fieldname':'TCA_ID'
-                      //               },   
-                      //               'HUC12':{'path':'HUC12_compressed.geojson',
-                      //               'color':'#EEF',
-                      //                'unique_fieldname':'huc12'
-                      //             },
-                      // 'Grid-30km':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
-                      //                 'color':'#EE0',
-                      //                  'unique_fieldname':'outID'
-                      //               },                     
+                  'US Counties Annual':{'path':'Counties-annual_compressed.geojson',
+                                    'color':'#FE0',
+                                  'unique_fieldname':'outID',
+                                  'summary_mode':'annual',
+                                'visible':false},
+                  'HUC 6 Transition':{'path':'HUC06-transition_compressed.geojson',
+                                  'color':'#00E',
+                                    'unique_fieldname':'huc6',
+                                        'summary_mode':'transition',
+                                        'visible':false
+                                },
+                      'Planning Units Transition':{'path':'LMPU_compressed.geojson',
+                                      'color':'#E00',
+                                      'unique_fieldname':'LMPU_NAME',
+                                      'summary_mode':'transition',
+                                      'visible':false
+                                    },
+                      'LTAs Transition':{'path':'LTA_compressed.geojson',
+                                      'color':'#E0E',
+                                       'unique_fieldname':'TCA_ID',
+                                       'summary_mode':'transition',
+                                       'visible':false
+                                    },   
+                                    'HUC12 Transition':{'path':'HUC12_compressed.geojson',
+                                    'color':'#EEF',
+                                     'unique_fieldname':'huc12',
+                                     'summary_mode':'transition',
+                                     'visible':false
+                                  },
+                      'Grid-30km':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
+                                      'color':'#EE0',
+                                       'unique_fieldname':'outID',
+                                       'summary_mode':'transition',
+                                       'visible':false
+                                    },                     
 }
 let addedLayerCount=0;
 
@@ -3105,7 +3126,7 @@ function loadGeoJson(summaryAreaObj,k){
   	.then(function(json) {
       if(json !== null){
         console.log(json)
-        Map2.addLayer(json,{dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,layerType:'geoJSONVector',strokeColor:summaryAreaObj.color,strokeWeight:1.5,fillOpacity:0},k,true,null,null,'Summary areas: '+k)
+        Map2.addLayer(json,{dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:summaryAreaObj.summary_mode,layerType:'geoJSONVector',strokeColor:summaryAreaObj.color,strokeWeight:1.5,fillOpacity:0},k,summaryAreaObj.visible,null,null,'Summary areas: '+k)
         addedLayerCount++;
         if(addedLayerCount===Object.keys(summaryAreas).length){
           if(localStorage['showIntroModal-'+mode] !== 'true'){

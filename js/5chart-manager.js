@@ -883,12 +883,12 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 				    return values;
 				})
 }
-function makeSankeyDashboardCharts(layer,whichOne){
+function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
 	var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
 	var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
 	var showPairwiseDiff = false;
-	var annualOrTransition = 'transition';
+	
 
 	var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
 						'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
@@ -898,8 +898,9 @@ function makeSankeyDashboardCharts(layer,whichOne){
 	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
 				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
 				}
+	
 	let total_area_fieldname = 'total_area';
-	var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
+	// var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
 	var chartWhich = ['Change','Land_Cover','Land_Use'];
 	if(annualOrTransition === 'transition'){
 	
@@ -1077,6 +1078,131 @@ function makeSankeyDashboardCharts(layer,whichOne){
 		Plotly.newPlot(`${chartID}`, data, layout,config);
 	
 
+	}else if(annualOrTransition === 'annual'){
+		var startI = years.indexOf(startYear.toString());
+        var endI = years.indexOf((endYear).toString())+1;
+        years = years.slice(startI,endI);
+		// console.log(years)
+		var fieldNames = Object.keys(results.features[0].properties).filter(v=>v.indexOf(whichOne)>-1).sort();
+		// console.log(fieldNames)
+		
+        var t = fieldNames.map(function(k){
+          var total_area = 0;
+          var total = [];
+
+          results.features.map(function(f){
+            // console.log(f.attributes)
+            try{
+              var scale = f.properties.scale;
+              
+              total.push(f.properties[k].split(',').slice(startI,endI).map(n => parseFloat(n)*scale**2));
+              var total_areaF = parseFloat(f.properties[total_area_fieldname]);
+              total_area = total_area + total_areaF*scale**2;
+            }catch(err){
+              console.log('No LCMS summary for: '+f.properties[titleField]);
+    //           // console.log(err);
+            }
+            
+           })
+		   
+          var colSums = [];
+          for(var col = 0;col < total[0].length;col++){
+            var colSum = 0;
+            for(var row = 0;row < total.length;row++){
+              colSum = colSum + total[row][col];
+            }
+            colSums.push(colSum);
+          };
+		  
+          //Convert from sq m to chosen area unit
+          if(chartFormat === 'Percentage'){
+            colSums = colSums.map((n)=>n/total_area*100);
+          }else{
+            colSums = colSums.map((n)=>n*chartFormatDict[chartFormat].mult);
+          }
+		  
+          if(showPairwiseDiff){
+            var pairwiseDiff = [];
+            for(var i=0;i<colSums.length-1;i++){
+              var left = colSums[i];
+              var right = colSums[i+1];
+              pairwiseDiff.push(right-left)
+            }
+            colSums = pairwiseDiff;
+            years = years.slice(1,years.length);
+          }
+          
+          ///////////////////////////////////////////////////////////////////////
+          //Set up chart object
+		  let classColor = colors[whichOne][names[whichOne].indexOf(k.split('---')[1])]
+            var out = {'borderColor':classColor,
+            'fill':false,
+            'data':colSums,
+            'label':k.split('---')[1],
+            pointStyle: 'line',
+            pointRadius:1,
+            'lineTension':0,
+            'borderWidth':2,
+            'steppedLine':false,
+            'showLine':true,
+            'spanGaps':true,
+            'fill' : stacked,
+            'backgroundColor':classColor}
+            colorsI ++;
+            return out;
+          })
+
+      //Clean out existing chart  
+      try{
+        chartJSChart.destroy(); 
+      }
+      catch(err){};
+      $(`#${chartID}`).remove(); 
+
+       
+	//Add new chart
+	$('#dashboard-results-collapse-div').append(`<div style='height:25rem;' class = "chart"  ><canvas id="${chartID}"><canvas></div>`);
+      // $('#chartDiv').append('<hr>');
+      //Set up chart object
+      var chartJSChart = new Chart($(`#${chartID}`),{
+        type: 'line',
+        data: {"labels": years,
+        "datasets":t},
+        options:{
+          responsive: true,
+          maintainAspectRatio: false,
+		  responsive: true,
+        //   aspectRatio: 1/.06,
+           title: {
+                display: true,
+                position:'top',
+                text: name,
+                fontSize: 14
+            },
+            legend:{
+              display:true,
+              position:'bottom',
+              labels : {
+				fontSize:11,
+                boxWidth:4,
+                usePointStyle: true,
+				padding:1,
+				
+              },
+			  margin:0
+            },
+            chartArea: {
+                backgroundColor: '#D6D1CA'
+            },
+            scales: {
+              yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:chartFormatDict[chartFormat].label}}],
+              xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
+            },
+			labels:{
+				padding:0
+			}
+          }
+        });
 	}
 }
 function updateDashboardCharts(){
@@ -1085,9 +1211,11 @@ function updateDashboardCharts(){
 	Object.keys(layerObj).map(k=>{
 		let layer = layerObj[k];
 		// console.log(layer.visible);
-		if(layer.viz.dashboardSummaryLayer && layer.visible && Object.keys(layer.dashboardSelectedFeatures).length > 0){
-			chartWhich.map((w) => makeSankeyDashboardCharts(layer,w));
+		if(layer.viz.dashboardSummaryLayer && layer.visible && Object.keys(layer.dashboardSelectedFeatures).length > 0 ){
+			chartWhich.map((w) => makeDashboardCharts(layer,w,layer.dashboardSummaryMode));
 		}
+			
+		
 	})
 	
 }

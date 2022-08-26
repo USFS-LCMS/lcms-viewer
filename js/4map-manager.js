@@ -2052,11 +2052,12 @@ updateDistance = function(){
 //     }
 ////////////////////////////////////////////////////////////////
 //Setup drag box selection object
-const dragBox = {}
+function addDragBox(){
+  const dragBox = {}
   dragBox.polygon = new google.maps.Polygon({
-    strokeColor:'#0FF',
+    strokeColor:'#FF0',
     fillColor:'#0FF',
-    fillOpacity:0.2,
+    fillOpacity:0.0,
     strokeOpacity: 1,
     strokeWeight: 2,
     zIndex:999
@@ -2070,21 +2071,38 @@ const dragBox = {}
   dragBox.stop = function(e){
     dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
     dragBox.listeners.mousemove = [];
+    dragBox.polygon.setMap(null);
   }
   dragBox.expand = function(e){
- 
+      console.log(e);
+    //   var event = $.Event('click');
+    //   event.clientX = e.domEvent.clientX;
+    //   event.clientY = e.domEvent.clientY;
+    //   console.log(event);
+    //   $('section').trigger(event);
+    //   const x = 10
+    // const y = 10
+      
+      if(e.feature!==undefined){
+        console.log('its a feature')
+        console.log(e.feature)
+      //   google.maps.event.trigger(e.feature, 'click')
+      //   e.feature.toGeoJson((r)=>{console.log(r)})
+      }
       dragBox.currentDragLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
       let second = {lng:dragBox.startDragBoxLocation.lng,lat:dragBox.currentDragLocation.lat};
       let fourth = {lat:dragBox.startDragBoxLocation.lat,lng:dragBox.currentDragLocation.lng};
       dragBox.dragBoxPath = [dragBox.startDragBoxLocation,second,dragBox.currentDragLocation,fourth];
       dragBox.polygon.setPath(dragBox.dragBoxPath);
-    
+      // setTimeout(()=>document.elementFromPoint(e.domEvent.clientX, e.domEvent.clientY).click(),5)
+      
     
   }
   dragBox.start = function(e){
     
     dragBox.polygon.setMap(null);
     dragBox.startDragBoxLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
+    dragBox.polygon.setPath([dragBox.startDragBoxLocation,dragBox.startDragBoxLocation,dragBox.startDragBoxLocation]);
     dragBox.polygon.setMap(map);
 
     Object.keys(dragBox.listenTo).map(k=>{
@@ -2093,18 +2111,22 @@ const dragBox = {}
     
   }
   dragBox.click = function(e){
-    if(dragBox.clickI%2===0){
-      dragBox.start(e);
-    }else{
-      dragBox.stop(e);
+    if(dashboardAreaSelectionMode==='Drag-Box'){
+      if(dragBox.clickI%2===0){
+        dragBox.start(e);
+      }else{
+        dragBox.stop(e);
+      }
+      dragBox.clickI++
     }
-    dragBox.clickI++
+    
+  }
+  dragBox.listenTo={'box':dragBox.polygon}
+  dragBox.addListenTo = function(obj,nm){
+    dragBox.listenTo[nm]=obj;
   }
   dragBox.startListening=function(){
-    if(dragBox.listenTo===undefined){
-      dragBox.listenTo = {'map':map,'box':dragBox.polygon}
-      Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.listenTo[v.id]=v.layer)
-    }
+    
     Object.keys(dragBox.listenTo).map(k=>{
       dragBox.listeners.click.push(google.maps.event.addListener(dragBox.listenTo[k], "click", dragBox.click));
     });
@@ -2115,6 +2137,9 @@ const dragBox = {}
     dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
     dragBox.listeners={'click':[],'mousemove':[]};
   }
+  return dragBox;
+}
+
 ////////////////////////////////////////////////////////////////
 //Setup study areas and run functions
 function dropdownUpdateStudyArea(whichOne){
