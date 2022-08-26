@@ -3098,13 +3098,13 @@ function runDashboard(){
                                        'summary_mode':'transition',
                                        'visible':false
                                     },   
-                                    'HUC12 Transition':{'path':'HUC12_compressed.geojson',
-                                    'color':'#EEF',
-                                     'unique_fieldname':'huc12',
-                                     'summary_mode':'transition',
-                                     'visible':false
-                                  },
-                      'Grid-30km':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
+                                  //   'HUC12 Transition':{'path':'HUC12_compressed.geojson',
+                                  //   'color':'#EEF',
+                                  //    'unique_fieldname':'huc12',
+                                  //    'summary_mode':'transition',
+                                  //    'visible':false
+                                  // },
+                      'Grid-30km Transition':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
                                       'color':'#EE0',
                                        'unique_fieldname':'outID',
                                        'summary_mode':'transition',
