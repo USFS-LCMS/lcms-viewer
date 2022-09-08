@@ -43,6 +43,10 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
         <script src='https://cdn.plot.ly/plotly-2.12.1.min.js'></script>
         
+        <!-- PDF Report -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+        <script type="text/javascript" src ="https://unpkg.com/jspdf-autotable"></script>   
+        <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 
         <!-- Hammer for mobile tap and desktop click support -->
         <script src="https://hammerjs.github.io/dist/hammer.js"></script>
@@ -66,6 +70,7 @@
             
             ga('send', 'event','load', mode, 'lcms-dashboard');
         </script>
+        <script type="text/javascript" src="./js/report-fonts.js"></script>
         <script type="text/javascript" src="./js/2templates.js"></script>
         <script type="text/javascript" src="./js/3template-adder.js"></script>
         <script type="text/javascript" src="./js/4map-manager.js"></script>
@@ -78,5 +83,6 @@
         <script type="text/javascript" src="./js/11export-manager.js"></script>
         <script type="text/javascript" src="./js/12plot-manager.js"></script>
         <script type="text/javascript" src="./js/13tutorial-manager.js"></script>
+        
     </body>
 </html>

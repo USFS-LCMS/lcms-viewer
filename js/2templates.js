@@ -2227,7 +2227,7 @@ function addLayer(layer){
                                                     layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
                                                         strokeColor:'#0FF',
                                                         fillColor:'#0FF',
-                                                        fillOpacity:0.2,
+                                                        fillOpacity:0.3,
                                                         strokeOpacity: 0,
                                                         strokeWeight: 0,
                                                         path:polyCoordsT,
@@ -2507,3 +2507,221 @@ function addTransitionRow(){
 function removeLastTransitionRow(){
     $('#added-transition-rows tr:last').remove();
     }
+//////////////////////////////////////////////////
+// Dashboard template setup
+class report {
+    constructor() {
+
+        this.clear = function () {
+            this.doc = new jspdf.jsPDF('portrait');
+            this.h = this.doc.internal.pageSize.height;
+            this.w = this.doc.internal.pageSize.width;
+            this.margin = 10;
+
+            // Robotofont class (contains text needed to read ttf files)
+            const robotoNormal = reportFonts.getRobotoNormal();
+            const robotoBold = reportFonts.getRobotoBold();
+            const arialNormal = reportFonts.getArial();
+            const arialBold = reportFonts.getArialBold();
+            this.doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
+            this.doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
+            this.doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
+            this.doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
+            this.doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
+            this.doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
+            this.doc.addFileToVFS("arial-normal.ttf", arialNormal);
+            this.doc.addFont("arial-normal.ttf", "Arial", "normal");
+
+            this.doc.setFont('Arial', 'normal');
+
+            //header 
+            //header color block
+            var fontSize = 12;
+            this.doc.setFontSize(fontSize);
+            this.currentY = this.margin;
+            this.widthPng = 36;
+        };
+        this.addReportHeader = function () {
+            this.clear();
+
+            //header logo image
+            var usdaLogo = new Image();
+            usdaLogo.src = "./images/usdalogo.png";
+            this.doc.addImage(usdaLogo, 'PNG', 5, 4, 18, 13); //, 15);
+            var fsLogo = new Image();
+            fsLogo.src = "./images/usfslogo.png";
+            this.doc.addImage(fsLogo, 'PNG', 27, 3, 14, 15); //x,y,w,h            
+            var lcmsLogo = new Image();
+            lcmsLogo.src = "./images/lcms-icon.png";
+
+            //header text
+            this.currentY = 9;
+            this.widthPng = 36;
+            this.doc.setFontSize(18);
+            this.doc.text(this.margin + this.widthPng, this.currentY, "Forest Service");
+            this.doc.setFontSize(12);
+            this.currentY += 7;
+            this.doc.text(this.margin + this.widthPng, this.currentY, "U.S. DEPARTMENT OF AGRICULTURE");
+            this.currentY += 5;
+
+
+            this.doc.line(this.margin / 2, this.currentY, this.w - this.margin / 2, this.currentY); //x,y,w,h
+            this.currentY += 5;
+            this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
+            // doc.setFont(undefined,'bold');
+            // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
+            // doc.setFont(undefined,'normal');
+            // doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
+            this.currentY += 3;
+
+            this.doc.setFillColor(3, 74, 48); //169,209,142);
+
+            //doc.setTextColor(8,124,124);
+            this.doc.rect(0, this.currentY, 600, 20, 'F'); //x, y, w, h, style
+
+
+
+            this.doc.setFontSize(22);
+            this.doc.setTextColor(249, 226, 76); //0,0,0);
+            this.doc.setFont(undefined, 'bold');
+            this.currentY += 3;
+            this.doc.addImage(lcmsLogo, 'PNG', this.margin / 2, this.currentY, 13, 13); //x,y,w,h
+            this.currentY += 10;
+            this.doc.text(this.margin + 15, this.currentY, "LANDSCAPE CHANGE MONITORING SYSTEM"); //x,y,text
+            var lineHeight = this.doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM") / this.doc.internal.scaleFactor;
+            var lines = 1; //splittedText.length  // splitted text is a string array
+            var blockHeight = lines * lineHeight;
+            this.currentY += blockHeight + 10;
+            this.doc.setFont(undefined, 'normal');
+
+            this.doc.setFontSize(26);
+            this.doc.setFont(undefined, 'normal');
+            this.doc.setTextColor(0, 0, 0); //8,124,124)
+            var question = "How is our landscape changing?"; //change to document.getElementById("options-dropdown").value;//
+            var wrapQuestion = this.doc.splitTextToSize(question, 180);
+            this.doc.text(this.margin, this.currentY, wrapQuestion);
+
+            var lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
+            var lines = wrapQuestion.length; // splitted text is a string array
+            var blockHeight = lines * lineHeight;
+            this.currentY += blockHeight; //-18
+
+
+        };
+        this.checkForRoom = function (additional = 0) {
+            if (this.currentY + this.margin + additional > this.h) {
+                console.log(`Adding page: y=${this.currentY},margin=${this.margin},additional=${additional},pageH=${this.h}`)
+                this.doc.addPage();
+                this.currentY = this.margin;
+
+            }
+        };
+        this.addText = function (text, fontSize = 12) {
+            console.log(`Adding text: ${text}`);
+
+            this.doc.setFontSize(fontSize);
+            this.checkForRoom(fontSize);
+            this.doc.text(this.margin, this.currentY, text);
+            this.currentY += fontSize + this.margin;
+        };
+        this.outstandingCharts=0;
+        this.addChart = function (id,type) {
+            var that  = this;
+            that.outstandingCharts++;
+            console.log(`Adding chart: ${id}`);
+            if(type==='chartJS'){
+                const canvas0 = document.getElementById(id);
+                // const legend_div= document.getElementById("chart-canvas-Change-"+thisFC+"-js-legend");
+                let chartHeight = canvas0.height;
+                let chartWidth = canvas0.width;
+                let aspectRatio = chartHeight / chartWidth;
+                let chartW = this.w - this.margin * 2;
+                let chartH = chartW * aspectRatio;
+                this.checkForRoom(chartH+this.margin);
+                // doc.setFillColor(204,204,204,0);
+                // doc.rect(margin,currentY,chartW, chartH)
+                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
+                let dataURL = canvas0.toDataURL("image/png", 1.0);
+                let link = document.createElement("a");
+                        link.download = id;
+                        link.href = dataURL;
+                        // link.click();
+                // console.log(imgURL)
+                this.doc.addImage(dataURL, 'PNG', this.margin, this.currentY, chartW, chartH, { compresion: 'NONE' });
+                this.currentY = this.currentY + chartH+this.margin;
+                that.outstandingCharts--;
+                // return 'done';
+            }else if(type==='Plotly'){
+                let chartHeight = 600;
+                let chartWidth = 800;
+                let aspectRatio = chartHeight / chartWidth;
+                let chartW = this.w - this.margin * 2;
+                let chartH = chartW * aspectRatio;
+                this.checkForRoom(chartH+this.margin);
+
+                
+                return Plotly.toImage(id, { format: 'png', width: chartWidth, height: chartHeight }).then(function (dataURL) {
+                    //   console.log(dataURL);
+                      let link = document.createElement("a");
+                        link.download = id;
+                        link.href = dataURL;
+                        // link.click();
+                        // delete link;
+                        that.doc.addImage(dataURL, 'PNG', that.margin, that.currentY, chartW, chartH, { compresion:'NONE' });
+                        that.currentY = that.currentY + chartH+that.margin;
+                        that.outstandingCharts--;
+                        console.log('here')
+                  });
+            }
+            
+
+        };
+        this.download = function (outFilename) {
+            this.doc.save(outFilename + '.pdf');
+        };
+    }
+}
+var dashboardReport = new report();
+function makeDashboardReport(){
+    
+    dashboardReport.addReportHeader();
+    let chartTypes = {'chartJS':'#dashboard-results-div canvas','Plotly':'#dashboard-results-div div'};
+    Object.keys(chartTypes).map(k=>{
+        let w = chartTypes[k];
+        $(w).each(function() {
+            let id=$(this).attr('id');
+          
+            if(id!==undefined&&id.indexOf('chart-canvas')>-1){
+                console.log(id)
+                dashboardReport.addChart(id,k);
+            }
+    })
+    
+       
+                
+            
+            
+        })
+        
+    // function delayedDownload(){
+    //     let downloaded=false;
+    //     let downloadCount = 0;
+    //     let currentSeconds=new Date().getSeconds();
+    //     while(!downloaded && downloadCount<5){
+    //         if(new Date().getSeconds()%2===0 && new Date().getSeconds()!==currentSeconds &&dashboardReport.outstandingCharts==0 ){
+    //             currentSeconds=new Date().getSeconds()
+    //             console.log(`${downloadCount} ${currentSeconds} ${dashboardReport.outstandingCharts}`)
+    //             dashboardReport.download();
+    //             downloaded=true;
+    //             downloadCount++;
+    //         }
+            
+    //     }
+    // }
+    setTimeout(dashboardReport.download(),5000);
+    // for(var i = 0;i<100;i++){
+    //     dashboardReport.addText('hellodfdddddddddddddddddfffffffffffffffffffffffffffffffffffffffddddddddddddddddddddddddddddddddddddddddddddddddwthereworld')
+    // }
+    // dashboardReport.clear()
+    // dashboardReport.download();
+}

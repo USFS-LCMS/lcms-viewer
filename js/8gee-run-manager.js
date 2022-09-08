@@ -3069,47 +3069,83 @@ function runDashboard(){
   let tryDirs = ['./geojson/','https://storage.googleapis.com/lcms-dashboard-fast/'];
   let tryDirI = 0;
   let summaryAreas = {
-                  'US Counties Transition':{'path':'Counties_compressed.geojson',
-                                      'color':'#50E',
+                  'US Counties Transition':{'path':'Counties-transition_compressed.geojson',
+                                      'color':'#FEE',
                                         'unique_fieldname':'outID',
                                         'summary_mode':'transition',
-                                        'visible':true
+                                        'visible':false
                                     },
                   'US Counties Annual':{'path':'Counties-annual_compressed.geojson',
-                                    'color':'#FE0',
+                                    'color':'#FEE',
                                   'unique_fieldname':'outID',
                                   'summary_mode':'annual',
-                                'visible':false},
+                                'visible':true},
+                  'Forests Annual':{'path':'Forests-annual_compressed.geojson',
+                                'color':'#FEE',
+                              'unique_fieldname':'FORESTNAME',
+                              'summary_mode':'annual',
+                            'visible':false},
+                  'Forest Transition':{'path':'Forests-transition_compressed.geojson',
+                            'color':'#FEE',
+                          'unique_fieldname':'FORESTNAME',
+                          'summary_mode':'transition',
+                        'visible':false},
+                 'Forest Districts Annual':{'path':'Forest_Districts-annual_compressed.geojson',
+                        'color':'#FEE',
+                      'unique_fieldname':'DISTRICTNA',
+                      'summary_mode':'annual',
+                    'visible':false},
+          'Forest Districts Transition':{'path':'Forest_Districts-transition_compressed.geojson',
+                    'color':'#FEE',
+                  'unique_fieldname':'DISTRICTNA',
+                  'summary_mode':'transition',
+                'visible':false},
+                                
                   'HUC 6 Transition':{'path':'HUC06-transition_compressed.geojson',
                                   'color':'#00E',
-                                    'unique_fieldname':'huc6',
+                                    'unique_fieldname':'name',
                                         'summary_mode':'transition',
                                         'visible':false
                                 },
-                      'Planning Units Transition':{'path':'LMPU_compressed.geojson',
+                    'HUC 6 Annual':{'path':'HUC06-annual_compressed.geojson',
+                                  'color':'#00E',
+                                    'unique_fieldname':'name',
+                                        'summary_mode':'annual',
+                                        'visible':false
+                                },
+                      'Planning Units Transition':{'path':'LMPU-transition_compressed.geojson',
                                       'color':'#E00',
                                       'unique_fieldname':'LMPU_NAME',
                                       'summary_mode':'transition',
                                       'visible':false
                                     },
-                      'LTAs Transition':{'path':'LTA_compressed.geojson',
+                        'Planning Units Annual':{'path':'LMPU-annual_compressed.geojson',
+                                    'color':'#E00',
+                                    'unique_fieldname':'LMPU_NAME',
+                                    'summary_mode':'annual',
+                                    'visible':false
+                                  },
+                      'LTAs Transition':{'path':'LTA-transition_compressed.geojson',
                                       'color':'#E0E',
                                        'unique_fieldname':'TCA_ID',
                                        'summary_mode':'transition',
                                        'visible':false
                                     },   
-                                  //   'HUC12 Transition':{'path':'HUC12_compressed.geojson',
-                                  //   'color':'#EEF',
-                                  //    'unique_fieldname':'huc12',
-                                  //    'summary_mode':'transition',
-                                  //    'visible':false
-                                  // },
-                      'Grid-30km Transition':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
-                                      'color':'#EE0',
-                                       'unique_fieldname':'outID',
-                                       'summary_mode':'transition',
+                       'LTAs Annual':{'path':'LTA-annual_compressed.geojson',
+                                      'color':'#A0A',
+                                       'unique_fieldname':'TCA_ID',
+                                       'summary_mode':'annual',
                                        'visible':false
-                                    },                     
+                                    },
+                 
+                  //     'Grid-30km Transition':{'path':'LCMS_CONUS_2021-7_Grid_30000m_transition_1985-1987--2000-2002--2019-2021_Summaries_compressed.geojson',
+                  //                     'color':'#EE0',
+                  //                      'unique_fieldname':'outID',
+                  //                      'summary_mode':'transition',
+                  //                      'visible':false
+                  //                   },  
+                     
+                                        
 }
 let addedLayerCount=0;
 
@@ -3175,8 +3211,8 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
     let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,startYear+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
     let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYear-2,endYear,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.5,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
+    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
+    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
 
     firstComparisonLayerI = false;
   })

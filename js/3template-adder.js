@@ -882,9 +882,17 @@ if(mode === 'lcms-dashboard'){
   var collapseContainer =getWalkThroughCollapseContainerID(); 
   $(`#${collapseContainer}`).removeClass('col-xl-2');
   $(`#${collapseContainer}`).removeClass('col-lg-3');
-  $('.legendDiv').css('max-height','100%');
+  $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height());
   $('.legendDiv').css('max-width','40%')
   addCollapse(collapseContainer,'dashboard-results-collapse-label','dashboard-results-collapse-div','RESULTS','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Dashboard results','prepend');
+  $('#dashboard-results-collapse-div').append(`<div class='py-2 bg-black'>
+                                                <button class='btn' onclick='makeDashboardReport()' >
+                                                  <i class="fa fa-download  mx-1" aria-hidden="true"></i>
+                                                  Download Report
+                                                </button>
+                                                <input title = 'Provide a name for your report. A default one will be provided if left blank.'type="report-name" class="form-control" id="report-name" placeholder="Name your report!" style='width:25%;display:inline-block;'>
+                                              </div>
+                                              <div id = 'dashboard-results-div'</div>`)
   // $('#support-collapse-div').append(staticTemplates.supportDiv);
 
   

@@ -972,7 +972,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		
 		$(`#${chartID}`).remove();  
 		//Add new chart
-		$('#dashboard-results-collapse-div').append(`<div class = "chart" id="${chartID}"><div>`);
+		$('#dashboard-results-div').append(`<div class = "chart" id="${chartID}"><div>`);
 		// $('#chartDiv').append('<hr>');
 		//Set up chart object
 		// var chartJSChart = new Chart($(`#${chartID}`),{
@@ -1161,7 +1161,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 
        
 	//Add new chart
-	$('#dashboard-results-collapse-div').append(`<div style='height:25rem;' class = "chart"  ><canvas id="${chartID}"><canvas></div>`);
+	$('#dashboard-results-div').append(`<div style='height:25rem;' class = "chart"  ><canvas id="${chartID}"><canvas></div>`);
       // $('#chartDiv').append('<hr>');
       //Set up chart object
       var chartJSChart = new Chart($(`#${chartID}`),{
@@ -1206,7 +1206,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	}
 }
 function updateDashboardCharts(){
-	$('#dashboard-results-collapse-div').empty();
+	$('#dashboard-results-div').empty();
 	chartWhich = ['Land_Cover','Land_Use'];
 	Object.keys(layerObj).map(k=>{
 		let layer = layerObj[k];
@@ -1216,7 +1216,8 @@ function updateDashboardCharts(){
 		}
 			
 		
-	})
+	});
+	// setTimeout(makeDashboardReport(),1000);
 	
 }
 function expandChart(){
