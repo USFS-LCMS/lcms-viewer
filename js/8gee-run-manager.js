@@ -3197,7 +3197,18 @@ var summaryAreas2 = {'Counties Annual':{'path':'Counties-annual_compressed','uni
 'Forest Districts Annual':{'path':'Forest_Districts-annual_compressed','unique_fieldname':'DISTRICTNA',
 'summary_mode':'annual'},
 'Forest Disctricts Transition':{'path':'Forest_Districts-transition_compressed','unique_fieldname':'DISTRICTNA',
-'summary_mode':'transition'}
+'summary_mode':'transition'},
+'HUC 6 Transition':{'path':'HUC06-transition_compressed',
+'color':'#00E',
+  'unique_fieldname':'name',
+      'summary_mode':'transition',
+      'visible':false
+},
+'HUC 6 Annual':{'path':'HUC06-annual_compressed',
+'color':'#00E',
+  'unique_fieldname':'name',
+      'summary_mode':'annual',
+      'visible':false}
 }
 function loadGEESummaryAreas(summaryAreaObj,name){
   let path = summaryAreaObj.path;

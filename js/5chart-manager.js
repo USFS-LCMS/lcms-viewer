@@ -88,13 +88,80 @@ function updateSelectedAreaArea(){
         })
             
     }
-let dashboardSelectionTracker = {};
-function setupDashboardLayerSelection(){
+function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
+	// console.log(r);
+	let featureName = r.properties[layer.viz.dashboardFieldName].toString();
+	console.log(featureName)
+	if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
+		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
+	
+	
+		function getCoords(c){
+			if(c.type === 'Polygon'){
+				
+				c.coordinates.map(c2=>{
+					let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
+					layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
+						strokeColor:'#0FF',
+						fillColor:'#0FF',
+						fillOpacity:0.3,
+						strokeOpacity: 0,
+						strokeWeight: 0,
+						path:polyCoordsT,
+						zIndex:-999
+					}));
+				})
+					
+			}else if(c.type === 'MultiPolygon'){
+				// console.log(c);
+				c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
+			}else if(c.type === 'GeometryCollection'){
+				c.geometries.map(g=>getCoords(g))
+			}
+		}
+		getCoords(r.geometry);
+		
+		
+		// var infoContent = `<table class="table table-hover bg-white">
+		// <tbody>`
+	
+		// Object.keys(info).map(function(name){
+		//     var value = info[name];
+		//     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+		// });
+		// infoContent +=`</tbody></table>`;
+		
+		
+		
+		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
+		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{
+			if(deselectOnClick){
+				google.maps.event.addListener(p, "click", (event)=>{
+					console.log(`deselection clicked: ${event}`)
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+					delete layer.dashboardSelectedFeatures[featureName];
+					updateDashboardCharts();
+				})
+			}
+			
+		});
+		
+	}
+	// else{
+	// 	console.log(`Removing ${featureName}`)
+	// 	layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+	// 	delete layer.dashboardSelectedFeatures[featureName];
+	// }
+	
+	let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(',');
+	// $('#dashboard-results-collapse-div').append(selectedNames);
+	if(updateCharts){
+		updateDashboardCharts();
+	}
+}
+function startDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
-	dashboardSelectionTracker.selectedFeatures = [];
-	dashboardSelectionTracker.selectedNames = [];
-	dashboardSelectionTracker.seletedFeatureLayerIndices = [];
-
+	
 	function updateSelectedDashboardFeatures(event){
 		let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 		visibleDashboardLayers.map(layer=>{
@@ -103,61 +170,7 @@ function setupDashboardLayerSelection(){
 			// console.log(ft.getInfo())
 
 			ee.Feature(ft.first()).evaluate((r)=>{
-				console.log(r);
-				let featureName = r.properties[layer.viz.dashboardFieldName].toString();
-				console.log(featureName)
-				if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
-					layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
-				
-				
-					function getCoords(c){
-						if(c.type === 'Polygon'){
-							
-							c.coordinates.map(c2=>{
-								let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
-								layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
-									strokeColor:'#0FF',
-									fillColor:'#0FF',
-									fillOpacity:0.3,
-									strokeOpacity: 0,
-									strokeWeight: 0,
-									path:polyCoordsT,
-									zIndex:-999
-								}));
-							})
-								
-						}else if(c.type === 'MultiPolygon'){
-							// console.log(c);
-							c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
-						}else if(c.type === 'GeometryCollection'){
-							c.geometries.map(g=>getCoords(g))
-						}
-					}
-					getCoords(r.geometry);
-					
-					
-					// var infoContent = `<table class="table table-hover bg-white">
-					// <tbody>`
-				
-					// Object.keys(info).map(function(name){
-					//     var value = info[name];
-					//     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-					// });
-					// infoContent +=`</tbody></table>`;
-					
-					
-					
-					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
-					
-				}else{
-					console.log(`Removing ${featureName}`)
-					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
-					delete layer.dashboardSelectedFeatures[featureName];
-				}
-				
-				let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(',');
-				// $('#dashboard-results-collapse-div').append(selectedNames);
-				updateDashboardCharts();
+				chartDashboardFeature(r,layer);
 			})
 		})
 	}
@@ -167,6 +180,72 @@ function setupDashboardLayerSelection(){
 		})
 	
 }
+function clearAllSelectedDashboardFeatures(){
+	let dashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer);
+	dashboardLayers.map(layer=>{
+		Object.keys(layer.dashboardSelectedFeatures).map(fn=>{
+			layer.dashboardSelectedFeatures[fn].polyList.map(p=>p.setMap(null));
+			delete layer.dashboardSelectedFeatures[fn];
+		});
+	});
+	updateDashboardCharts();
+}
+function stopDashboardClickLayerSelect(){
+	google.maps.event.clearListeners(map, 'click');
+}
+function dashboardDragboxLayerSelect(){
+	console.log(dragBox.dragBoxPath);
+	let geeBox = ee.Geometry.Polygon(dragBox.dragBoxPath.map(c=>[c.lng,c.lat]));
+	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
+		visibleDashboardLayers.map(layer=>{
+			let ft = layer.queryItem.filterBounds(geeBox).toList(10000,0);
+			let count = ft.length().getInfo();
+			let counter = 1;
+			let update=false;
+			console.log(`${layer.name} ${ft.length().getInfo()}`)
+			for(var i = 0;i<count;i++){
+				f = ee.Feature(ft.get(i));
+				f.evaluate((r)=>{
+					// console.log(r)
+					if(counter === count){update=true}
+					
+					chartDashboardFeature(r,layer,update,false);
+					counter++
+				})
+			}
+			// console.log(ft.getInfo())
+			// var ft = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+			// // console.log(`${l.name} ${ft.size().getInfo()}`)
+			// // console.log(ft.getInfo())
+
+			// ee.Feature(ft.first()).evaluate((r)=>{
+			// 	chartDashboardFeature(r,layer);
+			// })
+		})
+}
+var dragBox;
+  
+  $('#summary-area-selection-radio').change(()=>{
+    console.log(dashboardAreaSelectionMode)
+    if(dashboardAreaSelectionMode==='Drag-Box'){
+      if(dragBox === undefined){
+        dragBox=addDragBox();
+        dragBox.addListenTo(map,'map')
+		dragBox.addOnStopFunction(dashboardDragboxLayerSelect)
+        dragBox.addOnStartFunction(clearAllSelectedDashboardFeatures)
+      // Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
+      }
+	  stopDashboardClickLayerSelect();
+	  clearAllSelectedDashboardFeatures();
+      dragBox.startListening();
+    }else{
+		clearAllSelectedDashboardFeatures();
+		startDashboardClickLayerSelect();
+      dragBox.stopListening();
+    }
+
+});
+
 function setupAreaLayerSelection(){
 	google.maps.event.clearListeners(map, 'click');
 	selectionTracker.selectedFeatures = [];

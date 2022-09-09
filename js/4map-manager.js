@@ -2063,7 +2063,10 @@ function addDragBox(){
     zIndex:999
     
   });
-  
+  dragBox.onStartFunctions = [()=>console.log('hi')];
+  dragBox.onStopFunctions = [()=>console.log('hi')];
+  dragBox.addOnStartFunction = function(fun){dragBox.onStartFunctions.push(fun)}
+  dragBox.addOnStopFunction = function(fun){dragBox.onStopFunctions.push(fun)}
   dragBox.listeners={'click':[],'mousemove':[]};
   dragBox.dragBoxPath = [];
   dragBox.clickI=0;
@@ -2071,10 +2074,11 @@ function addDragBox(){
   dragBox.stop = function(e){
     dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
     dragBox.listeners.mousemove = [];
-    dragBox.polygon.setMap(null);
+    dragBox.onStopFunctions.map(fun=>fun())
+    // dragBox.polygon.setMap(null);
   }
   dragBox.expand = function(e){
-      console.log(e);
+      // console.log(e);
     //   var event = $.Event('click');
     //   event.clientX = e.domEvent.clientX;
     //   event.clientY = e.domEvent.clientY;
@@ -2099,7 +2103,7 @@ function addDragBox(){
     
   }
   dragBox.start = function(e){
-    
+    dragBox.onStartFunctions.map(fun=>fun());
     dragBox.polygon.setMap(null);
     dragBox.startDragBoxLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
     dragBox.polygon.setPath([dragBox.startDragBoxLocation,dragBox.startDragBoxLocation,dragBox.startDragBoxLocation]);
@@ -2789,7 +2793,7 @@ function initialize() {
         };
       // }
       if(mode === 'lcms-dashboard'){
-        setupDashboardLayerSelection(); 
+        startDashboardClickLayerSelect(); 
       }
       
       

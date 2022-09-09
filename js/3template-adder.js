@@ -213,25 +213,11 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'Click':true,'Drag-Box':false});
-  $('#parameters-collapse-label').hide();
-  $('#parameters-collapse-div').hide();
-  // var dragBox;
-  
-//   $('#summary-area-selection-radio').change(()=>{
-//     console.log(dashboardAreaSelectionMode)
-//     if(dashboardAreaSelectionMode==='Drag-Box'){
-//       // if(dragBox === undefined){
-//       //   dragBox=addDragBox();
-//       //   dragBox.addListenTo(map,'map')
-        
-//       // Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
-//       // }
-//       dragBox.startListening();
-//     }else{
-//       dragBox.stopListening();
-//     }
 
-// });
+  $('#parameters-collapse-div').append(`<i title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class="fa fa-eraser eraser" style="display:inline-block;">Clear all Selected Features</i>`)
+  // $('#parameters-collapse-label').hide();
+  // $('#parameters-collapse-div').hide();
+  
 //   let selectionMode;
 //   $('#parameters-collapse-div').append(`<div id='drawing-mode-selection' class="btn-group btn-group-justified" title='Choose how to select areas'>
 //                                           <button type="button" id = 'click-drawing-mode' value='click' class="btn btn-primary drawing-mode-selector">Click</button>
