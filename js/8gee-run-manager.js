@@ -3180,9 +3180,35 @@ function loadGeoJson(summaryAreaObj,k){
   		
     })
 }
-Object.keys(summaryAreas).map(k=>{
-  loadGeoJson(summaryAreas[k],k)
-})
+// Object.keys(summaryAreas).map(k=>{
+//   loadGeoJson(summaryAreas[k],k)
+// })
+let dashboardFolder = 'projects/lcms-292214/assets/Dashboard';
+var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
+
+var summaryAreas2 = {'Counties Annual':{'path':'Counties-annual_compressed','unique_fieldname':'outID',
+'summary_mode':'annual',},
+'Counties Transition':{'path':'Counties-transition_compressed','unique_fieldname':'outID',
+'summary_mode':'transition'},
+'Forests Annual':{'path':'Forests-annual_compressed','unique_fieldname':'FORESTNAME',
+'summary_mode':'annual'},
+'Forests Transition':{'path':'Forests-transition_compressed','unique_fieldname':'FORESTNAME',
+'summary_mode':'transition'},
+'Forest Districts Annual':{'path':'Forest_Districts-annual_compressed','unique_fieldname':'DISTRICTNA',
+'summary_mode':'annual'},
+'Forest Disctricts Transition':{'path':'Forest_Districts-transition_compressed','unique_fieldname':'DISTRICTNA',
+'summary_mode':'transition'}
+}
+function loadGEESummaryAreas(summaryAreaObj,name){
+  let path = summaryAreaObj.path;
+  let summariesT = summaries.filter(f=>f.indexOf(path)>-1)
+  console.log(`${name} ${summariesT}`)
+  summariesT = summariesT.map(id=>ee.FeatureCollection(id))
+  summariesT = ee.FeatureCollection(summariesT).flatten();
+  Map2.addLayer(summariesT,{strokeColor:'8DD',layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:summaryAreaObj.summary_mode},name,true)
+}
+
+    
 let lcmsRun={}
 lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
@@ -3206,16 +3232,19 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 
   
   let firstComparisonLayerI 
-  ['Land_Cover','Land_Use'].map(nm=>{
-    console.log(nm)
-    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,startYear+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
-    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYear-2,endYear,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  // ['Land_Cover','Land_Use'].map(nm=>{
+  //   console.log(nm)
+  //   let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,startYear+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  //   let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYear-2,endYear,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
+  //   Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYear}-${startYear+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYear} to ${startYear+2}`,'reference-layer-list');
+  //   Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYear-2}-${endYear}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYear-2} to ${endYear}`,'reference-layer-list');
 
-    firstComparisonLayerI = false;
+  //   firstComparisonLayerI = false;
+  // })
+  
+  Object.keys(summaryAreas2).map(k=>{
+    loadGEESummaryAreas(summaryAreas2[k],k)
   })
   
-
 }

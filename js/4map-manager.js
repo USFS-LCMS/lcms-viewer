@@ -2778,15 +2778,20 @@ function initialize() {
         addPlotCollapse();
         loadAllPlots();
       }
-      if(mode !== 'lcms-dashboard'){
+      // if(mode !== 'lcms-dashboard'){
         if(localStorage['showIntroModal-'+mode] !== 'true'){
           $('.modal').modal('hide');
           $('.modal-backdrop').remove();
         }else{
           $('#intro-modal-loading-div').hide();
           $('#summary-spinner').hide();
+          
         };
+      // }
+      if(mode === 'lcms-dashboard'){
+        setupDashboardLayerSelection(); 
       }
+      
       
       
       addLabelOverlay();

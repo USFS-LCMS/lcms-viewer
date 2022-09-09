@@ -88,7 +88,85 @@ function updateSelectedAreaArea(){
         })
             
     }
+let dashboardSelectionTracker = {};
+function setupDashboardLayerSelection(){
+	google.maps.event.clearListeners(map, 'click');
+	dashboardSelectionTracker.selectedFeatures = [];
+	dashboardSelectionTracker.selectedNames = [];
+	dashboardSelectionTracker.seletedFeatureLayerIndices = [];
 
+	function updateSelectedDashboardFeatures(event){
+		let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
+		visibleDashboardLayers.map(layer=>{
+			var ft = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+			// console.log(`${l.name} ${ft.size().getInfo()}`)
+			// console.log(ft.getInfo())
+
+			ee.Feature(ft.first()).evaluate((r)=>{
+				console.log(r);
+				let featureName = r.properties[layer.viz.dashboardFieldName].toString();
+				console.log(featureName)
+				if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
+					layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
+				
+				
+					function getCoords(c){
+						if(c.type === 'Polygon'){
+							
+							c.coordinates.map(c2=>{
+								let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
+								layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
+									strokeColor:'#0FF',
+									fillColor:'#0FF',
+									fillOpacity:0.3,
+									strokeOpacity: 0,
+									strokeWeight: 0,
+									path:polyCoordsT,
+									zIndex:-999
+								}));
+							})
+								
+						}else if(c.type === 'MultiPolygon'){
+							// console.log(c);
+							c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
+						}else if(c.type === 'GeometryCollection'){
+							c.geometries.map(g=>getCoords(g))
+						}
+					}
+					getCoords(r.geometry);
+					
+					
+					// var infoContent = `<table class="table table-hover bg-white">
+					// <tbody>`
+				
+					// Object.keys(info).map(function(name){
+					//     var value = info[name];
+					//     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+					// });
+					// infoContent +=`</tbody></table>`;
+					
+					
+					
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
+					
+				}else{
+					console.log(`Removing ${featureName}`)
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+					delete layer.dashboardSelectedFeatures[featureName];
+				}
+				
+				let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(',');
+				// $('#dashboard-results-collapse-div').append(selectedNames);
+				updateDashboardCharts();
+			})
+		})
+	}
+	map.addListener('click',function(event){
+		console.log(event);
+		updateSelectedDashboardFeatures(event);
+		})
+	
+}
 function setupAreaLayerSelection(){
 	google.maps.event.clearListeners(map, 'click');
 	selectionTracker.selectedFeatures = [];

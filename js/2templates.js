@@ -1696,11 +1696,12 @@ function addLayer(layer){
             if(layer.layerType === 'geeVector' && layer.canQuery){
                 queryObj[queryID].visible = layer.visible;
             }
-            if(layer.viz.dashboardSummaryLayer){
-                Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(null)));
-                updateDashboardCharts();
-                
-            }
+            
+        }
+        if(layer.viz.dashboardSummaryLayer){
+            Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(null)));
+            updateDashboardCharts();
+            
         }
         layer.loading = false;
         updateGEETileLayersDownloading();
@@ -1744,12 +1745,13 @@ function addLayer(layer){
             if(layer.layerType === 'geeVector' && layer.canQuery){
                 queryObj[queryID].visible = layer.visible;
             }
-            if(layer.viz.dashboardSummaryLayer){
-                
-                Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(map)));
-                updateDashboardCharts();
-            }   
+             
         }
+        if(layer.viz.dashboardSummaryLayer){
+                
+            Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(map)));
+            updateDashboardCharts();
+        }  
         vizToggleCleanup();
     }
     //Some functions to keep layers tidy
@@ -2193,104 +2195,7 @@ function addLayer(layer){
                         infowindow.open(map);
                     })  
                 }
-                if(layer.viz.dashboardSummaryLayer){
-                    function deleteAllSelected(){
-                        if(layer.visible){
-                            Object.keys(layer.dashboardSelectedFeatures).map(fn=>{
-                                layer.dashboardSelectedFeatures[fn].polyList.map(p=>p.setMap(null));
-                                delete layer.dashboardSelectedFeatures[fn];
-                            });
-                            updateDashboardCharts();
-                        }
-                    }
-                    $(`#${eraserID}`).show();
-                    $(`#${eraserID}`).click(deleteAllSelected)
-                    layer.dashboardSelectedFeatures = {};
-                    layer.dashboardSummaryMode = layer.viz.dashboardSummaryMode;
-                    function mouseEventTracker(event){
-                        console.log(event);
-                            console.log(`${layer.name} clicked`);
-                            
-                            if(dashboardAreaSelectionMode==='Click'){
-                                event.feature.toGeoJson((r)=>{
-                                    // console.log(r);
-                                    let featureName = r.properties[layer.viz.dashboardFieldName].toString();
-                                    if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
-                                        layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
-                                    
-                                    
-                                        function getCoords(c){
-                                            if(c.type === 'Polygon'){
-                                                
-                                                c.coordinates.map(c2=>{
-                                                    let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
-                                                    layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
-                                                        strokeColor:'#0FF',
-                                                        fillColor:'#0FF',
-                                                        fillOpacity:0.3,
-                                                        strokeOpacity: 0,
-                                                        strokeWeight: 0,
-                                                        path:polyCoordsT,
-                                                        zIndex:-999
-                                                    }));
-                                                })
-                                                    
-                                            }else if(c.type === 'MultiPolygon'){
-                                                // console.log(c);
-                                                c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
-                                            }else if(c.type === 'GeometryCollection'){
-                                                c.geometries.map(g=>getCoords(g))
-                                            }
-                                        }
-                                        getCoords(r.geometry);
-                                        
-                                        
-                                        // var infoContent = `<table class="table table-hover bg-white">
-                                        // <tbody>`
-                                    
-                                        // Object.keys(info).map(function(name){
-                                        //     var value = info[name];
-                                        //     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-                                        // });
-                                        // infoContent +=`</tbody></table>`;
-                                        
-                                        
-                                        
-                                        layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
-                                        
-                                    }else{
-                                        console.log(`Removing ${featureName}`)
-                                        layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
-                                        delete layer.dashboardSelectedFeatures[featureName];
-                                    }
-                                    
-                                    let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(',');
-                                    // $('#dashboard-results-collapse-div').append(selectedNames);
-                                    updateDashboardCharts();
-                                })
-                            }
-                            
-    
-                           
-                            
-                            
-                            
-                            
-                            // console.log(polyPath);
-                            // var prop = event.feature.getProperty(layer.viz.dashboardFieldName);
-                            // console.log(prop)
-                            
-                        }
-                    
-                    layer.layer.addListener('click', mouseEventTracker)
-
-                    layer.dragBox=addDragBox();
-                    layer.dragBox.addListenTo(layer.layer,layer.id);
-                    layer.dragBox.startListening();
-        
-    //   Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
-                    // layer.layer.addListener('mouseover', mouseEventTracker)
-                }
+                
 		      	featureObj[layer.name] = layer.layer
 		      	// console.log(this.viz);
 		      
@@ -2370,6 +2275,105 @@ function addLayer(layer){
 			$('#' + visibleLabelID).show();
 			setRangeSliderThumbOpacity();
 	}
+
+    if(layer.viz.dashboardSummaryLayer){
+        function deleteAllSelected(){
+            if(layer.visible){
+                Object.keys(layer.dashboardSelectedFeatures).map(fn=>{
+                    layer.dashboardSelectedFeatures[fn].polyList.map(p=>p.setMap(null));
+                    delete layer.dashboardSelectedFeatures[fn];
+                });
+                updateDashboardCharts();
+            }
+        }
+        $(`#${eraserID}`).show();
+        $(`#${eraserID}`).click(deleteAllSelected)
+        layer.dashboardSelectedFeatures = {};
+        layer.dashboardSummaryMode = layer.viz.dashboardSummaryMode;
+        function mouseEventTracker(event){
+            console.log(event);
+                console.log(`${layer.name} clicked`);
+                
+                if(dashboardAreaSelectionMode==='Click'){
+                    event.feature.toGeoJson((r)=>{
+                        // console.log(r);
+                        let featureName = r.properties[layer.viz.dashboardFieldName].toString();
+                        if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
+                            layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
+                        
+                        
+                            function getCoords(c){
+                                if(c.type === 'Polygon'){
+                                    
+                                    c.coordinates.map(c2=>{
+                                        let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
+                                        layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
+                                            strokeColor:'#0FF',
+                                            fillColor:'#0FF',
+                                            fillOpacity:0.3,
+                                            strokeOpacity: 0,
+                                            strokeWeight: 0,
+                                            path:polyCoordsT,
+                                            zIndex:-999
+                                        }));
+                                    })
+                                        
+                                }else if(c.type === 'MultiPolygon'){
+                                    // console.log(c);
+                                    c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
+                                }else if(c.type === 'GeometryCollection'){
+                                    c.geometries.map(g=>getCoords(g))
+                                }
+                            }
+                            getCoords(r.geometry);
+                            
+                            
+                            // var infoContent = `<table class="table table-hover bg-white">
+                            // <tbody>`
+                        
+                            // Object.keys(info).map(function(name){
+                            //     var value = info[name];
+                            //     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
+                            // });
+                            // infoContent +=`</tbody></table>`;
+                            
+                            
+                            
+                            layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
+                            
+                        }else{
+                            console.log(`Removing ${featureName}`)
+                            layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+                            delete layer.dashboardSelectedFeatures[featureName];
+                        }
+                        
+                        let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(',');
+                        // $('#dashboard-results-collapse-div').append(selectedNames);
+                        updateDashboardCharts();
+                    })
+                }
+                
+
+               
+                
+                
+                
+                
+                // console.log(polyPath);
+                // var prop = event.feature.getProperty(layer.viz.dashboardFieldName);
+                // console.log(prop)
+                
+            }
+        
+        // layer.layer.addListener('click', mouseEventTracker)
+
+        // layer.dragBox=addDragBox();
+        // layer.dragBox.addListenTo(layer.layer,layer.id);
+        // layer.dragBox.startListening();
+
+//   Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
+        // layer.layer.addListener('mouseover', mouseEventTracker)
+    }
 }
 //////////////////////////////////////////////////
 // Transition charting input UI setup
