@@ -3196,7 +3196,7 @@ var summaryAreas2 = {'Counties Annual':{'path':'Counties-annual_compressed','uni
 'summary_mode':'transition'},
 'Forest Districts Annual':{'path':'Forest_Districts-annual_compressed','unique_fieldname':'DISTRICTNA',
 'summary_mode':'annual'},
-'Forest Disctricts Transition':{'path':'Forest_Districts-transition_compressed','unique_fieldname':'DISTRICTNA',
+'Forest Districts Transition':{'path':'Forest_Districts-transition_compressed','unique_fieldname':'DISTRICTNA',
 'summary_mode':'transition'},
 'HUC 6 Transition':{'path':'HUC06-transition_compressed',
 'color':'#00E',
