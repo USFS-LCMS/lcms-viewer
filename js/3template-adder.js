@@ -6,12 +6,16 @@ $('body').append(staticTemplates.mainContainer);
 $('body').append(staticTemplates.sidebarLeftContainer);
 
 $('body').append(staticTemplates.geeSpinner);
+
+
 $('body').append(staticTemplates.bottomBar);
 
 // $('#summary-spinner').show();
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
-
+if(mode==='lcms-dashboard'){
+  $('body').append(staticTemplates.dashboardResultsDiv);
+}
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
 
@@ -214,7 +218,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'Click':true,'Drag-Box':false});
 
-  $('#parameters-collapse-div').append(`<i title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class="fa fa-eraser eraser" style="display:inline-block;">Clear all Selected Features</i>`)
+  $('#parameters-collapse-div').append(`<div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser'><i class="fa fa-eraser teal" style="display:inline-block;"></i>Clear all Selected Features</div>`)
   // $('#parameters-collapse-label').hide();
   // $('#parameters-collapse-div').hide();
   
@@ -862,23 +866,86 @@ if(canExport){
      
    }
 }
+function resizeViewerPanes(){
+  console.log('resized');
+  if(mode !== 'lcms-dashboard'){
+    moveCollapse('legend-collapse');
+  }
+ 
+  $('.legendDiv').css('bottom',$('.bottombar').height());
+  $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height());
+  $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
+  // moveCollapse('plot-collapse');
+  if(walkThroughAdded){
+      moveCollapse('walk-through-collapse');
+  }
+  // addLegendCollapse();
 
+
+}
+
+function resizeDashboardPanes(){
+  console.log('resized');
+  let layerWidth = $('#layer-list-collapse-label-layer-list-collapse-div').width()+5;
+  let bottomHeight=$('.bottombar').height();
+  let resultsHeight = $('#dashboard-results-div').height();
+  $('#sidebar-left-container').css('max-height',window.innerHeight-bottomHeight);
+  $('#dashboard-results-div').css('left',layerWidth);
+  $('#dashboard-results-div').css('max-width',window.innerWidth-layerWidth);
+  $('#dashboard-results-div').css('bottom',$('.bottombar').height())
+  // $('.chart').css('height',$('#dashboard-results-div').height())
+}
 if(mode === 'lcms-dashboard'){
   
-  var collapseContainer =getWalkThroughCollapseContainerID(); 
-  $(`#${collapseContainer}`).removeClass('col-xl-2');
-  $(`#${collapseContainer}`).removeClass('col-lg-3');
-  $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height());
-  $('.legendDiv').css('max-width','40%')
-  addCollapse(collapseContainer,'dashboard-results-collapse-label','dashboard-results-collapse-div','RESULTS','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Dashboard results','prepend');
-  $('#dashboard-results-collapse-div').append(`<div class='py-2 bg-black'>
-                                                <button class='btn' onclick='makeDashboardReport()' >
-                                                  <i class="fa fa-download  mx-1" aria-hidden="true"></i>
-                                                  Download Report
-                                                </button>
-                                                <input title = 'Provide a name for your report. A default one will be provided if left blank.'type="report-name" class="form-control" id="report-name" placeholder="Name your report!" style='width:25%;display:inline-block;'>
-                                              </div>
-                                              <div id = 'dashboard-results-div'</div>`)
+  // var collapseContainer =getWalkThroughCollapseContainerID(); 
+  // $(`#${collapseContainer}`).removeClass('col-xl-2');
+  // $(`#${collapseContainer}`).removeClass('col-lg-3');
+  // $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height());
+  // $('.legendDiv').css('max-width','40%')
+  var dashboardScrollLeft = 0;
+
+  moveCollapse('legend-collapse','sidebar-left')
+  // addCollapse('dashboard-results-div','dashboard-results-collapse-label','dashboard-results-collapse-div','RESULTS','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Dashboard results','prepend');
+  resizeDashboardPanes()
+  $( "#dashboard-results-div" ).resizable({ ghost: true });
+  
+  $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
+
+  var isDragging = false;
+  var wasDragging = false;
+  var mouseDown = false;
+  var dashboardResultsHeight = convertRemToPixels(23);
+  
+  $("#dashboard-results-div").mousemove(function(e) {
+    wasDragging=false;
+    $('body').css('user-select','none');
+    if(e.buttons>0){
+      console.log(e)
+      isDragging = true;
+      dashboardResultsHeight = window.innerHeight-e.pageY;
+        $('.dashboard-results').css('height',dashboardResultsHeight);
+
+    }else{
+      if(isDragging){
+        wasDragging=true;
+        updateDashboardCharts();
+      }
+      isDragging=false;
+      $('body').css('user-select','auto');
+    }
+      
+      
+  });
+
+
+  // $('#dashboard-results-collapse-div').append(`<div class='py-2 bg-black'>
+  //                                               <button class='btn' onclick='makeDashboardReport()' >
+  //                                                 <i class="fa fa-download  mx-1" aria-hidden="true"></i>
+  //                                                 Download Report
+  //                                               </button>
+  //                                               <input title = 'Provide a name for your report. A default one will be provided if left blank.'type="report-name" class="form-control" id="report-name" placeholder="Name your report!" style='width:25%;display:inline-block;'>
+  //                                             </div>
+  //                                             <div id = 'dashboard-results-div'</div>`)
   // $('#support-collapse-div').append(staticTemplates.supportDiv);
 
   
@@ -890,11 +957,16 @@ if(urlParams.showSidebar === undefined || urlParams.showSidebar === null){
 function toggleSidebar(){
   $('#sidebar-left').toggle('collapse');
   // $('#title-banner').toggle('collapse');
+  
+  if(mode === 'lcms-dashboard'){
+    setTimeout(()=>{resizeDashboardPanes()},500);
+  }
   if(urlParams.showSidebar === 'false'){
     urlParams.showSidebar = 'true'
   }else{
     urlParams.showSidebar = 'false'
   }
+  
 };
 if(urlParams.showSidebar === 'false'){
   $('#sidebar-left').hide();

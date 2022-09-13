@@ -123,6 +123,7 @@ color:var(--deep-brown-20)!important;}
 }
 .eraser{
   color: var(--deep-brown-100)!important; 
+  cursor:pointer;
 }
 .eraser:active {
   transform: translate(3px) translateY(0px);
@@ -263,6 +264,25 @@ button {
   display: flex;
 }
 /*///////////////////////////////////////////////////////////*/
+/*Dashboard results styling*/
+.dashboard-results{
+  position:absolute;
+  bottom:0%;
+  left:0%;
+  width:100%;
+  overflow-x:scroll;
+  overflow-y:hidden;
+  white-space:nowrap;
+  height:0px;
+  color:var(--white);
+  background-color: var(--black)!important;
+  /*max-height:1.7em;*/
+  font-size:1em;
+  z-index:2;
+  border-top-color: teal;
+  border-top-style: solid;
+}
+/*///////////////////////////////////////////////////////////*/
 /*Bottombar styling*/
 .bottombar{
   position:absolute;
@@ -321,7 +341,22 @@ button {
 }
 .chart-table-first-row { position: sticky!important; top: 0!important;z-index: 1;}
 .chart-table-first-column { position: sticky!important; left: 0;z-index: 0;}
+.chartjs-chart,.plotly-chart{
+  /* max-width:30rem; */
+  display: inline-block;
+  height:100%;
+  /* width:33rem; */
+  padding-top:0.5rem;
+  padding-bottom:0.5rem;
+  padding-left:0.5rem;
+  
+  padding-right:0.5rem;
+}
 
+.plotly-chart{
+  padding-top:0.75rem;
+  margin-left:0.5rem;
+}
 /*///////////////////////////////////////////////////////////*/
 /*Legend div styling*/
 .legendDiv{
@@ -521,7 +556,8 @@ font-size:0.9em;
 /*///////////////////////////////////////////////////////*/
 /*Scroll bar styling*/
 ::-webkit-scrollbar {
-    width: 0.7em;
+    width: 0.7rem;
+    height:0.7rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -533,7 +569,7 @@ font-size:0.9em;
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
 .flexcroll::-webkit-scrollbar {
-    width: 0.7em;
+    width: 0.7rem;
 }
 
 /* Track */

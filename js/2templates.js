@@ -499,6 +499,8 @@ const staticTemplates = {
                         </a>
                     </span>
                 </footer>`,
+        dashboardResultsDiv:`<div id='dashboard-results-div' class='bg-black dashboard-results'>
+                            <div>`,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>
@@ -1463,8 +1465,7 @@ function getWalkThroughCollapseContainerID(){
     else{collapseContainer = 'legendDiv';}
     return collapseContainer
 }
-function moveCollapse(baseID){
-    var collapseContainer =getWalkThroughCollapseContainerID();
+function moveCollapse(baseID,collapseContainer =getWalkThroughCollapseContainerID()){
     $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
     $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
 }

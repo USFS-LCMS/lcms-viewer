@@ -1129,7 +1129,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		
 		$(`#${chartID}`).remove();  
 		//Add new chart
-		$('#dashboard-results-div').append(`<div class = "chart" id="${chartID}"><div>`);
+		$('#dashboard-results-div').append(`<div class = "plotly-chart" id="${chartID}"><div>`);
 		// $('#chartDiv').append('<hr>');
 		//Set up chart object
 		// var chartJSChart = new Chart($(`#${chartID}`),{
@@ -1207,30 +1207,35 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		}
 
 		var data = [data]
-
+		let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2); 
+		let plotWidth=plotHeight*1.5
 		var layout = {
 		title: name,
 		font: {
-			size: 10
+			size: 8
 		},
 		margin: {
-			l: 25,
-			r: 25,
+			l: 15,
+			r: 15,
 			b: 25,
-			t: 50,
-			pad: 4
+			t: 30,
+			pad:50
 		},
 		paper_bgcolor: '#D6D1CA',
-		plot_bgcolor: '#D6D1CA'
+		plot_bgcolor: '#D6D1CA',
+		autosize: false,
+		height:plotHeight,
+		width:plotWidth
+  		
 		}
 		var config = {
 			toImageButtonOptions: {
 				format: 'png', // one of png, svg, jpeg, webp
 				filename: name,
-				width:1000,height:600
+				//width:1000,height:600,
 			},
 			scrollZoom: true,
-			displayModeBar: true
+			displayModeBar: false
 			};
 		Plotly.newPlot(`${chartID}`, data, layout,config);
 	
@@ -1316,9 +1321,9 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
       catch(err){};
       $(`#${chartID}`).remove(); 
 
-       
-	//Add new chart
-	$('#dashboard-results-div').append(`<div style='height:25rem;' class = "chart"  ><canvas id="${chartID}"><canvas></div>`);
+	let chartHeight=$('#dashboard-results-div').height()-convertRemToPixels(1);
+	let chartWidth = chartHeight*1.5;
+	$('#dashboard-results-div').append(`<div  class = "chartjs-chart chart-container" ><canvas id="${chartID}"><canvas></div>`);
       // $('#chartDiv').append('<hr>');
       //Set up chart object
       var chartJSChart = new Chart($(`#${chartID}`),{
@@ -1328,8 +1333,10 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
         options:{
           responsive: true,
           maintainAspectRatio: false,
-		  responsive: true,
-        //   aspectRatio: 1/.06,
+		// height:chartHeight,
+		// width:chartWidth,
+		// width:chartHeight*2,
+        //   aspectRatio: 1.5,
            title: {
                 display: true,
                 position:'top',
@@ -1346,7 +1353,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 				padding:1,
 				
               },
-			  margin:0
+			  margin:5
             },
             chartArea: {
                 backgroundColor: '#D6D1CA'
@@ -1360,20 +1367,32 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 			}
           }
         });
+
+		$('.chartjs-chart').css('height',chartHeight);
+		$('.chartjs-chart').css('width',chartWidth);
 	}
 }
 function updateDashboardCharts(){
-	$('#dashboard-results-div').empty();
+	let lastScrollLeft = dashboardScrollLeft;
+	console.log(`Scroll left coord: ${lastScrollLeft}`)
+	$('.dashboard-results').empty();
+	$('.dashboard-results').css('height','0rem');
+	
+	let visible
 	chartWhich = ['Land_Cover','Land_Use'];
-	Object.keys(layerObj).map(k=>{
-		let layer = layerObj[k];
-		// console.log(layer.visible);
-		if(layer.viz.dashboardSummaryLayer && layer.visible && Object.keys(layer.dashboardSelectedFeatures).length > 0 ){
+	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
+	if(dashboardLayersToChart.length>0){
+		$('.dashboard-results').css('height',dashboardResultsHeight);
+		resizeDashboardPanes();
+		dashboardLayersToChart.map(layer=>{
 			chartWhich.map((w) => makeDashboardCharts(layer,w,layer.dashboardSummaryMode));
-		}
-			
+		})
 		
-	});
+			$( ".dashboard-results" ).scrollLeft(lastScrollLeft);
+	}else{
+		resizeDashboardPanes();
+	}
+	
 	// setTimeout(makeDashboardReport(),1000);
 	
 }

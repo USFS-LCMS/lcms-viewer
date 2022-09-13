@@ -3187,28 +3187,28 @@ let dashboardFolder = 'projects/lcms-292214/assets/Dashboard';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
 
 var summaryAreas2 = {'Counties Annual':{'path':'Counties-annual_compressed','unique_fieldname':'outID',
-'summary_mode':'annual',},
+'summary_mode':'annual','visible':false,'color':'00E'},
 'Counties Transition':{'path':'Counties-transition_compressed','unique_fieldname':'outID',
-'summary_mode':'transition'},
+'summary_mode':'transition','visible':false,'color':'00E'},
 'Forests Annual':{'path':'Forests-annual_compressed','unique_fieldname':'FORESTNAME',
-'summary_mode':'annual'},
+'summary_mode':'annual','visible':true,'color':'0A8'},
 'Forests Transition':{'path':'Forests-transition_compressed','unique_fieldname':'FORESTNAME',
-'summary_mode':'transition'},
+'summary_mode':'transition','visible':true,'color':'0A8'},
 'Forest Districts Annual':{'path':'Forest_Districts-annual_compressed','unique_fieldname':'DISTRICTNA',
-'summary_mode':'annual'},
+'summary_mode':'annual','visible':false,'color':'0AA'},
 'Forest Districts Transition':{'path':'Forest_Districts-transition_compressed','unique_fieldname':'DISTRICTNA',
-'summary_mode':'transition'},
+'summary_mode':'transition','visible':false,'color':'0AA'},
 'HUC 6 Transition':{'path':'HUC06-transition_compressed',
 'color':'#00E',
   'unique_fieldname':'name',
       'summary_mode':'transition',
-      'visible':false
+      'visible':false,'color':'00E'
 },
 'HUC 6 Annual':{'path':'HUC06-annual_compressed',
 'color':'#00E',
   'unique_fieldname':'name',
       'summary_mode':'annual',
-      'visible':false}
+      'visible':false,'color':'00E'}
 }
 function loadGEESummaryAreas(summaryAreaObj,name){
   let path = summaryAreaObj.path;
@@ -3216,7 +3216,7 @@ function loadGEESummaryAreas(summaryAreaObj,name){
   console.log(`${name} ${summariesT}`)
   summariesT = summariesT.map(id=>ee.FeatureCollection(id))
   summariesT = ee.FeatureCollection(summariesT).flatten();
-  Map2.addLayer(summariesT,{strokeColor:'D88',layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:summaryAreaObj.summary_mode},name,false)
+  Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:summaryAreaObj.summary_mode},name,summaryAreaObj.visible)
 }
 
     
