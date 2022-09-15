@@ -499,8 +499,27 @@ const staticTemplates = {
                         </a>
                     </span>
                 </footer>`,
-        dashboardResultsDiv:`<div id='dashboard-results-div' class='bg-black dashboard-results'>
-                            <div>`,
+        dashboardResultsDiv:`<div class = 'dashboard-results-container' id = 'dashboard-results-container'>
+                                <div id ='dashboard-results-expander' style='display:none;'></div>
+                                <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
+                            </div>`,
+        dashboardHighlightsDiv:`
+                                <div id='dashboard-highlights-container' class='pt-2 pb-0'>
+                                    
+                                    <div id = 'loading-spinner'  style='display:none;' title = 'Downloading selected areas'  >
+                                       
+                                        
+                                        <span  style = 'display: flex;  '>
+                                        <img id = 'loading-spinner-logo' class = ' px-2 ' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
+                                        
+                                        <div class="progressbar">
+                                            <span style="width: 0%;">0%</span>
+                                        </div>
+                                         <p class='pl-1 py-0'>Downloaded</p>
+                                        </span>
+                                        
+                                    </div>
+                                </div>`,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>

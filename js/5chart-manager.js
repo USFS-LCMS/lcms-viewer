@@ -159,18 +159,41 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 		updateDashboardCharts();
 	}
 }
+function updateProgress(id,val) {
+	var el = document.querySelector(`${id} span`);
+	el.style.width = val + '%';
+	el.innerText = val + '%';
+  };
 function startDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
 	
 	function updateSelectedDashboardFeatures(event){
+		let pt = ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()])
 		let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
+		let totalVisible = visibleDashboardLayers.length;
+		let totalLoaded = 0;
+		$('#loading-spinner-logo').addClass('fa-spin');
+		updateProgress('.progressbar',0);
+		$('#loading-spinner').show();
+		
 		visibleDashboardLayers.map(layer=>{
-			var ft = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
+			var ft = layer.queryItem.filterBounds(pt);
 			// console.log(`${l.name} ${ft.size().getInfo()}`)
 			// console.log(ft.getInfo())
 
-			ee.Feature(ft.first()).evaluate((r)=>{
-				chartDashboardFeature(r,layer);
+			ee.Feature(ft.first()).simplify(5000, 'EPSG:4326').evaluate((r,failure)=>{
+				console.log(r);
+				if(r!==undefined){
+					chartDashboardFeature(r,layer);
+				}
+				totalLoaded++
+				let pLoaded = totalLoaded/totalVisible*100
+				updateProgress('.progressbar',pLoaded);
+				if(pLoaded===100){
+					$('#loading-spinner-logo').removeClass('fa-spin');
+					// setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
+					
+				}
 			})
 		})
 	}
@@ -189,39 +212,62 @@ function clearAllSelectedDashboardFeatures(){
 		});
 	});
 	updateDashboardCharts();
+	try{
+		dragBox.polygon.setMap(null);
+	}catch(err){};
+	
+	$('#loading-spinner').hide();
 }
 function stopDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
 }
+var dragSelectedFeatures;
 function dashboardDragboxLayerSelect(){
 	console.log(dragBox.dragBoxPath);
+	
 	let geeBox = ee.Geometry.Polygon(dragBox.dragBoxPath.map(c=>[c.lng,c.lat]));
 	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
-		visibleDashboardLayers.map(layer=>{
-			let ft = layer.queryItem.filterBounds(geeBox).toList(10000,0);
-			let count = ft.length().getInfo();
-			let counter = 1;
-			let update=false;
-			console.log(`${layer.name} ${ft.length().getInfo()}`)
-			for(var i = 0;i<count;i++){
-				f = ee.Feature(ft.get(i));
-				f.evaluate((r)=>{
-					// console.log(r)
-					if(counter === count){update=true}
+	if(visibleDashboardLayers.length>0){
+		dragBox.stopListening(false);
+		$('#loading-spinner-logo').addClass('fa-spin');
+		updateProgress('.progressbar',0);
+		$('#loading-spinner').show();
+		ee.FeatureCollection(visibleDashboardLayers.map(layer=>layer.queryItem.filterBounds(geeBox))).flatten().size().evaluate((n)=>{
+			console.log(n);
+			if(n>0){
+				
+				var i=1;
+				visibleDashboardLayers.map(layer=>{
+					let selectedFeatures = layer.queryItem.filterBounds(geeBox);
+					selectedFeatures = selectedFeatures.map(f=>f.simplify(5000, 'EPSG:4326'))
+					selectedFeatures.evaluate((f)=>{
+						
+						let update=false;
+						f.features.map(feat=>{
+							if(i===n){update=true}
+							chartDashboardFeature(feat,layer,update,false);
+							let pLoaded = parseInt(i/n*100);
+							updateProgress('.progressbar',pLoaded);
+							if(pLoaded===100){
+								$('#loading-spinner-logo').removeClass('fa-spin');
+								dragBox.startListening();
+								// setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
+								
+							}
+							i++;
+							
+						})
+					})
 					
-					chartDashboardFeature(r,layer,update,false);
-					counter++
-				})
-			}
-			// console.log(ft.getInfo())
-			// var ft = layer.queryItem.filterBounds(ee.Geometry.Point([event.latLng.lng(),event.latLng.lat()]));
-			// // console.log(`${l.name} ${ft.size().getInfo()}`)
-			// // console.log(ft.getInfo())
-
-			// ee.Feature(ft.first()).evaluate((r)=>{
-			// 	chartDashboardFeature(r,layer);
-			// })
-		})
+				});
+			}else{$('#loading-spinner').hide();dragBox.startListening();}
+			
+		});
+	}
+	
+	
+	
+		
 }
 var dragBox;
   
@@ -1376,17 +1422,20 @@ function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
 	console.log(`Scroll left coord: ${lastScrollLeft}`)
 	$('.dashboard-results').empty();
-	$('.dashboard-results').css('height','0rem');
+	$('.dashboard-results-container').css('height','0rem');
 	
 	let visible
 	chartWhich = ['Land_Cover','Land_Use'];
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
 	if(dashboardLayersToChart.length>0){
-		$('.dashboard-results').css('height',dashboardResultsHeight);
+		$('.dashboard-results-container').css('height',dashboardResultsHeight);
 		resizeDashboardPanes();
-		dashboardLayersToChart.map(layer=>{
-			chartWhich.map((w) => makeDashboardCharts(layer,w,layer.dashboardSummaryMode));
+		chartWhich.map((w)=>{
+			dashboardLayersToChart.map(layer=>{
+				 makeDashboardCharts(layer,w,layer.dashboardSummaryMode);
+			})
 		})
+		
 		
 			$( ".dashboard-results" ).scrollLeft(lastScrollLeft);
 	}else{

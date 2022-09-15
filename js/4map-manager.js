@@ -2074,7 +2074,13 @@ function addDragBox(){
   dragBox.stop = function(e){
     dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
     dragBox.listeners.mousemove = [];
-    dragBox.onStopFunctions.map(fun=>fun())
+    if(dragBox.polygon.getPath().getArray().length===0){
+      dragBox.start();
+    }else{
+      dragBox.onStopFunctions.map(fun=>fun())
+    }
+    
+    
     // dragBox.polygon.setMap(null);
   }
   dragBox.expand = function(e){
@@ -2135,8 +2141,11 @@ function addDragBox(){
       dragBox.listeners.click.push(google.maps.event.addListener(dragBox.listenTo[k], "click", dragBox.click));
     });
   }
-  dragBox.stopListening=function(){
-    dragBox.polygon.setMap(null);
+  dragBox.stopListening=function(hide=true){
+    if(hide){
+      dragBox.polygon.setMap(null);
+    }
+    
     dragBox.listeners.click.map(e=>google.maps.event.removeListener(e));
     dragBox.listeners.mousemove.map(e=>google.maps.event.removeListener(e));
     dragBox.listeners={'click':[],'mousemove':[]};
@@ -2424,7 +2433,8 @@ function initialize() {
     tilt:0,
     controlSize: 25,
     scaleControl: true,
-    clickableIcons:false
+    clickableIcons:false,
+    cursor:'pointer'
   };
 
   var center = new google.maps.LatLng(initialCenter[0],initialCenter[1]);
@@ -2754,7 +2764,8 @@ function initialize() {
       }else if(mode === 'lcms-base-learner'){
         run = runBaseLearner
       }else if(mode === 'lcms-dashboard'){
-        run = runDashboard
+        run = runDashboard;
+        map.setOptions({draggableCursor:'pointer'});
       }else if(studyAreaName === 'CONUS'){
         longStudyAreaName = cachedStudyAreaName;
         run = runCONUS;

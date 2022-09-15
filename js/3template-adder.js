@@ -207,6 +207,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     urlParams.endYear = endYear;// = parseInt(urlParams.endYear);
   }
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
+  
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS summary areas to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','LCMS DATA',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,false,null,'LCMS DATA layers to view on map');
@@ -218,7 +219,10 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'Click':true,'Drag-Box':false});
 
-  $('#parameters-collapse-div').append(`<div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser'><i class="fa fa-eraser teal" style="display:inline-block;"></i>Clear all Selected Features</div>`)
+  $('#parameters-collapse-div').append(`<div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser'><i class="fa fa-eraser teal" style="display:inline-block;"></i>Clear all Selected Features</div>`);
+
+  $('#parameters-collapse-div').append(staticTemplates.dashboardHighlightsDiv);
+  
   // $('#parameters-collapse-label').hide();
   // $('#parameters-collapse-div').hide();
   
@@ -886,14 +890,14 @@ function resizeViewerPanes(){
 
 function resizeDashboardPanes(){
   console.log('resized');
-  let layerWidth = $('#layer-list-collapse-label-layer-list-collapse-div').width()+5;
+  let layerWidth = $('#layer-list-collapse-label-layer-list-collapse-div').width();//+5;
   let bottomHeight=$('.bottombar').height();
-  let resultsHeight = $('#dashboard-results-div').height();
+  let resultsHeight = $('#dashboard-results-container').height();
   $('#sidebar-left-container').css('max-height',window.innerHeight-bottomHeight);
-  $('#dashboard-results-div').css('left',layerWidth);
-  $('#dashboard-results-div').css('max-width',window.innerWidth-layerWidth);
-  $('#dashboard-results-div').css('bottom',$('.bottombar').height())
-  // $('.chart').css('height',$('#dashboard-results-div').height())
+  $('#dashboard-results-container').css('left',layerWidth);
+  $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth);
+  $('#dashboard-results-container').css('bottom',$('.bottombar').height()+$('#dashboard-results-expander').height())
+  // $('.chart').css('height',$('#dashboard-results-container').height())
 }
 if(mode === 'lcms-dashboard'){
   
@@ -905,10 +909,9 @@ if(mode === 'lcms-dashboard'){
   var dashboardScrollLeft = 0;
 
   moveCollapse('legend-collapse','sidebar-left')
-  // addCollapse('dashboard-results-div','dashboard-results-collapse-label','dashboard-results-collapse-div','RESULTS','<i class="fa fa-book  mx-1" aria-hidden="true"></i>',true,``,'Dashboard results','prepend');
+
   resizeDashboardPanes()
-  $( "#dashboard-results-div" ).resizable({ ghost: true });
-  
+ 
   $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
 
   var isDragging = false;
@@ -916,14 +919,16 @@ if(mode === 'lcms-dashboard'){
   var mouseDown = false;
   var dashboardResultsHeight = convertRemToPixels(23);
   
-  $("#dashboard-results-div").mousemove(function(e) {
+  $("#dashboard-results-expander").mousemove(function(e) {
+    // console.log(e)
     wasDragging=false;
     $('body').css('user-select','none');
     if(e.buttons>0){
       console.log(e)
       isDragging = true;
-      dashboardResultsHeight = window.innerHeight-e.pageY;
-        $('.dashboard-results').css('height',dashboardResultsHeight);
+      // dashboardResultsHeight = window.innerHeight-e.pageY;
+      console.log(dashboardResultsHeight)
+        // $('.dashboard-results-container').css('height',dashboardResultsHeight);
 
     }else{
       if(isDragging){
