@@ -1422,12 +1422,13 @@ function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
 	console.log(`Scroll left coord: ${lastScrollLeft}`)
 	$('.dashboard-results').empty();
-	$('.dashboard-results-container').css('height','0rem');
-	
+	// $('.dashboard-results-container').css('height','0rem');
+	// $('.dashboard-results-container').hide();
 	let visible
 	chartWhich = ['Land_Cover','Land_Use'];
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
 	if(dashboardLayersToChart.length>0){
+		$('.dashboard-results-container').show();
 		$('.dashboard-results-container').css('height',dashboardResultsHeight);
 		resizeDashboardPanes();
 		chartWhich.map((w)=>{

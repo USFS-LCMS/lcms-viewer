@@ -3190,6 +3190,11 @@ var summaryAreas2 = {'Counties Annual':{'path':'Counties-annual_compressed','uni
 'summary_mode':'annual','visible':false,'color':'00E'},
 'Counties Transition':{'path':'Counties-transition_compressed','unique_fieldname':'outID',
 'summary_mode':'transition','visible':false,'color':'00E'},
+'Planning Units Annual':{'path':'LMPU-annual_compressed',
+      'color':'#00E',
+        'unique_fieldname':'LMPU_NAME',
+            'summary_mode':'annual',
+            'visible':false},
 'Forests Annual':{'path':'Forests-annual_compressed','unique_fieldname':'FORESTNAME',
 'summary_mode':'annual','visible':true,'color':'0A8'},
 'Forests Transition':{'path':'Forests-transition_compressed','unique_fieldname':'FORESTNAME',
@@ -3209,6 +3214,7 @@ var summaryAreas2 = {'Counties Annual':{'path':'Counties-annual_compressed','uni
   'unique_fieldname':'name',
       'summary_mode':'annual',
       'visible':false,'color':'00E'}
+
 }
 function loadGEESummaryAreas(summaryAreaObj,name){
   let path = summaryAreaObj.path;

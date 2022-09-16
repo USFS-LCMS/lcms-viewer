@@ -275,10 +275,11 @@ button {
   z-index: 2;
 }
 #dashboard-results-expander{
-  height:0.0rem;
+  height:0.75rem;
   background-color: var(--teal-100);
   margin:0;
   padding:0;
+  cursor:grab;
 }
 .dashboard-results{
   

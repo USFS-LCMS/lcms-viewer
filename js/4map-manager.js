@@ -2059,7 +2059,7 @@ function addDragBox(){
     fillColor:'#0FF',
     fillOpacity:0.0,
     strokeOpacity: 1,
-    strokeWeight: 2,
+    strokeWeight: 1.5,
     zIndex:999
     
   });
@@ -2084,29 +2084,11 @@ function addDragBox(){
     // dragBox.polygon.setMap(null);
   }
   dragBox.expand = function(e){
-      // console.log(e);
-    //   var event = $.Event('click');
-    //   event.clientX = e.domEvent.clientX;
-    //   event.clientY = e.domEvent.clientY;
-    //   console.log(event);
-    //   $('section').trigger(event);
-    //   const x = 10
-    // const y = 10
-      
-      if(e.feature!==undefined){
-        console.log('its a feature')
-        console.log(e.feature)
-      //   google.maps.event.trigger(e.feature, 'click')
-      //   e.feature.toGeoJson((r)=>{console.log(r)})
-      }
       dragBox.currentDragLocation = {lng:e.latLng.lng(),lat:e.latLng.lat()};
       let second = {lng:dragBox.startDragBoxLocation.lng,lat:dragBox.currentDragLocation.lat};
       let fourth = {lat:dragBox.startDragBoxLocation.lat,lng:dragBox.currentDragLocation.lng};
       dragBox.dragBoxPath = [dragBox.startDragBoxLocation,second,dragBox.currentDragLocation,fourth];
       dragBox.polygon.setPath(dragBox.dragBoxPath);
-      // setTimeout(()=>document.elementFromPoint(e.domEvent.clientX, e.domEvent.clientY).click(),5)
-      
-    
   }
   dragBox.start = function(e){
     dragBox.onStartFunctions.map(fun=>fun());

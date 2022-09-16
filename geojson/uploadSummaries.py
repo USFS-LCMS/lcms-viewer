@@ -7,7 +7,8 @@ Map.clearMap()
 ############################################################################
 areas = glob.glob('*.geojson')
 asset_folder = 'projects/lcms-292214/assets/Dashboard'
-
+areas = [i for i in areas if i.find('LMPU-transition')>-1]
+print(areas)
 ############################################################################
 #Make all assets public
 def makeTablesPublic(table_dir):
@@ -29,7 +30,7 @@ def deleteTables(table_dir,name):
 def uploadTables():
     
     tasks = []
-    for area in areas[-3:]:
+    for area in areas:
         print('Reading in '+area)
         o = open(area,'r')
         geojson = json.load(o)

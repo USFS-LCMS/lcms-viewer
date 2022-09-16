@@ -218,9 +218,17 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'Click':true,'Drag-Box':false});
+  $('#summary-area-selection-radio').prop('title','Select areas by clicking on individual areas or selecting all polygons within a box')
+  $('#parameters-collapse-div').append(`<div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser'><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>`);
 
-  $('#parameters-collapse-div').append(`<div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser'><i class="fa fa-eraser teal" style="display:inline-block;"></i>Clear all Selected Features</div>`);
-
+  $('#parameters-collapse-div').append(`<div class='pt-2'>
+                                                <div class='btn' onclick='makeDashboardReport()' >
+                                                  <i class="fa fa-download  mx-1" aria-hidden="true"></i>
+                                                  Download Report
+                                                </div>
+                                                <input title = 'Provide a name for your report. A default one will be provided if left blank.'type="report-name" class="form-control" id="report-name" placeholder="Name your report!" style='width:50%;display:inline-block;'>
+                                              </div>
+                                             `)
   $('#parameters-collapse-div').append(staticTemplates.dashboardHighlightsDiv);
   
   // $('#parameters-collapse-label').hide();
@@ -914,43 +922,78 @@ if(mode === 'lcms-dashboard'){
  
   $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
 
+  function addExpander(){
+    var expander = {};
+    expander.setDragID = (id)=>expander.id = id;
+    expander.mouseDown=false;
+    expander.mouseUpFun;expander.originalBackgroundColor;
+    expander.startListening=()=>{
+      $('body').mousedown(e=>{
+        console.log(e.target.id)
+        if(e.target.id===expander.id){
+          expander.mouseDown=true;
+          expander.originalBackgroundColor=$(`#${expander.id}`).css('background-color');
+          $(`#${expander.id}`).css('background-color','#00BFA5');
+          
+          $('body').css('user-select','none');
+          
+        }
+      }).mouseup(e=>{
+        if(expander.mouseDown){
+          console.log('mouseUp');
+          expander.mouseDown=false;
+          expander.mouseUpFun(e);
+          $(`#${expander.id}`).css('background-color',expander.originalBackgroundColor);
+          $('body').css('user-select','auto');
+        }
+        
+      })
+    
+    }
+
+    return expander
+  }
+  var dashboardResultsHeight = convertRemToPixels(23);
+  var expander = addExpander();
+  expander.setDragID('dashboard-results-expander');
+
+  expander.mouseUpFun=(e)=>{
+    dashboardResultsHeight = window.innerHeight-e.pageY-$(`#${expander.id}`).height();
+        $('.dashboard-results-container').css('height',dashboardResultsHeight);
+       
+    updateDashboardCharts();
+  }
+  expander.startListening();
+  console.log(expander);
   var isDragging = false;
   var wasDragging = false;
   var mouseDown = false;
-  var dashboardResultsHeight = convertRemToPixels(23);
   
-  $("#dashboard-results-expander").mousemove(function(e) {
-    // console.log(e)
-    wasDragging=false;
-    $('body').css('user-select','none');
-    if(e.buttons>0){
-      console.log(e)
-      isDragging = true;
-      // dashboardResultsHeight = window.innerHeight-e.pageY;
-      console.log(dashboardResultsHeight)
-        // $('.dashboard-results-container').css('height',dashboardResultsHeight);
+  // $("#dashboard-results-expander").mousemove(function(e) {
+  //   // console.log(e)
+  //   wasDragging=false;
+  //   $('body').css('user-select','none');
+  //   if(e.buttons>0){
+  //     console.log(e)
+  //     isDragging = true;
+  //     // dashboardResultsHeight = window.innerHeight-e.pageY;
+  //     console.log(dashboardResultsHeight)
+  //       // $('.dashboard-results-container').css('height',dashboardResultsHeight);
 
-    }else{
-      if(isDragging){
-        wasDragging=true;
-        updateDashboardCharts();
-      }
-      isDragging=false;
-      $('body').css('user-select','auto');
-    }
+  //   }else{
+  //     if(isDragging){
+  //       wasDragging=true;
+  //       updateDashboardCharts();
+  //     }
+  //     isDragging=false;
+  //     $('body').css('user-select','auto');
+  //   }
       
       
-  });
+  // });
 
 
-  // $('#dashboard-results-collapse-div').append(`<div class='py-2 bg-black'>
-  //                                               <button class='btn' onclick='makeDashboardReport()' >
-  //                                                 <i class="fa fa-download  mx-1" aria-hidden="true"></i>
-  //                                                 Download Report
-  //                                               </button>
-  //                                               <input title = 'Provide a name for your report. A default one will be provided if left blank.'type="report-name" class="form-control" id="report-name" placeholder="Name your report!" style='width:25%;display:inline-block;'>
-  //                                             </div>
-  //                                             <div id = 'dashboard-results-div'</div>`)
+  
   // $('#support-collapse-div').append(staticTemplates.supportDiv);
 
   

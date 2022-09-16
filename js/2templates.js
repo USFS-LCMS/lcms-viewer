@@ -499,8 +499,8 @@ const staticTemplates = {
                         </a>
                     </span>
                 </footer>`,
-        dashboardResultsDiv:`<div class = 'dashboard-results-container' id = 'dashboard-results-container'>
-                                <div id ='dashboard-results-expander' style='display:none;'></div>
+        dashboardResultsDiv:`<div class = 'dashboard-results-container' id = 'dashboard-results-container' style='display:none;'>
+                                <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
         dashboardHighlightsDiv:`
@@ -2543,20 +2543,20 @@ class report {
             this.margin = 10;
 
             // Robotofont class (contains text needed to read ttf files)
-            const robotoNormal = reportFonts.getRobotoNormal();
-            const robotoBold = reportFonts.getRobotoBold();
-            const arialNormal = reportFonts.getArial();
-            const arialBold = reportFonts.getArialBold();
-            this.doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
-            this.doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
-            this.doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
-            this.doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
-            this.doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
-            this.doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
-            this.doc.addFileToVFS("arial-normal.ttf", arialNormal);
-            this.doc.addFont("arial-normal.ttf", "Arial", "normal");
+            // const robotoNormal = reportFonts.getRobotoNormal();
+            // const robotoBold = reportFonts.getRobotoBold();
+            // const arialNormal = reportFonts.getArial();
+            // const arialBold = reportFonts.getArialBold();
+            // this.doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
+            // this.doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
+            // this.doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
+            // this.doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
+            // this.doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
+            // this.doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
+            // this.doc.addFileToVFS("arial-normal.ttf", arialNormal);
+            // this.doc.addFont("arial-normal.ttf", "Arial", "normal");
 
-            this.doc.setFont('Arial', 'normal');
+            // this.doc.setFont('Arial', 'normal');
 
             //header 
             //header color block
@@ -2742,10 +2742,10 @@ function makeDashboardReport(){
             
     //     }
     // }
-    setTimeout(dashboardReport.download(),5000);
+    // setTimeout(dashboardReport.download(),5000);
     // for(var i = 0;i<100;i++){
     //     dashboardReport.addText('hellodfdddddddddddddddddfffffffffffffffffffffffffffffffffffffffddddddddddddddddddddddddddddddddddddddddddddddddwthereworld')
     // }
     // dashboardReport.clear()
-    // dashboardReport.download();
+    dashboardReport.download();
 }
