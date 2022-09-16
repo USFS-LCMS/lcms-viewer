@@ -172,9 +172,9 @@ function startDashboardClickLayerSelect(){
 		let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 		let totalVisible = visibleDashboardLayers.length;
 		let totalLoaded = 0;
-		$('#loading-spinner-logo').addClass('fa-spin');
+		$('#loading-spinner-logo').show();
 		updateProgress('.progressbar',0);
-		$('#loading-spinner').show();
+		$('#loading-progress-div').show();
 		
 		visibleDashboardLayers.map(layer=>{
 			var ft = layer.queryItem.filterBounds(pt);
@@ -190,7 +190,7 @@ function startDashboardClickLayerSelect(){
 				let pLoaded = totalLoaded/totalVisible*100
 				updateProgress('.progressbar',pLoaded);
 				if(pLoaded===100){
-					$('#loading-spinner-logo').removeClass('fa-spin');
+					$('#loading-spinner-logo').hide();
 					// setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
 					
 				}
@@ -216,7 +216,7 @@ function clearAllSelectedDashboardFeatures(){
 		dragBox.polygon.setMap(null);
 	}catch(err){};
 	
-	$('#loading-spinner').hide();
+	$('#loading-progress-div').hide();
 }
 function stopDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
@@ -229,9 +229,11 @@ function dashboardDragboxLayerSelect(){
 	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 	if(visibleDashboardLayers.length>0){
 		dragBox.stopListening(false);
+		$('#summary-area-selection-radio').css('pointer-events','none');
 		$('#loading-spinner-logo').addClass('fa-spin');
+		$('#loading-spinner-logo').show();
 		updateProgress('.progressbar',0);
-		$('#loading-spinner').show();
+		$('#loading-progress-div').show();
 		ee.FeatureCollection(visibleDashboardLayers.map(layer=>layer.queryItem.filterBounds(geeBox))).flatten().size().evaluate((n)=>{
 			console.log(n);
 			if(n>0){
@@ -249,7 +251,8 @@ function dashboardDragboxLayerSelect(){
 							let pLoaded = parseInt(i/n*100);
 							updateProgress('.progressbar',pLoaded);
 							if(pLoaded===100){
-								$('#loading-spinner-logo').removeClass('fa-spin');
+								$('#loading-spinner-logo').hide();
+								$('#summary-area-selection-radio').css('pointer-events','auto');
 								dragBox.startListening();
 								// setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
 								
@@ -260,7 +263,11 @@ function dashboardDragboxLayerSelect(){
 					})
 					
 				});
-			}else{$('#loading-spinner').hide();dragBox.startListening();}
+			}else{
+				$('#loading-progress-div').hide();
+				$('#summary-area-selection-radio').css('pointer-events','auto');
+				dragBox.startListening();
+				}
 			
 		});
 	}
@@ -269,28 +276,6 @@ function dashboardDragboxLayerSelect(){
 	
 		
 }
-var dragBox;
-  
-  $('#summary-area-selection-radio').change(()=>{
-    console.log(dashboardAreaSelectionMode)
-    if(dashboardAreaSelectionMode==='Drag-Box'){
-      if(dragBox === undefined){
-        dragBox=addDragBox();
-        dragBox.addListenTo(map,'map')
-		dragBox.addOnStopFunction(dashboardDragboxLayerSelect)
-        dragBox.addOnStartFunction(clearAllSelectedDashboardFeatures)
-      // Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
-      }
-	  stopDashboardClickLayerSelect();
-	  clearAllSelectedDashboardFeatures();
-      dragBox.startListening();
-    }else{
-		clearAllSelectedDashboardFeatures();
-		startDashboardClickLayerSelect();
-      dragBox.stopListening();
-    }
-
-});
 
 function setupAreaLayerSelection(){
 	google.maps.event.clearListeners(map, 'click');
@@ -1090,7 +1075,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
 	var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
 	var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
-	var showPairwiseDiff = false;
+	
 	
 
 	var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
@@ -1287,9 +1272,13 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	
 
 	}else if(annualOrTransition === 'annual'){
-		var startI = years.indexOf(startYear.toString());
-        var endI = years.indexOf((endYear).toString())+1;
+		var startI = years.indexOf(urlParams.startYear.toString());
+        var endI = years.indexOf((urlParams.endYear).toString())+1;
         years = years.slice(startI,endI);
+		if(showPairwiseDiff){
+			years = years.slice(1,years.length);
+			// console.log(`Diff years: ${years}`)
+		}
 		// console.log(years)
 		var fieldNames = Object.keys(results.features[0].properties).filter(v=>v.indexOf(whichOne)>-1).sort();
 		// console.log(fieldNames)
@@ -1337,7 +1326,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
               pairwiseDiff.push(right-left)
             }
             colSums = pairwiseDiff;
-            years = years.slice(1,years.length);
+            
           }
           
           ///////////////////////////////////////////////////////////////////////
@@ -1424,8 +1413,8 @@ function updateDashboardCharts(){
 	$('.dashboard-results').empty();
 	// $('.dashboard-results-container').css('height','0rem');
 	// $('.dashboard-results-container').hide();
-	let visible
-	chartWhich = ['Land_Cover','Land_Use'];
+	let visible;
+	chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));//['Land_Cover','Land_Use'];
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
 	if(dashboardLayersToChart.length>0){
 		$('.dashboard-results-container').show();

@@ -503,23 +503,20 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDiv:`
-                                <div id='dashboard-highlights-container' class='pt-2 pb-0'>
-                                    
-                                    <div id = 'loading-spinner'  style='display:none;' title = 'Downloading selected areas'  >
+        dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'></div>`,
+        dashboardProgressDiv:`<div id = 'loading-progress-div'  style='display:none;' title = 'Downloading selected areas'  >
                                        
-                                        
-                                        <span  style = 'display: flex;  '>
-                                        <img id = 'loading-spinner-logo' class = ' px-2 ' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
-                                        
-                                        <div class="progressbar">
-                                            <span style="width: 0%;">0%</span>
-                                        </div>
-                                         <p class='pl-1 py-0'>Downloaded</p>
-                                        </span>
-                                        
-                                    </div>
-                                </div>`,
+        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser pt-1''><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>                               
+        <span  style = 'display: flex;  '>
+        <img id = 'loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
+        
+        <div class="progressbar">
+            <span style="width: 0%;">0%</span>
+        </div>
+         
+        </span>
+        
+    </div>`,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>
@@ -1226,7 +1223,7 @@ Date.prototype.dayofYear= function(){
 //Create a dual range slider
 //Possible modes are : 'date','julian',or null
 //Default mode is 'date', must specify mode as null to use vanilla numbers
-function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,updateID,mode){
+function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,updateID,mode,slideFun,stopFun){
     // var dt_from = "2000/11/01";
   // var dt_to = "2015/11/24";
 // $("#"+updateID +" .ui-slider .ui-slider-handle").css( {"width": '3px'} );
@@ -1316,11 +1313,20 @@ function setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,slide
           eval(var1 + '= '+ value1.toString());
           eval(var2 + '= '+ value2.toString());
           }
+        if(slideFun!==undefined && slideFun!== null){
+            slideFun(e,ui);
+        }
+        },
+        stop: function (e, ui) {
+            if(stopFun!==undefined && stopFun!== null){
+                stopFun(e,ui);
+            }
+    
         }
           }); 
   }
 //Wrapper function to add a dual range slider
-function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip){
+function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,defaultMax,step,sliderID,mode,tooltip,slideFun,stopFun){
 	if(tooltip === null || tooltip === undefined){tooltip = ''};
 	
 	// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
@@ -1329,7 +1335,7 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
 							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
 							    </div>`);
-	setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,sliderID+ '-update',mode)
+	setUpDualRangeSlider(var1,var2,min,max,defaultMin,defaultMax,step,sliderID,sliderID+ '-update',mode,slideFun,stopFun)
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////

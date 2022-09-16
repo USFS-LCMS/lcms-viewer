@@ -11,12 +11,13 @@ areas = [i for i in areas if i.find('LMPU-transition')>-1]
 print(areas)
 ############################################################################
 #Make all assets public
-def makeTablesPublic(table_dir):
+def makeTablesPublic(table_dir,name=None):
   tables = ee.data.getList({'id':table_dir})
   for table in tables:
       table = table['id']
-      print('Making public: ',table)
-      ee.data.setAssetAcl(table, json.dumps({u'writers': [], u'all_users_can_read': True, u'readers': []}))
+      if table.find(name)>-1 or name == None or name == '*':
+        print('Making public: ',table)
+        ee.data.setAssetAcl(table, json.dumps({u'writers': [], u'all_users_can_read': True, u'readers': []}))
 def deleteTables(table_dir,name):
     tables = ee.data.getList({'id':table_dir})
     for table in tables:
@@ -41,11 +42,11 @@ def uploadTables():
         
         featureSizes = [sys.getsizeof(json.dumps(f)) for f in geojson['features']]
         maxSize = numpy.amax(featureSizes)
-        pctl = numpy.percentile(featureSizes,90)
+        pctl = numpy.percentile(featureSizes,95)
         nFeatureLimitMean = int(4500000/(size/nFeatures))
         nFeatureLimitMax = int(4500000/(maxSize))
         nFeatureLimitPctl = int(3000000/(pctl))
-        nFeatureLimit = nFeatureLimitPctl
+        nFeatureLimit = 5#nFeatureLimitPctl
         print(maxSize,nFeatureLimitMax,nFeatureLimitPctl,nFeatureLimitMean)
         print('{}: {} {} {}'.format(area,size/nFeatures,' bytes/feature. Max features:',nFeatureLimit))
         for i in range(0,nFeatures,nFeatureLimit):
@@ -72,6 +73,7 @@ def uploadTables():
  
   
 ###############################################################
-uploadTables()
-# makeTablesPublic(asset_folder)
-# deleteTables(asset_folder,'LTA-')
+# uploadTables()
+# tml.batchCancel()
+makeTablesPublic(asset_folder,'LMPU-transi')
+# deleteTables(asset_folder,'LMPU-transition')
