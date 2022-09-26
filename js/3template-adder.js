@@ -15,7 +15,7 @@ $('body').append(staticTemplates.bottomBar);
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
 if(mode==='lcms-dashboard'){
   $('body').append(staticTemplates.dashboardResultsDiv);
-  // $('body').append(staticTemplates.dashboardHighlightsDiv);
+  $('body').append(staticTemplates.dashboardHighlightsDiv);
 }
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
@@ -234,8 +234,15 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCheckboxes('parameters-collapse-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
   $('#which-products-radio').change( ()=>{
     updateDashboardCharts();
-    
-  })
+  });
+  if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
+    urlParams.annualTransition = {"Annual": true,"Transition": true}
+  }
+  addCheckboxes('parameters-collapse-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
+  $('#annual-transition-radio').change( ()=>{
+    updateDashboardCharts();
+  });
+
   $('#summary-area-selection-radio').prop('title','Select areas by clicking on individual areas or selecting all polygons within a box')
 
   $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
@@ -919,10 +926,18 @@ function resizeDashboardPanes(){
   let layerWidth = $('#layer-list-collapse-label-layer-list-collapse-div').width();//+5;
   let bottomHeight=$('.bottombar').height();
   let resultsHeight = $('#dashboard-results-container').height();
+  let sidebarHeight=$('#sidebar-left-container').height();
+  let expanderHeight = $('#dashboard-results-expander').height()
   $('#sidebar-left-container').css('max-height',window.innerHeight-bottomHeight);
-  $('#dashboard-results-container').css('left',layerWidth);
-  $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth);
-  $('#dashboard-results-container').css('bottom',$('.bottombar').height()+$('#dashboard-results-expander').height())
+  if(sidebarHeight+bottomHeight+resultsHeight+expanderHeight<window.innerHeight){
+    $('#dashboard-results-container').css('left',0);
+    $('#dashboard-results-container').css('max-width',window.innerWidth);
+  }else{
+    $('#dashboard-results-container').css('left',layerWidth);
+    $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth);
+  }
+  
+  $('#dashboard-results-container').css('bottom',bottomHeight+expanderHeight)
   // $('.chart').css('height',$('#dashboard-results-container').height())
 }
 if(mode === 'lcms-dashboard'){
@@ -940,7 +955,7 @@ if(mode === 'lcms-dashboard'){
   resizeDashboardPanes()
  
   $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
-
+  $('.panel-title').click((e)=>{console.log(e);setTimeout(()=>{resizeDashboardPanes()},500);});
   function addExpander(){
     var expander = {};
     expander.setDragID = (id)=>expander.id = id;

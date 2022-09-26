@@ -177,13 +177,20 @@ function startDashboardClickLayerSelect(){
 		$('#loading-progress-div').show();
 		
 		visibleDashboardLayers.map(layer=>{
-			var ft = layer.queryItem.filterBounds(pt);
+			var ft = ee.Feature(layer.queryItem.filterBounds(pt).first()).simplify(5000, 'EPSG:4326');
+			
+			
 			// console.log(`${l.name} ${ft.size().getInfo()}`)
 			// console.log(ft.getInfo())
 
-			ee.Feature(ft.first()).simplify(5000, 'EPSG:4326').evaluate((r,failure)=>{
+			ft.evaluate((r,failure)=>{
 				console.log(r);
 				if(r!==undefined){
+					if(layer.selectedDashboardGEEFeatures===undefined){
+						layer.selectedDashboardGEEFeatures = ee.FeatureCollection([ft])
+					}else{
+						layer.selectedDashboardGEEFeatures = layer.selectedDashboardGEEFeatures.merge(ee.FeatureCollection([ft]))
+					}
 					chartDashboardFeature(r,layer);
 				}
 				totalLoaded++
@@ -1089,7 +1096,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	
 	let total_area_fieldname = 'total_area';
 	// var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
-	var chartWhich = ['Change','Land_Cover','Land_Use'];
+	// var chartWhich = ['Change','Land_Cover','Land_Use'];
 	if(annualOrTransition === 'transition'){
 	
 	names['Land_Cover'] = ['Trees','Tall Shrubs','Shrubs','Grass/Forb/Herb','Barren or Impervious','Snow or Ice','Water','Non-Processing Area Mask'];
@@ -1098,7 +1105,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 
 	var stacked= false;
 	var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
-	var chartID = `chart-canvas-${layer.id}-${whichOne}`;
+	var chartID = `chart-canvas-${layer.id}-${whichOne}-${annualOrTransition}`;
 	var colorsI = 0;
 	var selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
 	// console.log(selectedFeatureNames)
@@ -1117,7 +1124,9 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	var t1 = new Date();
 	let results = {};
 	results.features = selectedFeatureNames.map(nm=>layer.dashboardSelectedFeatures[nm].geojson)
-	var years = results.features[0].properties.years.split(',').sort();
+	var years = results.features[0].properties['years_'+annualOrTransition].split(',').sort();
+	
+	
 	// console.log(years)
 	// console.log(results.features)
 	if(annualOrTransition === 'transition'){
@@ -1136,7 +1145,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 			total_area = total_area + total_areaF*scale**2;
 		});
 		
-
+		// console.log(total)
 		var colSums = [];
 		for(var col = 0;col < total[0].length;col++){
 			var colSum = 0;
@@ -1280,7 +1289,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 			// console.log(`Diff years: ${years}`)
 		}
 		// console.log(years)
-		var fieldNames = Object.keys(results.features[0].properties).filter(v=>v.indexOf(whichOne)>-1).sort();
+		fieldNames =fieldNames.filter(v=>v.indexOf(whichOne)>-1).sort();
 		// console.log(fieldNames)
 		
         var t = fieldNames.map(function(k){
@@ -1328,7 +1337,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
             colSums = pairwiseDiff;
             
           }
-          
+        //   console.log(colSums)
           ///////////////////////////////////////////////////////////////////////
           //Set up chart object
 		  let classColor = colors[whichOne][names[whichOne].indexOf(k.split('---')[1])]
@@ -1407,14 +1416,30 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		$('.chartjs-chart').css('width',chartWidth);
 	}
 }
+function updateDashboardHighlights(){
+	let highlightLCMSProducts = {'Land_Cover':['Trees']};
+	
+	let dashboardLayersToHighlight = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible)
+	dashboardLayersToHighlight.map(f=>{
+		let fc = f.queryItem;
+		Object.keys(highlightLCMSProducts).map(k=>{
+			let classes = highlightLCMSProducts[k];
+			
+		})
+		console.log(fc.first().getInfo())
+	})
+	// console.log(dashboardLayersToHighlight)
+}
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
 	console.log(`Scroll left coord: ${lastScrollLeft}`)
 	$('.dashboard-results').empty();
 	// $('.dashboard-results-container').css('height','0rem');
 	// $('.dashboard-results-container').hide();
-	let visible;
-	chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));//['Land_Cover','Land_Use'];
+	let visible,chartModes;
+	chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));
+	chartModes = Object.keys(annualTransition).filter(k=> annualTransition[k]).map(k=>k.toLowerCase())
+	
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
 	if(dashboardLayersToChart.length>0){
 		$('.dashboard-results-container').show();
@@ -1422,7 +1447,7 @@ function updateDashboardCharts(){
 		resizeDashboardPanes();
 		chartWhich.map((w)=>{
 			dashboardLayersToChart.map(layer=>{
-				 makeDashboardCharts(layer,w,layer.dashboardSummaryMode);
+				chartModes.map(chartMode=>makeDashboardCharts(layer,w,chartMode));
 			})
 		})
 		

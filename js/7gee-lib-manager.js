@@ -319,7 +319,28 @@ function joinCollections(c1,c2, maskAnyNullValues){
   }
   return joined;
 }
-
+//Simple inner join function for featureCollections
+//Matches features based on an exact match of the fieldName parameter
+//Retains the geometry of the primary, but copies the properties of the secondary collection
+function joinFeatureCollections(primary,secondary,fieldName){
+  // Use an equals filter to specify how the collections match.
+  var f = ee.Filter.equals({
+    leftField: fieldName,
+    rightField: fieldName
+  });
+  
+  // Define the join.
+  var innerJoin = ee.Join.inner('primary', 'secondary');
+  
+  // Apply the join.
+  var joined = innerJoin.apply(primary, secondary, f);
+  joined = joined.map(function(f){
+    var p = ee.Feature(f.get('primary'));
+    var s = ee.Feature(f.get('secondary'));
+    return p.copyProperties(s);
+  });
+  return joined;
+}
 function setNoData(image,noDataValue){
   var m = image.mask();
   image = image.mask(ee.Image(1));

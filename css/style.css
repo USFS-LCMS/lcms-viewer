@@ -334,7 +334,7 @@ button {
   background-color: var(--black)!important;
   /*max-height:1.7em;*/
   font-size:1em;
-  z-index:2;
+  z-index:999;
 }
 .image-icon-bar{
   max-height:1.3em;
