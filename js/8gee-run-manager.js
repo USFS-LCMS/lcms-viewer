@@ -3261,7 +3261,7 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   });
   lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms)  
 
-  
+  //
   let firstComparisonLayerI 
   ['Land_Cover','Land_Use'].map(nm=>{
     console.log(nm)
