@@ -1416,25 +1416,111 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		$('.chartjs-chart').css('width',chartWidth);
 	}
 }
-function updateDashboardHighlights(){
-	let highlightLCMSProducts = {'Land_Cover':['Trees']};
+var currentHighlightsMoveID=1;
+
+function updateDashboardHighlights(limit=10){
+	currentHighlightsMoveID++;
+	let thisHighlightsMoveID=currentHighlightsMoveID;
 	
-	let dashboardLayersToHighlight = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible)
-	dashboardLayersToHighlight.map(f=>{
-		let fc = f.queryItem;
-		Object.keys(highlightLCMSProducts).map(k=>{
-			let classes = highlightLCMSProducts[k];
-			
-		})
-		console.log(fc.first().getInfo())
-	})
+	let chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));
+	
+	let available_years = range(startYear,endYear+1);
+	let startYearI = available_years.indexOf(parseInt(urlParams.startYear));
+	let endYearI = available_years.indexOf(parseInt(urlParams.endYear));
+
+	console.log([startYearI,endYearI])
+	let dashboardLayersToHighlight = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
+	$('#dashboard-highlights-table').empty();
+	let totalToLoad=0;
+	let totalLoaded=0;
+	let classesToHighlight=0;
+	if(dashboardLayersToHighlight.length>0){
+		$('#highlights-loading-spinner-logo').show();
+		updateProgress('#highlights-progressbar',0);
+		dashboardLayersToHighlight.map(f=>{
+			let fc = f.queryItem.filterBounds(eeBoundsPoly);
+			// console.log(fc.first().getInfo())
+			// Map2.addLayer(fc,{},f.name+' bounds')
+			Object.keys(highlightLCMSProducts).map(k=>{
+				if(chartWhich.indexOf(k)>-1){
+					let classes = highlightLCMSProducts[k];
+					classesToHighlight = classesToHighlight+classes.length
+					if(classes.length>0){
+						classes.map(cls=>{
+							var class_name = `${k}---${cls}`;
+							console.log(class_name);
+							let ft = fc.map(f=>{
+								f = ee.Feature(f);
+								let attributes = ee.String(f.get(class_name)).split(',');
+								let totalArea = ee.Number(f.get('total_area'));
+								let startAtr = ee.Number.parse(attributes.get(startYearI)).divide(totalArea);
+								let endAtr = ee.Number.parse(attributes.get(endYearI)).divide(totalArea);
+								let diff = endAtr.subtract(startAtr);
+								return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
+								})
+							let top = ft.sort('3start-end_diff',false).limit(limit);
+							let bottom = ft.sort('3start-end_diff').limit(limit);
+							let nmT = `${f.viz.dashboardFieldName}`
+							let tops = top.toList(limit,0).map(feat=>ee.Feature(feat).toDictionary([nmT,'1start','2end','3start-end_diff']).values());
+							let bottoms = bottom.toList(limit,0).map(feat=>ee.Feature(feat).toDictionary([nmT,'1start','2end','3start-end_diff']).values());
+							
+							function parseResults(t,header){
+									totalLoaded++;
+									let pLoaded=totalLoaded/totalToLoad*100;
+									updateProgress('#highlights-progressbar',pLoaded);
+									if(pLoaded===100){
+										$('#highlights-loading-spinner-logo').hide();
+									}
+									$('#dashboard-highlights-table').append(`<tr class = 'bg-black' ><th colspan="4">  ${f.name} ${k.replaceAll('_',' ')}-${cls} Top ${limit} ${header}</th></tr><tr class = 'highlights-row'><th class="bg-black">
+										Name
+									</th>
+									<th class="bg-black">
+										${k} % ${urlParams.startYear} ${cls} 
+									</th>
+									<th class="bg-black">
+										${k} % ${urlParams.endYear} ${cls} 
+									</th>
+									<th class="bg-black">
+										${k} % Change ${cls} 
+									</th></tr>`)
+									t.map(tr=>$('#dashboard-highlights-table').append(`<tr class = 'highlights-row'>
+									<th class = 'highlights-entry'>${tr[3]}</th>
+									<td class = 'highlights-entry'>${(tr[0]*100).toFixed(2)}%</td>
+									<td class = 'highlights-entry'>${(tr[1]*100).toFixed(2)}%</td>
+									<td class = 'highlights-entry'>${(tr[2]*100).toFixed(2)}%</td></tr>`))
+									
+								
+							}
+							totalToLoad = totalToLoad+2;
+							tops.evaluate(t=>{if(thisHighlightsMoveID===currentHighlightsMoveID){parseResults(t,'Gain')}})
+							bottoms.evaluate(t=>{if(thisHighlightsMoveID===currentHighlightsMoveID){parseResults(t,'Loss')}})
+							// console.log(bottoms.getInfo())
+							})
+						}
+					}
+					
+				
+				})
+				
+				
+			})
+			if(classesToHighlight===0){$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);}
+	}else{
+		$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
+	}
+	
+	
+		
+	
 	// console.log(dashboardLayersToHighlight)
 }
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
 	console.log(`Scroll left coord: ${lastScrollLeft}`)
 	$('.dashboard-results').empty();
-	// $('.dashboard-results-container').css('height','0rem');
+	$('.dashboard-results-container').hide();
+	$('.dashboard-results-container').css('height','0rem');
+
 	// $('.dashboard-results-container').hide();
 	let visible,chartModes;
 	chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));

@@ -2665,6 +2665,9 @@ function initialize() {
       if(typeof(Storage) == "undefined") return;
       localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:mapCenterLat,lng:mapCenterLng},zoom:zoom}));
       updateViewList = true;
+      if(mode==='lcms-dashboard'){
+        updateDashboardHighlights();
+      }
       // setTimeout(function(){updateViewList = true;},10)
     }
     //Listen for zoom change and update bottom bar

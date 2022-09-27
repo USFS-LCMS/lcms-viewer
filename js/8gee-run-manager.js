@@ -3187,36 +3187,11 @@ let dashboardFolder = 'projects/lcms-292214/assets/Dashboard2';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
 
 var summaryAreas2 = {
-  'Counties':{'path':'Counties',
-                                        'unique_fieldname':'NAME',
-                                        'visible':false,'color':'00E'},
-'Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME',
-'visible':true,'color':'00E'} ,  
-                      // 'HUC12':{'path':'HUC12','unique_fieldname':'name',
-                                                              // 'visible':true,'color':'00E'}        
-// 'Planning Units Annual':{'path':'LMPU-annual_compressed',
-//       'color':'#00E',
-//         'unique_fieldname':'LMPU_NAME',
-//             'summary_mode':'annual',
-//             'visible':false},
-// 'Planning Units Transition':{'path':'LMPU-transition_compressed',
-//             'color':'#00E',
-//               'unique_fieldname':'LMPU_NAME',
-//                   'summary_mode':'transition',
-//                   'visible':false},
-'Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':false,'color':'0A8'},
-// 'Forests Transition':{'path':'Forests-transition_compressed','unique_fieldname':'FORESTNAME',
-// 'summary_mode':'transition','visible':true,'color':'0A8'},
-'Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'0AA'},
-// 'Forest Districts Transition':{'path':'Forest_Districts-transition_compressed','unique_fieldname':'DISTRICTNA',
-// 'summary_mode':'transition','visible':false,'color':'0AA'},
-'HUC 6':{'path':'HUC06','color':'#00E','unique_fieldname':'name','visible':false},
-// 'HUC 6 Annual':{'path':'HUC06-annual_compressed',
-// 'color':'#00E',
-//   'unique_fieldname':'name',
-//       'summary_mode':'annual',
-//       'visible':false,'color':'00E'}
-
+  'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false},
+  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE'},
+  'Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88'} , 
+  'Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8'},
+  'Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8'},
 }
 let summaryModes =  ['transition','annual'];
 let study_areas = ['CONUS','AK']
@@ -3232,7 +3207,7 @@ function loadGEESummaryAreas(summaryAreaObj,name){
       summariesT = ee.FeatureCollection(summariesT).flatten();
  
   
-    Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid'},name,summaryAreaObj.visible)
+    Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid',strokeWeight:1.5},name,summaryAreaObj.visible)
   }
   // console.log(fc);
   
@@ -3276,7 +3251,8 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   
   Object.keys(summaryAreas2).map(k=>{
     loadGEESummaryAreas(summaryAreas2[k],k)
-  })
+  });
+  updateDashboardHighlights();
   
 
 

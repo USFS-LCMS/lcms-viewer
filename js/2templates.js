@@ -503,7 +503,21 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'></div>`,
+        dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
+        <p class='highlights-title' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
+        <span  style = 'display: flex;'>
+        <img id = 'highlights-loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
+        
+        <div class="progressbar" id='highlights-progressbar' class = 'px-2'>
+            <span style="width: 0%;">0%</span>
+        </div>
+         
+        </span>
+                                    <table class="table table-hover bg-white">
+                                        <tbody id = 'dashboard-highlights-table'></tbody>
+                                    </table>
+                                   
+                                </div>`,
         dashboardProgressDiv:`<div id = 'loading-progress-div'  style='display:none;' title = 'Downloading selected areas'  >
                                        
         <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser pt-1''><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>                               
