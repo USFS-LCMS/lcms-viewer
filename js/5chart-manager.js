@@ -1494,21 +1494,26 @@ function updateDashboardHighlights(limit=10){
 									// if(pLoaded===100){
 										// $('#highlights-loading-spinner-logo').hide();
 									// }
-									$('#dashboard-highlights-table').append(`<tr class = 'bg-black' ><th colspan="5">  ${f.name} ${product_name}-${cls} ${header}</th></tr><tr class = 'highlights-row'>
-									<th class="bg-black">
+									let nRows = t.length;
+									let areasN = 'areas'
+									if(nRows===1){
+										areasN = 'area'
+									}
+									$('#dashboard-highlights-table').append(`<tr class = 'bg-black' ><th colspan="5" class='highlights-table-title'>  ${f.name} LCMS Change Ranking of ${product_name}-${cls} for ${t.length} selected ${areasN}</th></tr><tr class = ' highlights-table-section-title'>
+									<th >
 								
 									</th>
-									<th class="bg-black">
+									<th>
 										Name
 									</th>
-									<th class="bg-black">
-										${product_name} % ${urlParams.startYear} ${cls} 
+									<th>
+										${urlParams.startYear} 
 									</th>
-									<th class="bg-black">
-										${product_name} % ${urlParams.endYear} ${cls} 
+									<th>
+										${urlParams.endYear}
 									</th>
-									<th class="bg-black">
-										${k} % Change ${cls} 
+									<th>
+										 Change
 									</th></tr>`)
 									let rowI = 1;
 									t.map(tr=>{$('#dashboard-highlights-table').append(`<tr class = 'highlights-row'>

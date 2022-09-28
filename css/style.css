@@ -321,11 +321,27 @@ button {
   color:var(--deep-brown-20);
   font-family: 'Roboto';
    font-size:1.75rem;
-   
+   text-align: center;
    margin-top:0.5rem;
    margin-bottom:0.25rem;
    font-weight:200;
 }
+.highlights-table-title{
+  color:var(--deep-brown-20);
+  font-family: 'Roboto';
+   font-size:1.25rem;
+   text-align: center;
+   font-weight:200;
+}
+.highlights-table-section-title{
+  color:var(--deep-brown-20);
+  background-color: var(--black)!important;
+  font-family: 'Roboto';
+   font-size:0.75rem;
+   text-align: left;
+   font-weight:300;
+}
+
 
 .highlights-div{
   margin-left:0.5rem;

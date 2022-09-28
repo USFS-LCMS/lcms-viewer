@@ -505,6 +505,7 @@ const staticTemplates = {
                             </div>`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <p class='highlights-title highlights-div' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
+        <hr class='my-1'>
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
         
