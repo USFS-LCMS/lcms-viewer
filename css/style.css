@@ -129,6 +129,13 @@ color:var(--deep-brown-20)!important;}
   transform: translate(3px) translateY(0px);
   color:var(--teal-100)!important;
 }
+.eraser-all{
+  cursor:pointer;
+  color:var(--deep-brown-20);
+  font-family: 'Roboto';
+  font-size:1rem;
+  margin-bottom: 0.5rem;
+}
 .bg-solid-black{background-color: var(--solid-black)!important;
 color:var(--white)!important;}
 .time-lapse-active{
@@ -314,12 +321,17 @@ button {
   color:var(--deep-brown-20);
   font-family: 'Roboto';
    font-size:1.75rem;
-   margin-left:0.5rem;
-   margin-right:0.5rem;
+   
    margin-top:0.5rem;
    margin-bottom:0.25rem;
    font-weight:200;
 }
+
+.highlights-div{
+  margin-left:0.5rem;
+  margin-right:0.5rem;
+}
+
 .progressbar {
   background: #ACA199;
   width: 100%;

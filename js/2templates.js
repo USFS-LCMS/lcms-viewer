@@ -504,15 +504,16 @@ const staticTemplates = {
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
-        <p class='highlights-title' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
+        <p class='highlights-title highlights-div' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
         <span  style = 'display: flex;'>
-        <img id = 'highlights-loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
+        <img id = 'loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
         
         <div class="progressbar" id='highlights-progressbar' class = 'px-2'>
             <span style="width: 0%;">0%</span>
         </div>
          
         </span>
+        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all pt-1 highlights-div '><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>
                                     <table class="table table-hover bg-white">
                                         <tbody id = 'dashboard-highlights-table'></tbody>
                                     </table>
@@ -1741,6 +1742,7 @@ function addLayer(layer){
         if(layer.viz.dashboardSummaryLayer){
             Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(null)));
             updateDashboardCharts();
+            updateDashboardHighlights();
             
         }
         layer.loading = false;
@@ -1790,7 +1792,13 @@ function addLayer(layer){
         if(layer.viz.dashboardSummaryLayer){
                 
             Object.keys(layer.dashboardSelectedFeatures).map(nm=>layer.dashboardSelectedFeatures[nm].polyList.map(p=>p.setMap(map)));
-            updateDashboardCharts();
+            if(mode === 'lcms-dashboard'){
+                dashboardBoxSelect();
+              }else{
+                updateDashboardCharts();
+                updateDashboardHighlights();
+              }
+            
         }  
         vizToggleCleanup();
     }

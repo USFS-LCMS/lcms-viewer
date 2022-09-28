@@ -209,7 +209,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
-  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
+  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
   
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS summary areas to view on map');
@@ -221,7 +221,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
-  addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'Click':true,'Drag-Box':false});
+  addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'View-Extent':true,'Click':false,'Drag-Box':false});
 
   if(urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined){
     urlParams.pairwiseDiff = {'Annual':true,'Annual-Change':false}
@@ -233,8 +233,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
   addCheckboxes('parameters-collapse-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
   $('#which-products-radio').change( ()=>{
-    updateDashboardHighlights();
     updateDashboardCharts();
+    updateDashboardHighlights();
 
   });
   if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
@@ -262,7 +262,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     updateDashboardHighlights();
   });
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
-    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": true,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false}
+    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false}
   }
   addCheckboxes('parameters-collapse-div','lu-highlights-radio','Highlight Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
   $('#lu-highlights-radio').change( ()=>{
@@ -273,7 +273,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   
   $('#summary-area-selection-radio').prop('title','Select areas by clicking on individual areas or selecting all polygons within a box')
 
-  $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
+  // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
   $('#parameters-collapse-div').append(`<hr><div class='py-2'>
                                                 <div class='btn' onclick='makeDashboardReport()' >
                                                   <i class="fa fa-download  mx-1" aria-hidden="true"></i>
@@ -1041,21 +1041,29 @@ if(mode === 'lcms-dashboard'){
   
   $('#summary-area-selection-radio').change(()=>{
     console.log(dashboardAreaSelectionMode)
-    if(dashboardAreaSelectionMode==='Drag-Box'){
+    if(dashboardAreaSelectionMode==='View-Extent'){
+      clearAllSelectedDashboardFeatures();
+		  startDashboardViewExtentSelect();
+      try{dragBox.stopListening();}catch(err){}
+      dashboardBoxSelect();
+    }else if(dashboardAreaSelectionMode==='Drag-Box'){
+      
       if(dragBox === undefined){
         dragBox=addDragBox();
         dragBox.addListenTo(map,'map')
-		dragBox.addOnStopFunction(dashboardDragboxLayerSelect)
-        dragBox.addOnStartFunction(clearAllSelectedDashboardFeatures)
-      // Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
-      }
-	  stopDashboardClickLayerSelect();
-	  clearAllSelectedDashboardFeatures();
+      dragBox.addOnStopFunction(dashboardDragboxLayerSelect)
+          dragBox.addOnStartFunction(clearAllSelectedDashboardFeatures)
+        // Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
+        }
+      stopDashboardViewExtentSelect();
+      stopDashboardClickLayerSelect();
+      clearAllSelectedDashboardFeatures();
       dragBox.startListening();
     }else{
-		clearAllSelectedDashboardFeatures();
-		startDashboardClickLayerSelect();
-      dragBox.stopListening();
+      stopDashboardViewExtentSelect();
+      clearAllSelectedDashboardFeatures();
+      startDashboardClickLayerSelect();
+      try{dragBox.stopListening();}catch(err){}
     }
 
 });

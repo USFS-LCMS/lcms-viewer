@@ -2063,8 +2063,8 @@ function addDragBox(){
     zIndex:999
     
   });
-  dragBox.onStartFunctions = [()=>console.log('hi')];
-  dragBox.onStopFunctions = [()=>console.log('hi')];
+  dragBox.onStartFunctions = [];
+  dragBox.onStopFunctions = [];
   dragBox.addOnStartFunction = function(fun){dragBox.onStartFunctions.push(fun)}
   dragBox.addOnStopFunction = function(fun){dragBox.onStopFunctions.push(fun)}
   dragBox.listeners={'click':[],'mousemove':[]};
@@ -2665,9 +2665,7 @@ function initialize() {
       if(typeof(Storage) == "undefined") return;
       localStorage.setItem(cachedSettingskey,JSON.stringify({center:{lat:mapCenterLat,lng:mapCenterLng},zoom:zoom}));
       updateViewList = true;
-      if(mode==='lcms-dashboard'){
-        updateDashboardHighlights();
-      }
+      
       // setTimeout(function(){updateViewList = true;},10)
     }
     //Listen for zoom change and update bottom bar
@@ -2789,7 +2787,8 @@ function initialize() {
         };
       // }
       if(mode === 'lcms-dashboard'){
-        startDashboardClickLayerSelect(); 
+        dashboardBoxSelect();
+        startDashboardViewExtentSelect(); 
       }
       
       

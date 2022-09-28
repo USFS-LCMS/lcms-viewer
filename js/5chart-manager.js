@@ -88,10 +88,10 @@ function updateSelectedAreaArea(){
         })
             
     }
-function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
+function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true,updateHighlights=false){
 	// console.log(r);
 	let featureName = r.properties[layer.viz.dashboardFieldName].toString();
-	console.log(featureName)
+	// console.log(featureName)
 	if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
 		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
 	
@@ -141,6 +141,7 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
 					delete layer.dashboardSelectedFeatures[featureName];
 					updateDashboardCharts();
+					updateDashboardHighlights();
 				})
 			}
 			
@@ -157,6 +158,7 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 	// $('#dashboard-results-collapse-div').append(selectedNames);
 	if(updateCharts){
 		updateDashboardCharts();
+		updateDashboardHighlights();
 	}
 }
 function updateProgress(id,val) {
@@ -164,6 +166,7 @@ function updateProgress(id,val) {
 	el.style.width = val + '%';
 	el.innerText = val + '%';
   };
+
 function startDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
 	
@@ -218,6 +221,7 @@ function clearAllSelectedDashboardFeatures(){
 			delete layer.dashboardSelectedFeatures[fn];
 		});
 	});
+	$('#dashboard-highlights-table').empty();
 	updateDashboardCharts();
 	try{
 		dragBox.polygon.setMap(null);
@@ -229,13 +233,17 @@ function stopDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
 }
 var dragSelectedFeatures;
-function dashboardDragboxLayerSelect(){
-	console.log(dragBox.dragBoxPath);
-	
-	let geeBox = ee.Geometry.Polygon(dragBox.dragBoxPath.map(c=>[c.lng,c.lat]));
+function dashboardBoxSelect(){
 	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 	if(visibleDashboardLayers.length>0){
-		dragBox.stopListening(false);
+		let geeBox;
+		if(dashboardAreaSelectionMode==='View-Extent'){
+			geeBox = eeBoundsPoly;
+		}else{
+			geeBox = ee.Geometry.Polygon(dragBox.dragBoxPath.map(c=>[c.lng,c.lat]));
+			dragBox.stopListening(false);
+		}
+	
 		$('#summary-area-selection-radio').css('pointer-events','none');
 		$('#loading-spinner-logo').addClass('fa-spin');
 		$('#loading-spinner-logo').show();
@@ -260,7 +268,7 @@ function dashboardDragboxLayerSelect(){
 							if(pLoaded===100){
 								$('#loading-spinner-logo').hide();
 								$('#summary-area-selection-radio').css('pointer-events','auto');
-								dragBox.startListening();
+								if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening();}
 								// setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
 								
 							}
@@ -273,15 +281,21 @@ function dashboardDragboxLayerSelect(){
 			}else{
 				$('#loading-progress-div').hide();
 				$('#summary-area-selection-radio').css('pointer-events','auto');
-				dragBox.startListening();
+				if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
+				
 				}
 			
 		});
 	}
+}
+function dashboardDragboxLayerSelect(){dashboardBoxSelect()}
+var dashboardViewExtentListener;
+function stopDashboardViewExtentSelect(){
+	google.maps.event.removeListener(dashboardViewExtentListener)
 	
-	
-	
-		
+}
+function startDashboardViewExtentSelect(){
+	dashboardViewExtentListener = google.maps.event.addListener(map,'idle',()=>{clearAllSelectedDashboardFeatures();dashboardBoxSelect()});
 }
 
 function setupAreaLayerSelection(){
@@ -1428,73 +1442,91 @@ function updateDashboardHighlights(limit=10){
 	let startYearI = available_years.indexOf(parseInt(urlParams.startYear));
 	let endYearI = available_years.indexOf(parseInt(urlParams.endYear));
 
-	console.log([startYearI,endYearI])
+	// console.log([startYearI,endYearI])
 	let dashboardLayersToHighlight = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 	$('#dashboard-highlights-table').empty();
 	let totalToLoad=0;
 	let totalLoaded=0;
 	let classesToHighlight=0;
 	if(dashboardLayersToHighlight.length>0){
-		$('#highlights-loading-spinner-logo').show();
-		updateProgress('#highlights-progressbar',0);
+		// $('#highlights-loading-spinner-logo').show();
+		// updateProgress('#highlights-progressbar',0);
 		dashboardLayersToHighlight.map(f=>{
-			let fc = f.queryItem.filterBounds(eeBoundsPoly);
+			// let fc = f.queryItem.filterBounds(eeBoundsPoly);
+			fc= Object.values(f.dashboardSelectedFeatures).map(f=>f.geojson);
+			let fieldName = f.viz.dashboardFieldName;
+			
 			// console.log(fc.first().getInfo())
 			// Map2.addLayer(fc,{},f.name+' bounds')
 			Object.keys(highlightLCMSProducts).map(k=>{
 				if(chartWhich.indexOf(k)>-1){
+					let product_name = k.replaceAll('_',' ');
 					let classes = highlightLCMSProducts[k];
 					classesToHighlight = classesToHighlight+classes.length
 					if(classes.length>0){
 						classes.map(cls=>{
 							var class_name = `${k}---${cls}`;
-							console.log(class_name);
+							let t = [];
 							let ft = fc.map(f=>{
-								f = ee.Feature(f);
-								let attributes = ee.String(f.get(class_name)).split(',');
-								let totalArea = ee.Number(f.get('total_area'));
-								let startAtr = ee.Number.parse(attributes.get(startYearI)).divide(totalArea);
-								let endAtr = ee.Number.parse(attributes.get(endYearI)).divide(totalArea);
-								let diff = endAtr.subtract(startAtr);
-								return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
+			// 					f = ee.Feature(f);
+								let props = f.properties;
+								let attributes = props[class_name].split(',');
+								let totalArea = parseFloat(props['total_area']);
+								let startAtr = parseFloat(attributes[startYearI])/totalArea;
+								let endAtr = parseFloat(attributes[endYearI])/totalArea;
+								let diff = endAtr-startAtr;
+								t.push([props[fieldName],startAtr,endAtr,diff]);
+			// 					return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
 								})
-							let top = ft.sort('3start-end_diff',false).limit(limit);
-							let bottom = ft.sort('3start-end_diff').limit(limit);
+							
+							t= t.sort(function(a,b) {
+								return a[3] - b[3];
+							});
+							
+							
 							let nmT = `${f.viz.dashboardFieldName}`
-							let tops = top.toList(limit,0).map(feat=>ee.Feature(feat).toDictionary([nmT,'1start','2end','3start-end_diff']).values());
-							let bottoms = bottom.toList(limit,0).map(feat=>ee.Feature(feat).toDictionary([nmT,'1start','2end','3start-end_diff']).values());
+							
 							
 							function parseResults(t,header){
 									totalLoaded++;
 									let pLoaded=totalLoaded/totalToLoad*100;
-									updateProgress('#highlights-progressbar',pLoaded);
-									if(pLoaded===100){
-										$('#highlights-loading-spinner-logo').hide();
-									}
-									$('#dashboard-highlights-table').append(`<tr class = 'bg-black' ><th colspan="4">  ${f.name} ${k.replaceAll('_',' ')}-${cls} Top ${limit} ${header}</th></tr><tr class = 'highlights-row'><th class="bg-black">
+									// updateProgress('#highlights-progressbar',pLoaded);
+									// if(pLoaded===100){
+										// $('#highlights-loading-spinner-logo').hide();
+									// }
+									$('#dashboard-highlights-table').append(`<tr class = 'bg-black' ><th colspan="5">  ${f.name} ${product_name}-${cls} ${header}</th></tr><tr class = 'highlights-row'>
+									<th class="bg-black">
+								
+									</th>
+									<th class="bg-black">
 										Name
 									</th>
 									<th class="bg-black">
-										${k} % ${urlParams.startYear} ${cls} 
+										${product_name} % ${urlParams.startYear} ${cls} 
 									</th>
 									<th class="bg-black">
-										${k} % ${urlParams.endYear} ${cls} 
+										${product_name} % ${urlParams.endYear} ${cls} 
 									</th>
 									<th class="bg-black">
 										${k} % Change ${cls} 
 									</th></tr>`)
-									t.map(tr=>$('#dashboard-highlights-table').append(`<tr class = 'highlights-row'>
-									<th class = 'highlights-entry'>${tr[3]}</th>
-									<td class = 'highlights-entry'>${(tr[0]*100).toFixed(2)}%</td>
+									let rowI = 1;
+									t.map(tr=>{$('#dashboard-highlights-table').append(`<tr class = 'highlights-row'>
+									<th class = 'highlights-entry'>${rowI}</th>
+									<th class = 'highlights-entry'>${tr[0]}</th>
 									<td class = 'highlights-entry'>${(tr[1]*100).toFixed(2)}%</td>
-									<td class = 'highlights-entry'>${(tr[2]*100).toFixed(2)}%</td></tr>`))
+									<td class = 'highlights-entry'>${(tr[2]*100).toFixed(2)}%</td>
+									<td class = 'highlights-entry'>${(tr[3]*100).toFixed(2)}%</td></tr>`);rowI++;})
 									
 								
 							}
-							totalToLoad = totalToLoad+2;
-							tops.evaluate(t=>{if(thisHighlightsMoveID===currentHighlightsMoveID){parseResults(t,'Gain')}})
-							bottoms.evaluate(t=>{if(thisHighlightsMoveID===currentHighlightsMoveID){parseResults(t,'Loss')}})
-							// console.log(bottoms.getInfo())
+							// totalToLoad = totalToLoad+2;
+							if(t.length>0){
+								parseResults(t,'Change')
+							}
+							
+							// parseResults(bottom,'Loss')
+			// 				// console.log(bottoms.getInfo())
 							})
 						}
 					}
@@ -1504,10 +1536,11 @@ function updateDashboardHighlights(limit=10){
 				
 				
 			})
-			if(classesToHighlight===0){$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);}
-	}else{
-		$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
+			// if(classesToHighlight===0){$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);}
 	}
+	// else{
+	// 	$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
+	// }
 	
 	
 		
@@ -1516,7 +1549,7 @@ function updateDashboardHighlights(limit=10){
 }
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
-	console.log(`Scroll left coord: ${lastScrollLeft}`)
+	// console.log(`Scroll left coord: ${lastScrollLeft}`)
 	$('.dashboard-results').empty();
 	$('.dashboard-results-container').hide();
 	$('.dashboard-results-container').css('height','0rem');
