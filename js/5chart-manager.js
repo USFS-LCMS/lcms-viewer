@@ -88,7 +88,7 @@ function updateSelectedAreaArea(){
         })
             
     }
-function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true,updateHighlights=false){
+function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 	// console.log(r);
 	let featureName = r.properties[layer.viz.dashboardFieldName].toString();
 	// console.log(featureName)
@@ -221,7 +221,8 @@ function clearAllSelectedDashboardFeatures(){
 			delete layer.dashboardSelectedFeatures[fn];
 		});
 	});
-	$('#dashboard-highlights-table').empty();
+	$('#highlights-table-tabs').empty();
+	$('#highlights-table-divs').empty();
 	updateDashboardCharts();
 	try{
 		dragBox.polygon.setMap(null);
@@ -1435,7 +1436,7 @@ var currentHighlightsMoveID=1;
 function updateDashboardHighlights(limit=10){
 	currentHighlightsMoveID++;
 	let thisHighlightsMoveID=currentHighlightsMoveID;
-	
+	let isFirst = true;
 	let chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));
 	
 	let available_years = range(startYear,endYear+1);
@@ -1444,7 +1445,8 @@ function updateDashboardHighlights(limit=10){
 
 	// console.log([startYearI,endYearI])
 	let dashboardLayersToHighlight = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
-	$('#dashboard-highlights-table').empty();
+	$('#highlights-table-tabs').empty();
+	$('#highlights-table-divs').empty();
 	let totalToLoad=0;
 	let totalLoaded=0;
 	let classesToHighlight=0;
@@ -1499,7 +1501,32 @@ function updateDashboardHighlights(limit=10){
 									if(nRows===1){
 										areasN = 'area'
 									}
-									$('#dashboard-highlights-table').append(`<tr class = 'bg-black' ><th colspan="5" class='highlights-table-title'>  ${f.name} LCMS Change Ranking of ${product_name}-${cls} for ${t.length} selected ${areasN}</th></tr><tr class = ' highlights-table-section-title'>
+									let clsID = cls.replaceAll('/','-');
+									clsID = clsID.replaceAll(' ','-');
+									let navID=`${f.legendDivID}-${k}-${clsID}`;
+									// console.log(navID);
+									let isActive = '';
+									if(isFirst){isActive= ' show active'}
+									$('#highlights-table-tabs').append(`<li class="nav-item" role="presentation">
+																			<a
+																			class="nav-link"
+																			id="${navID}-tab"
+																			data-mdb-toggle="tab"
+																			href="#${navID}-div"
+																			role="tab"
+																			aria-controls="${navID}-div"
+																			aria-selected="${isFirst}">${product_name}-${cls}</a>
+																		</li>`);
+									$('#highlights-table-divs').append(`<table
+									class="tab-pane fade table table-hover bg-white show active"
+									id="${navID}-div"
+									role="tabpanel"
+									aria-labelledby="${navID}-tab"
+								  ><tbody id = '${navID}-table'></tbody></table>`);
+								 
+								  isFirst = false;						
+									
+									$(`#${navID}-table`).append(`<tr class = 'bg-black' ><th colspan="5" class='highlights-table-title'>  ${f.name} LCMS Change Ranking of ${product_name}-${cls} for ${t.length} selected ${areasN}</th></tr><tr class = ' highlights-table-section-title'>
 									<th >
 								
 									</th>
@@ -1516,7 +1543,7 @@ function updateDashboardHighlights(limit=10){
 										 Change
 									</th></tr>`)
 									let rowI = 1;
-									t.map(tr=>{$('#dashboard-highlights-table').append(`<tr class = 'highlights-row'>
+									t.map(tr=>{$(`#${navID}-table`).append(`<tr class = 'highlights-row'>
 									<th class = 'highlights-entry'>${rowI}</th>
 									<th class = 'highlights-entry'>${tr[0]}</th>
 									<td class = 'highlights-entry'>${(tr[1]*100).toFixed(2)}%</td>
@@ -1549,7 +1576,7 @@ function updateDashboardHighlights(limit=10){
 	
 	
 		
-	
+	resizeDashboardPanes();
 	// console.log(dashboardLayersToHighlight)
 }
 function updateDashboardCharts(){

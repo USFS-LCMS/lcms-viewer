@@ -515,9 +515,10 @@ const staticTemplates = {
          
         </span>
         <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all pt-1 highlights-div '><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>
-                                    <table class="table table-hover bg-white">
-                                        <tbody id = 'dashboard-highlights-table'></tbody>
-                                    </table>
+        <hr class='my-1'>
+        <ul class="nav nav-tabs "  role="tablist" id='highlights-table-tabs'></ul>
+        <div class="tab-content" id="highlights-table-divs"></div>
+                                    
                                    
                                 </div>`,
         dashboardProgressDiv:`<div id = 'loading-progress-div'  style='display:none;' title = 'Downloading selected areas'  >

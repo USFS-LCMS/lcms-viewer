@@ -245,7 +245,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     updateDashboardCharts();
   });
   var highlightsLCLookup = {'Trees':'Trees','Shrubs':'Shrubs','Grass-Forb-Herb':'Grass/Forb/Herb','Barren-or-Impervious':'Barren or Impervious','Water':'Water','Snow-or-Ice':'Snow or Ice'};
-  var  highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture'};
+  var  highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture','Other':'Other'};
   var highlightLCMSProducts = {'Land_Cover':[],'Land_Use':[]};
   function updateHighlightsProductSelectionDict(){
     highlightLCMSProducts['Land_Cover']=Object.keys(lcHighlightClasses).filter(k=>lcHighlightClasses[k]).map(v=>highlightsLCLookup[v]);
@@ -254,7 +254,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#parameters-collapse-div').append('<hr>');
   
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
-    urlParams.lcHighlightClasses = {"Trees": true,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':false}
+    urlParams.lcHighlightClasses = {"Trees": true,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':true}
   }
   addCheckboxes('parameters-collapse-div','lc-highlights-radio','Highlight Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
   $('#lc-highlights-radio').change( ()=>{
@@ -262,7 +262,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     updateDashboardHighlights();
   });
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
-    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false}
+    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": true,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
   addCheckboxes('parameters-collapse-div','lu-highlights-radio','Highlight Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
   $('#lu-highlights-radio').change( ()=>{
@@ -955,21 +955,33 @@ function resizeDashboardPanes(){
   let bottomHeight=$('.bottombar').height();
   let resultsHeight = $('#dashboard-results-container').height();
   let sidebarHeight=$('#sidebar-left-container').height();
-  let expanderHeight = $('#dashboard-results-expander').height()
+  let expanderHeight = $('#dashboard-results-expander').height();
+  let highlightsWidth=$('.dashboard-highlights').width();
+  let highlightsHeight=$('.dashboard-highlights').height();
   $('#sidebar-left-container').css('max-height',window.innerHeight-bottomHeight);
   if(sidebarHeight+bottomHeight+resultsHeight+expanderHeight<window.innerHeight){
     $('#dashboard-results-container').css('left',0);
-    $('#dashboard-results-container').css('max-width',window.innerWidth);
+    if(highlightsHeight<window.innerHeight-resultsHeight-expanderHeight){
+      $('#dashboard-results-container').css('max-width',window.innerWidth-1);
+    }else{
+      $('#dashboard-results-container').css('max-width',window.innerWidth-highlightsWidth-1);
+    }
+    
   }else{
     $('#dashboard-results-container').css('left',layerWidth);
-    $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth);
+    if(highlightsHeight<window.innerHeight-resultsHeight-expanderHeight){
+      $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth-1);
+      $('.dashboard-highlights').css('height',)
+    }else{
+      $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth-highlightsWidth-1);
+    }
   }
   
   $('#dashboard-results-container').css('bottom',bottomHeight+expanderHeight);
   if(resultsHeight>0){
-    $('.dashboard-highlights').css('max-height',window.innerHeight-bottomHeight-resultsHeight-expanderHeight);
+    $('.dashboard-highlights').css('max-height',window.innerHeight-bottomHeight);
   }else{
-    $('.dashboard-highlights').css('max-height',window.innerHeight-bottomHeight-resultsHeight);
+    $('.dashboard-highlights').css('max-height',window.innerHeight-bottomHeight);
   };
  
   // $('.chart').css('height',$('#dashboard-results-container').height())

@@ -306,11 +306,20 @@ button {
   top:0rem;
   right:0%;
   max-width:25rem;
-  height:100%;
+  max-height:100%;
   overflow-y:auto;
   overflow-x:auto;
   z-index: 2;
 }
+
+.nav-tabs > li > a{
+  border: medium ;
+  color:var(--deep-brown-20)
+}
+.nav-tabs > li > a:hover{
+  color:var(--teal-100);
+}
+.active{padding-left: 0px!important;}
 .highlights-row{
   font-size: 0.75rem;
 }
