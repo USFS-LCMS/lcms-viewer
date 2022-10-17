@@ -987,13 +987,7 @@ function resizeDashboardPanes(){
   // $('.chart').css('height',$('#dashboard-results-container').height())
 }
 if(mode === 'lcms-dashboard'){
-  // var updateDashboardCharts =()=>console.log('hello');
   
-  // var collapseContainer =getWalkThroughCollapseContainerID(); 
-  // $(`#${collapseContainer}`).removeClass('col-xl-2');
-  // $(`#${collapseContainer}`).removeClass('col-lg-3');
-  // $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height());
-  // $('.legendDiv').css('max-width','40%')
   var dashboardScrollLeft = 0;
 
   moveCollapse('legend-collapse','sidebar-left')

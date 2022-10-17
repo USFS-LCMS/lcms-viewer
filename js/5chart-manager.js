@@ -1450,6 +1450,7 @@ function updateDashboardHighlights(limit=10){
 	let totalToLoad=0;
 	let totalLoaded=0;
 	let classesToHighlight=0;
+	let firstID;
 	if(dashboardLayersToHighlight.length>0){
 		// $('#highlights-loading-spinner-logo').show();
 		// updateProgress('#highlights-progressbar',0);
@@ -1463,6 +1464,7 @@ function updateDashboardHighlights(limit=10){
 			Object.keys(highlightLCMSProducts).map(k=>{
 				if(chartWhich.indexOf(k)>-1){
 					let product_name = k.replaceAll('_',' ');
+					let tab_name = f.name;
 					let classes = highlightLCMSProducts[k];
 					classesToHighlight = classesToHighlight+classes.length
 					if(classes.length>0){
@@ -1509,16 +1511,16 @@ function updateDashboardHighlights(limit=10){
 									if(isFirst){isActive= ' show active'}
 									$('#highlights-table-tabs').append(`<li class="nav-item" role="presentation">
 																			<a
-																			class="nav-link"
+																			class="nav-link ${isActive}"
 																			id="${navID}-tab"
-																			data-mdb-toggle="tab"
+																			data-toggle="tab"
 																			href="#${navID}-div"
 																			role="tab"
 																			aria-controls="${navID}-div"
-																			aria-selected="${isFirst}">${product_name}-${cls}</a>
+																			aria-selected="${isFirst}">${tab_name}-${cls}</a>
 																		</li>`);
 									$('#highlights-table-divs').append(`<table
-									class="tab-pane fade table table-hover bg-white show active"
+									class="tab-pane fade table table-hover bg-white highlights-table ${isActive}"
 									id="${navID}-div"
 									role="tabpanel"
 									aria-labelledby="${navID}-tab"

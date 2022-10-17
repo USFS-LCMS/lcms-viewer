@@ -133,14 +133,21 @@
 	    		
 		    	var bucketName = 'lamda-products'
 		    	var id = 1;
-		    	$.ajax({
-			        type: 'GET',
-			        url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
-			    }).done(function(json){
-			        json = json.items
-			        
+				function listFiles(nextPageToken=null){
+					let url = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o?maxResults=100000`;
+					if(nextPageToken!== null){
+						url = `${url}?pageToken=${nextPageToken}`
+					}
+					return $.ajax({
+						type: 'GET',
+						url: url
+					})
+				}
+				function makeLists(json){
+			        // json = json.items
+			        // console.log(json.length)
 			        json = json.filter((f)=> f.name.indexOf('ay'+selectedYear)>-1 || f.name.indexOf(selectedYear + '_jd')>-1);
-			        console.log(json)
+			        // console.log(json)
 			        var already_added = [];
 			        Object.keys(setup_dict).map(function(k){
 		    			addDropdown(setup_dict[k].dropdown_id,setup_dict[k].dropdown_label)
@@ -150,7 +157,12 @@
 		    			Object.keys(study_area_dict).map(function(sak){
 		    				addDropdownItem(setup_dict[k].dropdown_id,study_area_dict[sak].dropdown_id,setup_dict[k].dropdown_label,study_area_dict[sak].dropdown_label)
 
-		    				var filesTT = filesT.filter(function(f){return f.name.startsWith(study_area_dict[sak].start)})
+		    				var filesTT = filesT.filter(function(f){return f.name.startsWith(study_area_dict[sak].start)});
+							let jdKey = 'jd';
+							if(k==='persistence'){jdKey='jds'}
+							filesTT = filesTT.map(o=>{o.day=parseInt(o.name.split(jdKey)[1].split('-')[0]);return o;});
+							filesTT=filesTT.sort(function(a, b){return a.day-b.day})
+							// console.log(filesTT)
 		    				filesTT.map(function(p){
 		    					var nm = p.name.split('.tif')[0]
 		    					// console.log(nm)
@@ -159,7 +171,7 @@
 		    							
 		    							</li>`)
 		    						if(k!== 'raw'){
-		    							console.log(k + ' '+nm)
+		    							// console.log(k + ' '+nm)
 		    							$(`#list-entry-${id}`).append(`<img   title = 'Click this image and hold to make bigger' class = 'pl-5' height=50 src="https://storage.googleapis.com/${bucketName}/${nm}.jpg"></img>`)
 		    							id++;
 		    						}
@@ -176,7 +188,9 @@
 									    </li>`)
 
 
-			        })
+			    }
+				listFiles().done(json=>makeLists(json.items))
+					
 		
 			    }
 			    $(document).ready(function(){

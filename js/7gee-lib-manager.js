@@ -649,7 +649,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
 function getMTBSandIDS(studyAreaName,whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
   var idsCollections = getIDSCollection();
-  console.log('ids collections:');console.log(idsCollections)
+  // console.log('ids collections:');console.log(idsCollections)
     var mtbs_path = 'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
    
   
@@ -714,13 +714,13 @@ function getNAIP(whichLayerList){
 }
 function getHansen(whichLayerList){
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = 'reference-layer-list'};
-  var hansen = ee.Image("UMD/hansen/global_forest_change_2020_v1_8").reproject('EPSG:4326',null,30);
+  var hansen = ee.Image("UMD/hansen/global_forest_change_2021_v1_9").reproject('EPSG:4326',null,30);
 
   var hansenClientBoundary = {"type":"Polygon","coordinates":[[[-180,-90],[180,-90],[180,90],[-180,90],[-180,-90]]]};//hansen.geometry().bounds(1000).getInfo();
   // print(hansenClientBoundary);
   var hansenLoss = hansen.select(['lossyear']).selfMask().add(2000).int16();
   var hansenStartYear = 2001;
-  var hansenEndYear = 2020;
+  var hansenEndYear = 2021;
 
   if(startYear > hansenStartYear){hansenStartYear = startYear};
   if(endYear < hansenEndYear){hansenEndYear = endYear};

@@ -737,7 +737,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 
     console.log('done computing years');
     console.log(viz.years);
-    console.log(viz)
+    // console.log(viz)
   }
   
   //Set up time laps object entry
@@ -1022,7 +1022,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
      
     }
     
-    console.log(name + ': '+viz.layerType)
+    // console.log(name + ': '+viz.layerType)
     // console.log(item.bandNames())
     if(viz.layerType === 'geoJSONVector'){viz.canQuery = false;}
     
@@ -2512,6 +2512,8 @@ function initialize() {
         $('.sidebar-toggler').hide();
         $('#legendDiv').hide();
         $('#bottombar').hide();
+        $('#dashboard-results-container').hide();
+        $('#dashboard-highlights-container').hide();
           // Display your street view visible UI
 
       } else {
@@ -2520,6 +2522,8 @@ function initialize() {
         $('.sidebar-toggler').show();
         $('#legendDiv').show();
         $('#bottombar').show();
+        $('#dashboard-results-container').show();
+        $('#dashboard-highlights-container').show();
           // Display your original UI
 
       }
@@ -2748,7 +2752,10 @@ function initialize() {
         run = runBaseLearner
       }else if(mode === 'lcms-dashboard'){
         run = runDashboard;
-        map.setOptions({draggableCursor:'pointer'});
+        map.setOptions({mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_CENTER,},streetViewControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},
+          scaleControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},
+          zoomControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},draggableCursor:'pointer'});
+        
       }else if(studyAreaName === 'CONUS'){
         longStudyAreaName = cachedStudyAreaName;
         run = runCONUS;

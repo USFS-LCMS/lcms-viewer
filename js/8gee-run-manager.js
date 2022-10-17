@@ -2962,15 +2962,20 @@ function runLAMDA(){
               }
 
   
-
-        $.ajax({
-              type: 'GET',
-              url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
-          }).done(function(json){
-              
-            var continuous_palette_chastain = ['a83800','ff5500','e0e0e0','a4ff73','38a800'];
-            json = json.items;
-            console.log(json);
+        function listFiles(nextPageToken=null){
+          let url = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o?maxResults=100000`;
+          if(nextPageToken!== null){
+            url = `${url}?pageToken=${nextPageToken}`
+          }
+          return $.ajax({
+            type: 'GET',
+            url: url
+          })
+        }
+        function makeTS(json){
+          //  json = json.items;
+          var continuous_palette_chastain = ['a83800','ff5500','e0e0e0','a4ff73','38a800'];
+            // console.log(json[0]);
             var selectedYear = year.toString()
             json = json.filter((f)=> f.name.indexOf('ay'+selectedYear)>-1 || f.name.indexOf(selectedYear + '_jd')>-1);
               var names = json.map(nm => nm.name)
@@ -2995,8 +3000,8 @@ function runLAMDA(){
                 if(raw_days.indexOf(d) === -1){raw_days.push(d)}
               });
               // console.log(eight_bit_days);
-              console.log(persistence_days);
-              console.log(raw_days);
+              console.log(`Persistence days: ${persistence_days.sort()}`);
+              console.log(`Raw days: ${raw_days}`);
               
               
               // console.log(names);
@@ -3028,7 +3033,7 @@ function runLAMDA(){
                 if(persistenceT.length>0){
                   var persistence_c = ee.ImageCollection.fromImages(persistence_days.map(function(persistence_day){
                     var t = persistenceT.filter(n => n.indexOf('_jds'+persistence_day)>-1);
-                    
+                    // console.log(`${persistence_day} ${t}`)
                     var img = ee.ImageCollection(t.map(function(nm){
                       return  ee.Image.loadGeoTIFF(`gs://${bucketName}/${nm}`);
                     })).mosaic().selfMask().set('system:time_start',getDate(t[0],'_jds',2));
@@ -3060,8 +3065,8 @@ function runLAMDA(){
              //  })
               // populatePixelChartDropdown();
               // setTimeout(function(){$('#close-modal-button').click();$('#CONUS-Z-8-bit-timelapse-1-name-span').click()}, 2500);
-
-          })
+        }
+        listFiles().done(json=>makeTS(json.items))
 }
 ///////////////////////////////////////////////////////////
 function runDashboard(){
