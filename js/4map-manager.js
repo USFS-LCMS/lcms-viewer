@@ -2413,7 +2413,7 @@ function initialize() {
     scaleControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     zoomControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
     tilt:0,
-    controlSize: 25,
+    controlSize: 20,
     scaleControl: true,
     clickableIcons:false,
     cursor:'pointer'
@@ -2752,9 +2752,11 @@ function initialize() {
         run = runBaseLearner
       }else if(mode === 'lcms-dashboard'){
         run = runDashboard;
-        map.setOptions({mapTypeControlOptions :{position: google.maps.ControlPosition.TOP_CENTER,},streetViewControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},
+        map.setOptions({mapTypeControlOptions :{style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,position: google.maps.ControlPosition.TOP_CENTER,style: google.maps.MapTypeControlStyle.SMALL},
+          streetViewControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},
           scaleControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},
-          zoomControlOptions:{position: google.maps.ControlPosition.TOP_CENTER},draggableCursor:'pointer'});
+          zoomControlOptions:{position: google.maps.ControlPosition.TOP_CENTER,style: google.maps.ZoomControlStyle.SMALL},
+          draggableCursor:'pointer'});
         
       }else if(studyAreaName === 'CONUS'){
         longStudyAreaName = cachedStudyAreaName;

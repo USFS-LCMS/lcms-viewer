@@ -504,34 +504,26 @@ const staticTemplates = {
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
-        <p class='highlights-title highlights-div' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
-        <hr class='my-1'>
+        <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
+        <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
+        
+        <div id='highlights-tables-container'>
+            <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
+            <div class="tab-content" id="highlights-table-divs"></div>
+        </div>
+        </div>`,
+        dashboardProgressDiv:`<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
-        <img id = 'loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
+        <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(1)}"  alt="GEE logo image">
         
         <div class="progressbar" id='highlights-progressbar' class = 'px-2'>
             <span style="width: 0%;">0%</span>
         </div>
-         
         </span>
-        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all pt-1 highlights-div '><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>
-        <hr class='my-1 hr'>
-        <ul class="nav nav-tabs px-2"  role="tablist" id='highlights-table-tabs'></ul>
-        <div class="tab-content" id="highlights-table-divs"></div>
+        
+        
+        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all highlights-div '><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>
         </div>`,
-        dashboardProgressDiv:`<div id = 'loading-progress-div'  style='display:none;' title = 'Downloading selected areas'  >
-                                       
-        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser pt-1''><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>                               
-        <span  style = 'display: flex;  '>
-        <img id = 'loading-spinner-logo' class = ' px-2 fa-spin ' style='display:none;' src="./images/GEE_logo_transparent.png" height="25"  alt="GEE logo image">
-        
-        <div class="progressbar">
-            <span style="width: 0%;">0%</span>
-        </div>
-         
-        </span>
-        
-    </div>`,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>
@@ -1672,7 +1664,7 @@ function addLayer(layer){
     //Progress bar controller
 	function updateProgress(){
 		var pct = layer.percent;
-        if(pct === 100 && (layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection')){jitterZoom()}
+        if(pct === 100 && mode !== 'lcms-dashboard' && (layer.layerType === 'geeImage' || layer.layerType === 'geeVectorImage' || layer.layerType === 'geeImageCollection')){jitterZoom()}
 		$('#'+containerID).css('background',`-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`)
 	}
 	//Function for zooming to object
@@ -2332,6 +2324,7 @@ function addLayer(layer){
                     delete layer.dashboardSelectedFeatures[fn];
                 });
                 updateDashboardCharts();
+                updateDashboardHighlights();
             }
         }
         $(`#${eraserID}`).show();

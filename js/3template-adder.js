@@ -209,8 +209,10 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
+  $('#sidebar-left-header').append(staticTemplates.dashboardProgressDiv);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
-  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
+  
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',()=>{updateDashboardCharts();updateDashboardHighlights();},()=>{updateDashboardCharts();updateDashboardHighlights();})
   
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS summary areas to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
@@ -222,7 +224,9 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'View-Extent':true,'Click':false,'Drag-Box':false});
-
+  $('#parameters-collapse-div').append('<hr>');
+  // addSubCollapse('parameters-collapse-div','adv-params-label','adv-params-div','Advanced Params', '',false,'');
+  
   if(urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined){
     urlParams.pairwiseDiff = {'Annual':true,'Annual-Change':false}
   }
@@ -238,13 +242,13 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
   });
   if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
-    urlParams.annualTransition = {"Annual": true,"Transition": true}
+    urlParams.annualTransition = {"Annual": true,"Transition": false}
   }
   addCheckboxes('parameters-collapse-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
   $('#annual-transition-radio').change( ()=>{
     updateDashboardCharts();
   });
-  var highlightsLCLookup = {'Trees':'Trees','Shrubs':'Shrubs','Grass-Forb-Herb':'Grass/Forb/Herb','Barren-or-Impervious':'Barren or Impervious','Water':'Water','Snow-or-Ice':'Snow or Ice'};
+  var highlightsLCLookup = {'Trees':'Trees','Tall-Shrubs':'Tall Shrubs','Shrubs':'Shrubs','Grass-Forb-Herb':'Grass/Forb/Herb','Barren-or-Impervious':'Barren or Impervious','Water':'Water','Snow-or-Ice':'Snow or Ice'};
   var  highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture','Other':'Other'};
   var highlightLCMSProducts = {'Land_Cover':[],'Land_Use':[]};
   function updateHighlightsProductSelectionDict(){
@@ -254,13 +258,14 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#parameters-collapse-div').append('<hr>');
   
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
-    urlParams.lcHighlightClasses = {"Trees": true,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':true}
+    urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':true}
   }
   addCheckboxes('parameters-collapse-div','lc-highlights-radio','Highlight Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
   $('#lc-highlights-radio').change( ()=>{
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
   });
+  $('#parameters-collapse-div').append('<hr>');
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
     urlParams.luHighlightClasses = {"Agriculture": false,"Developed": true,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
@@ -271,8 +276,14 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   });
   updateHighlightsProductSelectionDict();
   
-  $('#summary-area-selection-radio').prop('title','Select areas by clicking on individual areas or selecting all polygons within a box')
-
+  $('#analysis-year-slider-container').prop('title','Choose which years to include in the annual charts. The first and last year of this range of years will be uses for the highlights summaries.');
+  $('#summary-area-selection-radio').prop('title','Select areas by clicking on individual areas or selecting all polygons within a box');
+  $('#summary-pairwise-diff-radio').prop('title','Choose whether to show the percent or the percent change from the previous year of the selected area(s) of each cover/use type');
+  $('#which-products-radio').prop('title','Choose which LCMS products to show in the charts, highlights, and report');
+  $('#annual-transition-radio').prop('title','Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart');
+  $('#lc-highlights-radio').prop('title','Choose which land cover classes to include in the highlights tables');
+  $('#lu-highlights-radio').prop('title','Choose which land use classes to include in the highlights tables');
+  
   // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
   $('#parameters-collapse-div').append(`<hr><div class='py-2'>
                                                 <div class='btn' onclick='makeDashboardReport()' >
@@ -1105,6 +1116,10 @@ function toggleSidebar(){
   }
   
 };
+function toggleHighlights(){
+  $('#highlights-tables-container').toggle('collapse');
+  setTimeout(()=>{resizeDashboardPanes()},500);
+}
 if(urlParams.showSidebar === 'false'){
   $('#sidebar-left').hide();
 }

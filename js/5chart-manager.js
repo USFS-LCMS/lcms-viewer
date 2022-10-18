@@ -221,6 +221,7 @@ function clearAllSelectedDashboardFeatures(){
 			delete layer.dashboardSelectedFeatures[fn];
 		});
 	});
+	
 	$('#highlights-table-tabs').empty();
 	$('#highlights-table-divs').empty();
 	updateDashboardCharts();
@@ -234,10 +235,13 @@ function stopDashboardClickLayerSelect(){
 	google.maps.event.clearListeners(map, 'click');
 }
 var dragSelectedFeatures;
+var boxSelectID=0;
 function dashboardBoxSelect(){
 	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 	if(visibleDashboardLayers.length>0){
 		let geeBox;
+		boxSelectID++;
+		const thisBoxSelectID=boxSelectID;
 		if(dashboardAreaSelectionMode==='View-Extent'){
 			geeBox = eeBoundsPoly;
 		}else{
@@ -252,7 +256,7 @@ function dashboardBoxSelect(){
 		$('#loading-progress-div').show();
 		ee.FeatureCollection(visibleDashboardLayers.map(layer=>layer.queryItem.filterBounds(geeBox))).flatten().size().evaluate((n)=>{
 			console.log(n);
-			if(n>0){
+			if(n>0 && thisBoxSelectID===boxSelectID){
 				
 				var i=1;
 				visibleDashboardLayers.map(layer=>{
@@ -280,7 +284,8 @@ function dashboardBoxSelect(){
 					
 				});
 			}else{
-				$('#loading-progress-div').hide();
+				updateProgress('.progressbar',100);
+				$('#loading-spinner-logo').hide();
 				$('#summary-area-selection-radio').css('pointer-events','auto');
 				if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
 				
@@ -1432,7 +1437,11 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	}
 }
 var currentHighlightsMoveID=1;
-
+if(urlParams.currentlySelectedHighlightTab == null || urlParams.currentlySelectedHighlightTab == undefined){
+	urlParams.currentlySelectedHighlightTab;
+ }
+function getHighlightsTabListener(){return $('a.nav-link').click(e=>{urlParams.currentlySelectedHighlightTab=e.currentTarget.id})
+}
 function updateDashboardHighlights(limit=10){
 	currentHighlightsMoveID++;
 	let thisHighlightsMoveID=currentHighlightsMoveID;
@@ -1445,6 +1454,7 @@ function updateDashboardHighlights(limit=10){
 
 	// console.log([startYearI,endYearI])
 	let dashboardLayersToHighlight = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
+	
 	$('#highlights-table-tabs').empty();
 	$('#highlights-table-divs').empty();
 	let totalToLoad=0;
@@ -1509,7 +1519,7 @@ function updateDashboardHighlights(limit=10){
 									// console.log(navID);
 									let isActive = '';
 									if(isFirst){isActive= ' show active'}
-									$('#highlights-table-tabs').append(`<li class="nav-item" role="presentation">
+									$('#highlights-table-tabs').append(`<li class="nav-item" role="presentation" title='Click to show sorted table of ${tab_name}-${cls} change from ${urlParams.startYear}-${urlParams.endYear}'>
 																			<a
 																			class="nav-link ${isActive}"
 																			id="${navID}-tab"
@@ -1527,8 +1537,8 @@ function updateDashboardHighlights(limit=10){
 								  ><tbody id = '${navID}-table'></tbody></table>`);
 								 
 								  isFirst = false;						
-									
-									$(`#${navID}-table`).append(`<tr class = 'bg-black' ><th colspan="5" class='highlights-table-title'>  ${f.name} LCMS Change Ranking of ${product_name}-${cls} for ${t.length} selected ${areasN}</th></tr><tr class = ' highlights-table-section-title'>
+								//   $(`#${navID}-table`).append(`<tr class = 'bg-black' ><th colspan="5" class='highlights-table-title'>  ${f.name} LCMS Change Ranking of ${product_name}-${cls} for ${t.length} selected ${areasN}</th></tr>`);
+									$(`#${navID}-table`).append(`<tr class = ' highlights-table-section-title'>
 									<th >
 								
 									</th>
@@ -1576,11 +1586,14 @@ function updateDashboardHighlights(limit=10){
 	// 	$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
 	// }
 	
-	
-		
+	getHighlightsTabListener();
+	if(urlParams.currentlySelectedHighlightTab !==undefined){
+		$(`#${urlParams.currentlySelectedHighlightTab}`).click();
+	}
 	resizeDashboardPanes();
 	// console.log(dashboardLayersToHighlight)
 }
+
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
 	// console.log(`Scroll left coord: ${lastScrollLeft}`)

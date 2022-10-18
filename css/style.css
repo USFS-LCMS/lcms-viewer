@@ -134,7 +134,11 @@ color:var(--deep-brown-20)!important;}
   color:var(--deep-brown-20);
   font-family: 'Roboto';
   font-size:1rem;
-  margin-bottom: 0.5rem;
+  /* margin-bottom: 0.5rem; */
+}
+.eraser-all:active{
+  transform: translate(4px) translateY(4px);
+  color:var(--teal-100)!important;
 }
 .bg-solid-black{background-color: var(--solid-black)!important;
 color:var(--white)!important;}
@@ -305,7 +309,7 @@ button {
   position:absolute;
   top:0rem;
   right:0%;
-  max-width:25rem;
+  max-width:20rem;
   max-height:100%;
   overflow-y:auto;
   overflow-x:auto;
@@ -319,7 +323,9 @@ button {
 .nav-tabs .nav-link {
   border: 1px solid var(--deep-brown-20);
   border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem
+  border-top-right-radius: 0.25rem;
+  height: 2rem;
+  font-size: 0.85rem;
 }
 .nav-tabs .nav-link:active{background-color: var(--teal-100)!important;
   transform: scale3d(1.05, 1, 1);
@@ -332,26 +338,30 @@ button {
   background-color: var(--deep-brown-20);
   font-weight:bold;
 }
-
+.highlights-table-tabs{
+  max-width: 100%;
+}
 .highlights-row{
-  font-size: 0.75rem;
+  font-size: 0.65rem;
 }
 .highlights-entry{
   padding:0.1rem;
+  word-wrap: break-word;
 }
 .highlights-title{
   color:var(--deep-brown-20);
   font-family: 'Roboto';
    font-size:1.75rem;
    text-align: center;
-   margin-top:0.5rem;
+   margin-top:0.25rem;
    margin-bottom:0.25rem;
+   margin-left:3rem!important;
    font-weight:200;
 }
 .highlights-table-title{
   color:var(--deep-brown-20);
   font-family: 'Roboto';
-   font-size:1.25rem;
+   font-size:0.75rem;
    text-align: center;
    font-weight:200;
 }
@@ -373,21 +383,29 @@ button {
   background-color:var(--deep-brown-20);
 }
 .highlights-div{
-  margin-left:0.5rem;
-  margin-right:0.5rem;
+  /* margin-left:0.5rem; */
+  /* margin-right:0.5rem; */
 }
-
+#dashboard-progress-container {
+  padding-left:1.75rem;
+  padding-right:1rem;
+}
 .progressbar {
   background: #ACA199;
   width: 100%;
-  margin-left:0.5rem;
-  margin-right:0.5rem;
+  /* margin-left:0.5rem; */
+  /* margin-right:0.5rem; */
   font-size: 1rem;
   height:1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  /* margin-top: 0.5rem; */
+  /* margin-bottom: 0.5rem; */
 }
-
+.progress-spinner{
+  margin-left:0.25rem;
+  margin-right:0.25rem;
+  margin-top:0rem;
+  margin-bottom:0rem;
+}
 .progressbar span {
   display: block; 
   /* border-radius: 2px; */
