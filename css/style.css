@@ -379,9 +379,13 @@ button {
 }
 
 .btn-group>.btn{
-  padding-bottom: 0px;
-  border-radius: 0px;
-  font-size: 0.75rem;
+  margin-left: 0.5rem!important;
+    padding-bottom: 0px;
+    border-radius: 3px;
+    color: var(--deep-brown-100);
+    background-color: var(--deep-brown-20);
+    font-size: 0.75rem;
+    margin-top: 0.5rem!important;
 }
 .pac-container{
   background-color:var(--deep-brown-20);

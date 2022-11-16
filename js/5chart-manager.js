@@ -1579,12 +1579,13 @@ function updateDashboardHighlights(limit=10){
 											paging: false,
 											searching: false,
 											order: [[3, 'asc']],
+											responsive:true,
 											dom: 'Bfrtip',
 											buttons: [
-												{
-													extend: 'colvis',
-													title: 'Data export'
-												},
+												// {
+												// 	extend: 'colvis',
+												// 	title: 'Data export'
+												// },
 												{
 													extend: 'copyHtml5',
 													title: downloadName.replaceAll('_',' ')
