@@ -277,7 +277,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   updateHighlightsProductSelectionDict();
   
   $('#analysis-year-slider-container').prop('title','Choose which years to include in the annual charts. The first and last year of this range of years will be uses for the highlights summaries.');
-  $('#summary-area-selection-radio').prop('title','Select areas by clicking on individual areas or selecting all polygons within a box');
+  $('#summary-area-selection-radio').prop('title','Choose how to select summary areas. "View-Extent" will automatically select all areas within the current map view extent. "Click" will all you to select areas by clicking on them. "Drag-Box" will allow you to select by creating a box');
   $('#summary-pairwise-diff-radio').prop('title','Choose whether to show the percent or the percent change from the previous year of the selected area(s) of each cover/use type');
   $('#which-products-radio').prop('title','Choose which LCMS products to show in the charts, highlights, and report');
   $('#annual-transition-radio').prop('title','Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart');
@@ -315,7 +315,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
-  startYear = 1984;endYear = 2021;
+  startYear = 1984;endYear = 2022;
   var minYear = startYear;var maxYear = endYear;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
       urlParams.startYear = startYear;// = parseInt(urlParams.startYear);
@@ -1006,7 +1006,7 @@ if(mode === 'lcms-dashboard'){
   resizeDashboardPanes()
  
   $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
-  $('.panel-title').click((e)=>{console.log(e);setTimeout(()=>{resizeDashboardPanes()},500);});
+  $('.panel-title').click((e)=>{setTimeout(()=>{resizeDashboardPanes()},500);});
   function addExpander(){
     var expander = {};
     expander.setDragID = (id)=>expander.id = id;

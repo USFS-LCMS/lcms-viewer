@@ -377,15 +377,21 @@ button {
   overflow-y:auto;
   padding-left: 0px!important; 
 }
+
+.btn-group>.btn{
+  padding-bottom: 0px;
+  border-radius: 0px;
+  font-size: 0.75rem;
+}
+.pac-container{
+  background-color:var(--deep-brown-20);
+}
 .hr{
   height: 1px;
   border: none;
   background-color:var(--deep-brown-20);
 }
-.highlights-div{
-  /* margin-left:0.5rem; */
-  /* margin-right:0.5rem; */
-}
+
 #dashboard-progress-container {
   padding-left:1.75rem;
   padding-right:1rem;
@@ -595,12 +601,13 @@ font-size:0.9em;
     cursor:pointer;
   }
 
-.simple-layer-opacity-range{float:right;
+.simple-layer-opacity-range{
+  float:right;
 
     /*height: 0.1rem;*/
     
-    width:30%;
-    display:inline-block;
+    min-width:4rem;
+    /* display:inline-block; */
     vertical-align:bottom;
     margin-top:0.7rem;
     cursor:pointer;}

@@ -254,16 +254,17 @@ function dashboardBoxSelect(){
 		$('#loading-spinner-logo').show();
 		updateProgress('.progressbar',0);
 		$('#loading-progress-div').show();
-		ee.FeatureCollection(visibleDashboardLayers.map(layer=>layer.queryItem.filterBounds(geeBox))).flatten().size().evaluate((n)=>{
+		var boundsFilter = ee.Filter.bounds(geeBox,500)
+		ee.FeatureCollection(visibleDashboardLayers.map(layer=>layer.queryItem.filter(boundsFilter))).flatten().size().evaluate((n)=>{
 			console.log(n);
 			if(n>0 && thisBoxSelectID===boxSelectID){
 				
 				var i=1;
 				visibleDashboardLayers.map(layer=>{
-					let selectedFeatures = layer.queryItem.filterBounds(geeBox);
-					selectedFeatures = selectedFeatures.map(f=>f.simplify(5000, 'EPSG:4326'))
-					selectedFeatures.evaluate((f)=>{
-						
+					let selectedFeatures = layer.queryItem.filter(boundsFilter);
+					selectedFeatures = selectedFeatures.map(f=>f.simplify(5000, selectedFeatures.first().geometry().projection()))
+					selectedFeatures.evaluate((f,failure)=>{
+						console.log(`Failure: ${failure}`);
 						let update=false;
 						f.features.map(feat=>{
 							if(i===n){update=true}
@@ -1442,6 +1443,7 @@ if(urlParams.currentlySelectedHighlightTab == null || urlParams.currentlySelecte
  }
 function getHighlightsTabListener(){return $('a.nav-link').click(e=>{urlParams.currentlySelectedHighlightTab=e.currentTarget.id})
 }
+
 function updateDashboardHighlights(limit=10){
 	currentHighlightsMoveID++;
 	let thisHighlightsMoveID=currentHighlightsMoveID;
@@ -1499,7 +1501,8 @@ function updateDashboardHighlights(limit=10){
 							
 							
 							let nmT = `${f.viz.dashboardFieldName}`
-							
+							let startYrAbbrv = urlParams.startYear.toString().slice(2,4);
+							let endYrAbbrv = urlParams.endYear.toString().slice(2,4);
 							
 							function parseResults(t,header){
 									totalLoaded++;
@@ -1524,45 +1527,93 @@ function updateDashboardHighlights(limit=10){
 																			class="nav-link ${isActive}"
 																			id="${navID}-tab"
 																			data-toggle="tab"
-																			href="#${navID}-div"
+																			href="#${navID}-table_wrapper"
 																			role="tab"
-																			aria-controls="${navID}-div"
+																			aria-controls="${navID}-table_wrapper"
 																			aria-selected="${isFirst}">${tab_name}-${cls}</a>
 																		</li>`);
+									
+									
 									$('#highlights-table-divs').append(`<table
-									class="tab-pane fade table table-hover bg-white highlights-table ${isActive}"
-									id="${navID}-div"
+									class="table table-hover"
+									id="${navID}-table"
 									role="tabpanel"
 									aria-labelledby="${navID}-tab"
-								  ><tbody id = '${navID}-table'></tbody></table>`);
+								  ></table>`);
 								 
 								  isFirst = false;						
-								//   $(`#${navID}-table`).append(`<tr class = 'bg-black' ><th colspan="5" class='highlights-table-title'>  ${f.name} LCMS Change Ranking of ${product_name}-${cls} for ${t.length} selected ${areasN}</th></tr>`);
-									$(`#${navID}-table`).append(`<tr class = ' highlights-table-section-title'>
-									<th >
-								
-									</th>
+								  
+									$(`#${navID}-table`).append(`<thead><tr class = ' highlights-table-section-title'>
+									
 									<th>
 										Name
 									</th>
 									<th>
-										${urlParams.startYear} 
+										'${startYrAbbrv}
 									</th>
 									<th>
-										${urlParams.endYear}
+										'${endYrAbbrv} 
 									</th>
-									<th>
-										 Change
-									</th></tr>`)
+									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
+										Δ
+									</th>
+									<th title = "Relative change between '${startYrAbbrv} and '${endYrAbbrv}">
+										 Rel Δ
+									</th>
+									</tr></thead>`)
 									let rowI = 1;
-									t.map(tr=>{$(`#${navID}-table`).append(`<tr class = 'highlights-row'>
-									<th class = 'highlights-entry'>${rowI}</th>
+									t.map(tr=>{
+										let rel = (((tr[2]-tr[1])/Math.max(tr[2],tr[1]))*100).toFixed(2)
+										$(`#${navID}-table`).append(`<tr class = 'highlights-row'>
 									<th class = 'highlights-entry'>${tr[0]}</th>
 									<td class = 'highlights-entry'>${(tr[1]*100).toFixed(2)}%</td>
 									<td class = 'highlights-entry'>${(tr[2]*100).toFixed(2)}%</td>
-									<td class = 'highlights-entry'>${(tr[3]*100).toFixed(2)}%</td></tr>`);rowI++;})
+									<td class = 'highlights-entry'>${(tr[3]*100).toFixed(2)}%</td>
+									<td class = 'highlights-entry'>${rel}%</td>
+									</tr>`);rowI++;})
 									
-								
+									let downloadName = `LCMS_Change_Summaries_${tab_name}_${cls}_${urlParams.startYear}-${urlParams.endYear}`
+									$(document).ready(function () {
+										$(`#${navID}-table`).DataTable({
+											fixedHeader: true,
+											paging: false,
+											searching: false,
+											order: [[3, 'asc']],
+											dom: 'Bfrtip',
+											buttons: [
+												{
+													extend: 'colvis',
+													title: 'Data export'
+												},
+												{
+													extend: 'copyHtml5',
+													title: downloadName.replaceAll('_',' ')
+												},
+												{
+													extend: 'csvHtml5',
+													title: downloadName
+												},
+												{
+													extend: 'excelHtml5',
+													title: downloadName
+												},
+												{
+													extend: 'pdfHtml5',
+													title: downloadName
+												},
+												{
+													extend: 'print',
+													title: downloadName.replaceAll('_',' ')
+												},
+											]
+												
+											
+											
+										});
+										$(`#${navID}-table_wrapper`).addClass(`tab-pane fade bg-white highlights-table ${isActive}`);
+									
+										// $('.dataTables_length').addClass('bs-select');
+									  });
 							}
 							// totalToLoad = totalToLoad+2;
 							if(t.length>0){
@@ -1571,6 +1622,7 @@ function updateDashboardHighlights(limit=10){
 							
 							// parseResults(bottom,'Loss')
 			// 				// console.log(bottoms.getInfo())
+						
 							})
 						}
 					}
@@ -1581,10 +1633,12 @@ function updateDashboardHighlights(limit=10){
 				
 			})
 			// if(classesToHighlight===0){$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);}
+		
 	}
 	// else{
 	// 	$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
 	// }
+	
 	
 	getHighlightsTabListener();
 	if(urlParams.currentlySelectedHighlightTab !==undefined){

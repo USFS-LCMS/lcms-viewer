@@ -12,7 +12,7 @@ function runBaseLearner(){
 var studyAreaName = 'USFS LCMS 1984-2020';
 var startYear = parseInt(urlParams.startYear);
 var endYear = parseInt(urlParams.endYear);
-
+console.log(`${startYear},${endYear}`)
 var transform = [30,0,-2361915.0,0,-30,3177735.0];
 var lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
 var gainYearPalette = 'c5ee93,00a398';//'c5ee93,00a398';//'AFDEA8,80C476,308023,145B09';
@@ -3125,16 +3125,16 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 
   
   let firstComparisonLayerI;
-  ['Land_Cover','Land_Use'].map(nm=>{
-    console.log(nm)
-    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
-    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  // ['Land_Cover','Land_Use'].map(nm=>{
+  //   console.log(nm)
+  //   let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  //   let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
+  //   Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
+  //   Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
 
-    firstComparisonLayerI = false;
-  })
+  //   firstComparisonLayerI = false;
+  // })
   
   Object.keys(summaryAreas2).map(k=>{
     loadGEESummaryAreas(summaryAreas2[k],k)
