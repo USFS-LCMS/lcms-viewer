@@ -1571,7 +1571,15 @@ function reRun(){
 
   //Rerun the GEE code
   setTimeout(function() { 
-    run();  
+    // try{
+    //   run(); 
+    // }catch(err){
+      // console.log(err);
+      console.log('Failed to load GEE run function. Waiting 5 seconds to retry')
+      setTimeout(()=>run(), 5000);
+     
+    // }
+     
     if(mode !== 'lcms-dashboard'){
       $('.modal').modal('hide');
       $('.modal-backdrop').remove();
@@ -2774,10 +2782,29 @@ function initialize() {
     }
 
     setGEERunID();
-
+    
     setTimeout(function() { 
-      run();
-      
+      var loaded = false;
+      var loadTryCount = 0;
+      var maxLoadTryCount = 5;
+      function loadRun(){
+        try{
+            run();
+            loaded = true; 
+          }catch(err){
+            console.log(err);
+            console.log('Failed to load GEE run function. Waiting 5 seconds to retry');
+            loadTryCount++;
+          }
+
+      }
+      while(loaded===false && loadTryCount < maxLoadTryCount){
+        loadRun();
+        if(loaded===false){
+          sleepFor(5000);
+        }
+      }
+    
       setupAreaLayerSelection();
       // setupFSB();
       //Bring in plots of they're turned on
@@ -2844,7 +2871,7 @@ function map_load() { // if you need any param
         console.log('Failed to load google api');
     }
 }
+$(document).ready(map_load);
 
-map_load();
 /////////////////////////////////////////////////////
 

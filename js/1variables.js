@@ -486,3 +486,9 @@ function auto_grow(element) {
 function convertRemToPixels(rem) {    
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
+function sleepFor(sleepDuration){
+  var now = new Date().getTime();
+  while(new Date().getTime() < now + sleepDuration){ 
+      /* Do nothing */ 
+  }
+}

@@ -954,7 +954,7 @@ nwi_hi_rast = batchFillCollection(ee.ImageCollection([nwi_hi_rast]),years).map(s
 // prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
 var forCharting = joinCollections(mtbs.select([0],['MTBS Burn Severity']), annualPDSI.select([0],['PDSI']),false)//cdl.select([0],['Cropland Data']),false);
 // forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
-// forCharting  = joinCollections(forCharting,idsCollection, false);
+forCharting  = joinCollections(forCharting,idsCollection, false);
 forCharting  = joinCollections(forCharting,nlcdLC.select([0],['NLCD Landcover']), false);
 // forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
 forCharting  = joinCollections(forCharting,nlcdTCC.select([0],['NLCD % Tree Canopy Cover']), false);
@@ -964,7 +964,7 @@ forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervio
 // forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);
 forCharting  = joinCollections(forCharting,nwi_hi_rast, false);
 
-// console.log(forCharting.getInfo())
+console.log(forCharting.first().bandNames().getInfo())
 
 var chartTableDict = {
   'IDS Type':damage_codes,

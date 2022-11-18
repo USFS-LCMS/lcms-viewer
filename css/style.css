@@ -382,8 +382,8 @@ button {
   margin-left: 0.5rem!important;
     padding-bottom: 0px;
     border-radius: 3px;
-    color: var(--deep-brown-100);
-    background-color: var(--deep-brown-20);
+    color: var(--deep-brown-20)!important;
+    background-color: var(--deep-brown-100)!important;
     font-size: 0.75rem;
     margin-top: 0.5rem!important;
 }

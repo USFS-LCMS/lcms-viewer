@@ -1,4 +1,4 @@
-from css_html_js_minify import  process_single_js_file
+# from css_html_js_minify import  process_single_js_file
 import glob,os
 ##############################################
 
@@ -31,7 +31,7 @@ for js_file in js_files:
 	# # except Exception as e:
 	# # 	print(e)
 	o.close()
-o = open(combined_filename,'w')
+o = open(combined_filename,'w',encoding='utf-8')
 o.write(combined)
 o.close()
 
