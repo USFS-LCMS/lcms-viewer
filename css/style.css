@@ -121,6 +121,26 @@ color:var(--deep-brown-20)!important;}
   vertical-align:middle!important;
 
 }
+.shepherd-button{
+  background-color: var(--deep-brown-100)!important;
+  padding: 0.1rem 0.2rem;
+  font-size:1.25rem;
+}
+
+.shepherd-content,.shepherd-title,.shepherd-header,.shepherd-text,.shepherd-footer{
+  background-color: var(--deep-brown-100)!important;
+  color:var(--deep-brown-10)!important;
+  overflow: auto;
+}
+.shepherd-title{
+  font-size:1.25rem;
+}
+.shepherd-arrow:before{
+  background-color: var(--teal-100)!important;
+  outline-style: solid;
+
+
+}
 .eraser{
   color: var(--deep-brown-100)!important; 
   cursor:pointer;
@@ -698,6 +718,12 @@ font-size:0.9em;
 .third_toggle:checked ~ .toggle_option_slider{
   background: var(--transparent-teal);
   left: 215px;
+}
+
+.param-title{
+  font-weight: bold;
+  padding-top:1rem;
+  margin-bottom:0rem;
 }
 /*///////////////////////////////////////////////////////*/
 /*Scroll bar styling*/

@@ -1563,7 +1563,7 @@ function updateDashboardHighlights(limit=10){
 									</tr></thead>`)
 									let rowI = 1;
 									t.map(tr=>{
-										let rel = (((tr[2]-tr[1])/Math.max(tr[2],tr[1]))*100).toFixed(2)
+										let rel = (((tr[2]-tr[1])/tr[1])*100).toFixed(2)
 										$(`#${navID}-table`).append(`<tr class = 'highlights-row'>
 									<th class = 'highlights-entry'>${tr[0]}</th>
 									<td class = 'highlights-entry'>${(tr[1]*100).toFixed(2)}%</td>

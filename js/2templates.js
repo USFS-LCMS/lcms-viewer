@@ -277,6 +277,7 @@ const staticTemplates = {
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">DASHBOARD TOUR</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -1115,7 +1116,7 @@ function addStudyAreaToDropdown(name,toolTip){
 function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn,valueOff,onFunction,offFunction,tooltip){
 	eval(`window.${variable} = '${valueOn}';`);
 	$('#'+containerDivID).append(`<row class = 'row' id = '${radioID}-container' title="${tooltip}">
-		<h3 class="col-12 pb-0 h3">${title} </h3>
+		<p class="col-12  param-title">${title} </p>
 		<div class = 'col-12 pt-0'>
     		<div  id = '#${radioID}'  class="toggle_radio p-0">
                 <input type="radio" class = "first_toggle" checked class="toggle_option" id="${radioID}-first_toggle" name="${radioID}-toggle_option"  value="1" >
@@ -1142,7 +1143,7 @@ function addRadio(containerDivID,radioID,title,onLabel,offLabel,variable,valueOn
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
 function addCheckboxes(containerID,checkboxID,title,variable,optionList){
-    $('#'+containerID).append(`<form  id = '${checkboxID}'>${title}<br></form>`);
+    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`);
     eval(`if(window.${variable} === undefined){window.${variable} = []}`);
     Object.keys(optionList).map(function(k){
       // console.log(k)
@@ -1170,7 +1171,7 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
 //The variable assumes the value of the key of the object that is selected instead of the entire optionList object
 //e.g. if optionList = {'hello':true,'there':false} then the variable = 'hello'
 function addMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  class = 'py-2' id = '${radioID}'>${title}<br></form>`);
+    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${title}</p></form>`);
 
     eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
     Object.keys(optionList).map(function(k){
@@ -1338,7 +1339,7 @@ function addDualRangeSlider(containerDivID,title,var1,var2,min,max,defaultMin,de
 	
 	// setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
 	$('#'+containerDivID).append(`<div  id="${sliderID}-container"class='dual-range-slider-container px-1' title="${tooltip}">
-							        <div class='dual-range-slider-name pt-2 pb-3'>${title}</div>
+							        <div class='dual-range-slider-name pt-2 pb-3 param-title'>${title}</div>
 							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
 							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
 							    </div>`);
@@ -1365,7 +1366,7 @@ function setUpRangeSlider(variable,min,max,defaultValue,step,sliderID,mode){
 //Wrapper for single range slider
 function addRangeSlider(containerDivID,title,variable,min,max,defaultValue,step,sliderID,mode,tooltip){
     $('#'+containerDivID).append(`<div  id="${sliderID}-container" class='dual-range-slider-container px-1' title="${tooltip}">
-                                    <div class='dual-range-slider-name pt-2 pb-3'>${title}</div>
+                                    <div class='dual-range-slider-name pt-2 pb-3 param-title'>${title}</div>
                                     <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
                                     <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
                                 </div>`);

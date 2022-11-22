@@ -332,3 +332,107 @@ function showWalkThroughI(){
     
     
 }
+
+
+if(mode ==='lcms-dashboard'){
+  console.log('running dashboard tutorial');
+  // https://shepherdjs.dev/docs/tutorial-02-usage.html
+  var tour = new Shepherd.Tour({
+    defaultStepOptions: {
+      cancelIcon: {
+        enabled: true
+      },
+      classes: 'class-1 class-2',
+      scrollTo: { behavior: 'smooth', block: 'center' }
+    }
+  });
+
+  let tourButtons = [
+    {
+      action() {
+        return tour.back();
+      },
+      classes: 'shepherd-button-secondary',
+      text: `<i class="fa fa-chevron-left teal " title="Previous tour slide"></i>`
+    },
+    {
+      action() {
+        return tour.next();
+      },
+      text: `<i class="fa fa-chevron-right teal " title="Next tour slide"></i>`
+    }
+  ]
+
+  let steps  = [
+    ['Welcome to the LCMS Dashboard tour',`This tour will walk you through how to use the LCMS dashboard.`,'#title-banner','right',tourButtons.slice(1,2),'intro-tour-modal'],
+    
+    ['Locate, Share, Search, Navigate',`<ul>
+                          <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
+                          <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
+                          <li>You can search for locations in the search window.</li>
+                          <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
+                          </ul>`,'#search-share-div','right',tourButtons,'search-tour-modal'],
+['Loading Progress',`By default, summary areas are downloaded as you move the map based on your view extent. As these areas are downloaded, the progressbar will be updated.`,'#highlights-progressbar','right',tourButtons,'progress-tour-modal'],
+['Clear Everything',`You can clear all selected areas by clicking this button`,'#erase-all-dashboard-selected','right',tourButtons,'erase-all-tour-modal'],
+['Adjusting the parameters',`There are many parameters that can be adjusted. Each of these parameters will automatically update the summaries you see in the bottom and right panes.`,'#parameters-collapse-label','right',tourButtons,'params-tour-modal','#parameters-collapse-label-label'],
+['Selecting Years',`You can select the range of years to be included with this slider. Notice as you change the years, the table on the right and charts below are updated.`,'#analysis-year-slider-container','right',tourButtons,'year-slider-tour-modal'],
+['Change how areas are selected',`By default, all active summary areas within the map view (View-Extent) are included in the table and charts. You can also manually select individual areas by clicking on them (Click) or selecting all areas within a box (Drag-Box).`,'#summary-area-selection-radio','right-end',tourButtons,'select-method-tour-modal'],
+['How to chart',`You can switch between showing the amount of a land cover or land use class was mapped for a given year (Annual) or the difference between that year and the previous year (Annual-Change). Annual-Change can be useful to visualizing whether change for a given class has been positive or negative.`,'#summary-pairwise-diff-radio','right-end',tourButtons,'annual-change-method-tour-modal'],
+['Which LCMS Products',`Choose which LCMS products to show. If you are interested in monitoring changes in cover, choose Land Cover. If you are interested in changes related to how land is being used, choose Land Use.`,'#which-products-radio','right-end',tourButtons,'which-lcms-product-tour-modal'],
+
+['Which Land Cover Classes',`Choose which LCMS Land Cover clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lc-highlights-radio','right-end',tourButtons,'which-lc-classes-tour-modal'],
+['Which Land Use Classes',`Choose which LCMS Land Use clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lu-highlights-radio','right-end',tourButtons,'which-lu-classes-tour-modal'],
+
+['Summary Area Selection',`Turn on summary layers to include them in the generated tables and graphs. Turn them off to exclude them.`,'#layer-list-collapse-label','right-end',tourButtons,'layer-tour-modal']
+]
+// Click function adapted from: https://github.com/shipshapecode/shepherd/issues/119
+var createDelayedClick = function (selector) {
+  var wrapper = function () {
+      return function (sel) {
+        if($(sel).hasClass('collapsed')){$(sel).click();}
+          
+      }(selector);
+  };
+
+  return function () {
+      setTimeout(wrapper, 10);
+  }
+};
+  var stepN = 1
+  function addStep(step){
+    let title = `${step[0]}`;
+    let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${steps.length})</p>`
+    stepN++;
+    let obj = {
+      title: title,
+      text: txt,
+      attachTo: {
+        element: step[2],
+        on: step[3] //Possible string values: 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'right', 'right-start', 'right-end', 'left', 'left-start', 'left-end'
+      },
+      buttons: step[4],
+      id: step[5],
+      
+    }
+    if(step[6] !== undefined){
+      obj.when = {
+        show: createDelayedClick(step[6])
+    }
+    }
+    tour.addStep(obj);
+  }
+  function startTour(){
+    $('.modal').modal('hide');
+    $('.modal-backdrop').remove();
+    if(!tour.isActive()){tour.start();}
+    
+  }
+
+  steps.map(addStep);
+  // startTour();
+
+
+  
+  
+  
+}

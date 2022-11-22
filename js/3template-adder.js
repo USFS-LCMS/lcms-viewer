@@ -201,6 +201,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
 
 }else if(mode === 'lcms-dashboard'){
+  
   var minYear = startYear;var maxYear = endYear;
   // console.log(urlParams)  
   if(urlParams.startYear == null || urlParams.startYear == undefined){
@@ -312,6 +313,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // $('#parameters-collapse-div').append(selectionModeDiv);
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  $('#support-collapse-div').append(`<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">DASHBOARD TOUR</a>`);
 
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
