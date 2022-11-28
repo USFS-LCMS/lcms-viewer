@@ -273,7 +273,8 @@ const staticTemplates = {
                 'lcms-dashboard':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
                                     `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
-                                    `<p>Pre-calculated summary areas are available for generating custom reports
+                                    `<p>Pre-calculated summary areas are available for generating custom reports.</p>
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. While these tables can be useful for understanding broad patterns of change on our landscape, they lack necessary statistics to make statistically valid conclusions.
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
