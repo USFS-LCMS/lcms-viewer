@@ -2680,10 +2680,11 @@ class report {
             console.log(`Adding text: ${text}`);
             
             this.doc.setFontSize(fontSize);
-            this.checkForRoom(fontSize);
+           
             let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
             let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
             let textHeight = this.doc.getTextDimensions(text).h;
+            this.checkForRoom(textBlockHeight);
             console.log(textHeight);
             this.currentY += textHeight;
             if(link===null||link===undefined){
@@ -2805,7 +2806,7 @@ function makeDashboardReport(){
             
             
         dashboardReport.addText(`Tabular Results`,18);
-        dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.<hr>This report`,12);
+        dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.`,12);
         dashboardReport.addTables();
         // let reportName = $('#report-name').val();
         // if(reportName===''){
