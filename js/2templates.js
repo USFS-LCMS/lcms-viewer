@@ -2606,13 +2606,13 @@ class report {
 
             //header logo image
             var usdaLogo = new Image();
-            usdaLogo.src = "./images/usdalogo.png";
-            this.doc.addImage(usdaLogo, 'PNG', 5, 4, 18, 13); //, 15);
-            var fsLogo = new Image();
-            fsLogo.src = "./images/usfslogo.png";
-            this.doc.addImage(fsLogo, 'PNG', 27, 3, 14, 15); //x,y,w,h            
+            usdaLogo.src =  './images/logos_usda-fs_bn-dk-01.PNG';//"./images/usdalogo.png";
+            this.doc.addImage(usdaLogo, 'PNG', 5, 4, 16*2, 13); //, 15);
+            // var fsLogo = new Image();
+            // fsLogo.src = "./images/usfslogo.png";
+            // this.doc.addImage(fsLogo, 'PNG', 27, 3, 14, 15); //x,y,w,h            
             var lcmsLogo = new Image();
-            lcmsLogo.src = "./images/lcms-icon.png";
+            lcmsLogo.src ="./images/lcms-icon.png";
 
             //header text
             this.currentY = 9;
@@ -2633,8 +2633,8 @@ class report {
             // doc.setFont(undefined,'normal');
             // doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
             this.currentY += 3;
-
-            this.doc.setFillColor(3, 74, 48); //169,209,142);
+            this.doc.setFillColor(55, 46, 44);
+            // this.doc.setFillColor(3, 74, 48); //169,209,142);
 
             //doc.setTextColor(8,124,124);
             this.doc.rect(0, this.currentY, 600, 20, 'F'); //x, y, w, h, style
@@ -2642,7 +2642,8 @@ class report {
 
 
             this.doc.setFontSize(22);
-            this.doc.setTextColor(249, 226, 76); //0,0,0);
+            
+            this.doc.setTextColor(0,137, 123); //0,0,0);
             this.doc.setFont(undefined, 'bold');
             this.currentY += 3;
             this.doc.addImage(lcmsLogo, 'PNG', this.margin / 2, this.currentY, 13, 13); //x,y,w,h
