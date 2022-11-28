@@ -529,6 +529,16 @@ const staticTemplates = {
         
         <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all highlights-div '><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>
         </div>`,
+        dashboardDownloadReportButton:`<div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
+        <div class='btn dashboard-download-button' onclick='makeDashboardReport()' >
+          <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
+          Download Report
+          
+        </div>
+        
+        
+      </div>
+     `,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>
@@ -2666,13 +2676,28 @@ class report {
 
             }
         };
-        this.addText = function (text, fontSize = 12) {
+        this.addText = function (text, fontSize = 12,link=null) {
             console.log(`Adding text: ${text}`);
-
+            
             this.doc.setFontSize(fontSize);
             this.checkForRoom(fontSize);
-            this.doc.text(this.margin, this.currentY, text);
-            this.currentY += fontSize + this.margin;
+            let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
+            let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
+            let textHeight = this.doc.getTextDimensions(text).h;
+            console.log(textHeight);
+            this.currentY += textHeight;
+            if(link===null||link===undefined){
+                
+                this.doc.text(this.margin, this.currentY, textWrap);
+                this.currentY += textBlockHeight;
+            }else{
+                this.doc.setTextColor(0,137, 123); 
+                this.doc.textWithLink(text, this.margin, this.currentY, { url: link });
+                this.currentY += textHeight;
+                this.doc.setTextColor(0, 0, 0); 
+            }
+            
+            
         };
         this.outstandingCharts=0;
         this.addChart = function (id,type) {
@@ -2685,19 +2710,19 @@ class report {
                 let chartHeight = canvas0.height;
                 let chartWidth = canvas0.width;
                 let aspectRatio = chartHeight / chartWidth;
-                let chartW = this.w - this.margin * 2;
+                let chartW = this.w - this.margin * 4;
                 let chartH = chartW * aspectRatio;
                 this.checkForRoom(chartH+this.margin);
                 // doc.setFillColor(204,204,204,0);
                 // doc.rect(margin,currentY,chartW, chartH)
                 //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
-                let dataURL = canvas0.toDataURL("image/png", 1.0);
+                let dataURL = canvas0.toDataURL("image/jpg", 1.0);
                 let link = document.createElement("a");
                         link.download = id;
                         link.href = dataURL;
                         // link.click();
                 // console.log(imgURL)
-                this.doc.addImage(dataURL, 'PNG', this.margin, this.currentY, chartW, chartH, { compresion: 'NONE' });
+                this.doc.addImage(dataURL, 'JPG', this.margin*2, this.currentY, chartW, chartH, { compresion: 'NONE' });
                 this.currentY = this.currentY + chartH+this.margin;
                 that.outstandingCharts--;
                 // return 'done';
@@ -2726,52 +2751,69 @@ class report {
             
 
         };
+        this.addTables = function(){
+            let that = this;
+            
+            $('.report-table').each(function () {
+                
+                that.currentY= that.currentY+that.margin;
+                that.addText($(this).attr('tablename').replaceAll('-',' - '));
+                that.doc.autoTable({'html':`#${this.id}`,useCss:true,startY:that.currentY,margin:{left:that.margin,right:that.margin}});
+                that.currentY = that.doc.lastAutoTable.finalY
+                console.log(that.doc.lastAutoTable);
+            });
+            
+        }
         this.download = function (outFilename) {
+            console.log(this.doc)
             this.doc.save(outFilename + '.pdf');
         };
     }
 }
-var dashboardReport = new report();
+
 function makeDashboardReport(){
-    
+    var dashboardReport = new report();
     dashboardReport.addReportHeader();
-    let chartTypes = {'chartJS':'#dashboard-results-div canvas','Plotly':'#dashboard-results-div div'};
-    Object.keys(chartTypes).map(k=>{
-        let w = chartTypes[k];
-        $(w).each(function() {
-            let id=$(this).attr('id');
-          
-            if(id!==undefined&&id.indexOf('chart-canvas')>-1){
-                console.log(id)
-                dashboardReport.addChart(id,k);
-            }
-    })
-    
-       
-                
+    TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false);
+    setTimeout(()=>{
+        dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);
+        dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,12);
+        dashboardReport.addText(`Background`,18);
+        dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
+        dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2021-7_Methods.pdf');
+        
+        dashboardReport.currentY+=5;
+        dashboardReport.addText(`Chart Results`,18);
+        dashboardReport.addText(`The following charts depict the portion of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear}. These graphs can be useful to identify broad trends of change within and between different classes.`,12);
+        let chartTypes = {'chartJS':'#dashboard-results-div canvas'}//,'Plotly':'#dashboard-results-div div'};
+        Object.keys(chartTypes).map(k=>{
+            let w = chartTypes[k];
+            $(w).each(function() {
+                let id=$(this).attr('id');
             
-            
+                if(id!==undefined&&id.indexOf('chart-canvas')>-1){
+                    console.log(id)
+                    dashboardReport.addChart(id,k);
+                }
         })
         
-    // function delayedDownload(){
-    //     let downloaded=false;
-    //     let downloadCount = 0;
-    //     let currentSeconds=new Date().getSeconds();
-    //     while(!downloaded && downloadCount<5){
-    //         if(new Date().getSeconds()%2===0 && new Date().getSeconds()!==currentSeconds &&dashboardReport.outstandingCharts==0 ){
-    //             currentSeconds=new Date().getSeconds()
-    //             console.log(`${downloadCount} ${currentSeconds} ${dashboardReport.outstandingCharts}`)
-    //             dashboardReport.download();
-    //             downloaded=true;
-    //             downloadCount++;
-    //         }
+        
+                    
+                
+                
+            });
             
-    //     }
-    // }
-    // setTimeout(dashboardReport.download(),5000);
-    // for(var i = 0;i<100;i++){
-    //     dashboardReport.addText('hellodfdddddddddddddddddfffffffffffffffffffffffffffffffffffffffddddddddddddddddddddddddddddddddddddddddddddddddwthereworld')
-    // }
-    // dashboardReport.clear()
-    dashboardReport.download();
+            
+        dashboardReport.addText(`Tabular Results`,18);
+        dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.<hr>This report`,12);
+        dashboardReport.addTables();
+        // let reportName = $('#report-name').val();
+        // if(reportName===''){
+         let   reportName = `LCMS_Change_Report_${new Date().toStringFormat()}`
+        // }
+        
+        dashboardReport.download(reportName)
+    },500)
+    
+    
 }

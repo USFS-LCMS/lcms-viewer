@@ -1537,9 +1537,10 @@ function updateDashboardHighlights(limit=10){
 									
 									
 									$('#highlights-table-divs').append(`<table
-									class="table table-hover"
+									class="table table-hover report-table"
 									id="${navID}-table"
 									role="tabpanel"
+									tablename="${tab_name}-${cls}"
 									aria-labelledby="${navID}-tab"
 								  ></table>`);
 								 
@@ -1551,16 +1552,16 @@ function updateDashboardHighlights(limit=10){
 										Name
 									</th>
 									<th>
-										'${startYrAbbrv}
+										${urlParams.startYear}
 									</th>
 									<th>
-										'${endYrAbbrv} 
+										${urlParams.endYear} 
 									</th>
 									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
-										Δ
+										Change
 									</th>
 									<th title = "Relative change between '${startYrAbbrv} and '${endYrAbbrv}">
-										 Rel Δ
+										 Rel Change
 									</th>
 									</tr></thead>`)
 									let rowI = 1;
@@ -1647,7 +1648,7 @@ function updateDashboardHighlights(limit=10){
 	// 	$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
 	// }
 	
-	
+	$('#highlights-table-divs').prepend(staticTemplates.dashboardDownloadReportButton)
 	getHighlightsTabListener();
 	if(urlParams.currentlySelectedHighlightTab !==undefined){
 		$(`#${urlParams.currentlySelectedHighlightTab}`).click();

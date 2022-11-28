@@ -335,7 +335,24 @@ button {
   overflow-x:auto;
   z-index: 2;
 }
-
+.dashboard-download-div{
+ 
+  margin:0.5rem;
+}
+.dashboard-download-button{
+  background-color: var(--deep-brown-10)!important;
+  
+  font-size: 0.75rem;
+  color:var(--deep-brown-100)!important;
+  font-family: 'Roboto';
+  
+  font-size:1rem;
+  border: 1px solid var(--deep-brown-100);
+  
+}
+.dashboard-download-icon{
+  color:var(--deep-brown-100)!important;
+}
 .nav-tabs > li > a{
   color:var(--deep-brown-20);
   background-color: var(--deep-brown-100);;
@@ -387,7 +404,7 @@ button {
 }
 .highlights-table-section-title{
   color:var(--deep-brown-20);
-  background-color: var(--black)!important;
+  background-color: var(--deep-brown-100)!important;
   font-family: 'Roboto';
    font-size:0.75rem;
    text-align: left;

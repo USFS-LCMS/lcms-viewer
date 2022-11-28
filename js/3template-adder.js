@@ -286,14 +286,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#lu-highlights-radio').prop('title','Choose which land use classes to include in the highlights tables');
   
   // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
-  $('#parameters-collapse-div').append(`<hr><div class='py-2'>
-                                                <div class='btn' onclick='makeDashboardReport()' >
-                                                  <i class="fa fa-download  mx-1" aria-hidden="true"></i>
-                                                  Download Report
-                                                </div>
-                                                <input title = 'Provide a name for your report. A default one will be provided if left blank.'type="report-name" class="form-control" id="report-name" placeholder="Name your report!" style='width:50%;display:inline-block;'>
-                                              </div>
-                                             `)
+  // $('#parameters-collapse-div').append()
   
   
   // $('#parameters-collapse-label').hide();

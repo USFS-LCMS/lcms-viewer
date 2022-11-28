@@ -14,7 +14,7 @@ function eliminateSearchUrl(){
 function updatePageUrl(){
   pageUrl = window.location.protocol + "//" + window.location.host  + window.location.pathname + constructUrlSearch();
 }
-
+var fullShareURL;
 function TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=true){
     updatePageUrl();
     
@@ -43,6 +43,8 @@ function TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=true){
                if(mode !== 'geeViz'){
                 $('#shareLinkMessageBox').append(staticTemplates.shareButtons);
                 }
+            }else{
+              fullShareURL=fullURL
             }
             if(openInNewTab === false){
               setUrl(fullURL);
