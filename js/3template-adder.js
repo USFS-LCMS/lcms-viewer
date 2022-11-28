@@ -259,7 +259,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#parameters-collapse-div').append('<hr>');
   
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
-    urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':true}
+    urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':false}
   }
   addCheckboxes('parameters-collapse-div','lc-highlights-radio','Highlight Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
   $('#lc-highlights-radio').change( ()=>{
@@ -268,7 +268,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   });
   $('#parameters-collapse-div').append('<hr>');
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
-    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": true,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
   addCheckboxes('parameters-collapse-div','lu-highlights-radio','Highlight Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
   $('#lu-highlights-radio').change( ()=>{

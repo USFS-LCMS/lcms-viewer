@@ -393,7 +393,9 @@ if(mode ==='lcms-dashboard'){
 ['LCMS Layer Viewing',`Turn on and off LCMS data layers to help bring spatial context to the summary areas you are viewing. These layers are turned on and off in the same fashion as the summary areas above.`,'#reference-layer-list-collapse-label','right-end',[0,2],'lcms-raster-layer-tour-modal','#reference-layer-list-collapse-label-label'],
 ['Results: Charts',`As selected summary areas are downloaded, they are all totaled for each summary area type and a chart is created here. Classes can be turned off and on within the chart by clicking on them in the legend at the bottom.`,'#dashboard-results-div','left',[0,2],'chart-tour-modal'],
 ['Results: Charts Resizing Pane',`You can change the size of the charting area by dragging the teal bar up and down. Charts will automatically resize.`,'#dashboard-results-expander','top',[0,2],'chart-expander-tour-modal'],
-['Results: Change Highlights Tables',`Selected summary areas will be included in a table here highlighting the difference for a given class between the first and last years. These tables are automatically updated as selected areas, years, classes, etc are changed. Tables can be sorted by any column and downloaded in various formats.`,'#dashboard-highlights-container','left',[0,2],'highlights-tour-modal']
+['Results: Change Highlights Tables',`Selected summary areas will be included in a table here highlighting the difference for a given class between the first and last years. These tables are automatically updated as selected areas, years, classes, etc are changed. Tables can be sorted by any column and downloaded in various formats.`,'#dashboard-highlights-container','left',[0,2],'highlights-tour-modal'],
+['Results: Charts and Tables Report Download',`All tables and charts can be downloaded in a single pdf report.`,'#download-dashboard-report-container','left',[0,1],'report-download-tour-modal']
+
 
 ]
 // Click function adapted from: https://github.com/shipshapecode/shepherd/issues/119

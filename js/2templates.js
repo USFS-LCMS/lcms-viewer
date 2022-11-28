@@ -2685,7 +2685,7 @@ class report {
             let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
             let textHeight = this.doc.getTextDimensions(text).h;
             this.checkForRoom(textBlockHeight);
-            console.log(textHeight);
+            // console.log(textHeight);
             this.currentY += textHeight;
             if(link===null||link===undefined){
                 
@@ -2746,7 +2746,7 @@ class report {
                         that.doc.addImage(dataURL, 'PNG', that.margin, that.currentY, chartW, chartH, { compresion:'NONE' });
                         that.currentY = that.currentY + chartH+that.margin;
                         that.outstandingCharts--;
-                        console.log('here')
+                       
                   });
             }
             
@@ -2761,12 +2761,12 @@ class report {
                 that.addText($(this).attr('tablename').replaceAll('-',' - '));
                 that.doc.autoTable({'html':`#${this.id}`,useCss:true,startY:that.currentY,margin:{left:that.margin,right:that.margin}});
                 that.currentY = that.doc.lastAutoTable.finalY
-                console.log(that.doc.lastAutoTable);
+                // console.log(that.doc.lastAutoTable);
             });
             
         }
         this.download = function (outFilename) {
-            console.log(this.doc)
+            // console.log(this.doc)
             this.doc.save(outFilename + '.pdf');
         };
     }
@@ -2783,7 +2783,7 @@ function makeDashboardReport(){
         dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
         dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2021-7_Methods.pdf');
         
-        dashboardReport.currentY+=5;
+        // dashboardReport.doc.addPage();
         dashboardReport.addText(`Chart Results`,18);
         dashboardReport.addText(`The following charts depict the portion of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear}. These graphs can be useful to identify broad trends of change within and between different classes.`,12);
         let chartTypes = {'chartJS':'#dashboard-results-div canvas'}//,'Plotly':'#dashboard-results-div div'};
@@ -2804,13 +2804,13 @@ function makeDashboardReport(){
                 
             });
             
-            
+        // dashboardReport.doc.addPage();
         dashboardReport.addText(`Tabular Results`,18);
         dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.`,12);
         dashboardReport.addTables();
         // let reportName = $('#report-name').val();
         // if(reportName===''){
-         let   reportName = `LCMS_Change_Report_${new Date().toStringFormat()}`
+         let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
         // }
         
         dashboardReport.download(reportName)
