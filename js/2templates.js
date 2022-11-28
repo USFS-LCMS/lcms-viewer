@@ -504,6 +504,7 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
+        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. While these tables can be useful for understanding broad patterns of change on our landscape, they lack necessary statistics to make statistically valid conclusions.`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
@@ -511,8 +512,10 @@ const staticTemplates = {
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. While these tables can be useful for understanding broad patterns of change on our landscape, they lack necessary statistics to make statistically valid conclusions.</p>
         </div>
-        </div>`,
+        
+        </p>`,
         dashboardProgressDiv:`<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(1)}"  alt="GEE logo image">

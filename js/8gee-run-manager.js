@@ -3084,9 +3084,9 @@ var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.i
 var summaryAreas2 = {
   'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false},
   'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE'},
-  'Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88'} , 
-  'Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8'},
-  'Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8'},
+  'USFS Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88'} , 
+  'USFS Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8'},
+  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8'},
 }
 
 function loadGEESummaryAreas(summaryAreaObj,name){
@@ -3125,16 +3125,16 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 
   
   let firstComparisonLayerI;
-  ['Land_Cover','Land_Use'].map(nm=>{
-    console.log(nm)
-    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
-    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  // ['Land_Cover','Land_Use'].map(nm=>{
+  //   console.log(nm)
+  //   let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  //   let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
+  //   Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
+  //   Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
 
-    firstComparisonLayerI = false;
-  })
+  //   firstComparisonLayerI = false;
+  // })
   
   Object.keys(summaryAreas2).map(k=>{
     loadGEESummaryAreas(summaryAreas2[k],k)

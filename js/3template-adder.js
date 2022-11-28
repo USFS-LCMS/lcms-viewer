@@ -975,22 +975,22 @@ function resizeDashboardPanes(){
   if(sidebarHeight+bottomHeight+resultsHeight+expanderHeight<window.innerHeight){
     $('#dashboard-results-container').css('left',0);
     if(highlightsHeight<window.innerHeight-resultsHeight-expanderHeight){
-      $('#dashboard-results-container').css('max-width',window.innerWidth-1);
+      $('#dashboard-results-container').css('max-width',window.innerWidth);
     }else{
-      $('#dashboard-results-container').css('max-width',window.innerWidth-highlightsWidth-1);
+      $('#dashboard-results-container').css('max-width',window.innerWidth-highlightsWidth);
     }
     
   }else{
     $('#dashboard-results-container').css('left',layerWidth);
     if(highlightsHeight<window.innerHeight-resultsHeight-expanderHeight){
-      $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth-1);
+      $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth);
       $('.dashboard-highlights').css('height',)
     }else{
-      $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth-highlightsWidth-1);
+      $('#dashboard-results-container').css('max-width',window.innerWidth-layerWidth-highlightsWidth);
     }
   }
   
-  $('#dashboard-results-container').css('bottom',bottomHeight+expanderHeight);
+  $('#dashboard-results-container').css('bottom',bottomHeight+expanderHeight-1);
   if(resultsHeight>0){
     $('.dashboard-highlights').css('max-height',window.innerHeight-bottomHeight);
   }else{

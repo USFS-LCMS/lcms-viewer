@@ -262,6 +262,8 @@ function dashboardBoxSelect(){
 				var i=1;
 				visibleDashboardLayers.map(layer=>{
 					let selectedFeatures = layer.queryItem.filter(boundsFilter);
+					let selectedAttributes = selectedFeatures.toList(10000,0).map(f=>ee.Feature(f).toDictionary())
+					selectedAttributes.getInfo(f=>console.log(f))
 					selectedFeatures = selectedFeatures.map(f=>f.simplify(5000, selectedFeatures.first().geometry().projection()))
 					selectedFeatures.evaluate((f,failure)=>{
 						console.log(`Failure: ${failure}`);
@@ -1577,7 +1579,7 @@ function updateDashboardHighlights(limit=10){
 										$(`#${navID}-table`).DataTable({
 											fixedHeader: true,
 											paging: false,
-											searching: false,
+											searching: true,
 											order: [[3, 'asc']],
 											responsive:true,
 											dom: 'Bfrtip',
@@ -1588,23 +1590,28 @@ function updateDashboardHighlights(limit=10){
 												// },
 												{
 													extend: 'copyHtml5',
-													title: downloadName.replaceAll('_',' ')
+													title: downloadName.replaceAll('_',' '),
+													messageBottom: staticTemplates.dashboardHighlightsDisclaimerText
 												},
 												{
 													extend: 'csvHtml5',
-													title: downloadName
+													title: downloadName.replaceAll('_',' '),
+													messageBottom: staticTemplates.dashboardHighlightsDisclaimerText
 												},
 												{
 													extend: 'excelHtml5',
-													title: downloadName
+													title: downloadName.replaceAll('_',' '),
+													messageBottom: staticTemplates.dashboardHighlightsDisclaimerText
 												},
 												{
 													extend: 'pdfHtml5',
-													title: downloadName
+													title: downloadName.replaceAll('_',' '),
+													messageBottom: staticTemplates.dashboardHighlightsDisclaimerText
 												},
 												{
 													extend: 'print',
-													title: downloadName.replaceAll('_',' ')
+													title: downloadName.replaceAll('_',' '),
+													messageBottom: staticTemplates.dashboardHighlightsDisclaimerText
 												},
 											]
 												

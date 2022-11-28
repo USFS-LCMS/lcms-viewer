@@ -397,7 +397,25 @@ button {
   overflow-y:auto;
   padding-left: 0px!important; 
 }
+.dataTables_filter{
+  text-align: left!important;
+  margin-left: 0.5rem;
+  margin-top:0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  color:var(--deep-brown-100);
+  font-family: 'Roboto';
+}
 
+
+.highlights-disclaimer{   
+  margin-top:0.75rem; 
+  margin-left: 0.75rem;
+  margin-right:0.75rem;
+  margin-bottom:0.75rem;
+  font-size: 0.75rem;
+  color: var(--deep-brown-20);
+}
 .btn-group>.btn{
   margin-left: 0.5rem!important;
     padding-bottom: 0px;

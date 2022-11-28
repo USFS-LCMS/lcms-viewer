@@ -335,55 +335,66 @@ function showWalkThroughI(){
 
 
 if(mode ==='lcms-dashboard'){
+  
   console.log('running dashboard tutorial');
   // https://shepherdjs.dev/docs/tutorial-02-usage.html
   var tour = new Shepherd.Tour({
     defaultStepOptions: {
       cancelIcon: {
-        enabled: true
+        enabled: true,
+        confirmCancel:true
       },
+      
       classes: 'class-1 class-2',
       scrollTo: { behavior: 'smooth', block: 'center' }
     }
   });
 
-  let tourButtons = [
-    {
-      action() {
-        return tour.back();
+  function getTourButtons(buttonIs = [0,1],stepN=1,totalSteps=10){
+    let tourButtons = [
+      {
+        action() {
+          return tour.back();
+        },
+       text: `<i class="fa fa-chevron-left teal " title="Previous tour slide"></i>`
       },
-      classes: 'shepherd-button-secondary',
-      text: `<i class="fa fa-chevron-left teal " title="Previous tour slide"></i>`
-    },
-    {
-      action() {
-        return tour.next();
-      },
-      text: `<i class="fa fa-chevron-right teal " title="Next tour slide"></i>`
-    }
-  ]
+      {
+        action() {
+          return tour.next();
+        },
+        text: `<i class="fa fa-chevron-right teal " title="Next tour slide"></i>`
+      }
+    ]
+    return tourButtons.slice(buttonIs[0],buttonIs[1])
+  }
+  
 
   let steps  = [
-    ['Welcome to the LCMS Dashboard tour',`This tour will walk you through how to use the LCMS dashboard.`,'#title-banner','right',tourButtons.slice(1,2),'intro-tour-modal'],
+    ['Welcome to the LCMS Dashboard tour',`This tour will walk you through how to use the LCMS dashboard. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
     
     ['Locate, Share, Search, Navigate',`<ul>
                           <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
                           <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
                           <li>You can search for locations in the search window.</li>
                           <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
-                          </ul>`,'#search-share-div','right',tourButtons,'search-tour-modal'],
-['Loading Progress',`By default, summary areas are downloaded as you move the map based on your view extent. As these areas are downloaded, the progressbar will be updated.`,'#highlights-progressbar','right',tourButtons,'progress-tour-modal'],
-['Clear Everything',`You can clear all selected areas by clicking this button`,'#erase-all-dashboard-selected','right',tourButtons,'erase-all-tour-modal'],
-['Adjusting the parameters',`There are many parameters that can be adjusted. Each of these parameters will automatically update the summaries you see in the bottom and right panes.`,'#parameters-collapse-label','right',tourButtons,'params-tour-modal','#parameters-collapse-label-label'],
-['Selecting Years',`You can select the range of years to be included with this slider. Notice as you change the years, the table on the right and charts below are updated.`,'#analysis-year-slider-container','right',tourButtons,'year-slider-tour-modal'],
-['Change how areas are selected',`By default, all active summary areas within the map view (View-Extent) are included in the table and charts. You can also manually select individual areas by clicking on them (Click) or selecting all areas within a box (Drag-Box).`,'#summary-area-selection-radio','right-end',tourButtons,'select-method-tour-modal'],
-['How to chart',`You can switch between showing the amount of a land cover or land use class was mapped for a given year (Annual) or the difference between that year and the previous year (Annual-Change). Annual-Change can be useful to visualizing whether change for a given class has been positive or negative.`,'#summary-pairwise-diff-radio','right-end',tourButtons,'annual-change-method-tour-modal'],
-['Which LCMS Products',`Choose which LCMS products to show. If you are interested in monitoring changes in cover, choose Land Cover. If you are interested in changes related to how land is being used, choose Land Use.`,'#which-products-radio','right-end',tourButtons,'which-lcms-product-tour-modal'],
+                          </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
+['Loading Progress',`By default, summary areas are downloaded as you move the map based on your view extent. As these areas are downloaded, the progressbar will be updated.`,'#highlights-progressbar','right',[0,2],'progress-tour-modal'],
+['Clear Everything',`You can clear all selected areas by clicking this button`,'#erase-all-dashboard-selected','right',[0,2],'erase-all-tour-modal'],
+['Adjusting the parameters',`There are many parameters that can be adjusted. Each of these parameters will automatically update the summaries you see in the bottom and right panes.`,'#parameters-collapse-label','right',[0,2],'params-tour-modal','#parameters-collapse-label-label'],
+['Selecting Years',`You can select the range of years to be included with this slider. Notice as you change the years, the table on the right and charts below are updated.`,'#analysis-year-slider-container','right',[0,2],'year-slider-tour-modal','#parameters-collapse-label-label'],
+['Change how areas are selected',`By default, all active summary areas within the map view (View-Extent) are included in the table and charts. You can also manually select individual areas by clicking on them (Click) or selecting all areas within a box (Drag-Box).`,'#summary-area-selection-radio','right-end',[0,2],'select-method-tour-modal','#parameters-collapse-label-label'],
+['How to chart',`You can switch between showing the amount of a land cover or land use class was mapped for a given year (Annual) or the difference between that year and the previous year (Annual-Change). Annual-Change can be useful to visualizing whether change for a given class has been positive or negative.`,'#summary-pairwise-diff-radio','right-end',[0,2],'annual-change-method-tour-modal','#parameters-collapse-label-label'],
+['Which LCMS Products',`Choose which LCMS products to show. If you are interested in monitoring changes in cover, choose Land Cover. If you are interested in changes related to how land is being used, choose Land Use.`,'#which-products-radio','right-end',[0,2],'which-lcms-product-tour-modal','#parameters-collapse-label-label'],
 
-['Which Land Cover Classes',`Choose which LCMS Land Cover clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lc-highlights-radio','right-end',tourButtons,'which-lc-classes-tour-modal'],
-['Which Land Use Classes',`Choose which LCMS Land Use clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lu-highlights-radio','right-end',tourButtons,'which-lu-classes-tour-modal'],
+['Which Land Cover Classes',`Choose which LCMS Land Cover clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lc-highlights-radio','right-end',[0,2],'which-lc-classes-tour-modal','#parameters-collapse-label-label'],
+['Which Land Use Classes',`Choose which LCMS Land Use clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lu-highlights-radio','right-end',[0,2],'which-lu-classes-tour-modal','#parameters-collapse-label-label'],
 
-['Summary Area Selection',`Turn on summary layers to include them in the generated tables and graphs. Turn them off to exclude them.`,'#layer-list-collapse-label','right-end',tourButtons,'layer-tour-modal']
+['Summary Area Selection',`Turn on summary layers to include them in the generated tables and graphs. Turn them off to exclude them.`,'#layer-list-collapse-label','right-end',[0,2],'layer-tour-modal','#layer-list-collapse-label-label'],
+['LCMS Layer Viewing',`Turn on and off LCMS data layers to help bring spatial context to the summary areas you are viewing. These layers are turned on and off in the same fashion as the summary areas above.`,'#reference-layer-list-collapse-label','right-end',[0,2],'lcms-raster-layer-tour-modal','#reference-layer-list-collapse-label-label'],
+['Results: Charts',`As selected summary areas are downloaded, they are all totaled for each summary area type and a chart is created here. Classes can be turned off and on within the chart by clicking on them in the legend at the bottom.`,'#dashboard-results-div','left',[0,2],'chart-tour-modal'],
+['Results: Charts Resizing Pane',`You can change the size of the charting area by dragging the teal bar up and down. Charts will automatically resize.`,'#dashboard-results-expander','top',[0,2],'chart-expander-tour-modal'],
+['Results: Change Highlights Tables',`Selected summary areas will be included in a table here highlighting the difference for a given class between the first and last years. These tables are automatically updated as selected areas, years, classes, etc are changed. Tables can be sorted by any column and downloaded in various formats.`,'#dashboard-highlights-container','left',[0,2],'highlights-tour-modal']
+
 ]
 // Click function adapted from: https://github.com/shipshapecode/shepherd/issues/119
 var createDelayedClick = function (selector) {
@@ -395,13 +406,26 @@ var createDelayedClick = function (selector) {
   };
 
   return function () {
-      setTimeout(wrapper, 10);
+      setTimeout(wrapper, 500);
   }
 };
   var stepN = 1
   function addStep(step){
     let title = `${step[0]}`;
-    let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${steps.length})</p>`
+    let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${steps.length})</p>`;
+    let buttons = getTourButtons(step[4],stepN,steps.length)
+    $(step[2]).mousedown(function(event) {
+      console.log(event)
+      if ( event.ctrlKey) {
+          console.log('Right or ctrl mouse clicked');
+          console.log(step[2])
+          tour.show(step[5]);
+          
+      }
+    });
+    // $(step[2]).contextmenu(function() {
+    //     return false;
+    // });
     stepN++;
     let obj = {
       title: title,
@@ -410,7 +434,7 @@ var createDelayedClick = function (selector) {
         element: step[2],
         on: step[3] //Possible string values: 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'right', 'right-start', 'right-end', 'left', 'left-start', 'left-end'
       },
-      buttons: step[4],
+      buttons: buttons,
       id: step[5],
       
     }
