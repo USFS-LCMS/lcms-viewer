@@ -274,7 +274,7 @@ const staticTemplates = {
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
                                     `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
                                     `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. While these tables can be useful for understanding broad patterns of change on our landscape, they lack necessary statistics to make statistically valid conclusions.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding error please refer to the LCMS methods document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
@@ -505,15 +505,24 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. While these tables can be useful for understanding broad patterns of change on our landscape, they lack necessary statistics to make statistically valid conclusions.`,
+        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding error please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
+        <div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
+        <div class='btn dashboard-download-button' onclick='makeDashboardReport()' >
+          <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
+          Download Report
+          
+        </div>
         
+        
+      </div>
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. While these tables can be useful for understanding broad patterns of change on our landscape, they lack necessary statistics to make statistically valid conclusions.</p>
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding error please refer to the LCMS methods document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            </p>
         </div>
         
         </p>`,
@@ -1191,7 +1200,10 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
     Object.keys(optionList).map(function(k){
       var radioCheckboxID = k + '-checkbox';
       var radioLabelID = radioCheckboxID + '-label';
+      if(optionList[k] === 'true'){optionList[k] = true}
+      else  if(optionList[k] === 'false'){optionList[k] = false};
       var checked = optionList[k];
+      
       if(checked){
         checked = 'checked';
         eval(`window.${variable} = "${k}"`)
@@ -1202,8 +1214,10 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
                               <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
                             </div>`);
       $('#'+radioCheckboxID).change( function() {
-                                      var v = $(this).val();
-                                      eval(`window.${variable} = "${v}"`)
+                                    Object.keys(optionList).map(k=>optionList[k]=false)
+                                    var v = $(this).val();
+                                    optionList[v]=true;
+                                    eval(`window.${variable} = "${v}"`)
                                     });
 })
 }
@@ -2778,11 +2792,16 @@ function makeDashboardReport(){
     dashboardReport.addReportHeader();
     TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false);
     setTimeout(()=>{
+        dashboardReport.addText(`Resources`,18);
         dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);
-        dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,12);
+        dashboardReport.addText(`For any questions, contact the LCMS Helpdesk`,12,'mailto: sm.fs.lcms@usda.gov');
+        dashboardReport.currentY+=2;
         dashboardReport.addText(`Background`,18);
         dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
+        dashboardReport.addText(`LCMS produces annual maps depicting change (vegetation cover loss and gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, and meeting some broad-scale monitoring requirements and many others.`,12);
         dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2021-7_Methods.pdf');
+
+        dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,10);
         
         // dashboardReport.doc.addPage();
         dashboardReport.addText(`Chart Results`,18);

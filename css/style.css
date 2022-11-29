@@ -5,7 +5,7 @@
   --teal-30:#B2ECE4;
   --teal-50:#80DFD2;
   --teal-80:#00BFA5;
-  --teal-100:#00897B;
+  --teal-100:#00897b;
 
   --foo: true;
 
@@ -15,7 +15,7 @@
   --deep-brown-50:#968B83;
   --deep-brown-70:#847779;
   --deep-brown-80:#6F6259;
-  --deep-brown-100:#372E2C;
+  --deep-brown-100:#372e2c;
 
 
   --grayy:#6F6259;
@@ -152,8 +152,12 @@ color:var(--deep-brown-20)!important;}
 .eraser-all{
   cursor:pointer;
   color:var(--deep-brown-20);
+  border: 1px solid var(--teal-100);;
   font-family: 'Roboto';
   font-size:1rem;
+  margin-top:0.25rem;
+  margin-bottom: 0.25rem;
+  padding-left:0.25rem;
   /* margin-bottom: 0.5rem; */
 }
 .eraser-all:active{
@@ -340,10 +344,10 @@ button {
   margin:0.5rem;
 }
 .dashboard-download-button{
-  background-color: var(--deep-brown-10)!important;
+  background-color: var(--deep-brown-100)!important;
   
   font-size: 0.75rem;
-  color:var(--deep-brown-100)!important;
+  color:var(--deep-brown-10)!important;
   font-family: 'Roboto';
   
   font-size:1rem;
@@ -351,7 +355,7 @@ button {
   
 }
 .dashboard-download-icon{
-  color:var(--deep-brown-100)!important;
+  color:var(--deep-brown-10)!important;
 }
 .nav-tabs > li > a{
   color:var(--deep-brown-20);

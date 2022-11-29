@@ -1101,10 +1101,11 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 				    return values;
 				})
 }
+var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area','places':2}, 'Acres': {'mult':0.000247105,'label':' Acres','places':0}, 'Hectares': {'mult':0.0001,'label':' Hectares','places':0}};
+	// var chartFormat = 'Acres';//Options are: Percentage, Acres, Hectares
 function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
-	var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
-	var chartFormat = 'Percentage';//Options are: Percentage, Acres, Hectares
+	
 	
 	
 
@@ -1390,7 +1391,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 
 	let chartHeight=$('#dashboard-results-div').height()-convertRemToPixels(1);
 	let chartWidth = chartHeight*1.5;
-	$('#dashboard-results-div').append(`<div  class = "chartjs-chart chart-container" ><canvas id="${chartID}"><canvas></div>`);
+	$('#dashboard-results-div').append(`<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`);
       // $('#chartDiv').append('<hr>');
       //Set up chart object
       var chartJSChart = new Chart($(`#${chartID}`),{
@@ -1490,10 +1491,18 @@ function updateDashboardHighlights(limit=10){
 								let props = f.properties;
 								let attributes = props[class_name].split(',');
 								let totalArea = parseFloat(props['total_area']);
-								let startAtr = parseFloat(attributes[startYearI])/totalArea;
-								let endAtr = parseFloat(attributes[endYearI])/totalArea;
+								let startAtr,endAtr
+								if(chartFormat === 'Percentage'){
+									startAtr = parseFloat(attributes[startYearI])/totalArea*100;
+									endAtr = parseFloat(attributes[endYearI])/totalArea*100;
+								}else{
+									startAtr = parseFloat(attributes[startYearI])*chartFormatDict[chartFormat].mult;
+									endAtr = parseFloat(attributes[endYearI])*chartFormatDict[chartFormat].mult;
+									
+								}
 								let diff = endAtr-startAtr;
-								t.push([props[fieldName],startAtr,endAtr,diff]);
+								let rel = diff/startAtr*100;
+								t.push([props[fieldName],startAtr,endAtr,diff,rel]);
 			// 					return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
 								})
 							
@@ -1552,27 +1561,27 @@ function updateDashboardHighlights(limit=10){
 										Name
 									</th>
 									<th>
-										${urlParams.startYear}
+										${urlParams.startYear} (${chartFormatDict[chartFormat].label})
 									</th>
 									<th>
-										${urlParams.endYear} 
+										${urlParams.endYear} (${chartFormatDict[chartFormat].label})
 									</th>
 									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
-										Change
+										Change (${chartFormatDict[chartFormat].label})
 									</th>
 									<th title = "Relative change between '${startYrAbbrv} and '${endYrAbbrv}">
-										 Rel Change
+										 Rel Change (%)
 									</th>
 									</tr></thead>`)
 									let rowI = 1;
 									t.map(tr=>{
-										let rel = (((tr[2]-tr[1])/tr[1])*100).toFixed(2)
+										
 										$(`#${navID}-table`).append(`<tr class = 'highlights-row'>
 									<th class = 'highlights-entry'>${tr[0]}</th>
-									<td class = 'highlights-entry'>${(tr[1]*100).toFixed(2)}%</td>
-									<td class = 'highlights-entry'>${(tr[2]*100).toFixed(2)}%</td>
-									<td class = 'highlights-entry'>${(tr[3]*100).toFixed(2)}%</td>
-									<td class = 'highlights-entry'>${rel}%</td>
+									<td class = 'highlights-entry'>${(tr[1]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry'>${(tr[2]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry'>${(tr[3]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry'>${(tr[4]).toFixed(chartFormatDict['Percentage'].places)}</td>
 									</tr>`);rowI++;})
 									
 									let downloadName = `LCMS_Change_Summaries_${tab_name}_${cls}_${urlParams.startYear}-${urlParams.endYear}`
@@ -1648,7 +1657,7 @@ function updateDashboardHighlights(limit=10){
 	// 	$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
 	// }
 	
-	$('#highlights-table-divs').prepend(staticTemplates.dashboardDownloadReportButton)
+	// $('#highlights-table-divs').prepend(staticTemplates.dashboardDownloadReportButton)
 	getHighlightsTabListener();
 	if(urlParams.currentlySelectedHighlightTab !==undefined){
 		$(`#${urlParams.currentlySelectedHighlightTab}`).click();
@@ -1715,7 +1724,7 @@ function makeAreaChart(area,name,userDefined){
 	
 	
 	// updateProgress(50);
-	area = area.set('source','LCMS_data_explorer');
+	area = area.set('source','LCMS_data_explorer');0
 	centerObject(area);
 	area = area.geometry();
 
@@ -1735,7 +1744,7 @@ function makeAreaChart(area,name,userDefined){
 			
 			
 
-			var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
+			// var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
 			let bounds = area.bounds(maxError,crs).transform(crs,maxError);
 
 			let img = ee.Image(transitionClasses).clip(area);

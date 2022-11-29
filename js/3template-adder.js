@@ -228,6 +228,16 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#parameters-collapse-div').append('<hr>');
   // addSubCollapse('parameters-collapse-div','adv-params-label','adv-params-div','Advanced Params', '',false,'');
   
+  if(urlParams.chartUnits === null || urlParams.chartUnits === undefined){
+    urlParams.chartUnits = {"Percentage": true,"Acres": false,"Hectares": false}
+  }
+  addMultiRadio('parameters-collapse-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
+  $('#which-units-radio').change( ()=>{
+    updateDashboardCharts();
+    updateDashboardHighlights();
+
+  });
+
   if(urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined){
     urlParams.pairwiseDiff = {'Annual':true,'Annual-Change':false}
   }
@@ -284,6 +294,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#annual-transition-radio').prop('title','Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart');
   $('#lc-highlights-radio').prop('title','Choose which land cover classes to include in the highlights tables');
   $('#lu-highlights-radio').prop('title','Choose which land use classes to include in the highlights tables');
+  $('#which-units-radio').prop('title','Choose which units to represent summary areas in charts and tables');
   
   // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
   // $('#parameters-collapse-div').append()
@@ -1089,7 +1100,7 @@ $('#summary-pairwise-diff-radio').change(()=>{
   pairwiseDiffFun();
   updateDashboardCharts();
 })
-  // $('#support-collapse-div').append(staticTemplates.supportDiv);
+  $('#support-collapse-div').append(staticTemplates.supportDiv);
 
   
 }

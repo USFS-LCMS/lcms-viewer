@@ -3125,16 +3125,16 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 
   
   let firstComparisonLayerI;
-  ['Land_Cover','Land_Use'].map(nm=>{
-    console.log(nm)
-    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
-    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  // ['Land_Cover','Land_Use'].map(nm=>{
+  //   console.log(nm)
+  //   let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  //   let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
+  //   Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
+  //   Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
 
-    firstComparisonLayerI = false;
-  })
+  //   firstComparisonLayerI = false;
+  // })
   
   Object.keys(summaryAreas2).map(k=>{
     loadGEESummaryAreas(summaryAreas2[k],k)
