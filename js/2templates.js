@@ -536,7 +536,7 @@ const staticTemplates = {
         </span>
         
         
-        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all highlights-div '><i class="fa fa-eraser teal pr-1" style="display:inline-block;"></i>Clear all Selected Features</div>
+        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all highlights-div '><i class="fa fa-eraser pr-1" style="display:inline-block;"></i>Clear All Selected Features</div>
         </div>`,
         dashboardDownloadReportButton:`<div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
         <div class='btn dashboard-download-button' onclick='makeDashboardReport()' >
@@ -2790,7 +2790,7 @@ class report {
 function makeDashboardReport(){
     var dashboardReport = new report();
     dashboardReport.addReportHeader();
-    TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false);
+    TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
     setTimeout(()=>{
         dashboardReport.addText(`Resources`,18);
         dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);

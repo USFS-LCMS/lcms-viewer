@@ -151,18 +151,28 @@ color:var(--deep-brown-20)!important;}
 }
 .eraser-all{
   cursor:pointer;
-  color:var(--deep-brown-20);
-  border: 1px solid var(--teal-100);;
-  font-family: 'Roboto';
+  display: table;
+  color:#000;
+  background-color: var(--deep-brown-10);
+  /* border: 1px solid var(--teal-100);; */
+  /* font-family: 'Roboto'; */
   font-size:1rem;
   margin-top:0.25rem;
   margin-bottom: 0.25rem;
   padding-left:0.25rem;
+  padding-right:0.25rem;
+  border-radius: 0.2rem;
   /* margin-bottom: 0.5rem; */
 }
-.eraser-all:active{
-  transform: translate(4px) translateY(4px);
+.fa-eraser{
+  color:#000!important;
+}
+.eraser-all:active,.fa-eraser:active{
+  transform: translate(4px) translateY(0px);
   color:var(--teal-100)!important;
+}
+.eraser-all:hover{
+  font-weight: 300;
 }
 .bg-solid-black{background-color: var(--solid-black)!important;
 color:var(--white)!important;}
@@ -333,7 +343,7 @@ button {
   position:absolute;
   top:0rem;
   right:0%;
-  max-width:20rem;
+  max-width:25rem;
   max-height:100%;
   overflow-y:auto;
   overflow-x:auto;
@@ -435,6 +445,7 @@ button {
   margin-right:0.75rem;
   margin-bottom:0.75rem;
   font-size: 0.75rem;
+  max-width: 20rem;
   color: var(--deep-brown-20);
 }
 .btn-group>.btn{
@@ -460,14 +471,14 @@ button {
   padding-right:1rem;
 }
 .progressbar {
-  background: #ACA199;
+  background: var(--deep-brown-80);
   width: 100%;
   /* margin-left:0.5rem; */
   /* margin-right:0.5rem; */
   font-size: 1rem;
   height:1rem;
-  /* margin-top: 0.5rem; */
-  /* margin-bottom: 0.5rem; */
+  margin-top: 0rem;
+  margin-bottom: 0.25rem;
 }
 .progress-spinner{
   margin-left:0.25rem;
@@ -937,7 +948,7 @@ font-size:0.9em;
 
 
 
-.btn{padding:0.3em;}
+.btn{padding:0.3rem;}
 .btn:active,.drawing-mode-selector:active{background-color: var(--teal-100)!important;
             transform: scale3d(1.05, 1, 1);}
 .btn:hover,.drawing-mode-selector:hover{font-weight: 300}

@@ -1101,7 +1101,7 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 				    return values;
 				})
 }
-var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area','places':2}, 'Acres': {'mult':0.000247105,'label':' Acres','places':0}, 'Hectares': {'mult':0.0001,'label':' Hectares','places':0}};
+var chartFormatDict = {'Percentage': {'mult':'NA','label':'%','places':2}, 'Acres': {'mult':0.000247105,'label':' Acres','places':0}, 'Hectares': {'mult':0.0001,'label':' Hectares','places':0}};
 	// var chartFormat = 'Acres';//Options are: Percentage, Acres, Hectares
 function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
@@ -1549,7 +1549,7 @@ function updateDashboardHighlights(limit=10){
 									class="table table-hover report-table"
 									id="${navID}-table"
 									role="tabpanel"
-									tablename="${tab_name}-${cls}"
+									tablename="${tab_name}-LCMS ${k.replaceAll('_',' ')} ${cls}"
 									aria-labelledby="${navID}-tab"
 								  ></table>`);
 								 
@@ -1561,16 +1561,16 @@ function updateDashboardHighlights(limit=10){
 										Name
 									</th>
 									<th>
-										${urlParams.startYear} (${chartFormatDict[chartFormat].label})
+										${urlParams.startYear} ${chartFormatDict[chartFormat].label}
 									</th>
 									<th>
-										${urlParams.endYear} (${chartFormatDict[chartFormat].label})
+										${urlParams.endYear} ${chartFormatDict[chartFormat].label}
 									</th>
 									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
-										Change (${chartFormatDict[chartFormat].label})
+										Change ${chartFormatDict[chartFormat].label}
 									</th>
 									<th title = "Relative change between '${startYrAbbrv} and '${endYrAbbrv}">
-										 Rel Change (%)
+										 Rel Change %
 									</th>
 									</tr></thead>`)
 									let rowI = 1;
