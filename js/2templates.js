@@ -73,6 +73,12 @@ const  titles = {
             centerWords: 'DASHBOARD',
             rightWords:'',
             title:'LCMS Dashboard'
+            } ,
+    'Algal-Mapper': {
+            leftWords: 'Algal',
+            centerWords: 'MAPPER',
+            rightWords:'',
+            title:'Algal Mapper'
             }     
 }
 ///////////////////////////////////////////////////////////////////////
@@ -424,7 +430,7 @@ const staticTemplates = {
 
                             </p>`,
     `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
+    <div style ='float:left;display:block' title='This tool is produced by the USDA Forest Service'>
         <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
     </div>
     <div style ='float:left;'>
@@ -453,7 +459,34 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
-</div>`)
+</div>`),
+'Algal-Mapper':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
+            'Welcome to the Algal MAPPER!',
+            `<p class='my-2'>
+                            This tool provides an interactive ability view maps of potential algal presence. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not final and are intended for review purposes only.
+
+                            </p>`,
+    `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+         
+            <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+            </li>
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+        </ul>
+        
+    </div>
+
+</div>`,
+`<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+
+`)
         },
     loadingModal:{'all':function(logoPath,word,whatIsLoading='map services within Google Earth Engine'){
                                     let logoLine= `<img class = 'logo' src="./images/${logoPath}"   alt="${mode} logo image">`;
@@ -1086,7 +1119,12 @@ function showMessage(title,message,modalID,show){
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Show a basic tip BS modal
 function showTip(title,message){
-	showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
+	
+	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
+	  localStorage.showToolTipModal = 'true';
+	  }
+	if(localStorage.showToolTipModal === 'true' && walkThroughAdded == false){
+        showMessage('','<span class = "font-weight-bold text-uppercase" >'+ title +' </span><span>' +message + '</span>','tip-modal',false)
 
 	$('#tip-modal-body').append(`<form class="form-inline pt-3 pb-0">
 								  <div class="form-check  mr-0">
@@ -1094,10 +1132,6 @@ function showTip(title,message){
                                 	<label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
                             		</div>
 								</form>`);
-	if(localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined"){
-	  localStorage.showToolTipModal = 'true';
-	  }
-	if(localStorage.showToolTipModal === 'true' && walkThroughAdded == false){
 	  $('#tip-modal').modal().show();
 	}
 	$('#dontShowTipAgainCheckbox').change(function(){

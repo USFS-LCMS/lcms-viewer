@@ -236,6 +236,7 @@ function stopDashboardClickLayerSelect(){
 }
 var dragSelectedFeatures;
 var boxSelectID=0;
+
 function dashboardBoxSelect(){
 	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 	if(visibleDashboardLayers.length>0){
@@ -254,7 +255,8 @@ function dashboardBoxSelect(){
 		$('#loading-spinner-logo').show();
 		updateProgress('.progressbar',0);
 		$('#loading-progress-div').show();
-		var boundsFilter = ee.Filter.bounds(geeBox,500)
+		var boundsFilter = ee.Filter.bounds(geeBox,500);
+		
 		ee.FeatureCollection(visibleDashboardLayers.map(layer=>layer.queryItem.filter(boundsFilter))).flatten().size().evaluate((n)=>{
 			console.log(n);
 			if(n>0 && thisBoxSelectID===boxSelectID){
@@ -262,6 +264,9 @@ function dashboardBoxSelect(){
 				var i=1;
 				visibleDashboardLayers.map(layer=>{
 					let selectedFeatures = layer.queryItem.filter(boundsFilter);
+					layer.selectedTSData = lcmsTS.filter(ee.Filter.bounds(selectedFeatures,500));
+					// Map2.addLayer(layer.selectedTSData,{layerType:'geeVector'},layer.name+' Selected TS Data')
+					// selectedTSData.size().getInfo(f=>console.log(`Selected ts n: ${f}`))
 					let selectedAttributes = selectedFeatures.toList(10000,0).map(f=>ee.Feature(f).toDictionary())
 					selectedAttributes.getInfo(f=>console.log(f))
 					selectedFeatures = selectedFeatures.map(f=>f.simplify(5000, selectedFeatures.first().geometry().projection()))
@@ -1473,6 +1478,27 @@ function updateDashboardHighlights(limit=10){
 			// let fc = f.queryItem.filterBounds(eeBoundsPoly);
 			fc= Object.values(f.dashboardSelectedFeatures).map(f=>f.geojson);
 			let fieldName = f.viz.dashboardFieldName;
+			// console.log(f.selectedTSData.size().getInfo())
+			try{
+				let startTSYr = parseInt(urlParams.startYear);
+				let endTSYr = parseInt(urlParams.endYear);
+				if(endTSYr > 2019){endTSYr = 2019}
+				let startTS = f.selectedTSData.filter(ee.Filter.eq('YEAR',startTSYr));
+				let endTS = f.selectedTSData.filter(ee.Filter.eq('YEAR',endTSYr));
+				let tsDict = ee.Dictionary({'startLC':startTS.aggregate_histogram('DOM_LC'),
+				'endLC':endTS.aggregate_histogram('DOM_LC'),
+				'startLU':startTS.aggregate_histogram('DOM_LU'),
+				'endLU':endTS.aggregate_histogram('DOM_LU')})
+				tsDict.getInfo((d)=>{
+					console.log(d)
+				})
+				// startTS.evaluate((ts,failure)=>{
+				// 	console.log(failure)
+				// 	console.log(`Highlighted ts data ${ts}`)
+				// })
+			}catch(err){
+				console.log(`Error: ${err}`)
+			}
 			
 			// console.log(fc.first().getInfo())
 			// Map2.addLayer(fc,{},f.name+' bounds')
@@ -1587,7 +1613,7 @@ function updateDashboardHighlights(limit=10){
 									let downloadName = `LCMS_Change_Summaries_${tab_name}_${cls}_${urlParams.startYear}-${urlParams.endYear}`
 									$(document).ready(function () {
 										$(`#${navID}-table`).DataTable({
-											fixedHeader: true,
+											fixedHeader: false,
 											paging: false,
 											searching: true,
 											order: [[3, 'asc']],

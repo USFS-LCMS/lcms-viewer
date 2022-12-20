@@ -2711,8 +2711,8 @@ function initialize() {
           if(staticTemplates.loadingModal[mode]===undefined){
             if(mode==='MTBS'){
               showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Creating'));
-            }else if(mode==='STORM'){
-              showMessage('',staticTemplates.loadingModal['all']('','Creating'));
+            }else if(mode==='STORM' || mode === 'Algal-Mapper'){
+              showMessage('',staticTemplates.loadingModal['all']('logos_usda-fs_bn-dk-01.svg','Creating'));
             }else if(mode==='lcms-dashboard'){
             showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Loading','LCMS summary areas'));
           }else{
@@ -2766,6 +2766,8 @@ function initialize() {
           zoomControlOptions:{position: google.maps.ControlPosition.TOP_CENTER,style: google.maps.ZoomControlStyle.SMALL},
           draggableCursor:'pointer'});
         
+      }else if(mode === 'Algal-Mapper'){
+        run = runAlgal;
       }else if(studyAreaName === 'CONUS'){
         longStudyAreaName = cachedStudyAreaName;
         run = runCONUS;

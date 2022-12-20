@@ -232,11 +232,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     urlParams.chartUnits = {"Percentage": true,"Acres": false,"Hectares": false}
   }
   addMultiRadio('parameters-collapse-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
-  $('#which-units-radio').change( ()=>{
-    updateDashboardCharts();
-    updateDashboardHighlights();
-
-  });
+ 
 
   if(urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined){
     urlParams.pairwiseDiff = {'Annual':true,'Annual-Change':false}
@@ -247,7 +243,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     urlParams.whichProducts = {"Land-Cover": true,"Land-Use": true}
   }
   addCheckboxes('parameters-collapse-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
-  $('#which-products-radio').change( ()=>{
+  $('#which-units-radio,#which-products-radio').change( ()=>{
     updateDashboardCharts();
     updateDashboardHighlights();
 
@@ -272,16 +268,13 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':false}
   }
   addCheckboxes('parameters-collapse-div','lc-highlights-radio','Tables - Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
-  $('#lc-highlights-radio').change( ()=>{
-    updateHighlightsProductSelectionDict();
-    updateDashboardHighlights();
-  });
+
   $('#parameters-collapse-div').append('<hr>');
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
     urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
   addCheckboxes('parameters-collapse-div','lu-highlights-radio','Tables - Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
-  $('#lu-highlights-radio').change( ()=>{
+  $('#lc-highlights-radio,#lu-highlights-radio').change( ()=>{
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
   });
@@ -547,7 +540,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
  
   $('#introModal-body').append(staticTemplates.walkThroughButton);
-}else if(mode === 'TEST' || mode === 'IDS'){
+}else if(mode === 'TEST' || mode === 'IDS' || mode === 'Algal-Mapper'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
@@ -836,11 +829,11 @@ addColorPicker('measure-area-div-icon-bar','area-color-picker','updateAreaColor'
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTipHover);
-// if(mode !== 'STORM'){
+if(mode !== 'Algal-Mapper'){
   addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query '+mode+' Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTipHover);
   addDropdown('pixel-chart-div','pixel-collection-dropdown','Choose which '+mode+' time series to chart','whichPixelChartCollection','Choose which '+mode+' time series to chart.');
  
-// }
+}
 // $('#pixel-chart-div').append(staticTemplates.showChartButton);
 // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
 if(mode === 'geeViz'){

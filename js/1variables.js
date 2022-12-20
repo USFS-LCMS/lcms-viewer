@@ -201,6 +201,7 @@ let upperThresholdFastLoss = 1.0;
 if(lowerThresholdSlowLoss === undefined){lowerThresholdSlowLoss = lowerThresholdDecline}
 if(lowerThresholdFastLoss === undefined){lowerThresholdFastLoss = lowerThresholdDecline} 
 
+
  
 /*Set up some boundaries of different areas to zoom to*/
 const clientBoundsDict = {'All':{"geodesic": false,"type": "Polygon","coordinates": [[[-169.215141654273, 71.75307977193499],

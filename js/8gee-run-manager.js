@@ -3080,7 +3080,8 @@ let startYearT = parseInt(urlParams.startYear);
 let endYearT = parseInt(urlParams.endYear);
 let dashboardFolder = 'projects/lcms-292214/assets/Dashboard2';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
-
+window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
+					
 var summaryAreas = {
   'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false},
   'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE'},
@@ -3088,27 +3089,27 @@ var summaryAreas = {
   'USFS Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8'},
   'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8'},
 }
-if(urlParams.summaryViz == undefined || urlParams.summaryViz == null){
-  urlParams.summaryViz = {};
+if(urlParams.layerViz == undefined || urlParams.layerViz == null){
+  urlParams.layerViz = {};
   Object.keys(summaryAreas).map(k=>{
     let kName = k.replaceAll(' ','-');
-    urlParams.summaryViz[kName]=summaryAreas[k].visible;
+    urlParams.layerViz[kName]=summaryAreas[k].visible;
   })
 }else{
-  Object.keys(urlParams.summaryViz).map(k=>{
+  Object.keys(urlParams.layerViz).map(k=>{
     let t;
-    if(urlParams.summaryViz[k] == 'true'){urlParams.summaryViz[k]=true}
+    if(urlParams.layerViz[k] == 'true'){urlParams.layerViz[k]=true}
     else{
-      urlParams.summaryViz[k]=false
+      urlParams.layerViz[k]=false
     }
   });
   Object.keys(summaryAreas).map(k=>{
     let kName = k.replaceAll(' ','-')
-    summaryAreas[k].visible = urlParams.summaryViz[kName]
+    summaryAreas[k].visible = urlParams.layerViz[kName]
   })
 }
 
-let summaryVizKeys = Object.keys(urlParams.summaryViz);
+let layerVizKeys = Object.keys(urlParams.layerViz);
 
 function loadGEESummaryAreas(summaryAreaObj,name){
     path = summaryAreaObj.path
@@ -3146,16 +3147,16 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 
   
   let firstComparisonLayerI;
-  ['Land_Cover','Land_Use'].map(nm=>{
-    console.log(nm)
-    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
-    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  // ['Land_Cover','Land_Use'].map(nm=>{
+  //   console.log(nm)
+  //   let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  //   let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
-    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
+  //   Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
+  //   Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
 
-    firstComparisonLayerI = false;
-  })
+  //   firstComparisonLayerI = false;
+  // })
   
   Object.keys(summaryAreas).map(k=>{
     loadGEESummaryAreas(summaryAreas[k],k)
@@ -3165,8 +3166,8 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
     setTimeout(()=>{
       Object.keys(layerObj).map(k=>{
         let nm = layerObj[k].name.replaceAll(' ','-');
-        if(summaryVizKeys.indexOf(nm)>-1){
-          urlParams.summaryViz[nm]=layerObj[k].visible;
+        if(layerVizKeys.indexOf(nm)>-1){
+          urlParams.layerViz[nm]=layerObj[k].visible;
         }
       })}
     ,1000)
@@ -3174,4 +3175,19 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   })
   
 
+}
+
+function runAlgal(){
+  localStorage.showToolTipModal= 'false';
+  $('#query-label').click();
+  let ab = ee.ImageCollection('projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images');
+  let algalLegendDict={'Algal Negative':'00D','Algal Positive':'D00'};
+  Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'AB Classified',true)
+
+   
+    Map2.addTimeLapse(ab.select([1]),{'min':1000000,'max':5000000,'palette':'00D,D00','dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Count (cells/mL)')
+
+    
+    Map2.addTimeLapse(ab.select([2]),{'min':200000000,'max':1000000000,'palette':'00D,D00','dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Biovolume (um3)')
+    setTimeout(()=>{$('#AB-Classified-1-name-span').click()},5000)
 }
