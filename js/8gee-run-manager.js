@@ -3073,21 +3073,75 @@ function runDashboard(){
   console.log('running dashboard');
   let tryDirs = ['./geojson/','https://storage.googleapis.com/lcms-dashboard-fast/'];
   let tryDirI = 0;
-  
+let fipsDict = ee.Dictionary({'01':'AL',
+'02':'AK',
+'04':'AZ',
+'05':'AR',
+'06':'CA',
+'08':'CO',
+'09':'CT',
+'10':'DE',
+'11':'DC',
+'12':'FL',
+'13':'GA',
+'15':'HI',
+'16':'ID',
+'17':'IL',
+'18':'IN',
+'19':'IA',
+'20':'KS',
+'21':'KY',
+'22':'LA',
+'23':'ME',
+'24':'MD',
+'25':'MA',
+'26':'MI',
+'27':'MN',
+'28':'MS',
+'29':'MO',
+'30':'MT',
+'31':'NE',
+'32':'NV',
+'33':'NH',
+'34':'NJ',
+'35':'NM',
+'36':'NY',
+'37':'NC',
+'38':'ND',
+'39':'OH',
+'40':'OK',
+'41':'OR',
+'42':'PA',
+'44':'RI',
+'45':'SC',
+'46':'SD',
+'47':'TN',
+'48':'TX',
+'49':'UT',
+'50':'VT',
+'51':'VA',
+'53':'WA',
+'54':'WV',
+'55':'WI',
+'56':'WY'});
 let addedLayerCount=0;
 
 let startYearT = parseInt(urlParams.startYear);
 let endYearT = parseInt(urlParams.endYear);
-let dashboardFolder = 'projects/lcms-292214/assets/Dashboard2';
+let dashboardFolder = 'projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas';//'projects/lcms-292214/assets/Dashboard2';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
 window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
-					
+
+huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06")
+    .filter(ee.Filter.inList('states',['CN','MX','AK','AK,CN','HI','AS']).not())
+// Map2.addLayer(huc6_conus,{layerType:'geeVectorImage'},'HUC06')
 var summaryAreas = {
-  'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false},
-  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE'},
-  'USFS Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88'} , 
-  'USFS Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8'},
-  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8'},
+  'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false,'title':'Level 06 hydrological unit codes (watersheds)'},
+  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE','title':'All counties throughout the US'},
+  'CFLRP':{'path':'CFLRP','color':'D0D','unique_fieldname':'PROJECTNAM','visible':false, 'title':'Collaborative Forest Restoration Program areas throughout the US'},
+  'USFS Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88', 'title':'USFS planning areas'} , 
+  'USFS Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8','title':'USFS Forest District boundaries'},
+  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8','title':'USFS Forest boundaries'},
 }
 if(urlParams.layerViz == undefined || urlParams.layerViz == null){
   urlParams.layerViz = {};
@@ -3118,8 +3172,13 @@ function loadGEESummaryAreas(summaryAreaObj,name){
     if(summariesT.length>0){
       summariesT = summariesT.map(id=>ee.FeatureCollection(id));
       summariesT = ee.FeatureCollection(summariesT).flatten();
- 
-      Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid',strokeWeight:1.5},name,summaryAreaObj.visible)
+      if(name==='HUC 6'){
+        summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('name')).cat(', ').cat(ee.String(f.get('states')))))
+      }
+      if(name==='Counties'){
+        summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('NAME')).cat(', ').cat(fipsDict.get(ee.String(f.get('STATEFP'))))))
+      }
+      Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid',strokeWeight:1.5,title:summaryAreaObj.title},name,summaryAreaObj.visible)
   }
 }
 
@@ -3146,17 +3205,32 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms)  
 
   
-  let firstComparisonLayerI;
-  // ['Land_Cover','Land_Use'].map(nm=>{
-  //   console.log(nm)
-  //   let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
-  //   let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+  let firstComparisonLayerI=false;
+  ['Land_Cover','Land_Use'].map(nm=>{
+    console.log(nm)
+    let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
+    let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
-  //   Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
-  //   Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
+    Map2.addLayer(pre,{'autoViz':true,opacity:0.3,layerType:'geeImage'},`${nm.replace('_',' ')} ${startYearT}-${startYearT+2}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${startYearT} to ${startYearT+2}`,'reference-layer-list');
+    Map2.addLayer(post,{'autoViz':true,opacity:0.1,layerType:'geeImage'},`${nm.replace('_',' ')} ${endYearT-2}-${endYearT}`,firstComparisonLayerI,null,null,`Most common ${nm.replace('_',' ')} class from ${endYearT-2} to ${endYearT}`,'reference-layer-list');
 
-  //   firstComparisonLayerI = false;
-  // })
+    firstComparisonLayerI = false;
+  })
+  
+  let lossYearPalette = 'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02';
+  let gainYearPalette = 'c5ee93,00a398';
+
+    let code_dict = {2:{label:'Slow Loss',palette:lossYearPalette,visible:true},
+                    3:{label:'Fast Loss',palette:lossYearPalette,visible:true},
+                    4:{label:'Gain',palette:gainYearPalette,visible:false}};
+    Object.keys(code_dict).map(k=>{
+      let changeT = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,endYearT,'year')).select(['Change'])
+      changeT = changeT.map(img=>ee.Image.constant(ee.Number(img.date().get('year'))).int16().updateMask(img.eq(ee.Image(parseInt(k))))).max()
+      Map2.addLayer(changeT,{min:startYearT,max:endYearT,palette:code_dict[k].palette,layerType:'geeImage'},code_dict[k].label,code_dict[k].visible,null,null,``,'reference-layer-list');
+     
+    })
+  
+  
   
   Object.keys(summaryAreas).map(k=>{
     loadGEESummaryAreas(summaryAreas[k],k)
@@ -3182,7 +3256,7 @@ function runAlgal(){
   $('#query-label').click();
   let ab = ee.ImageCollection('projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images');
   let algalLegendDict={'Algal Negative':'00D','Algal Positive':'D00'};
-  Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'AB Classified',true)
+  Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'Algal Bloom Classification',true)
 
    
     Map2.addTimeLapse(ab.select([1]),{'min':1000000,'max':5000000,'palette':'00D,D00','dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Count (cells/mL)')

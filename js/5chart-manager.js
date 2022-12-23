@@ -269,7 +269,7 @@ function dashboardBoxSelect(){
 					// selectedTSData.size().getInfo(f=>console.log(`Selected ts n: ${f}`))
 					let selectedAttributes = selectedFeatures.toList(10000,0).map(f=>ee.Feature(f).toDictionary())
 					selectedAttributes.getInfo(f=>console.log(f))
-					selectedFeatures = selectedFeatures.map(f=>f.simplify(5000, selectedFeatures.first().geometry().projection()))
+					selectedFeatures = selectedFeatures.map(f=>f.simplify(500, selectedFeatures.first().geometry().projection()))
 					selectedFeatures.evaluate((f,failure)=>{
 						console.log(`Failure: ${failure}`);
 						let update=false;
@@ -1106,7 +1106,7 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 				    return values;
 				})
 }
-var chartFormatDict = {'Percentage': {'mult':'NA','label':'%','places':2}, 'Acres': {'mult':0.000247105,'label':' Acres','places':0}, 'Hectares': {'mult':0.0001,'label':' Hectares','places':0}};
+var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area','places':2}, 'Acres': {'mult':0.000247105,'label':'Acres','places':0}, 'Hectares': {'mult':0.0001,'label':'ha','places':0}};
 	// var chartFormat = 'Acres';//Options are: Percentage, Acres, Hectares
 function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
@@ -1138,7 +1138,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	var colorsI = 0;
 	var selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
 	// console.log(selectedFeatureNames)
-	if(selectedFeatureNames.length>3){
+	if(selectedFeatureNames.length>1){
 		var area_names = 'LCMS Summary for '+selectedFeatureNames.length.toString()+ ' areas'
 	}else{
 		var area_names = selectedFeatureNames.join(', ');
@@ -1414,26 +1414,28 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
                 display: true,
                 position:'top',
                 text: name,
-                fontSize: 14
+                fontSize: 12,
+				wrap: true,
+				maxWidth: 50
             },
             legend:{
               display:true,
               position:'bottom',
               labels : {
-				fontSize:11,
-                boxWidth:4,
-                usePointStyle: true,
-				padding:1,
+				usePointStyle: true,
+				fontSize:10,
+                boxWidth:5,
+				pointStyle:'circle',
+				padding:5,
 				
               },
-			  margin:5
             },
             chartArea: {
                 backgroundColor: '#D6D1CA'
             },
             scales: {
-              yAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:chartFormatDict[chartFormat].label}}],
-              xAxes: [{ stacked: stacked ,scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
+              yAxes: [{ stacked: stacked ,ticks: {fontSize: 10},scaleLabel:{display:true,labelString:chartFormatDict[chartFormat].label}}],
+              xAxes: [{ stacked: stacked ,ticks: {fontSize: 10},scaleLabel:{display:true,labelString:'Year'},maxBarThickness: 100}]
             },
 			labels:{
 				padding:0

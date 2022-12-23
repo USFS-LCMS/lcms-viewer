@@ -213,7 +213,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#sidebar-left-header').append(staticTemplates.dashboardProgressDiv);
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
   
-  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',()=>{updateDashboardCharts();updateDashboardHighlights();},()=>{updateDashboardCharts();updateDashboardHighlights();})
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
   
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS summary areas to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
@@ -310,7 +310,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // $('#parameters-collapse-div').append(selectionModeDiv);
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-  $('#support-collapse-div').append(`<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">DASHBOARD TOUR</a>`);
+  
 
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
@@ -1093,7 +1093,7 @@ $('#summary-pairwise-diff-radio').change(()=>{
   pairwiseDiffFun();
   updateDashboardCharts();
 })
-  $('#support-collapse-div').append(staticTemplates.supportDiv);
+  $('#support-collapse-div').append(staticTemplates.supportDivDashboard);
 
   
 }

@@ -280,7 +280,7 @@ const staticTemplates = {
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
                                     `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
                                     `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding error please refer to the LCMS methods document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
@@ -554,7 +554,7 @@ const staticTemplates = {
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding error please refer to the LCMS methods document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         
@@ -680,7 +680,7 @@ const staticTemplates = {
                                 <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                                <a class = 'links' onclick = 'downloadTutorial()'>
+                                <a id = 'tutorial-download' class = 'links' onclick = 'downloadTutorial()'>
                                 Click to launch a tutorial that explains how to utilize the Data Explorer</a>
                             </div>
                         </div>
@@ -800,6 +800,139 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
                                 Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about LCMS or have feedback on the LCMS Data Explorer.</a>
+                            </div>
+                        </section>
+        			</div>`,
+                    supportDivDashboard :`<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
+                            <h3 class = ' text-capitalize'>Tutorial</h3>
+                        </header>
+                        <div class = 'row ' onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">DASHBOARD TOUR</a>
+                            </div>
+                        </div>
+                        <hr>
+                         <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                            <h3 class = ' text-capitalize'>LCMS Methods</h3>
+                        </header>
+                        <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                Click to open in-depth methods document:
+                                <li>
+                                    <a class = 'links' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>Version 2021.7 (CONUS and SEAK)</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                </li>   
+                            </div>
+                        </div>
+                        <hr>
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize' title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow">Other LCMS Viewers</h3>
+                        </header>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'LCMS icon' src = './images/lcms-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a class = 'links' title = "Visualize and explore LCMS map outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+                                <hr>
+                                <a class = 'links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+                                <hr>
+                                <a class = 'links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                            </div>
+                        </section>
+                        <hr>
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
+                        </header>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                    <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.</p>
+                                </a>
+                            </div>
+                        </section>
+                        
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <h2>"..."</h2>
+                            </div>
+                            <div class = 'col-lg-10  support-text'>
+                                    Suggested citation: 
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2022). Landscape Change Monitoring System Dashboard [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/dashboard.html (Accessed: ${new Date().toStringFormat()}).
+                                    </p>
+                                    <span>
+                                        <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
+                                        </button>
+                                        <p id = 'copiedCitationMessageBox'></p>
+                                    </span>
+                            </div>
+                        </section>
+                        <hr>
+                        <header class ='row'>
+                            <h3 class ='text-capitalize'>Contact</h3>
+                        </header>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './images/email.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
+                                Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about LCMS or have feedback on the LCMS Dashboard.</a>
                             </div>
                         </section>
         			</div>`,
@@ -2749,6 +2882,34 @@ class report {
             
             
         };
+        this.addByID = function(id){
+
+            
+            const d = $(`#${id}`);
+            
+            const aspectRatio  = d.height()/d.width();
+            const imgW = this.w- this.margin * 4
+            const h = imgW*aspectRatio;
+            const margin = this.margin;
+            this.currentY += this.margin;
+            var that = this;
+            const currentY = this.currentY;
+            // let dataURL = d.toDataURL("image/jpg", 1.0);
+            // this.doc.addImage(dataURL, 'JPEG', this.margin, this.currentY, this.w, h ,{compresion:'NONE'});
+
+            // const canvas  = await html2canvas(d)
+            // var imgData = canvas.toDataURL('image/png');
+            //         console.log('Report Image URL: '+imgData);
+            //         console.log([margin, currentY, imgW, h,aspectRatio ])
+            //         // var doc = new jsPDF('p', 'mm', [297, 210]); //210mm wide and 297mm high
+                    
+            //         that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h ,{compresion:'NONE'});
+            //         this.currentY += h+this.margin;
+                
+            
+
+            
+        };
         this.outstandingCharts=0;
         this.addChart = function (id,type) {
             var that  = this;
@@ -2836,6 +2997,8 @@ function makeDashboardReport(){
         dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2021-7_Methods.pdf');
 
         dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,10);
+        
+        // dashboardReport.addByID('map')
         
         // dashboardReport.doc.addPage();
         dashboardReport.addText(`Chart Results`,18);
