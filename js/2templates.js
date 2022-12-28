@@ -152,6 +152,7 @@ const staticTemplates = {
 					        <div role="list" id = 'sidebar-left'></div>
 					    </nav>`,
 	geeSpinner : `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
+    lcmsSpinner : `<div id='lcms-spinner' style='position:absolute;right:40%; bottom:40%;width:10rem;height:8rem;z-index:10000000;display:none;'><img  alt= "LCMS logo spinner" title="Background processing is occurring" class="fa fa-spin" src="./images/lcms-icon.png"  style='width:100%;height:100%'><span id = 'lcms-spinner-message'></span></div>`,
     authErrorMessage:`<p>---  Error --- Map Loading Error ---</p>
                                                               <p>Map data did not load correctly and cannot be used at this time. We apologize for this inconvenience and are working to resolve this issue.</p>
                                                               ${specificAuthErrorMessage} 
@@ -543,11 +544,11 @@ const staticTemplates = {
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
         <div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
-        <div class='btn dashboard-download-button' onclick='makeDashboardReport()' >
+        <button class='btn dashboard-download-button' id='dashboard-download-button' onclick='makeDashboardReport()' >
           <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
           Download Report
           
-        </div>
+        </button>
         
         
       </div>
@@ -571,16 +572,16 @@ const staticTemplates = {
         
         <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all highlights-div '><i class="fa fa-eraser pr-1" style="display:inline-block;"></i>Clear All Selected Features</div>
         </div>`,
-        dashboardDownloadReportButton:`<div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
-        <div class='btn dashboard-download-button' onclick='makeDashboardReport()' >
-          <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
-          Download Report
+    //     dashboardDownloadReportButton:`<div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
+    //     <button class='btn dashboard-download-button' id='dashboard-download-button' onclick='makeDashboardReport()' >
+    //       <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
+    //       Download Report
           
-        </div>
+    //     </button>
         
         
-      </div>
-     `,
+    //   </div>
+    //  `,
         walkThroughPopup:`<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>
@@ -2858,6 +2859,13 @@ class report {
 
             }
         };
+        this.getTextHeight = function(text,fontSize=12){
+            this.doc.setFontSize(fontSize);
+           
+            let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
+            let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
+            return textBlockHeight
+        };
         this.addText = function (text, fontSize = 12,link=null) {
             console.log(`Adding text: ${text}`);
             
@@ -2882,40 +2890,69 @@ class report {
             
             
         };
-        this.addByID = function(id){
+        this.addBySelector = function(selector,preceedingText=null,preceedingTextFontSize=18,maxWidth=null,callback=null){
 
+            // const d = $(selector);
+            const d = document.querySelector(selector);
+            const aspectRatio  = d.clientHeight/d.clientWidth;
+            let imgW;
+            if(maxWidth===null|| maxWidth===undefined){
+                imgW = this.w- this.margin * 2
+            }else{
+                imgW = maxWidth;
+            }
             
-            const d = $(`#${id}`);
-            
-            const aspectRatio  = d.height()/d.width();
-            const imgW = this.w- this.margin * 4
             const h = imgW*aspectRatio;
             const margin = this.margin;
-            this.currentY += this.margin;
+            // this.currentY += this.margin;
+
+            if(preceedingText!== null && preceedingText!==undefined){
+                let textHeight = this.getTextHeight(preceedingText,preceedingTextFontSize);
+                this.checkForRoom(textHeight+margin+h);
+                this.addText(preceedingText,preceedingTextFontSize);
+            }else{
+                this.checkForRoom(h);
+            }
+            
             var that = this;
             const currentY = this.currentY;
             // let dataURL = d.toDataURL("image/jpg", 1.0);
             // this.doc.addImage(dataURL, 'JPEG', this.margin, this.currentY, this.w, h ,{compresion:'NONE'});
 
-            // const canvas  = await html2canvas(d)
-            // var imgData = canvas.toDataURL('image/png');
-            //         console.log('Report Image URL: '+imgData);
-            //         console.log([margin, currentY, imgW, h,aspectRatio ])
-            //         // var doc = new jsPDF('p', 'mm', [297, 210]); //210mm wide and 297mm high
-                    
-            //         that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h ,{compresion:'NONE'});
-            //         this.currentY += h+this.margin;
+
+            html2canvas(d, {
+                useCORS: true,
+                allowTaint: false,
+				// scale: 3,
+				// backgroundColor: null,
                 
-            
+            }).then(canvas=>{
+                var imgData = canvas.toDataURL('image/png');
+                // console.log('Report Image URL: '+imgData);
+                console.log([margin, currentY, imgW, h,aspectRatio ])
+               
+                that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
+                that.currentY += h;
+                that.checkForRoom();
+                callback();
+            });
+            // domtoimage.toPng(d, { quality: 0.95 })
+            //     .then(function (imgData) {
+            //         console.log([margin, currentY, imgW, h,aspectRatio ])
+            //         that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
+            //         that.currentY += h;
+            //         that.checkForRoom();
+            //         callback();
+            //     });
 
             
         };
         this.outstandingCharts=0;
-        this.addChart = function (id,type) {
+        this.addChartJS = function (id) {
             var that  = this;
             that.outstandingCharts++;
             console.log(`Adding chart: ${id}`);
-            if(type==='chartJS'){
+            
                 const canvas0 = document.getElementById(id);
                 // const legend_div= document.getElementById("chart-canvas-Change-"+thisFC+"-js-legend");
                 let chartHeight = canvas0.height;
@@ -2937,30 +2974,21 @@ class report {
                 this.currentY = this.currentY + chartH+this.margin;
                 that.outstandingCharts--;
                 // return 'done';
-            }else if(type==='Plotly'){
-                let chartHeight = 600;
-                let chartWidth = 800;
-                let aspectRatio = chartHeight / chartWidth;
-                let chartW = this.w - this.margin * 2;
-                let chartH = chartW * aspectRatio;
-                this.checkForRoom(chartH+this.margin);
-
-                
-                return Plotly.toImage(id, { format: 'png', width: chartWidth, height: chartHeight }).then(function (dataURL) {
-                    //   console.log(dataURL);
-                      let link = document.createElement("a");
-                        link.download = id;
-                        link.href = dataURL;
-                        // link.click();
-                        // delete link;
-                        that.doc.addImage(dataURL, 'PNG', that.margin, that.currentY, chartW, chartH, { compresion:'NONE' });
-                        that.currentY = that.currentY + chartH+that.margin;
-                        that.outstandingCharts--;
-                       
-                  });
-            }
+            
             
 
+        };
+        this.addPlotlyPlots = function(){
+            let chartHeight = 400;
+            let chartWidth = 600;
+            let aspectRatio = chartHeight / chartWidth;
+            let chartW = this.w - this.margin * 4;
+            let chartH = chartW * aspectRatio;
+            dashboardPlotlyDownloadURLs.map(dataURL=>{
+                this.checkForRoom(chartH+this.margin);
+                this.doc.addImage(dataURL, 'PNG', this.margin*2, this.currentY, chartW, chartH, { compresion:'NONE' });
+                this.currentY = this.currentY + chartH+this.margin;
+            })
         };
         this.addTables = function(){
             let that = this;
@@ -2983,6 +3011,9 @@ class report {
 }
 
 function makeDashboardReport(){
+    $('body').prop('disabled',true);
+    $('#lcms-spinner').prop('title','Downloading report');
+    $('#lcms-spinner').show();
     var dashboardReport = new report();
     dashboardReport.addReportHeader();
     TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
@@ -2998,39 +3029,38 @@ function makeDashboardReport(){
 
         dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,10);
         
-        // dashboardReport.addByID('map')
-        
-        // dashboardReport.doc.addPage();
-        dashboardReport.addText(`Chart Results`,18);
-        dashboardReport.addText(`The following charts depict the portion of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear}. These graphs can be useful to identify broad trends of change within and between different classes.`,12);
-        let chartTypes = {'chartJS':'#dashboard-results-div canvas'}//,'Plotly':'#dashboard-results-div div'};
-        Object.keys(chartTypes).map(k=>{
-            let w = chartTypes[k];
-            $(w).each(function() {
+     
+        function allTheRest(){
+       
+
+            dashboardReport.currentY+=dashboardReport.margin;
+            dashboardReport.addText(`Chart Results`,18);
+            dashboardReport.addText(`The following charts depict the portion of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear}. These graphs can be useful to identify broad trends of change within and between different classes.`,12);
+            
+            $('#dashboard-results-div canvas').each(function() {
                 let id=$(this).attr('id');
-            
-                if(id!==undefined&&id.indexOf('chart-canvas')>-1){
-                    console.log(id)
-                    dashboardReport.addChart(id,k);
-                }
-        })
-        
-        
-                    
-                
-                
-            });
-            
-        // dashboardReport.doc.addPage();
-        dashboardReport.addText(`Tabular Results`,18);
-        dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.`,12);
-        dashboardReport.addTables();
-        // let reportName = $('#report-name').val();
-        // if(reportName===''){
-         let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
-        // }
-        
-        dashboardReport.download(reportName)
+                if(id!==undefined&&id.indexOf('chart-canvas')>-1){dashboardReport.addChartJS(id)}
+        });
+             // dashboardReport.doc.addPage();
+             dashboardReport.addPlotlyPlots();
+             dashboardReport.addText(`Tabular Results`,18);
+             dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.`,12);
+             dashboardReport.addTables();
+             let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
+             
+             
+             dashboardReport.download(reportName);
+             $('body').prop('disabled',false);
+             $('#lcms-spinner').hide();
+               
+         
+           
+        };
+        function addLegend(){dashboardReport.addBySelector('#legend-collapse-div',null,12,60,allTheRest);}
+        // addLegend();
+        dashboardReport.doc.addPage();
+        dashboardReport.currentY=dashboardReport.margin;
+        dashboardReport.addBySelector('#map','Overview Map',18,null,addLegend);
     },500)
     
     

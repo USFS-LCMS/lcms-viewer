@@ -14,6 +14,7 @@ $('body').append(staticTemplates.bottomBar);
 
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
 if(mode==='lcms-dashboard'){
+  $('body').append(staticTemplates.lcmsSpinner);
   $('body').append(staticTemplates.dashboardResultsDiv);
   $('body').append(staticTemplates.dashboardHighlightsDiv);
 }
@@ -249,7 +250,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
   });
   if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
-    urlParams.annualTransition = {"Annual": true,"Transition": false}
+    urlParams.annualTransition = {"Annual": true,"Transition": true}
   }
   addCheckboxes('parameters-collapse-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
   $('#annual-transition-radio').change( ()=>{

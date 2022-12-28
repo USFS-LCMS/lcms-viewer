@@ -104,7 +104,7 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 					layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
 						strokeColor:'#0FF',
 						fillColor:'#0FF',
-						fillOpacity:0.3,
+						fillOpacity:0.2,
 						strokeOpacity: 0,
 						strokeWeight: 0,
 						path:polyCoordsT,
@@ -168,6 +168,7 @@ function updateProgress(id,val) {
   };
 
 function startDashboardClickLayerSelect(){
+	$('#dashboard-download-button').prop('disabled',true);
 	google.maps.event.clearListeners(map, 'click');
 	
 	function updateSelectedDashboardFeatures(event){
@@ -201,6 +202,7 @@ function startDashboardClickLayerSelect(){
 				updateProgress('.progressbar',pLoaded);
 				if(pLoaded===100){
 					$('#loading-spinner-logo').hide();
+					$('#dashboard-download-button').prop('disabled',false);
 					// setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
 					
 				}
@@ -240,6 +242,7 @@ var boxSelectID=0;
 function dashboardBoxSelect(){
 	let visibleDashboardLayers = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible);
 	if(visibleDashboardLayers.length>0){
+		$('#dashboard-download-button').prop('disabled',true);
 		let geeBox;
 		boxSelectID++;
 		const thisBoxSelectID=boxSelectID;
@@ -279,6 +282,7 @@ function dashboardBoxSelect(){
 							let pLoaded = parseInt(i/n*100);
 							updateProgress('.progressbar',pLoaded);
 							if(pLoaded===100){
+								$('#dashboard-download-button').prop('disabled',false);
 								$('#loading-spinner-logo').hide();
 								$('#summary-area-selection-radio').css('pointer-events','auto');
 								if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening();}
@@ -1107,6 +1111,7 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 				})
 }
 var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area','places':2}, 'Acres': {'mult':0.000247105,'label':'Acres','places':0}, 'Hectares': {'mult':0.0001,'label':'ha','places':0}};
+var dashboardPlotlyDownloadURLs = [];
 	// var chartFormat = 'Acres';//Options are: Percentage, Acres, Hectares
 function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
@@ -1199,6 +1204,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		$(`#${chartID}`).remove();  
 		//Add new chart
 		$('#dashboard-results-div').append(`<div class = "plotly-chart" id="${chartID}"><div>`);
+		$('#dashboard-results-div').append(`<div class = "plotly-chart plotly-chart-download" id="${chartID}-download"><div>`);
 		// $('#chartDiv').append('<hr>');
 		//Set up chart object
 		// var chartJSChart = new Chart($(`#${chartID}`),{
@@ -1279,7 +1285,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2); 
 		let plotWidth=plotHeight*1.5
 		var layout = {
-		title: name,
+		title: `<b>${name}</b>`,
 		font: {
 			size: 8
 		},
@@ -1306,9 +1312,17 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 			scrollZoom: true,
 			displayModeBar: false
 			};
-		Plotly.newPlot(`${chartID}`, data, layout,config);
 	
-
+		let layout2 = JSON.parse(JSON.stringify(layout));;
+		
+		layout2.font.size=20;
+		layout2.margin.t=80;
+		console.log([layout2.font.size,layout.font.size])
+		Plotly.newPlot(`${chartID}-download`, data, layout2,config).then((chart)=>{
+			Plotly.toImage(chart,{width:1200,height:800})
+				 .then(url=>dashboardPlotlyDownloadURLs.push(url))});
+				//  layout.font.size=8;
+		Plotly.newPlot(`${chartID}`, data, layout,config);
 	}else if(annualOrTransition === 'annual'){
 		var startI = years.indexOf(urlParams.startYear.toString());
         var endI = years.indexOf((urlParams.endYear).toString())+1;

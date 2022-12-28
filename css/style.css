@@ -572,6 +572,11 @@ button {
   padding-top:0.75rem;
   margin-left:0.5rem;
 }
+.plotly-chart-download{display: none;}
+
+
+
+
 /*///////////////////////////////////////////////////////////*/
 /*Legend div styling*/
 .legendDiv{
