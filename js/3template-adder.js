@@ -241,7 +241,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addMultiRadio('parameters-collapse-div','summary-pairwise-diff-radio','Annual Amount or Change in Annual Amount','pairwiseDiff',urlParams.pairwiseDiff);
 
   if(urlParams.whichProducts === null || urlParams.whichProducts === undefined){
-    urlParams.whichProducts = {"Land-Cover": true,"Land-Use": true}
+    urlParams.whichProducts = {"Land-Cover": true,"Land-Use": true,"Change":true}
   }
   addCheckboxes('parameters-collapse-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
   $('#which-units-radio,#which-products-radio').change( ()=>{
@@ -258,11 +258,22 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   });
   var highlightsLCLookup = {'Trees':'Trees','Tall-Shrubs':'Tall Shrubs','Shrubs':'Shrubs','Grass-Forb-Herb':'Grass/Forb/Herb','Barren-or-Impervious':'Barren or Impervious','Water':'Water','Snow-or-Ice':'Snow or Ice'};
   var  highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture','Other':'Other'};
-  var highlightLCMSProducts = {'Land_Cover':[],'Land_Use':[]};
+  var  highlightsChangeLookup = {'Stable':'Stable','Slow-Loss':'Slow Loss','Fast-Loss':'Fast Loss','Gain':'Gain'};
+  var highlightLCMSProducts = {'Land_Cover':[],'Land_Use':[],'Change':[]};
+  var highlightsSortingDict = {'Trees':'asc','Tall-Shrubs': 'desc','Shrubs':'desc','Grass/Forb/Herb':'desc','Barren or Impervious':'desc','Water':'asc','Snow or Ice':'asc',
+'Agriculture':'asc','Developed':'desc','Forest':'asc','Non-Forest Wetland':'asc','Rangeland or Pasture':'desc','Other':'desc',
+'Stable':'asc','Slow Loss':'desc','Fast Loss':'desc','Gain':'desc'};
   function updateHighlightsProductSelectionDict(){
     highlightLCMSProducts['Land_Cover']=Object.keys(lcHighlightClasses).filter(k=>lcHighlightClasses[k]).map(v=>highlightsLCLookup[v]);
     highlightLCMSProducts['Land_Use']=Object.keys(luHighlightClasses).filter(k=>luHighlightClasses[k]).map(v=>highlightsLULookup[v]);
+    highlightLCMSProducts['Change']=Object.keys(changeHighlightClasses).filter(k=>changeHighlightClasses[k]).map(v=>highlightsChangeLookup[v]);
   }
+  $('#parameters-collapse-div').append('<hr>');
+  
+  if(urlParams.changeHighlightClasses === null || urlParams.changeHighlightClasses === undefined){
+    urlParams.changeHighlightClasses = {"Stable": false,"Slow-Loss":true,"Fast-Loss": true,"Gain": true}
+  }
+  addCheckboxes('parameters-collapse-div','change-highlights-radio','Tables - Change Classes','changeHighlightClasses',urlParams.changeHighlightClasses);
   $('#parameters-collapse-div').append('<hr>');
   
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
@@ -275,7 +286,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
   addCheckboxes('parameters-collapse-div','lu-highlights-radio','Tables - Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
-  $('#lc-highlights-radio,#lu-highlights-radio').change( ()=>{
+  $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
   });

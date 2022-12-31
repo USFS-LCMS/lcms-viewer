@@ -267,9 +267,7 @@ function dashboardBoxSelect(){
 				var i=1;
 				visibleDashboardLayers.map(layer=>{
 					let selectedFeatures = layer.queryItem.filter(boundsFilter);
-					layer.selectedTSData = lcmsTS.filter(ee.Filter.bounds(selectedFeatures,500));
-					// Map2.addLayer(layer.selectedTSData,{layerType:'geeVector'},layer.name+' Selected TS Data')
-					// selectedTSData.size().getInfo(f=>console.log(`Selected ts n: ${f}`))
+					
 					let selectedAttributes = selectedFeatures.toList(10000,0).map(f=>ee.Feature(f).toDictionary())
 					selectedAttributes.getInfo(f=>console.log(f))
 					selectedFeatures = selectedFeatures.map(f=>f.simplify(500, selectedFeatures.first().geometry().projection()))
@@ -1110,19 +1108,19 @@ function getAreaSummaryTable(areaChartCollection,area,xAxisProperty,multiplier,d
 				    return values;
 				})
 }
-var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area','places':2}, 'Acres': {'mult':0.000247105,'label':'Acres','places':0}, 'Hectares': {'mult':0.0001,'label':'ha','places':0}};
-var dashboardPlotlyDownloadURLs = [];
+var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area','places':2}, 'Acres': {'mult':0.222395,'label':'Acres','places':0}, 'Hectares': {'mult':0.09,'label':'ha','places':0}};
+var dashboardPlotlyDownloadURLs;
 	// var chartFormat = 'Acres';//Options are: Percentage, Acres, Hectares
 function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	// console.log(layer)
-	
+	dashboardPlotlyDownloadURLs = [];
 	
 	
 
-	var colors = {'Change':["f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
+	var colors = {'Change':["3d4551","f39268","d54309","00a398","1B1716"].map(c =>'#'+c),
 						'Land_Cover':["005e00","008000","00cc00","b3ff1a","99ff99","b30088","e68a00","ffad33","ffe0b3","ffff00","AA7700","d3bf9b","ffffff","4780f3","1B1716"].map(c =>'#'+c),
 						'Land_Use': ["efff6b","ff2ff8","1b9d0c","97ffff","a1a1a1","c2b34a","1B1716"].map(c =>'#'+c)};
-	var names = {'Change':["Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
+	var names = {'Change':["Stable","Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
 				'Land_Cover':["Trees",
 	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
 				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
@@ -1137,7 +1135,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	colors['Land_Cover'] = ['#005e00','#b30088','#e68a00','#ffff00','#d3bf9b',"#ffffff","#4780f3","#1B1716"]
 	}
 
-	var stacked= false;
+	var stacked = false;
 	var fieldNames = names[whichOne].map(w => whichOne + '---'+w);
 	var chartID = `chart-canvas-${layer.id}-${whichOne}-${annualOrTransition}`;
 	var colorsI = 0;
@@ -1266,7 +1264,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		type: "sankey",
 		orientation: "h",
 		node: {
-			pad: 25,
+			pad: 20,
 			thickness: 20,
 			line: {
 			color: "black",
@@ -1317,7 +1315,8 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		
 		layout2.font.size=20;
 		layout2.margin.t=80;
-		console.log([layout2.font.size,layout.font.size])
+		layout2.margin.pad=20;
+		// console.log([layout2.font.size,layout.font.size])
 		Plotly.newPlot(`${chartID}-download`, data, layout2,config).then((chart)=>{
 			Plotly.toImage(chart,{width:1200,height:800})
 				 .then(url=>dashboardPlotlyDownloadURLs.push(url))});
@@ -1344,9 +1343,9 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
             try{
               var scale = f.properties.scale;
               
-              total.push(f.properties[k].split(',').slice(startI,endI).map(n => parseFloat(n)*scale**2));
+              total.push(f.properties[k].split(',').slice(startI,endI).map(n => parseFloat(n)));
               var total_areaF = parseFloat(f.properties[total_area_fieldname]);
-              total_area = total_area + total_areaF*scale**2;
+              total_area = total_area + total_areaF;
             }catch(err){
               console.log('No LCMS summary for: '+f.properties[titleField]);
     //           // console.log(err);
@@ -1495,56 +1494,75 @@ function updateDashboardHighlights(limit=10){
 			fc= Object.values(f.dashboardSelectedFeatures).map(f=>f.geojson);
 			let fieldName = f.viz.dashboardFieldName;
 			// console.log(f.selectedTSData.size().getInfo())
-			try{
-				let startTSYr = parseInt(urlParams.startYear);
-				let endTSYr = parseInt(urlParams.endYear);
-				if(endTSYr > 2019){endTSYr = 2019}
-				let startTS = f.selectedTSData.filter(ee.Filter.eq('YEAR',startTSYr));
-				let endTS = f.selectedTSData.filter(ee.Filter.eq('YEAR',endTSYr));
-				let tsDict = ee.Dictionary({'startLC':startTS.aggregate_histogram('DOM_LC'),
-				'endLC':endTS.aggregate_histogram('DOM_LC'),
-				'startLU':startTS.aggregate_histogram('DOM_LU'),
-				'endLU':endTS.aggregate_histogram('DOM_LU')})
-				tsDict.getInfo((d)=>{
-					console.log(d)
-				})
-				// startTS.evaluate((ts,failure)=>{
-				// 	console.log(failure)
-				// 	console.log(`Highlighted ts data ${ts}`)
-				// })
-			}catch(err){
-				console.log(`Error: ${err}`)
-			}
+			
 			
 			// console.log(fc.first().getInfo())
 			// Map2.addLayer(fc,{},f.name+' bounds')
 			Object.keys(highlightLCMSProducts).map(k=>{
 				if(chartWhich.indexOf(k)>-1){
 					let product_name = k.replaceAll('_',' ');
+					console.log(product_name)
 					let tab_name = f.name;
 					let classes = highlightLCMSProducts[k];
 					classesToHighlight = classesToHighlight+classes.length
 					if(classes.length>0){
 						classes.map(cls=>{
 							var class_name = `${k}---${cls}`;
+							var ts_class_name = `TS---${k}---${cls}`;
 							let t = [];
 							let ft = fc.map(f=>{
 			// 					f = ee.Feature(f);
 								let props = f.properties;
+								let tsProps = props[ts_class_name].split(',');
+								// console.log(tsProps)
+
+								// From http://www.stat.yale.edu/Courses/1997-98/101/catinf.htm
+								let tsCounts = props['TS_counts'].split(',');
 								let attributes = props[class_name].split(',');
 								let totalArea = parseFloat(props['total_area']);
-								let startAtr,endAtr
+								let startAtr,endAtr,startCILow,startCIHigh,endCILow,endCIHigh;
+
+								let startTSProp = parseFloat(tsProps[startYearI]);
+								let endTSProp = parseFloat(tsProps[endYearI]);
+								let startTSCount = parseFloat(tsCounts[startYearI]);
+								let endTSCount = parseFloat(tsCounts[endYearI]);
+
+								let ci = 1.96;
+								let startCI = ci*Math.sqrt((startTSProp*(1-startTSProp))/startTSCount);
+								let endCI = ci*Math.sqrt((endTSProp*(1-endTSProp))/endTSCount);
+								
 								if(chartFormat === 'Percentage'){
 									startAtr = parseFloat(attributes[startYearI])/totalArea*100;
 									endAtr = parseFloat(attributes[endYearI])/totalArea*100;
+
+									startCI = startCI*100;
+									endCI = endCI*100;
+
+									
 								}else{
 									startAtr = parseFloat(attributes[startYearI])*chartFormatDict[chartFormat].mult;
 									endAtr = parseFloat(attributes[endYearI])*chartFormatDict[chartFormat].mult;
-									
+
+									startCI = totalArea*chartFormatDict[chartFormat].mult*startCI;
+									endCI = totalArea*chartFormatDict[chartFormat].mult*endCI;
+								}
+
+								// console.log(cls);
+								// console.log([startTSProp,endTSProp,startTSCount,endTSCount,startCI,endCI])
+								
+								startCILow = startAtr-startCI;
+								startCIHigh = startAtr+startCI;
+
+								endCILow = endAtr-endCI;
+								endCIHigh = endAtr+endCI;
+								let isSig = false;
+								if(startCILow>endCIHigh || startCIHigh < endCILow){
+									isSig = true;
 								}
 								let diff = endAtr-startAtr;
 								let rel = diff/startAtr*100;
-								t.push([props[fieldName],startAtr,endAtr,diff,rel]);
+
+								t.push([props[fieldName],startAtr,startCI,endAtr,endCI,diff,rel,isSig]);
 			// 					return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
 								})
 							
@@ -1605,26 +1623,39 @@ function updateDashboardHighlights(limit=10){
 									<th>
 										${urlParams.startYear} ${chartFormatDict[chartFormat].label}
 									</th>
+									
 									<th>
 										${urlParams.endYear} ${chartFormatDict[chartFormat].label}
 									</th>
+									
 									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
 										Change ${chartFormatDict[chartFormat].label}
 									</th>
 									<th title = "Relative change between '${startYrAbbrv} and '${endYrAbbrv}">
 										 Rel Change %
 									</th>
+									
 									</tr></thead>`)
 									let rowI = 1;
+									
 									t.map(tr=>{
-										
-										$(`#${navID}-table`).append(`<tr class = 'highlights-row'>
-									<th class = 'highlights-entry'>${tr[0]}</th>
-									<td class = 'highlights-entry'>${(tr[1]).toFixed(chartFormatDict[chartFormat].places)}</td>
-									<td class = 'highlights-entry'>${(tr[2]).toFixed(chartFormatDict[chartFormat].places)}</td>
-									<td class = 'highlights-entry'>${(tr[3]).toFixed(chartFormatDict[chartFormat].places)}</td>
-									<td class = 'highlights-entry'>${(tr[4]).toFixed(chartFormatDict['Percentage'].places)}</td>
-									</tr>`);rowI++;})
+										let sigClass = '';
+										let sigTitle = 'No significant change detected (95% CI)';
+										if(tr[7]){
+											sigClass = 'highlights-sig';
+											sigTitle = 'Significant change detected (95% CI)';
+										}
+										$(`#${navID}-table`).append(`<tr class = 'highlights-row' title= '${sigTitle}'>
+									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[1]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									
+									<td class = 'highlights-entry ${sigClass}'>${(tr[3]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									
+									<td class = 'highlights-entry ${sigClass}'>${(tr[5]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[6]).toFixed(chartFormatDict['Percentage'].places)}</td>
+									</tr>`);
+									
+									rowI++;})
 									
 									let downloadName = `LCMS_Change_Summaries_${tab_name}_${cls}_${urlParams.startYear}-${urlParams.endYear}`
 									$(document).ready(function () {
@@ -1632,7 +1663,7 @@ function updateDashboardHighlights(limit=10){
 											fixedHeader: false,
 											paging: false,
 											searching: true,
-											order: [[3, 'asc']],
+											order: [[3, highlightsSortingDict[cls]]],
 											responsive:true,
 											dom: 'Bfrtip',
 											buttons: [
@@ -1829,7 +1860,7 @@ function makeAreaChart(area,name,userDefined){
 				if(areaChartFormat === 'Percentage'){
 					mult = 1/total_area*100;
 					}else{
-					mult = chartFormatDict[areaChartFormat].mult*scale**2;
+					mult = chartFormatDict[areaChartFormat].mult;
 					}
 				let dataMatrix = [];
 				let yri = 1;

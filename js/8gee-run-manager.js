@@ -3130,7 +3130,7 @@ let startYearT = parseInt(urlParams.startYear);
 let endYearT = parseInt(urlParams.endYear);
 let dashboardFolder = 'projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas';//'projects/lcms-292214/assets/Dashboard2';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
-window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
+// window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
 
 huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06")
     .filter(ee.Filter.inList('states',['CN','MX','AK','AK,CN','HI','AS']).not())
@@ -3168,6 +3168,7 @@ let layerVizKeys = Object.keys(urlParams.layerViz);
 function loadGEESummaryAreas(summaryAreaObj,name){
     path = summaryAreaObj.path
     let summariesT = summaries.filter(f=>f.indexOf(path)>-1);
+    summariesT = summariesT.filter(f=>f.indexOf('_wCI_')>-1);
     // console.log(summariesT)
     if(summariesT.length>0){
       summariesT = summariesT.map(id=>ee.FeatureCollection(id));
