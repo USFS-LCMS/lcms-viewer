@@ -399,9 +399,13 @@ button {
   padding:0.1rem;
   word-wrap: break-word;
 }
+.highlights-insig{
+  color:var(--deep-brown-80);
+}
 .highlights-sig{
   font-weight: 900;
   font-size:0.75rem;
+  color:var(--deep-brown-100);
 }
 .highlights-title{
   color:var(--deep-brown-20);

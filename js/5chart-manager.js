@@ -1125,7 +1125,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
 				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
 				}
-	
+	var fieldsHidden={'Change':[true,false,false,false,true]}
 	let total_area_fieldname = 'total_area';
 	// var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
 	// var chartWhich = ['Change','Land_Cover','Land_Use'];
@@ -1382,6 +1382,13 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
         //   console.log(colSums)
           ///////////////////////////////////////////////////////////////////////
           //Set up chart object
+		  let fieldHidden;
+		  try{
+			fieldHidden = fieldsHidden[whichOne][names[whichOne].indexOf(k.split('---')[1])];
+		  }catch(err){
+			fieldHidden=false;
+		  }
+		 
 		  let classColor = colors[whichOne][names[whichOne].indexOf(k.split('---')[1])]
             var out = {'borderColor':classColor,
             'fill':false,
@@ -1394,6 +1401,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
             'steppedLine':false,
             'showLine':true,
             'spanGaps':true,
+			'hidden':fieldHidden,
             'fill' : stacked,
             'backgroundColor':classColor}
             colorsI ++;
@@ -1538,6 +1546,8 @@ function updateDashboardHighlights(limit=10){
 									startCI = startCI*100;
 									endCI = endCI*100;
 
+									startTSProp = startTSProp*100;
+									endTSProp = endTSProp*100;
 									
 								}else{
 									startAtr = parseFloat(attributes[startYearI])*chartFormatDict[chartFormat].mult;
@@ -1545,6 +1555,9 @@ function updateDashboardHighlights(limit=10){
 
 									startCI = totalArea*chartFormatDict[chartFormat].mult*startCI;
 									endCI = totalArea*chartFormatDict[chartFormat].mult*endCI;
+
+									startTSProp = totalArea*chartFormatDict[chartFormat].mult*startTSProp;
+									endTSProp = totalArea*chartFormatDict[chartFormat].mult*endTSProp;
 								}
 
 								// console.log(cls);
@@ -1562,13 +1575,20 @@ function updateDashboardHighlights(limit=10){
 								let diff = endAtr-startAtr;
 								let rel = diff/startAtr*100;
 
-								t.push([props[fieldName],startAtr,startCI,endAtr,endCI,diff,rel,isSig]);
+								t.push([props[fieldName],startAtr,startTSProp,startCI,endAtr,endTSProp,endCI,diff,rel,isSig]);
 			// 					return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
 								})
+							// let sortMethod = highlightsSortingDict[cls];
+							// if(sortMethod==='asc'){
+							// 	t= t.sort(function(a,b) {
+							// 		return a[3] - b[3];
+							// 	});
+							// }else{
+							// 	t= t.sort(function(a,b) {
+							// 		return b[3] - a[3];
+							// 	});
+							// }
 							
-							t= t.sort(function(a,b) {
-								return a[3] - b[3];
-							});
 							
 							
 							let nmT = `${f.viz.dashboardFieldName}`
@@ -1598,27 +1618,31 @@ function updateDashboardHighlights(limit=10){
 																			class="nav-link ${isActive}"
 																			id="${navID}-tab"
 																			data-toggle="tab"
-																			href="#${navID}-table_wrapper"
+																			href="#${navID}-table-container"
 																			role="tab"
 																			aria-controls="${navID}-table_wrapper"
 																			aria-selected="${isFirst}">${tab_name}-${cls}</a>
 																		</li>`);
 									
 									
-									$('#highlights-table-divs').append(`<table
+									$('#highlights-table-divs').append(`<div id = "${navID}-table-container">
+									<table
 									class="table table-hover report-table"
 									id="${navID}-table"
 									role="tabpanel"
 									tablename="${tab_name}-LCMS ${k.replaceAll('_',' ')} ${cls}"
 									aria-labelledby="${navID}-tab"
-								  ></table>`);
-								 
+								  ></table>
+								  <div id = "${navID}-boxplots"></div>
+								  </div>`);
+								  
+								  
 								  isFirst = false;						
 								  
 									$(`#${navID}-table`).append(`<thead><tr class = ' highlights-table-section-title'>
 									
 									<th>
-										Name
+										Name (bold = sig 95% CI)
 									</th>
 									<th>
 										${urlParams.startYear} ${chartFormatDict[chartFormat].label}
@@ -1631,28 +1655,70 @@ function updateDashboardHighlights(limit=10){
 									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
 										Change ${chartFormatDict[chartFormat].label}
 									</th>
-									<th title = "Relative change between '${startYrAbbrv} and '${endYrAbbrv}">
-										 Rel Change %
-									</th>
+									
 									
 									</tr></thead>`)
 									let rowI = 1;
 									
 									t.map(tr=>{
-										let sigClass = '';
+										let sigClass = 'highlights-insig';
+										let sigStar = '';
 										let sigTitle = 'No significant change detected (95% CI)';
-										if(tr[7]){
+										if(tr[9]){
 											sigClass = 'highlights-sig';
+											sigStar = '*';
 											sigTitle = 'Significant change detected (95% CI)';
 										}
+
+										// var data = [
+										// 	{
+										// 	  x: [urlParams.startYear, urlParams.endYear],
+										// 	  y: [tr[1], tr[3]],
+										// 	  error_y: {
+										// 		type: 'data',
+										// 		array: [tr[2], tr[4]],
+										// 		visible: true
+										// 	  },
+										// 	  type: 'scatter'
+										// 	}
+										//   ];
+										//   var layout = {
+										// 	title: tr[0],
+										// 	font: {
+										// 	size: 12
+										// 	},
+										// 	autosize: true,
+										// 	margin: {
+										// 	l: 25,
+										// 	r: 25,
+										// 	b: 25,
+										// 	t: 50,
+										// 	pad: 4
+										// 	},
+										// 	paper_bgcolor: '#D6D1CA',
+										// 	plot_bgcolor: '#D6D1CA'
+										// }
+										// var config = {
+										// 	toImageButtonOptions: {
+										// 		format: 'png', // one of png, svg, jpeg, webp
+										// 		filename: tr[0],
+										// 		width:1000,height:600
+										// 	},
+										// 	scrollZoom: false,
+										// 	displayModeBar: false
+										// 	};
+										
+										//   $(`#${navID}-boxplots`).append(`<div id='${navID}-boxplot-${rowI}'></div>`)
+										//   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
 										$(`#${navID}-table`).append(`<tr class = 'highlights-row' title= '${sigTitle}'>
 									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
-									<td class = 'highlights-entry ${sigClass}'>${(tr[1]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[1]).toFixed(chartFormatDict[chartFormat].places)} &plusmn ${(tr[3]).toFixed(chartFormatDict[chartFormat].places)}</td>
 									
-									<td class = 'highlights-entry ${sigClass}'>${(tr[3]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[4]).toFixed(chartFormatDict[chartFormat].places)} &plusmn ${(tr[6]).toFixed(chartFormatDict[chartFormat].places)}</td>
 									
-									<td class = 'highlights-entry ${sigClass}'>${(tr[5]).toFixed(chartFormatDict[chartFormat].places)}</td>
-									<td class = 'highlights-entry ${sigClass}'>${(tr[6]).toFixed(chartFormatDict['Percentage'].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[7]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									
+									
 									</tr>`);
 									
 									rowI++;})
@@ -1701,7 +1767,7 @@ function updateDashboardHighlights(limit=10){
 											
 											
 										});
-										$(`#${navID}-table_wrapper`).addClass(`tab-pane fade bg-white highlights-table ${isActive}`);
+										$(`#${navID}-table-container`).addClass(`tab-pane fade bg-white highlights-table ${isActive}`);
 									
 										// $('.dataTables_length').addClass('bs-select');
 									  });

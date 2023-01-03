@@ -250,7 +250,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
 
   });
   if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
-    urlParams.annualTransition = {"Annual": true,"Transition": true}
+    urlParams.annualTransition = {"Annual": true,"Transition": false}
   }
   addCheckboxes('parameters-collapse-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
   $('#annual-transition-radio').change( ()=>{
@@ -300,7 +300,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#lc-highlights-radio').prop('title','Choose which land cover classes to include in the highlights tables');
   $('#lu-highlights-radio').prop('title','Choose which land use classes to include in the highlights tables');
   $('#which-units-radio').prop('title','Choose which units to represent summary areas in charts and tables');
-  
+  $('#annualTransitionannualTransitionTransition-checkbox-label').prop('title','Sankey Charts are the best')
   // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
   // $('#parameters-collapse-div').append()
   
