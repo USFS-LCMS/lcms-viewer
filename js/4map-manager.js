@@ -1572,11 +1572,11 @@ function reRun(){
   //Rerun the GEE code
   setTimeout(function() { 
     // try{
-    //   run(); 
+      run(); 
     // }catch(err){
       // console.log(err);
-      console.log('Failed to load GEE run function. Waiting 5 seconds to retry')
-      setTimeout(()=>run(), 5000);
+      // console.log('Failed to load GEE run function. Waiting 5 seconds to retry')
+      // setTimeout(()=>run(), 5000);
      
     // }
      

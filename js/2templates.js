@@ -483,6 +483,11 @@ const staticTemplates = {
         </ul>
         
     </div>
+    <div class ='my-3'>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
+                            <a class="intro-modal-links" onclick="function(){}" title="Open in-depth methods documentation">METHODS</a>
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+                        </div>
 
 </div>`,
 `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
@@ -1018,7 +1023,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                                    <p class = 'support-text'>${mode} utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, ${mode} would not be possible without Google Earth Engine.</p>
                                 </a>
                             </div>
                         </section>
