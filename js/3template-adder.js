@@ -226,36 +226,31 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'View-Extent':true,'Click':false,'Drag-Box':false});
-  $('#parameters-collapse-div').append('<hr>');
+  // $('#parameters-collapse-div').append('<hr>');
   // addSubCollapse('parameters-collapse-div','adv-params-label','adv-params-div','Advanced Params', '',false,'');
   
+  addSubCollapse('parameters-collapse-div','advanced-dashboard-params-label','advanced-dashboard-params-div','Advanced Parameters', '',false,'')
   if(urlParams.chartUnits === null || urlParams.chartUnits === undefined){
     urlParams.chartUnits = {"Percentage": true,"Acres": false,"Hectares": false}
   }
-  addMultiRadio('parameters-collapse-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
+  addMultiRadio('advanced-dashboard-params-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
  
 
   if(urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined){
     urlParams.pairwiseDiff = {'Annual':true,'Annual-Change':false}
   }
-  addMultiRadio('parameters-collapse-div','summary-pairwise-diff-radio','Annual Amount or Change in Annual Amount','pairwiseDiff',urlParams.pairwiseDiff);
+  addMultiRadio('advanced-dashboard-params-div','summary-pairwise-diff-radio','Annual Amount or Change in Annual Amount','pairwiseDiff',urlParams.pairwiseDiff);
 
   if(urlParams.whichProducts === null || urlParams.whichProducts === undefined){
     urlParams.whichProducts = {"Land-Cover": true,"Land-Use": true,"Change":true}
   }
-  addCheckboxes('parameters-collapse-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
-  $('#which-units-radio,#which-products-radio').change( ()=>{
-    updateDashboardCharts();
-    updateDashboardHighlights();
-
-  });
+  addCheckboxes('advanced-dashboard-params-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
+  
   if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
     urlParams.annualTransition = {"Annual": true,"Transition": false}
   }
-  addCheckboxes('parameters-collapse-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
-  $('#annual-transition-radio').change( ()=>{
-    updateDashboardCharts();
-  });
+  addCheckboxes('advanced-dashboard-params-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
+
   var highlightsLCLookup = {'Trees':'Trees','Tall-Shrubs':'Tall Shrubs','Shrubs':'Shrubs','Grass-Forb-Herb':'Grass/Forb/Herb','Barren-or-Impervious':'Barren or Impervious','Water':'Water','Snow-or-Ice':'Snow or Ice'};
   var  highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture','Other':'Other'};
   var  highlightsChangeLookup = {'Stable':'Stable','Slow-Loss':'Slow Loss','Fast-Loss':'Fast Loss','Gain':'Gain'};
@@ -268,39 +263,61 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     highlightLCMSProducts['Land_Use']=Object.keys(luHighlightClasses).filter(k=>luHighlightClasses[k]).map(v=>highlightsLULookup[v]);
     highlightLCMSProducts['Change']=Object.keys(changeHighlightClasses).filter(k=>changeHighlightClasses[k]).map(v=>highlightsChangeLookup[v]);
   }
-  $('#parameters-collapse-div').append('<hr>');
+  $('#advanced-dashboard-params-div').append('<hr>');
   
   if(urlParams.changeHighlightClasses === null || urlParams.changeHighlightClasses === undefined){
     urlParams.changeHighlightClasses = {"Stable": false,"Slow-Loss":true,"Fast-Loss": true,"Gain": true}
   }
-  addCheckboxes('parameters-collapse-div','change-highlights-radio','Tables - Change Classes','changeHighlightClasses',urlParams.changeHighlightClasses);
-  $('#parameters-collapse-div').append('<hr>');
+  addCheckboxes('advanced-dashboard-params-div','change-highlights-radio','Tables - Change Classes','changeHighlightClasses',urlParams.changeHighlightClasses);
+  $('#advanced-dashboard-params-div').append('<hr>');
   
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
     urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':false}
   }
-  addCheckboxes('parameters-collapse-div','lc-highlights-radio','Tables - Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
+  addCheckboxes('advanced-dashboard-params-div','lc-highlights-radio','Tables - Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
 
-  $('#parameters-collapse-div').append('<hr>');
+  $('#advanced-dashboard-params-div').append('<hr>');
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
     urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
-  addCheckboxes('parameters-collapse-div','lu-highlights-radio','Tables - Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
+  addCheckboxes('advanced-dashboard-params-div','lu-highlights-radio','Tables - Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
   $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
   });
   updateHighlightsProductSelectionDict();
+  $('#advanced-dashboard-params-div').append('<hr>');
+
+  var ciDict = {'90':1.64,'95':1.96,'99':2.58};
+  if(urlParams.ciLevel === null || urlParams.ciLevel === undefined){
+    urlParams.ciLevel = {"90": false,"95": true,"99": false}
+  }
+
+  addMultiRadio('advanced-dashboard-params-div','ci-level-radio','Confidence Interval Significance Level','ciLevel',urlParams.ciLevel);
   
+  $('#which-units-radio,#which-products-radio').change( ()=>{
+    updateDashboardCharts();
+    updateDashboardHighlights();
+
+  });
+  $('#annual-transition-radio').change( ()=>{
+    updateDashboardCharts();
+  });
+  $('#ci-level-radio').change( ()=>{
+    updateDashboardHighlights();
+
+  });
   $('#analysis-year-slider-container').prop('title','Choose which years to include in the annual charts. The first and last year of this range of years will be uses for the highlights summaries.');
   $('#summary-area-selection-radio').prop('title','Choose how to select summary areas. "View-Extent" will automatically select all areas within the current map view extent. "Click" will all you to select areas by clicking on them. "Drag-Box" will allow you to select by creating a box');
   $('#summary-pairwise-diff-radio').prop('title','Choose whether to show the percent or the percent change from the previous year of the selected area(s) of each cover/use type');
   $('#which-products-radio').prop('title','Choose which LCMS products to show in the charts, highlights, and report');
   $('#annual-transition-radio').prop('title','Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart');
+  $('#change-highlights-radio').prop('title','Choose which change classes to include in the highlights tables');
   $('#lc-highlights-radio').prop('title','Choose which land cover classes to include in the highlights tables');
   $('#lu-highlights-radio').prop('title','Choose which land use classes to include in the highlights tables');
   $('#which-units-radio').prop('title','Choose which units to represent summary areas in charts and tables');
-  $('#annualTransitionannualTransitionTransition-checkbox-label').prop('title','Sankey Charts are the best')
+  $('#ci-level-radio').prop('title','Choose which significance level to use for computing the confidence interval and significant change');
+  $('#annualTransitionannualTransitionTransition-checkbox-label').prop('title','Select this to show Sankey charts')
   // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
   // $('#parameters-collapse-div').append()
   
@@ -552,11 +569,35 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
   
  
   $('#introModal-body').append(staticTemplates.walkThroughButton);
-}else if(mode === 'TEST' || mode === 'IDS' || mode === 'Algal-Mapper'){
+}else if(mode === 'TEST' || mode === 'IDS'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+
+}else if(mode==='Algal-Mapper'){
+
+  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
+  startYear = 2020;
+  endYear = 2022;
+  if(urlParams.startYear == null || urlParams.startYear == undefined){
+    urlParams.startYear = startYear;
+  }
+  if(urlParams.endYear == null || urlParams.endYear == undefined){
+    urlParams.endYear = endYear;
+  }
+
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',startYear, endYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of algal data to include')
+  $('#parameters-collapse-div').append(staticTemplates.reRunButton);
+
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div',mode+' DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
+  addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
+
+  $('#support-collapse-div').append(staticTemplates.supportDivAlgal);
 
 }else if(mode === 'LAMDA'){
 

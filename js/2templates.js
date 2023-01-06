@@ -285,7 +285,7 @@ const staticTemplates = {
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">DASHBOARD TOUR</a>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -808,12 +808,12 @@ const staticTemplates = {
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
-                        <div class = 'row ' onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">
+                        <div class = 'row ' onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour od the LCMS Dashboard's features">DASHBOARD TOUR</a>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
                             </div>
                         </div>
                         <hr>
@@ -934,6 +934,121 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
                                 Please contact the LCMS help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about LCMS or have feedback on the LCMS Dashboard.</a>
+                            </div>
+                        </section>
+        			</div>`,
+                    supportDivAlgal :`<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row ' title = 'Open ${mode} tutorial'>
+                            <h3 class = ' text-capitalize'>Tutorial</h3>
+                        </header>
+                        <div class = 'row ' onclick="startTour()" title="Click to take a tour of the ${mode}'s features">
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Information icon' src = './images/information--v2.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS ${mode}'s features">${mode} TOUR</a>
+                            </div>
+                        </div>
+                        <hr>
+                         <header class = 'row ' title = 'Open in-depth ${mode} methods documentation'>
+                            <h3 class = ' text-capitalize'>${mode} Methods</h3>
+                        </header>
+                        <div class = 'row ' title = 'Open in-depth ${mode} methods documentation'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                Click to open in-depth methods document:
+                                <li>
+                                    Coming Soon
+                                </li>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
+                        </header>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for ${mode}'s methods development, documentation, and visualization (this viewer) at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="" target="_blank">
+                                <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about our field collaborators ">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="" target="_blank">
+                                    <p class = 'support-text'>Need some text about our USFS project cooperators.</p>
+                                </a>
+                            </div>
+                        </section>
+                        
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <h2>"..."</h2>
+                            </div>
+                            <div class = 'col-lg-10  support-text'>
+                                    Suggested citation: 
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2022). ${mode} [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/${mode}.html (Accessed: ${new Date().toStringFormat()}).
+                                    </p>
+                                    <span>
+                                        <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
+                                        </button>
+                                        <p id = 'copiedCitationMessageBox'></p>
+                                    </span>
+                            </div>
+                        </section>
+                        <hr>
+                        <header class ='row'>
+                            <h3 class ='text-capitalize'>Contact</h3>
+                        </header>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './images/email.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
+                                Please contact the ${mode} help desk <span href = "mailto: sm.fs.lcms@usda.gov">(sm.fs.lcms@usda.gov)</span> if you have questions/comments about ${mode} or have feedback on the ${mode}.</a>
                             </div>
                         </section>
         			</div>`,

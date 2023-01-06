@@ -453,6 +453,15 @@ String.prototype.replaceAll = function(str1, str2, ignore)
 Number.prototype.formatNumber = function(n=2){
   return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
+
+// Taken from: https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
+Number.prototype.numberWithCommas = function() {
+  return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+String.prototype.numberWithCommas = function() {
+  return this.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 //Taken from: https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript 
 String.prototype.toTitle = function() {
   return this.replace(/(^|\s)\S/g, function(t) { return t.toUpperCase() });

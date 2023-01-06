@@ -1264,7 +1264,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		type: "sankey",
 		orientation: "h",
 		node: {
-			pad: 20,
+			pad: 10,
 			thickness: 20,
 			line: {
 			color: "black",
@@ -1535,7 +1535,7 @@ function updateDashboardHighlights(limit=10){
 								let startTSCount = parseFloat(tsCounts[startYearI]);
 								let endTSCount = parseFloat(tsCounts[endYearI]);
 
-								let ci = 1.96;
+								let ci = ciDict[ciLevel];//1.96;
 								let startCI = ci*Math.sqrt((startTSProp*(1-startTSProp))/startTSCount);
 								let endCI = ci*Math.sqrt((endTSProp*(1-endTSProp))/endTSCount);
 								
@@ -1561,21 +1561,52 @@ function updateDashboardHighlights(limit=10){
 								}
 
 								// console.log(cls);
-								// console.log([startTSProp,endTSProp,startTSCount,endTSCount,startCI,endCI])
-								
-								startCILow = startAtr-startCI;
-								startCIHigh = startAtr+startCI;
-
-								endCILow = endAtr-endCI;
-								endCIHigh = endAtr+endCI;
+								// console.log([cls,startTSProp,endTSProp,startTSCount,endTSCount,startCI,endCI])
 								let isSig = false;
-								if(startCILow>endCIHigh || startCIHigh < endCILow){
-									isSig = true;
+								if(startTSProp ===0){
+									startCI = 'NA';
+									startCILow = 'NA';
+									startCIHigh = 'NA';
 								}
+								if(endTSProp ===0){
+									endCI = 'NA';
+									endCILow = 'NA';
+									endCIHigh = 'NA';
+								}
+								if(startTSProp > 0 && endTSProp > 0){
+									startCILow = startAtr-startCI;
+									startCIHigh = startAtr+startCI;
+
+									endCILow = endAtr-endCI;
+									endCIHigh = endAtr+endCI;
+									
+									if(startCILow>endCIHigh || startCIHigh < endCILow){
+										isSig = true;
+									}
+									
+									
+								}
+								if(startCI !== 'NA'){
+									startCI = startCI.toFixed(chartFormatDict[chartFormat].places);
+								}
+								if(endCI !== 'NA'){
+									endCI = endCI.toFixed(chartFormatDict[chartFormat].places);
+								}
+								
+
 								let diff = endAtr-startAtr;
 								let rel = diff/startAtr*100;
 
-								t.push([props[fieldName],startAtr,startTSProp,startCI,endAtr,endTSProp,endCI,diff,rel,isSig]);
+								t.push([props[fieldName],
+									startAtr.toFixed(chartFormatDict[chartFormat].places).numberWithCommas(),
+									startTSProp.toFixed(chartFormatDict[chartFormat].places).numberWithCommas(),
+									startCI.numberWithCommas(),
+									endAtr.toFixed(chartFormatDict[chartFormat].places).numberWithCommas(),
+									endTSProp.toFixed(chartFormatDict[chartFormat].places).numberWithCommas(),
+									endCI.numberWithCommas(),
+									diff.toFixed(chartFormatDict[chartFormat].places).numberWithCommas(),
+									rel.toFixed(chartFormatDict[chartFormat].places),
+									isSig]);
 			// 					return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
 								})
 							// let sortMethod = highlightsSortingDict[cls];
@@ -1642,7 +1673,7 @@ function updateDashboardHighlights(limit=10){
 									$(`#${navID}-table`).append(`<thead><tr class = ' highlights-table-section-title'>
 									
 									<th>
-										Name (bold = sig 95% CI)
+										Name (bold = sig ${ciLevel}% CI)
 									</th>
 									<th>
 										${urlParams.startYear} ${chartFormatDict[chartFormat].label}
@@ -1663,11 +1694,11 @@ function updateDashboardHighlights(limit=10){
 									t.map(tr=>{
 										let sigClass = 'highlights-insig';
 										let sigStar = '';
-										let sigTitle = 'No significant change detected (95% CI)';
+										let sigTitle = `No significant change detected (${ciLevel}% CI)`;
 										if(tr[9]){
 											sigClass = 'highlights-sig';
 											sigStar = '*';
-											sigTitle = 'Significant change detected (95% CI)';
+											sigTitle = `Significant change detected (${ciLevel}% CI)`;
 										}
 
 										// var data = [
@@ -1712,11 +1743,11 @@ function updateDashboardHighlights(limit=10){
 										//   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
 										$(`#${navID}-table`).append(`<tr class = 'highlights-row' title= '${sigTitle}'>
 									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
-									<td class = 'highlights-entry ${sigClass}'>${(tr[1]).toFixed(chartFormatDict[chartFormat].places)} &plusmn ${(tr[3]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[1])} &plusmn ${(tr[3])}</td>
 									
-									<td class = 'highlights-entry ${sigClass}'>${(tr[4]).toFixed(chartFormatDict[chartFormat].places)} &plusmn ${(tr[6]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[4])} &plusmn ${(tr[6])}</td>
 									
-									<td class = 'highlights-entry ${sigClass}'>${(tr[7]).toFixed(chartFormatDict[chartFormat].places)}</td>
+									<td class = 'highlights-entry ${sigClass}'>${(tr[7])}</td>
 									
 									
 									</tr>`);

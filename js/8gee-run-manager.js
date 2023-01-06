@@ -3256,13 +3256,23 @@ function runAlgal(){
   localStorage.showToolTipModal= 'false';
   $('#query-label').click();
   let ab = ee.ImageCollection('projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images');
-  let algalLegendDict={'Algal Negative':'00D','Algal Positive':'D00'};
-  Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'Algal Bloom Classification',true)
 
-   
-    Map2.addTimeLapse(ab.select([1]),{'min':1000000,'max':5000000,'palette':'00D,D00','dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Count (cells/mL)')
+  ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear),parseInt(urlParams.endYear),'year'))
+  let algalLegendDict={'Algal Negative':'00D','Algal Positive':'D00'};
+  // Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'Algal Bloom Classification',true)
+
+   countC = ab.select([1])
+  //  countNotC = countC.map(img=>img.updateMask(img.lt(25000)))
+  //  countC = countC.map(img=>img.updateMask(img.gte(25000)))
+
+    Map2.addTimeLapse(countC,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Count (cells/mL)')
 
     
-    Map2.addTimeLapse(ab.select([2]),{'min':200000000,'max':1000000000,'palette':'00D,D00','dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Biovolume (um3)')
-    setTimeout(()=>{$('#AB-Classified-1-name-span').click()},5000)
+    Map2.addTimeLapse(ab.select([2]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day'},'Cyanobacteria Biovolume (um3)')
+    setTimeout(()=>{$('#Cyanobacteria-Count--cells-mL--1-name-span').click();
+      setTimeout(()=>{$('#Cyanobacteria-Count--cells-mL--1-forward-button>i').click();
+      $('#Cyanobacteria-Count--cells-mL--1-forward-button>i').click();
+      $('#Cyanobacteria-Count--cells-mL--1-forward-button>i').click();
+    },500);
+    },5000)
 }
