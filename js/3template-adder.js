@@ -575,16 +575,16 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
 
-}else if(mode==='Algal-Mapper'){
+}else if(mode==='Bloom-Mapper'){
   var algalRunID = 1;
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LCMS products');
   startYear = 2020;
   endYear = 2022;
   if(urlParams.startYear == null || urlParams.startYear == undefined){
-    urlParams.startYear = startYear;
+    urlParams.startYear = 2022;
   }
   if(urlParams.endYear == null || urlParams.endYear == undefined){
-    urlParams.endYear = endYear;
+    urlParams.endYear = 2022;
   }
 
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',startYear, endYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of algal data to include')
@@ -882,7 +882,7 @@ addColorPicker('measure-area-div-icon-bar','area-color-picker','updateAreaColor'
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTipHover);
-if(mode !== 'Algal-Mapper'){
+if(mode !== 'Bloom-Mapper'){
   addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query '+mode+' Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTipHover);
   addDropdown('pixel-chart-div','pixel-collection-dropdown','Choose which '+mode+' time series to chart','whichPixelChartCollection','Choose which '+mode+' time series to chart.');
  

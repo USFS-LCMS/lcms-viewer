@@ -463,9 +463,9 @@ if(mode ==='lcms-dashboard'){
 dashboardTourSteps.map(s=>addStep(s,dashboardTourSteps.length));
   // startTour();
 
-}else if(mode ==='Algal-Mapper'){
+}else if(mode ==='Bloom-Mapper'){
   
-  console.log('running dashboard tutorial');
+  console.log('running  tutorial');
   
   
 

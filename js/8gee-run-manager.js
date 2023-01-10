@@ -3259,7 +3259,7 @@ function runAlgal(){
   }
   
   let ab = ee.ImageCollection('projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images');
-  ab = ab.filter(ee.Filter.eq('studyAreaName',"WY-MT-CO-UT-ID"))
+  ab = ab.filter(ee.Filter.eq('studyAreaName',"WY-MT-CO-UT-ID2"))
   console.log(ab.first().getInfo())
  
   ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear),parseInt(urlParams.endYear),'year'))

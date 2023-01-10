@@ -74,11 +74,11 @@ const  titles = {
             rightWords:'',
             title:'LCMS Dashboard'
             } ,
-    'Algal-Mapper': {
-            leftWords: 'Algal',
+    'Bloom-Mapper': {
+            leftWords: 'Bloom',
             centerWords: 'MAPPER',
             rightWords:'',
-            title:'Algal Mapper'
+            title:'Bloom Mapper'
             }     
 }
 ///////////////////////////////////////////////////////////////////////
@@ -461,10 +461,10 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`),
-'Algal-Mapper':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
-            'Welcome to the Algal MAPPER!',
+'Bloom-Mapper':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
+            'Welcome to the Bloom MAPPER!',
             `<p class='my-2'>
-                            This tool provides an interactive ability view maps of potential algal presence. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not final and are intended for review purposes only.
+            This tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only.
 
                             </p>`,
     `<div style='display:inline-block;margin-top:0.5rem;'>
@@ -1008,7 +1008,8 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="" target="_blank">
-                                    <p class = 'support-text'>Need some text about our USFS project cooperators.</p>
+                                    <p class = 'support-text'>
+                                    USFS units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected on over a dozen Forest waterbodies in an effort to understand the scale and extent of these blooms across the region.  Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
                                 </a>
                             </div>
                         </section>
