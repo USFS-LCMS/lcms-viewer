@@ -3168,6 +3168,7 @@ let layerVizKeys = Object.keys(urlParams.layerViz);
 function loadGEESummaryAreas(summaryAreaObj,name){
     path = summaryAreaObj.path
     let summariesT = summaries.filter(f=>f.indexOf(path)>-1);
+    // console.log(summariesT)
     summariesT = summariesT.filter(f=>f.indexOf('_wCI_')>-1);
     // console.log(summariesT)
     if(summariesT.length>0){
@@ -3208,7 +3209,7 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   
   let firstComparisonLayerI=false;
   ['Land_Cover','Land_Use'].map(nm=>{
-    console.log(nm)
+    // console.log(nm)
     let pre= lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT,startYearT+2,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
     let post= lcmsRun.lcms.filter(ee.Filter.calendarRange(endYearT-2,endYearT,'year')).select([nm]).mode().copyProperties(lcmsRun.f);
 
@@ -3263,6 +3264,7 @@ function runAlgal(){
   console.log(ab.first().getInfo())
  
   ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear),parseInt(urlParams.endYear),'year'))
+      .filter(ee.Filter.calendarRange(168,360))
   let algalLegendDict={'Algal Negative':'00D','Algal Positive':'D00'};
   // Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'Algal Bloom Classification',true)
 

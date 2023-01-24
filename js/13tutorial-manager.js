@@ -332,162 +332,163 @@ function showWalkThroughI(){
     
     
 }
-
-// https://shepherdjs.dev/docs/tutorial-02-usage.html
-var tour = new Shepherd.Tour({
-  defaultStepOptions: {
-    cancelIcon: {
-      enabled: true,
-      confirmCancel:true
-    },
-    
-    classes: 'class-1 class-2',
-    scrollTo: { behavior: 'smooth', block: 'center' }
-  }
-});
-
-function getTourButtons(buttonIs = [0,1],stepN=1,totalSteps=10){
-  let tourButtons = [
-    {
-      action() {
-        return tour.back();
+if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper'){
+  // https://shepherdjs.dev/docs/tutorial-02-usage.html
+  var tour = new Shepherd.Tour({
+    defaultStepOptions: {
+      cancelIcon: {
+        enabled: true,
+        confirmCancel:true
       },
-     text: `<i class="fa fa-chevron-left teal " title="Previous tour slide"></i>`
-    },
-    {
-      action() {
-        return tour.next();
-      },
-      text: `<i class="fa fa-chevron-right teal " title="Next tour slide"></i>`
+      
+      classes: 'class-1 class-2',
+      scrollTo: { behavior: 'smooth', block: 'center' }
     }
-  ]
-  return tourButtons.slice(buttonIs[0],buttonIs[1])
-}
-// Click function adapted from: https://github.com/shipshapecode/shepherd/issues/119
-var createDelayedClick = function (selector) {
-  var wrapper = function () {
-      return function (sel) {
-        if($(sel).hasClass('collapsed')){$(sel).click();}
-          
-      }(selector);
-  };
+  });
 
-  return function () {
-      setTimeout(wrapper, 500);
-  }
-};
-  var stepN = 1
-  function addStep(step,totalSteps){
-    let title = `${step[0]}`;
-    let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${totalSteps})</p>`;
-    let buttons = getTourButtons(step[4],stepN,totalSteps)
-    $(step[2]).mousedown(function(event) {
-      // console.log(event)
-      if ( event.ctrlKey) {
-          console.log('Right or ctrl mouse clicked');
-          console.log(step[2])
-          tour.show(step[5]);
-          
-      }
-    });
-    // $(step[2]).contextmenu(function() {
-    //     return false;
-    // });
-    stepN++;
-    let obj = {
-      title: title,
-      text: txt,
-      attachTo: {
-        element: step[2],
-        on: step[3] //Possible string values: 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'right', 'right-start', 'right-end', 'left', 'left-start', 'left-end'
+  function getTourButtons(buttonIs = [0,1],stepN=1,totalSteps=10){
+    let tourButtons = [
+      {
+        action() {
+          return tour.back();
+        },
+      text: `<i class="fa fa-chevron-left teal " title="Previous tour slide"></i>`
       },
-      buttons: buttons,
-      id: step[5],
+      {
+        action() {
+          return tour.next();
+        },
+        text: `<i class="fa fa-chevron-right teal " title="Next tour slide"></i>`
+      }
+    ]
+    return tourButtons.slice(buttonIs[0],buttonIs[1])
+  }
+  // Click function adapted from: https://github.com/shipshapecode/shepherd/issues/119
+  var createDelayedClick = function (selector) {
+    var wrapper = function () {
+        return function (sel) {
+          if($(sel).hasClass('collapsed')){$(sel).click();}
+            
+        }(selector);
+    };
+
+    return function () {
+        setTimeout(wrapper, 500);
+    }
+  };
+    var stepN = 1
+    function addStep(step,totalSteps){
+      let title = `${step[0]}`;
+      let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${totalSteps})</p>`;
+      let buttons = getTourButtons(step[4],stepN,totalSteps)
+      $(step[2]).mousedown(function(event) {
+        // console.log(event)
+        if ( event.ctrlKey) {
+            console.log('Right or ctrl mouse clicked');
+            console.log(step[2])
+            tour.show(step[5]);
+            
+        }
+      });
+      // $(step[2]).contextmenu(function() {
+      //     return false;
+      // });
+      stepN++;
+      let obj = {
+        title: title,
+        text: txt,
+        attachTo: {
+          element: step[2],
+          on: step[3] //Possible string values: 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'right', 'right-start', 'right-end', 'left', 'left-start', 'left-end'
+        },
+        buttons: buttons,
+        id: step[5],
+        
+      }
+      if(step[6] !== undefined){
+        obj.when = {
+          show: createDelayedClick(step[6])
+      }
+      }
+      tour.addStep(obj);
+    }
+    function startTour(){
+      $('.modal').modal('hide');
+      $('.modal-backdrop').remove();
+      if(!tour.isActive()){tour.start();}
       
     }
-    if(step[6] !== undefined){
-      obj.when = {
-        show: createDelayedClick(step[6])
-    }
-    }
-    tour.addStep(obj);
+  if(mode ==='lcms-dashboard'){
+    
+    // console.log('running dashboard tutorial');
+    
+    
+
+    let dashboardTourSteps  = [
+      ['Welcome to the LCMS Dashboard tour',`This tour will walk you through how to use the LCMS dashboard. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
+      
+      ['Locate, Share, Search, Navigate',`<ul>
+                            <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
+                            <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
+                            <li>You can search for locations in the search window.</li>
+                            <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
+                            </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
+  ['Loading Progress',`By default, summary areas are downloaded as you move the map based on your view extent. As these areas are downloaded, the progressbar will be updated.`,'#highlights-progressbar','right',[0,2],'progress-tour-modal'],
+  ['Clear Everything',`You can clear all selected areas by clicking this button`,'#erase-all-dashboard-selected','right',[0,2],'erase-all-tour-modal'],
+  ['Adjusting the parameters',`There are many parameters that can be adjusted. Each of these parameters will automatically update the summaries you see in the bottom and right panes. Clicking the <i class="fa fa-share-alt teal "></i> icon above will create a unique link that contains your current view extent and parameter choices for easy sharing.`,'#parameters-collapse-label','right',[0,2],'params-tour-modal','#parameters-collapse-label-label'],
+  ['Selecting Years',`You can select the range of years to be included with this slider. Notice as you change the years, the table on the right and charts below are updated.`,'#analysis-year-slider-container','right',[0,2],'year-slider-tour-modal','#parameters-collapse-label-label'],
+  ['Change how areas are selected',`By default, all active summary areas within the map view (View-Extent) are included in the table and charts. You can also manually select individual areas by clicking on them (Click) or selecting all areas within a box (Drag-Box).`,'#summary-area-selection-radio','right-end',[0,2],'select-method-tour-modal','#parameters-collapse-label-label'],
+  ['Advanced Parameters',`There are many parameters you can change to ask specific questions of LCMS data. This can include changing which LCMS products are included, which classes are in the tables, what kind of charts to show, and what level of significance testing you'd like to use. `,'#advanced-dashboard-params-label','right-end',[0,2],'advanced-prams-tour-modal','#advanced-dashboard-params-label>h5'],
+  ['What Units',`Choose to show areas as proportions of the entire summary area or in acres or hectares. When this is changed, all charts and tables are automatically updated`,'#which-units-radio','right-end',[0,2],'annual-change-method-tour-modal','#advanced-dashboard-params-label>h5'],
+
+  ['How to chart',`You can switch between showing the amount of a land cover or land use class was mapped for a given year (Annual) or the difference between that year and the previous year (Annual-Change). Annual-Change can be useful to visualizing whether change for a given class has been positive or negative.`,'#summary-pairwise-diff-radio','right-end',[0,2],'annual-change-method-tour-modal','#parameters-collapse-label-label'],
+  ['Which LCMS Products',`Choose which LCMS products to show. You can choose more than one product. If you are interested in monitoring changes in cover, choose Land Cover. If you are interested in changes related to how land is being used, choose Land Use. If you are interested in how vegetation cover change is changing, choose Change.`,'#which-products-radio','right-end',[0,2],'which-lcms-product-tour-modal','#parameters-collapse-label-label'],
+  ['Which Change Classes',`Choose which LCMS Change clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#change-highlights-radio','right-end',[0,2],'which-change-classes-tour-modal','#parameters-collapse-label-label'],
+
+  ['Which Land Cover Classes',`Choose which LCMS Land Cover clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lc-highlights-radio','right-end',[0,2],'which-lc-classes-tour-modal','#parameters-collapse-label-label'],
+  ['Which Land Use Classes',`Choose which LCMS Land Use clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lu-highlights-radio','right-end',[0,2],'which-lu-classes-tour-modal','#parameters-collapse-label-label'],
+  ['Significance Test',`Choose what level of confidence to use to detect significant change. A higher level of confidence will yield fewer significant changes detected.`,'#ci-level-radio','right-end',[0,2],'ci-level-classes-tour-modal','#parameters-collapse-label-label'],
+  ['Summary Area Selection',`Turn on summary layers to include them in the generated tables and graphs. Turn them off to exclude them.`,'#layer-list-collapse-label','right-end',[0,2],'layer-tour-modal','#layer-list-collapse-label-label'],
+  ['LCMS Layer Viewing',`Turn on and off LCMS data layers to help bring spatial context to the summary areas you are viewing. These layers are turned on and off in the same fashion as the summary areas above.`,'#reference-layer-list-collapse-label','right-end',[0,2],'lcms-raster-layer-tour-modal','#reference-layer-list-collapse-label-label'],
+  ['Results: Charts',`As selected summary areas are downloaded, they are all totaled for each summary area type and a chart is created here. Classes can be turned off and on within the chart by clicking on them in the legend at the bottom.`,'#dashboard-results-div','left',[0,2],'chart-tour-modal'],
+  ['Results: Charts Resizing Pane',`You can change the size of the charting area by dragging the teal bar up and down. Charts will automatically resize.`,'#dashboard-results-expander','top',[0,2],'chart-expander-tour-modal'],
+
+  ['Results: Charts and Tables Report Download',`All tables and charts can be downloaded in a single pdf report.`,'#download-dashboard-report-container','left',[0,2],'report-download-tour-modal'],
+  ['Results: Highlights Tables Tabs',`All tables for each selected class can be accessed with its tab. You can switch between different summary areas and classes by selecting its respective tab.`,'#highlights-table-tabs','left',[0,2],'highlights-tabs-tour-modal'],
+  ['Results: Change Highlights Tables',`Selected summary areas will be included in a table here highlighting the difference for a given class between the first and last years. View a given table by clicking on the tab above. These tables are automatically updated as selected areas, years, classes, etc are changed. Tables can be sorted by any column and downloaded in various formats.`,'#highlights-table-divs','left',[0,1],'highlights-tables-tour-modal'],
+
+
+  ]
+
+  dashboardTourSteps.map(s=>addStep(s,dashboardTourSteps.length));
+    // startTour();
+
+  }else if(mode ==='Bloom-Mapper'){
+    
+    // console.log('running  tutorial');
+    
+    
+
+    let  algalTourSteps  = [
+      [`Welcome to the ${mode} tour`,`This tour will walk you through how to use the ${mode}. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
+      
+      ['Locate, Share, Search, Navigate',`<ul>
+                            <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
+                            <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
+                            <li>You can search for locations in the search window.</li>
+                            <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
+                            </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
+  ['Adjusting the parameters',`There are parameters that can be adjusted. After changing these parameters, click the <kbd>Submit</kbd> button to refresh the map layers. Clicking the <i class="fa fa-share-alt teal "></i> icon above will create a unique link that contains your current view extent and parameter choices for easy sharing.`,'#parameters-collapse-label','right',[0,2],'params-tour-modal','#parameters-collapse-label-label'],
+  ['Selecting Years',`You can select the range of years of ${mode} data to be included with this slider.`,'#analysis-year-slider-container','right',[0,2],'year-slider-tour-modal','#parameters-collapse-label-label'],
+  ['Updating Map',`Click this button to update the maps to reflect your chosen parameters`,'#reRun-button','right',[0,2],'rerun-button-tour-modal','#parameters-collapse-label-label'],
+  [`${mode} Timelapse Layers`,`Turn on and off ${mode} timelapse layers using the radio buttons on the left side of each layer. Timelapse controls allow for the viewing and annimation of the time series of outputs.`,'#layer-list-collapse-label','right-end',[0,2],'layer-list-tour-modal','#layer-list-collapse-label-label'],
+  [`Exploration Tools`,`Tools are available to measure and chart map layers. The <i>Query Visible Map Layers</i> tool allows for any visible timelapse layer to be double-clicked to view the entire time series for the pixel you clicked on. This tool is turned on by default when this page loads.`,'#tools-collapse-label','right-end',[0,2],'tools-tour-modal','#tools-collapse-label-label'],
+  [`${mode} help`,`Various resources are available to help you use this tool, cite its use, and reach out to us to provide feedback or ask any questions.`,'#support-collapse-label','right-end',[0,2],'support-tour-modal','#support-collapse-label-label'],
+
+  ]
+
+  algalTourSteps.map(s=>addStep(s,algalTourSteps.length));
+    // startTour();
+
   }
-  function startTour(){
-    $('.modal').modal('hide');
-    $('.modal-backdrop').remove();
-    if(!tour.isActive()){tour.start();}
-    
-  }
-if(mode ==='lcms-dashboard'){
-  
-  console.log('running dashboard tutorial');
-  
-  
-
-  let dashboardTourSteps  = [
-    ['Welcome to the LCMS Dashboard tour',`This tour will walk you through how to use the LCMS dashboard. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
-    
-    ['Locate, Share, Search, Navigate',`<ul>
-                          <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
-                          <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
-                          <li>You can search for locations in the search window.</li>
-                          <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
-                          </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
-['Loading Progress',`By default, summary areas are downloaded as you move the map based on your view extent. As these areas are downloaded, the progressbar will be updated.`,'#highlights-progressbar','right',[0,2],'progress-tour-modal'],
-['Clear Everything',`You can clear all selected areas by clicking this button`,'#erase-all-dashboard-selected','right',[0,2],'erase-all-tour-modal'],
-['Adjusting the parameters',`There are many parameters that can be adjusted. Each of these parameters will automatically update the summaries you see in the bottom and right panes. Clicking the <i class="fa fa-share-alt teal "></i> icon above will create a unique link that contains your current view extent and parameter choices for easy sharing.`,'#parameters-collapse-label','right',[0,2],'params-tour-modal','#parameters-collapse-label-label'],
-['Selecting Years',`You can select the range of years to be included with this slider. Notice as you change the years, the table on the right and charts below are updated.`,'#analysis-year-slider-container','right',[0,2],'year-slider-tour-modal','#parameters-collapse-label-label'],
-['Change how areas are selected',`By default, all active summary areas within the map view (View-Extent) are included in the table and charts. You can also manually select individual areas by clicking on them (Click) or selecting all areas within a box (Drag-Box).`,'#summary-area-selection-radio','right-end',[0,2],'select-method-tour-modal','#parameters-collapse-label-label'],
-['Advanced Parameters',`There are many parameters you can change to ask specific questions of LCMS data. This can include changing which LCMS products are included, which classes are in the tables, what kind of charts to show, and what level of significance testing you'd like to use. `,'#advanced-dashboard-params-label','right-end',[0,2],'advanced-prams-tour-modal','#advanced-dashboard-params-label>h5'],
-['What Units',`Choose to show areas as proportions of the entire summary area or in acres or hectares. When this is changed, all charts and tables are automatically updated`,'#which-units-radio','right-end',[0,2],'annual-change-method-tour-modal','#advanced-dashboard-params-label>h5'],
-
-['How to chart',`You can switch between showing the amount of a land cover or land use class was mapped for a given year (Annual) or the difference between that year and the previous year (Annual-Change). Annual-Change can be useful to visualizing whether change for a given class has been positive or negative.`,'#summary-pairwise-diff-radio','right-end',[0,2],'annual-change-method-tour-modal','#parameters-collapse-label-label'],
-['Which LCMS Products',`Choose which LCMS products to show. You can choose more than one product. If you are interested in monitoring changes in cover, choose Land Cover. If you are interested in changes related to how land is being used, choose Land Use. If you are interested in how vegetation cover change is changing, choose Change.`,'#which-products-radio','right-end',[0,2],'which-lcms-product-tour-modal','#parameters-collapse-label-label'],
-['Which Change Classes',`Choose which LCMS Change clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#change-highlights-radio','right-end',[0,2],'which-change-classes-tour-modal','#parameters-collapse-label-label'],
-
-['Which Land Cover Classes',`Choose which LCMS Land Cover clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lc-highlights-radio','right-end',[0,2],'which-lc-classes-tour-modal','#parameters-collapse-label-label'],
-['Which Land Use Classes',`Choose which LCMS Land Use clases to show in the highlights table on the right. Any selected class will automatically have a tab added to the right pane containing the respective summary table.`,'#lu-highlights-radio','right-end',[0,2],'which-lu-classes-tour-modal','#parameters-collapse-label-label'],
-['Significance Test',`Choose what level of confidence to use to detect significant change. A higher level of confidence will yield fewer significant changes detected.`,'#ci-level-radio','right-end',[0,2],'ci-level-classes-tour-modal','#parameters-collapse-label-label'],
-['Summary Area Selection',`Turn on summary layers to include them in the generated tables and graphs. Turn them off to exclude them.`,'#layer-list-collapse-label','right-end',[0,2],'layer-tour-modal','#layer-list-collapse-label-label'],
-['LCMS Layer Viewing',`Turn on and off LCMS data layers to help bring spatial context to the summary areas you are viewing. These layers are turned on and off in the same fashion as the summary areas above.`,'#reference-layer-list-collapse-label','right-end',[0,2],'lcms-raster-layer-tour-modal','#reference-layer-list-collapse-label-label'],
-['Results: Charts',`As selected summary areas are downloaded, they are all totaled for each summary area type and a chart is created here. Classes can be turned off and on within the chart by clicking on them in the legend at the bottom.`,'#dashboard-results-div','left',[0,2],'chart-tour-modal'],
-['Results: Charts Resizing Pane',`You can change the size of the charting area by dragging the teal bar up and down. Charts will automatically resize.`,'#dashboard-results-expander','top',[0,2],'chart-expander-tour-modal'],
-
-['Results: Charts and Tables Report Download',`All tables and charts can be downloaded in a single pdf report.`,'#download-dashboard-report-container','left',[0,2],'report-download-tour-modal'],
-['Results: Highlights Tables Tabs',`All tables for each selected class can be accessed with its tab. You can switch between different summary areas and classes by selecting its respective tab.`,'#highlights-table-tabs','left',[0,2],'highlights-tabs-tour-modal'],
-['Results: Change Highlights Tables',`Selected summary areas will be included in a table here highlighting the difference for a given class between the first and last years. View a given table by clicking on the tab above. These tables are automatically updated as selected areas, years, classes, etc are changed. Tables can be sorted by any column and downloaded in various formats.`,'#highlights-table-divs','left',[0,1],'highlights-tables-tour-modal'],
-
-
-]
-
-dashboardTourSteps.map(s=>addStep(s,dashboardTourSteps.length));
-  // startTour();
-
-}else if(mode ==='Bloom-Mapper'){
-  
-  console.log('running  tutorial');
-  
-  
-
-  let  algalTourSteps  = [
-    [`Welcome to the ${mode} tour`,`This tour will walk you through how to use the ${mode}. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
-    
-    ['Locate, Share, Search, Navigate',`<ul>
-                          <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
-                          <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
-                          <li>You can search for locations in the search window.</li>
-                          <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
-                          </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
-['Adjusting the parameters',`There are parameters that can be adjusted. After changing these parameters, click the <kbd>Submit</kbd> button to refresh the map layers. Clicking the <i class="fa fa-share-alt teal "></i> icon above will create a unique link that contains your current view extent and parameter choices for easy sharing.`,'#parameters-collapse-label','right',[0,2],'params-tour-modal','#parameters-collapse-label-label'],
-['Selecting Years',`You can select the range of years of ${mode} data to be included with this slider.`,'#analysis-year-slider-container','right',[0,2],'year-slider-tour-modal','#parameters-collapse-label-label'],
-['Updating Map',`Click this button to update the maps to reflect your chosen parameters`,'#reRun-button','right',[0,2],'rerun-button-tour-modal','#parameters-collapse-label-label'],
-[`${mode} Timelapse Layers`,`Turn on and off ${mode} timelapse layers using the radio buttons on the left side of each layer. Timelapse controls allow for the viewing and annimation of the time series of outputs.`,'#layer-list-collapse-label','right-end',[0,2],'layer-list-tour-modal','#layer-list-collapse-label-label'],
-[`Exploration Tools`,`Tools are available to measure and chart map layers. The <i>Query Visible Map Layers</i> tool allows for any visible timelapse layer to be double-clicked to view the entire time series for the pixel you clicked on. This tool is turned on by default when this page loads.`,'#tools-collapse-label','right-end',[0,2],'tools-tour-modal','#tools-collapse-label-label'],
-[`${mode} help`,`Various resources are available to help you use this tool, cite its use, and reach out to us to provide feedback or ask any questions.`,'#support-collapse-label','right-end',[0,2],'support-tour-modal','#support-collapse-label-label'],
-
-]
-
-algalTourSteps.map(s=>addStep(s,algalTourSteps.length));
-  // startTour();
-
 }

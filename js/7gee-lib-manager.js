@@ -1224,16 +1224,17 @@ function ccdcChangeDetection(ccdcImg,bandName){
 }
 
 function getSelectLayers(short){
-  var perims = ee.FeatureCollection('projects/gtac-mtbs/assets/perimeters/mtbs_perims_DD');//ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  var perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1");//ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
   perims = perims.map(function(f){
-    var d = ee.Date(f.get('Ig_Date'));
+    var d = ee.Date(f.get('Ig_Date')).millis();
     
-    return f.set({'Year':d.get('year')})
+    return f.set('system:time_start',f.get('Ig_Date'))
   })
-  // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
-  // console.log(perims.get('bounds').getInfo())
-  perims = perims.filter(ee.Filter.gte('Year',startYear));
-  perims = perims.filter(ee.Filter.lte('Year',endYear));
+  // // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
+  // // console.log(perims.get('bounds').getInfo())
+
+  perims = perims.filterDate(ee.Date.fromYMD(startYear,1,1),ee.Date.fromYMD(endYear,12,31));
+  // perims = perims.filter(ee.Filter.lte('Date',ee.Date.fromYMD(endYear,12,31)));
   var huc4 = ee.FeatureCollection('USGS/WBD/2017/HUC04');
   var huc8 = ee.FeatureCollection('USGS/WBD/2017/HUC08');
   var huc12 = ee.FeatureCollection('USGS/WBD/2017/HUC12');
@@ -1288,6 +1289,6 @@ function getSelectLayers(short){
   Map2.addSelectLayer(b,{strokeColor:'00F',layerType:'geeVectorImage'},'National Forests',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
   
   Map2.addSelectLayer(district_boundaries,{strokeColor:'80F',layerType:'geeVectorImage'},'National Forest Districts',false,null,null,'National Forest District boundaries. Turn on layer and click on any Forest wanted to include in chart');
-  Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
+  Map2.addSelectLayer(perims,{strokeColor:'808',layerType:'geeVectorImage',selectLayerNameProperty:'Incid_Name'},'MTBS Fires',false,null,null,'Delineated perimeters of each MTBS mapped fire from '+startYear.toString()+'-'+endYear.toString()+'. Turn on layer and click on any fire wanted to include in chart');
   
 }

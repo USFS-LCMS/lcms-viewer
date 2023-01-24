@@ -1516,7 +1516,7 @@ function reRun(){
   if(staticTemplates.loadingModal[mode]===undefined){
             if(mode==='MTBS'){
               showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Updating'));
-            }else if(mode==='STORM'){
+            }else if(mode==='STORM' || mode === 'Bloom-Mapper'){
               showMessage('',staticTemplates.loadingModal['all']('','Updating'));
             }else{
               showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Updating'));
@@ -2727,7 +2727,7 @@ function initialize() {
         }
 
         $('#dontShowAgainCheckbox').change(function(){
-          console.log(this.checked);
+          // console.log(this.checked);
           localStorage['showIntroModal-'+mode]  = !this.checked;
         });
         

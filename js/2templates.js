@@ -254,6 +254,7 @@ const staticTemplates = {
                         </div>
                         
                         <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
+                            <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
                             <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
                             <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             
@@ -281,7 +282,7 @@ const staticTemplates = {
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
                                     `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
                                     `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the training sample for each year from each summary area plus a 210km buffer for each year. This assumes the statistical properties of the model-based and training sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
@@ -464,16 +465,20 @@ const staticTemplates = {
 'Bloom-Mapper':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
             'Welcome to the Bloom MAPPER!',
             `<p class='my-2'>
-            This tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only.
+            This tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Sample analysis conducted by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only.
 
                             </p>`,
     `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
+    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
         <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+        <img class = 'logo' alt="Wyoming Department of Environmental Quality" src="images/WY-DEQ-Logo-BW.png">
+        
     </div>
     <div style ='float:left;'>
         <ul class="intro-list">
           <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          <li title = "Harmful cyanobacterial blooms (HCBs) are dense concentrations of cyanobacteria, commonly referred to as blue-green algae, that pose a health risk to people, pets, and livestock. DEQ is working with the Wyoming Department of Health, the Wyoming Livestock Board, and other stakeholders to address HCBs in Wyoming surface waters."><a class="intro-modal-links" href="https://www.wyohcbs.org/" target="_blank">WY DEQ</a> Wyoming Department of Environmental
           </li>
          
             <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
@@ -544,7 +549,7 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding error please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
+        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the training sample for each year from each summary area plus a 210km buffer for each year. This assumes the statistical properties of the model-based and training sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
@@ -560,7 +565,7 @@ const staticTemplates = {
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error of these numbers is not provided in these tables. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the training sample for each year from each summary area plus a 210km buffer for each year. This assumes the statistical properties of the model-based and training sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         
@@ -1003,13 +1008,17 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="" target="_blank">
-                                <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about our field collaborators ">
+                                    <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about our field collaborators ">
+                                </a>
+                                
+                                <a href="" target="_blank" >
+                                    <img class = 'support-icons' alt="Wyoming Department of Environmental Quality icon" src="images/WY-DEQ-Logo.png" style="margin-top: 1rem;padding-right: 0.5rem;">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="" target="_blank">
                                     <p class = 'support-text'>
-                                    USFS units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected on over a dozen Forest waterbodies in an effort to understand the scale and extent of these blooms across the region.  Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
+                                    USFS units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
                                 </a>
                             </div>
                         </section>
@@ -2223,18 +2232,24 @@ function addLayer(layer){
             }
             //Add functionality for select layers to be clicked and selected
             if(layer.viz.isSelectLayer){
-                var name;
-                layer.queryItem.first().propertyNames().evaluate(function(propertyNames,failure){
-                    if(failure !== undefined){showMessage('Error',failure)}
-                    else{
-                        propertyNames.map(function(p){
-                            if(p.toLowerCase().indexOf('name') !== -1){name = p}
-                        })
-                        if(name === undefined){name = 'system:index'}
+                if( layer.viz.selectLayerNameProperty === undefined){
+                    var name;
+                    layer.queryItem.first().propertyNames().evaluate(function(propertyNames,failure){
+                        if(failure !== undefined){name = 'system:index';//showMessage('Error',failure)
                         }
-                    selectedFeaturesJSON[layer.name].fieldName = name
-                    selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select([name],['name'])
-                })
+                        else{
+                            propertyNames.map(function(p){
+                                if(p.toLowerCase().indexOf('name') !== -1){name = p}
+                            })
+                            if(name === undefined){name = 'system:index'}
+                            }
+                        selectedFeaturesJSON[layer.name].fieldName = name
+                        selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select([name],['name'])
+                    })
+                }else{
+                    selectedFeaturesJSON[layer.name].fieldName = layer.viz.selectLayerNamePropertyname
+                    selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select([layer.viz.selectLayerNameProperty],['name'])
+                }
                 
             }
             if(layer.viz.isSelectedLayer){

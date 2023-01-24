@@ -1013,7 +1013,7 @@ function resizeViewerPanes(){
 }
 
 function resizeDashboardPanes(){
-  console.log('resized');
+  // console.log('resized');
   let layerWidth = $('#layer-list-collapse-label-layer-list-collapse-div').width();//+5;
   let bottomHeight=$('.bottombar').height();
   let resultsHeight = $('#dashboard-results-container').height();
