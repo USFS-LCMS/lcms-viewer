@@ -471,7 +471,9 @@ const staticTemplates = {
     `<div style='display:inline-block;margin-top:0.5rem;'>
     <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
         <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
-        <img class = 'logo' alt="Wyoming Department of Environmental Quality" src="images/WY-DEQ-Logo-BW.png">
+        <br>
+        <img class = 'logo' style = 'margin-left:0.3rem;height:3.0rem;'alt="Wyoming Department of Environmental Quality" src="images/WY-DEQ-Logo-BW.png">
+       
         
     </div>
     <div style ='float:left;'>

@@ -1813,7 +1813,7 @@ function runMTBS(){
   //     // Create and append the li's to the ul
   //   })
   // })
-  var perims = ee.FeatureCollection('projects/gtac-mtbs/assets/perimeters/mtbs_perims_DD');//ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  var perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1");//ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
   var inFields  = ['Incid_Name','Incid_Type','Event_ID','irwinID','Ignition Date','BurnBndAc','Asmnt_Type'];
   var outFields = ['Incident Name','Incident Type','MTBS Event ID','IRWIN ID','Ignition Date','Acres','Assessment Type'];
   perims = perims.map(function(f){
