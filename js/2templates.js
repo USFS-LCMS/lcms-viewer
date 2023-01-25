@@ -465,14 +465,12 @@ const staticTemplates = {
 'Bloom-Mapper':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
             'Welcome to the Bloom MAPPER!',
             `<p class='my-2'>
-            This tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Sample analysis conducted by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only.
-
-                            </p>`,
+            This tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
+            </p>`,
     `<div style='display:inline-block;margin-top:0.5rem;'>
     <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
         <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
-        <br>
-        <img class = 'logo' style = 'margin-left:0.3rem;height:3.0rem;'alt="Wyoming Department of Environmental Quality" src="images/WY-DEQ-Logo-BW.png">
+        
        
         
     </div>
@@ -480,8 +478,7 @@ const staticTemplates = {
         <ul class="intro-list">
           <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
           </li>
-          <li title = "Harmful cyanobacterial blooms (HCBs) are dense concentrations of cyanobacteria, commonly referred to as blue-green algae, that pose a health risk to people, pets, and livestock. DEQ is working with the Wyoming Department of Health, the Wyoming Livestock Board, and other stakeholders to address HCBs in Wyoming surface waters."><a class="intro-modal-links" href="https://www.wyohcbs.org/" target="_blank">WY DEQ</a> Wyoming Department of Environmental
-          </li>
+          
          
             <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
             </li>
