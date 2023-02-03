@@ -72,7 +72,11 @@
 		    	
 		    </script>
     </head>
-
+	<!-- Set up analytics -->
+	<script type="text/javascript">
+		var mode = 'LAMDA';
+	</script>
+	<script type="text/javascript" src="./js/0analytics.js"></script>
     <body data-spy="scroll" data-target=".navbar" data-offset="50">
     	
 		<nav  id = 'top-nav' class="navbar navbar-expand-sm bg-black navbar-dark topbar fixed-top">
@@ -102,9 +106,27 @@
 	 
 
 	    <script type="text/javascript">
+			ga('send', 'event', 'lamda-download-load', new Date());
+			// Taken from: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
+			Date.prototype.dayOfYear= function(){
+			var j1= new Date(this);
+			j1.setMonth(0, 0);
+			return Math.round((this-j1)/8.64e7);
+			}
+			function trackDownload(path){
+				// console.log(`Downloading: ${path}`);
+				var sa = path.split('_')[0];	
+				ga('send', 'event', 'lamda-download-download', path.split('.tif')[0],sa);
+			}
 	    	var startYear = 2021;
 	    	var endYear = new Date().getYear()+1900;
-	    	
+	    	var endYearCutoff = new Date('2023-03-01').dayOfYear();
+			var currentDate = new Date();
+			
+			var currentDayOfYear = currentDate.dayOfYear();
+			if(currentDayOfYear < endYearCutoff){
+				endYear--;
+			}
 	    	for(var year = startYear;year<endYear;year++){
 	    		$('#year-selection').append(`<option value="${year}">${year}</option>`);
 	    	}
@@ -167,7 +189,7 @@
 		    					var nm = p.name.split('.tif')[0]
 		    					// console.log(nm)
 		    					if(already_added.indexOf(p.mediaLink) == -1){
-		    						$(`#${setup_dict[k].dropdown_id}_${study_area_dict[sak].dropdown_id}`).append(`<li class="list-group-item bg-black" id = "list-entry-${id}"><a class = "lamda-link" href = '${p.mediaLink}'>${p.name}</a>
+		    						$(`#${setup_dict[k].dropdown_id}_${study_area_dict[sak].dropdown_id}`).append(`<li class="list-group-item bg-black" id = "list-entry-${id}"><a class = "lamda-link" href = '${p.mediaLink}' onclick="trackDownload('${p.name}')">${p.name}</a>
 		    							
 		    							</li>`)
 		    						if(k!== 'raw'){

@@ -274,6 +274,7 @@ const staticTemplates = {
                         
                         <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
                             <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+                            <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
                             <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
                             
                         </div>`
@@ -282,7 +283,7 @@ const staticTemplates = {
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
                                     `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
                                     `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the training sample for each year from each summary area plus a 210km buffer for each year. This assumes the statistical properties of the model-based and training sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
                                     `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
@@ -548,7 +549,7 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the training sample for each year from each summary area plus a 210km buffer for each year. This assumes the statistical properties of the model-based and training sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
+        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
@@ -564,7 +565,7 @@ const staticTemplates = {
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the training sample for each year from each summary area plus a 210km buffer for each year. This assumes the statistical properties of the model-based and training sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         
@@ -2884,319 +2885,4 @@ function addTransitionRow(){
 function removeLastTransitionRow(){
     $('#added-transition-rows tr:last').remove();
     }
-//////////////////////////////////////////////////
-// Dashboard template setup
-class report {
-    constructor() {
 
-        this.clear = function () {
-            this.doc = new jspdf.jsPDF('portrait');
-            this.h = this.doc.internal.pageSize.height;
-            this.w = this.doc.internal.pageSize.width;
-            this.margin = 10;
-
-            // Robotofont class (contains text needed to read ttf files)
-            // const robotoNormal = reportFonts.getRobotoNormal();
-            // const robotoBold = reportFonts.getRobotoBold();
-            // const arialNormal = reportFonts.getArial();
-            // const arialBold = reportFonts.getArialBold();
-            // this.doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
-            // this.doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
-            // this.doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
-            // this.doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
-            // this.doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
-            // this.doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
-            // this.doc.addFileToVFS("arial-normal.ttf", arialNormal);
-            // this.doc.addFont("arial-normal.ttf", "Arial", "normal");
-
-            // this.doc.setFont('Arial', 'normal');
-
-            //header 
-            //header color block
-            var fontSize = 12;
-            this.doc.setFontSize(fontSize);
-            this.currentY = this.margin;
-            this.widthPng = 36;
-        };
-        this.addReportHeader = function () {
-            this.clear();
-
-            //header logo image
-            var usdaLogo = new Image();
-            usdaLogo.src =  './images/logos_usda-fs_bn-dk-01.PNG';//"./images/usdalogo.png";
-            this.doc.addImage(usdaLogo, 'PNG', 5, 4, 16*2, 13); //, 15);
-            // var fsLogo = new Image();
-            // fsLogo.src = "./images/usfslogo.png";
-            // this.doc.addImage(fsLogo, 'PNG', 27, 3, 14, 15); //x,y,w,h            
-            var lcmsLogo = new Image();
-            lcmsLogo.src ="./images/lcms-icon.png";
-
-            //header text
-            this.currentY = 9;
-            this.widthPng = 36;
-            this.doc.setFontSize(18);
-            this.doc.text(this.margin + this.widthPng, this.currentY, "Forest Service");
-            this.doc.setFontSize(12);
-            this.currentY += 7;
-            this.doc.text(this.margin + this.widthPng, this.currentY, "U.S. DEPARTMENT OF AGRICULTURE");
-            this.currentY += 5;
-
-
-            this.doc.line(this.margin / 2, this.currentY, this.w - this.margin / 2, this.currentY); //x,y,w,h
-            this.currentY += 5;
-            this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
-            // doc.setFont(undefined,'bold');
-            // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
-            // doc.setFont(undefined,'normal');
-            // doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
-            this.currentY += 3;
-            this.doc.setFillColor(55, 46, 44);
-            // this.doc.setFillColor(3, 74, 48); //169,209,142);
-
-            //doc.setTextColor(8,124,124);
-            this.doc.rect(0, this.currentY, 600, 20, 'F'); //x, y, w, h, style
-
-
-
-            this.doc.setFontSize(22);
-            
-            this.doc.setTextColor(0,137, 123); //0,0,0);
-            this.doc.setFont(undefined, 'bold');
-            this.currentY += 3;
-            this.doc.addImage(lcmsLogo, 'PNG', this.margin / 2, this.currentY, 13, 13); //x,y,w,h
-            this.currentY += 10;
-            this.doc.text(this.margin + 15, this.currentY, "LANDSCAPE CHANGE MONITORING SYSTEM"); //x,y,text
-            var lineHeight = this.doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM") / this.doc.internal.scaleFactor;
-            var lines = 1; //splittedText.length  // splitted text is a string array
-            var blockHeight = lines * lineHeight;
-            this.currentY += blockHeight + 10;
-            this.doc.setFont(undefined, 'normal');
-
-            this.doc.setFontSize(26);
-            this.doc.setFont(undefined, 'normal');
-            this.doc.setTextColor(0, 0, 0); //8,124,124)
-            var question = "How is our landscape changing?"; //change to document.getElementById("options-dropdown").value;//
-            var wrapQuestion = this.doc.splitTextToSize(question, 180);
-            this.doc.text(this.margin, this.currentY, wrapQuestion);
-
-            var lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
-            var lines = wrapQuestion.length; // splitted text is a string array
-            var blockHeight = lines * lineHeight;
-            this.currentY += blockHeight; //-18
-
-
-        };
-        this.checkForRoom = function (additional = 0) {
-            if (this.currentY + this.margin + additional > this.h) {
-                console.log(`Adding page: y=${this.currentY},margin=${this.margin},additional=${additional},pageH=${this.h}`)
-                this.doc.addPage();
-                this.currentY = this.margin;
-
-            }
-        };
-        this.getTextHeight = function(text,fontSize=12){
-            this.doc.setFontSize(fontSize);
-           
-            let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
-            let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
-            return textBlockHeight
-        };
-        this.addText = function (text, fontSize = 12,link=null) {
-            console.log(`Adding text: ${text}`);
-            
-            this.doc.setFontSize(fontSize);
-           
-            let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
-            let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
-            let textHeight = this.doc.getTextDimensions(text).h;
-            this.checkForRoom(textBlockHeight);
-            // console.log(textHeight);
-            this.currentY += textHeight;
-            if(link===null||link===undefined){
-                
-                this.doc.text(this.margin, this.currentY, textWrap);
-                this.currentY += textBlockHeight;
-            }else{
-                this.doc.setTextColor(0,137, 123); 
-                this.doc.textWithLink(text, this.margin, this.currentY, { url: link });
-                this.currentY += textHeight;
-                this.doc.setTextColor(0, 0, 0); 
-            }
-            
-            
-        };
-        this.addBySelector = function(selector,preceedingText=null,preceedingTextFontSize=18,maxWidth=null,callback=null){
-
-            // const d = $(selector);
-            const d = document.querySelector(selector);
-            const aspectRatio  = d.clientHeight/d.clientWidth;
-            let imgW;
-            if(maxWidth===null|| maxWidth===undefined){
-                imgW = this.w- this.margin * 2
-            }else{
-                imgW = maxWidth;
-            }
-            
-            const h = imgW*aspectRatio;
-            const margin = this.margin;
-            // this.currentY += this.margin;
-
-            if(preceedingText!== null && preceedingText!==undefined){
-                let textHeight = this.getTextHeight(preceedingText,preceedingTextFontSize);
-                this.checkForRoom(textHeight+margin+h);
-                this.addText(preceedingText,preceedingTextFontSize);
-            }else{
-                this.checkForRoom(h);
-            }
-            
-            var that = this;
-            const currentY = this.currentY;
-            // let dataURL = d.toDataURL("image/jpg", 1.0);
-            // this.doc.addImage(dataURL, 'JPEG', this.margin, this.currentY, this.w, h ,{compresion:'NONE'});
-
-
-            html2canvas(d, {
-                useCORS: true,
-                allowTaint: false,
-				// scale: 3,
-				// backgroundColor: null,
-                
-            }).then(canvas=>{
-                var imgData = canvas.toDataURL('image/png');
-                // console.log('Report Image URL: '+imgData);
-                console.log([margin, currentY, imgW, h,aspectRatio ])
-               
-                that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
-                that.currentY += h;
-                that.checkForRoom();
-                callback();
-            });
-            // domtoimage.toPng(d, { quality: 0.95 })
-            //     .then(function (imgData) {
-            //         console.log([margin, currentY, imgW, h,aspectRatio ])
-            //         that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
-            //         that.currentY += h;
-            //         that.checkForRoom();
-            //         callback();
-            //     });
-
-            
-        };
-        this.outstandingCharts=0;
-        this.addChartJS = function (id) {
-            var that  = this;
-            that.outstandingCharts++;
-            console.log(`Adding chart: ${id}`);
-            
-                const canvas0 = document.getElementById(id);
-                // const legend_div= document.getElementById("chart-canvas-Change-"+thisFC+"-js-legend");
-                let chartHeight = canvas0.height;
-                let chartWidth = canvas0.width;
-                let aspectRatio = chartHeight / chartWidth;
-                let chartW = this.w - this.margin * 4;
-                let chartH = chartW * aspectRatio;
-                this.checkForRoom(chartH+this.margin);
-                // doc.setFillColor(204,204,204,0);
-                // doc.rect(margin,currentY,chartW, chartH)
-                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
-                let dataURL = canvas0.toDataURL("image/jpg", 1.0);
-                let link = document.createElement("a");
-                        link.download = id;
-                        link.href = dataURL;
-                        // link.click();
-                // console.log(imgURL)
-                this.doc.addImage(dataURL, 'JPG', this.margin*2, this.currentY, chartW, chartH, { compresion: 'NONE' });
-                this.currentY = this.currentY + chartH+this.margin;
-                that.outstandingCharts--;
-                // return 'done';
-            
-            
-
-        };
-        this.addPlotlyPlots = function(){
-            let chartHeight = 400;
-            let chartWidth = 600;
-            let aspectRatio = chartHeight / chartWidth;
-            let chartW = this.w - this.margin * 4;
-            let chartH = chartW * aspectRatio;
-            dashboardPlotlyDownloadURLs.map(dataURL=>{
-                this.checkForRoom(chartH+this.margin);
-                this.doc.addImage(dataURL, 'PNG', this.margin*2, this.currentY, chartW, chartH, { compresion:'NONE' });
-                this.currentY = this.currentY + chartH+this.margin;
-            })
-        };
-        this.addTables = function(){
-            let that = this;
-            
-            $('.report-table').each(function () {
-                
-                that.currentY= that.currentY+that.margin;
-                that.addText($(this).attr('tablename').replaceAll('-',' - '));
-                that.doc.autoTable({'html':`#${this.id}`,useCss:true,startY:that.currentY,margin:{left:that.margin,right:that.margin}});
-                that.currentY = that.doc.lastAutoTable.finalY
-                // console.log(that.doc.lastAutoTable);
-            });
-            
-        }
-        this.download = function (outFilename) {
-            // console.log(this.doc)
-            this.doc.save(outFilename + '.pdf');
-        };
-    }
-}
-
-function makeDashboardReport(){
-    $('body').prop('disabled',true);
-    $('#lcms-spinner').prop('title','Downloading report');
-    $('#lcms-spinner').show();
-    var dashboardReport = new report();
-    dashboardReport.addReportHeader();
-    TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
-    setTimeout(()=>{
-        dashboardReport.addText(`Resources`,18);
-        dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);
-        dashboardReport.addText(`For any questions, contact the LCMS Helpdesk`,12,'mailto: sm.fs.lcms@usda.gov');
-        dashboardReport.currentY+=2;
-        dashboardReport.addText(`Background`,18);
-        dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
-        dashboardReport.addText(`LCMS produces annual maps depicting change (vegetation cover loss and gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, and meeting some broad-scale monitoring requirements and many others.`,12);
-        dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2021-7_Methods.pdf');
-
-        dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,10);
-        
-     
-        function allTheRest(){
-       
-
-            dashboardReport.currentY+=dashboardReport.margin;
-            dashboardReport.addText(`Chart Results`,18);
-            dashboardReport.addText(`The following charts depict the portion of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear}. These graphs can be useful to identify broad trends of change within and between different classes.`,12);
-            
-            $('#dashboard-results-div canvas').each(function() {
-                let id=$(this).attr('id');
-                if(id!==undefined&&id.indexOf('chart-canvas')>-1){dashboardReport.addChartJS(id)}
-        });
-             // dashboardReport.doc.addPage();
-             dashboardReport.addPlotlyPlots();
-             dashboardReport.addText(`Tabular Results`,18);
-             dashboardReport.addText(`The following tables depict the portion of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year. To compute the "Rel Change" (relative change), the value in the "Change" column is then divided by the value in the first year. Relative change can be useful to identify areas that have experienced a relatively large amount of change in a class that is not very common for a given summary area. This can become misleading as a class becomes extremely rare resulting in extremely large relative amounts of change.`,12);
-             dashboardReport.addTables();
-             let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
-             
-             
-             dashboardReport.download(reportName);
-             $('body').prop('disabled',false);
-             $('#lcms-spinner').hide();
-               
-         
-           
-        };
-        function addLegend(){dashboardReport.addBySelector('#legend-collapse-div',null,12,60,allTheRest);}
-        // addLegend();
-        dashboardReport.doc.addPage();
-        dashboardReport.currentY=dashboardReport.margin;
-        dashboardReport.addBySelector('#map','Overview Map',18,null,addLegend);
-    },500)
-    
-    
-}

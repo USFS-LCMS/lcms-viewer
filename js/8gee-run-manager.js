@@ -3169,7 +3169,7 @@ function loadGEESummaryAreas(summaryAreaObj,name){
     path = summaryAreaObj.path
     let summariesT = summaries.filter(f=>f.indexOf(path)>-1);
     // console.log(summariesT)
-    summariesT = summariesT.filter(f=>f.indexOf('_wCI_')>-1);
+    summariesT = summariesT.filter(f=>f.indexOf('_wCIWtd_')>-1);
     // console.log(summariesT)
     if(summariesT.length>0){
       summariesT = summariesT.map(id=>ee.FeatureCollection(id));
@@ -3261,7 +3261,7 @@ function runAlgal(){
   
   let ab = ee.ImageCollection('projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images');
   ab = ab.filter(ee.Filter.eq('studyAreaName',"WY-MT-CO-UT-ID2"))
-  console.log(ab.first().getInfo())
+  // console.log(ab.first().getInfo())
  
   ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear),parseInt(urlParams.endYear),'year'))
       .filter(ee.Filter.calendarRange(168,360))

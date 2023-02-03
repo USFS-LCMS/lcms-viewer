@@ -639,6 +639,7 @@ function updateDashboardHighlights(limit=10){
 								// console.log(tsProps)
 
 								// From http://www.stat.yale.edu/Courses/1997-98/101/catinf.htm
+								// Advised in Olofsson et al 2014 Equations 10 and 11
 								let tsCounts = props['TS_counts'].split(',');
 								let attributes = props[class_name].split(',');
 								let totalArea = parseFloat(props['total_area']);
@@ -981,4 +982,329 @@ function updateDashboardCharts(){
 	
 	// setTimeout(makeDashboardReport(),1000);
 	
+}
+
+//////////////////////////////////////////////////
+// Dashboard template setup
+class report {
+    constructor() {
+
+        this.clear = function () {
+            this.doc = new jspdf.jsPDF('portrait');
+            this.h = this.doc.internal.pageSize.height;
+            this.w = this.doc.internal.pageSize.width;
+            this.margin = 10;
+
+            // Robotofont class (contains text needed to read ttf files)
+            // const robotoNormal = reportFonts.getRobotoNormal();
+            // const robotoBold = reportFonts.getRobotoBold();
+            // const arialNormal = reportFonts.getArial();
+            // const arialBold = reportFonts.getArialBold();
+            // this.doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
+            // this.doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
+            // this.doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
+            // this.doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
+            // this.doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
+            // this.doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
+            // this.doc.addFileToVFS("arial-normal.ttf", arialNormal);
+            // this.doc.addFont("arial-normal.ttf", "Arial", "normal");
+
+            // this.doc.setFont('Arial', 'normal');
+
+            //header 
+            //header color block
+            var fontSize = 12;
+            this.doc.setFontSize(fontSize);
+            this.currentY = this.margin;
+            this.widthPng = 36;
+        };
+        this.addReportHeader = function () {
+            this.clear();
+
+            //header logo image
+            var usdaLogo = new Image();
+            usdaLogo.src =  './images/logos_usda-fs_bn-dk-01.PNG';//"./images/usdalogo.png";
+            this.doc.addImage(usdaLogo, 'PNG', 5, 4, 16*2, 13); //, 15);
+            // var fsLogo = new Image();
+            // fsLogo.src = "./images/usfslogo.png";
+            // this.doc.addImage(fsLogo, 'PNG', 27, 3, 14, 15); //x,y,w,h            
+            var lcmsLogo = new Image();
+            lcmsLogo.src ="./images/lcms-icon.png";
+
+            //header text
+            this.currentY = 9;
+            this.widthPng = 36;
+            this.doc.setFontSize(18);
+            this.doc.text(this.margin + this.widthPng, this.currentY, "Forest Service");
+            this.doc.setFontSize(12);
+            this.currentY += 7;
+            this.doc.text(this.margin + this.widthPng, this.currentY, "U.S. DEPARTMENT OF AGRICULTURE");
+            this.currentY += 5;
+
+
+            this.doc.line(this.margin / 2, this.currentY, this.w - this.margin / 2, this.currentY); //x,y,w,h
+            this.currentY += 5;
+            this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
+            // doc.setFont(undefined,'bold');
+            // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
+            // doc.setFont(undefined,'normal');
+            // doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
+            this.currentY += 3;
+            this.doc.setFillColor(55, 46, 44);
+            // this.doc.setFillColor(3, 74, 48); //169,209,142);
+
+            //doc.setTextColor(8,124,124);
+            this.doc.rect(0, this.currentY, 600, 20, 'F'); //x, y, w, h, style
+
+
+
+            this.doc.setFontSize(22);
+            
+            this.doc.setTextColor(0,137, 123); //0,0,0);
+            this.doc.setFont(undefined, 'bold');
+            this.currentY += 3;
+            this.doc.addImage(lcmsLogo, 'PNG', this.margin / 2, this.currentY, 13, 13); //x,y,w,h
+            this.currentY += 10;
+            this.doc.text(this.margin + 15, this.currentY, "LANDSCAPE CHANGE MONITORING SYSTEM"); //x,y,text
+            var lineHeight = this.doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM") / this.doc.internal.scaleFactor;
+            var lines = 1; //splittedText.length  // splitted text is a string array
+            var blockHeight = lines * lineHeight;
+            this.currentY += blockHeight + 10;
+            this.doc.setFont(undefined, 'normal');
+
+            this.doc.setFontSize(26);
+            this.doc.setFont(undefined, 'normal');
+            this.doc.setTextColor(0, 0, 0); //8,124,124)
+            var question = "How is our landscape changing?"; //change to document.getElementById("options-dropdown").value;//
+            var wrapQuestion = this.doc.splitTextToSize(question, 180);
+            this.doc.text(this.margin, this.currentY, wrapQuestion);
+
+            var lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
+            var lines = wrapQuestion.length; // splitted text is a string array
+            var blockHeight = lines * lineHeight;
+            this.currentY += blockHeight; //-18
+
+
+        };
+        this.checkForRoom = function (additional = 0) {
+            if (this.currentY + this.margin + additional > this.h) {
+                console.log(`Adding page: y=${this.currentY},margin=${this.margin},additional=${additional},pageH=${this.h}`)
+                this.doc.addPage();
+                this.currentY = this.margin;
+
+            }
+        };
+        this.getTextHeight = function(text,fontSize=12){
+            this.doc.setFontSize(fontSize);
+           
+            let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
+            let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
+            return textBlockHeight
+        };
+        this.addText = function (text, fontSize = 12,link=null) {
+            console.log(`Adding text: ${text}`);
+            
+            this.doc.setFontSize(fontSize);
+           
+            let textWrap = this.doc.splitTextToSize(text, this.w-(2*this.margin));
+            let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
+            let textHeight = this.doc.getTextDimensions(text).h;
+            this.checkForRoom(textBlockHeight);
+            // console.log(textHeight);
+            this.currentY += textHeight;
+            if(link===null||link===undefined){
+                
+                this.doc.text(this.margin, this.currentY, textWrap);
+                this.currentY += textBlockHeight;
+            }else{
+                this.doc.setTextColor(0,137, 123); 
+                this.doc.textWithLink(text, this.margin, this.currentY, { url: link });
+                this.currentY += textHeight;
+                this.doc.setTextColor(0, 0, 0); 
+            }
+            
+            
+        };
+        this.addBySelector = function(selector,preceedingText=null,preceedingTextFontSize=18,maxWidth=null,callback=null){
+
+            // const d = $(selector);
+            const d = document.querySelector(selector);
+            const aspectRatio  = d.clientHeight/d.clientWidth;
+            let imgW;
+            if(maxWidth===null|| maxWidth===undefined){
+                imgW = this.w- this.margin * 2
+            }else{
+                imgW = maxWidth;
+            }
+            
+            const h = imgW*aspectRatio;
+            const margin = this.margin;
+            // this.currentY += this.margin;
+
+            if(preceedingText!== null && preceedingText!==undefined){
+                let textHeight = this.getTextHeight(preceedingText,preceedingTextFontSize);
+                this.checkForRoom(textHeight+margin+h);
+                this.addText(preceedingText,preceedingTextFontSize);
+            }else{
+                this.checkForRoom(h);
+            }
+            
+            var that = this;
+            const currentY = this.currentY;
+            // let dataURL = d.toDataURL("image/jpg", 1.0);
+            // this.doc.addImage(dataURL, 'JPEG', this.margin, this.currentY, this.w, h ,{compresion:'NONE'});
+
+
+            html2canvas(d, {
+                useCORS: true,
+                allowTaint: false,
+				// scale: 3,
+				// backgroundColor: null,
+                
+            }).then(canvas=>{
+                var imgData = canvas.toDataURL('image/png');
+                // console.log('Report Image URL: '+imgData);
+                console.log([margin, currentY, imgW, h,aspectRatio ])
+               
+                that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
+                that.currentY += h;
+                that.checkForRoom();
+                callback();
+            });
+            // domtoimage.toPng(d, { quality: 0.95 })
+            //     .then(function (imgData) {
+            //         console.log([margin, currentY, imgW, h,aspectRatio ])
+            //         that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
+            //         that.currentY += h;
+            //         that.checkForRoom();
+            //         callback();
+            //     });
+
+            
+        };
+        this.outstandingCharts=0;
+        this.addChartJS = function (id) {
+            var that  = this;
+            that.outstandingCharts++;
+            console.log(`Adding chart: ${id}`);
+            
+                const canvas0 = document.getElementById(id);
+                // const legend_div= document.getElementById("chart-canvas-Change-"+thisFC+"-js-legend");
+                let chartHeight = canvas0.height;
+                let chartWidth = canvas0.width;
+                let aspectRatio = chartHeight / chartWidth;
+                let chartW = this.w - this.margin * 4;
+                let chartH = chartW * aspectRatio;
+                this.checkForRoom(chartH+this.margin);
+                // doc.setFillColor(204,204,204,0);
+                // doc.rect(margin,currentY,chartW, chartH)
+                //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
+                let dataURL = canvas0.toDataURL("image/jpg", 1.0);
+                let link = document.createElement("a");
+                        link.download = id;
+                        link.href = dataURL;
+                        // link.click();
+                // console.log(imgURL)
+                this.doc.addImage(dataURL, 'JPG', this.margin*2, this.currentY, chartW, chartH, { compresion: 'NONE' });
+                this.currentY = this.currentY + chartH+this.margin;
+                that.outstandingCharts--;
+                // return 'done';
+            
+            
+
+        };
+        this.addPlotlyPlots = function(){
+            let chartHeight = 400;
+            let chartWidth = 600;
+            let aspectRatio = chartHeight / chartWidth;
+            let chartW = this.w - this.margin * 4;
+            let chartH = chartW * aspectRatio;
+            dashboardPlotlyDownloadURLs.map(dataURL=>{
+                this.checkForRoom(chartH+this.margin);
+                this.doc.addImage(dataURL, 'PNG', this.margin*2, this.currentY, chartW, chartH, { compresion:'NONE' });
+                this.currentY = this.currentY + chartH+this.margin;
+            })
+        };
+        this.addTables = function(){
+            let that = this;
+            
+            $('.report-table').each(function () {
+                
+                that.currentY= that.currentY+that.margin;
+                that.addText($(this).attr('tablename').replaceAll('-',' - '));
+                that.doc.autoTable({'html':`#${this.id}`,useCss:true,startY:that.currentY,margin:{left:that.margin,right:that.margin}});
+                that.currentY = that.doc.lastAutoTable.finalY
+                // console.log(that.doc.lastAutoTable);
+            });
+            
+        }
+        this.download = function (outFilename) {
+            // console.log(this.doc)
+            this.doc.save(outFilename + '.pdf');
+        };
+    }
+}
+
+function makeDashboardReport(){
+    $('body').prop('disabled',true);
+    $('#lcms-spinner').prop('title','Downloading report');
+    $('#lcms-spinner').show();
+    var dashboardReport = new report();
+    dashboardReport.addReportHeader();
+    TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
+    setTimeout(()=>{
+        dashboardReport.addText(`Resources`,18);
+        dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);
+        dashboardReport.addText(`For any questions, contact the LCMS Helpdesk`,12,'mailto: sm.fs.lcms@usda.gov');
+        dashboardReport.currentY+=2;
+        dashboardReport.addText(`Background`,18);
+        dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
+        dashboardReport.addText(`LCMS produces annual maps depicting change (vegetation cover loss and gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, and meeting some broad-scale monitoring requirements and many others.`,12);
+        dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2021-7_Methods.pdf');
+
+        dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,10);
+        
+     
+        function allTheRest(){
+       
+
+            dashboardReport.currentY+=dashboardReport.margin;
+            dashboardReport.addText(`Chart Results`,18);
+            dashboardReport.addText(`The following charts depict the ${chartFormat.toLowerCase()} of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear}. These graphs can be useful to identify broad trends of change within and between different classes.`,12);
+            
+            $('#dashboard-results-div canvas').each(function() {
+                let id=$(this).attr('id');
+                if(id!==undefined&&id.indexOf('chart-canvas')>-1){dashboardReport.addChartJS(id)}
+        });
+             // dashboardReport.doc.addPage();
+             dashboardReport.addPlotlyPlots();
+             dashboardReport.addText(`Tabular Results`,18);
+             dashboardReport.addText(`The following tables depict the ${chartFormat.toLowerCase()} of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year.`,12);
+			 dashboardReport.addText(`While model-based estimates of change, land cover, and land use can be useful, it is difficult to know if a change is statistically significant. The LCMS Science Team is currently researching methods for computing significance from model-based outputs. In the meantime, in order to provide confidence intervals for the tables in this report, we are using our reference sample and traditional confidence interval computation methods.`,12)
+			 
+			 dashboardReport.addText(`First, since our reference sample was a stratified random sample, we consider the weight of each point as the proportion the strata it was drawn from / proportion of the total samples we drew from that strata. This way if a strata is over-sampled, each sample gets a lower weight and visa versa.`,12)
+			 dashboardReport.addText(`Since N is generally > 30, we are using a Z test to test for significant differences. The critical values for confidence levels are as follows (Z Test): 0.9: 1.64, 0.95: 1.96, 0.99: 2.58.`,12)
+			 dashboardReport.addText(`For each year, all reference points that fall within a given summary area for that year as well as the year prior and year after, plus a 210km buffer are tabulated for the strata weighted proportion of each class. This allows for confidence intevals for a given class for a given area to then be computed as follows:`,12)
+			 dashboardReport.addText(`ci =critical value*sqrt((TS Weighted Proportion*(1-TS Weighted Proportion))/TS Weighted Total).`,12)
+			 dashboardReport.addText(`Based on Olofsson et al 2014 Equations 10 and 11.`,12,window.location.protocol + "//" + window.location.host  + '/literature/Olofsson_et_al_2014.pdf');
+			 dashboardReport.addText(`This number is then added and subtracted from each amount for each class. If an amount of a given class in the first year does not intersect the amount in the last year, it is highlighted as being a signficant change.`,12);
+             dashboardReport.addTables();
+             let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
+             
+             
+             dashboardReport.download(reportName);
+             $('body').prop('disabled',false);
+             $('#lcms-spinner').hide();
+               
+         
+           
+        };
+        function addLegend(){dashboardReport.addBySelector('#legend-collapse-div',null,12,60,allTheRest);}
+        // addLegend();
+        dashboardReport.doc.addPage();
+        dashboardReport.currentY=dashboardReport.margin;
+        dashboardReport.addBySelector('#map','Overview Map',18,null,addLegend);
+    },500)
+    
+    
 }

@@ -603,7 +603,14 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
 
 addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',false,null,'Adjust parameters used to filter and sort LAMDA products');
   startYear = 2021;
-  endYear = new Date().getYear()+1900;
+  var endYearCutoff = new Date('2023-03-01').dayOfYear();
+  var currentDate = new Date();
+  endYear = currentDate.getYear()+1900;
+  var currentDayOfYear = currentDate.dayOfYear();
+  if(currentDayOfYear < endYearCutoff){
+    endYear--;
+  }
+  
   
   if(urlParams.year == null || urlParams.year == undefined){
         urlParams.year = endYear;

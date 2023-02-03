@@ -676,6 +676,11 @@ font-size:0.9em;
     /*vertical-align:bottom;*/
     margin-top:1.8em;
     cursor:pointer;
+    float:right;
+
+    /*height: 0.1rem;*/
+    
+    min-width:4rem;
   }
   .simple-time-lapse-layer-range-first{
 
@@ -684,6 +689,11 @@ font-size:0.9em;
     /*vertical-align:bottom;*/
     /*display:inline-block;*/
     /*vertical-align:bottom;*/
+    float:right;
+
+    /*height: 0.1rem;*/
+    
+    min-width:4rem;
     margin-top:1.5em;
     cursor:pointer;
   }
