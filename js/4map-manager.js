@@ -718,7 +718,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
     viz.dateFormat = 'YYYY';
     viz.advanceInterval = 'year';
   }
-  
+  if(viz.dateField  === null || viz.dateField  === undefined){
+    viz.dateField = 'system:time_start';
+  }
 
   timeLapseObj[legendDivID] = {}
   if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}  
@@ -730,8 +732,8 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   //Assumes the provided image collection has time property under system:time_start property
   if(viz.years === null || viz.years === undefined){
     console.log('start computing years');
-    viz.years = unique(item.sort('system:time_start',true).toList(10000,0).map(function(img){
-      var d = ee.Date(ee.Image(img).get('system:time_start'))
+    viz.years = unique(item.sort(viz.dateField,true).toList(10000,0).map(function(img){
+      var d = ee.Date(ee.Image(img).get(viz.dateField))
       return ee.Number.parse(d.format(viz.dateFormat)).int32()
     }).getInfo());
 

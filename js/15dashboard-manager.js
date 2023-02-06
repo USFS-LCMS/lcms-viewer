@@ -1287,7 +1287,7 @@ function makeDashboardReport(){
 			 dashboardReport.addText(`For each year, all reference points that fall within a given summary area for that year as well as the year prior and year after, plus a 210km buffer are tabulated for the strata weighted proportion of each class. This allows for confidence intevals for a given class for a given area to then be computed as follows:`,12)
 			 dashboardReport.addText(`ci =critical value*sqrt((TS Weighted Proportion*(1-TS Weighted Proportion))/TS Weighted Total).`,12)
 			 dashboardReport.addText(`Based on Olofsson et al 2014 Equations 10 and 11.`,12,window.location.protocol + "//" + window.location.host  + '/literature/Olofsson_et_al_2014.pdf');
-			 dashboardReport.addText(`This number is then added and subtracted from each amount for each class. If an amount of a given class in the first year does not intersect the amount in the last year, it is highlighted as being a signficant change.`,12);
+			 dashboardReport.addText(`This number is then added and subtracted from each amount for each class. If an amount of a given class in the first year does not intersect the amount in the last year, it is highlighted as being a signficant change in the tables below. Many summary areas had insufficient reference samples in some classes for some years to compute confidence intervals. In those instances, the confidence interval is denoted as "NA" and a significance test cannot be performed.`,12);
              dashboardReport.addTables();
              let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
              

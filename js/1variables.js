@@ -128,8 +128,8 @@ let startJulian = 153;//190;
 let endJulian = 274;//250;
 let layerObj = null;
 let crs = 'EPSG:5070';
-let transform = null;
-let scale = 30;
+let transform = [30,0,-2361915.0,0,-30,3177735.0];
+let scale = null;//30;
 let queryObj = {},timeLapseObj = {};dashboardObj={};
 let addLCMSTimeLapsesOn;
 parseUrlSearch();
@@ -362,6 +362,7 @@ metric:
 //Chart variables
 let plotRadius = 15;
 let plotScale = 30;
+let clickBoundsColor = '#FF0';
 var areaChartFormat = 'Percentage';
 const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
 
