@@ -772,7 +772,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                       </div>
                                     </div>
                                     <div id='${legendDivID}-time-lapse-layer-range-container' style = 'display:none;'>
-                                      <div title = 'Frame Year' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
+                                      <div title = 'Frame Date' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
                                         <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
                                           <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${viz.years[0]}</div>
                                         </div>
