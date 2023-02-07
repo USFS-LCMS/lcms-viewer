@@ -1139,27 +1139,33 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       
         legend.colorRamp = colorRamp;
 
-
+        let legendMinValue = viz.min;
+        let legendMaxValue = viz.max;
+        if(viz.legendNumbersWithCommas){
+          legendMinValue = legendMinValue.numberWithCommas();
+          legendMaxValue = legendMaxValue.numberWithCommas();
+        }
         if(label != null && viz.min != null){
-            legend.min = viz.min + ' ' +label;
+            legend.min = legendMinValue + ' ' +label;
         } else if(label != null && viz.min == null){
             legend.min = minLabel;
         } else if(label == null && viz.min != null){
-            legend.min = viz.min;
+            legend.min = legendMinValue;
         } 
-
+        
         if(label != null && viz.max != null){
-            legend.max = viz.max + ' ' +label;
+            legend.max = legendMaxValue + ' ' +label;
         } else if(label != null && viz.max == null){
             legend.max = maxLabel;
         } else if(label == null && viz.max != null){
-            legend.max = viz.max;
+            legend.max = legendMaxValue;
         } 
-
-        if(viz.legendLabelLeft !== null && viz.legendLabelLeft !== undefined){legend.min = viz.legendLabelLeft + ' ' + viz.min}
-        if(viz.legendLabelRight !== null && viz.legendLabelRight !== undefined){legend.max = viz.legendLabelRight + ' ' + viz.max}
-        if(viz.legendLabelLeftAfter !== null && viz.legendLabelLeftAfter !== undefined){legend.min =  viz.min + ' '+viz.legendLabelLeftAfter }
-        if(viz.legendLabelRightAfter !== null && viz.legendLabelRightAfter !== undefined){legend.max = viz.max + ' '+ viz.legendLabelRightAfter }
+        
+     
+        if(viz.legendLabelLeft !== null && viz.legendLabelLeft !== undefined){legend.min = viz.legendLabelLeft + ' ' +legendMinValue}
+        if(viz.legendLabelRight !== null && viz.legendLabelRight !== undefined){legend.max = viz.legendLabelRight + ' ' + legendMaxValue}
+        if(viz.legendLabelLeftAfter !== null && viz.legendLabelLeftAfter !== undefined){legend.min =  legendMinValue + ' '+viz.legendLabelLeftAfter }
+        if(viz.legendLabelRightAfter !== null && viz.legendLabelRightAfter !== undefined){legend.max = legendMaxValue + ' '+ viz.legendLabelRightAfter }
         if(legend.min ==null){legend.min = 'min'};
         if(legend.max ==null){legend.max = 'max'};
    

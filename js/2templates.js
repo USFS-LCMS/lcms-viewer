@@ -313,6 +313,7 @@ const staticTemplates = {
 
 <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
     <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,''
@@ -364,6 +365,7 @@ const staticTemplates = {
 <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
     <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,''
@@ -422,6 +424,7 @@ const staticTemplates = {
 <div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
     <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,''
@@ -460,6 +463,7 @@ const staticTemplates = {
 <div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
+    <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
     <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`),
@@ -1845,7 +1849,7 @@ function addLegendContainer(legendContainerID,containerID,show,toolTip){
 	if(show === undefined || show === null){show = true}
 	if(show){show = 'block'}
 	else{show = 'none'}
-	$('#' + containerID).prepend(`<div class = 'py-2 row' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+	$('#' + containerID).prepend(`<div class = 'py-1 row' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
 								</div>`);
 }
 

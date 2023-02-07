@@ -3180,7 +3180,7 @@ function loadGEESummaryAreas(summaryAreaObj,name){
       if(name==='Counties'){
         summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('NAME')).cat(', ').cat(fipsDict.get(ee.String(f.get('STATEFP'))))))
       }
-      Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid',strokeWeight:1.5,title:summaryAreaObj.title},name,summaryAreaObj.visible)
+      Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid',strokeWeight:1.5,title:summaryAreaObj.title},name,summaryAreaObj.visible);
   }
 }
 
@@ -3276,13 +3276,14 @@ function runAlgal(){
   //  countNotC = countC.map(img=>img.updateMask(img.lt(25000)))
   //  countC = countC.map(img=>img.updateMask(img.gte(25000)))
 
-    Map2.addTimeLapse(countC,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end'},'Cyanobacteria Count (cells/mL)')
+    Map2.addTimeLapse(countC,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Count',true,'cells/mL');
 
     
-    Map2.addTimeLapse(ab.select([1]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end'},'Cyanobacteria Biovolume (µm3)')
-    setTimeout(()=>{$('#Cyanobacteria-Count--cells-mL--1-name-span').click();
-      setTimeout(()=>{$('#Cyanobacteria-Count--cells-mL--1-forward-button>i').click();
-      $('#Cyanobacteria-Count--cells-mL--1-forward-button>i').click();
+    Map2.addTimeLapse(ab.select([1]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Biovolume',true,'µm3');
+    
+    setTimeout(()=>{$('#Cyanobacteria-Count-1-name-span').click();
+      setTimeout(()=>{$('#Cyanobacteria-Count-1-forward-button>i').click();
+      $('#Cyanobacteria-Count-1-forward-button>i').click();
       // $('#Cyanobacteria-Count--cells-mL--1-forward-button>i').click();
     },500);
     },5000)
