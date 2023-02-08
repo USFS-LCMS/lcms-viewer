@@ -3130,6 +3130,7 @@ let startYearT = parseInt(urlParams.startYear);
 let endYearT = parseInt(urlParams.endYear);
 let dashboardFolder = 'projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas';//'projects/lcms-292214/assets/Dashboard2';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
+// console.log(summaries.length)
 // window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
 
 huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06")
@@ -3174,7 +3175,11 @@ function loadGEESummaryAreas(summaryAreaObj,name){
     summariesT = summariesT.filter(f=>f.indexOf('_wCIWtd_')>-1);
     // console.log(summariesT)
     if(summariesT.length>0){
-      summariesT = summariesT.map(id=>ee.FeatureCollection(id));
+      summariesT = summariesT.map(id=>{
+        var f = ee.FeatureCollection(id)
+        f = f.map(feat=>feat.set('Path',id));
+        return f
+      });
       summariesT = ee.FeatureCollection(summariesT).flatten();
       if(name==='HUC 6'){
         summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('name')).cat(', ').cat(ee.String(f.get('states')))))

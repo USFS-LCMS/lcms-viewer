@@ -309,7 +309,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   });
   $('#analysis-year-slider-container').prop('title','Choose which years to include in the annual charts. The first and last year of this range of years will be uses for the highlights summaries.');
   $('#summary-area-selection-radio').prop('title','Choose how to select summary areas. "View-Extent" will automatically select all areas within the current map view extent. "Click" will all you to select areas by clicking on them. "Drag-Box" will allow you to select by creating a box');
-  $('#summary-pairwise-diff-radio').prop('title','Choose whether to show the percent or the percent change from the previous year of the selected area(s) of each cover/use type');
+  $('#summary-pairwise-diff-radio').prop('title','Choose whether to show the amount or the amount of change from the previous year of the selected area(s) of each cover/use/change type');
   $('#which-products-radio').prop('title','Choose which LCMS products to show in the charts, highlights, and report');
   $('#annual-transition-radio').prop('title','Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart');
   $('#change-highlights-radio').prop('title','Choose which change classes to include in the highlights tables');

@@ -635,6 +635,8 @@ function updateDashboardHighlights(limit=10){
 							let ft = fc.map(f=>{
 			// 					f = ee.Feature(f);
 								let props = f.properties;
+								// console.log(ts_class_name)
+								// console.log(props)
 								let tsProps = props[ts_class_name].split(',');
 								// console.log(tsProps)
 
