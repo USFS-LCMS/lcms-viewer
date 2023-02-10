@@ -180,9 +180,13 @@ function dashboardBoxSelect(){
 					
 					let selectedAttributes = selectedFeatures.toList(10000,0).map(f=>ee.Feature(f).toDictionary())
 					// selectedAttributes.getInfo(f=>console.log(f))
-					selectedFeatures = selectedFeatures.map(f=>f.simplify(500, selectedFeatures.first().geometry().projection()))
+					let selectedProj = selectedFeatures.first().geometry().projection();
+					// selectedFeatures = selectedFeatures.map(f=>f.simplify(500, selectedProj));
 					selectedFeatures.evaluate((f,failure)=>{
-						console.log(`Failure: ${failure}`);
+						if(failure !== undefined){
+							console.log(`Failure: ${failure}`);
+						}
+						
 						let update=false;
 						f.features.map(feat=>{
 							if(i===n){update=true}

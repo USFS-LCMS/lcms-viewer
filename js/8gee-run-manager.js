@@ -3146,6 +3146,13 @@ var summaryAreas = {
   'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8','title':'USFS Forest boundaries'}
   
 }
+if(urlParams.onlyIncludeFacts=='true'){
+  summaryAreas = {};
+}
+if(urlParams.onlyIncludeFacts == 'true' || urlParams.includeFacts == 'true'){
+  console.log('Including FACTS treatment polygons');
+  summaryAreas['FACTS Fuel Treatments'] = {'path':'FACTS_Fuel_Treatments','unique_fieldname':'ACTIVITY_U','visible':true,'color':'F8F','title':'FACTS Fuel Treatments'}
+}
 if(urlParams.layerViz == undefined || urlParams.layerViz == null){
   urlParams.layerViz = {};
   Object.keys(summaryAreas).map(k=>{
@@ -3186,6 +3193,9 @@ function loadGEESummaryAreas(summaryAreaObj,name){
       }
       if(name==='Counties'){
         summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('NAME')).cat(', ').cat(fipsDict.get(ee.String(f.get('STATEFP'))))))
+      }
+      if(name === 'FACTS Fuel Treatments'){
+        summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('ACTIVITY_2')).cat(' - ').cat(ee.String(f.get('FACTS_ID'))).cat(' - ').cat(ee.Date(f.get('ACT_CREATE')).format('YYYY-MM-dd'))))
       }
       Map2.addLayer(summariesT,{strokeColor:summaryAreaObj.color,layerType:'geeVectorImage',dashboardSummaryLayer:true,dashboardFieldName:summaryAreaObj.unique_fieldname,dashboardSummaryMode:'hybrid',strokeWeight:1.5,title:summaryAreaObj.title},name,summaryAreaObj.visible);
   }
