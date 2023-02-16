@@ -71,8 +71,8 @@ const  titles = {
     'lcms-dashboard': {
             leftWords: 'LCMS',
             centerWords: 'DASHBOARD',
-            rightWords:'',
-            title:'LCMS Dashboard'
+            rightWords:'Βeta',
+            title:'LCMS Dashboard Βeta'
             } ,
     'Bloom-Mapper': {
             leftWords: 'Bloom',
@@ -222,7 +222,7 @@ const staticTemplates = {
                                     This Data Explorer provides the ability to view, analyze, summarize, and download LCMS data. 
                                     </p>
                                     <p class='my-2'>
-                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.
+                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel 2 data availability, cloud-based computing power, and big data analysis methods.
 
                             </p>
                             `,
@@ -470,7 +470,7 @@ const staticTemplates = {
 'Bloom-Mapper':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
             'Welcome to the Bloom MAPPER!',
             `<p class='my-2'>
-            This tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
+            This prototype tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
             </p>`,
     `<div style='display:inline-block;margin-top:0.5rem;'>
     <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
@@ -553,7 +553,7 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDisclaimerText:`Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
+        dashboardHighlightsDisclaimerText:`LCMS Dashboard Βeta Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
@@ -576,15 +576,17 @@ const staticTemplates = {
         </p>`,
         dashboardProgressDiv:`<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
-        <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(1)}"  alt="GEE logo image">
+        <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(0.8)}"  alt="GEE logo image">
         
-        <div class="progressbar" id='highlights-progressbar' class = 'px-2'>
+        <div class="progressbar" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
             <span style="width: 0%;">0%</span>
         </div>
+        <i  onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' title="Click to clear all selected features from this layer" class="fa fa-eraser eraser-all" ></i>
+        
         </span>
         
         
-        <div title = 'Click to clear all selected features ' onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' class='eraser-all highlights-div '><i class="fa fa-eraser pr-1" style="display:inline-block;"></i>Clear All Selected Features</div>
+        
         </div>`,
     //     dashboardDownloadReportButton:`<div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
     //     <button class='btn dashboard-download-button' id='dashboard-download-button' onclick='makeDashboardReport()' >
@@ -2664,7 +2666,7 @@ function addLayer(layer){
                 updateDashboardHighlights();
             }
         }
-        $(`#${eraserID}`).show();
+        // $(`#${eraserID}`).show();
         $(`#${eraserID}`).click(deleteAllSelected)
         layer.dashboardSelectedFeatures = {};
         layer.dashboardSummaryMode = layer.viz.dashboardSummaryMode;

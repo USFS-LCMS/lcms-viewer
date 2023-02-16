@@ -202,7 +202,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
 
 }else if(mode === 'lcms-dashboard'){
-  
+  $('#title-banner').fitText(1.7);
   var minYear = startYear;var maxYear = endYear;
   // console.log(urlParams)  
   if(urlParams.startYear == null || urlParams.startYear == undefined){

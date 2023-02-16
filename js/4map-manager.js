@@ -886,9 +886,13 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
           s.slider('option', 'value',ui.value);
           $('#'+k+'-opacity-slider-handle-label').text(opacity);
           timeLapseObj[k].opacity = opacity*100
-          selectFrame(null,null,false)
+          selectFrame(null,null,false);
+          setTimeLapseRangeSliderThumbOpacity(opacity);
         }
       });
+      function setTimeLapseRangeSliderThumbOpacity(opacity){
+        $(`#${legendDivID}-opacity-slider`).css("background-color", `rgba(55, 46, 44,${opacity})!important`)  
+	}
   //The year slider
   $('#'+legendDivID+'-year-slider').slider({
         min: startYearT,
@@ -1320,16 +1324,22 @@ function addRESTToMap(tileURLFunction,name,visible,maxZoom,helpBox,whichLayerLis
 //////////////////////////////////////////////////////
 //Function to convert xy space in the dom to the map
 function point2LatLng(x,y) {
+  var out;
+  try{
+    var m = document.getElementById('map');
+    x = x- m.offsetLeft;
+    y = y-m.offsetTop;
+    // console.log('converting div to lat lng');console.log(x.toString() + ' ' + y.toString());
+    var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
+    var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+    var scale = Math.pow(2, map.getZoom());
+    var worldPoint = new google.maps.Point(x / scale + bottomLeft.x, y / scale + topRight.y);
+    out = map.getProjection().fromPointToLatLng(worldPoint);
+    
+  }catch(err){
+    out = null;
+  }
   
-  var m = document.getElementById('map');
-  x = x- m.offsetLeft;
-  y = y-m.offsetTop;
-  // console.log('converting div to lat lng');console.log(x.toString() + ' ' + y.toString());
-  var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
-  var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
-  var scale = Math.pow(2, map.getZoom());
-  var worldPoint = new google.maps.Point(x / scale + bottomLeft.x, y / scale + topRight.y);
-  var out = map.getProjection().fromPointToLatLng(worldPoint);
   return out;
 }
 //////////////////////////////////////////////////////
@@ -2645,18 +2655,21 @@ function initialize() {
         var x =event.clientX;
         var y = event.clientY;
         var center =point2LatLng(x,y);
-        var zoom = map.getZoom();
-        // var center = event.latLng;
-        mouseLat = center.lat().toFixed(4).toString();
-        mouseLng = center.lng().toFixed(4).toString();
-        var now = new Date().getTime()
-        var dt = now - elevationCheckTime  ;
-        
-        if(dt > 1000){
-          getElevation(center);
-          elevationCheckTime = now;
+        if(center !== null){
+          var zoom = map.getZoom();
+          // var center = event.latLng;
+          mouseLat = center.lat().toFixed(4).toString();
+          mouseLng = center.lng().toFixed(4).toString();
+          var now = new Date().getTime()
+          var dt = now - elevationCheckTime  ;
+          
+          if(dt > 1000){
+            getElevation(center);
+            elevationCheckTime = now;
+          }
+          else{updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)}
         }
-        else{updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation)}
+        
         
     })
     function trackViewChange(){
