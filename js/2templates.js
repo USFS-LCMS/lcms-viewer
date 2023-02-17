@@ -494,7 +494,7 @@ const staticTemplates = {
     </div>
     <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
-                            <a class="intro-modal-links" onclick="function(){}" title="Open in-depth methods documentation">METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadAnyMethods('./literature/Bloom_Mapper_v3_Methods_2023.pdf')" title="Open Bloom Mapper data creation methods documentation">METHODS</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
                         </div>
 
@@ -976,7 +976,7 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    Coming Soon
+                                <a class="intro-modal-links" onclick="downloadAnyMethods('./literature/Bloom_Mapper_v3_Methods_2023.pdf')" title="Open Bloom Mapper data creation methods documentation">Bloom Mapper V3 METHODS</a>
                                 </li>
                             </div>
                         </div>
