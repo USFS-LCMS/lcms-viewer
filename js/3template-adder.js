@@ -418,7 +418,7 @@ addCheckboxes('parameters-collapse-div','index-choice-checkboxes','Choose which 
     $('#comp-params-div').append(`<hr>`);
 
   if(urlParams.whichPlatforms === null || urlParams.whichPlatforms === undefined){
-    urlParams.whichPlatforms = {"L5": true,"L7-SLC-On": true,"L7-SLC-Off": false,"L8": true}
+    urlParams.whichPlatforms = {"L5": true,"L7-SLC-On": true,"L7-SLC-Off": false,"L8": true,"L9": true}
   }
   addCheckboxes('comp-params-div','which-sensor-method-radio','Choose which Landsat platforms to include','whichPlatforms',urlParams.whichPlatforms);
   

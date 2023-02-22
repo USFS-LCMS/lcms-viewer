@@ -2651,7 +2651,7 @@ function initialize() {
    
     }
     //Listen for mouse movement and update bottom bar
-    google.maps.event.addDomListener(mapDiv,'mousemove',function(event){
+    google.maps.event.addListener(mapDiv,'mousemove',function(event){
         var x =event.clientX;
         var y = event.clientY;
         var center =point2LatLng(x,y);
@@ -2876,7 +2876,7 @@ function initialize() {
 //Wait to initialize
 //Taken from: https://stackoverflow.com/questions/32808613/how-to-wait-till-the-google-maps-api-has-loaded-before-loading-a-google-maps-ove
 var mapWaitCount = 0;
-var mapWaitMax = 20;
+var mapWaitMax = 3;
 //Handle failed attempts to load gmaps api
 function map_load() { // if you need any param
     mapWaitCount++;

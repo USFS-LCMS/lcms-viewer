@@ -272,7 +272,7 @@ var ccdcAnnualBnsTo = ccdcOriginalIndices.map(function(bn){return bn + '_CCDC_fi
 // console.log(ccdcAnnualBnsTo)
 var ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb'].concat(ccdcIndices.map(function(i){return i+'_.*'}));
 var ccdcIndicesSelectorPrediction = ['tStart','tEnd','tBreak','changeProb'].concat(ccdcOriginalIndices.map(function(i){return i+'_.*'}));
-
+console.log(ccdcIndicesSelector)
 
 var fraction = 0.6657534246575343;
 var tEndExtrapolationPeriod = 1;//Period in years to extrapolate if needed
@@ -964,7 +964,7 @@ forCharting  = joinCollections(forCharting,nlcdImpv.select([0],['NLCD % Impervio
 // forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);
 forCharting  = joinCollections(forCharting,nwi_hi_rast, false);
 
-console.log(forCharting.first().bandNames().getInfo())
+// console.log(forCharting.first().bandNames().getInfo())
 
 var chartTableDict = {
   'IDS Type':damage_codes,
@@ -1581,7 +1581,7 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
 
 //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
-  var hansen = ee.Image('UMD/hansen/global_forest_change_2020_v1_8').select(['lossyear']).selfMask().add(2000);
+  var hansen = ee.Image('UMD/hansen/global_forest_change_2021_v1_9').select(['lossyear']).selfMask().add(2000);
   Map2.addLayer(hansen,{min:startYear,max:endYear,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},'Hansen Loss Year',false);
 
   
@@ -1649,7 +1649,13 @@ function simpleLANDTRENDR(ts,startYear,endYear,indexName){//, run_params,lossMag
                 .filter(ee.Filter.calendarRange(startJulian,endJulian))
                 .filter(ee.Filter.lte('WRS_ROW',120))
                 .select(['SR_B2','SR_B3','SR_B4','SR_B5','SR_B6','ST_B10','SR_B7','QA_PIXEL'],descriptiveBandNames);
-    var platformObj = {'L5':l5,'L7-SLC-On':l7SLCOn,'L7-SLC-Off':l7SLCOff,'L8':l8}
+    var l9 = ee.ImageCollection('LANDSAT/LC09/C02/T1_L2')
+                .filterBounds(aoi)
+                .filter(ee.Filter.calendarRange(startYear-yearBuffer,endYear+yearBuffer,'year'))
+                .filter(ee.Filter.calendarRange(startJulian,endJulian))
+                .filter(ee.Filter.lte('WRS_ROW',120))
+                .select(['SR_B2','SR_B3','SR_B4','SR_B5','SR_B6','ST_B10','SR_B7','QA_PIXEL'],descriptiveBandNames);
+    var platformObj = {'L5':l5,'L7-SLC-On':l7SLCOn,'L7-SLC-Off':l7SLCOff,'L8':l8,'L9':l9}
     var imgs;
 
     Object.keys(urlParams.whichPlatforms).map(function(k){
