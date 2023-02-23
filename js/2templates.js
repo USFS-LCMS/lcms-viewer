@@ -1135,7 +1135,7 @@ const staticTemplates = {
                                         <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                         <div id = 'select-features-edit-toolbar'></div>
                                         <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
-                                        <hr>`,
+                                        `,
         selectAreaInteractiveChartTip : 'Select from pre-defined areas on map to summarize products across.',
         shareButtons : `<!-- Email -->
                         <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>

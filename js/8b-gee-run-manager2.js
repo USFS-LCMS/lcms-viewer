@@ -316,13 +316,13 @@ function runGTAC(){
 //   // populatePixelChartDropdown();
 //   // $('#query-label').click();
   // }
-  var tArea = ee.FeatureCollection(
-        [ee.Feature(
-            ee.Geometry.Polygon(
-                [[[-111.45760650206141, 40.648752837173106],
-                  [-111.45760650206141, 40.58933585265644],
-                  [-111.36078948545985, 40.58933585265644],
-                  [-111.36078948545985, 40.648752837173106]]], null, false),
-            {
-              "system:index": "0"
-            })]);
+  // var tArea = ee.FeatureCollection(
+  //       [ee.Feature(
+  //           ee.Geometry.Polygon(
+  //               [[[-111.45760650206141, 40.648752837173106],
+  //                 [-111.45760650206141, 40.58933585265644],
+  //                 [-111.36078948545985, 40.58933585265644],
+  //                 [-111.36078948545985, 40.648752837173106]]], null, false),
+  //           {
+  //             "system:index": "0"
+  //           })]);

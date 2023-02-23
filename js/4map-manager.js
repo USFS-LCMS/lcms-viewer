@@ -2174,6 +2174,7 @@ function dropdownUpdateStudyArea(whichOne){
       run  = runLT;
     }else if( mode === 'LCMS'|| (mode === 'LCMS-pilot' && studyAreaDict[longStudyAreaName].isPilot == false)){
       run  = runGTAC;
+      run = function(){}
     }else if( mode === 'LCMS-pilot'){
       run  = runUSFS;
     }else if( mode === 'STORM'){
