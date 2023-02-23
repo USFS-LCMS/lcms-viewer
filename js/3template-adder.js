@@ -1002,7 +1002,7 @@ if(canExport){
    }
 }
 function resizeViewerPanes(){
-  console.log('resized');
+  // console.log('resized');
   if(mode !== 'lcms-dashboard'){
     moveCollapse('legend-collapse');
   }
