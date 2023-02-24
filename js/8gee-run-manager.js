@@ -3157,7 +3157,7 @@ if(urlParams.onlyIncludeFacts=='true'){
 }
 if(urlParams.onlyIncludeFacts == 'true' || urlParams.includeFacts == 'true'){
   console.log('Including FACTS treatment polygons');
-  summaryAreas['FACTS Fuel Treatments'] = {'path':'FACTS_Fuel_Treatments','unique_fieldname':'treat_cat','visible':true,'color':'F8F','title':'FACTS Fuel Treatments'}
+  summaryAreas['FACTS Fuel Treatments'] = {'path':'FACTS_Fuel_Treatments','unique_fieldname':'treat_cat_yr','visible':true,'color':'F8F','title':'FACTS Fuel Treatments'}
 }
 if(urlParams.layerViz == undefined || urlParams.layerViz == null){
   urlParams.layerViz = {};
