@@ -72,7 +72,6 @@ function runGTAC(){
 
 
   
-  
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
     if(analysisMode === 'advanced'){
     Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).filter(ee.Filter.calendarRange(startYear,startYear + lcmsRun.thematicChangeYearBuffer,'year')).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${startYear+lcmsRun.thematicChangeYearBuffer}.`,layerType : 'geeImage',autoViz:true},'Land Use Start',false);
@@ -126,6 +125,31 @@ function runGTAC(){
     Map2.addLayer(lcmsRun.gainCount.set('bounds',clientBoundary),{title: `Vegetation cover gain duration from ${startYear} to ${endYear}.`,layerType : 'geeImage', min: 1, max: 5, palette: recoveryDurPalette,legendLabelLeft:'Year count =',legendLabelRight:'Year count >='},'Gain Duration',false);
   }
   
+  
+  if(urlParams.addTCC2021 === 'true'){
+    var nlcdTCC2021 = ee.ImageCollection('projects/nlcd-tcc/assets/CONUS-TCC/Final-products/NLCD_tcc_final');
+    // nlcdTCC2021 = nlcdTCC2021.map(img=>img.selfMask())
+    var nlcdTCCYrs = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
+    // var nlcdTCCYrsI = ee.List.sequence(0,nlcdTCCYrs.length-2).getInfo();
+               
+    var tccDiff = [];
+    for(var i=0;i<nlcdTCCYrs.length-1;i++){
+      var yr1 = nlcdTCCYrs[i];
+      var yr2 = nlcdTCCYrs[i+1];
+      var nlcdTCC2021Pre = ee.Image(nlcdTCC2021.filter(ee.Filter.calendarRange(yr1,yr1,'year')).first());
+      var nlcdTCC2021Post = ee.Image(nlcdTCC2021.filter(ee.Filter.calendarRange(yr2,yr2,'year')).first());
+      var diff = nlcdTCC2021Post.subtract(nlcdTCC2021Pre).int16()
+      tccDiff.push(diff);
+    };
+    tccDiff = ee.ImageCollection(tccDiff);
+    var tccGain = tccDiff.max();
+    var tccLoss = tccDiff.min();
+
+    Map2.addLayer(tccLoss.updateMask(tccLoss.lte(-10)),{min:-80,max:-10,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Loss Mag',false);
+    Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
+    
+    Map2.addTimeLapse(nlcdTCC2021,{years:nlcdTCCYrs,min:0,max:80,palette:'808,DDD,080','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'NLCD TCC 2021')
+  }
 
   //Bring in time lapses
 

@@ -662,30 +662,7 @@ function getMTBSandIDS(studyAreaName,whichLayerList){
   [2016].map(function(yr){
     var tcc = nlcd.filter(ee.Filter.calendarRange(yr,yr,'year')).select(['percent_tree_cover']).mosaic();
   Map2.addLayer(tcc.updateMask(tcc.gte(1)).set('bounds',clientBoundsDict.CONUS),{min:1,max:90,palette:palettes.crameri.bamako[50].reverse()},'NLCD Tree Canopy Cover '+yr.toString(),false,null,null, 'NLCD '+yr.toString()+' Tree Canopy Cover',whichLayerList);
-  if(urlParams.addTCC2021 === 'true'){
-    var nlcdTCC2021 = ee.ImageCollection('projects/nlcd-tcc/assets/CONUS-TCC/Final-products/NLCD_tcc_final');
-    // nlcdTCC2021 = nlcdTCC2021.map(img=>img.selfMask())
-    var nlcdTCCYrs = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
-    // var nlcdTCCYrsI = ee.List.sequence(0,nlcdTCCYrs.length-2).getInfo();
-               
-    var tccDiff = [];
-    for(var i=0;i<nlcdTCCYrs.length-1;i++){
-      var yr1 = nlcdTCCYrs[i];
-      var yr2 = nlcdTCCYrs[i+1];
-      var nlcdTCC2021Pre = ee.Image(nlcdTCC2021.filter(ee.Filter.calendarRange(yr1,yr1,'year')).first());
-      var nlcdTCC2021Post = ee.Image(nlcdTCC2021.filter(ee.Filter.calendarRange(yr2,yr2,'year')).first());
-      var diff = nlcdTCC2021Post.subtract(nlcdTCC2021Pre).int16()
-      tccDiff.push(diff);
-    };
-    tccDiff = ee.ImageCollection(tccDiff);
-    var tccGain = tccDiff.max();
-    var tccLoss = tccDiff.min();
-
-    Map2.addLayer(tccLoss.updateMask(tccLoss.lte(-10)),{min:-80,max:-10,palette:'D00,F5DEB3'},'Max TCC Loss Mag',false);
-    Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400'},'Max TCC Gain Mag',false);
-    
-    Map2.addTimeLapse(nlcdTCC2021,{years:nlcdTCCYrs,min:0,max:60,palette:'808,DDD,080'},'NLCD TCC 2021')
-  }
+  
   
   })
   
