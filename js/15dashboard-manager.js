@@ -1052,6 +1052,7 @@ class report {
             this.currentY += 5;
             this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
 			this.currentY += 5;
+			this.doc.setFontSize(10);
             this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: CONUS and SEAK v2021.7, PRUSVI v2020.6 | Dashboard Version: Beta`);
             // doc.setFont(undefined,'bold');
             // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");

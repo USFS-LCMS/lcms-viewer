@@ -3155,7 +3155,7 @@ var summaryAreas = {
 if(urlParams.onlyIncludeFacts=='true'){
   summaryAreas = {};
 }
-if(urlParams.onlyIncludeFacts == 'true' || urlParams.includeFacts == 'true'){
+if(urlParams.onlyIncludeFacts == 'true' || urlParams.includeFacts == 'true' || urlParams.beta === 'true'){
   console.log('Including FACTS treatment polygons');
   summaryAreas['FACTS Fuel Treatments'] = {'path':'FACTS_Fuel_Treatments','unique_fieldname':'treat_cat_yr','visible':true,'color':'F8F','title':'FACTS Fuel Treatments'}
 }

@@ -126,7 +126,7 @@ function runGTAC(){
   }
   
   
-  if(urlParams.addTCC2021 === 'true'){
+  if(urlParams.addTCC2021 === 'true' || urlParams.beta === 'true'){
     var nlcdTCC2021 = ee.ImageCollection('projects/nlcd-tcc/assets/CONUS-TCC/Final-products/NLCD_tcc_final');
     // nlcdTCC2021 = nlcdTCC2021.map(img=>img.selfMask())
     var nlcdTCCYrs = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];

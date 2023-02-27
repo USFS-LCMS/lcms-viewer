@@ -71,8 +71,8 @@ const  titles = {
     'lcms-dashboard': {
             leftWords: 'LCMS',
             centerWords: 'DASHBOARD',
-            rightWords:'Βeta',
-            title:'LCMS Dashboard Βeta'
+            rightWords:'Beta',
+            title:'LCMS Dashboard Beta'
             } ,
     'Bloom-Mapper': {
             leftWords: 'Bloom',
@@ -553,7 +553,7 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDisclaimerText:`LCMS Dashboard Βeta Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
+        dashboardHighlightsDisclaimerText:`LCMS Dashboard Beta Disclaimer: All summary numbers are based on modeled LCMS outputs. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS refence sample for each year from each summary area plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. Theses tables are useful for understanding broad patterns of change on our landscape. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
