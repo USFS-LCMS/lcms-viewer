@@ -1618,9 +1618,20 @@ function reRun(){
   
 }
 ////////////////////////////////////////////////////////////////////////
-//Helper functions
+// Taken from: https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
+function mulberry32(a) {
+  return function() {
+    var t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    var out = ((t ^ t >>> 14) >>> 0) / 4294967296;
+    return out;
+  }
+}
+var randomN = mulberry32(1);
+////////////////////////////
 function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(randomN() * (max - min + 1)) + min;
 }
 function padLeft(nr, n, str){
     return Array(n-String(nr).length+1).join(str||'0')+nr;
@@ -1668,10 +1679,10 @@ function padZero(str, len) {
     var zeros = new Array(len).join('0');
     return (zeros + str).slice(-len);
 }
-function randomColor(){
-  var r = getRandomInt(100, 200);
-  var g = getRandomInt(100, 200);
-  var b = getRandomInt(100, 255);
+function randomColor(mins = [100,100,100],maxes=[200,200,255]){
+  var r = getRandomInt(mins[0], maxes[0]);
+  var g = getRandomInt(mins[1], maxes[1]);
+  var b = getRandomInt(mins[2], maxes[2]);
   var c = rgbToHex(r,g,b)
   return c
 }
@@ -2181,8 +2192,9 @@ function dropdownUpdateStudyArea(whichOne){
       run  = runStorm;
     }else if( mode === 'LAMDA'){
       run  = runLAMDA;
-    }
-    else if(mode === 'lcms-base-learner'){
+    }else if( mode === 'TreeMap'){
+      run  = runTreeMap;
+    }else if(mode === 'lcms-base-learner'){
       run = runBaseLearner
     }
       else if(studyAreaName === 'CONUS'){
@@ -2780,6 +2792,8 @@ function initialize() {
       run  = runStorm;
       }else if(mode === 'lcms-base-learner'){
         run = runBaseLearner
+      }else if( mode === 'TreeMap'){
+        run  = runTreeMap;
       }else if(mode === 'lcms-dashboard'){
         run = runDashboard;
         map.setOptions({mapTypeControlOptions :{style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,position: google.maps.ControlPosition.TOP_CENTER,style: google.maps.MapTypeControlStyle.SMALL},

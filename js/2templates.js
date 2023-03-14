@@ -79,7 +79,13 @@ const  titles = {
             centerWords: 'MAPPER',
             rightWords:'',
             title:'Bloom Mapper'
-            }     
+            } ,
+    'TreeMap': {
+                leftWords: '',
+                centerWords: 'TreeMap',
+                rightWords:'Explorer',
+                title:'TreeMap Explorer'
+                } ,    
 }
 ///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {'LCMS':`<p>Try <a class = 'support-text' title = "A simple LCMS output viewer" href = "lcms-in-motion.html" target="_blank">this viewer</a> for a simple visualization of LCMS data products.</p>
@@ -300,7 +306,7 @@ const staticTemplates = {
                 ),
             'IDS':getIntroModal('./images/lcms-icon.png',
             'Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!',
-           `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.fed.us/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
+           `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
            
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
@@ -501,6 +507,43 @@ const staticTemplates = {
 </div>`,
 `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
 
+`),
+'TreeMap':getIntroModal('./Icons_svg/logo_gtac_color-wt.svg',
+            'Welcome to the TreeMap Explorer!',
+            `<p class='my-2'>
+            This prototype tool provides an interactive map with the ability to view the 2016 TreeMap attributes. Source Data: Riley, Karin L.; Grenfell, Isaac C.; Finney, Mark A.; Shaw, John D. (2023). TreeMap 2016: A tree-level model of the forests of the conterminous United States circa 2016. Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2021-0074. Accessed 2023-03-13. 
+            </p>`,
+    `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='TreeMap Explorer is a joint effort between GTAC and USDA Forest Service Research'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="images/logos_usda-fs_bn-dk-01.svg">
+        
+       
+        
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          
+         
+            <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+            </li>
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+          <li title = 'TreeMap 2016 Research Dataset source data.'><a class="intro-modal-links" href="https://data.nal.usda.gov/dataset/treemap-2016-tree-level-model-forests-conterminous-united-states-circa-2016" target="_blank">RDS</a> TreeMap 2016 Data Source
+          </li>
+        </ul>
+        
+    </div>
+    <div class ='my-3'>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
+                            <a class="intro-modal-links" href="https://academic.oup.com/jof/article/120/6/607/6701541" target="_blank" title="Open 2016 TreeMap documentation">METHODS</a>
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+                        </div>
+
+</div>`,
+`<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+
 `)
         },
     loadingModal:{'all':function(logoPath,word,whatIsLoading='map services within Google Earth Engine'){
@@ -541,7 +584,7 @@ const staticTemplates = {
                         <a href="https://earthengine.google.com/" target="_blank">
                             <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
                         </a>
-                        <a href="http://www.fs.fed.us//" target="_blank">
+                        <a href="https://www.fs.usda.gov/" target="_blank">
                             <img src="images/usfslogo.png" class = 'image-icon-bar'  href="#"  alt= "USDA Forest Service logo" title="Click to learn more about the US Forest Service">
                         </a>
                         <a href="http://www.usda.gov" target="_blank">
@@ -739,12 +782,12 @@ const staticTemplates = {
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
                                 <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
                                     <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
                                 </a>
                             </div>
@@ -872,12 +915,12 @@ const staticTemplates = {
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
                                 <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
                                     <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
                                 </a>
                             </div>
@@ -987,12 +1030,12 @@ const staticTemplates = {
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
                                 <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
-                                <a href="https://www.fs.fed.us/gstc/" target="_blank">
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
                                     <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
                                 </a>
                             </div>

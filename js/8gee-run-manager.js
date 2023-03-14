@@ -3312,3 +3312,173 @@ function runAlgal(){
     },5000)
     algalRunID++;
 }
+
+function runTreeMap(){
+  var attrC = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/treeMap2016Attributes')
+      var attrs = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMR', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L'];
+      var visible = true;
+      var thematicAttrs = [['FLDTYPCD','FldTypName'], ['FORTYPCD','ForTypName']];
+      var continuousAttrs = [['CANOPYPCT',palettes.crameri.bamako[50].reverse(),0.05,0.95],
+                              ['TPA_LIVE',palettes.cmocean.Speed[7],0.05,0.95],
+                              ['TPA_DEAD',palettes.cmocean.Tempo[7].reverse(),0.25,0.75],
+                              ['CARBON_L',palettes.cmocean.Speed[7],0.05,0.95],
+                              ['CARBON_D',palettes.cmocean.Tempo[7].reverse(),0.05,0.95]
+                            ]
+      thematicAttrs.map(attr=>{
+        var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+        var numbers = treeMapLookup[attr[0]];
+        var names = treeMapLookup[attr[1]];
+        var zippedValuesNames = unique(zip(numbers,names));
+        zippedValuesNames.sort()
+        var  uniqueValues = zippedValuesNames.map(r=>r[0]);
+        var uniqueNames = zippedValuesNames.map(r=>r[1]);
+        var viz = {};
+        viz['queryDict'] = dict(zippedValuesNames);
+        viz['min'] = uniqueValues[0];
+        viz['max'] = uniqueValues[uniqueValues.length-1];
+        
+        let colors = []
+        let palette = []
+        range(viz['min'],viz['max']+1).map(i=>{
+
+        
+    //       # print(i)
+          
+          if(uniqueValues.indexOf(i)>-1){
+              //          # print(i,'in')
+              c = randomColor([50,50,50],[255,255,255]).slice(1);
+
+              colors.push(c)
+              palette.push(c)
+          } else{
+    //          # print(i,'out')
+              palette.push('000')
+        }
+      });
+      // console.log(zippedValuesNames.length);console.log(uniqueNames.length);console.log(colors.length)  
+        viz['palette']=palette;
+        viz['classLegendDict'] = dict(zip(uniqueNames,colors))
+        Map2.addLayer(attrImg,viz,attr[0],visible);
+        visible = false;
+      })
+
+      continuousAttrs.map(attr=>{
+        var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+        var numbers = treeMapLookup[attr[0]];
+        var uniqueValues = asc(unique(numbers));
+        uniqueValues = uniqueValues.filter(n=>n!==-99) 
+        var viz = {};
+        viz['min'] = parseInt(quantile(uniqueValues,attr[2]));
+        viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
+        viz['palette'] = attr[1];
+        Map2.addLayer(attrImg,viz,attr[0],false)
+      })
+
+  
+  
+  // fetch(treeMapLookup)
+	// .then((resp) => resp.json()) // Transform the data into json
+  // 	.then(function(df) {
+  //     console.log(Object.keys(df))
+      
+  //     console.log(attrC.aggregate_histogram('attribute').keys().getInfo())
+  //     //   var allCNs = df['Value']
+  //     //   var tmCN  = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap2016');
+  //     //   function getAttributeImage(columnNameNumbers,columnNameNames,randomColors,colors,min,max,pctlStretch){
+  //     //     let imgValues = df[columnNameNumbers].map(n=>parseInt(n));
+  //     //     console.log(columnNameNumbers)
+  //     //     let nameColumnProvided = columnNameNames !== null;
+  //     //     if(columnNameNames == null){
+  //     //       columnNameNames = columnNameNumbers;
+  //     //     }
+  //     //     // console.log(columnNameNames);console.log(columnNameNumbers)
+  //     //     let imgNames =  df[columnNameNames];
+      
+  //     //   // # remap = [codeLookup.keys(),codeLookup.values()]
+  //     //   // # viz = {'min':imgValues[0],'max':img
+      
+      
+  //     //     let tmAttribute = tmCN.remap(ee.List(allCNs),ee.List(imgValues)).int16()
+          
+  //     //   let viz = {}
+       
+  //     //   // // console.log(nameColumnProvided)
+  //     //   // var uniqueValues;var uniqueValues;
+  //     //   // if(nameColumnProvided){
+  //     //   //   let zippedValuesNames = unique(zip(imgValues,imgNames));
+  //     //   //   zippedValuesNames.sort()
+  //     //   //   viz['queryDict'] = dict(zippedValuesNames);
+  //     //   //   uniqueValues = zippedValuesNames.map(r=>r[0]);
+  //     //   //   uniqueNames = zippedValuesNames.map(r=>r[1]);
+  //     //   // }else{
+  //     //   //   uniqueValues = asc(unique(imgValues));
+  //     //   //   uniqueValues = uniqueValues.filter(n=>n!==-99) 
+  //     //   // };
+  //     //   // // console.log(uniqueValues)
+        
+        
+  //     //   // if(!!pctlStretch){
+  //     //   //    viz['min'] = parseInt(quantile(uniqueValues,pctlStretch[0]));
+  //     //   // }else if(!min){
+  //     //   //    viz['min'] = uniqueValues[0];
+  //     //   // }else{
+  //     //   //   viz['min'] = min
+  //     //   // }
+  //     //   // if(!!pctlStretch){
+  //     //   //    viz['max'] = parseInt(quantile(uniqueValues,pctlStretch[1]));
+  //     //   // }else if(!max){
+  //     //   //    viz['max'] = uniqueValues[uniqueValues.length-1]
+  //     //   // }else{
+  //     //   //    viz['max'] = max;
+  //     //   // // # print(uniqueValues)
+  //     //   // }
+
+  //     //   // if(randomColors && !colors){
+  //     //   //    let colors = []
+  //     //   //    let palette = []
+  //     //   //    range(viz['min'],viz['max']+1).map(i=>{
+
+           
+  //     //   // //       # print(i)
+              
+  //     //   //       if(uniqueValues.indexOf(i)>-1){
+  //     //   //          //          # print(i,'in')
+  //     //   //          c = randomColor([50,50,50],[255,255,255]).slice(1);
+
+  //     //   //          colors.push(c)
+  //     //   //          palette.push(c)
+  //     //   //       } else{
+  //     //   // //          # print(i,'out')
+  //     //   //          palette.push('000')
+  //     //   //     }
+  //     //   //   })
+  //     //   // //    print(len(colors),len(uniqueValues))
+  //     //   //    viz['palette']=palette
+  //     //   //    viz['classLegendDict'] = dict(zip(uniqueNames,colors))
+  //     //   // }else{
+  //     //   //   viz['palette']=colors;
+  //     //   // }
+  //     //   // console.log(viz)
+  //     //   Map2.addLayer(tmAttribute,viz,`Tree Map ${columnNameNames}`)
+      
+  //     //   }
+
+  //     // Map2.addLayer(tmCN.randomVisualizer(),{},'TreeMap Raw CN',false);
+  //     // // getAttributeImage('FORTYPCD','ForTypName',true);
+  //     // // getAttributeImage('FLDTYPCD','FldTypName',true);
+
+  //     // let thematicAttrs = [['FORTYPCD', 'ForTypName'], ['FLDTYPCD', 'FldTypName']]
+  //     // let continuousAttrs = ['STDSZCD', 'FLDSZCD', 'BALIVE', 'CANOPYPCT', 'STANDHT', 'ALSTK', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMR', 'TPA_LIVE', 'TPA_DEAD', 'VOLCFNET_L', 'VOLCFNET_D', 'VOLBFNET_L', 'DRYBIO_L', 'DRYBIO_D', 'CARBON_L', 'CARBON_D', 'CARBON_DWN', 'tm_id']
+  //     // thematicAttrs.map(attr=>{
+  //     //   getAttributeImage(attr[0],attr[1],true);
+  //     // })
+  //     // continuousAttrs.slice(0,3).map(attr=>{
+  //     //   getAttributeImage(attr,null,false,palettes.crameri.bamako[50].reverse(),null,null,[0.05,0.95]);
+  //     // })
+  //     // getAttributeImage('CARBON_L',null,false,palettes.crameri.bamako[50].reverse(),null,null,[0.05,0.95]);
+  //     // getAttributeImage('CARBON_D',null,false,palettes.crameri.bamako[50].reverse(),null,null,[0.05,0.95]);
+  //     // getAttributeImage('DRYBIO_L',null,false,palettes.crameri.bamako[50].reverse(),null,null,[0.05,0.95]);
+  //     // getAttributeImage('DRYBIO_D',null,false,palettes.crameri.bamako[50].reverse(),null,null,[0.05,0.95]);
+  //     // getAttributeImage('STANDHT',null,false,palettes.crameri.bamako[50].reverse(),null,null,[0.05,0.95]);
+  //   })
+}
