@@ -3317,13 +3317,29 @@ function runTreeMap(){
   var attrC = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/treeMap2016Attributes')
       var attrs = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMR', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L'];
       var visible = true;
+      palettes.cmocean.Tempo[7].reverse();
       var thematicAttrs = [['FLDTYPCD','FldTypName'], ['FORTYPCD','ForTypName']];
       var continuousAttrs = [['CANOPYPCT',palettes.crameri.bamako[50].reverse(),0.05,0.95],
                               ['TPA_LIVE',palettes.cmocean.Speed[7],0.05,0.95],
-                              ['TPA_DEAD',palettes.cmocean.Tempo[7].reverse(),0.25,0.75],
+                              ['TPA_DEAD',palettes.cmocean.Tempo[7],0.25,0.75],
                               ['CARBON_L',palettes.cmocean.Speed[7],0.05,0.95],
-                              ['CARBON_D',palettes.cmocean.Tempo[7].reverse(),0.05,0.95]
+                              ['CARBON_D',palettes.cmocean.Tempo[7],0.05,0.95],
+                              ['CARBON_DWN',palettes.cmocean.Tempo[7],0.05,0.95],
+                              ['DRYBIO_L',palettes.cmocean.Speed[7],0.05,0.95],
+                              ['DRYBIO_D',palettes.cmocean.Tempo[7],0.05,0.95],
+                              ['QMD_RMRS',palettes.crameri.hawaii[50],0.25,0.75],
+                              ['SDIPCT_RMR',palettes.crameri.hawaii[50],0.25,0.75],
+                              ['STANDHT',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['STDSZCD',palettes.crameri.hawaii[50],0,1],
+                              ['ALSTK',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['BALIVE',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['FLDSZCD',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['GSSTK',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['VOLBFNET_L',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['VOLCFNET_D',palettes.crameri.hawaii[50],0.05,0.95],
+                              ['VOLCFNET_L',palettes.crameri.hawaii[50],0.05,0.95],
                             ]
+                            
       thematicAttrs.map(attr=>{
         var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
         var numbers = treeMapLookup[attr[0]];
