@@ -256,6 +256,7 @@ const staticTemplates = {
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
@@ -275,6 +276,7 @@ const staticTemplates = {
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
@@ -295,6 +297,7 @@ const staticTemplates = {
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
@@ -314,6 +317,7 @@ const staticTemplates = {
     <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
     <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
+    <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
 </div>
 
@@ -745,6 +749,23 @@ const staticTemplates = {
                             </div>
                         </div>
                         <hr>
+                        
+                        <header class = 'row ' title = 'Click to help us learn how you use LCMS and how we can make it better'>
+                        <h3 class = ' text-capitalize'>LCMS Survey</h3>
+                    </header>
+                    <div class = 'row ' title = 'Click to help us learn how you use LCMS and how we can make it better'>
+                        <div class = 'col-lg-2 p-0 m-0'>
+                            <img class = 'support-icons' alt = 'Methods icon' src = './Icons_svg/documentation_372e2c.svg'></a> 
+                        </div>
+                        <div class = 'col-lg-10'>
+                            Click to open the LCMS Survey:
+                            <li>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("supportMenu")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
+                            </li>
+                             
+                        </div>
+                    </div>
+                    <hr>
                          <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
                             <h3 class = ' text-capitalize'>LCMS Methods</h3>
                         </header>
@@ -873,6 +894,41 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
+                            </div>
+                        </div>
+                        <hr>
+                                                
+                        <header class = 'row ' title = 'Click to help us learn how you use LCMS and how we can make it better'>
+                        <h3 class = ' text-capitalize'>LCMS Survey</h3>
+                    </header>
+                    <div class = 'row ' title = 'Click to help us learn how you use LCMS and how we can make it better'>
+                        <div class = 'col-lg-2 p-0 m-0'>
+                            <img class = 'support-icons' alt = 'Methods icon' src = './Icons_svg/documentation_372e2c.svg'></a> 
+                        </div>
+                        <div class = 'col-lg-10'>
+                            Click to open the LCMS Survey:
+                            <li>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("supportMenu")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
+                            </li>
+                             
+                        </div>
+                    </div>
+                    <hr>
+                         <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                            <h3 class = ' text-capitalize'>LCMS Methods</h3>
+                        </header>
+                        <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                Click to open in-depth methods document:
+                                <li>
+                                    <a class = 'links' onclick = 'downloadMethods("v2021-7")' title = 'Open in-depth LCMS v2021.7 methods documentation'>Version 2021.7 (CONUS and SEAK)</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                </li>   
                             </div>
                         </div>
                         <hr>

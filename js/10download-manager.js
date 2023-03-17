@@ -57,6 +57,13 @@ function downloadSelectedAreas(id){
 
   
 }
+function openLCMSSurvey(fromWhere){
+  var link = document.createElement("a");
+  link.href = 'https://arcg.is/1e0jef0';
+  link.target = '_blank';
+  link.click();
+  ga('send', 'event','survey-open',fromWhere);
+}
 function downloadTutorial(){
   var link = document.createElement("a");
   var tutorial_name ='LCMS_v2021-7_Data_Explorer_Overview.pdf';
