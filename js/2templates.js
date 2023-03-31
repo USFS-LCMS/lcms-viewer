@@ -1484,7 +1484,11 @@ function showMessage(title,message,modalID,show){
 	$('#'+modalID+'-body').append(message);
 	if(show){$('#'+modalID).modal();}
 };
-
+function appendMessage2(message,modalID){
+	if(message === undefined || message === null){message = ''}
+	if(modalID === undefined || modalID === null){modalID = 'error-modal'}
+	$('#'+modalID+'-body').append(message);
+};
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Show a basic tip BS modal
 function showTip(title,message){

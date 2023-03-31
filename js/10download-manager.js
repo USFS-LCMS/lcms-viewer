@@ -32,6 +32,11 @@ function downloadByUrl(url){
     // link.click();
 
     showMessage('Download Started','Your download of ' + downloadName + ' has started.');
+    setTimeout(()=>{
+      showSurveyModal('downloadedLCMSTif',true);
+    },2000)
+    
+ 
     return downloadName
 }
 function downloadSelectedArea(id){
@@ -57,6 +62,16 @@ function downloadSelectedAreas(id){
 
   
 }
+function showSurveyModal(source,appendMessage=false){
+  console.log('showing survey')
+  let takeSurveyModalText = `<p>We appreciate your interest in the Landscape Change Monitoring System and would welcome your feedback on the LCMS datasets and Data Explorer. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p><a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("${source}")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>`
+  if(!appendMessage){
+    showMessage('We would really appreciate your feedback!',takeSurveyModalText)
+  }else{
+    appendMessage2(`<hr><p style='font-size:1.2rem;font-weight:bold;'>We would really appreciate your feedback!</p>${takeSurveyModalText}`)
+  }
+  
+}
 function openLCMSSurvey(fromWhere){
   var link = document.createElement("a");
   link.href = 'https://arcg.is/1e0jef0';
@@ -71,6 +86,7 @@ function downloadTutorial(){
     link.target = '_blank';
   link.click();
   ga('send', 'event',mode+'-download', 'tutorial-download', tutorial_name);
+  showSurveyModal('downloadedTutorial');
   // link.setAttribute("download", filename);
 }
 function downloadMethods(version){
@@ -82,6 +98,7 @@ function downloadMethods(version){
   link.target = '_blank';
   link.click();
   ga('send', 'event',mode+'-download', 'methods-download', methods_name);
+  showSurveyModal('downloadedMethodsDoc');
   // link.setAttribute("download", filename);
 }
 function downloadAnyMethods(path){
