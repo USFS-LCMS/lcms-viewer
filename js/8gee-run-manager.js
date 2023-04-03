@@ -3318,7 +3318,7 @@ function runTreeMap(){
   // All attributes collection 
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
-  var attrC = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/treeMap2016Attributes');
+  var attrC = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/treeMap2016Attributes2');
 
   // All attributes available
   var attrs = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMR', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L'];
@@ -3351,8 +3351,8 @@ function runTreeMap(){
                           ['VOLCFNET_D',palettes.crameri.hawaii[50],0.05,0.95],
                           ['VOLCFNET_L',palettes.crameri.hawaii[50],0.05,0.95],
                         ];
-  // Iterate across each thematic attribute and bring it into the map                     
-  thematicAttrs.map(attr=>{
+       
+  function getThematicAttr(attr){
     // Pull the attribute image
     var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
 
@@ -3399,10 +3399,9 @@ function runTreeMap(){
 
     //Set so subsequent layers are not visible by default
     visible = false;
-  })
+  }                
   
-  // Add each continuous attribute to the map
-  continuousAttrs.map(attr=>{
+  function getContinuousAttr(attr){
     // Pull the attribute image
     var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
 
@@ -3420,6 +3419,38 @@ function runTreeMap(){
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
     viz['palette'] = attr[1];
     Map2.addLayer(attrImg,viz,attr[0],false);
-  })
+  }
+  // Iterate across each thematic attribute and bring it into the map
+  thematicAttrs.map(getThematicAttr)
+  // Add each continuous attribute to the map
+  continuousAttrs.map(getContinuousAttr)
 
+  // rawTreeMap = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap2016')
+  // Map2.addLayer(rawTreeMap.randomVisualizer(),{},'Raw TreeMap')
+  function makeTreeMapQueryLookup(){
+    let values = treeMapLookup.Value;
+    let keys = Object.keys(treeMapLookup).filter(k=>k!=='Value');
+    let queryDict = {};
+
+    for (var i=0;i<values.length;i++){
+      let value = treeMapLookup.Value[i];
+      let t = '<ul>';
+      keys.map(k=>{
+        let v = treeMapLookup[k][i];
+        t+=`<tr><th>${k}</th><td>${v}</td></tr>`
+      });
+      t+='</ul>'
+      queryDict[value]=t
+    }
+    return queryDict
+  }
+  rawQueryDict= makeTreeMapQueryLookup()
+  rawTreeMap = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
+  // rawQueryDict = {52059:`<ul>
+  //   <li>Coffee</li>
+  //   <li>Tea</li>
+  //   <li>Milk</li>
+  // </ul>`}
+  Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false},'Raw TreeMap')
+  $('#query-label').click();
 }

@@ -1305,7 +1305,7 @@ function makeDashboardReport(){
              dashboardReport.download(reportName);
              $('body').prop('disabled',false);
              $('#lcms-spinner').hide();
-               
+			 showSurveyModal('dashboardReportDownload');
          
            
         };

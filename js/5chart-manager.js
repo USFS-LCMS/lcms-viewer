@@ -262,7 +262,8 @@ var  getQueryImages = function(lng,lat){
 			$('#query-list-container').append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
-			if(Object.keys(value).length === 1 ){
+			let valueKeys = Object.keys(value);
+			if(valueKeys.length === 1 ){
 				var tValue = JSON.stringify(Object.values(value)[0]);
 				if(q.queryDict !== null && q.queryDict !== undefined){
 					tValue = q.queryDict[parseInt(tValue)]
@@ -270,8 +271,17 @@ var  getQueryImages = function(lng,lat){
 				
 				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
 				
-			}
-			else{
+			}else if(valueKeys.length === 4 && 
+				valueKeys.indexOf('viz-blue')>-1 && 
+				valueKeys.indexOf('viz-green')>-1 && 
+				valueKeys.indexOf('viz-red')>-1){
+				let mainKey = valueKeys.filter(f=>f.indexOf('viz-')===-1)[0];
+				var tValue = JSON.stringify(value[mainKey]);
+				if(q.queryDict !== null && q.queryDict !== undefined){
+					tValue = q.queryDict[parseInt(tValue)]
+				}
+				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
+			}else{
 				$('#'+containerID).append(`<tr><th>${q.name}</th><th>Multi band</th></tr>`);
 				
 				Object.keys(value).map(function(kt){
