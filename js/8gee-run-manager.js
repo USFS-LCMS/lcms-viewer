@@ -3321,6 +3321,7 @@ function runTreeMap(){
   var attrC = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/treeMap2016Attributes2');
 
   // All attributes available
+  // This list is currently only used for reference to creat the thematic and continuous lists below
   var attrs = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMR', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L'];
 
   // Set the first layer to visible
@@ -3393,7 +3394,7 @@ function runTreeMap(){
     // Specify the palette and the legend dictionary with the unique names and colors
     viz['palette']=palette;
     viz['classLegendDict'] = dict(zip(uniqueNames,colors));
-
+    viz['title']=`${attr[0]} attribute image layer`;
     // Add the layer to the map
     Map2.addLayer(attrImg,viz,attr[0],visible);
 
@@ -3418,6 +3419,7 @@ function runTreeMap(){
     viz['min'] = parseInt(quantile(uniqueValues,attr[2]));
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
     viz['palette'] = attr[1];
+    viz['title']=`${attr[0]} attribute image layer`;
     Map2.addLayer(attrImg,viz,attr[0],false);
   }
   // Iterate across each thematic attribute and bring it into the map
@@ -3425,8 +3427,8 @@ function runTreeMap(){
   // Add each continuous attribute to the map
   continuousAttrs.map(getContinuousAttr)
 
-  // rawTreeMap = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap2016')
-  // Map2.addLayer(rawTreeMap.randomVisualizer(),{},'Raw TreeMap')
+  // Function to convert json TreeMap lookup to a query-friendly format
+  // Makes a dictionary for each CN that has an html table of all attributes
   function makeTreeMapQueryLookup(){
     let values = treeMapLookup.Value;
     let keys = Object.keys(treeMapLookup).filter(k=>k!=='Value');
@@ -3444,13 +3446,11 @@ function runTreeMap(){
     }
     return queryDict
   }
-  rawQueryDict= makeTreeMapQueryLookup()
+  rawQueryDict= makeTreeMapQueryLookup();
+
+  // Bring in raw TreeMap layer and add it to the map
   rawTreeMap = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
-  // rawQueryDict = {52059:`<ul>
-  //   <li>Coffee</li>
-  //   <li>Tea</li>
-  //   <li>Milk</li>
-  // </ul>`}
-  Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false},'Raw TreeMap')
+  
+  Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'Raw TreeMap')
   $('#query-label').click();
 }
