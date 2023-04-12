@@ -223,26 +223,44 @@ function chartSelectedAreas(){
 function clearQueryGeoJSON(){
 	queryGeoJSON.forEach(function(f){queryGeoJSON.remove(f)});
 }
-
+// Set to infoWindow or sidebarCollapse
+var queryWindowMode = 'infoWindow';
 var  getQueryImages = function(lng,lat){
 	var lngLat = [lng, lat];
 	$('.gm-ui-hover-effect').show();
 	var outDict = {};
 	$('#summary-spinner').slideDown();
 	// $('#query-container').empty();
-	infowindow.setMap(null);
-	infowindow.setPosition({lng:lng,lat:lat});
+	
 	
 	var nameEnd = ' Queried Values for Lng '+lng.toFixed(3) + ' Lat ' + lat.toFixed(3);
 	var queryContent =`<div>
 							<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
 							<li id = 'query-list-container'></li>
 							
-						</div>`
-	 infowindow.setOptions({maxWidth:350});
-			
-	infowindow.setContent(queryContent);
-	infowindow.open(map);
+						</div>`;
+	if(queryWindowMode === 'infoWindow'){
+		$('#chart-collapse-label-chart-collapse-div').hide();
+		$('#chart-collapse-div').empty();
+		$('#legendDiv').css('max-width','');
+		$('#legendDiv').css('max-height','60%');
+		infowindow.setMap(null);
+		infowindow.setPosition({lng:lng,lat:lat});
+		infowindow.setOptions({maxWidth:350});
+		infowindow.setContent(queryContent);
+		infowindow.open(map);
+	}else{
+		infowindow.setContent('');
+		infowindow.setMap(null);
+		$('#legendDiv').css('max-width','');
+		$('#legendDiv').css('max-height','80%');
+		$('#chart-collapse-label-chart-collapse-div').show();
+		$('#chart-collapse-div').empty();
+	 	$('#chart-collapse-div').append(queryContent);
+		
+	}
+	
+	
 	var idI = 1;
 	function makeQueryTable(value,q,k){
 		// console.log(value);
@@ -264,10 +282,14 @@ var  getQueryImages = function(lng,lat){
 											  </table>`);
 			let valueKeys = Object.keys(value);
 			if(valueKeys.length === 1 ){
-				var tValue = JSON.stringify(Object.values(value)[0]);
+				var tValue = Object.values(value)[0];
 				if(q.queryDict !== null && q.queryDict !== undefined){
 					tValue = q.queryDict[parseInt(tValue)]
-				}
+				}else if(!!(tValue % 1)){
+					tValue = tValue.toFixed(4);
+				  }
+				// else var v = value[kt]
+				// if(v !== null){v = v.toFixed(2).toString();}
 				
 				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
 				
@@ -279,7 +301,10 @@ var  getQueryImages = function(lng,lat){
 				var tValue = JSON.stringify(value[mainKey]);
 				if(q.queryDict !== null && q.queryDict !== undefined){
 					tValue = q.queryDict[parseInt(tValue)]
-				}
+				}else if(!!(tValue % 1)){
+					tValue = tValue.toFixed(4);
+				  }
+				
 				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
 			}else{
 				$('#'+containerID).append(`<tr><th>${q.name}</th><th>Multi band</th></tr>`);
@@ -297,11 +322,18 @@ var  getQueryImages = function(lng,lat){
 				
 			}	
 		}else if(q.type === 'geeImageCollection'){
-		
+			
 			$('#query-list-container').append(`<ul class = 'bg-black dropdown-divider'></ul>`);
 			$('#query-list-container').append(`<ul class = 'm-0 p-0 bg-white' id = '${containerID}'></ul>`);
-			infowindow.setOptions({maxWidth:1200});
-			infowindow.open(map);
+			let chartWidthC= 600;
+			if(queryWindowMode === 'infoWindow'){
+				infowindow.setOptions({maxWidth:1200});
+				infowindow.open(map);
+
+			}else{
+				$('#legendDiv').css('max-width','575px');
+				chartWidthC = 550;
+			}
 	 		var plotLayout = {
 	 			plot_bgcolor:'#D6D1CA',
 	 			paper_bgcolor:"#D6D1CA",
@@ -317,7 +349,7 @@ var  getQueryImages = function(lng,lat){
 				    t: 80,
 				    pad: 0
 				  },
-	 			width:600,
+	 			width:chartWidthC,
 	 			height:400,
 	 			title: {
     				text:q.name
@@ -337,7 +369,7 @@ var  getQueryImages = function(lng,lat){
 				        format: 'png'
 				    }
 				}
-			console.log(value.table)
+			// console.log(value.table);console.log(containerID)
 			Plotly.newPlot(containerID, value.table,plotLayout,buttonOptions);
 
 		}else if(q.type === 'geeVectorImage' || q.type === 'geeVector'){
@@ -1427,6 +1459,9 @@ function stopQuery(){
 		map.setOptions({cursor:'hand'});
 		infowindow.setMap(null);
 		marker.setMap(null);
+		$('#legendDiv').css('max-width','');
+		$('#chart-collapse-div').empty();
+		$('#chart-collapse-label-chart-collapse-div').hide();
 	}catch(err){};
 	
 	// document.getElementById('query-container').style.display = 'none';

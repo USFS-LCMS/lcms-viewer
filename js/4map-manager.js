@@ -699,6 +699,11 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   legendDivID = legendDivID.replaceAll('/','-');
   legendDivID = legendDivID.replaceAll('(','-');
   legendDivID = legendDivID.replaceAll(')','-');
+  legendDivID = legendDivID.replaceAll('&','-');
+  legendDivID = legendDivID.replaceAll(',','-');
+  legendDivID = legendDivID.replaceAll('.','-');
+  legendDivID = legendDivID.replaceAll('%','-');
+  legendDivID = legendDivID.replaceAll('^','-');
   
   //AutoViz if specified
   if(viz.autoViz){
@@ -1067,7 +1072,8 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     legendDivID = legendDivID.replaceAll('&','-');
     legendDivID = legendDivID.replaceAll(',','-');
     legendDivID = legendDivID.replaceAll('.','-');
-
+    legendDivID = legendDivID.replaceAll('%','-');
+    legendDivID = legendDivID.replaceAll('^','-');
     if(visible == null){
         visible = true;
     }
@@ -2824,7 +2830,7 @@ function initialize() {
     setTimeout(function() { 
       var loaded = false;
       var loadTryCount = 0;
-      var maxLoadTryCount = 5;
+      var maxLoadTryCount = 2;
       function loadRun(){
         try{
             run();
@@ -2839,7 +2845,7 @@ function initialize() {
       while(loaded===false && loadTryCount < maxLoadTryCount){
         loadRun();
         if(loaded===false){
-          sleepFor(5000);
+          sleepFor(3000);
         }
       }
     

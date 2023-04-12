@@ -1008,7 +1008,10 @@ if(canExport){
 function resizeViewerPanes(){
   // console.log('resized');
   if(mode !== 'lcms-dashboard'){
+    moveCollapse('chart-collapse');
     moveCollapse('legend-collapse');
+    
+   
   }
  
   $('.legendDiv').css('bottom',$('.bottombar').height());

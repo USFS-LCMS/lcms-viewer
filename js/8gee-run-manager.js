@@ -3331,26 +3331,26 @@ function runTreeMap(){
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brough in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
-  var thematicAttrs = [['FLDTYPCD','FldTypName'], ['FORTYPCD','ForTypName']];
-  var continuousAttrs = [['CANOPYPCT',palettes.crameri.bamako[50].reverse(),0.05,0.95],
-                          ['TPA_LIVE',palettes.cmocean.Speed[7],0.05,0.95],
-                          ['TPA_DEAD',palettes.cmocean.Tempo[7],0.25,0.75],
-                          ['CARBON_L',palettes.cmocean.Speed[7],0.05,0.95],
-                          ['CARBON_D',palettes.cmocean.Tempo[7],0.05,0.95],
-                          ['CARBON_DWN',palettes.cmocean.Tempo[7],0.05,0.95],
-                          ['DRYBIO_L',palettes.cmocean.Speed[7],0.05,0.95],
-                          ['DRYBIO_D',palettes.cmocean.Tempo[7],0.05,0.95],
-                          ['QMD_RMRS',palettes.crameri.hawaii[50],0.25,0.75],
-                          ['SDIPCT_RMR',palettes.crameri.hawaii[50],0.25,0.75],
-                          ['STANDHT',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['STDSZCD',palettes.crameri.hawaii[50],0,1],
-                          ['ALSTK',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['BALIVE',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['FLDSZCD',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['GSSTK',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['VOLBFNET_L',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['VOLCFNET_D',palettes.crameri.hawaii[50],0.05,0.95],
-                          ['VOLCFNET_L',palettes.crameri.hawaii[50],0.05,0.95],
+  var thematicAttrs = [['FLDTYPCD','FldTypName','Field Type Name'], ['FORTYPCD','ForTypName','Forest Type Name']];
+  var continuousAttrs = [['CANOPYPCT',palettes.crameri.bamako[50].reverse(),0.05,0.95,'Live Canopy Cover %'],
+                          ['TPA_LIVE',palettes.cmocean.Speed[7],0.05,0.95,'Live Trees Per Acre'],
+                          ['TPA_DEAD',palettes.cmocean.Tempo[7],0.25,0.75,'Dead Trees Per Acre'],
+                          ['CARBON_L',palettes.cmocean.Speed[7],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
+                          ['CARBON_D',palettes.cmocean.Tempo[7],0.05,0.95,'Standing Dead Carbon (tons/acre)'],
+                          ['CARBON_DWN',palettes.cmocean.Tempo[7],0.05,0.95,'Carbon Down (tons/acre)'],
+                          ['DRYBIO_L',palettes.cmocean.Speed[7],0.05,0.95,'Dry Live Tree Above Ground Biomass (tons/acre)'],
+                          ['DRYBIO_D',palettes.cmocean.Tempo[7],0.05,0.95,'Dry Standing Dead Tree Above Ground Biomass (tons/acre)'],
+                          ['QMD_RMRS',palettes.crameri.hawaii[50],0.25,0.75,'Stand Quadratic Mean Diameter'],
+                          ['SDIPCT_RMR',palettes.crameri.hawaii[50],0.25,0.75,'Stand Density Index'],
+                          ['STANDHT',palettes.crameri.hawaii[50],0.05,0.95,'Height of Dominant Trees (feet)'],
+                          ['STDSZCD',palettes.crameri.hawaii[50],0,1,'Stand Size Code'],
+                          ['ALSTK',palettes.crameri.hawaii[50],0.05,0.95,'All Live Tree Stocking %'],
+                          ['BALIVE',palettes.crameri.hawaii[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
+                          ['FLDSZCD',palettes.crameri.hawaii[50],0,1,'Stand Size Code'],
+                          ['GSSTK',palettes.crameri.hawaii[50],0.05,0.95,'Growing-stock stocking %'],
+                          ['VOLBFNET_L',palettes.crameri.hawaii[50],0.05,0.95,'Live Volume (ft^3/acre)'],
+                          ['VOLCFNET_D',palettes.crameri.hawaii[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
+                          ['VOLCFNET_L',palettes.crameri.hawaii[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
                         ];
        
   function getThematicAttr(attr){
@@ -3394,9 +3394,9 @@ function runTreeMap(){
     // Specify the palette and the legend dictionary with the unique names and colors
     viz['palette']=palette;
     viz['classLegendDict'] = dict(zip(uniqueNames,colors));
-    viz['title']=`${attr[0]} attribute image layer`;
+    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
     // Add the layer to the map
-    Map2.addLayer(attrImg,viz,attr[0],visible);
+    Map2.addLayer(attrImg,viz,attr[2],visible);
 
     //Set so subsequent layers are not visible by default
     visible = false;
@@ -3419,13 +3419,13 @@ function runTreeMap(){
     viz['min'] = parseInt(quantile(uniqueValues,attr[2]));
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
     viz['palette'] = attr[1];
-    viz['title']=`${attr[0]} attribute image layer`;
-    Map2.addLayer(attrImg,viz,attr[0],false);
+    viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
+    Map2.addLayer(attrImg,viz,attr[4],false);
   }
   // Iterate across each thematic attribute and bring it into the map
-  thematicAttrs.map(getThematicAttr)
+  thematicAttrs.map(getThematicAttr);
   // Add each continuous attribute to the map
-  continuousAttrs.map(getContinuousAttr)
+  continuousAttrs.map(getContinuousAttr);
 
   // Function to convert json TreeMap lookup to a query-friendly format
   // Makes a dictionary for each CN that has an html table of all attributes
@@ -3439,6 +3439,9 @@ function runTreeMap(){
       let t = '<ul>';
       keys.map(k=>{
         let v = treeMapLookup[k][i];
+        if(!!(v % 1)){
+          v = v.toFixed(4);
+        }
         t+=`<tr><th>${k}</th><td>${v}</td></tr>`
       });
       t+='</ul>'
@@ -3453,4 +3456,5 @@ function runTreeMap(){
   
   Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'Raw TreeMap')
   $('#query-label').click();
+  queryWindowMode = 'sidePane';
 }

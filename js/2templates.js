@@ -256,7 +256,7 @@ const staticTemplates = {
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
-                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
@@ -276,7 +276,7 @@ const staticTemplates = {
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
-                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
@@ -297,7 +297,7 @@ const staticTemplates = {
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
-                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
+                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
@@ -317,7 +317,7 @@ const staticTemplates = {
     <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
     <a class="intro-modal-links" onclick="downloadMethods('v2021-7')" title="Open in-depth LCMS v2021.7 methods documentation">LCMS METHODS</a>
-    <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">SURVEY</a>
+    <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
 </div>
 
@@ -1941,7 +1941,13 @@ function moveCollapse(baseID,collapseContainer =getWalkThroughCollapseContainerI
 //Legend functions
 function addLegendCollapse(){
     var collapseContainer =getWalkThroughCollapseContainerID(); 
+    addCollapse(getWalkThroughCollapseContainerID(),'chart-collapse-label','chart-collapse-div','QUERY OUTPUTS','<i class="fa fa-graph fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'Charts go here');
     addCollapse(collapseContainer,'legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
+    
+    $('#chart-collapse-div').append(`<div role="list" id="chart-list"></div>`);
+    $('#chart-collapse-label-chart-collapse-div').hide();
+    $('#chart-collapse-div').removeClass('px-5');
+    $('#chart-collapse-div').addClass('px-3');
     // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
     $('#legend-collapse-div').append(`<div role="list" id="legend-layer-list"></div>`);
     $('#legend-collapse-div').append(`<div role="list" id="legend-reference-layer-list"></div>`);
