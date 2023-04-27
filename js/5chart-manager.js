@@ -1412,7 +1412,7 @@ function stopAreaCharting(){
 function startQuery(){
 	areaGeoJson = null;
 	try{udp.setMap(null);}catch(err){console.log(err)};
-
+	if(queryWindowMode !== 'infoWindow'){$('#chart-collapse-label-chart-collapse-div').show();}
 	google.maps.event.clearListeners(mapDiv, 'dblclick');
     google.maps.event.clearListeners(mapDiv, 'click');
 	map.setOptions({draggableCursor:'help'});

@@ -123,7 +123,7 @@ function constructUrlSearch(){
 /*Load global variables*/
 let cachedSettingskey = 'settings';
 let startYear = 1985;
-let endYear = 2021;
+let endYear = 2022;
 let startJulian = 153;//190;
 let endJulian = 274;//250;
 let layerObj = null;
@@ -143,7 +143,7 @@ const studyAreaDict = {
                       center:[37.5334105816903,-105.6787109375,5],
                       crs:'EPSG:5070',
                       startYear:1985,
-                      endYear:2021,
+                      endYear:2022,
                       conusSA : 'projects/lcms-292214/assets/CONUS-Ancillary-Data/conus',
                       conusLossThresh : 0.23,
                       conusFastLossThresh : 0.29,
@@ -174,7 +174,7 @@ const studyAreaDict = {
                                 4: {'modelName': 'Non_Forest_Wetland','legendName': 'Non-Forest Wetland','color': '97ffff'},
                                 5: {'modelName': 'Other','legendName': 'Other','color': 'a1a1a1'},
                                 6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}},
-                      final_collections  : ['USFS/GTAC/LCMS/v2020-6','USFS/GTAC/LCMS/v2021-7'],
+                      final_collections  : ['USFS/GTAC/LCMS/v2020-6','projects/lcms-292214/assets/Final_Outputs/2022-8/LCMS'],
                       composite_collections : ['projects/lcms-292214/assets/R10/CoastalAK/Composites/Composite-Collection', 'projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020',
                       'projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Composites/Composite-Collection'],
                       lt_collections: ['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection','projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/LandTrendr-Collection-1984-2020',

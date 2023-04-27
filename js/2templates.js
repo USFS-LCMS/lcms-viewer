@@ -1941,7 +1941,7 @@ function moveCollapse(baseID,collapseContainer =getWalkThroughCollapseContainerI
 //Legend functions
 function addLegendCollapse(){
     var collapseContainer =getWalkThroughCollapseContainerID(); 
-    addCollapse(getWalkThroughCollapseContainerID(),'chart-collapse-label','chart-collapse-div','QUERY OUTPUTS','<i class="fa fa-graph fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'Charts go here');
+    addCollapse(getWalkThroughCollapseContainerID(),'chart-collapse-label','chart-collapse-div','QUERY OUTPUTS','<i class="fa fa-list  mx-0" aria-hidden="true"></i>',true,``,'Query Visible Map Layers outputs will appear here');
     addCollapse(collapseContainer,'legend-collapse-label','legend-collapse-div','LEGEND','<i class="fa fa-location-arrow fa-rotate-45 mx-1" aria-hidden="true"></i>',true,``,'LEGEND of the layers displayed on the map')
     
     $('#chart-collapse-div').append(`<div role="list" id="chart-list"></div>`);

@@ -2433,7 +2433,7 @@ function getCoordGrid(lng,lat){
   var coords = ee.Image.pixelCoordinates(proj).float();
   var ptValues = ee.Image.constant(ee.List(ee.Dictionary(coords.reduceRegion(ee.Reducer.first(), pt, 1, crs)).values()));
   coords = coords.subtract(ptValues);
-  coords = coords.updateMask(coords.lte(maxDistance*1000))
+  coords = coords.updateMask(coords.abs().reduce(ee.Reducer.max()).lte(maxDistance*1000))
   return coords.multiply(ee.Image([1,-1]));//.reproject(crs,null,1);
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -3278,6 +3278,7 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
 
 function runAlgal(){
   plotRadius=5;
+  queryWindowMode = 'sidePane';
   // scale = 10;
   clickBoundsColor = '#0FF'
   transform=[10,0,-2361915.0,0,-10,3177735.0]
@@ -3331,7 +3332,9 @@ function runTreeMap(){
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brough in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
-  var thematicAttrs = [['FLDTYPCD','FldTypName','Field Type Name'], ['FORTYPCD','ForTypName','Forest Type Name']];
+  var thematicAttrs = [['FLDTYPCD','FldTypName','Field Forest Type Name'], ['FORTYPCD','ForTypName','Algorithm Forest Type Name']];
+
+  // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
   var continuousAttrs = [['CANOPYPCT',palettes.crameri.bamako[50].reverse(),0.05,0.95,'Live Canopy Cover %'],
                           ['TPA_LIVE',palettes.cmocean.Speed[7],0.05,0.95,'Live Trees Per Acre'],
                           ['TPA_DEAD',palettes.cmocean.Tempo[7],0.25,0.75,'Dead Trees Per Acre'],
@@ -3343,16 +3346,17 @@ function runTreeMap(){
                           ['QMD_RMRS',palettes.crameri.hawaii[50],0.25,0.75,'Stand Quadratic Mean Diameter'],
                           ['SDIPCT_RMR',palettes.crameri.hawaii[50],0.25,0.75,'Stand Density Index'],
                           ['STANDHT',palettes.crameri.hawaii[50],0.05,0.95,'Height of Dominant Trees (feet)'],
-                          ['STDSZCD',palettes.crameri.hawaii[50],0,1,'Stand Size Code'],
+                          ['STDSZCD',palettes.crameri.hawaii[50],0,1,'Algorithm Stand Size Code'],
                           ['ALSTK',palettes.crameri.hawaii[50],0.05,0.95,'All Live Tree Stocking %'],
                           ['BALIVE',palettes.crameri.hawaii[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
-                          ['FLDSZCD',palettes.crameri.hawaii[50],0,1,'Stand Size Code'],
+                          ['FLDSZCD',palettes.crameri.hawaii[50],0,1,'Field Stand Size Code'],
                           ['GSSTK',palettes.crameri.hawaii[50],0.05,0.95,'Growing-stock stocking %'],
                           ['VOLBFNET_L',palettes.crameri.hawaii[50],0.05,0.95,'Live Volume (ft^3/acre)'],
                           ['VOLCFNET_D',palettes.crameri.hawaii[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
                           ['VOLCFNET_L',palettes.crameri.hawaii[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
                         ];
-       
+
+  // Function to get a thematic attribute image service  
   function getThematicAttr(attr){
     // Pull the attribute image
     var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
@@ -3402,6 +3406,7 @@ function runTreeMap(){
     visible = false;
   }                
   
+  // Function to get a continuous attribute image service
   function getContinuousAttr(attr){
     // Pull the attribute image
     var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
@@ -3455,6 +3460,7 @@ function runTreeMap(){
   rawTreeMap = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
   
   Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'Raw TreeMap')
-  $('#query-label').click();
+  
   queryWindowMode = 'sidePane';
+  $('#query-label').click();
 }

@@ -696,14 +696,15 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   var checked = '';
   if(visible){checked = 'checked'}
   var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
-  legendDivID = legendDivID.replaceAll('/','-');
-  legendDivID = legendDivID.replaceAll('(','-');
-  legendDivID = legendDivID.replaceAll(')','-');
-  legendDivID = legendDivID.replaceAll('&','-');
-  legendDivID = legendDivID.replaceAll(',','-');
-  legendDivID = legendDivID.replaceAll('.','-');
-  legendDivID = legendDivID.replaceAll('%','-');
-  legendDivID = legendDivID.replaceAll('^','-');
+  legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
+  // legendDivID = legendDivID.replaceAll('/','-');
+  // legendDivID = legendDivID.replaceAll('(','-');
+  // legendDivID = legendDivID.replaceAll(')','-');
+  // legendDivID = legendDivID.replaceAll('&','-');
+  // legendDivID = legendDivID.replaceAll(',','-');
+  // legendDivID = legendDivID.replaceAll('.','-');
+  // legendDivID = legendDivID.replaceAll('%','-');
+  // legendDivID = legendDivID.replaceAll('^','-');
   
   //AutoViz if specified
   if(viz.autoViz){
@@ -963,9 +964,10 @@ function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
   var nowSuffix = '_'+now[2]+'_'+now[1]+'_'+now[3]+'_'+now[4]
 
   name = name;//+ nowSuffix
-  name = name.replace(/\s+/g,'_')
-  name = name.replaceAll('(','_')
-  name = name.replaceAll(')','_')
+  name = name.replace(/[^A-Za-z0-9]/g, "_");
+  // name = name.replace(/\s+/g,'_')
+  // name = name.replaceAll('(','_')
+  // name = name.replaceAll(')','_')
   exportElement.res = res;
   exportElement.name = name;
  
@@ -1066,14 +1068,15 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
 
     //Handle legend
     var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
-    legendDivID = legendDivID.replaceAll('/','-');
-    legendDivID = legendDivID.replaceAll('(','-');
-    legendDivID = legendDivID.replaceAll(')','-');
-    legendDivID = legendDivID.replaceAll('&','-');
-    legendDivID = legendDivID.replaceAll(',','-');
-    legendDivID = legendDivID.replaceAll('.','-');
-    legendDivID = legendDivID.replaceAll('%','-');
-    legendDivID = legendDivID.replaceAll('^','-');
+    legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
+    // legendDivID = legendDivID.replaceAll('/','-');
+    // legendDivID = legendDivID.replaceAll('(','-');
+    // legendDivID = legendDivID.replaceAll(')','-');
+    // legendDivID = legendDivID.replaceAll('&','-');
+    // legendDivID = legendDivID.replaceAll(',','-');
+    // legendDivID = legendDivID.replaceAll('.','-');
+    // legendDivID = legendDivID.replaceAll('%','-');
+    // legendDivID = legendDivID.replaceAll('^','-');
     if(visible == null){
         visible = true;
     }
@@ -1125,7 +1128,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       viz.queryDict = dicts.queryDict
     }
     //Construct legend
-    if(viz != null && viz.bands == null && viz.addToLegend != false && (viz.addToClassLegend === undefined || viz.addToClassLegend === null || viz.addToClassLegend === false) &&(viz.classLegendDict == undefined || viz.classLegendDict == null )){
+    if(viz != null && (viz.bands == null || viz.bands.split(',').length==1 )&& viz.addToLegend != false && (viz.addToClassLegend === undefined || viz.addToClassLegend === null || viz.addToClassLegend === false) &&(viz.classLegendDict == undefined || viz.classLegendDict == null )){
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       
       var legend ={};
@@ -1457,12 +1460,13 @@ function addFeatureView(assetId,visParams,name,visible,maxZoom,helpBox,whichLaye
   })
 
   var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
-  legendDivID = legendDivID.replaceAll('/','-');
-  legendDivID = legendDivID.replaceAll('(','-');
-  legendDivID = legendDivID.replaceAll(')','-');
-  legendDivID = legendDivID.replaceAll('&','-');
-  legendDivID = legendDivID.replaceAll(',','-');
-  legendDivID = legendDivID.replaceAll('.','-');
+  legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
+  // legendDivID = legendDivID.replaceAll('/','-');
+  // legendDivID = legendDivID.replaceAll('(','-');
+  // legendDivID = legendDivID.replaceAll(')','-');
+  // legendDivID = legendDivID.replaceAll('&','-');
+  // legendDivID = legendDivID.replaceAll(',','-');
+  // legendDivID = legendDivID.replaceAll('.','-');
 
   NEXT_LAYER_ID++;
   featureViewObj[legendDivID] = {
