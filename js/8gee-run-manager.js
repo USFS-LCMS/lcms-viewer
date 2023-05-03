@@ -3134,7 +3134,7 @@ let addedLayerCount=0;
 
 let startYearT = parseInt(urlParams.startYear);
 let endYearT = parseInt(urlParams.endYear);
-let dashboardFolder = 'projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas';//'projects/lcms-292214/assets/Dashboard2';
+let dashboardFolder = 'projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2022-8';//'projects/lcms-292214/assets/Dashboard2';
 var summaries = ee.data.getList({id:dashboardFolder}).map(function(t){return t.id});
 // console.log(summaries.length)
 // window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
