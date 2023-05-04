@@ -637,7 +637,7 @@ esri_lc_dict = {'Water':'008',
 //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
 //                 8,11,
 //                 'NWI',false,'National Wetlands Inventory data as viewed in https://www.fws.gov/wetlands/Data/Mapper.html from zoom levels >= 8')
-var years = ee.List.sequence(1984,2019).getInfo();
+var years = ee.List.sequence(1984,2022).getInfo();
 var dummyNLCDImage = ee.Image(nlcdLC.first());
 var cdl = ee.ImageCollection('USDA/NASS/CDL').select([0],['cdl']);
 
@@ -712,7 +712,7 @@ cdlNames.zip(cdlPalette).getInfo().map(function(l){cdlLegendDict[l[0]] = l[1]});
 
 // Terra-Climate
 var pdsiStartYear = 1984;
-var pdsiEndYear = 2020;
+var pdsiEndYear = 2022;
 var terra = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE')
    .filter(ee.Filter.calendarRange(pdsiStartYear-1, pdsiEndYear,'year'));
 var terra_pdsi = terra.select('pdsi').map(function(img) {return img.multiply(0.01).copyProperties(img,['system:time_start']).copyProperties(img)});
@@ -2311,7 +2311,7 @@ function runIDS(){
   // var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
   var idsFolder = 'projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS';
   var ids = ee.data.getList({id:idsFolder}).map(function(t){return t.id});
- 
+  console.log(ids)
   ids = ids.map(function(id){
     var idsT = ee.FeatureCollection(id);
     return idsT;
