@@ -980,54 +980,49 @@ function setupDownloads(studyAreaName){
 
 }
 function setupDropdownTreeDownloads(studyAreaName){
-  var studyAreas = ['CONUS','SEAK','PRUSVI'];
-  var products = {'change':['annual','summary'],'land_cover':['annual'],'land_use':['annual'],'qa_bits':['annual']};
-  var saDict = lcmsDownloadDict[studyAreaName]
-  if(saDict !== undefined){
-    var downloads = saDict['downloads'];
-    studyAreas.map(function(sa){
-      Object.keys(products).map(function(product){
-        products[product].map(function(m){
-          try{
-            var download_list = downloads[sa][product][m];
-            // console.log(download_list)
-            var id = `${sa}-${product}-${m}-downloads`;
-            var dropdownID = id + '-d';
-            // console.log(dropdownID)
-            $('#'+id).empty();
-            // console.log(id)
-            $('#'+id).append(`
-              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
-                              <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
-                              <br>
-                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
-                              <hr>`)
-            download_list.map(function(url){
-              var name = url.substr(url.lastIndexOf('v20') + 8);
-              $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
-            })
-          }catch(err){console.log(err)}
-        })
-      })
-    })
+  
+  var serverLocation = 'https://data.fs.usda.gov/geodata/LCMS';				
+  
+  var study_areas = {'SEAK':{'startYear':1985,'endYear':2022,'version':'2022-8','products':{'Change':['annual','summary'],'Land_Cover':['annual'],'Land_Use':['annual'],'QA_Bits':['annual']},summary_products : ['Fast_Loss','Slow_Loss','Gain']},
+            'CONUS':{'startYear':1985,'endYear':2022,'version':'2022-8','products':{'Change':['annual','summary'],'Land_Cover':['annual'],'Land_Use':['annual'],'QA_Bits':['annual']},summary_products : ['Fast_Loss','Slow_Loss','Gain']},
+            'PRUSVI':{'startYear':1985,'endYear':2020,'version':'2020-6','products':{'Change':['annual','summary'],'Land_Cover':['annual'],'Land_Use':['annual']},summary_products : ['Fast_Loss','Gain']},
   }
-  // $('select').selectpicker();
-  // var saDict = lcmsDownloadDict[studyAreaName]
-  //   if(saDict !== undefined){
-  //     var downloads = saDict['downloads'];
-  //     console.log(downloads)
-  //     var description = saDict['description'];
-  //     // downloads.map(function(url){
-  //     //   var name = url.substr(url.lastIndexOf('/') + 1);
-  //     //   addDownload(url,name);
-  //     // });
-  //     // $('#product-descriptions').attr('href',description);
-  //     // $('#product-descriptions').attr('title','Click here for a detailed description of products available for download for chosen area');
-  //   }else{
-  //     addDownload('','No downloads available for chosen study area');
-  //     $('#product-descriptions').attr('href',null);
-  //     $('#product-descriptions').attr('title','No product description available for chosen study area');
-  //   }
+  Object.keys(study_areas).map(sa=>{
+    Object.keys(study_areas[sa].products).map(product=>{
+      study_areas[sa].products[product].map(m=>{
+        var id = `${sa}-${product.toLowerCase()}-${m}-downloads`;
+        var dropdownID = id + '-d';
+        $('#'+id).empty();
+        $('#'+id).append(`
+            <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+                            <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                            <br>
+                            <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                            <hr>`);
+        
+        if(m==='annual'){
+          var years = range(study_areas[sa].startYear,study_areas[sa].endYear+1);
+          years.map(yr=>{
+            var url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`
+            var name = url.substr(url.lastIndexOf('v20') + 8);
+            $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
+          })
+          
+          //https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2011.zip
+        }else if(m==='summary'){
+          study_areas[sa].summary_products.map(summary_product=>{
+            var url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
+            var name = url.substr(url.lastIndexOf('v20') + 8);
+            $('#'+dropdownID).append(`<option  value = "${url}">${name}</option>`);
+          //https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Fast_Loss_Summary_1985_2022.zip
+          })
+          
+        }
+      })
+
+    })
+  })
+  
 }
 
 /////////////////////////////////////////////////////////////////////////////
