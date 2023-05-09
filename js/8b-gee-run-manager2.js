@@ -272,7 +272,7 @@ function runGTAC(){
     activeStartYear = startYear;activeEndYear=endYear;
     // $('#transition-year-interval-slider-container').show();
     setupTransitionPeriodUI();
-    $('#transition-periods-container').show();
+    // $('#transition-periods-container').show();
     // updateSankeyPeriods(transitionChartYearInterval);
 
     

@@ -927,6 +927,14 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
     var activeStartYear=urlParams.startYear;
     var activeEndYear=urlParams.endYear;
     $('#area-chart-params-div').append(`<div id='transition-periods-container'></div>`);
+    $('#transition-periods-container').hide();
+    $('#area-collection-dropdown').change(e=>{
+      if($('#area-collection-dropdown').val().indexOf('-transition')>-1){
+        $('#transition-periods-container').show();
+        }else{
+          $('#transition-periods-container').hide();
+        }
+      })
   }
  
   $('#area-summary-format').prop('title','Choose how to summarize area- as a percentage of the area, acres, or hectares.')

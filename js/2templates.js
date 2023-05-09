@@ -1508,7 +1508,6 @@ function showTip(title,message){
 	  $('#tip-modal').modal().show();
 	}
 	$('#dontShowTipAgainCheckbox').change(function(){
-    console.log(this.checked)
     localStorage.showToolTipModal  = !this.checked;
     if(localStorage.showToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
     else if(localStorage.showToolTipModal === 'true'){$('#tooltip-radio-first_toggle_label').click();};

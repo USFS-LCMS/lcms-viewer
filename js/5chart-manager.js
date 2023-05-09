@@ -657,7 +657,6 @@ function areaChartingTabSelect(target){
 	
    
 	whichAreaDrawingMethod = target;
-  	console.log(target);
   	if(target === '#user-defined'){startUserDefinedAreaCharting();}
   	else if(target === '#shp-defined'){startShpDefinedCharting();}
   	else if(target === '#pre-defined'){$('#pre-defined').slideDown();}
@@ -704,7 +703,6 @@ function undoUserDefinedAreaCharting(e){
 	
 }
 function startUserDefinedAreaCharting(){
-	console.log('start clicking');
 	
 	// udpList = [];
 
@@ -944,7 +942,6 @@ function makeAreaChart(area,name,userDefined){
 	currentChartID++;
 	var thisChartID = currentChartID;
 	areaGeoJson = null;
-	console.log('making chart');//console.log(userDefined);
 	if(userDefined === undefined || userDefined === null){userDefined = false};
 	
 	areaChartingCount++;
@@ -1205,15 +1202,15 @@ function makeAreaChart(area,name,userDefined){
 		var startTime = new Date();
 		var tableT;
 		function evalTable(){
-			console.log('Evaluating area chart tables');
+			// console.log('Evaluating area chart tables');
 			table.evaluate(function(tableT, failure){
-				print(iteration);
-				print(tableT);
-				print(failure);
-				print(areaChartingCount);
+				// print(iteration);
+				// print(tableT);
+				// print(failure);
+				// print(areaChartingCount);
 				var endTime = new Date();
 				var dt = endTime-startTime;
-				console.log('dt: '+dt.toString())
+				// console.log('dt: '+dt.toString())
 				if(failure !== undefined && iteration < maxIterations && currentChartID === thisChartID && dt < maxTime){
 					// $('#area-charting-message-box').empty();
 					// $('#area-charting-message-box').html(failure	);
@@ -1385,7 +1382,7 @@ function startShpDefinedCharting(){
 function stopAreaCharting(){
 	window.removeEventListener("keydown", restartUserDefinedAreaCarting);
     window.removeEventListener("keydown", undoUserDefinedAreaCharting);
-	console.log('stopping area charting');
+	// console.log('stopping area charting');
 	try{
    	Object.keys(udpPolygonObj).map(function(k){
         udpPolygonObj[k].setMap(null) ;       
@@ -1448,7 +1445,7 @@ function startQuery(){
 	// document.getElementById('query-container').style.display = 'block';
 }
 function stopQuery(){
-	print('stopping');
+	// print('stopping');
 	try{
 		mapHammer.destroy();
 		map.setOptions({draggableCursor:'hand'});
@@ -1659,9 +1656,9 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
 	if(stacked === null || stacked === undefined){stacked = false};
 	if(steppedLine === undefined || steppedLine == null){steppedLine = false};
 
-	console.log('starting convert to table')
+	// console.log('starting convert to table')
 	dataTable = dataTableNumbersToNames(dt);
-	console.log('finished convert to table')
+	// console.log('finished convert to table')
 	configChartModal();
 
     var data = dt.slice(1);
@@ -1670,7 +1667,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
     // console.log(firstColumn)
     var columnN = dt[1].length;
     var columns = range(1,columnN);
-    console.log('starting to convert to chart')
+    // console.log('starting to convert to chart')
     var datasets = columns.map(function(i){
     	var fieldHidden = false;
     	if(fieldsHidden !== null){
@@ -1713,7 +1710,7 @@ function addChartJS(dt,title,chartType,stacked,steppedLine,colors,xAxisLabel,yAx
         return out
         // console.log(label);console.log(data)
     });
-    console.log('finished to convert to chart')
+    // console.log('finished to convert to chart')
     chartColorI = 0;
     // console.log(datasets)
     try{
@@ -2106,8 +2103,8 @@ function startPixelChartCollection() {
 		function chartValues(values){
 			
 			if(chartIncludeDate){var startColumn = 3}else{var startColumn = 4};
-			print('Extracted values:');
-			print(values);
+			// print('Extracted values:');
+			// print(values);
 			var header = values[0].slice(startColumn);
 			values = values.slice(1).map(function(v){return v.slice(startColumn)}).sort(sortFunction);
 			if(chartIncludeDate){
