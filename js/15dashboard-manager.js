@@ -1263,13 +1263,13 @@ function makeDashboardReport(){
     TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
     setTimeout(()=>{
         dashboardReport.addText(`Resources`,18);
-        dashboardReport.addText(`Source LCMS Dashboard (beta) instance used to create this report`,12,fullShareURL);
+        dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);
         dashboardReport.addText(`For any questions, contact the LCMS Helpdesk`,12,'mailto: sm.fs.lcms@usda.gov');
         dashboardReport.currentY+=2;
         dashboardReport.addText(`Background`,18);
         dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
         dashboardReport.addText(`LCMS produces annual maps depicting change (vegetation cover loss and gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, and meeting some broad-scale monitoring requirements and many others.`,12);
-		dashboardReport.addText(`This report was generated from the LCMS Dashboard beta version. The LCMS Dashboard is intended to simplify the use of LCMS data by providing pre-computed summaries for various areas of interest throughout the United States. The LCMS Dashboard is currently under review. We would appreciate any feedback you may have. See the helpdesk link below.`,12);
+		dashboardReport.addText(`This report was generated from the LCMS Dashboard 2023.1 version. The LCMS Dashboard is intended to simplify the use of LCMS data by providing pre-computed summaries for various areas of interest throughout the United States. The LCMS Dashboard is currently under review. We would appreciate any feedback you may have. See the helpdesk link below.`,12);
         dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf');
 
         dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`,10);

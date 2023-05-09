@@ -3457,7 +3457,7 @@ function runTreeMap(){
   rawQueryDict= makeTreeMapQueryLookup();
 
   // Bring in raw TreeMap layer and add it to the map
-  rawTreeMap = ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
+  rawTreeMap = attrC.filter(ee.Filter.eq('attribute','Value')).first();//ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
   
   Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'Raw TreeMap')
   

@@ -923,35 +923,10 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   // $('#area-chart-params-div').append(`<hr>`);
   $('#parameters-collapse-div').append(`<hr>`);
   addMultiRadio('area-chart-params-div','area-summary-format','Area Units','areaChartFormat',{"Percentage":true,"Acres":false,"Hectares":false})
-  if(mode==='LCMS' && (urlParams.sankey==='true' || urlParams.beta ==='true')){
+  if(mode==='LCMS' ){//&& (urlParams.sankey==='true' || urlParams.beta ==='true')){
     var activeStartYear=urlParams.startYear;
     var activeEndYear=urlParams.endYear;
-    //  addRangeSlider('area-chart-params-div','Transition Chart Year Interval','transitionChartYearInterval',10,35,15,5,'transition-year-interval-slider','null','Choose how many years between transition summary periods. This is only used for products in the dropdown above that end with the word transition.');
-     $('#area-chart-params-div').append(`<div id='transition-periods-container'></div>`)
-    //  function updateSankeyPeriods(t){
-    //   // console.log(t)
-    //   let periods = getSankeyPeriods(activeStartYear,activeEndYear,t);
-    //   // console.log([activeStartYear,activeEndYear]);console.log(periods);
-    //   $('#transition-periods-container').empty();
-    //   $('#transition-periods-container').append('Transition periods: '+periods.map(n=>n.join('-')).join(' to '))
-    
-      
-    //  }
-
-    //  $('#transition-year-interval-slider').on( 
-    //     "slide", 
-    //     function( event, ui ) {updateSankeyPeriods(ui.value)} 
-    // );
-
-    
-
-// $("#add-transition-row").click();
-// $("#remove-transition-row").click(function(){
-  
-// });
-
-// $("#add_row").click();//$("#add_row").click();
-  
+    $('#area-chart-params-div').append(`<div id='transition-periods-container'></div>`);
   }
  
   $('#area-summary-format').prop('title','Choose how to summarize area- as a percentage of the area, acres, or hectares.')

@@ -265,8 +265,10 @@ function runGTAC(){
   }
   
   
-
-  if(urlParams.sankey==='true' || urlParams.beta ==='true' && endYear-startYear >= 5){
+  var lcmsBnsForCharting = ['Change','Land_Cover','Land_Use'];
+  lcmsBnsForCharting.map(bn=>{lcmsRunFuns.addAreaChartClass(bn);});
+    
+  if(endYear-startYear >= 5){//&& urlParams.sankey==='true' || urlParams.beta ==='true' ){
     activeStartYear = startYear;activeEndYear=endYear;
     // $('#transition-year-interval-slider-container').show();
     setupTransitionPeriodUI();
@@ -274,16 +276,15 @@ function runGTAC(){
     // updateSankeyPeriods(transitionChartYearInterval);
 
     
-      ['Land_Cover','Land_Use','Change'].map(bn=>{addSankey(lcmsRun,bn);});
+    lcmsBnsForCharting.map(bn=>{addSankey(lcmsRun,bn);});
 
    
-  }else if((urlParams.sankey==='true' || urlParams.beta ==='true')&& endYear-startYear<5){
+  }else if(endYear-startYear<5){//&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
     // $('#transition-year-interval-slider-container').hide();
     $('#transition-periods-container').hide();
     
   }
-  ['Change','Land_Cover','Land_Use'].map(bn=>{lcmsRunFuns.addAreaChartClass(bn);});
-    
+  
   getSelectLayers(true);
   populatePixelChartDropdown();
   populateAreaChartDropdown();
