@@ -584,7 +584,7 @@ const staticTemplates = {
         			<span class = 'px-2' title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
                     <span class = 'px-2' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></span>
                     <span title="Current location and elevation of mouse pointer and map zoom level and respective map scale" class = 'px-2'  id='current-mouse-position'  ></span>
-                    <span id = 'contributor-logos' > 
+                    <span id = 'contributor-logos' style='display:none;'> 
                         <a href="https://earthengine.google.com/" target="_blank">
                             <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
                         </a>

@@ -2673,11 +2673,13 @@ function initialize() {
     
    
     }
+    
     //Listen for mouse movement and update bottom bar
-    google.maps.event.addListener(mapDiv,'mousemove',function(event){
-        var x =event.clientX;
-        var y = event.clientY;
-        var center =point2LatLng(x,y);
+    map.addListener('mousemove',function(event){
+      console.log(event)
+        // var x =event.clientX;
+        // var y = event.clientY;
+        var center =event.latLng;//point2LatLng(x,y);
         if(center !== null){
           var zoom = map.getZoom();
           // var center = event.latLng;

@@ -225,6 +225,7 @@ function clearQueryGeoJSON(){
 }
 // Set to infoWindow or sidebarCollapse
 var queryWindowMode = 'infoWindow';
+queryWindowMode = 'sidepane';
 var  getQueryImages = function(lng,lat){
 	var lngLat = [lng, lat];
 	$('.gm-ui-hover-effect').show();

@@ -513,12 +513,12 @@ button {
 .bottombar{
   position:absolute;
   bottom:0.0%;
-  left:0%;
-  width:100%;
+  left:5rem;
+  /* width:100%; */
   color:var(--white);
   background-color: var(--black)!important;
   /*max-height:1.7em;*/
-  font-size:1em;
+  font-size:0.7rem;
   z-index:999;
 }
 .image-icon-bar{
