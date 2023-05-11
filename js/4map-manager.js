@@ -2676,7 +2676,7 @@ function initialize() {
     
     //Listen for mouse movement and update bottom bar
     map.addListener('mousemove',function(event){
-      console.log(event)
+      // console.log(event)
         // var x =event.clientX;
         // var y = event.clientY;
         var center =event.latLng;//point2LatLng(x,y);

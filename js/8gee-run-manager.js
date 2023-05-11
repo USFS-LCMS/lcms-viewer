@@ -3319,7 +3319,7 @@ function runTreeMap(){
   // All attributes collection 
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
-  var attrC = ee.ImageCollection('projects/lcms-292214/assets/CONUS-Ancillary-Data/treeMap2016Attributes2');
+  var attrC = ee.ImageCollection('projects/treemap-386222/assets/Final_Outputs/TreeMap_2016');
 
   // All attributes available
   // This list is currently only used for reference to creat the thematic and continuous lists below
