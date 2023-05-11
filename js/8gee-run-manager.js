@@ -272,7 +272,7 @@ var ccdcAnnualBnsTo = ccdcOriginalIndices.map(function(bn){return bn + '_CCDC_fi
 // console.log(ccdcAnnualBnsTo)
 var ccdcIndicesSelector = ['tStart','tEnd','tBreak','changeProb'].concat(ccdcIndices.map(function(i){return i+'_.*'}));
 var ccdcIndicesSelectorPrediction = ['tStart','tEnd','tBreak','changeProb'].concat(ccdcOriginalIndices.map(function(i){return i+'_.*'}));
-console.log(ccdcIndicesSelector)
+// console.log(ccdcIndicesSelector)
 
 var fraction = 0.6657534246575343;
 var tEndExtrapolationPeriod = 1;//Period in years to extrapolate if needed

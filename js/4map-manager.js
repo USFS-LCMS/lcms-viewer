@@ -1615,7 +1615,7 @@ function reRun(){
     
     setupAreaLayerSelection();
     addLabelOverlay();
-    if(urlParams.endYear-urlParams.startYear < 5 ){//&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
+    if((urlParams.endYear-urlParams.startYear < 5) && mode === 'LCMS' ){//&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
       showMessage('No Transition Charting','The year range must be 5 years or more to perform transition charting')
     }
   }, 1500);
@@ -2881,7 +2881,7 @@ function initialize() {
       
       addLabelOverlay();
       
-    if( urlParams.endYear-urlParams.startYear < 5 ){//&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
+      if((urlParams.endYear-urlParams.startYear < 5) && mode === 'LCMS' ){//&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
       showMessage('No Transition Charting','The year range must be 5 years or more to perform transition charting')
     }
     }, 1500);

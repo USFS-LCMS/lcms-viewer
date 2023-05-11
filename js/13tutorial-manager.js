@@ -332,7 +332,7 @@ function showWalkThroughI(){
     
     
 }
-if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper'){
+if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper' || mode === 'TreeMap'){
   // https://shepherdjs.dev/docs/tutorial-02-usage.html
   var tour = new Shepherd.Tour({
     defaultStepOptions: {
@@ -488,6 +488,30 @@ if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper'){
   ]
 
   algalTourSteps.map(s=>addStep(s,algalTourSteps.length));
+    // startTour();
+
+  }else if(mode ==='TreeMap'){
+    
+    // console.log('running  tutorial');
+    
+    
+
+    let  treemapTourSteps  = [
+      [`Welcome to the ${mode} tour`,`This tour will walk you through how to use the ${mode}. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
+      
+      ['Locate, Share, Search, Navigate',`<ul>
+                            <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
+                            <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
+                            <li>You can search for locations in the search window.</li>
+                            <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
+                            </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
+  
+  [`${mode} Layers`,`Each TreeMap attribute is available for individual viewing. The <i>Raw TreeMap</i> output is also available to provide a depiction of how model predictions tend to clump. Turn on and off ${mode} layers using the radio buttons on the left side of each layer. Opacity (transparency) can be adjusted with the slider on the right.`,'#layer-list-collapse-label','right-end',[0,2],'layer-list-tour-modal','#layer-list-collapse-label-label'],
+  [`Exploration Tools`,`Tools are available to measure and chart map layers. The <i>Query Visible Map Layers</i> tool allows for any visible layer to be double-clicked to view the value of the pixel you clicked on. This tool is turned on by default when this page loads. Querying the <i>Raw TreeMap</i> layer will return all available attributes for that pixel.`,'#tools-collapse-label','right-end',[0,1],'tools-tour-modal','#tools-collapse-label-label'],
+
+  ]
+
+  treemapTourSteps.map(s=>addStep(s,treemapTourSteps.length));
     // startTour();
 
   }
