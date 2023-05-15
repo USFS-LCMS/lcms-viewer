@@ -1144,24 +1144,26 @@ ul, #myUL {
 .caret {
   cursor: pointer;
   user-select: none; /* Prevent text selection */
+  white-space: nowrap;
+  padding-bottom:2.25em;
 }
 
+/* /*padding: 15px 0px 15px 0px; /*top,right,bottom,left*/
 /* Create the caret/arrow with a unicode, and style it */
 .caret::before {
   font-family: FontAwesome;
   content:"\f07b";
   color: var(--teal-100);
   display: inline-block;
-  margin-right: 0.2em;
-  /*padding-left:0.5em;*/
+  margin-right: 0.3em;
+  padding-left:0.25em;
 }
 
 /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
 .caret-down::before {
   font-family: FontAwesome;
   content:"\f07c";
-  color: var(--teal-100);
-  
+  color: var(--teal-100); 
 }
 
 /* Hide the nested list */
@@ -1172,10 +1174,20 @@ ul, #myUL {
 
 /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
 .active {
-   display: block;
-   padding-left:1.2em;
-   
-}
+  display: block;
+  padding-left:1.2em;
+  }
+  #downloadTree{
+  color:#00897b;
+  }
+  
+  .carousel-img {
+    width: 100%;
+    max-width: 600px;
+    max-height: 500px;
+  }
+  
+
 /*
 .ui-slider-horizontal .ui-slider-handle {
 
