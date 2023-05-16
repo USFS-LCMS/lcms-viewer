@@ -2638,7 +2638,7 @@ function initialize() {
     function updateMousePositionAndZoom(cLng,cLat,zoom,elevation){
             $('.legendDiv').css('bottom',$('.bottombar').height());
             
-            $( "#current-mouse-position" ).html( 'Lng: ' +cLng + ', Lat: ' + cLat +', '+elevation+ 'Zoom: ' +zoom +', 1:'+zoomDict[zoom]);
+            $( "#current-mouse-position" ).html( 'Lng: ' +cLng + ', Lat: ' + cLat +', '+elevation+ ' Zoom: ' +zoom +', 1:'+zoomDict[zoom]);
     }
      
     //Set up elevation api
@@ -2656,7 +2656,7 @@ function initialize() {
           
           if(thisElevation !== null){
             var thisElevationFt = parseInt(thisElevation*3.28084);
-            lastElevation = 'Elevation: '+thisElevation.toString()+'(m),'+thisElevationFt.toString()+'(ft),';
+            lastElevation = 'Elevation: '+thisElevation.toString()+'(m), '+thisElevationFt.toString()+'(ft),';
           }else{
             var thisElevationFt = 'NA';
             lastElevation = 'Elevation: NA,';

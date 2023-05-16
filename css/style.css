@@ -518,7 +518,7 @@ button {
   color:var(--white);
   background-color: var(--black)!important;
   /*max-height:1.7em;*/
-  font-size:0.7rem;
+  font-size:0.8rem;
   z-index:999;
 }
 .image-icon-bar{

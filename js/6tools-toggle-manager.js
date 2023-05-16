@@ -92,7 +92,7 @@ function getActiveTools(){
 function updateToolStatusBar(){
   var somethingShown = false;
   $('#current-tool-selection').empty();
-  $('#current-tool-selection').append(`Currently active tools: `)
+  $('#current-tool-selection').append(`Ative tools: `)
   Object.keys(toolFunctions).map(function(t){Object.keys(toolFunctions[t]).map(function(tt){
                                                                         var state = toolFunctions[t][tt]['state'];
                                                                         var title = toolFunctions[t][tt]['title'];

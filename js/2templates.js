@@ -580,10 +580,10 @@ const staticTemplates = {
                  </p>
                   `},
 	bottomBar:`<footer class = 'bottombar'  id = 'bottombar' >
-        			<span class = 'px-2'  id='current-tool-selection' title="Any tool that is currently active is shown here."></span>
-        			<span class = 'px-2' title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
-                    <span class = 'px-2' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading tiles: <span id='number-gee-tiles-downloading'>0</span></span>
-                    <span title="Current location and elevation of mouse pointer and map zoom level and respective map scale" class = 'px-2'  id='current-mouse-position'  ></span>
+        			<span class = 'px-1'  id='current-tool-selection' title="Any tool that is currently active is shown here."></span>
+        			<span id = 'gee-queue-len' class = 'px-1' style="display:none;" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
+                    <span class = 'px-1' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading: <span id='number-gee-tiles-downloading'>0</span></span>
+                    <span title="Current location and elevation of mouse pointer and map zoom level and respective map scale" class = 'px-1'  id='current-mouse-position'  ></span>
                     <span id = 'contributor-logos' style='display:none;'> 
                         <a href="https://earthengine.google.com/" target="_blank">
                             <img src="images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
@@ -2001,11 +2001,18 @@ function regulateReRunButton(){
 //Function to help keep track of GEE requests
 function updateOutstandingGEERequests(){
     // $('#loading-number-box').html(outstandingGEERequests)
-	$('#outstanding-gee-requests').html(outstandingGEERequests);
+	
+
+    if(outstandingGEERequests===0){$('#gee-queue-len').hide()
+    }else{
+        $('#gee-queue-len').show();
+        $('#outstanding-gee-requests').html(outstandingGEERequests);
+    }
+
 	regulateReRunButton();
 }
 function updateGEETileLayersLoading(){
-	$('#number-gee-tiles-downloading').html(geeTileLayersDownloading);
+    $('#number-gee-tiles-downloading').html(geeTileLayersDownloading);
 }
 function incrementOutstandingGEERequests(){
 	outstandingGEERequests ++;updateOutstandingGEERequests();
