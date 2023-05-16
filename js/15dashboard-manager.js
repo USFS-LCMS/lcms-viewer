@@ -8,23 +8,20 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 	
 		function getCoords(c){
 			if(c.type === 'Polygon'){
-				
 				c.coordinates.map(c2=>{
 					let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
 					layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
 						strokeColor:'#0FF',
 						fillColor:'#0FF',
-						fillOpacity:0.2,
+						fillOpacity:0.15,
 						strokeOpacity: 0,
 						strokeWeight: 0,
 						path:polyCoordsT,
 						zIndex:-999
 					}));
-				})
-					
+				})	
 			}else if(c.type === 'MultiPolygon'){
-				// console.log(c);
-				c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))//c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
+				c.coordinates.map(c2=>getCoords({type:'Polygon',coordinates:c2}))
 			}else if(c.type === 'GeometryCollection'){
 				c.geometries.map(g=>getCoords(g))
 			}
@@ -1267,8 +1264,8 @@ function makeDashboardReport(){
         dashboardReport.addText(`For any questions, contact the LCMS Helpdesk`,12,'mailto: sm.fs.lcms@usda.gov');
         dashboardReport.currentY+=2;
         dashboardReport.addText(`Background`,18);
-        dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
-        dashboardReport.addText(`LCMS produces annual maps depicting change (vegetation cover loss and gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, and meeting some broad-scale monitoring requirements and many others.`,12);
+        dashboardReport.addText(`LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States, produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat data availability, cloud-based computing power, and big data analysis methods.`,12);
+        dashboardReport.addText(`LCMS produces annual maps depicting change (vegetation cover loss and gain), land cover, and land use from 1985 to present that can be used to assist with a wide range of land management applications. With the help of Regional and National Forest staffs, we have identified many applications of LCMS data, including forest planning and revision, updating existing vegetation maps, assessing landscape conditions, supporting post-fire recovery, meeting some broad-scale monitoring requirements, and many others.`,12);
 		dashboardReport.addText(`This report was generated from the LCMS Dashboard 2023.1 version. The LCMS Dashboard is intended to simplify the use of LCMS data by providing pre-computed summaries for various areas of interest throughout the United States. The LCMS Dashboard is currently under review. We would appreciate any feedback you may have. See the helpdesk link below.`,12);
         dashboardReport.addText(`Detailed methods can be found here`,12,'https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf');
 
@@ -1292,9 +1289,9 @@ function makeDashboardReport(){
              dashboardReport.addText(`The following tables depict the ${chartFormat.toLowerCase()} of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year.`,12);
 			 dashboardReport.addText(`While model-based estimates of change, land cover, and land use can be useful, it is difficult to know if a change is statistically significant. The LCMS Science Team is currently researching methods for computing significance from model-based outputs. In the meantime, in order to provide confidence intervals for the tables in this report, we are using our reference sample and traditional confidence interval computation methods.`,12)
 			 
-			 dashboardReport.addText(`First, since our reference sample was a stratified random sample, we consider the weight of each point as the proportion the strata it was drawn from / proportion of the total samples we drew from that strata. This way if a strata is over-sampled, each sample gets a lower weight and visa versa.`,12)
+			 dashboardReport.addText(`First, since our reference sample was a stratified random sample, we consider the weight of each point as the proportion of the strata it was drawn from divided by proportion of the total samples we drew from that strata. This way, if a strata is over-sampled, each sample gets a lower weight and visa versa.`,12)
 			 dashboardReport.addText(`Since N is generally > 30, we are using a Z test to test for significant differences. The critical values for confidence levels are as follows (Z Test): 0.9: 1.64, 0.95: 1.96, 0.99: 2.58.`,12)
-			 dashboardReport.addText(`For each year, all reference points that fall within a given summary area for that year as well as the year prior and year after, plus a 210km buffer are tabulated for the strata weighted proportion of each class. This allows for confidence intevals for a given class for a given area to then be computed as follows:`,12)
+			 dashboardReport.addText(`For each year, all reference points that fall within a given summary area for that year, as well as the year prior and year after, plus a 210km buffer, are tabulated for the strata weighted proportion of each class. This allows for confidence intevals for a given class for a given area to then be computed as follows:`,12)
 			 dashboardReport.addText(`ci =critical value*sqrt((TS Weighted Proportion*(1-TS Weighted Proportion))/TS Weighted Total).`,12)
 			 dashboardReport.addText(`Based on Olofsson et al 2014 Equations 10 and 11.`,12,window.location.protocol + "//" + window.location.host  + '/literature/Olofsson_et_al_2014.pdf');
 			 dashboardReport.addText(`This number is then added and subtracted from each amount for each class. If an amount of a given class in the first year does not intersect the amount in the last year, it is highlighted as being a signficant change in the tables below. Many summary areas had insufficient reference samples in some classes for some years to compute confidence intervals. In those instances, the confidence interval is denoted as "NA" and a significance test cannot be performed.`,12);
