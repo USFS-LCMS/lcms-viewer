@@ -78,7 +78,7 @@ const introDivContent = {'true':`<span>
                           </span>
                           <hr style='margin-top:0.75rem;margin-bottom:0.75rem;'>
                           <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
-                          <p>By clicking on a Forest or Forest District boundary, a gif animation will pop up. This animation illustrates how the selected area has changed over the past 37 years. 
+                          <p>By clicking on a Forest or Forest District boundary, a gif animation will pop up. This animation illustrates how the selected area has changed over the past 38 years. 
                           <br>
                           Click on the animation to open it in a new tab for a larger view.
                           <br>
@@ -381,7 +381,7 @@ require(["esri/Map",
             // Oct 1 - Oct 31
             fullTimeExtent: {
               start: new Date('1985-7-1'), 
-              end: new Date('2021-7-1') 
+              end: new Date('2022-7-1') 
             },
             stops: {
               interval: {
