@@ -3328,32 +3328,44 @@ function runTreeMap(){
   // Set the first layer to visible
   var visible = true;
   palettes.cmocean.Tempo[7].reverse();
-
+  palettes.crameri.bamako[50].reverse();
+  palettes.crameri.bamako[25].reverse();
+  palettes.crameri.lajolla[10].reverse();
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brough in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
   var thematicAttrs = [['FLDTYPCD','FldTypName','Field Forest Type Name'], ['FORTYPCD','ForTypName','Algorithm Forest Type Name']];
 
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
-  var continuousAttrs = [['CANOPYPCT',palettes.crameri.bamako[50].reverse(),0.05,0.95,'Live Canopy Cover %'],
-                          ['TPA_LIVE',palettes.cmocean.Speed[7],0.05,0.95,'Live Trees Per Acre'],
-                          ['TPA_DEAD',palettes.cmocean.Tempo[7],0.25,0.75,'Dead Trees Per Acre'],
-                          ['CARBON_L',palettes.cmocean.Speed[7],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
-                          ['CARBON_D',palettes.cmocean.Tempo[7],0.05,0.95,'Standing Dead Carbon (tons/acre)'],
-                          ['CARBON_DWN',palettes.cmocean.Tempo[7],0.05,0.95,'Carbon Down (tons/acre)'],
-                          ['DRYBIO_L',palettes.cmocean.Speed[7],0.05,0.95,'Dry Live Tree Above Ground Biomass (tons/acre)'],
-                          ['DRYBIO_D',palettes.cmocean.Tempo[7],0.05,0.95,'Dry Standing Dead Tree Above Ground Biomass (tons/acre)'],
-                          ['QMD_RMRS',palettes.crameri.hawaii[50],0.25,0.75,'Stand Quadratic Mean Diameter'],
-                          ['SDIPCT_RMR',palettes.crameri.hawaii[50],0.25,0.75,'Stand Density Index'],
-                          ['STANDHT',palettes.crameri.hawaii[50],0.05,0.95,'Height of Dominant Trees (feet)'],
-                          ['STDSZCD',palettes.crameri.hawaii[50],0,1,'Algorithm Stand Size Code'],
-                          ['ALSTK',palettes.crameri.hawaii[50],0.05,0.95,'All Live Tree Stocking %'],
-                          ['BALIVE',palettes.crameri.hawaii[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
-                          ['FLDSZCD',palettes.crameri.hawaii[50],0,1,'Field Stand Size Code'],
-                          ['GSSTK',palettes.crameri.hawaii[50],0.05,0.95,'Growing-stock stocking %'],
-                          ['VOLBFNET_L',palettes.crameri.hawaii[50],0.05,0.95,'Live Volume (ft^3/acre)'],
-                          ['VOLCFNET_D',palettes.crameri.hawaii[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
-                          ['VOLCFNET_L',palettes.crameri.hawaii[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
+  var continuousAttrs = [
+                          // unique values - separate these out later
+                          ['STDSZCD',palettes.colorbrewer.Purples[5],0,1,'Algorithm Stand Size Code'],
+                          ['FLDSZCD',palettes.colorbrewer.Purples[5],0,1,'Field Stand Size Code'],
+                          // live tree variables
+                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
+                          ['CANOPYPCT',palettes.crameri.bamako[50],0.05,0.95,'Live Canopy Cover %'],
+                          ['STANDHT',palettes.crameri.bamako[50],0.05,0.95,'Height of Dominant Trees (feet)'],
+                          ['ALSTK',palettes.crameri.bamako[50],0.05,0.95,'All Live Tree Stocking %'],
+                          ['GSSTK',palettes.crameri.bamako[50],0.05,0.95,'Growing-stock stocking %'],
+                          // stand density
+                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'Stand Quadratic Mean Diameter'],
+                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'Stand Density Index'],
+                          // trees per acre
+                          ['TPA_LIVE',palettes.colorbrewer.Greens[9],0.05,0.95,'Live Trees Per Acre'],
+                          ['TPA_DEAD',palettes.colorbrewer.Greens[9],0.05,0.95,'Dead Trees Per Acre'],
+                          // volume
+                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume (ft^3/acre)'],
+                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
+                          ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
+                          // dry biomass
+                          ['DRYBIO_L',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Live Tree Above Ground Biomass (tons/acre)'],
+                          ['DRYBIO_D',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Standing Dead Tree Above Ground Biomass (tons/acre)'],
+                          // carbon
+                          ['CARBON_L',palettes.crameri.lajolla[10],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
+                          ['CARBON_D',palettes.crameri.lajolla[10],0.05,0.95,'Standing Dead Carbon (tons/acre)'],
+                          ['CARBON_DWN',palettes.crameri.lajolla[10],0.05,0.95,'Carbon Down (tons/acre)'],
+
+                          
                         ];
 
   // Function to get a thematic attribute image service  

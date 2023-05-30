@@ -340,7 +340,10 @@ require(["esri/Map",
   
         const view = new MapView({
           container: "viewDiv",
-          map: map
+          map: map,
+          spatialReference : {
+            wkid: '3857'
+          }
         });
       
       
@@ -397,7 +400,7 @@ require(["esri/Map",
             expandTooltip: "Timelapse Slider",
             expanded :true
           });
-        
+          
           // Add the expand instance to the ui
           // view.ui.add(timeSlider, "bottom-right");
           function setExtent(){

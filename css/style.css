@@ -198,7 +198,7 @@ color:var(--white)!important;}
     /*line-height: 1.6em;*/
   }
 .info-page{
-  color:var(--deep-brown-70)!important;
+  color:var(--deep-brown-20)!important;
   padding-top:4em;
 }
 .simple-bg-black{
@@ -225,6 +225,41 @@ hr{
 table {border: none!important;}
 .dropdown-divider{margin-top:0.2em;margin-bottom:0em;padding-top:0.2em;padding-bottom:0.2em;}
 /*///////////////////////////////////////////////////////*/
+
+
+
+/*/////////////////////*/
+
+
+    /* Add styling here you wish to add for screens with a width of 600px and wider */
+
+.figure {
+  display: right;
+  float: right;
+}
+
+.figcaption {
+  width: 50%;
+  text-align: justify;
+  font-size:20em;
+}
+
+
+/*///////////////////////////*/
+
+.container-beforeIntro{
+  padding-right: -50px;
+  padding-left:100px;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.container-intro{
+  padding-right: 25px;
+  padding-left: 45px;
+  margin-right: 0px;
+  margin-left: -15px;
+}
 
 .main-container{
   position: absolute;
@@ -1143,9 +1178,11 @@ ul, #myUL {
 /* Style the caret/arrow */
 .caret {
   cursor: pointer;
+  border-top: none;
   user-select: none; /* Prevent text selection */
   white-space: nowrap;
-  padding-bottom:2.25em;
+  padding-bottom:1.5rem;
+  font-size: 1.1rem;
 }
 
 /* /*padding: 15px 0px 15px 0px; /*top,right,bottom,left*/
@@ -1181,12 +1218,65 @@ ul, #myUL {
   color:#00897b;
   }
   
-  .carousel-img {
-    width: 100%;
-    max-width: 600px;
-    max-height: 500px;
-  }
+.carousel-img {
+  width: 100%;
+  max-width: 600px;
+  max-height: 500px;
+}
   
+
+.textFade {
+  animation: fadeInAnimation ease 20s;
+  animation-delay: ease 0;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  }
+
+  .textFade2 {
+  animation: fadeInAnimation ease 25s;
+  animation-delay: ease 0;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  }
+
+  .textFade3 {
+  animation: fadeInAnimation ease 30s;
+  animation-delay: ease 0;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  }
+
+  .textFade4 {
+  animation: fadeInAnimation ease 35s;
+  animation-delay: ease 0;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  }
+
+  .textFade5 {
+  animation: fadeInAnimation ease 40s;
+  animation-delay: ease 0;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  }
+
+  .textFade6 {
+  animation: fadeInAnimation ease 45s;
+  animation-delay: ease 0;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  }
+  @keyframes fadeInAnimation {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+  }
+
+
+
 
 /*
 .ui-slider-horizontal .ui-slider-handle {

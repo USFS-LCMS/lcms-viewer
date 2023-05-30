@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Theme Made By www.w3schools.com -->
+  <title>Landscape Change Monitoring System</title>
+  <link rel="icon" href="./images/usfslogo.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="./js/16lcms-webpage.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="./css/style.css">
+  <style type="text/css">
+    .navbar-inverse .navbar-nav>.active>a,
+    .navbar-inverse .navbar-nav>.active>a:hover,
+    .navbar-inverse .navbar-nav>.active>a:focus {
+      background: rgba(235, 235, 235, 0) !important;
+      color: var(--teal-80) !important;
+
+    }
+
+  
+  </style>
+
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="10" class='bg-solid-black'>
+
+  <div class='container-fluid '>
+
+    <nav class="navbar navbar-inverse bg-gray navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header ">
+
+          <!-- <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service" style = 'font-size:5em;'> -->
+          <h2 class=" pull-left teal-study-area-label " href="#" style='margin-left:1em;'><img
+              style='margin:0px!important;padding:0px!important;filter: invert(0);' height='35px'
+              src="images/logos_usda-fs.svg"><img
+              style='margin:0px!important;margin-left:0.5em!important;padding:0px!important;filter: invert(0);'
+              height='35px' src="images/lcms-icon.png"> LANDSCAPE <span
+              style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">CHANGE</span> MONITORING SYSTEM </h2>
+
+        </div>
+        <div class="collapse navbar-collapse vcenter" id="myNavbar">
+          <ul class="nav navbar-nav pull-right">
+            <li title='What is LCMS?'><a class='teal-hover ' id='intro-nav' href="#intro">INTRODUCTION</a></li>
+            <li title='How can LCMS data be used?'><a class='teal-hover' id='applications-nav'
+                href="#applications">APPLICATIONS</a></li>
+            <li title='What are LCMS map outputs?'><a class='teal-hover' id='applications-nav'
+                href="#products">PRODUCTS</a></li>
+
+            <li title='How to visualize and explor LCMS data'><a class='teal-hover' id='map-nav'
+                href="#data-explorer">DATA EXPLORER</a></li>
+            <li title='Download LCMS products for your analyses'><a class='teal-hover' id='download-nav'
+                href="#download">DOWNLOAD</a></li>
+            <li title='Why is LCMS needed?'><a class='teal-hover' id='about-nav' href="#background">BACKGROUND</a></li>
+            <li title='Contact us with any questions'><a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </nav>
+
+    <div id="intro" class="container-fluid bg-solid-black">
+
+      <div class="row slideanim info-page">
+        <h2 style='margin-left:1em;'>INTRODUCTION</h2>
+
+        <div id="myCarousel1" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel1" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel1" data-slide-to="1"></li>
+            <li data-target="#myCarousel1" data-slide-to="2"></li>
+            <li data-target="#myCarousel1" data-slide-to="3"></li>
+            <li data-target="#myCarousel1" data-slide-to="4"></li>
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            <div class="item active " style='min-height: 600px;'>
+
+              <div class="carousel-caption">
+                <h3>The Landscape Change Monitoring System (LCMS)</h3>
+                <p>LCMS is the USDA Forest Service landscape change monitoring system for US lands</p>
+                <img class='carousel-img' src="./images/change_annimation_All_change.gif">
+              </div>
+            </div>
+
+            <div class="item" style='min-height: 500px;'>
+              <div class="carousel-caption">
+                <h3>What does LCMS monitor?</h3>
+                <p>Vegetation cover loss and gain</p>
+                <img class='carousel-img' src="./images/study_area_map_change.PNG">
+                <p>Annual vegetation cover loss and gain maps from 1985-present</p>
+              </div>
+            </div>
+            <div class="item" style='min-height: 500px;'>
+              <div class="carousel-caption">
+                <h3>What does LCMS monitor?</h3>
+                <p>Land cover transitions</p>
+                <img class='carousel-img' src="./images/study_area_map_land_cover.PNG">
+                <p>Annual land cover maps from 1985-present</p>
+              </div>
+            </div>
+            <div class="item" style='min-height: 550px;'>
+              <div class="carousel-caption">
+                <h3>What does LCMS monitor?</h3>
+                <p>Land use transitions</p>
+                <img class='carousel-img' src="./images/study_area_map_land_use.PNG">
+                <p>Annual land use maps for each year from 1985-present</p>
+              </div>
+            </div>
+
+            <div class="item" style='min-height: 550px;'>
+              <div class="carousel-caption">
+                <h3>Where does LCMS monitor?</h3>
+                <p>LCMS monitors all lands across the conterminous United States, southeastern Alaska, Puerto Rico US Virgin Islands, and Hawaii on an annual
+                  basis</p>
+                <img class='carousel-img' src="./images/lmcs_studyAreas.png">
+              </div>
+            </div>
+
+          </div>
+          <!-- Left and right controls -->
+          <a class="left carousel-control" href="#myCarousel1" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel1" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+      <hr>
+
+    </div>
+    <div id="applications" class="container-fluid bg-solid-black">
+
+      <div class="row slideanim info-page">
+        <h2 style='margin-left:1em;'>APPLICATIONS</h2>
+        <div id="myCarousel2" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel2" data-slide-to="1"></li>
+            <li data-target="#myCarousel2" data-slide-to="2"></li>
+            <li data-target="#myCarousel2" data-slide-to="3"></li>
+            <li data-target="#myCarousel2" data-slide-to="4"></li>
+            <li data-target="#myCarousel2" data-slide-to="5"></li>
+            <li data-target="#myCarousel2" data-slide-to="6"></li>
+            <li data-target="#myCarousel2" data-slide-to="7"></li>
+            <li data-target="#myCarousel2" data-slide-to="8"></li>
+            <li data-target="#myCarousel2" data-slide-to="9"></li>
+
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+
+            <div class="item active" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor tree mortality from insects and disease, fire, and harvest.</p>
+                <img class='carousel-img' src="./images/change_annimation_San_Juans.gif">
+                <p>San Juans, CO</p>
+              </div>
+            </div>
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Quantify tree mortality from insects and disease, fire, and harvest.</p>
+                <img class='carousel-img' src="./images/San Juans LCMS Change Summary.png">
+                <p>San Juans, CO</p>
+              </div>
+            </div>
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor trends of urban expansion.</p>
+                <img class='carousel-img' src="./images/land_use_annimation_Denver.gif">
+                <p>Denver, CO</p>
+              </div>
+            </div>
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Quantify trends of urban expansion.</p>
+                <img class='carousel-img' src="./images/Denver, CO LCMS Land Use Summary.png">
+                <p>Denver, CO</p>
+              </div>
+            </div>
+
+            <div class="item" style='height:650px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor tree mortality from insects and disease.</p>
+                <img class='carousel-img' src="./images/change_annimation_slow.gif">
+                <p>Sangre De Cristo Mts, CO</p>
+              </div>
+            </div>
+
+            <div class="item" style='height:625px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor trends of urban expansion.</p>
+                <img class='carousel-img' src="./images/land_use_annimation_Las_Vegas.gif">
+                <p>Las Vegas, NV</p>
+              </div>
+            </div>
+
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Quantify trends of urban expansion.</p>
+                <img class='carousel-img' src="./images/Las Vegas, NV LCMS Land Use Summary.png">
+                <p>Las Vegas, NV</p>
+              </div>
+            </div>
+
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor fluctuations in water cover.</p>
+                <img class='carousel-img' src="./images/land_cover_annimation_Lake_Powell.gif">
+                <p>Lake Powell, UT</p>
+              </div>
+            </div>
+
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor cumulative tree harvest and regrowth.</p>
+                <img class='carousel-img' src="./images/change_annimation_SE_harvest.gif">
+                <p>Southeastern US harvest cycles, SC</p>
+              </div>
+            </div>
+
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <h3>How is it useful?</h3>
+                <p>Monitor glacial recession.</p>
+                <img class='carousel-img' src="./images/change_annimation_AK_glacier1.gif">
+                <p>AK</p>
+              </div>
+            </div>
+          </div>
+          <!-- Left and right controls -->
+          <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel2" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="products" class="container-fluid bg-white info-page">
+
+      <div style='margin:1em;' class="row slideanim ">
+        <h2>PRODUCTS</h2>
+        <table class="table bg-gray">
+          <thead class='teal80 '>
+            <tr>
+              <th scope="col">Product Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Change</th>
+              <td>
+                <table  class="lcms-change-table-columns">
+                  <thead>
+                    <tr>
+                      <th scope="col">Change Class</th>
+                      <th scope="col">Change Class Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Fast Loss</td>
+                      <td> Vegetation cover loss caused by ephemeral events. For example, a fire or harvest that causes rapid vegetation cover change. </td>
+                    </tr>
+                    <tr>
+                      <td>Slow Loss</td>
+                      <td> Vegetation cover loss caused by longer duration events. For example, mountain pine beetle and spectral and structural decline in Rocky Mountain forests. </td>
+                    </tr>
+                    <tr>
+                      <td>Gain</td>
+                      <td> Vegetation cover succession that is growth and recovery. For example, new growth of tree saplings following a fire or harvest.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td><img width='250px' src="./images/change_annimation_SE_harvest.gif"></td>
+            </tr>
+            <tr>
+              <th>Land Cover</th>
+              <td>Land cover classes represent the vegetation or other biophysical attributes of the land surface.  </td>
+              <td><img width='250px' src="./images/land_cover_annimation_Lake_Powell.gif"></td>
+            </tr>
+            <tr>
+              <th>Land Use</th>
+              <td>Land use classes represent how biophysical attributes are being or could be used by humans.  </td>
+              <td><img width='250px' src="./images/land_use_annimation_Las_Vegas.gif"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="data-explorer" class="container-fluid bg-solid-black info-page">
+      <div class="row slideanim">
+        <h2 style='margin-left:1em;'>DATA EXPLORER</h2>
+
+        <div id="myCarousel3" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel3" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel3" data-slide-to="1"></li>
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            <div class="item active" style='height:600px;'>
+              <div class="carousel-caption">
+                <a class='teal' href="./index.html" target="_blank">
+                  <h2>Click here to explore LCMS products interactively</h2>
+                  <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
+                </a>
+              </div>
+            </div>
+
+            <div class="item" style='height:600px;'>
+              <div class="carousel-caption">
+                <a class='teal' href="./lcms-base-learner.html" target="_blank">
+                  <h2>Click here to explore LCMS model inputs interactively</h2>
+                  <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Left and right controls -->
+          <a class="left carousel-control" href="#myCarousel3" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel3" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+    <div id="download" class="container-fluid bg-white info-page ">
+      <div class="row slideanim">
+        <h2 style='margin-left:1em;'>DOWNLOAD</h2>
+
+        <div id='main-container'>>
+          <ul id="downloadTree" class="pl-0 mb-0" title="Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
+            <li class="pl-0"><span class="caret caret-down">Conterminous United States (v2022.8)</span>
+              <ul class="nested active">
+                <li><span class="caret">Change</span>
+                  <ul class="nested">
+                    <li><span class="caret" title="Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.">Summary</span>
+                      <ul class="nested" id="CONUS-change-summary-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="CONUS-change-summary-downloads-d">Select products to download:</label>
+                      <select id="CONUS-change-summary-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Fast_Loss_Summary_1985_2022.zip">Change_Fast_Loss_Summary_1985_2022.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Slow_Loss_Summary_1985_2022.zip">Change_Slow_Loss_Summary_1985_2022.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Gain_Summary_1985_2022.zip">Change_Gain_Summary_1985_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;CONUS-change-summary-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                    </li>
+                                    <li><span class="caret" title="Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.">Annual</span>
+                                      <ul class="nested" id="CONUS-change-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="CONUS-change-annual-downloads-d">Select products to download:</label>
+                      <select id="CONUS-change-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1985.zip">Change_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1986.zip">Change_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1987.zip">Change_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1988.zip">Change_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1989.zip">Change_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1990.zip">Change_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1991.zip">Change_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1992.zip">Change_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1993.zip">Change_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1994.zip">Change_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1995.zip">Change_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1996.zip">Change_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1997.zip">Change_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1998.zip">Change_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_1999.zip">Change_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2000.zip">Change_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2001.zip">Change_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2002.zip">Change_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2003.zip">Change_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2004.zip">Change_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2005.zip">Change_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2006.zip">Change_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2007.zip">Change_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2008.zip">Change_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2009.zip">Change_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2010.zip">Change_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2011.zip">Change_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2012.zip">Change_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2013.zip">Change_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2014.zip">Change_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2015.zip">Change_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2016.zip">Change_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2017.zip">Change_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2018.zip">Change_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2019.zip">Change_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2020.zip">Change_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2021.zip">Change_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Change_Annual_2022.zip">Change_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;CONUS-change-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li><span class="caret" title="Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.">Land Cover</span>
+                                  <ul class="nested" id="CONUS-land_cover-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="CONUS-land_cover-annual-downloads-d">Select products to download:</label>
+                      <select id="CONUS-land_cover-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1985.zip">Land_Cover_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1986.zip">Land_Cover_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1987.zip">Land_Cover_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1988.zip">Land_Cover_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1989.zip">Land_Cover_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1990.zip">Land_Cover_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1991.zip">Land_Cover_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1992.zip">Land_Cover_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1993.zip">Land_Cover_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1994.zip">Land_Cover_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1995.zip">Land_Cover_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1996.zip">Land_Cover_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1997.zip">Land_Cover_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1998.zip">Land_Cover_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_1999.zip">Land_Cover_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2000.zip">Land_Cover_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2001.zip">Land_Cover_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2002.zip">Land_Cover_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2003.zip">Land_Cover_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2004.zip">Land_Cover_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2005.zip">Land_Cover_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2006.zip">Land_Cover_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2007.zip">Land_Cover_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2008.zip">Land_Cover_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2009.zip">Land_Cover_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2010.zip">Land_Cover_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2011.zip">Land_Cover_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2012.zip">Land_Cover_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2013.zip">Land_Cover_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2014.zip">Land_Cover_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2015.zip">Land_Cover_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2016.zip">Land_Cover_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2017.zip">Land_Cover_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2018.zip">Land_Cover_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2019.zip">Land_Cover_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2020.zip">Land_Cover_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2021.zip">Land_Cover_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Cover_Annual_2022.zip">Land_Cover_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;CONUS-land_cover-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                                <li><span class="caret" title="Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.">Land Use</span>
+                                  <ul class="nested" id="CONUS-land_use-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="CONUS-land_use-annual-downloads-d">Select products to download:</label>
+                      <select id="CONUS-land_use-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1985.zip">Land_Use_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1986.zip">Land_Use_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1987.zip">Land_Use_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1988.zip">Land_Use_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1989.zip">Land_Use_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1990.zip">Land_Use_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1991.zip">Land_Use_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1992.zip">Land_Use_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1993.zip">Land_Use_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1994.zip">Land_Use_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1995.zip">Land_Use_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1996.zip">Land_Use_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1997.zip">Land_Use_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1998.zip">Land_Use_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_1999.zip">Land_Use_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2000.zip">Land_Use_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2001.zip">Land_Use_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2002.zip">Land_Use_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2003.zip">Land_Use_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2004.zip">Land_Use_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2005.zip">Land_Use_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2006.zip">Land_Use_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2007.zip">Land_Use_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2008.zip">Land_Use_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2009.zip">Land_Use_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2010.zip">Land_Use_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2011.zip">Land_Use_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2012.zip">Land_Use_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2013.zip">Land_Use_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2014.zip">Land_Use_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2015.zip">Land_Use_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2016.zip">Land_Use_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2017.zip">Land_Use_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2018.zip">Land_Use_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2019.zip">Land_Use_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2020.zip">Land_Use_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2021.zip">Land_Use_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_Land_Use_Annual_2022.zip">Land_Use_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;CONUS-land_use-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                                <li><span class="caret" title="Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.">QA Bits</span>
+                                  <ul class="nested" id="CONUS-qa_bits-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="CONUS-qa_bits-annual-downloads-d">Select products to download:</label>
+                      <select id="CONUS-qa_bits-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1985.zip">QA_Bits_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1986.zip">QA_Bits_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1987.zip">QA_Bits_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1988.zip">QA_Bits_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1989.zip">QA_Bits_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1990.zip">QA_Bits_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1991.zip">QA_Bits_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1992.zip">QA_Bits_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1993.zip">QA_Bits_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1994.zip">QA_Bits_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1995.zip">QA_Bits_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1996.zip">QA_Bits_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1997.zip">QA_Bits_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1998.zip">QA_Bits_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_1999.zip">QA_Bits_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2000.zip">QA_Bits_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2001.zip">QA_Bits_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2002.zip">QA_Bits_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2003.zip">QA_Bits_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2004.zip">QA_Bits_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2005.zip">QA_Bits_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2006.zip">QA_Bits_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2007.zip">QA_Bits_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2008.zip">QA_Bits_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2009.zip">QA_Bits_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2010.zip">QA_Bits_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2011.zip">QA_Bits_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2012.zip">QA_Bits_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2013.zip">QA_Bits_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2014.zip">QA_Bits_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2015.zip">QA_Bits_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2016.zip">QA_Bits_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2017.zip">QA_Bits_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2018.zip">QA_Bits_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2019.zip">QA_Bits_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2020.zip">QA_Bits_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2021.zip">QA_Bits_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_CONUS_v2022-8_QA_Bits_Annual_2022.zip">QA_Bits_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;CONUS-qa_bits-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                              </ul>
+                            </li>
+                            <li><span class="caret caret-down">Southeastern Alaska (v2022.8)</span>
+                              <ul class="nested active">
+                                <li><span class="caret">Change</span>
+                                  <ul class="nested">
+                                    <li><span class="caret" title="Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.">Summary</span>
+                                      <ul class="nested" id="SEAK-change-summary-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="SEAK-change-summary-downloads-d">Select products to download:</label>
+                      <select id="SEAK-change-summary-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Fast_Loss_Summary_1985_2022.zip">Change_Fast_Loss_Summary_1985_2022.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Slow_Loss_Summary_1985_2022.zip">Change_Slow_Loss_Summary_1985_2022.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Gain_Summary_1985_2022.zip">Change_Gain_Summary_1985_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;SEAK-change-summary-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                    </li>
+                                    <li><span class="caret" title="Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.">Annual</span>
+                                      <ul class="nested" id="SEAK-change-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="SEAK-change-annual-downloads-d">Select products to download:</label>
+                      <select id="SEAK-change-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1985.zip">Change_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1986.zip">Change_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1987.zip">Change_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1988.zip">Change_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1989.zip">Change_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1990.zip">Change_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1991.zip">Change_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1992.zip">Change_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1993.zip">Change_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1994.zip">Change_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1995.zip">Change_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1996.zip">Change_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1997.zip">Change_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1998.zip">Change_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_1999.zip">Change_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2000.zip">Change_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2001.zip">Change_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2002.zip">Change_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2003.zip">Change_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2004.zip">Change_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2005.zip">Change_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2006.zip">Change_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2007.zip">Change_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2008.zip">Change_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2009.zip">Change_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2010.zip">Change_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2011.zip">Change_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2012.zip">Change_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2013.zip">Change_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2014.zip">Change_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2015.zip">Change_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2016.zip">Change_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2017.zip">Change_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2018.zip">Change_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2019.zip">Change_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2020.zip">Change_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2021.zip">Change_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Annual_2022.zip">Change_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;SEAK-change-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li><span class="caret" title="Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.">Land Cover</span>
+                                  <ul class="nested" id="SEAK-land_cover-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="SEAK-land_cover-annual-downloads-d">Select products to download:</label>
+                      <select id="SEAK-land_cover-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1985.zip">Land_Cover_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1986.zip">Land_Cover_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1987.zip">Land_Cover_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1988.zip">Land_Cover_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1989.zip">Land_Cover_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1990.zip">Land_Cover_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1991.zip">Land_Cover_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1992.zip">Land_Cover_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1993.zip">Land_Cover_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1994.zip">Land_Cover_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1995.zip">Land_Cover_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1996.zip">Land_Cover_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1997.zip">Land_Cover_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1998.zip">Land_Cover_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_1999.zip">Land_Cover_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2000.zip">Land_Cover_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2001.zip">Land_Cover_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2002.zip">Land_Cover_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2003.zip">Land_Cover_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2004.zip">Land_Cover_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2005.zip">Land_Cover_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2006.zip">Land_Cover_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2007.zip">Land_Cover_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2008.zip">Land_Cover_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2009.zip">Land_Cover_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2010.zip">Land_Cover_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2011.zip">Land_Cover_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2012.zip">Land_Cover_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2013.zip">Land_Cover_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2014.zip">Land_Cover_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2015.zip">Land_Cover_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2016.zip">Land_Cover_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2017.zip">Land_Cover_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2018.zip">Land_Cover_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2019.zip">Land_Cover_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2020.zip">Land_Cover_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2021.zip">Land_Cover_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Cover_Annual_2022.zip">Land_Cover_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;SEAK-land_cover-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                                <li><span class="caret" title="Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.">Land Use</span>
+                                  <ul class="nested" id="SEAK-land_use-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="SEAK-land_use-annual-downloads-d">Select products to download:</label>
+                      <select id="SEAK-land_use-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1985.zip">Land_Use_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1986.zip">Land_Use_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1987.zip">Land_Use_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1988.zip">Land_Use_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1989.zip">Land_Use_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1990.zip">Land_Use_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1991.zip">Land_Use_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1992.zip">Land_Use_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1993.zip">Land_Use_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1994.zip">Land_Use_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1995.zip">Land_Use_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1996.zip">Land_Use_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1997.zip">Land_Use_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1998.zip">Land_Use_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_1999.zip">Land_Use_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2000.zip">Land_Use_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2001.zip">Land_Use_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2002.zip">Land_Use_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2003.zip">Land_Use_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2004.zip">Land_Use_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2005.zip">Land_Use_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2006.zip">Land_Use_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2007.zip">Land_Use_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2008.zip">Land_Use_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2009.zip">Land_Use_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2010.zip">Land_Use_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2011.zip">Land_Use_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2012.zip">Land_Use_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2013.zip">Land_Use_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2014.zip">Land_Use_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2015.zip">Land_Use_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2016.zip">Land_Use_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2017.zip">Land_Use_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2018.zip">Land_Use_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2019.zip">Land_Use_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2020.zip">Land_Use_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2021.zip">Land_Use_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Land_Use_Annual_2022.zip">Land_Use_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;SEAK-land_use-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                                <li><span class="caret" title="Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.">QA Bits</span>
+                                  <ul class="nested" id="SEAK-qa_bits-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="SEAK-qa_bits-annual-downloads-d">Select products to download:</label>
+                      <select id="SEAK-qa_bits-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1985.zip">QA_Bits_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1986.zip">QA_Bits_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1987.zip">QA_Bits_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1988.zip">QA_Bits_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1989.zip">QA_Bits_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1990.zip">QA_Bits_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1991.zip">QA_Bits_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1992.zip">QA_Bits_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1993.zip">QA_Bits_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1994.zip">QA_Bits_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1995.zip">QA_Bits_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1996.zip">QA_Bits_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1997.zip">QA_Bits_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1998.zip">QA_Bits_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_1999.zip">QA_Bits_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2000.zip">QA_Bits_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2001.zip">QA_Bits_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2002.zip">QA_Bits_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2003.zip">QA_Bits_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2004.zip">QA_Bits_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2005.zip">QA_Bits_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2006.zip">QA_Bits_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2007.zip">QA_Bits_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2008.zip">QA_Bits_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2009.zip">QA_Bits_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2010.zip">QA_Bits_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2011.zip">QA_Bits_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2012.zip">QA_Bits_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2013.zip">QA_Bits_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2014.zip">QA_Bits_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2015.zip">QA_Bits_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2016.zip">QA_Bits_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2017.zip">QA_Bits_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2018.zip">QA_Bits_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2019.zip">QA_Bits_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2020.zip">QA_Bits_Annual_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2021.zip">QA_Bits_Annual_2021.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_QA_Bits_Annual_2022.zip">QA_Bits_Annual_2022.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;SEAK-qa_bits-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                              </ul>
+                            </li>
+                            <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2020.6)</span>
+                              <ul class="nested active">
+                                <li><span class="caret">Change</span>
+                                  <ul class="nested">
+                                    <li><span class="caret" title="Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.">Summary</span>
+                                      <ul class="nested" id="PRUSVI-change-summary-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="PRUSVI-change-summary-downloads-d">Select products to download:</label>
+                      <select id="PRUSVI-change-summary-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Fast_Loss_Summary_1985_2020.zip">Change_Fast_Loss_Summary_1985_2020.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Gain_Summary_1985_2020.zip">Change_Gain_Summary_1985_2020.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;PRUSVI-change-summary-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                    </li>
+                                    <li><span class="caret" title="Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.">Annual</span>
+                                      <ul class="nested" id="PRUSVI-change-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="PRUSVI-change-annual-downloads-d">Select products to download:</label>
+                      <select id="PRUSVI-change-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1985.zip">Change_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1986.zip">Change_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1987.zip">Change_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1988.zip">Change_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1989.zip">Change_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1990.zip">Change_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1991.zip">Change_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1992.zip">Change_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1993.zip">Change_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1994.zip">Change_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1995.zip">Change_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1996.zip">Change_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1997.zip">Change_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1998.zip">Change_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_1999.zip">Change_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2000.zip">Change_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2001.zip">Change_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2002.zip">Change_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2003.zip">Change_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2004.zip">Change_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2005.zip">Change_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2006.zip">Change_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2007.zip">Change_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2008.zip">Change_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2009.zip">Change_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2010.zip">Change_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2011.zip">Change_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2012.zip">Change_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2013.zip">Change_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2014.zip">Change_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2015.zip">Change_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2016.zip">Change_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2017.zip">Change_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2018.zip">Change_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2019.zip">Change_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Change_Annual_2020.zip">Change_Annual_2020.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;PRUSVI-change-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li><span class="caret" title="Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.">Land Cover</span>
+                                  <ul class="nested" id="PRUSVI-land_cover-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="PRUSVI-land_cover-annual-downloads-d">Select products to download:</label>
+                      <select id="PRUSVI-land_cover-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1985.zip">Land_Cover_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1986.zip">Land_Cover_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1987.zip">Land_Cover_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1988.zip">Land_Cover_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1989.zip">Land_Cover_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1990.zip">Land_Cover_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1991.zip">Land_Cover_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1992.zip">Land_Cover_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1993.zip">Land_Cover_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1994.zip">Land_Cover_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1995.zip">Land_Cover_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1996.zip">Land_Cover_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1997.zip">Land_Cover_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1998.zip">Land_Cover_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_1999.zip">Land_Cover_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2000.zip">Land_Cover_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2001.zip">Land_Cover_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2002.zip">Land_Cover_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2003.zip">Land_Cover_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2004.zip">Land_Cover_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2005.zip">Land_Cover_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2006.zip">Land_Cover_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2007.zip">Land_Cover_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2008.zip">Land_Cover_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2009.zip">Land_Cover_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2010.zip">Land_Cover_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2011.zip">Land_Cover_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2012.zip">Land_Cover_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2013.zip">Land_Cover_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2014.zip">Land_Cover_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2015.zip">Land_Cover_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2016.zip">Land_Cover_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2017.zip">Land_Cover_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2018.zip">Land_Cover_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2019.zip">Land_Cover_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Cover_Annual_2020.zip">Land_Cover_Annual_2020.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;PRUSVI-land_cover-annual-downloads-d&quot;)">Download</button>
+                      <hr></ul>
+                                </li>
+                                <li><span class="caret" title="Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.">Land Use</span>
+                                  <ul class="nested" id="PRUSVI-land_use-annual-downloads">
+                      <label title="Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks." for="PRUSVI-land_use-annual-downloads-d">Select products to download:</label>
+                      <select id="PRUSVI-land_use-annual-downloads-d" size="8" style="height: 100%;" class=" bg-download-select" multiple=""><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1985.zip">Land_Use_Annual_1985.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1986.zip">Land_Use_Annual_1986.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1987.zip">Land_Use_Annual_1987.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1988.zip">Land_Use_Annual_1988.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1989.zip">Land_Use_Annual_1989.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1990.zip">Land_Use_Annual_1990.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1991.zip">Land_Use_Annual_1991.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1992.zip">Land_Use_Annual_1992.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1993.zip">Land_Use_Annual_1993.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1994.zip">Land_Use_Annual_1994.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1995.zip">Land_Use_Annual_1995.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1996.zip">Land_Use_Annual_1996.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1997.zip">Land_Use_Annual_1997.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1998.zip">Land_Use_Annual_1998.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_1999.zip">Land_Use_Annual_1999.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2000.zip">Land_Use_Annual_2000.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2001.zip">Land_Use_Annual_2001.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2002.zip">Land_Use_Annual_2002.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2003.zip">Land_Use_Annual_2003.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2004.zip">Land_Use_Annual_2004.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2005.zip">Land_Use_Annual_2005.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2006.zip">Land_Use_Annual_2006.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2007.zip">Land_Use_Annual_2007.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2008.zip">Land_Use_Annual_2008.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2009.zip">Land_Use_Annual_2009.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2010.zip">Land_Use_Annual_2010.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2011.zip">Land_Use_Annual_2011.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2012.zip">Land_Use_Annual_2012.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2013.zip">Land_Use_Annual_2013.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2014.zip">Land_Use_Annual_2014.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2015.zip">Land_Use_Annual_2015.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2016.zip">Land_Use_Annual_2016.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2017.zip">Land_Use_Annual_2017.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2018.zip">Land_Use_Annual_2018.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2019.zip">Land_Use_Annual_2019.zip</option><option value="https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2020.zip">Land_Use_Annual_2020.zip</option></select>
+                      <br>
+                      <button title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided" class="btn" onclick="downloadSelectedAreas(&quot;PRUSVI-land_use-annual-downloads-d&quot;)">Download</button>
+                    <hr></ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          </div>
+
+
+
+      </div>
+    </div>
+
+    <div id="background" class="container-fluid bg-white info-page">
+      <h2 style='margin-left:0.5em;'>BACKGROUND</h2>
+      <div class="col-sm-12 col-lg-6">
+        <h4>Knowing where, when, and what factors create change across landscapes is critical to making sound land
+          management decisions. To support land managers and scientists with this need, an interagency effort between
+          leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey,
+          NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System
+          (LCMS).
+          <br><br>
+          <p>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States.
+          LCMS provides a “best available” map of landscape change that leverages advances in time series-based change
+          detection techniques, Landsat and Sentinel data availability, cloud-based computing power, and big data analysis 
+          methods.</p> 
+          <br>
+          <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The LCMS 
+            Production Team and Science Team annually review methods to ensure the LCMS mapping process is based on the 
+            best available science. All LCMS map products are recreated annually from 1985 to the most recent full growing 
+            season. LCMS mapping areas include all the United States and its territories. The current operational set of 
+            outputs cover the conterminous United States (CONUS), southeastern Alaska (SEAK) and Puerto Rico U.S. Virgin Islands. 
+            Future mapping efforts will extend to Hawaii.
+          </p>
+        </h4>
+        <h3>Literature</h3>
+        <li>
+          <ul>
+            <a href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' target='_blank'>Healey et al 2018</a>
+          </ul>
+          <ul>
+            <a href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' target='_blank'>Cohen et al 2017</a>
+          </ul>
+          <ul>
+            <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target='_blank'>Cohen et al 2018</a>
+          </ul>
+        </li>
+      </div>
+      <div class='col-sm-12 col-lg-6 '>
+        <img src="./images/change_annimation_San_Juans.gif" class='img-responsive'></img>
+        <hr>
+      </div>
+    </div>
+
+    <div id="contact" class="container-fluid bg-solid-black">
+      <h2 style='margin-left:0.5em;'>CONTACT</h2>
+      <div class="row">
+        <div style='margin-left:1em;' class="col-sm-12">
+
+          <p>Geospatial Technology and Applications Center (GTAC)</p>
+          <p>125 S State St, Suite 7105</p>
+          <p>Salt Lake City, UT 84138</p>
+          <a href="mailto: sm.fs.lcms@usda.gov">Contact Us</a>
+
+          <a href="https://earthengine.google.com/" target="_blank">
+            <img src="images/GEE.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#"
+              title="Click to learn more about Google Earth Engine">
+          </a>
+          <a href="https://www.redcastleresources.com/" target="_blank">
+            <img src="images/RCR-logo.jpg" class='home-image-icon-bar' alt="RedCastle Inc. Logo" href="#"
+              title="Click to learn more about RedCastle Resources Inc.">
+          </a>
+          <a href="https://www.fs.fed.us/gstc/" target="_blank">
+            <img src="images/GTAC_Logo.png" class='home-image-icon-bar' alt="GTAC Logo" href="#"
+              title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+          </a>
+
+          <a href="http://www.fs.fed.us//" target="_blank">
+            <img src="images/usfslogo.png" class='home-image-icon-bar' href="#"
+              title="Click to learn more about the US Forest Service">
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+  function addModal(containerID,modalID,bodyOnly){
+      if(bodyOnly === null || bodyOnly === undefined){
+          bodyOnly = false};
+      if(containerID === null || containerID === undefined){containerID = 'main-container'};
+      if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+      $('#'+modalID).remove();
+      if(bodyOnly){
+      $('#'+ containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
+                  <div class="modal-dialog modal-md ">
+                  <div class="modal-content modal-content-not-full-screen-styling">
+                      <div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
+                      <button style = 'float:right;' id = 'close-modal-button' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
+                      </div>
+                  <div id ="${modalID}-body" class="modal-body " ></div>
+                  </div>
+              </div> 
+              </div>`
+              );
+      }else{
+      $('#'+ containerID).append(`
+              <div id = "${modalID}" class="modal fade " role="dialog">
+                  <div class="modal-dialog modal-lg ">
+                  <div class="modal-content bg-black">
+                  <button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
+                      <div class="modal-header py-0" id ="${modalID}-header"></div>
+                  <div id ="${modalID}-body" class="modal-body " style = 'background:#DDD;' ></div>
+                      <div class="modal-footer" id ="${modalID}-footer"></div>
+                  </div>
+              </div> 
+              </div>`
+              );
+      }
+      }
+
+  function addModalTitle(modalID,title){
+    if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+      $('#'+modalID+' .modal-header').prepend(`<h4 class="modal-title" id = '${modalID}-title'>${title}</h4>`);
+    }
+
+  function clearModal(modalID){
+    if(modalID === null || modalID === undefined){modalID = 'modal-id'};
+    // $('#'+modalID).empty();
+
+  $('#'+modalID+'-title .modal-title').html('')
+  $('#'+modalID+'-header').html('');
+  $('#'+modalID+'-body').html('');
+  $('#'+modalID+'-footer').html('');
+  $('.modal').modal('hide');
+  $('.modal-backdrop').remove()
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //Function to plae a message in a BS modal and show it
+  function showMessage(title,message,modalID,show){
+    if(title === undefined || title === null){title = ''}
+    if(message === undefined || message === null){message = ''}
+    if(show === undefined || show === null){show = true}
+    if(modalID === undefined || modalID === null){modalID = 'error-modal'}
+
+  clearModal(modalID);
+  addModal('main-container',modalID,true);
+    if(title !== '' && title !== undefined && title !== null){
+        addModalTitle(modalID,title);
+    }
+
+  $('#'+modalID+'-body').append(message);
+  if(show){$('#'+modalID).modal();}
+  };
+  function appendMessage2(message,modalID){
+    if(message === undefined || message === null){message = ''}
+    if(modalID === undefined || modalID === null){modalID = 'error-modal'}
+    $('#'+modalID+'-body').append(message);
+    };
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  function populateLCMSDownloads(){
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+      toggler[i].addEventListener("click", function() {
+        // console.log(this)
+        this.parentElement.querySelector(".nested").classList.toggle("active");
+        // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
+        this.classList.toggle("caret-down");
+        // this.classList.toggle("treeOff");
+      });
+    }
+  }
+  populateLCMSDownloads();
+
+  function downloadByUrl(url){
+    console.log('downloading');
+      console.log(url);
+      var link=document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      var downloadName = url.substr(url.lastIndexOf('/') + 1);
+      
+
+      // link.download ='hello';// downloadName;
+      link.setAttribute('download',downloadName);
+
+      console.log(link)
+      link.click();
+      
+      showMessage('Download Started','Your download of ' + downloadName + ' has started.');
+      
+      
+
+      return downloadName
+  }
+
+  function downloadSelectedAreas(id){
+    var urls =  $('#'+id).val();
+    if(urls !== ''){
+      console.log(urls)
+      var downloadNames = urls.map(downloadByUrl);
+      var message = '<li class = "m-0">';
+      urls.map(function(url){
+        var downloadName = url.substr(url.lastIndexOf('/') + 1);
+        message += `<ul class = "m-0"><a href = "${url}" target = "_blank">${downloadName}</a></ul>`
+      })
+      message += '</li>'
+      showMessage('Downloads Started','The following downloads have started. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<hr>' + message + '</ul></li>');
+      // setTimeout(()=>{
+        showSurveyModal('downloadedLCMSTif',true);
+      // },2000)
+    }
+  }
+
+  $(document).ready(function() {
+    // Add smooth scrolling to all links in navbar + footer link
+    $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+      // Make sure this.hash has a value before overriding default behavior
+      if (this.hash !== "") {
+        // Prevent default anchor click behavior
+        event.preventDefault();
+        // Store hash
+        var hash = this.hash;
+        // Using jQuery's animate() method to add smooth page scroll
+        // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+        $('html, body').animate({
+          scrollTop: $(hash).offset().top
+        }, 900, function() {
+          // Add hash (#) to URL when done scrolling (default click behavior)
+          window.location.hash = hash;
+        });
+      } // End if
+    });
+    $(window).scroll(function() {
+      $(".slideanim").each(function() {
+        var pos = $(this).offset().top;
+        var winTop = $(window).scrollTop();
+        if (pos < winTop + 600) {
+          $(this).addClass("slide");
+        }
+      });
+    });
+  })
+  $('.carousel').carousel({
+    interval: 8000
+  })
+
+
+  </script>
+  
+</body>
+
+</html>

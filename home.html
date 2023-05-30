@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
-  <!-- Theme Made By www.w3schools.comasdf -->
+  <!-- Theme Made By www.w3schools.com -->
   <title>Landscape Change Monitoring System</title>
-  <link rel="icon" href="./images/usfslogo.png">
+  <link rel="icon" href="./images/lcms-icon.png">
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,47 +16,39 @@
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="./js/16lcms-webpage.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
   <link rel="stylesheet" href="./css/style.css">
-  <style type="text/css">
-    .navbar-inverse .navbar-nav>.active>a,
-    .navbar-inverse .navbar-nav>.active>a:hover,
-    .navbar-inverse .navbar-nav>.active>a:focus {
-      background: rgba(235, 235, 235, 0) !important;
-      color: var(--teal-80) !important;
-
-    }
-
+  <link rel="stylesheet" href="./css/style-lcmshomepage.css">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:200,100,400" rel="stylesheet" type="text/css" />
   
-  </style>
+  <script src="./js/16lcms-webpage.js"></script>
 
 </head>
 
 <body data-spy="scroll" data-target=".navbar" data-offset="10" class='bg-solid-black'>
 
-  <div class='container-fluid '>
-
-    <nav class="navbar navbar-inverse bg-gray navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header ">
-
-          <!-- <img src="images/usfslogo.png"  title="Click to learn more about the US Forest Service" style = 'font-size:5em;'> -->
-          <h2 class=" pull-left teal-study-area-label " href="#" style='margin-left:1em;'><img
-              style='margin:0px!important;padding:0px!important;filter: invert(0);' height='35px'
-              src="images/logos_usda-fs.svg"><img
-              style='margin:0px!important;margin-left:0.5em!important;padding:0px!important;filter: invert(0);'
-              height='35px' src="images/lcms-icon.png"> LANDSCAPE <span
-              style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">CHANGE</span> MONITORING SYSTEM </h2>
-
+  <div class='container-fluid ' >
+    
+    <nav class="navbar navbar-inverse bg-gray navbar-fixed-top navbar-expand-lg">
+      <div class="container-fluid" id="top-bar">
+        <div class="navbar-header" style = 'font-size:2rem'>
+          <span class=" pull-left teal-study-area-label " style="padding-top: 0.3rem;">
+            <img style="height:2.7rem" src="./images/logos_usda-fs.svg">
+            <img style="height:2.2rem" src="./images/logo_icon_lcms-data-viewer.svg">
+            LANDSCAPE
+            <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span>
+            MONITORING SYSTEM
+          </span>
         </div>
-        <div class="collapse navbar-collapse vcenter" id="myNavbar">
+        <div class="collapse navbar-collapse vcenter" id="navbar">
           <ul class="nav navbar-nav pull-right">
             <li title='What is LCMS?'><a class='teal-hover ' id='intro-nav' href="#intro">INTRODUCTION</a></li>
             <li title='How can LCMS data be used?'><a class='teal-hover' id='applications-nav'
@@ -64,234 +57,135 @@
                 href="#products">PRODUCTS</a></li>
 
             <li title='How to visualize and explor LCMS data'><a class='teal-hover' id='map-nav'
-                href="#data-explorer">DATA EXPLORER</a></li>
+                href="#data-explorer">DATA EXPLORERS</a></li>
             <li title='Download LCMS products for your analyses'><a class='teal-hover' id='download-nav'
-                href="#download">DOWNLOAD</a></li>
-            <li title='Why is LCMS needed?'><a class='teal-hover' id='about-nav' href="#background">BACKGROUND</a></li>
+                href="#download">DATA DOWNLOAD</a></li>
+            <li title='Why is LCMS needed?'><a class='teal-hover' id='about-nav' href="#background">ABOUT</a></li>
             <li title='Contact us with any questions'><a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
             </li>
           </ul>
         </div>
       </div>
+    </div>
 
     </nav>
 
-    <div id="intro" class="container-fluid bg-solid-black">
-
-      <div class="row slideanim info-page">
-        <h2 style='margin-left:1em;'>INTRODUCTION</h2>
-
-        <div id="myCarousel1" class="carousel slide" data-ride="carousel">
-          <!-- Indicators -->
-          <ol class="carousel-indicators">
-            <li data-target="#myCarousel1" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel1" data-slide-to="1"></li>
-            <li data-target="#myCarousel1" data-slide-to="2"></li>
-            <li data-target="#myCarousel1" data-slide-to="3"></li>
-            <li data-target="#myCarousel1" data-slide-to="4"></li>
-          </ol>
-
-          <!-- Wrapper for slides -->
-          <div class="carousel-inner">
-            <div class="item active " style='min-height: 600px;'>
-
-              <div class="carousel-caption">
-                <h3>The Landscape Change Monitoring System (LCMS)</h3>
-                <p>LCMS is the USDA Forest Service landscape change monitoring system for US lands</p>
-                <img class='carousel-img' src="./images/change_annimation_All_change.gif">
-              </div>
+    
+    
+    
+    
+    <div id="intro" class="container-fluid bg-solid-black" style = 'margin-top:5rem;'> 
+      <h2 style="font-weight:1000;font-family: 'Roboto Black', sans-serif; margin-left:10px" class="teal80">LCMS</h2>
+      <div class="row">
+        
+        <div class = 'col-sm-4'>
+          <ul  style="text-align: left;font-size:1.8rem;margin-top:4rem;">
+            <p  style = "margin-bottom:2rem!important;"><b>What:</b> Annual vegetation cover change, land cover, and land use data </p>
+            <p  style = "margin-bottom:2rem!important;"><b>When:</b> 1985 to present</p>
+            <p  style = "margin-bottom:2rem!important;"><b>Where:</b> Across conterminous U.S., SE Alaska, Puerto Rico, U.S. Virgin Islands, Hawaii</p>
+          </ul>
+        </div>
+        <div class="col-sm-8">
+          
+          <img style= 'width:100%' src="./images/CONUS_Change_loss.png"/>
+        </div>
+      </div>
+      
+    </div>  
+    <div id="applications" class="container-fluid bg-solid-black" style = 'margin-top:5rem;'>
+      
+      
+        <h2 style='margin-left:0.5em;'>APPLICATIONS</h2>
+        
+      <div class="row"  > 
+        <h3 style="margin-bottom:2rem!important;margin-left:2rem">Monitor annual land cover changes</h3>
+        <div class="col-md-5">
+          <img style= 'width:100%' src="./images/CONUS_All_LandCover.PNG"/>
+        </div>
+        <div class = 'col-md-7'>
+          <p style='font-size:1.5rem;display: none;'> LCMS is a useful tool for monitoring landscape changes caused by natural disturbance regimes and human activies</p>
+          <ul style="display:none;" >
+            <li class="liClass"> When and where change occurs</li>
+            <li class="liClass"> Vegetation change - tree mortality</li>
+            <li class="liClass"> Urban vegetated and non-vegetated change - urban expansion</li>
+            <li class="liClass"> Water body change - reservoir water loss</li>
+            <li class="liClass"> Cryosphere change - glacial retreat </li>
+            <li class="liClass"> Change attribution - wildfire, harvest, hurricane, insect and disease </li>
+          </ul>
+          <img style= 'width:75%;display:none;' src="./images/wildfire_photo.jpg"/>
+          
+          <ul style="text-align: left;font-size:1.2rem;">
+            <li class="liClass">Where were trees and are they still there?</li>
+            <li class="liClass">Where was there water and is it still there?</li>
+            <li class="liClass">Where was there snow or ice and is it still there?</li>
+          </ul>
+         
+         
+          <div class = 'row'>
+            <div class="col-md-6">
+              <img style= 'width:100%;' src="./images/Colorado_Change.gif">
+              <p>Changes from insects, disease, and wildfire, CO</p>
             </div>
-
-            <div class="item" style='min-height: 500px;'>
-              <div class="carousel-caption">
-                <h3>What does LCMS monitor?</h3>
-                <p>Vegetation cover loss and gain</p>
-                <img class='carousel-img' src="./images/study_area_map_change.PNG">
-                <p>Annual vegetation cover loss and gain maps from 1985-present</p>
-              </div>
+            
+            <div class="col-md-6">
+              <img style= 'width:100%;' src="./images/Chugach_Glacier_Landcover.gif">
+              <p>Change in extent of snow/ice in the Columbia Glacier, AK </p>
             </div>
-            <div class="item" style='min-height: 500px;'>
-              <div class="carousel-caption">
-                <h3>What does LCMS monitor?</h3>
-                <p>Land cover transitions</p>
-                <img class='carousel-img' src="./images/study_area_map_land_cover.PNG">
-                <p>Annual land cover maps from 1985-present</p>
-              </div>
-            </div>
-            <div class="item" style='min-height: 550px;'>
-              <div class="carousel-caption">
-                <h3>What does LCMS monitor?</h3>
-                <p>Land use transitions</p>
-                <img class='carousel-img' src="./images/study_area_map_land_use.PNG">
-                <p>Annual land use maps for each year from 1985-present</p>
-              </div>
-            </div>
-
-            <div class="item" style='min-height: 550px;'>
-              <div class="carousel-caption">
-                <h3>Where does LCMS monitor?</h3>
-                <p>LCMS monitors all lands across the conterminous United States, southeastern Alaska, Puerto Rico US Virgin Islands, and Hawaii on an annual
-                  basis</p>
-                <img class='carousel-img' src="./images/lmcs_studyAreas.png">
-              </div>
-            </div>
-
           </div>
-          <!-- Left and right controls -->
-          <a class="left carousel-control" href="#myCarousel1" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="right carousel-control" href="#myCarousel1" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="sr-only">Next</span>
-          </a>
         </div>
       </div>
       <hr>
-
-    </div>
-    <div id="applications" class="container-fluid bg-solid-black">
-
-      <div class="row slideanim info-page">
-        <h2 style='margin-left:1em;'>APPLICATIONS</h2>
-        <div id="myCarousel2" class="carousel slide" data-ride="carousel">
-          <!-- Indicators -->
-          <ol class="carousel-indicators">
-            <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel2" data-slide-to="1"></li>
-            <li data-target="#myCarousel2" data-slide-to="2"></li>
-            <li data-target="#myCarousel2" data-slide-to="3"></li>
-            <li data-target="#myCarousel2" data-slide-to="4"></li>
-            <li data-target="#myCarousel2" data-slide-to="5"></li>
-            <li data-target="#myCarousel2" data-slide-to="6"></li>
-            <li data-target="#myCarousel2" data-slide-to="7"></li>
-            <li data-target="#myCarousel2" data-slide-to="8"></li>
-            <li data-target="#myCarousel2" data-slide-to="9"></li>
-
-          </ol>
-
-          <!-- Wrapper for slides -->
-          <div class="carousel-inner">
-
-            <div class="item active" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor tree mortality from insects and disease, fire, and harvest.</p>
-                <img class='carousel-img' src="./images/change_annimation_San_Juans.gif">
-                <p>San Juans, CO</p>
-              </div>
-            </div>
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Quantify tree mortality from insects and disease, fire, and harvest.</p>
-                <img class='carousel-img' src="./images/San Juans LCMS Change Summary.png">
-                <p>San Juans, CO</p>
-              </div>
-            </div>
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor trends of urban expansion.</p>
-                <img class='carousel-img' src="./images/land_use_annimation_Denver.gif">
-                <p>Denver, CO</p>
-              </div>
-            </div>
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Quantify trends of urban expansion.</p>
-                <img class='carousel-img' src="./images/Denver, CO LCMS Land Use Summary.png">
-                <p>Denver, CO</p>
-              </div>
-            </div>
-
-            <div class="item" style='height:650px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor tree mortality from insects and disease.</p>
-                <img class='carousel-img' src="./images/change_annimation_slow.gif">
-                <p>Sangre De Cristo Mts, CO</p>
-              </div>
-            </div>
-
-            <div class="item" style='height:625px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor trends of urban expansion.</p>
-                <img class='carousel-img' src="./images/land_use_annimation_Las_Vegas.gif">
-                <p>Las Vegas, NV</p>
-              </div>
-            </div>
-
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Quantify trends of urban expansion.</p>
-                <img class='carousel-img' src="./images/Las Vegas, NV LCMS Land Use Summary.png">
-                <p>Las Vegas, NV</p>
-              </div>
-            </div>
-
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor fluctuations in water cover.</p>
-                <img class='carousel-img' src="./images/land_cover_annimation_Lake_Powell.gif">
-                <p>Lake Powell, UT</p>
-              </div>
-            </div>
-
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor cumulative tree harvest and regrowth.</p>
-                <img class='carousel-img' src="./images/change_annimation_SE_harvest.gif">
-                <p>Southeastern US harvest cycles, SC</p>
-              </div>
-            </div>
-
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <h3>How is it useful?</h3>
-                <p>Monitor glacial recession.</p>
-                <img class='carousel-img' src="./images/change_annimation_AK_glacier1.gif">
-                <p>AK</p>
-              </div>
-            </div>
-          </div>
-          <!-- Left and right controls -->
-          <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="right carousel-control" href="#myCarousel2" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="sr-only">Next</span>
-          </a>
+      <div class="row" >
+        <h3 style="margin-top:0em;margin-left:2rem">Monitor annual land use changes</h3>
+        <div class="col-md-5">
+          <img style= 'width:100%' src="./images/CONUS_All_LandUse.PNG"/>
         </div>
-
+        <div class = 'col-md-7'>
+         
+          <ul style="text-align: left;font-size:1.2rem;">
+            <li class="liClass"> When and where forested land use is changing</li>
+                  <li class="liClass"> When and where non-forested land use is changing</li>
+                  <li class="liClass"> When and where development land use is changing</li>
+                  <li class="liClass"> When and where rangeland and other land use is changing</li>
+          </ul>
+          <div class = 'row'>
+            <div class="col-md-6">
+              <img style= 'width:100%;' src="./images/Oregon_Change.gif">
+              <p>Fire and harvest change over a forest land use area of the Willamette National Forest</p>
+            </div>
+            <div class="col-md-6">
+              <img style= 'width:100%;' src="./images/Las_Vegas_Landuse.gif">
+              <p>Urban development of Las Vegas, NV</p>
+            </div>
+            
+            
+          </div>
+          
+        </div>
       </div>
+        
+
+     
     </div>
 
     <div id="products" class="container-fluid bg-white info-page">
 
       <div style='margin:1em;' class="row slideanim ">
         <h2>PRODUCTS</h2>
+       
         <table class="table bg-gray">
           <thead class='teal80 '>
             <tr>
-              <th scope="col">Product Name</th>
-              <th scope="col">Description</th>
-              <th scope="col">Example</th>
+              <th style="font-size:16px"; scope="col">Product Name</th>
+              <th style="font-size:16px"; scope="col">Description</th>
+              <th style="font-size:16px"; scope="col">Example</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th>Change</th>
+              <th style="font-size:16px"> Change</th>
               <td>
-                <table  class="lcms-change-table-columns">
+                <table style="font-size:16px"; class="lcms-change-table-columns">
                   <thead>
                     <tr>
                       <th scope="col">Change Class</th>
@@ -300,90 +194,174 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>Fast Loss</td>
-                      <td> Vegetation cover loss caused by ephemeral events. For example, a fire or harvest that causes rapid vegetation cover change. </td>
+                      <td style="font-size:16px"> Fast Loss</td>
+                      <td style="font-size:14px">Vegetation cover loss caused by ephemeral events. For example, a fire or harvest that causes rapid vegetation cover change</td>
                     </tr>
                     <tr>
-                      <td>Slow Loss</td>
-                      <td> Vegetation cover loss caused by longer duration events. For example, mountain pine beetle and spectral and structural decline in Rocky Mountain forests. </td>
+                      <td style="font-size:16px"> Slow Loss</td>
+                      <td style="font-size:14px">Vegetation cover loss caused by longer duration events. For example, mountain pine beetle and spectral and structural decline in Rocky Mountain forests</td>
                     </tr>
                     <tr>
-                      <td>Gain</td>
-                      <td> Vegetation cover succession that is growth and recovery. For example, new growth of tree saplings following a fire or harvest.</td>
+                      <td style="font-size:16px">Gain</td>
+                      <td style="font-size:14px">Vegetation cover growth after a loss of vegetation cover. For example, new growth of tree saplings following a fire or harvest</td>
                     </tr>
                   </tbody>
                 </table>
               </td>
-              <td><img width='250px' src="./images/change_annimation_SE_harvest.gif"></td>
+              <td><img width='250px' src="./images/California_Change.gif"></td>
             </tr>
             <tr>
-              <th>Land Cover</th>
-              <td>Land cover classes represent the vegetation or other biophysical attributes of the land surface.  </td>
-              <td><img width='250px' src="./images/land_cover_annimation_Lake_Powell.gif"></td>
+              <th style="font-size:16px"> Land Cover</th>
+                <td>
+                  <table style="font-size:16px"; class="lcms-change-table-columns">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Land Cover Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td style="font-size:14px">	Land cover classes represent the vegetation or other biophysical attributes of the land surface</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style="font-size:14px">There are 12 landcover classes for CONUS, Hawaii, Puerto Rico, and U.S. Virgin Islands</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style="font-size:14px">There are 14 landcover classes for coastal Alaska
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <ul>
+                              <li>Trees</li>
+                              <li>Tall Shrubs-Trees (Alaska only)</li>
+                              <li>Shrubs-Trees</li>
+                              <li>Grass-Trees</li>
+                              <li>Barren-Trees</li>
+                              <li>Tall-Shrub (Alaska only)</li>
+                              <li>Shrubs</li>
+                            </ul>
+                          </div>
+                          <div class="col-sm-6">
+                            <ul>
+                              <li>Grass-Shrubs</li>
+                              <li>Barren-Shrubs</li>
+                              <li>Grass</li>
+                              <li>Barren-Grass</li>
+                              <li>Barren-Impervious</li>
+                              <li>Snow</li>
+                              <li>Water</li>
+                            </ul>
+                          </div>
+                        </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              <td><img width='250px' src="./images/Great_Salt_Lake_Landcover.gif"></td>
             </tr>
             <tr>
-              <th>Land Use</th>
-              <td>Land use classes represent how biophysical attributes are being or could be used by humans.  </td>
-              <td><img width='250px' src="./images/land_use_annimation_Las_Vegas.gif"></td>
+              <th style="font-size:16px"> Land Use</th>
+                <td>
+                  <table style="font-size:16px"; class="lcms-change-table-columns">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Land Use Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td style="font-size:14px">Land use classes represent how biophysical attributes are intended to be used by humans</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style="font-size:14px">There are 6 land use classes for all mapping areas:
+                        <ul>
+                          <li>Agriculture</li>
+                          <li>Developed</li>
+                          <li>Forest</li>
+                          <li>Non-forest Wetland</li>
+                          <li>Other</li>
+                          <li>Rangeland</li>
+                          </ul>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              <td><img width='250px' src="./images/Denver_Land_use_terrain.gif"></td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div id="data-explorer" class="container-fluid bg-solid-black info-page">
-      <div class="row slideanim">
-        <h2 style='margin-left:1em;'>DATA EXPLORER</h2>
-
-        <div id="myCarousel3" class="carousel slide" data-ride="carousel">
-          <!-- Indicators -->
-          <ol class="carousel-indicators">
-            <li data-target="#myCarousel3" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel3" data-slide-to="1"></li>
-          </ol>
-
-          <!-- Wrapper for slides -->
-          <div class="carousel-inner">
-            <div class="item active" style='height:600px;'>
-              <div class="carousel-caption">
-                <a class='teal' href="./index.html" target="_blank">
-                  <h2>Click here to explore LCMS products interactively</h2>
-                  <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
-                </a>
-              </div>
-            </div>
-
-            <div class="item" style='height:600px;'>
-              <div class="carousel-caption">
-                <a class='teal' href="./lcms-base-learner.html" target="_blank">
-                  <h2>Click here to explore LCMS model inputs interactively</h2>
-                  <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
-                </a>
-              </div>
-            </div>
-
+      
+      <div id="data-explorer" class="container-fluid bg-solid-black info-page">
+        <h2 style= margin-left:1rem;'>Explore LCMS Data</h2>
+        <p style='margin-top:2rem!important;margin-left:1rem;font-size:18px'>Several web mapping applications are available to explore, summarize, and produce reports of how our landscape is changing.</p>
+        <div class = 'row' style="margin-left:0.5rem;margin-right:0.5rem;margin-top:2rem">
+          <div class="col-md-4" title = 'The original LCMS Data Explorer. Serves as a great way to become familiar with the LCMS dataset and explore change on our landscape in a highly interactive environment'>
+            <p style = 'font-size: 1.5rem;'>Data Explorer</p>
+            <a class='teal' href="./index.html" target="_blank">
+              <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
+              <p style = 'font-size: 1rem;'>The original LCMS Data Explorer. Serves as a great way to become familiar with the LCMS dataset and explore change on our landscape in a highly interactive environment</p>
+            </a>
           </div>
-
-          <!-- Left and right controls -->
-          <a class="left carousel-control" href="#myCarousel3" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="right carousel-control" href="#myCarousel3" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="sr-only">Next</span>
-          </a>
-
+          <div class="col-md-4">
+            <p style = 'font-size: 1.5rem;'>Data Dashboard</p>
+            <a class='teal' href="./dashboard.html" target="_blank">
+              <img class='img-responsive' src="./images/dashboard-map-example.PNG">
+              <p style = 'font-size: 1rem;'>Use this tool if you want to see summaries of how our landscape is changing and generate reports for an area.</p>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <p style = 'font-size: 1.5rem;'>LCMS in Motion</p>
+            <a class='teal' href="./lcms-in-motion.html" target="_blank">
+              <img class='img-responsive' src="./images/lcms-in-motion-map-example.PNG">
+              <p>See annimations of our changing landscape</p>
+            </a>
+          </div>
         </div>
-
+        <hr>
+        <p style="margin-left:1rem;margin-right:0.5rem;font-size:18px">Additional LCMS data exploration tools</p>
+        <div class='row' style="margin-left:0.5rem;margin-right:0.5rem;margin-top:2rem">
+          
+          <div class="col-md-3">
+            <p style = 'font-size: 1.5rem;'>Base Learner Explorer</p>
+            <a class='teal' href="./lcms-base-learner.html" target="_blank">
+              <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
+              <p>Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
+            </a>
+          </div>
+          <div class="col-md-3">
+            <p style = 'font-size: 1.5rem;'>IDS Explorer</p>
+            <a class='teal' href="./IDS.html" target="_blank">
+              <img class='img-responsive' src="./images/ids-explorer-map-example.PNG">
+              <p>Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
+            </a>
+          </div>
+         
+        </div>
       </div>
-    </div>
+      
+    
+    
+
     <div id="download" class="container-fluid bg-white info-page ">
       <div class="row slideanim">
         <h2 style='margin-left:1em;'>DOWNLOAD</h2>
+          <h3 style='margin-left:2em;font-size: 18px'>Click on the folders to download annual LCMS data</h3>
 
-        <div id='main-container'>>
+
+        <div id='main-container'>
           <ul id="downloadTree" class="pl-0 mb-0" title="Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
-            <li class="pl-0"><span class="caret caret-down">Conterminous United States (v2022.8)</span>
+            <li class="pl-0 col-md-4"><span class="caret caret-down">Conterminous United States (v2022.8)</span>
               <ul class="nested active">
                 <li><span class="caret">Change</span>
                   <ul class="nested">
@@ -431,7 +409,9 @@
                                 </li>
                               </ul>
                             </li>
-                            <li><span class="caret caret-down">Southeastern Alaska (v2022.8)</span>
+
+
+                            <li class='col-md-4'><span class="caret caret-down">Southeastern Alaska (v2022.8)</span>
                               <ul class="nested active">
                                 <li><span class="caret">Change</span>
                                   <ul class="nested">
@@ -479,7 +459,7 @@
                                 </li>
                               </ul>
                             </li>
-                            <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2020.6)</span>
+                            <li class='col-md-4'><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2020.6)</span>
                               <ul class="nested active">
                                 <li><span class="caret">Change</span>
                                   <ul class="nested">
@@ -525,10 +505,11 @@
 
 
       </div>
+      <!-- <div class="row" style>Image Services</div> -->
     </div>
 
     <div id="background" class="container-fluid bg-white info-page">
-      <h2 style='margin-left:0.5em;'>BACKGROUND</h2>
+      <h2 style='margin-left:0.5em;'>ABOUT</h2>
       <div class="col-sm-12 col-lg-6">
         <h4>Knowing where, when, and what factors create change across landscapes is critical to making sound land
           management decisions. To support land managers and scientists with this need, an interagency effort between
@@ -551,26 +532,26 @@
         </h4>
         <h3>Literature</h3>
         <li>
-          <ul>
+          <ul style='margin-left:-2.6em'>
             <a href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' target='_blank'>Healey et al 2018</a>
           </ul>
-          <ul>
+          <ul style='margin-left:-2.6em'>
             <a href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' target='_blank'>Cohen et al 2017</a>
           </ul>
-          <ul>
+          <ul style='margin-left:-2.6em'>
             <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target='_blank'>Cohen et al 2018</a>
           </ul>
         </li>
       </div>
       <div class='col-sm-12 col-lg-6 '>
-        <img src="./images/change_annimation_San_Juans.gif" class='img-responsive'></img>
+        <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
         <hr>
       </div>
     </div>
 
-    <div id="contact" class="container-fluid bg-solid-black">
+    <div id="contact" class="container-fluid bg-solid-black" >
       <h2 style='margin-left:0.5em;'>CONTACT</h2>
-      <div class="row">
+      
         <div style='margin-left:1em;' class="col-sm-12">
 
           <p>Geospatial Technology and Applications Center (GTAC)</p>
@@ -579,27 +560,29 @@
           <a href="mailto: sm.fs.lcms@usda.gov">Contact Us</a>
 
           <a href="https://earthengine.google.com/" target="_blank">
-            <img src="images/GEE.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#"
-              title="Click to learn more about Google Earth Engine">
+            <img src="images/GEE_logo_transparent.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#"
+              title="Google Earth Engine (GEE) was used as the primary data acquisition and compute platform for LCMS. Click to learn more about GEE">
           </a>
           <a href="https://www.redcastleresources.com/" target="_blank">
             <img src="images/RCR-logo.jpg" class='home-image-icon-bar' alt="RedCastle Inc. Logo" href="#"
-              title="Click to learn more about RedCastle Resources Inc.">
+              title="RedCastle Resources Inc is the on-site contractor responsible for the technical implementation of LCMS. Click to learn more about RedCastle Resources Inc.">
           </a>
-          <a href="https://www.fs.fed.us/gstc/" target="_blank">
+          <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
             <img src="images/GTAC_Logo.png" class='home-image-icon-bar' alt="GTAC Logo" href="#"
-              title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+              title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
           </a>
-
-          <a href="http://www.fs.fed.us//" target="_blank">
-            <img src="images/usfslogo.png" class='home-image-icon-bar' href="#"
+          
+          <a href="https://www.fs.usda.gov" target="_blank">
+            <img src="./images/logos_usda-fs.svg" class='home-image-icon-bar' href="#"
               title="Click to learn more about the US Forest Service">
           </a>
 
         </div>
-      </div>
+      
     </div>
   </div>
+
+
   
 </body>
 
