@@ -54,12 +54,12 @@
             <li title='How can LCMS data be used?'><a class='teal-hover' id='applications-nav'
                 href="#applications">APPLICATIONS</a></li>
             <li title='What are LCMS map outputs?'><a class='teal-hover' id='applications-nav'
-                href="#products">PRODUCTS</a></li>
+                href="#products">DATA DESCRIPTIONS</a></li>
 
             <li title='How to visualize and explor LCMS data'><a class='teal-hover' id='map-nav'
-                href="#data-explorer">DATA EXPLORERS</a></li>
+                href="#data-explorer">EXPLORERS</a></li>
             <li title='Download LCMS products for your analyses'><a class='teal-hover' id='download-nav'
-                href="#download">DATA DOWNLOAD</a></li>
+                href="#download">DOWNLOAD</a></li>
             <li title='Why is LCMS needed?'><a class='teal-hover' id='about-nav' href="#background">ABOUT</a></li>
             <li title='Contact us with any questions'><a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
             </li>
@@ -75,19 +75,21 @@
     
     
     <div id="intro" class="container-fluid bg-solid-black" style = 'margin-top:5rem;'> 
-      <h2 style="font-weight:1000;font-family: 'Roboto Black', sans-serif; margin-left:10px" class="teal80">LCMS</h2>
+      <!-- <h2 style="font-weight:1000;font-family: 'Roboto Black', sans-serif; margin-left:10px" class="teal80">LCMS</h2> -->
       <div class="row">
         
         <div class = 'col-sm-4'>
-          <ul  style="text-align: left;font-size:1.8rem;margin-top:4rem;">
-            <p  style = "margin-bottom:2rem!important;"><b>What:</b> Annual vegetation cover change, land cover, and land use data </p>
-            <p  style = "margin-bottom:2rem!important;"><b>When:</b> 1985 to present</p>
-            <p  style = "margin-bottom:2rem!important;"><b>Where:</b> Across conterminous U.S., SE Alaska, Puerto Rico, U.S. Virgin Islands, Hawaii</p>
+          <ul  style="text-align: left;font-size:1.8rem;margin-top:6rem;">
+            <p  style = "margin-bottom:2rem!important;"> <i>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i></p>
+            <p  style = "margin-bottom:2rem!important;"><b>What:</b> Annual data layers for vegetation cover Change, Land Cover, and Land Use </p>
+            <p  style = "margin-bottom:2rem!important;"><b>When:</b> 1985 to 2022</p>
+            <p  style = "margin-bottom:2rem!important;"><b>Where:</b> Conterminous U.S., Southeastern Alaska, Puerto Rico, U.S. Virgin Islands, and Hawaii*</p>
+            <p style = "margin-bottom:2rem!important;font-size:14px"> <i> *Coming summer 2023 </i></p>
           </ul>
         </div>
         <div class="col-sm-8">
           
-          <img style= 'width:100%' src="./images/CONUS_Change_loss.png"/>
+          <img style= 'width:100%; margin-top:6rem;' src="./images/CONUS_Change_loss.png"/>
         </div>
       </div>
       
@@ -98,7 +100,8 @@
         <h2 style='margin-left:0.5em;'>APPLICATIONS</h2>
         
       <div class="row"  > 
-        <h3 style="margin-bottom:2rem!important;margin-left:2rem">Monitor annual land cover changes</h3>
+        <h3 style="margin-bottom:2rem!important;margin-left:2rem">Monitor annual Land Cover changes</h3>
+        <p style="margin-bottom:2rem!important;margin-left:2rem">The surface components of the land that are present and visible.</p>
         <div class="col-md-5">
           <img style= 'width:100%' src="./images/CONUS_All_LandCover.PNG"/>
         </div>
@@ -115,6 +118,7 @@
           <img style= 'width:75%;display:none;' src="./images/wildfire_photo.jpg"/>
           
           <ul style="text-align: left;font-size:1.2rem;">
+            <p style="font-size:20px">LCMS Land Cover data example uses: </p>
             <li class="liClass">Where were trees and are they still there?</li>
             <li class="liClass">Where was there water and is it still there?</li>
             <li class="liClass">Where was there snow or ice and is it still there?</li>
@@ -136,13 +140,15 @@
       </div>
       <hr>
       <div class="row" >
-        <h3 style="margin-top:0em;margin-left:2rem">Monitor annual land use changes</h3>
+        <h3 style="margin-top:0em;margin-left:2rem">Monitor annual Land Use changes</h3>
+        <p style="margin-bottom:2rem!important;margin-left:2rem">The intended human use of land. Represents economic and cultural activities that are practiced at a given place.</p>
         <div class="col-md-5">
           <img style= 'width:100%' src="./images/CONUS_All_LandUse.PNG"/>
         </div>
         <div class = 'col-md-7'>
          
           <ul style="text-align: left;font-size:1.2rem;">
+            <p style="font-size:20px">LCMS Land Cover data example uses: </p>
             <li class="liClass"> When and where forested land use is changing</li>
                   <li class="liClass"> When and where non-forested land use is changing</li>
                   <li class="liClass"> When and where development land use is changing</li>
@@ -171,12 +177,12 @@
     <div id="products" class="container-fluid bg-white info-page">
 
       <div style='margin:1em;' class="row slideanim ">
-        <h2>PRODUCTS</h2>
+        <h2>DATA DESCRIPTIONS</h2>
        
         <table class="table bg-gray">
           <thead class='teal80 '>
             <tr>
-              <th style="font-size:16px"; scope="col">Product Name</th>
+              <th style="font-size:16px"; scope="col">Name</th>
               <th style="font-size:16px"; scope="col">Description</th>
               <th style="font-size:16px"; scope="col">Example</th>
             </tr>
@@ -227,11 +233,7 @@
                       </tr>
                       <tr>
                         <td></td>
-                        <td style="font-size:14px">There are 12 landcover classes for CONUS, Hawaii, Puerto Rico, and U.S. Virgin Islands</td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td style="font-size:14px">There are 14 landcover classes for coastal Alaska
+                        <td style="font-size:14px">There are 14 landcover classes 
                         <div class="row">
                           <div class="col-sm-6">
                             <ul>
@@ -304,27 +306,27 @@
       
       <div id="data-explorer" class="container-fluid bg-solid-black info-page">
         <h2 style= margin-left:1rem;'>Explore LCMS Data</h2>
-        <p style='margin-top:2rem!important;margin-left:1rem;font-size:18px'>Several web mapping applications are available to explore, summarize, and produce reports of how our landscape is changing.</p>
+        <p style='margin-top:2rem!important;margin-left:1rem;font-size:20px'>Several web mapping applications are available to explore, summarize, and produce reports of how our landscape is changing.</p>
         <div class = 'row' style="margin-left:0.5rem;margin-right:0.5rem;margin-top:2rem">
-          <div class="col-md-4" title = 'The original LCMS Data Explorer. Serves as a great way to become familiar with the LCMS dataset and explore change on our landscape in a highly interactive environment'>
-            <p style = 'font-size: 1.5rem;'>Data Explorer</p>
+          <div class="col-md-4" title = 'Click to open LCMS Data Explorer'>
+            <p style = 'font-size: 1.75rem;'>Data Explorer</p>
             <a class='teal' href="./index.html" target="_blank">
               <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
-              <p style = 'font-size: 1rem;'>The original LCMS Data Explorer. Serves as a great way to become familiar with the LCMS dataset and explore change on our landscape in a highly interactive environment</p>
+              <p style = 'font-size: 1rem;'>Become familiar with LCMS data and explore landscape changes in a highly interactive environment</p>
             </a>
           </div>
           <div class="col-md-4">
-            <p style = 'font-size: 1.5rem;'>Data Dashboard</p>
+            <p style = 'font-size: 1.75rem;'>Data Dashboard</p>
             <a class='teal' href="./dashboard.html" target="_blank">
               <img class='img-responsive' src="./images/dashboard-map-example.PNG">
-              <p style = 'font-size: 1rem;'>Use this tool if you want to see summaries of how our landscape is changing and generate reports for an area.</p>
+              <p style = 'font-size: 1rem;'>See summaries of how landscapes are changing and generate reports</p>
             </a>
           </div>
           <div class="col-md-4">
-            <p style = 'font-size: 1.5rem;'>LCMS in Motion</p>
+            <p style = 'font-size: 1.75rem;'>LCMS in Motion</p>
             <a class='teal' href="./lcms-in-motion.html" target="_blank">
               <img class='img-responsive' src="./images/lcms-in-motion-map-example.PNG">
-              <p>See annimations of our changing landscape</p>
+              <p>Discover our changing landscape through animation</p>
             </a>
           </div>
         </div>
@@ -333,14 +335,14 @@
         <div class='row' style="margin-left:0.5rem;margin-right:0.5rem;margin-top:2rem">
           
           <div class="col-md-3">
-            <p style = 'font-size: 1.5rem;'>Base Learner Explorer</p>
+            <p style = 'font-size: 1.75rem;'>Base Learner Explorer</p>
             <a class='teal' href="./lcms-base-learner.html" target="_blank">
               <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
               <p>Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
             </a>
           </div>
           <div class="col-md-3">
-            <p style = 'font-size: 1.5rem;'>IDS Explorer</p>
+            <p style = 'font-size: 1.75rem;'>Insects and Disease Explorer</p>
             <a class='teal' href="./IDS.html" target="_blank">
               <img class='img-responsive' src="./images/ids-explorer-map-example.PNG">
               <p>Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
@@ -543,7 +545,7 @@
           </ul>
         </li>
       </div>
-      <div class='col-sm-12 col-lg-6 '>
+      <div class='col-sm-12 col-lg-6'>
         <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
         <hr>
       </div>
