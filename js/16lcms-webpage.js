@@ -1,6 +1,5 @@
 
 $(document).ready(function () {
-  console.log("Hello World!");
   function addModal(containerID,modalID,bodyOnly){
       if(bodyOnly === null || bodyOnly === undefined){
           bodyOnly = false};
