@@ -3333,37 +3333,51 @@ function runTreeMap(){
   palettes.crameri.lajolla[10].reverse();
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
-  // of the attribute table that is brough in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
-  var thematicAttrs = [['FLDTYPCD','FldTypName','Field Forest Type Name'], ['FORTYPCD','ForTypName','Algorithm Forest Type Name']];
+  // of the attribute table that is brought in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
+  var thematicAttrs = [
+                       ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
+                       ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
+                      ];
 
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
+  // Attributes appear in legend in reverse order from how they appear here
   var continuousAttrs = [
-                          // unique values - separate these out later
-                          ['STDSZCD',palettes.colorbrewer.Purples[5],0,1,'Algorithm Stand Size Code'],
-                          ['FLDSZCD',palettes.colorbrewer.Purples[5],0,1,'Field Stand Size Code'],
-                          // live tree variables
-                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
-                          ['CANOPYPCT',palettes.crameri.bamako[50],0.05,0.95,'Live Canopy Cover %'],
-                          ['STANDHT',palettes.crameri.bamako[50],0.05,0.95,'Height of Dominant Trees (feet)'],
-                          ['ALSTK',palettes.crameri.bamako[50],0.05,0.95,'All Live Tree Stocking %'],
-                          ['GSSTK',palettes.crameri.bamako[50],0.05,0.95,'Growing-stock stocking %'],
+                          
+                          
                           // stand density
                           ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'Stand Quadratic Mean Diameter'],
                           ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'Stand Density Index'],
+                          
                           // trees per acre
-                          ['TPA_LIVE',palettes.colorbrewer.Greens[9],0.05,0.95,'Live Trees Per Acre'],
                           ['TPA_DEAD',palettes.colorbrewer.Greens[9],0.05,0.95,'Dead Trees Per Acre'],
+                          ['TPA_LIVE',palettes.colorbrewer.Greens[9],0.05,0.95,'Live Trees Per Acre'],
+
                           // volume
-                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume (ft^3/acre)'],
-                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
                           ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
+                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
+                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume (ft^3/acre)'],
+                          
                           // dry biomass
-                          ['DRYBIO_L',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Live Tree Above Ground Biomass (tons/acre)'],
                           ['DRYBIO_D',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Standing Dead Tree Above Ground Biomass (tons/acre)'],
+                          ['DRYBIO_L',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Live Tree Above Ground Biomass (tons/acre)'],
+                          
                           // carbon
-                          ['CARBON_L',palettes.crameri.lajolla[10],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
                           ['CARBON_D',palettes.crameri.lajolla[10],0.05,0.95,'Standing Dead Carbon (tons/acre)'],
                           ['CARBON_DWN',palettes.crameri.lajolla[10],0.05,0.95,'Carbon Down (tons/acre)'],
+                          ['CARBON_L',palettes.crameri.lajolla[10],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
+                          
+                          // live tree variables
+                          
+                          ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'Height of Dominant Trees (feet)'],
+                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
+                          ['GSSTK',palettes.crameri.bamako[50],0.05,0.95,'Growing-stock stocking %'],
+                          ['ALSTK',palettes.crameri.bamako[50],0.00,0.95,'All Live Tree Stocking %'],
+                          ['CANOPYPCT',palettes.crameri.bamako[50],0.05,0.95,'Live Canopy Cover %'],
+
+
+                          // unique values - how to label as unique values, and not as continuous?
+                          ['STDSZCD',palettes.colorbrewer.Set1[5],0,1,'Algorithm Stand Size Code'],
+                          ['FLDSZCD',palettes.colorbrewer.Set1[5],0,1,'Field Stand Size Code'],
 
                           
                         ];
@@ -3439,10 +3453,12 @@ function runTreeMap(){
     viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
     Map2.addLayer(attrImg,viz,attr[4],false);
   }
-  // Iterate across each thematic attribute and bring it into the map
-  thematicAttrs.map(getThematicAttr);
+  
   // Add each continuous attribute to the map
   continuousAttrs.map(getContinuousAttr);
+  
+  // Iterate across each thematic attribute and bring it into the map
+  thematicAttrs.map(getThematicAttr);
 
   // Function to convert json TreeMap lookup to a query-friendly format
   // Makes a dictionary for each CN that has an html table of all attributes
