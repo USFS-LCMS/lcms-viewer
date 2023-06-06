@@ -86,7 +86,7 @@ function populateLCMSDownloads(){
     });
   }
 }
-populateLCMSDownloads();
+
 
 function downloadByUrl(url){
   console.log('downloading');
@@ -129,6 +129,7 @@ function downloadSelectedAreas(id){
 }
 
 $(document).ready(function() {
+  populateLCMSDownloads();
   // Add smooth scrolling to all links in navbar + footer link
   // $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
   //   // Make sure this.hash has a value before overriding default behavior
