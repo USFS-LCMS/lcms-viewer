@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  
+   
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/style-lcmshomepage.css">
   <link href="https://fonts.googleapis.com/css?family=Raleway:200,100,400" rel="stylesheet" type="text/css" />
-  
-  <script src="./js/16lcms-webpage.js"></script>
+  <script type="text/javascript" src="./js/16lcms-webpage.js"></script>
 
 </head>
 
@@ -70,26 +69,23 @@
 
     </nav>
 
-    
-    
-    
-    
+
     <div id="intro" class="container-fluid bg-solid-black" style = 'margin-top:5rem;'> 
       <!-- <h2 style="font-weight:1000;font-family: 'Roboto Black', sans-serif; margin-left:10px" class="teal80">LCMS</h2> -->
       <div class="row">
         
         <div class = 'col-sm-4'>
           <ul  style="text-align: left;font-size:1.8rem;margin-top:6rem;">
-            <p  style = "margin-bottom:2rem!important;"> <i>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i></p>
-            <p  style = "margin-bottom:2rem!important;"><b>What:</b> Annual data layers for vegetation cover Change, Land Cover, and Land Use </p>
-            <p  style = "margin-bottom:2rem!important;"><b>When:</b> 1985 to 2022</p>
-            <p  style = "margin-bottom:2rem!important;"><b>Where:</b> Conterminous U.S., Southeastern Alaska, Puerto Rico, U.S. Virgin Islands, and Hawaii*</p>
-            <p style = "margin-bottom:2rem!important;font-size:14px"> <i> *Coming summer 2023 </i></p>
+            <p  style = "color:#D6D1CA;margin-bottom:2rem!important;"> <i>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i></p>
+            <p  style = "color:#D6D1CA;margin-bottom:2rem!important;"><b>What:</b> Annual data layers for vegetation cover Change, Land Cover, and Land Use </p>
+            <p  style = "color:#D6D1CA;margin-bottom:2rem!important;"><b>When:</b> 1985 to 2022</p>
+            <p  style = "color:#D6D1CA;margin-bottom:2rem!important;"><b>Where:</b> Conterminous U.S., Southeastern Alaska, Puerto Rico, U.S. Virgin Islands, and Hawaii*</p>
+            <p style = "color:#D6D1CA;margin-bottom:2rem!important;font-size:14px"> <i> *Coming summer 2023 </i></p>
           </ul>
         </div>
         <div class="col-sm-8">
           
-          <img style= 'width:100%; margin-top:6rem;' src="./images/CONUS_Change_loss.png"/>
+          <img style= 'width:100%; margin-top:6rem;' src="./images/CONUS_Change_Loss.png"/>
         </div>
       </div>
       
@@ -97,83 +93,118 @@
     <div id="applications" class="container-fluid bg-solid-black" style = 'margin-top:5rem;'>
       
       
-        <h2 style='margin-left:0.5em;'>APPLICATIONS</h2>
-        
-      <div class="row"  > 
-        <h3 style="margin-bottom:2rem!important;margin-left:2rem">Monitor annual Land Cover changes</h3>
-        <p style="margin-bottom:2rem!important;margin-left:2rem">The surface components of the land that are present and visible.</p>
+      <h2 style='color:#D6D1CA;margin-left:0.5em;'>APPLICATIONS</h2>
+
+      <div class="row"> 
+        <div class="col-md-4">
+          <h3 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:2rem;font-size:20px">Monitor annual Change</h3>
+          <p style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:2rem;font-size:14px">The surface components of the land that are present and visible.</p>
+        </div>
+        <div class = 'col-md-4'>
+          <!-- <ul style="text-align: left;margin-left:5rem;font-size:12px;"> -->
+            <h2 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:8rem;font-size:20px">LCMS Change possible applications</h2>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest loss caused by insect and disease</p>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest loss caused by wildfire</p>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest growth after natural disturbance</p>
+          <!-- </ul> -->
+        </div>
+        <div class="col-md-4">
+          <!-- <ul style="text-align: left;font-size:12px;"> -->
+            <h2 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:0rem;font-size:20px">LCMS Land Cover possible applications</h2>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Vegetation change </p>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Glacial retreat</p>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Water level changes in reservoirs and lakes</p>
+          <!-- </ul> -->
+        </div>
+      </div>
+      <div class = 'row'>
         <div class="col-md-5">
           <img style= 'width:100%' src="./images/CONUS_All_LandCover.PNG"/>
         </div>
-        <div class = 'col-md-7'>
-          <p style='font-size:1.5rem;display: none;'> LCMS is a useful tool for monitoring landscape changes caused by natural disturbance regimes and human activies</p>
-          <ul style="display:none;" >
-            <li class="liClass"> When and where change occurs</li>
-            <li class="liClass"> Vegetation change - tree mortality</li>
-            <li class="liClass"> Urban vegetated and non-vegetated change - urban expansion</li>
-            <li class="liClass"> Water body change - reservoir water loss</li>
-            <li class="liClass"> Cryosphere change - glacial retreat </li>
-            <li class="liClass"> Change attribution - wildfire, harvest, hurricane, insect and disease </li>
-          </ul>
-          <img style= 'width:75%;display:none;' src="./images/wildfire_photo.jpg"/>
-          
-          <ul style="text-align: left;font-size:1.2rem;">
-            <p style="font-size:20px">LCMS Land Cover data example uses: </p>
-            <li class="liClass">Where were trees and are they still there?</li>
-            <li class="liClass">Where was there water and is it still there?</li>
-            <li class="liClass">Where was there snow or ice and is it still there?</li>
-          </ul>
-         
-         
-          <div class = 'row'>
-            <div class="col-md-6">
-              <img style= 'width:100%;' src="./images/Colorado_Change.gif">
-              <p>Changes from insects, disease, and wildfire, CO</p>
-            </div>
-            
-            <div class="col-md-6">
-              <img style= 'width:100%;' src="./images/Chugach_Glacier_Landcover.gif">
-              <p>Change in extent of snow/ice in the Columbia Glacier, AK </p>
-            </div>
-          </div>
+        <div class="col-md-3">
+          <img style= 'width:100%;' src="./images/Colorado_Change.gif">
+          <p style='color:#D6D1CA;'>Changes from insects, disease, and wildfire, CO</p>
+        </div>
+        <div class="col-md-3">
+            <img style= 'width:96.75%;' src="./images/Chugach_Glacier_Landcover.gif">
+            <p style='color:#D6D1CA;'>Change in extent of snow/ice in the Columbia Glacier, AK </p>
+        </div>
+      </div>
+      <hr>
+        
+      <div class="row"> 
+        <div class="col-md-4">
+          <h3 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:2rem;font-size:20px">Monitor annual Land Cover changes</h3>
+          <p style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:2rem;font-size:14px">The surface components of the land that are present and visible.</p>
+        </div>
+        <div class = 'col-md-4'>
+          <!-- <ul style="text-align: left;margin-left:5rem;font-size:12px;"> -->
+            <h2 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:8rem;font-size:20px">LCMS Change possible applications</h2>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest loss caused by insect and disease</p>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest loss caused by wildfire</p>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest growth after natural disturbance</p>
+          <!-- </ul> -->
+        </div>
+        <div class="col-md-4">
+          <!-- <ul style="text-align: left;font-size:12px;"> -->
+            <h2 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:0rem;font-size:20px">LCMS Land Cover possible applications</h2>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Vegetation change </p>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Glacial retreat</p>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Water level changes in reservoirs and lakes</p>
+          <!-- </ul> -->
+        </div>
+      </div>
+      <div class = 'row'>
+        <div class="col-md-5">
+          <img style= 'width:100%' src="./images/CONUS_All_LandCover.PNG"/>
+        </div>
+        <div class="col-md-3">
+          <img style= 'width:100%;' src="./images/Colorado_Change.gif">
+          <p style='color:#D6D1CA;'>Changes from insects, disease, and wildfire, CO</p>
+        </div>
+        <div class="col-md-3">
+            <img style= 'width:96.75%;' src="./images/Chugach_Glacier_Landcover.gif">
+            <p style='color:#D6D1CA;'>Change in extent of snow/ice in the Columbia Glacier, AK </p>
         </div>
       </div>
       <hr>
       <div class="row" >
-        <h3 style="margin-top:0em;margin-left:2rem">Monitor annual Land Use changes</h3>
-        <p style="margin-bottom:2rem!important;margin-left:2rem">The intended human use of land. Represents economic and cultural activities that are practiced at a given place.</p>
-        <div class="col-md-5">
-          <img style= 'width:100%' src="./images/CONUS_All_LandUse.PNG"/>
+        <div class="col-md-4">
+          <h3 style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:2rem;font-size:20px">Monitor annual Land Use changes</h3>
+          <p style="color:#D6D1CA;margin-bottom:2rem!important;margin-left:2rem; font-size:14px">The intended human use of land. Represents economic and cultural activities that are practiced at a given place.</p>
         </div>
-        <div class = 'col-md-7'>
-         
-          <ul style="text-align: left;font-size:1.2rem;">
-            <p style="font-size:20px">LCMS Land Cover data example uses: </p>
-            <li class="liClass"> When and where forested land use is changing</li>
-                  <li class="liClass"> When and where non-forested land use is changing</li>
-                  <li class="liClass"> When and where development land use is changing</li>
-                  <li class="liClass"> When and where rangeland and other land use is changing</li>
-          </ul>
+        <div class = 'col-md-4'>
+          <!-- <ul style="text-align: left;margin-left:5rem;font-size:1rem;"> -->
+            <h2 style="color:#D6D1CA;margin-bottom:2rem!;margin-left:8rem;font-size:20px">LCMS Change possible applications</h2>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest loss caused by timber harvest</p>
+            <p style="color:#D6D1CA;margin-left:8rem;font-size:14px">Forest growth following harvest</p>
+            <!-- <p style="margin-left:8rem;font-size:12px"></p> -->
+          <!-- </ul> -->
+        </div>
+        <div class = 'col-md-4'>
+          <!-- <ul style="text-align: left;margin-left:0rem;font-size:1em;"> -->
+            <h2 style="color:#D6D1CA;margin-bottom:2rem!;margin-left:0rem;font-size:20px">LCMS Land Use possible applications</h2>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Urban development and growth</p>
+            <p style="color:#D6D1CA;margin-left:0rem;font-size:14px">Land use conversion. For example, from Forest to Agriculture</p>
+            <!-- <p style="margin-left:0rem;font-size:12px"></p> -->
+          <!-- </ul> -->
+        </div>
+        </div>
           <div class = 'row'>
-            <div class="col-md-6">
+            <div class="col-md-5">
+              <img style= 'width:100%' src="./images/CONUS_All_LandUse.PNG"/>
+            </div>
+            <div class="col-md-3">
               <img style= 'width:100%;' src="./images/Oregon_Change.gif">
-              <p>Fire and harvest change over a forest land use area of the Willamette National Forest</p>
+              <p style='color:#D6D1CA;'>Fire and harvest change over a forest land use area of the Willamette National Forest</p>
             </div>
-            <div class="col-md-6">
-              <img style= 'width:100%;' src="./images/Las_Vegas_Landuse.gif">
-              <p>Urban development of Las Vegas, NV</p>
+            <div class="col-md-3">
+              <img style= 'width:99.5%;' src="./images/Las_Vegas_Landuse.gif">
+              <p style='color:#D6D1CA;'>Urban development of Las Vegas, NV</p>
             </div>
-            
-            
           </div>
-          
         </div>
-      </div>
-        
-
-     
-    </div>
-
+      </div>     
     <div id="products" class="container-fluid bg-white info-page">
 
       <div style='margin:1em;' class="row slideanim ">
@@ -191,24 +222,24 @@
             <tr>
               <th style="font-size:16px"> Change</th>
               <td>
-                <table style="font-size:16px"; class="lcms-change-table-columns">
+                <table style="font-size:16px"; class="lcms-table-columns">
                   <thead>
                     <tr>
-                      <th scope="col">Change Class</th>
-                      <th scope="col">Change Class Description</th>
+                      <!-- <th scope="col">Change Class</th> -->
+                      <!-- <th scope="col">Change Class Description</th> -->
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td style="font-size:16px"> Fast Loss</td>
+                      <td style="font-size:14px"> Fast Loss</td>
                       <td style="font-size:14px">Vegetation cover loss caused by ephemeral events. For example, a fire or harvest that causes rapid vegetation cover change</td>
                     </tr>
                     <tr>
-                      <td style="font-size:16px"> Slow Loss</td>
+                      <td style="font-size:14px"> Slow Loss</td>
                       <td style="font-size:14px">Vegetation cover loss caused by longer duration events. For example, mountain pine beetle and spectral and structural decline in Rocky Mountain forests</td>
                     </tr>
                     <tr>
-                      <td style="font-size:16px">Gain</td>
+                      <td style="font-size:14px">Gain</td>
                       <td style="font-size:14px">Vegetation cover growth after a loss of vegetation cover. For example, new growth of tree saplings following a fire or harvest</td>
                     </tr>
                   </tbody>
@@ -219,11 +250,11 @@
             <tr>
               <th style="font-size:16px"> Land Cover</th>
                 <td>
-                  <table style="font-size:16px"; class="lcms-change-table-columns">
+                  <table style="font-size:16px"; class="lcms-table-columns">
                     <thead>
                       <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Land Cover Description</th>
+                        <!-- <th scope="col"></th> -->
+                        <!-- <th scope="col">Land Cover Description</th> -->
                       </tr>
                     </thead>
                     <tbody>
@@ -268,11 +299,11 @@
             <tr>
               <th style="font-size:16px"> Land Use</th>
                 <td>
-                  <table style="font-size:16px"; class="lcms-change-table-columns">
+                  <table style="font-size:16px"; class="lcms-table-columns">
                     <thead>
                       <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Land Use Description</th>
+                        <!-- <th scope="col"></th> -->
+                        <!-- <th scope="col">Land Use Description</th> -->
                       </tr>
                     </thead>
                     <tbody>
@@ -310,23 +341,23 @@
         <div class = 'row' style="margin-left:0.5rem;margin-right:0.5rem;margin-top:2rem">
           <div class="col-md-4" title = 'Click to open LCMS Data Explorer'>
             <p style = 'font-size: 1.75rem;'>Data Explorer</p>
-            <a class='teal' href="./index.html" target="_blank">
+            <a href="./index.html" target="_blank">
               <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
-              <p style = 'font-size: 1rem;'>Become familiar with LCMS data and explore landscape changes in a highly interactive environment</p>
+              <p style = 'color:#D6D1CA;font-size: 16px;'>Become familiar with LCMS data and explore landscape changes in a highly interactive environment</p>
             </a>
           </div>
           <div class="col-md-4">
             <p style = 'font-size: 1.75rem;'>Data Dashboard</p>
-            <a class='teal' href="./dashboard.html" target="_blank">
+            <a href="./dashboard.html" target="_blank">
               <img class='img-responsive' src="./images/dashboard-map-example.PNG">
-              <p style = 'font-size: 1rem;'>See summaries of how landscapes are changing and generate reports</p>
+              <p style = 'color:#D6D1CA;font-size: 16px;'>See summaries of how landscapes are changing and generate reports</p>
             </a>
           </div>
           <div class="col-md-4">
             <p style = 'font-size: 1.75rem;'>LCMS in Motion</p>
             <a class='teal' href="./lcms-in-motion.html" target="_blank">
               <img class='img-responsive' src="./images/lcms-in-motion-map-example.PNG">
-              <p>Discover our changing landscape through animation</p>
+              <p style = 'color:#D6D1CA;font-size: 16px;'>Discover our changing landscape through animation</p>
             </a>
           </div>
         </div>
@@ -338,14 +369,14 @@
             <p style = 'font-size: 1.75rem;'>Base Learner Explorer</p>
             <a class='teal' href="./lcms-base-learner.html" target="_blank">
               <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
-              <p>Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
+              <p style = 'color:#D6D1CA;font-size: 16px;'>Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
             </a>
           </div>
           <div class="col-md-3">
             <p style = 'font-size: 1.75rem;'>Insects and Disease Explorer</p>
             <a class='teal' href="./IDS.html" target="_blank">
               <img class='img-responsive' src="./images/ids-explorer-map-example.PNG">
-              <p>Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
+              <p style = 'color:#D6D1CA;font-size: 16px;'>Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
             </a>
           </div>
          
@@ -358,7 +389,7 @@
     <div id="download" class="container-fluid bg-white info-page ">
       <div class="row slideanim">
         <h2 style='margin-left:1em;'>DOWNLOAD</h2>
-          <h3 style='margin-left:2em;font-size: 18px'>Click on the folders to download annual LCMS data</h3>
+          <h3 style='margin-left:2em;font-size: 20px'>Click on the folders to download annual LCMS data</h3>
 
 
         <div id='main-container'>
@@ -583,9 +614,5 @@
       
     </div>
   </div>
-
-
-  
 </body>
-
 </html>
