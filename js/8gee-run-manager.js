@@ -3492,3 +3492,71 @@ function runTreeMap(){
   queryWindowMode = 'sidePane';
   $('#query-label').click();
 }
+function runSequoia(){
+  loadJS("./js/getImagesLib.js", true,()=>{
+    var gil = exports;
+
+    var preStartYear =parseInt(urlParams.preStartYear),
+    preEndYear=parseInt(urlParams.preEndYear),
+    postStartYear=parseInt(urlParams.postStartYear),
+    postEndYear=parseInt(urlParams.postEndYear),
+    startJulian=parseInt(urlParams.startJulian),
+    endJulian =parseInt(urlParams.endJulian);
+
+    startJulianFormatted = ee.Date.parse('DDD',startJulian.toString()).format('MM/dd').getInfo()
+    endJulianFormatted = ee.Date.parse('DDD',endJulian.toString()).format('MM/dd').getInfo()
+    var monitoring_sites = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest');
+    
+    var tchC = ee.ImageCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH')  
+        .filter(ee.Filter.stringContains('system:index','v3shadows_extract_gfch'))
+    
+    
+    var projection = tchC.first().projection().getInfo()
+    var crs = projection.crs;
+    var transform = projection.transform;
+
+    var studyArea = monitoring_sites.geometry().bounds(500,crs)
+    
+
+    var s2s = gil.getProcessedSentinel2Scenes({studyArea:studyArea,
+      startYear:preStartYear-1,
+      endYear:postEndYear+1,
+      startJulian:startJulian,endJulian:endJulian,
+      convertToDailyMosaics : false});
+      
+    var preS2s = s2s.filter(ee.Filter.calendarRange(preStartYear,preEndYear,'year'));
+    var postS2s = s2s.filter(ee.Filter.calendarRange(postEndYear,postEndYear,'year'));
+
+    var preComp = preS2s.median();
+    var postComp = postS2s.median();
+
+    var compDiff = postComp.subtract(preComp);
+    
+    changeHeuristic = compDiff.select(['greenness']).lt(-0.05)
+                .and(compDiff.select(['wetness']).lt(-0.02))
+                .and(compDiff.select(['NBR']).lt(-0.2)).rename(['Change_Heuristic'])
+    
+    compDiff.addBands(changeHeuristic).reduceRegions(
+      monitoring_sites,
+      ee.Reducer.first(), 
+      null, 
+      crs,
+      transform, 
+     4).evaluate(t=>{
+      console.log('Finished summarizing monitoring sites')
+      showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
+     })
+    Map2.addLayer(preComp,gil.vizParamsFalse,`Pre Composite Yrs ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
+    Map2.addLayer(postComp,gil.vizParamsFalse,`Post Composite Yrs ${postStartYear}-${postEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
+    
+    Map2.addLayer(compDiff.select(['brightness','greenness','wetness']),{min:-0.05,max:0.05},'Diff Tasseled Cap',false)
+
+    Map2.addLayer(changeHeuristic.selfMask(),{palette:'E20',classLegendDict:{'Loss':'E20'}},`Loss ${preStartYear}-${preEndYear}to ${postStartYear}-${postEndYear}`);
+
+    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(10).bounds(10,crs)}),{'strokeColor':'FF0'},'Monitoring Sites')
+       
+    Map2.addLayer(studyArea,{},'Study Area');
+  });
+  
+  
+}
