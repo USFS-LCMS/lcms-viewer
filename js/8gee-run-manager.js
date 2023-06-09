@@ -3492,7 +3492,21 @@ function runTreeMap(){
   queryWindowMode = 'sidePane';
   $('#query-label').click();
 }
+var seq_mon_query_clicked=false;
+var site_highlights_dict = {};
 function runSequoia(){
+  TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
+  $('#table-collapse-div').empty();
+  $('#table-collapse-div').append(`<div id="sequoia-mon-loading-div" style="">
+  <p>
+    <img style="width:2rem;" class="image-icon fa-spin mr-1" alt="Google Earth Engine logo spinner" src="images/GEE_logo_transparent.png">
+    Summarizing Giant Sequoia Monitoring Sites
+   </p>
+</div>`)
+
+
+  
+  
   loadJS("./js/getImagesLib.js", true,()=>{
     var gil = exports;
 
@@ -3512,8 +3526,10 @@ function runSequoia(){
     
     
     var projection = tchC.first().projection().getInfo()
-    var crs = projection.crs;
-    var transform = projection.transform;
+    crs = projection.crs;
+    transform = projection.transform;
+    scale=null;
+    plotRadius=transform[0]/2.;
 
     var studyArea = monitoring_sites.geometry().bounds(500,crs)
     
@@ -3531,12 +3547,23 @@ function runSequoia(){
     var postComp = postS2s.median();
 
     var compDiff = postComp.subtract(preComp);
+    var changeBands = ['greenness','wetness','NBR'];
+    var changeThresholds = [-0.05,-0.02,-0.2];
+    var monitoringSitesPropertyNames = ['Tree_Name','Status','Grove'];
+    var labelProperty = 'Tree_Name';
     
-    changeHeuristic = compDiff.select(['greenness']).lt(-0.05)
-                .and(compDiff.select(['wetness']).lt(-0.02))
-                .and(compDiff.select(['NBR']).lt(-0.2)).rename(['Change_Heuristic'])
+
+    var preBns = preComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_yr${preStartYear}-${preEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
+    var postBns = postComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_yr${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
+    var diffBns = compDiff.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Diff_yrs${preStartYear}-${preEndYear}__${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
     
-    compDiff.addBands(changeHeuristic).reduceRegions(
+    let tableDownloadName = `Giant_Sequoia_Monitoring_Sites_Sentinel2_Change_Table_${preStartYear}-${preEndYear}__${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`;
+    var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).rename(['Potential_Loss'])
+    var stack = ee.Image.cat([preComp.select(changeBands).rename(preBns),
+                              postComp.select(changeBands).rename(postBns),
+                              compDiff.select(changeBands).rename(diffBns),changeHeuristic])
+
+    stack.reduceRegions(
       monitoring_sites,
       ee.Reducer.first(), 
       null, 
@@ -3544,18 +3571,153 @@ function runSequoia(){
       transform, 
      4).evaluate(t=>{
       console.log('Finished summarizing monitoring sites')
-      showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
+      // showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
+
+      $('#table-collapse-div').append(`<div id = "monitoring-sites-table-container">
+									<table
+									class="table table-hover report-table"
+									id="monitoring-sites-table"
+									role="tabpanel"
+									tablename="Giant Sequoia Monitoring Sites"
+                  title="Double click on any row to zoom to location on map"
+									></table>
+								</div>`);
+
+      
+      var spectralProps = Object.keys(t.features[0].properties).filter(p=>changeBands.indexOf(p.split('_')[0])>-1);
+      var locProps = ['Longitude','Latitude'];
+      var allProps = monitoringSitesPropertyNames.concat(['Potential_Loss']).concat(spectralProps).concat(locProps)
+      $(`#monitoring-sites-table`).append(`<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`);
+      allProps.map(prop=>{
+        $('#mon-sites-table-header').append(`<td class = 'highlights-entry '>${prop.replaceAll('_',' ')}</td>`)
+      })
+      var siteID = 1;
+      const svgMarker = {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: "#FF834C",
+        fillOpacity: 0.2,
+        strokeWeight: 1,
+        strokeColor:'#FF834C',
+        scale:10
+      };
+      var monSiteMarker = new google.maps.Marker({icon:svgMarker})
+       
+      t.features.map(f=>{
+        // console.log(f)
+        var rowID = `seq-mon-site-${siteID}`
+        $(`#monitoring-sites-table`).append(`<tr class = 'highlights-row' id='${rowID}'></tr>`);
+        
+        monitoringSitesPropertyNames.map(prop=>{
+          $(`#${rowID}`).append(`<td class = 'highlights-entry '>${f.properties[prop]}</td>`);
+        });
+
+        var potLossV = f.properties['Potential_Loss'];
+        if(potLossV===null){potLossV=''}
+        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${potLossV}</td>`);
+
+        spectralProps.map(prop=>{
+          var v = f.properties[prop];
+          if(v===null){v=''}
+          else{v=parseFloat(v.toFixed(4))}
+          
+          $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
+        })
+        locProps.map(prop=>{
+          var v = f.properties[prop];
+         
+          $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
+        })
+        site_highlights_dict[rowID] = [f.properties.Longitude,f.properties.Latitude,f.properties[labelProperty]];
+        siteID++;
+      });
+
+
+      $(document).ready(function () {
+        $("#monitoring-sites-table").on('mousemove', 'tr', function (e) {
+          try{
+            var loc = site_highlights_dict[e.currentTarget.id];
+          monSiteMarker.setPosition({ lat: loc[1], lng: loc[0] });
+          monSiteMarker.setLabel({text: loc[2], color: "#FFF",fontSize: '0.9rem',className:'gm-marker-label'})
+          monSiteMarker.setMap(map);
+          }catch(err){
+            monSiteMarker.setMap(null);
+          }
+          
+          
+      
+        
+      });
+      $("#monitoring-sites-table").on('mouseleave', 'tr', function (e) {
+        monSiteMarker.setMap(null);
+       });
+       $("#monitoring-sites-table").on('dblclick', 'tr', function (e) {
+        console.log('double clicked')
+        var loc = site_highlights_dict[e.currentTarget.id];
+        map.setCenter({ lat: loc[1], lng: loc[0] });
+        map.setZoom(15);
+       });
+        $(`#monitoring-sites-table`).DataTable({
+          fixedHeader: true,
+          paging: false,
+          searching: true,
+          order: [3],
+          responsive:true,
+          dom: 'Bfrtip',
+          buttons: [
+            // {
+            // 	extend: 'colvis',
+            // 	title: 'Data export'
+            // },
+            {
+              extend: 'copyHtml5',
+              title: tableDownloadName.replaceAll('_',' '),
+              messageBottom: `Source: ${fullShareURL}`
+            },
+            {
+              extend: 'csvHtml5',
+              title: tableDownloadName.replaceAll('_',' '),
+              messageBottom: `Source: ${fullShareURL}`
+            },
+            {
+              extend: 'excelHtml5',
+              title: tableDownloadName.replaceAll('_',' '),
+              messageBottom: `Source: ${fullShareURL}`
+            },
+            {
+              extend: 'pdfHtml5',
+              title: tableDownloadName.replaceAll('_',' '),
+              messageBottom: `Source: ${fullShareURL}`
+            },
+            {
+              extend: 'print',
+              title: tableDownloadName.replaceAll('_',' '),
+              messageBottom: `Source: ${fullShareURL}`
+            },
+          ]
+            
+          
+          
+        });
+        $(`#monitoring-sites-table-container`).addClass(` bg-white highlights-table`);
+        $('#sequoia-mon-loading-div').hide();
+      
+        
+        });
      })
     Map2.addLayer(preComp,gil.vizParamsFalse,`Pre Composite Yrs ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
     Map2.addLayer(postComp,gil.vizParamsFalse,`Post Composite Yrs ${postStartYear}-${postEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
     
     Map2.addLayer(compDiff.select(['brightness','greenness','wetness']),{min:-0.05,max:0.05},'Diff Tasseled Cap',false)
 
-    Map2.addLayer(changeHeuristic.selfMask(),{palette:'E20',classLegendDict:{'Loss':'E20'}},`Loss ${preStartYear}-${preEndYear}to ${postStartYear}-${postEndYear}`);
+    Map2.addLayer(changeHeuristic.selfMask(),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postStartYear}-${postEndYear}`);
 
-    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(10).bounds(10,crs)}),{'strokeColor':'FF0'},'Monitoring Sites')
+    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(30)}),{'strokeColor':'80DFD2'},'Monitoring Sites')
        
-    Map2.addLayer(studyArea,{},'Study Area');
+    Map2.addLayer(studyArea,{},'Study Area',false);
+    if(!seq_mon_query_clicked){
+      $('#query-label').click();
+      seq_mon_query_clicked=true;
+    }
   });
   
   
