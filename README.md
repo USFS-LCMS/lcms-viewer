@@ -10,8 +10,6 @@
 
 Ian Housman- ian.housman@usda.gov
 
-Anatoliy Zharkikh- anatoliy.zharkikh@usda.gov
-
 Leah Campbell- leah.campbell@usda.gov
 
 
