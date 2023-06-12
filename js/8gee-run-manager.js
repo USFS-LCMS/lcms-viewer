@@ -3533,6 +3533,9 @@ function runSequoia(){
 
     var studyArea = monitoring_sites.geometry().bounds(500,crs)
     
+    if(localStorage.settings ===undefined){
+      centerObject(studyArea)
+    }
 
     var s2s = gil.getProcessedSentinel2Scenes({studyArea:studyArea,
       startYear:preStartYear-1,
