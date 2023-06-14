@@ -332,7 +332,7 @@ function showWalkThroughI(){
     
     
 }
-if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper' || mode === 'TreeMap'){
+if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper' || mode === 'TreeMap' || mode === 'sequoia-view'){
   // https://shepherdjs.dev/docs/tutorial-02-usage.html
   var tour = new Shepherd.Tour({
     defaultStepOptions: {
@@ -514,5 +514,31 @@ if(mode==='lcms-dashboard' || mode === 'Bloom-Mapper' || mode === 'TreeMap'){
   treemapTourSteps.map(s=>addStep(s,treemapTourSteps.length));
     // startTour();
 
+  }
+  else if(mode ==='sequoia-view'){
+    
+    // console.log('running  tutorial');
+    
+    
+
+    let  sequoiaTourSteps  = [
+      [`Welcome to the ${mode} tour`,`This tour will walk you through how to use the ${mode}. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,'#title-banner','right',[1,2],'intro-tour-modal'],
+      
+      ['Locate, Share, Search, Navigate',`<ul>
+                            <li>Clicking the <i class="fa fa-map-marker"></i> icon will show your current location on the map if possible.</li>
+                            <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
+                            <li>You can search for locations in the search window.</li>
+                            <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
+                            </ul>`,'#search-share-div','right',[0,2],'search-tour-modal'],
+                            ['Adjusting the parameters',`Date paramters can be adjusted. Clicking the <i class="fa fa-share-alt teal "></i> icon above will create a unique link that contains your current view extent and parameter choices for easy sharing.`,'#parameters-collapse-label','right',[0,2],'params-tour-modal','#parameters-collapse-label-label'],
+  [`MAP LAYERS`,`Both monitoring site locations, image composites used to flag potentially declining sites, and the change/not-change layers are available for viewing. Turn on and off layers using the radio buttons on the left side of each layer. Opacity (transparency) can be adjusted with the slider on the right.`,'#layer-list-collapse-label','right-end',[0,2],'layer-list-tour-modal','#layer-list-collapse-label-label'],
+  
+  [`MONITORING SITES`,`Individual named Giant Sequoias are flagged if they are found to display signs of potential mortality. Using this table and the accompanying imagery data in the <i>MAP LAYERS</i> above can help determine whether a tree merits further investigation.`,'#table-collapse-label-table-collapse-div','right-end',[0,1],'table-tour-modal','#table-collapse-label-label'],
+  [`Exploration Tools`,`Tools are available to measure and chart map layers. The <i>Query Visible Map Layers</i> tool allows for any visible layer to be double-clicked to view the value of the pixel you clicked on. This tool is turned on by default when this page loads.`,'#tools-collapse-label','right-end',[0,1],'tools-tour-modal','#tools-collapse-label-label'],
+
+  ]
+
+  sequoiaTourSteps.map(s=>addStep(s,sequoiaTourSteps.length));
+    // startTour();
   }
 }

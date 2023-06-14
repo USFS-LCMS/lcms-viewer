@@ -6,7 +6,7 @@
   --teal-50:#80DFD2;
   --teal-80:#00BFA5;
   --teal-100:#00897b;
-
+  
   --foo: true;
 
   --deep-brown-10:#D6D1CA;
@@ -1014,6 +1014,14 @@ font-size:0.9em;
 /*Google Maps info window styling*/
 .gm-style-iw{
   border-radius: 1px!important;
+}
+.gm-marker-label{
+  background-color: #372e2c;
+  bottom: 1rem;
+    right: 60%;
+    position: relative;
+    font-size: 0.8rem;
+    font-family: 'Roboto Condensed', sans-serif;
 }
 /*///////////////////////////////////////////////////////////*/
 .dropdown{cursor: pointer;}

@@ -854,6 +854,54 @@ else if(mode === 'STORM'){
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','TreeMap DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+}else if(mode==='sequoia-view'){
+  addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare storm outputs');
+  var minYear = 2017;
+  var maxYear = new Date().getFullYear();
+  var dayOfYear = new Date().dayofYear();
+  if(urlParams.preStartYear == null || urlParams.preStartYear == undefined){
+    urlParams.preStartYear = minYear;
+  }
+  if(urlParams.preEndYear == null || urlParams.preEndYear == undefined){
+    urlParams.preEndYear = maxYear-1;
+  }
+  if(urlParams.postStartYear == null || urlParams.postStartYear == undefined){
+    urlParams.postStartYear = maxYear;
+  }
+  if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
+    urlParams.postEndYear = maxYear;
+  }
+
+  if(urlParams.startJulian == null || urlParams.startJulian == undefined){
+    urlParams.startJulian = dayOfYear-16;// = parseInt(urlParams.startYear);
+}
+if(urlParams.endJulian == null || urlParams.endJulian == undefined){
+   urlParams.endJulian = dayOfYear-2;// = parseInt(urlParams.endYear);
+}
+
+
+  console.log(maxYear)
+  // $('#parameters-collapse-div').append(`<hr>`);
+
+  addDualRangeSlider('parameters-collapse-div','Choose start year range:','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Years to include for the past image data')
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the current image data')
+  
+  addDualRangeSlider('parameters-collapse-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
+
+  addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP LAYERS',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
+  
+  addCollapse('sidebar-left','table-collapse-label','table-collapse-div','MONITORING SITES',`<img class='panel-title-svg-lg'  alt="Graph icon" src="./Icons_svg/graph_ffffff.svg">`,true,``,'Giant Sequoia monitoring sites output table');
+
+  addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+  
+  // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
+  // addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
+
+  $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
+  $('#parameters-collapse-div').append(staticTemplates.reRunButton);
+
+
 }else{
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','PLOT DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,false,null,'Additional relevant layers to view on map intended to provide context for '+mode+' DATA');
