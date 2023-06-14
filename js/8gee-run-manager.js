@@ -3494,6 +3494,7 @@ function runTreeMap(){
 }
 var seq_mon_query_clicked=false;
 var site_highlights_dict = {};
+var gil;
 function runSequoia(){
   TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
   $('#table-collapse-div').empty();
@@ -3508,7 +3509,7 @@ function runSequoia(){
   
   
   loadJS("./js/getImagesLib.js", true,()=>{
-    var gil = exports;
+    gil = exports;
 
     var preStartYear =parseInt(urlParams.preStartYear),
     preEndYear=parseInt(urlParams.preEndYear),
@@ -3550,8 +3551,8 @@ function runSequoia(){
     var postComp = postS2s.median();
 
     var compDiff = postComp.subtract(preComp);
-    var changeBands = ['greenness','wetness','NBR'];
-    var changeThresholds = [-0.05,-0.02,-0.2];
+    var changeBands = Object.keys(urlParams.diffThreshs);
+    var changeThresholds = Object.values(urlParams.diffThreshs);
     var monitoringSitesPropertyNames = ['Tree_Name','Status','Grove'];
     var labelProperty = 'Tree_Name';
     
@@ -3561,18 +3562,19 @@ function runSequoia(){
     var diffBns = compDiff.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Diff_yrs${preStartYear}-${preEndYear}__${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
     
     let tableDownloadName = `Giant_Sequoia_Monitoring_Sites_Sentinel2_Change_Table_${preStartYear}-${preEndYear}__${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`;
-    var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).rename(['Potential_Loss'])
+    var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).multiply(100).rename(['Potential_Loss'])
     var stack = ee.Image.cat([preComp.select(changeBands).rename(preBns),
                               postComp.select(changeBands).rename(postBns),
                               compDiff.select(changeBands).rename(diffBns),changeHeuristic])
-
-    stack.reduceRegions(
+   
+    stack.focalMean(urlParams.treeDiameter/2.,'circle','meters').reduceRegions(
       monitoring_sites,
       ee.Reducer.first(), 
       null, 
       crs,
       transform, 
-     4).evaluate(t=>{
+     4).evaluate((t,failure)=>{
+      console.log(failure)
       console.log('Finished summarizing monitoring sites')
       // showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
 
@@ -3657,7 +3659,7 @@ function runSequoia(){
         console.log('double clicked')
         var loc = site_highlights_dict[e.currentTarget.id];
         map.setCenter({ lat: loc[1], lng: loc[0] });
-        map.setZoom(15);
+        map.setZoom(18);
        });
         $(`#monitoring-sites-table`).DataTable({
           fixedHeader: true,
@@ -3707,14 +3709,14 @@ function runSequoia(){
         
         });
      })
-    Map2.addLayer(preComp,gil.vizParamsFalse,`Pre Composite Yrs ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
-    Map2.addLayer(postComp,gil.vizParamsFalse,`Post Composite Yrs ${postStartYear}-${postEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
+    Map2.addLayer(preComp,urlParams.compVizParams,`Pre Composite Yrs ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
+    Map2.addLayer(postComp,urlParams.compVizParams,`Post Composite Yrs ${postStartYear}-${postEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
     
-    Map2.addLayer(compDiff.select(['brightness','greenness','wetness']),{min:-0.05,max:0.05},'Diff Tasseled Cap',false)
+    Map2.addLayer(compDiff,urlParams.diffVizParams,'Pre-Post Composite',false)
 
-    Map2.addLayer(changeHeuristic.selfMask(),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postStartYear}-${postEndYear}`);
+    Map2.addLayer(changeHeuristic.selfMask().reproject(crs,transform),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postStartYear}-${postEndYear}`);
 
-    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(30)}),{'strokeColor':'80DFD2'},'Monitoring Sites')
+    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'80DFD2'},'Monitoring Sites')
        
     Map2.addLayer(studyArea,{},'Study Area',false);
     if(!seq_mon_query_clicked){

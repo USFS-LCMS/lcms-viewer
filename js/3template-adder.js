@@ -878,7 +878,18 @@ else if(mode === 'STORM'){
 if(urlParams.endJulian == null || urlParams.endJulian == undefined){
    urlParams.endJulian = dayOfYear-2;// = parseInt(urlParams.endYear);
 }
-
+if(urlParams.compVizParams == null || urlParams.compVizParams == undefined){
+  urlParams.compVizParams = {"min":0.1,"max":[0.5,0.6,0.6],"bands":"swir2,nir,red","gamma":1.6}
+}
+if(urlParams.diffVizParams == null || urlParams.diffVizParams == undefined){
+  urlParams.diffVizParams = {min:-0.05,max:0.05,bands:['brightness','greenness','wetness']}
+}
+if(urlParams.diffThreshs == null || urlParams.diffThreshs == undefined){
+  urlParams.diffThreshs = {'greenness':-0.05,'wetness':-0.02,'NBR':-0.2}
+}
+if(urlParams.treeDiameter == null || urlParams.treeDiameter == undefined){
+  urlParams.treeDiameter = 15
+}
 
   console.log(maxYear)
   // $('#parameters-collapse-div').append(`<hr>`);
@@ -887,6 +898,36 @@ if(urlParams.endJulian == null || urlParams.endJulian == undefined){
   addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the current image data')
   
   addDualRangeSlider('parameters-collapse-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
+
+  addSubCollapse('parameters-collapse-div','advanced-params-label','advanced-params-div','Advanced Parameters', '',false,'')
+  $('#parameters-collapse-div').append('<hr>')
+  addRangeSlider('advanced-params-div','Giant Sequoia Canopy Diamater (m)','urlParams.treeDiameter',0, 30,urlParams.treeDiameter,5,'tree-diameter-slider','null',"Specify the average diameter of a Giant Sequoia crown in meters")
+  $('#advanced-params-div').append(`
+  <hr>
+  <label>Difference Bands and Thresholds</label>
+  <textarea   title = 'Bands and thresholds to use for identifying change'   class="form-control" id="diff-bands-thresh-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.diffThreshs)}</textarea>
+  <hr>
+  <label>Composite Visualization Parameters</label>
+  <textarea   title = 'Viz params for composite images'   class="form-control" id="comp-viz-params-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.compVizParams)}</textarea>
+  <hr>
+  <label>Difference Visualization Parameters</label>
+  <textarea   title = 'Viz params for difference image'   class="form-control" id="diff-viz-params-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.diffVizParams)}</textarea>
+ 
+ `);
+ $('#comp-viz-params-input').on('input',()=>{
+  urlParams.compVizParams=JSON.parse($('#comp-viz-params-input').val())
+ })
+ $('#diff-viz-params-input').on('input',()=>{
+  urlParams.diffVizParams=JSON.parse($('#diff-viz-params-input').val())
+ })
+ $('#diff-bands-thresh-input').on('input',()=>{
+  urlParams.diffThreshs=JSON.parse($('#diff-bands-thresh-input').val())
+ })
+
+   
+  // addMultiRadio('advanced-params-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
+ 
+
 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP LAYERS',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   

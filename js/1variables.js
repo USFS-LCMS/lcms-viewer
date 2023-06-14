@@ -75,16 +75,22 @@ function parseUrlSearch(){
       urlParamsStr = urlParamsStr.split('?')[1].split('&');
     
       urlParamsStr.map(function(str){
-        if(str.indexOf('OBJECT---')>-1){
-          var strT = str.split('---');
-          if(urlParams[strT[1]] === undefined){
-            urlParams[strT[1]] = {};
+        // if(str.indexOf('OBJECT---')>-1){
+          // var strT = str.split('---');
+          // if(urlParams[strT[1]] === undefined){
+          //   urlParams[strT[1]] = {};
+          // }
+          // urlParams[strT[1]][strT[2].split('=')[0]] = strT[2].split('=')[1];
+          // urlParams[str.split('=')[0]] = JSON.parse(decodeURIComponent(str.split('=')[1].split('OBJECT---')[1]));
+        // }else{
+          var decodedParam = decodeURIComponent(str.split('=')[1]);
+          try{
+            urlParams[str.split('=')[0]] = JSON.parse(decodedParam);
+          }catch(err){
+            urlParams[str.split('=')[0]] = decodedParam;
           }
-          urlParams[strT[1]][strT[2].split('=')[0]] = strT[2].split('=')[1];
           
-        }else{
-          urlParams[str.split('=')[0]] = str.split('=')[1];
-        }
+        // }
     })}
     if(urlParams.id !== undefined){
       window.open("https://tinyurl.com/"+urlParams.id,"_self");
@@ -108,13 +114,14 @@ function parseUrlSearch(){
 function constructUrlSearch(){
   var outURL = '?';
   Object.keys(urlParams).map(function(p){
-    if(typeof(urlParams[p]) == 'object'){
-      var tObj = {};
-      Object.keys(urlParams[p]).map(k => tObj['OBJECT---'+p+'---'+k] = urlParams[p][k]);
-      outURL += new URLSearchParams(tObj).toString() + '&';
-    }else{
-      outURL += p+'='+urlParams[p] + '&';
-    }
+    // if(typeof(urlParams[p]) == 'object'){
+      // var tObj = {};
+      // Object.keys(urlParams[p]).map(k => tObj['OBJECT---'+p+'---'+k] = urlParams[p][k]);
+      // outURL += new URLSearchParams(tObj).toString() + '&';
+      // outURL += p+'=OBJECT---'+encodeURIComponent(JSON.stringify(urlParams[p])) + '&';
+    // }else{
+      outURL += p+'='+encodeURIComponent(JSON.stringify(urlParams[p]))  + '&';
+    // }
     
   })
   outURL = outURL.slice(0,outURL.length-1)

@@ -1083,6 +1083,9 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     if(viz.opacity == null){
       viz.opacity = 1;
     }
+    if(viz.bands !== undefined && typeof(viz.bands) === 'string'){
+      viz.bands = viz.bands.split(',');
+    }
     
     var layerObjKeys = Object.keys(layerObj);
     var nameIndex = layerObjKeys.indexOf(legendDivID);
@@ -1128,7 +1131,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
       viz.queryDict = dicts.queryDict
     }
     //Construct legend
-    if(viz != null && (viz.bands == null || viz.bands.split(',').length==1 )&& viz.addToLegend != false && (viz.addToClassLegend === undefined || viz.addToClassLegend === null || viz.addToClassLegend === false) &&(viz.classLegendDict == undefined || viz.classLegendDict == null )){
+    if(viz != null && (viz.bands == null || viz.bands.length==1 )&& viz.addToLegend != false && (viz.addToClassLegend === undefined || viz.addToClassLegend === null || viz.addToClassLegend === false) &&(viz.classLegendDict == undefined || viz.classLegendDict == null )){
       addLegendContainer(legendDivID,'legend-'+whichLayerList,false,helpBox)
       
       var legend ={};
