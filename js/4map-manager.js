@@ -1516,7 +1516,7 @@ function mp(){
 }
 var Map2 = new mp();
 
-if(urlParams.addLayer==='false'){
+if(urlParams.addLayer==='false' || urlParams.addLayer ===false){
   Object.keys(Map2).filter(k=>k.indexOf('add')>-1).map(k=>{
     Map2[k]=function(){}
   })

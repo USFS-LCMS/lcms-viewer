@@ -3513,13 +3513,14 @@ function runSequoia(){
 
     var preStartYear =parseInt(urlParams.preStartYear),
     preEndYear=parseInt(urlParams.preEndYear),
-    postStartYear=parseInt(urlParams.postStartYear),
-    postEndYear=parseInt(urlParams.postEndYear),
+    postYear=parseInt(urlParams.postYear),
+    // postStartYear=parseInt(urlParams.postStartYear),
+    // postEndYear=parseInt(urlParams.postEndYear),
     startJulian=parseInt(urlParams.startJulian),
     endJulian =parseInt(urlParams.endJulian);
 
-    startJulianFormatted = ee.Date.parse('DDD',startJulian.toString()).format('MM/dd').getInfo()
-    endJulianFormatted = ee.Date.parse('DDD',endJulian.toString()).format('MM/dd').getInfo()
+    startJulianFormatted = ee.Date.parse('YYYY-DDD',`2003-${startJulian}`).format('MM/dd').getInfo()
+    endJulianFormatted = ee.Date.parse('YYYY-DDD',`2003-${endJulian}`).format('MM/dd').getInfo()
     var monitoring_sites = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest');
     
     var tchC = ee.ImageCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH')  
@@ -3540,12 +3541,12 @@ function runSequoia(){
 
     var s2s = gil.getProcessedSentinel2Scenes({studyArea:studyArea,
       startYear:preStartYear-1,
-      endYear:postEndYear+1,
+      endYear:postYear+1,
       startJulian:startJulian,endJulian:endJulian,
       convertToDailyMosaics : false});
       
     var preS2s = s2s.filter(ee.Filter.calendarRange(preStartYear,preEndYear,'year'));
-    var postS2s = s2s.filter(ee.Filter.calendarRange(postEndYear,postEndYear,'year'));
+    var postS2s = s2s.filter(ee.Filter.calendarRange(postYear,postYear,'year'));
 
     var preComp = preS2s.median();
     var postComp = postS2s.median();
@@ -3555,17 +3556,23 @@ function runSequoia(){
     var changeThresholds = Object.values(urlParams.diffThreshs);
     var monitoringSitesPropertyNames = ['Tree_Name','Status','Grove'];
     var labelProperty = 'Tree_Name';
+    var lcms_land_cover_tree_classes = Object.values(lcmsTreeMaskClasses).insert(1,false).map((e,i)=>{return [i+1,e]}).filter(row=>row[1]).map(n=>n[0])
+    var lcmsTreeMask = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
+                    .filter(ee.Filter.eq('study_area','CONUS'))
+                    .filter(ee.Filter.calendarRange(preStartYear-1,postYear,'year'))
+                    .select(['Land_Cover'])
+                    .map(img=>img.eq(lcms_land_cover_tree_classes)).max().reduce(ee.Reducer.max())
     
-
-    var preBns = preComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_yr${preStartYear}-${preEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
-    var postBns = postComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_yr${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
-    var diffBns = compDiff.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Diff_yrs${preStartYear}-${preEndYear}__${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`));
+    Map2.addLayer(lcmsTreeMask.selfMask(),{palette:'0A0',classLegendDict:{'LCMS Tree Mask':'0A0'}},'LCMS Tree Mask',false);
+    var preBns = preComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_Pre`));
+    var postBns = postComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_Post`));
+    var diffBns = compDiff.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_Diff`));
     
-    let tableDownloadName = `Giant_Sequoia_Monitoring_Sites_Sentinel2_Change_Table_${preStartYear}-${preEndYear}__${postStartYear}-${postEndYear}_${startJulianFormatted}-${endJulianFormatted}`;
-    var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).multiply(100).rename(['Potential_Loss'])
+    let tableDownloadName = `Giant_Sequoia_Monitoring_Sites_Sentinel2_Change_Table_pre${preStartYear}-${preEndYear}__post${postYear}_dates${startJulianFormatted}-${endJulianFormatted}`;
+    var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).rename(['Potential_Loss']);
     var stack = ee.Image.cat([preComp.select(changeBands).rename(preBns),
                               postComp.select(changeBands).rename(postBns),
-                              compDiff.select(changeBands).rename(diffBns),changeHeuristic])
+                              compDiff.select(changeBands).rename(diffBns),changeHeuristic]).updateMask(lcmsTreeMask)
    
     stack.focalMean(urlParams.treeDiameter/2.,'circle','meters').reduceRegions(
       monitoring_sites,
@@ -3591,7 +3598,7 @@ function runSequoia(){
       
       var spectralProps = Object.keys(t.features[0].properties).filter(p=>changeBands.indexOf(p.split('_')[0])>-1);
       var locProps = ['Longitude','Latitude'];
-      var allProps = monitoringSitesPropertyNames.concat(['Potential_Loss']).concat(spectralProps).concat(locProps)
+      var allProps = monitoringSitesPropertyNames.concat(['Potential_Loss % Crown']).concat(spectralProps).concat(locProps)
       $(`#monitoring-sites-table`).append(`<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`);
       allProps.map(prop=>{
         $('#mon-sites-table-header').append(`<td class = 'highlights-entry '>${prop.replaceAll('_',' ')}</td>`)
@@ -3675,27 +3682,27 @@ function runSequoia(){
             // },
             {
               extend: 'copyHtml5',
-              title: tableDownloadName.replaceAll('_',' '),
+              title: tableDownloadName,
               messageBottom: `Source: ${fullShareURL}`
             },
             {
               extend: 'csvHtml5',
-              title: tableDownloadName.replaceAll('_',' '),
+              title: tableDownloadName,
               messageBottom: `Source: ${fullShareURL}`
             },
             {
               extend: 'excelHtml5',
-              title: tableDownloadName.replaceAll('_',' '),
+              title: tableDownloadName,
               messageBottom: `Source: ${fullShareURL}`
             },
             {
               extend: 'pdfHtml5',
-              title: tableDownloadName.replaceAll('_',' '),
+              title: tableDownloadName,
               messageBottom: `Source: ${fullShareURL}`
             },
             {
               extend: 'print',
-              title: tableDownloadName.replaceAll('_',' '),
+              title: tableDownloadName,
               messageBottom: `Source: ${fullShareURL}`
             },
           ]
@@ -3709,12 +3716,12 @@ function runSequoia(){
         
         });
      })
-    Map2.addLayer(preComp,urlParams.compVizParams,`Pre Composite Yrs ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
-    Map2.addLayer(postComp,urlParams.compVizParams,`Post Composite Yrs ${postStartYear}-${postEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
+    Map2.addLayer(preComp,urlParams.compVizParams,`Pre Composite ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
+    Map2.addLayer(postComp,urlParams.compVizParams,`Post Composite ${postYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
     
     Map2.addLayer(compDiff,urlParams.diffVizParams,'Pre-Post Composite',false)
 
-    Map2.addLayer(changeHeuristic.selfMask().reproject(crs,transform),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postStartYear}-${postEndYear}`);
+    Map2.addLayer(changeHeuristic.selfMask().updateMask(lcmsTreeMask),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
 
     Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'80DFD2'},'Monitoring Sites')
        

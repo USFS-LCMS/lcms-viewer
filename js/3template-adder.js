@@ -865,12 +865,12 @@ else if(mode === 'STORM'){
   if(urlParams.preEndYear == null || urlParams.preEndYear == undefined){
     urlParams.preEndYear = maxYear-1;
   }
-  if(urlParams.postStartYear == null || urlParams.postStartYear == undefined){
-    urlParams.postStartYear = maxYear;
+  if(urlParams.postYear == null || urlParams.postYear == undefined){
+    urlParams.postYear = maxYear;
   }
-  if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
-    urlParams.postEndYear = maxYear;
-  }
+  // if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
+  //   urlParams.postEndYear = maxYear;
+  // }
 
   if(urlParams.startJulian == null || urlParams.startJulian == undefined){
     urlParams.startJulian = dayOfYear-16;// = parseInt(urlParams.startYear);
@@ -890,23 +890,29 @@ if(urlParams.diffThreshs == null || urlParams.diffThreshs == undefined){
 if(urlParams.treeDiameter == null || urlParams.treeDiameter == undefined){
   urlParams.treeDiameter = 15
 }
+if(urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == undefined){
+  urlParams.lcmsTreeMaskClasses = {"Trees": true,"Shrubs & Trees Mix": false,"Grass/Forb/Herb & Trees Mix":false,"Barren & Trees Mix":false}
+}
 
-  console.log(maxYear)
+  
   // $('#parameters-collapse-div').append(`<hr>`);
 
-  addDualRangeSlider('parameters-collapse-div','Choose start year range:','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Years to include for the past image data')
-  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the current image data')
-  
+  addDualRangeSlider('parameters-collapse-div','Baseline (reference) condition years:','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Range of years to calculate the baseline (reference) condition')
+  // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
+  addRangeSlider('parameters-collapse-div','Target year:','urlParams.postYear',minYear+1,maxYear,urlParams.postYear,1,'post-years-slider',null,'Year to include for the target year evaluation period')
   addDualRangeSlider('parameters-collapse-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
 
   addSubCollapse('parameters-collapse-div','advanced-params-label','advanced-params-div','Advanced Parameters', '',false,'')
   $('#parameters-collapse-div').append('<hr>')
-  addRangeSlider('advanced-params-div','Giant Sequoia Canopy Diamater (m)','urlParams.treeDiameter',0, 30,urlParams.treeDiameter,5,'tree-diameter-slider','null',"Specify the average diameter of a Giant Sequoia crown in meters")
+  addRangeSlider('advanced-params-div','Giant Sequoia Canopy Diamater (m)','urlParams.treeDiameter',5, 30,urlParams.treeDiameter,5,'tree-diameter-slider','null',"Specify the average diameter of a Giant Sequoia crown in meters");
+  
+  addCheckboxes('advanced-params-div','lcms-tree-mask-class-checkboxes','LCMS land cover classes to include as tree to mask out non tree areas from change detection. ','lcmsTreeMaskClasses',urlParams.lcmsTreeMaskClasses);
   $('#advanced-params-div').append(`
   <hr>
   <label>Difference Bands and Thresholds</label>
   <textarea   title = 'Bands and thresholds to use for identifying change'   class="form-control" id="diff-bands-thresh-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.diffThreshs)}</textarea>
   <hr>
+  
   <label>Composite Visualization Parameters</label>
   <textarea   title = 'Viz params for composite images'   class="form-control" id="comp-viz-params-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.compVizParams)}</textarea>
   <hr>
@@ -923,11 +929,41 @@ if(urlParams.treeDiameter == null || urlParams.treeDiameter == undefined){
  $('#diff-bands-thresh-input').on('input',()=>{
   urlParams.diffThreshs=JSON.parse($('#diff-bands-thresh-input').val())
  })
-
-   
-  // addMultiRadio('advanced-params-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
- 
-
+  
+// Sync sliders
+$('#post-years-slider').slider().bind('slide',function(event,ui){
+  var yr = ui.value;
+  var needsUpdated=false;
+  if(yr <= urlParams.preEndYear){
+    urlParams.preEndYear=yr-1;
+    needsUpdated=true;  
+  }
+  if(yr <= urlParams.preStartYear){
+    urlParams.preStartYear=yr-1;
+    needsUpdated=true;  
+  }
+  if(needsUpdated){
+    $("#pre-years-slider" ).slider("values", [urlParams.preStartYear,urlParams.preEndYear]);
+    $('#pre-years-slider-update').html(`${urlParams.preStartYear} - ${urlParams.preEndYear}`);
+  }
+});
+$('#pre-years-slider').slider().bind('slide',function(event,ui){
+  var yrs = ui.values;
+  var needsUpdated=false;
+  if(yrs[0] >= urlParams.postYear){
+    urlParams.postYear=yrs[0]+1;
+    needsUpdated=true;  
+  }
+  if(yrs[1] >= urlParams.postYear){
+    urlParams.postYear=yrs[1]+1;
+    needsUpdated=true;   
+  }
+  if(needsUpdated){
+    $("#post-years-slider" ).slider("value", urlParams.postYear);
+    $('#post-years-slider-update').html(`${urlParams.postYear}`);
+  }
+});
+  
 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP LAYERS',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   
@@ -982,7 +1018,7 @@ addColorPicker('measure-area-div-icon-bar','area-color-picker','updateAreaColor'
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
 addSubAccordianCard('tools-accordian','query-label','query-div','Query Visible Map Layers',staticTemplates.queryDiv,false,`toggleTool(toolFunctions.pixel.query)`,staticTemplates.queryTipHover);
-if(['Bloom-Mapper','TreeMap'].indexOf(mode) === -1){
+if(['Bloom-Mapper','TreeMap','sequoia-view'].indexOf(mode) === -1){
   addSubAccordianCard('tools-accordian','pixel-chart-label','pixel-chart-div','Query '+mode+' Time Series',staticTemplates.pixelChartDiv,false,`toggleTool(toolFunctions.pixel.chart)`,staticTemplates.pixelChartTipHover);
   addDropdown('pixel-chart-div','pixel-collection-dropdown','Choose which '+mode+' time series to chart','whichPixelChartCollection','Choose which '+mode+' time series to chart.');
  

@@ -459,7 +459,14 @@ String.prototype.replaceAll = function(str1, str2, ignore)
 {
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 } 
-
+/////////////////////////////////////////////////////
+// Taken from: https://stackoverflow.com/questions/586182/how-to-insert-an-item-into-an-array-at-a-specific-index-javascript
+Array.prototype.insert = function(index) {
+  this.splice.apply(this, [index, 0].concat(
+      Array.prototype.slice.call(arguments, 1)));
+  return this;
+};
+/////////////////////////////////////////////////////
 Number.prototype.formatNumber = function(n=2){
   return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }

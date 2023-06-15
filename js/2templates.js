@@ -1601,7 +1601,8 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
     eval(`if(window.${variable} === undefined){window.${variable} = []}`);
     Object.keys(optionList).map(function(k){
       // console.log(k)
-      const checkboxCheckboxID = variable+k + '-checkbox';
+      const kID = k.replace(/[^A-Za-z0-9]/g, "-")
+      const checkboxCheckboxID = variable+kID+ '-checkbox';
       const checkboxLabelID = variable+checkboxCheckboxID + '-label'
       if(optionList[k] === 'true'){optionList[k] = true}
       else  if(optionList[k] === 'false'){optionList[k] = false};
@@ -1629,7 +1630,8 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
 
     eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
     Object.keys(optionList).map(function(k){
-      var radioCheckboxID = k + '-checkbox';
+      const kID = k.replace(/[^A-Za-z0-9]/g, "-");
+      var radioCheckboxID = kID + '-checkbox';
       var radioLabelID = radioCheckboxID + '-label';
       if(optionList[k] === 'true'){optionList[k] = true}
       else  if(optionList[k] === 'false'){optionList[k] = false};
