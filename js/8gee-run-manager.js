@@ -3327,10 +3327,14 @@ function runTreeMap(){
 
   // Set the first layer to visible
   var visible = true;
+
+  // Set up palettes - reverse those we want reversed 
   palettes.cmocean.Tempo[7].reverse();
   palettes.crameri.bamako[50].reverse();
   palettes.crameri.bamako[25].reverse();
   palettes.crameri.lajolla[10].reverse();
+  palettes.crameri.imola[50].reverse();
+  
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brought in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
@@ -3342,12 +3346,7 @@ function runTreeMap(){
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
   // Attributes appear in legend in reverse order from how they appear here
   var continuousAttrs = [
-                          
-                          
-                          // stand density
-                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'Stand Quadratic Mean Diameter'],
-                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'Stand Density Index'],
-                          
+                                                    
                           // trees per acre
                           ['TPA_DEAD',palettes.colorbrewer.Greens[9],0.05,0.95,'Dead Trees Per Acre'],
                           ['TPA_LIVE',palettes.colorbrewer.Greens[9],0.05,0.95,'Live Trees Per Acre'],
@@ -3366,21 +3365,30 @@ function runTreeMap(){
                           ['CARBON_DWN',palettes.crameri.lajolla[10],0.05,0.95,'Carbon Down (tons/acre)'],
                           ['CARBON_L',palettes.crameri.lajolla[10],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
                           
+                          // stand density
+                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'Stand Quadratic Mean Diameter'],
+                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'Stand Density Index'],
+                        
                           // live tree variables
-                          
                           ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'Height of Dominant Trees (feet)'],
                           ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
                           ['GSSTK',palettes.crameri.bamako[50],0.05,0.95,'Growing-stock stocking %'],
                           ['ALSTK',palettes.crameri.bamako[50],0.00,0.95,'All Live Tree Stocking %'],
                           ['CANOPYPCT',palettes.crameri.bamako[50],0.05,0.95,'Live Canopy Cover %'],
 
-
                           // unique values - how to label as unique values, and not as continuous?
-                          ['STDSZCD',palettes.colorbrewer.Set1[5],0,1,'Algorithm Stand Size Code'],
-                          ['FLDSZCD',palettes.colorbrewer.Set1[5],0,1,'Field Stand Size Code'],
+                          //['STDSZCD',palettes.colorbrewer.Set1[6],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
+                          //['FLDSZCD',palettes.colorbrewer.Set1[6],0,1,'Field Stand Size Code'], // ranges from 0-5
 
                           
                         ];
+
+  var ordinalAttrs = [
+                          // unique values - how to label as unique values, and not as continuous?
+                          ['STDSZCD',palettes.colorbrewer.Set1[6],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
+                          ['FLDSZCD',palettes.colorbrewer.Set1[6],0,1,'Field Stand Size Code'], // ranges from 0-5
+
+  ]
 
   // Function to get a thematic attribute image service  
   function getThematicAttr(attr){
@@ -3425,6 +3433,7 @@ function runTreeMap(){
     viz['palette']=palette;
     viz['classLegendDict'] = dict(zip(uniqueNames,colors));
     viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+    
     // Add the layer to the map
     Map2.addLayer(attrImg,viz,attr[2],visible);
 
@@ -3446,6 +3455,7 @@ function runTreeMap(){
 
     // Set up renderer
     var viz = {};
+    
     // Compute the nth percentile for the min max
     viz['min'] = parseInt(quantile(uniqueValues,attr[2]));
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
@@ -3454,12 +3464,58 @@ function runTreeMap(){
     Map2.addLayer(attrImg,viz,attr[4],false);
   }
   
+  // function to apply unique values to Ordinal attribute
+  function getOrdinalAttr(attr){
+
+    // Pull the attribute image
+    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+
+    // Get the numbers and unique numbers for that attribute
+    var numbers = treeMapLookup[attr[0]];
+    var uniqueValues = asc(unique(numbers));
+
+    // Filter out any value that is non RMRS (-99)
+    uniqueValues = uniqueValues.filter(n=>n!==-99);
+
+    // Set up renderer
+    var viz = {};
+    
+    // Set the min and max value for the renderer
+    viz['min'] = 0;  // original value: parseInt(quantile(uniqueValues,attr[2]));
+    viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
+    
+    // Get all the unique colors for the legend and colors with blanks as black in the palette 
+    palette = attr[1];
+    let colors = []
+        range(viz['min'],viz['max']+1).map(i=>{
+      if(uniqueValues.indexOf(i)>-1){
+        c = palette[i]
+        //c = randomColor([50,50,50],[255,255,255]).slice(1);
+        colors.push(c);
+        //palette.push(c);
+      }else{
+        palette.push('000');
+      }
+    });
+    
+    // Specify the palette and the legend dictionary with the unique names and colors
+    viz['palette']=attr[1];
+    viz['classLegendDict'] = dict(zip(uniqueValues,colors));
+    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+    Map2.addLayer(attrImg,viz,attr[4],false);
+
+  }
+
+  // Add each ordinal attribute to the map
+  ordinalAttrs.map(getOrdinalAttr);
+  
   // Add each continuous attribute to the map
   continuousAttrs.map(getContinuousAttr);
   
   // Iterate across each thematic attribute and bring it into the map
   thematicAttrs.map(getThematicAttr);
 
+  
   // Function to convert json TreeMap lookup to a query-friendly format
   // Makes a dictionary for each CN that has an html table of all attributes
   function makeTreeMapQueryLookup(){
