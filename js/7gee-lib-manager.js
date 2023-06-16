@@ -523,6 +523,7 @@ function getMTBSAndNLCD(studyAreaName,whichLayerList,showSeverity){
   // multipleSame = multipleSame.selfMask()
   // Map2.addLayer(mtbsDistinct,{min:1,max:3,palette:'00F,F00'},'Distinct',false);
   // Map2.addLayer(multipleSame,{min:1,max:1,palette:'F00'},'multipleSame',false);
+  
   var mtbsClassDict = {
     'Unburned to Low': '006400',
     'Low':'7fffd4',

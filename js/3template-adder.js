@@ -967,6 +967,9 @@ $('#pre-years-slider').slider().bind('slide',function(event,ui){
 
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','MAP LAYERS',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   
+  addCollapse('sidebar-left','reference-layer-list-collapse-label','reference-layer-list-collapse-div','REFERENCE DATA',`<img class='panel-title-svg-lg'  alt="Layers icon" src="./Icons_svg/data-layers_ffffff.svg">`,false,null,'Additional relevant layers to view on map intended to provide context for change data');
+  $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+
   addCollapse('sidebar-left','table-collapse-label','table-collapse-div','MONITORING SITES',`<img class='panel-title-svg-lg'  alt="Graph icon" src="./Icons_svg/graph_ffffff.svg">`,true,``,'Giant Sequoia monitoring sites output table');
 
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
