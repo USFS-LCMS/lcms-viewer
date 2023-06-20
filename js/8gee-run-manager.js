@@ -3558,7 +3558,6 @@ if(mode === 'sequoia-view'){
 function runSequoia(){
   // First get a unique id url with all the parameters used to make the outputs
   TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
-
   
   // Empty any existing table if it exists and add a spinner to let user know the table is being computed
   $('#table-collapse-div').empty();
@@ -3779,7 +3778,6 @@ function runSequoia(){
         map.setCenter({ lat: loc[1], lng: loc[0] });
         map.setZoom(18);
        });
-
        
        // Cast the datatable as a DataTable object
           $(`#monitoring-sites-table`).DataTable({
@@ -3844,12 +3842,24 @@ function runSequoia(){
     return ee.Image(img.date().get('year')).updateMask(img).int16()
     }).max();
 
+    // Bring in SEKI assets as FeatureCollections
+    var sekiNorthTAO = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI')
+    var sekiLiveTrees = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive')
+    var tharpsSequoias = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias')
+    var sierraGroves = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py')
+
     // Add MTBS layers to Reference data
     Map2.addLayer(mtbs.count(),{min:1,max:4,palette:'BD1600,E2F400,0C2780'},`MTBS Burn Count ${preStartYear}-${postYear}`,false,null,null,`Number of mapped MTBS burns from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
     Map2.addLayer(mtbsYr,{min:preStartYear,max:postYear,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},`MTBS Most Recent Burn Year ${preStartYear}-${postYear}`,false,null,null,`Most recent mapped MTBS burn from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
     Map2.addLayer(mtbs.max(),{min:2,max:4,palette:'7fffd4,FF0,F00',queryDict:{2:'Low',3:'Moderate',4:'High'},classLegendDict:{'Low':'7fffd4','Moderate':'FF0','High':'F00'}},`MTBS Max Severity ${preStartYear}-${postYear}`,false,null,null,`Highest severity mapped MTBS burn from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
     
-    // Add the sequoia layers to the map
+    // Add SEKI vector layers to Reference Data
+    Map2.addLayer(sierraGroves,{strokeColor:'953822','layerType':'geeVector'},`Sequoia Groves of the Sierra Nevada`,false,null,null,null,'reference-layer-list'); //{'strokeColor':'953822'} =dark reddish brown
+    Map2.addLayer(sekiNorthTAO,{strokeColor:'10755c'},`Tree Approximate Objects (TAO)`,false,null,null,`LiDAR-derived TAO for SEKI north; SEGI trees only.`,'reference-layer-list'); //{'strokeColor':'10755c'} =dark teal
+    Map2.addLayer(sekiLiveTrees.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{strokeColor:'85bd04'},`SEKI Live Sequoia Trees`,false,null,null,`Sequoia trees from the Sequoia and Kings Canyon National Parks (SEKI) Sequoia Tree Inventory Project (STI).`,'reference-layer-list',false); //'strokeColor':'85bd04'=light green
+    Map2.addLayer(tharpsSequoias.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{strokeColor:'eb7a38'},`Tharps Burn Project Sequoias`,false,null,null,`SEGI trees of the Tharps Burn Project`,'reference-layer-list'); // {'strokeColor':'eb7a38'} =orange
+
+    // Add the analysis layers to the map
     Map2.addLayer(preComp,urlParams.compVizParams,`Pre Composite ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
     Map2.addLayer(postComp,urlParams.compVizParams,`Post Composite ${postYear} ${startJulianFormatted}-${endJulianFormatted}`,false);
     
@@ -3857,8 +3867,8 @@ function runSequoia(){
 
     Map2.addLayer(changeHeuristic.selfMask().updateMask(lcmsTreeMask),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
 
-    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'00BFA5','layerType':'geeVector'},'Monitoring Sites')
-    // clickBoundsColor='#0FF';
+    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'FF0','layerType':'geeVector'},'Monitoring Sites',true,null,null,'Trees of special interest');
+           
     Map2.addLayer(studyArea,{},'Study Area',false);
 
     
