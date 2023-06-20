@@ -3559,6 +3559,7 @@ function runSequoia(){
   // First get a unique id url with all the parameters used to make the outputs
   TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
 
+  
   // Empty any existing table if it exists and add a spinner to let user know the table is being computed
   $('#table-collapse-div').empty();
   $('#table-collapse-div').append(`<div id="sequoia-mon-loading-div" style="">
@@ -3584,6 +3585,8 @@ function runSequoia(){
     startJulianFormatted = formatDTJulian(Date.fromDayofYear(startJulian));//ee.Date.parse('YYYY-DDD',`2003-${startJulian}`).format('MM/dd').getInfo()
     endJulianFormatted = formatDTJulian(Date.fromDayofYear(endJulian));//ee.Date.parse('YYYY-DDD',`2003-${endJulian}`).format('MM/dd').getInfo()
 
+    //Send run event for Google Analytics
+    ga('send', 'event', 'sequoia-view-run', 'date_params', `${preStartYear}-${preEndYear}__${postYear}__${startJulianFormatted}-${endJulianFormatted}`);
     // Bring in the monitoring sites
     var monitoring_sites = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest');
     
@@ -3693,7 +3696,7 @@ function runSequoia(){
       var locProps = ['Longitude','Latitude'];
       
       // Concat all column names for the header
-      var allProps = monitoringSitesPropertyNames.concat(['Potential_Loss % Crown']).concat(spectralProps).concat(locProps)
+      var allProps = monitoringSitesPropertyNames.concat(['Potential_Loss']).concat(spectralProps).concat(locProps)
       
       // Add in the table header
       $(`#monitoring-sites-table`).append(`<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`);
@@ -3725,11 +3728,11 @@ function runSequoia(){
         monitoringSitesPropertyNames.map(prop=>{
           $(`#${rowID}`).append(`<td class = 'highlights-entry '>${f.properties[prop]}</td>`);
         });
-
+        var potLossDict={null:'',0:'No',1:'Yes'}
         // Add in the potential loss column value
         var potLossV = f.properties['Potential_Loss'];
-        if(potLossV===null){potLossV=''}
-        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${potLossV}</td>`);
+        // if(potLossV===null){potLossV=''}
+        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${potLossDict[potLossV]}</td>`);
 
         // Add any spectral properties
         spectralProps.map(prop=>{
@@ -3777,9 +3780,10 @@ function runSequoia(){
         map.setZoom(18);
        });
 
+       
        // Cast the datatable as a DataTable object
           $(`#monitoring-sites-table`).DataTable({
-            fixedHeader: true,
+            // fixedHeader: true,
           paging: false,
           searching: true,
           order: [3],
@@ -3823,7 +3827,10 @@ function runSequoia(){
         // Hide the table loading spinner
         $('#sequoia-mon-loading-div').hide();
       
-        
+        $('#monitoring-sites-table_wrapper>div.dt-buttons>button.buttons-html5 ').on('click',(e)=>{
+          console.log('Sequoia download event')
+          ga('send','event','sequoia-monarch-table-download', e.target.innerText,tableDownloadName);
+         });
         });
      });
     
@@ -3850,8 +3857,8 @@ function runSequoia(){
 
     Map2.addLayer(changeHeuristic.selfMask().updateMask(lcmsTreeMask),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
 
-    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'FF0','layerType':'geeVector'},'Monitoring Sites')
-       
+    Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'00BFA5','layerType':'geeVector'},'Monitoring Sites')
+    // clickBoundsColor='#0FF';
     Map2.addLayer(studyArea,{},'Study Area',false);
 
     

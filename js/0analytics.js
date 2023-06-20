@@ -15,7 +15,10 @@ var analyticsObj = {'LCMS':'G-Q5Y0RQT6WG',
 					'Bloom-Mapper':'G-DXSXKN9537',
 					'Ancillary':'G-7NYEBLBGR4',
 					'dev-viewer':'G-CT5Z7S3YFP',
-					'geeViz':'G-3KQZ4670E3'
+					'geeViz':'G-3KQZ4670E3',
+					'TreeMap':'G-Q2J4L3ZDFV',
+					'lcms-home':'G-JD5RXX6TFK',
+					'sequoia-view':'G-15Q4KFCY98'
 // 					'LCMS-pilot':'UA-188090968-1',
 // 					'FHP':'UA-188090968-1',
 // 					'MTBS':'UA-188090968-2',
