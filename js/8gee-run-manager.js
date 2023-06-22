@@ -3832,9 +3832,9 @@ function runSequoia(){
         });
      });
     
-    // Bring in MTBS data
+    // Bring in MTBS data : start MTBS data in 2012 at onset of 2012-2016 drought period
     var mtbs = ee.ImageCollection("USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1")
-    .filter(ee.Filter.calendarRange(preStartYear,postYear,'year'))
+    .filter(ee.Filter.calendarRange(preStartYear-5,postYear,'year'))
     .map(img=>{
       return img.updateMask(img.gte(2).and(img.lte(4)))
     })
@@ -3849,9 +3849,9 @@ function runSequoia(){
     var sierraGroves = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py');
 
     // Add MTBS layers to Reference data
-    Map2.addLayer(mtbs.count(),{min:1,max:4,palette:'BD1600,E2F400,0C2780'},`MTBS Burn Count ${preStartYear}-${postYear}`,false,null,null,`Number of mapped MTBS burns from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
-    Map2.addLayer(mtbsYr,{min:preStartYear,max:postYear,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},`MTBS Most Recent Burn Year ${preStartYear}-${postYear}`,false,null,null,`Most recent mapped MTBS burn from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
-    Map2.addLayer(mtbs.max(),{min:2,max:4,palette:'7fffd4,FF0,F00',queryDict:{2:'Low',3:'Moderate',4:'High'},classLegendDict:{'Low':'7fffd4','Moderate':'FF0','High':'F00'}},`MTBS Max Severity ${preStartYear}-${postYear}`,false,null,null,`Highest severity mapped MTBS burn from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
+    Map2.addLayer(mtbs.count(),{min:1,max:4,palette:'BD1600,E2F400,0C2780'},`MTBS Burn Count ${preStartYear-5}-${postYear}`,false,null,null,`Number of mapped MTBS burns from ${preStartYear-5} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
+    Map2.addLayer(mtbsYr,{min:preStartYear-5,max:postYear,palette:'ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02'},`MTBS Most Recent Burn Year ${preStartYear-5}-${postYear}`,false,null,null,`Most recent mapped MTBS burn from ${preStartYear-5} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
+    Map2.addLayer(mtbs.max(),{min:2,max:4,palette:'7fffd4,FF0,F00',queryDict:{2:'Low',3:'Moderate',4:'High'},classLegendDict:{'Low':'7fffd4','Moderate':'FF0','High':'F00'}},`MTBS Max Severity ${preStartYear-5}-${postYear}`,false,null,null,`Highest severity mapped MTBS burn from ${preStartYear-5} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
     
     // Add SEKI vector layers to Reference Data
     Map2.addLayer(sierraGroves,{strokeColor:'953822','layerType':'geeVector'},`Sequoia Groves of the Sierra Nevada`,false,null,null,null,'reference-layer-list'); //{'strokeColor':'953822'} =dark reddish brown
@@ -3874,6 +3874,7 @@ function runSequoia(){
     
 
     if(!seq_mon_query_clicked){
+      localStorage.showToolTipModal = 'false';
       $('#query-label').click();
       seq_mon_query_clicked=true;
     }
