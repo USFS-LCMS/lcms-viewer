@@ -1,0 +1,137 @@
+.lcms-table-columns td {
+font-size: 1rem;
+table-layout: fixed;
+font-weight: bold;
+padding: 1rem 2rem 0rem 1rem;/*  top,right,bottom,left */
+max-width: 1000px;
+}
+.lcms-table-columns td smalltext{font-size: 0.75rem;font-weight: 100;}
+
+td{
+word-wrap:break-word;
+}
+
+.liClass {
+list-style: none;
+}
+    
+
+.liClass::before {
+
+/* Unicode for a bullet */
+content: "\2022";
+
+/* Styles for Indentation*/
+color: #00BFA5;
+size: 10;    
+display: inline-block;
+width: 1em;
+margin-left: -1em;
+}
+
+.liClass {
+color: white;
+}
+
+
+h5 {
+font-weight: 200;
+/* margin: 0.4em 0; */
+color: #00BFA5;
+font-size: 24px;
+font-family: inherit;
+text-align: center;
+}
+
+h6 {
+animation: fadeInAnimation ease 10s;
+animation-iteration-count: 1; 
+animation-fill-mode: forwards; 
+}
+
+textFade {
+animation: fadeInAnimation ease 20s;
+animation-delay: ease 0;
+animation-iteration-count: 1;
+animation-fill-mode: forwards;
+}
+
+textFade2 {
+animation: fadeInAnimation ease 25s;
+animation-delay: ease 0;
+animation-iteration-count: 1;
+animation-fill-mode: forwards;
+}
+
+textFade3 {
+animation: fadeInAnimation ease 30s;
+animation-delay: ease 0;
+animation-iteration-count: 1;
+animation-fill-mode: forwards;
+}
+
+textFade4 {
+animation: fadeInAnimation ease 35s;
+animation-delay: ease 0;
+animation-iteration-count: 1;
+animation-fill-mode: forwards;
+}
+
+textFade5 {
+animation: fadeInAnimation ease 40s;
+animation-delay: ease 0;
+animation-iteration-count: 1;
+animation-fill-mode: forwards;
+}
+
+textFade6 {
+animation: fadeInAnimation ease 45s;
+animation-delay: ease 0;
+animation-iteration-count: 1;
+animation-fill-mode: forwards;
+}
+@keyframes fadeInAnimation {
+0% {
+    opacity: 0;
+}
+100% {
+    opacity: 1;
+}
+}
+
+
+
+
+
+.navbar-inverse .navbar-nav>.active>a,
+.navbar-inverse .navbar-nav>.active>a:hover,
+.navbar-inverse .navbar-nav>.active>a:focus {
+background: rgba(235, 235, 235, 0) !important;
+color: var(--teal-80) !important;
+
+}
+
+.bg-dark{background-color: var(--solid-black)!important;
+    color:var(--deep-brown-10)!important;}
+
+.intro-text{
+    text-align: left;
+    font-size:1.8rem;
+    margin-top:5rem;
+}
+.intro-text>ul>p{
+    margin-bottom:2rem;
+}
+.application-examples{margin-top:2rem;}
+
+.home-section{
+    margin-left:1rem;
+}
+.bg-dark a{
+    color:var(--deep-brown-10)
+}
+
+.bg-white a{
+    color:var(--deep-brown-100)
+}
+

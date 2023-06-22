@@ -3825,8 +3825,8 @@ function runSequoia(){
         // Hide the table loading spinner
         $('#sequoia-mon-loading-div').hide();
       
+        // Listen for downloading of table and log event
         $('#monitoring-sites-table_wrapper>div.dt-buttons>button.buttons-html5 ').on('click',(e)=>{
-          console.log('Sequoia download event')
           ga('send','event','sequoia-monarch-table-download', e.target.innerText,tableDownloadName);
          });
         });
@@ -3843,10 +3843,10 @@ function runSequoia(){
     }).max();
 
     // Bring in SEKI assets as FeatureCollections
-    var sekiNorthTAO = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI')
-    var sekiLiveTrees = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive')
-    var tharpsSequoias = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias')
-    var sierraGroves = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py')
+    var sekiNorthTAO = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI');
+    var sekiLiveTrees = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive');
+    var tharpsSequoias = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias');
+    var sierraGroves = ee.FeatureCollection('projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py');
 
     // Add MTBS layers to Reference data
     Map2.addLayer(mtbs.count(),{min:1,max:4,palette:'BD1600,E2F400,0C2780'},`MTBS Burn Count ${preStartYear}-${postYear}`,false,null,null,`Number of mapped MTBS burns from ${preStartYear} to ${postYear} with low, moderate, or high severity`,'reference-layer-list');
