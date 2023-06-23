@@ -3756,6 +3756,7 @@ function runSequoia(){
       // Once the table is loaded, set up listeners for table to map behaviors
       $(document).ready(()=>{
 
+        
         // As the mouse moves over the table, set a marker and label at that location on the map
         $("#monitoring-sites-table").on('mousemove', 'tr', function (e) {
           try{
@@ -3822,6 +3823,9 @@ function runSequoia(){
         // Change appearance of table container
         $(`#monitoring-sites-table-container`).addClass(`bg-white highlights-table`);
         
+        // Set hover text
+        $('.dt-buttons.btn-group.flex-wrap').prop('title','Download this table to any of these formats for local/offline use');
+        $('#monitoring-sites-table_filter').prop('title','Filter named Giant Sequoias here');
         // Hide the table loading spinner
         $('#sequoia-mon-loading-div').hide();
       
