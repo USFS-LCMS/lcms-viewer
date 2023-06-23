@@ -28,12 +28,13 @@
     </script>
     <script type="text/javascript" src="./js/0analytics.js"></script>
     <script type="text/javascript" src="./js/16lcms-webpage.js"></script>
+    <!-- <script type="text/javascript" src="./js/10download-manager.js"></script> -->
   </head>
   <body data-spy="scroll" data-target=".navbar" data-offset="10" class='bg-solid-black'>
     <div class='container-fluid '>
       <nav class="navbar navbar-inverse bg-gray navbar-fixed-top navbar-expand-lg">
         <div class="container-fluid" id="top-bar">
-          <div class="navbar-header" style='font-size:2rem'>
+          <div class="navbar-header" style='font-size:2rem;padding-top: 0.25rem;'>
             <span class=" pull-left teal-study-area-label ">
               <img style="height:2.7rem" src="./images/logos_usda-fs.svg">
               <img style="height:2.2rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM </span>
@@ -92,10 +93,10 @@
         </div>
       </div>
     </div>
-    <div id="applications" class="container-fluid bg-dark info-page">
+    <div id="applications" class="container-fluid bg-white info-page">
       <div class="home-section">
         <h2>APPLICATIONS</h2>
-        <div class='row'>
+        <div class='row bg-dark'>
           <div class="col-md-5">
             <h3>Monitor annual Change</h3>
             <p>Vegetation cover changes caused by ephemeral and longer duration disturbance events</p>
@@ -113,7 +114,7 @@
           </div>
         </div>
         <hr>
-        <div class='row'>
+        <div class='row bg-dark'>
           <div class="col-md-5">
             <h3>Monitor annual Land Cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
@@ -131,7 +132,7 @@
           </div>
         </div>
         <hr>
-        <div class='row'>
+        <div class='row bg-dark'>
           <div class="col-md-5">
             <h3>Monitor annual Land Use changes</h3>
             <p>Intended human use of the land that represent economic and cultural activities practiced at a given place</p>
@@ -151,164 +152,167 @@
       </div>
     </div>
     <div id="products" class="container-fluid bg-white info-page">
-      <h2>DATA DESCRIPTIONS</h2>
-      <div class="row ">
-        <table class="table bg-dark mx-1">
-          <thead class='teal80 '>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Example</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Change</th>
-              <td>
-                <table class="lcms-table-columns">
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td>Change classes represent the most recent state of vegetation cover change</td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>There are 4 change classes: <div class="row">
-                          <ul>
-                            <li>Fast Loss: <smalltext>Vegetation cover loss caused by ephemeral events. For example, a fire or harvest that causes rapid vegetation cover change.</smalltext>
-                            </li>
-                            <li>Slow Loss: <smalltext>Vegetation cover loss caused by longer duration events. For example, mountain pine beetle-caused mortality in Rocky Mountain forests.</smalltext>
-                            </li>
-                            <li>Gain: <smalltext>Vegetation cover growth after a loss of vegetation cover. For example, new growth of tree saplings following a fire or harvest.</smalltext>
-                            </li>
-                            <li>Stable: <smalltext>Where no significant change is evident in the spectral response and the trend is essentially flat. Agricultural systems and wetlands are commonly highly variable spectrally through time, and are thus considered stable but ephemeral.</smalltext>
-                            </li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-              <td class="col-md-2">
-                <img width='100%' src="./images/California_Change.gif">
-              </td>
-            </tr>
-            <tr>
-              <th>Land Cover</th>
-              <td>
-                <table class="lcms-table-columns">
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td>Land cover classes represent the vegetation or other biophysical attributes of the land surface</td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>There are 14 landcover classes: <div class="row">
-                          <div class="col-sm-6">
+      <div class="home-section">
+        <h2>DATA DESCRIPTIONS</h2>
+        <div class="row bg-dark">
+          <table class="table">
+            <thead class='teal80 '>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Change</th>
+                <td>
+                  <table class="lcms-table-columns">
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td>Change classes represent the most recent state of vegetation cover change</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>There are 4 change classes: <div class="row">
                             <ul>
-                              <li>Trees: <smalltext>The majority of the pixel is comprised of live or standing dead trees</smalltext>
+                              <li>Fast Loss: <smalltext>Vegetation cover loss caused by ephemeral events. For example, a fire or harvest that causes rapid vegetation cover change.</smalltext>
                               </li>
-                              <li>Tall Shrubs-Trees (Alaska only): <smalltext>The majority of the pixel is comprised of shrubs greater than 1m in height and is also comprised of at least 10% live or standing dead trees</smalltext>
+                              <li>Slow Loss: <smalltext>Vegetation cover loss caused by longer duration events. For example, mountain pine beetle-caused mortality in Rocky Mountain forests.</smalltext>
                               </li>
-                              <li>Shrubs-Trees: <smalltext>The majority of the pixel is comprised of shrubs and is also comprised of at least 10% live or standing dead trees</smalltext>
+                              <li>Gain: <smalltext>Vegetation cover growth after a loss of vegetation cover. For example, new growth of tree saplings following a fire or harvest.</smalltext>
                               </li>
-                              <li>Grass-Trees: <smalltext>The majority of the pixel is comprised of perennial grasses, forbs, or other forms of herbaceous vegetation and is also comprised of at least 10% live or standing dead trees</smalltext>
-                              </li>
-                              <li>Barren-Trees: <smalltext>The majority of the pixel is comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren and is also comprised of at least 10% live or standing dead trees</smalltext>
-                              </li>
-                              <li>Tall-Shrub (Alaska only): <smalltext>The majority of the pixel is comprised of shrubs greater than 1m in height</smalltext>
-                              </li>
-                              <li>Shrubs: <smalltext>The majority of the pixel is comprised of shrubs</smalltext>
+                              <li>Stable: <smalltext>Where no significant change is evident in the spectral response and the trend is essentially flat. Agricultural systems and wetlands are commonly highly variable spectrally through time, and are thus considered stable but ephemeral.</smalltext>
                               </li>
                             </ul>
                           </div>
-                          <div class="col-sm-6">
-                            <ul>
-                              <li>Grass-Shrubs: <smalltext>The majority of the pixel is comprised of perennial grasses, forbs, or other forms of herbaceous vegetation and is also comprised of at least 10% shrubs</smalltext>
-                              </li>
-                              <li>Barren-Shrubs: <smalltext>The majority of the pixel is comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren and is also comprised of at least 10% shrubs</smalltext>
-                              </li>
-                              <li>Grass: <smalltext>The majority of the pixel is comprised of perennial grasses, forbs, or other forms of herbaceous vegetation</smalltext>
-                              </li>
-                              <li>Barren-Grass: <smalltext>The majority of the pixel is comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren and is also comprised of at least 10% perennial grasses, forbs, or other forms of herbaceous vegetation</smalltext>
-                              </li>
-                              <li>Barren-Impervious: <smalltext>The majority of the pixel is comprised of 1) bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren or 2) man-made materials that water cannot penetrate, such as paved roads, rooftops, and parking lots</smalltext>
-                              </li>
-                              <li>Snow or ice: <smalltext>The majority of the pixel is comprised of snow or ice</smalltext>
-                              </li>
-                              <li>Water: <smalltext>The majority of the pixel is comprised of water</smalltext>
-                              </li>
-                            </ul>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td class="col-md-2">
+                  <img width='100%' src="./images/California_Change.gif">
+                </td>
+              </tr>
+              <tr>
+                <th>Land Cover</th>
+                <td>
+                  <table class="lcms-table-columns">
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td>Land cover classes represent the vegetation or other biophysical attributes of the land surface</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>There are 14 landcover classes: <div class="row">
+                            <div class="col-sm-6">
+                              <ul>
+                                <li>Trees: <smalltext>The majority of the pixel is comprised of live or standing dead trees</smalltext>
+                                </li>
+                                <li>Tall Shrubs-Trees (Alaska only): <smalltext>The majority of the pixel is comprised of shrubs greater than 1m in height and is also comprised of at least 10% live or standing dead trees</smalltext>
+                                </li>
+                                <li>Shrubs-Trees: <smalltext>The majority of the pixel is comprised of shrubs and is also comprised of at least 10% live or standing dead trees</smalltext>
+                                </li>
+                                <li>Grass-Trees: <smalltext>The majority of the pixel is comprised of perennial grasses, forbs, or other forms of herbaceous vegetation and is also comprised of at least 10% live or standing dead trees</smalltext>
+                                </li>
+                                <li>Barren-Trees: <smalltext>The majority of the pixel is comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren and is also comprised of at least 10% live or standing dead trees</smalltext>
+                                </li>
+                                <li>Tall-Shrub (Alaska only): <smalltext>The majority of the pixel is comprised of shrubs greater than 1m in height</smalltext>
+                                </li>
+                                <li>Shrubs: <smalltext>The majority of the pixel is comprised of shrubs</smalltext>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-sm-6">
+                              <ul>
+                                <li>Grass-Shrubs: <smalltext>The majority of the pixel is comprised of perennial grasses, forbs, or other forms of herbaceous vegetation and is also comprised of at least 10% shrubs</smalltext>
+                                </li>
+                                <li>Barren-Shrubs: <smalltext>The majority of the pixel is comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren and is also comprised of at least 10% shrubs</smalltext>
+                                </li>
+                                <li>Grass: <smalltext>The majority of the pixel is comprised of perennial grasses, forbs, or other forms of herbaceous vegetation</smalltext>
+                                </li>
+                                <li>Barren-Grass: <smalltext>The majority of the pixel is comprised of bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren and is also comprised of at least 10% perennial grasses, forbs, or other forms of herbaceous vegetation</smalltext>
+                                </li>
+                                <li>Barren-Impervious: <smalltext>The majority of the pixel is comprised of 1) bare soil exposed by disturbance (e.g., soil uncovered by mechanical clearing or forest harvest), as well as perennially barren areas such as deserts, playas, rock outcroppings (including minerals and other geologic materials exposed by surface mining activities), sand dunes, salt flats, and beaches. Roads made of dirt and gravel are also considered barren or 2) man-made materials that water cannot penetrate, such as paved roads, rooftops, and parking lots</smalltext>
+                                </li>
+                                <li>Snow or ice: <smalltext>The majority of the pixel is comprised of snow or ice</smalltext>
+                                </li>
+                                <li>Water: <smalltext>The majority of the pixel is comprised of water</smalltext>
+                                </li>
+                              </ul>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-              <td>
-                <img class="col-md-2">
-                <img width='100%' src="./images/Great_Salt_Lake_Landcover.gif">
-              </td>
-            </tr>
-            <tr>
-              <th>Land Use</th>
-              <td>
-                <table class="lcms-table-columns">
-                  <thead>
-                    <tr></tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td>Land use classes represent how biophysical attributes are intended to be used by humans</td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>There are 6 land use classes: <div class="row">
-                          <div class="col-sm-6">
-                            <ul>
-                              <li>Agriculture: <smalltext>Land used for the production of food, fiber and fuels which is in either a vegetated or non-vegetated state. This includes but is not limited to cultivated and uncultivated croplands, hay lands, orchards, vineyards, confined livestock operations, and areas planted for production of fruits, nuts or berries. Roads used primarily for agricultural use (i.e. not used for public transport from town to town) are considered agriculture land use.</smalltext>
-                              </li>
-                              <li>Developed: <smalltext>Land covered by man-made structures (e.g. high density residential, commercial, industrial, mining or transportation), or a mixture of both vegetation (including trees) and structures (e.g., low density residential, lawns, recreational facilities, cemeteries, transportation and utility corridors, etc.), including any land functionally altered by human activity. 3: FOREST: Land that is planted or naturally vegetated and which contains (or is likely to contain) 10% or greater tree cover at some time during a near-term successional sequence. This may include deciduous, evergreen and/or mixed categories of natural forest, forest plantations, and woody wetlands.</smalltext>
-                              </li>
-                              <li>Forest: <smalltext>Land that is planted or naturally vegetated and which contains (or is likely to contain) 10% or greater tree cover at some time during a near-term successional sequence. This may include deciduous, evergreen and/or mixed categories of natural forest, forest plantations, and woody wetlands.</smalltext>
-                              </li>
-                            </ul>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td>
+                  <img class="col-md-2">
+                  <img width='100%' src="./images/Great_Salt_Lake_Landcover.gif">
+                </td>
+              </tr>
+              <tr>
+                <th>Land Use</th>
+                <td>
+                  <table class="lcms-table-columns">
+                    <thead>
+                      <tr></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td>Land use classes represent how biophysical attributes are intended to be used by humans</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>There are 6 land use classes: <div class="row">
+                            <div class="col-sm-6">
+                              <ul>
+                                <li>Agriculture: <smalltext>Land used for the production of food, fiber and fuels which is in either a vegetated or non-vegetated state. This includes but is not limited to cultivated and uncultivated croplands, hay lands, orchards, vineyards, confined livestock operations, and areas planted for production of fruits, nuts or berries. Roads used primarily for agricultural use (i.e. not used for public transport from town to town) are considered agriculture land use.</smalltext>
+                                </li>
+                                <li>Developed: <smalltext>Land covered by man-made structures (e.g. high density residential, commercial, industrial, mining or transportation), or a mixture of both vegetation (including trees) and structures (e.g., low density residential, lawns, recreational facilities, cemeteries, transportation and utility corridors, etc.), including any land functionally altered by human activity. 3: FOREST: Land that is planted or naturally vegetated and which contains (or is likely to contain) 10% or greater tree cover at some time during a near-term successional sequence. This may include deciduous, evergreen and/or mixed categories of natural forest, forest plantations, and woody wetlands.</smalltext>
+                                </li>
+                                <li>Forest: <smalltext>Land that is planted or naturally vegetated and which contains (or is likely to contain) 10% or greater tree cover at some time during a near-term successional sequence. This may include deciduous, evergreen and/or mixed categories of natural forest, forest plantations, and woody wetlands.</smalltext>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-sm-6">
+                              <ul>
+                                <li>Non-forest Wetland: <smalltext>Lands adjacent to or within a visible water table (either permanently or seasonally saturated) dominated by shrubs or persistent emergents. These wetlands may be situated shoreward of lakes, river channels, or estuaries; on river floodplains; in isolated catchments; or on slopes. They may also occur as prairie potholes, drainage ditches and stock ponds in agricultural landscapes and may also appear as islands in the middle of lakes or rivers. Other examples also include marshes, bogs, swamps, quagmires, muskegs, sloughs, fens, and bayous.</smalltext>
+                                </li>
+                                <li>Other: <smalltext>Land (regardless of use) where the spectral trend or other supporting evidence suggests a disturbance or change event has occurred but the definitive cause cannot be determined or the type of change fails to meet any of the change process categories defined above.</smalltext>
+                                </li>
+                                <li>Rangeland or Pasture: <smalltext>This class includes any area that is either a.) Rangeland, where vegetation is a mix of native grasses, shrubs, forbs and grass-like plants largely arising from natural factors and processes such as rainfall, temperature, elevation and fire, although limited management may include prescribed burning as well as grazing by domestic and wild herbivores; or b.) Pasture, where vegetation may range from mixed, largely natural grasses, forbs and herbs to more managed vegetation dominated by grass species that have been seeded and managed to maintain near monoculture.</smalltext>
+                                </li>
+                              </ul>
+                            </div>
                           </div>
-                          <div class="col-sm-6">
-                            <ul>
-                              <li>Non-forest Wetland: <smalltext>Lands adjacent to or within a visible water table (either permanently or seasonally saturated) dominated by shrubs or persistent emergents. These wetlands may be situated shoreward of lakes, river channels, or estuaries; on river floodplains; in isolated catchments; or on slopes. They may also occur as prairie potholes, drainage ditches and stock ponds in agricultural landscapes and may also appear as islands in the middle of lakes or rivers. Other examples also include marshes, bogs, swamps, quagmires, muskegs, sloughs, fens, and bayous.</smalltext>
-                              </li>
-                              <li>Other: <smalltext>Land (regardless of use) where the spectral trend or other supporting evidence suggests a disturbance or change event has occurred but the definitive cause cannot be determined or the type of change fails to meet any of the change process categories defined above.</smalltext>
-                              </li>
-                              <li>Rangeland or Pasture: <smalltext>This class includes any area that is either a.) Rangeland, where vegetation is a mix of native grasses, shrubs, forbs and grass-like plants largely arising from natural factors and processes such as rainfall, temperature, elevation and fire, although limited management may include prescribed burning as well as grazing by domestic and wild herbivores; or b.) Pasture, where vegetation may range from mixed, largely natural grasses, forbs and herbs to more managed vegetation dominated by grass species that have been seeded and managed to maintain near monoculture.</smalltext>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-              <td>
-                <img class="col-md-2">
-                <img width='100%' src="./images/Denver_Land_use_terrain.gif">
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td>
+                  <img class="col-md-2">
+                  <img width='100%' src="./images/Denver_Land_use_terrain.gif">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+      
     </div>
-    <div id="data-explorer" class="container-fluid bg-dark info-page ">
+    <div id="data-explorer" class="container-fluid bg-white info-page ">
       <div class="row home-section">
         <h2>Explore LCMS Data</h2>
         <p>Several web mapping applications are available to explore, summarize, and produce reports of how our landscape is changing.</p>
       </div>
-      <div class='row home-section'>
+      <div class='row home-section bg-dark'>
         <div class="col-md-4" title='Click to open LCMS Data Explorer'>
           <p>Data Explorer</p>
           <a href="./index.html" target="_blank">
@@ -334,6 +338,8 @@
       <hr>
       <div class='row home-section'>
         <h3>Additional LCMS data exploration tools</h3>
+      </div>
+      <div class='row home-section bg-dark'>
         <div class="col-md-3" title='Click to open LCMS Base Learner Explorer'>
           <p>Base Learner Explorer</p>
           <a href="./lcms-base-learner.html" target="_blank">

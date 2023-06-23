@@ -1083,7 +1083,7 @@ textarea {
     -o-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }*/
-.close{color:#FFF;}
+/* .close{color:#FFF;} */
 .modal-md{
   max-width:550px;
 }

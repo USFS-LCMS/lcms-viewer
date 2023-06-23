@@ -126,6 +126,7 @@ color: var(--teal-80) !important;
 
 .home-section{
     margin-left:1rem;
+    margin-right:1rem;
 }
 .bg-dark a{
     color:var(--deep-brown-10)
