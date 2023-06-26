@@ -102,7 +102,7 @@ animation-fill-mode: forwards;
 
 
 
-
+.navbar-header{font-size:2rem;padding-top: 0.25rem;}
 .navbar-inverse .navbar-nav>.active>a,
 .navbar-inverse .navbar-nav>.active>a:hover,
 .navbar-inverse .navbar-nav>.active>a:focus {
@@ -110,7 +110,15 @@ background: rgba(235, 235, 235, 0) !important;
 color: var(--teal-80) !important;
 
 }
-
+.navbar-toggler{
+    width: 3rem;
+    height:3rem;
+    border-color: none;
+    background-color: var(--deep-brown-100);
+    color:none;
+    
+     }
+     .navbar-toggler>span{font-size:2rem;color:var(--deep-brown-10)} 
 .bg-dark{background-color: var(--solid-black)!important;
     color:var(--deep-brown-10)!important;}
 

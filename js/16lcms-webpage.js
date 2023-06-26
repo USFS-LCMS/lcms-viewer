@@ -177,12 +177,23 @@ function openLCMSSurvey(fromWhere){
 }
 function resizePanes(){
   console.log('resized');
-  $('.info-page').css('padding-top',$('#navbar').height())
+  if(window.innerWidth>=768){
+    $('#navbar-toggler-button').hide();
+  }else{
+    $('#navbar-toggler-button').show();
+  }
+  $('.info-page').css('padding-top',$('nav').height())
 }
 $(document).ready(function () {
   populateLCMSDownloads();
   resizePanes();
   addEventListener("resize", (e) => {resizePanes()});
+
+  const ro = new ResizeObserver(e => {
+    resizePanes();
+  });
+  // Only observe the second box
+  ro.observe(document.querySelector('#navbar'));
   // $('.carousel').carousel({
   //   interval: 8000
   // })
