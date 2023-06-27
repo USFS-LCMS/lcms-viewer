@@ -7,6 +7,7 @@
     <!-- test push -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -31,9 +32,9 @@
     <!-- <script type="text/javascript" src="./js/10download-manager.js"></script> -->
   </head>
   <body>
-    <div class='container-fluid '>
+    
       <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm" >
-        <div class="container-fluid" id="top-bar">
+        
           
           
           <div class="navbar-header" >
@@ -71,10 +72,11 @@
                 <a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
               </li>
             </ul>
-          </div>
+          
         </div>
-    </div>
-    </nav>
+      </nav>
+   
+    
     <div id="intro" class="container-fluid bg-dark info-page">
       <div class="row home-section">
         <div class='col-sm-4 intro-text'>
@@ -106,7 +108,7 @@
         <h2>APPLICATIONS</h2>
         <div class='row bg-dark'>
           <div class="col-md-5">
-            <h3>Monitor annual Change</h3>
+            <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by ephemeral and longer duration disturbance events</p>
             <img style='width:95%' src="./images/CONUS_All_Change.png" />
           </div>
@@ -124,7 +126,7 @@
         <hr>
         <div class='row bg-dark'>
           <div class="col-md-5">
-            <h3>Monitor annual Land Cover changes</h3>
+            <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
             <img style='width:100%' src="./images/CONUS_Land_Cover.png" />
           </div>
@@ -142,7 +144,7 @@
         <hr>
         <div class='row bg-dark'>
           <div class="col-md-5">
-            <h3>Monitor annual Land Use changes</h3>
+            <h3>Monitor annual land use changes</h3>
             <p>Intended human use of the land that represent economic and cultural activities practiced at a given place</p>
             <img style='width:100%' src="./images/CONUS_All_LandUse.png">
           </div>
@@ -1000,10 +1002,21 @@
               <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target='_blank'>Cohen et al 2018</a>
             </ul>
           </li>
+          
         </div>
         <div class='col-sm-6' style="margin-bottom: 1rem;">
           <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
         </div>
+      </div>
+      <hr>
+      <div class="row home-section " style="margin-bottom:2rem;">
+        <div class = 'col-sm-6'>
+          <h3>Feedback</h3>
+          <p>We welcome your feedback. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p>
+        <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
+        </div>
+        
+  
       </div>
     </div>
     <div id="contact" class="container-fluid bg-dark">
@@ -1013,7 +1026,7 @@
           <p>Geospatial Technology and Applications Center (GTAC)</p>
           <p>125 S State St, Suite 7105</p>
           <p>Salt Lake City, UT 84138</p>
-          <a href="mailto: sm.fs.lcms@usda.gov">Contact Us</a>
+          <a href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"><u><b>Contact Us</b></u></a>
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="images/GEE_logo_transparent.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#" title="Google Earth Engine (GEE) was used as the primary data acquisition and compute platform for LCMS. Click to learn more about GEE">
           </a>

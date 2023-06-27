@@ -179,15 +179,21 @@ function resizePanes(){
   console.log('resized');
   if(window.innerWidth>=768){
     $('#navbar-toggler-button').hide();
+    $('.info-page').css('padding-top',$('nav').height())
   }else{
     $('#navbar-toggler-button').show();
+    $('.info-page').css('padding-top',$('.navbar-header').height())
   }
-  $('.info-page').css('padding-top',$('nav').height())
+  
 }
 $(document).ready(function () {
   populateLCMSDownloads();
   resizePanes();
   addEventListener("resize", (e) => {resizePanes()});
+  // $('#navbar-toggler-button').on('click',e=>{
+  //   console.log(e)
+  //   resizePanes();
+  // })
 
   const ro = new ResizeObserver(e => {
     resizePanes();

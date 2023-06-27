@@ -110,6 +110,9 @@ background: rgba(235, 235, 235, 0) !important;
 color: var(--teal-80) !important;
 
 }
+.form-check-label{
+    margin-top:1rem;
+}
 .navbar-toggler{
     width: 3rem;
     height:3rem;
