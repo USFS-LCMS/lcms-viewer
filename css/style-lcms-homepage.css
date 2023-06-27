@@ -69,7 +69,7 @@ nav{
 .navbar-inverse .navbar-nav>.active>a:focus {
 background: rgba(235, 235, 235, 0) !important;
 color: var(--teal-80) !important;
-
+padding-left:0rem;
 }
 .form-check-label{
     margin-top:1rem;
@@ -82,6 +82,8 @@ color: var(--teal-80) !important;
     color:none;
     
      }
+     
+
      .navbar-toggler>span{font-size:2rem;color:var(--deep-brown-10)} 
 .bg-dark{background-color: var(--solid-black)!important;
     color:var(--deep-brown-10)!important;}
