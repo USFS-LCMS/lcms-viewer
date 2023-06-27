@@ -150,7 +150,13 @@ padding-left:0rem;
     color:var(--deep-brown-10)
 }
 
-.bg-white a{
-    color:var(--teal-100)
+.bg-white a>p{
+    /* color:var(--teal-100); */
+    color:var(--deep-brown-10);
+    /* text-decoration: underline!important; */
 }
-
+.bg-white a{
+    color:var(--teal-100);
+    /* color:var(--deep-brown-10); */
+    /* text-decoration: underline!important; */
+}

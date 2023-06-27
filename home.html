@@ -7,7 +7,6 @@
     <!-- test push -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -32,52 +31,43 @@
     <!-- <script type="text/javascript" src="./js/10download-manager.js"></script> -->
   </head>
   <body data-spy="scroll">
-    
-      <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm" >
-        
-          
-          
-          <div class="navbar-header" >
-            
-            <span class="  teal-study-area-label ">
-              <button class="navbar-toggler "type="button"data-toggle="collapse"data-target="#navbar"  id='navbar-toggler-button' style="display:none">
-                  <span class="navbar-toggler-icon fa fa-bars">
-                
-                </span>
-              </button>
-              <img style="height:2.1rem;margin-left: -0.3rem;" src="./images/logos_usda-fs.svg">
-              <div class="vl-home"></div>
-              <img style="height:1.8rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM </span>
-          </div>
-          <div class="collapse navbar-collapse " id="navbar">
-            <ul class="nav navbar-nav pull-right">
-              <li title='What is LCMS?'>
-                <a class='teal-hover ' id='intro-nav' href="#intro">INTRODUCTION</a>
-              </li>
-              <li title='How can LCMS data be used?'>
-                <a class='teal-hover' id='applications-nav' href="#applications">APPLICATIONS</a>
-              </li>
-              <li title='What are LCMS map outputs?'>
-                <a class='teal-hover' id='applications-nav' href="#products">DATA DESCRIPTIONS</a>
-              </li>
-              <li title='How to visualize and explor LCMS data'>
-                <a class='teal-hover' id='map-nav' href="#data-explorer">EXPLORERS</a>
-              </li>
-              <li title='Download LCMS products for your analyses'>
-                <a class='teal-hover' id='download-nav' href="#download">DOWNLOAD</a>
-              </li>
-              <li title='Why is LCMS needed?'>
-                <a class='teal-hover' id='about-nav' href="#background">ABOUT</a>
-              </li>
-              <li title='Contact us with any questions'>
-                <a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
-              </li>
-            </ul>
-          
-        </div>
-      </nav>
-   
-    
+    <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm">
+      <div class="navbar-header">
+        <span class="  teal-study-area-label ">
+          <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbar" id='navbar-toggler-button' style="display:none">
+            <span class="navbar-toggler-icon fa fa-bars"></span>
+          </button>
+          <img style="height:2.1rem;margin-left: -0.3rem;" src="./images/logos_usda-fs.svg">
+          <div class="vl-home"></div>
+          <img style="height:1.8rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM
+        </span>
+      </div>
+      <div class="collapse navbar-collapse " id="navbar">
+        <ul class="nav navbar-nav pull-right">
+          <li title='What is LCMS?'>
+            <a class='teal-hover ' id='intro-nav' href="#intro">INTRODUCTION</a>
+          </li>
+          <li title='How can LCMS data be used?'>
+            <a class='teal-hover' id='applications-nav' href="#applications">APPLICATIONS</a>
+          </li>
+          <li title='What are LCMS map outputs?'>
+            <a class='teal-hover' id='applications-nav' href="#products">DATA DESCRIPTIONS</a>
+          </li>
+          <li title='How to visualize and explor LCMS data'>
+            <a class='teal-hover' id='map-nav' href="#data-explorer">EXPLORERS</a>
+          </li>
+          <li title='Download LCMS products for your analyses'>
+            <a class='teal-hover' id='download-nav' href="#download">DOWNLOAD</a>
+          </li>
+          <li title='Why is LCMS needed?'>
+            <a class='teal-hover' id='about-nav' href="#background">ABOUT</a>
+          </li>
+          <li title='Contact us with any questions'>
+            <a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div id="intro" class="container-fluid bg-dark info-page">
       <div class="row home-section">
         <div class='col-sm-4 intro-text'>
@@ -198,9 +188,7 @@
                               </li>
                             </ul>
                           </div>
-                          <span title="Click on link to open LCMS methods document in a new browser tab">
-                            <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS change classes see the LCMS methods document</a>
-                          </span>
+                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS change classes see the LCMS methods document</a>
                         </td>
                       </tr>
                     </tbody>
@@ -224,44 +212,29 @@
                         <td>There are 14 landcover classes: <div class="row">
                             <div class="col-sm-6">
                               <ul>
-                                <li>Trees
-                                </li>
-                                <li>Tall Shrubs-Trees (Alaska only)
-                                </li>
-                                <li>Shrubs-Trees
-                                </li>
-                                <li>Grass-Trees
-                                </li>
-                                <li>Barren-Trees
-                                </li>
-                                <li>Tall-Shrub (Alaska only)
-                                </li>
-                                <li>Shrubs
-                                </li>
+                                <li>Trees </li>
+                                <li>Tall Shrubs-Trees (Alaska only) </li>
+                                <li>Shrubs-Trees </li>
+                                <li>Grass-Trees </li>
+                                <li>Barren-Trees </li>
+                                <li>Tall-Shrub (Alaska only) </li>
+                                <li>Shrubs </li>
                               </ul>
                             </div>
                             <div class="col-sm-6">
                               <ul>
-                                <li>Grass-Shrubs
-                                </li>
+                                <li>Grass-Shrubs </li>
                                 <li>Barren-Shrubs
-                                <li>Grass
-                                </li>
-                                <li>Barren-Grass
-                                </li>
-                                <li>Barren-Impervious
-                                </li>
-                                <li>Snow or ice
-                                </li>
-                                <li>Water
-                                </li>
+                                <li>Grass </li>
+                                <li>Barren-Grass </li>
+                                <li>Barren-Impervious </li>
+                                <li>Snow or ice </li>
+                                <li>Water </li>
                               </ul>
                             </div>
                           </div>
                           <br>
-                          <span title="Click on link to open LCMS methods document in a new browser tab">
-                            <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS land cover classes see the LCMS methods document</a>
-                          </span>
+                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS land cover classes see the LCMS methods document</a>
                         </td>
                       </tr>
                     </tbody>
@@ -289,29 +262,21 @@
                         <td>There are 6 land use classes: <div class="row">
                             <div class="col-sm-6">
                               <ul>
-                                <li>Agriculture
-                                </li>
-                                <li>Developed
-                                </li>
-                                <li>Forest
-                                </li>
+                                <li>Agriculture </li>
+                                <li>Developed </li>
+                                <li>Forest </li>
                               </ul>
                             </div>
                             <div class="col-sm-6">
                               <ul>
-                                <li>Non-forest Wetland
-                                </li>
-                                <li>Other
-                                </li>
-                                <li>Rangeland or Pasture
-                                </li>
+                                <li>Non-forest Wetland </li>
+                                <li>Other </li>
+                                <li>Rangeland or Pasture </li>
                               </ul>
                             </div>
                           </div>
                           <br>
-                          <span title="Click on link to open LCMS methods document in a new browser tab">
-                            <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS land use classes see the LCMS methods document</a>
-                          </span>
+                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS land use classes see the LCMS methods document</a>
                         </td>
                       </tr>
                     </tbody>
@@ -326,7 +291,6 @@
           </table>
         </div>
       </div>
-      
     </div>
     <div id="data-explorer" class="container-fluid bg-white info-page ">
       <div class="row home-section">
@@ -1031,25 +995,20 @@
           <h3>LCMS Methods</h3>
           <li>
             <ul class="teal80">
-              <span title="Click on link to open LCMS CONUS & SEAK methods document in a new browser tab">
-                <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS CONUS & SEAK methods document</a>
-              </span>
+              <a title="Click on link to open LCMS CONUS & SEAK methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS CONUS & SEAK methods document</a>
             </ul>
             <ul>
-              <span title="Click on link to open LCMS PRUSVI methods document in a new browser tab">
-               <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" target="_blank">LCMS PRUSVI methods document</a>
-              </span>
+              <a title="Click on link to open LCMS PRUSVI methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" target="_blank">LCMS PRUSVI methods document</a>
             </ul>
-        </li>
+          </li>
           <h3>Feedback</h3>
           <p>We welcome your feedback. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p>
-        <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
+          <a class='intro-modal-links' onclick='openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
         </div>
-        <div class='col-sm-6' >
+        <div class='col-sm-6'>
           <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
         </div>
       </div>
-    
     </div>
     <div id="contact" class="container-fluid bg-dark">
       <div class='row home-section'>
@@ -1057,13 +1016,18 @@
         <div class="col-sm-12">
           <div class="gtac-address">
             <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
-            <u><b>Geospatial Technology and Applications Center (GTAC)</b></u>
+              <u>
+                <b>Geospatial Technology and Applications Center (GTAC)</b>
+              </u>
             </a>
             <p>125 S State St, Suite 7105</p>
             <p>Salt Lake City, UT 84138</p>
           </div>
-          
-          <a href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"><u><b>Contact Us</b></u></a>
+          <a href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions">
+            <u>
+              <b>Contact Us</b>
+            </u>
+          </a>
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="images/GEE_logo_transparent.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#" title="Google Earth Engine (GEE) was used as the primary data acquisition and compute platform for LCMS. Click to learn more about GEE">
           </a>
@@ -1071,7 +1035,7 @@
             <img src="images/RCR-logo.jpg" class='home-image-icon-bar' alt="RedCastle Inc. Logo" href="#" title="RedCastle Resources Inc is the on-site contractor responsible for the technical implementation of LCMS. Click to learn more about RedCastle Resources Inc.">
           </a>
           <a href="https://www.fs.usda.gov" target="_blank">
-            <img src="./images/logos_usda-fs.svg" style= 'height: 2.5rem;
+            <img src="./images/logos_usda-fs.svg" style='height: 2.5rem;
             margin-top: 0rem;margin-bottom:0rem;' class='home-image-icon-bar' href="#" title="Click to learn more about the US Forest Service">
           </a>
         </div>
