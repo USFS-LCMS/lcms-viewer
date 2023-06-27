@@ -319,6 +319,15 @@ button {
   margin-right:0.25rem;
   margin-top:0.5rem;
 }
+.vl-home{
+  border-left: 1px solid var(--deep-brown-20);
+  height: 1.5rem;
+  vertical-align: middle;
+  display: inline-block;
+  margin-left: 0.1rem;
+  margin-right:0.25rem;
+  margin-top:0rem;
+}
 .vl2 {
   border-left: 1px solid var(--deep-brown-100);
   height:2rem;
@@ -564,7 +573,7 @@ button {
   background:rgba(255,255,255,0.2);
 }
 .home-image-icon-bar{
-  max-height:2em;
+  height:2rem;
   float:right;
   margin:0.3em;
   border-radius: 0px;

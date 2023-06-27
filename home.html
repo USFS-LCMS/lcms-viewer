@@ -7,6 +7,7 @@
     <!-- test push -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -30,10 +31,10 @@
     <script type="text/javascript" src="./js/16lcms-webpage.js"></script>
     <!-- <script type="text/javascript" src="./js/10download-manager.js"></script> -->
   </head>
-  <body>
-    <div class='container-fluid '>
+  <body data-spy="scroll">
+    
       <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm" >
-        <div class="container-fluid" id="top-bar">
+        
           
           
           <div class="navbar-header" >
@@ -44,8 +45,9 @@
                 
                 </span>
               </button>
-              <img style="height:2.7rem" src="./images/logos_usda-fs.svg">
-              <img style="height:2.2rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM </span>
+              <img style="height:2.1rem;margin-left: -0.3rem;" src="./images/logos_usda-fs.svg">
+              <div class="vl-home"></div>
+              <img style="height:1.8rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM </span>
           </div>
           <div class="collapse navbar-collapse " id="navbar">
             <ul class="nav navbar-nav pull-right">
@@ -71,10 +73,11 @@
                 <a class='teal-hover' id='contact-nav' href="#contact">CONTACT</a>
               </li>
             </ul>
-          </div>
+          
         </div>
-    </div>
-    </nav>
+      </nav>
+   
+    
     <div id="intro" class="container-fluid bg-dark info-page">
       <div class="row home-section">
         <div class='col-sm-4 intro-text'>
@@ -124,7 +127,7 @@
         <hr>
         <div class='row bg-dark'>
           <div class="col-md-5">
-            <h3>Monitor annual Land Cover changes</h3>
+            <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
             <img style='width:100%' src="./images/CONUS_Land_Cover.png" />
           </div>
@@ -142,7 +145,7 @@
         <hr>
         <div class='row bg-dark'>
           <div class="col-md-5">
-            <h3>Monitor annual Land Use changes</h3>
+            <h3>Monitor annual land use changes</h3>
             <p>Intended human use of the land that represent economic and cultural activities practiced at a given place</p>
             <img style='width:100%' src="./images/CONUS_All_LandUse.png">
           </div>
@@ -1008,8 +1011,8 @@
       <!-- <div class="row" style>Image Services</div> -->
     </div>
     <div id="background" class="container-fluid bg-white info-page">
-      <div class='row home-section'>
-        <h2 style='margin-left:0.5em;'>ABOUT</h2>
+      <div class='row home-section' style="margin-bottom: 1rem;">
+        <h2>ABOUT</h2>
         <div class="col-sm-6">
           <p>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS). </p>
           <br>
@@ -1031,37 +1034,48 @@
           <h3>LCMS Methods</h3>
           <li>
             <ul class="teal80">
-              <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS CONUS & SEAK Methods Document</a>
+              <span title="Click on link to open LCMS CONUS & SEAK Methods document in a new browser tab">
+                <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS CONUS & SEAK Methods Document</a>
+              </span>
             </ul>
             <ul>
-              <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" target="_blank">LCMS PRUSVI Methods Document</a>
+              <span title="Click on link to open LCMS PRUSVI Methods document in a new browser tab">
+               <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" target="_blank">LCMS PRUSVI Methods Document</a>
+              </span>
             </ul>
         </li>
+          <h3>Feedback</h3>
+          <p>We welcome your feedback. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p>
+        <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
         </div>
-        <div class='col-sm-6' style="margin-bottom: 1rem;">
+        <div class='col-sm-6' >
           <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
         </div>
       </div>
+    
     </div>
     <div id="contact" class="container-fluid bg-dark">
       <div class='row home-section'>
         <h2>CONTACT</h2>
         <div class="col-sm-12">
-          <p>Geospatial Technology and Applications Center (GTAC)</p>
-          <p>125 S State St, Suite 7105</p>
-          <p>Salt Lake City, UT 84138</p>
-          <a href="mailto: sm.fs.lcms@usda.gov">Contact Us</a>
+          <div class="gtac-address">
+            <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
+            <u><b>Geospatial Technology and Applications Center (GTAC)</b></u>
+            </a>
+            <p>125 S State St, Suite 7105</p>
+            <p>Salt Lake City, UT 84138</p>
+          </div>
+          
+          <a href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"><u><b>Contact Us</b></u></a>
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="images/GEE_logo_transparent.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#" title="Google Earth Engine (GEE) was used as the primary data acquisition and compute platform for LCMS. Click to learn more about GEE">
           </a>
           <a href="https://www.redcastleresources.com/" target="_blank">
             <img src="images/RCR-logo.jpg" class='home-image-icon-bar' alt="RedCastle Inc. Logo" href="#" title="RedCastle Resources Inc is the on-site contractor responsible for the technical implementation of LCMS. Click to learn more about RedCastle Resources Inc.">
           </a>
-          <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-            <img src="images/GTAC_Logo.png" class='home-image-icon-bar' alt="GTAC Logo" href="#" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
-          </a>
           <a href="https://www.fs.usda.gov" target="_blank">
-            <img src="./images/logos_usda-fs.svg" class='home-image-icon-bar' href="#" title="Click to learn more about the US Forest Service">
+            <img src="./images/logos_usda-fs.svg" style= 'height: 2.5rem;
+            margin-top: 0rem;margin-bottom:0rem;' class='home-image-icon-bar' href="#" title="Click to learn more about the US Forest Service">
           </a>
         </div>
       </div>
