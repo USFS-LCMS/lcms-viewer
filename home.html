@@ -31,7 +31,7 @@
     <script type="text/javascript" src="./js/16lcms-webpage.js"></script>
     <!-- <script type="text/javascript" src="./js/10download-manager.js"></script> -->
   </head>
-  <body>
+  <body data-spy="scroll">
     
       <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm" >
         
@@ -45,7 +45,7 @@
                 
                 </span>
               </button>
-              <img style="height:2.7rem" src="./images/logos_usda-fs.svg">
+              <img style="height:2.7rem;margin-left: -0.3rem;" src="./images/logos_usda-fs.svg">
               <img style="height:2.2rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM </span>
           </div>
           <div class="collapse navbar-collapse " id="navbar">
@@ -982,8 +982,8 @@
       <!-- <div class="row" style>Image Services</div> -->
     </div>
     <div id="background" class="container-fluid bg-white info-page">
-      <div class='row home-section'>
-        <h2 style='margin-left:0.5em;'>ABOUT</h2>
+      <div class='row home-section' style="margin-bottom: 1rem;">
+        <h2>ABOUT</h2>
         <div class="col-sm-6">
           <p>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS). </p>
           <br>
@@ -1002,22 +1002,15 @@
               <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target='_blank'>Cohen et al 2018</a>
             </ul>
           </li>
-          
-        </div>
-        <div class='col-sm-6' style="margin-bottom: 1rem;">
-          <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
-        </div>
-      </div>
-      <hr>
-      <div class="row home-section " style="margin-bottom:2rem;">
-        <div class = 'col-sm-6'>
           <h3>Feedback</h3>
           <p>We welcome your feedback. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p>
         <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
         </div>
-        
-  
+        <div class='col-sm-6' >
+          <img src="./images/Colorado_Change.gif" class='img-responsive'></img>
+        </div>
       </div>
+    
     </div>
     <div id="contact" class="container-fluid bg-dark">
       <div class='row home-section'>
@@ -1037,7 +1030,8 @@
             <img src="images/GTAC_Logo.png" class='home-image-icon-bar' alt="GTAC Logo" href="#" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
           </a>
           <a href="https://www.fs.usda.gov" target="_blank">
-            <img src="./images/logos_usda-fs.svg" class='home-image-icon-bar' href="#" title="Click to learn more about the US Forest Service">
+            <img src="./images/logos_usda-fs.svg" style= 'height: 2.5rem;
+            margin-top: 0rem;margin-bottom:0rem;' class='home-image-icon-bar' href="#" title="Click to learn more about the US Forest Service">
           </a>
         </div>
       </div>

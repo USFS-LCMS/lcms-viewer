@@ -43,65 +43,26 @@ font-family: inherit;
 text-align: center;
 }
 
-h6 {
-animation: fadeInAnimation ease 10s;
-animation-iteration-count: 1; 
-animation-fill-mode: forwards; 
-}
-
-textFade {
-animation: fadeInAnimation ease 20s;
-animation-delay: ease 0;
-animation-iteration-count: 1;
-animation-fill-mode: forwards;
-}
-
-textFade2 {
-animation: fadeInAnimation ease 25s;
-animation-delay: ease 0;
-animation-iteration-count: 1;
-animation-fill-mode: forwards;
-}
-
-textFade3 {
-animation: fadeInAnimation ease 30s;
-animation-delay: ease 0;
-animation-iteration-count: 1;
-animation-fill-mode: forwards;
-}
-
-textFade4 {
-animation: fadeInAnimation ease 35s;
-animation-delay: ease 0;
-animation-iteration-count: 1;
-animation-fill-mode: forwards;
-}
-
-textFade5 {
-animation: fadeInAnimation ease 40s;
-animation-delay: ease 0;
-animation-iteration-count: 1;
-animation-fill-mode: forwards;
-}
-
-textFade6 {
-animation: fadeInAnimation ease 45s;
-animation-delay: ease 0;
-animation-iteration-count: 1;
-animation-fill-mode: forwards;
-}
-@keyframes fadeInAnimation {
-0% {
-    opacity: 0;
-}
-100% {
-    opacity: 1;
-}
-}
 
 
 
+.row {
+    margin-right: 0rem;
+   margin-left: 0rem;
+}
+nav{
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+}
+.container-fluid{
+    padding-left:0rem;
+    padding-right:0rem;
+}
 
+.home-section{
+    margin-left:1.5rem;
+    margin-right:1.5rem;
+}
 .navbar-header{font-size:2rem;padding-top: 0.25rem;}
 .navbar-inverse .navbar-nav>.active>a,
 .navbar-inverse .navbar-nav>.active>a:hover,
@@ -128,17 +89,14 @@ color: var(--teal-80) !important;
 .intro-text{
     text-align: left;
     font-size:1.8rem;
-    margin-top:5rem;
+    margin-top:3rem;
 }
 .intro-text>ul>p{
     margin-bottom:2rem;
 }
 .application-examples{margin-top:2rem;}
 
-.home-section{
-    margin-left:1rem;
-    margin-right:1rem;
-}
+
 .bg-dark a{
     color:var(--deep-brown-10)
 }
