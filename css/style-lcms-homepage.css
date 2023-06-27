@@ -122,8 +122,8 @@ padding-left:0rem;
     margin-top:1rem;
 }
 .navbar-toggler{
-    width: 3rem;
-    height:3rem;
+    width: 2.5rem;
+    height:2.5rem;
     border-color: none;
     background-color: var(--deep-brown-100);
     color:none;
@@ -131,7 +131,7 @@ padding-left:0rem;
      }
      
 
-     .navbar-toggler>span{font-size:2rem;color:var(--deep-brown-10)} 
+     .navbar-toggler>span{font-size:1.75rem;color:var(--deep-brown-10)} 
 .bg-dark{background-color: var(--solid-black)!important;
     color:var(--deep-brown-10)!important;}
 
