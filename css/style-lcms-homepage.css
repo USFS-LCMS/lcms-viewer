@@ -107,7 +107,9 @@ nav{
     margin-left:1rem;
     margin-right:1rem;
 }
-
+.gtac-address>p{
+    margin:0px;
+}
 .navbar-header{font-size:1.75rem;padding-top: 0.3rem;}
 .navbar-inverse .navbar-nav>.active>a,
 .navbar-inverse .navbar-nav>.active>a:hover,
@@ -135,8 +137,8 @@ padding-left:0rem;
 
 .intro-text{
     text-align: left;
-    font-size:1.8rem;
-    margin-top:3rem;
+    font-size:1.5rem;
+    margin-top:2rem;
 }
 .intro-text>ul>p{
     margin-bottom:2rem;
