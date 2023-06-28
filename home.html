@@ -4,7 +4,7 @@
     <!-- Theme Made By www.w3schools.com -->
     <title>Landscape Change Monitoring System</title>
     <link rel="icon" href="./images/lcms-icon.png">
-    <!-- test push -->
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Jquery -->
@@ -34,9 +34,9 @@
     <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm">
       <div class="navbar-header">
         <span class="  teal-study-area-label ">
-          <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbar" id='navbar-toggler-button' style="display:none">
-            <span class="navbar-toggler-icon fa fa-bars"></span>
-          </button>
+          <!-- <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbar" id='navbar-toggler-button' style="display:none"> -->
+            <span class="navbar-toggler-icon fa fa-bars nav-toggler" onclick="toggleNavbar()" style="display:none"></span>
+          <!-- </button> -->
           <img style="height:2.1rem;margin-left: -0.3rem;" src="./images/logos_usda-fs.svg">
           <div class="vl-home"></div>
           <img style="height:1.8rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM
@@ -188,7 +188,7 @@
                               </li>
                             </ul>
                           </div>
-                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS change classes see the LCMS methods document</a>
+                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information on LCMS change classes see the LCMS methods document</a>
                         </td>
                       </tr>
                     </tbody>
@@ -234,7 +234,7 @@
                             </div>
                           </div>
                           <br>
-                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS land cover classes see the LCMS methods document</a>
+                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information on LCMS land cover classes see the LCMS methods document</a>
                         </td>
                       </tr>
                     </tbody>
@@ -276,7 +276,7 @@
                             </div>
                           </div>
                           <br>
-                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">For additional information on LCMS land use classes see the LCMS methods document</a>
+                          <a title="Click on link to open LCMS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information on LCMS land use classes see the LCMS methods document</a>
                         </td>
                       </tr>
                     </tbody>
@@ -302,21 +302,21 @@
           <p>Data Explorer</p>
           <a href="./index.html" target="_blank">
             <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
-            <p>Become familiar with LCMS data and explore landscape changes in a highly interactive environment</p>
+            <p class="homepage-link">Become familiar with LCMS data and explore landscape changes in a highly interactive environment</p>
           </a>
         </div>
         <div class="col-md-4" title='Click to open LCMS Data Dashboard'>
           <p>Data Dashboard</p>
           <a href="./dashboard.html" target="_blank">
             <img class='img-responsive' src="./images/dashboard-map-example.PNG">
-            <p>See summaries of how landscapes are changing and generate reports</p>
+            <p class="homepage-link">See summaries of how landscapes are changing and generate reports</p>
           </a>
         </div>
         <div class="col-md-4" title='Click to open LCMS in Motion'>
           <p>LCMS in Motion</p>
           <a href="./lcms-in-motion.html" target="_blank">
             <img class='img-responsive' src="./images/lcms-in-motion-map-example.PNG">
-            <p>Discover our changing landscape through animation</p>
+            <p class="homepage-link">Discover our changing landscape through animation</p>
           </a>
         </div>
       </div>
@@ -329,14 +329,14 @@
           <p>Base Learner Explorer</p>
           <a href="./lcms-base-learner.html" target="_blank">
             <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
-            <p>Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
+            <p class="homepage-link">Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
           </a>
         </div>
         <div class="col-md-3" title='Click to open LCMS IDS Explorer'>
           <p>Insects and Disease Explorer</p>
           <a href="./IDS.html" target="_blank">
             <img class='img-responsive' src="./images/ids-explorer-map-example.PNG">
-            <p>Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
+            <p class="homepage-link">Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
           </a>
         </div>
       </div>
@@ -565,11 +565,10 @@
                     <hr>
                   </ul>
                 </li>
-                <li>
-                  <span title="Click on link to open LCMS CONUS methods document in a new browser tab">
-                    <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS CONUS methods document</a>
-                  </span>
-                </li>
+                
+                  <a title="Click on link to open LCMS CONUS methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">LCMS CONUS methods document</a>
+                  
+               
               </ul>
             </li>
             <li class='col-md-4'>
@@ -791,9 +790,8 @@
                   </ul>
                 </li>
                 <li>
-                  <span title="Click on link to open LCMS SEAK methods document in a new browser tab">
-                    <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS SEAK methods document</a>
-                  </span>
+                  <a title="Click on link to open LCMS SEAK methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">LCMS SEAK methods document</a>
+                  
                 </li>
               </ul>
             </li>
@@ -960,9 +958,8 @@
                   </ul>
                 </li>
                 <li>
-                  <span title="Click on link to open LCMS PRUSVI methods document in a new browser tab">
-                    <a href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" target="_blank">LCMS PRUSVI methods document</a>
-                  </span>
+                  <a title="Click on link to open LCMS PRUSVI methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" class="homepage-link" target="_blank">LCMS PRUSVI methods document</a>
+                 
                 </li>
               </ul>
             </li>
@@ -982,28 +979,28 @@
           <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The LCMS Production Team and Science Team annually review methods to ensure the LCMS mapping process is based on the best available science. All LCMS map products are recreated annually from 1985 to the most recent full growing season. LCMS mapping areas include all the United States and its territories. The current operational set of outputs cover the conterminous United States (CONUS), southeastern Alaska (SEAK) and Puerto Rico U.S. Virgin Islands. Future mapping efforts will extend to Hawaii. </p>
           <h3>Literature</h3>
           <li>
-            <ul class="teal80">
-              <a href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' target='_blank'>Healey et al 2018</a>
+            <ul>
+              <a href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link" target='_blank'>Healey et al 2018</a>
             </ul>
             <ul>
-              <a href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' target='_blank'>Cohen et al 2017</a>
+              <a href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen et al 2017</a>
             </ul>
             <ul>
-              <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' target='_blank'>Cohen et al 2018</a>
+              <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link" target='_blank'>Cohen et al 2018</a>
             </ul>
           </li>
           <h3>LCMS Methods</h3>
           <li>
-            <ul class="teal80">
-              <a title="Click on link to open LCMS CONUS & SEAK methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" target="_blank">LCMS CONUS & SEAK methods document</a>
+            <ul>
+              <a title="Click on link to open LCMS CONUS & SEAK methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">LCMS CONUS & SEAK methods document</a>
             </ul>
             <ul>
-              <a title="Click on link to open LCMS PRUSVI methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" target="_blank">LCMS PRUSVI methods document</a>
+              <a title="Click on link to open LCMS PRUSVI methods document in a new browser tab" href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2020-6_Methods.pdf" class="homepage-link" target="_blank">LCMS PRUSVI methods document</a>
             </ul>
           </li>
           <h3>Feedback</h3>
           <p>We welcome your feedback. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p>
-          <a class='intro-modal-links' onclick='openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
+          <a class='homepage-link' onclick='openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
         </div>
         <div class='col-sm-6 ' style="margin-top:1rem;">
           <img src="./images/Colorado_Change.gif" class='img-responsive '></img>
@@ -1015,18 +1012,14 @@
         <h2>CONTACT</h2>
         <div class="col-sm-12">
           <div class="gtac-address">
-            <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
-              <u>
-                <b>Geospatial Technology and Applications Center (GTAC)</b>
-              </u>
+            <a href="https://www.fs.usda.gov/about-agency/gtac" class='homepage-link' target="_blank" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC">
+              Geospatial Technology and Applications Center (GTAC)
             </a>
             <p>125 S State St, Suite 7105</p>
             <p>Salt Lake City, UT 84138</p>
           </div>
-          <a href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions">
-            <u>
-              <b>Contact Us</b>
-            </u>
+          <a  class='homepage-link' href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions">
+            Contact Us
           </a>
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="images/GEE_logo_transparent.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#" title="Google Earth Engine (GEE) was used as the primary data acquisition and compute platform for LCMS. Click to learn more about GEE">

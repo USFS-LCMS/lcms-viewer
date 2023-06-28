@@ -1134,6 +1134,7 @@ textarea {
   margin-right:0.3rem;
   color:var(--black)!important;
 }
+
 .intro-modal-links:active {
   transform: translate(4px) translateY(4px);
 }
