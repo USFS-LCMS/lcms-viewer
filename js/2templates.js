@@ -109,6 +109,7 @@ if(mode==='MTBS'){
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
+$('head').append(`<script type="text/javascript" src="./js/forest-type-palette.js"></script>`);
 let topBannerParams = titles[mode];
 let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
@@ -1236,7 +1237,14 @@ const staticTemplates = {
                                 <div id="area-charting-shp-layer-list"></div>
                                 <hr>
                                 <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedCharting()' title = 'Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.'>Chart across chosen file</button>`,
-        uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml (If the .kmz or .kml has embedded pngs or any other non vector data, the conversion will likely fail.), or .geojson file to summarize products across.',
+        uploadShpToMapLayerDiv : `<hr>
+                                <label title = 'Powered by: https://ogre.adc4gis.com/'>Choose a zipped shapefile, kml, kmz, or geoJSON file to add to the viewer for reference. Then click "Add file to viewer" button below to add the layer.</label>
+                                <input class = 'file-input my-1' type="file" id="areaUpload" name="upload" accept=".zip,.geojson,.json,.kmz,.kml" style="display: inline-block;">
+                                <div>Uploaded areas:</div>
+                                <div id="area-charting-shp-layer-list"></div>
+                                <hr>
+                                <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'runShpDefinedAddLayer()' title = 'Click to add .zip shapefile, .kmz, .kml, or .geojson. Layer will appear in Reference Data.'>Add file to viewer</button>`,                        
+        uploadAreaChartTip : 'Select zipped shapefile (zip into .zip all files related to the shapefile) or a single .kmz, .kml (If the .kmz or .kml has embedded pngs or any other non vector data, the conversion will likely fail), or .geojson file to summarize products across.',
         selectAreaDropdownChartDiv : `<i title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                             <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
                             <hr>`,

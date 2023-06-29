@@ -1371,6 +1371,95 @@ function runShpDefinedCharting(){
 		
 	}else{showMessage('No Summary Area Selected','Please select a .zip shapefile or a .geojson file to summarize across')}
 }
+// new function based on runShpDefinedCharting that is for adding a user defined shp, geojson, etc without doing any charting -EH
+function runShpDefinedAddLayer(){
+	//clearUploadedAreas();
+	if(jQuery('#areaUpload')[0].files.length > 0){
+		//try{udp.setMap(null);}
+		//catch(err){console.log(err)};
+	
+		//$('#summary-spinner').slideDown();
+
+		var name = jQuery('#areaUpload')[0].files[0].name.split('.')[0] 
+		//var addon = ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
+		//if(name.indexOf(addon) === -1){
+		//	name += addon;
+		//}
+		map.setOptions({draggableCursor:'progress'});
+		map.setOptions({cursor:'progress'});
+		
+		convertToGeoJSON('areaUpload').done(function(convertedRaw){
+			console.log('successfully converted to JSON');
+			console.log(convertedRaw);
+		
+			//console.log('compressing geoJSON')
+			//var converted = compressGeoJSON(convertedRaw,uploadReductionFactor);
+			//console.log(converted);
+		////////////First try assuming the geoJSON has spatial info/////////////
+		// var area =ee.FeatureCollection(convertedRaw.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
+		// 	console.log('N features to add to map ');
+		// 	var nFeatures = area.size().getInfo()
+		// 	console.log(nFeatures);
+		// 	if(nFeatures == 0){
+		// 		showMessage('No Features Found','Found '+nFeatures.toString() + ' in provided file. Please select a file with features.');
+		// 		$('#summary-spinner').hide();
+		// 		return
+		// 	}
+			/*	
+		try{
+			var area =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
+			console.log('N features to add to map ');
+			var nFeatures = area.size().getInfo()
+			console.log(nFeatures);
+			if(nFeatures == 0){
+				showMessage('No Features Found','Found '+nFeatures.toString() + ' in provided file. Please select a file with features.');
+				$('#summary-spinner').hide();
+				return
+			}
+			} 
+		//Fix it if not
+		catch(err){
+			err = err.toString();
+			console.log('Error');console.log(err);
+			if(err.indexOf('Error: Invalid GeoJSON geometry:') > -1){
+				try{
+					var area =ee.FeatureCollection(fixGeoJSONZ(converted).features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}))	
+					console.log('N features to summarize ');
+					console.log(area.size().getInfo());
+					}
+				catch(err){
+					err = err.toString();
+					console.log(err)
+					if(err.indexOf('413')>-1){
+						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.')
+					}else{
+						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',err)
+					}
+					$('#summary-spinner').hide();
+					return;
+					
+				};
+				}
+			else{
+				
+				if(err.indexOf('413')>-1){
+						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.')
+					}else{
+						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',err)
+					}
+				$('#summary-spinner').hide();
+				return;
+				}*
+			};*/
+			if(convertedRaw.features.map(function(f){f.geometry.type == 'Point' || "MultiPoint"})){
+				Map2.addLayer(convertedRaw.features.map(pts=>{return ee.Feature(pts).buffer(8)}),{layerType:'geeVectorImage'},name,true,null,null,name,'reference-layer-list')
+				}
+			else{
+				Map2.addLayer(convertedRaw,{layerType:'geoJSONVector'},name,true,null,null,name,'reference-layer-list');
+				}
+		})		
+}else{showMessage('No Summary Area Selected','Please select a .zip shapefile or a .geojson file to add to viewer')}
+}
 function startShpDefinedCharting(){
 	// clearUploadedAreas();
 	turnOnUploadedLayers();

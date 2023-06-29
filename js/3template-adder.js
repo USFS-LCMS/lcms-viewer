@@ -1086,6 +1086,12 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 
 }
+// Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
+if(mode === 'sequoia-view'){
+  $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
+  //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
+  addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadShpToMapLayerDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTipHover);
+}
 //Add some logos for different modes
 if(mode === 'MTBS' || mode === 'Ancillary'){
   $('#contributor-logos').prepend(`<a href="https://www.usgs.gov/" target="_blank" >
