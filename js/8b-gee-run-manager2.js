@@ -148,7 +148,24 @@ function runGTAC(){
     Map2.addLayer(tccLoss.updateMask(tccLoss.lte(-10)),{min:-80,max:-10,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Loss Mag',false);
     Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
     
-    Map2.addTimeLapse(nlcdTCC2021,{years:nlcdTCCYrs,min:0,max:80,palette:'808,DDD,080','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'NLCD TCC 2021')
+    // Map2.addTimeLapse(nlcdTCC2021,{years:nlcdTCCYrs,min:0,max:80,palette:'808,DDD,080','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'NLCD TCC 2021');
+
+
+    var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_AttributionV2')
+    .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
+    ;
+    var attrVals = JSON.parse(lcmsAttr.first().toDictionary().getInfo().changeAttributionVals).Change_Attribution_Values;
+    var palette=['3d4551','692104','d54309','f39268','a5d509','5966e3','a0e359','b32784','00a398','222'];
+    var palette='3d4551,FFFF00,d54309,f39268,DD0,ffcccb,FFA500,AA4A44,00a398,1B1716'.split(',');
+
+    var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals),palette).map(([k,v]) => [k, v]))
+    var attrQueryDict = Object.fromEntries(zip(range(1,Object.keys(attrVals).length+1),Object.keys(attrVals)).map(([k,v]) => [k, v]))
+    // console.log(attrClassLegendDict);
+    // console.log(attrQueryDict);
+    // console.log(lcmsAttr.size().getInfo())
+
+    
+    Map2.addTimeLapse(lcmsAttr.map(img=>img.updateMask(img.gt(1))),{min:1,max:10,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes')
   }
 
   //Bring in time lapses

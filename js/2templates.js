@@ -109,6 +109,7 @@ if(mode==='MTBS'){
 /*Add anything to head not already there*/
 $('head').append(`<title>${titles[mode].title}</title>`);
 $('head').append(`<script type="text/javascript" src="./js/gena-gee-palettes.js"></script>`);
+$('head').append(`<script type="text/javascript" src="./js/forest-type-palette.js"></script>`);
 let topBannerParams = titles[mode];
 let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
