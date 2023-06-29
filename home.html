@@ -37,15 +37,15 @@
           <!-- <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbar" id='navbar-toggler-button' style="display:none"> -->
             <span class="navbar-toggler-icon fa fa-bars nav-toggler" onclick="toggleNavbar()" style="display:none"></span>
           <!-- </button> -->
-          <img style="height:2.1rem;margin-left: -0.3rem;" src="./images/logos_usda-fs.svg">
+          <img style="height:2.1rem;margin-left: -0.3rem;" alt='USDA Forest Service Logo' src="./images/logos_usda-fs.svg">
           <div class="vl-home"></div>
-          <img style="height:1.8rem" src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM
+          <img style="height:1.8rem" alt='Landscape Change Monitoring System logo' src="./images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM
         </span>
       </div>
       <div class="collapse navbar-collapse " id="navbar">
         <ul class="nav navbar-nav pull-right">
           <li title='What is LCMS?'>
-            <a class='teal-hover ' id='intro-nav' href="#intro">INTRODUCTION</a>
+            <a class='teal-hover ' id='intro-nav' aria-label="Link to introduction section"  href="#intro">INTRODUCTION</a>
           </li>
           <li title='How can LCMS data be used?'>
             <a class='teal-hover' id='applications-nav' href="#applications">APPLICATIONS</a>
@@ -68,29 +68,36 @@
         </ul>
       </div>
     </nav>
-    <div id="intro" class="container-fluid bg-dark info-page">
+    <div id="intro" class="container-fluid bg-dark info-page" aria-labelledby="intro-nav">
       <div class="row home-section">
         <div class='col-sm-4 intro-text'>
-          <ul>
-            <p>
-              <i>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i>
-            </p>
-            <p>
-              <b>What:</b> Annual data layers for vegetation cover Change, Land Cover, and Land Use
-            </p>
-            <p>
-              <b>When:</b> 1985 to 2022
-            </p>
-            <p>
-              <b>Where:</b> Conterminous U.S., Southeastern Alaska, Puerto Rico, U.S. Virgin Islands, and Hawaii*
-            </p>
-            <p style="font-size:1rem">
-              <i> *Coming summer 2023 </i>
-            </p>
-          </ul>
+          <p>
+            <b><i> Landscape Change Monitoring System (LCMS) is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i></b>
+          </p>
+          <p>
+            <b>Who:</b> LCMS is produced by the U.S. Department of Agriculture Forest Service (USFS) Geospatial Technology and Applications Center (GTAC)
+          </p>
+          <p style="margin-bottom:0px;">
+            <b>What:</b> Annual data layers of
+                  <ul style="margin-top:0px">
+                    <li>Vegetation cover Change</li>
+                    <li>Land Cover</li>
+                    <li>Land Use</li>
+                  </ul>
+                 
+          </p>
+          <p>
+            <b>When:</b> 1985 to 2022
+          </p>
+          <p>
+            <b>Where:</b> Conterminous U.S., Southeastern Alaska (SEAK), Puerto Rico and U.S. Virgin Islands (PRUSVI), and Hawaii*
+          </p>
+          <p style="font-size:1rem">
+            <i> *Coming summer 2023 </i>
+          </p>
         </div>
         <div class="col-sm-8">
-          <img style='width:100%; margin-top:3rem;' src="./images/CONUS_Change_loss.png" />
+          <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S." src="./images/CONUS_Change_loss.png" />
         </div>
       </div>
     </div>
@@ -99,18 +106,18 @@
         <h2>APPLICATIONS</h2>
         <div class='row bg-dark'>
           <div class="col-md-6">
-            <h3>Monitor annual Change</h3>
+            <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by short and long duration disturbance events</p>
-            <img style='width:95%' src="./images/CONUS_All_Change.png" />
+            <img style='width:95%' alt="Map of LCMS Change Loss and Gain output across the U.S." src="./images/CONUS_All_Change.png" />
           </div>
           <div class="col-md-3 application-examples">
-            <p>Forest loss and growth in response to disturbance agents</p>
-            <img style='width:100%;' src="./images/Colorado_Change.gif">
+            <p>Forest loss and growth in response to disturbance</p>
+            <img style='width:100%;' alt="Example area showing LCMS Change over Colorado" src="./images/Colorado_Change.gif">
             <p>Changes from insects, disease, and wildfire, CO</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Forest responding to natural and anthropogenic causes of loss</p>
-            <img style='width:100%;' src="./images/Oregon_Change.gif">
+            <p>Forest responding to natural and human-caused disturbance</p>
+            <img style='width:100%;' alt="Example area showing LCMS Change over Oregon" src="./images/Oregon_Change.gif">
             <p>Vegetation change largely caused by timber harvest and wildfire in the Willamette National Forest, OR </p>
           </div>
         </div>
@@ -119,16 +126,16 @@
           <div class="col-md-6">
             <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
-            <img style='width:100%' src="./images/CONUS_Land_Cover.png" />
+            <img style='width:100%' alt="Map of LCMS Land Cover output across the U.S." src="./images/CONUS_Land_Cover.png" />
           </div>
           <div class="col-md-3 application-examples">
             <p>Water loss caused by water consumption & decadal drought</p>
-            <img style='width:100%;' src="./images/Lake_Mead_Landcover.gif">
+            <img style='width:100%;' alt="Example area showing LCMS land cover changing over Lake Mead" src="./images/Lake_Mead_Landcover.gif">
             <p>Change in Lake Mead water level, NV</p>
           </div>
           <div class="col-md-3 application-examples">
             <p>Glacial retreat</p>
-            <img style='width:100%;' src="./images/Chugach_Glacier_Landcover.gif">
+            <img style='width:100%;' alt="Example area showing LCMS land cover changing over the Columbia Glacier" src="./images/Chugach_Glacier_Landcover.gif">
             <p>Change in extent of the Columbia Glacier, AK</p>
           </div>
         </div>
@@ -136,17 +143,17 @@
         <div class='row bg-dark'>
           <div class="col-md-6">
             <h3>Monitor annual land use changes</h3>
-            <p>Intended human use of the land that represent economic and cultural activities practiced at a given place</p>
-            <img style='width:100%' src="./images/CONUS_All_LandUse.png">
+            <p>Intended human use of the land that represents economic and cultural activities practiced at a given place</p>
+            <img style='width:100%' alt="Map of LCMS Land Use output across the U.S." src="./images/CONUS_All_LandUse.png">
           </div>
           <div class="col-md-3 application-examples">
             <p>Land use conversion from forest to developed</p>
-            <img style='width:100%;' src="./images/Atlanta_Land_Use_terrain.gif">
+            <img style='width:100%;' alt="Example area showing LCMS land use changing over Atlanta" src="./images/Atlanta_Land_Use_terrain.gif">
             <p>Urban development of Atlanta, GA</p>
           </div>
           <div class="col-md-3 application-examples">
             <p>Land use conversion from rangeland to developed</p>
-            <img style='width:100%;' src="./images/Las_Vegas_Landuse.gif">
+            <img style='width:100%;' alt="Example area showing LCMS land use changing over Las Vegas" src="./images/Las_Vegas_Landuse.gif">
             <p>Urban development of Las Vegas, NV</p>
           </div>
         </div>
@@ -195,7 +202,7 @@
                   </table>
                 </td>
                 <td class="col-md-2">
-                  <img width='100%' src="./images/California_Change.gif">
+                  <img width='100%' alt="Example map of LCMS Loss over California" src="./images/California_Change.gif">
                 </td>
               </tr>
               <tr>
@@ -241,8 +248,7 @@
                   </table>
                 </td>
                 <td>
-                  <img class="col-md-2">
-                  <img width='100%' src="./images/Great_Salt_Lake_Landcover.gif">
+                  <img width='100%' alt="Example area showing LCMS land cover changing over the Great Salt Lake" src="./images/Great_Salt_Lake_Landcover.gif">
                 </td>
               </tr>
               <tr>
@@ -283,8 +289,8 @@
                   </table>
                 </td>
                 <td>
-                  <img class="col-md-2">
-                  <img width='100%' src="./images/Denver_Land_use_terrain.gif">
+                   
+                  <img width='100%' alt="Example area showing LCMS land use changing over Denver" src="./images/Denver_Land_use_terrain.gif">
                 </td>
               </tr>
             </tbody>
@@ -301,21 +307,21 @@
         <div class="col-md-4" title='Click to open LCMS Data Explorer'>
           <p>Data Explorer</p>
           <a href="./index.html" target="_blank">
-            <img class='img-responsive' src="./images/data-explorer-map-example.PNG">
+            <img class='img-responsive' alt="LCMS Data Explorer example image" src="./images/data-explorer-map-example.PNG">
             <p class="homepage-link">Become familiar with LCMS data and explore landscape changes in a highly interactive environment</p>
           </a>
         </div>
         <div class="col-md-4" title='Click to open LCMS Data Dashboard'>
           <p>Data Dashboard</p>
           <a href="./dashboard.html" target="_blank">
-            <img class='img-responsive' src="./images/dashboard-map-example.PNG">
+            <img class='img-responsive' alt="LCMS Dashboard example image" src="./images/dashboard-map-example.PNG">
             <p class="homepage-link">See summaries of how landscapes are changing and generate reports</p>
           </a>
         </div>
         <div class="col-md-4" title='Click to open LCMS in Motion'>
           <p>LCMS in Motion</p>
           <a href="./lcms-in-motion.html" target="_blank">
-            <img class='img-responsive' src="./images/lcms-in-motion-map-example.PNG">
+            <img class='img-responsive' alt="LCMS-in-Motion example image" src="./images/lcms-in-motion-map-example.PNG">
             <p class="homepage-link">Discover our changing landscape through animation</p>
           </a>
         </div>
@@ -328,14 +334,14 @@
         <div class="col-md-3" title='Click to open LCMS Base Learner Explorer'>
           <p>Base Learner Explorer</p>
           <a href="./lcms-base-learner.html" target="_blank">
-            <img class='img-responsive' src="./images/base-learner-explorer-map-example.PNG">
+            <img class='img-responsive' alt="LCMS Base Learner Explorer example image" src="./images/base-learner-explorer-map-example.PNG">
             <p class="homepage-link">Explore the raw input data used to create the final LCMS products. This app is useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used in LCMS.</p>
           </a>
         </div>
-        <div class="col-md-3" title='Click to open LCMS IDS Explorer'>
+        <div class="col-md-3" title='Click to open LCMS Insects and Disease Survey (IDS) Explorer'>
           <p>Insects and Disease Explorer</p>
           <a href="./IDS.html" target="_blank">
-            <img class='img-responsive' src="./images/ids-explorer-map-example.PNG">
+            <img class='img-responsive' alt="LCMS IDS Explorer example image" src="./images/ids-explorer-map-example.PNG">
             <p class="homepage-link">Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS) dataset.</p>
           </a>
         </div>
@@ -794,7 +800,7 @@
               </ul>
             </li>
             <li class='col-md-4'>
-              <span class="caret caret-down">Puerto Rico - US Virgin Islands (v2020.6)</span>
+              <span class="caret caret-down">Puerto Rico and U.S. Virgin Islands (v2020.6)</span>
               <ul class="nested active">
                 <li>
                   <span class="caret">Change</span>
@@ -969,11 +975,11 @@
       <div class='row home-section' style="margin-bottom: 1rem;">
         <h2>ABOUT</h2>
         <div class="col-sm-6">
-          <p>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the US Forest Service, US Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS). </p>
+          <p>Knowing where, when, and what factors create change across landscapes is critical to making sound land management decisions. To support land managers and scientists with this need, an interagency effort between leading remote sensing scientists and application specialists in the U.S. Department of Agriculture Forest Service, U.S. Geological Survey, NASA, and numerous universities have collaborated to develop and produce a Landscape Change Monitoring System (LCMS). </p>
           <br>
           <p>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States. LCMS provides a “best available” map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel data availability, cloud-based computing power, and big data analysis methods.</p>
           <br>
-          <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The LCMS Production Team and Science Team annually review methods to ensure the LCMS mapping process is based on the best available science. All LCMS map products are recreated annually from 1985 to the most recent full growing season. LCMS mapping areas include all the United States and its territories. The current operational set of outputs cover the conterminous United States (CONUS), southeastern Alaska (SEAK) and Puerto Rico U.S. Virgin Islands. Future mapping efforts will extend to Hawaii. </p>
+          <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The LCMS Production Team and Science Team annually review methods to ensure the LCMS mapping process is based on the best available science. All LCMS map products are recreated annually from 1985 to the most recent full growing season. LCMS mapping areas include all the United States and its territories. The current operational set of outputs covers the conterminous United States (CONUS), southeastern Alaska (SEAK) and Puerto Rico and U.S. Virgin Islands. Future mapping efforts will extend to Hawaii. </p>
           <h3>Literature</h3>
           <li>
             <ul>
@@ -1000,7 +1006,7 @@
           <a class='homepage-link' onclick='openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
         </div>
         <div class='col-sm-6 ' style="margin-top:1rem;">
-          <img src="./images/Colorado_Change.gif" class='img-responsive '></img>
+          <img src="./images/Colorado_Change.gif" alt="Example map of LCMS Loss over Colorado" class='img-responsive '></img>
         </div>
       </div>
     </div>
@@ -1026,8 +1032,9 @@
           </a>
           <div class="vl-home home-image-icon-bar"></div>
           <a href="https://www.fs.usda.gov" target="_blank">
-            <img src="./images/logos_usda-fs.svg" style='height: 2.5rem;
-            margin-top: 0rem;margin-bottom:0rem;' class='home-image-icon-bar' href="#" title="Click to learn more about the US Forest Service">
+            <img src="./images/usfs-symbol.svg" alt="USFS logo" style='background-color: var(--deep-brown-10);padding:1px;margin-left:0px' class='home-image-icon-bar' href="#" title="Click to learn more about the U.S. Forest Service">
+            <img src="./images/usda-symbol.svg" alt="USDA logo" style='background-color: var(--deep-brown-10);padding:1px;margin-right:0px' class='home-image-icon-bar' href="#" title="Click to learn more about the U.S. Forest Service">
+            
           </a>
         </div>
       </div>

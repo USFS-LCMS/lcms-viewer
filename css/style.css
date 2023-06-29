@@ -573,9 +573,9 @@ button {
   background:rgba(255,255,255,0.2);
 }
 .home-image-icon-bar{
-  height:2rem;
+  height:1.5rem;
   float:right;
-  margin:0.3em;
+  margin:0.2em;
   border-radius: 0px;
   /*background:rgba(255,255,255,0.2);*/
 }
@@ -1111,6 +1111,7 @@ textarea {
   display: inline;
   vertical-align: top;
   margin-bottom: 0.5rem;
+  margin-left:-0.3rem;
 }
 .splash-title{
   overflow: hidden;
