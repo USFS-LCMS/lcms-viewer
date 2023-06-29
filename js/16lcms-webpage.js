@@ -202,13 +202,16 @@ function openLCMSSurvey(fromWhere) {
 function resizePanes() {
 	console.log('resized');
 	if (window.innerWidth >= 768) {
-		$('#navbar-toggler-button').hide();
+		$('.nav-toggler').hide();
 		$('.info-page').css('padding-top', $('nav').height())
 	} else {
-		$('#navbar-toggler-button').show();
+		$('.nav-toggler').show();
 		$('.info-page').css('padding-top', $('.navbar-header').height())
 	}
 
+}
+function toggleNavbar(){
+	$('#navbar').toggle();
 }
 $(document).ready(function() {
 	populateLCMSDownloads();

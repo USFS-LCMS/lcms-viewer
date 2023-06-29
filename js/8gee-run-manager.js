@@ -3169,9 +3169,7 @@ if(urlParams.layerViz == undefined || urlParams.layerViz == null){
   Object.keys(urlParams.layerViz).map(k=>{
     let t;
     if(urlParams.layerViz[k] == 'true'){urlParams.layerViz[k]=true}
-    else{
-      urlParams.layerViz[k]=false
-    }
+    else if(urlParams.layerViz[k] == 'false'){urlParams.layerViz[k]=false}
   });
   Object.keys(summaryAreas).map(k=>{
     let kName = k.replaceAll(' ','-')
