@@ -994,7 +994,7 @@ $('#pre-years-slider').slider().bind('slide',function(event,ui){
 }
 
 $('body').append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
-$('.legendDiv').css('bottom',$('.bottombar').height()-2);
+$('.legendDiv').css('bottom','1rem');
 $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
 addLegendCollapse();
 /////////////////////////////////////////////////////////////////
@@ -1131,8 +1131,8 @@ function resizeViewerPanes(){
    
   }
  
-  $('.legendDiv').css('bottom',$('.bottombar').height()-2);
-  $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height()+1);
+  $('.legendDiv').css('bottom','1rem');
+  $('.legendDiv').css('max-height',window.innerHeight-convertRemToPixels(1)+1);
   $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
   // moveCollapse('plot-collapse');
   if(walkThroughAdded){
