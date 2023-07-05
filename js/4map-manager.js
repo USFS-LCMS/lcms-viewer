@@ -2643,7 +2643,7 @@ function initialize() {
 
     //Set up cursor info in bottom bar
     function updateMousePositionAndZoom(cLng,cLat,zoom,elevation){
-            $('.legendDiv').css('bottom',$('.bottombar').height());
+            // $('.legendDiv').css('bottom',$('.bottombar').height());
             
             $( "#current-mouse-position" ).html( 'Lng: ' +cLng + ', Lat: ' + cLat +', '+elevation+ ' Zoom: ' +zoom +', 1:'+zoomDict[zoom]);
     }

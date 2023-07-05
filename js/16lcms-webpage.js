@@ -211,11 +211,12 @@ function resizePanes() {
 
 }
 function toggleNavbar(){
-	$('#navbar').toggle();
+	$('#navbar').slideToggle(200);
 }
 $(document).ready(function() {
 	populateLCMSDownloads();
 	resizePanes();
+	$('.caret').attr('role','img');
 	addEventListener("resize", (e) => {
 		resizePanes()
 	});

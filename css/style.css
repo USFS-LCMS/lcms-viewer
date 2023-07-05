@@ -327,6 +327,7 @@ button {
   margin-left: 0.1rem;
   margin-right:0.25rem;
   margin-top:0rem;
+  margin-bottom:0.4rem;
 }
 .vl2 {
   border-left: 1px solid var(--deep-brown-100);
