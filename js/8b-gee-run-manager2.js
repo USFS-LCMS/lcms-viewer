@@ -130,8 +130,7 @@ function runGTAC(){
     var nlcdTCC2021 = ee.ImageCollection('projects/nlcd-tcc/assets/CONUS-TCC/Final-products/NLCD_tcc');
     // nlcdTCC2021 = nlcdTCC2021.map(img=>img.selfMask())
     var nlcdTCCYrs = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
-    // var nlcdTCCYrsI = ee.List.sequence(0,nlcdTCCYrs.length-2).getInfo();
-               
+    // var nlcdTCCYrsI = ee.List.sequence(0,nlcdTCCYrs.length-2).getInfo();        
     var tccDiff = [];
     for(var i=0;i<nlcdTCCYrs.length-1;i++){
       var yr1 = nlcdTCCYrs[i];
@@ -148,24 +147,29 @@ function runGTAC(){
     Map2.addLayer(tccLoss.updateMask(tccLoss.lte(-10)),{min:-80,max:-10,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Loss Mag',false);
     Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
     
-    // Map2.addTimeLapse(nlcdTCC2021,{years:nlcdTCCYrs,min:0,max:80,palette:'808,DDD,080','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'NLCD TCC 2021');
+    var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+    var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
 
+    lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
+    
+    var stack = []
+    ee.List.sequence(startYear,endYear).getInfo().map(function(year){
+      var imgYr = lcmsAttr_merged.filter(ee.Filter.calendarRange(year,year,'year'))
+      imgYr = imgYr.mosaic().copyProperties(ee.Image(imgYr.first())).copyProperties(ee.Image(imgYr.first()),['system:time_start'])
+      stack.push(imgYr)
+    })
 
-    var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_AttributionV2')
-    .filter(ee.Filter.calendarRange(startYear,endYear,'year'))
-    ;
-    var attrVals = JSON.parse(lcmsAttr.first().toDictionary().getInfo().changeAttributionVals).Change_Attribution_Values;
-    var palette=['3d4551','692104','d54309','f39268','a5d509','5966e3','a0e359','b32784','00a398','222'];
-    var palette='3d4551,FFFF00,d54309,f39268,DD0,ffcccb,FFA500,AA4A44,00a398,1B1716'.split(',');
+    lcmsAttr_stack = ee.ImageCollection(stack)
+
+    var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
+    var palette=['3d4551','FFFF00','d54309','f39268','F5DEB3','ffcccb','FFA500','00a398','1B1716'];
+    var palette='3d4551,FFFF00,d54309,f39268,F5DEB3,ffcccb,FFA500,00a398,1B1716'.split(',');
 
     var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals),palette).map(([k,v]) => [k, v]))
     var attrQueryDict = Object.fromEntries(zip(range(1,Object.keys(attrVals).length+1),Object.keys(attrVals)).map(([k,v]) => [k, v]))
-    // console.log(attrClassLegendDict);
-    // console.log(attrQueryDict);
-    // console.log(lcmsAttr.size().getInfo())
-
+    console.log(lcmsAttr.size().getInfo())
     
-    Map2.addTimeLapse(lcmsAttr.map(img=>img.updateMask(img.gt(1))),{min:1,max:10,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes')
+    Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:9,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
   }
 
   //Bring in time lapses
