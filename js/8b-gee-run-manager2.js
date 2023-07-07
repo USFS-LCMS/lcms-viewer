@@ -170,7 +170,7 @@ function runGTAC(){
     console.log(lcmsAttr.size().getInfo())
     
     Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:9,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
-  }
+ }
 
   //Bring in time lapses
 

@@ -3169,9 +3169,7 @@ if(urlParams.layerViz == undefined || urlParams.layerViz == null){
   Object.keys(urlParams.layerViz).map(k=>{
     let t;
     if(urlParams.layerViz[k] == 'true'){urlParams.layerViz[k]=true}
-    else{
-      urlParams.layerViz[k]=false
-    }
+    else if(urlParams.layerViz[k] == 'false'){urlParams.layerViz[k]=false}
   });
   Object.keys(summaryAreas).map(k=>{
     let kName = k.replaceAll(' ','-')
@@ -3347,23 +3345,24 @@ function runTreeMap(){
   // Attributes appear in legend in reverse order from how they appear here
   var continuousAttrs = [
                                                     
-                          // trees per acre
-                          ['TPA_DEAD',palettes.colorbrewer.Greens[9],0.05,0.95,'Dead Trees Per Acre'],
-                          ['TPA_LIVE',palettes.colorbrewer.Greens[9],0.05,0.95,'Live Trees Per Acre'],
-
                           // volume
                           ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
                           ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
                           ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume (ft^3/acre)'],
                           
+                          // trees per acre
+                          ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'Dead Trees Per Acre'],
+                          ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'Live Trees Per Acre'],
+
+                          
                           // dry biomass
-                          ['DRYBIO_D',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Standing Dead Tree Above Ground Biomass (tons/acre)'],
-                          ['DRYBIO_L',palettes.colorbrewer.Greens[9],0.05,0.95,'Dry Live Tree Above Ground Biomass (tons/acre)'],
+                          ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'Above Ground Dry Standing Dead Tree Biomass (tons/acre)'],
+                          ['DRYBIO_L',palettes.crameri.lajolla[10],0.05,0.95,'Above Ground Dry Live Tree Biomass (tons/acre)'],
                           
                           // carbon
-                          ['CARBON_D',palettes.crameri.lajolla[10],0.05,0.95,'Standing Dead Carbon (tons/acre)'],
-                          ['CARBON_DWN',palettes.crameri.lajolla[10],0.05,0.95,'Carbon Down (tons/acre)'],
-                          ['CARBON_L',palettes.crameri.lajolla[10],0.05,0.95,'Live Carbon Above Ground (tons/acre)'],
+                          ['CARBON_D',palettes.crameri.lajolla[25],0.05, 0.95,'Standing Dead Carbon (tons/acre)'],
+                          ['CARBON_DWN',palettes.crameri.lajolla[25],0.05, 0.95,'Down Dead Carbon (tons/acre)'],
+                          ['CARBON_L',palettes.crameri.lajolla[10],0.05, 0.95,'Live Carbon Above Ground (tons/acre)'],
                           
                           // stand density
                           ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'Stand Quadratic Mean Diameter'],
@@ -3371,22 +3370,31 @@ function runTreeMap(){
                         
                           // live tree variables
                           ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'Height of Dominant Trees (feet)'],
-                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)'],
-                          ['GSSTK',palettes.crameri.bamako[50],0.05,0.95,'Growing-stock stocking %'],
-                          ['ALSTK',palettes.crameri.bamako[50],0.00,0.95,'All Live Tree Stocking %'],
-                          ['CANOPYPCT',palettes.crameri.bamako[50],0.05,0.95,'Live Canopy Cover %'],
-
-                          // unique values - how to label as unique values, and not as continuous?
-                          //['STDSZCD',palettes.colorbrewer.Set1[6],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
-                          //['FLDSZCD',palettes.colorbrewer.Set1[6],0,1,'Field Stand Size Code'], // ranges from 0-5
-
+                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)']
                           
                         ];
 
   var ordinalAttrs = [
-                          // unique values - how to label as unique values, and not as continuous?
+                          
                           ['STDSZCD',palettes.colorbrewer.Set1[6],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
                           ['FLDSZCD',palettes.colorbrewer.Set1[6],0,1,'Field Stand Size Code'], // ranges from 0-5
+
+  ]
+
+  var percentAttrs = [    // have two attributes: palette and name. default range is 0-100
+                          ['GSSTK',palettes.crameri.bamako[50],'Growing-stock stocking %'],
+                          ['ALSTK',palettes.crameri.bamako[50],'All Live Tree Stocking %'],
+                          ['CANOPYPCT',palettes.crameri.bamako[50],'Live Canopy Cover %'],
+
+  ]
+
+  var continuousSDAttrs = [                            
+                          // have three attributes: palette, # of SDs +/- the median, name
+                          // carbon
+                          ['CARBON_D',palettes.crameri.lajolla[10],2,'Standing Dead Carbon (tons/acre)'],
+                          ['CARBON_DWN',palettes.crameri.lajolla[10],2,'Carbon Down (tons/acre)'],
+                          ['CARBON_L',palettes.crameri.lajolla[10],2,'Live Carbon Above Ground (tons/acre)'],
+
 
   ]
 
@@ -3441,6 +3449,62 @@ function runTreeMap(){
     visible = false;
   }                
   
+// Function to get a thematic attribute image service  
+function getThematicAttr_Colors(attr){
+  // Pull the attribute image
+  var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+
+  // Get the numbers and names from the attribute table
+  var numbers = treeMapLookup[attr[0]];
+  var names = treeMapLookup[attr[1]];
+
+  // Zip the numbers to the names, find the unique pairs and sort them
+  var zippedValuesNames = unique(zip(numbers,names));
+  zippedValuesNames.sort();
+
+  // Pull apart the sorted unique pairs
+  var  uniqueValues = zippedValuesNames.map(r=>r[0]);
+  var uniqueNames = zippedValuesNames.map(r=>r[1]);
+
+  // Set up visualization parameters
+  var viz = {};
+
+  // First set up a dictionary so when user queries pixel, the name is returned instead of the value
+  viz['queryDict'] = dict(zippedValuesNames);
+
+  // Set the min and max value for the renderer
+  viz['min'] = uniqueValues[0];
+  viz['max'] = uniqueValues[uniqueValues.length-1];
+  
+  // Get all the unique colors for the legend and colors with blanks as black in the palette 
+  
+  //let colors = []
+  //let palette = []
+  // range(viz['min'],viz['max']+1).map(i=>{
+  //   if(uniqueValues.indexOf(i)>-1){
+  //     c = randomColor([50,50,50],[255,255,255]).slice(1);
+  //     colors.push(c);
+  //     palette.push(c);
+  //   }else{
+  //     palette.push('000');
+  //   }
+  // });
+  
+  let palette = palettes_FT.forestType.forestType[999];
+  
+  // Specify the palette based on the input palette 
+  viz['palette']= palette;
+  // Specify the legend dictionary with the unique names and colors
+  viz['classLegendDict'] = dict(zip(uniqueNames,palette));
+  viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+  
+  // Add the layer to the map
+  Map2.addLayer(attrImg,viz,attr[2],visible);
+
+  //Set so subsequent layers are not visible by default
+  visible = false;
+}                
+
   // Function to get a continuous attribute image service
   function getContinuousAttr(attr){
     // Pull the attribute image
@@ -3480,40 +3544,89 @@ function runTreeMap(){
     // Set up renderer
     var viz = {};
     
-    // Set the min and max value for the renderer
-    viz['min'] = 0;  // original value: parseInt(quantile(uniqueValues,attr[2]));
+    // Compute the nth percentile for the min max
+    viz['min'] = 0;
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
+    viz['palette'] = attr[1];
+    // set up legend - for values and palette
+    viz['classLegendDict'] = dict(zip(uniqueValues,attr[1]));
+    viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
     
-    // Get all the unique colors for the legend and colors with blanks as black in the palette 
-    palette = attr[1];
-    let colors = []
-        range(viz['min'],viz['max']+1).map(i=>{
-      if(uniqueValues.indexOf(i)>-1){
-        c = palette[i]
-        //c = randomColor([50,50,50],[255,255,255]).slice(1);
-        colors.push(c);
-        //palette.push(c);
-      }else{
-        palette.push('000');
-      }
-    });
-    
-    // Specify the palette and the legend dictionary with the unique names and colors
-    viz['palette']=attr[1];
-    viz['classLegendDict'] = dict(zip(uniqueValues,colors));
-    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
     Map2.addLayer(attrImg,viz,attr[4],false);
+  }
 
+  // function to apply to show percentage attributes as a range from 0-100
+  function getPercentAttr(attr){
+
+    // Pull the attribute image
+    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+
+    // Get the numbers and unique numbers for that attribute
+    var numbers = treeMapLookup[attr[0]];
+    var uniqueValues = asc(unique(numbers));
+
+    // Filter out any value that is non RMRS (-99)
+    uniqueValues = uniqueValues.filter(n=>n!==-99);
+
+    // Set up renderer
+    var viz = {};
+    
+    // Compute the nth percentile for the min max
+    viz['min'] = 0;
+    viz['max'] = 100;
+    viz['palette'] = attr[1];
+    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+    Map2.addLayer(attrImg,viz,attr[2],false);
+
+  }
+
+  // Function to get a continuous attribute image service and use standard deviation as the min/max
+  function getContinuousAttrSD(attr){
+    // Pull the attribute image
+    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+
+    // Get the numbers and unique numbers for that attribute
+    var numbers = treeMapLookup[attr[0]];
+    var uniqueValues = asc(unique(numbers));
+
+    // Filter out any value that is non RMRS (-99)
+    uniqueValues = uniqueValues.filter(n=>n!==-99);
+
+    // Set up renderer
+    var viz = {};
+    
+    // Compute the SD spread for the min max
+    var sd_n = parseFloat(attr[2]);
+    var median_n = parseFloat(quantile(uniqueValues, .5));
+    var mean_n = parseInt(mean(uniqueValues))
+
+
+    viz['min'] = 0;
+    viz['max'] = mean_n;
+    //viz['min'] = 0;
+    //viz['max'] = parseInt(uniqueValues.median());
+    viz['palette'] = attr[1];
+    viz['title']=`${attr[3]} (${attr[0]}) attribute image layer`;
+    Map2.addLayer(attrImg,viz,attr[3],false);
   }
 
   // Add each ordinal attribute to the map
   ordinalAttrs.map(getOrdinalAttr);
-  
+
   // Add each continuous attribute to the map
   continuousAttrs.map(getContinuousAttr);
+
+  // Add the sd attributes to the map
+  //continuousSDAttrs.map(getContinuousAttrSD);
   
+  // Add each percent attribute to the map
+  percentAttrs.map(getPercentAttr)
+
   // Iterate across each thematic attribute and bring it into the map
   thematicAttrs.map(getThematicAttr);
+
+  // Iterate across each thematic attribute and bring it into the map
+  //thematicAttrs.map(getThematicAttr_Colors);
 
   
   // Function to convert json TreeMap lookup to a query-friendly format
@@ -3543,7 +3656,7 @@ function runTreeMap(){
   // Bring in raw TreeMap layer and add it to the map
   rawTreeMap = attrC.filter(ee.Filter.eq('attribute','Value')).first();//ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
   
-  Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'Raw TreeMap')
+  Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap Identifier dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'TreeMap ID')
   
   queryWindowMode = 'sidePane';
   $('#query-label').click();

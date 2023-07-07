@@ -693,6 +693,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   if(viz.opacity === undefined || viz.opacity === null){viz.opacity = 1}
   item = ee.ImageCollection(item);
 
+  if(name== undefined || name == null){
+    name = "Layer "+NEXT_LAYER_ID;  
+  }
   var checked = '';
   if(visible){checked = 'checked'}
   var legendDivID = name.replaceAll(' ','-')+ '-' +NEXT_LAYER_ID.toString() ;
@@ -1020,7 +1023,7 @@ function addToMap(item,viz,name,visible,label,fontColor,helpBox,whichLayerList,q
     var currentGEERunID = geeRunID;
     if(whichLayerList === null || whichLayerList === undefined){whichLayerList = "layer-list"}
     if(viz === null || viz === undefined){viz = {}}
-    if(name == null){
+    if(name===undefined || name === null){
         name = "Layer "+NEXT_LAYER_ID;  
     }
     //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
@@ -2640,7 +2643,7 @@ function initialize() {
 
     //Set up cursor info in bottom bar
     function updateMousePositionAndZoom(cLng,cLat,zoom,elevation){
-            $('.legendDiv').css('bottom',$('.bottombar').height());
+            // $('.legendDiv').css('bottom',$('.bottombar').height());
             
             $( "#current-mouse-position" ).html( 'Lng: ' +cLng + ', Lat: ' + cLat +', '+elevation+ ' Zoom: ' +zoom +', 1:'+zoomDict[zoom]);
     }

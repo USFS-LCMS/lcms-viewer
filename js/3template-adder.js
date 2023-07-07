@@ -897,11 +897,11 @@ if(urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == und
   
   // $('#parameters-collapse-div').append(`<hr>`);
 
-  addDualRangeSlider('parameters-collapse-div','Baseline (reference) condition years:','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Range of years to calculate the baseline (reference) condition')
+  addDualRangeSlider('parameters-collapse-div','Analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Select a window of dates to filter the analysis (baseline and post-disturbance).')
+  addDualRangeSlider('parameters-collapse-div','Baseline year(s):','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range.')
   // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
-  addRangeSlider('parameters-collapse-div','Target year:','urlParams.postYear',minYear+1,maxYear,urlParams.postYear,1,'post-years-slider',null,'Year to include for the target year evaluation period')
-  addDualRangeSlider('parameters-collapse-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
-
+  addRangeSlider('parameters-collapse-div','Target year:','urlParams.postYear',minYear+1,maxYear,urlParams.postYear,1,'post-years-slider',null,'Choose year to compare against Baseline year(s).')
+  
   addSubCollapse('parameters-collapse-div','advanced-params-label','advanced-params-div','Advanced Parameters', '',false,'')
   $('#parameters-collapse-div').append('<hr>')
   addRangeSlider('advanced-params-div','Giant Sequoia Canopy Diamater (m)','urlParams.treeDiameter',5, 30,urlParams.treeDiameter,5,'tree-diameter-slider','null',"Specify the average diameter of a Giant Sequoia crown in meters");
@@ -994,7 +994,7 @@ $('#pre-years-slider').slider().bind('slide',function(event,ui){
 }
 
 $('body').append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
-$('.legendDiv').css('bottom',$('.bottombar').height());
+$('.legendDiv').css('bottom','1rem');
 $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
 addLegendCollapse();
 /////////////////////////////////////////////////////////////////
@@ -1086,6 +1086,12 @@ if(mode === 'LCMS-pilot' || mode === 'MTBS'|| mode === 'lcms-base-learner' || mo
   if(tShowToolTipModal === 'false'){$('#tooltip-radio-second_toggle_label').click();}
 
 }
+// Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
+if(mode === 'sequoia-view'){
+  $('#tools-accordian').append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
+  //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
+  addSubAccordianCard('tools-accordian','upload-area-chart-label','upload-area-chart-div','Upload an Area',staticTemplates.uploadShpToMapLayerDiv,false,'toggleTool(toolFunctions.area.shpDefined)',staticTemplates.uploadAreaChartTipHover);
+}
 //Add some logos for different modes
 if(mode === 'MTBS' || mode === 'Ancillary'){
   $('#contributor-logos').prepend(`<a href="https://www.usgs.gov/" target="_blank" >
@@ -1125,8 +1131,8 @@ function resizeViewerPanes(){
    
   }
  
-  $('.legendDiv').css('bottom',$('.bottombar').height());
-  $('.legendDiv').css('max-height',window.innerHeight-$('.bottombar').height());
+  $('.legendDiv').css('bottom','1rem');
+  $('.legendDiv').css('max-height',window.innerHeight-convertRemToPixels(1)+1);
   $('.sidebar').css('max-height',$('body').height()-$('.bottombar').height());
   // moveCollapse('plot-collapse');
   if(walkThroughAdded){
