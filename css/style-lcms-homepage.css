@@ -125,6 +125,16 @@ text-align: center;
     content:"\f07c";
     color: var(--solid-black); 
   }
+  .bg-download-select{
+  
+    background-color: var(--deep-brown-10)!important;
+    margin:0px!important;
+    color:var(--solid-black)!important;
+    outline:none!important;
+  }
+  #downloadTree {
+    color: var(--solid-black);
+}
 .row {
     margin-right: 0rem;
    margin-left: 0rem;
@@ -145,7 +155,7 @@ nav{
 .gtac-address>p{
     margin:0px;
 }
-.navbar-header{font-size:1.75rem;padding-top: 0.3rem;}
+.navbar-header{font-size:1.85rem;padding-top: 0.2rem;}
 .navbar-nav>li{margin-left:--0.5rem;margin-right:-0.5rem;}
 .navbar-inverse .navbar-nav>.active>a,
 .navbar-inverse .navbar-nav>.active>a:hover,
@@ -214,4 +224,4 @@ padding-left:0rem;
     transform: translate(0.3rem) translateY(0.3rem)!important;
   }
 
-  body{cursor:text}
+  body,label{cursor:text}

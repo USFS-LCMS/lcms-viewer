@@ -217,6 +217,7 @@ $(document).ready(function() {
 	populateLCMSDownloads();
 	resizePanes();
 	$('.caret').attr('role','img');
+	$('.caret').attr('alt','Folder Icon');
 	addEventListener("resize", (e) => {
 		resizePanes()
 	});
