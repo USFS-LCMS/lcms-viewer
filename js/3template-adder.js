@@ -898,11 +898,11 @@ if(urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == und
   
   // $('#parameters-collapse-div').append(`<hr>`);
 
-  addDualRangeSlider('parameters-collapse-div','Baseline (reference) condition years:','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Range of years to calculate the baseline (reference) condition')
+  addDualRangeSlider('parameters-collapse-div','Analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Select a window of dates to filter the analysis (baseline and post-disturbance).')
+  addDualRangeSlider('parameters-collapse-div','Baseline year(s):','urlParams.preStartYear','urlParams.preEndYear',minYear, maxYear-1, urlParams.preStartYear, urlParams.preEndYear, 1,'pre-years-slider','null','Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range.')
   // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
-  addRangeSlider('parameters-collapse-div','Target year:','urlParams.postYear',minYear+1,maxYear,urlParams.postYear,1,'post-years-slider',null,'Year to include for the target year evaluation period')
-  addDualRangeSlider('parameters-collapse-div','Choose analysis date range:','urlParams.startJulian','urlParams.endJulian',1, 365, urlParams.startJulian, urlParams.endJulian, 1,'julian-day-slider','julian','Days of year of '+mode+' data to include for land cover, land use, loss, and gain')
-
+  addRangeSlider('parameters-collapse-div','Target year:','urlParams.postYear',minYear+1,maxYear,urlParams.postYear,1,'post-years-slider',null,'Choose year to compare against Baseline year(s).')
+  
   addSubCollapse('parameters-collapse-div','advanced-params-label','advanced-params-div','Advanced Parameters', '',false,'')
   $('#parameters-collapse-div').append('<hr>')
   addRangeSlider('advanced-params-div','Giant Sequoia Canopy Diamater (m)','urlParams.treeDiameter',5, 30,urlParams.treeDiameter,5,'tree-diameter-slider','null',"Specify the average diameter of a Giant Sequoia crown in meters");
