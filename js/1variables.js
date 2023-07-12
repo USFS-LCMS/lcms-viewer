@@ -436,7 +436,6 @@ if(urlParams.accessToken !== null && urlParams.accessToken !== undefined && urlP
     ee.data.setAuthToken('', 'Bearer', urlParams.accessToken, 3600, [], undefined, false);
 }
 
-
 var plotsOn = false;
 
 /////////////////////////////////////////////////////
