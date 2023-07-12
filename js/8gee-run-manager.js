@@ -3336,18 +3336,11 @@ function runTreeMap(){
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brought in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
-  
   var thematicAttrs = [
                        ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
                        ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
                       ];
 
-  var thematicAttrs_colors = [
-                       ['FORTYPCD','ForTypName','Algorithm Forest Type Name',palette_forTyp],
-                       ['FLDTYPCD','FldTypName','Field Forest Type Name',palette_fldtyp] 
-                      ];
-
-                      
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
   // Attributes appear in legend in reverse order from how they appear here
   var continuousAttrs = [
@@ -3470,7 +3463,7 @@ function getThematicAttr_Colors(attr){
   zippedValuesNames.sort();
 
   // Pull apart the sorted unique pairs
-  var uniqueValues = zippedValuesNames.map(r=>r[0]);
+  var  uniqueValues = zippedValuesNames.map(r=>r[0]);
   var uniqueNames = zippedValuesNames.map(r=>r[1]);
 
   // Set up visualization parameters
@@ -3497,8 +3490,10 @@ function getThematicAttr_Colors(attr){
   //   }
   // });
   
+  let palette = palettes_FT.forestType.forestType[999];
+  
   // Specify the palette based on the input palette 
-  viz['palette'] = attr[3];
+  viz['palette']= palette;
   // Specify the legend dictionary with the unique names and colors
   viz['classLegendDict'] = dict(zip(uniqueNames,palette));
   viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
@@ -3631,7 +3626,7 @@ function getThematicAttr_Colors(attr){
   thematicAttrs.map(getThematicAttr);
 
   // Iterate across each thematic attribute and bring it into the map
-  //thematicAttrs_colors.map(getThematicAttr_Colors);
+  //thematicAttrs.map(getThematicAttr_Colors);
 
   
   // Function to convert json TreeMap lookup to a query-friendly format
