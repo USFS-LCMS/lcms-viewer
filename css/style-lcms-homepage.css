@@ -135,6 +135,25 @@ text-align: center;
   #downloadTree {
     color: var(--solid-black);
 }
+.my-legend ul.legend-labels li span {
+    width:1rem; 
+}
+.my-legend ul.legend-labels li p {
+    font-size:0.75rem; 
+    margin-top:1px;
+    margin-bottom:1px;
+}
+.my-legend{
+    /* margin-left: -2.5rem; */
+    margin-top:0.25rem;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width:5rem;
+    background-color: var(--solid-black);
+    color:var(--deep-brown-10)
+}
+.legend-labels{margin-bottom:0px;padding-left:2px;padding-right:0px;}
 .row {
     margin-right: 0rem;
    margin-left: 0rem;
