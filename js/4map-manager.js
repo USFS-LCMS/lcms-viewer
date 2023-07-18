@@ -2753,8 +2753,7 @@ function initialize() {
     //Initialize GEE
     
   
-
-    ee.initialize(authProxyAPIURL,geeAPIURL,function(){
+    function eeInitSuccessCallback(){
       //Set up the correct GEE run function
       geeAuthenticated = true;
         setTimeout(function() { 
@@ -2895,7 +2894,8 @@ function initialize() {
     }
     }, 1500);
    
-  	},function(failure){
+  	}
+    function eeInitFailureCallback(failure){
       console.log(`Failed to authenticate to GEE: ${failure}`)
       if(mode === 'LCMS'){ 
         setupDropdownTreeDownloads(studyAreaName);
@@ -2905,7 +2905,25 @@ function initialize() {
      
       ga('send', 'event', mode + '-gee-auth-error', 'failure', 'failure');
       showMessage('Map Loading Error',staticTemplates['authErrorMessage']);
-  });
+
+      if(mode==='geeViz' && urlParams.accessToken !== null && urlParams.accessToken !== undefined && urlParams.accessToken !== 'null' && urlParams.accessToken !== 'None'){
+        urlParams.geeAuthProxyURL = "https://rcr-ee-proxy-2.herokuapp.com";
+        authProxyAPIURL = urlParams.geeAuthProxyURL;
+        geeAPIURL = "https://earthengine.googleapis.com";
+        if(initCount<5){
+          showMessage('Map Loading Error','Switching to use standard credentials to access GEE. This may produce errors in accessing assets that are not shared publically.');
+          setTimeout(()=>{eeInit()}, 1000);
+        }
+        
+      }
+  }
+  var initCount = 1;
+  function eeInit(){
+    console.log(`Initializing GEE try number: ${initCount}`)
+    ee.initialize(authProxyAPIURL,geeAPIURL,()=>{eeInitSuccessCallback()},(failure)=>{eeInitFailureCallback(failure)});
+    initCount++;
+  }
+  eeInit();
 
 }
 ///////////////////////////////////////////////////////////////
