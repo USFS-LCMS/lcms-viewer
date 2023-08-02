@@ -3642,7 +3642,7 @@ function getThematicAttr_Colors(attr){
   thematicAttrs.map(getThematicAttr);
 
   // Iterate across each thematic attribute and bring it into the map
-  thematicAttrs.map(getThematicAttr_Colors);
+  //thematicAttrs.map(getThematicAttr_Colors);
 
   
   // Function to convert json TreeMap lookup to a query-friendly format
