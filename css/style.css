@@ -319,6 +319,17 @@ button {
   margin-right:0.25rem;
   margin-top:0.5rem;
 }
+.hl {
+  border-bottom: 1px solid var(--deep-brown-20);
+  height: 0.5rem;
+  width:100%;
+  vertical-align: middle;
+  display: inline-block;
+  margin-left: 0rem;
+  margin-right:0rem;
+  margin-top:0rem;
+  padding:0;
+}
 .vl-home{
   border-left: 1px solid var(--deep-brown-20);
   height: 1.5rem;

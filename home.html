@@ -4,7 +4,6 @@
     <!-- Theme Made By www.w3schools.com -->
     <title>Landscape Change Monitoring System</title>
     <link rel="icon" href="./images/lcms-icon.png">
-    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Jquery -->
@@ -35,7 +34,7 @@
       <div class="navbar-header">
         <span class="  teal-study-area-label ">
           <!-- <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbar" id='navbar-toggler-button' style="display:none"> -->
-            <span class="navbar-toggler-icon fa fa-bars nav-toggler" onclick="toggleNavbar()" style="display:none"></span>
+          <span class="navbar-toggler-icon fa fa-bars nav-toggler" onclick="toggleNavbar()" style="display:none"></span>
           <!-- </button> -->
           <img style="height:2.1rem;margin-left: -0.3rem;margin-bottom:0.4rem" alt='USDA Forest Service Logo' src="./images/logos_usda-fs.svg">
           <div class="vl-home"></div>
@@ -45,7 +44,7 @@
       <div class="collapse navbar-collapse " id="navbar">
         <ul class="nav navbar-nav pull-right">
           <li title='What is LCMS?'>
-            <a class='teal-hover ' id='intro-nav' aria-label="Link to introduction section"  href="#intro">INTRODUCTION</a>
+            <a class='teal-hover ' id='intro-nav' aria-label="Link to introduction section" href="#intro">INTRODUCTION</a>
           </li>
           <li title='How can LCMS data be used?'>
             <a class='teal-hover' id='applications-nav' href="#applications">APPLICATIONS</a>
@@ -68,25 +67,25 @@
         </ul>
       </div>
     </nav>
-
-    <main role="main" >
+    <main role="main">
       <div id="intro" class="container-fluid bg-dark info-page" aria-labelledby="intro-nav">
         <div class="row home-section">
           <div class='col-sm-4 intro-text'>
             <p>
-              <b><i> Landscape Change Monitoring System (LCMS) is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i></b>
+              <b>
+                <i> Landscape Change Monitoring System (LCMS) is a remote sensing-based system for mapping and monitoring landscape change across the United States. </i>
+              </b>
             </p>
             <p>
               <b>Who:</b> LCMS is produced by the U.S. Department of Agriculture Forest Service Geospatial Technology and Applications Center (GTAC).
             </p>
             <p style="margin-bottom:0px;">
               <b>What:</b> Annual data layers of
-                    <ul style="margin-top:0px">
-                      <li>Vegetation cover Change</li>
-                      <li>Land Cover</li>
-                      <li>Land Use</li>
-                    </ul>
-                  
+            <ul style="margin-top:0px">
+              <li>Vegetation cover Change</li>
+              <li>Land Cover</li>
+              <li>Land Use</li>
+            </ul>
             </p>
             <p>
               <b>When:</b> 1985 to 2022
@@ -114,12 +113,48 @@
             </div>
             <div class="col-md-3 application-examples">
               <p>Forest loss and growth in response to disturbance</p>
-              <img style='width:100%;' alt="Example area showing LCMS Change over Colorado" src="./images/Colorado_Change.gif">
+              <div style="position:relative">
+                <img style='width:100%;' alt="Example area showing LCMS Change over Colorado" src="./images/Colorado_Change.gif">
+                <div class="my-legend">
+                  <ul class="legend-labels">
+                    <li>
+                      <span style="background:#f39268;"></span>
+                      <p>Slow Loss</p>
+                    </li>
+                    <li>
+                      <span style="background:#d54309;"></span>
+                      <p>Fast Loss</p>
+                    </li>
+                    <li>
+                      <span style="background:#00a398;"></span>
+                      <p>Gain</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <p>Changes from insects, disease, and wildfire, Colo.</p>
             </div>
             <div class="col-md-3 application-examples">
               <p>Forest responding to natural and human-caused disturbance</p>
-              <img style='width:100%;' alt="Example area showing LCMS Change over Oregon" src="./images/Oregon_Change.gif">
+              <div style="position:relative">
+                <img style='width:100%;' alt="Example area showing LCMS Change over Oregon" src="./images/Oregon_Change.gif">
+                <div class="my-legend">
+                  <ul class="legend-labels">
+                    <li>
+                      <span style="background:#f39268;"></span>
+                      <p>Slow Loss</p>
+                    </li>
+                    <li>
+                      <span style="background:#d54309;"></span>
+                      <p>Fast Loss</p>
+                    </li>
+                    <li>
+                      <span style="background:#00a398;"></span>
+                      <p>Gain</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <p>Vegetation change largely caused by timber harvest and wildfire in the Willamette National Forest, Oreg. </p>
             </div>
           </div>
@@ -164,139 +199,101 @@
       <div id="products" class="container-fluid bg-white info-page">
         <div class="home-section">
           <h2>DATA DESCRIPTIONS</h2>
-          <div class="row bg-dark">
-            <table class="table">
-              <thead class='teal80 '>
-                <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Example</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>Change</th>
-                  <td>
-                    <table class="lcms-table-columns">
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td>Change classes represent the most recent state of vegetation cover change</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td>There are 4 change classes: <div class="row">
-                              <ul>
-                                <li>Fast Loss: <smalltext>Vegetation cover loss caused by short-duration events. For example, a fire or harvest that causes rapid vegetation cover change.</smalltext>
-                                </li>
-                                <li>Slow Loss: <smalltext>Vegetation cover loss caused by long-duration events. For example, mountain pine beetle-caused mortality in Rocky Mountain forests.</smalltext>
-                                </li>
-                                <li>Gain: <smalltext>Vegetation cover growth after a loss of vegetation cover. For example, new growth of tree saplings following a fire or harvest.</smalltext>
-                                </li>
-                                <li>Stable: <smalltext>Where no significant change is evident in the spectral response and the trend is essentially flat. Agricultural systems and wetlands are commonly highly variable spectrally through time, and are thus considered stable but ephemeral.</smalltext>
-                                </li>
-                              </ul>
-                            </div>
-                            <a title="Click on link to open LCMS methods document" href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information about LCMS change classes see the LCMS methods document</a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                  <td class="col-md-2">
-                    <img width='100%' alt="Example map of LCMS Loss over California" src="./images/California_Change.gif">
-                  </td>
-                </tr>
-                <tr>
-                  <th>Land Cover</th>
-                  <td>
-                    <table class="lcms-table-columns">
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td>Land cover classes represent the vegetation or other biophysical attributes of the land surface</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td>There are 14 land cover classes: <div class="row">
-                              <div class="col-sm-6">
-                                <ul>
-                                  <li>Trees </li>
-                                  <li>Tall Shrubs-Trees (Alaska only) </li>
-                                  <li>Shrubs-Trees </li>
-                                  <li>Grass-Trees </li>
-                                  <li>Barren-Trees </li>
-                                  <li>Tall-Shrub (Alaska only) </li>
-                                  <li>Shrubs </li>
-                                </ul>
-                              </div>
-                              <div class="col-sm-6">
-                                <ul>
-                                  <li>Grass-Shrubs </li>
-                                  <li>Barren-Shrubs
-                                  <li>Grass </li>
-                                  <li>Barren-Grass </li>
-                                  <li>Barren-Impervious </li>
-                                  <li>Snow or ice </li>
-                                  <li>Water </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <br>
-                            <a title="Click on link to open LCMS methods document" href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information about LCMS land cover classes see the LCMS methods document</a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                  <td>
-                    <img width='100%' alt="Example area showing LCMS land cover changing over the Great Salt Lake" src="./images/Great_Salt_Lake_Landcover.gif">
-                  </td>
-                </tr>
-                <tr>
-                  <th>Land Use</th>
-                  <td>
-                    <table class="lcms-table-columns">
-                      <thead>
-                        <tr></tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td>Land use classes represent how biophysical attributes are intended to be used by humans</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td>There are 6 land use classes: <div class="row">
-                              <div class="col-sm-6">
-                                <ul>
-                                  <li>Agriculture </li>
-                                  <li>Developed </li>
-                                  <li>Forest </li>
-                                </ul>
-                              </div>
-                              <div class="col-sm-6">
-                                <ul>
-                                  <li>Non-forest Wetland </li>
-                                  <li>Other </li>
-                                  <li>Rangeland or Pasture </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <br>
-                            <a title="Click on link to open LCMS methods document" href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information about LCMS land use classes see the LCMS methods document</a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                  <td>
-                    
-                    <img width='100%' alt="Example area showing LCMS land use changing over Denver" src="./images/Denver_Land_use_terrain.gif">
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="row bg-dark data-descriptions-row data-descriptions-header" id="data-descriptions-header-row">
+            <div class="col-sm-2 teal80"> Name </div>
+            <div class="col-sm-8 teal80"> Description </div>
+            <div class="col-sm-2 teal80"> Example </div>
+          </div>
+          <div class="row bg-dark py-2 data-descriptions-row">
+            <div class="col-sm-2">
+              <p class="data-description-classes">Change</p>
+            </div>
+            <div class="col-sm-8">
+              <b>Change classes represent the most recent state of vegetation cover change</b>
+              <ul class='data-descriptions-classes-row'>
+                <li>
+                  <b>There are 4 change classes:</b>
+                </li>
+                <li>Fast Loss: <smalltext>Vegetation cover loss caused by short-duration events. For example, a fire or harvest that causes rapid vegetation cover change.</smalltext>
+                </li>
+                <li>Slow Loss: <smalltext>Vegetation cover loss caused by long-duration events. For example, mountain pine beetle-caused mortality in Rocky Mountain forests.</smalltext>
+                </li>
+                <li>Gain: <smalltext>Vegetation cover growth after a loss of vegetation cover. For example, new growth of tree saplings following a fire or harvest.</smalltext>
+                </li>
+                <li>Stable: <smalltext>Where no significant change is evident in the spectral response and the trend is essentially flat. Agricultural systems and wetlands are commonly highly variable spectrally through time, and are thus considered stable but ephemeral.</smalltext>
+                </li>
+              </ul>
+              <a title="Click on link to open LCMS methods document" href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information about LCMS change classes see the LCMS methods document</a>
+            </div>
+            <div class="col-sm-2">
+              <img width='100%' alt="Example map of LCMS Loss over California" src="./images/California_Change.gif">
+            </div>
+          </div>
+          <div class="row bg-dark py-2 data-descriptions-row">
+            <div class="col-sm-2">
+              <p class="data-description-classes">Land Cover</p>
+            </div>
+            <div class="col-sm-8">
+              <b>Land cover classes represent the vegetation or other biophysical attributes of the land surface</b>
+              <div class="row data-descriptions-classes-row">
+                <b class="row">There are 14 land cover classes: </b>
+                <div class="col-sm-6">
+                  <ul>
+                    <li>Trees </li>
+                    <li>Tall Shrubs-Trees (Alaska only) </li>
+                    <li>Shrubs-Trees </li>
+                    <li>Grass-Trees </li>
+                    <li>Barren-Trees </li>
+                    <li>Tall-Shrub (Alaska only) </li>
+                    <li>Shrubs </li>
+                  </ul>
+                </div>
+                <div class="col-sm-6">
+                  <ul>
+                    <li>Grass-Shrubs </li>
+                    <li>Barren-Shrubs
+                    <li>Grass </li>
+                    <li>Barren-Grass </li>
+                    <li>Barren-Impervious </li>
+                    <li>Snow or ice </li>
+                    <li>Water </li>
+                  </ul>
+                </div>
+              </div>
+              <a title="Click on link to open LCMS methods document" href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information about LCMS land cover classes see the LCMS methods document</a>
+            </div>
+            <div class="col-sm-2">
+              <img width='100%' alt="Example area showing LCMS land cover changing over the Great Salt Lake" src="./images/Great_Salt_Lake_Landcover.gif">
+            </div>
+          </div>
+          <div class="row bg-dark py-2 data-descriptions-row">
+            <div class="col-sm-2">
+              <p class="data-description-classes">Land Use</p>
+            </div>
+            <div class="col-sm-8">
+              <b>Land use classes represent how biophysical attributes are intended to be used by humans</b>
+              <div class="row data-descriptions-classes-row">
+                <b class="row">There are 6 land use classes: </b>
+                <div class="col-sm-6">
+                  <ul>
+                    <li>Agriculture </li>
+                    <li>Developed </li>
+                    <li>Forest </li>
+                  </ul>
+                </div>
+                <div class="col-sm-6">
+                  <ul>
+                    <li>Non-forest Wetland </li>
+                    <li>Other </li>
+                    <li>Rangeland or Pasture </li>
+                  </ul>
+                </div>
+              </div>
+              <a title="Click on link to open LCMS methods document" href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf" class="homepage-link" target="_blank">For additional information about LCMS land use classes see the LCMS methods document</a>
+            </div>
+            <div class="col-sm-2">
+              <img width='100%' alt="Example area showing LCMS land use changing over Denver" src="./images/Denver_Land_use_terrain.gif">
+            </div>
           </div>
         </div>
       </div>
@@ -1005,10 +1002,28 @@
             </li>
             <h3>Feedback</h3>
             <p>We welcome your feedback. If you would be willing to take our short user survey, the provided information will help inform future improvements and additional functionalities. Thank you.</p>
-            <a class='homepage-link'  href="#"  onclick='openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
+            <a class='homepage-link' href="#" onclick='openLCMSSurvey("home-page")' title="Click to help us learn how you use LCMS and how we can make it better">TAKE SURVEY</a>
           </div>
           <div class='col-sm-6 ' style="margin-top:1rem;">
-            <img src="./images/Colorado_Change.gif" alt="Example map of LCMS Loss over Colorado" class='img-responsive '></img>
+            <div style="position:relative">
+              <img src="./images/Colorado_Change.gif" alt="Example map of LCMS Loss over Colorado" class='img-responsive '></img>
+              <div class="my-legend">
+                <ul class="legend-labels">
+                  <li>
+                    <span style="background:#f39268;"></span>
+                    <p>Slow Loss</p>
+                  </li>
+                  <li>
+                    <span style="background:#d54309;"></span>
+                    <p>Fast Loss</p>
+                  </li>
+                  <li>
+                    <span style="background:#00a398;"></span>
+                    <p>Gain</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1017,15 +1032,11 @@
           <h2>CONTACT</h2>
           <div class="col-sm-12">
             <div class="gtac-address">
-              <a href="https://www.fs.usda.gov/about-agency/gtac" class='homepage-link' target="_blank" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC.">
-                Geospatial Technology and Applications Center (GTAC)
-              </a>
+              <a href="https://www.fs.usda.gov/about-agency/gtac" class='homepage-link' target="_blank" title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC."> Geospatial Technology and Applications Center (GTAC) </a>
               <p>125 S State St, Suite 7105</p>
               <p>Salt Lake City, Utah 84138</p>
             </div>
-            <a  class='homepage-link' href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions">
-              Contact Us
-            </a>
+            <a class='homepage-link' href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"> Contact Us </a>
             <a href="https://earthengine.google.com/" target="_blank">
               <img src="images/GEE_logo_transparent.png" class='home-image-icon-bar' alt="Powered by Google Earth Engine" href="#" title="Google Earth Engine (GEE) was used as the primary data acquisition and compute platform for LCMS. Click to learn more about GEE">
             </a>
@@ -1036,13 +1047,11 @@
             <a href="https://www.fs.usda.gov" target="_blank">
               <img src="./images/usfs-symbol.svg" alt="USFS logo" style='background-color: var(--deep-brown-10);padding:1px;margin-left:0px' class='home-image-icon-bar' href="#" title="Click to learn more about the U.S. Forest Service">
               <img src="./images/usda-symbol.svg" alt="USDA logo" style='background-color: var(--deep-brown-10);padding:1px;margin-right:0px' class='home-image-icon-bar' href="#" title="Click to learn more about the U.S. Forest Service">
-              
             </a>
           </div>
         </div>
       </div>
     </main>
-  </div>
-  
+    </div>
   </body>
 </html>

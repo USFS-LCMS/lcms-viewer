@@ -203,12 +203,17 @@ function resizePanes() {
 	console.log('resized');
 	if (window.innerWidth >= 768) {
 		$('.nav-toggler').hide();
-		$('.info-page').css('padding-top', $('nav').height())
+		$('.info-page').css('padding-top', $('nav').height());
+		$('#data-descriptions-header-row').show();
+		
+		$('.navbar-header').css({'font-size':'1.85rem','padding-top': '0.2rem;'});
 	} else {
 		$('.nav-toggler').show();
-		$('.info-page').css('padding-top', $('.navbar-header').height())
+		$('.info-page').css('padding-top', $('.navbar-header').height());
+		$('#data-descriptions-header-row').hide();
+		$('.navbar-header').css({'font-size':'1.65rem','padding-top': '0.15rem;'});
 	}
-
+	
 }
 function toggleNavbar(){
 	$('#navbar').slideToggle(200);
