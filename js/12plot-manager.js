@@ -79,10 +79,9 @@ var coastalAK = {name:'Coastal AK 2020',path:'./geojson/CoastalAK_sample_NEW_g_a
 var coastalAK2022 = {name:'Coastal AK',path:'./geojson/Coastal_AK_plots_202211_final_30m_box.json','plotIDField':'ID'}
 var prviPractice = {name:'PRVI Practice',path:'./geojson/PR_USVI_Random_Sample_100_proj_g_albers_30m_box.json','plotIDField':'PLOTID'}
 var prviFinal = {name:'PRVI Final',path:'./geojson/PR_sample_1100_11strata_make_ordered_chipping_g_albers_30m_box.json','plotIDField':'PLOTID'}
-//var hiFinal = {name:'HI',path:'./geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.json','plotIDField':'PLOTID'}
-//var hiFinal2 = {name:'HI2',path:'./geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.geojson','plotIDField':'PLOTID'}
+var hiFinal = {name:'HI',path:'./geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.json','plotIDField':'PLOTID'}
 var CONUSpractice = {name:'CONUS Practice',path:'./geojson/CONUS_training_new_30m_box.json','plotIDField':'LCMS_ID'}
-var hiPractice = {name:'Hawaii Practice',path:'./geojson/HI_training_30m_box.json','plotIDField':'PLOTID'}
+//var hiPractice = {name:'Hawaii Practice',path:'./geojson/HI_training_30m_box.json','plotIDField':'PLOTID'}
 var akPractice = {name:'Alaska Practice',path:'./geojson/AK_training_30m_box.json','plotIDField':'PLOTID'}
 var plotsGeoJSONs =[hiFinal, CONUSpractice, hiPractice, akPractice, coastalAK2022];//[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
