@@ -171,6 +171,7 @@ function runGTAC(){
     console.log('attrQueryDict',attrQueryDict)
     console.log(lcmsAttr.size().getInfo())
     
+    //Test
     Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
   }
 
