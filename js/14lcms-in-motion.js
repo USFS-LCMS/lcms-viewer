@@ -77,7 +77,9 @@ const introDivContent = {'true':`<span>
                             <h2 class = 'splash-title'>Welcome to LCMS in Motion!</h2>
                           </span>
                           <hr style='margin-top:0.75rem;margin-bottom:0.75rem;'>
-                          <p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
+                          <div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the <a href="https://usfs-lcms.github.io/lcms-viewer/home.html" target="_blank">LCMS Homepage.</a>
+                          </div> 
+                          <p>The LCMS in Motion application is designed to provide a visualization of how vegetation cover, land cover, and land use have changed across US National Forests.</p>
                           <p>By clicking on a Forest or Forest District boundary, a gif animation will pop up. This animation illustrates how the selected area has changed over the past 38 years. 
                           <br>
                           Click on the animation to open it in a new tab for a larger view.
