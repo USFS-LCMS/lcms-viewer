@@ -148,9 +148,10 @@ function runGTAC(){
     Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
     
     var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
-    var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+    // var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
 
-    lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
+    // lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
+    lcmsAttr_merged = lcmsAttr
 
     var stack = []
     ee.List.sequence(startYear,endYear).getInfo().map(function(year){
@@ -170,8 +171,7 @@ function runGTAC(){
     console.log('attrClassLegendDict',attrClassLegendDict)
     console.log('attrQueryDict',attrQueryDict)
     console.log(lcmsAttr.size().getInfo())
-    
-    //test
+
     Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
   }
 
