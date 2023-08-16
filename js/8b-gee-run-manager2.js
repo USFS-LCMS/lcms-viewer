@@ -164,7 +164,10 @@ function runGTAC(){
 
     var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
     console.log('attrVals',attrVals)
-    var palette='3d4551,FFFF00,cd853f,d54309,DE3163,f39268,F5DEB3,FFB6C1,FFA500,b5651d,#C0C0C0,c0362c,D3B683,808000,00a398,1B1716'.split(',');
+    // var palette='3d4551,FFFF00,cd853f,d54309,DE3163,f39268,F5DEB3,FFB6C1,FFA500,b5651d,#C0C0C0,c0362c,D3B683,808000,00a398,1B1716'.split(',');
+    // var palette='3d4551,FFFF00,C6C600,DAA520,D54309,AD3100,FFB6C1,FF8397,F39268,D46C40,897044,9EAAD7,898944,D8D898,00a398,1B1716'.split(',');
+    var palette='3d4551,FFFF00,C6C600,D54309,AD3100,F39268,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D46C40,D8D898,00a398,1B1716'.split(',');
+
 
     var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals),palette).map(([k,v]) => [k, v]))
     var attrQueryDict = Object.fromEntries(zip(range(1,Object.keys(attrVals).length+1),Object.keys(attrVals)).map(([k,v]) => [k, v]))
