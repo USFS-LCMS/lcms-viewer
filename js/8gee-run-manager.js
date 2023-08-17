@@ -601,6 +601,8 @@ Map2.addLayer(hi_veg,{strokeColor:'808',layerType:'geeVectorImage'},'HI Veg',fal
 // });
 var mtbsIDS = getMTBSandIDS('anc','layer-list');  
 var mtbs =mtbsIDS[0];
+
+// NWI
 var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Freshwater Emergent wetland':'7fc31c',
                     'Freshwater pond': '688cc0',
@@ -619,10 +621,12 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
   var nwi_dict = {1: 'Estuarine and Marine Deepwater', 2: 'Estuarine and Marine Wetland', 3: 'Freshwater Emergent Wetland', 4: 'Freshwater Forested/Shrub Wetland', 5: 'Freshwater Pond', 6: 'Lake', 7: 'Riverine'};
   var nwi_palette = ['007c88','66c2a5','7fc31c','008836','688cc0','13007c','0190bf'];
   var nwi_hi_rast = nwi_hi.reduceToImage(['WETLAND_TY_NO'], ee.Reducer.first()).rename(['NWI']).set('system:time_start',ee.Date.fromYMD(2019,6,1).millis());
-  // Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'NWI');                
+  
+  Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'NWI');                
+  
+  // Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2}, {baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11} ],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
 
-    Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
-esri_lc_dict = {'Water':'008',
+    esri_lc_dict = {'Water':'008',
                 'Trees':'080',
                 'Flooded Vegetation':'088',
                 'Built Area':'D00',
