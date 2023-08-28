@@ -240,7 +240,20 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
 				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
 				}
-	var fieldsHidden={'Change':[true,false,false,false,true]}
+	var lcNamesSimpleIndices = {'Trees':[0,1,2,3,4], 'Tall-Shrubs':[5], 'Shrubs':[6,7,8], 'Grass-Forb-Herb':[9,10], 'Barren-or-Impervious':[11], 'Water':[13], 'Snow-or-Ice':[12]}
+	var lcFieldsHidden = [];
+	Object.keys(urlParams.lcHighlightClasses).map(lcc=>{
+		lcNamesSimpleIndices[lcc].map(i=>{
+			lcFieldsHidden.push(!urlParams.lcHighlightClasses[lcc])
+		})
+	});
+	var fieldsHidden={'Change':Object.values(urlParams.changeHighlightClasses).map(v=>!v),
+						'Land_Use':Object.values(urlParams.luHighlightClasses).map(v=>!v),
+						'Land_Cover':lcFieldsHidden,
+						};
+	fieldsHidden.Change.push(true);
+	fieldsHidden.Land_Use.push(true);
+	fieldsHidden.Land_Cover.push(true);
 	let total_area_fieldname = 'total_area';
 	// var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
 	// var chartWhich = ['Change','Land_Cover','Land_Use'];

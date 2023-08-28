@@ -248,7 +248,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addMultiRadio('advanced-dashboard-params-div','summary-pairwise-diff-radio','Annual Amount or Change in Annual Amount','pairwiseDiff',urlParams.pairwiseDiff);
 
   if(urlParams.whichProducts === null || urlParams.whichProducts === undefined){
-    urlParams.whichProducts = {"Land-Cover": true,"Land-Use": true,"Change":true}
+    urlParams.whichProducts = {"Change":true,"Land-Cover": true,"Land-Use": true}
   }
   addCheckboxes('advanced-dashboard-params-div','which-products-radio','Choose which LCMS outputs to chart','whichProducts',urlParams.whichProducts);
   
@@ -278,7 +278,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#advanced-dashboard-params-div').append('<hr>');
   
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
-    urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": false,"Water": false,'Snow-or-Ice':false}
+    urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": false,'Snow-or-Ice':false,"Water": false}
   }
   addCheckboxes('advanced-dashboard-params-div','lc-highlights-radio','Tables - Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
 
@@ -290,6 +290,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
+    updateDashboardCharts();
   });
   updateHighlightsProductSelectionDict();
   $('#advanced-dashboard-params-div').append('<hr>');
@@ -353,7 +354,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       hoverText:'Some more info about fire succession',
       whichProducts:{"Land-Cover": true,"Land-Use": false,"Change":true},
       changeHighlightClasses : {"Stable": true,"Slow-Loss":true,"Fast-Loss": false,"Gain": true},
-      lClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,"Water": true,'Snow-or-Ice':true},
+      lClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice':true,"Water": true},
       luClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     },
     glacialRecession:{
@@ -361,7 +362,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       hoverText:'Some more info about glacial succession',
       whichProducts:{"Land-Cover": true,"Land-Use": false,"Change":true},
       changeHighlightClasses : {"Stable": false,"Slow-Loss":false,"Fast-Loss": true,"Gain": true},
-      lClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,"Water": true,'Snow-or-Ice':true},
+      lClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice':true,"Water": true},
       luClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     }
   }
@@ -394,8 +395,9 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
+    updateDashboardCharts();
   }
-  function listenForQuestionChange(){
+  function listenForQuestionChangechangeQuestion(){
     $('select#questions-dashboard-dropdown').change( ()=>{
       console.log('A question was asked')
       selectQuestion(questionDict[urlParams.questionVar]);
@@ -406,7 +408,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   makeQuestionDropdown();
   populateQuestionDropdown();
   $('#questions-dashboard-dropdown').val(urlParams.questionVar);
-  listenForQuestionChange();
+  listenForQuestionChangechangeQuestion();
   
   
 
