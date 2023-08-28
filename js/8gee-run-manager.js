@@ -601,8 +601,6 @@ Map2.addLayer(hi_veg,{strokeColor:'808',layerType:'geeVectorImage'},'HI Veg',fal
 // });
 var mtbsIDS = getMTBSandIDS('anc','layer-list');  
 var mtbs =mtbsIDS[0];
-
-// NWI
 var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Freshwater Emergent wetland':'7fc31c',
                     'Freshwater pond': '688cc0',
@@ -621,12 +619,10 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
   var nwi_dict = {1: 'Estuarine and Marine Deepwater', 2: 'Estuarine and Marine Wetland', 3: 'Freshwater Emergent Wetland', 4: 'Freshwater Forested/Shrub Wetland', 5: 'Freshwater Pond', 6: 'Lake', 7: 'Riverine'};
   var nwi_palette = ['007c88','66c2a5','7fc31c','008836','688cc0','13007c','0190bf'];
   var nwi_hi_rast = nwi_hi.reduceToImage(['WETLAND_TY_NO'], ee.Reducer.first()).rename(['NWI']).set('system:time_start',ee.Date.fromYMD(2019,6,1).millis());
-  
-  Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'NWI');                
-  
-  // Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2}, {baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11} ],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+  // Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'NWI');                
 
-    esri_lc_dict = {'Water':'008',
+    Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+esri_lc_dict = {'Water':'008',
                 'Trees':'080',
                 'Flooded Vegetation':'088',
                 'Built Area':'D00',
@@ -3262,7 +3258,11 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   Object.keys(summaryAreas).map(k=>{
     loadGEESummaryAreas(summaryAreas[k],k)
   });
-  updateDashboardHighlights();
+
+  selectQuestion(questionDict[urlParams.questionVar]);
+  // updateDashboardHighlights();
+
+  // Keep track of which layers are being viewed
   $('.layer-checkbox,.layer-span').click(event=>{
     setTimeout(()=>{
       Object.keys(layerObj).map(k=>{
@@ -3358,6 +3358,7 @@ function runTreeMap(){
                           ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'Dead Trees Per Acre'],
                           ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'Live Trees Per Acre'],
 
+                          
                           // dry biomass
                           ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'Above Ground Dry Standing Dead Tree Biomass (tons/acre)'],
                           ['DRYBIO_L',palettes.crameri.lajolla[10],0.05,0.95,'Above Ground Dry Live Tree Biomass (tons/acre)'],
@@ -3415,7 +3416,7 @@ function runTreeMap(){
     zippedValuesNames.sort();
 
     // Pull apart the sorted unique pairs
-    var uniqueValues = zippedValuesNames.map(r=>r[0]);
+    var  uniqueValues = zippedValuesNames.map(r=>r[0]);
     var uniqueNames = zippedValuesNames.map(r=>r[1]);
 
     // Set up visualization parameters
@@ -3433,14 +3434,15 @@ function runTreeMap(){
     let palette = []
     range(viz['min'],viz['max']+1).map(i=>{
       if(uniqueValues.indexOf(i)>-1){
-        c = randomColor([50,50,50],[255,255,255]).slice(1);
+        var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
+        var c = colorDict[valueNameT]
+        // c = randomColor([50,50,50],[255,255,255]).slice(1);
         colors.push(c);
         palette.push(c);
       }else{
         palette.push('000');
       }
     });
-
     // Specify the palette and the legend dictionary with the unique names and colors
     viz['palette']=palette;
     viz['classLegendDict'] = dict(zip(uniqueNames,colors));
@@ -3481,41 +3483,25 @@ function getThematicAttr_Colors(attr){
   viz['max'] = uniqueValues[uniqueValues.length-1];
   
   // Get all the unique colors for the legend and colors with blanks as black in the palette 
-  let colors = []
-  let palette = []
-
-
+  
+  //let colors = []
+  //let palette = []
   // range(viz['min'],viz['max']+1).map(i=>{
   //   if(uniqueValues.indexOf(i)>-1){
   //     c = randomColor([50,50,50],[255,255,255]).slice(1);
-  //     // c = paletteFT_forestType {}
   //     colors.push(c);
   //     palette.push(c);
   //   }else{
   //     palette.push('000');
   //   }
   // });
-
-  range(viz['min'],viz['max']+1).map(i=>{
-    if(uniqueValues.indexOf(i)>-1){
-      var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
-      var valueCodeT = uniqueValues[uniqueValue.indexOf(i)]
-      c = forestTypePalette[valueNameT]                  // refers to forest type palette .json brought in in html
-
-      //c = $("ForestTypePalette")
-      // c = randomColor([50,50,50],[255,255,255]).slice(1);
-      colors.push(c);
-      palette.push(c);
-    }else{
-      palette.push('000');
-
-  }
-
-});
-
-  // Specify the palette and the legend dictionary with the unique names and colors
-  viz['palette']=palette;
-  viz['classLegendDict'] = dict(zip(uniqueNames,colors));
+  
+  let palette = palettes_FT.forestType.forestType[999];
+  
+  // Specify the palette based on the input palette 
+  viz['palette']= palette;
+  // Specify the legend dictionary with the unique names and colors
+  viz['classLegendDict'] = dict(zip(uniqueNames,palette));
   viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
   
   // Add the layer to the map

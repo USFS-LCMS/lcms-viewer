@@ -1329,7 +1329,7 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 //Function to add an item to a dropdown
 function addDropdownItem(dropdownID,label,value,tooltip){
     if(tooltip === undefined || tooltip === null){tooltip = ''};
-	$('#'+dropdownID).append(`<option title = '${tooltip}' value = "${value}">${label}</option>`)
+	$('#'+dropdownID).append(`<option class = '${dropdownID}-dropdown-item' $title = '${tooltip}' value = "${value}">${label}</option>`)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a standard shape editor toolbar

@@ -1306,7 +1306,13 @@ function makeDashboardReport(){
          
            
         };
-        function addLegend(){dashboardReport.addBySelector('#legend-collapse-div',null,12,60,allTheRest);}
+        function addLegend(){
+			// if(!${$('#legend-collapse-div').is(":visible")){
+			// 	${$(selector).show()
+			// }
+			dashboardReport.addBySelector('#legend-collapse-div',null,12,60,allTheRest);
+		
+		}
         // addLegend();
         dashboardReport.doc.addPage();
         dashboardReport.currentY=dashboardReport.margin;
