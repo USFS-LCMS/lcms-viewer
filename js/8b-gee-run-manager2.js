@@ -148,10 +148,11 @@ function runGTAC(){
     Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
     
     var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
-    var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+    // var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
 
-    lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
-    
+    // lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
+    lcmsAttr_merged = lcmsAttr
+
     var stack = []
     ee.List.sequence(startYear,endYear).getInfo().map(function(year){
       var imgYr = lcmsAttr_merged.filter(ee.Filter.calendarRange(year,year,'year'))
@@ -162,15 +163,20 @@ function runGTAC(){
     lcmsAttr_stack = ee.ImageCollection(stack)
 
     var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
-    var palette=['3d4551','FFFF00','d54309','f39268','F5DEB3','ffcccb','FFA500','00a398','1B1716'];
-    var palette='3d4551,FFFF00,d54309,f39268,F5DEB3,ffcccb,FFA500,00a398,1B1716'.split(',');
+    console.log('attrVals',attrVals)
+    // var palette='3d4551,FFFF00,cd853f,d54309,DE3163,f39268,F5DEB3,FFB6C1,FFA500,b5651d,#C0C0C0,c0362c,D3B683,808000,00a398,1B1716'.split(',');
+    // var palette='3d4551,FFFF00,C6C600,DAA520,D54309,AD3100,FFB6C1,FF8397,F39268,D46C40,897044,9EAAD7,898944,D8D898,00a398,1B1716'.split(',');
+    var palette='3d4551,FFFF00,C6C600,D54309,AD3100,F39268,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D46C40,D8D898,00a398,1B1716'.split(',');
+
 
     var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals),palette).map(([k,v]) => [k, v]))
     var attrQueryDict = Object.fromEntries(zip(range(1,Object.keys(attrVals).length+1),Object.keys(attrVals)).map(([k,v]) => [k, v]))
+    console.log('attrClassLegendDict',attrClassLegendDict)
+    console.log('attrQueryDict',attrQueryDict)
     console.log(lcmsAttr.size().getInfo())
-    
-    Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:9,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
- }
+
+    Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
+  }
 
   //Bring in time lapses
 

@@ -3258,7 +3258,11 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
   Object.keys(summaryAreas).map(k=>{
     loadGEESummaryAreas(summaryAreas[k],k)
   });
-  updateDashboardHighlights();
+
+  selectQuestion(questionDict[urlParams.questionVar]);
+  // updateDashboardHighlights();
+
+  // Keep track of which layers are being viewed
   $('.layer-checkbox,.layer-span').click(event=>{
     setTimeout(()=>{
       Object.keys(layerObj).map(k=>{
@@ -3430,7 +3434,9 @@ function runTreeMap(){
     let palette = []
     range(viz['min'],viz['max']+1).map(i=>{
       if(uniqueValues.indexOf(i)>-1){
-        c = randomColor([50,50,50],[255,255,255]).slice(1);
+        var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
+        var c = colorDict[valueNameT]
+        // c = randomColor([50,50,50],[255,255,255]).slice(1);
         colors.push(c);
         palette.push(c);
       }else{

@@ -233,7 +233,9 @@ const staticTemplates = {
                                     `<p class='my-2'>
                                     This Data Explorer provides the ability to view, analyze, summarize, and download LCMS data. 
                                     </p>
-                                    <p class='my-2'>
+                                    <div class ='my-3'> For an overview of LCMS and to find links to other LCMS Explorers, visit the
+                                      <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
+                                    </div>
                             LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel 2 data availability, cloud-based computing power, and big data analysis methods.
 
                             </p>
@@ -266,15 +268,13 @@ const staticTemplates = {
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
                         
-                        <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
-                            <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-                            <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
-                            <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
-                            
-                        </div>`),
+                        `),
             'lcms-base-learner':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Base-Learner Explorer!',
-                                    `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
+                                    `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
+                                        <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
+                                    </div> 
+                                    <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
                                     `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
                                     </p>`,
                                     `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
@@ -284,18 +284,14 @@ const staticTemplates = {
                             <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-                        </div>
-                        
-                        <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
-                            <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
-                            <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-                            <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
-                            
                         </div>`
                 ),
                 'lcms-dashboard':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
-                                    `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
+                                    `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
+                                        <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
+                                    </div>
+                                    <p>The LCMS Dashboard application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
                                     `<p>Pre-calculated summary areas are available for generating custom reports.</p>
                                     <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
@@ -306,16 +302,15 @@ const staticTemplates = {
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
-                        
-                        <div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
-                            <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
-                            <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
-                            
+
                         </div>`,'Loading LCMS summary areas. This can take some time'
                 ),
             'IDS':getIntroModal('./images/lcms-icon.png',
             'Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!',
-           `<p>LCMS is a landscape change detection program developed by the USDA Forest Service. This application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
+            `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
+                <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
+            </div>
+            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
            
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
@@ -325,13 +320,6 @@ const staticTemplates = {
     <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
     <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-</div>
-
-<div class ='my-3' title='There are additional data visualization tools available in these other sites'>Other LCMS EXPLORERS:
-    <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
-    <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
-    
 </div>`,''
 )
 ,
@@ -810,16 +798,19 @@ const staticTemplates = {
                         </div>
                         <hr>
                         <header class = 'row'>
-                            <h3 class = ' text-capitalize' title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow">Other LCMS Viewers</h3>
+                            <h3 class = ' text-capitalize' title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow">LCMS Homepage</h3>
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './images/lcms-icon.png'></a> 
+                                <a title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './images/lcms-icon.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                                <a class = 'links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
-                                <hr>
-                                <a class = 'links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                                <li>
+                                    <a class = 'links' title = "An overview of LCMS" href = "home.html" target="_blank">Introduction</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' title = "Other LCMS Explorers" href = "home.html#data-explorer" target="_blank">Other Data Explorers</a>
+                                </li>
                             </div>
                         </section>
                         <hr>
@@ -939,24 +930,7 @@ const staticTemplates = {
                         </div>
                     </div>
                     <hr>
-                         <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
-                            <h3 class = ' text-capitalize'>LCMS Methods</h3>
-                        </header>
-                        <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
-                            <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
-                            </div>
-                            <div class = 'col-lg-10'>
-                                Click to open in-depth methods document:
-                                <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (CONUS and SEAK)</a>
-                                </li>
-                                <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
-                                </li>   
-                            </div>
-                        </div>
-                        <hr>
+                         
                          <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
                             <h3 class = ' text-capitalize'>LCMS Methods</h3>
                         </header>
@@ -976,18 +950,19 @@ const staticTemplates = {
                         </div>
                         <hr>
                         <header class = 'row'>
-                            <h3 class = ' text-capitalize' title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow">Other LCMS Viewers</h3>
+                            <h3 class = ' text-capitalize' title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow">LCMS Homepage</h3>
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "In addition to this viewer, there are viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'LCMS icon' src = './images/lcms-icon.png'></a> 
+                                <a title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'LCMS icon' src = './images/lcms-icon.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                                <a class = 'links' title = "Visualize and explore LCMS map outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
-                                <hr>
-                                <a class = 'links' title = "Visualize and explore time series datasets used to create the LCMS map outputs" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
-                                <hr>
-                                <a class = 'links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+                            <li>
+                                <a class = 'links' title = "An overview of LCMS" href = "home.html" target="_blank">Introduction</a>
+                            </li>
+                            <li>
+                                <a class = 'links' title = "Other LCMS Explorers" href = "home.html#data-explorer" target="_blank">Other Data Explorers</a>
+                            </li>
                             </div>
                         </section>
                         <hr>
@@ -1354,7 +1329,7 @@ function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
 //Function to add an item to a dropdown
 function addDropdownItem(dropdownID,label,value,tooltip){
     if(tooltip === undefined || tooltip === null){tooltip = ''};
-	$('#'+dropdownID).append(`<option title = '${tooltip}' value = "${value}">${label}</option>`)
+	$('#'+dropdownID).append(`<option class = '${dropdownID}-dropdown-item' $title = '${tooltip}' value = "${value}">${label}</option>`)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a standard shape editor toolbar
@@ -1650,6 +1625,36 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
       }else{checked = ''};
       
       $('#'+radioID).append(`<div class="form-check form-check-inline">
+                              <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
+                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
+                            </div>`);
+      $('#'+radioCheckboxID).change( function() {
+                                    Object.keys(optionList).map(k=>optionList[k]=false)
+                                    var v = $(this).val();
+                                    optionList[v]=true;
+                                    eval(`window.${variable} = "${v}"`)
+                                    });
+})
+}
+//like addMultiRadio but with new line for each option **still need to add that functionality -EH 8/10/23**
+function addVertMultiRadio(containerID,radioID,title,variable,optionList){
+    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${title}</p></form>`);
+
+    eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
+    Object.keys(optionList).map(function(k){
+      const kID = k.replace(/[^A-Za-z0-9]/g, "-");
+      var radioCheckboxID = kID + '-checkbox';
+      var radioLabelID = radioCheckboxID + '-label';
+      if(optionList[k] === 'true'){optionList[k] = true}
+      else  if(optionList[k] === 'false'){optionList[k] = false};
+      var checked = optionList[k];
+      
+      if(checked){
+        checked = 'checked';
+        eval(`window.${variable} = "${k}"`)
+      }else{checked = ''};
+      
+      $('#'+radioID).append(`<div class="form-check form-check-inline"><br>
                               <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
                               <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
                             </div>`);
