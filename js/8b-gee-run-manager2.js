@@ -378,3 +378,15 @@ function runGTAC(){
   //           {
   //             "system:index": "0"
   //           })]);
+
+
+  // function runGTAC(){
+  //   Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
+  //   Map2.addLayer(ee.Image([1,2,3]).toArray());
+  //   Map2.addLayer(ee.Image(1));
+  //   Map2.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
+  //   Map2.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
+  //   Map2.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().float())
+    
+  //   setTimeout(()=>{$('#query-label').click()},1000)
+  // }

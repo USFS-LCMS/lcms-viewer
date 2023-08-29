@@ -3435,8 +3435,8 @@ function runTreeMap(){
     range(viz['min'],viz['max']+1).map(i=>{
       if(uniqueValues.indexOf(i)>-1){
         var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
-        var c = colorDict[valueNameT]
-        // c = randomColor([50,50,50],[255,255,255]).slice(1);
+        // var c = colorDict[valueNameT]
+        c = randomColor([50,50,50],[255,255,255]).slice(1);
         colors.push(c);
         palette.push(c);
       }else{
