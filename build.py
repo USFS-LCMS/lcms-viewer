@@ -2,19 +2,24 @@
 import glob,os,shutil
 ##############################################
 
-js_folder = 'js'
-js_min_folder = 'js-min'
+
+# js_min_folder = 'js-min'
 which_ones =['1variables.js','2templates.js','3template-adder.js','4map-manager.js','5chart-manager.js','6tools-toggle-manager.js']#,'7gee-lib-manager.js']
-combined_filename = r"A:\GEE\gee_py_modules_package\geeViz\geeView\js\lcms-viewer.min.js"
-in_css = r"Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer\css\style.css"
-out_css = r"A:\GEE\gee_py_modules_package\geeViz\geeView\css\style.min.css"
+lcmsViewerFolder = r'C:\RCR\lcms-viewer'
+geeViewFolder = r'C:\RCR\geeViz\geeView'
+js_folder = os.path.join(lcmsViewerFolder,'js')
+combined_filename = os.path.join(geeViewFolder,r"js\lcms-viewer.min.js")
+in_css = os.path.join(lcmsViewerFolder,r"css\style.css")
+
+out_css = os.path.join(geeViewFolder,r"css\style.min.css")
+
 ##############################################
 # if not os.path.exists(js_min_folder):os.makedirs(js_min_folder)
 
 js_files = glob.glob(os.path.join(js_folder,'*.js'))
 js_files = [i for i in js_files if os.path.basename(i).find('.min.js') == -1]
 js_files = [i for i in js_files if os.path.basename(i) in which_ones]
-# print(js_files)
+print(js_files)
 combined = ''
 for js_file in js_files:
 	print(js_file)
