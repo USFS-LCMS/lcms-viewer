@@ -278,23 +278,12 @@ var  getQueryImages = function(lng,lat){
 											  </table>`);
 			$('#'+containerID).append(`<tr><th>${q.name}</th><th>NULL</th></tr>`);
 		}else if(q.type === 'geeImage'){
+			
 			$('#query-list-container').append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
 			let valueKeys = Object.keys(value);
-			if(valueKeys.length === 1 ){
-				var tValue = Object.values(value)[0];
-				if(q.queryDict !== null && q.queryDict !== undefined){
-					tValue = q.queryDict[parseInt(tValue)]
-				}else if(!!(tValue % 1)){
-					tValue = tValue.toFixed(4);
-				  }
-				// else var v = value[kt]
-				// if(v !== null){v = v.toFixed(2).toString();}
-				
-				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
-				
-			}else if(valueKeys.length === 4 && 
+			 if(valueKeys.length === 4 && 
 				valueKeys.indexOf('viz-blue')>-1 && 
 				valueKeys.indexOf('viz-green')>-1 && 
 				valueKeys.indexOf('viz-red')>-1){
@@ -307,16 +296,34 @@ var  getQueryImages = function(lng,lat){
 				  }
 				
 				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
-			}else{
-				$('#'+containerID).append(`<tr><th>${q.name}</th><th>Multi band</th></tr>`);
+			}else{	
+				if(Object.keys(value).length > 1){
+					$('#'+containerID).append(`<tr><th colspan=2 style="text-align:left;">${q.name}</th</tr>`);
+				// $('#'+containerID).append(`<tr><th>Band Name</th><th>Value</th></tr>`);
+				}
 				
 				Object.keys(value).map(function(kt){
 					try{
-					var v = value[kt]
-					if(v !== null){v = v.toFixed(2).toString();}
+					var v = value[kt];
+					
+					if(Array.isArray(v)){
+
+						v = JSON.stringify(v);
+					}else if(!!(v % 1) && v !== null){
+						v = v.toFixed(4);
+					}else if(q.queryDict !== null && q.queryDict !== undefined){
+								var t = q.queryDict[parseInt(v)];
+								if(t !== undefined){v = t}
+							}
+					
 					// var queryLine =  kt+ ': '+v + "<br>";
-					$('#'+containerID).append(`<tr><td>${kt}</td><td>${v}</td></tr>`);
+					if(Object.keys(value).length > 1){
+						$('#'+containerID).append(`<tr><td>${kt}</td><td>${v}</td></tr>`);
+					}else{
+						$('#'+containerID).append(`<tr><th>${q.name}</th><td>${v}</td></tr>`);
+					}
 					}catch(err){
+						console.log(`Click query error: ${err}`);
 						$('#'+containerID).append(`<tr><td>${kt}</td><td>${JSON.stringify(v)}</td></tr>`);
 					}
 				});
