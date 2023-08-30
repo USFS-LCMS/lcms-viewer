@@ -258,8 +258,8 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   addCheckboxes('advanced-dashboard-params-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
 
   var highlightsLCLookup = {'Trees':'Trees','Tall-Shrubs':'Tall Shrubs','Shrubs':'Shrubs','Grass-Forb-Herb':'Grass/Forb/Herb','Barren-or-Impervious':'Barren or Impervious','Water':'Water','Snow-or-Ice':'Snow or Ice'};
-  var  highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture','Other':'Other'};
-  var  highlightsChangeLookup = {'Stable':'Stable','Slow-Loss':'Slow Loss','Fast-Loss':'Fast Loss','Gain':'Gain'};
+  var highlightsLULookup = {'Agriculture':'Agriculture','Developed':'Developed','Forest':'Forest','Non-Forest-Wetland':'Non-Forest Wetland','Rangeland-or-Pasture':'Rangeland or Pasture','Other':'Other'};
+  var highlightsChangeLookup = {'Stable':'Stable','Slow-Loss':'Slow Loss','Fast-Loss':'Fast Loss','Gain':'Gain'};
   var highlightLCMSProducts = {'Land_Cover':[],'Land_Use':[],'Change':[]};
   var highlightsSortingDict = {'Trees':'asc','Tall-Shrubs': 'desc','Shrubs':'desc','Grass/Forb/Herb':'desc','Barren or Impervious':'desc','Water':'asc','Snow or Ice':'asc',
 'Agriculture':'asc','Developed':'desc','Forest':'asc','Non-Forest Wetland':'asc','Rangeland or Pasture':'desc','Other':'desc',
@@ -353,17 +353,25 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       title: 'Post Fire Succession',
       hoverText:'Some more info about fire succession',
       whichProducts:{"Land-Cover": true,"Land-Use": false,"Change":true},
-      changeHighlightClasses : {"Stable": true,"Slow-Loss":true,"Fast-Loss": false,"Gain": true},
-      lClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice':true,"Water": true},
-      luClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+      changeHighlightClasses : {"Stable": true,"Slow-Loss": true,"Fast-Loss": false,"Gain": true},
+      lcHighlightClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice':false,"Water": false},
+      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     },
     glacialRecession:{
       title: 'Glacial Recession',
       hoverText:'Some more info about glacial succession',
       whichProducts:{"Land-Cover": true,"Land-Use": false,"Change":true},
-      changeHighlightClasses : {"Stable": false,"Slow-Loss":false,"Fast-Loss": true,"Gain": true},
-      lClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice':true,"Water": true},
-      luClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": true,"Gain": true},
+      lcHighlightClasses : {"Trees": false,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": true,"Barren-or-Impervious": true,'Snow-or-Ice': true,"Water": true},
+      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    },
+    question3:{
+      title: 'Q3 with Land Use',
+      hoverText:'Some more info about question 3',
+      whichProducts:{"Land-Cover": true,"Land-Use": true,"Change": true},
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": true,"Gain": true},
+      lcHighlightClasses : {"Trees": false,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": true,"Barren-or-Impervious": true,'Snow-or-Ice': false,"Water": false},
+      luHighlightClasses : {"Agriculture": true,"Developed": true,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     }
   }
 
@@ -372,17 +380,20 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     urlParams.questionVar = Object.keys(questionDict)[0];
   }
   
-  
-
+  // creates a Bootstrap dropdown to contain the questions
   function makeQuestionDropdown(){
-    addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically choose LCMS products to summarize');
+    addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically select certain LCMS products to summarize');
   }
+
+  // populates the dropdown with the questions (keys) from the questionDict 
   function populateQuestionDropdown(){
     Object.keys(questionDict).map(k=>{
 
       addDropdownItem('questions-dashboard-dropdown',questionDict[k].title,k,`Choose this to summarize ${k}`)
     })
   }
+
+  // changes the LCMS product selections based on the question chosen
   function selectQuestion(selectedQuestion){
     var selectedChangeClasses = selectedQuestion.changeHighlightClasses;
     console.log(selectedChangeClasses);
@@ -392,6 +403,23 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       $(checkboxID).prop('checked', selectedChangeClasses[k]);
       urlParams.changeHighlightClasses[k] = selectedChangeClasses[k];
     })
+    var selectedLCclasses = selectedQuestion.lcHighlightClasses;
+    console.log(selectedLCclasses);
+    Object.keys(selectedLCclasses).map(k=>{
+      var checkboxID = `#lcHighlightClasses${k}-checkbox`;
+      console.log(checkboxID);
+      $(checkboxID).prop('checked', selectedLCclasses[k]);
+      urlParams.lcHighlightClasses[k] = selectedLCclasses[k];
+    })
+    var selectedluClasses = selectedQuestion.luHighlightClasses;
+    console.log(selectedluClasses);  
+    Object.keys(selectedluClasses).map(k=>{
+      var checkboxID = `#luHighlightClasses${k}-checkbox`;
+      console.log(checkboxID);
+      $(checkboxID).prop('checked', selectedluClasses[k]);
+      urlParams.luHighlightClasses[k] = selectedluClasses[k];
+    })
+    
     
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
