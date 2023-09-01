@@ -164,9 +164,8 @@ function runGTAC(){
 
     var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
     console.log('attrVals',attrVals)
-    // var palette='3d4551,FFFF00,cd853f,d54309,DE3163,f39268,F5DEB3,FFB6C1,FFA500,b5651d,#C0C0C0,c0362c,D3B683,808000,00a398,1B1716'.split(',');
-    // var palette='3d4551,FFFF00,C6C600,DAA520,D54309,AD3100,FFB6C1,FF8397,F39268,D46C40,897044,9EAAD7,898944,D8D898,00a398,1B1716'.split(',');
-    var palette='3d4551,FFFF00,C6C600,D54309,AD3100,F39268,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D46C40,D8D898,00a398,1B1716'.split(',');
+
+    var palette='3d4551,d54309,AD3100,FFFF00,C6C600,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D8D898,D46C40,F39268,00A398,1B1716'.split(',');
 
 
     var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals),palette).map(([k,v]) => [k, v]))
@@ -176,6 +175,7 @@ function runGTAC(){
     console.log(lcmsAttr.size().getInfo())
 
     Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
+    //Map2.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
   }
 
   //Bring in time lapses
