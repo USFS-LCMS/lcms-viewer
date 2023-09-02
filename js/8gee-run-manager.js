@@ -3290,11 +3290,12 @@ function runAlgal(){
   }
   
   let ab = ee.ImageCollection('projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images');
-  ab = ab.filter(ee.Filter.eq('studyAreaName',"WY-MT-CO-UT-ID2"))
+  //ab = ab.filter(ee.Filter.eq('studyAreaName',"WY-MT-CO-UT-ID2"))
+  ab = ab.filter(ee.Filter.eq('studyAreaName','GYE-WY'))
   // console.log(ab.first().getInfo())
  
   ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear),parseInt(urlParams.endYear),'year'))
-      .filter(ee.Filter.calendarRange(160,300))
+      .filter(ee.Filter.calendarRange(150,350))
   let algalLegendDict={'Algal Negative':'00D','Algal Positive':'D00'};
   // Map2.addTimeLapse(ab.select([0]),{'min':1,'max':2,'palette':'00D,D00','classLegendDict':algalLegendDict,'dateFormat':'YYMMdd','advanceInterval':'day'},'Algal Bloom Classification',true)
 
