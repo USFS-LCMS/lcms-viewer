@@ -403,7 +403,6 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // populates the dropdown with the questions (keys) from the questionDict 
   function populateQuestionDropdown(){
     Object.keys(questionDict).map(k=>{
-
       addDropdownItem('questions-dashboard-dropdown',questionDict[k].title,k,questionDict[k].hoverText)
     })
   }
@@ -413,7 +412,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     var selectedProducts = selectedQuestion.productHighlightClasses;
     console.log(selectedProducts);
     Object.keys(selectedProducts).map(k=>{
-      var checkboxID = `productHighlightClasses${k}-checkbox`;
+      var checkboxID = `#productHighlightClasses${k}-checkbox`;
       console.log(checkboxID);
       $(checkboxID).prop('checked', selectedProducts[k]);
       urlParams.productHighlightClasses[k] = selectedProducts[k];
