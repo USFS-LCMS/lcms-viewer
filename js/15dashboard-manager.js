@@ -607,7 +607,7 @@ function updateDashboardHighlights(limit=10){
 	currentHighlightsMoveID++;
 	let thisHighlightsMoveID=currentHighlightsMoveID;
 	let isFirst = true;
-	let chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));
+	let chartWhich = Object.keys(productHighlightClasses).filter(k=> productHighlightClasses[k]).map(i=>i.replaceAll('-','_'));
 	
 	let available_years = range(startYear,endYear+1);
 	let startYearI = available_years.indexOf(parseInt(urlParams.startYear));
@@ -976,7 +976,7 @@ function updateDashboardCharts(){
 
 	// $('.dashboard-results-container').hide();
 	let visible,chartModes;
-	chartWhich = Object.keys(whichProducts).filter(k=> whichProducts[k]).map(i=>i.replaceAll('-','_'));
+	chartWhich = Object.keys(productHighlightClasses).filter(k=> productHighlightClasses[k]).map(i=>i.replaceAll('-','_'));
 	chartModes = Object.keys(annualTransition).filter(k=> annualTransition[k]).map(k=>k.toLowerCase())
 	
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
