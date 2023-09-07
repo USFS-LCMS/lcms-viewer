@@ -387,6 +387,9 @@ function runGTAC(){
   //   Map2.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
   //   Map2.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
   //   Map2.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().float())
+  //   var sa = ee.FeatureCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary');
+  //   Map2.addLayer(sa)
     
   //   setTimeout(()=>{$('#query-label').click()},1000)
   // }
+  //
