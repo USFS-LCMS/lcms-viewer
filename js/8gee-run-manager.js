@@ -3336,6 +3336,10 @@ function runTreeMap(){
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brought in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
+  //var thematicAttrs = [
+  //                     ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
+  //                     ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
+  //                    ];
   var thematicAttrs = [
                        ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
                        ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
@@ -3375,8 +3379,8 @@ function runTreeMap(){
 
   var ordinalAttrs = [
                           
-                          ['STDSZCD',palettes.colorbrewer.Set1[6],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
-                          ['FLDSZCD',palettes.colorbrewer.Set1[6],0,1,'Field Stand Size Code'], // ranges from 0-5
+                          ['STDSZCD',palettes.custom.standsize[4],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
+                          ['FLDSZCD',palettes.custom.fieldsize[6],0,1,'Field Stand Size Code'], // ranges from 0-5
 
   ]
 
@@ -3396,6 +3400,52 @@ function runTreeMap(){
 
 
   ]
+  // function to apply unique values to Ordinal attribute
+  function getThematicAttr2(attr){
+
+    // Pull the attribute image
+    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+
+    // Get the numbers and unique numbers for that attribute
+    var numbers = treeMapLookup[attr[0]];
+    var names = treeMapLookup[attr[1]];
+
+    // Zip the numbers to the names, find the unique pairs and sort them
+    var zippedValuesNames = unique(zip(numbers,names));
+    zippedValuesNames.sort();
+
+    // Pull apart the sorted unique pairs
+    var uniqueValues = zippedValuesNames.map(r=>r[0]);
+    var uniqueNames = zippedValuesNames.map(r=>r[1]);
+
+    // Set up visualization parameters
+    var viz = {};
+    var forfld_palette = 'PLACEHOLDER'
+
+    // Get all the unique colors for the legend and colors with blanks as black in the palette 
+    let colors = []
+    let palette = []
+    range(viz['min'],viz['max']+1).map(i=>{
+      if(uniqueValues.indexOf(i)>-1){
+        c = randomColor([50,50,50],[255,255,255]).slice(1);
+        colors.push(c);
+        palette.push(c);
+      }else{
+        palette.push('000');
+      }
+    });
+
+    // Specify the palette and the legend dictionary with the unique names and colors
+    viz['palette']=palette;
+    viz['classLegendDict'] = dict(zip(uniqueNames,colors));
+    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+    
+    // Add the layer to the map
+    Map2.addLayer(attrImg,viz,attr[2],visible);
+
+    //Set so subsequent layers are not visible by default
+    visible = false;
+  }
 
   // Function to get a thematic attribute image service  
   function getThematicAttr(attr){
@@ -3430,6 +3480,7 @@ function runTreeMap(){
     range(viz['min'],viz['max']+1).map(i=>{
       if(uniqueValues.indexOf(i)>-1){
         c = randomColor([50,50,50],[255,255,255]).slice(1);
+        console.log(c);
         colors.push(c);
         palette.push(c);
       }else{
@@ -3463,7 +3514,7 @@ function getThematicAttr_Colors(attr){
   zippedValuesNames.sort();
 
   // Pull apart the sorted unique pairs
-  var  uniqueValues = zippedValuesNames.map(r=>r[0]);
+  var uniqueValues = zippedValuesNames.map(r=>r[0]);
   var uniqueNames = zippedValuesNames.map(r=>r[1]);
 
   // Set up visualization parameters
@@ -3480,31 +3531,20 @@ function getThematicAttr_Colors(attr){
   let colors = []
   let palette = []
 
-
-  // range(viz['min'],viz['max']+1).map(i=>{
-  //   if(uniqueValues.indexOf(i)>-1){
-  //     c = randomColor([50,50,50],[255,255,255]).slice(1);
-  //     // c = paletteFT_forestType {}
-  //     colors.push(c);
-  //     palette.push(c);
-  //   }else{
-  //     palette.push('000');
-  //   }
-  // });
-
   range(viz['min'],viz['max']+1).map(i=>{
-    if(uniqueValues.indexOf(i)>-1){
-      var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
-      var valueCodeT = uniqueValues[uniqueValue.indexOf(i)]
-      c = forestTypePalette[valueNameT]                  // refers to forest type palette .json brought in in html
+    if(uniqueValues.indexOf(i)>-1){ 
+      var valueNameT = uniqueNames[uniqueValues.indexOf(i)];
+      var nameIndex = forestTypeLookup.names.indexOf(valueNameT);
+      c = forestTypeLookup.palette[nameIndex];             // refers to forest type palette .json brought in in html
 
-      //c = $("ForestTypePalette")
-      // c = randomColor([50,50,50],[255,255,255]).slice(1);
+      // If the hex color starts with a #, remove the #
+      if(c[0] === '#'){
+        c = c.slice(1);
+      }
       colors.push(c);
       palette.push(c);
     }else{
       palette.push('000');
-
   }
 
 });
@@ -3639,7 +3679,7 @@ function getThematicAttr_Colors(attr){
   percentAttrs.map(getPercentAttr)
 
   // Iterate across each thematic attribute and bring it into the map
-  thematicAttrs.map(getThematicAttr);
+  //thematicAttrs.map(getThematicAttr);
 
   // Iterate across each thematic attribute and bring it into the map
   thematicAttrs.map(getThematicAttr_Colors);
