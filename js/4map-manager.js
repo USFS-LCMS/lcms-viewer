@@ -767,7 +767,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   timeLapseObj[legendDivID].state = 'inactive';
   timeLapseObj[legendDivID].opacity = viz.opacity*100;
  
-  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name};  
+   
   
   var layerContainerTitle = 'Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.'
   
@@ -856,11 +856,27 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
      }) 
   }else{
     var dummyImage = ee.Image(item.first());
+    var cT = []
     viz.years.map(function(yr){
 
-      var d = ee.Date.parse(viz.dateFormat,yr.toString())
-      var img = fillEmptyCollections(item.filterDate(d,d.advance(1,viz.advanceInterval)),dummyImage);
+      // Get the date
+      var d = ee.Date.parse(viz.dateFormat,yr.toString());
+
+       // Filter and find the image
+      if(viz.dateField !== 'system:time_start'){
+        
+        var img = item.filter(ee.Filter.gte(viz.dateField,d.millis()));
+        img = img.filter(ee.Filter.lt(viz.dateField,d.advance(1,viz.advanceInterval).millis()));
+        // var img = item.filter.and(ee.Filter.gte(viz.dateField,d.millis()),ee.Filter.lt(viz.dateField,d.advance(1,viz.advanceInterval).millis()));
+        img = fillEmptyCollections(img,dummyImage);
+      }else{
+        // This method fails with different dateFields than system:time_start
+        var img = fillEmptyCollections(item.filterDate(d,d.advance(1,viz.advanceInterval)),dummyImage);
+      }
+      
+     
       var img = ee.Image(img.first()).set('system:time_start',d.millis());
+      cT.push(img)
       if(yr !== viz.years[0]){
         viz.addToLegend = false;
         viz.addToClassLegend = false;
@@ -870,6 +886,12 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
       vizT.year = yr
       addToMap(img,vizT,name +' '+   yr.toString(),visible,label ,fontColor,helpBox,legendDivID+'-collapse-div',queryItem);
     })
+    
+     // Set the time_start (which is used for pixel query charting) to the date used 
+      // regardless of the dateField so the same dates will appear in the charts and timeLapse
+    if(viz.dateField !== 'system:time_start'){
+      item = ee.ImageCollection(cT);
+    }
   }
   //If its a tile map service, don't wait
   if(viz.timeLapseType === 'tileMapService'){
@@ -877,6 +899,10 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
     $('#'+legendDivID+'-toggle-checkbox-label').show();
     $('#'+legendDivID+'-loading-spinner').hide();
   }
+
+  // Set up query collection
+  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name}; 
+
   //Get all the individual layers' sliders
   timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
 
@@ -2911,7 +2937,8 @@ function initialize() {
         authProxyAPIURL = urlParams.geeAuthProxyURL;
         geeAPIURL = "https://earthengine.googleapis.com";
         if(initCount<5){
-          showMessage('Map Loading Error','Switching to use standard credentials to access GEE. This may produce errors in accessing assets that are not shared publically.');
+          showMessage('Map Loading Error',`<p style = 'margin-bottom:1rem;'>Switching to use standard credentials to access GEE. This may produce errors in accessing assets that are not shared publically.</p>${staticTemplates.loadingModal[mode]}`);
+          
           setTimeout(()=>{eeInit()}, 1000);
         }
         
