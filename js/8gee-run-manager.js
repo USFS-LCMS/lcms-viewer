@@ -3412,107 +3412,7 @@ function runTreeMap(){
                           ['CARBON_L',palettes.crameri.lajolla[10],2,'Live Carbon Above Ground (tons/acre)'],
 
 
-  ]
-  // function to apply unique values to Ordinal attribute
-  function getThematicAttr2(attr){
-
-    // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
-
-    // Get the numbers and unique numbers for that attribute
-    var numbers = treeMapLookup[attr[0]];
-    var names = treeMapLookup[attr[1]];
-
-    // Zip the numbers to the names, find the unique pairs and sort them
-    var zippedValuesNames = unique(zip(numbers,names));
-    zippedValuesNames.sort();
-
-    // Pull apart the sorted unique pairs
-    var uniqueValues = zippedValuesNames.map(r=>r[0]);
-    var uniqueNames = zippedValuesNames.map(r=>r[1]);
-
-    // Set up visualization parameters
-    var viz = {};
-    var forfld_palette = 'PLACEHOLDER'
-
-    // Get all the unique colors for the legend and colors with blanks as black in the palette 
-    let colors = []
-    let palette = []
-    range(viz['min'],viz['max']+1).map(i=>{
-      if(uniqueValues.indexOf(i)>-1){
-        c = randomColor([50,50,50],[255,255,255]).slice(1);
-        colors.push(c);
-        palette.push(c);
-      }else{
-        palette.push('000');
-      }
-    });
-
-    // Specify the palette and the legend dictionary with the unique names and colors
-    viz['palette']=palette;
-    viz['classLegendDict'] = dict(zip(uniqueNames,colors));
-    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
-    
-    // Add the layer to the map
-    Map2.addLayer(attrImg,viz,attr[2],visible);
-
-    //Set so subsequent layers are not visible by default
-    visible = false;
-  }
-
-  // Function to get a thematic attribute image service  
-  function getThematicAttr(attr){
-    // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
-
-    // Get the numbers and names from the attribute table
-    var numbers = treeMapLookup[attr[0]];
-    var names = treeMapLookup[attr[1]];
-
-    // Zip the numbers to the names, find the unique pairs and sort them
-    var zippedValuesNames = unique(zip(numbers,names));
-    zippedValuesNames.sort();
-
-    // Pull apart the sorted unique pairs
-    var  uniqueValues = zippedValuesNames.map(r=>r[0]);
-    var uniqueNames = zippedValuesNames.map(r=>r[1]);
-
-    // Set up visualization parameters
-    var viz = {};
-
-    // First set up a dictionary so when user queries pixel, the name is returned instead of the value
-    viz['queryDict'] = dict(zippedValuesNames);
-
-    // Set the min and max value for the renderer
-    viz['min'] = uniqueValues[0];
-    viz['max'] = uniqueValues[uniqueValues.length-1];
-    
-    // Get all the unique colors for the legend and colors with blanks as black in the palette 
-    let colors = []
-    let palette = []
-    range(viz['min'],viz['max']+1).map(i=>{
-      if(uniqueValues.indexOf(i)>-1){
-        var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
-        // var c = colorDict[valueNameT]
-        c = randomColor([50,50,50],[255,255,255]).slice(1);
-        console.log(c);
-        colors.push(c);
-        palette.push(c);
-      }else{
-        palette.push('000');
-      }
-    });
-    // Specify the palette and the legend dictionary with the unique names and colors
-    viz['palette']=palette;
-    viz['classLegendDict'] = dict(zip(uniqueNames,colors));
-    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
-    
-    // Add the layer to the map
-    Map2.addLayer(attrImg,viz,attr[2],visible);
-
-    //Set so subsequent layers are not visible by default
-    visible = false;
-  }                
+  ]          
   
 // Function to get a thematic attribute image service  
 function getThematicAttr_Colors(attr){
@@ -3691,9 +3591,6 @@ function getThematicAttr_Colors(attr){
   
   // Add each percent attribute to the map
   percentAttrs.map(getPercentAttr)
-
-  // Iterate across each thematic attribute and bring it into the map
-  //thematicAttrs.map(getThematicAttr);
 
   // Iterate across each thematic attribute and bring it into the map
   thematicAttrs.map(getThematicAttr_Colors);
