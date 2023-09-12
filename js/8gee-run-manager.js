@@ -3349,6 +3349,10 @@ function runTreeMap(){
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brought in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
+  //var thematicAttrs = [
+  //                     ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
+  //                     ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
+  //                    ];
   var thematicAttrs = [
                        ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
                        ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
@@ -3366,7 +3370,6 @@ function runTreeMap(){
                           // trees per acre
                           ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'Dead Trees Per Acre'],
                           ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'Live Trees Per Acre'],
-
                           
                           // dry biomass
                           ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'Above Ground Dry Standing Dead Tree Biomass (tons/acre)'],
@@ -3389,8 +3392,8 @@ function runTreeMap(){
 
   var ordinalAttrs = [
                           
-                          ['STDSZCD',palettes.colorbrewer.Set1[6],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
-                          ['FLDSZCD',palettes.colorbrewer.Set1[6],0,1,'Field Stand Size Code'], // ranges from 0-5
+                          ['STDSZCD',palettes.custom.standsize[4],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
+                          ['FLDSZCD',palettes.custom.fieldsize[6],0,1,'Field Stand Size Code'], // ranges from 0-5
 
   ]
 
@@ -3409,60 +3412,7 @@ function runTreeMap(){
                           ['CARBON_L',palettes.crameri.lajolla[10],2,'Live Carbon Above Ground (tons/acre)'],
 
 
-  ]
-
-  // Function to get a thematic attribute image service  
-  function getThematicAttr(attr){
-    // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
-
-    // Get the numbers and names from the attribute table
-    var numbers = treeMapLookup[attr[0]];
-    var names = treeMapLookup[attr[1]];
-
-    // Zip the numbers to the names, find the unique pairs and sort them
-    var zippedValuesNames = unique(zip(numbers,names));
-    zippedValuesNames.sort();
-
-    // Pull apart the sorted unique pairs
-    var  uniqueValues = zippedValuesNames.map(r=>r[0]);
-    var uniqueNames = zippedValuesNames.map(r=>r[1]);
-
-    // Set up visualization parameters
-    var viz = {};
-
-    // First set up a dictionary so when user queries pixel, the name is returned instead of the value
-    viz['queryDict'] = dict(zippedValuesNames);
-
-    // Set the min and max value for the renderer
-    viz['min'] = uniqueValues[0];
-    viz['max'] = uniqueValues[uniqueValues.length-1];
-    
-    // Get all the unique colors for the legend and colors with blanks as black in the palette 
-    let colors = []
-    let palette = []
-    range(viz['min'],viz['max']+1).map(i=>{
-      if(uniqueValues.indexOf(i)>-1){
-        var valueNameT = uniqueNames[uniqueValues.indexOf(i)]
-        // var c = colorDict[valueNameT]
-        c = randomColor([50,50,50],[255,255,255]).slice(1);
-        colors.push(c);
-        palette.push(c);
-      }else{
-        palette.push('000');
-      }
-    });
-    // Specify the palette and the legend dictionary with the unique names and colors
-    viz['palette']=palette;
-    viz['classLegendDict'] = dict(zip(uniqueNames,colors));
-    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
-    
-    // Add the layer to the map
-    Map2.addLayer(attrImg,viz,attr[2],visible);
-
-    //Set so subsequent layers are not visible by default
-    visible = false;
-  }                
+  ]          
   
 // Function to get a thematic attribute image service  
 function getThematicAttr_Colors(attr){
@@ -3478,7 +3428,7 @@ function getThematicAttr_Colors(attr){
   zippedValuesNames.sort();
 
   // Pull apart the sorted unique pairs
-  var  uniqueValues = zippedValuesNames.map(r=>r[0]);
+  var uniqueValues = zippedValuesNames.map(r=>r[0]);
   var uniqueNames = zippedValuesNames.map(r=>r[1]);
 
   // Set up visualization parameters
@@ -3492,25 +3442,30 @@ function getThematicAttr_Colors(attr){
   viz['max'] = uniqueValues[uniqueValues.length-1];
   
   // Get all the unique colors for the legend and colors with blanks as black in the palette 
-  
-  //let colors = []
-  //let palette = []
-  // range(viz['min'],viz['max']+1).map(i=>{
-  //   if(uniqueValues.indexOf(i)>-1){
-  //     c = randomColor([50,50,50],[255,255,255]).slice(1);
-  //     colors.push(c);
-  //     palette.push(c);
-  //   }else{
-  //     palette.push('000');
-  //   }
-  // });
-  
-  let palette = palettes_FT.forestType.forestType[999];
-  
-  // Specify the palette based on the input palette 
-  viz['palette']= palette;
-  // Specify the legend dictionary with the unique names and colors
-  viz['classLegendDict'] = dict(zip(uniqueNames,palette));
+  let colors = []
+  let palette = []
+
+  range(viz['min'],viz['max']+1).map(i=>{
+    if(uniqueValues.indexOf(i)>-1){ 
+      var valueNameT = uniqueNames[uniqueValues.indexOf(i)];
+      var nameIndex = forestTypeLookup.names.indexOf(valueNameT);
+      c = forestTypeLookup.palette[nameIndex];             // refers to forest type palette .json brought in in html
+
+      // If the hex color starts with a #, remove the #
+      if(c[0] === '#'){
+        c = c.slice(1);
+      }
+      colors.push(c);
+      palette.push(c);
+    }else{
+      palette.push('000');
+  }
+
+});
+
+  // Specify the palette and the legend dictionary with the unique names and colors
+  viz['palette']=palette;
+  viz['classLegendDict'] = dict(zip(uniqueNames,colors));
   viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
   
   // Add the layer to the map
@@ -3638,10 +3593,7 @@ function getThematicAttr_Colors(attr){
   percentAttrs.map(getPercentAttr)
 
   // Iterate across each thematic attribute and bring it into the map
-  thematicAttrs.map(getThematicAttr);
-
-  // Iterate across each thematic attribute and bring it into the map
-  //thematicAttrs.map(getThematicAttr_Colors);
+  thematicAttrs.map(getThematicAttr_Colors);
 
   
   // Function to convert json TreeMap lookup to a query-friendly format

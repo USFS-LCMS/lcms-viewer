@@ -20,6 +20,11 @@ palettes.cmocean = {
   Delta: {7: ['112040', '1c67a0', '6db6b3', 'fffccc', 'abac21', '177228', '172313']},
   Curl: {7: ['151d44', '156c72', '7eb390', 'fdf5f4', 'db8d77', '9c3060', '340d35']}
 }
+
+palettes.custom = {
+  fieldsize:{6:["C62363", "FEBA12", "FFFF00", "38A800", "73DFFF", "5C09FC"]},
+  standsize:{4:["38A800", "FFFF00", "FEBA12", "C62363"]}
+}
   
 palettes.colorbrewer = {
   YlGn:{3:["f7fcb9","addd8e","31a354"],4:["ffffcc","c2e699","78c679","238443"],5:["ffffcc","c2e699","78c679","31a354","006837"],6:["ffffcc","d9f0a3","addd8e","78c679","31a354","006837"],7:["ffffcc","d9f0a3","addd8e","78c679","41ab5d","238443","005a32"],8:["ffffe5","f7fcb9","d9f0a3","addd8e","78c679","41ab5d","238443","005a32"],9:["ffffe5","f7fcb9","d9f0a3","addd8e","78c679","41ab5d","238443","006837","004529"]},
