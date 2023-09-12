@@ -3310,11 +3310,11 @@ function runAlgal(){
   //  countNotC = countC.map(img=>img.updateMask(img.lt(25000)))
   //  countC = countC.map(img=>img.updateMask(img.gte(25000)))
 
-    Map2.addTimeLapse(countC_hcb,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Count',true,'cells/mL');
-    Map2.addTimeLapse(ab_hcb.select([1]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Biovolume',true,'µm3');
+    Map2.addTimeLapse(countC_hcb,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Count-Model 1',true,'cells/mL');
+    Map2.addTimeLapse(ab_hcb.select([1]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Biovolume-Model 1',true,'µm3');
     
-    Map2.addTimeLapse(countC_wdeq,{'min':1000,'max':5000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanophyceae Cell Count',true,'raw cell count');
-    Map2.addTimeLapse(ab_wdeq.select([1]),{'min':2000000,'max':10000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanophyceae Density',true,'cells/L');
+    Map2.addTimeLapse(countC_wdeq,{'min':1000,'max':5000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Cell Count-Model 2',true,'raw cell count');
+    Map2.addTimeLapse(ab_wdeq.select([1]),{'min':2000000,'max':10000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Density-Model 2',true,'cells/L');
 
     setTimeout(()=>{$('#Cyanobacteria-Count-1-name-span').click();
       setTimeout(()=>{$('#Cyanobacteria-Count-1-forward-button>i').click();
