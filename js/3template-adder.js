@@ -394,7 +394,18 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.questionVar == undefined || urlParams.questionVar === null){
     urlParams.questionVar = Object.keys(questionDict)[0];
   }
-  
+  function populateCheckboxesFromUrlParams(){
+    Object.keys(urlParams.changeHighlightClasses).map(k=>{
+      var checkboxID = `#changeHighlightClasses${k}-checkbox`;
+      // console.log(urlParams.changeHighlightClasses);
+      $(checkboxID).prop('checked', urlParams.changeHighlightClasses[k]);
+  })
+  }
+  if(urlParams.questionVar == Object.keys(questionDict)[3]){ // need to update key number from 3 to whatever as more questions are added
+      console.log('custom question was chosen');
+      populateCheckboxesFromUrlParams();
+    }
+
   // creates a Bootstrap dropdown to contain the questions
   function makeQuestionDropdown(){
     addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically select certain LCMS products to summarize');
@@ -446,18 +457,35 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     updateDashboardHighlights();
     updateDashboardCharts();
   }
+
   function listenForQuestionChangechangeQuestion(){
     $('select#questions-dashboard-dropdown').change( ()=>{
       console.log('A question was asked')
       selectQuestion(questionDict[urlParams.questionVar]);
+      if(urlParams.questionVar == Object.keys(questionDict)[3]){ // need to update key number from 3 to whatever as more questions are added
+        console.log('custom question was chosen');
+        // populateCheckboxesFromUrlParams();
+        // $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
+        //   updateHighlightsProductSelectionDict();
+        //   updateDashboardHighlights();
+        //   updateDashboardCharts();
+        // });
+        //updateHighlightsProductSelectionDict();
+      }
     });
   }
 
   makeQuestionDropdown();
   populateQuestionDropdown();
-  $('#questions-dashboard-dropdown').val(urlParams.questionVar);
+  $('#questions-dashboard-dropdown').val(urlParams.questionVar);  //start here for adding conditional for 'custom' question option
   listenForQuestionChangechangeQuestion();
-  
+
+  // if(urlParams.questionVar == Object.keys(questionDict)[3]){ // need to update key number from 3 to whatever as more questions are added
+  //   console.log('custom question was chosen');
+  //   populateCheckboxesFromUrlParams();
+  // }
+
+   
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
   startYear = 1984;endYear = 2022;
