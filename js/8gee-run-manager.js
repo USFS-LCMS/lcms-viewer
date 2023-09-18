@@ -3259,9 +3259,11 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
     loadGEESummaryAreas(summaryAreas[k],k)
   });
 
-  selectQuestion(questionDict[urlParams.questionVar]);
-  // updateDashboardHighlights();
-
+  // if no share link in play, then call selectQuestion
+  if(!deepLink){
+    selectQuestion(questionDict[urlParams.questionVar]);
+  }
+  
   // Keep track of which layers are being viewed
   $('.layer-checkbox,.layer-span').click(event=>{
     setTimeout(()=>{
