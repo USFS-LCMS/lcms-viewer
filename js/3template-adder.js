@@ -266,36 +266,54 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.productHighlightClasses === null || urlParams.productHighlightClasses === undefined){
     urlParams.productHighlightClasses = {"Change":true,"Land-Cover": true,"Land-Use": true}
   }
-  addCheckboxes('advanced-dashboard-params-div','which-products-radio','Choose which LCMS outputs to chart','productHighlightClasses',urlParams.productHighlightClasses);
-  
+  // addCheckboxes('advanced-dashboard-params-div','which-products-radio','Choose which LCMS outputs to chart','productHighlightClasses',urlParams.productHighlightClasses);
+  var productHighlightClasses = urlParams.productHighlightClasses;
+
   if(urlParams.annualTransition === null || urlParams.annualTransition === undefined){
     urlParams.annualTransition = {"Annual": true,"Transition": false}
   }
   addCheckboxes('advanced-dashboard-params-div','annual-transition-radio','Choose which summary methods to chart','annualTransition',urlParams.annualTransition);
 
- 
-  $('#advanced-dashboard-params-div').append('<hr>');
+   $('#advanced-dashboard-params-div').append('<hr>');
   
   // default change products at initial load
   if(urlParams.changeHighlightClasses === null || urlParams.changeHighlightClasses === undefined){
     urlParams.changeHighlightClasses = {"Stable": false,"Slow-Loss":true,"Fast-Loss": true,"Gain": true}
   }
-  addCheckboxes('advanced-dashboard-params-div','change-highlights-radio','Tables - Change Classes','changeHighlightClasses',urlParams.changeHighlightClasses);
+  addCheckboxes('advanced-dashboard-params-div','change-highlights-radio','Change Classes','changeHighlightClasses',urlParams.changeHighlightClasses);
   $('#advanced-dashboard-params-div').append('<hr>');
   
   // default LC products at initial load
   if(urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined){
     urlParams.lcHighlightClasses = {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": false,'Snow-or-Ice':false,"Water": false}
   }
-  addCheckboxes('advanced-dashboard-params-div','lc-highlights-radio','Tables - Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
+  addCheckboxes('advanced-dashboard-params-div','lc-highlights-radio','Land Cover Classes','lcHighlightClasses',urlParams.lcHighlightClasses);
 
   $('#advanced-dashboard-params-div').append('<hr>');
   // default LU products at initial load
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
     urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
   }
-  addCheckboxes('advanced-dashboard-params-div','lu-highlights-radio','Tables - Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
+  addCheckboxes('advanced-dashboard-params-div','lu-highlights-radio','Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
   $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
+    if(Object.values(urlParams.changeHighlightClasses).indexOf(true)>-1){
+      urlParams.productHighlightClasses['Change'] = true;
+    }
+    else{
+      urlParams.productHighlightClasses['Change'] = false;
+    };
+    if(Object.values(urlParams.lcHighlightClasses).indexOf(true)>-1){
+      urlParams.productHighlightClasses['Land-Cover'] = true;
+    }
+    else{
+      urlParams.productHighlightClasses['Land-Cover'] = false;
+    };
+    if(Object.values(urlParams.luHighlightClasses).indexOf(true)>-1){
+      urlParams.productHighlightClasses['Land-Use'] = true;
+    }
+    else{
+      urlParams.productHighlightClasses['Land-Use'] = false;
+    };
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
     updateDashboardCharts();
@@ -389,22 +407,16 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     }
   }
+  // a variable to establish whether a 'share'/'deep' link is in play
+  var deepLink = false;
 
-  // Use first listed question as default
+  // Use first listed question as default. If the questionVar is undefined/null, then the first question is default; otherwise a share link is in use
   if(urlParams.questionVar == undefined || urlParams.questionVar === null){
     urlParams.questionVar = Object.keys(questionDict)[0];
   }
-  function populateCheckboxesFromUrlParams(){
-    Object.keys(urlParams.changeHighlightClasses).map(k=>{
-      var checkboxID = `#changeHighlightClasses${k}-checkbox`;
-      // console.log(urlParams.changeHighlightClasses);
-      $(checkboxID).prop('checked', urlParams.changeHighlightClasses[k]);
-  })
+  else{
+    deepLink = true;
   }
-  if(urlParams.questionVar == Object.keys(questionDict)[3]){ // need to update key number from 3 to whatever as more questions are added
-      console.log('custom question was chosen');
-      populateCheckboxesFromUrlParams();
-    }
 
   // creates a Bootstrap dropdown to contain the questions
   function makeQuestionDropdown(){
@@ -414,7 +426,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   // populates the dropdown with the questions (keys) from the questionDict 
   function populateQuestionDropdown(){
     Object.keys(questionDict).map(k=>{
-      addDropdownItem('questions-dashboard-dropdown',questionDict[k].title,k,questionDict[k].hoverText)
+      addDropdownItem('questions-dashboard-dropdown',questionDict[k].title,k,questionDict[k].hoverText); 
     })
   }
 
@@ -462,29 +474,13 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     $('select#questions-dashboard-dropdown').change( ()=>{
       console.log('A question was asked')
       selectQuestion(questionDict[urlParams.questionVar]);
-      if(urlParams.questionVar == Object.keys(questionDict)[3]){ // need to update key number from 3 to whatever as more questions are added
-        console.log('custom question was chosen');
-        // populateCheckboxesFromUrlParams();
-        // $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
-        //   updateHighlightsProductSelectionDict();
-        //   updateDashboardHighlights();
-        //   updateDashboardCharts();
-        // });
-        //updateHighlightsProductSelectionDict();
-      }
     });
   }
 
   makeQuestionDropdown();
   populateQuestionDropdown();
-  $('#questions-dashboard-dropdown').val(urlParams.questionVar);  //start here for adding conditional for 'custom' question option
+  $('#questions-dashboard-dropdown').val(urlParams.questionVar);  
   listenForQuestionChangechangeQuestion();
-
-  // if(urlParams.questionVar == Object.keys(questionDict)[3]){ // need to update key number from 3 to whatever as more questions are added
-  //   console.log('custom question was chosen');
-  //   populateCheckboxesFromUrlParams();
-  // }
-
    
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
