@@ -3144,12 +3144,12 @@ huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06")
 // Map2.addLayer(huc6_conus,{layerType:'geeVectorImage'},'HUC06')
 var summaryAreas = {
   'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false,'title':'Level 06 hydrological unit codes (watersheds)'},
-  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE','title':'All counties throughout the US'},
+  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':true,'color':'EFE','title':'All counties throughout the US'},
   'Census Urban Areas':{'path':'Census_Metro_Areas','unique_fieldname':'NAME10','visible':false,'color':'E2E','title':'2018 US Census Bureau Urban Areas'},
   'CFLRP':{'path':'CFLRP','color':'D0D','unique_fieldname':'PROJECTNAM','visible':false, 'title':'Collaborative Forest Restoration Program areas throughout the US'},
   'USFS Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88', 'title':'USFS planning areas'} , 
   'USFS Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8','title':'USFS Forest District boundaries'},
-  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8','title':'USFS Forest boundaries'}
+  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':false,'color':'8F8','title':'USFS Forest boundaries'}
   
 }
 if(urlParams.onlyIncludeFacts==true){
