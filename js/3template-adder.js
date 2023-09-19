@@ -166,9 +166,6 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
 
-
-  
-
   if(mode === 'LCMS'){
     function populateLCMSDownloads(){
       var toggler = document.getElementsByClassName("caret");
@@ -186,14 +183,11 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
     }
     $('#download-collapse-div').append(staticTemplates.lcmsProductionDownloadDiv);
     
-
-
   }else{
     $('#download-collapse-div').append(staticTemplates.downloadDiv);
   }
   $('#support-collapse-div').append(staticTemplates.supportDiv);
 
- 
   if(tAnalysisMode === 'advanced'){
     $('#analysis-mode-radio-second_toggle_label').click();
   }
@@ -211,15 +205,11 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   if(urlParams.endYear == null || urlParams.endYear == undefined){
      urlParams.endYear = endYear;
   }
-
   
   $('#sidebar-left-header').append(staticTemplates.dashboardProgressDiv);
 
- 
-
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
-  
-  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
+  //addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
   
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','LCMS SUMMARY AREAS',`<img class='panel-title-svg-sm'alt="LCMS icon" src="./Icons_svg/logo_icon_lcms-data-viewer.svg">`,true,null,'LCMS summary areas to view on map');
   // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
@@ -227,21 +217,148 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   
   // addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<img class='panel-title-svg-lg'  alt="Tools icon" src="./Icons_svg/tools_ffffff.svg">`,false,'','Tools to measure and chart data provided on the map');
 
-  // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
-  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
+    addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
 
   addMultiRadio('parameters-collapse-div','summary-area-selection-radio','Choose how to select areas','dashboardAreaSelectionMode',{'View-Extent':true,'Click':false,'Drag-Box':false});
   // $('#parameters-collapse-div').append('<hr>');
-  // addSubCollapse('parameters-collapse-div','adv-params-label','adv-params-div','Advanced Params', '',false,'');
-  
-  addSubCollapse('parameters-collapse-div','questions-dashboard-params-label','questions-dashboard-params-div','Questions', '',false,'Pre-selected parameter combinations')
-  addSubCollapse('parameters-collapse-div','advanced-dashboard-params-label','advanced-dashboard-params-div','Advanced Parameters', '',false,'')
+   
+  //addSubCollapse('parameters-collapse-div','questions-dashboard-params-label','questions-dashboard-params-div','Questions', '',false,'Pre-selected parameter combinations')
+  //////////////////////////////////// Add summaryArea to question dict in future////////////////////////////////////////////
+  var questionDict = {
+    fire:{
+      title: 'Post Fire Succession',
+      hoverText:'Some more info about fire succession',
+      productHighlightClasses:{"Land-Cover": true,"Land-Use": false,"Change":true},
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": true,"Fast-Loss": true,"Gain": true},
+      lcHighlightClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": true,"Grass-Forb-Herb": true,"Barren-or-Impervious": true,'Snow-or-Ice':false,"Water": false},
+      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false},
+      //summaryArea : {"Forests": false, "Forest-Districts": false, "Planning-Units":false, "CFLRP":false, "Census-Urban-Areas":false, "Counties":false, "HUC-6":false}
+    },
+    glacialRecession:{
+      title: 'Glacial Recession',
+      hoverText:'Some more info about glacial succession',
+      productHighlightClasses:{"Land-Cover": true,"Land-Use": false,"Change":false},
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": false,"Gain": false},
+      lcHighlightClasses : {"Trees": false,"Tall-Shrubs":true,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice': true,"Water": true},
+      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    },
+    forestToDeveloped:{
+      title: 'Forest to Developed',
+      hoverText:'Forest land changing to developed',
+      productHighlightClasses:{"Land-Cover": false,"Land-Use": true,"Change":false},
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": false,"Gain": false},
+      lcHighlightClasses : {"Trees": false,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,'Snow-or-Ice': false,"Water": false},
+      luHighlightClasses : {"Agriculture": false,"Developed": true,"Forest": true,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    },
+    waterLoss:{
+      title: 'Water Change',
+      hoverText:'Loss of Water',
+      productHighlightClasses:{"Land-Cover": true,"Land-Use": false,"Change":true},
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": true,"Gain": false},
+      lcHighlightClasses : {"Trees": false,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,'Snow-or-Ice': false,"Water": true},
+      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    },
+    customQuestion:{
+      title: 'Custom - Choose your own Advanced Parameters to summarize',
+      hoverText:'All products turned on for charting but empty until populated by user',
+      productHighlightClasses:{"Land-Cover": true,"Land-Use": true,"Change":true},
+      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": false,"Gain": false},
+      lcHighlightClasses : {"Trees": false,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,'Snow-or-Ice': false,"Water": false},
+      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    }
+  }
+  // a variable to establish whether a 'share'/'deep' link is in play
+  var deepLink = false;
+
+  // Use first listed question as default. If the questionVar is undefined/null, then the first question is default; otherwise a share link is in use
+  if(urlParams.questionVar == undefined || urlParams.questionVar === null){
+    urlParams.questionVar = Object.keys(questionDict)[0];
+  }
+  else{
+    deepLink = true;
+  }
+
+  // creates a Bootstrap dropdown to contain the questions
+  function makeQuestionDropdown(){
+    //addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically select certain LCMS products to summarize');
+    addDropdown('parameters-collapse-div','questions-dashboard-dropdown','Learn More About','urlParams.questionVar','Choose a Topic to automatically select certain LCMS products to summarize');
+  }
+
+  // populates the dropdown with the questions (keys) from the questionDict 
+  function populateQuestionDropdown(){
+    Object.keys(questionDict).map(k=>{
+      addDropdownItem('questions-dashboard-dropdown',questionDict[k].title,k,questionDict[k].hoverText); 
+    })
+  }
+
+  // changes the LCMS product selections based on the question chosen
+  //////////////////////////////// add summary area as part of Question functionality in future//////////////////////////////////////////
+  function selectQuestion(selectedQuestion){
+    var selectedProducts = selectedQuestion.productHighlightClasses;
+    console.log(selectedProducts);
+    Object.keys(selectedProducts).map(k=>{
+      var checkboxID = `#productHighlightClasses${k}-checkbox`;
+      console.log(checkboxID);
+      $(checkboxID).prop('checked', selectedProducts[k]);
+      urlParams.productHighlightClasses[k] = selectedProducts[k];
+    })
+    var selectedChangeClasses = selectedQuestion.changeHighlightClasses;
+    console.log(selectedChangeClasses);
+    Object.keys(selectedChangeClasses).map(k=>{
+      var checkboxID = `#changeHighlightClasses${k}-checkbox`;
+      console.log(checkboxID);
+      $(checkboxID).prop('checked', selectedChangeClasses[k]);
+      urlParams.changeHighlightClasses[k] = selectedChangeClasses[k];
+    })
+    var selectedLCclasses = selectedQuestion.lcHighlightClasses;
+    console.log(selectedLCclasses);
+    Object.keys(selectedLCclasses).map(k=>{
+      var checkboxID = `#lcHighlightClasses${k}-checkbox`;
+      console.log(checkboxID);
+      $(checkboxID).prop('checked', selectedLCclasses[k]);
+      urlParams.lcHighlightClasses[k] = selectedLCclasses[k];
+    })
+    var selectedluClasses = selectedQuestion.luHighlightClasses;
+    console.log(selectedluClasses);  
+    Object.keys(selectedluClasses).map(k=>{
+      var checkboxID = `#luHighlightClasses${k}-checkbox`;
+      console.log(checkboxID);
+      $(checkboxID).prop('checked', selectedluClasses[k]);
+      urlParams.luHighlightClasses[k] = selectedluClasses[k];
+    })
+    // var selectedSummaryAreas = selectedQuestion.saHighlightClasses;
+    // console.log(selectedSummaryAreas);  
+    // Object.keys(selectedSummaryAreas).map(k=>{
+    //   var checkboxID = `#saHighlightClasses${k}-checkbox`;
+    //   console.log(checkboxID);
+    //   $(checkboxID).prop('checked', selectedSummaryAreas[k]);
+    //   urlParams.saHighlightClasses[k] = selectedSummaryAreas[k];
+    // })
+    updateHighlightsProductSelectionDict();
+    updateDashboardHighlights();
+    updateDashboardCharts();
+  }
+
+  function listenForQuestionChangechangeQuestion(){
+    $('select#questions-dashboard-dropdown').change( ()=>{
+      console.log('A question was asked')
+      selectQuestion(questionDict[urlParams.questionVar]);
+    });
+  }
+
+  makeQuestionDropdown();
+  populateQuestionDropdown();
+  $('#questions-dashboard-dropdown').val(urlParams.questionVar);  
+  listenForQuestionChangechangeQuestion();
+
+  addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
+ 
+  addSubCollapse('parameters-collapse-div','advanced-dashboard-params-label','advanced-dashboard-params-div','Advanced Parameters', '',false,'');
   if(urlParams.chartUnits === null || urlParams.chartUnits === undefined){
     urlParams.chartUnits = {"Percentage": true,"Acres": false,"Hectares": false}
   }
   addMultiRadio('advanced-dashboard-params-div','which-units-radio','Chart Area Units','chartFormat',urlParams.chartUnits);
  
-
   if(urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined){
     urlParams.pairwiseDiff = {'Annual':true,'Annual-Change':false}
   }
@@ -373,115 +490,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
   $('#reference-layer-list-collapse-div').append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
 
-  var questionDict = {
-    fire:{
-      title: 'Post Fire Succession',
-      hoverText:'Some more info about fire succession',
-      productHighlightClasses:{"Land-Cover": true,"Land-Use": false,"Change":true},
-      changeHighlightClasses : {"Stable": true,"Slow-Loss": true,"Fast-Loss": false,"Gain": true},
-      lcHighlightClasses : {"Trees": true,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice':false,"Water": false},
-      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
-    },
-    glacialRecession:{
-      title: 'Glacial Recession',
-      hoverText:'Some more info about glacial succession',
-      productHighlightClasses:{"Land-Cover": true,"Land-Use": false,"Change":true},
-      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": true,"Gain": true},
-      lcHighlightClasses : {"Trees": false,"Tall-Shrubs":false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": true,'Snow-or-Ice': true,"Water": true},
-      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
-    },
-    forestToDeveloped:{
-      title: 'Forest to Developed',
-      hoverText:'Forest land changing to developed',
-      productHighlightClasses:{"Land-Cover": true,"Land-Use": true,"Change":true},
-      changeHighlightClasses : {"Stable": false,"Slow-Loss": true,"Fast-Loss": false,"Gain": false},
-      lcHighlightClasses : {"Trees": true,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,'Snow-or-Ice': false,"Water": false},
-      luHighlightClasses : {"Agriculture": false,"Developed": true,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
-    },
-    customQuestion:{
-      title: 'Custom - Choose your own Advanced Parameters to summarize',
-      hoverText:'All products turned on for charting but empty until populated by user',
-      productHighlightClasses:{"Land-Cover": true,"Land-Use": true,"Change":true},
-      changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": false,"Gain": false},
-      lcHighlightClasses : {"Trees": false,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,'Snow-or-Ice': false,"Water": false},
-      luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
-    }
-  }
-  // a variable to establish whether a 'share'/'deep' link is in play
-  var deepLink = false;
 
-  // Use first listed question as default. If the questionVar is undefined/null, then the first question is default; otherwise a share link is in use
-  if(urlParams.questionVar == undefined || urlParams.questionVar === null){
-    urlParams.questionVar = Object.keys(questionDict)[0];
-  }
-  else{
-    deepLink = true;
-  }
-
-  // creates a Bootstrap dropdown to contain the questions
-  function makeQuestionDropdown(){
-    addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically select certain LCMS products to summarize');
-  }
-
-  // populates the dropdown with the questions (keys) from the questionDict 
-  function populateQuestionDropdown(){
-    Object.keys(questionDict).map(k=>{
-      addDropdownItem('questions-dashboard-dropdown',questionDict[k].title,k,questionDict[k].hoverText); 
-    })
-  }
-
-  // changes the LCMS product selections based on the question chosen
-  function selectQuestion(selectedQuestion){
-    var selectedProducts = selectedQuestion.productHighlightClasses;
-    console.log(selectedProducts);
-    Object.keys(selectedProducts).map(k=>{
-      var checkboxID = `#productHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
-      $(checkboxID).prop('checked', selectedProducts[k]);
-      urlParams.productHighlightClasses[k] = selectedProducts[k];
-    })
-    var selectedChangeClasses = selectedQuestion.changeHighlightClasses;
-    console.log(selectedChangeClasses);
-    Object.keys(selectedChangeClasses).map(k=>{
-      var checkboxID = `#changeHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
-      $(checkboxID).prop('checked', selectedChangeClasses[k]);
-      urlParams.changeHighlightClasses[k] = selectedChangeClasses[k];
-    })
-    var selectedLCclasses = selectedQuestion.lcHighlightClasses;
-    console.log(selectedLCclasses);
-    Object.keys(selectedLCclasses).map(k=>{
-      var checkboxID = `#lcHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
-      $(checkboxID).prop('checked', selectedLCclasses[k]);
-      urlParams.lcHighlightClasses[k] = selectedLCclasses[k];
-    })
-    var selectedluClasses = selectedQuestion.luHighlightClasses;
-    console.log(selectedluClasses);  
-    Object.keys(selectedluClasses).map(k=>{
-      var checkboxID = `#luHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
-      $(checkboxID).prop('checked', selectedluClasses[k]);
-      urlParams.luHighlightClasses[k] = selectedluClasses[k];
-    })
-    
-    updateHighlightsProductSelectionDict();
-    updateDashboardHighlights();
-    updateDashboardCharts();
-  }
-
-  function listenForQuestionChangechangeQuestion(){
-    $('select#questions-dashboard-dropdown').change( ()=>{
-      console.log('A question was asked')
-      selectQuestion(questionDict[urlParams.questionVar]);
-    });
-  }
-
-  makeQuestionDropdown();
-  populateQuestionDropdown();
-  $('#questions-dashboard-dropdown').val(urlParams.questionVar);  
-  listenForQuestionChangechangeQuestion();
-   
 }else if(mode === 'lcms-base-learner'){
   canExport = false;
   startYear = 1984;endYear = 2022;
