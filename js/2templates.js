@@ -1316,16 +1316,17 @@ function showLocationError(error){
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a Bootstrap dropdown
-function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
+function addDropdown(containerID,dropdownID,title,variable,tooltip){
 	if(tooltip === undefined || tooltip === null){tooltip = ''}
 	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" title="${tooltip}">
-								  <label for="${dropdownID}">${dropdownLabel}:</label>
+								  <label for="${dropdownID}"><p class = 'param-title'>${title}:</p></label>
 								  <select class="form-control" id="${dropdownID}"></select>
 								</div>`);
 	  $("select#"+dropdownID).on("change", function(value) {
 	  	eval(`window.${variable} = $(this).val()`);
 	  });
 }
+
 //Function to add an item to a dropdown
 function addDropdownItem(dropdownID,label,value,tooltip){
     if(tooltip === undefined || tooltip === null){tooltip = ''};
@@ -1625,36 +1626,6 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
       }else{checked = ''};
       
       $('#'+radioID).append(`<div class="form-check form-check-inline">
-                              <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
-                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
-                            </div>`);
-      $('#'+radioCheckboxID).change( function() {
-                                    Object.keys(optionList).map(k=>optionList[k]=false)
-                                    var v = $(this).val();
-                                    optionList[v]=true;
-                                    eval(`window.${variable} = "${v}"`)
-                                    });
-})
-}
-//like addMultiRadio but with new line for each option **still need to add that functionality -EH 8/10/23**
-function addVertMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${title}</p></form>`);
-
-    eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
-    Object.keys(optionList).map(function(k){
-      const kID = k.replace(/[^A-Za-z0-9]/g, "-");
-      var radioCheckboxID = kID + '-checkbox';
-      var radioLabelID = radioCheckboxID + '-label';
-      if(optionList[k] === 'true'){optionList[k] = true}
-      else  if(optionList[k] === 'false'){optionList[k] = false};
-      var checked = optionList[k];
-      
-      if(checked){
-        checked = 'checked';
-        eval(`window.${variable} = "${k}"`)
-      }else{checked = ''};
-      
-      $('#'+radioID).append(`<div class="form-check form-check-inline"><br>
                               <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
                               <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
                             </div>`);
