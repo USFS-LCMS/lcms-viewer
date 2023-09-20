@@ -381,15 +381,24 @@ function runGTAC(){
 
 
   // function runGTAC(){
-  //   Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
-  //   Map2.addLayer(ee.Image([1,2,3]).toArray());
-  //   Map2.addLayer(ee.Image(1));
-  //   Map2.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
-  //   Map2.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
-  //   Map2.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().float())
-  //   var sa = ee.FeatureCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary');
-  //   Map2.addLayer(sa)
-    
+  //   // Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
+  //   // Map2.addLayer(ee.Image([1,2,3]).toArray());
+  //   // Map2.addLayer(ee.Image(1));
+  //   // Map2.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
+  //   // Map2.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
+  //   // Map2.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().float())
+  //   // var sa = ee.FeatureCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary');
+  //   // Map2.addLayer(sa)
+  //   var props = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").first().toDictionary().getInfo();
+  //   var tLcms = ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-6_assembledLCMSOutputs')
+  //   tLcms = tLcms.map(img=> img.set(props))
+  //   Map2.addLayer(tLcms.select(['Change']),{queryDict22:{1:'Stable',2:'Slow Loss',3:'Fast Loss',4:'Gain'}})
+  //   Map2.addLayer(tLcms.select(['Land_Cover']),{autoViz:true})
+  //   Map2.addLayer(tLcms.select(['Land_Use']),{autoViz:true})
+
+  //   var dataset = ee.ImageCollection('USGS/NLCD_RELEASES/2021_REL/NLCD');
+   
+  //   Map2.addLayer(dataset.select([0]),{'autoViz':true},'NLCD')
   //   setTimeout(()=>{$('#query-label').click()},1000)
   // }
-  //
+  

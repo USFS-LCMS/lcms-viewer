@@ -330,7 +330,25 @@ var  getQueryImages = function(lng,lat){
 				
 			}	
 		}else if(q.type === 'geeImageCollection'){
+			// console.log(q)
 			
+			var yAxisLabels = {tickfont:{size:yLabelFontSize}};
+		
+			if(q.queryDict !== undefined && q.queryDict !== null){
+				var labelHeights = [];
+				yAxisLabels = {
+					ticktext:Object.values(q.queryDict).map(l=>{
+						var chunks = l.slice(0,yLabelMaxLength).chunk(yLabelBreakLength)
+						labelHeights.push(chunks.length);
+						return chunks.join('<br>');
+					}),
+					tickvals:Object.keys(q.queryDict).map(n=>parseInt(n)),
+					tickmode:"array",
+					tickfont:{size:yLabelFontSize},
+				  }
+				//   console.log(sum(labelHeights))
+				//   console.log(labelHeights.length)
+			}
 			$('#query-list-container').append(`<ul class = 'bg-black dropdown-divider'></ul>`);
 			$('#query-list-container').append(`<ul class = 'm-0 p-0 bg-white' id = '${containerID}'></ul>`);
 			let chartWidthC= 600;
@@ -367,12 +385,13 @@ var  getQueryImages = function(lng,lat){
     				tickfont:{size:12},
 				    title: {
 				      text: value.xLabel
-				  }}
+				  }},
+				  yaxis:yAxisLabels
 	 		};
 	 		var buttonOptions = {
 				    toImageButtonOptions: {
 				        filename: q.name + nameEnd ,
-				        width: 1200,
+				        width: 1500,
 				        height: 800,
 				        format: 'png'
 				    }
