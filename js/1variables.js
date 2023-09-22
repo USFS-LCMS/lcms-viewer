@@ -371,6 +371,9 @@ metric:
 //Chart variables
 let plotRadius = 15;
 let plotScale = 30;
+var yLabelMaxLength = 30;
+var yLabelBreakLength = 8;
+var yLabelFontSize = 12;
 let clickBoundsColor = '#FF0';
 var areaChartFormat = 'Percentage';
 const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
@@ -482,7 +485,9 @@ String.prototype.numberWithCommas = function() {
 String.prototype.toTitle = function() {
   return this.replace(/(^|\s)\S/g, function(t) { return t.toUpperCase() });
 }
-
+String.prototype.chunk = function( size) {
+  return this.match(new RegExp('.{1,' + size + '}', 'g'));
+}
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function(){
   const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
