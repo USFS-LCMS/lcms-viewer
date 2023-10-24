@@ -163,16 +163,16 @@ function runGTAC(){
     lcmsAttr_stack = ee.ImageCollection(stack)
 
     var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
-    console.log('attrVals',attrVals)
+    // console.log('attrVals',attrVals)
 
     var palette='3d4551,d54309,AD3100,FFFF00,C6C600,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D8D898,D46C40,F39268,00A398,1B1716'.split(',');
 
 
     var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals),palette).map(([k,v]) => [k, v]))
     var attrQueryDict = Object.fromEntries(zip(range(1,Object.keys(attrVals).length+1),Object.keys(attrVals)).map(([k,v]) => [k, v]))
-    console.log('attrClassLegendDict',attrClassLegendDict)
-    console.log('attrQueryDict',attrQueryDict)
-    console.log(lcmsAttr.size().getInfo())
+    // console.log('attrClassLegendDict',attrClassLegendDict)
+    // console.log('attrQueryDict',attrQueryDict)
+    // console.log(lcmsAttr.size().getInfo())
 
     Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
     //Map2.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
@@ -392,8 +392,8 @@ function runGTAC(){
   //   var props = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").first().toDictionary().getInfo();
   //   var tLcms = ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-6_assembledLCMSOutputs')
   //   tLcms = tLcms.map(img=> img.set(props))
-  //   Map2.addLayer(tLcms.select(['Change']),{queryDict22:{1:'Stable',2:'Slow Loss',3:'Fast Loss',4:'Gain'}})
-  //   Map2.addLayer(tLcms.select(['Land_Cover']),{autoViz:true})
+  //   Map2.addTimeLapse(tLcms.select(['Change']).limit(2),{autoViz:true})
+  //   Map2.addTimeLapse(tLcms.select(['Land_Cover']).limit(2),{autoViz:true})
   //   Map2.addLayer(tLcms.select(['Land_Use']),{autoViz:true})
 
   //   var dataset = ee.ImageCollection('USGS/NLCD_RELEASES/2021_REL/NLCD');
