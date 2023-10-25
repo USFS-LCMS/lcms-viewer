@@ -127,25 +127,37 @@ function runGTAC(){
   
   
   if(urlParams.addTCC2021 === true || urlParams.beta === true){
-    var nlcdTCC2021 = ee.ImageCollection('projects/nlcd-tcc/assets/CONUS-TCC/Final-products/NLCD_tcc');
-    // nlcdTCC2021 = nlcdTCC2021.map(img=>img.selfMask())
-    var nlcdTCCYrs = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
-    // var nlcdTCCYrsI = ee.List.sequence(0,nlcdTCCYrs.length-2).getInfo();        
+    var nlcdTCC2021 = ee.ImageCollection('projects/nlcd-tcc/assets/CONUS-TCC/Final-products/2021-4').select([0]);
+    var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[0]).filter('study_area=="CONUS"');
+    var props = lcms.first().toDictionary().getInfo();
+    var change = lcms.select(['Change']);
+    var changeNames = props['Change_class_names'];
+    var changeValues = props['Change_class_values'];
+    var changeDict = Object.fromEntries(zip(changeValues,changeNames))
+    var lcmsTCC = joinCollections(change,nlcdTCC2021);
+    var nlcdTCCYrs = lcmsTCC.aggregate_histogram('year').keys().getInfo().map(n=>parseInt(n));
+    
     var tccDiff = [];
     for(var i=0;i<nlcdTCCYrs.length-1;i++){
       var yr1 = nlcdTCCYrs[i];
       var yr2 = nlcdTCCYrs[i+1];
-      var nlcdTCC2021Pre = ee.Image(nlcdTCC2021.filter(ee.Filter.calendarRange(yr1,yr1,'year')).first());
-      var nlcdTCC2021Post = ee.Image(nlcdTCC2021.filter(ee.Filter.calendarRange(yr2,yr2,'year')).first());
-      var diff = nlcdTCC2021Post.subtract(nlcdTCC2021Pre).int16()
-      tccDiff.push(diff);
+      var nlcdTCC2021Pre = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr1,yr1,'year')).first());
+      var nlcdTCC2021Post = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr2,yr2,'year')).first());
+      var diff = nlcdTCC2021Post.select(['Science_Percent_Tree_Canopy_Cover']).subtract(nlcdTCC2021Pre.select(['Science_Percent_Tree_Canopy_Cover'])).int16()
+      var diffStack = ee.ImageCollection(changeValues.slice(1,4).map(cv=>{
+        var cb = nlcdTCC2021Post.select(['Change']).eq(cv);
+        return diff.updateMask(cb);
+      })).toBands().rename(Object.values(changeDict).slice(1,4));
+      tccDiff.push(diffStack);
     };
     tccDiff = ee.ImageCollection(tccDiff);
     var tccGain = tccDiff.max();
     var tccLoss = tccDiff.min();
 
-    Map2.addLayer(tccLoss.updateMask(tccLoss.lte(-10)),{min:-80,max:-10,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Loss Mag',false);
-    Map2.addLayer(tccGain.updateMask(tccGain.gte(10)),{min:10,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
+    Map2.addLayer(tccLoss.select(['Slow Loss']),{min:-30,max:-5,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Slow Loss Mag',false);
+    
+    Map2.addLayer(tccLoss.select(['Fast Loss']),{min:-30,max:-5,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Fast Loss Mag',false);
+    Map2.addLayer(tccGain.select(['Gain']),{min:0,max:10,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
     
     var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
     // var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
@@ -381,6 +393,7 @@ function runGTAC(){
 
 
   // function runGTAC(){
+    
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray());
   //   // Map2.addLayer(ee.Image(1));
