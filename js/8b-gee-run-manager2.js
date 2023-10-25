@@ -151,13 +151,13 @@ function runGTAC(){
       tccDiff.push(diffStack);
     };
     tccDiff = ee.ImageCollection(tccDiff);
-    var tccGain = tccDiff.max();
-    var tccLoss = tccDiff.min();
+    var tccGain = tccDiff.map(img=>img.updateMask(img.gte(0))).sum();
+    var tccLoss = tccDiff.map(img=>img.updateMask(img.lte(0))).sum();
 
-    Map2.addLayer(tccLoss.select(['Slow Loss']),{min:-30,max:-5,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Slow Loss Mag',false);
+    Map2.addLayer(tccLoss.select(['Slow Loss']),{min:-50,max:-5,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'TCC Slow Loss Mag',false);
     
-    Map2.addLayer(tccLoss.select(['Fast Loss']),{min:-30,max:-5,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Fast Loss Mag',false);
-    Map2.addLayer(tccGain.select(['Gain']),{min:0,max:10,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'Max TCC Gain Mag',false);
+    Map2.addLayer(tccLoss.select(['Fast Loss']),{min:-50,max:-5,palette:'D00,F5DEB3','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'TCC Fast Loss Mag',false);
+    Map2.addLayer(tccGain.select(['Gain']),{min:0,max:50,palette:'F5DEB3,006400','legendLabelLeftAfter':'% TCC','legendLabelRightAfter':'% TCC'},'TCC Gain Mag',false);
     
     var lcmsAttr = ee.ImageCollection('projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
     // var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
