@@ -203,10 +203,10 @@ const staticTemplates = {
                         
                     </div>`,
 	topBanner:` <div id = 'title-banner' class = 'white  title-banner '>
-                    <img id='title-banner-icon-left' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
-                    <div class="vl"></div>
-                    <img id='title-banner-icon-right' style = 'width:1.6rem;height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
-                    <div  class='my-0'>
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
+                    <div class="vl title-banner-icon"></div>
+                    <img id='title-banner-icon-right' class = 'title-banner-icon' style = 'height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
+                    <div  class='my-0 title-banner-label'>
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
                 </div>`,
 
@@ -2128,20 +2128,25 @@ function addLayer(layer){
 	}
 	//Function for zooming to object
 	function zoomFunction(){
-
+        
 		if(layer.layerType === 'geeVector' ){
 			centerObject(layer.item)
 		}else if(layer.layerType === 'geoJSONVector'){
 			// centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
 			// synchronousCenterObject(layer.item.features[0].geometry)
 		}else{
-          
+            
 			if(layer.item.args !== undefined && layer.item.args.value !== null && layer.item.args.value !== undefined){
-				synchronousCenterObject(layer.item.args.value)
+                synchronousCenterObject(layer.item.args.value)
 			}
             else if(layer.item.args !== undefined &&layer.item.args.featureCollection !== undefined &&layer.item.args.featureCollection.args !== undefined && layer.item.args.featureCollection.args.value !== undefined && layer.item.args.featureCollection.args.value !== undefined){
                 synchronousCenterObject(layer.item.args.featureCollection.args.value);
-            };
+            }else if(layer.viz.bounds !== undefined && layer.viz.bounds !== null){
+                synchronousCenterObject(layer.viz.bounds);
+            }else{
+                centerObject(layer.item);
+            }
+            ;
 		}
 	}
     //Try to handle load failures
@@ -2335,9 +2340,15 @@ function addLayer(layer){
 
             if(layer.viz.reducer === null || layer.viz.reducer === undefined){
                 layer.viz.reducer = ee.Reducer.lastNonNull();
+            }else if(typeof(layer.viz.reducer)==='string'){
+                try{
+                    layer.viz.reducer = ee.Deserializer.fromJSON(layer.viz.reducer)
+                }catch(err){
+                    layer.viz.reducer = eval(layer.viz.reducer);
+                }
             }
             var bandNames = ee.Image(layer.item.first()).bandNames();
-            layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first());
+            layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first()).set(layer.item.toDictionary());
             
         //Handle vectors
         } else if(layer.layerType === 'geeVectorImage' || layer.layerType === 'geeVector'){

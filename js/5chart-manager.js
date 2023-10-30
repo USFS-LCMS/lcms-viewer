@@ -338,7 +338,7 @@ var  getQueryImages = function(lng,lat){
 				var labelHeights = [];
 				yAxisLabels = {
 					ticktext:Object.values(q.queryDict).map(l=>{
-						var chunks = l.slice(0,yLabelMaxLength).chunk(yLabelBreakLength)
+						var chunks = l.slice(0,yLabelMaxLength).chunk(yLabelBreakLength).slice(0,yLabelMaxLines)
 						labelHeights.push(chunks.length);
 						return chunks.join('<br>');
 					}),

@@ -716,7 +716,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
     viz.queryDict = dicts.queryDict;
     viz.autoViz = false;
   }
-  
+  if(viz.mosaic  === null || viz.mosaic  === undefined){
+    viz.mosaic = false;
+  }
   viz.canQuery = false;
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
@@ -874,8 +876,12 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         var img = fillEmptyCollections(item.filterDate(d,d.advance(1,viz.advanceInterval)),dummyImage);
       }
       
-     
-      var img = ee.Image(img.first()).set('system:time_start',d.millis());
+      if(viz.mosaic){
+        var img = ee.Image(img.mosaic()).set('system:time_start',d.millis());
+      }else{
+        var img = ee.Image(img.first()).set('system:time_start',d.millis());
+      }
+      
       cT.push(img)
       if(yr !== viz.years[0]){
         viz.addToLegend = false;

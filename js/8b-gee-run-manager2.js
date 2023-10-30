@@ -54,7 +54,7 @@ function runGTAC(){
 
   //Get properties image
   lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(['Change_class_names'])).first());
-  lcmsRun.props = lcmsRun.f.getInfo().properties;
+  lcmsRun.props = lcmsRun.f.toDictionary().getInfo();
   // console.log(lcmsRun.props)
 
   lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear,endYear,'year'));
@@ -74,18 +74,18 @@ function runGTAC(){
   
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
     if(analysisMode === 'advanced'){
-    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).filter(ee.Filter.calendarRange(startYear,startYear + lcmsRun.thematicChangeYearBuffer,'year')).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${startYear+lcmsRun.thematicChangeYearBuffer}.`,layerType : 'geeImage',autoViz:true},'Land Use Start',false);
-    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).filter(ee.Filter.calendarRange(endYear-lcmsRun.thematicChangeYearBuffer,endYear,'year')).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land use class from ${endYear-lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,layerType : 'geeImage',autoViz:true},'Land Use End',false);
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).filter(ee.Filter.calendarRange(startYear,startYear + lcmsRun.thematicChangeYearBuffer,'year')),{title: `Most common land use class from ${startYear} to ${startYear+lcmsRun.thematicChangeYearBuffer}.`,autoViz:true,reducer:ee.Reducer.mode(),'bounds':clientBoundary},'Land Use Start',false);
 
-    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).filter(ee.Filter.calendarRange(startYear,startYear + lcmsRun.thematicChangeYearBuffer,'year')).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${startYear+lcmsRun.thematicChangeYearBuffer}.`,layerType : 'geeImage',autoViz:true},'Land Cover Start',false);
-    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).filter(ee.Filter.calendarRange(endYear-lcmsRun.thematicChangeYearBuffer,endYear,'year')).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land cover class from ${endYear-lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,layerType : 'geeImage',autoViz:true},'Land Cover End',false);
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).filter(ee.Filter.calendarRange(endYear-lcmsRun.thematicChangeYearBuffer,endYear,'year')),{title: `Most common land use class from ${endYear-lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,autoViz:true,reducer:ee.Reducer.mode(),'bounds':clientBoundary},'Land Use End',false);
+
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).filter(ee.Filter.calendarRange(startYear,startYear + lcmsRun.thematicChangeYearBuffer,'year')),{title: `Most common land cover class from ${startYear} to ${startYear+lcmsRun.thematicChangeYearBuffer}.`,autoViz:true,reducer:ee.Reducer.mode(),'bounds':clientBoundary},'Land Cover Start',false);
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).filter(ee.Filter.calendarRange(endYear-lcmsRun.thematicChangeYearBuffer,endYear,'year')),{title: `Most common land cover class from ${endYear-lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,autoViz:true,reducer:ee.Reducer.mode(),'bounds':clientBoundary},'Land Cover End',false);
     // Map2.addLayer(lcChangeObj.change.set('bounds',clientBoundary),lcChangeObj.viz,lcLayerName + ' Change' ,false);
     // Map2.addLayer(luChangeObj.change.set('bounds',clientBoundary),luChangeObj.viz,luLayerName + ' Change' ,false);
   }else{
-    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land cover class from ${startYear} to ${endYear}.`,autoViz:true,layerType:'geeImage'},'Land Cover',false);
-    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']).mode().copyProperties(lcmsRun.f).set('bounds',clientBoundary),{title: `Most common land use class from ${startYear} to ${endYear}.`,autoViz:true,layerType:'geeImage'},'Land Use',false);
-
-
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Cover']),{title: `Most common land cover class from ${startYear} to ${endYear}.`,autoViz:true,reducer:ee.Reducer.mode(),'bounds':clientBoundary},'Land Cover',false);
+    
+    Map2.addLayer(lcmsRun.lcms.select(['Land_Use']),{title: `Most common land use class from ${startYear} to ${endYear}.`,autoViz:true,reducer:ee.Reducer.mode(),'bounds':clientBoundary},'Land Use',false);
   }
   
   lcmsRun.slowLoss = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(['Change','Change_Raw_Probability_Slow_Loss'],['Change','Prob']),2);
@@ -393,7 +393,8 @@ function runGTAC(){
 
 
   // function runGTAC(){
-    
+    // var comps = ee.ImageCollection('projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020')
+    // Map2.addTimeLapse(comps.filter(ee.Filter.calendarRange(2018,2023,'year')),{min:500,max:3500,bands:'swir2,nir,red',mosaic:true})
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray());
   //   // Map2.addLayer(ee.Image(1));
@@ -412,6 +413,11 @@ function runGTAC(){
   //   var dataset = ee.ImageCollection('USGS/NLCD_RELEASES/2021_REL/NLCD');
    
   //   Map2.addLayer(dataset.select([0]),{'autoViz':true},'NLCD')
+
+  //   var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[0]).filter('study_area=="CONUS"');
+  //   var props = lcms.first().toDictionary().getInfo();
+
+  //   Map2.addLayer(lcms.select(['Land_Cover']),{'autoViz':true,reducer:ee.Reducer.mode()},'LCMS')
   //   setTimeout(()=>{$('#query-label').click()},1000)
   // }
   

@@ -5,8 +5,8 @@ import glob,os,shutil
 
 # js_min_folder = 'js-min'
 which_ones =['1variables.js','2templates.js','3template-adder.js','4map-manager.js','5chart-manager.js','6tools-toggle-manager.js']#,'7gee-lib-manager.js']
-lcmsViewerFolder = r'C:\RCR\lcms-viewer'
-geeViewFolder = r'C:\RCR\geeViz\geeView'
+lcmsViewerFolder = r'Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer'
+geeViewFolder = r'A:\GEE\gee_py_modules_package\geeViz\geeView'
 js_folder = os.path.join(lcmsViewerFolder,'js')
 combined_filename = os.path.join(geeViewFolder,r"js\lcms-viewer.min.js")
 in_css = os.path.join(lcmsViewerFolder,r"css\style.css")

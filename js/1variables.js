@@ -371,9 +371,12 @@ metric:
 //Chart variables
 let plotRadius = 15;
 let plotScale = 30;
+
 var yLabelMaxLength = 30;
 var yLabelBreakLength = 8;
-var yLabelFontSize = 12;
+var yLabelMaxLines = 3;
+var yLabelFontSize = 10;
+
 let clickBoundsColor = '#FF0';
 var areaChartFormat = 'Percentage';
 const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
@@ -524,6 +527,12 @@ function auto_grow(element) {
 
 function convertRemToPixels(rem) {    
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+function isWrapped(id){
+  $(id).addClass('noWrap');
+  var isWrapped = $(id)[0].scrollWidth > $(id).width();
+  $(id).removeClass('noWrap');
+  return isWrapped
 }
 function sleepFor(sleepDuration){
   var now = new Date().getTime();

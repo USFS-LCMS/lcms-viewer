@@ -63,8 +63,17 @@ if(['LCMS','lcms-base-learner','Ancillary','LT','IDS','lcms-dashboard'].indexOf(
 //1.6 = 'lcms data dashboard.length'
 // fittextCoeff = len*0.05+0.65
 // $('#title-banner').fitText(`${topBannerParams.leftWords} ${topBannerParams.centerWords} ${topBannerParams.rightWords}`.length*0.05+0.65);
+function adjustTitleBanner(){
+  $('.title-banner-icon').height(convertRemToPixels(1.5));
+  $('#title-banner').fitText(1.6);
+  setTimeout(() => {
+    $('#title-banner').addClass('noWrap');
+    $('.title-banner-icon').height($('.title-banner-label').height()-convertRemToPixels(0.5));
+    $('#title-banner').removeClass('noWrap');
+  }, 500);
+}
+adjustTitleBanner();
 
-$('#title-banner').fitText(1.6);
 
 function toggleAdvancedOn(){
     $("#threshold-container").slideDown();
@@ -1274,7 +1283,7 @@ if(canExport){
    }
 }
 function resizeViewerPanes(){
-  // console.log('resized');
+  console.log('resized');
   if(mode !== 'lcms-dashboard'){
     moveCollapse('chart-collapse');
     moveCollapse('legend-collapse');
@@ -1289,6 +1298,8 @@ function resizeViewerPanes(){
   if(walkThroughAdded){
       moveCollapse('walk-through-collapse');
   }
+  
+  adjustTitleBanner();
   // addLegendCollapse();
 
 
