@@ -372,10 +372,11 @@ metric:
 let plotRadius = 15;
 let plotScale = 30;
 
-var yLabelMaxLength = 30;
-var yLabelBreakLength = 8;
-var yLabelMaxLines = 3;
-var yLabelFontSize = 10;
+var yLabelMaxLength = 30;// Max len total per y axis label
+var yLabelBreakLength = 10;// Max len per line of a given y label
+var yLabelMaxLines = 5;// Max lines per y label
+var yLabelFontSize = 10;// Font size of y label
+var yLabelMaxTotalLines = 18;// Max lines for all y labels to avoid over-crowding 
 
 let clickBoundsColor = '#FF0';
 var areaChartFormat = 'Percentage';

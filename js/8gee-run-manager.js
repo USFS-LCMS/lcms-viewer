@@ -3695,12 +3695,18 @@ function runSequoia(){
       centerObject(studyArea)
     }
 
+    var tdomBuffer = 1;
+    if(urlParams.cloudMaskMethod['CloudScore+']){tdomBuffer = 0}
     // Get S2 images for union of date periods
     var s2s = gil.getProcessedSentinel2Scenes({studyArea:studyArea,
-      startYear:preStartYear-1,
-      endYear:postYear+1,
+      startYear:preStartYear-tdomBuffer,
+      endYear:postYear+tdomBuffer,
       startJulian:startJulian,endJulian:endJulian,
-      convertToDailyMosaics : false});
+      convertToDailyMosaics : false,
+      applyTDOM:urlParams.cloudMaskMethod['S2Cloudless-TDOM'],
+      applyCloudScorePlus:urlParams.cloudMaskMethod['CloudScore+'],
+      applyCloudProbability:urlParams.cloudMaskMethod['S2Cloudless-TDOM']
+    });
     
     // Filter out pre and post images
     var preS2s = s2s.filter(ee.Filter.calendarRange(preStartYear,preEndYear,'year'));
@@ -3721,15 +3727,23 @@ function runSequoia(){
 
     // Pull in the LCMS land cover classes to be included in the tree mask
     var lcms_land_cover_tree_classes = Object.values(lcmsTreeMaskClasses).insert(1,false).map((e,i)=>{return [i+1,e]}).filter(row=>row[1]).map(n=>n[0]);
-
-    // Get the LCMS tree mask
-    var lcmsTreeMask = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
-                    .filter(ee.Filter.eq('study_area','CONUS'))
+    
+    // If no LCMS tree classes are selected, don't apply the mask
+    var applyLCMSTreeMask = true;
+    if(lcms_land_cover_tree_classes.length === 0){
+      applyLCMSTreeMask = false;
+    }
+    
+    // Get the LCMS tree mask if any LCMS tree classes are selected
+    if(applyLCMSTreeMask){
+      var lcmsTreeMask = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
                     .filter(ee.Filter.calendarRange(preStartYear-1,postYear,'year'))
                     .select(['Land_Cover'])
                     .map(img=>img.eq(lcms_land_cover_tree_classes)).max().reduce(ee.Reducer.max())
     
-    Map2.addLayer(lcmsTreeMask.selfMask(),{palette:'0A0',classLegendDict:{'LCMS Tree Mask':'0A0'}},'LCMS Tree Mask',false);
+      Map2.addLayer(lcmsTreeMask.selfMask(),{palette:'0A0',classLegendDict:{'LCMS Tree Mask':'0A0'}},'LCMS Tree Mask',false);
+    
+    }
     
     // Make band names so pre, post, and diff can be stacked
     var preBns = preComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_Pre`));
@@ -3745,7 +3759,11 @@ function runSequoia(){
     // Stack all bands to be included in table
     var stack = ee.Image.cat([preComp.select(changeBands).rename(preBns),
                               postComp.select(changeBands).rename(postBns),
-                              compDiff.select(changeBands).rename(diffBns),changeHeuristic]).updateMask(lcmsTreeMask)
+                              compDiff.select(changeBands).rename(diffBns),changeHeuristic])
+    if(applyLCMSTreeMask){
+      stack = stack.updateMask(lcmsTreeMask);
+    }
+                              
     
     // Compute the mean for the radius of a Giant Sequoia for each site
     stack.focalMean(urlParams.treeDiameter/2.,'circle','meters').reduceRegions(
@@ -3951,13 +3969,31 @@ function runSequoia(){
     
     Map2.addLayer(compDiff,urlParams.diffVizParams,'Pre-Post Composite',false)
 
-    Map2.addLayer(changeHeuristic.selfMask().updateMask(lcmsTreeMask),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
+    var changeHeuristicForMap = changeHeuristic.selfMask();
+    if(applyLCMSTreeMask){
+      changeHeuristicForMap =changeHeuristicForMap.updateMask(lcmsTreeMask);
+    }
+    Map2.addLayer(changeHeuristicForMap,{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
 
     Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'FF0','layerType':'geeVector'},'Monitoring Sites',true,null,null,'Trees of special interest');
            
     Map2.addLayer(studyArea,{},'Study Area',false);
 
-    
+    if(urlParams.canExport){
+      console.log('here');
+      var exportBands = ['blue','green','red','nir','swir1','swir2'];
+      changeBands.map(bn=>{
+        if(exportBands.indexOf(bn)===-1){
+          exportBands.push(bn);
+        };
+        
+      });
+      console.log(exportBands);
+      Map2.addExport(preComp.select(exportBands).multiply(10000).int16(),`S2_Composite_yrs${preStartYear}-${preEndYear}_jds${startJulian}-${endJulian}` ,10,true,{});
+      Map2.addExport(postComp.select(exportBands).multiply(10000).int16(),`S2_Composite_yr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{});
+      Map2.addExport(compDiff.select(exportBands).multiply(10000).int16(),`S2_Composite_Diff_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{});
+      Map2.addExport(changeHeuristicForMap.byte(),`S2_Change_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{},255);
+    }
 
     if(!seq_mon_query_clicked){
       localStorage.showToolTipModal = 'false';

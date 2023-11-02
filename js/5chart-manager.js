@@ -335,19 +335,35 @@ var  getQueryImages = function(lng,lat){
 			var yAxisLabels = {tickfont:{size:yLabelFontSize}};
 		
 			if(q.queryDict !== undefined && q.queryDict !== null){
-				var labelHeights = [];
-				yAxisLabels = {
-					ticktext:Object.values(q.queryDict).map(l=>{
-						var chunks = l.slice(0,yLabelMaxLength).chunk(yLabelBreakLength).slice(0,yLabelMaxLines)
-						labelHeights.push(chunks.length);
+				// Configure best way of showing given labels for queried pixel
+				// This tries to avoid over-crowding of labels that happens when there are many long labels
+				// within the queried range of values
+				var yValues = value.table[0].y;
+				var yMin = yValues.min();
+				var yMax = yValues.max();
+				var allYValues = range(yMin,yMax+1);
+				var allYLabels = allYValues.map(v=>q.queryDict[v]);
+				var yLabelMaxLinesT = yLabelMaxLines;
+				var brokenLabels;
+				function breakLabels(){
+					var totalLines = 0;
+					brokenLabels = allYLabels.map(l=>{
+						var chunks = l.slice(0,yLabelMaxLength).chunk(yLabelBreakLength).slice(0,yLabelMaxLinesT)
+						totalLines = totalLines+ chunks.length;
 						return chunks.join('<br>');
-					}),
-					tickvals:Object.keys(q.queryDict).map(n=>parseInt(n)),
+					})
+					if(totalLines>yLabelMaxTotalLines && yLabelMaxLinesT > 1){
+						yLabelMaxLinesT = yLabelMaxLinesT-1;
+						breakLabels()
+					}
+				}
+				breakLabels();
+				yAxisLabels = {
+					ticktext:brokenLabels,
+					tickvals:allYValues,
 					tickmode:"array",
 					tickfont:{size:yLabelFontSize},
 				  }
-				//   console.log(sum(labelHeights))
-				//   console.log(labelHeights.length)
 			}
 			$('#query-list-container').append(`<ul class = 'bg-black dropdown-divider'></ul>`);
 			$('#query-list-container').append(`<ul class = 'm-0 p-0 bg-white' id = '${containerID}'></ul>`);
@@ -366,13 +382,14 @@ var  getQueryImages = function(lng,lat){
 	 			font: {
 			    family: 'Roboto Condensed, sans-serif'
 			  },
-				 			// legend: {"orientation": "h"},
+				 			legend: {
+									"font":{"size":yLabelFontSize}},
 
 	 			margin: {
 				    l: 50,
 				    r: 10,
-				    b: 80,
-				    t: 80,
+				    b: 50,
+				    t: 50,
 				    pad: 0
 				  },
 	 			width:chartWidthC,
@@ -382,17 +399,20 @@ var  getQueryImages = function(lng,lat){
     			},
     			xaxis: {
     				tickangle:45,
-    				tickfont:{size:12},
+    				tickfont:{size:yLabelFontSize},
 				    title: {
-				      text: value.xLabel
+				      text: value.xLabel,
+					  font:{
+						size:12
+					  }
 				  }},
 				  yaxis:yAxisLabels
 	 		};
 	 		var buttonOptions = {
 				    toImageButtonOptions: {
 				        filename: q.name + nameEnd ,
-				        width: 1500,
-				        height: 800,
+				        width: 900,
+				        height: 600,
 				        format: 'png'
 				    }
 				}

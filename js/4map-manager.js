@@ -982,6 +982,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 
   var exportElement = {};
+  if(res === null || res === undefined){
+    res = 30;
+  }
   if(metadataParams === null || metadataParams === undefined){
     metadataParams = {};//'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
   }
@@ -1020,14 +1023,19 @@ function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
                               </span>
                               
                               <input  id = '${name}-name-${exportID}' class="form-control export-name-input" type="text" value="${exportElement.name}" title = 'Change export name if needed'>
+                              <input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'>
                             </div>`)
   $('#' + name + '-name-'+exportID.toString()).on('input', function() {
-    exportImageDict[exportElement.ID].name = $(this).val()
-  })
+    exportImageDict[exportElement.ID].name = $(this).val();
+  });
+  $('#' + name + '-res-'+exportID.toString()).on('input', function() {
+    exportImageDict[exportElement.ID].res = parseInt($(this).val());
+  });
   $('#' + name + '-checkbox-'+exportID.toString()).on('change', function() {
    
-    exportImageDict[exportElement.ID].shouldExport = this.checked
-  })
+    exportImageDict[exportElement.ID].shouldExport = this.checked;
+  });
+  
   exportID ++;
 }
 

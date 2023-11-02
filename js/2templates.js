@@ -194,10 +194,10 @@ const staticTemplates = {
                                 </div>
                                 <hr>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
-						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
-						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
+						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
 								</span>
-                                <div id = 'export-count-div'></div>
+                                <div id = 'export-count-div' ></div>
                             </div>  
                         </div>
                         
@@ -1609,8 +1609,8 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
 //Similar to the addCheckboxes only with radio buttons
 //The variable assumes the value of the key of the object that is selected instead of the entire optionList object
 //e.g. if optionList = {'hello':true,'there':false} then the variable = 'hello'
-function addMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${title}</p></form>`);
+function addMultiRadio(containerID,radioID,label,variable,optionList,title){
+    $('#'+containerID).append(`<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`);
 
     eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
     Object.keys(optionList).map(function(k){
@@ -1638,6 +1638,20 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
                                     });
 })
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Function to add JSON text input widget
+function addJSONInputTextBox(containerID,inputID,label,variable,defaultValue,title){
+    eval(`if(window.${variable} === undefined){window.${variable} = ${JSON.stringify(defaultValue)}}`);
+    $('#'+containerID).append(`
+    <hr>
+    <label>${label}</label>
+    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(defaultValue)}</textarea>`);
+
+    $('#'+containerID).on('input',()=>{
+      var tJSON = $(`#${inputID}`).val();
+      eval(`window.${variable} = JSON.parse(tJSON)`);
+     })
+  }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Some basic formatting functions
 function zeroPad(num, places) {

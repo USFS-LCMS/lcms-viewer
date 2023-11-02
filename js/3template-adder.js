@@ -1015,6 +1015,7 @@ else if(mode === 'STORM'){
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
 }else if(mode==='sequoia-view'){
+  
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare analysis window');
   var minYear = 2017;
   var maxYear = new Date().getFullYear();
@@ -1067,28 +1068,20 @@ if(urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == und
   addRangeSlider('advanced-params-div','Giant Sequoia Canopy Diamater (m)','urlParams.treeDiameter',5, 30,urlParams.treeDiameter,5,'tree-diameter-slider','null',"Specify the average diameter of a Giant Sequoia crown in meters");
   
   addCheckboxes('advanced-params-div','lcms-tree-mask-class-checkboxes','LCMS land cover classes to include as tree to mask out non tree areas from change detection. ','lcmsTreeMaskClasses',urlParams.lcmsTreeMaskClasses);
-  $('#advanced-params-div').append(`
-  <hr>
-  <label>Difference Bands and Thresholds</label>
-  <textarea   title = 'Bands and thresholds to use for identifying change'   class="form-control" id="diff-bands-thresh-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.diffThreshs)}</textarea>
-  <hr>
+
+  // addRadio('advanced-params-div','cloud-mask-method-radio','','S2Cloudless+TDOM','CloudScore+','cloudMaskMethod','s2c','csp',null,null,'Toggle between imperial or metric units')
+
+  if(urlParams.cloudMaskMethod === null || urlParams.cloudMaskMethod === undefined){
+    urlParams.cloudMaskMethod = {"S2Cloudless-TDOM": true,"CloudScore+": false}
+  }
+  addMultiRadio('advanced-params-div','cloud-mask-method-radio','Cloud Masking Method','cloudMaskMethod',urlParams.cloudMaskMethod,'Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024');
   
-  <label>Composite Visualization Parameters</label>
-  <textarea   title = 'Viz params for composite images'   class="form-control" id="comp-viz-params-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.compVizParams)}</textarea>
-  <hr>
-  <label>Difference Visualization Parameters</label>
-  <textarea   title = 'Viz params for difference image'   class="form-control" id="diff-viz-params-input"   oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(urlParams.diffVizParams)}</textarea>
- 
- `);
- $('#comp-viz-params-input').on('input',()=>{
-  urlParams.compVizParams=JSON.parse($('#comp-viz-params-input').val())
- })
- $('#diff-viz-params-input').on('input',()=>{
-  urlParams.diffVizParams=JSON.parse($('#diff-viz-params-input').val())
- })
- $('#diff-bands-thresh-input').on('input',()=>{
-  urlParams.diffThreshs=JSON.parse($('#diff-bands-thresh-input').val())
- })
+  addJSONInputTextBox('advanced-params-div','diff-bands-thresh-input','Difference Bands and Thresholds','diffThreshs',urlParams.diffThreshs,'Bands and thresholds to use for identifying change');
+
+  addJSONInputTextBox('advanced-params-div','comp-viz-params-input','Composite Visualization Parameters','compVizParams',urlParams.compVizParams,'Viz params for composite images');
+
+  addJSONInputTextBox('advanced-params-div','diff-viz-params-input','Difference Visualization Parameters','diffVizParams',urlParams.diffVizParams,'Viz params for difference image');
+
   
 // Sync sliders
 $('#post-years-slider').slider().bind('slide',function(event,ui){
@@ -1141,6 +1134,10 @@ $('#pre-years-slider').slider().bind('slide',function(event,ui){
 
   $('#parameters-collapse-div').append(staticTemplates.reRunButton);
 
+  if(urlParams.canExport===true){
+    canExport=urlParams.canExport;
+    addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
+  }
 
 }else{
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','ANCILLARY DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
@@ -1193,7 +1190,7 @@ if(mode === 'geeViz'){
   $('#share-button').remove();
    $('#tools-accordian').append(`<hr>`);
    //Sync tooltip toggle
-  var tShowToolTipModal = true
+  var tShowToolTipModal = true;
   if(localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined){
     tShowToolTipModal = localStorage.showToolTipModal
   }

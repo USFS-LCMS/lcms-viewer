@@ -272,6 +272,7 @@ function trackExports(){
     
     exportList = [];
     var taskIDList  = 'Exporting: ';
+    var taskIDListTitle = 'Exporting: ';
     taskCount = 0;
     var taskList = ee.data.getTaskList().tasks
     if(taskList.length > 10){taskList = taskList.slice(0,40);}
@@ -295,7 +296,8 @@ function trackExports(){
                 
                 timeDiff = new Date(timeDiff);
                 var timeDiffShow = zeroPad(timeDiff.getMinutes(),2) + ':' +zeroPad(timeDiff.getSeconds(),2)
-                taskIDList = taskIDList+ '\n' + t.description  + ' Status: ' + t.state +' Processing Time: ' + timeDiffShow;
+                taskIDList = taskIDList + t.description.chunk(40).join('<br>')  + '<br>Status: ' + t.state +' <br>Processing Time: ' + timeDiffShow + '<hr>';
+                taskIDListTitle = taskIDListTitle + t.description  + ' Status: ' + t.state +' Processing Time: ' + timeDiffShow + '\n';
                 }
         else if(t.state === 'COMPLETED'  && cachedEEExport.downloaded === false ){
             
@@ -345,8 +347,18 @@ function trackExports(){
         
     // localStorage.setItem("pastEEExports",JSON.stringify(pastEEExports));
     $('#export-spinner').show();
-    document.getElementById('export-spinner').title = taskIDList;
+    document.getElementById('export-spinner').title = taskIDListTitle;
     $('#export-count-div').html(taskIDList);
+    
+    //   $('#export-count-div').append(`<div id = "export-tasks-table-container">
+	// 								<table
+	// 								class="table table-hover "
+	// 								id="export-tasks-table"
+	// 								role="tabpanel"
+	// 								tablename="Export Tasks Monitor"
+    //               title="Current status of exports"
+	// 								></table>
+	// 							</div>`);
     $('#export-count').text(taskCount.toString())
     localStorage.setItem("cachedEEExports",JSON.stringify(cachedEEExports));
 

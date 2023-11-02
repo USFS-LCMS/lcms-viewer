@@ -415,9 +415,8 @@ function runGTAC(){
   //   Map2.addLayer(dataset.select([0]),{'autoViz':true},'NLCD')
 
   //   var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[0]).filter('study_area=="CONUS"');
-  //   var props = lcms.first().toDictionary().getInfo();
-
-  //   Map2.addLayer(lcms.select(['Land_Cover']),{'autoViz':true,reducer:ee.Reducer.mode()},'LCMS')
+  //   Map2.addTimeLapse(lcms.select(['.*Probability.*']),{reducer:ee.Reducer.max(),min:0,max:30,classLegendDict:{'Non-Tree No Change':'000','Tree No Change':'0E0','Non-Tree Fast Loss':'E00','Tree Gain':'0FF','Tree Fast Loss':'FF0','Tree Fast Loss + Gain':'FFF'},bands:'Change_Raw_Probability_Fast_Loss,Land_Cover_Raw_Probability_Trees,Change_Raw_Probability_Gain'},'LCMS Change Composite')
+  //   Map2.addLayer(lcms.select(['Land_Cover']),{'autoViz':true,reducer:ee.Reducer.mode()},'LCMS',false)
   //   setTimeout(()=>{$('#query-label').click()},1000)
   // }
   
