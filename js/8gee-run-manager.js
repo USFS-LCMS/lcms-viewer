@@ -3144,12 +3144,12 @@ huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06")
 // Map2.addLayer(huc6_conus,{layerType:'geeVectorImage'},'HUC06')
 var summaryAreas = {
   'HUC 6':{'path':'HUC06','color':'00E','unique_fieldname':'name','visible':false,'title':'Level 06 hydrological unit codes (watersheds)'},
-  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':false,'color':'EFE','title':'All counties throughout the US'},
+  'Counties':{'path':'Counties','unique_fieldname':'NAME','visible':true,'color':'EFE','title':'All counties throughout the US'},
   'Census Urban Areas':{'path':'Census_Metro_Areas','unique_fieldname':'NAME10','visible':false,'color':'E2E','title':'2018 US Census Bureau Urban Areas'},
   'CFLRP':{'path':'CFLRP','color':'D0D','unique_fieldname':'PROJECTNAM','visible':false, 'title':'Collaborative Forest Restoration Program areas throughout the US'},
   'USFS Planning Units':{'path':'LMPU','unique_fieldname':'LMPU_NAME','visible':false,'color':'F88', 'title':'USFS planning areas'} , 
   'USFS Forest Districts':{'path':'Districts','unique_fieldname':'DISTRICTNA','visible':false,'color':'FF8','title':'USFS Forest District boundaries'},
-  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':true,'color':'8F8','title':'USFS Forest boundaries'}
+  'USFS Forests':{'path':'Forests','unique_fieldname':'FORESTNAME','visible':false,'color':'8F8','title':'USFS Forest boundaries'}
   
 }
 if(urlParams.onlyIncludeFacts==true){
@@ -3259,9 +3259,11 @@ lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
     loadGEESummaryAreas(summaryAreas[k],k)
   });
 
-  selectQuestion(questionDict[urlParams.questionVar]);
-  // updateDashboardHighlights();
-
+  // if no share link in play, then call selectQuestion
+  if(!deepLink){
+    selectQuestion(questionDict[urlParams.questionVar]);
+  }
+  
   // Keep track of which layers are being viewed
   $('.layer-checkbox,.layer-span').click(event=>{
     setTimeout(()=>{
@@ -3310,11 +3312,11 @@ function runAlgal(){
   //  countNotC = countC.map(img=>img.updateMask(img.lt(25000)))
   //  countC = countC.map(img=>img.updateMask(img.gte(25000)))
 
-    Map2.addTimeLapse(countC_hcb,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Count',true,'cells/mL');
-    Map2.addTimeLapse(ab_hcb.select([1]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Biovolume',true,'µm3');
+    Map2.addTimeLapse(countC_hcb,{'min':25000,'max':5000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Count-Model 1',true,'cells/mL');
+    Map2.addTimeLapse(ab_hcb.select([1]),{'min':200000000,'max':1000000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Biovolume-Model 1',true,'µm3');
     
-    Map2.addTimeLapse(countC_wdeq,{'min':1000,'max':5000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanophyceae Cell Count',true,'raw cell count');
-    Map2.addTimeLapse(ab_wdeq.select([1]),{'min':2000000,'max':10000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanophyceae Density',true,'cells/L');
+    Map2.addTimeLapse(countC_wdeq,{'min':1000,'max':5000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Cell Count-Model 2',true,'raw cell count');
+    Map2.addTimeLapse(ab_wdeq.select([1]),{'min':2000000,'max':10000000,'palette':palettes.matplotlib.plasma[7],'dateFormat':'YYMMdd','advanceInterval':'day','dateField':'system:time_end',legendNumbersWithCommas:true},'Cyanobacteria Density-Model 2',true,'cells/L');
 
     setTimeout(()=>{$('#Cyanobacteria-Count-1-name-span').click();
       setTimeout(()=>{$('#Cyanobacteria-Count-1-forward-button>i').click();
@@ -3696,12 +3698,18 @@ function runSequoia(){
       centerObject(studyArea)
     }
 
+    var tdomBuffer = 1;
+    if(urlParams.cloudMaskMethod['CloudScore+']){tdomBuffer = 0}
     // Get S2 images for union of date periods
     var s2s = gil.getProcessedSentinel2Scenes({studyArea:studyArea,
-      startYear:preStartYear-1,
-      endYear:postYear+1,
+      startYear:preStartYear-tdomBuffer,
+      endYear:postYear+tdomBuffer,
       startJulian:startJulian,endJulian:endJulian,
-      convertToDailyMosaics : false});
+      convertToDailyMosaics : false,
+      applyTDOM:urlParams.cloudMaskMethod['S2Cloudless-TDOM'],
+      applyCloudScorePlus:urlParams.cloudMaskMethod['CloudScore+'],
+      applyCloudProbability:urlParams.cloudMaskMethod['S2Cloudless-TDOM']
+    });
     
     // Filter out pre and post images
     var preS2s = s2s.filter(ee.Filter.calendarRange(preStartYear,preEndYear,'year'));
@@ -3722,15 +3730,23 @@ function runSequoia(){
 
     // Pull in the LCMS land cover classes to be included in the tree mask
     var lcms_land_cover_tree_classes = Object.values(lcmsTreeMaskClasses).insert(1,false).map((e,i)=>{return [i+1,e]}).filter(row=>row[1]).map(n=>n[0]);
-
-    // Get the LCMS tree mask
-    var lcmsTreeMask = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
-                    .filter(ee.Filter.eq('study_area','CONUS'))
+    
+    // If no LCMS tree classes are selected, don't apply the mask
+    var applyLCMSTreeMask = true;
+    if(lcms_land_cover_tree_classes.length === 0){
+      applyLCMSTreeMask = false;
+    }
+    
+    // Get the LCMS tree mask if any LCMS tree classes are selected
+    if(applyLCMSTreeMask){
+      var lcmsTreeMask = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
                     .filter(ee.Filter.calendarRange(preStartYear-1,postYear,'year'))
                     .select(['Land_Cover'])
                     .map(img=>img.eq(lcms_land_cover_tree_classes)).max().reduce(ee.Reducer.max())
     
-    Map2.addLayer(lcmsTreeMask.selfMask(),{palette:'0A0',classLegendDict:{'LCMS Tree Mask':'0A0'}},'LCMS Tree Mask',false);
+      Map2.addLayer(lcmsTreeMask.selfMask(),{palette:'0A0',classLegendDict:{'LCMS Tree Mask':'0A0'}},'LCMS Tree Mask',false);
+    
+    }
     
     // Make band names so pre, post, and diff can be stacked
     var preBns = preComp.select(changeBands).bandNames().map( bn=>ee.String(bn).cat(`_Comp_Pre`));
@@ -3746,7 +3762,11 @@ function runSequoia(){
     // Stack all bands to be included in table
     var stack = ee.Image.cat([preComp.select(changeBands).rename(preBns),
                               postComp.select(changeBands).rename(postBns),
-                              compDiff.select(changeBands).rename(diffBns),changeHeuristic]).updateMask(lcmsTreeMask)
+                              compDiff.select(changeBands).rename(diffBns),changeHeuristic])
+    if(applyLCMSTreeMask){
+      stack = stack.updateMask(lcmsTreeMask);
+    }
+                              
     
     // Compute the mean for the radius of a Giant Sequoia for each site
     stack.focalMean(urlParams.treeDiameter/2.,'circle','meters').reduceRegions(
@@ -3952,13 +3972,31 @@ function runSequoia(){
     
     Map2.addLayer(compDiff,urlParams.diffVizParams,'Pre-Post Composite',false)
 
-    Map2.addLayer(changeHeuristic.selfMask().updateMask(lcmsTreeMask),{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
+    var changeHeuristicForMap = changeHeuristic.selfMask();
+    if(applyLCMSTreeMask){
+      changeHeuristicForMap =changeHeuristicForMap.updateMask(lcmsTreeMask);
+    }
+    Map2.addLayer(changeHeuristicForMap,{palette:'E20',classLegendDict:{'Loss':'E20'},queryDict:{1:'Yes','null':'No'}},`Potential Loss ${preStartYear}-${preEndYear} to ${postYear}`);
 
     Map2.addLayer(monitoring_sites.map(f=>{return ee.Feature(f).buffer(urlParams.treeDiameter/2.)}),{'strokeColor':'FF0','layerType':'geeVector'},'Monitoring Sites',true,null,null,'Trees of special interest');
            
     Map2.addLayer(studyArea,{},'Study Area',false);
 
-    
+    if(urlParams.canExport){
+      console.log('here');
+      var exportBands = ['blue','green','red','nir','swir1','swir2'];
+      changeBands.map(bn=>{
+        if(exportBands.indexOf(bn)===-1){
+          exportBands.push(bn);
+        };
+        
+      });
+      console.log(exportBands);
+      Map2.addExport(preComp.select(exportBands).multiply(10000).int16(),`S2_Composite_yrs${preStartYear}-${preEndYear}_jds${startJulian}-${endJulian}` ,10,true,{});
+      Map2.addExport(postComp.select(exportBands).multiply(10000).int16(),`S2_Composite_yr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{});
+      Map2.addExport(compDiff.select(exportBands).multiply(10000).int16(),`S2_Composite_Diff_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{});
+      Map2.addExport(changeHeuristicForMap.byte(),`S2_Change_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{},255);
+    }
 
     if(!seq_mon_query_clicked){
       localStorage.showToolTipModal = 'false';

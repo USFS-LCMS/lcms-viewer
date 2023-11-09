@@ -371,6 +371,13 @@ metric:
 //Chart variables
 let plotRadius = 15;
 let plotScale = 30;
+
+var yLabelMaxLength = 30;// Max len total per y axis label
+var yLabelBreakLength = 10;// Max len per line of a given y label
+var yLabelMaxLines = 5;// Max lines per y label
+var yLabelFontSize = 10;// Font size of y label
+var yLabelMaxTotalLines = 18;// Max lines for all y labels to avoid over-crowding 
+
 let clickBoundsColor = '#FF0';
 var areaChartFormat = 'Percentage';
 const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
@@ -482,7 +489,9 @@ String.prototype.numberWithCommas = function() {
 String.prototype.toTitle = function() {
   return this.replace(/(^|\s)\S/g, function(t) { return t.toUpperCase() });
 }
-
+String.prototype.chunk = function( size) {
+  return this.match(new RegExp('.{1,' + size + '}', 'g'));
+}
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function(){
   const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -519,6 +528,12 @@ function auto_grow(element) {
 
 function convertRemToPixels(rem) {    
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+function isWrapped(id){
+  $(id).addClass('noWrap');
+  var isWrapped = $(id)[0].scrollWidth > $(id).width();
+  $(id).removeClass('noWrap');
+  return isWrapped
 }
 function sleepFor(sleepDuration){
   var now = new Date().getTime();

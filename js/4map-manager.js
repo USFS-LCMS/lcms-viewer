@@ -716,7 +716,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
     viz.queryDict = dicts.queryDict;
     viz.autoViz = false;
   }
-  
+  if(viz.mosaic  === null || viz.mosaic  === undefined){
+    viz.mosaic = false;
+  }
   viz.canQuery = false;
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
@@ -781,7 +783,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
                                       </div>
                                     </div>
                                     <div id='${legendDivID}-time-lapse-layer-range-container' style = 'display:none;'>
-                                      <div title = 'Frame Date' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range'>
+                                      <div title = 'Frame Date' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range-first'>
                                         <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
                                           <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${viz.years[0]}</div>
                                         </div>
@@ -801,7 +803,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 
                                   <span  id = '${legendDivID}-name-span'  class = 'layer-span'>${name}</span>
 
-                                  <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-4 pt-3' style = 'display:none;'>
+                                  <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-3 pt-3' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
                                     <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
                                     <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
@@ -874,8 +876,12 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
         var img = fillEmptyCollections(item.filterDate(d,d.advance(1,viz.advanceInterval)),dummyImage);
       }
       
-     
-      var img = ee.Image(img.first()).set('system:time_start',d.millis());
+      if(viz.mosaic){
+        var img = ee.Image(img.mosaic()).set('system:time_start',d.millis());
+      }else{
+        var img = ee.Image(img.first()).set('system:time_start',d.millis());
+      }
+      
       cT.push(img)
       if(yr !== viz.years[0]){
         viz.addToLegend = false;
@@ -976,6 +982,9 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
 function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
 
   var exportElement = {};
+  if(res === null || res === undefined){
+    res = 30;
+  }
   if(metadataParams === null || metadataParams === undefined){
     metadataParams = {};//'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
   }
@@ -1014,14 +1023,19 @@ function addExport(eeImage,name,res,Export,metadataParams,noDataValue){
                               </span>
                               
                               <input  id = '${name}-name-${exportID}' class="form-control export-name-input" type="text" value="${exportElement.name}" title = 'Change export name if needed'>
+                              <input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'>
                             </div>`)
   $('#' + name + '-name-'+exportID.toString()).on('input', function() {
-    exportImageDict[exportElement.ID].name = $(this).val()
-  })
+    exportImageDict[exportElement.ID].name = $(this).val();
+  });
+  $('#' + name + '-res-'+exportID.toString()).on('input', function() {
+    exportImageDict[exportElement.ID].res = parseInt($(this).val());
+  });
   $('#' + name + '-checkbox-'+exportID.toString()).on('change', function() {
    
-    exportImageDict[exportElement.ID].shouldExport = this.checked
-  })
+    exportImageDict[exportElement.ID].shouldExport = this.checked;
+  });
+  
   exportID ++;
 }
 

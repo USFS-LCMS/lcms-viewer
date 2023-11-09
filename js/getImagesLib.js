@@ -77,11 +77,29 @@ var changeDirDict = {
 //Precomputed cloudscore offsets and TDOM stats
 //These have been pre-computed for all CONUS for Landsat and Setinel 2 (separately)
 //and are appropriate to use for any time period within the growing season
+// These have been calculated separately for AK and HI, so we mosaic them all together
 //The cloudScore offset is generally some lower percentile of cloudScores on a pixel-wise basis
 //The TDOM stats are the mean and standard deviations of the two bands used in TDOM
 //By default, TDOM uses the nir and swir1 bands
 var preComputedCloudScoreOffset = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/cloudScore').mosaic();
-var preComputedTDOMStats = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/TDOM').filter(ee.Filter.eq('endYear',2019)).mosaic().divide(10000);
+//var preComputedCloudScoreOffsetAK = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/Alaska/cloudScore_stats').mosaic();
+//var preComputedCloudScoreOffsetHI = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/Hawaii/cloudScore').mosaic();
+
+// mosaic all together
+//var preComputedCloudScoreOffset = ee.ImageCollection.fromImages([preComputedCloudScoreOffset, 
+//                                                                 preComputedCloudScoreOffsetAK,
+//                                                                 preComputedCloudScoreOffsetHI]).mosaic();
+
+var preComputedTDOMStats = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/TDOM').mosaic().divide(10000);
+//var preComputedTDOMStatsAK = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/Alaska/TDOM_stats').mosaic().divide(10000);
+//var preComputedTDOMStatsHI = ee.ImageCollection('projects/lcms-tcc-shared/assets/CS-TDOM-Stats/Hawaii/TDOM').mosaic().divide(10000);
+
+// mosaic all together
+//var preComputedTDOMStats = ee.ImageCollection.fromImages([preComputedTDOMStats, 
+//                                              preComputedTDOMStatsAK,
+//                                              preComputedTDOMStatsHI]).mosaic();
+
+
 exports.preComputedCloudScoreOffset = preComputedCloudScoreOffset;
 exports.preComputedTDOMStats = preComputedTDOMStats;
 
@@ -90,6 +108,7 @@ exports.getPrecomputedCloudScoreOffsets = function(cloudScorePctl){
           'sentinel2':preComputedCloudScoreOffset.select(['Sentinel2_CloudScore_p'+cloudScorePctl.toString()])
           };
 };
+
 exports.getPrecomputedTDOMStats = function(cloudScorePctl){
   return {'landsat': {
                       'mean':preComputedTDOMStats.select(['Landsat_nir_mean','Landsat_swir1_mean']),
@@ -102,6 +121,32 @@ exports.getPrecomputedTDOMStats = function(cloudScorePctl){
           };
 };
 
+exports.getPrecomputedTDOMStatsAK = function(cloudScorePctl){
+  
+  return {'landsat': {
+                      'mean':preComputedTDOMStatsAK.select(['Landsat_nir_mean','Landsat_swir1_mean']),
+                      'stdDev':preComputedTDOMStatsAK.select(['Landsat_nir_stdDev','Landsat_swir1_stdDev'])
+                      },
+          'sentinel2': {
+                      'mean':preComputedTDOMStatsAK.select(['Sentinel2_nir_mean','Sentinel2_swir1_mean']),
+                      'stdDev':preComputedTDOMStatsAK.select(['Sentinel2_nir_stdDev','Sentinel2_swir1_stdDev'])
+                      }
+          };
+};
+
+exports.getPrecomputedTDOMStatsHI = function(cloudScorePctl){
+  
+  return {// TDOM stats not calculated for landsat for HI
+          //'landsat': {
+          //            'mean':preComputedTDOMStatsHI.select(['Landsat_nir_mean','Landsat_swir1_mean']),
+          //           'stdDev':preComputedTDOMStatsHI.select(['Landsat_nir_stdDev','Landsat_swir1_stdDev'])
+          //            },
+          'sentinel2': {
+                      'mean':preComputedTDOMStatsHI.select(['Sentinel2_nir_mean','Sentinel2_swir1_mean']),
+                      'stdDev':preComputedTDOMStatsHI.select(['Sentinel2_nir_stdDev','Sentinel2_swir1_stdDev'])
+                      }
+          };
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // FUNCTIONS
@@ -708,7 +753,8 @@ function getS2(){
     'resampleMethod':'aggregate',
     'toaOrSR':'TOA',
     'convertToDailyMosaics':true,
-    'addCloudProbability':true //LSC
+    'addCloudProbability':true, //LSC
+    'addCloudScorePlus' : false
     };
   
   var args = prepArgumentsObject(arguments,defaultArgs);
@@ -762,6 +808,24 @@ function getS2(){
     
   }
   
+  if(args.addCloudScorePlus){
+    print('Joining pre-computed cloudScore+ from: GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED');
+    var cloudScorePlus = ee.ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
+                    .filterDate(args.startDate, args.endDate.advance(1,'day'))
+                    .filter(ee.Filter.calendarRange(args.startJulian, args.endJulian))
+                    .filterBounds(args.studyArea)
+                    .select(['cs'],['cloudScorePlus']);
+
+    var cloudScorePlusIds = ee.List(ee.Dictionary(cloudScorePlus.aggregate_histogram('system:index')).keys());
+
+    var s2sIds = ee.List(ee.Dictionary(s2s.aggregate_histogram('system:index')).keys());
+    var missing = s2sIds.removeAll(cloudScorePlusIds);
+    print('Missing cloud probability ids:', missing);
+    print('N s2 images before joining with cloudScore+:', s2s.size());
+    s2s = joinCollections(s2s, cloudScorePlus, false,'system:index');
+   
+    print('N s2 images after joining with cloudScore+:', s2s.size());
+  }
   
   if(['bilinear','bicubic'].indexOf(args.resampleMethod) > -1){
     print('Setting resample method to ',args.resampleMethod);
@@ -2953,7 +3017,7 @@ function getProcessedSentinel2Scenes(){
     'applyShadowShift':false,
     'applyTDOM':true,
     'cloudScoreThresh':20,
-    'performCloudScoreOffset':true,
+    'performCloudScoreOffset':false,
     'cloudScorePctl':10,
     'cloudHeights':ee.List.sequence(500,10000,500),
     'zScoreThresh': -1,
@@ -2967,13 +3031,16 @@ function getProcessedSentinel2Scenes(){
     'preComputedCloudScoreOffset':null,
     'preComputedTDOMIRMean':null,
     'preComputedTDOMIRStdDev':null,
-    'cloudProbThresh': 40
+    'cloudProbThresh': 40,
+    'applyCloudScorePlus': false,
+    'cloudScorePlusThresh' : 0.6
     };
   
   var args = prepArgumentsObject(arguments,defaultArgs);
   args.toaOrSR =  args.toaOrSR.toUpperCase();
   args.origin = 'Sentinel2';
   args.addCloudProbability = args.applyCloudProbability; //LSC
+  args.addCloudScorePlus = args.applyCloudScorePlus;
   print(args)
   
   // Prepare dates
@@ -3005,6 +3072,11 @@ function getProcessedSentinel2Scenes(){
   if(args.applyCloudProbability){
     print('Applying cloud probability');
     s2s = s2s.map(function(img){return img.updateMask(img.select(['cloud_probability']).lte(args.cloudProbThresh))})
+  }
+  
+  if(args.applyCloudScorePlus){
+    print('Applying cloudScore+')
+    s2s = s2s.map(function(img){return img.updateMask(img.select(['cloudScorePlus']).gte(args.cloudScorePlusThresh))})
   }
   if(args.applyShadowShift){
     print('Applying shadow shift');
@@ -3070,7 +3142,9 @@ function getSentinel2Wrapper(){
     'preComputedCloudScoreOffset':null,
     'preComputedTDOMIRMean':null,
     'preComputedTDOMIRStdDev':null,
-    'cloudProbThresh': 40
+    'cloudProbThresh': 40,
+    'applyCloudScorePlus' : false,
+    'cloudScorePlusThresh' : 0.6
     };
   
   var args = prepArgumentsObject(arguments,defaultArgs);
@@ -3174,7 +3248,9 @@ function getProcessedLandsatAndSentinel2Scenes(){
           'preComputedSentinel2TDOMIRMean':null,
           'preComputedSentinel2TDOMIRStdDev':null,
           'cloudProbThresh': 40,
-          'landsatCollectionVersion' : 'C2'
+          'landsatCollectionVersion' : 'C2',
+          'applyCloudScorePlus' : false,
+          'cloudScorePlusThresh' : 0.6
         };
         
     var args = prepArgumentsObject(arguments,defaultArgs);
@@ -3364,12 +3440,15 @@ function getLandsatAndSentinel2HybridWrapper(){
           'preComputedSentinel2TDOMIRMean':null,
           'preComputedSentinel2TDOMIRStdDev':null,
           'cloudProbThresh': 40,
-          'landsatCollectionVersion':'C2'
+          'landsatCollectionVersion':'C2',
+          'applyCloudScorePlusSentinel2' : false,
+          'cloudScorePlusThresh' : 0.6
         }
         
   var args = prepArgumentsObject(arguments,defaultArgs);
   
-    
+  args.applyCloudScorePlus=args.applyCloudScorePlusSentinel2;
+  
   var merged = getProcessedLandsatAndSentinel2Scenes(args);
   print('Merged',merged)
   args.ls = merged;

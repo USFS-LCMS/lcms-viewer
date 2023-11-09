@@ -194,19 +194,19 @@ const staticTemplates = {
                                 </div>
                                 <hr>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
-						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:2em;height:2em;'>
-						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-left: 0.2em;padding-top: 0.1em;cursor:pointer;'></strong>
+						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
 								</span>
-                                <div id = 'export-count-div'></div>
+                                <div id = 'export-count-div' ></div>
                             </div>  
                         </div>
                         
                     </div>`,
 	topBanner:` <div id = 'title-banner' class = 'white  title-banner '>
-                    <img id='title-banner-icon-left' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
-                    <div class="vl"></div>
-                    <img id='title-banner-icon-right' style = 'width:1.6rem;height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
-                    <div  class='my-0'>
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="images/logos_usda-fs.svg">
+                    <div class="vl title-banner-icon"></div>
+                    <img id='title-banner-icon-right' class = 'title-banner-icon' style = 'height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
+                    <div  class='my-0 title-banner-label'>
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
                 </div>`,
 
@@ -440,6 +440,7 @@ const staticTemplates = {
 `,
 `
 <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<h5>For access please contact Sequoia Viewer project coordinator.</h5>
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
 <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
@@ -1330,16 +1331,17 @@ function showLocationError(error){
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a Bootstrap dropdown
-function addDropdown(containerID,dropdownID,dropdownLabel,variable,tooltip){
+function addDropdown(containerID,dropdownID,title,variable,tooltip){
 	if(tooltip === undefined || tooltip === null){tooltip = ''}
 	$('#' + containerID).append(`<div id="${dropdownID}-container" class="form-group" title="${tooltip}">
-								  <label for="${dropdownID}">${dropdownLabel}:</label>
+								  <label for="${dropdownID}"><p class = 'param-title'>${title}:</p></label>
 								  <select class="form-control" id="${dropdownID}"></select>
 								</div>`);
 	  $("select#"+dropdownID).on("change", function(value) {
 	  	eval(`window.${variable} = $(this).val()`);
 	  });
 }
+
 //Function to add an item to a dropdown
 function addDropdownItem(dropdownID,label,value,tooltip){
     if(tooltip === undefined || tooltip === null){tooltip = ''};
@@ -1621,8 +1623,8 @@ function addCheckboxes(containerID,checkboxID,title,variable,optionList){
 //Similar to the addCheckboxes only with radio buttons
 //The variable assumes the value of the key of the object that is selected instead of the entire optionList object
 //e.g. if optionList = {'hello':true,'there':false} then the variable = 'hello'
-function addMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${title}</p></form>`);
+function addMultiRadio(containerID,radioID,label,variable,optionList,title){
+    $('#'+containerID).append(`<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`);
 
     eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
     Object.keys(optionList).map(function(k){
@@ -1650,36 +1652,20 @@ function addMultiRadio(containerID,radioID,title,variable,optionList){
                                     });
 })
 }
-//like addMultiRadio but with new line for each option **still need to add that functionality -EH 8/10/23**
-function addVertMultiRadio(containerID,radioID,title,variable,optionList){
-    $('#'+containerID).append(`<form  class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${title}</p></form>`);
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Function to add JSON text input widget
+function addJSONInputTextBox(containerID,inputID,label,variable,defaultValue,title){
+    eval(`if(window.${variable} === undefined){window.${variable} = ${JSON.stringify(defaultValue)}}`);
+    $('#'+containerID).append(`
+    <hr>
+    <label>${label}</label>
+    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(defaultValue)}</textarea>`);
 
-    eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
-    Object.keys(optionList).map(function(k){
-      const kID = k.replace(/[^A-Za-z0-9]/g, "-");
-      var radioCheckboxID = kID + '-checkbox';
-      var radioLabelID = radioCheckboxID + '-label';
-      if(optionList[k] === 'true'){optionList[k] = true}
-      else  if(optionList[k] === 'false'){optionList[k] = false};
-      var checked = optionList[k];
-      
-      if(checked){
-        checked = 'checked';
-        eval(`window.${variable} = "${k}"`)
-      }else{checked = ''};
-      
-      $('#'+radioID).append(`<div class="form-check form-check-inline"><br>
-                              <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
-                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
-                            </div>`);
-      $('#'+radioCheckboxID).change( function() {
-                                    Object.keys(optionList).map(k=>optionList[k]=false)
-                                    var v = $(this).val();
-                                    optionList[v]=true;
-                                    eval(`window.${variable} = "${v}"`)
-                                    });
-})
-}
+    $('#'+containerID).on('input',()=>{
+      var tJSON = $(`#${inputID}`).val();
+      eval(`window.${variable} = JSON.parse(tJSON)`);
+     })
+  }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Some basic formatting functions
 function zeroPad(num, places) {
@@ -2170,20 +2156,25 @@ function addLayer(layer){
 	}
 	//Function for zooming to object
 	function zoomFunction(){
-
+        
 		if(layer.layerType === 'geeVector' ){
 			centerObject(layer.item)
 		}else if(layer.layerType === 'geoJSONVector'){
 			// centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
 			// synchronousCenterObject(layer.item.features[0].geometry)
 		}else{
-          
+            
 			if(layer.item.args !== undefined && layer.item.args.value !== null && layer.item.args.value !== undefined){
-				synchronousCenterObject(layer.item.args.value)
+                synchronousCenterObject(layer.item.args.value)
 			}
             else if(layer.item.args !== undefined &&layer.item.args.featureCollection !== undefined &&layer.item.args.featureCollection.args !== undefined && layer.item.args.featureCollection.args.value !== undefined && layer.item.args.featureCollection.args.value !== undefined){
                 synchronousCenterObject(layer.item.args.featureCollection.args.value);
-            };
+            }else if(layer.viz.bounds !== undefined && layer.viz.bounds !== null){
+                synchronousCenterObject(layer.viz.bounds);
+            }else{
+                centerObject(layer.item);
+            }
+            ;
 		}
 	}
     //Try to handle load failures
@@ -2377,9 +2368,15 @@ function addLayer(layer){
 
             if(layer.viz.reducer === null || layer.viz.reducer === undefined){
                 layer.viz.reducer = ee.Reducer.lastNonNull();
+            }else if(typeof(layer.viz.reducer)==='string'){
+                try{
+                    layer.viz.reducer = ee.Deserializer.fromJSON(layer.viz.reducer)
+                }catch(err){
+                    layer.viz.reducer = eval(layer.viz.reducer);
+                }
             }
             var bandNames = ee.Image(layer.item.first()).bandNames();
-            layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first());
+            layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first()).set(layer.item.toDictionary());
             
         //Handle vectors
         } else if(layer.layerType === 'geeVectorImage' || layer.layerType === 'geeVector'){
