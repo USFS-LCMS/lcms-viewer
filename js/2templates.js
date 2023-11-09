@@ -2123,7 +2123,7 @@ function addLayer(layer){
 
     //Set up layer control container
 	$('#'+ layer.whichLayerList).prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container'  title= '${layer.helpBoxMessage}'>
-								           <div id="${opacityID}" aria-labelledby="${containerID}" Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
+								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
 								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" title='Waiting for layer service from Google Earth Engine'></i>
