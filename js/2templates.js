@@ -550,6 +550,8 @@ const staticTemplates = {
           </li>
           <li title = 'TreeMap 2016 Research Dataset source data.'><a class="intro-modal-links" href="https://data.nal.usda.gov/dataset/treemap-2016-tree-level-model-forests-conterminous-united-states-circa-2016" target="_blank">RDS</a> TreeMap 2016 Data Source
           </li>
+          <li title = "The Raster Data Gateway (RDG) is the location for TreeMap attribute downloads."><a class="intro-modal-links" href="https://staging-data.fs.usda.gov/geodata/rastergateway/treemap/index.php" target="_blank">RDG</a> Download TreeMap data on the Raster Data Gateway
+          </li>
         </ul>
         
     </div>
@@ -765,6 +767,18 @@ const staticTemplates = {
                                             </ul>
                                           </li>
                                         </ul>`,
+        TreeMapDownloadDiv:`<ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
+                                    <li class="pl-0"><span class="caret caret-down">2016</span>
+                                      <ul class="nested active">
+                                        <li><span class="caret" title="Download individual attributes of TreeMap.">Individual Attributes</span>
+                                          <ul class="nested" id="TreeMap2016-attribute-downloads"></ul>
+                                        </li>
+                                        <li><span class="caret" title="Download the full TreeMap RDS.">RDS</span>
+                                          <ul class="nested" id="TreeMap2016-RDS-downloads"></ul>
+                                        </li>
+                                      </ul>
+                                    </li>
+                                </ul>`,
         supportDiv :`<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>

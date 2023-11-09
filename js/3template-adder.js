@@ -75,6 +75,20 @@ function adjustTitleBanner(){
 adjustTitleBanner();
 
 
+function populateDownloads(){
+  var toggler = document.getElementsByClassName("caret");
+  var i;
+  for (i = 0; i < toggler.length; i++) {
+    toggler[i].addEventListener("click", function() {
+      // console.log(this)
+      this.parentElement.querySelector(".nested").classList.toggle("active");
+      // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
+      this.classList.toggle("caret-down");
+      // this.classList.toggle("treeOff");
+    });
+  }
+  }
+
 function toggleAdvancedOn(){
     $("#threshold-container").slideDown();
     $("#advanced-radio-container").slideDown();  
@@ -1021,7 +1035,11 @@ else if(mode === 'STORM'){
   $('head').append(`<script type="text/javascript" src="./js/forest-type-palette.js"></script>`);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','TreeMap DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
+  //addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  //$('#download-collapse-div').append(staticTemplates.TreeMapDownloadDiv);
+  //setupDropdownTreeMapDownloads()
+  //populateDownloads()
 }else if(mode==='sequoia-view'){
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare analysis window');

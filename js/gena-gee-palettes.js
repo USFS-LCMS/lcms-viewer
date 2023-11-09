@@ -23,7 +23,7 @@ palettes.cmocean = {
 
 palettes.custom = {
   fieldsize:{6:["C62363", "FEBA12", "FFFF00", "38A800", "73DFFF", "5C09FC"]},
-  standsize:{4:["38A800", "FFFF00", "FEBA12", "C62363"]}
+  standsize:{4:["38A800", "FFFF00", "FEBA12", "000000", "C62363"]}
 }
   
 palettes.colorbrewer = {
