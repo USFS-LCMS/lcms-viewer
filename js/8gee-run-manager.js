@@ -3354,8 +3354,8 @@ function runTreeMap(){
   //                     ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
   //                    ];
   var thematicAttrs = [
-                       ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
-                       ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
+                       ['FORTYPCD','ForTypName','FORTYPCD: Algorithm Forest Type Code'],
+                       ['FLDTYPCD','FldTypName','FLDTYPCD: Field Forest Type Code'] 
                       ];
 
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
@@ -3363,56 +3363,45 @@ function runTreeMap(){
   var continuousAttrs = [
                                                     
                           // volume
-                          ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume SawLog (board-ft/acre)'],
-                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'Standing Dead Volume (ft^3/acre)'],
-                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'Live Volume (ft^3/acre)'],
+                          ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'VOLCFNET_L: Volume, Live (ft³/acre)'],
+                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'VOLCFNET_D: Volume, Standing Dead (ft³/acre)'],
+                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'VOLBFNET_L: Volume, Live (sawlog-board-ft/acre)'],
                           
                           // trees per acre
-                          ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'Dead Trees Per Acre'],
-                          ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'Live Trees Per Acre'],
+                          ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'TPA_DEAD: Dead Trees Per Acre'],
+                          ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'TPA_LIVE: Live Trees Per Acre'],
                           
                           // dry biomass
-                          ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'Above Ground Dry Standing Dead Tree Biomass (tons/acre)'],
-                          ['DRYBIO_L',palettes.crameri.lajolla[10],0.05,0.95,'Above Ground Dry Live Tree Biomass (tons/acre)'],
+                          ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'DRYBIO_D: Dry Standing Dead Tree Biomass, Above Ground (tons/acre)'],
+                          ['DRYBIO_L',palettes.crameri.lajolla[10],0.05,0.95,'DRYBIO_L: Dry Live Tree Biomass, Above Ground (tons/acre)'],
                           
                           // carbon
-                          ['CARBON_D',palettes.crameri.lajolla[25],0.05, 0.95,'Standing Dead Carbon (tons/acre)'],
-                          ['CARBON_DWN',palettes.crameri.lajolla[25],0.05, 0.95,'Down Dead Carbon (tons/acre)'],
-                          ['CARBON_L',palettes.crameri.lajolla[10],0.05, 0.95,'Live Carbon Above Ground (tons/acre)'],
+                          ['CARBON_D',palettes.crameri.lajolla[25],0.05, 0.95,'CARBON_D: Carbon, Standing Dead (tons/acre)'],
+                          ['CARBON_DWN',palettes.crameri.lajolla[25],0.05, 0.95,'CARBON_DWN: Carbon, Down Dead (tons/acre)'],
+                          ['CARBON_L',palettes.crameri.lajolla[10],0.05, 0.95,'CARBON_L: Carbon, Live Above Ground (tons/acre)'],
                           
                           // stand density
-                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'Stand Quadratic Mean Diameter'],
-                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'Stand Density Index'],
+                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'QMD_RMRS: Stand Quadratic Mean Diameter (in)'],
+                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)'],
                         
                           // live tree variables
-                          ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'Height of Dominant Trees (feet)'],
-                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'Live Tree Basal Area (sq ft)']
-                          
+                          ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'STANDHT: Height of Dominant Trees (ft)'],
+                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'BALIVE: Live Tree Basal Area (ft²)'] 
                         ];
 
   var ordinalAttrs = [
                           
-                          ['STDSZCD',palettes.custom.standsize[4],0,1,'Algorithm Stand Size Code'], // ranges from 1-5
-                          ['FLDSZCD',palettes.custom.fieldsize[6],0,1,'Field Stand Size Code'], // ranges from 0-5
+                          ['STDSZCD',palettes.custom.standsize[4],0,1,'STDSZCD: Algorithm Stand-Size Class Code'], // ranges from 1-5
+                          ['FLDSZCD',palettes.custom.fieldsize[6],0,1,'FLDSZCD: Field Stand-Size Class Code'], // ranges from 0-5
 
   ]
 
   var percentAttrs = [    // have two attributes: palette and name. default range is 0-100
-                          ['GSSTK',palettes.crameri.bamako[50],'Growing-stock stocking %'],
-                          ['ALSTK',palettes.crameri.bamako[50],'All Live Tree Stocking %'],
-                          ['CANOPYPCT',palettes.crameri.bamako[50],'Live Canopy Cover %'],
+                          ['GSSTK',palettes.crameri.bamako[50],'GSSTK: Growing-Stock Stocking (percent)'],
+                          ['ALSTK',palettes.crameri.bamako[50],'ALSTK: All-Live-Tree Stocking (percent)'],
+                          ['CANOPYPCT',palettes.crameri.bamako[50],'CANOPYPCT: Live Canopy Cover (percent)'],
 
-  ]
-
-  var continuousSDAttrs = [                            
-                          // have three attributes: palette, # of SDs +/- the median, name
-                          // carbon
-                          ['CARBON_D',palettes.crameri.lajolla[10],2,'Standing Dead Carbon (tons/acre)'],
-                          ['CARBON_DWN',palettes.crameri.lajolla[10],2,'Carbon Down (tons/acre)'],
-                          ['CARBON_L',palettes.crameri.lajolla[10],2,'Live Carbon Above Ground (tons/acre)'],
-
-
-  ]          
+  ]       
   
 // Function to get a thematic attribute image service  
 function getThematicAttr_Colors(attr){
@@ -3497,33 +3486,50 @@ function getThematicAttr_Colors(attr){
     viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
     Map2.addLayer(attrImg,viz,attr[4],false);
   }
+
+    // function to apply unique values to Ordinal attribute
+    function getOrdinalAttr(attr){
+
+      // Pull the attribute image
+      var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
   
-  // function to apply unique values to Ordinal attribute
-  function getOrdinalAttr(attr){
+      // Get the numbers and unique numbers for that attribute
+      var numbers = treeMapLookup[attr[0]];
+      var uniqueValues = asc(unique(numbers));
+  
+      // Filter out any value that is non RMRS (-99)
+      uniqueValues = uniqueValues.filter(n=>n!==-99);
+  
+      // Set up renderer
+      var viz = {};
+      
+      // Compute the nth percentile for the min max
+      viz['min'] = parseInt(quantile(uniqueValues,attr[2]));
+      viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
+      viz['palette'] = attr[1];
+      
+      // set up legend - for values and palette
+        // Remove '000000' values from palette
+      var removed_nulls_palette = removeItemAll(JSON.parse(JSON.stringify(attr[1])), '000000')
+      console.log(removed_nulls_palette)
+      viz['classLegendDict'] = dict(zip(uniqueValues,removed_nulls_palette));
+      viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
+      
+      Map2.addLayer(attrImg,viz,attr[4],false);
+    }
 
-    // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
-
-    // Get the numbers and unique numbers for that attribute
-    var numbers = treeMapLookup[attr[0]];
-    var uniqueValues = asc(unique(numbers));
-
-    // Filter out any value that is non RMRS (-99)
-    uniqueValues = uniqueValues.filter(n=>n!==-99);
-
-    // Set up renderer
-    var viz = {};
-    
-    // Compute the nth percentile for the min max
-    viz['min'] = 0;
-    viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
-    viz['palette'] = attr[1];
-    // set up legend - for values and palette
-    viz['classLegendDict'] = dict(zip(uniqueValues,attr[1]));
-    viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
-    
-    Map2.addLayer(attrImg,viz,attr[4],false);
-  }
+    // Removes all items of a given value from an array
+    function removeItemAll(arr, value) {
+      var i = 0;
+      while (i < arr.length) {
+        if (arr[i] === value) {
+          arr.splice(i, 1);
+        } else {
+          ++i;
+        }
+      }
+      return arr;
+    }
 
   // function to apply to show percentage attributes as a range from 0-100
   function getPercentAttr(attr){
@@ -3585,9 +3591,6 @@ function getThematicAttr_Colors(attr){
 
   // Add each continuous attribute to the map
   continuousAttrs.map(getContinuousAttr);
-
-  // Add the sd attributes to the map
-  //continuousSDAttrs.map(getContinuousAttrSD);
   
   // Add each percent attribute to the map
   percentAttrs.map(getPercentAttr)
