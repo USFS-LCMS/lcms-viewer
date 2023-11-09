@@ -126,7 +126,9 @@ color:var(--deep-brown-20)!important;}
   padding: 0.1rem 0.2rem;
   font-size:1.25rem;
 }
-
+.shepherd-header{
+  padding:0.75rem;
+}
 .shepherd-content,.shepherd-title,.shepherd-header,.shepherd-text,.shepherd-footer{
   background-color: var(--deep-brown-100)!important;
   color:var(--deep-brown-10)!important;
@@ -400,7 +402,7 @@ button {
   overflow-y:hidden;
   white-space:nowrap;
   color:var(--white);
-  background-color: var(--black)!important;
+  /* background-color: var(--black)!important; */
   margin:0;
   padding:0;
  
@@ -409,11 +411,13 @@ button {
   position:absolute;
   top:0rem;
   right:0%;
-  max-width:25rem;
+  max-width:35rem;
   max-height:100%;
   overflow-y:auto;
   overflow-x:auto;
   z-index: 2;
+  padding-left:0px;
+  padding-right:0px;
 }
 .dashboard-download-div{
  
@@ -421,7 +425,8 @@ button {
 }
 .dashboard-download-button{
   background-color: var(--deep-brown-100)!important;
-  
+  margin-left:0.25rem;
+  border-radius: 0.1rem;
   font-size: 0.75rem;
   color:var(--deep-brown-10)!important;
   font-family: 'Roboto';
@@ -511,7 +516,9 @@ button {
   color:var(--deep-brown-100);
   font-family: 'Roboto';
 }
-
+div.dataTables_info{
+  margin-left:0.75rem;
+}
 
 .highlights-disclaimer{   
   margin-top:0.75rem; 
@@ -520,7 +527,7 @@ button {
   margin-bottom:0.75rem;
   font-size: 0.75rem;
   max-width: 20rem;
-  color: var(--deep-brown-20);
+  /* color: var(--deep-brown-20); */
 }
 .btn-group>.btn{
   margin-left: 0.5rem!important;

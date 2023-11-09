@@ -329,8 +329,8 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		
 		$(`#${chartID}`).remove();  
 		//Add new chart
-		$('#dashboard-results-div').append(`<div class = "plotly-chart" id="${chartID}"><div>`);
-		$('#dashboard-results-div').append(`<div class = "plotly-chart plotly-chart-download" id="${chartID}-download"><div>`);
+		$('#charts-collapse-div').append(`<div class = "plotly-chart" id="${chartID}"><div>`);
+		$('#charts-collapse-div').append(`<div class = "plotly-chart plotly-chart-download" id="${chartID}-download"><div>`);
 		// $('#chartDiv').append('<hr>');
 		//Set up chart object
 		// var chartJSChart = new Chart($(`#${chartID}`),{
@@ -408,8 +408,12 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		}
 
 		var data = [data]
-		let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2); 
-		let plotWidth=plotHeight*1.5
+		// let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2); 
+		// let plotWidth=plotHeight*1.5;
+		
+		let plotWidth = $('#charts-collapse-label-charts-collapse-div').width()-2;//chartHeight*1.5;
+		let plotHeight=parseInt(plotWidth/1.3);//$('#dashboard-results-div').height()-convertRemToPixels(1);
+	
 		var layout = {
 		title: `<b>${name}</b>`,
 		font: {
@@ -496,7 +500,8 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
           }else{
             colSums = colSums.map((n)=>n*chartFormatDict[chartFormat].mult);
           }
-		  
+
+		
           if(showPairwiseDiff){
             var pairwiseDiff = [];
             for(var i=0;i<colSums.length-1;i++){
@@ -507,7 +512,8 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
             colSums = pairwiseDiff;
             
           }
-        //   console.log(colSums)
+		  colSums = colSums.map(n=>n.round(3))
+          
           ///////////////////////////////////////////////////////////////////////
           //Set up chart object
 		  let fieldHidden;
@@ -516,13 +522,21 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		  }catch(err){
 			fieldHidden=false;
 		  }
-		 
+			//   'label':label,
+			//   pointStyle: 'circle',
+			//   pointRadius:1,
+			//   'data':data,
+			//   'fill':false,
+			//   'borderColor':color,
+			//   'lineTension':0,
+			//   'borderWidth':2,
+			//   'steppedLine':steppedLine,
+			//   'showLine':true,
 		  let classColor = colors[whichOne][names[whichOne].indexOf(k.split('---')[1])]
             var out = {'borderColor':classColor,
-            'fill':false,
             'data':colSums,
             'label':k.split('---')[1],
-            pointStyle: 'line',
+            pointStyle: 'circle',
             pointRadius:1,
             'lineTension':0,
             'borderWidth':2,
@@ -543,9 +557,10 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
       catch(err){};
       $(`#${chartID}`).remove(); 
 
-	let chartHeight=$('#dashboard-results-div').height()-convertRemToPixels(1);
-	let chartWidth = chartHeight*1.5;
-	$('#dashboard-results-div').append(`<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`);
+	
+	let chartWidth = $('#charts-collapse-label-charts-collapse-div').width()-2;//convertRemToPixels(35)-5;//chartHeight*1.5;
+	let chartHeight=parseInt(chartWidth/1.5);//$('#dashboard-results-div').height()-convertRemToPixels(1);
+	$('#charts-collapse-div').append(`<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`);
       // $('#chartDiv').append('<hr>');
       //Set up chart object
       var chartJSChart = new Chart($(`#${chartID}`),{
@@ -574,7 +589,6 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 				usePointStyle: true,
 				fontSize:10,
                 boxWidth:5,
-				pointStyle:'circle',
 				padding:5,
 				
               },
@@ -970,7 +984,9 @@ function updateDashboardHighlights(limit=10){
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
 	// console.log(`Scroll left coord: ${lastScrollLeft}`)
-	$('.dashboard-results').empty();
+	// $('.dashboard-results').empty();
+	// $('#dashboard-results-div').empty();
+	$('#charts-collapse-div').empty();
 	$('.dashboard-results-container').hide();
 	$('.dashboard-results-container').css('height','0rem');
 
@@ -1257,6 +1273,20 @@ class report {
             });
             
         }
+		this.addPageNumbers = function(fontSize=10){
+			const pageCount = this.doc.internal.getNumberOfPages();
+			console.log(`Page count: ${pageCount}`);
+			const w = this.doc.internal.pageSize.width;  
+			const h = this.doc.internal.pageSize.height; 
+			let fs = this.doc.getFontSize();	 
+			this.doc.setFontSize(fontSize);
+				
+			range(1,pageCount+1).map(pn=>{
+				this.doc.setPage(pn);
+				this.doc.text(`${pn} of ${pageCount}`, w / 2, h - 10, {align: 'center'})
+			})
+			this.doc.setFontSize(fs);
+		}
         this.download = function (outFilename) {
             // console.log(this.doc)
             this.doc.save(outFilename + '.pdf');
@@ -1268,10 +1298,32 @@ function makeDashboardReport(){
     $('body').prop('disabled',true);
     $('#lcms-spinner').prop('title','Downloading report');
     $('#lcms-spinner').show();
+	map.setOptions({
+		zoomControl: false,
+		mapTypeControl: false,
+		scaleControl: false,
+		streetViewControl: false,
+		// rotateControl: false,
+		// fullscreenControl: false
+	  });
+	  var sidebarTogglerClicked = false;
+	  var collapseClicked = [];
+	  var needsOpenList = ['legend-collapse','charts-collapse']
+	  if($('#sidebar-left').css('display')==='none'){
+		  toggleSidebar();
+		  sidebarTogglerClicked = true;
+	  }
+	  needsOpenList.map(needsOpen=>{
+		  if(!$(`#${needsOpen}-div`).hasClass('show')){
+			  $(`#${needsOpen}-label-label`).click();
+			  collapseClicked.push(needsOpen);
+		  }
+	  })
     var dashboardReport = new report();
     dashboardReport.addReportHeader();
     TweetThis(preURL='',postURL='',openInNewTab=false,showMessageBox=false,onlyURL=true);
     setTimeout(()=>{
+		
         dashboardReport.addText(`Resources`,18);
         dashboardReport.addText(`Source LCMS Dashboard instance used to create this report`,12,fullShareURL);
         dashboardReport.addText(`For any questions, contact the LCMS Helpdesk`,12,'mailto: sm.fs.lcms@usda.gov');
@@ -1292,7 +1344,7 @@ function makeDashboardReport(){
             dashboardReport.addText(`Chart Results`,18);
             dashboardReport.addText(`The following charts depict the ${chartFormat.toLowerCase()} of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${urlParams.endYear} (See tables below for names of summary areas included in these charts). These charts can be useful to identify broad trends of change within and between different classes.`,12);
             
-            $('#dashboard-results-div canvas').each(function() {
+            $('#charts-collapse-div canvas').each(function() {
                 let id=$(this).attr('id');
                 if(id!==undefined&&id.indexOf('chart-canvas')>-1){dashboardReport.addChartJS(id)}
         });
@@ -1306,31 +1358,66 @@ function makeDashboardReport(){
 			 dashboardReport.addText(`Since N is generally > 30, we are using a Z test to test for significant differences. The critical values for confidence levels are as follows (Z Test): 0.9: 1.64, 0.95: 1.96, 0.99: 2.58.`,12)
 			 dashboardReport.addText(`For each year, all reference points that fall within a given summary area for that year, as well as the year prior and year after, plus a 210km buffer, are tabulated for the strata weighted proportion of each class. This allows for confidence intevals for a given class for a given area to then be computed as follows:`,12)
 			 dashboardReport.addText(`ci =critical value*sqrt((TS Weighted Proportion*(1-TS Weighted Proportion))/TS Weighted Total).`,12)
-			 dashboardReport.addText(`Based on Olofsson et al 2014 Equations 10 and 11.`,12,window.location.protocol + "//" + window.location.host  + '/literature/Olofsson_et_al_2014.pdf');
+			 dashboardReport.addText(`Based on Olofsson et al 2014 Equations 10 and 11.`,12,window.location.href.split('/dashboard.html')[0]  + '/literature/Olofsson_et_al_2014.pdf');
 			 dashboardReport.addText(`This number is then added and subtracted from each amount for each class. If an amount of a given class in the first year does not intersect the amount in the last year, it is highlighted as being a signficant change in the tables below. Many summary areas had insufficient reference samples in some classes for some years to compute confidence intervals. In those instances, the confidence interval is denoted as "NA" and a significance test cannot be performed.`,12);
              dashboardReport.addTables();
              let   reportName = `LCMS_Change_Report_${urlParams.startYear}-${urlParams.endYear}_${new Date().toStringFormat()}`
-             
+             dashboardReport.addPageNumbers();
              
              dashboardReport.download(reportName);
              $('body').prop('disabled',false);
              $('#lcms-spinner').hide();
 			 showSurveyModal('dashboardReportDownload');
+
+			if(sidebarTogglerClicked){toggleSidebar();}
+			collapseClicked.map(k=>{$(`#${k}-label-label`).click();})
+			
+			map.setOptions({
+				zoomControl: true,
+				mapTypeControl: true,
+				scaleControl: true,
+				streetViewControl: true,
+				// rotateControl: false,
+				// fullscreenControl: false
+				})
          
            
         };
         function addLegend(){
-			// if(!${$('#legend-collapse-div').is(":visible")){
-			// 	${$(selector).show()
-			// }
 			dashboardReport.addBySelector('#legend-collapse-div',null,12,60,allTheRest);
-		
 		}
-        // addLegend();
+        
         dashboardReport.doc.addPage();
         dashboardReport.currentY=dashboardReport.margin;
         dashboardReport.addBySelector('#map','Overview Map',18,null,addLegend);
     },500)
     
     
+}
+var dashboardResultsLocation ='right';
+
+function moveDashboardResults(location='left'){
+	if(dashboardResultsLocation !== location){
+		var dashboardMoveLocationDict = {'right':'dashboard-results-list','left':'sidebar-left'};
+		var outLoc = dashboardMoveLocationDict[location]
+		
+		moveCollapse('charts-collapse',outLoc);
+		moveCollapse('tables-collapse',outLoc);
+
+		if(location=='right'){
+			$('#dashboard-results-container-right').show();
+		}else{
+			$('#dashboard-results-container-right').hide();
+		}
+		updateDashboardCharts();
+		dashboardResultsLocation = location;
+	}
+    
+}
+function toggleDashboardResultsLocation(){
+	if(dashboardResultsLocation==='right'){
+		moveDashboardResults('left');
+	}else{
+		moveDashboardResults('right');
+	}
 }

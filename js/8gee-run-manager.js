@@ -3980,7 +3980,6 @@ function runSequoia(){
     Map2.addLayer(studyArea,{},'Study Area',false);
 
     if(urlParams.canExport){
-      console.log('here');
       var exportBands = ['blue','green','red','nir','swir1','swir2'];
       changeBands.map(bn=>{
         if(exportBands.indexOf(bn)===-1){
@@ -3988,7 +3987,6 @@ function runSequoia(){
         };
         
       });
-      console.log(exportBands);
       Map2.addExport(preComp.select(exportBands).multiply(10000).int16(),`S2_Composite_yrs${preStartYear}-${preEndYear}_jds${startJulian}-${endJulian}` ,10,true,{});
       Map2.addExport(postComp.select(exportBands).multiply(10000).int16(),`S2_Composite_yr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{});
       Map2.addExport(compDiff.select(exportBands).multiply(10000).int16(),`S2_Composite_Diff_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}` ,10,true,{});

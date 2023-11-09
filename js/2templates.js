@@ -612,11 +612,26 @@ const staticTemplates = {
                 </footer>`,
         dashboardResultsDiv:`<div class = 'dashboard-results-container' id = 'dashboard-results-container' style='display:none;'>
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
-                                <div id='dashboard-results-div' class='bg-black dashboard-results'></div>
+                                <div id='dashboard-results-div22' class='bg-black dashboard-results'></div>
                             </div>`,
         dashboardHighlightsDisclaimerText:`LCMS Dashboard Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
-        dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black'>
-        <img style='height:3rem;' title = 'Click to toggle highlights visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
+        dashboardResultsContainer:`<div id='dashboard-results-container-right' class='dashboard-highlights bg-black col-sm-7 col-md-3 col-xl-3'>
+        <img style='height:3rem;' title = 'Click to toggle highlights visibility' id = 'dashboard-results-sidebar-toggler' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' ><h2 class = 'mx-5'><button class=' dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' >
+        <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
+        Download Report
+        
+      </button></h2>
+        
+        <div id = 'dashboard-results-list'></div>                            
+                                    </div>`,
+        dashboardHighlightsContainer:`<div id='highlights-tables-container'>
+        <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
+        <div class="tab-content" id="highlights-table-divs"></div>
+        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+        </p>
+    </div>`,
+        dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black col-sm-7 col-md-4 col-xl-3'>
+        <img style='height:3rem;' title = 'Click to toggle highlights visibility' id = 'dashboard-results-sidebar-toggler' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
         <div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
         <button class='btn dashboard-download-button' id='dashboard-download-button' onclick='makeDashboardReport()' >
@@ -627,14 +642,15 @@ const staticTemplates = {
         
         
       </div>
+      <div id = 'dashboard-results-div'>
+        </div>
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
             <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
-        
-        </p>`,
+        `,
         dashboardProgressDiv:`<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(0.8)}"  alt="GEE logo image">
@@ -1961,6 +1977,7 @@ function moveCollapse(baseID,collapseContainer =getWalkThroughCollapseContainerI
     $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
     $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Legend functions
 function addLegendCollapse(){

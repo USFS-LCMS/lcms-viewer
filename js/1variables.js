@@ -114,15 +114,7 @@ function parseUrlSearch(){
 function constructUrlSearch(){
   var outURL = '?';
   Object.keys(urlParams).map(function(p){
-    // if(typeof(urlParams[p]) == 'object'){
-      // var tObj = {};
-      // Object.keys(urlParams[p]).map(k => tObj['OBJECT---'+p+'---'+k] = urlParams[p][k]);
-      // outURL += new URLSearchParams(tObj).toString() + '&';
-      // outURL += p+'=OBJECT---'+encodeURIComponent(JSON.stringify(urlParams[p])) + '&';
-    // }else{
-      outURL += p+'='+encodeURIComponent(JSON.stringify(urlParams[p]))  + '&';
-    // }
-    
+    outURL += p+'='+encodeURIComponent(JSON.stringify(urlParams[p]))  + '&'; 
   })
   outURL = outURL.slice(0,outURL.length-1)
   return outURL
@@ -475,6 +467,9 @@ Array.prototype.insert = function(index) {
 /////////////////////////////////////////////////////
 Number.prototype.formatNumber = function(n=2){
   return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+Number.prototype.round = function(n=2){
+  return Math.round(this*10**n)/10**n;
 }
 
 // Taken from: https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators

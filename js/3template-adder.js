@@ -15,8 +15,8 @@ $('body').append(staticTemplates.bottomBar);
 $('#main-container').append(staticTemplates.sidebarLeftToggler);
 if(mode==='lcms-dashboard'){
   $('body').append(staticTemplates.lcmsSpinner);
-  $('body').append(staticTemplates.dashboardResultsDiv);
-  $('body').append(staticTemplates.dashboardHighlightsDiv);
+  // $('body').append(staticTemplates.dashboardResultsDiv);
+  $('body').append(staticTemplates.dashboardResultsContainer);
 }
 $('#sidebar-left-header').append(staticTemplates.topBanner);
 
@@ -216,7 +216,15 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   }
   
   $('#sidebar-left-header').append(staticTemplates.dashboardProgressDiv);
+  
+  addCollapse('dashboard-results-list','charts-collapse-label','charts-collapse-div','CHARTS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Line chart LCMS summary results');
 
+  addCollapse('dashboard-results-list','tables-collapse-label','tables-collapse-div','TABLES',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Tabular LCMS summary results');
+
+  $('#tables-collapse-div').append(staticTemplates.dashboardHighlightsContainer);
+  $('#charts-collapse-div').removeClass('px-5');
+  $('#tables-collapse-div').removeClass('px-5');
+  $('#charts-collapse-label').on('click',()=>{console.log('clicked');updateDashboardCharts();})
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
   //addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
   
@@ -304,34 +312,34 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   //////////////////////////////// add summary area as part of Question functionality in future//////////////////////////////////////////
   function selectQuestion(selectedQuestion){
     var selectedProducts = selectedQuestion.productHighlightClasses;
-    console.log(selectedProducts);
+    // console.log(selectedProducts);
     Object.keys(selectedProducts).map(k=>{
       var checkboxID = `#productHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
+      // console.log(checkboxID);
       $(checkboxID).prop('checked', selectedProducts[k]);
       urlParams.productHighlightClasses[k] = selectedProducts[k];
     })
     var selectedChangeClasses = selectedQuestion.changeHighlightClasses;
-    console.log(selectedChangeClasses);
+    // console.log(selectedChangeClasses);
     Object.keys(selectedChangeClasses).map(k=>{
       var checkboxID = `#changeHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
+      // console.log(checkboxID);
       $(checkboxID).prop('checked', selectedChangeClasses[k]);
       urlParams.changeHighlightClasses[k] = selectedChangeClasses[k];
     })
     var selectedLCclasses = selectedQuestion.lcHighlightClasses;
-    console.log(selectedLCclasses);
+    // console.log(selectedLCclasses);
     Object.keys(selectedLCclasses).map(k=>{
       var checkboxID = `#lcHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
+      // console.log(checkboxID);
       $(checkboxID).prop('checked', selectedLCclasses[k]);
       urlParams.lcHighlightClasses[k] = selectedLCclasses[k];
     })
     var selectedluClasses = selectedQuestion.luHighlightClasses;
-    console.log(selectedluClasses);  
+    // console.log(selectedluClasses);  
     Object.keys(selectedluClasses).map(k=>{
       var checkboxID = `#luHighlightClasses${k}-checkbox`;
-      console.log(checkboxID);
+      // console.log(checkboxID);
       $(checkboxID).prop('checked', selectedluClasses[k]);
       urlParams.luHighlightClasses[k] = selectedluClasses[k];
     })
@@ -1338,6 +1346,8 @@ function resizeDashboardPanes(){
   };
  
   // $('.chart').css('height',$('#dashboard-results-container').height())
+  // if($(window).width() < 576){moveDashboardResults('left')}
+  // $(document).ready(function(){resizeDashboardPanes()})
 }
 if(mode === 'lcms-dashboard'){
   
@@ -1348,7 +1358,7 @@ if(mode === 'lcms-dashboard'){
   if(!urlParams.showHighlightsBar){ $('#highlights-tables-container').hide()}
   moveCollapse('legend-collapse','sidebar-left')
 
-  resizeDashboardPanes()
+  resizeDashboardPanes();
  
   $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
   $('.panel-title').click((e)=>{setTimeout(()=>{resizeDashboardPanes()},500);});
@@ -1444,30 +1454,34 @@ $('#summary-pairwise-diff-radio').change(()=>{
   
 }
 if(urlParams.showSidebar === undefined || urlParams.showSidebar === null){
-  urlParams.showSidebar = 'true'
+  urlParams.showSidebar = true
 }
+// Handle legacy 'true' and 'false'
+if(urlParams.showSidebar === 'true'){urlParams.showSidebar = true}
+else if(urlParams.showSidebar === 'false'){urlParams.showSidebar = false}
 
 function toggleSidebar(){
+  
   $('#sidebar-left').toggle('collapse');
   // $('#title-banner').toggle('collapse');
   
   if(mode === 'lcms-dashboard'){
     setTimeout(()=>{resizeDashboardPanes()},500);
   }
-  if(urlParams.showSidebar === 'false'){
-    urlParams.showSidebar = 'true'
+  if(urlParams.showSidebar === false){
+    urlParams.showSidebar = true
   }else{
-    urlParams.showSidebar = 'false'
+    urlParams.showSidebar = false
   }
   
 };
 function toggleHighlights(){
-  $('#highlights-tables-container').toggle('collapse');
+  $('#dashboard-results-list').toggle('collapse');
   setTimeout(()=>{resizeDashboardPanes();
-    urlParams.showHighlightsBar = $('#highlights-tables-container').css("display")!=='none'
+    urlParams.showHighlightsBar = $('#dashboard-results-list').css("display")!=='none'
   },500);
 }
-if(urlParams.showSidebar === 'false'){
+if(urlParams.showSidebar === false){
   $('#sidebar-left').hide();
 }
 
