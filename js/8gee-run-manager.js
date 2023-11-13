@@ -3356,8 +3356,8 @@ function runTreeMap(){
   //                     ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
   //                    ];
   var thematicAttrs = [
-                       ['FORTYPCD','ForTypName','FORTYPCD: Algorithm Forest Type Code'],
-                       ['FLDTYPCD','FldTypName','FLDTYPCD: Field Forest Type Code'] 
+                       ['FORTYPCD','ForTypName','FORTYPCD: Algorithm Forest Type Code', 'This is the forest type used for reporting purposes. It is primarily derived using a computer algorithm, except when less than 25 percent of the plot samples a particular forest condition or in a few other cases.'],
+                       ['FLDTYPCD','FldTypName','FLDTYPCD: Field Forest Type Code', 'A code indicating the forest type, assigned by the field crew, based on the tree species or species groups forming a plurality of all live stocking. The field crew assesses the forest type based on the acre of forest land around the plot, in addition to the species sampled on the condition.'] 
                       ];
 
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
@@ -3365,43 +3365,43 @@ function runTreeMap(){
   var continuousAttrs = [
                                                     
                           // volume
-                          ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'VOLCFNET_L: Volume, Live (ft³/acre)'],
-                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'VOLCFNET_D: Volume, Standing Dead (ft³/acre)'],
-                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'VOLBFNET_L: Volume, Live (sawlog-board-ft/acre)'],
+                          ['VOLCFNET_L',palettes.crameri.imola[50],0.05,0.95,'VOLCFNET_L: Volume, Live (ft³/acre)', 'Calculated via the following FIA query: Sum VOLCFNET*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1))'],
+                          ['VOLCFNET_D',palettes.crameri.imola[50],0.05,0.95,'VOLCFNET_D: Volume, Standing Dead (ft³/acre)', 'Calculated via the following FIA query: Sum VOLCFNET*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=2) AND ((TREE.DIA)>=5) AND ((TREE.STANDING_DEAD_CD)=1))'],
+                          ['VOLBFNET_L',palettes.crameri.imola[50],0.05,0.95,'VOLBFNET_L: Volume, Live (sawlog-board-ft/acre)', 'Calculated via the following FIA query: Sum VOLBFNET * TPA_UNADJ WHERE (((TREE.TREECLCD)=2) AND ((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1))'],
                           
                           // trees per acre
-                          ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'TPA_DEAD: Dead Trees Per Acre'],
-                          ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'TPA_LIVE: Live Trees Per Acre'],
+                          ['TPA_DEAD',palettes.crameri.bamako[10],0.25,0.7,'TPA_DEAD: Dead Trees Per Acre', 'Number of dead standing trees per acre (DIA >= 5”). Calculated via the following FIA query: Sum TREE.TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=2) AND ((TREE.DIA)>=5) AND ((TREE.STANDING_DEAD_CD)=1))'],
+                          ['TPA_LIVE',palettes.crameri.bamako[25],0.2,0.8,'TPA_LIVE: Live Trees Per Acre', 'Number of live trees per acre (DIA > 1"). Calculated via the following FIA query: Sum TREE.TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1) AND ((TREE.DIA)>=1))'],
                           
                           // dry biomass
-                          ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'DRYBIO_D: Dry Standing Dead Tree Biomass, Above Ground (tons/acre)'],
-                          ['DRYBIO_L',palettes.crameri.lajolla[10],0.05,0.95,'DRYBIO_L: Dry Live Tree Biomass, Above Ground (tons/acre)'],
+                          ['DRYBIO_D',palettes.crameri.lajolla[25],0.1,0.9,'DRYBIO_D: Dry Standing Dead Tree Biomass, Above Ground (tons/acre)', 'Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=2) AND ((TREE.DIA)>=5) AND ((TREE.STANDING_DEAD_CD)=1))'],
+                          ['DRYBIO_L',palettes.crameri.lajolla[10],0.05,0.95,'DRYBIO_L: Dry Live Tree Biomass, Above Ground (tons/acre)', 'Dry Live Tree Biomass, Above Ground. Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1))'],
                           
                           // carbon
-                          ['CARBON_D',palettes.crameri.lajolla[25],0.05, 0.95,'CARBON_D: Carbon, Standing Dead (tons/acre)'],
-                          ['CARBON_DWN',palettes.crameri.lajolla[25],0.05, 0.95,'CARBON_DWN: Carbon, Down Dead (tons/acre)'],
-                          ['CARBON_L',palettes.crameri.lajolla[10],0.05, 0.95,'CARBON_L: Carbon, Live Above Ground (tons/acre)'],
+                          ['CARBON_D',palettes.crameri.lajolla[25],0.05, 0.95,'CARBON_D: Carbon, Standing Dead (tons/acre)', 'Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) / 2 /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=2) AND ((TREE.DIA)>=5) AND ((TREE.STANDING_DEAD_CD)=1))'],
+                          ['CARBON_DWN',palettes.crameri.lajolla[25],0.05, 0.95,'CARBON_DWN: Carbon, Down Dead (tons/acre)', 'Carbon (tons per acre) of woody material >3 inches in diameter on the ground, and stumps and their roots >3 inches in diameter. Estimated from models based on geographic area, forest type, and live tree carbon density (Smith and Heath 2008).'],
+                          ['CARBON_L',palettes.crameri.lajolla[10],0.05, 0.95,'CARBON_L: Carbon, Live Above Ground (tons/acre)', 'Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) / 2 /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1))'],
                           
                           // stand density
-                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'QMD_RMRS: Stand Quadratic Mean Diameter (in)'],
-                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)'],
+                          ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'QMD_RMRS: Stand Quadratic Mean Diameter (in)', 'Rocky Mountain Research Station. The quadratic mean diameter, or the diameter of the tree of average basal area, on the condition. Based on live trees ≥1.0 inch d.b.h./d.r.c. Only collected by certain FIA work units.'],
+                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)', 'Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.'],
                         
                           // live tree variables
-                          ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'STANDHT: Height of Dominant Trees (ft)'],
-                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'BALIVE: Live Tree Basal Area (ft²)'] 
+                          ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'STANDHT: Height of Dominant Trees (ft)', 'Derived from the Forest Vegetation Simulator.'],
+                          ['BALIVE',palettes.crameri.bamako[50],0.05,0.95,'BALIVE: Live Tree Basal Area (ft²)', 'Basal area in square feet per acre of all live trees ≥1.0 inch d.b.h./d.r.c. sampled in the condition.'] 
                         ];
 
   var ordinalAttrs = [
                           
-                          ['STDSZCD',palettes.custom.standsize[4],0,1,'STDSZCD: Algorithm Stand-Size Class Code'], // ranges from 1-5
-                          ['FLDSZCD',palettes.custom.fieldsize[6],0,1,'FLDSZCD: Field Stand-Size Class Code'], // ranges from 0-5
+                          ['STDSZCD',palettes.custom.standsize[4],0,1,'STDSZCD: Algorithm Stand-Size Class Code', 'A classification of the predominant (based on stocking) diameter class of live trees within the condition assigned using an algorithm.'], // ranges from 1-5
+                          ['FLDSZCD',palettes.custom.fieldsize[6],0,1,'FLDSZCD: Field Stand-Size Class Code', 'Field-assigned classification of the predominant (based on stocking) diameter class of live trees within the condition.'], // ranges from 0-5
 
   ]
 
   var percentAttrs = [    // have two attributes: palette and name. default range is 0-100
-                          ['GSSTK',palettes.crameri.bamako[50],'GSSTK: Growing-Stock Stocking (percent)'],
-                          ['ALSTK',palettes.crameri.bamako[50],'ALSTK: All-Live-Tree Stocking (percent)'],
-                          ['CANOPYPCT',palettes.crameri.bamako[50],'CANOPYPCT: Live Canopy Cover (percent)'],
+                          ['GSSTK',palettes.crameri.bamako[50],'GSSTK: Growing-Stock Stocking (percent)', 'The sum of stocking percent values of all growing-stock trees on the condition.'],
+                          ['ALSTK',palettes.crameri.bamako[50],'ALSTK: All-Live-Tree Stocking (percent)', 'The sum of stocking percent values of all live trees on the condition.'],
+                          ['CANOPYPCT',palettes.crameri.bamako[50],'CANOPYPCT: Live Canopy Cover (percent)', 'Derived from the Forest Vegetation Simulator.'],
 
   ]       
   
@@ -3457,7 +3457,7 @@ function getThematicAttr_Colors(attr){
   // Specify the palette and the legend dictionary with the unique names and colors
   viz['palette']=palette;
   viz['classLegendDict'] = dict(zip(uniqueNames,colors));
-  viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+  viz['title']=`${attr[2]} || ${attr[3]}`;
   
   // Add the layer to the map
   Map2.addLayer(attrImg,viz,attr[2],visible);
@@ -3485,7 +3485,7 @@ function getThematicAttr_Colors(attr){
     viz['min'] = parseInt(quantile(uniqueValues,attr[2]));
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
     viz['palette'] = attr[1];
-    viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
+    viz['title']=`${attr[4]} || ${attr[5]}`;
     Map2.addLayer(attrImg,viz,attr[4],false);
   }
 
@@ -3515,7 +3515,7 @@ function getThematicAttr_Colors(attr){
       var removed_nulls_palette = removeItemAll(JSON.parse(JSON.stringify(attr[1])), '000000')
       console.log(removed_nulls_palette)
       viz['classLegendDict'] = dict(zip(uniqueValues,removed_nulls_palette));
-      viz['title']=`${attr[4]} (${attr[0]}) attribute image layer`;
+      viz['title']=`${attr[4]} || ${attr[5]}`;
       
       Map2.addLayer(attrImg,viz,attr[4],false);
     }
@@ -3553,7 +3553,7 @@ function getThematicAttr_Colors(attr){
     viz['min'] = 0;
     viz['max'] = 100;
     viz['palette'] = attr[1];
-    viz['title']=`${attr[2]} (${attr[0]}) attribute image layer`;
+    viz['title']=`${attr[2]} || ${attr[3]}`;
     Map2.addLayer(attrImg,viz,attr[2],false);
 
   }
