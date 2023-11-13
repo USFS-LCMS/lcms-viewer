@@ -411,7 +411,7 @@ button {
   position:absolute;
   top:0rem;
   right:0%;
-  max-width:35rem;
+  /* max-width:35rem; */
   max-height:100%;
   overflow-y:auto;
   overflow-x:auto;

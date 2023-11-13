@@ -155,7 +155,7 @@ const staticTemplates = {
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
 	sidebarLeftToggler:`<img style='height:3rem' title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
     sidebarLeftContainer: `
-						<nav onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
+						<nav onclick = "$('#study-area-list').hide();" class = ' col-sm-6 col-md-4 col-lg-3  sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 
 					        <header id = 'sidebar-left-header'>
                                 
@@ -617,7 +617,7 @@ const staticTemplates = {
                                 <div id='dashboard-results-div22' class='bg-black dashboard-results'></div>
                             </div>`,
         dashboardHighlightsDisclaimerText:`LCMS Dashboard Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK (sm.fs.lcms@usda.gov)`,
-        dashboardResultsContainer:`<div id='dashboard-results-container-right' class='dashboard-highlights bg-black col-sm-7 col-md-3 col-xl-3'>
+        dashboardResultsContainer:`<div id='dashboard-results-container-right' class='dashboard-highlights bg-black  col-md-6 col-lg-4 '>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' id = 'dashboard-results-sidebar-toggler' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <div id = 'dashboard-download-button-container'>
             <button class=' dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' title='Click to download PDF report containing the summaries currently being displayed.' >
@@ -1986,7 +1986,7 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
 //Functions to run the walk through
 function getWalkThroughCollapseContainerID(){
     var collapseContainer;
-    if($(window).width() < 576){collapseContainer = 'sidebar-left' }
+    if($(window).width() < 768){collapseContainer = 'sidebar-left' }
     else{collapseContainer = 'legendDiv';}
     return collapseContainer
 }

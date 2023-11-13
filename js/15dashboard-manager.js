@@ -984,6 +984,8 @@ function updateDashboardHighlights(limit=10){
 
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
+	let lastScrollTop = dashboardScrollTop[dashboardResultsLocation];
+	turnOffScrollMonitoring();
 	// console.log(`Scroll left coord: ${lastScrollLeft}`)
 	// $('.dashboard-results').empty();
 	// $('#dashboard-results-div').empty();
@@ -1009,6 +1011,8 @@ function updateDashboardCharts(){
 		
 		
 			// $( ".dashboard-results" ).scrollLeft(lastScrollLeft);
+			$(dashboardScrollDict[dashboardResultsLocation]).scrollTop(lastScrollTop);
+			turnOnScrollMonitoring();
 	}
 	// else{
 	// 	resizeDashboardPanes();
@@ -1396,11 +1400,10 @@ function makeDashboardReport(){
     
     
 }
-var dashboardResultsLocation ='right';
 
 function moveDashboardResults(location='left'){
 	if(dashboardResultsLocation !== location){
-		var dashboardMoveLocationDict = {'right':'dashboard-results-list','left':'sidebar-left'};
+		
 		var outLoc = dashboardMoveLocationDict[location]
 		
 		moveCollapse('charts-collapse',outLoc);
@@ -1414,6 +1417,8 @@ function moveDashboardResults(location='left'){
 			moveElement('#dashboard-download-button','#sidebar-left-header');
 		}
 		dashboardResultsLocation = location;
+		turnOffScrollMonitoring();
+		turnOnScrollMonitoring();	
 	}
 	updateDashboardCharts();
 }
