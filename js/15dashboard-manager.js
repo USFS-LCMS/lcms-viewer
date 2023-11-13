@@ -182,7 +182,7 @@ function dashboardBoxSelect(){
 					selectedFeatures.evaluate((f,failure)=>{
 						if(failure !== undefined){
 							console.log(`Failure: ${failure}`);
-						}
+						}else{console.log(f)}
 						
 						let update=false;
 						f.features.map(feat=>{
@@ -204,13 +204,14 @@ function dashboardBoxSelect(){
 					})
 					
 				});
-			}else{
-				updateProgress('.progressbar',100);
-				$('#loading-spinner-logo').hide();
-				$('#summary-area-selection-radio').css('pointer-events','auto');
-				if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
+			}
+			// else{
+			// 	updateProgress('.progressbar',100);
+			// 	$('#loading-spinner-logo').hide();
+			// 	$('#summary-area-selection-radio').css('pointer-events','auto');
+			// 	if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
 				
-				}
+			// 	}
 			
 		});
 	}
@@ -411,13 +412,13 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		// let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2); 
 		// let plotWidth=plotHeight*1.5;
 		
-		let plotWidth = $('#charts-collapse-label-charts-collapse-div').width()-2;//chartHeight*1.5;
+		let plotWidth = $('#charts-collapse-div').width()-2;//chartHeight*1.5;
 		let plotHeight=parseInt(plotWidth/1.3);//$('#dashboard-results-div').height()-convertRemToPixels(1);
 	
 		var layout = {
 		title: `<b>${name}</b>`,
 		font: {
-			size: 8
+			size: 10
 		},
 		margin: {
 			l: 15,
@@ -558,7 +559,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
       $(`#${chartID}`).remove(); 
 
 	
-	let chartWidth = $('#charts-collapse-label-charts-collapse-div').width()-2;//convertRemToPixels(35)-5;//chartHeight*1.5;
+	let chartWidth = $('#charts-collapse-div').width()-2;//convertRemToPixels(35)-5;//chartHeight*1.5;
 	let chartHeight=parseInt(chartWidth/1.5);//$('#dashboard-results-div').height()-convertRemToPixels(1);
 	$('#charts-collapse-div').append(`<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`);
       // $('#chartDiv').append('<hr>');
@@ -987,8 +988,8 @@ function updateDashboardCharts(){
 	// $('.dashboard-results').empty();
 	// $('#dashboard-results-div').empty();
 	$('#charts-collapse-div').empty();
-	$('.dashboard-results-container').hide();
-	$('.dashboard-results-container').css('height','0rem');
+	// $('.dashboard-results-container').hide();
+	// $('.dashboard-results-container').css('height','0rem');
 
 	// $('.dashboard-results-container').hide();
 	let visible,chartModes;
@@ -997,9 +998,9 @@ function updateDashboardCharts(){
 	
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
 	if(dashboardLayersToChart.length>0){
-		$('.dashboard-results-container').show();
-		$('.dashboard-results-container').css('height',dashboardResultsHeight);
-		resizeDashboardPanes();
+		// $('.dashboard-results-container').show();
+		// $('.dashboard-results-container').css('height',dashboardResultsHeight);
+		// resizeDashboardPanes();
 		chartWhich.map((w)=>{
 			dashboardLayersToChart.map(layer=>{
 				chartModes.map(chartMode=>makeDashboardCharts(layer,w,chartMode));
@@ -1007,10 +1008,11 @@ function updateDashboardCharts(){
 		})
 		
 		
-			$( ".dashboard-results" ).scrollLeft(lastScrollLeft);
-	}else{
-		resizeDashboardPanes();
+			// $( ".dashboard-results" ).scrollLeft(lastScrollLeft);
 	}
+	// else{
+	// 	resizeDashboardPanes();
+	// }
 	
 	// setTimeout(makeDashboardReport(),1000);
 	
@@ -1079,7 +1081,7 @@ class report {
             this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
 			this.currentY += 5;
 			this.doc.setFontSize(10);
-            this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: CONUS and SEAK v2022.8, PRUSVI v2020.6 | Dashboard Version: 2023.1`);
+            this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: v2022.8 | Dashboard Version: 2023.2`);
             // doc.setFont(undefined,'bold');
             // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
             // doc.setFont(undefined,'normal');
@@ -1406,13 +1408,14 @@ function moveDashboardResults(location='left'){
 
 		if(location=='right'){
 			$('#dashboard-results-container-right').show();
+			moveElement('#dashboard-download-button','#dashboard-download-button-container');
 		}else{
 			$('#dashboard-results-container-right').hide();
+			moveElement('#dashboard-download-button','#sidebar-left-header');
 		}
-		updateDashboardCharts();
 		dashboardResultsLocation = location;
 	}
-    
+	updateDashboardCharts();
 }
 function toggleDashboardResultsLocation(){
 	if(dashboardResultsLocation==='right'){

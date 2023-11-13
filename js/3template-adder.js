@@ -231,13 +231,15 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   
   $('#sidebar-left-header').append(staticTemplates.dashboardProgressDiv);
   
-  addCollapse('dashboard-results-list','charts-collapse-label','charts-collapse-div','CHARTS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Line chart LCMS summary results');
+  addCollapse('dashboard-results-list','charts-collapse-label','charts-collapse-div','CHARTS',`<i role="img" class="fa fa-bar-chart mr-1" aria-hidden="true"></i>`,true,null,'Line chart LCMS summary results');
 
-  addCollapse('dashboard-results-list','tables-collapse-label','tables-collapse-div','TABLES',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,true,null,'Tabular LCMS summary results');
+  addCollapse('dashboard-results-list','tables-collapse-label','tables-collapse-div','TABLES',`<i role="img" class="fa fa-list mr-1" aria-hidden="true"></i>`,true,null,'Tabular LCMS summary results');
 
   $('#tables-collapse-div').append(staticTemplates.dashboardHighlightsContainer);
+  
   $('#charts-collapse-div').removeClass('px-5');
   $('#tables-collapse-div').removeClass('px-5');
+  $('.plotly-chart').css('margin-left','');
   $('#charts-collapse-label').on('click',()=>{console.log('clicked');updateDashboardCharts();})
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS',`<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,false,null,'Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected');
   //addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
@@ -1329,7 +1331,7 @@ function resizeViewerPanes(){
 }
 
 function resizeDashboardPanes(){
-  // console.log('resized');
+  console.log('resized');
   let layerWidth = $('#layer-list-collapse-label-layer-list-collapse-div').width();//+5;
   let bottomHeight=$('.bottombar').height();
   let resultsHeight = $('#dashboard-results-container').height();
@@ -1364,7 +1366,13 @@ function resizeDashboardPanes(){
   };
  
   // $('.chart').css('height',$('#dashboard-results-container').height())
-  // if($(window).width() < 576){moveDashboardResults('left')}
+  try{
+    if($(window).width() < 768){moveDashboardResults('left')}
+    else if($(window).width() >= 768){moveDashboardResults('right')}
+  }catch(err){
+    console.log(err);
+  }
+  
   // $(document).ready(function(){resizeDashboardPanes()})
 }
 if(mode === 'lcms-dashboard'){
@@ -1376,9 +1384,9 @@ if(mode === 'lcms-dashboard'){
   if(!urlParams.showHighlightsBar){ $('#highlights-tables-container').hide()}
   moveCollapse('legend-collapse','sidebar-left')
 
-  resizeDashboardPanes();
+  // resizeDashboardPanes();
  
-  $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
+  // $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
   $('.panel-title').click((e)=>{setTimeout(()=>{resizeDashboardPanes()},500);});
   function addExpander(){
     var expander = {};

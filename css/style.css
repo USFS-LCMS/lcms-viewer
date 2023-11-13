@@ -424,11 +424,12 @@ button {
   margin:0.5rem;
 }
 .dashboard-download-button{
-  background-color: var(--deep-brown-100)!important;
-  margin-left:0.25rem;
+  background-color: var(--solid-black)!important;
+  margin-left:2.5rem;
+  margin-top:0.5rem;
   border-radius: 0.1rem;
   font-size: 0.75rem;
-  color:var(--deep-brown-10)!important;
+  color:var(--white)!important;
   font-family: 'Roboto';
   
   font-size:1rem;
@@ -642,11 +643,11 @@ div.dataTables_info{
   display: inline-block;
   height:100%;
   /* width:33rem; */
-  padding-top:0.5rem;
-  padding-bottom:0.5rem;
-  padding-left:0.5rem;
+  /* padding-top:0.5rem; */
+  /* padding-bottom:0.5rem; */
+  /* padding-left:0.5rem; */
   
-  padding-right:0.5rem;
+  /* padding-right:0.5rem; */
 }
 
 .lcms-change-table-columns td {
@@ -660,10 +661,10 @@ td{
   word-wrap:break-word;
 }
 
-.plotly-chart{
-  padding-top:0.75rem;
-  margin-left:0.5rem;
-}
+/* .plotly-chart{ */
+  /* padding-top:0.75rem; */
+  /* margin-left:0.5rem; */
+/* } */
 .plotly-chart-download{display: none;}
 
 

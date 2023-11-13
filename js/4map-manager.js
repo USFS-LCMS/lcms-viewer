@@ -2803,7 +2803,7 @@ function initialize() {
           if(staticTemplates.loadingModal[mode]===undefined){
             if(mode==='MTBS'){
               showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Creating'));
-            }else if(mode==='STORM' || mode === 'Bloom-Mapper' || mode === 'sequoia-view'){
+            }else if(mode==='STORM' || mode === 'Bloom-Mapper' || mode === 'sequoia-view' || mode === 'TreeMap'){
               showMessage('',staticTemplates.loadingModal['all']('logos_usda-fs_bn-dk-01.svg','Creating'));
             }else if(mode==='lcms-dashboard'){
             showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Loading','LCMS summary areas'));
