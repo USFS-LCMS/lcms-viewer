@@ -153,7 +153,7 @@ function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText,loadin
 const staticTemplates = {
 	map:`<section aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </section>`,
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
-	sidebarLeftToggler:`<img style='height:3rem' title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
+	sidebarLeftToggler:`<img  title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
     sidebarLeftContainer: `
 						<nav onclick = "$('#study-area-list').hide();" class = ' col-sm-6 col-md-4 col-lg-3  sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 
@@ -618,7 +618,7 @@ const staticTemplates = {
                             </div>`,
         dashboardHighlightsDisclaimerText:`LCMS Dashboard Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK (sm.fs.lcms@usda.gov)`,
         dashboardResultsContainer:`<div id='dashboard-results-container-right' class='dashboard-highlights bg-black  col-md-6 col-lg-4 '>
-        <img style='height:3rem;' title = 'Click to toggle highlights visibility' id = 'dashboard-results-sidebar-toggler' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
+        
         <div id = 'dashboard-download-button-container'>
             <button class=' dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' title='Click to download PDF report containing the summaries currently being displayed.' >
                     <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
@@ -628,10 +628,11 @@ const staticTemplates = {
         
         <div id = 'dashboard-results-list'></div>                            
                                     </div>`,
+        dashboardResultsToggler:`<img  title = 'Click to toggle results pane visibility' id = 'dashboard-results-sidebar-toggler' class='dashboard-results-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >`,
         dashboardHighlightsContainer:`<div id='highlights-tables-container'>
         <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
         <div class="tab-content" id="highlights-table-divs"></div>
-        <div id ='highlights-disclaimer-div' style='display:none;'>
+        <div id ='highlights-disclaimer-div' >
         <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
     </p></div>
     </div>`,                          

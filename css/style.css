@@ -287,7 +287,13 @@ th{font-weight:  600!important}
 button {
   -webkit-appearance: button;
 }
-
+.dashboard-results-toggler{
+  position:absolute;
+  top:0%;
+  margin-top:-0.2rem;
+  z-index: 5;
+  height:3rem;
+}
 .sidebar-toggler{
   position:absolute;
   top:0%;

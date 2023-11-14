@@ -239,7 +239,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	var names = {'Change':["Stable","Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
 				'Land_Cover':["Trees",
 	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
-				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Rangeland or Pasture","Other","Non-Processing Area Mask"]
+				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
 				}
 	var lcNamesSimpleIndices = {'Trees':[0,1,2,3,4], 'Tall-Shrubs':[5], 'Shrubs':[6,7,8], 'Grass-Forb-Herb':[9,10], 'Barren-or-Impervious':[11], 'Water':[13], 'Snow-or-Ice':[12]}
 	var lcFieldsHidden = [];
@@ -1411,9 +1411,11 @@ function moveDashboardResults(location='left'){
 
 		if(location=='right'){
 			$('#dashboard-results-container-right').show();
+			$('#dashboard-results-sidebar-toggler').show();
 			moveElement('#dashboard-download-button','#dashboard-download-button-container');
 		}else{
 			$('#dashboard-results-container-right').hide();
+			$('#dashboard-results-sidebar-toggler').hide();
 			moveElement('#dashboard-download-button','#sidebar-left-header');
 		}
 		dashboardResultsLocation = location;

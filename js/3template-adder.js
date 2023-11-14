@@ -276,12 +276,12 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
       luHighlightClasses : {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     },
     forestToDeveloped:{
-      title: 'Forest to Developed',
-      hoverText:'Forest land changing to developed',
+      title: 'Forest and Agriculture to Developed',
+      hoverText:'Forest and Agriculture land changing to developed',
       productHighlightClasses:{"Land-Cover": false,"Land-Use": true,"Change":false},
       changeHighlightClasses : {"Stable": false,"Slow-Loss": false,"Fast-Loss": false,"Gain": false},
       lcHighlightClasses : {"Trees": false,"Tall-Shrubs": false,"Shrubs": false,"Grass-Forb-Herb": false,"Barren-or-Impervious": false,'Snow-or-Ice': false,"Water": false},
-      luHighlightClasses : {"Agriculture": false,"Developed": true,"Forest": true,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+      luHighlightClasses : {"Agriculture": true,"Developed": true,"Forest": true,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
     },
     waterLoss:{
       title: 'Water Change',
@@ -442,7 +442,7 @@ if(mode === 'LCMS-pilot' || mode === 'LCMS'){
   $('#advanced-dashboard-params-div').append('<hr>');
   // default LU products at initial load
   if(urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined){
-    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,"Rangeland-or-Pasture": false,'Other':false}
+    urlParams.luHighlightClasses = {"Agriculture": false,"Developed": false,"Forest": false,"Non-Forest-Wetland": false,'Other':false,"Rangeland-or-Pasture": false}
   }
   addCheckboxes('advanced-dashboard-params-div','lu-highlights-radio','Land Use Classes','luHighlightClasses',urlParams.luHighlightClasses);
   $('#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio').change( ()=>{
@@ -1372,11 +1372,13 @@ function resizeDashboardPanes(){
   }catch(err){
     console.log(err);
   }
-  
+  $('.dashboard-results-toggler').css('right',`${($('#dashboard-results-container-right').width()-convertRemToPixels(3))/$('body').width()*100}%`)
   // $(document).ready(function(){resizeDashboardPanes()})
 }
 if(mode === 'lcms-dashboard'){
   
+  $('body').append(staticTemplates.dashboardResultsToggler);
+  $('.dashboard-results-toggler').css('right',`${($('#dashboard-results-container-right').width()-convertRemToPixels(3))/$('body').width()*100}%`)
   var dashboardScrollLeft = 0;
   var dashboardScrollTop = {'left':0,'right':0};
   if(urlParams.showHighlightsBar === undefined || urlParams.showHighlightsBar === null){
@@ -1522,9 +1524,11 @@ function toggleSidebar(){
   
 };
 function toggleHighlights(){
+  turnOffScrollMonitoring();
   $('#dashboard-results-list').toggle('collapse');
   setTimeout(()=>{resizeDashboardPanes();
-    urlParams.showHighlightsBar = $('#dashboard-results-list').css("display")!=='none'
+    urlParams.showHighlightsBar = $('#dashboard-results-list').css("display")!=='none';
+    turnOnScrollMonitoring();
   },500);
 }
 if(urlParams.showSidebar === false){
