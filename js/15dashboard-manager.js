@@ -1,6 +1,20 @@
+const hoverFeatureStyling = {
+	strokeColor:'#00FFFF',
+	fillColor:'#00FFFF',
+	fillOpacity:0.3,
+	strokeOpacity: 1,
+	strokeWeight: 3
+}
+const notHoverFeatureStyling = {
+	strokeColor:'#0FF',
+	fillColor:'#0FF',
+	fillOpacity:0.2,
+	strokeOpacity: 0,
+	strokeWeight: 0,
+};
 function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 	// console.log(r);
-	let featureName = r.properties[layer.viz.dashboardFieldName].toString();
+	let featureName = r.properties[layer.viz.dashboardFieldName].toString().replace(/[^A-Za-z0-9]/g, "-");
 	// console.log(featureName)
 	if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
 		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
@@ -11,11 +25,6 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 				c.coordinates.map(c2=>{
 					let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
 					layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
-						strokeColor:'#0FF',
-						fillColor:'#0FF',
-						fillOpacity:0.15,
-						strokeOpacity: 0,
-						strokeWeight: 0,
 						path:polyCoordsT,
 						zIndex:-999
 					}));
@@ -40,7 +49,9 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 		
 		
 		
-		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
+		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{
+			p.setOptions(notHoverFeatureStyling)
+			p.setMap(map)});
 		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{
 			if(deselectOnClick){
 				google.maps.event.addListener(p, "click", (event)=>{
@@ -615,7 +626,9 @@ var currentHighlightsMoveID=1;
 if(urlParams.currentlySelectedHighlightTab == null || urlParams.currentlySelectedHighlightTab == undefined){
 	urlParams.currentlySelectedHighlightTab;
  }
-function getHighlightsTabListener(){return $('a.nav-link').click(e=>{urlParams.currentlySelectedHighlightTab=e.currentTarget.id})
+function getHighlightsTabListener(){return $('a.nav-link').click(e=>{
+	console.log(e);
+	urlParams.currentlySelectedHighlightTab=e.currentTarget.id})
 }
 
 function updateDashboardHighlights(limit=10){
@@ -644,6 +657,9 @@ function updateDashboardHighlights(limit=10){
 			// let fc = f.queryItem.filterBounds(eeBoundsPoly);
 			fc= Object.values(f.dashboardSelectedFeatures).map(f=>f.geojson);
 			let fieldName = f.viz.dashboardFieldName;
+			// let featureName = f.properties[fieldName].toString();
+			
+			
 			// console.log(f.selectedTSData.size().getInfo())
 			
 			
@@ -665,7 +681,7 @@ function updateDashboardHighlights(limit=10){
 			// 					f = ee.Feature(f);
 								let props = f.properties;
 								// console.log(ts_class_name)
-								// console.log(props)
+								
 								let tsProps = props[ts_class_name].split(',');
 								// console.log(tsProps)
 
@@ -829,7 +845,7 @@ function updateDashboardHighlights(limit=10){
 										${urlParams.endYear} ${chartFormatDict[chartFormat].label}
 									</th>
 									
-									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
+									<th title ="Change between '${startYrAbbrv} and '${endYrAbbrv}">
 										Change ${chartFormatDict[chartFormat].label}
 									</th>
 									
@@ -887,7 +903,7 @@ function updateDashboardHighlights(limit=10){
 										
 										//   $(`#${navID}-boxplots`).append(`<div id='${navID}-boxplot-${rowI}'></div>`)
 										//   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
-										$(`#${navID}-table`).append(`<tr class = 'highlights-row' title= '${sigTitle}'>
+										$(`#${navID}-table`).append(`<tr id = '${f.id}----${tr[0].replace(/[^A-Za-z0-9]/g, "-")}' class = 'highlights-row' title= '${sigTitle}'>
 									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
 									<td class = 'highlights-entry ${sigClass}'>${(tr[1])} &plusmn ${(tr[3])}</td>
 									
@@ -980,6 +996,46 @@ function updateDashboardHighlights(limit=10){
 	}
 	resizeDashboardPanes();
 	// console.log(dashboardLayersToHighlight)
+	function getFeatures(id){
+		return layerObj[id.split('----')[0]].dashboardSelectedFeatures[id.split('----')[1]].polyList;
+	}
+	$(".dataTable.table>tbody>tr").on('mousemove', function (e) {
+		let highlightFeatures = getFeatures(e.currentTarget.id);
+		highlightFeatures.map(f=>{
+			f.setOptions(hoverFeatureStyling)
+		})
+		// console.log(highlightFeatures);
+
+	});
+	
+
+	// Any time the mouse leaves the table, get rid of any marker
+	$(".dataTable.table>tbody>tr").on('mouseleave',  function (e) {
+		let highlightFeatures = getFeatures(e.currentTarget.id);
+		highlightFeatures.map(f=>{
+			f.setOptions(notHoverFeatureStyling)
+		})
+	   					
+       });
+	$(".dataTable.table>tbody>tr").on('dblclick', function (e) {
+        console.log('double clicked');
+		let highlightFeatures = getFeatures(e.currentTarget.id);
+		// let lats = [];
+		// let lngs = [];
+		let bounds = new google.maps.LatLngBounds();
+		highlightFeatures.map(f=>{
+			let coords = f.getPath().getArray();
+			coords.map(coord=>{
+				// lats.push(coord.lat());
+				// lngs.push(coord.lng());
+				bounds.extend(coord);
+			})
+		});
+		// console.log(lats);
+		// console.log(lngs);
+		map.fitBounds(bounds)
+		// console.log( bounds.toJSON())
+    	});
 }
 
 function updateDashboardCharts(){
