@@ -413,6 +413,10 @@ button {
   padding:0;
  
 }
+.dashboard-row-hover{
+  background-color: var(--almost-transparent)!important;
+  box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.075);
+}
 .dashboard-highlights{
   position:absolute;
   top:0rem;

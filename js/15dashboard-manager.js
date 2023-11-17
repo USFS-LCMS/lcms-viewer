@@ -17,7 +17,7 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 	let featureName = r.properties[layer.viz.dashboardFieldName].toString().replace(/[^A-Za-z0-9]/g, "-");
 	// console.log(featureName)
 	if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
-		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
+		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[],'listeners':[]};
 	
 	
 		function getCoords(c){
@@ -56,12 +56,39 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 			if(deselectOnClick){
 				google.maps.event.addListener(p, "click", (event)=>{
 					console.log(`deselection clicked: ${event}`)
-					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{p.setMap(null);});
+					layer.dashboardSelectedFeatures[featureName].listeners.map(l=>google.maps.event.removeListener(l));
 					delete layer.dashboardSelectedFeatures[featureName];
 					updateDashboardCharts();
 					updateDashboardHighlights();
 				})
 			}
+			layer.dashboardSelectedFeatures[featureName].listeners.push(google.maps.event.addListener(p, "mouseover", (event)=>{
+				// console.log('mouseover: ')
+				
+				let selector = `#${urlParams.currentlySelectedHighlightTab.split('-tab')[0]}----${featureName}`;
+				// console.log(selector);
+				// console.log(event)
+				$(selector).addClass('dashboard-row-hover');
+				try{
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setOptions(hoverFeatureStyling));
+				}catch(err){
+					console.log(err);
+				}
+			}));
+			layer.dashboardSelectedFeatures[featureName].listeners.push(google.maps.event.addListener(p, "mouseout", (event)=>{
+				// console.log('mouseout: ')
+				let selector = `#${urlParams.currentlySelectedHighlightTab.split('-tab')[0]}----${featureName}`;
+				// console.log(selector);
+				$(selector).removeClass('dashboard-row-hover');
+				// console.log(event)
+				try{
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setOptions(notHoverFeatureStyling));
+				}catch(err){
+					console.log(err);
+				}
+				
+			}));
 			
 		});
 		
@@ -138,6 +165,7 @@ function clearAllSelectedDashboardFeatures(){
 	dashboardLayers.map(layer=>{
 		Object.keys(layer.dashboardSelectedFeatures).map(fn=>{
 			layer.dashboardSelectedFeatures[fn].polyList.map(p=>p.setMap(null));
+			layer.dashboardSelectedFeatures[fn].listeners.map(l=>google.maps.event.removeListener(l))
 			delete layer.dashboardSelectedFeatures[fn];
 		});
 	});
@@ -165,7 +193,7 @@ function dashboardBoxSelect(){
 		boxSelectID++;
 		const thisBoxSelectID=boxSelectID;
 		if(dashboardAreaSelectionMode==='View-Extent'){
-			geeBox = eeBoundsPoly;
+			geeBox = eeBoundsPoly.buffer(10000);
 		}else{
 			geeBox = ee.Geometry.Polygon(dragBox.dragBoxPath.map(c=>[c.lng,c.lat]));
 			dragBox.stopListening(false);
@@ -802,7 +830,7 @@ function updateDashboardHighlights(limit=10){
 									}
 									let clsID = cls.replaceAll('/','-');
 									clsID = clsID.replaceAll(' ','-');
-									let navID=`${f.legendDivID}-${k}-${clsID}`;
+									let navID=`${f.legendDivID}----${k}----${clsID}`;
 									// console.log(navID);
 									let isActive = '';
 									if(isFirst){isActive= ' show active'}
@@ -903,7 +931,7 @@ function updateDashboardHighlights(limit=10){
 										
 										//   $(`#${navID}-boxplots`).append(`<div id='${navID}-boxplot-${rowI}'></div>`)
 										//   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
-										$(`#${navID}-table`).append(`<tr id = '${f.id}----${tr[0].replace(/[^A-Za-z0-9]/g, "-")}' class = 'highlights-row' title= '${sigTitle}'>
+										$(`#${navID}-table`).append(`<tr id = '${navID}----${tr[0].replace(/[^A-Za-z0-9]/g, "-")}' class = 'highlights-row' title= '${sigTitle}'>
 									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
 									<td class = 'highlights-entry ${sigClass}'>${(tr[1])} &plusmn ${(tr[3])}</td>
 									
@@ -990,14 +1018,19 @@ function updateDashboardHighlights(limit=10){
 	// }
 	
 	// $('#highlights-table-divs').prepend(staticTemplates.dashboardDownloadReportButton)
+	
 	getHighlightsTabListener();
-	if(urlParams.currentlySelectedHighlightTab !==undefined){
+	if(urlParams.currentlySelectedHighlightTab !== null && urlParams.currentlySelectedHighlightTab !==undefined){
 		$(`#${urlParams.currentlySelectedHighlightTab}`).click();
+	}else{
+		if($('a.nav-link').length > 0){
+			urlParams.currentlySelectedHighlightTab = $('a.nav-link')[0].id;
+		}
 	}
 	resizeDashboardPanes();
 	// console.log(dashboardLayersToHighlight)
 	function getFeatures(id){
-		return layerObj[id.split('----')[0]].dashboardSelectedFeatures[id.split('----')[1]].polyList;
+		return layerObj[id.split('----')[0]].dashboardSelectedFeatures[id.split('----')[3]].polyList;
 	}
 	$(".dataTable.table>tbody>tr").on('mousemove', function (e) {
 		let highlightFeatures = getFeatures(e.currentTarget.id);

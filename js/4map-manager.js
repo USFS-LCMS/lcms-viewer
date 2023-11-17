@@ -2755,14 +2755,10 @@ function initialize() {
       trackView();
       
       // console.log('bounds changed');
-      var bounds = map.getBounds();
-      var keys = Object.keys(bounds);
-      var keysX = Object.keys(bounds[keys[0]]);
-      var keysY = Object.keys(bounds[keys[1]]);
-      // console.log('b');console.log(bounds);
+      var coords = Object.values(map.getBounds().toJSON());
       updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation);
       try{
-        eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+        eeBoundsPoly = ee.Geometry.Rectangle([coords[1],coords[0],coords[3],coords[2]],null,false);
       }
       catch(err){
         const x = 1;
