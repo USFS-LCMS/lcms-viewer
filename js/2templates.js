@@ -281,10 +281,10 @@ const staticTemplates = {
                             </p>
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
-                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
-                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-                        </div>`
+                                <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                                <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
+                                <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+                            </div>`
                 ),
                 'lcms-dashboard':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
@@ -558,7 +558,7 @@ const staticTemplates = {
     <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
                             <a class="intro-modal-links" href="https://academic.oup.com/jof/article/120/6/607/6701541" target="_blank" title="Open 2016 TreeMap documentation">METHODS</a>
-                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.gtactreemap@usda.gov" >HELPDESK/FEEDBACK</a> 
                         </div>
 
 </div>`,
@@ -661,8 +661,8 @@ const staticTemplates = {
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(0.8)}"  alt="GEE logo image">
         
-        <div class="progressbar" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
-            <span style="width: 0%;">0%</span>
+        <div class="progressbar progress-pulse" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
+            <span  style="width: 0%;">0%</span>
         </div>
         <i  onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' title="Click to clear all selected features from this layer" class="fa fa-eraser eraser-all" ></i>
         

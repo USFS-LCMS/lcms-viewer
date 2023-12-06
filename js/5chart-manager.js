@@ -291,8 +291,8 @@ var  getQueryImages = function(lng,lat){
 				var tValue = JSON.stringify(value[mainKey]);
 				if(q.queryDict !== null && q.queryDict !== undefined){
 					tValue = q.queryDict[parseInt(tValue)]
-				}else if(!!(tValue % 1)){
-					tValue = tValue.toFixed(4);
+				}else{
+					tValue = smartToFixed(tValue);
 				  }
 				
 				$('#'+containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
@@ -307,10 +307,12 @@ var  getQueryImages = function(lng,lat){
 					var v = value[kt];
 					
 					if(Array.isArray(v)){
-
+						// Limit precision
+						v = arraySmartToFixed(v);
 						v = JSON.stringify(v);
-					}else if(!!(v % 1) && v !== null){
-						v = v.toFixed(4);
+						
+					}else if(!Number.isInteger(v) && v !== null){
+						v = smartToFixed(v);
 					}else if(q.queryDict !== null && q.queryDict !== undefined){
 								var t = q.queryDict[parseInt(v)];
 								if(t !== undefined){v = t}
@@ -338,9 +340,10 @@ var  getQueryImages = function(lng,lat){
 				// Configure best way of showing given labels for queried pixel
 				// This tries to avoid over-crowding of labels that happens when there are many long labels
 				// within the queried range of values
-				var yValues = value.table[0].y;
+				var yValues = value.table[0].y.filter(n=>n!==null);
 				var yMin = yValues.min();
 				var yMax = yValues.max();
+				
 				var allYValues = range(yMin,yMax+1);
 				var allYLabels = allYValues.map(v=>q.queryDict[v]);
 				var yLabelMaxLinesT = yLabelMaxLines;
@@ -399,6 +402,7 @@ var  getQueryImages = function(lng,lat){
     			},
     			xaxis: {
     				tickangle:45,
+					tickformat: q.xTickDateFormat,
     				tickfont:{size:yLabelFontSize},
 				    title: {
 				      text: value.xLabel,
@@ -480,14 +484,19 @@ var  getQueryImages = function(lng,lat){
 			ga('send', 'event', mode, 'pixelQuery-'+q.type, q.name);
 			if(q.type === 'geeImage'){
 				var img = ee.Image(q.queryItem);
-				img.reduceRegion(ee.Reducer.first(),clickPt,30,'EPSG:5070',null,true,1e13,1).evaluate(function(values){
+				img.reduceRegion(ee.Reducer.first(),clickPt,scale,crs,transform,true,1e13,4).evaluate(function(values){
 					keyI++;
 					
 					makeQueryTable(values,q,k);
 				})
 			}else if(q.type === 'geeImageCollection'){
 				var dateFormat = q.queryDateFormat;
-				if(dateFormat===null||dateFormat===undefined){dateFormat = 'YYYY-MM-dd'}
+				// console.log(`Query date format: ${dateFormat}`);
+				if(dateFormat===null||dateFormat===undefined){dateFormat = defaultQueryDateFormat}
+				q.xTickDateFormat = null;
+				if(dateFormat.indexOf('HH:mm')>-1){
+					q.xTickDateFormat = '%Y-%m-%d\n%H:%M';
+				}
 				var c = ee.ImageCollection(q.queryItem);
 				var plotBounds = clickPt.buffer(plotRadius).bounds();
 				function getCollectionValues(values){
@@ -530,7 +539,7 @@ var  getQueryImages = function(lng,lat){
 						var tableList = yColumnNames.map(function(c,i){
 							return {
 							  x: xColumn,
-							  y: arrayColumn(yColumns,i),
+							  y: arrayColumn(yColumns,i).map(smartToFixed),
 							  type: 'scatter',
 							  name:c
 							}
@@ -548,18 +557,87 @@ var  getQueryImages = function(lng,lat){
 					c = c.sort('system:time_start').map(function(img){return img.set('system:time_start',img.date().format(dateFormat))});
 				};
 				
-				var getRegionCall = c.getRegion(plotBounds,scale,crs,transform);
-				getRegionCall.evaluate(function(values,failure){
-					// console.log('values');
-					console.log(values);
-					if(values !== undefined && values !== null){
-						getCollectionValues(values);
-					}else{
+				// var getRegionCall = c.getRegion(plotBounds,scale,crs,transform);
+				// getRegionCall.evaluate(function(values,failure){
+				// 	// console.log('values');
+				// 	console.log(values);
+				// 	if(values !== undefined && values !== null){
+				// 		getCollectionValues(values);
+				// 	}else{
+				// 		keyI++;
+				// 		makeQueryTable(null,q,k);
+				// 	}
+				// 	if(failure !== undefined && failure !== null){showMessage('Error',failure)}
+				// });
+
+				var cT = c.filterBounds(clickPt);
+				var anyImages = cT.limit(1).size().getInfo()>0;
+				if(anyImages){
+					var dateIDs = ee.List(cT.toList(10000,0).map(img=>ee.List([ee.Image(img).id(),ee.Image(img).get('system:time_start')])));
+				
+					var cTBns = cT.first().bandNames();
+					var table = cT.toBands().reduceRegion(ee.Reducer.firstNonNull(),clickPt,scale,crs,transform,true,1e13,4)
+					var allTables = ee.Dictionary({'table':table,'bandNames':cTBns,'dateIDs':dateIDs})
+					allTables.evaluate(function(values,failure){
+						
 						keyI++;
-						makeQueryTable(null,q,k);
-					}
+						if(values !== undefined && values !== null){
+							// console.log(values);
+							values['id_date_lookup'] = toDict(arrayColumn(values.dateIDs,0),arrayColumn(values.dateIDs,1));
+							values['ids'] = arrayColumn(values.dateIDs,0);
+							// console.log(values);
+
+							var header = ['id','date'];
+							values.bandNames.map(bandName=>{header.push(bandName)})
+							var out_table = [];
+							values.ids.map(id=>{
+								
+								var date = values['id_date_lookup'][id];
+								var row = [id,date];
+								// console.log(date)
+								values.bandNames.map(bandName=>{
+									var v = values.table[id+'_'+bandName];
+									row.push(smartToFixed(v));
+								});
+								var allNull = row.slice(2).filter(n=>n!==null).length==0;
+								if(!allNull){
+									out_table.push(row);
+								}
+							});
+							// var yColumns = ee.Image(c.first()).bandNames().getInfo();
+							var yColumnNames = 	header.slice(2);
+							var xLabel = 'Time';
+							var xColumn = arrayColumn(out_table,1);
+							if(xColumn.indexOf(null)>-1){
+								xColumn = arrayColumn(out_table,0);
+								xLabel = 'ID';
+							}
+							// console.log(xColumn);
+							
+							// console.log(yColumnNames);
+							// yColumns = out_table.map(function(v){return v.slice(4)});
+							var tableList = yColumnNames.map(function(c,i){
+								return {
+								x: xColumn,
+								y: arrayColumn(out_table,i+2),
+								type: 'scatter',
+								name:c
+								}
+							})
+							
+							makeQueryTable({table:tableList,xLabel:xLabel},q,k);
+							// console.log(arrayColumn(out_table,2));
+							// console.log(out_table);
+							// console.log(lngLat);
+							// console.log(failure);
+						}else{
+							
+						}
+					
 					if(failure !== undefined && failure !== null){showMessage('Error',failure)}
+					
 				})
+			}else{keyI++;makeQueryTable(null,q,k);}
 				// c.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){keyI++;makeQueryTable(value,q,k);})
 			}else if(q.type === 'geeVectorImage' || q.type === 'geeVector'){
 				try{
@@ -1609,7 +1687,7 @@ function getImageCollectionValuesForCharting(pt){
 	var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 	var tryCount = 2;
 	// print(icT.getRegion(pt.buffer(plotRadius),plotScale))
-	try{var allValues = icT.getRegion(pt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate();
+	try{var allValues = icT.getRegion(pt,scale,crs,transform).evaluate();
 		print(allValues)
 		return allValues}
 	catch(err){showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Charting error',err.message)};//reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}

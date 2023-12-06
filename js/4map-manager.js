@@ -907,7 +907,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   }
 
   // Set up query collection
-  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name}; 
+  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name,'queryDateFormat':viz.queryDateFormat}; 
 
   //Get all the individual layers' sliders
   timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
@@ -1555,6 +1555,10 @@ function mp(){
   };
   this.centerObject = function(fc){
     centerObject(fc);
+  }
+  this.turnOnInspector = function(){
+    $('#query-label').click();
+  
   }
 }
 var Map2 = new mp();
@@ -2788,7 +2792,12 @@ function initialize() {
 	 // ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
     //Initialize GEE
     
-  
+    function loadGEELibraries(){
+      function loadCDL(){
+        loadJS("./js/changeDetectionLib.js", true,eeInitSuccessCallback)
+      }
+      loadJS("./js/getImagesLib.js", true,loadCDL)
+    }
     function eeInitSuccessCallback(){
       //Set up the correct GEE run function
       geeAuthenticated = true;
@@ -2881,24 +2890,27 @@ function initialize() {
       var loaded = false;
       var loadTryCount = 0;
       var maxLoadTryCount = 2;
+      var geeRunError;
       function loadRun(){
         try{
             run();
             loaded = true; 
           }catch(err){
+            geeRunError = err;
             console.log(err);
-            console.log('Failed to load GEE run function. Waiting 5 seconds to retry');
+            console.log('Failed to load GEE run function. Waiting 1 second   to retry');
             loadTryCount++;
+            
           }
 
       }
       while(loaded===false && loadTryCount < maxLoadTryCount){
         loadRun();
         if(loaded===false){
-          sleepFor(3000);
+          sleepFor(1000);
         }
       }
-    
+      
       setupAreaLayerSelection();
       // setupFSB();
       //Bring in plots of they're turned on
@@ -2914,6 +2926,10 @@ function initialize() {
           $('#intro-modal-loading-div').hide();
           $('#summary-spinner').hide();
           
+        };
+
+        if(!loaded){
+          showMessage('GEE Script Error',geeRunError);
         };
       // }
       if(mode === 'lcms-dashboard'){
@@ -2957,7 +2973,9 @@ function initialize() {
   var initCount = 1;
   function eeInit(){
     console.log(`Initializing GEE try number: ${initCount}`)
-    ee.initialize(authProxyAPIURL,geeAPIURL,()=>{eeInitSuccessCallback()},(failure)=>{eeInitFailureCallback(failure)});
+    ee.initialize(authProxyAPIURL,geeAPIURL,()=>{
+      loadGEELibraries()},
+    (failure)=>{eeInitFailureCallback(failure)});
     initCount++;
   }
   eeInit();

@@ -454,7 +454,8 @@ pixelChartCollections['ccdcTS'] =  {
 // Map2.addLayer(CCDCchange.gainYears.reduce(ee.Reducer.max()),{min:startYear,max:endYear,palette:gainYearPalette},'CCDC Gain Year',false);
 // Map2.addLayer(CCDCchange.gainMags.reduce(ee.Reducer.max()),{min:1000,max:3000,palette:gainMagPalette},'CCDC Gain Mag',false);
 
-Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir1,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+// Map2.addTimeLapse(composites,{min:500,max:[4500,6500,4500],gamma:1.6,bands:'swir1,nir,red',years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
+Map2.addTimeLapse(composites,{bands:"red,green,blue",max: [0.2*10000, 0.2*10000, 0.2*10000],min:0,years:ee.List.sequence(startYear,endYear).getInfo()},'Composite Time Lapse');
 
 // function getTerraPulseTileFunction(url){
 //   return function(coord, zoom) {
@@ -3654,9 +3655,9 @@ function runSequoia(){
   </div>`);
 
   // Callback function that gets run after getImagesLib js is loaded
-  function runSequoiaLibLoadedCallback(){
+  // function runSequoiaLibLoadedCallback(){
     // Make the default GEE Playground scripts exports object name shortened version of getImagesLib - gil
-    var gil = exports;
+    var gil = getImagesLib;
 
     // Pull in date params
     var preStartYear =parseInt(urlParams.preStartYear),
@@ -4005,12 +4006,12 @@ function runSequoia(){
 
   // If getImagesLib exports object doesn't exist yet, load it and call the callback once loaded
   // If it's already loaded, just call the callback
-  if(exports===undefined){
-    loadJS("./js/getImagesLib.js", true,runSequoiaLibLoadedCallback);
-  }else{
-    runSequoiaLibLoadedCallback();
-  }
+  // if(exports===undefined){
+    // loadJS("./js/getImagesLib.js", true,runSequoiaLibLoadedCallback);
+  // }else{
+    // runSequoiaLibLoadedCallback();
+  // }
   
   
   
-}
+// }
