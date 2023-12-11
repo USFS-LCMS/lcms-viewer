@@ -210,9 +210,10 @@ function centerObject(fc){
 ///////////////////////////////////////////////////////////////////
 //Function for creating color ramp generally for a map legend
 function createColorRamp(styleName, colorList, width,height){
-    var myCss ="background-image:linear-gradient(to right, ";
-    for(var i = 0; i< colorList.length;i++){myCss = myCss + '#'+colorList[i].toLowerCase() + ',';}
-    myCss = myCss.slice(0,-1) + ");";
+  colorList = colorList.map(addColorHash);
+  var myCss ="background-image:linear-gradient(to right, ";
+  for(var i = 0; i< colorList.length;i++){myCss = myCss + colorList[i].toLowerCase() + ',';}
+  myCss = myCss.slice(0,-1) + ");";
   return myCss
 }
 ///////////////////////////////////////////////////////////////////
@@ -1556,11 +1557,44 @@ function mp(){
   this.centerObject = function(fc){
     centerObject(fc);
   }
+  this.setTitle = function(title){
+    $('#title-banner').html(title);
+    document.title = title;
+  }
   this.turnOnInspector = function(){
     $('#query-label').click();
-  
   }
+  this.setQueryCRS = function(newCrs){
+    crs = newCrs;
+  }
+  this.setQueryScale = function(newScale){
+    transform=null;
+    scale=newScale;
+    plotRadius=newScale/2.;
+  }
+  this.setQueryTransform = function(newTransform){
+    scale=null;
+    transform=newTransform;
+    plotRadius=transform[0]/2.;
+  }
+  this.setQueryPrecision = function(newChartPrecision = 3,newChartDecimalProportion=0.25){
+    chartPrecision = newChartPrecision;
+    chartDecimalProportion=newChartDecimalProportion;
+  }
+  this.setQueryDateFormat = function(newDefaultQueryDateFormat){
+    defaultQueryDateFormat = newDefaultQueryDateFormat;
+  }
+  this.setQueryBoxColor = function(color){
+    if(isHexColor(color) && color[0] !== '#'){
+      color = '#'+color;
+    }
+
+    clickBoundsColor= color;
+  } 
+  
+ 
 }
+
 var Map2 = new mp();
 
 if(urlParams.addLayer==='false' || urlParams.addLayer ===false){
@@ -1690,6 +1724,18 @@ function mulberry32(a) {
 }
 var randomN = mulberry32(1);
 ////////////////////////////
+// Function to handle adding a hash before a hex color or add nothing if it's a color name
+function isHexColor(color,regexp = /^[0-9a-fA-F]+$/){
+  return regexp.test(color);
+}
+function addColorHash(color){
+  if(isHexColor(color)){
+    return `#${color}`;
+  }else{
+    return color;
+  }
+}
+////////////////////////////
 function getRandomInt(min, max) {
     return Math.floor(randomN() * (max - min + 1)) + min;
 }
@@ -1697,6 +1743,12 @@ function padLeft(nr, n, str){
     return Array(n-String(nr).length+1).join(str||'0')+nr;
 }
 function rgbToHex(r,g,b) {
+  if(typeof(r)=='object'){
+    var colors = r;
+    r = colors[0];
+    g = colors[1];
+    b = colors[2];
+  }
     return "#"+("00000"+(r<<16|g<<8|b).toString(16)).slice(-6);
 }
 //Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb

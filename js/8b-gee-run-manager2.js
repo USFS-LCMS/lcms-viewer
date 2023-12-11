@@ -344,7 +344,7 @@ function runGTAC(){
     console.log(err)
   }
   
-$('#query-label').click()
+// $('#query-label').click()
 // $('#pixel-chart-label').click();
   }
 
@@ -395,20 +395,26 @@ $('#query-label').click()
 
 
   // function runGTAC(){
+  // var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8")
+  //   // .map(img=>img.updateMask(img.gt(1)));
+  // Map2.addLayer(lcms.select([0]),{'autoViz':true})
+    // Map2.addLayer(lcms.select(['Land_Cover_Raw_Probability_Trees']),{'min':20,'max':80,'palette':['Ffff00','BlUe','green','green']},'lcms')
   //   var comps = ee.ImageCollection('projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7')
   //   .select(['swir2','nir','red'])
   //   Map2.addTimeLapse(comps.filter(ee.Filter.calendarRange(2000,2005,'year')),{mosaic:true,'queryDateFormat':'YYYY-MM-dd HH:mm'})//,{min:500,max:3500,bands:'swir2,nir,red'});
-    // Map2.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')).mosaic().divide(10000),{min:500,max:3500,bands:'swir2,nir,red'});
-    // Map2.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')),{min:500,max:3500,bands:'swir2,nir,red'});
-    // var ls = getImagesLib.getProcessedLandsatScenes(geometry,2015,2019,190,250).select(['swir2','red','NBR','NDVI','nir']);
-    // Map2.addLayer(ls.sort('system:time_start',false),getImagesLib.vizParamsFalse,'LS')
-    // var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8")
-    // .select([0])
-    // .map(img=>img.updateMask(img.gt(1)));
-    // Map2.addLayer(lcms,{autoViz:true},'lcms')
-    
+  //   Map2.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')).mosaic().divide(10000),{min:500,max:3500,bands:'swir2,nir,red'});
+  //   Map2.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')),{min:500,max:3500,bands:'swir2,nir,red'});
+  //   var ls = getImagesLib.getProcessedLandsatScenes(geometry,2015,2019,190,250).select(['swir2','red','NBR','NDVI','nir']);
+  //   Map2.addLayer(ls.sort('system:time_start',false),getImagesLib.vizParamsFalse,'LS')
+    // Map2.addLayer(ee.Image(1).multiply(0.001111111111111111111111),{palette:'lightblue',min:0,max:1,classLegendDict:{'test1':'lightblue'}})
     // Map2.turnOnInspector();
-    
+    // Map2.setTitle('test');
+    // Map2.setQueryCRS('EPSG:32611')
+    // Map2.setQueryTransform( [60, 0, -2361915, 0, -60, 3177735]);
+    // Map2.setQueryPrecision(4,0.01)
+    // Map2.setQueryDateFormat('YYYY-MM-dd HH:mm');
+    // Map2.setQueryBoxColor('#F00')
+  
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray());
   //   // Map2.addLayer(ee.Image(1));

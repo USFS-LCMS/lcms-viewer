@@ -2037,7 +2037,7 @@ function addClassLegendContainer(classLegendContainerID,legendContainerID,classL
 									</div>`)
 }
 function addClassLegendEntry(classLegendContainerID,obj){
-	$('#'+classLegendContainerID).append(`<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:#${obj.classColor};'></span>${obj.className}</li>`)
+	$('#'+classLegendContainerID).append(`<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`)
 }
 
 function addColorRampLegendEntry(legendContainerID,obj){
