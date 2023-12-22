@@ -550,7 +550,7 @@ const staticTemplates = {
           </li>
           <li title = 'TreeMap 2016 Research Dataset source data.'><a class="intro-modal-links" href="https://data.nal.usda.gov/dataset/treemap-2016-tree-level-model-forests-conterminous-united-states-circa-2016" target="_blank">RDS</a> TreeMap 2016 Data Source
           </li>
-          <li title = "The Raster Data Gateway (RDG) is the location for TreeMap attribute downloads."><a class="intro-modal-links" href="https://staging-data.fs.usda.gov/geodata/rastergateway/treemap/index.php" target="_blank">RDG</a> Download TreeMap data on the Raster Data Gateway
+          <li title = "The Raster Data Gateway (RDG) is the location for TreeMap attribute downloads."><a class="intro-modal-links" href="https://data.fs.usda.gov/geodata/rastergateway/treemap/index.php" target="_blank">RDG</a> Download TreeMap data on the Raster Data Gateway
           </li>
         </ul>
         
