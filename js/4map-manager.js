@@ -2878,6 +2878,10 @@ function initialize() {
       setupDropdownTreeDownloads(studyAreaName);
       populateLCMSDownloads();
     }
+    if(mode === 'TreeMap'){
+      setupDropdownTreeMapDownloads();
+      populateDownloads();
+    }
 
     setGEERunID();
     

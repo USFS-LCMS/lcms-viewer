@@ -3458,12 +3458,8 @@ function getThematicAttr_Colors(attr){
   viz['palette']=palette;
   viz['classLegendDict'] = dict(zip(uniqueNames,colors));
   viz['title']=`${attr[2]} || ${attr[3]}`;
-  
-  // Add the layer to the map
-  Map2.addLayer(attrImg,viz,attr[2],visible);
 
-  //Set so subsequent layers are not visible by default
-  visible = false;
+  return [attrImg,viz,attr[2]]
 }                
 
   // Function to get a continuous attribute image service
@@ -3486,7 +3482,8 @@ function getThematicAttr_Colors(attr){
     viz['max'] = parseInt(quantile(uniqueValues,attr[3]));
     viz['palette'] = attr[1];
     viz['title']=`${attr[4]} || ${attr[5]}`;
-    Map2.addLayer(attrImg,viz,attr[4],false);
+
+    return [attrImg,viz,attr[4]]
   }
 
     // function to apply unique values to Ordinal attribute
@@ -3513,11 +3510,10 @@ function getThematicAttr_Colors(attr){
       // set up legend - for values and palette
         // Remove '000000' values from palette
       var removed_nulls_palette = removeItemAll(JSON.parse(JSON.stringify(attr[1])), '000000')
-      console.log(removed_nulls_palette)
       viz['classLegendDict'] = dict(zip(uniqueValues,removed_nulls_palette));
       viz['title']=`${attr[4]} || ${attr[5]}`;
       
-      Map2.addLayer(attrImg,viz,attr[4],false);
+      return [attrImg,viz,attr[4]]
     }
 
     // Removes all items of a given value from an array
@@ -3554,8 +3550,8 @@ function getThematicAttr_Colors(attr){
     viz['max'] = 100;
     viz['palette'] = attr[1];
     viz['title']=`${attr[2]} || ${attr[3]}`;
-    Map2.addLayer(attrImg,viz,attr[2],false);
 
+    return [attrImg,viz,attr[2]]
   }
 
   // Function to get a continuous attribute image service and use standard deviation as the min/max
@@ -3585,21 +3581,40 @@ function getThematicAttr_Colors(attr){
     //viz['max'] = parseInt(uniqueValues.median());
     viz['palette'] = attr[1];
     viz['title']=`${attr[3]} (${attr[0]}) attribute image layer`;
-    Map2.addLayer(attrImg,viz,attr[3],false);
+
+    return [attrImg,viz,attr[3]]
   }
 
-  // Add each ordinal attribute to the map
-  ordinalAttrs.map(getOrdinalAttr);
+  //// Sort and add layers to the map
+    // Create an array of all the layer visualization arrays returned by the respective functions
+  var metaArray = ordinalAttrs.map(getOrdinalAttr).concat(percentAttrs.map(getPercentAttr).concat(thematicAttrs.map(getThematicAttr_Colors).concat(continuousAttrs.map(getContinuousAttr))));
 
-  // Add each continuous attribute to the map
-  continuousAttrs.map(getContinuousAttr);
-  
-  // Add each percent attribute to the map
-  percentAttrs.map(getPercentAttr)
+    // Sort the meta array by the second index of each subarray
+  metaArray.sort(function(a, b) {
+    var nameA = a[1].title.toUpperCase(); // Ignore case
+    var nameB = b[1].title.toUpperCase(); // Ignore case
+    if (nameA < nameB) {
+      return 1;
+    }
+    if (nameA > nameB) {
+      return -1;
+    }
 
-  // Iterate across each thematic attribute and bring it into the map
-  thematicAttrs.map(getThematicAttr_Colors);
+    // Names must be equal
+    return 0;
+  });
 
+    // Loop through sorted metaArray and add each layer to the map
+  for (let layer of metaArray){
+    if (layer[2].includes('FLDTYPCD')){
+      var visible = true;
+    }
+    else{
+      var visible = false;
+    }
+    Map2.addLayer(layer[0], layer[1], layer[2], visible)
+  }
+  ////
   
   // Function to convert json TreeMap lookup to a query-friendly format
   // Makes a dictionary for each CN that has an html table of all attributes

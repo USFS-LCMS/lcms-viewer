@@ -774,11 +774,131 @@ const staticTemplates = {
                                           <ul class="nested" id="TreeMap2016-attribute-downloads"></ul>
                                         </li>
                                         <li><span class="caret" title="Download the full TreeMap RDS.">RDS</span>
-                                          <ul class="nested" id="TreeMap2016-RDS-downloads"></ul>
+                                          <ul class="nested" id="TreeMap2016-rds-downloads"></ul>
                                         </li>
                                       </ul>
                                     </li>
                                 </ul>`,
+        TreeMapSupportDiv :`<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize'>TreeMap Resources</h3>
+                        </header>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img src="./images/information--v2.png" class = 'support-icons' alt="Other Resources icon"  href="#" title="Explore additional ways to access TreeMap.">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <li>
+                                    <a class = 'links' href='https://www.fs.usda.gov/research/treesearch/65597' title = 'View the TreeMap 2016 publication.'>2016 Publication</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' href='https://data.fs.usda.gov/geodata/rastergateway/treemap/index.php' title = 'Get an overview of TreeMap data, download attributes, and browse additional documentation.'>Raster Data Gateway</a>
+                                </li>
+                            </div>
+                        </section>
+                        <hr>
+                         <header class = 'row ' title = 'Open in-depth TreeMap methods documentation.'>
+                            <h3 class = ' text-capitalize'>TreeMap Methods</h3>
+                        </header>
+                        <div class = 'row ' title = 'Open in-depth TreeMap methods documentation.'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Methods icon' src = './images/methods-icon.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                Click to open in-depth methods document:
+                                <li>
+                                    <a class = 'links' href='https://www.fs.usda.gov/rm/pubs_journals/2022/rmrs_2022_riley_k002.pdf' title = 'Open in-depth TreeMap methods documentation.'>Version 2016</a>
+                                </li> 
+                            </div>
+                        </div>
+                        <hr>
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
+                        </header>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
+                                <img src="./images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC).">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. Operational TreeMap production and support takes place at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for TreeMap's operational production, documentation, and delivery at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                <img src="./images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
+                                    <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation TreeMap is built upon. They have been instrumental in developing and publishing the original TreeMap methodology and continue to provide ongoing research and development to further improve TreeMap methods.</p>
+                                </a>
+                            </div>
+                        </section>
+                        
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <img src="images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <p class = 'support-text'>TreeMap utilizes Google Earth Engine for visualization through an enterprise agreement between the USDA Forest Service and Google.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <h2>"..."</h2>
+                            </div>
+                            <div class = 'col-lg-10  support-text'>
+                                    Suggested citation: 
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). TreeMap Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/treemap.html (Accessed: ${new Date().toStringFormat()}).
+                                    </p>
+                                    <span>
+                                        <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
+                                        </button>
+                                        <p id = 'copiedCitationMessageBox'></p>
+                                    </span>
+                            </div>
+                        </section>
+                        <hr>
+                        <header class ='row'>
+                            <h3 class ='text-capitalize'>Contact</h3>
+                        </header>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './images/email.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.gtactreemap@usda.gov">
+                                Please contact the TreeMap help desk <span href = "mailto: sm.fs.gtactreemap@usda.gov">(sm.fs.gtactreemap@usda.gov)</span> if you have questions/comments about TreeMap or have feedback on the TreeMap Data Explorer.</a>
+                            </div>
+                        </section>
+        			</div>`,
         supportDiv :`<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>

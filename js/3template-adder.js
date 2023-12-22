@@ -1035,11 +1035,11 @@ else if(mode === 'STORM'){
   $('head').append(`<script type="text/javascript" src="./js/forest-type-palette.js"></script>`);
   addCollapse('sidebar-left','layer-list-collapse-label','layer-list-collapse-div','TreeMap DATA',`<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="images/layer_icon.png">`,true,null,mode+' DATA layers to view on map');
   addCollapse('sidebar-left','tools-collapse-label','tools-collapse-div','TOOLS',`<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,false,'','Tools to measure and chart data provided on the map');
-  //addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
+  addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,false,``,'Download '+mode+' products for further analysis');
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
   $('#layer-list-collapse-div').append(`<ul id="layer-list" class = "layer-list"></ul>`);
-  //$('#download-collapse-div').append(staticTemplates.TreeMapDownloadDiv);
-  //setupDropdownTreeMapDownloads()
-  //populateDownloads()
+  $('#download-collapse-div').append(staticTemplates.TreeMapDownloadDiv);
+  $('#support-collapse-div').append(staticTemplates.TreeMapSupportDiv);
 }else if(mode==='sequoia-view'){
   
   addCollapse('sidebar-left','parameters-collapse-label','parameters-collapse-div','PARAMETERS','<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',true,null,'Adjust parameters used to prepare analysis window');

@@ -1012,15 +1012,14 @@ function setupDropdownTreeMapDownloads(){
   var att_serverLocation = 'https://data.fs.usda.gov/geodata/rastergateway/treemap';
   var rds_serverLocation = 'https://s3-us-west-2.amazonaws.com/fs.usda.rds'
   
-  var attributes = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMRS', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L', 'RDS']
+  var attributes = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMRS', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L']
 
   var rds_dict = {'2016': 'RDS-2021-0074'}
 
   var tm_versions = ['2016']
   
   tm_versions.map(ver=>{
-    attributes.map(att=>{
-      var id = `TreeMap${ver}-attribute-downloads`; 
+    var id = `TreeMap${ver}-attribute-downloads`; 
       var dropdownID = id + '-d';
       $('#'+id).empty()
       $('#'+id).append(`
@@ -1029,24 +1028,26 @@ function setupDropdownTreeMapDownloads(){
                       <br>
                       <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                       <hr>`);
-
-      var url = `${att_serverLocation}/TreeMap${ver}_${att}.zip`;
+    attributes.map(att=>{
+      var url = `${att_serverLocation}/docs/TreeMap${ver}_${att}.zip`;
       $('#'+dropdownID).append(`<option  value = "${url}">TreeMap${ver}_${att}</option>`)
     })
-
+  });
+  
+  tm_versions.map(ver=>{
     var id = `TreeMap${ver}-rds-downloads`
     var dropdownID = id + '-d'
     $('#'+id).empty()
     $('#'+id).append(`
       <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
-                      <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                      <br>
+                      <select id = "${dropdownID}" size="8" style="height: 3rem;" class=" bg-download-select" multiple ></select>
                       <br>
                       <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                       <hr>`);
-
-    var url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip}`;
-    $('#'+dropdownID).append(`<option  value = "${url}">TreeMap${ver}</option>`);
-  })
+      var url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
+      $('#'+dropdownID).append(`<option  value = "${url}">TreeMap${ver}</option>`);
+})
 }
 
 /////////////////////////////////////////////////////////////////////////////
