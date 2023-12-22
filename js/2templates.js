@@ -153,9 +153,9 @@ function getIntroModal(iconPath,welcomeText,topText,middleText,bottomText,loadin
 const staticTemplates = {
 	map:`<section aria-label="Map where all map outputs are displayed" onclick = "$('#study-area-list').hide();" class = 'map' id = 'map'> </section>`,
 	mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
-	sidebarLeftToggler:`<img style='height:3rem' title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
+	sidebarLeftToggler:`<img  title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
     sidebarLeftContainer: `
-						<nav onclick = "$('#study-area-list').hide();" class = 'col-sm-7 col-md-4 col-lg-4 col-xl-3 sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
+						<nav onclick = "$('#study-area-list').hide();" class = ' col-sm-6 col-md-4 col-lg-3  sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 
 					        <header id = 'sidebar-left-header'>
                                 
@@ -281,10 +281,10 @@ const staticTemplates = {
                             </p>
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
-                            <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
-                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-                        </div>`
+                                <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                                <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
+                                <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
+                            </div>`
                 ),
                 'lcms-dashboard':getIntroModal('./images/lcms-icon.png',
                                     'Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!',
@@ -558,7 +558,7 @@ const staticTemplates = {
     <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
                             <a class="intro-modal-links" href="https://academic.oup.com/jof/article/120/6/607/6701541" target="_blank" title="Open 2016 TreeMap documentation">METHODS</a>
-                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.gtactreemap@usda.gov" >HELPDESK/FEEDBACK</a> 
                         </div>
 
 </div>`,
@@ -616,22 +616,26 @@ const staticTemplates = {
                                 <div id ='dashboard-results-expander' title='Click and drag up and down to resize charts'></div>
                                 <div id='dashboard-results-div22' class='bg-black dashboard-results'></div>
                             </div>`,
-        dashboardHighlightsDisclaimerText:`LCMS Dashboard Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK`,
-        dashboardResultsContainer:`<div id='dashboard-results-container-right' class='dashboard-highlights bg-black col-sm-7 col-md-3 col-xl-3'>
-        <img style='height:3rem;' title = 'Click to toggle highlights visibility' id = 'dashboard-results-sidebar-toggler' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' ><h2 class = 'mx-5'><button class=' dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' >
-        <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
-        Download Report
+        dashboardHighlightsDisclaimerText:`LCMS Dashboard Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the LCMS methods document or reach out to the LCMS HELPDESK (sm.fs.lcms@usda.gov)`,
+        dashboardResultsContainer:`<div id='dashboard-results-container-right' class='dashboard-highlights bg-black  col-md-6 col-lg-4 '>
         
-      </button></h2>
+        <div id = 'dashboard-download-button-container'>
+            <button class=' dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' title='Click to download PDF report containing the summaries currently being displayed.' >
+                    <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
+                    Download Report
+            </button>
+        </div>
         
         <div id = 'dashboard-results-list'></div>                            
                                     </div>`,
+        dashboardResultsToggler:`<img  title = 'Click to toggle results pane visibility' id = 'dashboard-results-sidebar-toggler' class='dashboard-results-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >`,
         dashboardHighlightsContainer:`<div id='highlights-tables-container'>
         <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
         <div class="tab-content" id="highlights-table-divs"></div>
+        <div id ='highlights-disclaimer-div' >
         <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
-        </p>
-    </div>`,
+    </p></div>
+    </div>`,                          
         dashboardHighlightsDiv:`<div id='dashboard-highlights-container' class='dashboard-highlights bg-black col-sm-7 col-md-4 col-xl-3'>
         <img style='height:3rem;' title = 'Click to toggle highlights visibility' id = 'dashboard-results-sidebar-toggler' class='sidebar-toggler' src='./images/menu-hamburger_ffffff.svg' onclick = 'toggleHighlights()' >
         <p class='highlights-title highlights-div' style='' title = 'As you move the map around, summary areas that are visible will be ranked according to classes selected within the PARAMETERS menu'>Change Highlights</p>
@@ -657,8 +661,8 @@ const staticTemplates = {
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./images/GEE_logo_transparent.png" height="${convertRemToPixels(0.8)}"  alt="GEE logo image">
         
-        <div class="progressbar" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
-            <span style="width: 0%;">0%</span>
+        <div class="progressbar progress-pulse" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
+            <span  style="width: 0%;">0%</span>
         </div>
         <i  onclick='clearAllSelectedDashboardFeatures()' id='erase-all-dashboard-selected' title="Click to clear all selected features from this layer" class="fa fa-eraser eraser-all" ></i>
         
@@ -2103,13 +2107,18 @@ function addSubAccordianCard(accordianContainerID,accordianCardHeaderID, accordi
 //Functions to run the walk through
 function getWalkThroughCollapseContainerID(){
     var collapseContainer;
-    if($(window).width() < 576){collapseContainer = 'sidebar-left' }
+    if($(window).width() < 768){collapseContainer = 'sidebar-left' }
     else{collapseContainer = 'legendDiv';}
     return collapseContainer
 }
+function moveElement(selectorFrom,appendToID){
+    $(selectorFrom).detach().appendTo(appendToID);
+}
 function moveCollapse(baseID,collapseContainer =getWalkThroughCollapseContainerID()){
-    $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
-    $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
+    // $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
+    moveElement('#'+baseID+'-label','#'+collapseContainer)
+    // $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
+    moveElement('#'+baseID+'-div','#'+collapseContainer)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2148,7 +2157,7 @@ function addClassLegendContainer(classLegendContainerID,legendContainerID,classL
 									</div>`)
 }
 function addClassLegendEntry(classLegendContainerID,obj){
-	$('#'+classLegendContainerID).append(`<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:#${obj.classColor};'></span>${obj.className}</li>`)
+	$('#'+classLegendContainerID).append(`<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`)
 }
 
 function addColorRampLegendEntry(legendContainerID,obj){

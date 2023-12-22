@@ -129,6 +129,11 @@ let layerObj = null;
 let crs = 'EPSG:5070';
 let transform = [30,0,-2361915.0,0,-30,3177735.0];
 let scale = null;//30;
+
+// Query charting floating point prevision parameters
+let chartPrecision = 3;
+let chartDecimalProportion=0.25;
+
 let queryObj = {},timeLapseObj = {};dashboardObj={};
 let addLCMSTimeLapsesOn;
 parseUrlSearch();
@@ -174,10 +179,14 @@ const studyAreaDict = {
                                 5: {'modelName': 'Other','legendName': 'Other','color': 'a1a1a1'},
                                 6: {'modelName': 'Rangeland','legendName': 'Rangeland or Pasture','color': 'c2b34a'}},
                       final_collections  : ['USFS/GTAC/LCMS/v2022-8'],
-                      composite_collections : ['projects/lcms-292214/assets/R10/CoastalAK/Composites/Composite-Collection', 'projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Composites/Composite-Collection-1984-2020',
+                      composite_collections : ['projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7',
+                      'projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection',
+                      'projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Composites/Composite-Collection',
                       'projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Composites/Composite-Collection'],
-                      lt_collections: ['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/LANDTRENDR-Collection','projects/lcms-tcc-shared/assets/LandTrendr/LandTrendr-Collection-yesL7-1984-2020','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/LandTrendr-Collection-1984-2020',
-                    'projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection'],
+                      lt_collections: ['projects/lcms-tcc-shared/assets/CONUS/Base-Learners/LandTrendr-Collection',
+                      'projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection',
+                      'projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Base-Learners/LandTrendr-Collection',
+                      'projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection'],
                       ccdc_collections:['projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/CCDC-Collection','projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2022','projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020']
                     }                        
                 }
@@ -370,6 +379,8 @@ var yLabelMaxLines = 5;// Max lines per y label
 var yLabelFontSize = 10;// Font size of y label
 var yLabelMaxTotalLines = 18;// Max lines for all y labels to avoid over-crowding 
 
+var defaultQueryDateFormat = 'YYYY-MM-dd';//Default format for dates in query time series charts
+
 let clickBoundsColor = '#FF0';
 var areaChartFormat = 'Percentage';
 const areaChartFormatDict = {'Percentage': {'mult':100,'label':'% Area'}, 'Acres': {'mult':0.000247105,'label':'Acres'}, 'Hectares': {'mult':0.0001,'label':'Hectares'}};
@@ -468,6 +479,43 @@ Array.prototype.insert = function(index) {
 Number.prototype.formatNumber = function(n=2){
   return this.toFixed(n).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
+/////////////////////////////////////////////////////
+// Function that tries to find the best way of limiting precision for floating point numbers
+// Will limit to the maximum of chartDecimalProportion the length of decimals or whatever chartPrecision is set to
+function smartToFixed(v){
+  if(Number.isInteger(v) || !isNumber(v)){
+    return v;
+  }else{
+    let currentDecimalL = v.toString().split('.')[1].length;
+    let maxToFixedL =Math.ceil(currentDecimalL*chartDecimalProportion);
+    let toFixedL = Math.max(chartPrecision,maxToFixedL)
+    let out = parseFloat(v.toFixed(toFixedL))
+    // console.log(`${v}-${currentDecimalL}-${maxToFixedL}-${toFixedL}-${out}`)
+    return out;
+  }
+}
+////////////////////////////////////////////
+// Adapted from: https://stackoverflow.com/questions/43952126/javascript-round-numeric-values-of-n-dimensional-array
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function arraySmartToFixed(array, precision=chartPrecision){
+    var roundedArray = [];
+
+    array.forEach(function round(elem){
+        if(isNumber(elem)) {
+            roundedArray.push(smartToFixed(elem));
+        } else if(elem.constructor === Array){
+            roundedArray.push(arraySmartToFixed(elem, precision));
+        } else {
+            roundedArray.push(elem);
+        }
+    })
+
+    return roundedArray;
+}
+////////////////////////////////////////////
 Number.prototype.round = function(n=2){
   return Math.round(this*10**n)/10**n;
 }
@@ -576,7 +624,7 @@ const quantile = (arr, q) => {
 ////////////////////////
 // Load a js file as code
 // Taken from: https://www.educative.io/answers/how-to-dynamically-load-a-js-file-in-javascript
-function loadJS(FILE_URL, async = true,callback) {
+function loadJS(FILE_URL, async = true,callback,quiet=true) {
   let scriptEle = document.createElement("script");
 
   scriptEle.setAttribute("src", FILE_URL);
@@ -587,11 +635,16 @@ function loadJS(FILE_URL, async = true,callback) {
 
   // success event 
   scriptEle.addEventListener("load", () => {
-    console.log("File loaded")
+    if(!quiet){
+      console.log("File loaded");
+    }
     callback()
   });
    // error event
   scriptEle.addEventListener("error", (ev) => {
-    console.log("Error on loading file", ev);
+    if(!quiet){
+      console.log("Error on loading file", ev);
+    }
+    callback();
   });
 }

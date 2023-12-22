@@ -1,9 +1,23 @@
+const hoverFeatureStyling = {
+	strokeColor:'#00FFFF',
+	fillColor:'#00FFFF',
+	fillOpacity:0.3,
+	strokeOpacity: 1,
+	strokeWeight: 3
+}
+const notHoverFeatureStyling = {
+	strokeColor:'#0FF',
+	fillColor:'#0FF',
+	fillOpacity:0.2,
+	strokeOpacity: 0,
+	strokeWeight: 0,
+};
 function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 	// console.log(r);
-	let featureName = r.properties[layer.viz.dashboardFieldName].toString();
+	let featureName = r.properties[layer.viz.dashboardFieldName].toString().replace(/[^A-Za-z0-9]/g, "-");
 	// console.log(featureName)
 	if(Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName)===-1){
-		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[]};
+		layer.dashboardSelectedFeatures[featureName]={'geojson':r,'polyList':[],'listeners':[]};
 	
 	
 		function getCoords(c){
@@ -11,11 +25,6 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 				c.coordinates.map(c2=>{
 					let polyCoordsT =c2.map(c3=>{return {lng:c3[0],lat:c3[1]}});
 					layer.dashboardSelectedFeatures[featureName].polyList.push(new google.maps.Polygon({
-						strokeColor:'#0FF',
-						fillColor:'#0FF',
-						fillOpacity:0.15,
-						strokeOpacity: 0,
-						strokeWeight: 0,
 						path:polyCoordsT,
 						zIndex:-999
 					}));
@@ -40,17 +49,46 @@ function chartDashboardFeature(r,layer,updateCharts=true,deselectOnClick=true){
 		
 		
 		
-		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(map));
+		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{
+			p.setOptions(notHoverFeatureStyling)
+			p.setMap(map)});
 		layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{
 			if(deselectOnClick){
 				google.maps.event.addListener(p, "click", (event)=>{
 					console.log(`deselection clicked: ${event}`)
-					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>{p.setMap(null);});
+					layer.dashboardSelectedFeatures[featureName].listeners.map(l=>google.maps.event.removeListener(l));
 					delete layer.dashboardSelectedFeatures[featureName];
 					updateDashboardCharts();
 					updateDashboardHighlights();
 				})
 			}
+			layer.dashboardSelectedFeatures[featureName].listeners.push(google.maps.event.addListener(p, "mouseover", (event)=>{
+				// console.log('mouseover: ')
+				
+				let selector = `#${urlParams.currentlySelectedHighlightTab.split('-tab')[0]}----${featureName}`;
+				// console.log(selector);
+				// console.log(event)
+				$(selector).addClass('dashboard-row-hover');
+				try{
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setOptions(hoverFeatureStyling));
+				}catch(err){
+					console.log(err);
+				}
+			}));
+			layer.dashboardSelectedFeatures[featureName].listeners.push(google.maps.event.addListener(p, "mouseout", (event)=>{
+				// console.log('mouseout: ')
+				let selector = `#${urlParams.currentlySelectedHighlightTab.split('-tab')[0]}----${featureName}`;
+				// console.log(selector);
+				$(selector).removeClass('dashboard-row-hover');
+				// console.log(event)
+				try{
+					layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setOptions(notHoverFeatureStyling));
+				}catch(err){
+					console.log(err);
+				}
+				
+			}));
 			
 		});
 		
@@ -127,6 +165,7 @@ function clearAllSelectedDashboardFeatures(){
 	dashboardLayers.map(layer=>{
 		Object.keys(layer.dashboardSelectedFeatures).map(fn=>{
 			layer.dashboardSelectedFeatures[fn].polyList.map(p=>p.setMap(null));
+			layer.dashboardSelectedFeatures[fn].listeners.map(l=>google.maps.event.removeListener(l))
 			delete layer.dashboardSelectedFeatures[fn];
 		});
 	});
@@ -154,7 +193,7 @@ function dashboardBoxSelect(){
 		boxSelectID++;
 		const thisBoxSelectID=boxSelectID;
 		if(dashboardAreaSelectionMode==='View-Extent'){
-			geeBox = eeBoundsPoly;
+			geeBox = eeBoundsPoly.buffer(10000);
 		}else{
 			geeBox = ee.Geometry.Polygon(dragBox.dragBoxPath.map(c=>[c.lng,c.lat]));
 			dragBox.stopListening(false);
@@ -182,7 +221,7 @@ function dashboardBoxSelect(){
 					selectedFeatures.evaluate((f,failure)=>{
 						if(failure !== undefined){
 							console.log(`Failure: ${failure}`);
-						}
+						}else{console.log(f)}
 						
 						let update=false;
 						f.features.map(feat=>{
@@ -204,13 +243,14 @@ function dashboardBoxSelect(){
 					})
 					
 				});
-			}else{
-				updateProgress('.progressbar',100);
-				$('#loading-spinner-logo').hide();
-				$('#summary-area-selection-radio').css('pointer-events','auto');
-				if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
+			}
+			// else{
+			// 	updateProgress('.progressbar',100);
+			// 	$('#loading-spinner-logo').hide();
+			// 	$('#summary-area-selection-radio').css('pointer-events','auto');
+			// 	if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
 				
-				}
+			// 	}
 			
 		});
 	}
@@ -238,7 +278,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 	var names = {'Change':["Stable","Slow Loss","Fast Loss","Gain","Non-Processing Area Mask"],
 				'Land_Cover':["Trees",
 	"Tall Shrubs & Trees Mix","Shrubs & Trees Mix","Grass/Forb/Herb & Trees Mix","Barren & Trees Mix","Tall Shrubs","Shrubs","Grass/Forb/Herb & Shrubs Mix","Barren & Shrubs Mix","Grass/Forb/Herb", "Barren & Grass/Forb/Herb Mix","Barren or Impervious","Snow or Ice","Water","Non-Processing Area Mask"],
-				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Rangeland or Pasture","Other","Non-Processing Area Mask"]
+				'Land_Use':["Agriculture","Developed","Forest","Non-Forest Wetland","Other","Rangeland or Pasture","Non-Processing Area Mask"]
 				}
 	var lcNamesSimpleIndices = {'Trees':[0,1,2,3,4], 'Tall-Shrubs':[5], 'Shrubs':[6,7,8], 'Grass-Forb-Herb':[9,10], 'Barren-or-Impervious':[11], 'Water':[13], 'Snow-or-Ice':[12]}
 	var lcFieldsHidden = [];
@@ -411,13 +451,13 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
 		// let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2); 
 		// let plotWidth=plotHeight*1.5;
 		
-		let plotWidth = $('#charts-collapse-label-charts-collapse-div').width()-2;//chartHeight*1.5;
+		let plotWidth = $('#charts-collapse-div').width()-2;//chartHeight*1.5;
 		let plotHeight=parseInt(plotWidth/1.3);//$('#dashboard-results-div').height()-convertRemToPixels(1);
 	
 		var layout = {
 		title: `<b>${name}</b>`,
 		font: {
-			size: 8
+			size: 10
 		},
 		margin: {
 			l: 15,
@@ -558,7 +598,7 @@ function makeDashboardCharts(layer,whichOne,annualOrTransition){
       $(`#${chartID}`).remove(); 
 
 	
-	let chartWidth = $('#charts-collapse-label-charts-collapse-div').width()-2;//convertRemToPixels(35)-5;//chartHeight*1.5;
+	let chartWidth = $('#charts-collapse-div').width()-2;//convertRemToPixels(35)-5;//chartHeight*1.5;
 	let chartHeight=parseInt(chartWidth/1.5);//$('#dashboard-results-div').height()-convertRemToPixels(1);
 	$('#charts-collapse-div').append(`<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`);
       // $('#chartDiv').append('<hr>');
@@ -614,7 +654,9 @@ var currentHighlightsMoveID=1;
 if(urlParams.currentlySelectedHighlightTab == null || urlParams.currentlySelectedHighlightTab == undefined){
 	urlParams.currentlySelectedHighlightTab;
  }
-function getHighlightsTabListener(){return $('a.nav-link').click(e=>{urlParams.currentlySelectedHighlightTab=e.currentTarget.id})
+function getHighlightsTabListener(){return $('a.nav-link').click(e=>{
+	console.log(e);
+	urlParams.currentlySelectedHighlightTab=e.currentTarget.id})
 }
 
 function updateDashboardHighlights(limit=10){
@@ -643,6 +685,9 @@ function updateDashboardHighlights(limit=10){
 			// let fc = f.queryItem.filterBounds(eeBoundsPoly);
 			fc= Object.values(f.dashboardSelectedFeatures).map(f=>f.geojson);
 			let fieldName = f.viz.dashboardFieldName;
+			// let featureName = f.properties[fieldName].toString();
+			
+			
 			// console.log(f.selectedTSData.size().getInfo())
 			
 			
@@ -664,7 +709,7 @@ function updateDashboardHighlights(limit=10){
 			// 					f = ee.Feature(f);
 								let props = f.properties;
 								// console.log(ts_class_name)
-								// console.log(props)
+								
 								let tsProps = props[ts_class_name].split(',');
 								// console.log(tsProps)
 
@@ -785,7 +830,7 @@ function updateDashboardHighlights(limit=10){
 									}
 									let clsID = cls.replaceAll('/','-');
 									clsID = clsID.replaceAll(' ','-');
-									let navID=`${f.legendDivID}-${k}-${clsID}`;
+									let navID=`${f.legendDivID}----${k}----${clsID}`;
 									// console.log(navID);
 									let isActive = '';
 									if(isFirst){isActive= ' show active'}
@@ -828,7 +873,7 @@ function updateDashboardHighlights(limit=10){
 										${urlParams.endYear} ${chartFormatDict[chartFormat].label}
 									</th>
 									
-									<th title ="Absolute change between '${startYrAbbrv} and '${endYrAbbrv}">
+									<th title ="Change between '${startYrAbbrv} and '${endYrAbbrv}">
 										Change ${chartFormatDict[chartFormat].label}
 									</th>
 									
@@ -886,7 +931,7 @@ function updateDashboardHighlights(limit=10){
 										
 										//   $(`#${navID}-boxplots`).append(`<div id='${navID}-boxplot-${rowI}'></div>`)
 										//   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
-										$(`#${navID}-table`).append(`<tr class = 'highlights-row' title= '${sigTitle}'>
+										$(`#${navID}-table`).append(`<tr id = '${navID}----${tr[0].replace(/[^A-Za-z0-9]/g, "-")}' class = 'highlights-row' title= '${sigTitle}'>
 									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
 									<td class = 'highlights-entry ${sigClass}'>${(tr[1])} &plusmn ${(tr[3])}</td>
 									
@@ -973,22 +1018,69 @@ function updateDashboardHighlights(limit=10){
 	// }
 	
 	// $('#highlights-table-divs').prepend(staticTemplates.dashboardDownloadReportButton)
+	
 	getHighlightsTabListener();
-	if(urlParams.currentlySelectedHighlightTab !==undefined){
+	if(urlParams.currentlySelectedHighlightTab !== null && urlParams.currentlySelectedHighlightTab !==undefined){
 		$(`#${urlParams.currentlySelectedHighlightTab}`).click();
+	}else{
+		if($('a.nav-link').length > 0){
+			urlParams.currentlySelectedHighlightTab = $('a.nav-link')[0].id;
+		}
 	}
 	resizeDashboardPanes();
 	// console.log(dashboardLayersToHighlight)
+	function getFeatures(id){
+		return layerObj[id.split('----')[0]].dashboardSelectedFeatures[id.split('----')[3]].polyList;
+	}
+	$(".dataTable.table>tbody>tr").on('mousemove', function (e) {
+		let highlightFeatures = getFeatures(e.currentTarget.id);
+		highlightFeatures.map(f=>{
+			f.setOptions(hoverFeatureStyling)
+		})
+		// console.log(highlightFeatures);
+
+	});
+	
+
+	// Any time the mouse leaves the table, get rid of any marker
+	$(".dataTable.table>tbody>tr").on('mouseleave',  function (e) {
+		let highlightFeatures = getFeatures(e.currentTarget.id);
+		highlightFeatures.map(f=>{
+			f.setOptions(notHoverFeatureStyling)
+		})
+	   					
+       });
+	$(".dataTable.table>tbody>tr").on('dblclick', function (e) {
+        console.log('double clicked');
+		let highlightFeatures = getFeatures(e.currentTarget.id);
+		// let lats = [];
+		// let lngs = [];
+		let bounds = new google.maps.LatLngBounds();
+		highlightFeatures.map(f=>{
+			let coords = f.getPath().getArray();
+			coords.map(coord=>{
+				// lats.push(coord.lat());
+				// lngs.push(coord.lng());
+				bounds.extend(coord);
+			})
+		});
+		// console.log(lats);
+		// console.log(lngs);
+		map.fitBounds(bounds)
+		// console.log( bounds.toJSON())
+    	});
 }
 
 function updateDashboardCharts(){
 	let lastScrollLeft = dashboardScrollLeft;
+	let lastScrollTop = dashboardScrollTop[dashboardResultsLocation];
+	turnOffScrollMonitoring();
 	// console.log(`Scroll left coord: ${lastScrollLeft}`)
 	// $('.dashboard-results').empty();
 	// $('#dashboard-results-div').empty();
 	$('#charts-collapse-div').empty();
-	$('.dashboard-results-container').hide();
-	$('.dashboard-results-container').css('height','0rem');
+	// $('.dashboard-results-container').hide();
+	// $('.dashboard-results-container').css('height','0rem');
 
 	// $('.dashboard-results-container').hide();
 	let visible,chartModes;
@@ -997,9 +1089,9 @@ function updateDashboardCharts(){
 	
 	let dashboardLayersToChart = Object.values(layerObj).filter(v=>v.viz.dashboardSummaryLayer&&v.visible&&Object.keys(v.dashboardSelectedFeatures).length > 0);
 	if(dashboardLayersToChart.length>0){
-		$('.dashboard-results-container').show();
-		$('.dashboard-results-container').css('height',dashboardResultsHeight);
-		resizeDashboardPanes();
+		// $('.dashboard-results-container').show();
+		// $('.dashboard-results-container').css('height',dashboardResultsHeight);
+		// resizeDashboardPanes();
 		chartWhich.map((w)=>{
 			dashboardLayersToChart.map(layer=>{
 				chartModes.map(chartMode=>makeDashboardCharts(layer,w,chartMode));
@@ -1007,10 +1099,13 @@ function updateDashboardCharts(){
 		})
 		
 		
-			$( ".dashboard-results" ).scrollLeft(lastScrollLeft);
-	}else{
-		resizeDashboardPanes();
+			// $( ".dashboard-results" ).scrollLeft(lastScrollLeft);
+			$(dashboardScrollDict[dashboardResultsLocation]).scrollTop(lastScrollTop);
+			turnOnScrollMonitoring();
 	}
+	// else{
+	// 	resizeDashboardPanes();
+	// }
 	
 	// setTimeout(makeDashboardReport(),1000);
 	
@@ -1079,7 +1174,7 @@ class report {
             this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
 			this.currentY += 5;
 			this.doc.setFontSize(10);
-            this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: CONUS and SEAK v2022.8, PRUSVI v2020.6 | Dashboard Version: 2023.1`);
+            this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: v2022.8 | Dashboard Version: 2023.2`);
             // doc.setFont(undefined,'bold');
             // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
             // doc.setFont(undefined,'normal');
@@ -1394,11 +1489,10 @@ function makeDashboardReport(){
     
     
 }
-var dashboardResultsLocation ='right';
 
 function moveDashboardResults(location='left'){
 	if(dashboardResultsLocation !== location){
-		var dashboardMoveLocationDict = {'right':'dashboard-results-list','left':'sidebar-left'};
+		
 		var outLoc = dashboardMoveLocationDict[location]
 		
 		moveCollapse('charts-collapse',outLoc);
@@ -1406,13 +1500,18 @@ function moveDashboardResults(location='left'){
 
 		if(location=='right'){
 			$('#dashboard-results-container-right').show();
+			$('#dashboard-results-sidebar-toggler').show();
+			moveElement('#dashboard-download-button','#dashboard-download-button-container');
 		}else{
 			$('#dashboard-results-container-right').hide();
+			$('#dashboard-results-sidebar-toggler').hide();
+			moveElement('#dashboard-download-button','#sidebar-left-header');
 		}
-		updateDashboardCharts();
 		dashboardResultsLocation = location;
+		turnOffScrollMonitoring();
+		turnOnScrollMonitoring();	
 	}
-    
+	updateDashboardCharts();
 }
 function toggleDashboardResultsLocation(){
 	if(dashboardResultsLocation==='right'){

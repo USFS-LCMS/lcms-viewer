@@ -210,9 +210,10 @@ function centerObject(fc){
 ///////////////////////////////////////////////////////////////////
 //Function for creating color ramp generally for a map legend
 function createColorRamp(styleName, colorList, width,height){
-    var myCss ="background-image:linear-gradient(to right, ";
-    for(var i = 0; i< colorList.length;i++){myCss = myCss + '#'+colorList[i].toLowerCase() + ',';}
-    myCss = myCss.slice(0,-1) + ");";
+  colorList = colorList.map(addColorHash);
+  var myCss ="background-image:linear-gradient(to right, ";
+  for(var i = 0; i< colorList.length;i++){myCss = myCss + colorList[i].toLowerCase() + ',';}
+  myCss = myCss.slice(0,-1) + ");";
   return myCss
 }
 ///////////////////////////////////////////////////////////////////
@@ -907,7 +908,7 @@ function addTimeLapseToMap(item,viz,name,visible,label,fontColor,helpBox,whichLa
   }
 
   // Set up query collection
-  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name}; 
+  queryObj[legendDivID] = {'visible':timeLapseObj[legendDivID].visible,'queryItem':item,'queryDict':viz.queryDict,'type':'geeImageCollection','name':name,'queryDateFormat':viz.queryDateFormat}; 
 
   //Get all the individual layers' sliders
   timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
@@ -1556,7 +1557,44 @@ function mp(){
   this.centerObject = function(fc){
     centerObject(fc);
   }
+  this.setTitle = function(title){
+    $('#title-banner').html(title);
+    document.title = title;
+  }
+  this.turnOnInspector = function(){
+    $('#query-label').click();
+  }
+  this.setQueryCRS = function(newCrs){
+    crs = newCrs;
+  }
+  this.setQueryScale = function(newScale){
+    transform=null;
+    scale=newScale;
+    plotRadius=newScale/2.;
+  }
+  this.setQueryTransform = function(newTransform){
+    scale=null;
+    transform=newTransform;
+    plotRadius=transform[0]/2.;
+  }
+  this.setQueryPrecision = function(newChartPrecision = 3,newChartDecimalProportion=0.25){
+    chartPrecision = newChartPrecision;
+    chartDecimalProportion=newChartDecimalProportion;
+  }
+  this.setQueryDateFormat = function(newDefaultQueryDateFormat){
+    defaultQueryDateFormat = newDefaultQueryDateFormat;
+  }
+  this.setQueryBoxColor = function(color){
+    if(isHexColor(color) && color[0] !== '#'){
+      color = '#'+color;
+    }
+
+    clickBoundsColor= color;
+  } 
+  
+ 
 }
+
 var Map2 = new mp();
 
 if(urlParams.addLayer==='false' || urlParams.addLayer ===false){
@@ -1686,6 +1724,18 @@ function mulberry32(a) {
 }
 var randomN = mulberry32(1);
 ////////////////////////////
+// Function to handle adding a hash before a hex color or add nothing if it's a color name
+function isHexColor(color,regexp = /^[0-9a-fA-F]+$/){
+  return regexp.test(color);
+}
+function addColorHash(color){
+  if(isHexColor(color)){
+    return `#${color}`;
+  }else{
+    return color;
+  }
+}
+////////////////////////////
 function getRandomInt(min, max) {
     return Math.floor(randomN() * (max - min + 1)) + min;
 }
@@ -1693,6 +1743,12 @@ function padLeft(nr, n, str){
     return Array(n-String(nr).length+1).join(str||'0')+nr;
 }
 function rgbToHex(r,g,b) {
+  if(typeof(r)=='object'){
+    var colors = r;
+    r = colors[0];
+    g = colors[1];
+    b = colors[2];
+  }
     return "#"+("00000"+(r<<16|g<<8|b).toString(16)).slice(-6);
 }
 //Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
@@ -2755,14 +2811,10 @@ function initialize() {
       trackView();
       
       // console.log('bounds changed');
-      var bounds = map.getBounds();
-      var keys = Object.keys(bounds);
-      var keysX = Object.keys(bounds[keys[0]]);
-      var keysY = Object.keys(bounds[keys[1]]);
-      // console.log('b');console.log(bounds);
+      var coords = Object.values(map.getBounds().toJSON());
       updateMousePositionAndZoom(mouseLng,mouseLat,zoom,lastElevation);
       try{
-        eeBoundsPoly = ee.Geometry.Rectangle([bounds[keys[1]][keysX[0]],bounds[keys[0]][keysY[0]],bounds[keys[1]][keysX[1]],bounds[keys[0]][keysY[1]]]);
+        eeBoundsPoly = ee.Geometry.Rectangle([coords[1],coords[0],coords[3],coords[2]],null,false);
       }
       catch(err){
         const x = 1;
@@ -2792,7 +2844,12 @@ function initialize() {
 	 // ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
     //Initialize GEE
     
-  
+    function loadGEELibraries(){
+      function loadCDL(){
+        loadJS("./js/changeDetectionLib.js", true,eeInitSuccessCallback)
+      }
+      loadJS("./js/getImagesLib.js", true,loadCDL)
+    }
     function eeInitSuccessCallback(){
       //Set up the correct GEE run function
       geeAuthenticated = true;
@@ -2803,7 +2860,7 @@ function initialize() {
           if(staticTemplates.loadingModal[mode]===undefined){
             if(mode==='MTBS'){
               showMessage('',staticTemplates.loadingModal['all']('mtbs-logo.png','Creating'));
-            }else if(mode==='STORM' || mode === 'Bloom-Mapper' || mode === 'sequoia-view'){
+            }else if(mode==='STORM' || mode === 'Bloom-Mapper' || mode === 'sequoia-view' || mode === 'TreeMap'){
               showMessage('',staticTemplates.loadingModal['all']('logos_usda-fs_bn-dk-01.svg','Creating'));
             }else if(mode==='lcms-dashboard'){
             showMessage('',staticTemplates.loadingModal['all']('lcms-icon.png','Loading','LCMS summary areas'));
@@ -2889,24 +2946,27 @@ function initialize() {
       var loaded = false;
       var loadTryCount = 0;
       var maxLoadTryCount = 2;
+      var geeRunError;
       function loadRun(){
         try{
             run();
             loaded = true; 
           }catch(err){
+            geeRunError = err;
             console.log(err);
-            console.log('Failed to load GEE run function. Waiting 5 seconds to retry');
+            console.log('Failed to load GEE run function. Waiting 1 second   to retry');
             loadTryCount++;
+            
           }
 
       }
       while(loaded===false && loadTryCount < maxLoadTryCount){
         loadRun();
         if(loaded===false){
-          sleepFor(3000);
+          sleepFor(1000);
         }
       }
-    
+      
       setupAreaLayerSelection();
       // setupFSB();
       //Bring in plots of they're turned on
@@ -2922,6 +2982,10 @@ function initialize() {
           $('#intro-modal-loading-div').hide();
           $('#summary-spinner').hide();
           
+        };
+
+        if(!loaded){
+          showMessage('GEE Script Error',geeRunError);
         };
       // }
       if(mode === 'lcms-dashboard'){
@@ -2965,7 +3029,9 @@ function initialize() {
   var initCount = 1;
   function eeInit(){
     console.log(`Initializing GEE try number: ${initCount}`)
-    ee.initialize(authProxyAPIURL,geeAPIURL,()=>{eeInitSuccessCallback()},(failure)=>{eeInitFailureCallback(failure)});
+    ee.initialize(authProxyAPIURL,geeAPIURL,()=>{
+      loadGEELibraries()},
+    (failure)=>{eeInitFailureCallback(failure)});
     initCount++;
   }
   eeInit();

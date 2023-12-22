@@ -1,6 +1,7 @@
 
 
 function runGTAC(){
+  defaultQueryDateFormat = 'YYYY';
   //Set up some params
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
@@ -186,7 +187,8 @@ function runGTAC(){
     // console.log('attrQueryDict',attrQueryDict)
     // console.log(lcmsAttr.size().getInfo())
 
-    Map2.addTimeLapse(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
+    Map2.addLayer(lcmsAttr_stack.map(img=>img.updateMask(img.gt(1).and(img.lt(16)))),{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false);
+    // Map2.addLayer(lcmsRun.lcms.select([0]),{autoViz:true},'Change')
     //Map2.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
   }
 
@@ -231,14 +233,14 @@ function runGTAC(){
   lcmsRun.fittedCCDC = predictCCDC(ccdcImg,annualImages,fillGaps,whichHarmonics).select([lcmsRun.whichIndex+'_predicted'],['CCDC Fitted '+lcmsRun.whichIndex]).map(setSameDate);
   
   //Set up LANDTRENDR
-  lcmsRun.lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f).filter(ee.Filter.eq('band',lcmsRun.whichIndex)))).flatten()).mosaic();
-//   var lt = conusLT.filter(ee.Filter.eq('band',whichIndex)).merge(akLT.filter(ee.Filter.eq('band',whichIndex))).mosaic();
-  lcmsRun.fittedAsset = ltStackToFitted(lcmsRun.lt,1984,2022).filter(ee.Filter.calendarRange(startYear,endYear,'year')).select(['fit'],['LANDTRENDR Fitted '+ lcmsRun.whichIndex]);
-  
+  lcmsRun.lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f))).flatten()).filter(ee.Filter.eq('band',lcmsRun.whichIndex)).select([0]).max();
+  // Map2.addLayer(lcmsRun.lt,{},'raw lt')
+  lcmsRun.fittedAsset = cdl.simpleLTFit(lcmsRun.lt,1984,2023, lcmsRun.whichIndex,true,6).select([`${lcmsRun.whichIndex}_LT_fitted`],['LANDTRENDR Fitted '+ lcmsRun.whichIndex]).map(i=>{return i.divide(10000).float().copyProperties(i,['system:time_start'])});
+  // Map2.addLayer(lcmsRun.fittedAsset,{},'lt fitted')
   //Join raw time series to lt fitted and ccdc fitted
   lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.composites.select([lcmsRun.whichIndex],['Raw '+lcmsRun.whichIndex]),lcmsRun.fittedAsset,false);
   lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection,lcmsRun.fittedCCDC,false);
-
+  // console.log(lcmsRun.changePixelChartCollection.getInfo())
   //Set up change prob outputs for pixel charting
   lcmsRun.probCollection = lcmsRun.lcms.select(['Change_Raw_Probability_.*'],['Slow Loss Probability','Fast Loss Probability','Gain Probability']).map(function(img){return img.divide(100).copyProperties(img,['system:time_start'])})
   
@@ -349,7 +351,7 @@ function runGTAC(){
   // function runGTAC(){
   //   let lcmsRun = {};
   //   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections
-  //   lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
+    // lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map(f => ee.ImageCollection(f).select(['Change','Land_Cover','Land_Use','.*Probability.*']))).flatten())
   //   lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.eq('study_area','CONUS'))
   //   lcmsRun.props = lcmsRun.lcms.first().toDictionary().getInfo();
   //   console.log(lcmsRun.lcms.getInfo());
@@ -393,14 +395,32 @@ function runGTAC(){
 
 
   // function runGTAC(){
-    // var comps = ee.ImageCollection('projects/lcms-tcc-shared/assets/Composites/Composite-Collection-yesL7-1984-2020')
-    // Map2.addTimeLapse(comps.filter(ee.Filter.calendarRange(2018,2023,'year')),{min:500,max:3500,bands:'swir2,nir,red',mosaic:true})
+  // var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8")
+  //   // .map(img=>img.updateMask(img.gt(1)));
+  // Map2.addLayer(lcms.select([0]),{'autoViz':true})
+    // Map2.addLayer(lcms.select(['Land_Cover_Raw_Probability_Trees']),{'min':20,'max':80,'palette':['Ffff00','BlUe','green','green']},'lcms')
+  //   var comps = ee.ImageCollection('projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7')
+  //   .select(['swir2','nir','red'])
+  //   Map2.addTimeLapse(comps.filter(ee.Filter.calendarRange(2000,2005,'year')),{mosaic:true,'queryDateFormat':'YYYY-MM-dd HH:mm'})//,{min:500,max:3500,bands:'swir2,nir,red'});
+  //   Map2.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')).mosaic().divide(10000),{min:500,max:3500,bands:'swir2,nir,red'});
+  //   Map2.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')),{min:500,max:3500,bands:'swir2,nir,red'});
+  //   var ls = getImagesLib.getProcessedLandsatScenes(geometry,2015,2019,190,250).select(['swir2','red','NBR','NDVI','nir']);
+  //   Map2.addLayer(ls.sort('system:time_start',false),getImagesLib.vizParamsFalse,'LS')
+    // Map2.addLayer(ee.Image(1).multiply(0.001111111111111111111111),{palette:'lightblue',min:0,max:1,classLegendDict:{'test1':'lightblue'}})
+    // Map2.turnOnInspector();
+    // Map2.setTitle('test');
+    // Map2.setQueryCRS('EPSG:32611')
+    // Map2.setQueryTransform( [60, 0, -2361915, 0, -60, 3177735]);
+    // Map2.setQueryPrecision(4,0.01)
+    // Map2.setQueryDateFormat('YYYY-MM-dd HH:mm');
+    // Map2.setQueryBoxColor('#F00')
+  
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
   //   // Map2.addLayer(ee.Image([1,2,3]).toArray());
   //   // Map2.addLayer(ee.Image(1));
   //   // Map2.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
   //   // Map2.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
-  //   // Map2.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().float())
+    // Map2.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().multiply(10000).float())
   //   // var sa = ee.FeatureCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary');
   //   // Map2.addLayer(sa)
   //   var props = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").first().toDictionary().getInfo();
@@ -418,5 +438,14 @@ function runGTAC(){
   //   Map2.addTimeLapse(lcms.select(['.*Probability.*']),{reducer:ee.Reducer.max(),min:0,max:30,classLegendDict:{'Non-Tree No Change':'000','Tree No Change':'0E0','Non-Tree Fast Loss':'E00','Tree Gain':'0FF','Tree Fast Loss':'FF0','Tree Fast Loss + Gain':'FFF'},bands:'Change_Raw_Probability_Fast_Loss,Land_Cover_Raw_Probability_Trees,Change_Raw_Probability_Gain'},'LCMS Change Composite')
   //   Map2.addLayer(lcms.select(['Land_Cover']),{'autoViz':true,reducer:ee.Reducer.mode()},'LCMS',false)
   //   setTimeout(()=>{$('#query-label').click()},1000)
+  //  s2s = getImagesLib.getProcessedSentinel2Scenes(geometry,2022,2022,190,250);
+  //  console.log(s2s.size().getInfo())
+  //  var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f))).flatten()).select([0]);
+  //  Map2.addLayer(lt.filter(ee.Filter.eq('band','NBR')).max())
+  //  var ltStack = cdl.batchSimpleLTFit(lt,urlParams.startYear+20,urlParams.endYear,null,'band',true,6)
+  //  print(ltStack.first().getInfo())
+  //  Map2.addTimeLapse(ltStack.limit(2),{min:getImagesLib.vizParamsFalse10k.min,max:getImagesLib.vizParamsFalse10k.max,bands:'swir1_LT_fitted,nir_LT_fitted,red_LT_fitted',gamma:getImagesLib.vizParamsFalse10k.gamma})
+  //  Map2.addLayer(s2s.median(),getImagesLib.vizParamsFalse,'test')
+  //  Map2.centerObject(geometry)
   // }
   
