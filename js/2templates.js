@@ -799,6 +799,9 @@ const staticTemplates = {
                                 <li>
                                     <a class = 'links' href='https://data.fs.usda.gov/geodata/rastergateway/treemap/index.php' title = 'Get an overview of TreeMap data, download attributes, and browse additional documentation.'>Raster Data Gateway</a>
                                 </li>
+                                <li>
+                                    <a class = 'links' href='https://developers.google.com/earth-engine/datasets/catalog/USFS_GTAC_TreeMap_v2016' title = 'View TreeMap v2016 in the Google Earth Engine Data Catalog.'>Google Earth Engine Data Catalog</a>
+                                </li>
                             </div>
                         </section>
                         <hr>
