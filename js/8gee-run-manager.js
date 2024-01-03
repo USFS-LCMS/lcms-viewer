@@ -512,9 +512,83 @@ function runAncillary(){
 
   getLCMSVariables();
   // Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
-  var hi_veg = ee.FeatureCollection('projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED')
-Map2.addLayer(hi_veg,{strokeColor:'808',layerType:'geeVectorImage'},'HI Veg',false,null,null, 'HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1');
+  var hi_veg_polys = ee.FeatureCollection('projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED')
+  Map2.addLayer(hi_veg_polys,{strokeColor:'808',layerType:'geeVectorImage'},'HI Veg Polys',false,null,null, 'HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1');
   
+  var hi_veg_ccap = ee.Image('projects/lcms-292214/assets/hi_hawaii_2010_ccap_hires_landcover_20150120')
+  
+  var hi_veg_ccap_dict = {
+    0: 'Background', 
+    1: 'Unclassified', 
+    2: 'Developed, Impervious',
+    5: 'Developed, Open Space',
+    6: 'Cultivated Crops',
+    7: 'Pasture/Hay', 
+    8: 'Grassland/Herbaceous', 
+    9: 'Deciduous Forest',
+    10: 'Evergreen Forest',
+    11: 'Mixed Forest',
+    12: 'Shrub/Scrub',
+    13: 'Palustrine Forested Wetland',
+    14: 'Palustring Scrub/Shrub Wetland',
+    15: 'Palustrine Emergent Wetland (Persistent)',
+    16: 'Estuarine Forested Wetland',
+    17: 'Estuarine Scrub/Shrub Wetland',
+    18: 'Estuarine Emergent Wetland',
+    19: 'Unconsolidated Shore',
+    20: 'Barren Land',
+    24: 'Tundra',
+    25: 'Perennial Ice/Snow'
+
+  };
+
+  var hi_veg_ccap_palette = [
+    'ffffff', //1
+    'ffffff',
+    'ffffff',
+    'ffffff',
+    'cccc00',//5
+    '521f00',
+    'c1a04f',
+    'c3a04a',
+    'f7ba83',
+    '00f200',//10
+    '003801', 
+    '08a038',
+    '6b6d01',
+    '005c5a',
+    'f56c01',//15
+    'f501f5', 
+    '3a003a',
+    'b500b4',
+    '00f2f6',
+    'f7f301',//20
+    '090873' //21
+  ];
+  
+  var hi_veg_ccap_LegendDict= {
+    'Background' : 'ffffff',
+    'Unclassified':  'ffffff',
+    'Developed, Impervious':'ffffff',
+    'Developed, Open Space':'ffffff',
+    'Cultivated Crops':'cccc00', //5
+    'Pasture/Hay': '521f00',
+    'Grassland/Herbaceous': 'c1a04f',
+    'Deciduous Forest':'c3a04a',
+    'Evergreen Forest':'f7ba83',
+    'Mixed Forest':'00f200',//10
+    'Shrub/Scrub':'003801',
+    'Palustrine Forested Wetland':'08a038',
+    'Palustring Scrub/Shrub Wetland':'6b6d01',
+    'Palustrine Emergent Wetland (Persistent)':'005c5a',
+    'Estuarine Forested Wetland':'f56c01',//15
+    'Estuarine Scrub/Shrub Wetland':'f501f5',
+    'Estuarine Emergent Wetland':'3a003a',
+    'Unconsolidated Shore':'b500b4',
+    'Barren Land':'00f2f6'
+}
+
+  Map2.addLayer(hi_veg_ccap,{layerType:'geeImage',min:1,max:20,palette:hi_veg_ccap_palette,classLegendDict:hi_veg_ccap_LegendDict,queryDict:hi_veg_ccap_dict}, 'HI Veg NOAA CCAP 2010', false);
 
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
@@ -611,6 +685,7 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
                     'Estuarine and Marine Deepwater': '007c88',
                     'Other Freshwater wetland':'b28653'
                   }
+  // Hawaii Wetland data                
   var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/HI_wetlands");
   nwi_hi = nwi_hi.map(function(f){return f.set('WETLAND_TY_NO',f.get('WETLAND_TY'))});
   var props =nwi_hi.aggregate_histogram('WETLAND_TY_NO').keys();
@@ -620,9 +695,9 @@ var nwiLegendDict= {'Freshwater- Forested and Shrub wetland':'008836',
   var nwi_dict = {1: 'Estuarine and Marine Deepwater', 2: 'Estuarine and Marine Wetland', 3: 'Freshwater Emergent Wetland', 4: 'Freshwater Forested/Shrub Wetland', 5: 'Freshwater Pond', 6: 'Lake', 7: 'Riverine'};
   var nwi_palette = ['007c88','66c2a5','7fc31c','008836','688cc0','13007c','0190bf'];
   var nwi_hi_rast = nwi_hi.reduceToImage(['WETLAND_TY_NO'], ee.Reducer.first()).rename(['NWI']).set('system:time_start',ee.Date.fromYMD(2019,6,1).millis());
-  // Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'NWI');                
+  Map2.addLayer(nwi_hi_rast,{layerType:'geeImage',min:1,max:7,palette:nwi_palette,classLegendDict:nwiLegendDict,queryDict:nwi_dict},'HI NWI', false);                
 
-    Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
+  //Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
 esri_lc_dict = {'Water':'008',
                 'Trees':'080',
                 'Flooded Vegetation':'088',
