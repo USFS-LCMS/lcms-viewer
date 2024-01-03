@@ -585,7 +585,7 @@ function runAncillary(){
     'Barren Land':'f7f301' // 20
 }
 
-  Map2.addLayer(hi_veg_ccap,{layerType:'geeImage',min:1,max:20,palette:hi_veg_ccap_palette,classLegendDict:hi_veg_ccap_LegendDict,queryDict:hi_veg_ccap_dict}, 'HI Veg NOAA CCAP 2010');
+  Map2.addLayer(hi_veg_ccap,{layerType:'geeImage',min:1,max:20,palette:hi_veg_ccap_palette,classLegendDict:hi_veg_ccap_LegendDict,queryDict:hi_veg_ccap_dict}, 'HI Veg NOAA CCAP 2010', false);
 
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
