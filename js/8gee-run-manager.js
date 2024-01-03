@@ -530,7 +530,7 @@ function runAncillary(){
     11: 'Mixed Forest',
     12: 'Shrub/Scrub',
     13: 'Palustrine Forested Wetland',
-    14: 'Palustring Scrub/Shrub Wetland',
+    14: 'Palustrine Scrub/Shrub Wetland',
     15: 'Palustrine Emergent Wetland (Persistent)',
     16: 'Estuarine Forested Wetland',
     17: 'Estuarine Scrub/Shrub Wetland',
@@ -544,51 +544,48 @@ function runAncillary(){
 
   var hi_veg_ccap_palette = [
     'ffffff', //1
-    'ffffff',
+    'ffffff', //2
     'ffffff',
     'ffffff',
     'cccc00',//5
     '521f00',
-    'c1a04f',
     'c3a04a',
     'f7ba83',
-    '00f200',//10
-    '003801', 
-    '08a038',
-    '6b6d01',
+    '02eb02', //9 - deciduous forest
+    '013700', // 10 - evergreen forest
+    '08a038', // 11- mixed forest
+    '6b6d01', 
     '005c5a',
-    'f56c01',//15
-    'f501f5', 
+    'f56c01',
+    'f501f5', //15
     '3a003a',
+    '6a006a',
     'b500b4',
     '00f2f6',
-    'f7f301',//20
-    '090873' //21
+    'f7f301'//20
   ];
   
   var hi_veg_ccap_LegendDict= {
-    'Background' : 'ffffff',
-    'Unclassified':  'ffffff',
-    'Developed, Impervious':'ffffff',
-    'Developed, Open Space':'ffffff',
-    'Cultivated Crops':'cccc00', //5
-    'Pasture/Hay': '521f00',
-    'Grassland/Herbaceous': 'c1a04f',
-    'Deciduous Forest':'c3a04a',
-    'Evergreen Forest':'f7ba83',
-    'Mixed Forest':'00f200',//10
-    'Shrub/Scrub':'003801',
-    'Palustrine Forested Wetland':'08a038',
-    'Palustring Scrub/Shrub Wetland':'6b6d01',
-    'Palustrine Emergent Wetland (Persistent)':'005c5a',
-    'Estuarine Forested Wetland':'f56c01',//15
-    'Estuarine Scrub/Shrub Wetland':'f501f5',
-    'Estuarine Emergent Wetland':'3a003a',
-    'Unconsolidated Shore':'b500b4',
-    'Barren Land':'00f2f6'
+    'Developed, Impervious': 'ffffff',//2
+    'Developed, Open Space':'cccc00', //5
+    'Cultivated Crops':'521f00',
+    'Pasture/Hay': 'c1a04f',
+    'Grassland/Herbaceous': 'f7ba83',
+    'Deciduous Forest':'02eb02',
+    'Evergreen Forest':'013700',//10
+    'Mixed Forest':'08a038',
+    'Shrub/Scrub':'6b6d01',
+    'Palustrine Forested Wetland':'005c5a',
+    'Palustrine Scrub/Shrub Wetland':'f56c01',
+    'Persistent Emergent Wetland' :'f501f5', //15
+    'Estuarine Forested Wetland':'3a003a',
+    'Estuarine Scrub/Shrub Wetland':'6a006a',
+    'Estuarine Emergent Wetland':'b500b4',
+    'Unconsolidated Shore':'00f2f6',
+    'Barren Land':'f7f301' // 20
 }
 
-  Map2.addLayer(hi_veg_ccap,{layerType:'geeImage',min:1,max:20,palette:hi_veg_ccap_palette,classLegendDict:hi_veg_ccap_LegendDict,queryDict:hi_veg_ccap_dict}, 'HI Veg NOAA CCAP 2010', false);
+  Map2.addLayer(hi_veg_ccap,{layerType:'geeImage',min:1,max:20,palette:hi_veg_ccap_palette,classLegendDict:hi_veg_ccap_LegendDict,queryDict:hi_veg_ccap_dict}, 'HI Veg NOAA CCAP 2010');
 
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
   // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
