@@ -1,231 +1,249 @@
 <!DOCTYPE html>
 <html lang="en-US">
-    <head>
-		<meta charset="utf-8" />
-		    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-        	<meta content="utf-8" http-equiv="encoding">
-        	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	        <meta name="description" content="USDA Forest Service LAMDA Viewer ">
-	        <meta name="keywords" content="Landscape, Change, Forestry, USDA, Forest Service, Remote Sensing, Earth Engine">
-	        <meta name="author" content="Ian Housman">
-	        <link rel="icon" href="./images/usfslogo.png">
-		    <title>LAMDA Product Downloads</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta content="utf-8" http-equiv="encoding" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="USDA Forest Service LAMDA Viewer " />
+    <meta name="keywords" content="Landscape, Change, Forestry, USDA, Forest Service, Remote Sensing, Earth Engine" />
+    <meta name="author" content="Ian Housman" />
+    <link rel="icon" href="./src/assets/images/usfslogo.png" />
+    <title>LAMDA Product Downloads</title>
 
-		    <!-- Latest compiled and minified CSS -->
-			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 
-			<!-- jQuery library -->
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-			<!-- Popper JS -->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-			<!-- Latest compiled JavaScript -->
-			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-		   
-			<style>
-			  body {
-			      position: relative; 
-			  }
-			  .bg-black{
-			  	background-color: #372E2C!important;
-			  	color:#BFB7B0!important;
-			  }
-			  .bg-white{
-			  	color: #372E2C;
-			  	background-color:#BFB7B0;
-			  }
-			  .topbar{
-			  	font-size: 1.5em;
-			  }
-			  .lamda-link{
-			  	color:#00BFA5;
-			  	font-size:0.8em;
-			  }
-			  .lamda-link:hover{
-			  	color:#B2ECE4;
-			  	transition-duration: 0.5s;
-			  }
-			  nav{border-bottom: 0.1em solid #00BFA5;}
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-			   img:active {
-				  height: 500px;
-				   transition-duration: 0.5s;
-				}
-			 </style>
-		    
-		    <script type="text/javascript">
-		    	function addDropdown(id,label){
-		    		$(`#navbar`).append(`<li class="nav-item dropdown" id = "${id}">
+    <style>
+      body {
+        position: relative;
+      }
+      .bg-black {
+        background-color: #372e2c !important;
+        color: #bfb7b0 !important;
+      }
+      .bg-white {
+        color: #372e2c;
+        background-color: #bfb7b0;
+      }
+      .topbar {
+        font-size: 1.5em;
+      }
+      .lamda-link {
+        color: #00bfa5;
+        font-size: 0.8em;
+      }
+      .lamda-link:hover {
+        color: #b2ece4;
+        transition-duration: 0.5s;
+      }
+      nav {
+        border-bottom: 0.1em solid #00bfa5;
+      }
+
+      img:active {
+        height: 500px;
+        transition-duration: 0.5s;
+      }
+    </style>
+
+    <script type="text/javascript">
+      function addDropdown(id, label) {
+        $(`#navbar`).append(`<li class="nav-item dropdown" id = "${id}">
 									      <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">${label}</a>
 									      <div class="dropdown-menu" id = "${id}-menu"></div>
-									    </li>`)
-		    	}
-		    	function addDropdownItem(containerID,id,label1,label2){
-		    		$(`#${containerID}-menu`).append(`<a class="dropdown-item" href="#${containerID}_${id}">${label2}</a>`)
+									    </li>`);
+      }
+      function addDropdownItem(containerID, id, label1, label2) {
+        $(`#${containerID}-menu`).append(`<a class="dropdown-item" href="#${containerID}_${id}">${label2}</a>`);
 
-		    		$('#list-container').append(`<div id="${containerID}_${id}" class="container-fluid bg-black" style="padding-top:90px;">
+        $("#list-container").append(`<div id="${containerID}_${id}" class="container-fluid bg-black" style="padding-top:90px;">
 												  <p>${label1} - ${label2}</p>
 												  <ul id = "${containerID}_${id}" class="list-group list-group-flush bg-black"></ul>
-												</div>`)
-		    	}
-		    	
-		    </script>
-    </head>
-	<!-- Set up analytics -->
-	<script type="text/javascript">
-		var mode = 'LAMDA';
-	</script>
-	<script type="text/javascript" src="./js/0analytics.js"></script>
-    <body data-spy="scroll" data-target=".navbar" data-offset="50">
-    	
-		<nav  id = 'top-nav' class="navbar navbar-expand-sm bg-black navbar-dark topbar fixed-top">
-			<div class="container-fluid">
-		  		<h1 class = 'mr-5'>LAMDA Downloads</h1>
-		  		<div class='form-group nav bg-black'>
-		  			<label for = 'year-selection' class = 'pr-2'>Year:  </label>
-			  		<select class="bg-black" id = 'year-selection' onchange =  'load_available_lamda()' aria-label="year selection">
-					  
-					  
-					</select>	
-		  		</div>
-		  		
-		  		<ul  class="navbar-nav" id = 'navbar'></ul>
-		  	</div>
-		  
-		</nav>
+												</div>`);
+      }
+    </script>
+  </head>
+  <!-- Set up analytics -->
+  <script type="text/javascript">
+    var mode = "LAMDA";
+  </script>
+  <script type="text/javascript" src="./src/js/0analytics.js"></script>
+  <body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <nav id="top-nav" class="navbar navbar-expand-sm bg-black navbar-dark topbar fixed-top">
+      <div class="container-fluid">
+        <h1 class="mr-5">LAMDA Downloads</h1>
+        <div class="form-group nav bg-black">
+          <label for="year-selection" class="pr-2">Year: </label>
+          <select class="bg-black" id="year-selection" onchange="load_available_lamda()" aria-label="year selection"></select>
+        </div>
 
-		
-		<div  class = 'container-fluid px-0' id = 'list-container'></div>
+        <ul class="navbar-nav" id="navbar"></ul>
+      </div>
+    </nav>
 
-		<div  class = 'bg-black container-fluid'>
-			
-			<iframe  id = 'viewer' src="./lamda-viewer.html" title="LAMDA Viewer"></iframe>
-		</div>
-		
-	 
+    <div class="container-fluid px-0" id="list-container"></div>
 
-	    <script type="text/javascript">
-			ga('send', 'event', 'lamda-download-load', new Date());
-			// Taken from: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
-			Date.prototype.dayOfYear= function(){
-			var j1= new Date(this);
-			j1.setMonth(0, 0);
-			return Math.round((this-j1)/8.64e7);
-			}
-			function trackDownload(path){
-				// console.log(`Downloading: ${path}`);
-				var sa = path.split('_')[0];	
-				ga('send', 'event', 'lamda-download-download', path.split('.tif')[0],sa);
-			}
-	    	var startYear = 2021;
-	    	var endYear = new Date().getYear()+1900;
-	    	var endYearCutoff = new Date('2023-02-26').dayOfYear();
-			var currentDate = new Date();
-			
-			var currentDayOfYear = currentDate.dayOfYear();
-			if(currentDayOfYear < endYearCutoff){
-				endYear--;
-			}
-	    	for(var year = startYear;year<endYear;year++){
-	    		$('#year-selection').append(`<option value="${year}">${year}</option>`);
-	    	}
-	    	$('#year-selection').append(`<option selected value = '${endYear}'>${endYear}</option>`);
-	    	console.log(endYear);
-	    	$('#loading-label').show();
-	    	$('#title-label').hide();
-	    	
-	    	// var available_years = ['2021','2022'];
-	    	// var selectedYear; 
-	    	function load_available_lamda(){
-	    		$(`#navbar`).empty();
-	    		$('#list-container').empty();
-	    		var selectedYear = $('#year-selection').val();
-	    		var topNavHeight = $('#top-nav').innerHeight()
-	    		$('#viewer').height(window.innerHeight-(topNavHeight*1.2));
-	    		$('#viewer').width(window.innerWidth-50);
-	    		// $('#viewer').css('padding-top', `${topNavHeight}px`);
-	    		var setup_dict = {	'persistence':{'dropdown_id':'persistence-dropdown','dropdown_label':'LAMDA Persistence','ending':'_persistence.tif'},
-	    							'eight_bit':{'dropdown_id':'eight-bit-dropdown','dropdown_label':'LAMDA 8-bit','ending':'_8bit.tif'},
-	    							
-	    							'raw':{'dropdown_id':'raw-dropdown','dropdown_label':'LAMDA Raw','ending':'.tif'}}
+    <div class="bg-black container-fluid">
+      <iframe id="viewer" src="./lamda-viewer.html" title="LAMDA Viewer"></iframe>
+    </div>
 
-	    		var study_area_dict = {'CONUS':{'dropdown_id':'conus','dropdown_label':'CONUS','start':'CONUS'},
-	    								'AK':{'dropdown_id':'AK','dropdown_label':'AK','start':'AK'}}
-	    		
-		    	var bucketName = 'lamda-products'
-		    	var id = 1;
-				function listFiles(nextPageToken=null){
-					let url = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o?maxResults=100000`;
-					if(nextPageToken!== null){
-						url = `${url}?pageToken=${nextPageToken}`
-					}
-					return $.ajax({
-						type: 'GET',
-						url: url
-					})
-				}
-				function makeLists(json){
-			        // json = json.items
-			        // console.log(json.length)
-			        json = json.filter((f)=> f.name.indexOf('ay'+selectedYear)>-1 || f.name.indexOf(selectedYear + '_jd')>-1);
-			        // console.log(json)
-			        var already_added = [];
-			        Object.keys(setup_dict).map(function(k){
-		    			addDropdown(setup_dict[k].dropdown_id,setup_dict[k].dropdown_label)
-		    		
-		    			var filesT = json.filter(function(f){return f.name.endsWith(setup_dict[k].ending)})
-		    			// console.log(filesT	)
-		    			Object.keys(study_area_dict).map(function(sak){
-		    				addDropdownItem(setup_dict[k].dropdown_id,study_area_dict[sak].dropdown_id,setup_dict[k].dropdown_label,study_area_dict[sak].dropdown_label)
+    <script type="text/javascript">
+      ga("send", "event", "lamda-download-load", new Date());
+      // Taken from: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
+      Date.prototype.dayOfYear = function () {
+        var j1 = new Date(this);
+        j1.setMonth(0, 0);
+        return Math.round((this - j1) / 8.64e7);
+      };
+      function trackDownload(path) {
+        // console.log(`Downloading: ${path}`);
+        var sa = path.split("_")[0];
+        ga("send", "event", "lamda-download-download", path.split(".tif")[0], sa);
+      }
+      var startYear = 2021;
+      var endYear = new Date().getYear() + 1900;
+      var endYearCutoff = new Date("2023-02-26").dayOfYear();
+      var currentDate = new Date();
 
-		    				var filesTT = filesT.filter(function(f){return f.name.startsWith(study_area_dict[sak].start)});
-							let jdKey = 'jd';
-							if(k==='persistence'){jdKey='jds'}
-							filesTT = filesTT.map(o=>{o.day=parseInt(o.name.split(jdKey)[1].split('-')[0]);return o;});
-							filesTT=filesTT.sort(function(a, b){return a.day-b.day})
-							// console.log(filesTT)
-		    				filesTT.map(function(p){
-		    					var nm = p.name.split('.tif')[0]
-		    					// console.log(nm)
-		    					if(already_added.indexOf(p.mediaLink) == -1){
-		    						$(`#${setup_dict[k].dropdown_id}_${study_area_dict[sak].dropdown_id}`).append(`<li class="list-group-item bg-black" id = "list-entry-${id}"><a class = "lamda-link" href = '${p.mediaLink}' onclick="trackDownload('${p.name}')">${p.name}</a>
+      var currentDayOfYear = currentDate.dayOfYear();
+      if (currentDayOfYear < endYearCutoff) {
+        endYear--;
+      }
+      for (var year = startYear; year < endYear; year++) {
+        $("#year-selection").append(`<option value="${year}">${year}</option>`);
+      }
+      $("#year-selection").append(`<option selected value = '${endYear}'>${endYear}</option>`);
+      console.log(endYear);
+      $("#loading-label").show();
+      $("#title-label").hide();
+
+      // var available_years = ['2021','2022'];
+      // var selectedYear;
+      function load_available_lamda() {
+        $(`#navbar`).empty();
+        $("#list-container").empty();
+        var selectedYear = $("#year-selection").val();
+        var topNavHeight = $("#top-nav").innerHeight();
+        $("#viewer").height(window.innerHeight - topNavHeight * 1.2);
+        $("#viewer").width(window.innerWidth - 50);
+        // $('#viewer').css('padding-top', `${topNavHeight}px`);
+        var setup_dict = {
+          persistence: {
+            dropdown_id: "persistence-dropdown",
+            dropdown_label: "LAMDA Persistence",
+            ending: "_persistence.tif",
+          },
+          eight_bit: {
+            dropdown_id: "eight-bit-dropdown",
+            dropdown_label: "LAMDA 8-bit",
+            ending: "_8bit.tif",
+          },
+
+          raw: {
+            dropdown_id: "raw-dropdown",
+            dropdown_label: "LAMDA Raw",
+            ending: ".tif",
+          },
+        };
+
+        var study_area_dict = {
+          CONUS: {
+            dropdown_id: "conus",
+            dropdown_label: "CONUS",
+            start: "CONUS",
+          },
+          AK: { dropdown_id: "AK", dropdown_label: "AK", start: "AK" },
+        };
+
+        var bucketName = "lamda-products";
+        var id = 1;
+        function listFiles(nextPageToken = null) {
+          let url = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o?maxResults=100000`;
+          if (nextPageToken !== null) {
+            url = `${url}?pageToken=${nextPageToken}`;
+          }
+          return $.ajax({
+            type: "GET",
+            url: url,
+          });
+        }
+        function makeLists(json) {
+          // json = json.items
+          // console.log(json.length)
+          json = json.filter((f) => f.name.indexOf("ay" + selectedYear) > -1 || f.name.indexOf(selectedYear + "_jd") > -1);
+          // console.log(json)
+          var already_added = [];
+          Object.keys(setup_dict).map(function (k) {
+            addDropdown(setup_dict[k].dropdown_id, setup_dict[k].dropdown_label);
+
+            var filesT = json.filter(function (f) {
+              return f.name.endsWith(setup_dict[k].ending);
+            });
+            // console.log(filesT	)
+            Object.keys(study_area_dict).map(function (sak) {
+              addDropdownItem(setup_dict[k].dropdown_id, study_area_dict[sak].dropdown_id, setup_dict[k].dropdown_label, study_area_dict[sak].dropdown_label);
+
+              var filesTT = filesT.filter(function (f) {
+                return f.name.startsWith(study_area_dict[sak].start);
+              });
+              let jdKey = "jd";
+              if (k === "persistence") {
+                jdKey = "jds";
+              }
+              filesTT = filesTT.map((o) => {
+                o.day = parseInt(o.name.split(jdKey)[1].split("-")[0]);
+                return o;
+              });
+              filesTT = filesTT.sort(function (a, b) {
+                return a.day - b.day;
+              });
+              // console.log(filesTT)
+              filesTT.map(function (p) {
+                var nm = p.name.split(".tif")[0];
+                // console.log(nm)
+                if (already_added.indexOf(p.mediaLink) == -1) {
+                  $(`#${setup_dict[k].dropdown_id}_${study_area_dict[sak].dropdown_id}`)
+                    .append(`<li class="list-group-item bg-black" id = "list-entry-${id}"><a class = "lamda-link" href = '${p.mediaLink}' onclick="trackDownload('${p.name}')">${p.name}</a>
 		    							
-		    							</li>`)
-		    						if(k!== 'raw'){
-		    							// console.log(k + ' '+nm)
-		    							$(`#list-entry-${id}`).append(`<img   title = 'Click this image and hold to make bigger' class = 'pl-5' height=50 src="https://storage.googleapis.com/${bucketName}/${nm}.jpg"></img>`)
-		    							id++;
-		    						}
-					        		already_added.push(p.mediaLink)
-		    					}
-					        	
-					        })
-		    			})
-		    		})
-			    
+		    							</li>`);
+                  if (k !== "raw") {
+                    // console.log(k + ' '+nm)
+                    $(`#list-entry-${id}`).append(
+                      `<img   title = 'Click this image and hold to make bigger' class = 'pl-5' height=50 src="https://storage.googleapis.com/${bucketName}/${nm}.jpg"></img>`
+                    );
+                    id++;
+                  }
+                  already_added.push(p.mediaLink);
+                }
+              });
+            });
+          });
 
-			            $(`#navbar`).append(`<li class="nav-item " id = "viewer-nav">
+          $(`#navbar`).append(`<li class="nav-item " id = "viewer-nav">
 									      <a class="nav-link" href="#viewer">LAMDA Viewer</a>
-									    </li>`)
-
-
-			    }
-				listFiles().done(json=>makeLists(json.items))
-					
-		
-			    }
-			    $(document).ready(function(){
-			    	load_available_lamda()
-			    })
-			   window.addEventListener('resize',function(){
-			    	console.log('resized')
-			        var topNavHeight = $('#top-nav').innerHeight()
-	    			$('#viewer').height(window.innerHeight-(topNavHeight*1.2));
-	    			$('#viewer').width(window.innerWidth-50);
-			            })
-
-		    </script>
-    	
-    </body>
+									    </li>`);
+        }
+        listFiles().done((json) => makeLists(json.items));
+      }
+      $(document).ready(function () {
+        load_available_lamda();
+      });
+      window.addEventListener("resize", function () {
+        console.log("resized");
+        var topNavHeight = $("#top-nav").innerHeight();
+        $("#viewer").height(window.innerHeight - topNavHeight * 1.2);
+        $("#viewer").width(window.innerWidth - 50);
+      });
+    </script>
+  </body>
 </html>
