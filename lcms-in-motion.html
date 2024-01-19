@@ -1,71 +1,73 @@
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="description" content="USDA Forest Service Landscape Change Monitoring System (LCMS) Data Explorer " />
+    <meta name="keywords" content="Landscape, Change, Forestry, USDA, Forest Service, Remote Sensing, Earth Engine" />
+    <meta name="author" content="Ian Housman" />
+    <title>LCMS in Motion | LCMS Data Animations</title>
+    <link rel="icon" href="./src/assets/images/lcms-icon.png" />
+    <script type="text/javascript">
+      var mode = "LCMS";
+    </script>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="description" content="USDA Forest Service Landscape Change Monitoring System (LCMS) Data Explorer ">
-  <meta name="keywords" content="Landscape, Change, Forestry, USDA, Forest Service, Remote Sensing, Earth Engine">
-  <meta name="author" content="Ian Housman">
-  <title>LCMS in Motion | LCMS Data Animations</title>
-  <link rel="icon" href="./images/lcms-icon.png">
-  <script type="text/javascript">var mode = 'LCMS'</script>
-  
-  <!-- Google Earth Engine API - only used to see if GEE is up and running so we can use cloudStorage for the gifs-->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/google/earthengine-api@v0.1.341/javascript/build/ee_api_js.js"></script>
-  
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Google Earth Engine API - only used to see if GEE is up and running so we can use cloudStorage for the gifs-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/google/earthengine-api@v0.1.341/javascript/build/ee_api_js.js"></script>
 
-  <link rel="stylesheet" href="https://js.arcgis.com/4.23/esri/themes/dark/main.css" />
-  <link rel="stylesheet" href="./css/style.css">
-  <script src="https://js.arcgis.com/4.23/"></script>
-  <link rel="stylesheet" href="./css/esri-viewer.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+      integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+      crossorigin="anonymous"
+    />
 
-  <script src="./js/14lcms-in-motion.js"></script>
-</head>
-<script type="text/javascript" src="./js/0analytics.js"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.23/esri/themes/dark/main.css" />
+    <link rel="stylesheet" href="./src/styles/style.css" />
+    <script src="https://js.arcgis.com/4.23/"></script>
+    <link rel="stylesheet" href="./src/styles/esri-viewer.css" />
+
+    <script src="./src/js/14lcms-in-motion.js"></script>
+  </head>
+  <script type="text/javascript" src="./src/js/0analytics.js"></script>
   <script type="text/javascript">
-    ga('send', 'event','load', 'lcms-gif-viewer', 'lcms-gif-viewer');
+    ga("send", "event", "load", "lcms-gif-viewer", "lcms-gif-viewer");
   </script>
-<body>
-  
-  <div id="viewDiv"></div>
-  <div id="timeSlider" style = 'display:none;' title='If any time-enabled layers are turned on, this time slider will appear. Use it to change what year is shown.'></div>
-  <div id = 'splash' class = 'md-8' >
-    
-    <div id = 'intro-div' style = 'display:none;'>
-      <button type="button" onclick="closeSplash()" class = 'close-button' >&times;</button>
-      <div id='intro-div-content'></div>
-      <hr>
-      <div>
-        <input  type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-        <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
-            
+  <body>
+    <div id="viewDiv"></div>
+    <div id="timeSlider" style="display: none" title="If any time-enabled layers are turned on, this time slider will appear. Use it to change what year is shown."></div>
+    <div id="splash" class="md-8">
+      <div id="intro-div" style="display: none">
+        <button type="button" onclick="closeSplash()" class="close-button">&times;</button>
+        <div id="intro-div-content"></div>
+        <hr />
+        <div>
+          <input type="checkbox" class="form-check-input" id="dontShowAgainCheckbox" name="dontShowAgain" value="true" />
+          <label class="text-uppercase form-check-label" for="dontShowAgainCheckbox">Don't show again</label>
+        </div>
+        <hr id="intro-divider" />
       </div>
-      <hr id = 'intro-divider'>            
-    </div>
-    
-      
-      <div id = 'loading-spinner'  title = 'Layers loading'>
+
+      <div id="loading-spinner" title="Layers loading">
         <p>Loading Layers - this can take some time. Please be patient.</p>
-        
-        <span  style = 'display: flex;  '>
-          <img id = 'loading-spinner-logo' class = 'fa-spin px-2' src="./images/lcms-icon.png" height="20"  alt="LCMS logo image">
-         
+
+        <span style="display: flex">
+          <img id="loading-spinner-logo" class="fa-spin px-2" src="./src/assets/images/lcms-icon.png" height="20" alt="LCMS logo image" />
+
           <div class="progressbar">
-            <span style="width: 0%;">0%</span>
+            <span style="width: 0%">0%</span>
           </div>
         </span>
-        
       </div>
-  </div>
-  <div id = 'banner' onclick="showSplash();">
-    <img style = 'padding-right:1em;'class = 'logo' src="./images/lcms-icon.png" height="40"  alt="LCMS logo image" >
-    <h1 id = 'title-banner' title="" class = ' text-center pr-2 mb-1' style="font-weight:100;font-family: 'Roboto';"><span class = 'white' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">LCMS </span><span class = 'white' style="font-family: 'Roboto Black', sans-serif;">IN</span><span class = 'white' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> MOTION</span></h1>
-  </div>
-
-</body>
-
+    </div>
+    <div id="banner" onclick="showSplash();">
+      <img style="padding-right: 1em" class="logo" src="./src/assets/images/lcms-icon.png" height="40" alt="LCMS logo image" />
+      <h1 id="title-banner" title="" class="text-center pr-2 mb-1" style="font-weight: 100; font-family: 'Roboto'">
+        <span class="white" style="font-weight: 1000; font-family: 'Roboto Black', sans-serif">LCMS </span><span class="white" style="font-family: 'Roboto Black', sans-serif">IN</span
+        ><span class="white" style="font-weight: 1000; font-family: 'Roboto Black', sans-serif"> MOTION</span>
+      </h1>
+    </div>
+  </body>
 </html>
