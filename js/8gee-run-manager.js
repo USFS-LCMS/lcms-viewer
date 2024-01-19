@@ -3448,7 +3448,7 @@ function runTreeMap(){
                           
                           // stand density
                           ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'QMD_RMRS: Stand Quadratic Mean Diameter (in)', 'Rocky Mountain Research Station. The quadratic mean diameter, or the diameter of the tree of average basal area, on the condition. Based on live trees ≥1.0 inch d.b.h./d.r.c. Only collected by certain FIA work units.'],
-                          ['SDIPCT_RMRS',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)', 'Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.'],
+                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)', 'Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.'],
                         
                           // live tree variables
                           ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'STANDHT: Height of Dominant Trees (ft)', 'Derived from the Forest Vegetation Simulator.'],
