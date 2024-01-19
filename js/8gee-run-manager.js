@@ -3403,13 +3403,8 @@ function runAlgal(){
 // Function to add Treemap attributes to map
 function runTreeMap(){
   // All attributes collection 
-  // Each attribute is an individual image
-  // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
-  var attrC = ee.ImageCollection('projects/treemap-386222/assets/Final_Outputs/TreeMap_2016');
-
-  // All attributes available
-  // This list is currently only used for reference to creat the thematic and continuous lists below
-  var attrs = ['ALSTK', 'BALIVE', 'CANOPYPCT', 'CARBON_D', 'CARBON_DWN', 'CARBON_L', 'DRYBIO_D', 'DRYBIO_L', 'FLDSZCD', 'FLDTYPCD', 'FORTYPCD', 'GSSTK', 'QMD_RMRS', 'SDIPCT_RMR', 'STANDHT', 'STDSZCD', 'TPA_DEAD', 'TPA_LIVE', 'VOLBFNET_L', 'VOLCFNET_D', 'VOLCFNET_L'];
+  // Each attribute is a band in an image of the image collection
+  var attrC = ee.ImageCollection('USFS/GTAC/TreeMap/v2016');
 
   // Set the first layer to visible
   var visible = true;
@@ -3424,10 +3419,6 @@ function runTreeMap(){
   // Set up the thematic and continuous attributes
   // Thematic have a numeric and name field specified - the name field is pulled from the json version 
   // of the attribute table that is brought in when the TreeMap page is initially loaded (./geojson/TreeMap2016.tif.vat.json)
-  //var thematicAttrs = [
-  //                     ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
-  //                     ['FLDTYPCD','FldTypName','Field Forest Type Name'] 
-  //                    ];
   var thematicAttrs = [
                        ['FORTYPCD','ForTypName','FORTYPCD: Algorithm Forest Type Code', 'This is the forest type used for reporting purposes. It is primarily derived using a computer algorithm, except when less than 25 percent of the plot samples a particular forest condition or in a few other cases.'],
                        ['FLDTYPCD','FldTypName','FLDTYPCD: Field Forest Type Code', 'A code indicating the forest type, assigned by the field crew, based on the tree species or species groups forming a plurality of all live stocking. The field crew assesses the forest type based on the acre of forest land around the plot, in addition to the species sampled on the condition.'] 
@@ -3457,7 +3448,7 @@ function runTreeMap(){
                           
                           // stand density
                           ['QMD_RMRS',palettes.crameri.bamako[25],0.05,0.95,'QMD_RMRS: Stand Quadratic Mean Diameter (in)', 'Rocky Mountain Research Station. The quadratic mean diameter, or the diameter of the tree of average basal area, on the condition. Based on live trees ≥1.0 inch d.b.h./d.r.c. Only collected by certain FIA work units.'],
-                          ['SDIPCT_RMR',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)', 'Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.'],
+                          ['SDIPCT_RMRS',palettes.crameri.bamako[25],0.05,0.95,'SDIPCT_RMRS: Stand Density Index (percent of maximum)', 'Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.'],
                         
                           // live tree variables
                           ['STANDHT',palettes.crameri.bamako[50],0.1,0.90,'STANDHT: Height of Dominant Trees (ft)', 'Derived from the Forest Vegetation Simulator.'],
@@ -3480,8 +3471,8 @@ function runTreeMap(){
   
 // Function to get a thematic attribute image service  
 function getThematicAttr_Colors(attr){
-  // Pull the attribute image
-  var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+  // Pull the attribute band
+  var attrBand = attrC.filterDate('2016', '2017').first().select(attr[0]);
 
   // Get the numbers and names from the attribute table
   var numbers = treeMapLookup[attr[0]];
@@ -3532,13 +3523,13 @@ function getThematicAttr_Colors(attr){
   viz['classLegendDict'] = dict(zip(uniqueNames,colors));
   viz['title']=`${attr[2]} || ${attr[3]}`;
 
-  return [attrImg,viz,attr[2]]
+  return [attrBand,viz,attr[2]]
 }                
 
   // Function to get a continuous attribute image service
   function getContinuousAttr(attr){
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+    var attrBand = attrC.filterDate('2016', '2017').first().select(attr[0]);
 
     // Get the numbers and unique numbers for that attribute
     var numbers = treeMapLookup[attr[0]];
@@ -3556,14 +3547,14 @@ function getThematicAttr_Colors(attr){
     viz['palette'] = attr[1];
     viz['title']=`${attr[4]} || ${attr[5]}`;
 
-    return [attrImg,viz,attr[4]]
+    return [attrBand,viz,attr[4]]
   }
 
     // function to apply unique values to Ordinal attribute
     function getOrdinalAttr(attr){
 
       // Pull the attribute image
-      var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+      var attrBand = attrC.filterDate('2016', '2017').first().select(attr[0]);
   
       // Get the numbers and unique numbers for that attribute
       var numbers = treeMapLookup[attr[0]];
@@ -3586,7 +3577,7 @@ function getThematicAttr_Colors(attr){
       viz['classLegendDict'] = dict(zip(uniqueValues,removed_nulls_palette));
       viz['title']=`${attr[4]} || ${attr[5]}`;
       
-      return [attrImg,viz,attr[4]]
+      return [attrBand,viz,attr[4]]
     }
 
     // Removes all items of a given value from an array
@@ -3606,7 +3597,7 @@ function getThematicAttr_Colors(attr){
   function getPercentAttr(attr){
 
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+    var attrBand = attrC.filterDate('2016', '2017').first().select(attr[0]);
 
     // Get the numbers and unique numbers for that attribute
     var numbers = treeMapLookup[attr[0]];
@@ -3624,13 +3615,13 @@ function getThematicAttr_Colors(attr){
     viz['palette'] = attr[1];
     viz['title']=`${attr[2]} || ${attr[3]}`;
 
-    return [attrImg,viz,attr[2]]
+    return [attrBand,viz,attr[2]]
   }
 
   // Function to get a continuous attribute image service and use standard deviation as the min/max
   function getContinuousAttrSD(attr){
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq('attribute',attr[0])).first();
+    var attrBand = attrC.filterDate('2016', '2017').first().select(attr[0]);
 
     // Get the numbers and unique numbers for that attribute
     var numbers = treeMapLookup[attr[0]];
@@ -3655,17 +3646,17 @@ function getThematicAttr_Colors(attr){
     viz['palette'] = attr[1];
     viz['title']=`${attr[3]} (${attr[0]}) attribute image layer`;
 
-    return [attrImg,viz,attr[3]]
+    return [attrBand,viz,attr[3]]
   }
 
   //// Sort and add layers to the map
     // Create an array of all the layer visualization arrays returned by the respective functions
-  var metaArray = ordinalAttrs.map(getOrdinalAttr).concat(percentAttrs.map(getPercentAttr).concat(thematicAttrs.map(getThematicAttr_Colors).concat(continuousAttrs.map(getContinuousAttr))));
+  var metaArray = ordinalAttrs.map(getOrdinalAttr).concat(percentAttrs.map(getPercentAttr)).concat(thematicAttrs.map(getThematicAttr_Colors)).concat(continuousAttrs.map(getContinuousAttr))
 
     // Sort the meta array by the second index of each subarray
   metaArray.sort(function(a, b) {
-    var nameA = a[1].title.toUpperCase(); // Ignore case
-    var nameB = b[1].title.toUpperCase(); // Ignore case
+    var nameA = a[2].toUpperCase(); // Ignore case
+    var nameB = b[2].toUpperCase(); // Ignore case
     if (nameA < nameB) {
       return 1;
     }
@@ -3714,7 +3705,7 @@ function getThematicAttr_Colors(attr){
   rawQueryDict= makeTreeMapQueryLookup();
 
   // Bring in raw TreeMap layer and add it to the map
-  rawTreeMap = attrC.filter(ee.Filter.eq('attribute','Value')).first();//ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
+  rawTreeMap = attrC.filterDate('2016', '2017').first().select('Value');//ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
   
   Map2.addLayer(rawTreeMap.randomVisualizer(),{queryDict:rawQueryDict,addToLegend:false,opacity:0,title: `Raw TreeMap Identifier dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`},'TreeMap ID')
   
