@@ -101,7 +101,7 @@ function openLCMSSurvey(fromWhere) {
 function downloadTutorial() {
   var link = document.createElement("a");
   var tutorial_name = "LCMS_v2022-8_Data_Explorer_Overview.pdf";
-  link.href = "./tutorials/" + tutorial_name;
+  link.href = "./src/assets/tutorials/" + tutorial_name;
   link.target = "_blank";
   link.click();
   ga("send", "event", mode + "-download", "tutorial-download", tutorial_name);

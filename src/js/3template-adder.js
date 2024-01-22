@@ -946,7 +946,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 } else if (mode === "lcms-base-learner") {
   canExport = false;
   startYear = 1984;
-  endYear = 2022;
+  endYear = 2023;
   var minYear = startYear;
   var maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
@@ -1137,6 +1137,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   if (urlParams.whichPlatforms === null || urlParams.whichPlatforms === undefined) {
     urlParams.whichPlatforms = {
+      L4: true,
       L5: true,
       "L7-SLC-On": true,
       "L7-SLC-Off": false,
@@ -1689,7 +1690,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#parameters-collapse-div").append(`
-    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below. <a href="./geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
+    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below. <a href="./src/data/geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
     <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
     <hr>
     <label>Provide name for storm (optional):</label>

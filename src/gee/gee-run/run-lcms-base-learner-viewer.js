@@ -76,11 +76,18 @@ function runBaseLearner() {
 
   composites = ee.ImageCollection(
     ee.List.sequence(startYear, endYear, 1).map(function (yr) {
-      return simpleAddIndices(composites.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()), 10000);
+      return simpleAddIndices(
+        composites
+          .filter(ee.Filter.calendarRange(yr, yr, "year"))
+          .mosaic()
+          .select(["blue", "green", "red", "nir", "swir1", "swir2"])
+          .divide(10000)
+          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
+      );
     })
   );
 
-  fittedTS = joinCollections(
+  fittedTS = getImagesLib.joinCollections(
     composites.select(
       whichIndices,
       whichIndices.map(function (nm) {
@@ -90,25 +97,26 @@ function runBaseLearner() {
     lt_fit.select(final_bns),
     false
   );
-  Map.addLayer(fittedTS, {}, "Raw and LT Fitted");
-  // var ltPalette = palettes.niccoli.isol[7].reverse();
-  // var ltFitColors = ee.List.sequence(0, 6, 7 / indicesUsed.length)
-  //   .getInfo()
-  //   .map(function (i) {
-  //     i = Math.floor(i);
-  //     return ltPalette[i % 7];
-  //   });
-  // ltFitColors.map(function (c) {
-  //   ltFitColors.push(invertColor(c));
-  // });
+  // console.log(fittedTS.first().date().format("YYYY-MM-dd").getInfo());
+  // Map.addLayer(fittedTS, {}, "Raw and LT Fitted");
+  var ltPalette = palettes.niccoli.isol[7].reverse();
+  var ltFitColors = ee.List.sequence(0, 6, 7 / whichIndices.length)
+    .getInfo()
+    .map(function (i) {
+      i = Math.floor(i);
+      return ltPalette[i % 7];
+    });
+  ltFitColors.map(function (c) {
+    ltFitColors.push(invertColor(c));
+  });
   // // console.log(ltFitColors)
-  // // pixelChartCollections['LT_Fit'] =  {
-  // //         'label':'LANDTRENDR Fitted Time Series',
-  // //         'collection':fittedTS,
-  // //         'xAxisLabel':'Year',
-  // //         'tooltip':'Query LANDTRENDR fitted value for each year',
-  // //         'chartColors':ltFitColors
-  // //     };
+  pixelChartCollections["LT_Fit"] = {
+    label: "LANDTRENDR Fitted Time Series",
+    collection: fittedTS,
+    xAxisLabel: "Year",
+    tooltip: "Query LANDTRENDR fitted value for each year",
+    chartColors: ltFitColors,
+  };
 
   // ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -473,7 +481,7 @@ function runBaseLearner() {
   //   label: "Composite Time Series",
   //   collection: composites.select(["blue", "green", "red", "nir", "swir1", "swir2"]),
   // };
-  // populatePixelChartDropdown();
+  populatePixelChartDropdown();
   // populateAreaChartDropdown();
   // getLCMSVariables();
   // getSelectLayers(true);

@@ -22,7 +22,7 @@ function TweetThis(preURL = "", postURL = "", openInNewTab = false, showMessageB
   updatePageUrl();
 
   $.get("https://tinyurl.com/api-create.php", { url: pageUrl }, function (tinyURL) {
-    // console.log(tinyURL);
+    console.log(tinyURL);
     let key = tinyURL.split("//tinyurl.com/")[1];
     let shareURL = pageUrl.split("?")[0] + "?id=" + key;
     let fullURL = preURL + shareURL + postURL;

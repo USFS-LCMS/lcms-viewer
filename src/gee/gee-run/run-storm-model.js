@@ -653,20 +653,25 @@ function createHurricaneDamageWrapper(rows) {
               },
               function (url2, failure2) {
                 $("#summary-spinner").slideUp();
+
                 if (failure1 === undefined) {
-                  failure1 = "No errors";
+                  var failure1Message = "";
+                } else {
+                  var failure1Message = `<p title = 'If there are errors, you may need to specify a larger "Quick look spatial resolution"'>Errors: ${failure1}</p>`;
                 }
                 if (failure2 === undefined) {
-                  failure2 = "No errors";
+                  var failure2Message = "";
+                } else {
+                  var failure2Message = `<p title = 'If there are errors, you may need to specify a larger "Quick look spatial resolution"'>Errors: ${failure2}</p>`;
                 }
                 showMessage(
                   "Quick Look Outputs Ready",
                   `<hr>
                                   <a  target="_blank" href = '${url1}'>Click to download wind stack</a>
-                                  <p title = 'If there are errors, you may need to specify a larger "Quick look spatial resolution"'>Errors: ${failure1}</p>
+                                  ${failure1Message}
                                   <hr>
                                   <a  target="_blank" href = '${url2}'>Click to download damage stack</a>
-                                  <p title = 'If there are errors, you may need to specify a larger "Quick look spatial resolution"'>Errors: ${failure2}</p>
+                                  ${failure2Message}
                                   `
                 );
               }

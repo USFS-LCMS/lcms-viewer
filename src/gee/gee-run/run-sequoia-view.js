@@ -6,7 +6,6 @@ var site_highlights_dict = {};
 // var exports;
 // }
 function runSequoia() {
-  console.log("run");
   // First get a unique id url with all the parameters used to make the outputs
   TweetThis((preURL = ""), (postURL = ""), (openInNewTab = false), (showMessageBox = false), (onlyURL = true));
 
