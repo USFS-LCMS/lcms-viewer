@@ -2,15 +2,34 @@ function runBaseLearner() {
   var studyAreaName = "USFS LCMS 1984-2020";
   var startYear = urlParams.startYear;
   var endYear = urlParams.endYear;
-
-  var whichIndices = Object.keys(whichIndices2).filter((k) => whichIndices2[k] == true);
-
   var bandPropertyName = "band";
   var arrayMode = true;
   var bandNames;
   var cdl = changeDetectionLib;
   var gil = getImagesLib;
 
+  var whichIndices = Object.keys(whichIndices2).filter((k) => whichIndices2[k] == true);
+
+  
+  var composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten());
+
+  composites = ee.ImageCollection(
+    ee.List.sequence(startYear, endYear, 1).map(function (yr) {
+      return simpleAddIndices(
+        composites
+          .filter(ee.Filter.calendarRange(yr, yr, "year"))
+          .mosaic()
+          .select(["blue", "green", "red", "nir", "swir1", "swir2"])
+          .divide(10000)
+          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
+      );
+    })
+  );
+  let compViz = copyObj(gil.vizParamsFalse);
+  compViz.reducer = ee.Reducer.median();
+  Map.addLayer(composites,compViz,'Raw Composites',false);
+
+  
   var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten());
 
   var lt_props = lt.first().toDictionary().getInfo();
@@ -73,22 +92,7 @@ function runBaseLearner() {
   });
 
   // Map.addLayer(lt);
-  Map.turnOnTimeSeriesCharting();
-
-  var composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten());
-
-  composites = ee.ImageCollection(
-    ee.List.sequence(startYear, endYear, 1).map(function (yr) {
-      return simpleAddIndices(
-        composites
-          .filter(ee.Filter.calendarRange(yr, yr, "year"))
-          .mosaic()
-          .select(["blue", "green", "red", "nir", "swir1", "swir2"])
-          .divide(10000)
-          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
-      );
-    })
-  );
+ 
 
   // ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -159,7 +163,12 @@ function runBaseLearner() {
   ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
 
-  Map.addLayer(ccdcFitted.select([".*_fitted"]), ccdcSynthViz, `CCDC Synthetic Composite`, false);
+  
+  var annualImages = changeDetectionLib.getTimeImageCollection(startYear, endYear + 1, startJulian, endJulian, 1);
+  annualImages = annualImages.map((img) => setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))); //.map(setSameDate);
+  // #Then predict the CCDC models
+  var annualPredictedCCDC = changeDetectionLib.predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics);
+  Map.addLayer(annualPredictedCCDC.select([".*_fitted"]), ccdcSynthViz, `CCDC Synthetic Composite`, false);
 
   // #Extract the change years and magnitude
   changeObj = changeDetectionLib.ccdcChangeDetection(ccdcImg, changeDetectionBandName);
@@ -273,10 +282,7 @@ function runBaseLearner() {
   // var predicted = predictCCDC(ccdcImg, yearImages, fillGaps, whichHarmonics).select(ccdcAnnualBnsFrom, ccdcAnnualBnsTo);
 
   // var annualImages = simpleGetTimeImageCollection(ee.Number(startYear + fraction), ee.Number(endYear + 1 + fraction), 1);
-  var annualImages = changeDetectionLib.getTimeImageCollection(startYear, endYear + 1, startJulian, endJulian, 1);
-  annualImages = annualImages.map((img) => setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))); //.map(setSameDate);
-  // #Then predict the CCDC models
-  var annualPredictedCCDC = changeDetectionLib.predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics);
+
   // console.log(annualPredictedCCDC.first().getInfo());
   // // console.log(ccdcIndicesSelectorPrediction)
   // var annualPredicted = predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics)
@@ -518,4 +524,5 @@ function runBaseLearner() {
   // populateAreaChartDropdown();
   // getLCMSVariables();
   // getSelectLayers(true);
+  Map.turnOnTimeSeriesCharting();
 }

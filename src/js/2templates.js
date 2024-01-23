@@ -116,7 +116,14 @@ let topBannerParams = titles[mode];
 let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
 //Provide a bunch of templates to use for various elements
-function getIntroModal(iconPath, welcomeText, topText, middleText, bottomText, loadingText = "Creating map services within Google Earth Engine") {
+function getIntroModal(
+  iconPath,
+  welcomeText,
+  topText,
+  middleText,
+  bottomText,
+  loadingText = "Creating map services within Google Earth Engine"
+) {
   return `<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
                 <div style='max-width:700px;' class="modal-dialog" role="document">
                     <div class="modal-content text-dark modal-content-full-screen-styling" >
@@ -282,7 +289,7 @@ const staticTemplates = {
                                         <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
                                     </div> 
                                     <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
-      `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
+      `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd>
                                     </p>`,
       `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
@@ -595,7 +602,11 @@ const staticTemplates = {
     ),
   },
   loadingModal: {
-    all: function (logoPath, word, whatIsLoading = "map services within Google Earth Engine") {
+    all: function (
+      logoPath,
+      word,
+      whatIsLoading = "map services within Google Earth Engine"
+    ) {
       let logoLine = `<img class = 'logo' src="./src/assets/images/${logoPath}"   alt="${mode} logo image">`;
       if (logoPath === "" || logoPath === null || logoPath === undefined) {
         logoLine = ``;
@@ -1372,10 +1383,15 @@ const staticTemplates = {
        `,
   areaTip:
     "Click on map to measure area. Double-click to complete polygon, press <kbd>ctrl+z</kbd> to undo most recent point, press <kbd>Delete</kbd> or <kbd>Backspace</kbd> to start over. Any number of polygons can be defined by repeating this process.",
-  queryDiv: "<div>Double-click on map to query values of displayed layers at that location</div>",
-  queryTip: "Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.",
+  queryDiv:
+    "<div>Double-click on map to query values of displayed layers at that location</div>",
+  queryTip:
+    "Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.",
   pixelChartDiv: `<div>Double-click on map to query ${mode} data time series<br></div>`,
-  pixelChartTip: "Double-click on map to look at the full time series of " + mode + " outputs for a pixel.",
+  pixelChartTip:
+    "Double-click on map to look at the full time series of " +
+    mode +
+    " outputs for a pixel.",
   userDefinedAreaChartDiv: `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
@@ -1415,7 +1431,8 @@ const staticTemplates = {
   selectAreaDropdownChartDiv: `<i title="Selecting pre-defined summary areas for chosen study area" id = "select-area-spinner" class="text-dark px-2 fa fa-spin fa-spinner"></i>
                             <select class = 'form-control' style = 'width:100%;'  id='forestBoundaries' onchange='chartChosenArea()'></select>
                             <hr>`,
-  selectAreaDropdownChartTip: "Select from pre-defined areas to summarize products across.",
+  selectAreaDropdownChartTip:
+    "Select from pre-defined areas to summarize products across.",
   selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                         <hr>
                                         <label>Provide name for area selected for charting (optional):</label>
@@ -1435,7 +1452,8 @@ const staticTemplates = {
                                         <div id = 'select-features-edit-toolbar'></div>
                                         <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
                                         `,
-  selectAreaInteractiveChartTip: "Select from pre-defined areas on map to summarize products across.",
+  selectAreaInteractiveChartTip:
+    "Select from pre-defined areas on map to summarize products across.",
   shareButtons: `<!-- Email -->
                         <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
                             <img class = 'image-icon-bar' src="./src/assets/images/email.png" alt="Email" />
@@ -1472,7 +1490,10 @@ function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, showLocationError);
   } else {
-    showMessage("Cannot acquire location", "Geolocation is not supported by this browser.");
+    showMessage(
+      "Cannot acquire location",
+      "Geolocation is not supported by this browser."
+    );
     ga("send", "event", mode + "-getLocation", "failure", "failure");
   }
 }
@@ -1491,18 +1512,33 @@ function showPosition(position) {
   });
   map.setCenter(pt);
   map.setZoom(10);
-  showMessage("Acquired location", "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude);
+  showMessage(
+    "Acquired location",
+    "Latitude: " +
+      position.coords.latitude +
+      "<br>Longitude: " +
+      position.coords.longitude
+  );
 }
 function showLocationError(error) {
   switch (error.code) {
     case error.PERMISSION_DENIED:
-      showMessage("Cannot acquire location", "User denied the request for Geolocation.");
+      showMessage(
+        "Cannot acquire location",
+        "User denied the request for Geolocation."
+      );
       break;
     case error.POSITION_UNAVAILABLE:
-      showMessage("Cannot acquire location", "Location information is unavailable.");
+      showMessage(
+        "Cannot acquire location",
+        "Location information is unavailable."
+      );
       break;
     case error.TIMEOUT:
-      showMessage("Cannot acquire location", "The request to get user location timed out.");
+      showMessage(
+        "Cannot acquire location",
+        "The request to get user location timed out."
+      );
       break;
     case error.UNKNOWN_ERROR:
       showMessage("Cannot acquire location", "An unknown error occurred.");
@@ -1515,7 +1551,8 @@ function addDropdown(containerID, dropdownID, title, variable, tooltip) {
   if (tooltip === undefined || tooltip === null) {
     tooltip = "";
   }
-  $("#" + containerID).append(`<div id="${dropdownID}-container" class="form-group" title="${tooltip}">
+  $("#" + containerID)
+    .append(`<div id="${dropdownID}-container" class="form-group" title="${tooltip}">
 								  <label for="${dropdownID}"><p class = 'param-title'>${title}:</p></label>
 								  <select class="form-control" id="${dropdownID}"></select>
 								</div>`);
@@ -1529,16 +1566,26 @@ function addDropdownItem(dropdownID, label, value, tooltip) {
   if (tooltip === undefined || tooltip === null) {
     tooltip = "";
   }
-  $("#" + dropdownID).append(`<option class = '${dropdownID}-dropdown-item' $title = '${tooltip}' value = "${value}">${label}</option>`);
+  $("#" + dropdownID).append(
+    `<option class = '${dropdownID}-dropdown-item' $title = '${tooltip}' value = "${value}">${label}</option>`
+  );
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a standard shape editor toolbar
-function addShapeEditToolbar(containerID, toolbarID, undoFunction, restartFunction, undoTip, deleteTip) {
+function addShapeEditToolbar(
+  containerID,
+  toolbarID,
+  undoFunction,
+  restartFunction,
+  undoTip,
+  deleteTip
+) {
   if (undoTip === undefined || undoTip === null) {
     undoTip = "Click to undo last drawn point (ctrl z)";
   }
   if (deleteTip === undefined || deleteTip === null) {
-    deleteTip = "Click to clear current drawing and start a new one (Delete, or Backspace)";
+    deleteTip =
+      "Click to clear current drawing and start a new one (Delete, or Backspace)";
   }
   $("#" + containerID).append(`<hr>
 								    <div id = '${toolbarID}' class="icon-bar ">
@@ -1582,8 +1629,22 @@ function getDiv(containerID, divID, label, variable, value) {
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function getToggle(containerID, toggleID, onLabel, offLabel, onValue, offValue, variable, checked) {
-  if (checked === undefined || checked === null || checked === "true" || checked === "checked") {
+function getToggle(
+  containerID,
+  toggleID,
+  onLabel,
+  offLabel,
+  onValue,
+  offValue,
+  variable,
+  checked
+) {
+  if (
+    checked === undefined ||
+    checked === null ||
+    checked === "true" ||
+    checked === "checked"
+  ) {
     checked = true;
   } else if (checked === "false" || checked === "") {
     checked = false;
@@ -1628,7 +1689,8 @@ function addColorPicker(containerID, pickerID, updateFunction, value) {
   if (value === undefined || value === null) {
     value = "FFFF00";
   }
-  $("#" + containerID).append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
+  $("#" + containerID)
+    .append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
 							    class=" fa fa-paint-brush text-dark color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
 							    ></button>`);
 }
@@ -1646,7 +1708,8 @@ function addModal(containerID, modalID, bodyOnly) {
   }
   $("#" + modalID).remove();
   if (bodyOnly) {
-    $("#" + containerID).append(`<div id = "${modalID}" class="modal fade " role="dialog">
+    $("#" + containerID)
+      .append(`<div id = "${modalID}" class="modal fade " role="dialog">
             	<div class="modal-dialog modal-md ">
             		<div class="modal-content modal-content-not-full-screen-styling">
 	            		<div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
@@ -1674,7 +1737,9 @@ function addModalTitle(modalID, title) {
   if (modalID === null || modalID === undefined) {
     modalID = "modal-id";
   }
-  $("#" + modalID + " .modal-header").prepend(`<h4 class="modal-title" id = '${modalID}-title'>${title}</h4>`);
+  $("#" + modalID + " .modal-header").prepend(
+    `<h4 class="modal-title" id = '${modalID}-title'>${title}</h4>`
+  );
 }
 
 function clearModal(modalID) {
@@ -1729,11 +1794,23 @@ function appendMessage2(message, modalID) {
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Show a basic tip BS modal
 function showTip(title, message) {
-  if (localStorage.showToolTipModal == undefined || localStorage.showToolTipModal == "undefined") {
+  if (
+    localStorage.showToolTipModal == undefined ||
+    localStorage.showToolTipModal == "undefined"
+  ) {
     localStorage.showToolTipModal = "true";
   }
   if (localStorage.showToolTipModal === "true" && walkThroughAdded == false) {
-    showMessage("", '<span class = "font-weight-bold text-uppercase" >' + title + " </span><span>" + message + "</span>", "tip-modal", false);
+    showMessage(
+      "",
+      '<span class = "font-weight-bold text-uppercase" >' +
+        title +
+        " </span><span>" +
+        message +
+        "</span>",
+      "tip-modal",
+      false
+    );
 
     $("#tip-modal-body").append(`<form class="form-inline pt-3 pb-0">
 								  <div class="form-check  mr-0">
@@ -1756,7 +1833,9 @@ function showTip(title, message) {
 //Function to add a given study area to the study area dropdown
 function addStudyAreaToDropdown(name, toolTip) {
   var id = name.replaceAll(" ", "-");
-  $("#study-area-list").append(`<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`);
+  $("#study-area-list").append(
+    `<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`
+  );
   $("#" + id).on("click", function () {
     // $('#summary-spinner').show();
     $("#study-area-list").hide();
@@ -1765,7 +1844,19 @@ function addStudyAreaToDropdown(name, toolTip) {
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addToggle(containerDivID, toggleID, title, onLabel, offLabel, on, variable, valueOn, valueOff, onChangeFunction, tooltip) {
+function addToggle(
+  containerDivID,
+  toggleID,
+  title,
+  onLabel,
+  offLabel,
+  on,
+  variable,
+  valueOn,
+  valueOff,
+  onChangeFunction,
+  tooltip
+) {
   var valueDict = { true: valueOn, false: valueOff };
   var checked;
   if (tooltip === undefined || tooltip === null) {
@@ -1789,9 +1880,22 @@ function addToggle(containerDivID, toggleID, title, onLabel, offLabel, on, varia
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, valueOn, valueOff, onFunction, offFunction, tooltip) {
+function addRadio(
+  containerDivID,
+  radioID,
+  title,
+  onLabel,
+  offLabel,
+  variable,
+  valueOn,
+  valueOff,
+  onFunction,
+  offFunction,
+  tooltip
+) {
   eval(`window.${variable} = '${valueOn}';`);
-  $("#" + containerDivID).append(`<row class = 'row' id = '${radioID}-container' title="${tooltip}">
+  $("#" + containerDivID)
+    .append(`<row class = 'row' id = '${radioID}-container' title="${tooltip}">
 		<p class="col-12  param-title">${title} </p>
 		<div class = 'col-12 pt-0'>
     		<div  id = '#${radioID}'  class="toggle_radio p-0">
@@ -1819,7 +1923,9 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
 function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
-  $("#" + containerID).append(`<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`);
+  $("#" + containerID).append(
+    `<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`
+  );
   eval(`if(window.${variable} === undefined){window.${variable} = []}`);
   Object.keys(optionList).map(function (k) {
     // console.log(k)
@@ -1839,7 +1945,9 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
       checked = "";
     }
     eval(`window.${variable} = optionList`);
-    $("#" + checkboxID).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+    $(
+      "#" + checkboxID
+    ).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
                                  <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${k}</label>`);
 
     $("#" + checkboxCheckboxID).change(function () {
@@ -1854,8 +1962,17 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
 //Similar to the addCheckboxes only with radio buttons
 //The variable assumes the value of the key of the object that is selected instead of the entire optionList object
 //e.g. if optionList = {'hello':true,'there':false} then the variable = 'hello'
-function addMultiRadio(containerID, radioID, label, variable, optionList, title) {
-  $("#" + containerID).append(`<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`);
+function addMultiRadio(
+  containerID,
+  radioID,
+  label,
+  variable,
+  optionList,
+  title
+) {
+  $("#" + containerID).append(
+    `<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`
+  );
 
   eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
   Object.keys(optionList).map(function (k) {
@@ -1890,12 +2007,25 @@ function addMultiRadio(containerID, radioID, label, variable, optionList, title)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Function to add JSON text input widget
-function addJSONInputTextBox(containerID, inputID, label, variable, defaultValue, title) {
-  eval(`if(window.${variable} === undefined){window.${variable} = ${JSON.stringify(defaultValue)}}`);
+function addJSONInputTextBox(
+  containerID,
+  inputID,
+  label,
+  variable,
+  defaultValue,
+  title
+) {
+  eval(
+    `if(window.${variable} === undefined){window.${variable} = ${JSON.stringify(
+      defaultValue
+    )}}`
+  );
   $("#" + containerID).append(`
     <hr>
     <label>${label}</label>
-    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(defaultValue)}</textarea>`);
+    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
+    defaultValue
+  )}</textarea>`);
 
   $("#" + containerID).on("input", () => {
     var tJSON = $(`#${inputID}`).val();
@@ -1940,7 +2070,20 @@ Date.prototype.dayofYear = function () {
 //Create a dual range slider
 //Possible modes are : 'date','julian',or null
 //Default mode is 'date', must specify mode as null to use vanilla numbers
-function setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step, sliderID, updateID, mode, slideFun, stopFun) {
+function setUpDualRangeSlider(
+  var1,
+  var2,
+  min,
+  max,
+  defaultMin,
+  defaultMax,
+  step,
+  sliderID,
+  updateID,
+  mode,
+  slideFun,
+  stopFun
+) {
   // var dt_from = "2000/11/01";
   // var dt_to = "2015/11/24";
   // $("#"+updateID +" .ui-slider .ui-slider-handle").css( {"width": '3px'} );
@@ -1969,9 +2112,13 @@ function setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step
     step = step * 24 * 60 * 60;
     defaultMin = Date.fromDayofYear(defaultMin);
     defaultMax = Date.fromDayofYear(defaultMax);
-    $("#" + updateID).html(formatDTJulian(defaultMin) + " - " + formatDTJulian(defaultMax));
+    $("#" + updateID).html(
+      formatDTJulian(defaultMin) + " - " + formatDTJulian(defaultMax)
+    );
   } else {
-    $("#" + updateID).html(defaultMin.toString() + " - " + defaultMax.toString());
+    $("#" + updateID).html(
+      defaultMin.toString() + " - " + defaultMax.toString()
+    );
   }
 
   if (mode === "date" || mode === "julian") {
@@ -2003,7 +2150,9 @@ function setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step
 
         // value1 = new Date(value1);
         // value2 = new Date(value2);
-        $("#" + updateID).html(value1Show.toString() + " - " + value2Show.toString());
+        $("#" + updateID).html(
+          value1Show.toString() + " - " + value2Show.toString()
+        );
 
         eval(var1 + "= new Date(" + value1.toString() + ")");
         eval(var2 + "= new Date(" + value2.toString() + ")");
@@ -2016,7 +2165,9 @@ function setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step
         value1 = value1.dayofYear();
         value2 = value2.dayofYear();
 
-        $("#" + updateID).html(value1Show.toString() + " - " + value2Show.toString());
+        $("#" + updateID).html(
+          value1Show.toString() + " - " + value2Show.toString()
+        );
 
         eval(var1 + "= " + value1.toString());
         eval(var2 + "= " + value2.toString());
@@ -2027,7 +2178,9 @@ function setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step
         var value1Show = value1;
         var value2Show = value2;
 
-        $("#" + updateID).html(value1Show.toString() + " - " + value2Show.toString());
+        $("#" + updateID).html(
+          value1Show.toString() + " - " + value2Show.toString()
+        );
 
         eval(var1 + "= " + value1.toString());
         eval(var2 + "= " + value2.toString());
@@ -2044,22 +2197,59 @@ function setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step
   });
 }
 //Wrapper function to add a dual range slider
-function addDualRangeSlider(containerDivID, title, var1, var2, min, max, defaultMin, defaultMax, step, sliderID, mode, tooltip, slideFun, stopFun) {
+function addDualRangeSlider(
+  containerDivID,
+  title,
+  var1,
+  var2,
+  min,
+  max,
+  defaultMin,
+  defaultMax,
+  step,
+  sliderID,
+  mode,
+  tooltip,
+  slideFun,
+  stopFun
+) {
   if (tooltip === null || tooltip === undefined) {
     tooltip = "";
   }
 
   // setUpRangeSlider('startYear', 'endYear', 1985, 2018, startYear, endYear, 1, 'slider1', 'date-range-value1', 'null');
-  $("#" + containerDivID).append(`<div  id="${sliderID}-container"class='dual-range-slider-container px-1' title="${tooltip}">
+  $("#" + containerDivID)
+    .append(`<div  id="${sliderID}-container"class='dual-range-slider-container px-1' title="${tooltip}">
 							        <div class='dual-range-slider-name pt-2 pb-3 param-title'>${title}</div>
 							        <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
 							        <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
 							    </div>`);
-  setUpDualRangeSlider(var1, var2, min, max, defaultMin, defaultMax, step, sliderID, sliderID + "-update", mode, slideFun, stopFun);
+  setUpDualRangeSlider(
+    var1,
+    var2,
+    min,
+    max,
+    defaultMin,
+    defaultMax,
+    step,
+    sliderID,
+    sliderID + "-update",
+    mode,
+    slideFun,
+    stopFun
+  );
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add single range slider
-function setUpRangeSlider(variable, min, max, defaultValue, step, sliderID, mode) {
+function setUpRangeSlider(
+  variable,
+  min,
+  max,
+  defaultValue,
+  step,
+  sliderID,
+  mode
+) {
   eval(`window.${variable} = ${defaultValue};`);
   $("#" + sliderID + "-update").html(defaultValue);
   $("#" + sliderID).slider({
@@ -2075,8 +2265,20 @@ function setUpRangeSlider(variable, min, max, defaultValue, step, sliderID, mode
   });
 }
 //Wrapper for single range slider
-function addRangeSlider(containerDivID, title, variable, min, max, defaultValue, step, sliderID, mode, tooltip) {
-  $("#" + containerDivID).append(`<div  id="${sliderID}-container" class='dual-range-slider-container px-1' title="${tooltip}">
+function addRangeSlider(
+  containerDivID,
+  title,
+  variable,
+  min,
+  max,
+  defaultValue,
+  step,
+  sliderID,
+  mode,
+  tooltip
+) {
+  $("#" + containerDivID)
+    .append(`<div  id="${sliderID}-container" class='dual-range-slider-container px-1' title="${tooltip}">
                                     <div class='dual-range-slider-name pt-2 pb-3 param-title'>${title}</div>
                                     <div id="${sliderID}" class='dual-range-slider-slider' href = '#'></div>
                                     <div id='${sliderID}-update' class='dual-range-slider-value p-2'></div>
@@ -2086,7 +2288,17 @@ function addRangeSlider(containerDivID, title, variable, min, max, defaultValue,
 //////////////////////////////////////////////////////////////////////////////////////////////
 //More Bootstrap element creators
 //Function to add tab to list
-function addTab(tabTitle, tabListID, divListID, tabID, divID, tabOnClick, divHTML, tabToolTip, selected) {
+function addTab(
+  tabTitle,
+  tabListID,
+  divListID,
+  tabID,
+  divID,
+  tabOnClick,
+  divHTML,
+  tabToolTip,
+  selected
+) {
   if (!tabToolTip) {
     tabToolTip = "";
   }
@@ -2101,11 +2313,16 @@ function addTab(tabTitle, tabListID, divListID, tabID, divID, tabOnClick, divHTM
     `<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-left text-dark tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" title="${tabToolTip}">${tabTitle}</a></li>`
   );
 
-  $("#" + divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`).append(divHTML));
+  $("#" + divListID).append(
+    $(
+      `<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`
+    ).append(divHTML)
+  );
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
 function addTabContainer(containerID, tabListID, divListID) {
-  $("#" + containerID).append(`<ul class="pb-1 nav nav-tabs flex-column nav-justified md-tabs" id="${tabListID}" role="tablist">  
+  $("#" + containerID)
+    .append(`<ul class="pb-1 nav nav-tabs flex-column nav-justified md-tabs" id="${tabListID}" role="tablist">  
     </ul>
     <div class = 'tab-content card' id = '${divListID}'>
     </div>`);
@@ -2117,7 +2334,17 @@ function addTabContainer(containerID, tabListID, divListID) {
 //     </div>`);
 // }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addCollapse(containerID, collapseLabelID, collapseID, collapseLabel, collapseLabelIcon, show, onclick, toolTip, mode = "append") {
+function addCollapse(
+  containerID,
+  collapseLabelID,
+  collapseID,
+  collapseLabel,
+  collapseLabelIcon,
+  show,
+  onclick,
+  toolTip,
+  mode = "append"
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2135,15 +2362,27 @@ function addCollapse(containerID, collapseLabelID, collapseID, collapseLabel, co
 
   var collapseDiv = `<section id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-5 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></section>`;
   if (mode === "append") {
-    $("#" + containerID).append(`<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`);
+    $("#" + containerID).append(
+      `<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`
+    );
   } else {
-    $("#" + containerID).prepend(`<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`);
+    $("#" + containerID).prepend(
+      `<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`
+    );
   }
   $(`#${collapseLabelID}-${collapseID}`).append(collapseTitleDiv);
   $(`#${collapseLabelID}-${collapseID}`).append(collapseDiv);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addSubCollapse(containerID, collapseLabelID, collapseID, collapseLabel, collapseLabelIcon, show, onclick) {
+function addSubCollapse(
+  containerID,
+  collapseLabelID,
+  collapseID,
+  collapseLabel,
+  collapseLabelIcon,
+  show,
+  onclick
+) {
   var collapsed;
   if (show === true || show === "true" || show === "show") {
     show = "show";
@@ -2165,11 +2404,22 @@ function addSubCollapse(containerID, collapseLabelID, collapseID, collapseLabel,
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 function addAccordianContainer(parentContainerID, accordianContainerID) {
-  $("#" + parentContainerID).append(`<div class="accordion" id="${accordianContainerID}"></div>`);
+  $("#" + parentContainerID).append(
+    `<div class="accordion" id="${accordianContainerID}"></div>`
+  );
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 var panelCollapseI = 1;
-function addAccordianCard(accordianContainerID, accordianCardHeaderID, accordianCardBodyID, accordianCardHeaderContent, accordianCardBodyContent, show, onclick, toolTip) {
+function addAccordianCard(
+  accordianContainerID,
+  accordianCardHeaderID,
+  accordianCardBodyID,
+  accordianCardHeaderContent,
+  accordianCardBodyContent,
+  show,
+  onclick,
+  toolTip
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2203,7 +2453,16 @@ function addAccordianCard(accordianContainerID, accordianCardHeaderID, accordian
   panelCollapseI++;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addSubAccordianCard(accordianContainerID, accordianCardHeaderID, accordianCardBodyID, accordianCardHeaderContent, accordianCardBodyContent, show, onclick, toolTip) {
+function addSubAccordianCard(
+  accordianContainerID,
+  accordianCardHeaderID,
+  accordianCardBodyID,
+  accordianCardHeaderContent,
+  accordianCardBodyContent,
+  show,
+  onclick,
+  toolTip
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2250,7 +2509,10 @@ function getWalkThroughCollapseContainerID() {
 function moveElement(selectorFrom, appendToID) {
   $(selectorFrom).detach().appendTo(appendToID);
 }
-function moveCollapse(baseID, collapseContainer = getWalkThroughCollapseContainerID()) {
+function moveCollapse(
+  baseID,
+  collapseContainer = getWalkThroughCollapseContainerID()
+) {
   // $('#'+baseID+'-label').detach().appendTo('#'+collapseContainer);
   moveElement("#" + baseID + "-label", "#" + collapseContainer);
   // $('#'+baseID+'-div').detach().appendTo('#'+collapseContainer);
@@ -2287,11 +2549,21 @@ function addLegendCollapse() {
   $("#chart-collapse-div").removeClass("px-5");
   $("#chart-collapse-div").addClass("px-3");
   // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
-  $("#legend-collapse-div").append(`<div role="list" id="legend-layer-list"></div>`);
-  $("#legend-collapse-div").append(`<div role="list" id="legend-reference-layer-list"></div>`);
-  $("#legend-collapse-div").append(`<div role="list" id="legend-fhp-div"></div>`);
-  $("#legend-collapse-div").append(`<div role="list" id="time-lapse-legend-list"></div>`);
-  $("#legend-collapse-div").append(`<div role="list" id="legend-area-charting-select-layer-list"></div>`);
+  $("#legend-collapse-div").append(
+    `<div role="list" id="legend-layer-list"></div>`
+  );
+  $("#legend-collapse-div").append(
+    `<div role="list" id="legend-reference-layer-list"></div>`
+  );
+  $("#legend-collapse-div").append(
+    `<div role="list" id="legend-fhp-div"></div>`
+  );
+  $("#legend-collapse-div").append(
+    `<div role="list" id="time-lapse-legend-list"></div>`
+  );
+  $("#legend-collapse-div").append(
+    `<div role="list" id="legend-area-charting-select-layer-list"></div>`
+  );
 }
 function addLegendContainer(legendContainerID, containerID, show, toolTip) {
   if (containerID === undefined || containerID === null) {
@@ -2305,11 +2577,16 @@ function addLegendContainer(legendContainerID, containerID, show, toolTip) {
   } else {
     show = "none";
   }
-  $("#" + containerID).prepend(`<div class = 'py-1 row' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+  $("#" + containerID)
+    .prepend(`<div class = 'py-1 row' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
 								</div>`);
 }
 
-function addClassLegendContainer(classLegendContainerID, legendContainerID, classLegendTitle) {
+function addClassLegendContainer(
+  classLegendContainerID,
+  legendContainerID,
+  classLegendTitle
+) {
   $("#" + legendContainerID).append(`<div class='my-legend'>
 										<div class = 'legend-title'>${classLegendTitle}</div>
 										<div class='legend-scale'>
@@ -2319,12 +2596,15 @@ function addClassLegendContainer(classLegendContainerID, legendContainerID, clas
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
+    `<li><span style='border: ${obj.classStrokeWeight}px solid #${
+      obj.classStrokeColor
+    };background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
   );
 }
 
 function addColorRampLegendEntry(legendContainerID, obj) {
-  $("#" + legendContainerID).append(`<li class = 'legend-colorRamp' title= '${obj.helpBoxMessage}'>
+  $("#" + legendContainerID)
+    .append(`<li class = 'legend-colorRamp' title= '${obj.helpBoxMessage}'>
 							            <div class = 'legend-title'>${obj.name}</div>
 							            <div class = 'colorRamp'style='${obj.colorRamp};'></div>
 							            <div>
@@ -2339,7 +2619,10 @@ function addColorRampLegendEntry(legendContainerID, obj) {
 function regulateReRunButton() {
   if (outstandingGEERequests > 0) {
     $("#reRun-button").prop("disabled", true);
-    $("#reRun-button").prop("title", staticTemplates.reRunButtonDisabledTooltip);
+    $("#reRun-button").prop(
+      "title",
+      staticTemplates.reRunButtonDisabledTooltip
+    );
   } else {
     $("#reRun-button").prop("disabled", false);
     $("#reRun-button").prop("title", staticTemplates.reRunButtonEnabledTooltip);
@@ -2419,7 +2702,8 @@ function addLayer(layer) {
   }
 
   //Set up layer control container
-  $("#" + layer.whichLayerList).prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container'  title= '${layer.helpBoxMessage}'>
+  $("#" + layer.whichLayerList)
+    .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container'  title= '${layer.helpBoxMessage}'>
 								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
@@ -2438,7 +2722,10 @@ function addLayer(layer) {
     slide: function (e, ui) {
       layer.opacity = ui.value / 100;
       // console.log(layer.opacity);
-      if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
+      if (
+        layer.layerType !== "geeVector" &&
+        layer.layerType !== "geoJSONVector"
+      ) {
         layer.layer.setOpacity(layer.opacity);
       } else {
         var style = layer.layer.getStyle();
@@ -2459,15 +2746,27 @@ function addLayer(layer) {
   });
   function setRangeSliderThumbOpacity() {
     // console.log([opacityID,layer.rangeOpacity].join('-'))
-    $(`#${opacityID}`).css("background-color", `rgba(55, 46, 44,${layer.rangeOpacity})!important`);
+    $(`#${opacityID}`).css(
+      "background-color",
+      `rgba(55, 46, 44,${layer.rangeOpacity})!important`
+    );
   }
   //Progress bar controller
   function updateProgress() {
     var pct = layer.percent;
-    if (pct === 100 && mode !== "lcms-dashboard" && (layer.layerType === "geeImage" || layer.layerType === "geeVectorImage" || layer.layerType === "geeImageCollection")) {
+    if (
+      pct === 100 &&
+      mode !== "lcms-dashboard" &&
+      (layer.layerType === "geeImage" ||
+        layer.layerType === "geeVectorImage" ||
+        layer.layerType === "geeImageCollection")
+    ) {
       jitterZoom();
     }
-    $("#" + containerID).css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`);
+    $("#" + containerID).css(
+      "background",
+      `-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`
+    );
   }
   //Function for zooming to object
   function zoomFunction() {
@@ -2477,7 +2776,11 @@ function addLayer(layer) {
       // centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
       // synchronousCenterObject(layer.item.features[0].geometry)
     } else {
-      if (layer.item.args !== undefined && layer.item.args.value !== null && layer.item.args.value !== undefined) {
+      if (
+        layer.item.args !== undefined &&
+        layer.item.args.value !== null &&
+        layer.item.args.value !== undefined
+      ) {
         synchronousCenterObject(layer.item.args.value);
       } else if (
         layer.item.args !== undefined &&
@@ -2500,7 +2803,10 @@ function addLayer(layer) {
     console.log("GEE Tile Service request failed for " + layer.name);
     console.log(containerID);
     $("#" + containerID).css("background", "red");
-    $("#" + containerID).attr("title", 'Layer failed to load. Error message: "' + failure + '"');
+    $("#" + containerID).attr(
+      "title",
+      'Layer failed to load. Error message: "' + failure + '"'
+    );
     // getGEEMapService();
   }
   //Function to handle turning off of different types of layers
@@ -2514,14 +2820,21 @@ function addLayer(layer) {
       setRangeSliderThumbOpacity();
       updateProgress();
       $("#" + layer.legendDivID).hide();
-    } else if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
+    } else if (
+      layer.layerType !== "geeVector" &&
+      layer.layerType !== "geoJSONVector"
+    ) {
       layer.visible = false;
       layer.map.overlayMapTypes.setAt(layer.layerId, null);
       layer.percent = 0;
       updateProgress();
       $("#" + layer.legendDivID).hide();
       layer.rangeOpacity = 0;
-      if (layer.layerType !== "tileMapService" && layer.layerType !== "dynamicMapService" && layer.canQuery) {
+      if (
+        layer.layerType !== "tileMapService" &&
+        layer.layerType !== "dynamicMapService" &&
+        layer.canQuery
+      ) {
         queryObj[queryID].visible = layer.visible;
       }
     } else {
@@ -2540,7 +2853,9 @@ function addLayer(layer) {
       }
     }
     if (layer.viz.dashboardSummaryLayer) {
-      Object.keys(layer.dashboardSelectedFeatures).map((nm) => layer.dashboardSelectedFeatures[nm].polyList.map((p) => p.setMap(null)));
+      Object.keys(layer.dashboardSelectedFeatures).map((nm) =>
+        layer.dashboardSelectedFeatures[nm].polyList.map((p) => p.setMap(null))
+      );
       updateDashboardCharts();
       updateDashboardHighlights();
     }
@@ -2565,7 +2880,10 @@ function addLayer(layer) {
       setRangeSliderThumbOpacity();
       updateProgress();
       $("#" + layer.legendDivID).show();
-    } else if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
+    } else if (
+      layer.layerType !== "geeVector" &&
+      layer.layerType !== "geoJSONVector"
+    ) {
       layer.visible = true;
       layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
       $("#" + layer.legendDivID).show();
@@ -2575,7 +2893,11 @@ function addLayer(layer) {
         updateProgress();
       }
       layer.layer.setOpacity(layer.opacity);
-      if (layer.layerType !== "tileMapService" && layer.layerType !== "dynamicMapService" && layer.canQuery) {
+      if (
+        layer.layerType !== "tileMapService" &&
+        layer.layerType !== "dynamicMapService" &&
+        layer.canQuery
+      ) {
         queryObj[queryID].visible = layer.visible;
       }
     } else {
@@ -2590,7 +2912,9 @@ function addLayer(layer) {
       }
     }
     if (layer.viz.dashboardSummaryLayer) {
-      Object.keys(layer.dashboardSelectedFeatures).map((nm) => layer.dashboardSelectedFeatures[nm].polyList.map((p) => p.setMap(map)));
+      Object.keys(layer.dashboardSelectedFeatures).map((nm) =>
+        layer.dashboardSelectedFeatures[nm].polyList.map((p) => p.setMap(map))
+      );
       if (mode === "lcms-dashboard") {
         dashboardBoxSelect();
       } else {
@@ -2667,7 +2991,11 @@ function addLayer(layer) {
       turnOffAll();
     });
   }
-  if (layer.layerType === "geeVector" || layer.layerType === "geeVectorImage" || layer.layerType === "geoJSONVector") {
+  if (
+    layer.layerType === "geeVector" ||
+    layer.layerType === "geeVectorImage" ||
+    layer.layerType === "geoJSONVector"
+  ) {
     $("#" + visibleLabelID).addClass("vector-layer-checkbox");
     $(".vector-layer-checkbox").on("turnOffAll", function () {
       turnOffAll();
@@ -2695,7 +3023,11 @@ function addLayer(layer) {
   }
 
   //Handle different object types
-  if (layer.layerType === "geeImage" || layer.layerType === "geeVectorImage" || layer.layerType === "geeImageCollection") {
+  if (
+    layer.layerType === "geeImage" ||
+    layer.layerType === "geeVectorImage" ||
+    layer.layerType === "geeImageCollection"
+  ) {
     //Handle image colletions
     if (layer.layerType === "geeImageCollection") {
       // layer.item = ee.ImageCollection(layer.item);
@@ -2711,10 +3043,18 @@ function addLayer(layer) {
         }
       }
       var bandNames = ee.Image(layer.item.first()).bandNames();
-      layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first()).set(layer.item.toDictionary());
+      layer.item = ee
+        .ImageCollection(layer.item)
+        .reduce(layer.viz.reducer)
+        .rename(bandNames)
+        .copyProperties(layer.imageCollection.first())
+        .set(layer.item.toDictionary());
 
       //Handle vectors
-    } else if (layer.layerType === "geeVectorImage" || layer.layerType === "geeVector") {
+    } else if (
+      layer.layerType === "geeVectorImage" ||
+      layer.layerType === "geeVector"
+    ) {
       if (layer.viz.isSelectLayer) {
         selectedFeaturesJSON[layer.name] = {
           layerName: layer.name,
@@ -2770,11 +3110,16 @@ function addLayer(layer) {
                 }
               }
               selectedFeaturesJSON[layer.name].fieldName = name;
-              selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select([name], ["name"]);
+              selectedFeaturesJSON[layer.name].eeObject =
+                layer.queryItem.select([name], ["name"]);
             });
         } else {
-          selectedFeaturesJSON[layer.name].fieldName = layer.viz.selectLayerNamePropertyname;
-          selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select([layer.viz.selectLayerNameProperty], ["name"]);
+          selectedFeaturesJSON[layer.name].fieldName =
+            layer.viz.selectLayerNamePropertyname;
+          selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+            [layer.viz.selectLayerNameProperty],
+            ["name"]
+          );
         }
       }
       if (layer.viz.isSelectedLayer) {
@@ -2812,17 +3157,30 @@ function addLayer(layer) {
       decrementOutstandingGEERequests();
       $("#" + spinnerID).hide();
       if (layer.viz.isTimeLapse) {
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
-        var prop = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[
+          layer.viz.timeLapseID
+        ].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+        var prop = parseInt(
+          (1 -
+            timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length /
+              timeLapseObj[layer.viz.timeLapseID].nFrames) *
+            100
+        );
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`);
+        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          "background",
+          `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
+        );
 
         // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
         if (timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+            "background",
+            `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
+          );
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
@@ -2865,7 +3223,9 @@ function addLayer(layer) {
                 incrementGEETileLayersLoading();
                 tileIncremented = true;
                 if (layer.viz.isTimeLapse) {
-                  timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.push(id);
+                  timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.push(
+                    id
+                  );
                 }
               }
             } else {
@@ -2873,34 +3233,65 @@ function addLayer(layer) {
               $("#" + spinnerID + "2").hide();
               decrementGEETileLayersLoading();
               if (layer.viz.isTimeLapse) {
-                timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+                timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs =
+                  timeLapseObj[
+                    layer.viz.timeLapseID
+                  ].loadingTilesLayerIDs.filter(
+                    (timeLapseLayerID) => timeLapseLayerID !== id
+                  );
               }
               tileIncremented = false;
             }
             //Handle the setup of layers within a time lapse
             if (layer.viz.isTimeLapse) {
-              var loadingTimelapseLayers = Object.values(layerObj).filter(function (v) {
-                return v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList;
-              });
+              var loadingTimelapseLayers = Object.values(layerObj).filter(
+                function (v) {
+                  return (
+                    v.loading &&
+                    v.viz.isTimeLapse &&
+                    v.whichLayerList === layer.whichLayerList
+                  );
+                }
+              );
               var loadingTimelapseLayersYears = loadingTimelapseLayers
                 .map(function (f) {
                   return [f.viz.year, f.percent].join(":");
                 })
                 .join(", ");
-              var notLoadingTimelapseLayers = Object.values(layerObj).filter(function (v) {
-                return !v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList;
-              });
+              var notLoadingTimelapseLayers = Object.values(layerObj).filter(
+                function (v) {
+                  return (
+                    !v.loading &&
+                    v.viz.isTimeLapse &&
+                    v.whichLayerList === layer.whichLayerList
+                  );
+                }
+              );
               var notLoadingTimelapseLayersYears = notLoadingTimelapseLayers
                 .map(function (f) {
                   return [f.viz.year, f.percent].join(":");
                 })
                 .join(", ");
-              $("#" + layer.viz.timeLapseID + "-message-div").html("Loading:<br>" + loadingTimelapseLayersYears + "<hr>Not Loading:<br>" + notLoadingTimelapseLayersYears);
-              var propTiles = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
+              $("#" + layer.viz.timeLapseID + "-message-div").html(
+                "Loading:<br>" +
+                  loadingTimelapseLayersYears +
+                  "<hr>Not Loading:<br>" +
+                  notLoadingTimelapseLayersYears
+              );
+              var propTiles = parseInt(
+                (1 -
+                  timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs
+                    .length /
+                    timeLapseObj[layer.viz.timeLapseID].nFrames) *
+                  100
+              );
               // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
               $("#" + layer.viz.timeLapseID + "-loading-gear").show();
 
-              $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`);
+              $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+                "background",
+                `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
+              );
               if (propTiles < 100) {
                 // console.log(propTiles)
                 // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
@@ -2935,15 +3326,32 @@ function addLayer(layer) {
     }
     function updateTimeLapseLoadingProgress() {
       var loadingTimelapseLayers = Object.values(layerObj).filter(function (v) {
-        return v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList;
+        return (
+          v.loading &&
+          v.viz.isTimeLapse &&
+          v.whichLayerList === layer.whichLayerList
+        );
       }).length;
-      var notLoadingTimelapseLayers = Object.values(layerObj).filter(function (v) {
-        return !v.loading && v.viz.isTimeLapse && v.whichLayerList === layer.whichLayerList;
+      var notLoadingTimelapseLayers = Object.values(layerObj).filter(function (
+        v
+      ) {
+        return (
+          !v.loading &&
+          v.viz.isTimeLapse &&
+          v.whichLayerList === layer.whichLayerList
+        );
       }).length;
       var total = loadingTimelapseLayers + notLoadingTimelapseLayers;
-      var propTiles = (1 - loadingTimelapseLayers / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100;
+      var propTiles =
+        (1 -
+          loadingTimelapseLayers /
+            timeLapseObj[layer.viz.timeLapseID].nFrames) *
+        100;
 
-      $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`);
+      $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+        "background",
+        `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
+      );
       if (propTiles < 100) {
         $("#" + layer.viz.timeLapseID + "-loading-gear").show();
         // console.log(propTiles)
@@ -2959,17 +3367,30 @@ function addLayer(layer) {
       decrementOutstandingGEERequests();
       $("#" + spinnerID).hide();
       if (layer.viz.isTimeLapse) {
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
-        var prop = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[
+          layer.viz.timeLapseID
+        ].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+        var prop = parseInt(
+          (1 -
+            timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length /
+              timeLapseObj[layer.viz.timeLapseID].nFrames) *
+            100
+        );
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`);
+        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          "background",
+          `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
+        );
 
         // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
         if (timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+            "background",
+            `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
+          );
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
@@ -2989,7 +3410,10 @@ function addLayer(layer) {
           var getTileUrlFun = function (coord, zoom) {
             var t = [coord, zoom];
 
-            let url = tilesUrl.replace("{x}", coord.x).replace("{y}", coord.y).replace("{z}", zoom);
+            let url = tilesUrl
+              .replace("{x}", coord.x)
+              .replace("{y}", coord.y)
+              .replace("{z}", zoom);
             if (!layer.loading) {
               layer.loading = true;
               layer.percent = 10;
@@ -3045,7 +3469,16 @@ function addLayer(layer) {
 
       //Handle embeded visualization params if available
       var vizKeys = Object.keys(layer.viz);
-      var possibleVizKeys = ["bands", "min", "max", "gain", "bias", "gamma", "palette", "color"];
+      var possibleVizKeys = [
+        "bands",
+        "min",
+        "max",
+        "gain",
+        "bias",
+        "gamma",
+        "palette",
+        "color",
+      ];
       var vizFound = false;
       possibleVizKeys.map(function (k) {
         var i = vizKeys.indexOf(k) > -1;
@@ -3079,7 +3512,10 @@ function addLayer(layer) {
     getGEEMapService();
 
     //Handle different vector formats
-  } else if (layer.layerType === "geeVector" || layer.layerType === "geoJSONVector") {
+  } else if (
+    layer.layerType === "geeVector" ||
+    layer.layerType === "geoJSONVector"
+  ) {
     if (layer.canQuery) {
       queryObj[queryID] = {
         visible: layer.visible,
@@ -3178,9 +3614,17 @@ function addLayer(layer) {
   } else if (layer.layerType === "dynamicMapService") {
     function groundOverlayWrapper() {
       if (map.getZoom() > layer.item[1].minZoom) {
-        return getGroundOverlay(layer.item[1].baseURL, layer.item[1].minZoom, layer.item[1].ending);
+        return getGroundOverlay(
+          layer.item[1].baseURL,
+          layer.item[1].minZoom,
+          layer.item[1].ending
+        );
       } else {
-        return getGroundOverlay(layer.item[0].baseURL, layer.item[0].minZoom, layer.item[0].ending);
+        return getGroundOverlay(
+          layer.item[0].baseURL,
+          layer.item[0].minZoom,
+          layer.item[0].ending
+        );
       }
     }
     function updateGroundOverlay() {
@@ -3221,7 +3665,9 @@ function addLayer(layer) {
     function deleteAllSelected() {
       if (layer.visible) {
         Object.keys(layer.dashboardSelectedFeatures).map((fn) => {
-          layer.dashboardSelectedFeatures[fn].polyList.map((p) => p.setMap(null));
+          layer.dashboardSelectedFeatures[fn].polyList.map((p) =>
+            p.setMap(null)
+          );
           delete layer.dashboardSelectedFeatures[fn];
         });
         updateDashboardCharts();
@@ -3239,8 +3685,13 @@ function addLayer(layer) {
       if (dashboardAreaSelectionMode === "Click") {
         event.feature.toGeoJson((r) => {
           // console.log(r);
-          let featureName = r.properties[layer.viz.dashboardFieldName].toString();
-          if (Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName) === -1) {
+          let featureName =
+            r.properties[layer.viz.dashboardFieldName].toString();
+          if (
+            Object.keys(layer.dashboardSelectedFeatures).indexOf(
+              featureName
+            ) === -1
+          ) {
             layer.dashboardSelectedFeatures[featureName] = {
               geojson: r,
               polyList: [],
@@ -3266,7 +3717,9 @@ function addLayer(layer) {
                 });
               } else if (c.type === "MultiPolygon") {
                 // console.log(c);
-                c.coordinates.map((c2) => getCoords({ type: "Polygon", coordinates: c2 })); //c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
+                c.coordinates.map((c2) =>
+                  getCoords({ type: "Polygon", coordinates: c2 })
+                ); //c2.map(c3=>c3.map(c4=>coords.push({lng:c4[0],lat:c4[1]}))));
               } else if (c.type === "GeometryCollection") {
                 c.geometries.map((g) => getCoords(g));
               }
@@ -3282,14 +3735,20 @@ function addLayer(layer) {
             // });
             // infoContent +=`</tbody></table>`;
 
-            layer.dashboardSelectedFeatures[featureName].polyList.map((p) => p.setMap(map));
+            layer.dashboardSelectedFeatures[featureName].polyList.map((p) =>
+              p.setMap(map)
+            );
           } else {
             console.log(`Removing ${featureName}`);
-            layer.dashboardSelectedFeatures[featureName].polyList.map((p) => p.setMap(null));
+            layer.dashboardSelectedFeatures[featureName].polyList.map((p) =>
+              p.setMap(null)
+            );
             delete layer.dashboardSelectedFeatures[featureName];
           }
 
-          let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(",");
+          let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(
+            ","
+          );
           // $('#dashboard-results-collapse-div').append(selectedNames);
           updateDashboardCharts();
         });
@@ -3315,7 +3774,10 @@ function addLayer(layer) {
 function getTransitionRowData() {
   var periods = [];
   var periodsValid = true;
-  periods.push([parseInt($("#first-transition-row td input:first").val()), parseInt($("#first-transition-row td input:last").val())]);
+  periods.push([
+    parseInt($("#first-transition-row td input:first").val()),
+    parseInt($("#first-transition-row td input:last").val()),
+  ]);
 
   let rowI = 1;
   $("#added-transition-rows tr").each(function () {
@@ -3335,12 +3797,17 @@ function getTransitionRowData() {
     periods.push(row);
     rowI++;
   });
-  periods.push([parseInt($("#last-transition-row td input:first").val()), parseInt($("#last-transition-row td input:last").val())]);
+  periods.push([
+    parseInt($("#last-transition-row td input:first").val()),
+    parseInt($("#last-transition-row td input:last").val()),
+  ]);
   var errorDict = {
     blank: "One or more blank value found",
     outsideYearRange: `Found years outside available year range. Please ensure all years are >= ${activeStartYear} and <= ${activeEndYear}.`,
-    backwards: "One or more row has a first year that is greater than the last year",
-    overlap: "Please ensure all transition periods have values and are in succession of one another and do not overlap",
+    backwards:
+      "One or more row has a first year that is greater than the last year",
+    overlap:
+      "Please ensure all transition periods have values and are in succession of one another and do not overlap",
   };
   var errorList = [];
   rowI = 0;
@@ -3415,8 +3882,20 @@ function setupTransitionPeriodUI() {
   </div>
   
 `);
-  addRow("default-transition-start", "first-transition-row", activeStartYear, activeStartYear + 2, true);
-  addRow("default-transition-end", "last-transition-row", activeEndYear - 2, activeEndYear, true);
+  addRow(
+    "default-transition-start",
+    "first-transition-row",
+    activeStartYear,
+    activeStartYear + 2,
+    true
+  );
+  addRow(
+    "default-transition-end",
+    "last-transition-row",
+    activeEndYear - 2,
+    activeEndYear,
+    true
+  );
 }
 var transitionRowI = 0;
 
