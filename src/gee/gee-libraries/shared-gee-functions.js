@@ -175,9 +175,9 @@ function batchFillCollection(c, expectedYears) {
   var out = c.merge(missingCollection).sort("system:time_start");
   return out; //.map(function(img){return img.unmask(255)});
 }
-function setSameDate(img) {
+function setSameDate(img, month = 6, day = 1) {
   var yr = ee.Date(img.get("system:time_start")).get("year");
-  return img.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+  return img.set("system:time_start", ee.Date.fromYMD(yr, month, day).millis());
 }
 
 // --------Add MTBS and IDS Layers-------------------------------

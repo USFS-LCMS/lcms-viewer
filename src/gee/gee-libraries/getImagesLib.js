@@ -843,8 +843,8 @@ function getS2() {
     resampleMethod: "aggregate",
     toaOrSR: "TOA",
     convertToDailyMosaics: true,
-    addCloudProbability: true, //LSC
-    addCloudScorePlus: false,
+    addCloudProbability: false, //LSC
+    addCloudScorePlus: true,
   };
 
   var args = prepArgumentsObject(arguments, defaultArgs);
@@ -3186,7 +3186,7 @@ function getProcessedSentinel2Scenes() {
     applyQABand: false,
     applyCloudScore: false,
     applyShadowShift: false,
-    applyTDOM: true,
+    applyTDOM: false,
     cloudScoreThresh: 20,
     performCloudScoreOffset: false,
     cloudScorePctl: 10,
@@ -3198,12 +3198,12 @@ function getProcessedSentinel2Scenes() {
     resampleMethod: "aggregate",
     toaOrSR: "TOA",
     convertToDailyMosaics: true,
-    applyCloudProbability: true,
+    applyCloudProbability: false,
     preComputedCloudScoreOffset: null,
     preComputedTDOMIRMean: null,
     preComputedTDOMIRStdDev: null,
     cloudProbThresh: 40,
-    applyCloudScorePlus: false,
+    applyCloudScorePlus: true,
     cloudScorePlusThresh: 0.6,
   };
 
@@ -3301,7 +3301,7 @@ function getSentinel2Wrapper() {
     applyQABand: false,
     applyCloudScore: false,
     applyShadowShift: false,
-    applyTDOM: true,
+    applyTDOM: false,
     cloudScoreThresh: 20,
     performCloudScoreOffset: true,
     cloudScorePctl: 10,
@@ -3321,12 +3321,12 @@ function getSentinel2Wrapper() {
     resampleMethod: "aggregate",
     toaOrSR: "TOA",
     convertToDailyMosaics: true,
-    applyCloudProbability: true,
+    applyCloudProbability: false,
     preComputedCloudScoreOffset: null,
     preComputedTDOMIRMean: null,
     preComputedTDOMIRStdDev: null,
     cloudProbThresh: 40,
-    applyCloudScorePlus: false,
+    applyCloudScorePlus: true,
     cloudScorePlusThresh: 0.6,
   };
 
@@ -3401,12 +3401,12 @@ function getProcessedLandsatAndSentinel2Scenes() {
     includeSLCOffL7: false,
     defringeL5: false,
     applyQABand: false,
-    applyCloudProbability: true,
+    applyCloudProbability: false,
     applyShadowShift: false,
     applyCloudScoreLandsat: false,
     applyCloudScoreSentinel2: false,
     applyTDOMLandsat: true,
-    applyTDOMSentinel2: true,
+    applyTDOMSentinel2: false,
     applyFmaskCloudMask: true,
     applyFmaskCloudShadowMask: true,
     applyFmaskSnowMask: false,
@@ -3432,7 +3432,7 @@ function getProcessedLandsatAndSentinel2Scenes() {
     preComputedSentinel2TDOMIRStdDev: null,
     cloudProbThresh: 40,
     landsatCollectionVersion: "C2",
-    applyCloudScorePlus: false,
+    applyCloudScorePlus: true,
     cloudScorePlusThresh: 0.6,
   };
 
@@ -3602,12 +3602,12 @@ function getLandsatAndSentinel2HybridWrapper() {
     includeSLCOffL7: false,
     defringeL5: false,
     applyQABand: false,
-    applyCloudProbability: true,
+    applyCloudProbability: false,
     applyShadowShift: false,
     applyCloudScoreLandsat: false,
     applyCloudScoreSentinel2: false,
     applyTDOMLandsat: true,
-    applyTDOMSentinel2: true,
+    applyTDOMSentinel2: false,
     applyFmaskCloudMask: true,
     applyFmaskCloudShadowMask: true,
     applyFmaskSnowMask: false,
@@ -3639,7 +3639,7 @@ function getLandsatAndSentinel2HybridWrapper() {
     preComputedSentinel2TDOMIRStdDev: null,
     cloudProbThresh: 40,
     landsatCollectionVersion: "C2",
-    applyCloudScorePlusSentinel2: false,
+    applyCloudScorePlusSentinel2: true,
     cloudScorePlusThresh: 0.6,
   };
 

@@ -169,7 +169,7 @@ function runTreeMap() {
       palettes.crameri.bamako[25],
       0.05,
       0.95,
-      "SDIPCT_RMRS: Stand Density Index (percent of maximum)",
+      "SDIPCT_RMR: Stand Density Index (percent of maximum)",
       "Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.",
     ],
 

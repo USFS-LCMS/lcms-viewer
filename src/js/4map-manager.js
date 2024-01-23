@@ -1722,7 +1722,28 @@ function mp() {
     document.title = title;
   };
   this.turnOnInspector = function () {
-    $("#query-label").click();
+    let activeTools = getActiveTools();
+    if (activeTools.indexOf("Pixel Tools-Query Visible Map Layers") == -1) {
+      $("#query-label").click();
+    }
+  };
+  this.turnOffInspector = function () {
+    let activeTools = getActiveTools();
+    if (activeTools.indexOf("Pixel Tools-Query Visible Map Layers") > -1) {
+      $("#query-label").click();
+    }
+  };
+  this.turnOnTimeSeriesCharting = function () {
+    let activeTools = getActiveTools();
+    if (activeTools.indexOf(`Pixel Tools-Query ${mode} Time Series`) == -1) {
+      $("#pixel-chart-label").click();
+    }
+  };
+  this.turnOffTimeSeriesCharting = function () {
+    let activeTools = getActiveTools();
+    if (activeTools.indexOf(`Pixel Tools-Query ${mode} Time Series`) > -1) {
+      $("#pixel-chart-label").click();
+    }
   };
   this.setQueryCRS = function (newCrs) {
     crs = newCrs;

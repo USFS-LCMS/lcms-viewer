@@ -19,22 +19,25 @@ function runBaseLearner() {
   // Divide by 10000 (0.0001) so values are back to original values (0-1 or -1-1)
   var lt_fit = cdl.batchSimpleLTFit(lt, startYear, endYear, bandNames, bandPropertyName, arrayMode, lt_props["maxSegments"], 0.0001);
   lt_fit = lt_fit.select([".*_fitted"]);
-
+  var ltSynthViz = copyObj(getImagesLib.vizParamsFalse);
+  ltSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_LT_fitted`);
+  ltSynthViz.reducer = ee.Reducer.median();
   // Vizualize image collection for charting (opacity set to 0 so it will chart but not be visible)
   // Map.addLayer(lt_fit.select(["NBR_LT_fitted"]), {}, "LT Fit TS", false);
 
   // Visualize fitted landTrendr composite
-  var fitted_bns = lt_fit.select([".*_fitted"]).first().bandNames();
-  var final_bns = whichIndices.map((bn) => `${bn}_LT_fitted`);
+  // var fitted_bns = lt_fit.select([".*_fitted"]).first().bandNames();
+  var final_lt_bns = whichIndices.map((bn) => `${bn}_LT_fitted`);
+  var final_ccdc_bns = whichIndices.map((bn) => `${bn}_CCDC_fitted`);
 
-  var out_bns = fitted_bns.map((bn) => ee.String(bn).split("_").get(0));
+  // var out_bns = fitted_bns.map((bn) => ee.String(bn).split("_").get(0));
 
-  var lt_synth = lt_fit.select(fitted_bns, out_bns);
+  // var lt_synth = lt_fit.select(fitted_bns, out_bns);
   // .filter(ee.Filter.calendarRange(endYear - 1, endYear - 1, "year"))
   // .first();
 
   // Visualize as you would a composite
-  Map.addLayer(lt_synth, gil.vizParamsFalse, "LT Synthetic Composite");
+  Map.addLayer(lt_fit, ltSynthViz, "LT Synthetic Composite", false);
 
   // Iterate across each band to look for areas of change
   if (bandNames === null || bandNames === undefined) {
@@ -70,7 +73,7 @@ function runBaseLearner() {
   });
 
   // Map.addLayer(lt);
-  Map.turnOnInspector();
+  Map.turnOnTimeSeriesCharting();
 
   var composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten());
 
@@ -86,37 +89,6 @@ function runBaseLearner() {
       );
     })
   );
-
-  fittedTS = getImagesLib.joinCollections(
-    composites.select(
-      whichIndices,
-      whichIndices.map(function (nm) {
-        return "Raw_" + nm;
-      })
-    ),
-    lt_fit.select(final_bns),
-    false
-  );
-  // console.log(fittedTS.first().date().format("YYYY-MM-dd").getInfo());
-  // Map.addLayer(fittedTS, {}, "Raw and LT Fitted");
-  var ltPalette = palettes.niccoli.isol[7].reverse();
-  var ltFitColors = ee.List.sequence(0, 6, 7 / whichIndices.length)
-    .getInfo()
-    .map(function (i) {
-      i = Math.floor(i);
-      return ltPalette[i % 7];
-    });
-  ltFitColors.map(function (c) {
-    ltFitColors.push(invertColor(c));
-  });
-  // // console.log(ltFitColors)
-  pixelChartCollections["LT_Fit"] = {
-    label: "LANDTRENDR Fitted Time Series",
-    collection: fittedTS,
-    xAxisLabel: "Year",
-    tooltip: "Query LANDTRENDR fitted value for each year",
-    chartColors: ltFitColors,
-  };
 
   // ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,7 +117,7 @@ function runBaseLearner() {
   // );
   // // console.log(ccdcIndicesSelector)
 
-  // var fraction = 0.6657534246575343;
+  var fraction = 0.6657534246575343;
   // var tEndExtrapolationPeriod = 1; //Period in years to extrapolate if needed
 
   var ccdcImg = ee
@@ -177,22 +149,26 @@ function runBaseLearner() {
   // #Add the raw array image
   Map.addLayer(ccdcImg, { opacity: 0 }, "Raw CCDC Output", false);
 
-  // #Extract the change years and magnitude
-  changeObj = changeDetectionLib.ccdcChangeDetection(ccdcImg, changeDetectionBandName);
-
-  Map.addLayer(changeObj[sortingMethod]["loss"]["year"], { min: startYear, max: endYear, palette: changeDetectionLib.lossYearPalette }, "CCDC Loss Year");
-  Map.addLayer(changeObj[sortingMethod]["loss"]["mag"], { min: -0.5, max: -0.1, palette: changeDetectionLib.lossMagPalette }, "CCDC Loss Mag", false);
-  Map.addLayer(changeObj[sortingMethod]["gain"]["year"], { min: startYear, max: endYear, palette: changeDetectionLib.gainYearPalette }, "CCDC Gain Year");
-  Map.addLayer(changeObj[sortingMethod]["gain"]["mag"], { min: 0.05, max: 0.2, palette: changeDetectionLib.gainMagPalette }, "CCDC Gain Mag", false);
-
   // #Apply the CCDC harmonic model across a time series
   // #First get a time series of time images
   var yearImages = changeDetectionLib.getTimeImageCollection(startYear, endYear, startJulian, endJulian, 0.1);
 
   // #Then predict the CCDC models
-  var fitted = changeDetectionLib.predictCCDC(ccdcImg, yearImages, fillGaps, whichHarmonics);
-  Map.addLayer(fitted.select([".*_fitted"]), { opacity: 0 }, "Fitted CCDC", true);
-  Map.addLayer(fitted.filter(ee.Filter.calendarRange(1990, 1990, "year")).select([".*_fitted"]), { opacity: 0 }, "Fitted CCDC 1990", true);
+  var ccdcFitted = changeDetectionLib.predictCCDC(ccdcImg, yearImages, fillGaps, whichHarmonics);
+  var ccdcSynthViz = copyObj(getImagesLib.vizParamsFalse);
+  ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_CCDC_fitted`);
+  ccdcSynthViz.reducer = ee.Reducer.median();
+
+  Map.addLayer(ccdcFitted.select([".*_fitted"]), ccdcSynthViz, `CCDC Synthetic Composite`, false);
+
+  // #Extract the change years and magnitude
+  changeObj = changeDetectionLib.ccdcChangeDetection(ccdcImg, changeDetectionBandName);
+
+  Map.addLayer(changeObj[sortingMethod]["loss"]["year"], { min: startYear, max: endYear, palette: changeDetectionLib.lossYearPalette }, "CCDC Loss Year");
+  Map.addLayer(changeObj[sortingMethod]["loss"]["mag"], { min: -0.5, max: -0.1, palette: changeDetectionLib.lossMagPalette }, "CCDC Loss Mag", false);
+  Map.addLayer(changeObj[sortingMethod]["gain"]["year"], { min: startYear, max: endYear, palette: changeDetectionLib.gainYearPalette }, "CCDC Gain Year", false);
+  Map.addLayer(changeObj[sortingMethod]["gain"]["mag"], { min: 0.05, max: 0.2, palette: changeDetectionLib.gainMagPalette }, "CCDC Gain Mag", false);
+  // Map.addLayer(fitted.filter(ee.Filter.calendarRange(1990, 1990, "year")).select([".*_fitted"]), ccdcSynthViz, "Fitted CCDC 1990", true);
   // console.log(fitted.first().bandNames().getInfo());
 
   // # Synthetic composites visualizing
@@ -297,6 +273,11 @@ function runBaseLearner() {
   // var predicted = predictCCDC(ccdcImg, yearImages, fillGaps, whichHarmonics).select(ccdcAnnualBnsFrom, ccdcAnnualBnsTo);
 
   // var annualImages = simpleGetTimeImageCollection(ee.Number(startYear + fraction), ee.Number(endYear + 1 + fraction), 1);
+  var annualImages = changeDetectionLib.getTimeImageCollection(startYear, endYear + 1, startJulian, endJulian, 1);
+  annualImages = annualImages.map((img) => setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))); //.map(setSameDate);
+  // #Then predict the CCDC models
+  var annualPredictedCCDC = changeDetectionLib.predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics);
+  // console.log(annualPredictedCCDC.first().getInfo());
   // // console.log(ccdcIndicesSelectorPrediction)
   // var annualPredicted = predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics)
   //   .select(ccdcAnnualBnsFrom, ccdcAnnualBnsTo)
@@ -398,48 +379,100 @@ function runBaseLearner() {
   // // Map.addLayer(maskedPredicted.select(['.*_Annualized']),{opacity:0},'CCDC Time Series');
 
   // fittedLTCCDCTS = joinCollections(fittedTS, annualPredicted.map(setSameDate), false);
-  // // var ltCCDCPalette =palettes.niccoli.isol[7].reverse()
-  // // var ltCCDCFitColors = ee.List.sequence(0,6,7/(indicesUsed.length)).getInfo().map(function(i){i = Math.floor(i);return ltPalette[i%7]})
+  fittedTS = getImagesLib.joinCollections(
+    composites.select(
+      whichIndices,
+      whichIndices.map(function (nm) {
+        return "Raw_" + nm;
+      })
+    ),
+    lt_fit.select(final_lt_bns),
+    false
+  );
+  fittedTS = getImagesLib.joinCollections(fittedTS, annualPredictedCCDC.select(final_ccdc_bns), false);
 
-  // // var ltCCDCFitColorsFull = ltCCDCFitColors;
-  // // // console.log(ltCCDCFitColorsFull)
-  // // var opposites = ltCCDCFitColors.map(invertColor)
-  // // var offsetOpposites = opposites.map(function(hex){return offsetColor(hex,25)});
-  // // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(opposites);
-  // // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(offsetOpposites);
-  // // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(ltCCDCFitColors.map(function(hex){return offsetColor(hex,10)}))
-  // // console.log(ltCCDCFitColorsFull)
-  // // ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(ltCCDCFitColors.map(function(hex){return offsetColor(hex,20)}))
-  // // console.log(ltCCDCFitColorsFull)
-  // // ltCCDCFitColors.map(function(c){ltCCDCFitColors.push(invertColor(c))})
-  // // printEE(fittedLTCCDCTS.limit(2));
-  // // var colorsN = indicesUsed.length;
-  // // if(colorsN === 1){colorsN = 3}
-  // pixelChartCollections["LT_CCDC_Fit"] = {
-  //   label: "LandTrendr and CCDC Fitted Time Series",
-  //   collection: fittedLTCCDCTS,
+  // console.log(fittedTS.first().getInfo());
+  // Map.addLayer(fittedTS, {}, "Raw and LT Fitted");
+  var ltPalette = palettes.niccoli.isol[7].reverse();
+  var ltFitColors = ee.List.sequence(0, 6, 7 / whichIndices.length)
+    .getInfo()
+    .map(function (i) {
+      i = Math.floor(i);
+      return ltPalette[i % 7];
+    });
+  ltFitColors.map(function (c) {
+    ltFitColors.push(invertColor(c));
+  });
+  // // console.log(ltFitColors)
+  // pixelChartCollections["LT_Fit"] = {
+  //   label: "LANDTRENDR Fitted Time Series",
+  //   collection: fittedTS,
   //   xAxisLabel: "Year",
-  //   tooltip: "Query LandTrendr and CCDC fitted value for each year",
-  //   chartColors: palettes.colorbrewer.Set1[9],
+  //   tooltip: "Query LANDTRENDR fitted value for each year",
+  //   // chartColors: ltFitColors,
   // };
+  let indicesUsed = whichIndices;
+  var ltCCDCPalette = palettes.niccoli.isol[7].reverse();
+  var ltCCDCFitColors = ee.List.sequence(0, 6, 7 / indicesUsed.length)
+    .getInfo()
+    .map(function (i) {
+      i = Math.floor(i);
+      return ltPalette[i % 7];
+    });
 
-  // var ccdcFitColors = ee.List.sequence(0, 6, 7 / 2)
-  //   .getInfo()
-  //   .map(function (i) {
-  //     i = Math.floor(i);
-  //     return ltPalette[i % 7];
-  //   });
-  // ccdcFitColors.map(function (c) {
-  //   ccdcFitColors.push(invertColor(c));
-  // });
-  // pixelChartCollections["ccdcTS"] = {
-  //   label: "CCDC Fitted Time Series",
-  //   collection: predicted,
-  //   xAxisLabel: "Date",
-  //   tooltip: "Query CCDC time series",
-  //   chartColors: ccdcFitColors,
-  //   semiSimpleDate: true,
-  // };
+  var ltCCDCFitColorsFull = ltCCDCFitColors;
+  // console.log(ltCCDCFitColorsFull)
+  var opposites = ltCCDCFitColors.map(invertColor);
+  var offsetOpposites = opposites.map(function (hex) {
+    return offsetColor(hex, 25);
+  });
+  ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(opposites);
+  ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(offsetOpposites);
+  ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(
+    ltCCDCFitColors.map(function (hex) {
+      return offsetColor(hex, 10);
+    })
+  );
+  // console.log(ltCCDCFitColorsFull);
+  ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(
+    ltCCDCFitColors.map(function (hex) {
+      return offsetColor(hex, 20);
+    })
+  );
+  // console.log(ltCCDCFitColorsFull);
+  ltCCDCFitColors.map(function (c) {
+    ltCCDCFitColors.push(invertColor(c));
+  });
+  // printEE(fittedLTCCDCTS.limit(2));
+  var colorsN = indicesUsed.length;
+  if (colorsN === 1) {
+    colorsN = 3;
+  }
+  pixelChartCollections["LT_CCDC_Fit"] = {
+    label: "Composite, LandTrendr and CCDC Fitted Time Series",
+    collection: fittedTS,
+    xAxisLabel: "Year",
+    tooltip: "Query Raw Composite, LandTrendr, and CCDC fitted value for each year",
+    chartColors: palettes.colorbrewer.Set1[9],
+  };
+
+  var ccdcFitColors = ee.List.sequence(0, 6, 7 / 2)
+    .getInfo()
+    .map(function (i) {
+      i = Math.floor(i);
+      return ltPalette[i % 7];
+    });
+  ccdcFitColors.map(function (c) {
+    ccdcFitColors.push(invertColor(c));
+  });
+  pixelChartCollections["ccdcTS"] = {
+    label: "CCDC Fitted Time Series",
+    collection: ccdcFitted.select(final_ccdc_bns),
+    xAxisLabel: "Date",
+    tooltip: "Query CCDC time series",
+    chartColors: ccdcFitColors,
+    semiSimpleDate: true,
+  };
 
   // // function simpleGetTimeImageCollection(startYear,endYear,step){
   // // var CCDCchange = getCCDCChange2(ccdc,'B4',-1,'_tBreak','_MAG','_changeProb',ccdcChangeProbThresh,365.25,startYear,endYear);
