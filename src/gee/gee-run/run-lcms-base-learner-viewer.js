@@ -10,7 +10,6 @@ function runBaseLearner() {
 
   var whichIndices = Object.keys(whichIndices2).filter((k) => whichIndices2[k] == true);
 
-  
   var composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten());
 
   composites = ee.ImageCollection(
@@ -27,11 +26,10 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  Map.addLayer(composites,compViz,'Raw Composites',false);
+  Map.addLayer(composites, compViz, "Raw Composites", false);
 
-  
   var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten());
-
+  Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
   var lt_props = lt.first().toDictionary().getInfo();
 
   // Convert stacked outputs into collection of fitted, magnitude, slope, duration, etc values for each year
@@ -92,7 +90,6 @@ function runBaseLearner() {
   });
 
   // Map.addLayer(lt);
- 
 
   // ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -163,7 +160,6 @@ function runBaseLearner() {
   ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
 
-  
   var annualImages = changeDetectionLib.getTimeImageCollection(startYear, endYear + 1, startJulian, endJulian, 1);
   annualImages = annualImages.map((img) => setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))); //.map(setSameDate);
   // #Then predict the CCDC models
@@ -455,7 +451,7 @@ function runBaseLearner() {
     colorsN = 3;
   }
   pixelChartCollections["LT_CCDC_Fit"] = {
-    label: "Composite, LandTrendr and CCDC Fitted Time Series",
+    label: "Raw Composite, LandTrendr, and CCDC Fitted Time Series",
     collection: fittedTS,
     xAxisLabel: "Year",
     tooltip: "Query Raw Composite, LandTrendr, and CCDC fitted value for each year",

@@ -249,7 +249,7 @@ const studyAreaDict = {
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],
     ccdc_collections: [
-      "projects/lcms-292214/assets/R10/CoastalAK/Base-Learners/CCDC-Collection",
+      "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection_TOA",
       "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2022",
       "projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020",
       "projects/lcms-292214/assets/R5/Hawaii/Base-Learners/CCDC-Collection",
