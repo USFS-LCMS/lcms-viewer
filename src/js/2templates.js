@@ -579,12 +579,11 @@ const staticTemplates = {
             </li>
           <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
-          <li title = 'TreeMap 2016 Research Dataset source data.'><a class="intro-modal-links" href="https://data.nal.usda.gov/dataset/treemap-2016-tree-level-model-forests-conterminous-united-states-circa-2016" target="_blank">RDS</a> TreeMap 2016 Data Source
+          <li title = 'TreeMap 2016 Research Dataset source data.'><a class="intro-modal-links" href="https://data.nal.usda.gov/dataset/treemap-2016-tree-level-model-forests-conterminous-united-states-circa-2016" target="_blank">RDS</a> Original TreeMap 2016 Research Dataset
           </li>
           <li title = "The Raster Data Gateway (RDG) is the location for TreeMap attribute downloads."><a class="intro-modal-links" href="https://staging-data.fs.usda.gov/geodata/rastergateway/treemap/index.php" target="_blank">RDG</a> Download TreeMap data on the Raster Data Gateway
           </li>
-          <li>
-              <a class = 'links' href='https://developers.google.com/earth-engine/datasets/catalog/USFS_GTAC_TreeMap_v2016' title = 'View TreeMap v2016 in the Google Earth Engine Data Catalog.'>Google Earth Engine Data Catalog</a>
+          <li title = "View TreeMap v2016 in the Google Earth Engine Data Catalog."><a class = 'intro-modal-links' href="https://developers.google.com/earth-engine/datasets/catalog/USFS_GTAC_TreeMap_v2016" target="_blank">GEE Catalog</a> View and use TreeMap data alongside hundreds of other datasets in Google Earth Engine
           </li>
         </ul>
         
@@ -841,6 +840,9 @@ const staticTemplates = {
                                         </li>
                                         <li>
                                             <a class = 'links' href='https://data.fs.usda.gov/geodata/rastergateway/treemap/index.php'  target="_blank" title = 'Get an overview of TreeMap data, download attributes, and browse additional documentation.'>Raster Data Gateway</a>
+                                        </li>
+                                        <li>
+                                            <a class = 'links' href='https://developers.google.com/earth-engine/datasets/catalog/USFS_GTAC_TreeMap_v2016'  target="_blank" title = 'View and use TreeMap data in Google Earth Engine alongside hundreds of other datasets.'>Google Earth Engine</a>
                                         </li>
                                     </div>
                                 </section>
