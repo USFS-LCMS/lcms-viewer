@@ -29,7 +29,7 @@ function runBaseLearner() {
   Map.addLayer(composites, compViz, "Raw Composites", false);
 
   var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten());
-  Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
+  // Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
   var lt_props = lt.first().toDictionary().getInfo();
 
   // Convert stacked outputs into collection of fitted, magnitude, slope, duration, etc values for each year
