@@ -591,7 +591,7 @@ const staticTemplates = {
     <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
                             <a class="intro-modal-links" href="https://academic.oup.com/jof/article/120/6/607/6701541" target="_blank" title="Open 2016 TreeMap documentation">METHODS</a>
-                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.gtactreemap@usda.gov" >HELPDESK/FEEDBACK</a> 
+                            <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.treemaphelp@usda.gov" >HELPDESK/FEEDBACK</a> 
                         </div>
 
 </div>`,
@@ -940,11 +940,11 @@ const staticTemplates = {
                                 </header>
                                 <section class = 'row '>
                                     <div class = 'col-lg-2 p-0 m-0'>
-                                        <a title = "Send us an E-mail" href = "mailto: sm.fs.gtactreemap@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'></a> 
+                                        <a title = "Send us an E-mail" href = "mailto: sm.fs.treemaphelp@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'></a> 
                                     </div>
                                     <div class = 'col-lg-10'>
-                                        <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.gtactreemap@usda.gov">
-                                        Please contact the TreeMap help desk <span href = "mailto: sm.fs.gtactreemap@usda.gov">(sm.fs.gtactreemap@usda.gov)</span> if you have questions/comments about TreeMap or have feedback on the TreeMap Data Explorer.</a>
+                                        <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.treemaphelp@usda.gov">
+                                        Please contact the TreeMap help desk <span href = "mailto: sm.fs.treemaphelp@usda.gov">(sm.fs.treemaphelp@usda.gov)</span> if you have questions/comments about TreeMap or have feedback on the TreeMap Data Explorer.</a>
                                     </div>
                                 </section>
                       </div>`,
