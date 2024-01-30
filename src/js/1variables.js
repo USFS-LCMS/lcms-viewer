@@ -782,7 +782,7 @@ const quantile = (arr, q) => {
 };
 ////////////////////////
 // Adapted from: https://stackoverflow.com/questions/14783046/using-getscript-synchronously
-function batchLoad(scriptList, callback) {
+function batchLoad(scriptList, callback, timeout = 500) {
   var queue = scriptList.map(function (script) {
     console.log("Loading:", script);
     return $.getScript({ url: script, cache: false });
@@ -790,6 +790,9 @@ function batchLoad(scriptList, callback) {
 
   $.when.apply(null, queue).done(function () {
     // Wait until done, then finish function
-    callback();
+    setTimeout(() => {
+      console.log("Running batch load callback");
+      callback();
+    }, timeout);
   });
 }
