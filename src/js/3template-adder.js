@@ -459,8 +459,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     ``,
     "If you need any help"
   );
-
-  addMultiRadio("parameters-collapse-div", "summary-area-selection-radio", "Choose how to select areas", "dashboardAreaSelectionMode", { "View-Extent": true, Click: false, "Drag-Box": false });
+  if (!urlParams.dashboardAreaSelectionMode) {
+    urlParams.dashboardAreaSelectionMode = { "View-Extent": false, Click: true, "Drag-Box": false };
+  }
+  addMultiRadio("parameters-collapse-div", "summary-area-selection-radio", "Choose how to select areas", "dashboardAreaSelectionMode", urlParams.dashboardAreaSelectionMode);
   // $('#parameters-collapse-div').append('<hr>');
 
   //addSubCollapse('parameters-collapse-div','questions-dashboard-params-label','questions-dashboard-params-div','Questions', '',false,'Pre-selected parameter combinations')
@@ -2711,8 +2713,7 @@ if (mode === "lcms-dashboard") {
   var mouseDown = false;
 
   var dragBox;
-
-  $("#summary-area-selection-radio").change(() => {
+  function dashboardSelectionModeChange() {
     console.log(dashboardAreaSelectionMode);
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
@@ -2741,7 +2742,8 @@ if (mode === "lcms-dashboard") {
         dragBox.stopListening();
       } catch (err) {}
     }
-  });
+  }
+  $("#summary-area-selection-radio").change(() => dashboardSelectionModeChange());
   var showPairwiseDiff;
   pairwiseDiffFun = () => {
     if (pairwiseDiff === "Annual-Change") {

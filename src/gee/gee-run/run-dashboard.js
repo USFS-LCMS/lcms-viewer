@@ -345,4 +345,10 @@ function runDashboard() {
       });
     }, 1000);
   });
+  setTimeout(() => {
+    dashboardSelectionModeChange();
+    if (dashboardAreaSelectionMode !== "View-Extent") {
+      $("#introModal-body").append('<p style="font-weight:bold;font-size:1.5rem;">Click on map to select summary areas</p>');
+    }
+  }, 100);
 }

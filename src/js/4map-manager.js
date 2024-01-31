@@ -3245,11 +3245,6 @@ function initialize() {
       if (!loaded) {
         showMessage("GEE Script Error", geeRunError);
       }
-      // }
-      if (mode === "lcms-dashboard") {
-        dashboardBoxSelect();
-        startDashboardViewExtentSelect();
-      }
 
       addLabelOverlay();
 
