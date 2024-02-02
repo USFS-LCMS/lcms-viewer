@@ -1899,7 +1899,7 @@ function addJSONInputTextBox(containerID, inputID, label, variable, defaultValue
     <label>${label}</label>
     <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(defaultValue)}</textarea>`);
 
-  $("#" + containerID).on("input", () => {
+  $("#" + inputID).on("input", () => {
     var tJSON = $(`#${inputID}`).val();
     eval(`window.${variable} = JSON.parse(tJSON)`);
   });

@@ -2117,11 +2117,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024"
   );
 
-  addJSONInputTextBox("advanced-params-div", "diff-bands-thresh-input", "Difference Bands and Thresholds", "diffThreshs", urlParams.diffThreshs, "Bands and thresholds to use for identifying change");
+  addJSONInputTextBox(
+    "advanced-params-div",
+    "diff-bands-thresh-input",
+    "Difference Bands and Thresholds",
+    "urlParams.diffThreshs",
+    urlParams.diffThreshs,
+    "Bands and thresholds to use for identifying change"
+  );
 
-  addJSONInputTextBox("advanced-params-div", "comp-viz-params-input", "Composite Visualization Parameters", "compVizParams", urlParams.compVizParams, "Viz params for composite images");
+  addJSONInputTextBox("advanced-params-div", "comp-viz-params-input", "Composite Visualization Parameters", "urlParams.compVizParams", urlParams.compVizParams, "Viz params for composite images");
 
-  addJSONInputTextBox("advanced-params-div", "diff-viz-params-input", "Difference Visualization Parameters", "diffVizParams", urlParams.diffVizParams, "Viz params for difference image");
+  addJSONInputTextBox("advanced-params-div", "diff-viz-params-input", "Difference Visualization Parameters", "urlParams.diffVizParams", urlParams.diffVizParams, "Viz params for difference image");
 
   // Sync sliders
   $("#post-years-slider")
