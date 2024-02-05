@@ -140,7 +140,7 @@ function startDashboardClickLayerSelect() {
       // console.log(ft.getInfo())
 
       ft.evaluate((r, failure) => {
-        console.log(r);
+        // console.log(r);
         if (r !== undefined) {
           if (layer.selectedDashboardGEEFeatures === undefined) {
             layer.selectedDashboardGEEFeatures = ee.FeatureCollection([ft]);
@@ -161,7 +161,7 @@ function startDashboardClickLayerSelect() {
     });
   }
   map.addListener("click", function (event) {
-    console.log(event);
+    // console.log(event);
     updateSelectedDashboardFeatures(event);
   });
 }

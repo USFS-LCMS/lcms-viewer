@@ -781,18 +781,21 @@ const quantile = (arr, q) => {
   }
 };
 ////////////////////////
-// Adapted from: https://stackoverflow.com/questions/14783046/using-getscript-synchronously
+// Heavily adapted from: https://stackoverflow.com/questions/14783046/using-getscript-synchronously
 function batchLoad(scriptList, callback, timeout = 500) {
-  var queue = scriptList.map(function (script) {
-    console.log("Loading:", script);
-    return $.getScript({ url: script, cache: false });
-  });
-
-  $.when.apply(null, queue).done(function () {
-    // Wait until done, then finish function
-    setTimeout(() => {
-      console.log("Running batch load callback");
-      callback();
-    }, timeout);
-  });
+  let i = 0;
+  function loadScript() {
+    console.log("Loading:", scriptList[i]);
+    if (i == scriptList.length - 1) {
+      $.getScript({ url: scriptList[i], cache: false }).done(() => {
+        callback();
+      });
+    } else {
+      $.getScript({ url: scriptList[i], cache: false }).done(() => {
+        i++;
+        loadScript();
+      });
+    }
+  }
+  loadScript(i);
 }
