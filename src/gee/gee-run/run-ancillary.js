@@ -1,5 +1,11 @@
 function runAncillary() {
   getLCMSVariables();
+  
+
+  ////////////////////////////////////////
+  ////////// Load Ancillary Data Layers
+  /////////////////////////////////////////
+  
   // Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
   var hi_veg_polys = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED");
   Map2.addLayer(
