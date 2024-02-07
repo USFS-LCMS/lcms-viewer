@@ -787,14 +787,25 @@ function batchLoad(scriptList, callback, timeout = 500) {
   function loadScript() {
     console.log("Loading:", scriptList[i]);
     if (i == scriptList.length - 1) {
-      $.getScript({ url: scriptList[i], cache: false }).done(() => {
-        callback();
-      });
+      $.getScript({ url: scriptList[i], cache: false })
+        .done(() => {
+          callback();
+        })
+        .fail(() => {
+          console.log("Could not load", scriptList[i]);
+          callback();
+        });
     } else {
-      $.getScript({ url: scriptList[i], cache: false }).done(() => {
-        i++;
-        loadScript();
-      });
+      $.getScript({ url: scriptList[i], cache: false })
+        .done(() => {
+          i++;
+          loadScript();
+        })
+        .fail(() => {
+          console.log("Could not load", scriptList[i]);
+          i++;
+          loadScript();
+        });
     }
   }
   loadScript(i);

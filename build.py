@@ -1,5 +1,6 @@
 # from css_html_js_minify import  process_single_js_file
 import glob,os,shutil
+from jsmin import jsmin
 ##############################################
 
 
@@ -7,11 +8,11 @@ import glob,os,shutil
 which_ones =['1variables.js','2templates.js','3template-adder.js','4map-manager.js','5chart-manager.js','6tools-toggle-manager.js']#,'7gee-lib-manager.js']
 lcmsViewerFolder = r'Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer'
 geeViewFolder = r'A:\GEE\gee_py_modules_package\geeViz\geeView'
-js_folder = os.path.join(lcmsViewerFolder,'js')
-combined_filename = os.path.join(geeViewFolder,r"js\lcms-viewer.min.js")
-in_css = os.path.join(lcmsViewerFolder,r"css\style.css")
+js_folder = os.path.join(lcmsViewerFolder,'src\js')
+combined_filename = os.path.join(geeViewFolder,r"src\js\lcms-viewer.min.js")
+in_css = os.path.join(lcmsViewerFolder,r"src\styles\style.css")
 
-out_css = os.path.join(geeViewFolder,r"css\style.min.css")
+out_css = os.path.join(geeViewFolder,r"src\styles\style.min.css")
 
 ##############################################
 # if not os.path.exists(js_min_folder):os.makedirs(js_min_folder)
@@ -25,7 +26,7 @@ for js_file in js_files:
 	print(js_file)
 	# process_single_js_file(js_file, overwrite=False)
 	o  = open(js_file,'r',encoding='utf-8')
-	combined += o.read()
+	combined += jsmin(o.read(), quote_chars="'\"`")
 	o.close()
 	# # try:
 	# minified = jsmin(o.read())

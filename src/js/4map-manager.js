@@ -194,11 +194,13 @@ function centerObject(fc) {
     fc.geometry()
       .bounds(100)
       .evaluate(function (feature) {
+        console.log(feature);
         synchronousCenterObject(feature);
       });
   } catch (err) {
     try {
       fc.bounds(100).evaluate(function (feature) {
+        console.log(feature);
         synchronousCenterObject(feature);
       });
     } catch (err) {
@@ -813,7 +815,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
 
   //Set up container for time lapse
   $("#" + whichLayerList).append(`
-                                <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container'>
+                                <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container not-draggable-layer'>
                                   <div class = 'time-lapse-layer-range-container' >
                                     <div title = 'Opacity' id='${legendDivID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>
                                       <div id='${legendDivID}-opacity-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
@@ -3100,8 +3102,12 @@ function initialize() {
   //Initialize GEE
 
   function loadGEELibraries() {
-    let geeModules = ["./src/gee/gee-libraries/getImagesLib.js", "./src/gee/gee-libraries/changeDetectionLib.js"];
-    batchLoad(geeModules, eeInitSuccessCallback);
+    if (mode !== "geeViz") {
+      let geeModules = ["./src/gee/gee-libraries/getImagesLib.js", "./src/gee/gee-libraries/changeDetectionLib.js"];
+      batchLoad(geeModules, eeInitSuccessCallback);
+    } else {
+      eeInitSuccessCallback();
+    }
   }
   function eeInitSuccessCallback() {
     //Set up the correct GEE run function
@@ -3253,6 +3259,9 @@ function initialize() {
         showMessage("No Transition Charting", "The year range must be 5 years or more to perform transition charting");
       }
     }, 1500);
+
+    // Add drag listeners
+    ["layer-list", "reference-layer-list"].map((l) => addLayerSortListener(`#${l}`));
   }
   function eeInitFailureCallback(failure) {
     console.log(`Failed to authenticate to GEE: ${failure}`);

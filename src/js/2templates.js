@@ -1901,6 +1901,7 @@ function addJSONInputTextBox(containerID, inputID, label, variable, defaultValue
 
   $("#" + inputID).on("input", () => {
     var tJSON = $(`#${inputID}`).val();
+    // console.log(JSON.parse(tJSON));
     eval(`window.${variable} = JSON.parse(tJSON)`);
   });
 }
@@ -2405,6 +2406,7 @@ function addLayer(layer) {
   var eraserID = `${id}-eraser-${layer.ID}`;
   var selectionID = id + "-selection-list-" + layer.ID;
   var checked = "";
+  let isDraggable = "draggable-layer";
   layerObj[id] = layer;
   layer.wasJittered = false;
   layer.loading = false;
@@ -2418,10 +2420,12 @@ function addLayer(layer) {
     timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.push(id);
     timeLapseObj[layer.viz.timeLapseID].sliders.push(opacityID);
     timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
+    isDraggable = "not-draggable-layer";
   }
 
   //Set up layer control container
-  $("#" + layer.whichLayerList).prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container'  title= '${layer.helpBoxMessage}'>
+  $("#" + layer.whichLayerList)
+    .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container ${isDraggable}'  title= '${layer.helpBoxMessage}'>
 								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
@@ -3311,6 +3315,55 @@ function addLayer(layer) {
     //   Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
     // layer.layer.addListener('mouseover', mouseEventTracker)
   }
+}
+
+//////////////////////////////////////////////////
+// Function to listen allow for layer order changes and then update the map accordingly
+function addLayerSortListener(containerSelector, layerSelector = ".layer-container.draggable-layer", layerSplitString = "-container-") {
+  // Set up sortable layer list
+  $(containerSelector).sortable();
+
+  // Listen for sort stopping and then sort map layers accordingly
+  $(containerSelector).on("sortstop", (e, ui) => {
+    // Get the new order of layers
+    var layerContainerIDs = $.map($(`${containerSelector}>${layerSelector}`), (n) => n.id.split(layerSplitString)[0]);
+
+    // Reverse them since map layers are bottom-up
+    layerContainerIDs = layerContainerIDs.reverse();
+
+    // Find the corresponding map layer ids and sort them
+    let currentLayerIDs = layerContainerIDs.map((layerContainerID) => layerObj[layerContainerID].layerId).sort();
+    // console.log(currentLayerIDs);
+
+    // Iterate across each layer, clear it off the map, and update its layerId (index of its position in the layer list)
+    layerContainerIDs.forEach((layerContainerID, i) => {
+      let layer = layerObj[layerContainerID];
+
+      // First clear out current layer
+      // layer.map.overlayMapTypes.setAt(layer.layerId, null);
+
+      // Update the layer id
+      layerObj[layerContainerID].layerId = currentLayerIDs[i];
+    });
+
+    // Add it back on the map if its visible
+    layerContainerIDs.forEach((layerContainerID, i) => {
+      let layer = layerObj[layerContainerID];
+      if (layer.visible) {
+        // console.log(`Adding ${layer.name} to the map ${layer.opacity}`);
+        if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
+          layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+        }
+        // else {
+        //   layer.layer.setMap(layer.map);
+        // }
+
+        // layer.layer.setOpacity(layer.opacity);
+      } else {
+        layer.map.overlayMapTypes.setAt(layer.layerId, null);
+      }
+    });
+  });
 }
 //////////////////////////////////////////////////
 // Transition charting input UI setup

@@ -640,17 +640,64 @@ function runGTAC() {
 //           })]);
 
 // function runGTAC() {
-//   var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8");
+// var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8");
+// console.log(lcms.first().select([".*_Raw_Prob.*"]).bandNames().getInfo());
 //   // const mapId = lcms.getMap({ min: 0, max: 60 });
 //   // const tileSource = new ee.layers.EarthEngineTileSource(mapId);
 
 //   // .map(img=>img.updateMask(img.gt(1)));
-//   Map.addLayer(lcms.select([0]), {
-//     layerType: "geeImageCollection",
+// Map.addLayer(
+//   lcms.select([0]),
+//   {
+//     //     layerType: "geeImageCollection",
 //     autoViz: true,
-//   });
-//   // console.log(lcms.mosaic().getMap())
-//   Map.turnOnInspector();
+//   },
+//   "Change"
+// );
+// Map.addLayer(
+//   lcms.select([1]),
+//   {
+//     //     layerType: "geeImageCollection",
+//     autoViz: true,
+//   },
+//   "Land Cover"
+// );
+// Map.addTimeLapse(
+//   lcms.select([2]).limit(3),
+//   {
+//     //     layerType: "geeImageCollection",
+//     autoViz: true,
+//   },
+//   "Land Use"
+// );
+// Map.addLayer(
+//   lcms.select([".*_Raw_Prob.*"]),
+//   {
+//     //     layerType: "geeImageCollection",
+//     // autoViz: true,
+//   },
+//   "Probs"
+// );
+// Map.addLayer(ee.Image(1), {}, "blank img");
+// // console.log(lcms.mosaic().getMap())
+// Map.addLayer(ee.FeatureCollection("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary_buff2mile"), {}, "prusvi");
+// var monitoring_sites = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest");
+// Map.addLayer(
+//   monitoring_sites.map((f) => {
+//     return ee.Feature(f).buffer(300 / 2);
+//   }),
+//   {
+//     strokeColor: "FF0",
+//     layerType: "geeVector",
+//   },
+//   "Monitoring Sites",
+//   true,
+//   null,
+//   null,
+//   "Trees of special interest"
+// );
+
+// Map.turnOnInspector();
 // var c = [];
 // range(0,1000).map(n=>c.push(ee.Image([n,n+1,n+2]).divide(1000).float()));
 // c = ee.ImageCollection(c);

@@ -26,7 +26,12 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  Map.addLayer(composites, compViz, "Raw Composites", false);
+  var vizYears = range(startYear, endYear, 5);
+  if (vizYears[vizYears.length - 2] !== endYear) {
+    vizYears.push(endYear);
+  }
+  compViz.years = vizYears;
+  Map.addTimeLapse(composites, compViz, "Raw Composites", false);
 
   var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten());
   // Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
@@ -37,6 +42,7 @@ function runBaseLearner() {
   var lt_fit = cdl.batchSimpleLTFit(lt, startYear, endYear, bandNames, bandPropertyName, arrayMode, lt_props["maxSegments"], 0.0001);
   lt_fit = lt_fit.select([".*_fitted"]);
   var ltSynthViz = copyObj(getImagesLib.vizParamsFalse);
+  ltSynthViz.years = vizYears;
   ltSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_LT_fitted`);
   ltSynthViz.reducer = ee.Reducer.median();
   // Vizualize image collection for charting (opacity set to 0 so it will chart but not be visible)
@@ -54,7 +60,7 @@ function runBaseLearner() {
   // .first();
 
   // Visualize as you would a composite
-  Map.addLayer(lt_fit, ltSynthViz, "LT Synthetic Composite", false);
+  Map.addTimeLapse(lt_fit, ltSynthViz, "LT Synthetic Composite", false);
 
   // Iterate across each band to look for areas of change
   if (bandNames === null || bandNames === undefined) {
@@ -159,12 +165,12 @@ function runBaseLearner() {
   var ccdcSynthViz = copyObj(getImagesLib.vizParamsFalse);
   ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
-
+  ccdcSynthViz.years = vizYears;
   var annualImages = changeDetectionLib.getTimeImageCollection(startYear, endYear + 1, startJulian, endJulian, 1);
   annualImages = annualImages.map((img) => setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))); //.map(setSameDate);
   // #Then predict the CCDC models
   var annualPredictedCCDC = changeDetectionLib.predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics);
-  Map.addLayer(annualPredictedCCDC.select([".*_fitted"]), ccdcSynthViz, `CCDC Synthetic Composite`, false);
+  Map.addTimeLapse(annualPredictedCCDC.select([".*_fitted"]), ccdcSynthViz, `CCDC Synthetic Composite`, false);
 
   // #Extract the change years and magnitude
   changeObj = changeDetectionLib.ccdcChangeDetection(ccdcImg, changeDetectionBandName);
