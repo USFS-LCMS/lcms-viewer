@@ -3100,18 +3100,7 @@ function initialize() {
   //RCR appspot proxy costs $$
   // ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
   //Initialize GEE
-
-  function loadGEELibraries() {
-    if (mode !== "geeViz") {
-      let geeModules = ["./src/gee/gee-libraries/getImagesLib.js", "./src/gee/gee-libraries/changeDetectionLib.js"];
-      batchLoad(geeModules, eeInitSuccessCallback);
-    } else {
-      eeInitSuccessCallback();
-    }
-  }
-  function eeInitSuccessCallback() {
-    //Set up the correct GEE run function
-    geeAuthenticated = true;
+  function showSplash() {
     setTimeout(function () {
       if (localStorage["showIntroModal-" + mode] === "true") {
         $("#introModal").modal().show();
@@ -3135,7 +3124,20 @@ function initialize() {
         // console.log(this.checked);
         localStorage["showIntroModal-" + mode] = !this.checked;
       });
-    }, 1000);
+    }, 500);
+  }
+  function loadGEELibraries() {
+    if (mode !== "geeViz") {
+      let geeModules = ["./src/gee/gee-libraries/getImagesLib.js", "./src/gee/gee-libraries/changeDetectionLib.js"];
+      batchLoad(geeModules, eeInitSuccessCallback);
+    } else {
+      eeInitSuccessCallback();
+    }
+  }
+  function eeInitSuccessCallback() {
+    //Set up the correct GEE run function
+    geeAuthenticated = true;
+    showSplash();
     if (geeAuthenticated) {
       $("#main-container").append(staticTemplates.introModal[mode]);
     }

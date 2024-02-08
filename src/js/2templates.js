@@ -2422,7 +2422,9 @@ function addLayer(layer) {
     timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
     isDraggable = "not-draggable-layer";
   }
-
+  if (layer.layerType === "geeVector" || layer.layerType === "geoJSONVector") {
+    isDraggable = "not-draggable-layer";
+  }
   //Set up layer control container
   $("#" + layer.whichLayerList)
     .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container ${isDraggable}'  title= '${layer.helpBoxMessage}'>
@@ -3321,7 +3323,7 @@ function addLayer(layer) {
 // Function to listen allow for layer order changes and then update the map accordingly
 function addLayerSortListener(containerSelector, layerSelector = ".layer-container.draggable-layer", layerSplitString = "-container-") {
   // Set up sortable layer list
-  $(containerSelector).sortable();
+  $(containerSelector).sortable({ items: `>${layerSelector}` });
 
   // Listen for sort stopping and then sort map layers accordingly
   $(containerSelector).on("sortstop", (e, ui) => {
@@ -3330,9 +3332,9 @@ function addLayerSortListener(containerSelector, layerSelector = ".layer-contain
 
     // Reverse them since map layers are bottom-up
     layerContainerIDs = layerContainerIDs.reverse();
-
+    // console.log(layerContainerIDs);
     // Find the corresponding map layer ids and sort them
-    let currentLayerIDs = layerContainerIDs.map((layerContainerID) => layerObj[layerContainerID].layerId).sort();
+    var currentLayerIDs = layerContainerIDs.map((layerContainerID) => layerObj[layerContainerID].layerId).sort((a, b) => a - b);
     // console.log(currentLayerIDs);
 
     // Iterate across each layer, clear it off the map, and update its layerId (index of its position in the layer list)
@@ -3342,6 +3344,9 @@ function addLayerSortListener(containerSelector, layerSelector = ".layer-contain
       // First clear out current layer
       // layer.map.overlayMapTypes.setAt(layer.layerId, null);
 
+      // if (layer.layerType == "geeVector" || layer.layerType == "geoJSONVector") {
+      // layer.layer.setMap(null);
+      // }
       // Update the layer id
       layerObj[layerContainerID].layerId = currentLayerIDs[i];
     });
@@ -3353,14 +3358,18 @@ function addLayerSortListener(containerSelector, layerSelector = ".layer-contain
         // console.log(`Adding ${layer.name} to the map ${layer.opacity}`);
         if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
           layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+        } else {
+          layer.map.overlayMapTypes.setAt(layer.layerId, null);
+          layer.layer.setMap(layer.map);
         }
-        // else {
-        //   layer.layer.setMap(layer.map);
-        // }
 
         // layer.layer.setOpacity(layer.opacity);
       } else {
-        layer.map.overlayMapTypes.setAt(layer.layerId, null);
+        if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
+          layer.map.overlayMapTypes.setAt(layer.layerId, null);
+        } else {
+          layer.layer.setMap(null);
+        }
       }
     });
   });
