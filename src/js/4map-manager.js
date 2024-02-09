@@ -1774,6 +1774,7 @@ function mp() {
 
     clickBoundsColor = color;
   };
+  this.canReorderLayers = true;
 }
 
 var Map2 = new mp();
@@ -3232,6 +3233,10 @@ function initialize() {
         if (loaded === false) {
           sleepFor(1000);
         }
+        // Add drag listeners
+        if (Map.canReorderLayers) {
+          ["layer-list", "reference-layer-list"].map((l) => addLayerSortListener(`#${l}`));
+        }
       }
 
       setupAreaLayerSelection();
@@ -3261,9 +3266,6 @@ function initialize() {
         showMessage("No Transition Charting", "The year range must be 5 years or more to perform transition charting");
       }
     }, 1500);
-
-    // Add drag listeners
-    ["layer-list", "reference-layer-list"].map((l) => addLayerSortListener(`#${l}`));
   }
   function eeInitFailureCallback(failure) {
     console.log(`Failed to authenticate to GEE: ${failure}`);

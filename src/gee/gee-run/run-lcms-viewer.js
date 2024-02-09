@@ -547,7 +547,6 @@ function runGTAC() {
   lcmsBnsForCharting.map((bn) => {
     lcmsRunFuns.addAreaChartClass(bn);
   });
-
   if (endYear - startYear >= 5) {
     //&& urlParams.sankey==='true' || urlParams.beta ==='true' ){
     activeStartYear = startYear;
