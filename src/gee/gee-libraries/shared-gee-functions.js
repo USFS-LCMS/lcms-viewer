@@ -656,20 +656,35 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
   // var hillshade = ee.Terrain.hillshade(ned);
   // Map.addLayer(hillshade,{min:0,max:255},'hillshade')
   var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
+  var nlcd_tcc = ee
+    .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
+    .select([0, 2])
+    .map((img) => img.selfMask());
+
+  Map.addLayer(
+    nlcd_tcc,
+    { bands: "NLCD_Percent_Tree_Canopy_Cover", min: 1, max: 90, palette: "white,green" },
+    "NLCD Tree Canopy Cover",
+    false,
+    null,
+    null,
+    "NLCD Tree Canopy Cover v2021-4",
+    whichLayerList
+  );
   // Map.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
-  [2016].map(function (yr) {
-    var tcc = nlcd.filter(ee.Filter.calendarRange(yr, yr, "year")).select(["percent_tree_cover"]).mosaic();
-    Map.addLayer(
-      tcc.updateMask(tcc.gte(1)).set("bounds", clientBoundsDict.CONUS),
-      { min: 1, max: 90, palette: palettes.crameri.bamako[50].reverse() },
-      "NLCD Tree Canopy Cover " + yr.toString(),
-      false,
-      null,
-      null,
-      "NLCD " + yr.toString() + " Tree Canopy Cover",
-      whichLayerList
-    );
-  });
+  // [2016].map(function (yr) {
+  //   var tcc = nlcd.filter(ee.Filter.calendarRange(yr, yr, "year")).select(["percent_tree_cover"]).mosaic();
+  //   Map.addLayer(
+  //     tcc.updateMask(tcc.gte(1)).set("bounds", clientBoundsDict.CONUS),
+  //     { min: 1, max: 90, palette: palettes.crameri.bamako[50].reverse() },
+  //     "NLCD Tree Canopy Cover " + yr.toString(),
+  //     false,
+  //     null,
+  //     null,
+  //     "NLCD " + yr.toString() + " Tree Canopy Cover",
+  //     whichLayerList
+  //   );
+  // });
 
   if (idsCollections !== undefined) {
     var idsYr = idsCollections.featureCollection.reduceToImage(["SURVEY_YEA"], ee.Reducer.max()).set("bounds", clientBoundsDict.CONUS);
