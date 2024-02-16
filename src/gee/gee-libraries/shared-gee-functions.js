@@ -136,26 +136,6 @@ function addSankey(lcmsRun, bn) {
     names: names,
   };
 }
-function getSankeyPeriods(startYear, endYear, yearRangeFrequency = 15, yearBuffer = 2) {
-  // console.log('getting sankey periods');console.log([startYear,endYear]);
-  if (endYear - startYear < yearRangeFrequency) {
-    return [
-      [startYear, startYear + yearBuffer],
-      [endYear - yearBuffer, endYear],
-    ];
-  } else {
-    let yearRanges = range(startYear, endYear, yearRangeFrequency);
-    if (endYear - yearRanges[yearRanges.length - 1] < parseInt(yearRangeFrequency / 2)) {
-      yearRanges.pop();
-    }
-    if (yearRanges.indexOf(endYear) === -1) {
-      yearRanges.push(endYear);
-    }
-    let yearRangesPairs = yearRanges.slice(0, yearRanges.length - 1).map((yr) => [yr, yr + yearBuffer]);
-    yearRangesPairs.push([yearRanges[yearRanges.length - 1] - yearBuffer, yearRanges[yearRanges.length - 1]]);
-    return yearRangesPairs;
-  }
-}
 
 function batchFillCollection(c, expectedYears) {
   var actualYears = c
@@ -778,7 +758,7 @@ function getHansen(whichLayerList) {
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "reference-layer-list";
   }
-  var hansen = ee.Image("UMD/hansen/global_forest_change_2021_v1_9").reproject("EPSG:4326", null, 30);
+  var hansen = ee.Image("UMD/hansen/global_forest_change_2022_v1_10").reproject("EPSG:4326", null, 30);
 
   var hansenClientBoundary = {
     type: "Polygon",
@@ -795,7 +775,7 @@ function getHansen(whichLayerList) {
   // print(hansenClientBoundary);
   var hansenLoss = hansen.select(["lossyear"]).selfMask().add(2000).int16();
   var hansenStartYear = 2001;
-  var hansenEndYear = 2021;
+  var hansenEndYear = 2022;
 
   if (startYear > hansenStartYear) {
     hansenStartYear = startYear;

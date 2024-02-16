@@ -20,6 +20,35 @@ function runGTAC() {
   var lcmsRun = {};
   var lcmsRunFuns = {};
 
+  //Bring in ref layers
+  getHansen();
+
+  var whp = ee.ImageCollection("projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential").mosaic().rename(["whp"]);
+  var names = ["Very Low", "Low", "Moderate", "High", "Very High", "Non-burnable", "Water"];
+  var palette = ["38A800", "D1FF73", "FFFF00", "FFAA00", "FF0000", "B2B2B2", "0070FF"];
+  var values = [1, 2, 3, 4, 5, 6, 7];
+  whp = whp.set({
+    whp_class_names: names,
+    whp_class_palette: palette,
+    whp_class_values: values,
+  });
+
+  Map.addLayer(
+    whp,
+    { autoViz: true },
+    "Wildfire Hazard Potential 2020",
+    false,
+    null,
+    null,
+    "The wildfire hazard potential (WHP) map is a raster geospatial product produced by the USDA Forest Service, Fire Modeling Institute that can help to inform evaluations of wildfire hazard or prioritization of fuels management needs across very large landscapes",
+    "reference-layer-list"
+  );
+  try {
+    getMTBSandIDS();
+  } catch (err) {
+    console.log(err);
+  }
+
   //Set up some params
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
@@ -522,21 +551,24 @@ function runGTAC() {
     var colors = lcmsRun.props[`${bn}_class_palette`];
     names = names.map((nm) => nm.replaceAll(" (SEAK Only)", ""));
     var areaC = formatAreaChartCollection(c, numbers, names);
-
+    console.log(areaC.first().bandNames().getInfo());
     var bnTitle = bn.replaceAll("_", " ");
     var fieldsHidden;
     if (bn === "Change") {
       fieldsHidden = [true, false, false, false, true];
     }
 
-    convertToStack(areaC, (xAxisProperty = "year"), (dateFormat = "YYYY"));
+    // convertToStack(areaC, (xAxisProperty = "year"), (dateFormat = "YYYY"));
     areaChartCollections[bn] = {
       label: `LCMS ${bnTitle} Annual`,
       collection: areaC,
       stacked: false,
       steppedLine: false,
       tooltip: `Summarize ${bnTitle} classes for each year`,
+      class_names: names,
+      class_numbers: numbers,
       colors: colors,
+      zonalReducer: ee.Reducer.frequencyHistogram(),
       xAxisLabel: "Year",
       fieldsHidden: fieldsHidden,
       dateFormat: "YYYY",
@@ -564,37 +596,10 @@ function runGTAC() {
     // $('#transition-year-interval-slider-container').hide();
     $("#transition-periods-container").hide();
   }
-
+  $("#user-defined-area-chart-label").click();
   getSelectLayers(true);
   populatePixelChartDropdown();
   populateAreaChartDropdown();
-  getHansen();
-
-  var whp = ee.ImageCollection("projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential").mosaic().rename(["whp"]);
-  var names = ["Very Low", "Low", "Moderate", "High", "Very High", "Non-burnable", "Water"];
-  var palette = ["38A800", "D1FF73", "FFFF00", "FFAA00", "FF0000", "B2B2B2", "0070FF"];
-  var values = [1, 2, 3, 4, 5, 6, 7];
-  whp = whp.set({
-    whp_class_names: names,
-    whp_class_palette: palette,
-    whp_class_values: values,
-  });
-
-  Map.addLayer(
-    whp,
-    { autoViz: true },
-    "Wildfire Hazard Potential 2020",
-    false,
-    null,
-    null,
-    "The wildfire hazard potential (WHP) map is a raster geospatial product produced by the USDA Forest Service, Fire Modeling Institute that can help to inform evaluations of wildfire hazard or prioritization of fuels management needs across very large landscapes",
-    "reference-layer-list"
-  );
-  try {
-    getMTBSandIDS();
-  } catch (err) {
-    console.log(err);
-  }
 
   // $('#query-label').click()
   // $('#pixel-chart-label').click();
@@ -639,135 +644,199 @@ function runGTAC() {
 //           })]);
 
 // function runGTAC() {
-//   var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8");
-//   // console.log(lcms.first().select([".*_Raw_Prob.*"]).bandNames().getInfo());
-//   //   // const mapId = lcms.getMap({ min: 0, max: 60 });
-//   //   // const tileSource = new ee.layers.EarthEngineTileSource(mapId);
+//   var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").filter(ee.Filter.eq("study_area", "CONUS"));
+//   var tcc = ee.ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4").select([0, 2]).filter(ee.Filter.eq("study_area", "CONUS"));
+//   // console.log(tcc.first().toDictionary().getInfo());
+//   let changeVisibility = [false, true, true, true, false];
+//   lcms = lcms.map((img) => img.set("Change_class_visibility", changeVisibility));
+//   Map.addLayer(lcms.select([1]), { autoViz: true }, "LCMS Land Cover");
+//   // areaChart.addLayer(lcms.select([0]), {}, "LCMS");
+//   areaChart.addLayer(lcms.select([0, 1, 2]), { sankey: true }, "LCMS Transition");
+//   areaChart.addLayer(lcms.select([0, 1, 2]), {}, "LCMS Annual");
+//   // areaChart.addLayer(lcms.select([2]), {}, "LCMS Use");
+//   // areaChart.addLayer(lcms.select([0, 1, 2]), {}, "LCMS All");
+//   // areaChart.addLayer(lcms.select([2]), { autoViz: true }, "test");
 
-//   //   // .map(img=>img.updateMask(img.gt(1)));
-//   Map.addLayer(
-//     lcms.select([0]),
-//     {
-//       //     layerType: "geeImageCollection",
-//       autoViz: true,
-//     },
-//     "Change"
-//   );
-//   Map.addLayer(
-//     lcms.select([1]),
-//     {
-//       //     layerType: "geeImageCollection",
-//       autoViz: true,
-//     },
-//     "Land Cover"
-//   );
-//   Map.addTimeLapse(
-//     lcms.select([2]).limit(3),
-//     {
-//       //     layerType: "geeImageCollection",
-//       autoViz: true,
-//     },
-//     "Land Use"
-//   );
+//   let lcmap_dict = {
+//     LC_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+//     LC_class_names: ["Developed", "Cropland", "Grass/Shrub", "Tree Cover", "Water", "Wetlands", "Ice/Snow", "Barren", "Class Change"],
+//     LC_class_palette: ["E60000", "A87000", "E3E3C2", "1D6330", "476BA1", "BAD9EB", "FFFFFF", "B3B0A3", "A201FF"],
+//   };
+//   let lcpri = ee.ImageCollection("projects/sat-io/open-datasets/LCMAP/LCPRI").select(["b1"], ["LC"]);
+//   lcpri = lcpri.map((img) => img.set(lcmap_dict));
+//   Map.addLayer(lcpri, { autoViz: true }, "LCMAP LC");
+//   areaChart.addLayer(lcpri, { sankey: false }, "LCMAP LC Annual");
+//   areaChart.addLayer(lcpri, { sankey: true }, "LCMAP LC Transition");
+//   console.log(lcpri.first().bandNames().getInfo());
+//   // var f = ee.Geometry.Polygon(
+//   //   [
+//   //     [
+//   //       [-105.91375135016187, 40.242613115226675],
+//   //       [-105.91375135016187, 40.2352749347849],
+//   //       [-105.86637281012281, 40.2352749347849],
+//   //       [-105.86637281012281, 40.242613115226675],
+//   //     ],
+//   //   ],
+//   //   null,
+//   //   false
+//   // );
 
-//   Map.addLayer(ee.Image(1), {}, "blank img");
-//   // console.log(lcms.mosaic().getMap())
-//   var monitoring_sites = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest");
-//   Map.addLayer(
-//     monitoring_sites.map((f) => {
-//       return ee.Feature(f).buffer(300 / 2);
-//     }),
-//     {
-//       strokeColor: "FF0",
-//       fillColor: "0FF",
-//       fillOpacity: 1,
-//       layerType: "geeVector",
-//     },
-//     "Monitoring Sites 150",
-//     true,
-//     null,
-//     null,
-//     "Trees of special interest 150"
-//   );
-//   Map.addLayer(
-//     monitoring_sites.map((f) => {
-//       return ee.Feature(f).buffer(50);
-//     }),
-//     {
-//       strokeColor: "F0F",
-//       fillColor: "0F0",
-//       fillOpacity: 1,
-//       layerType: "geeVector",
-//     },
-//     "Monitoring Sites 50",
-//     true,
-//     null,
-//     null,
-//     "Trees of special interest 50"
-//   );
-//   Map.addLayer(
-//     lcms.select([".*_Raw_Prob.*"]),
-//     {
-//       //     layerType: "geeImageCollection",
-//       // autoViz: true,
-//     },
-//     "Probs"
-//   );
-//   // Map.addLayer(ee.FeatureCollection("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary_buff2mile"), {}, "prusvi");
+//   // areaChart.chartArea(f, "test charting");
+//   var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2019_REL/NLCD");
+//   // console.log(nlcd.first().bandNames().getInfo());
+//   nlcd = nlcd.select([0]);
+//   var nlcd_class_names = ee.List(nlcd.first().toDictionary().get("landcover_class_names"));
+//   nlcd_class_names = nlcd_class_names.map((nm) => {
+//     return ee.String(nm).split(": ").get(0);
+//   });
+//   nlcd = nlcd.map((img) => img.set("landcover_class_names", nlcd_class_names));
+//   // console.log(nlcd_class_names.getInfo());
+//   // Map.addLayer(nlcd, { sankey: true }, "NLCD");
+//   // areaChart.sankeyTransitionPeriods = [
+//   // [2001, 2004],
+//   // [2019, 2019],
+//   // ];
+//   // areaChart.addLayer(nlcd, { sankey: true }, "NLCD");
+//   // areaChart.addLayer(nlcd, {}, "NLCD Annual");
+//   // areaChart.addLayer(tcc, { visible: [true, false] }, "NLCD TCC");
+//   // areaChart.addLayer(tcc, { reducer: ee.Reducer.median() }, "NLCD TCC Median");
+//   // areaChart.populateChartDropdown();
+//   areaChart.populateChartLayerSelect();
+//   areaChart.startAutoCharting();
 
-//   Map.turnOnInspector();
-// var c = [];
-// range(0,1000).map(n=>c.push(ee.Image([n,n+1,n+2]).divide(1000).float()));
-// c = ee.ImageCollection(c);
-// console.log(c.size().getInfo())
-// Map.addLayer(c,{},'test')
-// Map.addLayer(lcms.select(['Land_Cover_Raw_Probability_Trees']),{'min':20,'max':80,'palette':['Ffff00','BlUe','green','green']},'lcms')
-//   var comps = ee.ImageCollection('projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7')
-//   .select(['swir2','nir','red'])
-//   Map.addTimeLapse(comps.filter(ee.Filter.calendarRange(2000,2005,'year')),{mosaic:true,'queryDateFormat':'YYYY-MM-dd HH:mm'})//,{min:500,max:3500,bands:'swir2,nir,red'});
-//   Map.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')).mosaic().divide(10000),{min:500,max:3500,bands:'swir2,nir,red'});
-//   Map.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')),{min:500,max:3500,bands:'swir2,nir,red'});
-//   var ls = getImagesLib.getProcessedLandsatScenes(geometry,2015,2019,190,250).select(['swir2','red','NBR','NDVI','nir']);
-//   Map.addLayer(ls.sort('system:time_start',false),getImagesLib.vizParamsFalse,'LS')
-// Map.addLayer(ee.Image(1).multiply(0.001111111111111111111111),{palette:'lightblue',min:0,max:1,classLegendDict:{'test1':'lightblue'}})
-// Map.turnOnInspector();
-// Map.setTitle('test');
-// Map.setQueryCRS('EPSG:32611')
-// Map.setQueryTransform( [60, 0, -2361915, 0, -60, 3177735]);
-// Map.setQueryPrecision(4,0.01)
-// Map.setQueryDateFormat('YYYY-MM-dd HH:mm');
-// Map.setQueryBoxColor('#F00')
+//   // Map.addLayer(lcms);
+//   // Map.turnOnInspector();
+//   // Map.addLayer(f, {}, "area");
+//   // Map.centerObject(f);
+//   // areaChart.addLayer(lcms.select([1]));
+//   //   // console.log(lcms.first().select([".*_Raw_Prob.*"]).bandNames().getInfo());
+//   //   //   // const mapId = lcms.getMap({ min: 0, max: 60 });
+//   //   //   // const tileSource = new ee.layers.EarthEngineTileSource(mapId);
 
-//   // Map.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
-//   // Map.addLayer(ee.Image([1,2,3]).toArray());
-//   // Map.addLayer(ee.Image(1));
-//   // Map.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
-//   // Map.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
-// Map.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().multiply(10000).float())
-//   // var sa = ee.FeatureCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary');
-//   // Map.addLayer(sa)
-//   var props = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").first().toDictionary().getInfo();
-//   var tLcms = ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-6_assembledLCMSOutputs')
-//   tLcms = tLcms.map(img=> img.set(props))
-//   Map.addTimeLapse(tLcms.select(['Change']).limit(2),{autoViz:true})
-//   Map.addTimeLapse(tLcms.select(['Land_Cover']).limit(2),{autoViz:true})
-//   Map.addLayer(tLcms.select(['Land_Use']),{autoViz:true})
+//   //   //   // .map(img=>img.updateMask(img.gt(1)));
+//   //   Map.addLayer(
+//   //     lcms.select([0]),
+//   //     {
+//   //       //     layerType: "geeImageCollection",
+//   //       autoViz: true,
+//   //     },
+//   //     "Change"
+//   //   );
+//   //   Map.addLayer(
+//   //     lcms.select([1]),
+//   //     {
+//   //       //     layerType: "geeImageCollection",
+//   //       autoViz: true,
+//   //     },
+//   //     "Land Cover"
+//   //   );
+//   //   Map.addTimeLapse(
+//   //     lcms.select([2]).limit(3),
+//   //     {
+//   //       //     layerType: "geeImageCollection",
+//   //       autoViz: true,
+//   //     },
+//   //     "Land Use"
+//   //   );
 
-//   var dataset = ee.ImageCollection('USGS/NLCD_RELEASES/2021_REL/NLCD');
+//   //   Map.addLayer(ee.Image(1), {}, "blank img");
+//   //   // console.log(lcms.mosaic().getMap())
+//   //   var monitoring_sites = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest");
+//   //   Map.addLayer(
+//   //     monitoring_sites.map((f) => {
+//   //       return ee.Feature(f).buffer(300 / 2);
+//   //     }),
+//   //     {
+//   //       strokeColor: "FF0",
+//   //       fillColor: "0FF",
+//   //       fillOpacity: 1,
+//   //       layerType: "geeVector",
+//   //     },
+//   //     "Monitoring Sites 150",
+//   //     true,
+//   //     null,
+//   //     null,
+//   //     "Trees of special interest 150"
+//   //   );
+//   //   Map.addLayer(
+//   //     monitoring_sites.map((f) => {
+//   //       return ee.Feature(f).buffer(50);
+//   //     }),
+//   //     {
+//   //       strokeColor: "F0F",
+//   //       fillColor: "0F0",
+//   //       fillOpacity: 1,
+//   //       layerType: "geeVector",
+//   //     },
+//   //     "Monitoring Sites 50",
+//   //     true,
+//   //     null,
+//   //     null,
+//   //     "Trees of special interest 50"
+//   //   );
+//   //   Map.addLayer(
+//   //     lcms.select([".*_Raw_Prob.*"]),
+//   //     {
+//   //       //     layerType: "geeImageCollection",
+//   //       // autoViz: true,
+//   //     },
+//   //     "Probs"
+//   //   );
+//   //   // Map.addLayer(ee.FeatureCollection("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary_buff2mile"), {}, "prusvi");
 
-//   Map.addLayer(dataset.select([0]),{'autoViz':true},'NLCD')
+//   //   Map.turnOnInspector();
+//   // var c = [];
+//   // range(0,1000).map(n=>c.push(ee.Image([n,n+1,n+2]).divide(1000).float()));
+//   // c = ee.ImageCollection(c);
+//   // console.log(c.size().getInfo())
+//   // Map.addLayer(c,{},'test')
+//   // Map.addLayer(lcms.select(['Land_Cover_Raw_Probability_Trees']),{'min':20,'max':80,'palette':['Ffff00','BlUe','green','green']},'lcms')
+//   //   var comps = ee.ImageCollection('projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7')
+//   //   .select(['swir2','nir','red'])
+//   //   Map.addTimeLapse(comps.filter(ee.Filter.calendarRange(2000,2005,'year')),{mosaic:true,'queryDateFormat':'YYYY-MM-dd HH:mm'})//,{min:500,max:3500,bands:'swir2,nir,red'});
+//   //   Map.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')).mosaic().divide(10000),{min:500,max:3500,bands:'swir2,nir,red'});
+//   //   Map.addLayer(comps.filter(ee.Filter.calendarRange(2021,2021,'year')),{min:500,max:3500,bands:'swir2,nir,red'});
+//   //   var ls = getImagesLib.getProcessedLandsatScenes(geometry,2015,2019,190,250).select(['swir2','red','NBR','NDVI','nir']);
+//   //   Map.addLayer(ls.sort('system:time_start',false),getImagesLib.vizParamsFalse,'LS')
+//   // Map.addLayer(ee.Image(1).multiply(0.001111111111111111111111),{palette:'lightblue',min:0,max:1,classLegendDict:{'test1':'lightblue'}})
+//   // Map.turnOnInspector();
+//   // Map.setTitle('test');
+//   // Map.setQueryCRS('EPSG:32611')
+//   // Map.setQueryTransform( [60, 0, -2361915, 0, -60, 3177735]);
+//   // Map.setQueryPrecision(4,0.01)
+//   // Map.setQueryDateFormat('YYYY-MM-dd HH:mm');
+//   // Map.setQueryBoxColor('#F00')
 
-//   var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[0]).filter('study_area=="CONUS"');
-//   Map.addTimeLapse(lcms.select(['.*Probability.*']),{reducer:ee.Reducer.max(),min:0,max:30,classLegendDict:{'Non-Tree No Change':'000','Tree No Change':'0E0','Non-Tree Fast Loss':'E00','Tree Gain':'0FF','Tree Fast Loss':'FF0','Tree Fast Loss + Gain':'FFF'},bands:'Change_Raw_Probability_Fast_Loss,Land_Cover_Raw_Probability_Trees,Change_Raw_Probability_Gain'},'LCMS Change Composite')
-//   Map.addLayer(lcms.select(['Land_Cover']),{'autoViz':true,reducer:ee.Reducer.mode()},'LCMS',false)
-//   setTimeout(()=>{$('#query-label').click()},1000)
-//  s2s = getImagesLib.getProcessedSentinel2Scenes(geometry,2022,2022,190,250);
-//  console.log(s2s.size().getInfo())
-//  var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f))).flatten()).select([0]);
-//  Map.addLayer(lt.filter(ee.Filter.eq('band','NBR')).max())
-//  var ltStack = cdl.batchSimpleLTFit(lt,urlParams.startYear+20,urlParams.endYear,null,'band',true,6)
-//  print(ltStack.first().getInfo())
-//  Map.addTimeLapse(ltStack.limit(2),{min:getImagesLib.vizParamsFalse10k.min,max:getImagesLib.vizParamsFalse10k.max,bands:'swir1_LT_fitted,nir_LT_fitted,red_LT_fitted',gamma:getImagesLib.vizParamsFalse10k.gamma})
-//  Map.addLayer(s2s.median(),getImagesLib.vizParamsFalse,'test')
-//  Map.centerObject(geometry)
+//   //   // Map.addLayer(ee.Image([1,2,3]).toArray().addBands(ee.Image(1)));
+//   //   // Map.addLayer(ee.Image([1,2,3]).toArray());
+//   //   // Map.addLayer(ee.Image(1));
+//   //   // Map.addLayer(ee.Image([1,2,4]).float(),{queryDict:{1:'there',2:'hi',3:'you'}});
+//   //   // Map.addLayer(ee.Image('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_landTrendr/LT_Raw_NDVI_yrs1984-2022_jds152-151'))
+//   // Map.addLayer(ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-3_CCDC').mosaic().multiply(10000).float())
+//   //   // var sa = ee.FeatureCollection('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/prusvi_boundary');
+//   //   // Map.addLayer(sa)
+//   //   var props = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").first().toDictionary().getInfo();
+//   //   var tLcms = ee.ImageCollection('projects/rcr-gee/assets/lcms-training/lcms-training_module-6_assembledLCMSOutputs')
+//   //   tLcms = tLcms.map(img=> img.set(props))
+//   //   Map.addTimeLapse(tLcms.select(['Change']).limit(2),{autoViz:true})
+//   //   Map.addTimeLapse(tLcms.select(['Land_Cover']).limit(2),{autoViz:true})
+//   //   Map.addLayer(tLcms.select(['Land_Use']),{autoViz:true})
+
+//   //   var dataset = ee.ImageCollection('USGS/NLCD_RELEASES/2021_REL/NLCD');
+
+//   //   Map.addLayer(dataset.select([0]),{'autoViz':true},'NLCD')
+
+//   //   var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[0]).filter('study_area=="CONUS"');
+//   //   Map.addTimeLapse(lcms.select(['.*Probability.*']),{reducer:ee.Reducer.max(),min:0,max:30,classLegendDict:{'Non-Tree No Change':'000','Tree No Change':'0E0','Non-Tree Fast Loss':'E00','Tree Gain':'0FF','Tree Fast Loss':'FF0','Tree Fast Loss + Gain':'FFF'},bands:'Change_Raw_Probability_Fast_Loss,Land_Cover_Raw_Probability_Trees,Change_Raw_Probability_Gain'},'LCMS Change Composite')
+//   //   Map.addLayer(lcms.select(['Land_Cover']),{'autoViz':true,reducer:ee.Reducer.mode()},'LCMS',false)
+//   //   setTimeout(()=>{$('#query-label').click()},1000)
+//   //  s2s = getImagesLib.getProcessedSentinel2Scenes(geometry,2022,2022,190,250);
+//   //  console.log(s2s.size().getInfo())
+//   //  var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f))).flatten()).select([0]);
+//   //  Map.addLayer(lt.filter(ee.Filter.eq('band','NBR')).max())
+//   //  var ltStack = cdl.batchSimpleLTFit(lt,urlParams.startYear+20,urlParams.endYear,null,'band',true,6)
+//   //  print(ltStack.first().getInfo())
+//   //  Map.addTimeLapse(ltStack.limit(2),{min:getImagesLib.vizParamsFalse10k.min,max:getImagesLib.vizParamsFalse10k.max,bands:'swir1_LT_fitted,nir_LT_fitted,red_LT_fitted',gamma:getImagesLib.vizParamsFalse10k.gamma})
+//   //  Map.addLayer(s2s.median(),getImagesLib.vizParamsFalse,'test')
+//   //  Map.centerObject(geometry)
 // }

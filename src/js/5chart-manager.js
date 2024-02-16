@@ -411,6 +411,7 @@ var getQueryImages = function (lng, lat) {
       };
       // console.log(value.table);console.log(containerID)
       Plotly.newPlot(containerID, value.table, plotLayout, buttonOptions);
+      console.log(value);
     } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
       $("#query-list-container").append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
@@ -958,7 +959,8 @@ function convertToStack(areaChartCollection, xAxisProperty = "year", dateFormat 
   });
   return stack.rename(bnsOut).set({ xProps: xProps, bns: oBns });
 }
-function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplier, dateFormat, crs, transform, scale) {
+
+function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplier, dateFormat, crs, transform, scale, kwargs) {
   if (xAxisProperty === null || xAxisProperty === undefined) {
     xAxisProperty = "year";
   }
@@ -1011,6 +1013,14 @@ function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplie
   }
   var bandNames = ee.Image(areaChartCollection.first()).bandNames();
 
+  let areaChartCollectionStack = areaChartCollection.toBands();
+  let xLabels = areaChartCollection.aggregate_histogram(xAxisProperty).keys();
+  areaChartCollectionStack = areaChartCollectionStack.rename(xLabels);
+  areaChartCollectionStack.reduceRegion(kwargs.zonalReducer, area, scale, crs, transform, true, 1e13, 4).evaluate((counts) => {
+    console.log(counts);
+  });
+  // console.log(areaChartCollectionStack.bandNames().getInfo());
+  // console.log(counts.getInfo());
   return areaChartCollection.toList(10000, 0).map(function (img) {
     img = ee.Image(img);
     // img = ee.Image(img).clip(area);
@@ -1041,9 +1051,9 @@ function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplie
   });
 }
 var chartFormatDict = {
-  Percentage: { mult: "NA", label: "% Area", places: 2 },
-  Acres: { mult: 0.222395, label: "Acres", places: 0 },
-  Hectares: { mult: 0.09, label: "ha", places: 0 },
+  Percentage: { mult: "NA", label: "% Area", places: 2, scale: 30 },
+  Acres: { mult: 0.222395, label: "Acres", places: 0, scale: 30 },
+  Hectares: { mult: 0.09, label: "ha", places: 0, scale: 30 },
 };
 
 function expandChart() {
@@ -1083,7 +1093,6 @@ function makeAreaChart(area, name, userDefined) {
     let startYear = areaChartCollections[whichAreaChartCollection].collection.sort("system:time_start").first().date().get("year").getInfo();
     let endYear = areaChartCollections[whichAreaChartCollection].collection.sort("system:time_start", false).first().date().get("year").getInfo();
 
-    // let transitionPeriods = getSankeyPeriods(startYear,endYear,transitionChartYearInterval,yearBuffer=2);
     let transitionPeriods = getTransitionRowData();
     if (transitionPeriods !== null) {
       let transitionClasses = getTransitionClasses(
@@ -1209,7 +1218,9 @@ function makeAreaChart(area, name, userDefined) {
 
               link: sankey_dict,
             };
-
+            console.log(labels);
+            console.log(sankeyPalette);
+            console.log(sankey_dict);
             var data = [data];
 
             // let h = parseInt($('#chart-modal-body').width()*0.5);
@@ -1322,7 +1333,8 @@ function makeAreaChart(area, name, userDefined) {
     });
     bandNames.unshift(xAxisProperty);
 
-    var table = getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplier, dateFormat, crs, transform, scale);
+    var table = getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplier, dateFormat, crs, transform, scale, areaChartCollections[whichAreaChartCollection]);
+
     // var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
     var iteration = 0;
     var maxIterations = 60;
@@ -1347,6 +1359,7 @@ function makeAreaChart(area, name, userDefined) {
         } else if (failure === undefined && currentChartID === thisChartID) {
           // tableT.unshift(['year','Loss %','Gain %']);
           tableT.unshift(bandNames);
+          console.log(tableT);
           $("#summary-spinner").slideUp();
           var stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
           var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;

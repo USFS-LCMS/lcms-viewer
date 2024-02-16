@@ -194,13 +194,13 @@ function centerObject(fc) {
     fc.geometry()
       .bounds(100)
       .evaluate(function (feature) {
-        console.log(feature);
+        // console.log(feature);
         synchronousCenterObject(feature);
       });
   } catch (err) {
     try {
       fc.bounds(100).evaluate(function (feature) {
-        console.log(feature);
+        // console.log(feature);
         synchronousCenterObject(feature);
       });
     } catch (err) {
