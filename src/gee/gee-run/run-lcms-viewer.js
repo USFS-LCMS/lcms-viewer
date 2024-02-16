@@ -596,7 +596,7 @@ function runGTAC() {
     // $('#transition-year-interval-slider-container').hide();
     $("#transition-periods-container").hide();
   }
-  $("#user-defined-area-chart-label").click();
+  // $("#user-defined-area-chart-label").click();
   getSelectLayers(true);
   populatePixelChartDropdown();
   populateAreaChartDropdown();
