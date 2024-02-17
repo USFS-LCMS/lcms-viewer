@@ -1807,19 +1807,26 @@ function downloadChartJS(chart, name) {
   delete link;
   ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "png");
 }
-function downloadPlotly(plotlyDownloadChartObject, name) {
-  Plotly.update("chart-download-canvas", null, {
-    font: { size: 20 },
-    margin: {
-      l: 50,
-      r: 50,
-      b: 50,
-      t: 75,
-      pad: 4,
-    },
-  });
+function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, width, height) {
+  let dims = {};
+  if (useBiggerFrame) {
+    width = 2000;
+    height = 1000;
+    Plotly.update("chart-download-canvas", null, {
+      font: { size: 20 },
+      margin: {
+        l: 50,
+        r: 50,
+        b: 50,
+        t: 75,
+        pad: 4,
+      },
+    });
+    dims = { width: width, height: height };
+  }
+
   plotlyDownloadChartObject.then((chart) => {
-    Plotly.toImage(chart, { width: 2000, height: 1000 }).then(function (url) {
+    Plotly.toImage(chart, dims).then(function (url) {
       var link = document.createElement("a");
       link.download = name;
       link.href = url;
@@ -2551,6 +2558,7 @@ function exportJSON(filename, json) {
     ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "geoJSON");
   }
 }
+
 function exportToCsv(filename, rows) {
   var processRow = function (row) {
     var finalVal = "";

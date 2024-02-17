@@ -635,6 +635,7 @@ Number.prototype.formatNumber = function (n = 2) {
 Number.prototype.repeat = function (n = 2) {
   return Array(n).fill(this * 1);
 };
+
 /////////////////////////////////////////////////////
 // Function that tries to find the best way of limiting precision for floating point numbers
 // Will limit to the maximum of chartDecimalProportion the length of decimals or whatever chartPrecision is set to
@@ -692,6 +693,9 @@ String.prototype.toTitle = function () {
 };
 String.prototype.chunk = function (size) {
   return this.match(new RegExp(".{1," + size + "}", "g"));
+};
+String.prototype.smartBreak = function (size = 10, joinStr = "<br>") {
+  return this.chunk(size).join(joinStr);
 };
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function () {

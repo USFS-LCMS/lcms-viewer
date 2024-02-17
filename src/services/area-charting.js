@@ -1,21 +1,61 @@
+function exportToCsv2(areaObjID, bn, filename) {
+  // console.log(filename);
+  let table = areaChart.areaChartObj[areaObjID].tableExportData[bn];
+  // console.log(table);
+  var blob = new Blob([table], { type: "text/csv;charset=utf-8;" });
+  if (navigator.msSaveBlob) {
+    // IE 10+
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    var link = document.createElement("a");
+    if (link.download !== undefined) {
+      // feature detection
+      // Browsers that support HTML5 download attribute
+      var url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      ga("send", "event", mode, "new-area-chart-chartDownload", "csv");
+    }
+  }
+}
+function downloadPlotlyAreaChartWrapper(areaObjID, bn, filename) {
+  console.log(areaChart.areaChartObj[areaObjID].plots[bn]);
+  downloadPlotly(areaChart.areaChartObj[areaObjID].plots[bn], filename, false);
+}
 function areaChartCls() {
   this.areaChartID = 1;
   this.makeChartID = 0;
+
   this.areaChartObj = {};
-  this.outstandingChartRequests = 0;
+  this.outstandingChartRequests = {};
+  this.maxOutStandingChartRequests = {};
   this.chartContainerID = "chart-collapse-div";
   this.layerSelectContainerID = "area-chart-params-div";
   this.layerSelectID = "area-chart-layer-select";
   this.listeners = [];
   this.autoScale = true;
+  this.plot_bgcolor = "#D6D1CA";
+  this.plot_font = "Roboto Condensed, sans-serif";
+  this.autoChartingOn = false;
+  this.firstRun = true;
 
   this.sankeyTransitionPeriodYearBuffer = 2;
   this.sankeyTransitionPeriods = [
     [urlParams.startYear, urlParams.startYear + this.sankeyTransitionPeriodYearBuffer],
-    [2000 - this.sankeyTransitionPeriodYearBuffer, 2000],
+    [2001, 2001 + this.sankeyTransitionPeriodYearBuffer],
     [urlParams.endYear - this.sankeyTransitionPeriodYearBuffer, urlParams.endYear],
   ];
-
+  // Function for cleanup of all area chart layers and output divs
+  this.clearLayers = function () {
+    this.areaChartObj = {};
+    this.areaChartID = 1;
+    // this.makeChartID = 0;
+    this.clearCharts;
+  };
   // Add chart layer object
   this.addLayer = function (eeLayer, params = {}, name, shouldChart = true) {
     let obj = {};
@@ -70,15 +110,21 @@ function areaChartCls() {
     obj.xAxisLabel = params.xAxisLabel || "Year";
     obj.xAxisProperty = params.xAxisProperty || "year";
     obj.dateFormat = params.dateFormat || "YYYY";
-    obj.yLabelFontSize = params.yLabelFontSize || 12;
-    obj.chartWidthC = params.chartWidthC || 600;
+    obj.chartLabelFontSize = params.chartLabelFontSize || 10;
+    obj.chartAxisTitleFontSize = params.chartAxisTitleFontSize || 12;
+    obj.chartLabelMaxWidth = params.chartLabelMaxWidth || 15;
+    obj.chartLabelMaxLength = params.chartLabelMaxLength || 50;
+    obj.chartWidth = params.chartWidth;
+    obj.chartHeight = params.chartHeight;
     obj.xTickDateFormat = params.xTickDateFormat || null;
     obj.chartDecimalProportion = params.chartDecimalProportion;
     obj.chartPrecision = params.chartPrecision;
     obj.scale = params.scale || scale;
     obj.transform = params.transform || transform;
     obj.crs = params.crs || crs;
-
+    obj.sankeyTransitionPeriods = params.sankeyTransitionPeriods;
+    obj.plots = {};
+    obj.tableExportData = {};
     // Control for setting only one of scale or transform - defaults to transform (since it snaps)
     if (params.scale !== undefined && params.scale !== null && params.transform !== undefined && params.transform !== null) {
       obj.scale = null;
@@ -141,17 +187,29 @@ function areaChartCls() {
       return 1;
     }
   };
-
+  this.getMapExtentCoordsStr = function () {
+    return Object.values(map.getBounds().toJSON()).map(smartToFixed).join(",");
+  };
   this.startAutoCharting = function () {
+    this.mapCoordsStr = this.getMapExtentCoordsStr();
     this.listeners.push(
       google.maps.event.addListener(map, "idle", () => {
-        this.chartMapExtent();
+        let nowCoords = this.getMapExtentCoordsStr();
+        if (nowCoords !== this.mapCoordsStr) {
+          this.mapCoordsStr = nowCoords;
+          this.chartMapExtent();
+        } else {
+          console.log("Map has not really moved");
+        }
+        // setTimeout(, 500);
       })
     );
+    this.autoChartingOn = true;
     this.chartMapExtent();
   };
   this.stopAutoCharting = function () {
     this.listeners.map((e) => google.maps.event.removeListener(e));
+    this.autoChartingOn = false;
   };
 
   // this.populateChartDropdown = function () {
@@ -159,20 +217,26 @@ function areaChartCls() {
   // };
   this.clearCharts = function () {
     $(`#${this.chartContainerID}`).empty();
+    // $(`#${this.chartContainerID}`).append(`<div id="chart-download-canvas" style="display:none;"></div>`);
   };
   this.chartMapExtent = function (name = "") {
     let mapCoords = Object.values(map.getBounds().toJSON()).map(smartToFixed).join(",");
     this.clearCharts();
-    this.chartArea(eeBoundsPoly, `${name} ${mapCoords}`);
+    this.chartArea(eeBoundsPoly, `${name} (${mapCoords})`);
   };
 
-  this.makeSankeyChart = function (sankey_dict, labels, colors, bn, name, selectedObj, thickness = 20, nodePad = 25, fontSize = 10) {
-    $("#chart-collapse-label-chart-collapse-div").show();
-    $("#legendDiv").css("max-width", "575px");
-    $("#legendDiv").css("max-height", window.innerHeight - convertRemToPixels(1) + 1);
+  this.getDownloadButtonGroup = function (id, bn, outFilename) {
+    return `<div class="btn-group" role="group" >
+  <button type="button" class="btn btn-secondary" onclick = "exportToCsv2('${id}','${bn}','${outFilename}.csv')" title = "Click to download ${outFilename}.csv tabular data">CSV</button>
+  
+  <button type="button" class="btn btn-secondary" onclick = "downloadPlotlyAreaChartWrapper('${id}','${bn}','${outFilename}.png')" title = "Click to download ${outFilename}.png graph data">PNG</button>
+</div>`;
+    //   return `<div href="#" class = 'btn area-chart-download-btn' title = "Click to download ${outFilename}" onclick = "downloadPlotlyAreaChartWrapper('${id}','${bn}','${outFilename}.png')"><img alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg"><img alt="Downloads icon" src="./src/assets/Icons_svg/graph_ffffff.svg"></div>`;
+  };
 
+  this.makeSankeyChart = function (sankey_dict, labels, colors, bn, name, selectedObj, csvData, thickness = 35, nodePad = 25) {
     sankey_dict.hovertemplate = "%{value}" + chartFormatDict[areaChartFormat].label + " %{source.label}-%{target.label}<extra></extra>";
-
+    let yAxisLabel = selectedObj.yAxisLabel || chartFormatDict[areaChartFormat].label;
     var data = {
       type: "sankey",
       orientation: "h",
@@ -185,7 +249,7 @@ function areaChartCls() {
         },
         label: labels,
         color: colors,
-        hovertemplate: "%{value}" + chartFormatDict[areaChartFormat].label + " %{label}<extra></extra>",
+        hovertemplate: "%{value}" + yAxisLabel + " %{label}<extra></extra>",
       },
 
       link: sankey_dict,
@@ -201,11 +265,11 @@ function areaChartCls() {
     var plotLayout = {
       title: name,
       font: {
-        size: fontSize,
-        family: "Roboto Condensed, sans-serif",
+        size: selectedObj.chartLabelFontSize,
+        family: this.plot_font,
       },
-      plot_bgcolor: "#D6D1CA",
-      paper_bgcolor: "#D6D1CA",
+      plot_bgcolor: this.plot_bgcolor,
+      paper_bgcolor: this.plot_bgcolor,
 
       autosize: true,
       margin: {
@@ -223,28 +287,37 @@ function areaChartCls() {
         width: 1000,
         height: 600,
       },
-      scrollZoom: true,
-      displayModeBar: true,
+      scrollZoom: false,
+      displayModeBar: false,
     };
     // return Plotly.newPlot(canvasID, data, layout, config);
+    let outFilename = `${name}`;
+    // let downloadCSVButton = this.getDownloadCSVButton(selectedObj.id, outFilename);
+    // let
     let tempGraphDivID = `${this.chartContainerID}-${selectedObj.id}-${bn}`;
     // console.log(bn);
-    $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div><hr>`);
+    let downloadButtons = this.getDownloadButtonGroup(selectedObj.id, bn, outFilename);
+    $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div>${downloadButtons}<hr>`);
     var graphDiv = document.getElementById(tempGraphDivID);
-    Plotly.newPlot(graphDiv, data, plotLayout, config);
+    selectedObj.plots[bn] = Plotly.newPlot(graphDiv, data, plotLayout, config);
   };
-  this.makeChart = function (table, name, colors, visible, selectedObj) {
-    // let selectedObj = this.areaChartObj[whichAreaChartCollection];
 
+  this.makeLineChart = function (table, name, colors, visible, selectedObj) {
+    // let selectedObj = this.areaChartObj[whichAreaChartCollection];
+    let outFilename = `${selectedObj.name} Summary ${name}`;
     if (selectedObj.chartDecimalProportion !== undefined && selectedObj.chartDecimalProportion !== null) {
       chartDecimalProportion = selectedObj.chartDecimalProportion;
     }
     if (selectedObj.chartPrecision !== undefined && selectedObj.chartPrecision !== null) {
       chartPrecision = selectedObj.chartPrecision;
     }
-    $("#chart-collapse-label-chart-collapse-div").show();
-    $("#legendDiv").css("max-width", "575px");
-    $("#legendDiv").css("max-height", window.innerHeight - convertRemToPixels(1) + 1);
+    let csvTable = [table[0].map((s) => s.replace(/[^A-Za-z0-9]/g, "-"))];
+    csvTable = csvTable.concat(table.slice(1).map((r) => r.slice(0, 1).concat(r.slice(1).map((n) => smartToFixed(n)))));
+    selectedObj.tableExportData["line"] = csvTable.map((r) => r.join(",")).join("\n");
+    // Set up table
+
+    // console.log(downloadButton);
+    // exportToCsv(outFilename + ".csv", table);
     let xColumn = arrayColumn(table, 0).slice(1);
     let header = table.slice(0, 1)[0];
     table = table.slice(1);
@@ -259,20 +332,20 @@ function areaChartCls() {
         y: arrayColumn(table, i).map(smartToFixed),
         type: "scatter",
         visible: visible[i - 1],
-        name: header[i],
+        name: header[i].slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"),
         line: { color: colors[i - 1] },
       };
     });
     // console.log(data);
 
     var plotLayout = {
-      plot_bgcolor: "#D6D1CA",
-      paper_bgcolor: "#D6D1CA",
+      plot_bgcolor: this.plot_bgcolor,
+      paper_bgcolor: this.plot_bgcolor,
       font: {
-        family: "Roboto Condensed, sans-serif",
+        family: this.plot_font,
       },
       legend: {
-        font: { size: selectedObj.yLabelFontSize },
+        font: { size: selectedObj.chartLabelFontSize },
       },
 
       margin: {
@@ -282,43 +355,74 @@ function areaChartCls() {
         t: 50,
         pad: 0,
       },
-      width: selectedObj.chartWidthC,
-      height: 400,
+      width: selectedObj.chartWidth,
+      height: selectedObj.chartHeight,
       title: {
-        text: `${selectedObj.name} Summary (${name})`,
+        text: outFilename,
       },
       xaxis: {
         tickangle: 45,
         tickformat: selectedObj.xTickDateFormat,
-        tickfont: { size: selectedObj.yLabelFontSize },
+        tickfont: { size: selectedObj.chartLabelFontSize },
         title: {
           text: selectedObj.xAxisLabel,
           font: {
-            size: 12,
+            size: selectedObj.chartAxisTitleFontSize,
           },
         },
       },
-      yaxis: { tickfont: { size: yLabelFontSize }, title: { text: yAxisLabel } },
+      yaxis: {
+        tickfont: { size: selectedObj.chartLabelFontSize },
+        title: {
+          text: yAxisLabel,
+          font: {
+            size: selectedObj.chartAxisTitleFontSize,
+          },
+        },
+      },
     };
     var buttonOptions = {
       toImageButtonOptions: {
-        filename: name,
+        filename: outFilename,
         width: 900,
         height: 600,
         format: "png",
       },
+      scrollZoom: false,
+      displayModeBar: false,
     };
 
     let tempGraphDivID = `${this.chartContainerID}-${selectedObj.id}`;
-    $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div><hr>`);
+    // let downloadCSVButton = this.getDownloadCSVButton(selectedObj.id, outFilename);
+    let downloadButtons = this.getDownloadButtonGroup(selectedObj.id, "line", outFilename);
+    $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div>
+    ${downloadButtons}<hr>`);
     var graphDiv = document.getElementById(tempGraphDivID);
-    Plotly.newPlot(graphDiv, data, plotLayout, buttonOptions);
+    selectedObj.plots["line"] = Plotly.newPlot(graphDiv, data, plotLayout, buttonOptions);
   };
 
   this.chartArea = function (area, name = "Default Name") {
+    if (this.firstRun) {
+      $("#query-spinner").append(
+        `<img  id = 'query-spinner-img' alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa" src="./src/assets/images/GEE_logo_transparent.png"  style='height:2rem;'><div class="progressbar progress-pulse"  id='query-progressbar px-2' title='Percent of layers that have finished downloading chart summary data'>
+        <span  style="width: 0% ;padding-top:0.15rem;">0%</span>
+        </div>
+        <span id = 'summary-spinner-message'></span>`
+      );
+      this.firstRun = false;
+    }
     this.makeChartID++;
-    this.outstandingChartRequests = 0;
+    this.outstandingChartRequests[this.makeChartID] = 0;
+    this.maxOutStandingChartRequests[this.makeChartID] = 0;
+    if (Object.values(selectedChartLayers).filter((v) => v == true).length > 0) {
+      this.updateProgress();
+    }
     let splitStr = "----";
+
+    $("#chart-collapse-label-chart-collapse-div").show();
+    $("#legendDiv").css("max-width", "575px");
+    $("#legendDiv").css("max-height", window.innerHeight - convertRemToPixels(1) + 1);
+
     // console.log(area);
     Object.keys(selectedChartLayers).map((k) => {
       // console.log(k);
@@ -326,7 +430,8 @@ function areaChartCls() {
       selectedObj = Object.values(selectedObj)[0];
       if (selectedObj !== undefined) {
         // console.log(selectedObj);
-        $("#summary-spinner").slideDown();
+        // $("#summary-spinner").slideDown();
+
         // // Older area charting method
         if (selectedObj.xAxisProperty === "year") {
           selectedObj.item = selectedObj.item.map(function (img) {
@@ -337,13 +442,16 @@ function areaChartCls() {
 
         if (selectedObj.sankey) {
           selectedObj.bandNames.map((bn) => {
-            this.outstandingChartRequests++;
+            this.outstandingChartRequests[this.makeChartID]++;
+            this.maxOutStandingChartRequests[this.makeChartID]++;
             let itemBn = selectedObj.item.select(bn);
+            let dummyImage = itemBn.first();
             let sankeyC = [];
             let transitionBns = [];
-            range(0, this.sankeyTransitionPeriods.length - 1).map((transitionPeriodI) => {
-              let sankeyTransitionPeriod1 = this.sankeyTransitionPeriods[transitionPeriodI];
-              let sankeyTransitionPeriod2 = this.sankeyTransitionPeriods[transitionPeriodI + 1];
+            let sankeyTransitionPeriods = selectedObj.sankeyTransitionPeriods || this.sankeyTransitionPeriods;
+            range(0, sankeyTransitionPeriods.length - 1).map((transitionPeriodI) => {
+              let sankeyTransitionPeriod1 = sankeyTransitionPeriods[transitionPeriodI];
+              let sankeyTransitionPeriod2 = sankeyTransitionPeriods[transitionPeriodI + 1];
               // console.log(sankeyTransitionPeriod1, sankeyTransitionPeriod2);
               let itemBnTransitionPeriod1 = itemBn.filter(ee.Filter.calendarRange(sankeyTransitionPeriod1[0], sankeyTransitionPeriod1[1], "year")).mode();
               let itemBnTransitionPeriod2 = itemBn.filter(ee.Filter.calendarRange(sankeyTransitionPeriod2[0], sankeyTransitionPeriod2[1], "year")).mode();
@@ -351,7 +459,7 @@ function areaChartCls() {
 
               selectedObj.sankey_class_values[bn].map((sankey_class_values_pair) => {
                 // console.log(sankey_class_values_pair);
-                outClass = parseInt(`${sankey_class_values_pair[0]}009900${sankey_class_values_pair[1]}`);
+                outClass = parseInt(`${sankey_class_values_pair[0]}0990${sankey_class_values_pair[1]}`);
                 // console.log(outClass);
                 transitionImg = transitionImg.where(itemBnTransitionPeriod1.eq(sankey_class_values_pair[0]).and(itemBnTransitionPeriod2.eq(sankey_class_values_pair[1])), outClass);
               });
@@ -378,7 +486,9 @@ function areaChartCls() {
                   };
                   let labels = [];
                   let colors = [];
-                  selectedObj.class_names[bn].map((l) => labels.push(`${this.sankeyTransitionPeriods[0].join("-")} ${l}`));
+                  let outCSV = [];
+
+                  selectedObj.class_names[bn].map((l) => labels.push(`${sankeyTransitionPeriods[0].join("-")} ${l}`));
                   selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                   Object.keys(counts).map((transitionPeriod) => {
@@ -386,7 +496,7 @@ function areaChartCls() {
                     let offset1 = (transitionPeriodI - 1) * selectedObj.class_names[bn].length;
                     let offset2 = transitionPeriodI * selectedObj.class_names[bn].length;
                     //Append labels and colors
-                    selectedObj.class_names[bn].map((l) => labels.push(`${this.sankeyTransitionPeriods[transitionPeriodI].join("-")} ${l}`));
+                    selectedObj.class_names[bn].map((l) => labels.push(`${sankeyTransitionPeriods[transitionPeriodI].join("-")} ${l}`));
                     selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                     let countsTransitionPeriod = counts[transitionPeriod];
@@ -398,36 +508,58 @@ function areaChartCls() {
                     } else {
                       mult = chartFormatDict[areaChartFormat].mult;
                     }
-                    values = values.map((v) => v * mult);
-                    let classes = Object.keys(countsTransitionPeriod).map((cls) => cls.split("009900").map((n) => parseInt(n)));
+                    values = values.map((v) => smartToFixed(v * mult));
+                    let classes = Object.keys(countsTransitionPeriod).map((cls) => cls.split("0990").map((n) => parseInt(n)));
                     // console.log(classes);
                     let vi = 0;
+                    let countLookup = {};
                     classes.map((cls) => {
                       // console.log(cls);
-                      sankey_dict.source.push(selectedObj.class_values[bn].indexOf(cls[0]) + offset1);
-                      sankey_dict.target.push(selectedObj.class_values[bn].indexOf(cls[1]) + offset2);
+                      let class_valueI1 = selectedObj.class_values[bn].indexOf(cls[0]);
+                      let class_valueI2 = selectedObj.class_values[bn].indexOf(cls[1]);
+                      sankey_dict.source.push(class_valueI1 + offset1);
+                      sankey_dict.target.push(class_valueI2 + offset2);
                       sankey_dict.value.push(values[vi]);
+                      countLookup[`${selectedObj.class_names[bn][class_valueI1]}---${selectedObj.class_names[bn][class_valueI2]}`] = values[vi];
                       vi++;
                     });
+                    // console.log(countLookup);
+                    outCSV.push([""].concat(selectedObj.class_names[bn].map((nm) => `${nm.replace(/[^A-Za-z0-9]/g, "-")} ${transitionPeriod.split("---")[1]} `)));
+                    selectedObj.class_names[bn].map((nm1) => {
+                      let line = [`${nm1.replace(/[^A-Za-z0-9]/g, "-")} ${transitionPeriod.split("---")[0]}`];
+                      selectedObj.class_names[bn].map((nm2) => {
+                        let v = countLookup[`${nm1}---${nm2}`];
+                        v = v !== undefined ? v : 0;
+                        line.push(v);
+                      });
+                      outCSV.push(line);
+                    });
+                    outCSV.push([""]);
+
+                    // selectedObj.class_names[bn].map((nm)
 
                     transitionPeriodI++;
                   });
-                  this.makeSankeyChart(sankey_dict, labels, colors, bn, `${selectedObj.name} Sankey ${bn.replaceAll("_", " ")} ${name}`, selectedObj);
+                  // console.log(outCSV);
+                  outCSV = outCSV.map((r) => r.join(",")).join("\n");
+                  selectedObj.tableExportData[bn] = outCSV;
+                  labels = labels.map((l) => l.slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"));
+                  this.makeSankeyChart(sankey_dict, labels, colors, bn, `${selectedObj.name} Sankey ${bn.replaceAll("_", " ")} ${name}`, selectedObj, outCSV);
                   // console.log(labels);
                   // console.log(colors);
                   // console.log(sankey_dict);
-                  this.outstandingChartRequests--;
-                  if (this.outstandingChartRequests === 0) {
-                    $("#summary-spinner").slideUp();
-                  }
+                  this.outstandingChartRequests[this.makeChartID]--;
+
+                  this.updateProgress();
                 } else {
-                  console.log("chart id moved on");
+                  console.log(`Chart id moved on: Returned ID = ${makeChartID}, Current ID = ${this.makeChartID}`);
                 }
               }
             });
           });
         } else {
-          this.outstandingChartRequests++;
+          this.outstandingChartRequests[this.makeChartID]++;
+          this.maxOutStandingChartRequests[this.makeChartID]++;
           let areaChartCollectionStack = selectedObj.item.toBands();
           let xLabels = selectedObj.item.aggregate_histogram(selectedObj.xAxisProperty).keys().getInfo();
 
@@ -519,15 +651,13 @@ function areaChartCls() {
                   outTable.push(row);
                 });
                 // console.log(outTable);
-                this.outstandingChartRequests--;
-                if (this.outstandingChartRequests === 0) {
-                  $("#summary-spinner").slideUp();
-                }
+                this.outstandingChartRequests[this.makeChartID]--;
+                this.updateProgress();
                 // console.log(this.outstandingChartRequests);
-                this.makeChart(outTable, name, colors, visible, selectedObj);
+                this.makeLineChart(outTable, name, colors, visible, selectedObj);
               }
             } else {
-              console.log("chart id moved on");
+              console.log(`Chart id moved on: Returned ID = ${makeChartID}, Current ID = ${this.makeChartID}`);
             }
           });
         }
@@ -543,8 +673,34 @@ function areaChartCls() {
     });
 
     addCheckboxes(this.layerSelectContainerID, this.layerSelectID, "Chart Layers", "selectedChartLayers", selectedObj);
-  };
 
+    $("#" + this.layerSelectID).change(() => {
+      if (this.autoChartingOn) {
+        this.chartMapExtent();
+      }
+    });
+
+    $("#area-summary-format").change(() => {
+      console.log("change");
+      if (this.autoChartingOn) {
+        this.chartMapExtent();
+      }
+    });
+  };
+  this.updateProgress = function () {
+    let p = 0;
+    if (this.maxOutStandingChartRequests[this.makeChartID] > 0) {
+      p = parseInt((1 - this.outstandingChartRequests[this.makeChartID] / this.maxOutStandingChartRequests[this.makeChartID]) * 100);
+    }
+
+    updateProgress(".progressbar", p);
+    // console.log(p);
+    if (p === 100) {
+      $("#query-spinner-img").removeClass("fa-spin");
+    } else {
+      $("#query-spinner-img").addClass("fa-spin");
+    }
+  };
   this.chartUserDefinedArea = function () {
     try {
       var userArea = [];

@@ -2268,7 +2268,9 @@ function addLegendCollapse() {
     getWalkThroughCollapseContainerID(),
     "chart-collapse-label",
     "chart-collapse-div",
-    "QUERY OUTPUTS",
+    `<div id='query-spinner' style = 'display:inline;'>QUERY OUTPUTS 
+    </div>
+    `,
     '<i class="fa fa-list  mx-0" aria-hidden="true"></i>',
     true,
     ``,
@@ -3516,4 +3518,9 @@ function addTransitionRow() {
 }
 function removeLastTransitionRow() {
   $("#added-transition-rows tr:last").remove();
+}
+function updateProgress(id, val) {
+  var el = document.querySelector(`${id} span`);
+  el.style.width = val + "%";
+  el.innerText = val + "%";
 }
