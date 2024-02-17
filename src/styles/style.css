@@ -635,7 +635,7 @@ div.dataTables_info {
   /* border-radius: 2px; */
   text-align: center;
   color: #fff;
-  transition: 500ms width cubic-bezier(0.1, 0.7, 1, 0.1);
+  transition: 300ms width linear;
   /*line-height: 1.2em;*/
   background: #00897b;
   /* max-width: 100%; */
