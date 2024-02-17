@@ -197,11 +197,10 @@ function areaChartCls() {
         let nowCoords = this.getMapExtentCoordsStr();
         if (nowCoords !== this.mapCoordsStr) {
           this.mapCoordsStr = nowCoords;
-          this.chartMapExtent();
+          setTimeout(this.chartMapExtent(), 500);
         } else {
           console.log("Map has not really moved");
         }
-        // setTimeout(, 500);
       })
     );
     this.autoChartingOn = true;
