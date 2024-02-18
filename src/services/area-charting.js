@@ -123,9 +123,9 @@ function areaChartCls() {
     obj.scale = params.scale || null;
     obj.transform = params.transform || [30, 0, -2361915, 0, -30, 3177735];
     obj.crs = params.crs || crs;
-    obj.autoScale = params.autoScale || true;
-    obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 13; // Above this zoom level, it won't change the scale/transform
-    obj.maxAutoScale = 2 ** 5; // Max n scale can be multiplied by (ideally 2**n)
+    obj.autoScale = params.autoScale || true; // Whether to set the reducer resolution to a larger number below a specified zoom (next param)
+    obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 11; // Above this zoom level, it won't change the scale/transform of teh reducer
+    obj.maxAutoScale = 2 ** 6; // Max n scale can be multiplied by (ideally 2**n)
     obj.sankeyTransitionPeriods = params.sankeyTransitionPeriods;
     obj.plots = {};
     obj.tableExportData = {};
@@ -206,13 +206,15 @@ function areaChartCls() {
     scaleMult = scaleMult < 1 ? 1 : scaleMult;
     scaleMult = scaleMult > maxAutoScale ? maxAutoScale : scaleMult;
     scaleT = scaleT * scaleMult;
-    console.log([scaleMult, scaleT]);
+
+    let nominalScale = scaleT;
     if (transformT !== undefined && transformT !== null) {
       transformT[0] = scaleT;
       transformT[4] = -scaleT;
       scaleT = null;
     }
-    return [scaleT, transformT, scaleMult];
+    console.log([scaleMult, scaleT, transformT, nominalScale]);
+    return [scaleT, transformT, scaleMult, nominalScale];
   };
 
   this.getMapExtentCoordsStr = function () {
@@ -459,6 +461,7 @@ function areaChartCls() {
         let scaleT = structuredClone(selectedObj.scale);
         let transformT = structuredClone(selectedObj.transform);
         let scaleMult = 1;
+        let nominalScale = scaleT || transformT[0];
         if (selectedObj.autoScale) {
           // console.log("here");
           // console.log(selectedObj.autoScale);
@@ -467,6 +470,7 @@ function areaChartCls() {
           scaleT = scaleTransform[0];
           transformT = scaleTransform[1];
           scaleMult = scaleTransform[2];
+          nominalScale = scaleTransform[3];
         }
         // console.log(scaleT, transformT, scaleMult);
         // console.log(selectedObj);
@@ -578,7 +582,7 @@ function areaChartCls() {
                   outCSV = outCSV.map((r) => r.join(",")).join("\n");
                   selectedObj.tableExportData[bn] = outCSV;
                   labels = labels.map((l) => l.slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"));
-                  this.makeSankeyChart(sankey_dict, labels, colors, bn, `${selectedObj.name} Sankey ${bn.replaceAll("_", " ")} ${name}`, selectedObj, outCSV);
+                  this.makeSankeyChart(sankey_dict, labels, colors, bn, `${selectedObj.name} Sankey ${bn.replaceAll("_", " ")} ${name} (${nominalScale}m)`, selectedObj, outCSV);
                   // console.log(labels);
                   // console.log(colors);
                   // console.log(sankey_dict);
@@ -680,7 +684,7 @@ function areaChartCls() {
                 this.outstandingChartRequests[this.makeChartID]--;
                 this.updateProgress();
                 // console.log(this.outstandingChartRequests);
-                this.makeLineChart(outTable, name, colors, visible, selectedObj);
+                this.makeLineChart(outTable, `${name} (${nominalScale}m)`, colors, visible, selectedObj);
               }
             } else {
               console.log(`Chart id moved on: Returned ID = ${makeChartID}, Current ID = ${this.makeChartID}`);
