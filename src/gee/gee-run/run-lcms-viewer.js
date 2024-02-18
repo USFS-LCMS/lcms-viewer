@@ -733,7 +733,7 @@ function runDynamic() {
   //   "NLCD"
   // );
   // areaChart.addLayer(nlcd, { sankey: true }, "NLCD Annual");
-  areaChart.addLayer(tcc, { visible: [true, true], palette: ["080", "0D0"] }, "NLCD TCC (mean)");
+  areaChart.addLayer(tcc, { visible: [true, true], palette: ["080", "0D0"] }, "NLCD TCC");
   // areaChart.addLayer(tcc, { reducer: ee.Reducer.median() }, "NLCD TCC Median");
   // areaChart.populateChartDropdown();
   areaChart.populateChartLayerSelect();

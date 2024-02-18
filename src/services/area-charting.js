@@ -37,7 +37,7 @@ function areaChartCls() {
   this.layerSelectContainerID = "area-chart-params-div";
   this.layerSelectID = "area-chart-layer-select";
   this.listeners = [];
-  this.autoScale = true;
+
   this.plot_bgcolor = "#D6D1CA";
   this.plot_font = "Roboto Condensed, sans-serif";
   this.autoChartingOn = false;
@@ -62,18 +62,19 @@ function areaChartCls() {
     obj.name = name || `Area-Layer-${this.areaChartID}`;
     obj.id = obj.name.replaceAll(" ", "-") + "-" + this.areaChartID.toString();
     obj.id = obj.id.replace(/[^A-Za-z0-9]/g, "-");
-    obj.bandNames = params.bandNames || eeLayer.first().bandNames().getInfo();
 
     // if (params.autoViz) {
     let bandNames = eeLayer.first().bandNames();
     let dict = eeLayer.first().toDictionary();
     dict = dict.set("bandNames", bandNames).getInfo();
+    obj.bandNames = params.bandNames || dict.bandNames;
+
     //   console.log(dict);
     params.class_names = params.class_names || {};
     params.class_values = params.class_values || {};
     params.class_palette = params.class_palette || {};
     params.class_visibility = params.class_visibility || {};
-    obj.bandNames = [];
+    // obj.bandNames = [];
     dict.bandNames.map((bn) => {
       let cns = dict[`${bn}_class_names`];
       let cvs = dict[`${bn}_class_values`];
@@ -91,7 +92,7 @@ function areaChartCls() {
       // params.class_values = null;
       // params.class_palette = null;
       // }
-      obj.bandNames.push(bn);
+      // obj.bandNames.push(bn);
     });
     // } else {
     // }
@@ -119,12 +120,17 @@ function areaChartCls() {
     obj.xTickDateFormat = params.xTickDateFormat || null;
     obj.chartDecimalProportion = params.chartDecimalProportion;
     obj.chartPrecision = params.chartPrecision;
-    obj.scale = params.scale || scale;
-    obj.transform = params.transform || transform;
+    obj.scale = params.scale || null;
+    obj.transform = params.transform || [30, 0, -2361915, 0, -30, 3177735];
     obj.crs = params.crs || crs;
+    obj.autoScale = params.autoScale || true;
+    obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 13; // Above this zoom level, it won't change the scale/transform
     obj.sankeyTransitionPeriods = params.sankeyTransitionPeriods;
     obj.plots = {};
     obj.tableExportData = {};
+    obj.splitStr = "----";
+
+    // .map((yr) => parseInt(yr));
     // Control for setting only one of scale or transform - defaults to transform (since it snaps)
     if (params.scale !== undefined && params.scale !== null && params.transform !== undefined && params.transform !== null) {
       obj.scale = null;
@@ -161,7 +167,25 @@ function areaChartCls() {
         obj.sankey_class_values[bn] = bn_sankey_class_values;
         obj.sankey_class_palette[bn] = bn_sankey_class_palette;
       });
+    } else {
+      if (obj.xAxisProperty === "year") {
+        let tempItem = obj.item.map(function (img) {
+          return img.set("year", img.date().format(obj.dateFormat));
+        });
+        obj.xAxisLabels = tempItem.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
+      } else {
+        obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
+      }
+
+      obj.stackBandNames = [];
+      obj.xAxisLabels.map((xLabel) => {
+        obj.bandNames.map((bn) => {
+          obj.stackBandNames.push(`${xLabel}${obj.splitStr}${bn}`);
+        });
+      });
+      // console.log(obj.stackBandNames);
     }
+
     if (Object.keys(obj.class_names).length > 0) {
       obj.isThematic = true;
       obj.reducer = params.reducer || ee.Reducer.frequencyHistogram();
@@ -175,18 +199,20 @@ function areaChartCls() {
     this.areaChartObj[obj.id] = obj;
     this.areaChartID++;
   };
-  this.autoSetScale = function (scale) {
-    return scale * this.getAutoScale();
-  };
-  this.getAutoScale = function () {
-    let zoom = map.getZoom();
-    console.log(1 / zoom);
-    if (zoom < 11) {
-      return 5;
-    } else {
-      return 1;
+  this.autoSetScale = function (scaleT, transformT, minZoomSpecifiedScale) {
+    scaleT = scaleT || transformT[0];
+    let scaleMult = 1 / ((1 << map.getZoom()) / (1 << minZoomSpecifiedScale));
+    scaleMult = scaleMult < 1 ? 1 : scaleMult;
+    scaleT = scaleT * scaleMult;
+    // console.log([scaleMult, scaleT]);
+    if (transformT !== undefined && transformT !== null) {
+      transformT[0] = scaleT;
+      transformT[4] = -scaleT;
+      scaleT = null;
     }
+    return [scaleT, transformT, scaleMult];
   };
+
   this.getMapExtentCoordsStr = function () {
     return Object.values(map.getBounds().toJSON()).map(smartToFixed).join(",");
   };
@@ -416,7 +442,6 @@ function areaChartCls() {
     if (Object.values(selectedChartLayers).filter((v) => v == true).length > 0) {
       this.updateProgress();
     }
-    let splitStr = "----";
 
     $("#chart-collapse-label-chart-collapse-div").show();
     $("#legendDiv").css("max-width", "575px");
@@ -427,16 +452,24 @@ function areaChartCls() {
       // console.log(k);
       let selectedObj = Object.fromEntries(Object.entries(this.areaChartObj).filter(([k2, v]) => v.name == k && selectedChartLayers[k] === true));
       selectedObj = Object.values(selectedObj)[0];
+
       if (selectedObj !== undefined) {
+        let scaleT = structuredClone(selectedObj.scale);
+        let transformT = structuredClone(selectedObj.transform);
+        let scaleMult = 1;
+        if (selectedObj.autoScale) {
+          // console.log("here");
+          // console.log(selectedObj.autoScale);
+          // console.log(scaleT, transformT);
+          let scaleTransform = this.autoSetScale(scaleT, transformT, selectedObj.minZoomSpecifiedScale);
+          scaleT = scaleTransform[0];
+          transformT = scaleTransform[1];
+          scaleMult = scaleTransform[2];
+        }
+        // console.log(scaleT, transformT, scaleMult);
         // console.log(selectedObj);
         // $("#summary-spinner").slideDown();
 
-        // // Older area charting method
-        if (selectedObj.xAxisProperty === "year") {
-          selectedObj.item = selectedObj.item.map(function (img) {
-            return img.set("year", img.date().format(selectedObj.dateFormat));
-          });
-        }
         let makeChartID = this.makeChartID;
 
         if (selectedObj.sankey) {
@@ -470,7 +503,7 @@ function areaChartCls() {
             });
             sankeyC = ee.ImageCollection(sankeyC).toBands().rename(transitionBns);
 
-            sankeyC.reduceRegion(selectedObj.reducer, area, selectedObj.scale, selectedObj.crs, selectedObj.transform, true, 1e13, 4).evaluate((counts, failure) => {
+            sankeyC.reduceRegion(selectedObj.reducer, area, scaleT, selectedObj.crs, transformT, true, 1e13, 4).evaluate((counts, failure) => {
               if (failure !== undefined) {
                 showMessage("Area Charting Error", `Encountered the following error while summarizing ${selectedObj.name}<br>${failure}`);
               } else {
@@ -505,7 +538,7 @@ function areaChartCls() {
                     if (areaChartFormat === "Percentage") {
                       mult = (1 / pixelTotal) * 100;
                     } else {
-                      mult = chartFormatDict[areaChartFormat].mult;
+                      mult = chartFormatDict[areaChartFormat].mult * scaleMult;
                     }
                     values = values.map((v) => smartToFixed(v * mult));
                     let classes = Object.keys(countsTransitionPeriod).map((cls) => cls.split("0990").map((n) => parseInt(n)));
@@ -560,15 +593,7 @@ function areaChartCls() {
           this.outstandingChartRequests[this.makeChartID]++;
           this.maxOutStandingChartRequests[this.makeChartID]++;
           let areaChartCollectionStack = selectedObj.item.toBands();
-          let xLabels = selectedObj.item.aggregate_histogram(selectedObj.xAxisProperty).keys().getInfo();
 
-          // console.log(xLabels);
-          let stackBandNames = [];
-          xLabels.map((xLabel) => {
-            selectedObj.bandNames.map((bn) => {
-              stackBandNames.push(`${xLabel}${splitStr}${bn}`);
-            });
-          });
           let header = [selectedObj.xAxisLabel];
 
           // Pull auto viz attributes if available
@@ -605,30 +630,30 @@ function areaChartCls() {
           }
           // console.log(visible);
           // console.log(header);
-          areaChartCollectionStack = areaChartCollectionStack.rename(stackBandNames);
+          areaChartCollectionStack = areaChartCollectionStack.rename(selectedObj.stackBandNames);
           // console.log(areaChartCollectionStack.bandNames().getInfo());
           // this.getZonalStats(areaChartCollectionStack, area, selectedObj.reducer);
 
-          areaChartCollectionStack.reduceRegion(selectedObj.reducer, area, selectedObj.scale, selectedObj.crs, selectedObj.transform, true, 1e13, 4).evaluate((counts, failure) => {
+          areaChartCollectionStack.reduceRegion(selectedObj.reducer, area, scaleT, selectedObj.crs, transformT, true, 1e13, 4).evaluate((counts, failure) => {
             if (makeChartID === this.makeChartID) {
               if (failure !== undefined) {
                 showMessage("Area Charting Error", `Encountered the following error while summarizing ${selectedObj.name}<br>${failure}`);
               } else {
                 // console.log(counts);
                 let outTable = [header];
-                xLabels.map((xLabel) => {
+                selectedObj.xAxisLabels.map((xLabel) => {
                   let row = [xLabel];
 
                   if (selectedObj.isThematic) {
                     selectedObj.bandNames.map((bn) => {
-                      let countsT = counts[`${xLabel}${splitStr}${bn}`];
+                      let countsT = counts[`${xLabel}${selectedObj.splitStr}${bn}`];
                       let values = selectedObj.class_values[bn];
                       let names = selectedObj.class_names[bn];
                       let pixelTotal = sum(Object.values(countsT)) || 0;
                       if (areaChartFormat === "Percentage") {
                         mult = (1 / pixelTotal) * 100;
                       } else {
-                        mult = chartFormatDict[areaChartFormat].mult;
+                        mult = chartFormatDict[areaChartFormat].mult * scaleMult;
                       }
                       // console.log(mult);
                       // console.log(selectedObj.chartScale);
@@ -642,7 +667,7 @@ function areaChartCls() {
                     });
                   } else {
                     selectedObj.bandNames.map((bn) => {
-                      let countsT = counts[`${xLabel}${splitStr}${bn}`];
+                      let countsT = counts[`${xLabel}${selectedObj.splitStr}${bn}`];
                       row.push(countsT);
                     });
                   }
