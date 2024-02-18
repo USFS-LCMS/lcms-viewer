@@ -125,6 +125,7 @@ function areaChartCls() {
     obj.crs = params.crs || crs;
     obj.autoScale = params.autoScale || true;
     obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 13; // Above this zoom level, it won't change the scale/transform
+    obj.maxAutoScale = 2 ** 5; // Max n scale can be multiplied by (ideally 2**n)
     obj.sankeyTransitionPeriods = params.sankeyTransitionPeriods;
     obj.plots = {};
     obj.tableExportData = {};
@@ -199,12 +200,13 @@ function areaChartCls() {
     this.areaChartObj[obj.id] = obj;
     this.areaChartID++;
   };
-  this.autoSetScale = function (scaleT, transformT, minZoomSpecifiedScale) {
+  this.autoSetScale = function (scaleT, transformT, minZoomSpecifiedScale, maxAutoScale) {
     scaleT = scaleT || transformT[0];
     let scaleMult = 1 / ((1 << map.getZoom()) / (1 << minZoomSpecifiedScale));
     scaleMult = scaleMult < 1 ? 1 : scaleMult;
+    scaleMult = scaleMult > maxAutoScale ? maxAutoScale : scaleMult;
     scaleT = scaleT * scaleMult;
-    // console.log([scaleMult, scaleT]);
+    console.log([scaleMult, scaleT]);
     if (transformT !== undefined && transformT !== null) {
       transformT[0] = scaleT;
       transformT[4] = -scaleT;
@@ -461,7 +463,7 @@ function areaChartCls() {
           // console.log("here");
           // console.log(selectedObj.autoScale);
           // console.log(scaleT, transformT);
-          let scaleTransform = this.autoSetScale(scaleT, transformT, selectedObj.minZoomSpecifiedScale);
+          let scaleTransform = this.autoSetScale(scaleT, transformT, selectedObj.minZoomSpecifiedScale, selectedObj.maxAutoScale);
           scaleT = scaleTransform[0];
           transformT = scaleTransform[1];
           scaleMult = scaleTransform[2];
