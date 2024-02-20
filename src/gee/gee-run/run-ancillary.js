@@ -6,17 +6,32 @@ function runAncillary() {
   ////////// Load Ancillary Data Layers
   /////////////////////////////////////////
   
-  // Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
-  var hi_veg_polys = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED");
-  Map2.addLayer(
-    hi_veg_polys,
-    { strokeColor: "808", layerType: "geeVectorImage" },
-    "HI Veg Polys",
-    false,
-    null,
-    null,
-    "HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1"
-  );
+  // AK Vegetation Layers
+  ////////////////////////////////////////////
+  var ak_landcover = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
+                      .filterDate('2016', '2017')  // range: [1985, 2022]
+                      .filter('study_area == "SEAK"')  
+                      .first()
+                      .select('Land_Cover');
+  
+  Map.addLayer(ak_landcover, 
+    {}, 
+    'AK LandCover - LCMS 2016',
+    false)
+
+  // Hawaii Vegetation Layers
+  //////////////////////////////////////////////////////
+
+  // var hi_veg_polys = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/Vegetation_-_Hawaii_County_VED");
+  // Map2.addLayer(
+  //   hi_veg_polys,
+  //   { strokeColor: "808", layerType: "geeVectorImage" },
+  //   "HI Veg Polys",
+  //   false,
+  //   null,
+  //   null,
+  //   "HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1"
+  // );
 
   var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/hi_hawaii_2010_ccap_hires_landcover_20150120");
 
@@ -94,14 +109,24 @@ function runAncillary() {
     false
   );
 
-  // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
-  // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
+  // Hawaii Wetland data
+  ///////////////////////////////////////////////
+  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/HI_wetlands");
+  nwi_hi = nwi_hi.map(function (f) {
+    return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
+  });
+  var props = nwi_hi.aggregate_histogram("WETLAND_TY_NO").keys();
+  var props_nos = ee.List.sequence(1, props.length());
+  nwi_hi = nwi_hi.remap(props, props_nos, "WETLAND_TY_NO");
+  var nwi_hi_rast = nwi_hi.reduceToImage(["WETLAND_TY_NO"], ee.Reducer.first()).rename(["NWI"]).set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis());
+  //Map2.addLayer(nwi_hi_rast, { layerType: "geeImage", min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
 
-  // var prUSVI_ch_2018 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/PR_USVI_2018_CHM_1m')
-  //                       .set('system:time_start',ee.Date.fromYMD(2018,6,1).millis())
-  //                       .rename(['Canopy Height'])
-  //                       .selfMask()
-  // Map2.addLayer(prUSVI_ch_2018,{min:1,max:15,palette:palettes.crameri.bamako[50].reverse(),legendLabelLeftAfter:'(m)',legendLabelRightAfter:'(m)'},'PRUSVI 2018 Canopy Height',false);
+  // Standard Ancillary Data Layers - CONUS
+  ////////////////////////////////////////////////////////////////////
+  
+
+  // NCLD
+  /////////////
   var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
 
   var nlcdLCMS = ee.ImageCollection("users/yang/CONUS_NLCD2016");
@@ -250,8 +275,16 @@ function runAncillary() {
   //   var naipT = naip.filter(ee.Filter.calendarRange(yr,yr,'year'));
   //   Map2.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
   // });
+
+  // MTBS
+  /////////////////////////////////////////////////////
+
   var mtbsIDS = getMTBSandIDS("anc", "layer-list");
   var mtbs = mtbsIDS[0];
+  
+  // NWI
+  /////////////////////////////////////////////////
+  
   var nwiLegendDict = {
     "Freshwater- Forested and Shrub wetland": "008836",
     "Freshwater Emergent wetland": "7fc31c",
@@ -262,14 +295,7 @@ function runAncillary() {
     "Estuarine and Marine Deepwater": "007c88",
     "Other Freshwater wetland": "b28653",
   };
-  // Hawaii Wetland data
-  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/HI_wetlands");
-  nwi_hi = nwi_hi.map(function (f) {
-    return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
-  });
-  var props = nwi_hi.aggregate_histogram("WETLAND_TY_NO").keys();
-  var props_nos = ee.List.sequence(1, props.length());
-  nwi_hi = nwi_hi.remap(props, props_nos, "WETLAND_TY_NO");
+  
   // var nwi_dict = ee.Dictionary.fromLists(props_nos.map((n)=>ee.Number(n).byte().format()),props).getInfo();
   var nwi_dict = {
     1: "Estuarine and Marine Deepwater",
@@ -281,8 +307,9 @@ function runAncillary() {
     7: "Riverine",
   };
   var nwi_palette = ["007c88", "66c2a5", "7fc31c", "008836", "688cc0", "13007c", "0190bf"];
-  var nwi_hi_rast = nwi_hi.reduceToImage(["WETLAND_TY_NO"], ee.Reducer.first()).rename(["NWI"]).set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis());
+  
   Map2.addLayer(nwi_hi_rast, { layerType: "geeImage", min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
+
 
   //Map2.addLayer([{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
   esri_lc_dict = { Water: "008", Trees: "080", "Flooded Vegetation": "088", "Built Area": "D00" };
@@ -290,16 +317,18 @@ function runAncillary() {
 
   // Map2.addLayer([{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:0,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1577880000000'},{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:11,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1577880000000'}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'ESRI LC 2021',true)
   // Map2.addLayer([{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',minZoom:2},{baseURL:'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands_Raster/ImageServer/exportImage?dpi=96&transparent=true&format=png32&layers=show%3A0%2C1&bbox=',minZoom:11}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'NWI',true)
-
+  // Map2.addLayer(standardTileURLFunction('http://server.arcgisonline.com/arcgis/rest/services/Specialty/Soil_Survey_Map/MapServer/tile/'),{layerType:'tileMapService'},'SSURGO Soils',false);
+  
   // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
   //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
   //                 8,11,
   //                 'NWI',false,'National Wetlands Inventory data as viewed in https://www.fws.gov/wetlands/Data/Mapper.html from zoom levels >= 8')
   var years = ee.List.sequence(1984, 2022).getInfo();
   var dummyNLCDImage = ee.Image(nlcdLC.first());
-  var cdl = ee.ImageCollection("USDA/NASS/CDL").select([0], ["cdl"]);
-
+  
+  
   //Denote dca_codes
+  ///////////////////////////////////////////////////////////
   //From: https://www.fs.fed.us/foresthealth/technology/pdfs/Appendix_E_DCA_20141030.pdf
   //DCA codes are divided by 1000
   var dca_codes = {
@@ -351,7 +380,23 @@ function runAncillary() {
     19: "Unknown Damage",
   };
 
+    // print(idsCollection.getInfo())
+  // var mortType = idsCollection.select(['IDS Mort Type']).max();
+  // var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
+  // var defolType = idsCollection.select(['IDS Defol Type']).max();
+  // var defolDCA = idsCollection.select(['IDS Defol DCA']).max();
+
+  // var typeViz = {min:1,max:19,palette:'F00,888,00F',queryDict:damage_codes};
+  // var dcaViz = {min:10,max:99,palette:'F00,888,00F',queryDict:dca_codes};
+  // Map2.addLayer(mortType,typeViz,'mortType');
+  // Map2.addLayer(mortDCA,dcaViz,'mortDCA');
+  // Map2.addLayer(defolType,typeViz,'defolType');
+  // Map2.addLayer(defolDCA,dcaViz,'defolDCA')
+
+  // Cropland  // Cropland Data Layers
+  ////////////////////////////////////////
   // var cdl = ee.Image('USDA/NASS/CDL/2014').select([0]);
+  var cdl = ee.ImageCollection("USDA/NASS/CDL").select([0], ["cdl"]);
 
   var d = ee.Image("USDA/NASS/CDL/2014").select([0]).toDictionary();
 
@@ -378,6 +423,7 @@ function runAncillary() {
   // Map2.addLayer(cdl2,{min:0,max:254,palette:palette,addToClassLegend:true,classLegendDict:cdlLegendDict,queryDict:cdlQueryDict},'CDL')
 
   // Terra-Climate
+  ////////////////////////////////////////////////////////////
   var pdsiStartYear = 1984;
   var pdsiEndYear = 2022;
   var terra = ee.ImageCollection("IDAHO_EPSCOR/TERRACLIMATE").filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
@@ -417,6 +463,19 @@ function runAncillary() {
   var idsCollection = mtbsIDS[1].select([1, 0], ["IDS Type", "IDS DCA"]);
 
   //PRVI layers
+  ///////////////////////////////////
+
+  // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_2019_15cm_VNIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PRUSVI 2019 15cm',false);
+  // Map2.addLayer(superSimpleTileURLFunction('https://image-services-gtac.fs.usda.gov/arcgis/rest/services/ResourcePhoto_Region08/PR_USACOE_30cm_2010_12_CIR/ImageServer/tile/'),{layerType:'tileMapService','addToLegend':false},'PR 2010 30cm',false)
+
+  // var prUSVI_ch_2018 = ee.Image('projects/lcms-292214/assets/R8/PR_USVI/Ancillary/PR_USVI_2018_CHM_1m')
+  //                       .set('system:time_start',ee.Date.fromYMD(2018,6,1).millis())
+  //                       .rename(['Canopy Height'])
+  //                       .selfMask()
+  // Map2.addLayer(prUSVI_ch_2018,{min:1,max:15,palette:palettes.crameri.bamako[50].reverse(),legendLabelLeftAfter:'(m)',legendLabelRightAfter:'(m)'},'PRUSVI 2018 Canopy Height',false);
+
+
+
   var vi_2007 = ee.Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007").add(50).byte().set("system:time_start", ee.Date.fromYMD(2007, 6, 1).millis());
 
   var pr_1991 = ee.Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_PR_1991").set("system:time_start", ee.Date.fromYMD(1991, 6, 1).millis());
@@ -570,18 +629,10 @@ function runAncillary() {
 
   // var maxWinds = prvi_winds.qualityMosaic('Max_Wind_MPH');
   // console.log(prvi_lc_lookup)
-  // print(idsCollection.getInfo())
-  // var mortType = idsCollection.select(['IDS Mort Type']).max();
-  // var mortDCA = idsCollection.select(['IDS Mort DCA']).max();
-  // var defolType = idsCollection.select(['IDS Defol Type']).max();
-  // var defolDCA = idsCollection.select(['IDS Defol DCA']).max();
 
-  // var typeViz = {min:1,max:19,palette:'F00,888,00F',queryDict:damage_codes};
-  // var dcaViz = {min:10,max:99,palette:'F00,888,00F',queryDict:dca_codes};
-  // Map2.addLayer(mortType,typeViz,'mortType');
-  // Map2.addLayer(mortDCA,dcaViz,'mortDCA');
-  // Map2.addLayer(defolType,typeViz,'defolType');
-  // Map2.addLayer(defolDCA,dcaViz,'defolDCA')
+  // Batch Fill Collections
+  ///////////////////////////////////////////////////////
+
   annualPDSI = batchFillCollection(annualPDSI, years).map(setSameDate);
   idsCollection = batchFillCollection(idsCollection, years).map(setSameDate);
   nlcdLC = batchFillCollection(nlcdLC, years).map(setSameDate);
@@ -592,6 +643,10 @@ function runAncillary() {
   nlcdImpv = batchFillCollection(nlcdImpv, years).map(setSameDate);
 
   nwi_hi_rast = batchFillCollection(ee.ImageCollection([nwi_hi_rast]), years).map(setSameDate);
+  
+  // Format for Charting
+  /////////////////////////////////////////
+  
   // prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
   // prvi_winds = batchFillCollection(prvi_winds.select([0,1,2]),years).map(setSameDate);
   // prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
