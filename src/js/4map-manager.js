@@ -1960,6 +1960,22 @@ function hexToRgb(hex) {
       }
     : null;
 }
+function blendColors(color1, color2, weight=0.5) {
+  // Convert the hex colors to RGB values.
+  const rgb1 = hexToRgb(color1);
+  const rgb2 = hexToRgb(color2);
+  console.log(color1);console.log(color2)
+  console.log(rgb1);console.log(rgb2)
+  // Calculate the blended RGB values.
+  const blendedRgb = {
+    r: (rgb1.r * weight + rgb2.r * (1 - weight)) ,
+    g: (rgb1.g * weight + rgb2.g * (1 - weight)) ,
+    b: (rgb1.b * weight + rgb2.b * (1 - weight)) ,
+  };
+  
+  // Convert the blended RGB values to a hex color.
+  return rgbToHex(blendedRgb.r,blendedRgb.g,blendedRgb.b);
+}
 function offsetColor(hex, offset) {
   obj = hexToRgb(hex);
   obj.r = (obj.r + offset) % 255;

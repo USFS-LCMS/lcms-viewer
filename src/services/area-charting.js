@@ -220,14 +220,34 @@ function areaChartCls() {
   this.getMapExtentCoordsStr = function () {
     return Object.values(map.getBounds().toJSON()).map(smartToFixed).join(",");
   };
-  this.startAutoCharting = function () {
+  
+  this.startAutoCharting = function (idleDelay = 2000) {
+    this.setupChartProgress();
+    let idleEventID = 0;
     this.mapCoordsStr = this.getMapExtentCoordsStr();
     this.listeners.push(
       google.maps.event.addListener(map, "idle", () => {
+        this.clearCharts();
+        
+        $("#query-spinner-img").addClass("fa-spin");
+      updateProgress(".progressbar", 0);
         let nowCoords = this.getMapExtentCoordsStr();
         if (nowCoords !== this.mapCoordsStr) {
           this.mapCoordsStr = nowCoords;
-          setTimeout(this.chartMapExtent(), 500);
+          idleEventID++;
+          let idleEventIDT = idleEventID;
+          setTimeout(()=>{
+            if(idleEventID   === idleEventIDT){
+              console.log(idleEventID,idleEventIDT)
+            
+              this.chartMapExtent();
+            }else{
+              console.log('not idle long enough');
+              console.log(idleEventID,idleEventIDT)
+            }
+            
+          }, idleDelay);
+          
         } else {
           console.log("Map has not really moved");
         }
@@ -278,6 +298,7 @@ function areaChartCls() {
         },
         label: labels,
         color: colors,
+        // opacity: 0.5,
         hovertemplate: "%{value}" + yAxisLabel + " %{label}<extra></extra>",
       },
 
@@ -359,14 +380,14 @@ function areaChartCls() {
       return {
         x: xColumn,
         y: arrayColumn(table, i).map(smartToFixed),
-        type: "scatter",
+        // mode: "lines",
         visible: visible[i - 1],
         name: header[i].slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"),
         line: { color: colors[i - 1] },
       };
     });
     // console.log(data);
-
+   
     var plotLayout = {
       plot_bgcolor: this.plot_bgcolor,
       paper_bgcolor: this.plot_bgcolor,
@@ -391,6 +412,7 @@ function areaChartCls() {
       },
       xaxis: {
         tickangle: 45,
+        // rangeslider: {},
         tickformat: selectedObj.xTickDateFormat,
         tickfont: { size: selectedObj.chartLabelFontSize },
         title: {
@@ -429,8 +451,7 @@ function areaChartCls() {
     var graphDiv = document.getElementById(tempGraphDivID);
     selectedObj.plots["line"] = Plotly.newPlot(graphDiv, data, plotLayout, buttonOptions);
   };
-
-  this.chartArea = function (area, name = "Default Name") {
+  this.setupChartProgress = function(){
     if (this.firstRun) {
       $("#query-spinner").append(
         `<img  id = 'query-spinner-img' alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa" src="./src/assets/images/GEE_logo_transparent.png"  style='height:2rem;'><div class="progressbar progress-pulse"  id='query-progressbar px-2' title='Percent of layers that have finished downloading chart summary data'>
@@ -440,6 +461,9 @@ function areaChartCls() {
       );
       this.firstRun = false;
     }
+  }
+  this.chartArea = function (area, name = "Default Name") {
+    this.setupChartProgress();
     this.makeChartID++;
     this.outstandingChartRequests[this.makeChartID] = 0;
     this.maxOutStandingChartRequests[this.makeChartID] = 0;
@@ -521,6 +545,10 @@ function areaChartCls() {
                     source: [],
                     target: [],
                     value: [],
+                    // color: [],
+                    // colorScale:[]
+                    // link_color:[]
+                    // opacity:[]
                   };
                   let labels = [];
                   let colors = [];
@@ -554,10 +582,18 @@ function areaChartCls() {
                     classes.map((cls) => {
                       // console.log(cls);
                       let class_valueI1 = selectedObj.class_values[bn].indexOf(cls[0]);
+                      let color_value1 = selectedObj.class_palette[bn][class_valueI1];
                       let class_valueI2 = selectedObj.class_values[bn].indexOf(cls[1]);
+                      let color_value2 = selectedObj.class_palette[bn][class_valueI2];
                       sankey_dict.source.push(class_valueI1 + offset1);
                       sankey_dict.target.push(class_valueI2 + offset2);
                       sankey_dict.value.push(values[vi]);
+                      // console.log(color_value1,color_value2)
+                      // console.log(blendColors(color_value1,color_value2))
+                      // console.log(selectedObj.plot_bgcolor)
+                      // sankey_dict.color.push('rgba(55,46,44,0.5)');
+                      
+                      // sankey_dict.colorScale.push([[0, 'rgb(0,0,255)'], [1, 'rgb(255,0,0)']]);
                       countLookup[`${selectedObj.class_names[bn][class_valueI1]}---${selectedObj.class_names[bn][class_valueI2]}`] = values[vi];
                       vi++;
                     });
@@ -585,7 +621,7 @@ function areaChartCls() {
                   this.makeSankeyChart(sankey_dict, labels, colors, bn, `${selectedObj.name} Sankey ${bn.replaceAll("_", " ")} ${name} (${nominalScale}m)`, selectedObj, outCSV);
                   // console.log(labels);
                   // console.log(colors);
-                  // console.log(sankey_dict);
+                  console.log(sankey_dict);
                   this.outstandingChartRequests[this.makeChartID]--;
 
                   this.updateProgress();
@@ -748,10 +784,7 @@ function areaChartCls() {
         }
       });
       if (!anythingToChart) {
-        showMessage(
-          "Error!",
-          "Please draw polygons on map. Double-click to finish drawing polygon. Once all polygons have been drawn, click the <kbd>Chart Selected Areas</kbd> button to create chart."
-        );
+        showMessage("Error!", "Please draw polygons on map. Double-click to finish drawing polygon. Once all polygons have been drawn, click the <kbd>Chart Selected Areas</kbd> button to create chart.");
       } else {
         userArea = ee.FeatureCollection(userArea);
         var udpName = $("#user-defined-area-name").val();
