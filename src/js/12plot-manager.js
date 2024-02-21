@@ -189,6 +189,7 @@ var akPractice = {
 var plotsGeoJSONs = [
   hiFinal,
   conus1,
+  CONUSpractice,
   hiPractice,
   akPractice,
   coastalAK2022
