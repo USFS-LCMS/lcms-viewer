@@ -114,11 +114,6 @@ function chartDashboardFeature(r, layer, updateCharts = true, deselectOnClick = 
     updateDashboardHighlights();
   }
 }
-function updateProgress(id, val) {
-  var el = document.querySelector(`${id} span`);
-  el.style.width = val + "%";
-  el.innerText = val + "%";
-}
 
 function startDashboardClickLayerSelect() {
   $("#dashboard-download-button").prop("disabled", true);

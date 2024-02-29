@@ -244,7 +244,7 @@ const studyAreaDict = {
     ],
     lt_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Base-Learners/LandTrendr-Collection",
-      "projects/lcms-292214/assets/R5/Hawaii/Base-Learners/LandTrendr-Collection-1984-2022-annual",
+      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],
@@ -635,6 +635,7 @@ Number.prototype.formatNumber = function (n = 2) {
 Number.prototype.repeat = function (n = 2) {
   return Array(n).fill(this * 1);
 };
+
 /////////////////////////////////////////////////////
 // Function that tries to find the best way of limiting precision for floating point numbers
 // Will limit to the maximum of chartDecimalProportion the length of decimals or whatever chartPrecision is set to
@@ -693,6 +694,9 @@ String.prototype.toTitle = function () {
 String.prototype.chunk = function (size) {
   return this.match(new RegExp(".{1," + size + "}", "g"));
 };
+String.prototype.smartBreak = function (size = 10, joinStr = "<br>") {
+  return this.chunk(size).join(joinStr);
+};
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function () {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -710,7 +714,13 @@ Date.prototype.dayOfYear = function () {
 //
 //Taken from: https://stackoverflow.com/questions/22015684/how-do-i-zip-two-arrays-in-javascript
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
-
+const dictFromKeyValues = (a, b) => {
+  let out = {};
+  a.map((k, i) => {
+    out[k] = b[i];
+  });
+  return out;
+};
 //Taken from: https://stackoverflow.com/questions/11688692/how-to-create-a-list-of-unique-items-in-javascript
 function unique(arr) {
   let u = {},
