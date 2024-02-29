@@ -35,8 +35,8 @@ function runAlgal() {
   Map.addTimeLapse(
     countC_hcb,
     {
-      min: 25000,
-      max: 5000000,
+      min: 0, //25000
+      max: 3000000, //5000000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
@@ -50,8 +50,8 @@ function runAlgal() {
   Map.addTimeLapse(
     ab_hcb.select([1]),
     {
-      min: 200000000,
-      max: 1000000000,
+      min: 10000000, //200000000
+      max: 100000000, //1000000000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
@@ -66,8 +66,8 @@ function runAlgal() {
   Map.addTimeLapse(
     countC_wdeq,
     {
-      min: 1000,
-      max: 5000,
+      min: 0, //1000
+      max: 8000, //5000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
@@ -81,8 +81,8 @@ function runAlgal() {
   Map.addTimeLapse(
     ab_wdeq.select([1]),
     {
-      min: 2000000,
-      max: 10000000,
+      min: 3000000, //2000000
+      max: 30000000, //10000000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
