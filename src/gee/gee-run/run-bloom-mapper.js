@@ -14,7 +14,7 @@ function runAlgal() {
   ab = ab.filter(ee.Filter.eq("studyAreaName", "WY-GYE"));
   // console.log(ab.first().getInfo())
 
-  ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear), parseInt(urlParams.endYear), "year")).filter(ee.Filter.calendarRange(150, 300));
+  ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear), parseInt(urlParams.endYear), "year")).filter(ee.Filter.calendarRange(130, 300));
 
   // Add filter for asset whichModel property (WDEQ vs HCB)
   ab_wdeq = ab.filter(ee.Filter.eq("whichModel", "WDEQ"));
