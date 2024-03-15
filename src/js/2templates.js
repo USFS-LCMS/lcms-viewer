@@ -458,7 +458,7 @@ const staticTemplates = {
 `,
       `
 <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
-<h5>For access please contact Sequoia Viewer project coordinator.</h5>
+<!-- <h5>For access please contact Sequoia Viewer project coordinator.</h5> -->
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR/TUTORIAL</a>
 <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
