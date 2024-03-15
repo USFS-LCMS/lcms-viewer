@@ -460,7 +460,7 @@ const staticTemplates = {
 <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
 <h5>For access please contact Sequoia Viewer project coordinator.</h5>
 <div class ='my-3'>
-<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
+<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR/TUTORIAL</a>
 <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
 
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
@@ -937,6 +937,19 @@ const staticTemplates = {
                                     </div>
                                 </section>
                       </div>`,
+  sequoiaSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row ' title = 'Open Giant Sequoia Viewer tutorial'>
+                            <h3 class = ' text-capitalize'>Tutorial</h3>
+                        </header>
+                        <div class = 'row ' onclick="startTour()" title="Click to take a tour of the Giant Sequoia Viewer's features">
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the Giant Sequoia Viewer's features">Giant Sequoia View TOUR</a>
+                            </div>
+                        </div>
+                        <hr>`,                    
   supportDiv: `<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
