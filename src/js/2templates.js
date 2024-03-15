@@ -2297,6 +2297,19 @@ function addLegendCollapse() {
   $("#legend-collapse-div").append(`<div role="list" id="legend-fhp-div"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="time-lapse-legend-list"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="legend-area-charting-select-layer-list"></div>`);
+  
+  if (mode === 'sequoia-view'){
+    addCollapse(
+    getWalkThroughCollapseContainerID(),//"sidebar-left",
+    "table-collapse-label",
+    "table-collapse-div",
+    "MONITORING SITES",
+    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+    true,
+    ``,
+    "Giant Sequoia monitoring sites output table"
+    );
+  }
 }
 function addLegendContainer(legendContainerID, containerID, show, toolTip) {
   if (containerID === undefined || containerID === null) {

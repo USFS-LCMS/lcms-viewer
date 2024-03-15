@@ -211,6 +211,8 @@ function runSequoia() {
       });
 
       var siteID = 1;
+      // make list of features that are yes for highlighting those another color:
+      var lossYesList = []; //ee.List([]);
 
       // Iterate across each feature and set up the table row
       t.features.map((f) => {
@@ -247,12 +249,35 @@ function runSequoia() {
           var v = f.properties[prop];
           $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
         });
-
+        
+        // add features to lossYestList if they have potential loss  
+        if (f.properties["Potential_Loss"] == 1) {
+          lossYesList.push(f);
+        }  
         // Set up the location and label for hover and double click events on the table
         site_highlights_dict[rowID] = [f.properties.Longitude, f.properties.Latitude, f.properties[labelProperty]];
 
         siteID++;
       });
+
+      console.log("Loss sites:", lossYesList);
+      
+      // create FC of loss sites
+      var potentialLossSites = ee.FeatureCollection(lossYesList)
+      Map.addLayer(
+        potentialLossSites.map((f) => {
+          return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
+        }),
+        {
+          strokeColor: 'FF0', // yellow,
+          layerType: "geeVector"
+        },
+        "Monitoring Sites Flagged for Potential Loss",
+        false,
+        null,
+        null,
+        "Flagged trees of special interest. None until the user runs an analysis period that flags trees for potential loss."
+      );
 
       // Once the table is loaded, set up listeners for table to map behaviors
       $(document).ready(() => {
@@ -465,7 +490,7 @@ function runSequoia() {
       return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
     }),
     {
-      strokeColor: "eb7a38",
+      strokeColor: "BF40BF", // purple
     },
     `Tharps Burn Project Sequoias`,
     false,
@@ -485,6 +510,7 @@ function runSequoia() {
   if (applyLCMSTreeMask) {
     changeHeuristicForMap = changeHeuristicForMap.updateMask(lcmsTreeMask);
   }
+
   Map.addLayer(
     changeHeuristicForMap,
     {
@@ -505,7 +531,7 @@ function runSequoia() {
       return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
     }),
     {
-      strokeColor: "FF0",
+      strokeColor: 'eb7a38', //orange
       layerType: "geeVector",
     },
     "Monitoring Sites",

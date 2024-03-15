@@ -2190,17 +2190,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Additional relevant layers to view on map intended to provide context for change data"
   );
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-
-  addCollapse(
-    "sidebar-left",
-    "table-collapse-label",
-    "table-collapse-div",
-    "MONITORING SITES",
-    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
-    true,
-    ``,
-    "Giant Sequoia monitoring sites output table"
-  );
+  //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js 
+  // addCollapse(
+  //   "sidebar-left",
+  //   "table-collapse-label",
+  //   "table-collapse-div",
+  //   "MONITORING SITES",
+  //   `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+  //   true,
+  //   ``,
+  //   "Giant Sequoia monitoring sites output table"
+  // );
 
   addCollapse(
     "sidebar-left",
