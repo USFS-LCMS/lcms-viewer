@@ -876,7 +876,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
       ],
       [
         `MONITORING SITES`,
-        `Named Giant Sequoias are flagged if they are found to display signs of potential mortality. Using this table and the accompanying imagery data in the <i>MAP LAYERS</i> in the left sidebar can help determine whether a tree merits further investigation. Double-clicking a row in this table will zoom to that tree location on the map, and hovering on a row will highlight that tree.`,
+        `Named Giant Sequoias are flagged if they are found to display signs of potential mortality. Using this table and the accompanying imagery data in the <i>MAP LAYERS</i> in the left sidebar can help determine whether a tree merits further investigation.<br>Double-clicking a row in this table will zoom to that tree location on the map, and hovering on a row will highlight that tree. <br><br>After running an analysis period that flags trees for potential loss, the flagged monitoring sites will be sorted to the top of this table. While the table is scrollable, for easiest viewing of all parameters in the table, you can copy or download the entire table. `,
         "#table-collapse-label",
         "right-end",
         [0, 2],

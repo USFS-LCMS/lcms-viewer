@@ -259,8 +259,6 @@ function runSequoia() {
 
         siteID++;
       });
-
-      console.log("Loss sites:", lossYesList);
       
       // create FC of loss sites
       var potentialLossSites = ee.FeatureCollection(lossYesList)

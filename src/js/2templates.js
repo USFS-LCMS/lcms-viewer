@@ -941,12 +941,12 @@ const staticTemplates = {
                         <header class = 'row ' title = 'Open Giant Sequoia Viewer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
-                        <div class = 'row ' onclick="startTour()" title="Click to take a tour of the Giant Sequoia Viewer's features">
+                        <div class = 'row ' onclick="startTour()" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
                             </div>
                             <div class = 'col-lg-10'>
-                            <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the Giant Sequoia Viewer's features">Giant Sequoia View TOUR</a>
+                            <a class="intro-modal-links" onclick="startTour()" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">Giant Sequoia View TOUR</a>
                             </div>
                         </div>
                         <hr>`,                    
