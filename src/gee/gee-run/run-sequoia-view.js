@@ -276,7 +276,7 @@ function runSequoia() {
         false,
         null,
         null,
-        "Flagged trees of special interest. None until the user runs an analysis period that flags trees for potential loss."
+        "Trees of special interest that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
       );
 
       // Once the table is loaded, set up listeners for table to map behaviors
@@ -541,7 +541,7 @@ function runSequoia() {
     "Trees of special interest"
   );
 
-  Map.addLayer(studyArea, {}, "Study Area", false);
+  Map.addLayer(studyArea, {strokeColor: '0000FF'}, "Study Area", true);
 
   if (urlParams.canExport) {
     var exportBands = ["blue", "green", "red", "nir", "swir1", "swir2"];
