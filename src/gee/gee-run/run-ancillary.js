@@ -8,14 +8,14 @@ function runAncillary() {
   
   // AK Vegetation Layers
   ////////////////////////////////////////////
-  var ak_landcover = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
+  var ak_land_cover = ee.ImageCollection('USFS/GTAC/LCMS/v2022-8')
                       .filterDate('2016', '2017')  // range: [1985, 2022]
                       .filter('study_area == "SEAK"')  
                       .first()
                       .select('Land_Cover');
   
-  Map.addLayer(ak_landcover, 
-    {}, 
+  Map.addLayer(ak_land_cover, 
+    {'autoViz':true}, 
     'AK LandCover - LCMS 2016',
     false)
 
