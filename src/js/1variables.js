@@ -619,7 +619,10 @@ String.prototype.toProperCase = function () {
 /////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
 String.prototype.replaceAll = function (str1, str2, ignore) {
-  return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), ignore ? "gi" : "g"), typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2);
+  return this.replace(
+    new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), ignore ? "gi" : "g"),
+    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
+  );
 };
 /////////////////////////////////////////////////////
 // Taken from: https://stackoverflow.com/questions/586182/how-to-insert-an-item-into-an-array-at-a-specific-index-javascript

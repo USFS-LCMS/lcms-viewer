@@ -84,7 +84,9 @@ function runGTAC() {
     };
 
     lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
-    lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten());
+    lcmsRun.lcms = ee.ImageCollection(
+      ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten()
+    );
 
     //Get properties image
     lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());
@@ -456,18 +458,27 @@ function runGTAC() {
     lcmsRun.whichIndex = "NBR";
 
     //Bring in composites
-    lcmsRun.composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten());
+    lcmsRun.composites = ee.ImageCollection(
+      ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten()
+    );
 
     lcmsRun.composites = ee.ImageCollection(
       ee.List.sequence(startYear, endYear, 1).map(function (yr) {
-        return getImagesLib.simpleAddIndices(lcmsRun.composites.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()), 1);
+        return getImagesLib.simpleAddIndices(
+          lcmsRun.composites.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()),
+          1
+        );
       })
     );
     // Map.addTimeLapse(lcmsRun.composites.limit(5),{min:500,max:5000,bands:'swir1,nir,red'},'Composite Time Lapse');
 
     //Set up CCDC
     lcmsRun.ccdcIndicesSelector = ["tStart", "tEnd", "tBreak", "changeProb", lcmsRun.whichIndex + "_.*", "NDVI_.*"];
-    lcmsRun.ccdc = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].ccdc_collections.map((f) => ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector))).flatten());
+    lcmsRun.ccdc = ee.ImageCollection(
+      ee
+        .FeatureCollection(studyAreaDict[studyAreaName].ccdc_collections.map((f) => ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector)))
+        .flatten()
+    );
 
     var f = ee.Image(lcmsRun.ccdc.first());
     var ccdcImg = ee.Image(lcmsRun.ccdc.mosaic().copyProperties(f));
@@ -496,13 +507,19 @@ function runGTAC() {
       });
     // Map.addLayer(lcmsRun.fittedAsset,{},'lt fitted')
     //Join raw time series to lt fitted and ccdc fitted
-    lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.composites.select([lcmsRun.whichIndex], ["Raw " + lcmsRun.whichIndex]), lcmsRun.fittedAsset, false);
+    lcmsRun.changePixelChartCollection = joinCollections(
+      lcmsRun.composites.select([lcmsRun.whichIndex], ["Raw " + lcmsRun.whichIndex]),
+      lcmsRun.fittedAsset,
+      false
+    );
     lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection, lcmsRun.fittedCCDC, false);
     // console.log(lcmsRun.changePixelChartCollection.getInfo())
     //Set up change prob outputs for pixel charting
-    lcmsRun.probCollection = lcmsRun.lcms.select(["Change_Raw_Probability_.*"], ["Slow Loss Probability", "Fast Loss Probability", "Gain Probability"]).map(function (img) {
-      return img.divide(100).copyProperties(img, ["system:time_start"]);
-    });
+    lcmsRun.probCollection = lcmsRun.lcms
+      .select(["Change_Raw_Probability_.*"], ["Slow Loss Probability", "Fast Loss Probability", "Gain Probability"])
+      .map(function (img) {
+        return img.divide(100).copyProperties(img, ["system:time_start"]);
+      });
 
     lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection, lcmsRun.probCollection, false);
 
@@ -664,7 +681,7 @@ function runGTAC() {
 
 function runDynamic() {
   areaChart.clearLayers();
-
+  let lcmsRun = {};
   let lcmap_dict = {
     LC_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     LC_class_names: ["Developed", "Cropland", "Grass/Shrub", "Tree Cover", "Water", "Wetlands", "Ice/Snow", "Barren", "Class Change"],
@@ -672,40 +689,176 @@ function runDynamic() {
   };
   let lcpri = ee.ImageCollection("projects/sat-io/open-datasets/LCMAP/LCPRI").select(["b1"], ["LC"]);
   lcpri = lcpri.map((img) => img.set(lcmap_dict));
-  Map.addLayer(lcpri, { autoViz: true }, "LCMAP LC", false);
-  areaChart.addLayer(lcpri, { sankey: false }, "LCMAP LC Annual", false);
-  areaChart.addLayer(lcpri, { sankey: true }, "LCMAP LC Transition", false);
+  // Map.addLayer(lcpri, { autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: true } }, "LCMAP LC", true);
+  // areaChart.addLayer(lcpri, { sankey: false }, "LCMAP LC Annual", false);
+  // areaChart.addLayer(lcpri, { sankey: true }, "LCMAP LC Transition", false);
+  lcmsRun.lcms = ee
+    // .ImageCollection("projects/lcms-292214/assets/Final_Outputs/2022-8/HAWAII")
+    .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
+    .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]);
 
-  
-  var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").filter(ee.Filter.eq("study_area", "CONUS"));
-  var tcc = ee.ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4").select([0, 2]).filter(ee.Filter.eq("study_area", "CONUS"));
-  Map.addLayer(lcms.select([1]), { autoViz: true }, "LCMS Land Cover", false);
-  Map.addLayer(lcms.select([2]), { autoViz: true }, "LCMS Land Use", false);
+  // .filter('study_area=="CONUS"');
+
+  //Get properties image
+  lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());
+  lcmsRun.props = lcmsRun.f.toDictionary().getInfo();
+  // console.log(lcmsRun.props)
+  // lcmsRun.lcms = ee
+  //   .ImageCollection("projects/lcms-292214/assets/Final_Outputs/2022-8/HAWAII")
+  //   // .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
+  //   .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
+  //   .filter(ee.Filter.calendarRange(1990, 2022, "year"));
+  // .filter('study_area=="CONUS"');
+  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear, endYear, "year"));
+  // lcmsRun.lcms = lcmsRun.lcms.map((img) => img.set(lcmsRun.props));
+  // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
+
+  //Mosaic all study areas
+
+  var tcc = ee.ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4").select([0, 2]); //.filter(ee.Filter.eq("study_area", "CONUS"));
+  // Map.addLayer(
+  //   lcmsRun.lcms.select(["Land_Cover"]), //(), //.set(lcmsRun.props),
+  //   {
+  //     // bands: "Land_Use",
+  //     // mosaic: true,
+  //     // dateFormat: "YYYY",
+  //     // advanceInterval: "day",
+  //     autoViz: true,
+  //     canAreaChart: true,
+  //     areaChartParams: { line: true, sankey: true },
+  //   },
+  //   "LCMS Land Cover",
+  //   true
+  // );
+  // let changeVisibility = [false, true, true, true, false];
+  // Map.addLayer(
+  //   lcmsRun.lcms.select(["Change"]), //(), //.set(lcmsRun.props),
+  //   {
+  //     autoViz: true,
+  //     canAreaChart: true,
+  //     areaChartParams: {
+  //       line: true,
+  //       sankey: true,
+  //       visible: changeVisibility,
+  //       // sankeyTransitionPeriods: [
+  //       //   [1990, 1991],
+  //       //   [2000, 2005],
+  //       // ],
+  //     },
+  //   },
+  //   "LCMS Change",
+  //   true
+  // );
+  // Map.addLayer(
+  //   lcmsRun.lcms.select(["Land_Cover"]).mode().set(lcmsRun.props),
+  //   { autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: false } },
+  //   "LCMS Land Cover",
+  //   true
+  // );
+  let raw = lcmsRun.lcms.select(["Land_Cover_Raw.*"]);
+  let bns = raw.first().bandNames();
+  let bnsOut = bns.map((bn) => ee.String(bn).split("Land_Cover_Raw_Probability_").get(1));
+
+  // console.log(bns.getInfo());
+  // console.log(bnsOut.getInfo());
+  raw = raw.select(bns, bnsOut);
+  // Map.addLayer(
+  //   raw,
+  //   {
+  //     queryParams: { palette: lcmsRun.props.Land_Cover_class_palette },
+  //     areaChartParams: { palette: lcmsRun.props.Land_Cover_class_palette },
+  //     canAreaChart: true,
+  //     bands: "Barren-or-Impervious,Trees,Water",
+  //     min: 0,
+  //     max: 30,
+  //     reducer: ee.Reducer.stdDev(),
+  //   },
+  //   "LCMS Land Cover Raw ",
+  //   true
+  // );
+  // Map.addLayer(lcms.select([2]), { autoViz: true, canAreaChart: true, line: true, sankey: true }, "LCMS Land Use", false);
   // console.log(tcc.first().toDictionary().getInfo());
-  let changeVisibility = [false, true, true, true, false];
-  lcms = lcms.map((img) => img.set("Change_class_visibility", changeVisibility));
-  
-  let changeClassDict = {'Fast Loss':{'code':3,visible:true,palette:lossYearPalette},'Slow Loss':{'code':2,visible:true,palette:lossYearPalette},'Gain':{'code':4,visible:false,palette:"c5ee93,00a398"}};
-  Object.keys(changeClassDict).map(k=>{
-    let changeYear = lcms.select([0]).map(img=>ee.Image(img.date().get('year')).int16().rename(['year']).updateMask(img.eq(changeClassDict[k].code))).max()
-      Map.addLayer(changeYear,{min:urlParams.startYear,max:urlParams.endYear,palette:changeClassDict[k].palette},k,changeClassDict[k].visible)
-     
-  })
-  
-  
+
+  // lcmsRun.lcms = lcmsRun.lcms.map((img) => img.set("Change_class_visibility", changeVisibility));
+  // console.log(lcmsRun.lcms.first().bandNames().getInfo());
+  let allLossYearPalette = [
+    "#ffffe5",
+    "#fffddf",
+    "#fffcd9",
+    "#fffbd3",
+    "#fffacd",
+    "#fff9c7",
+    "#fff7bc",
+    "#fef4b5",
+    "#fef1af",
+    "#feeea9",
+    "#feeba3",
+    "#fee597",
+    "#fee391",
+    "#fede87",
+    "#feda7e",
+    "#fed574",
+    "#fecc61",
+    "#fec858",
+    "#fec44f",
+    "#febd49",
+    "#feb744",
+    "#feab39",
+    "#fea533",
+    "#fe9f2e",
+    "#fe9929",
+    "#fb9326",
+    "#f68720",
+    "#f3811d",
+    "#f17b1a",
+    "#ee7517",
+    "#ec7014",
+    "#e76a11",
+    "#e2650e",
+    "#de600c",
+    "#d95b09",
+    "#d55607",
+    "#d05104",
+    "#cc4c02",
+  ];
+  let changeClassDict = {
+    "Fast Loss": { code: 3, visible: true, palette: allLossYearPalette },
+    "Slow Loss": { code: 2, visible: true, palette: allLossYearPalette },
+    Gain: { code: 4, visible: false, palette: "c5ee93,00a398" },
+  };
+
+  Object.keys(changeClassDict).map((k) => {
+    let changeYear = lcmsRun.lcms
+      .select([0])
+      .map((img) => ee.Image(img.date().get("year")).int16().rename(["year"]).updateMask(img.eq(changeClassDict[k].code)))
+      .max();
+    Map.addLayer(
+      changeYear,
+      {
+        min: urlParams.startYear,
+        max: urlParams.endYear,
+        palette: changeClassDict[k].palette,
+        canAreaChart: true,
+        areaChartParams: { reducer: ee.Reducer.frequencyHistogram(), palette: changeClassDict[k].palette, rangeSlider: true },
+      },
+      k,
+      changeClassDict[k].visible
+    );
+  });
+
   // Map.addLayer(lcms.select([0]), { autoViz: true, reducer: ee.Reducer.max() }, "LCMS Change", true);
-  
-  areaChart.addLayer(lcms.select([0]), {}, "LCMS Change Annual");
-  areaChart.addLayer(lcms.select([1]), {}, "LCMS Land Cover Annual");
-  areaChart.addLayer(lcms.select([2]), {}, "LCMS Land Use Annual");
-  areaChart.addLayer(lcms.select([0, 1, 2]), { sankey: true }, "LCMS Transition", true);
+
+  // areaChart.addLayer(lcms.select([0]), {}, "LCMS Change Annual");
+  // areaChart.addLayer(lcms.select([1]), {}, "LCMS Land Cover Annual");
+  // areaChart.addLayer(lcms.select([2]), {}, "LCMS Land Use Annual");
+  // areaChart.addLayer(lcms.select([0, 1, 2]), { sankey: true }, "LCMS Transition", true);
+
   // areaChart.addLayer(lcms.select([0, 1, 2]), {}, "LCMS Annual");
   // areaChart.addLayer(lcms.select([1]), {}, "LCMS Cover", true);
   // areaChart.addLayer(lcms.select([2]), {}, "LCMS Use", false);
   // areaChart.addLayer(lcms.select([0, 1, 2]), {}, "LCMS All");
   // areaChart.addLayer(lcms.select([2]), { autoViz: true }, "test");
 
-  
   // console.log(lcpri.first().bandNames().getInfo());
   // var f = ee.Geometry.Polygon(
   //   [
@@ -728,6 +881,7 @@ function runDynamic() {
   nlcd_class_names = nlcd_class_names.map((nm) => {
     return ee.String(nm).split(": ").get(0);
   });
+
   // nlcd = nlcd.map((img) => img.set("landcover_class_names", nlcd_class_names));
   // console.log(nlcd_class_names.getInfo());
   // Map.addLayer(nlcd, { sankey: true }, "NLCD");
@@ -747,22 +901,88 @@ function runDynamic() {
   //   "NLCD"
   // );
   // areaChart.addLayer(nlcd, { sankey: true }, "NLCD Annual");
-  areaChart.addLayer(tcc, { visible: [true, true], palette: ["080", "0D0"] }, "NLCD TCC");
+  // Map.addLayer(
+  //   tcc,
+  //   {
+  //     canAreaChart: true,
+  //     reducer: ee.Reducer.stdDev(),
+  //     bands: "NLCD_Percent_Tree_Canopy_Cover",
+  //     min: 0,
+  //     max: 10,
+  //     palette: "DDD,080",
+  //     // areaChartParams: { palette: "080,0D0" },
+  //   },
+  //   "NLCD TCC",
+  //   true
+  // );
+  // areaChart.addLayer(tcc, { visible: [true, true], palette: ["080", "0D0"] }, "NLCD TCC");
   // areaChart.addLayer(tcc, { reducer: ee.Reducer.median() }, "NLCD TCC Median");
   // areaChart.populateChartDropdown();
-  areaChart.populateChartLayerSelect();
+
   // areaChart.sankeyTransitionPeriods = [
   //   [1995, 1997],
   //   [2010, 2014],
   //   [2019, 2019],
   // ];
-  areaChart.startAutoCharting();
 
+  // getLCMSVariables();
+  let mtbsBoundaries = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1");
+  mtbsBoundaries = mtbsBoundaries.map(function (f) {
+    var d = ee.Date(f.get("Ig_Date")).millis();
+
+    return f.set("system:time_start", f.get("Ig_Date"));
+  });
+  // // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
+  // // console.log(perims.get('bounds').getInfo())
+
+  mtbsBoundaries = mtbsBoundaries.filterDate(ee.Date.fromYMD(urlParams.startYear, 1, 1), ee.Date.fromYMD(urlParams.endYear, 12, 31));
+  i = ee.Image([1, 2]);
+  // print(i.bandNames().getInfo());
+  // Map.addLayer(i, {});
+
+  lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").filter('study_area=="CONUS"'); //.select([".*Raw.*"]);
+
+  lcms = lcms.map((img) => img.set("Change_class_visibility", [false, true, true, true, false]));
+  // lcms = lcms.map((img) => img.set("Land_Cover_class_palette", newPalette));
+  // console.log(lcms.getInfo());
+  // Map.addLayer(lcms.select([1]), {
+  //   canAreaChart: true,
+  //   areaChartParams: { reducer: ee.Reducer.frequencyHistogram(), sankey: true, showGrid: true, line: true },
+  // });
+  // console.log("starting");
+  // console.log(ee.Algorithms.ObjectType(mtbsBoundaries).getInfo());
+  // Map.addLayer(mtbsBoundaries);
+
+  // Map.addSelectLayer(
+  //   mtbsBoundaries,
+  //   { strokeColor: "00F", layerType: "geeVectorImage", selectLayerNameProperty: "Incid_Name" },
+  //   "MTBS Fire Boundaries",
+  //   false,
+  //   null,
+  //   null,
+  //   "MTBS Fire Boundaries"
+  // );
+  // ["Change", "Land_Cover", "Land_Use"].map((c) => {
+  //   Map.addLayer(lcmsRun.lcms.select([c]), { canAreaChart: true, areaChartParams: { line: true, sankey: true } }, c);
+  // });
+
+  // areaChart.startAutoCharting();
+
+  // Map.turnOnInspector();
+  // chartUserDefinedArea = areaChart.chartUserDefinedArea;
+  // Map.turnOnUserDefinedAreaCharting();
+  // Map.turnOnSelectionAreaCharting();
+
+  // getSelectLayers(true);
+  // Map.turnOnInspector();
   // Map.addLayer(lcms);
   // Map.turnOnInspector();
   // Map.addLayer(f, {}, "area");
   // Map.centerObject(f);
-  // areaChart.addLayer(lcms.select([1]));
+  // areaChart.addLayer(lcmsRun.lcms);
+
+  // areaChart.populateChartLayerSelect();
+  Map.turnOnAutoAreaCharting();
   //   // console.log(lcms.first().select([".*_Raw_Prob.*"]).bandNames().getInfo());
   //   //   // const mapId = lcms.getMap({ min: 0, max: 60 });
   //   //   // const tileSource = new ee.layers.EarthEngineTileSource(mapId);

@@ -41,7 +41,10 @@ function removeLastSelectArea() {
   updateSelectedAreaArea();
   var lastIndex = selectionTracker.seletedFeatureLayerIndices[selectionTracker.seletedFeatureLayerIndices.length - 1];
   map.overlayMapTypes.setAt(lastIndex, null);
-  selectionTracker.seletedFeatureLayerIndices = selectionTracker.seletedFeatureLayerIndices.slice(0, selectionTracker.seletedFeatureLayerIndices.length - 1);
+  selectionTracker.seletedFeatureLayerIndices = selectionTracker.seletedFeatureLayerIndices.slice(
+    0,
+    selectionTracker.seletedFeatureLayerIndices.length - 1
+  );
   $("#area-charting-selected-layer-list li:first-child").remove();
 }
 function updateSelectedAreasNameList() {
@@ -121,7 +124,16 @@ function setupAreaLayerSelection() {
                 if (simplifyMaxError !== 0) {
                   layerName = "Simplified (" + simplifyMaxError.toString() + "m)- " + layerName;
                 }
-                Map2.addLayer(selectedFeaturesT, { layerType: "geeVectorImage", isSelectedLayer: true }, layerName, true, null, null, null, "area-charting-selected-layer-list");
+                Map2.addLayer(
+                  selectedFeaturesT,
+                  { layerType: "geeVectorImage", isSelectedLayer: true },
+                  layerName,
+                  true,
+                  null,
+                  null,
+                  null,
+                  "area-charting-selected-layer-list"
+                );
               }
               updateSelectedAreasNameList();
               updateSelectedAreaArea();
@@ -194,8 +206,9 @@ function chartSelectedAreas() {
   // console.log(selectedFeatures);
   // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
   var selectedFeatures = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
-
-  $("#summary-spinner").slideDown();
+  if (Object.keys(areaChart.areaChartObj).length === 0) {
+    $("#summary-spinner").slideDown();
+  }
   selectedFeatures.size().evaluate(function (size, failure) {
     if (failure !== undefined) {
       showMessage("Error", failure);
@@ -204,10 +217,20 @@ function chartSelectedAreas() {
       if (title === "") {
         title = selectionTracker.selectedNames.join(" - ");
       }
+      Map.centerObject(selectedFeatures);
 
-      makeAreaChart(selectedFeatures, title + " " + areaChartCollections[whichAreaChartCollection].label + " Summary", true);
+      if (Object.keys(areaChart.areaChartObj).length > 0) {
+        areaChart.clearCharts();
+        areaChart.chartArea(selectedFeatures, title);
+      } else {
+        $("#summary-spinner").slideUp();
+        makeAreaChart(selectedFeatures, title + " " + areaChartCollections[whichAreaChartCollection].label + " Summary", true);
+      }
     } else {
-      showMessage("Error!", "Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button.");
+      showMessage(
+        "Error!",
+        "Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button."
+      );
       $("#summary-spinner").slideUp();
     }
   });
@@ -320,7 +343,7 @@ var getQueryImages = function (lng, lat) {
         });
       }
     } else if (q.type === "geeImageCollection") {
-      // console.log(q)
+      // console.log(q);
 
       var yAxisLabels = { tickfont: { size: yLabelFontSize } };
 
@@ -333,6 +356,7 @@ var getQueryImages = function (lng, lat) {
         var yMax = yValues.max();
 
         var allYValues = range(yMin, yMax + 1);
+
         var allYLabels = allYValues.map((v) => q.queryDict[v]);
         var yLabelMaxLinesT = yLabelMaxLines;
         var brokenLabels;
@@ -411,7 +435,7 @@ var getQueryImages = function (lng, lat) {
       };
       // console.log(value.table);console.log(containerID)
       Plotly.newPlot(containerID, value.table, plotLayout, buttonOptions);
-      console.log(value);
+      // console.log(value);
     } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
       $("#query-list-container").append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
@@ -523,11 +547,13 @@ var getQueryImages = function (lng, lat) {
               return v.slice(4);
             });
             var tableList = yColumnNames.map(function (c, i) {
+              let color = q.queryParams.palette !== undefined ? q.queryParams.palette[i] : undefined;
               return {
                 x: xColumn,
                 y: arrayColumn(yColumns, i).map(smartToFixed),
                 type: "scatter",
-                name: c,
+                name: c.slice(0, 50).chunk(15).join("<br>"),
+                line: { color: color },
               };
             });
 
@@ -546,7 +572,7 @@ var getQueryImages = function (lng, lat) {
         var getRegionCall = c.getRegion(plotBounds, scale, crs, transform);
         getRegionCall.evaluate(function (values, failure) {
           // console.log('values');
-          console.log(values);
+          // console.log(values);
           if (values !== undefined && values !== null) {
             getCollectionValues(values);
           } else {
@@ -788,6 +814,7 @@ function restartUserDefinedAreaCarting(e) {
   // console.log(e);
   if (e === undefined || e.key == "Delete" || e.key == "d" || e.key == "Backspace") {
     areaChartingTabSelect(whichAreaDrawingMethod);
+    areaChart.clearCharts();
     updateUserDefinedAreaArea();
     //startUserDefinedAreaCharting();
   }
@@ -915,10 +942,17 @@ function chartUserDefinedArea() {
         udpName = "User Defined Area " + userDefinedI.toString();
         userDefinedI++;
       }
-      var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
-      udpName += addon;
-      $("#summary-spinner").slideDown();
-      makeAreaChart(userArea, udpName, true);
+      // var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
+      // udpName += addon;
+
+      Map.centerObject(userArea);
+      if (Object.keys(areaChart.areaChartObj).length > 0) {
+        areaChart.clearCharts();
+        areaChart.chartArea(userArea, udpName);
+      } else {
+        $("#summary-spinner").slideDown();
+        makeAreaChart(userArea, udpName, true);
+      }
     }
   } catch (err) {
     showMessage("Error", err);
@@ -1291,7 +1325,9 @@ function makeAreaChart(area, name, userDefined) {
             areaGeoJson = i;
             areaGeoJson["properties"] = geojsonT;
             if (failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null) {
-              $("#chart-download-dropdown").append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+              $("#chart-download-dropdown").append(
+                `<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`
+              );
             } else {
               showMessage("Error", "Could not convert summary area to geoJSON " + failure);
             }
@@ -1333,7 +1369,17 @@ function makeAreaChart(area, name, userDefined) {
     });
     bandNames.unshift(xAxisProperty);
 
-    var table = getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplier, dateFormat, crs, transform, scale, areaChartCollections[whichAreaChartCollection]);
+    var table = getAreaSummaryTable(
+      areaChartCollection,
+      area,
+      xAxisProperty,
+      multiplier,
+      dateFormat,
+      crs,
+      transform,
+      scale,
+      areaChartCollections[whichAreaChartCollection]
+    );
 
     // var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
     var iteration = 0;
@@ -1380,7 +1426,9 @@ function makeAreaChart(area, name, userDefined) {
             areaGeoJson = i;
             areaGeoJson[name] = tableT;
             if (failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null) {
-              $("#chart-download-dropdown").append(`<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`);
+              $("#chart-download-dropdown").append(
+                `<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`
+              );
             } else {
               showMessage("Error", "Could not convert summary area to geoJSON " + failure);
             }
@@ -1393,8 +1441,13 @@ function makeAreaChart(area, name, userDefined) {
           // map.setOptions({cursor:'hand'});
 
           // areaChartingTabSelect(whichAreaDrawingMethod);
-          if (failure.indexOf("Dictionary.toArray: Unable to convert dictionary to array") > -1 || failure.indexOf("Array: Parameter 'values' is required.") > -1) {
-            failure = "Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>" + failure;
+          if (
+            failure.indexOf("Dictionary.toArray: Unable to convert dictionary to array") > -1 ||
+            failure.indexOf("Array: Parameter 'values' is required.") > -1
+          ) {
+            failure =
+              "Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>" +
+              failure;
           }
           showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again', failure);
         }
@@ -1441,10 +1494,10 @@ function runShpDefinedCharting() {
     $("#summary-spinner").slideDown();
 
     var name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
-    var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
-    if (name.indexOf(addon) === -1) {
-      name += addon;
-    }
+    // var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
+    // if (name.indexOf(addon) === -1) {
+    //   name += addon;
+    // }
     map.setOptions({ draggableCursor: "progress" });
     map.setOptions({ cursor: "progress" });
 
@@ -1513,8 +1566,14 @@ function runShpDefinedCharting() {
       // var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 
       Map2.addLayer(area, { isUploadedLayer: true }, name, true, null, null, name + " for area summarizing", "area-charting-shp-layer-list");
-
-      makeAreaChart(area, name);
+      Map.centerObject(area);
+      $("#summary-spinner").slideUp();
+      if (Object.keys(areaChart.areaChartObj).length > 0) {
+        areaChart.clearCharts();
+        areaChart.chartArea(area, name);
+      } else {
+        makeAreaChart(area, name);
+      }
     });
   } else {
     showMessage("No Summary Area Selected", "Please select a .zip shapefile or a .geojson file to summarize across");
@@ -1865,7 +1924,12 @@ var dataToTable = function (dataset) {
   jQuery.each(dataset.labels, function (idx, item) {
     html += "<tr><td>" + item + "</td>";
     for (i = 0; i < columnCount; i++) {
-      html += '<td style="background-color:' + dataset.datasets[i].fillColor + ';">' + (dataset.datasets[i].data[idx] === "0" ? "-" : dataset.datasets[i].data[idx]) + "</td>";
+      html +=
+        '<td style="background-color:' +
+        dataset.datasets[i].fillColor +
+        ';">' +
+        (dataset.datasets[i].data[idx] === "0" ? "-" : dataset.datasets[i].data[idx]) +
+        "</td>";
     }
     html += "</tr>";
   });
@@ -1914,7 +1978,9 @@ function configChartModal(chartPlatform = "chartJS") {
 	    												</div>`);
   }
 
-  $("#chart-modal-graph-table-container").append(`<div id="chart-table" style = 'display:none;' width="${canvasWidth}" height = "${canvasHeight}" ></div>`);
+  $("#chart-modal-graph-table-container").append(
+    `<div id="chart-table" style = 'display:none;' width="${canvasWidth}" height = "${canvasHeight}" ></div>`
+  );
 }
 function addChartJS(dt, title, chartType, stacked, steppedLine, colors, xAxisLabel, yAxisLabel, fieldsHidden) {
   var displayXAxis = true;
@@ -2152,7 +2218,10 @@ var testTable = JSON.parse(
 function dataTableNumbersToNames(dataTable) {
   // try{chartTableDict = chartCollection.get('chartTableDict').getInfo();}
   // catch(err){chartTableDict = null};
-  if (pixelChartCollections[whichPixelChartCollection].chartTableDict !== null && pixelChartCollections[whichPixelChartCollection].chartTableDict !== undefined) {
+  if (
+    pixelChartCollections[whichPixelChartCollection].chartTableDict !== null &&
+    pixelChartCollections[whichPixelChartCollection].chartTableDict !== undefined
+  ) {
     chartTableDict = pixelChartCollections[whichPixelChartCollection].chartTableDict;
   } else {
     chartTableDict = null;
@@ -2403,8 +2472,19 @@ function startPixelChartCollection() {
     addClickMarker(plotBounds);
     var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 
-    uriName = pixelChartCollections[whichPixelChartCollection].label.replaceAll(" ", "_") + "_lng_" + center.lng().toFixed(4).toString() + "_lat_" + center.lat().toFixed(4).toString();
-    chartTitle = pixelChartCollections[whichPixelChartCollection].label + " (lng: " + center.lng().toFixed(4).toString() + " lat: " + center.lat().toFixed(4).toString() + ")";
+    uriName =
+      pixelChartCollections[whichPixelChartCollection].label.replaceAll(" ", "_") +
+      "_lng_" +
+      center.lng().toFixed(4).toString() +
+      "_lat_" +
+      center.lat().toFixed(4).toString();
+    chartTitle =
+      pixelChartCollections[whichPixelChartCollection].label +
+      " (lng: " +
+      center.lng().toFixed(4).toString() +
+      " lat: " +
+      center.lat().toFixed(4).toString() +
+      ")";
 
     csvName = uriName + ".csv";
 
@@ -2465,7 +2545,10 @@ function startPixelChartCollection() {
         pixelChartCollections[whichPixelChartCollection].fieldsHidden
       );
 
-      if (pixelChartCollections[whichPixelChartCollection].legends !== null && pixelChartCollections[whichPixelChartCollection].legends !== undefined) {
+      if (
+        pixelChartCollections[whichPixelChartCollection].legends !== null &&
+        pixelChartCollections[whichPixelChartCollection].legends !== undefined
+      ) {
         makeLegend(pixelChartCollections[whichPixelChartCollection].legends);
         toggleChartTable(localStorage.tableOrChart);
       }

@@ -690,6 +690,7 @@ div.dataTables_info {
   border-right: 1px solid #000 !important;
   border-left: 1px solid #000 !important;
 }
+.table{margin-bottom: 0rem;}
 .chart-table {
   max-height: 30rem;
   max-width: 90rem;

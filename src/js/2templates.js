@@ -1378,6 +1378,12 @@ const staticTemplates = {
   queryTip: "Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.",
   pixelChartDiv: `<div>Double-click on map to query ${mode} data time series<br></div>`,
   pixelChartTip: "Double-click on map to look at the full time series of " + mode + " outputs for a pixel.",
+  mapDefinedAreaChartDiv: `<div  id="map-defined" >
+                                            <label>Provide name for area selected for charting (optional):</label>
+                                            <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="map-defined-area-name" class="form-control my-1" id="map-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                            
+        		            			</div>
+                                	</div>`,
   userDefinedAreaChartDiv: `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
@@ -1820,14 +1826,17 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
-function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
+function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels) {
   $("#" + containerID).append(`<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`);
   eval(`if(window.${variable} === undefined){window.${variable} = []}`);
+  let ki = 0;
+  labels = labels || [];
   Object.keys(optionList).map(function (k) {
+    let kLabel = labels[ki] || k;
     // console.log(k)
     const kID = k.replace(/[^A-Za-z0-9]/g, "-");
     const checkboxCheckboxID = variable + kID + "-checkbox";
-    const checkboxLabelID = variable + checkboxCheckboxID + "-label";
+    const checkboxLabelID = variable + kID + "-label";
     if (optionList[k] === "true") {
       optionList[k] = true;
     } else if (optionList[k] === "false") {
@@ -1842,7 +1851,7 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
     }
     eval(`window.${variable} = optionList`);
     $("#" + checkboxID).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
-                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${k}</label>`);
+                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label>`);
 
     $("#" + checkboxCheckboxID).change(function () {
       optionList[$(this).val()] = $(this)[0].checked;
@@ -1850,6 +1859,7 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
       console.log("Checkbox change");
       console.log(optionList);
     });
+    ki++;
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1897,7 +1907,9 @@ function addJSONInputTextBox(containerID, inputID, label, variable, defaultValue
   $("#" + containerID).append(`
     <hr>
     <label>${label}</label>
-    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(defaultValue)}</textarea>`);
+    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
+    defaultValue
+  )}</textarea>`);
 
   $("#" + inputID).on("input", () => {
     var tJSON = $(`#${inputID}`).val();
@@ -2104,7 +2116,9 @@ function addTab(tabTitle, tabListID, divListID, tabID, divID, tabOnClick, divHTM
     `<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-left text-dark tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" title="${tabToolTip}">${tabTitle}</a></li>`
   );
 
-  $("#" + divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`).append(divHTML));
+  $("#" + divListID).append(
+    $(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`).append(divHTML)
+  );
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
 function addTabContainer(containerID, tabListID, divListID) {
@@ -2172,7 +2186,16 @@ function addAccordianContainer(parentContainerID, accordianContainerID) {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 var panelCollapseI = 1;
-function addAccordianCard(accordianContainerID, accordianCardHeaderID, accordianCardBodyID, accordianCardHeaderContent, accordianCardBodyContent, show, onclick, toolTip) {
+function addAccordianCard(
+  accordianContainerID,
+  accordianCardHeaderID,
+  accordianCardBodyID,
+  accordianCardHeaderContent,
+  accordianCardBodyContent,
+  show,
+  onclick,
+  toolTip
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2206,7 +2229,16 @@ function addAccordianCard(accordianContainerID, accordianCardHeaderID, accordian
   panelCollapseI++;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addSubAccordianCard(accordianContainerID, accordianCardHeaderID, accordianCardBodyID, accordianCardHeaderContent, accordianCardBodyContent, show, onclick, toolTip) {
+function addSubAccordianCard(
+  accordianContainerID,
+  accordianCardHeaderID,
+  accordianCardBodyID,
+  accordianCardHeaderContent,
+  accordianCardBodyContent,
+  show,
+  onclick,
+  toolTip
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2324,7 +2356,9 @@ function addClassLegendContainer(classLegendContainerID, legendContainerID, clas
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
+    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${
+      obj.className
+    }</li>`
   );
 }
 
@@ -2474,7 +2508,11 @@ function addLayer(layer) {
   //Progress bar controller
   function updateProgress() {
     var pct = layer.percent;
-    if (pct === 100 && mode !== "lcms-dashboard" && (layer.layerType === "geeImage" || layer.layerType === "geeVectorImage" || layer.layerType === "geeImageCollection")) {
+    if (
+      pct === 100 &&
+      mode !== "lcms-dashboard" &&
+      (layer.layerType === "geeImage" || layer.layerType === "geeVectorImage" || layer.layerType === "geeImageCollection")
+    ) {
       jitterZoom();
     }
     $("#" + containerID).css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`);
@@ -2721,7 +2759,14 @@ function addLayer(layer) {
         }
       }
       var bandNames = ee.Image(layer.item.first()).bandNames();
-      layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first()).set(layer.item.toDictionary());
+      layer.item = ee.Image(
+        ee
+          .ImageCollection(layer.item)
+          .reduce(layer.viz.reducer)
+          .rename(bandNames)
+          .copyProperties(layer.imageCollection.first())
+          .set(layer.item.toDictionary())
+      );
 
       //Handle vectors
     } else if (layer.layerType === "geeVectorImage" || layer.layerType === "geeVector") {
@@ -2811,6 +2856,7 @@ function addLayer(layer) {
         queryItem: layer.queryItem,
         queryDict: layer.viz.queryDict,
         type: layer.layerType,
+        queryParams: layer.viz.queryParams || {},
         name: layer.name,
         queryDateFormat: layer.viz.queryDateFormat,
       };
@@ -2822,17 +2868,25 @@ function addLayer(layer) {
       decrementOutstandingGEERequests();
       $("#" + spinnerID).hide();
       if (layer.viz.isTimeLapse) {
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(
+          (timeLapseLayerID) => timeLapseLayerID !== id
+        );
         var prop = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`);
+        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          "background",
+          `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
+        );
 
         // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
         if (timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+            "background",
+            `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
+          );
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
@@ -2883,7 +2937,9 @@ function addLayer(layer) {
               $("#" + spinnerID + "2").hide();
               decrementGEETileLayersLoading();
               if (layer.viz.isTimeLapse) {
-                timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+                timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.filter(
+                  (timeLapseLayerID) => timeLapseLayerID !== id
+                );
               }
               tileIncremented = false;
             }
@@ -2905,12 +2961,19 @@ function addLayer(layer) {
                   return [f.viz.year, f.percent].join(":");
                 })
                 .join(", ");
-              $("#" + layer.viz.timeLapseID + "-message-div").html("Loading:<br>" + loadingTimelapseLayersYears + "<hr>Not Loading:<br>" + notLoadingTimelapseLayersYears);
-              var propTiles = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
+              $("#" + layer.viz.timeLapseID + "-message-div").html(
+                "Loading:<br>" + loadingTimelapseLayersYears + "<hr>Not Loading:<br>" + notLoadingTimelapseLayersYears
+              );
+              var propTiles = parseInt(
+                (1 - timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100
+              );
               // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
               $("#" + layer.viz.timeLapseID + "-loading-gear").show();
 
-              $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`);
+              $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+                "background",
+                `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
+              );
               if (propTiles < 100) {
                 // console.log(propTiles)
                 // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
@@ -2953,7 +3016,10 @@ function addLayer(layer) {
       var total = loadingTimelapseLayers + notLoadingTimelapseLayers;
       var propTiles = (1 - loadingTimelapseLayers / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100;
 
-      $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`);
+      $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+        "background",
+        `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
+      );
       if (propTiles < 100) {
         $("#" + layer.viz.timeLapseID + "-loading-gear").show();
         // console.log(propTiles)
@@ -2969,17 +3035,25 @@ function addLayer(layer) {
       decrementOutstandingGEERequests();
       $("#" + spinnerID).hide();
       if (layer.viz.isTimeLapse) {
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(
+          (timeLapseLayerID) => timeLapseLayerID !== id
+        );
         var prop = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`);
+        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          "background",
+          `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
+        );
 
         // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
         if (timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+            "background",
+            `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
+          );
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
@@ -3064,13 +3138,15 @@ function addLayer(layer) {
         }
       });
 
-      if (vizFound == false) {
+      if (vizFound == false || layer.viz.autoViz) {
         layer.usedViz = {};
       } else {
         layer.usedViz = layer.viz;
       }
-      // console.log(layer.usedViz);
-      ee.Image(layer.item).getMap(layer.usedViz, function (eeLayer, failure) {
+
+      let mapItem = layer.viz.bands !== undefined ? layer.item.select(layer.viz.bands) : layer.item;
+
+      ee.Image(mapItem).getMap(layer.usedViz, function (eeLayer, failure) {
         if (eeLayer === undefined && layer.mapServiceTryNumber <= 1) {
           queryObj[queryID].queryItem = layer.item;
           layer.item = layer.item.visualize();
@@ -3095,6 +3171,7 @@ function addLayer(layer) {
         visible: layer.visible,
         queryItem: layer.queryItem,
         queryDict: layer.viz.queryDict,
+        queryParams: layer.viz.queryParams || {},
         type: layer.layerType,
         name: layer.name,
       };
