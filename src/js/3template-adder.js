@@ -2303,17 +2303,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Additional relevant layers to view on map intended to provide context for change data"
   );
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-
-  addCollapse(
-    "sidebar-left",
-    "table-collapse-label",
-    "table-collapse-div",
-    "MONITORING SITES",
-    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
-    true,
-    ``,
-    "Giant Sequoia monitoring sites output table"
-  );
+  //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js 
+  // addCollapse(
+  //   "sidebar-left",
+  //   "table-collapse-label",
+  //   "table-collapse-div",
+  //   "MONITORING SITES",
+  //   `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+  //   true,
+  //   ``,
+  //   "Giant Sequoia monitoring sites output table"
+  // );
 
   addCollapse(
     "sidebar-left",
@@ -2327,8 +2327,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
-  // addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
-
+  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,true,``,'If you need any help');
+  $("#support-collapse-div").append(staticTemplates.sequoiaSupportDiv);    
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);

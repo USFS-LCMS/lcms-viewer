@@ -458,9 +458,10 @@ const staticTemplates = {
 `,
       `
 <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
-<h5>For access please contact Sequoia Viewer project coordinator.</h5>
+<!-- <h5>For access please contact Sequoia Viewer project coordinator.</h5> -->
 <div class ='my-3'>
-<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
+<h6><b>First time users</b>, please click below to take a tutorial on how to use the Giant Sequoia Viewer's features:</h6>
+<a class="intro-modal-links" onclick= "startTour()" id= "tutorialLink" title="Click to take a tour of the Giant Sequoia Viewer's features">TUTORIAL</a><br><br>
 <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
 
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
@@ -937,6 +938,19 @@ const staticTemplates = {
                                     </div>
                                 </section>
                       </div>`,
+  sequoiaSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row ' title = 'Open Giant Sequoia Viewer tutorial'>
+                            <h3 class = ' text-capitalize'>Tutorial</h3>
+                        </header>
+                        <div class = 'row ' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                            <a class="intro-modal-links" onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">Giant Sequoia View TUTORIAL</a>
+                            </div>
+                        </div>
+                        <hr>`,                    
   supportDiv: `<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
@@ -1760,6 +1774,17 @@ function showTip(title, message) {
     }
   });
 }
+// function to force a second opportunity for new users to open tutorial for sequoia viewer:
+function showTutorialLinkAgain(title, message) {
+// If it is a user's first time at the site, localStorage.isFirstTime is undefined. This is then be set to false after a user clicks to do tutorial
+    $("#introModal").on('hidden.bs.modal', function() {
+      if (localStorage.isFirstTime != "false") {
+        showMessage(title, message, "secondTutorialPopUp-modal", true);
+        localStorage.isFirstTime = "false";
+      }
+  });
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a given study area to the study area dropdown
 function addStudyAreaToDropdown(name, toolTip) {
@@ -2329,6 +2354,19 @@ function addLegendCollapse() {
   $("#legend-collapse-div").append(`<div role="list" id="legend-fhp-div"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="time-lapse-legend-list"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="legend-area-charting-select-layer-list"></div>`);
+  
+  if (mode === 'sequoia-view'){
+    addCollapse(
+    getWalkThroughCollapseContainerID(),//"sidebar-left",
+    "table-collapse-label",
+    "table-collapse-div",
+    "MONITORING SITES",
+    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+    true,
+    ``,
+    "Giant Sequoia monitoring sites output table"
+    );
+  }
 }
 function addLegendContainer(legendContainerID, containerID, show, toolTip) {
   if (containerID === undefined || containerID === null) {

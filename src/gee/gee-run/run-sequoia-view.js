@@ -62,6 +62,20 @@ function runSequoia() {
     centerObject(studyArea);
   }
 
+  // if a user clicks on the tutorial link in the splashscreen, set localStorage.isFirstTime = "false" so they aren't prompted with a second pop up
+  $("#tutorialLink").on("click", function() {
+    localStorage.isFirstTime = "false";
+  }); 
+
+  // if the user didn't open tutorial from splashscreen and it's their first time, trigger showTutorialAgain function
+  if (localStorage.isFirstTime == null) {
+    showTutorialLinkAgain("First Time Users: ", `
+                              <div class = 'col-lg-10'>
+                              <a class="intro-modal-links" onclick="startTour()" title="Click to launch a tutorial to learn how to use the Giant Sequoia Viewer">Click to launch a brief tutorial that explains how to use the Giant Sequoia Viewer</a>
+                              </div>
+                              <hr>`);
+  };
+
   var tdomBuffer = 1;
   if (urlParams.cloudMaskMethod["CloudScore+"]) {
     tdomBuffer = 0;
@@ -211,6 +225,8 @@ function runSequoia() {
       });
 
       var siteID = 1;
+      // make list of features that are yes for highlighting those another color:
+      var lossYesList = []; //ee.List([]);
 
       // Iterate across each feature and set up the table row
       t.features.map((f) => {
@@ -247,12 +263,33 @@ function runSequoia() {
           var v = f.properties[prop];
           $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
         });
-
+        
+        // add features to lossYestList if they have potential loss  
+        if (f.properties["Potential_Loss"] == 1) {
+          lossYesList.push(f);
+        }  
         // Set up the location and label for hover and double click events on the table
         site_highlights_dict[rowID] = [f.properties.Longitude, f.properties.Latitude, f.properties[labelProperty]];
 
         siteID++;
       });
+      
+      // create FC of loss sites
+      var potentialLossSites = ee.FeatureCollection(lossYesList)
+      Map.addLayer(
+        potentialLossSites.map((f) => {
+          return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
+        }),
+        {
+          strokeColor: 'FF0', // yellow,
+          layerType: "geeVector"
+        },
+        "Monitoring Sites Flagged for Potential Loss",
+        false,
+        null,
+        null,
+        "Trees of special interest that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
+      );
 
       // Once the table is loaded, set up listeners for table to map behaviors
       $(document).ready(() => {
@@ -465,7 +502,7 @@ function runSequoia() {
       return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
     }),
     {
-      strokeColor: "eb7a38",
+      strokeColor: "BF40BF", // purple
     },
     `Tharps Burn Project Sequoias`,
     false,
@@ -485,6 +522,7 @@ function runSequoia() {
   if (applyLCMSTreeMask) {
     changeHeuristicForMap = changeHeuristicForMap.updateMask(lcmsTreeMask);
   }
+
   Map.addLayer(
     changeHeuristicForMap,
     {
@@ -505,7 +543,7 @@ function runSequoia() {
       return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
     }),
     {
-      strokeColor: "FF0",
+      strokeColor: 'eb7a38', //orange
       layerType: "geeVector",
     },
     "Monitoring Sites",
@@ -515,7 +553,7 @@ function runSequoia() {
     "Trees of special interest"
   );
 
-  Map.addLayer(studyArea, {}, "Study Area", false);
+  Map.addLayer(studyArea, {strokeColor: '0000FF'}, "Study Area", true);
 
   if (urlParams.canExport) {
     var exportBands = ["blue", "green", "red", "nir", "swir1", "swir2"];

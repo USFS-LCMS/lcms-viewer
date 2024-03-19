@@ -14,7 +14,7 @@ function runAlgal() {
   ab = ab.filter(ee.Filter.eq("studyAreaName", "WY-GYE"));
   // console.log(ab.first().getInfo())
 
-  ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear), parseInt(urlParams.endYear), "year")).filter(ee.Filter.calendarRange(150, 300));
+  ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear), parseInt(urlParams.endYear), "year")).filter(ee.Filter.calendarRange(130, 300));
 
   // Add filter for asset whichModel property (WDEQ vs HCB)
   ab_wdeq = ab.filter(ee.Filter.eq("whichModel", "WDEQ"));
@@ -35,8 +35,8 @@ function runAlgal() {
   Map.addTimeLapse(
     countC_hcb,
     {
-      min: 25000,
-      max: 5000000,
+      min: 0, //25000
+      max: 3000000, //5000000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
@@ -50,8 +50,8 @@ function runAlgal() {
   Map.addTimeLapse(
     ab_hcb.select([1]),
     {
-      min: 200000000,
-      max: 1000000000,
+      min: 10000000, //200000000
+      max: 100000000, //1000000000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
@@ -66,8 +66,8 @@ function runAlgal() {
   Map.addTimeLapse(
     countC_wdeq,
     {
-      min: 1000,
-      max: 5000,
+      min: 0, //1000
+      max: 8000, //5000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
@@ -81,8 +81,8 @@ function runAlgal() {
   Map.addTimeLapse(
     ab_wdeq.select([1]),
     {
-      min: 2000000,
-      max: 10000000,
+      min: 3000000, //2000000
+      max: 30000000, //10000000
       palette: palettes.matplotlib.plasma[7],
       dateFormat: "YYMMdd",
       advanceInterval: "day",
