@@ -818,7 +818,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
     let sequoiaTourSteps = [
       [
         `Welcome to the Giant Sequoia Viewer tour`,
-        `This tour will walk you through how to use the Giant Sequoia Viewer. <br>(If you'd like to learn how to use individual elements, ctrl+click on the element to see the tour slide for a specific element.)`,
+        `This tour will walk you through how to use the Giant Sequoia Viewer. <br>(If you'd like to learn how to use individual elements or revisit an element after exiting the tour, you can ctrl+click on an element to see its tour slide.)`,
         "#title-banner",
         "right",
         [1, 2],

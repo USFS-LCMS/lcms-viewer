@@ -62,6 +62,20 @@ function runSequoia() {
     centerObject(studyArea);
   }
 
+  // if a user clicks on the tutorial link in the splashscreen, set localStorage.isFirstTime = "false" so they aren't prompted with a second pop up
+  $("#tutorialLink").on("click", function() {
+    localStorage.isFirstTime = "false";
+  }); 
+
+  // if the user didn't open tutorial from splashscreen and it's their first time, trigger showTutorialAgain function
+  if (localStorage.isFirstTime == null) {
+    showTutorialLinkAgain("First Time Users: ", `
+                              <div class = 'col-lg-10'>
+                              <a class="intro-modal-links" onclick="startTour()" title="Click to launch a tutorial to learn how to use the Giant Sequoia Viewer">Click to launch a brief tutorial that explains how to use the Giant Sequoia Viewer</a>
+                              </div>
+                              <hr>`);
+  };
+
   var tdomBuffer = 1;
   if (urlParams.cloudMaskMethod["CloudScore+"]) {
     tdomBuffer = 0;
