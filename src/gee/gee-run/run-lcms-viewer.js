@@ -38,7 +38,7 @@ function runGTAC() {
 
     Map.addLayer(
       whp,
-      { autoViz: true },
+      { autoViz: true, layerType: "geeImage" },
       "Wildfire Hazard Potential 2020",
       false,
       null,
@@ -110,6 +110,7 @@ function runGTAC() {
         {
           title: `Most common land use class from ${startYear} to ${startYear + lcmsRun.thematicChangeYearBuffer}.`,
           autoViz: true,
+          layerType: "geeImageCollection",
           reducer: ee.Reducer.mode(),
           bounds: clientBoundary,
         },
@@ -122,6 +123,7 @@ function runGTAC() {
         {
           title: `Most common land use class from ${endYear - lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,
           autoViz: true,
+          layerType: "geeImageCollection",
           reducer: ee.Reducer.mode(),
           bounds: clientBoundary,
         },
@@ -145,6 +147,7 @@ function runGTAC() {
         {
           title: `Most common land cover class from ${endYear - lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,
           autoViz: true,
+          layerType: "geeImageCollection",
           reducer: ee.Reducer.mode(),
           bounds: clientBoundary,
         },
@@ -159,6 +162,7 @@ function runGTAC() {
         {
           title: `Most common land cover class from ${startYear} to ${endYear}.`,
           autoViz: true,
+          layerType: "geeImageCollection",
           reducer: ee.Reducer.mode(),
           bounds: clientBoundary,
         },
@@ -171,6 +175,7 @@ function runGTAC() {
         {
           title: `Most common land use class from ${startYear} to ${endYear}.`,
           autoViz: true,
+          layerType: "geeImageCollection",
           reducer: ee.Reducer.mode(),
           bounds: clientBoundary,
         },
@@ -361,6 +366,7 @@ function runGTAC() {
           min: -50,
           max: -5,
           palette: "D00,F5DEB3",
+          layerType: "geeImage",
           legendLabelLeftAfter: "% TCC",
           legendLabelRightAfter: "% TCC",
         },
@@ -373,6 +379,7 @@ function runGTAC() {
         {
           min: -50,
           max: -5,
+          layerType: "geeImage",
           palette: "D00,F5DEB3",
           legendLabelLeftAfter: "% TCC",
           legendLabelRightAfter: "% TCC",
@@ -839,6 +846,7 @@ function runDynamic() {
         max: urlParams.endYear,
         palette: changeClassDict[k].palette,
         canAreaChart: true,
+        layerType: "geeImage",
         areaChartParams: { reducer: ee.Reducer.frequencyHistogram(), palette: changeClassDict[k].palette, rangeSlider: true },
       },
       k,

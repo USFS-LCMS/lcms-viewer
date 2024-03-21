@@ -189,7 +189,9 @@ function getIDSCollection() {
       return idsT;
     });
     ids = ee.FeatureCollection(ids).flatten();
-    ids = ids.filter(ee.Filter.and(ee.Filter.gte("SURVEY_YEA", idsStartYear), ee.Filter.lte("SURVEY_YEA", idsEndYear))).set("bounds", clientBoundsDict.CONUS);
+    ids = ids
+      .filter(ee.Filter.and(ee.Filter.gte("SURVEY_YEA", idsStartYear), ee.Filter.lte("SURVEY_YEA", idsEndYear)))
+      .set("bounds", clientBoundsDict.CONUS);
 
     var years = ee.List.sequence(idsStartYear, idsEndYear);
     var dcaCollection = years.map(function (yr) {
@@ -474,7 +476,8 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
       steppedLine: false,
       chartType: "bar",
       xAxisProperty: "Burned",
-      tooltip: "Chart the union of burn severity " + startYear.toString() + "-" + endYear.toString() + ". The maximum severity is used when fires overlap. ",
+      tooltip:
+        "Chart the union of burn severity " + startYear.toString() + "-" + endYear.toString() + ". The maximum severity is used when fires overlap. ",
     };
   }
   var mtbsMaxSeverity = mtbs.select([0]).max();
@@ -609,7 +612,11 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     false,
     null,
     null,
-    "MTBS number of burns mapped for a given area from " + startYear.toString() + "-" + mtbsEndYear.toString() + " with a burn serverity class of low, moderate, or high",
+    "MTBS number of burns mapped for a given area from " +
+      startYear.toString() +
+      "-" +
+      mtbsEndYear.toString() +
+      " with a burn serverity class of low, moderate, or high",
     whichLayerList
   );
 
@@ -643,7 +650,7 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
 
   Map.addLayer(
     nlcd_tcc,
-    { bands: "NLCD_Percent_Tree_Canopy_Cover", min: 1, max: 90, palette: "white,green" },
+    { bands: "NLCD_Percent_Tree_Canopy_Cover", min: 1, max: 90, palette: "white,green", layerType: "geeImageCollection" },
     "NLCD Tree Canopy Cover",
     false,
     null,
@@ -668,13 +675,17 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
 
   if (idsCollections !== undefined) {
     var idsYr = idsCollections.featureCollection.reduceToImage(["SURVEY_YEA"], ee.Reducer.max()).set("bounds", clientBoundsDict.CONUS);
-    var idsCount = idsCollections.featureCollection.reduceToImage(["SURVEY_YEA"], ee.Reducer.count()).selfMask().set("bounds", clientBoundsDict.CONUS);
+    var idsCount = idsCollections.featureCollection
+      .reduceToImage(["SURVEY_YEA"], ee.Reducer.count())
+      .selfMask()
+      .set("bounds", clientBoundsDict.CONUS);
     Map.addLayer(
       idsCount,
       {
         min: 1,
         max: Math.ceil((idsEndYear - idsStartYear) / 2) + 1,
         palette: declineYearPalette,
+        layerType: "geeImage",
       },
       "IDS Survey Count",
       false,
@@ -685,7 +696,7 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
     );
     Map.addLayer(
       idsYr,
-      { min: startYear, max: endYear, palette: declineYearPalette },
+      { min: startYear, max: endYear, palette: declineYearPalette, layerType: "geeImage" },
       "IDS Most Recent Year Surveyed",
       false,
       null,
@@ -749,7 +760,11 @@ function getNAIP(whichLayerList) {
       false,
       null,
       null,
-      "The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the " + yr[0].toString() + " to the " + yr[1].toString() + " agricultural growing season in the continental U.S.",
+      "The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the " +
+        yr[0].toString() +
+        " to the " +
+        yr[1].toString() +
+        " agricultural growing season in the continental U.S.",
       whichLayerList
     );
   });
@@ -796,7 +811,7 @@ function getHansen(whichLayerList) {
   hansenLoss = hansenLoss.updateMask(hansenLoss.gte(startYear).and(hansenLoss.lte(endYear)));
   Map.addLayer(
     hansenLoss.set("bounds", hansenClientBoundary),
-    { min: startYear, max: endYear, palette: declineYearPalette },
+    { min: startYear, max: endYear, palette: declineYearPalette, layerType: "geeImage" },
     "Hansen Loss Year",
     false,
     null,
@@ -811,6 +826,7 @@ function getHansen(whichLayerList) {
       max: 1,
       palette: "0A0",
       addToClassLegend: true,
+      layerType: "geeImage",
       classLegendDict: { "Forest Gain": "0A0" },
     },
     "Hansen Gain",
@@ -1050,7 +1066,15 @@ function getSelectLayers(short) {
   if (short === null || short === undefined || short === false) {
     // Map.addSelectLayer(tiles,{strokeColor:'BB0',layerType:'geeVectorImage'},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
 
-    Map.addSelectLayer(bia, { strokeColor: "0F0", layerType: "geeVectorImage" }, "BIA Boundaries", false, null, null, "BIA boundaries. Turn on layer and click on any area wanted to include in chart");
+    Map.addSelectLayer(
+      bia,
+      { strokeColor: "0F0", layerType: "geeVectorImage" },
+      "BIA Boundaries",
+      false,
+      null,
+      null,
+      "BIA boundaries. Turn on layer and click on any area wanted to include in chart"
+    );
 
     Map.addSelectLayer(
       huc12,
@@ -1187,6 +1211,10 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "Delineated perimeters of each MTBS mapped fire from " + startYear.toString() + "-" + endYear.toString() + ". Turn on layer and click on any fire wanted to include in chart"
+    "Delineated perimeters of each MTBS mapped fire from " +
+      startYear.toString() +
+      "-" +
+      endYear.toString() +
+      ". Turn on layer and click on any fire wanted to include in chart"
   );
 }

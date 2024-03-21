@@ -24,11 +24,11 @@ function runSequoia() {
   var gil = getImagesLib;
 
   // Pull in date params
-  var preStartYear = parseInt(urlParams.preStartYear),
-    preEndYear = parseInt(urlParams.preEndYear),
-    postYear = parseInt(urlParams.postYear),
-    startJulian = parseInt(urlParams.startJulian),
-    endJulian = parseInt(urlParams.endJulian);
+  var preStartYear = urlParams.preStartYear,
+    preEndYear = urlParams.preEndYear,
+    postYear = urlParams.postYear,
+    startJulian = urlParams.startJulian,
+    endJulian = urlParams.endJulian;
 
   // Format julian days to MM/dd syntax
   startJulianFormatted = formatDTJulian(Date.fromDayofYear(startJulian)); //ee.Date.parse('YYYY-DDD',`2003-${startJulian}`).format('MM/dd').getInfo()
@@ -40,7 +40,9 @@ function runSequoia() {
   var monitoring_sites = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest");
 
   // Bring in the TCH NAIP-based change outputs for projection and snap raster
-  var tchC = ee.ImageCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH").filter(ee.Filter.stringContains("system:index", "v3shadows_extract_gfch"));
+  var tchC = ee
+    .ImageCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH")
+    .filter(ee.Filter.stringContains("system:index", "v3shadows_extract_gfch"));
 
   var projection = tchC.first().projection().getInfo();
   crs = projection.crs;
@@ -63,18 +65,21 @@ function runSequoia() {
   }
 
   // if a user clicks on the tutorial link in the splashscreen, set localStorage.isFirstTime = "false" so they aren't prompted with a second pop up
-  $("#tutorialLink").on("click", function() {
+  $("#tutorialLink").on("click", function () {
     localStorage.isFirstTime = "false";
-  }); 
+  });
 
   // if the user didn't open tutorial from splashscreen and it's their first time, trigger showTutorialAgain function
   if (localStorage.isFirstTime == null) {
-    showTutorialLinkAgain("First Time Users: ", `
+    showTutorialLinkAgain(
+      "First Time Users: ",
+      `
                               <div class = 'col-lg-10'>
                               <a class="intro-modal-links" onclick="startTour()" title="Click to launch a tutorial to learn how to use the Giant Sequoia Viewer">Click to launch a brief tutorial that explains how to use the Giant Sequoia Viewer</a>
                               </div>
-                              <hr>`);
-  };
+                              <hr>`
+    );
+  }
 
   var tdomBuffer = 1;
   if (urlParams.cloudMaskMethod["CloudScore+"]) {
@@ -107,7 +112,7 @@ function runSequoia() {
   var changeThresholds = Object.values(urlParams.diffThreshs);
 
   // Define which monitoring sites table fields to include in output table and which to use as label for mouse hover on a table row
-  var monitoringSitesPropertyNames = ["Tree_Name", "Status", "Grove"];
+  var monitoringSitesPropertyNames = ["Status", "Grove"];
   var labelProperty = "Tree_Name";
 
   // Pull in the LCMS land cover classes to be included in the tree mask
@@ -139,6 +144,7 @@ function runSequoia() {
       lcmsTreeMask.selfMask(),
       {
         palette: "0A0",
+        layerType: "geeImage",
         classLegendDict: {
           "LCMS Tree Mask": "0A0",
         },
@@ -169,22 +175,33 @@ function runSequoia() {
   var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).rename(["Potential_Loss"]);
 
   // Stack all bands to be included in table
-  var stack = ee.Image.cat([preComp.select(changeBands).rename(preBns), postComp.select(changeBands).rename(postBns), compDiff.select(changeBands).rename(diffBns), changeHeuristic]);
+  var stack = ee.Image.cat([
+    preComp.select(changeBands).rename(preBns),
+    postComp.select(changeBands).rename(postBns),
+    compDiff.select(changeBands).rename(diffBns),
+    changeHeuristic,
+  ]);
   if (applyLCMSTreeMask) {
     stack = stack.updateMask(lcmsTreeMask);
   }
 
   // Compute the mean for the radius of a Giant Sequoia for each site
-  stack
+  let summarizedSites = stack
     .focalMean(urlParams.treeDiameter / 2, "circle", "meters")
-    .reduceRegions(monitoring_sites, ee.Reducer.first(), null, crs, transform, 4)
-    .evaluate((t, failure) => {
-      console.log(failure);
-      console.log("Finished summarizing monitoring sites");
-      // showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
+    .reduceRegions(monitoring_sites, ee.Reducer.first(), null, crs, transform, 4);
 
-      //Set up output table
-      $("#table-collapse-div").append(`<div id = "monitoring-sites-table-container">
+  // create FC of loss sites
+  var potentialLossSites = summarizedSites.filter(ee.Filter.eq("Potential_Loss", 1));
+
+  // Download the sites table
+  summarizedSites.evaluate((t, failure) => {
+    console.log(failure);
+    console.log("Finished summarizing monitoring sites");
+
+    // showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
+
+    //Set up output table
+    $("#table-collapse-div").append(`<div id = "monitoring-sites-table-container">
                                       <table
                                       class="table table-hover report-table"
                                       id="monitoring-sites-table"
@@ -194,194 +211,180 @@ function runSequoia() {
                                       ></table>
                                   </div>`);
 
-      // Find the property names of only the spectral bands
-      var spectralProps = Object.keys(t.features[0].properties).filter((p) => changeBands.indexOf(p.split("_")[0]) > -1);
+    // Find the property names of only the spectral bands
+    var spectralProps = Object.keys(t.features[0].properties).filter((p) => changeBands.indexOf(p.split("_")[0]) > -1);
 
-      // The location properties
-      var locProps = ["Longitude", "Latitude"];
+    // The location properties
+    var locProps = ["Longitude", "Latitude"];
 
-      // Concat all column names for the header
-      var allProps = monitoringSitesPropertyNames.concat(["Potential_Loss"]).concat(spectralProps).concat(locProps);
+    // Concat all column names for the header
+    var allProps = [labelProperty, "Potential_Loss"];
+    allProps = allProps.concat(monitoringSitesPropertyNames).concat(spectralProps).concat(locProps);
 
-      // Add in the table header
-      $(`#monitoring-sites-table`).append(`<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`);
+    // Add in the table header
+    $(`#monitoring-sites-table`).append(`<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`);
 
-      // Add columns within the header for each of the props concatenated above
-      allProps.map((prop) => {
-        $("#mon-sites-table-header").append(`<td class = 'highlights-entry '>${prop.replaceAll("_", " ")}</td>`);
+    // Add columns within the header for each of the props concatenated above
+    allProps.map((prop) => {
+      $("#mon-sites-table-header").append(`<td class = 'highlights-entry '>${prop.replaceAll("_", " ")}</td>`);
+    });
+
+    // Set up hover icon
+    const svgMarker = {
+      path: google.maps.SymbolPath.CIRCLE,
+      fillColor: "#FF834C",
+      fillOpacity: 0.2,
+      strokeWeight: 1,
+      strokeColor: "#FF834C",
+      scale: 10,
+    };
+    var potLossDict = {
+      null: "No data available",
+      0: "No",
+      1: "Yes",
+    };
+    var monSiteMarker = new google.maps.Marker({
+      icon: svgMarker,
+    });
+
+    var siteID = 1;
+    // make list of features that are yes for highlighting those another color:
+
+    // Iterate across each feature and set up the table row
+    t.features.map((f) => {
+      var rowID = `seq-mon-site-${siteID}`;
+      $(`#monitoring-sites-table`).append(`<tr class = 'highlights-row' id='${rowID}'></tr>`);
+      // Add in the label prop value
+      var l = f.properties[labelProperty];
+      // if(potLossV===null){potLossV=''}
+      $(`#${rowID}`).append(`<td class = 'highlights-entry '>${l}</td>`);
+      // Add in the potential loss column value
+      var potLossV = f.properties["Potential_Loss"];
+      // if(potLossV===null){potLossV=''}
+      $(`#${rowID}`).append(`<td class = 'highlights-entry '>${potLossDict[potLossV]}</td>`);
+      // Add the props of the site itself
+      monitoringSitesPropertyNames.map((prop) => {
+        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${f.properties[prop]}</td>`);
       });
 
-      // Set up hover icon
-      const svgMarker = {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: "#FF834C",
-        fillOpacity: 0.2,
-        strokeWeight: 1,
-        strokeColor: "#FF834C",
-        scale: 10,
-      };
-      var monSiteMarker = new google.maps.Marker({
-        icon: svgMarker,
+      // Add any spectral properties
+      spectralProps.map((prop) => {
+        var v = f.properties[prop];
+        if (v === null) {
+          v = "";
+        } else {
+          v = parseFloat(v.toFixed(4));
+        }
+        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
       });
 
-      var siteID = 1;
-      // make list of features that are yes for highlighting those another color:
-      var lossYesList = []; //ee.List([]);
-
-      // Iterate across each feature and set up the table row
-      t.features.map((f) => {
-        var rowID = `seq-mon-site-${siteID}`;
-        $(`#monitoring-sites-table`).append(`<tr class = 'highlights-row' id='${rowID}'></tr>`);
-
-        // Add the props of the site itself
-        monitoringSitesPropertyNames.map((prop) => {
-          $(`#${rowID}`).append(`<td class = 'highlights-entry '>${f.properties[prop]}</td>`);
-        });
-        var potLossDict = {
-          null: "",
-          0: "No",
-          1: "Yes",
-        };
-        // Add in the potential loss column value
-        var potLossV = f.properties["Potential_Loss"];
-        // if(potLossV===null){potLossV=''}
-        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${potLossDict[potLossV]}</td>`);
-
-        // Add any spectral properties
-        spectralProps.map((prop) => {
-          var v = f.properties[prop];
-          if (v === null) {
-            v = "";
-          } else {
-            v = parseFloat(v.toFixed(4));
-          }
-          $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
-        });
-
-        // Add the location properties
-        locProps.map((prop) => {
-          var v = f.properties[prop];
-          $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
-        });
-        
-        // add features to lossYestList if they have potential loss  
-        if (f.properties["Potential_Loss"] == 1) {
-          lossYesList.push(f);
-        }  
-        // Set up the location and label for hover and double click events on the table
-        site_highlights_dict[rowID] = [f.properties.Longitude, f.properties.Latitude, f.properties[labelProperty]];
-
-        siteID++;
+      // Add the location properties
+      locProps.map((prop) => {
+        var v = f.properties[prop];
+        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
       });
-      
-      // create FC of loss sites
-      var potentialLossSites = ee.FeatureCollection(lossYesList)
-      Map.addLayer(
-        potentialLossSites.map((f) => {
-          return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
-        }),
-        {
-          strokeColor: 'FF0', // yellow,
-          layerType: "geeVector"
-        },
-        "Monitoring Sites Flagged for Potential Loss",
-        false,
-        null,
-        null,
-        "Trees of special interest that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
-      );
 
-      // Once the table is loaded, set up listeners for table to map behaviors
-      $(document).ready(() => {
-        // As the mouse moves over the table, set a marker and label at that location on the map
-        $("#monitoring-sites-table").on("mousemove", "tr", function (e) {
-          try {
-            var loc = site_highlights_dict[e.currentTarget.id];
-            monSiteMarker.setPosition({
-              lat: loc[1],
-              lng: loc[0],
-            });
-            monSiteMarker.setLabel({
-              text: loc[2],
-              color: "#FFF",
-              fontSize: "0.9rem",
-              className: "gm-marker-label",
-            });
-            monSiteMarker.setMap(map);
-          } catch (err) {
-            monSiteMarker.setMap(null);
-          }
-        });
-        // Any time the mouse leaves the table, get rid of any marker
-        $("#monitoring-sites-table").on("mouseleave", "tr", function (e) {
-          monSiteMarker.setMap(null);
-        });
+      // Set up the location and label for hover and double click events on the table
+      site_highlights_dict[rowID] = [
+        f.properties.Longitude,
+        f.properties.Latitude,
+        `${f.properties[labelProperty]} | Potential Loss: ${potLossDict[f.properties["Potential_Loss"]]}`,
+      ];
 
-        // When the table row is double clicked, zoom there on the map
-        $("#monitoring-sites-table").on("dblclick", "tr", function (e) {
+      siteID++;
+    });
+
+    // Once the table is loaded, set up listeners for table to map behaviors
+    $(document).ready(() => {
+      // As the mouse moves over the table, set a marker and label at that location on the map
+      $("#monitoring-sites-table").on("mousemove", "tr", function (e) {
+        try {
           var loc = site_highlights_dict[e.currentTarget.id];
-          map.setCenter({
+          monSiteMarker.setPosition({
             lat: loc[1],
             lng: loc[0],
           });
-          map.setZoom(18);
-        });
+          monSiteMarker.setLabel({
+            text: loc[2],
+            color: "#FFF",
+            fontSize: "0.9rem",
+            className: "gm-marker-label",
+          });
+          monSiteMarker.setMap(map);
+        } catch (err) {
+          monSiteMarker.setMap(null);
+        }
+      });
+      // Any time the mouse leaves the table, get rid of any marker
+      $("#monitoring-sites-table").on("mouseleave", "tr", function (e) {
+        monSiteMarker.setMap(null);
+      });
 
-        // Cast the datatable as a DataTable object
-        $(`#monitoring-sites-table`).DataTable({
-          // fixedHeader: true,
-          paging: false,
-          searching: true,
-          order: [3],
-          responsive: true,
-          dom: "Bfrtip",
-          buttons: [
-            // {
-            // 	extend: 'colvis',
-            // 	title: 'Data export'
-            // },
-            {
-              extend: "copyHtml5",
-              title: tableDownloadName,
-              messageBottom: `Source: ${fullShareURL}`,
-            },
-            {
-              extend: "csvHtml5",
-              title: tableDownloadName,
-              messageBottom: `Source: ${fullShareURL}`,
-            },
-            {
-              extend: "excelHtml5",
-              title: tableDownloadName,
-              messageBottom: `Source: ${fullShareURL}`,
-            },
-            {
-              extend: "pdfHtml5",
-              title: tableDownloadName,
-              messageBottom: `Source: ${fullShareURL}`,
-            },
-            {
-              extend: "print",
-              title: tableDownloadName,
-              messageBottom: `Source: ${fullShareURL}`,
-            },
-          ],
+      // When the table row is double clicked, zoom there on the map
+      $("#monitoring-sites-table").on("dblclick", "tr", function (e) {
+        var loc = site_highlights_dict[e.currentTarget.id];
+        map.setCenter({
+          lat: loc[1],
+          lng: loc[0],
         });
-        // Change appearance of table container
-        $(`#monitoring-sites-table-container`).addClass(`bg-white highlights-table`);
+        map.setZoom(18);
+      });
 
-        // Set hover text
-        $(".dt-buttons.btn-group.flex-wrap").prop("title", "Download this table to any of these formats for local/offline use");
-        $("#monitoring-sites-table_filter").prop("title", "Filter named Giant Sequoias here");
-        // Hide the table loading spinner
-        $("#sequoia-mon-loading-div").hide();
+      // Cast the datatable as a DataTable object
+      $(`#monitoring-sites-table`).DataTable({
+        // fixedHeader: true,
+        paging: false,
+        searching: true,
+        order: [3],
+        responsive: true,
+        dom: "Bfrtip",
+        buttons: [
+          // {
+          // 	extend: 'colvis',
+          // 	title: 'Data export'
+          // },
+          {
+            extend: "copyHtml5",
+            title: tableDownloadName,
+            messageBottom: `Source: ${fullShareURL}`,
+          },
+          {
+            extend: "csvHtml5",
+            title: tableDownloadName,
+            messageBottom: `Source: ${fullShareURL}`,
+          },
+          {
+            extend: "excelHtml5",
+            title: tableDownloadName,
+            messageBottom: `Source: ${fullShareURL}`,
+          },
+          {
+            extend: "pdfHtml5",
+            title: tableDownloadName,
+            messageBottom: `Source: ${fullShareURL}`,
+          },
+          {
+            extend: "print",
+            title: tableDownloadName,
+            messageBottom: `Source: ${fullShareURL}`,
+          },
+        ],
+      });
+      // Change appearance of table container
+      $(`#monitoring-sites-table-container`).addClass(`bg-white highlights-table`);
 
-        // Listen for downloading of table and log event
-        $("#monitoring-sites-table_wrapper>div.dt-buttons>button.buttons-html5 ").on("click", (e) => {
-          ga("send", "event", "sequoia-monarch-table-download", e.target.innerText, tableDownloadName);
-        });
+      // Set hover text
+      $(".dt-buttons.btn-group.flex-wrap").prop("title", "Download this table to any of these formats for local/offline use");
+      $("#monitoring-sites-table_filter").prop("title", "Filter named Giant Sequoias here");
+      // Hide the table loading spinner
+      $("#sequoia-mon-loading-div").hide();
+
+      // Listen for downloading of table and log event
+      $("#monitoring-sites-table_wrapper>div.dt-buttons>button.buttons-html5 ").on("click", (e) => {
+        ga("send", "event", "sequoia-monarch-table-download", e.target.innerText, tableDownloadName);
       });
     });
+  });
 
   // Bring in MTBS data : start MTBS data in 2012 at onset of 2012-2016 drought period
   var mtbs = ee
@@ -397,7 +400,9 @@ function runSequoia() {
     .max();
 
   // Bring in SEKI assets as FeatureCollections
-  var sekiNorthTAO = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI");
+  var sekiNorthTAO = ee.FeatureCollection(
+    "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI"
+  );
   var sekiLiveTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive");
   var tharpsSequoias = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias");
   var sierraGroves = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py");
@@ -408,6 +413,7 @@ function runSequoia() {
     {
       min: 1,
       max: 4,
+      layerType: "geeImage",
       palette: "BD1600,E2F400,0C2780",
     },
     `MTBS Burn Count ${preStartYear - 5}-${postYear}`,
@@ -422,6 +428,7 @@ function runSequoia() {
     {
       min: preStartYear - 5,
       max: postYear,
+      layerType: "geeImage",
       palette: "ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02",
     },
     `MTBS Most Recent Burn Year ${preStartYear - 5}-${postYear}`,
@@ -436,6 +443,7 @@ function runSequoia() {
     {
       min: 2,
       max: 4,
+      layerType: "geeImage",
       palette: "7fffd4,FF0,F00",
       queryDict: {
         2: "Low",
@@ -461,7 +469,7 @@ function runSequoia() {
     sierraGroves,
     {
       strokeColor: "953822",
-      layerType: "geeVector",
+      layerType: "geeVectorImage",
     },
     `Sequoia Groves of the Sierra Nevada`,
     false,
@@ -474,6 +482,7 @@ function runSequoia() {
     sekiNorthTAO,
     {
       strokeColor: "10755c",
+      layerType: "geeVectorImage",
     },
     `Tree Approximate Objects (TAO)`,
     false,
@@ -488,6 +497,7 @@ function runSequoia() {
     }),
     {
       strokeColor: "85bd04",
+      layerType: "geeVectorImage",
     },
     `SEKI Live Sequoia Trees`,
     false,
@@ -503,6 +513,7 @@ function runSequoia() {
     }),
     {
       strokeColor: "BF40BF", // purple
+      layerType: "geeVectorImage",
     },
     `Tharps Burn Project Sequoias`,
     false,
@@ -527,6 +538,7 @@ function runSequoia() {
     changeHeuristicForMap,
     {
       palette: "E20",
+      layerType: "geeImage",
       classLegendDict: {
         Loss: "E20",
       },
@@ -543,8 +555,8 @@ function runSequoia() {
       return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
     }),
     {
-      strokeColor: 'eb7a38', //orange
-      layerType: "geeVector",
+      strokeColor: "eb7a38", //orange
+      layerType: "geeVectorImage",
     },
     "Monitoring Sites",
     true,
@@ -552,8 +564,21 @@ function runSequoia() {
     null,
     "Trees of special interest"
   );
-
-  Map.addLayer(studyArea, {strokeColor: '0000FF'}, "Study Area", true);
+  Map.addLayer(
+    potentialLossSites.map((f) => {
+      return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
+    }),
+    {
+      strokeColor: "FF0", // yellow,
+      layerType: "geeVectorImage",
+    },
+    "Monitoring Sites Flagged for Potential Loss",
+    true,
+    null,
+    null,
+    "Trees of special interest that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
+  );
+  Map.addLayer(studyArea, { strokeColor: "0000FF", layerType: "geeVectorImage" }, "Study Area", true);
 
   if (urlParams.canExport) {
     var exportBands = ["blue", "green", "red", "nir", "swir1", "swir2"];
@@ -562,10 +587,29 @@ function runSequoia() {
         exportBands.push(bn);
       }
     });
-    Map.addExport(preComp.select(exportBands).multiply(10000).int16(), `S2_Composite_yrs${preStartYear}-${preEndYear}_jds${startJulian}-${endJulian}`, 10, true, {});
+    Map.addExport(
+      preComp.select(exportBands).multiply(10000).int16(),
+      `S2_Composite_yrs${preStartYear}-${preEndYear}_jds${startJulian}-${endJulian}`,
+      10,
+      true,
+      {}
+    );
     Map.addExport(postComp.select(exportBands).multiply(10000).int16(), `S2_Composite_yr${postYear}_jds${startJulian}-${endJulian}`, 10, true, {});
-    Map.addExport(compDiff.select(exportBands).multiply(10000).int16(), `S2_Composite_Diff_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}`, 10, true, {});
-    Map.addExport(changeHeuristicForMap.byte(), `S2_Change_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}`, 10, true, {}, 255);
+    Map.addExport(
+      compDiff.select(exportBands).multiply(10000).int16(),
+      `S2_Composite_Diff_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}`,
+      10,
+      true,
+      {}
+    );
+    Map.addExport(
+      changeHeuristicForMap.byte(),
+      `S2_Change_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}`,
+      10,
+      true,
+      {},
+      255
+    );
   }
 
   if (!seq_mon_query_clicked) {

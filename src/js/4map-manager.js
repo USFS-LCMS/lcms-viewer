@@ -194,7 +194,6 @@ function centerObject(fc) {
     fc.geometry()
       .bounds(100)
       .evaluate(function (feature) {
-        // console.log(feature);
         synchronousCenterObject(feature);
       });
   } catch (err) {
@@ -739,9 +738,19 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   }
 
   item = ee.ImageCollection(item);
-  viz.eeObjInfo = getImagesLib.eeObjInfo(item).getInfo();
-  viz = addClassVizDicts(viz);
-  console.log(viz);
+
+  let dictServerSide = true;
+  viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
+  if (viz.autoViz === true && (viz.eeObjInfo === undefined || viz.eeObjInfo === null) && (viz.layerType === undefined || viz.layerType === null)) {
+    console.log("start");
+    console.log(name);
+    viz.eeObjInfo = viz.eeObjInfo.getInfo();
+    dictServerSide = false;
+    viz = addClassVizDicts(viz);
+    console.log(viz);
+  }
+
+  // console.log(viz);
   if (name == undefined || name == null) {
     name = "Layer " + NEXT_LAYER_ID;
   }
@@ -763,7 +772,17 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   //AutoViz if specified
   //AutoViz if specified
   if (viz.autoViz) {
-    viz.bands = viz.bands || viz.eeObjInfo.bandNames;
+    if (dictServerSide) {
+      console.log("start");
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      dictServerSide = false;
+      console.log(viz);
+    }
+    if (viz.bands === undefined || viz.bands === null) {
+      viz.bands = viz.eeObjInfo.bandNames;
+    }
+
     viz.bands = viz.bands[0];
     dicts = getLookupDicts(viz.bands, viz.class_values, viz.class_names, viz.class_palette);
 
@@ -1173,7 +1192,7 @@ function addClassVizDicts(viz) {
 
     bns = bns.filter((bn) => viz.eeObjInfo.bandNames.indexOf(bn) > -1);
 
-    if (bns.length > 0) {
+    if (bns.length === 1) {
       viz.autoViz = true;
       viz.class_names = {};
       viz.class_values = {};
@@ -1245,21 +1264,34 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     name = "Layer " + NEXT_LAYER_ID;
   }
   viz.isTimeLapse = viz.isTimeLapse || false;
-
+  let dictServerSide = true;
+  viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
   if (
+    viz.autoViz === true &&
     (viz.eeObjInfo === undefined || viz.eeObjInfo === null) &&
+    (viz.layerType === undefined || viz.layerType === null) &&
     viz.layerType !== "geoJSONVector" &&
     viz.layerType !== "tileMapService" &&
     viz.layerType !== "dynamicMapService"
   ) {
-    // console.log("start");
-    viz.eeObjInfo = getImagesLib.eeObjInfo(item).getInfo();
+    console.log("start");
+    console.log(name);
+    viz.eeObjInfo = viz.eeObjInfo.getInfo();
+    dictServerSide = false;
     viz = addClassVizDicts(viz);
-    // console.log(viz);
+    console.log(viz);
   }
 
   //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
   if (viz.layerType === null || viz.layerType === undefined) {
+    if (dictServerSide) {
+      console.log("start");
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      console.log(viz);
+      dictServerSide = false;
+      viz = addClassVizDicts(viz);
+    }
     var eeType = viz.eeObjInfo.layerType;
 
     if (eeType === "Feature") {
@@ -1349,7 +1381,13 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
     viz.areaChartParams.line = viz.areaChartParams.line || viz.areaChartParams.sankey == false;
     viz.areaChartParams.id = legendDivID;
-    viz.areaChartParams.bandNames = viz.eeObjInfo.bandNames;
+    if ((viz.bands === undefined || viz.bands === null) && dictServerSide) {
+      console.log("start");
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      dictServerSide = false;
+    }
+    viz.areaChartParams.bandNames = viz.bands || viz.eeObjInfo.bandNames;
     viz.areaChartParams.class_values = viz.class_values;
     viz.areaChartParams.class_names = viz.class_names;
     viz.areaChartParams.class_palette = viz.class_palette;
@@ -1434,7 +1472,18 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
 
   //AutoViz if specified
   if (viz.autoViz && viz.isTimeLapse === false) {
-    viz.bands = viz.bands || viz.eeObjInfo.bandNames;
+    if (dictServerSide) {
+      console.log("start");
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      dictServerSide = false;
+      viz = addClassVizDicts(viz);
+      console.log(viz);
+    }
+    if (viz.bands === undefined || viz.bands === null) {
+      viz.bands = viz.eeObjInfo.bandNames;
+    }
+
     viz.bands = viz.bands[0];
     dicts = getLookupDicts(viz.bands, viz.class_values, viz.class_names, viz.class_palette);
 

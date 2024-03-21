@@ -10,7 +10,9 @@ function runBaseLearner() {
 
   var whichIndices = Object.keys(whichIndices2).filter((k) => whichIndices2[k] == true);
 
-  var composites = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten());
+  var composites = ee.ImageCollection(
+    ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten()
+  );
 
   composites = ee.ImageCollection(
     ee.List.sequence(startYear, endYear, 1).map(function (yr) {
@@ -154,7 +156,7 @@ function runBaseLearner() {
   var endJulian = 365;
 
   // #Add the raw array image
-  Map.addLayer(ccdcImg, { opacity: 0 }, "Raw CCDC Output", false);
+  Map.addLayer(ccdcImg, { opacity: 0, layerType: "geeImage" }, "Raw CCDC Output", false);
 
   // #Apply the CCDC harmonic model across a time series
   // #First get a time series of time images
@@ -175,10 +177,29 @@ function runBaseLearner() {
   // #Extract the change years and magnitude
   changeObj = changeDetectionLib.ccdcChangeDetection(ccdcImg, changeDetectionBandName);
 
-  Map.addLayer(changeObj[sortingMethod]["loss"]["year"], { min: startYear, max: endYear, palette: changeDetectionLib.lossYearPalette }, "CCDC Loss Year");
-  Map.addLayer(changeObj[sortingMethod]["loss"]["mag"], { min: -0.5, max: -0.1, palette: changeDetectionLib.lossMagPalette }, "CCDC Loss Mag", false);
-  Map.addLayer(changeObj[sortingMethod]["gain"]["year"], { min: startYear, max: endYear, palette: changeDetectionLib.gainYearPalette }, "CCDC Gain Year", false);
-  Map.addLayer(changeObj[sortingMethod]["gain"]["mag"], { min: 0.05, max: 0.2, palette: changeDetectionLib.gainMagPalette }, "CCDC Gain Mag", false);
+  Map.addLayer(
+    changeObj[sortingMethod]["loss"]["year"],
+    { min: startYear, max: endYear, palette: changeDetectionLib.lossYearPalette, layerType: "geeImage" },
+    "CCDC Loss Year"
+  );
+  Map.addLayer(
+    changeObj[sortingMethod]["loss"]["mag"],
+    { min: -0.5, max: -0.1, palette: changeDetectionLib.lossMagPalette, layerType: "geeImage" },
+    "CCDC Loss Mag",
+    false
+  );
+  Map.addLayer(
+    changeObj[sortingMethod]["gain"]["year"],
+    { min: startYear, max: endYear, palette: changeDetectionLib.gainYearPalette, layerType: "geeImage" },
+    "CCDC Gain Year",
+    false
+  );
+  Map.addLayer(
+    changeObj[sortingMethod]["gain"]["mag"],
+    { min: 0.05, max: 0.2, palette: changeDetectionLib.gainMagPalette, layerType: "geeImage" },
+    "CCDC Gain Mag",
+    false
+  );
   // Map.addLayer(fitted.filter(ee.Filter.calendarRange(1990, 1990, "year")).select([".*_fitted"]), ccdcSynthViz, "Fitted CCDC 1990", true);
   // console.log(fitted.first().bandNames().getInfo());
 

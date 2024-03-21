@@ -71,10 +71,10 @@ function copyText(element, messageBoxId) {
 function parseUrlSearch() {
   // console.log(window.location.search == '')
   let urlParamsStr = window.location.search;
-  console.log(urlParamsStr);
+  // console.log(urlParamsStr);
   if (urlParamsStr !== "") {
     urlParamsStr = urlParamsStr.split("?")[1].split("&");
-
+    // console.log(urlParamsStr);
     urlParamsStr.map(function (str) {
       // if(str.indexOf('OBJECT---')>-1){
       // var strT = str.split('---');
@@ -86,6 +86,7 @@ function parseUrlSearch() {
       // }else{
       var decodedParam = decodeURIComponent(str.split("=")[1]);
       try {
+        // console.log(JSON.parse(decodedParam));
         urlParams[str.split("=")[0]] = JSON.parse(decodedParam);
       } catch (err) {
         urlParams[str.split("=")[0]] = decodedParam;
@@ -93,6 +94,7 @@ function parseUrlSearch() {
 
       // }
     });
+    // console.log(urlParams);
   }
   if (urlParams.id !== undefined) {
     window.open("https://tinyurl.com/" + urlParams.id, "_self");
@@ -110,8 +112,26 @@ function parseUrlSearch() {
     }
   }
 }
-function constructUrlSearch() {
+function constructUrlSearch(maxLen = 5000) {
   var outURL = "?";
+  Object.keys(urlParams).map(function (p) {
+    if (typeof urlParams[p] === "object") {
+      Object.keys(urlParams[p]).map((k) => {
+        let tp = encodeURIComponent(JSON.stringify(urlParams[p][k]));
+        if (tp.length > maxLen) {
+          // console.log(`Removing urlParam: ${urlParams[p][k]}`);
+          delete urlParams[p][k];
+        }
+      });
+    } else {
+      let tp = encodeURIComponent(JSON.stringify(urlParams[p]));
+      if (tp.length > maxLen) {
+        // console.log(`Removing urlParam: ${urlParams[p]}`);
+        delete urlParams[p];
+      }
+    }
+  });
+  // console.log(urlParams);
   Object.keys(urlParams).map(function (p) {
     outURL += p + "=" + encodeURIComponent(JSON.stringify(urlParams[p])) + "&";
   });

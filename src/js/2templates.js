@@ -950,7 +950,7 @@ const staticTemplates = {
                             <a class="intro-modal-links" onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">Giant Sequoia View TUTORIAL</a>
                             </div>
                         </div>
-                        <hr>`,                    
+                        <hr>`,
   supportDiv: `<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
@@ -1776,12 +1776,12 @@ function showTip(title, message) {
 }
 // function to force a second opportunity for new users to open tutorial for sequoia viewer:
 function showTutorialLinkAgain(title, message) {
-// If it is a user's first time at the site, localStorage.isFirstTime is undefined. This is then be set to false after a user clicks to do tutorial
-    $("#introModal").on('hidden.bs.modal', function() {
-      if (localStorage.isFirstTime != "false") {
-        showMessage(title, message, "secondTutorialPopUp-modal", true);
-        localStorage.isFirstTime = "false";
-      }
+  // If it is a user's first time at the site, localStorage.isFirstTime is undefined. This is then be set to false after a user clicks to do tutorial
+  $("#introModal").on("hidden.bs.modal", function () {
+    if (localStorage.isFirstTime != "false") {
+      showMessage(title, message, "secondTutorialPopUp-modal", true);
+      localStorage.isFirstTime = "false";
+    }
   });
 }
 
@@ -1932,7 +1932,7 @@ function addJSONInputTextBox(containerID, inputID, label, variable, defaultValue
   $("#" + containerID).append(`
     <hr>
     <label>${label}</label>
-    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
+    <textarea title='${title}' class="form-control json-input-text-box" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
     defaultValue
   )}</textarea>`);
 
@@ -2354,17 +2354,17 @@ function addLegendCollapse() {
   $("#legend-collapse-div").append(`<div role="list" id="legend-fhp-div"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="time-lapse-legend-list"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="legend-area-charting-select-layer-list"></div>`);
-  
-  if (mode === 'sequoia-view'){
+
+  if (mode === "sequoia-view") {
     addCollapse(
-    getWalkThroughCollapseContainerID(),//"sidebar-left",
-    "table-collapse-label",
-    "table-collapse-div",
-    "MONITORING SITES",
-    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
-    true,
-    ``,
-    "Giant Sequoia monitoring sites output table"
+      getWalkThroughCollapseContainerID(), //"sidebar-left",
+      "table-collapse-label",
+      "table-collapse-div",
+      "MONITORING SITES",
+      `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+      true,
+      ``,
+      "Giant Sequoia monitoring sites output table"
     );
   }
 }
@@ -2559,6 +2559,8 @@ function addLayer(layer) {
   function zoomFunction() {
     if (layer.layerType === "geeVector") {
       centerObject(layer.item);
+    } else if (layer.layerType === "geeVectorImage" && (layer.viz.bounds === undefined || layer.viz.bounds !== null)) {
+      centerObject(layer.viz.asyncBounds);
     } else if (layer.layerType === "geoJSONVector") {
       // centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
       // synchronousCenterObject(layer.item.features[0].geometry)
@@ -2839,6 +2841,12 @@ function addLayer(layer) {
       }
       layer.queryItem = layer.item;
       if (layer.layerType === "geeVectorImage") {
+        try {
+          layer.viz.asyncBounds = layer.item.geometry().bounds(100, "EPSG:4326");
+        } catch (err) {
+          layer.viz.asyncBounds = layer.item.bounds(100, "EPSG:4326");
+        }
+
         layer.item = ee.Image().paint(layer.item, null, layer.viz.strokeWeight);
         layer.viz.palette = layer.viz.strokeColor;
       }
@@ -3182,7 +3190,7 @@ function addLayer(layer) {
         layer.usedViz = layer.viz;
       }
 
-      let mapItem = layer.viz.bands !== undefined ? layer.item.select(layer.viz.bands) : layer.item;
+      let mapItem = layer.viz.bands !== undefined ? ee.Image(layer.item).select(layer.viz.bands) : ee.Image(layer.item);
 
       ee.Image(mapItem).getMap(layer.usedViz, function (eeLayer, failure) {
         if (eeLayer === undefined && layer.mapServiceTryNumber <= 1) {

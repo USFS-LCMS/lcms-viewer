@@ -2107,6 +2107,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       min: 0.1,
       max: [0.5, 0.6, 0.6],
       bands: "swir2,nir,red",
+      layerType: "geeImage",
       gamma: 1.6,
     };
   }
@@ -2114,6 +2115,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.diffVizParams = {
       min: -0.05,
       max: 0.05,
+      layerType: "geeImage",
       bands: ["brightness", "greenness", "wetness"],
     };
   }
@@ -2303,7 +2305,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Additional relevant layers to view on map intended to provide context for change data"
   );
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-  //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js 
+  //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js
   // addCollapse(
   //   "sidebar-left",
   //   "table-collapse-label",
@@ -2327,8 +2329,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
-  addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,true,``,'If you need any help');
-  $("#support-collapse-div").append(staticTemplates.sequoiaSupportDiv);    
+  addCollapse(
+    "sidebar-left",
+    "support-collapse-label",
+    "support-collapse-div",
+    "SUPPORT",
+    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
+    true,
+    ``,
+    "If you need any help"
+  );
+  $("#support-collapse-div").append(staticTemplates.sequoiaSupportDiv);
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
@@ -2706,6 +2717,7 @@ function resizeViewerPanes() {
   if (mode !== "lcms-dashboard") {
     moveCollapse("chart-collapse");
     moveCollapse("legend-collapse");
+    moveCollapse("table-collapse");
   }
 
   $(".legendDiv").css("bottom", "1rem");

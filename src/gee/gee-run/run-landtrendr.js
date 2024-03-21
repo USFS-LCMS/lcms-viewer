@@ -59,7 +59,13 @@ function runLT() {
     // if(year%5 ==0 || year === startYear || year === endYear){
     //   Map.addLayer(img,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red'},'Composite '+nameEnd,false);
     // }
-    Map.addExport(img.select(["blue", "green", "red", "nir", "swir1", "swir2"]).multiply(10000).int16(), "Landsat_Composite_" + nameEnd, 30, false, {});
+    Map.addExport(
+      img.select(["blue", "green", "red", "nir", "swir1", "swir2"]).multiply(10000).int16(),
+      "Landsat_Composite_" + nameEnd,
+      30,
+      false,
+      {}
+    );
 
     c.push(img);
     years.push(year);
@@ -132,7 +138,15 @@ function runLT() {
     Map.addExport(gainStack, gainName, 30, true, {}, -32768);
 
     var decompressedC = changeDetectionLib
-      .simpleLTFit(rawLTForExport, urlParams.startYear, urlParams.endYear, indexName, true, changeDetectionLib.default_lt_run_params["maxSegments"], 1 / multBy)
+      .simpleLTFit(
+        rawLTForExport,
+        urlParams.startYear,
+        urlParams.endYear,
+        indexName,
+        true,
+        changeDetectionLib.default_lt_run_params["maxSegments"],
+        1 / multBy
+      )
       .select([".*_LT_fitted"]);
     // Map.addLayer(decompressedC, { layerType: "geeImageCollection" }, "Decompressed LT Output " + indexName, false);
 
