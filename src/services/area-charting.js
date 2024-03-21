@@ -100,8 +100,10 @@ function areaChartCls() {
 
       if (params.bandNames === undefined || params.bandNames === null) {
         if (dictServerSide) {
+          console.log("start");
           params.eeObjInfo = params.eeObjInfo.getInfo();
           dictServerSide = false;
+          console.log(params);
         }
         obj.bandNames = params.eeObjInfo.bandNames;
       } else {
@@ -111,10 +113,13 @@ function areaChartCls() {
       obj.bandNames = typeof obj.bandNames === "string" ? obj.bandNames.split(",") : obj.bandNames;
 
       //   console.log(dict);
-      if (params.class_names === undefined || params.class_names === null) {
+      console.log(params);
+      if ((params.class_names === undefined || params.class_names === null) && params.class_dicts_added !== true) {
         if (dictServerSide) {
+          console.log("start");
           params.eeObjInfo = params.eeObjInfo.getInfo();
           dictServerSide = false;
+          console.log(params);
         }
         params = addClassVizDicts(params);
       }
@@ -628,7 +633,7 @@ function areaChartCls() {
             selectedChartLayers.push([o.legendDivID, o.visible]);
           }
         });
-      // console.log(selectedChartLayers);
+      console.log(selectedChartLayers);
       selectedChartLayers = Object.fromEntries(selectedChartLayers.filter(([k, v]) => v));
     } else {
       selectedChartLayers = Object.fromEntries(Object.entries(checkboxSelectedChartLayers).filter(([k, v]) => v));

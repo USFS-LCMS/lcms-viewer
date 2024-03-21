@@ -740,8 +740,13 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   item = ee.ImageCollection(item);
 
   let dictServerSide = true;
-  viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
-  if (viz.autoViz === true && (viz.eeObjInfo === undefined || viz.eeObjInfo === null) && (viz.layerType === undefined || viz.layerType === null)) {
+  if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+    viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
+  } else {
+    viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+  }
+
+  if (viz.autoViz === true && (viz.class_names === undefined || viz.class_names === null)) {
     console.log("start");
     console.log(name);
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
@@ -993,19 +998,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       item = ee.ImageCollection(cT);
     }
 
-    // Handle area charting
     if (viz.canAreaChart) {
       let vizTT = copyObj(viz);
-
-      vizTT.areaChartParams = vizTT.areaChartParams || {};
-      vizTT.areaChartParams.sankey = vizTT.areaChartParams.sankey || false;
-      vizTT.areaChartParams.line = vizTT.areaChartParams.line || vizTT.areaChartParams.sankey == false;
-      vizTT.areaChartParams.id = legendDivID;
-      vizTT.areaChartParams.layerType = vizTT.areaChartParams.layerType || vizTT.eeObjectType;
-      vizTT.areaChartParams.dateFormat = vizTT.areaChartParams.dateFormat || vizTT.dateFormat;
-
-      timeLapseObj[legendDivID].viz = vizTT;
-      timeLapseObj[legendDivID].legendDivID = legendDivID;
+      vizTT = setupAreaChartParams(vizTT, dictServerSide, legendDivID);
       // viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.layerType;
       // All a 1:2 layer to area chart object if both line and sankey are specified
       if (vizTT.areaChartParams.sankey && vizTT.areaChartParams.line) {
@@ -1026,6 +1021,8 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
         // console.log(vizTT.areaChartParams);
         areaChart.addLayer(item, vizTT.areaChartParams, name, visible);
       }
+      timeLapseObj[legendDivID].viz = vizTT;
+      timeLapseObj[legendDivID].legendDivID = legendDivID;
       // console.log(params);
     }
   }
@@ -1183,6 +1180,43 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   exportID++;
 }
 /////////////////////////////////////////////////////
+// Function to set up area charting params given viz params from addLayer
+function setupAreaChartParams(viz, dictServerSide, legendDivID) {
+  // viz = copyObj(viz);
+  viz.areaChartParams = viz.areaChartParams || {};
+  viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
+  viz.areaChartParams.line = viz.areaChartParams.line || viz.areaChartParams.sankey == false;
+  viz.areaChartParams.id = legendDivID;
+  if ((viz.bands === undefined || viz.bands === null) && dictServerSide) {
+    console.log("start");
+    viz.eeObjInfo = viz.eeObjInfo.getInfo();
+    dictServerSide = false;
+    console.log(viz);
+  }
+  viz.areaChartParams.bandNames = viz.bands || viz.eeObjInfo.bandNames;
+
+  if ((viz.class_names === undefined || viz.class_names === null) && dictServerSide) {
+    console.log("start");
+    viz.eeObjInfo = viz.eeObjInfo.getInfo();
+
+    console.log(viz);
+    dictServerSide = false;
+  }
+  if (viz.class_names === undefined || viz.class_names === null) {
+    viz = addClassVizDicts(viz);
+    viz.areaChartParams.class_dicts_added = true;
+  }
+
+  viz.areaChartParams.class_values = viz.class_values;
+  viz.areaChartParams.class_names = viz.class_names;
+  viz.areaChartParams.class_palette = viz.class_palette;
+  viz.areaChartParams.class_visibility = viz.class_visibility;
+
+  viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.eeObjectType;
+
+  return viz;
+}
+/////////////////////////////////////////////////////
 //Function to add lookup dictionaries from info (assumes info is within an object and named eeObjInfo)
 function addClassVizDicts(viz) {
   // console.log(viz);
@@ -1215,6 +1249,7 @@ function addClassVizDicts(viz) {
   }
   return viz;
 }
+
 /////////////////////////////////////////////////////
 //Function to add lookup dictionaries to map viz object
 function getLookupDicts(bandName, class_values, class_names, class_palette) {
@@ -1264,12 +1299,17 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     name = "Layer " + NEXT_LAYER_ID;
   }
   viz.isTimeLapse = viz.isTimeLapse || false;
+
   let dictServerSide = true;
-  viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
+  if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+    viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
+  } else {
+    viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+  }
+
   if (
     viz.autoViz === true &&
-    (viz.eeObjInfo === undefined || viz.eeObjInfo === null) &&
-    (viz.layerType === undefined || viz.layerType === null) &&
+    (viz.class_names === undefined || viz.class_names === null) &&
     viz.layerType !== "geoJSONVector" &&
     viz.layerType !== "tileMapService" &&
     viz.layerType !== "dynamicMapService"
@@ -1377,25 +1417,8 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
 
   // Handle area charting
   if (viz.canAreaChart) {
-    viz.areaChartParams = viz.areaChartParams || {};
-    viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
-    viz.areaChartParams.line = viz.areaChartParams.line || viz.areaChartParams.sankey == false;
-    viz.areaChartParams.id = legendDivID;
-    if ((viz.bands === undefined || viz.bands === null) && dictServerSide) {
-      console.log("start");
-      console.log(name);
-      viz.eeObjInfo = viz.eeObjInfo.getInfo();
-      dictServerSide = false;
-    }
-    viz.areaChartParams.bandNames = viz.bands || viz.eeObjInfo.bandNames;
-    viz.areaChartParams.class_values = viz.class_values;
-    viz.areaChartParams.class_names = viz.class_names;
-    viz.areaChartParams.class_palette = viz.class_palette;
-    viz.areaChartParams.class_visibility = viz.class_visibility;
+    viz = setupAreaChartParams(viz, dictServerSide, legendDivID);
 
-    viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.eeObjectType;
-    // console.log(viz);
-    // viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.layerType;
     // All a 1:2 layer to area chart object if both line and sankey are specified
     if (viz.areaChartParams.sankey && viz.areaChartParams.line) {
       let areaChartParamsLine = copyObj(viz.areaChartParams);

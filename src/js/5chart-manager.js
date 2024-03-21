@@ -356,8 +356,9 @@ var getQueryImages = function (lng, lat) {
         var yMax = yValues.max();
 
         var allYValues = range(yMin, yMax + 1);
-
-        var allYLabels = allYValues.map((v) => q.queryDict[v]);
+        // console.log(allYValues);
+        var allYLabels = allYValues.map((v) => q.queryDict[v] || v.toString());
+        // console.log(allYLabels);
         var yLabelMaxLinesT = yLabelMaxLines;
         var brokenLabels;
         function breakLabels() {

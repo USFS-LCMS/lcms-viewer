@@ -737,25 +737,26 @@ function runDynamic() {
   //   "LCMS Land Cover",
   //   true
   // );
-  // let changeVisibility = [false, true, true, true, false];
-  // Map.addLayer(
-  //   lcmsRun.lcms.select(["Change"]), //(), //.set(lcmsRun.props),
-  //   {
-  //     autoViz: true,
-  //     canAreaChart: true,
-  //     areaChartParams: {
-  //       line: true,
-  //       sankey: true,
-  //       visible: changeVisibility,
-  //       // sankeyTransitionPeriods: [
-  //       //   [1990, 1991],
-  //       //   [2000, 2005],
-  //       // ],
-  //     },
-  //   },
-  //   "LCMS Change",
-  //   true
-  // );
+  let changeVisibility = [false, true, true, true, false];
+  Map.addTimeLapse(
+    lcmsRun.lcms.select(["Change"]).limit(10), //(), //.set(lcmsRun.props),
+    {
+      autoViz: true,
+      canAreaChart: true,
+      areaChartParams: {
+        line: false,
+        sankey: true,
+        visible: changeVisibility,
+        // sankeyTransitionPeriods: [
+        //   [1990, 1991],
+        //   [2000, 2005],
+        // ],
+      },
+    },
+    "LCMS Change",
+    true
+  );
+
   // Map.addLayer(
   //   lcmsRun.lcms.select(["Land_Cover"]).mode().set(lcmsRun.props),
   //   { autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: false } },
@@ -829,9 +830,9 @@ function runDynamic() {
     "#cc4c02",
   ];
   let changeClassDict = {
-    "Fast Loss": { code: 3, visible: true, palette: allLossYearPalette },
-    "Slow Loss": { code: 2, visible: true, palette: allLossYearPalette },
-    Gain: { code: 4, visible: false, palette: "c5ee93,00a398" },
+    // "Fast Loss": { code: 3, visible: true, palette: allLossYearPalette },
+    // "Slow Loss": { code: 2, visible: true, palette: allLossYearPalette },
+    // Gain: { code: 4, visible: false, palette: "c5ee93,00a398" },
   };
 
   Object.keys(changeClassDict).map((k) => {
