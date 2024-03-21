@@ -738,28 +738,28 @@ function runDynamic() {
   //   true
   // );
   let changeVisibility = [false, true, true, true, false];
-  Map.addTimeLapse(
-    lcmsRun.lcms.select(["Change"]).limit(10), //(), //.set(lcmsRun.props),
-    {
-      autoViz: true,
-      canAreaChart: true,
-      areaChartParams: {
-        line: false,
-        sankey: true,
-        visible: changeVisibility,
-        // sankeyTransitionPeriods: [
-        //   [1990, 1991],
-        //   [2000, 2005],
-        // ],
-      },
-    },
-    "LCMS Change",
-    true
-  );
+  // Map.addLayer(
+  //   lcmsRun.lcms.select(["Change"]), //(), //.set(lcmsRun.props),
+  //   {
+  //     autoViz: true,
+  //     canAreaChart: true,
+  //     areaChartParams: {
+  //       line: true,
+  //       sankey: true,
+  //       visible: changeVisibility,
+  //       // sankeyTransitionPeriods: [
+  //       //   [1990, 1991],
+  //       //   [2000, 2005],
+  //       // ],
+  //     },
+  //   },
+  //   "LCMS Change",
+  //   true
+  // );
 
   // Map.addLayer(
-  //   lcmsRun.lcms.select(["Land_Cover"]).mode().set(lcmsRun.props),
-  //   { autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: false } },
+  //   lcmsRun.lcms.select(["Land_Cover"]), //.mode().set(lcmsRun.props),
+  //   { autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: true } },
   //   "LCMS Land Cover",
   //   true
   // );
@@ -830,9 +830,9 @@ function runDynamic() {
     "#cc4c02",
   ];
   let changeClassDict = {
-    // "Fast Loss": { code: 3, visible: true, palette: allLossYearPalette },
-    // "Slow Loss": { code: 2, visible: true, palette: allLossYearPalette },
-    // Gain: { code: 4, visible: false, palette: "c5ee93,00a398" },
+    "Fast Loss": { code: 3, visible: true, palette: allLossYearPalette },
+    "Slow Loss": { code: 2, visible: true, palette: allLossYearPalette },
+    Gain: { code: 4, visible: false, palette: "c5ee93,00a398" },
   };
 
   Object.keys(changeClassDict).map((k) => {
@@ -910,20 +910,20 @@ function runDynamic() {
   //   "NLCD"
   // );
   // areaChart.addLayer(nlcd, { sankey: true }, "NLCD Annual");
-  // Map.addLayer(
-  //   tcc,
-  //   {
-  //     canAreaChart: true,
-  //     reducer: ee.Reducer.stdDev(),
-  //     bands: "NLCD_Percent_Tree_Canopy_Cover",
-  //     min: 0,
-  //     max: 10,
-  //     palette: "DDD,080",
-  //     // areaChartParams: { palette: "080,0D0" },
-  //   },
-  //   "NLCD TCC",
-  //   true
-  // );
+  Map.addLayer(
+    tcc,
+    {
+      canAreaChart: true,
+      reducer: ee.Reducer.stdDev(),
+      bands: "NLCD_Percent_Tree_Canopy_Cover",
+      min: 0,
+      max: 10,
+      palette: "DDD,080",
+      areaChartParams: { palette: "080,0D0" },
+    },
+    "NLCD TCC",
+    true
+  );
   // areaChart.addLayer(tcc, { visible: [true, true], palette: ["080", "0D0"] }, "NLCD TCC");
   // areaChart.addLayer(tcc, { reducer: ee.Reducer.median() }, "NLCD TCC Median");
   // areaChart.populateChartDropdown();
@@ -962,18 +962,28 @@ function runDynamic() {
   // console.log(ee.Algorithms.ObjectType(mtbsBoundaries).getInfo());
   // Map.addLayer(mtbsBoundaries);
 
-  // Map.addSelectLayer(
-  //   mtbsBoundaries,
-  //   { strokeColor: "00F", layerType: "geeVectorImage", selectLayerNameProperty: "Incid_Name" },
-  //   "MTBS Fire Boundaries",
-  //   false,
-  //   null,
-  //   null,
-  //   "MTBS Fire Boundaries"
-  // );
-  // ["Change", "Land_Cover", "Land_Use"].map((c) => {
-  //   Map.addLayer(lcmsRun.lcms.select([c]), { canAreaChart: true, areaChartParams: { line: true, sankey: true } }, c);
-  // });
+  Map.addSelectLayer(
+    mtbsBoundaries,
+    { strokeColor: "00F", layerType: "geeVectorImage", selectLayerNameProperty: "Incid_Name" },
+    "MTBS Fire Boundaries",
+    false,
+    null,
+    null,
+    "MTBS Fire Boundaries"
+  );
+  ["Change", "Land_Cover", "Land_Use"].map((c) => {
+    let visible;
+    if (c === "Change") {
+      visible = changeVisibility;
+    } else {
+      visible;
+    }
+    Map.addLayer(
+      lcmsRun.lcms.select([c]),
+      { canAreaChart: true, areaChartParams: { line: true, sankey: true, visible: visible } },
+      c.replaceAll("_", " ")
+    );
+  });
 
   // areaChart.startAutoCharting();
 
@@ -992,6 +1002,7 @@ function runDynamic() {
 
   // areaChart.populateChartLayerSelect();
   Map.turnOnAutoAreaCharting();
+  $("#pixel-chart-label").hide();
   //   // console.log(lcms.first().select([".*_Raw_Prob.*"]).bandNames().getInfo());
   //   //   // const mapId = lcms.getMap({ min: 0, max: 60 });
   //   //   // const tileSource = new ee.layers.EarthEngineTileSource(mapId);

@@ -64,6 +64,7 @@ function areaChartCls() {
     // this.outstandingAddLayers++;
     // setTimeout(() => {
     $("#map-defined-area-chart-label").show();
+
     $("#area-collection-dropdown-container").hide();
     let obj = {};
     obj.name = name || `Area-Layer-${this.areaChartID}`;
