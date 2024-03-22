@@ -92,6 +92,12 @@ const titles = {
     rightWords: "Viewer",
     title: "Sequoia View",
   },
+  "HiForm-BMP": {
+    leftWords: "HiForm",
+    centerWords: "Timber Harvest",
+    rightWords: "BMP Tool",
+    title: "HiForm Timber Harvest BMP Tool",
+  },
 };
 ///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {
@@ -450,6 +456,29 @@ const staticTemplates = {
       ""
     ),
     "sequoia-view": getIntroModal(
+      "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
+      "Welcome to the Giant Sequoia Viewer!",
+      `<li>
+<p class="pb-2 ">This near real-time program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide first cut alarm of potentially declining named Giant Sequoias and the ability to view available remote sensing image data.</p>
+</li>
+`,
+      `
+<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<h5>For access please contact Sequoia Viewer project coordinator.</h5>
+<div class ='my-3'>
+<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
+<a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
+
+<a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+</div>
+<div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
+<a class = 'intro-modal-links' title = "Visualize and explore LAMDA products" href = "lamda-downloads.html" target="_blank">LAMDA Explorer</a>
+
+
+</div>`,
+      ""
+    ),
+    "HiForm-BMP": getIntroModal(
       "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
       "Welcome to the Giant Sequoia Viewer!",
       `<li>

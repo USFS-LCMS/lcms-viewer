@@ -1826,7 +1826,7 @@ function reRun() {
   if (staticTemplates.loadingModal[mode] === undefined) {
     if (mode === "MTBS") {
       showMessage("", staticTemplates.loadingModal["all"]("mtbs-logo.png", "Updating"));
-    } else if (mode === "STORM" || mode === "Bloom-Mapper" || mode === "sequoia-view") {
+    } else if (mode === "STORM" || mode === "Bloom-Mapper" || mode === "sequoia-view" || mode === "HiForm-BMP") {
       showMessage("", staticTemplates.loadingModal["all"]("", "Updating"));
     } else {
       showMessage("", staticTemplates.loadingModal["all"]("lcms-icon.png", "Updating"));
@@ -2541,6 +2541,8 @@ function dropdownUpdateStudyArea(whichOne) {
     run = runBaseLearner;
   } else if (mode === "sequoia-view") {
     run = runSequoia;
+  } else if (mode === "HiForm-BMP") {
+    run = runHiForm;
   } else if (studyAreaName === "CONUS") {
     run = runCONUS;
   } else {
@@ -3109,7 +3111,7 @@ function initialize() {
         if (staticTemplates.loadingModal[mode] === undefined) {
           if (mode === "MTBS") {
             showMessage("", staticTemplates.loadingModal["all"]("mtbs-logo.png", "Creating"));
-          } else if (mode === "STORM" || mode === "Bloom-Mapper" || mode === "sequoia-view" || mode === "TreeMap") {
+          } else if (mode === "STORM" || mode === "Bloom-Mapper" || mode === "sequoia-view" || mode === "HiForm-BMP" || mode === "TreeMap") {
             showMessage("", staticTemplates.loadingModal["all"]("logos_usda-fs_bn-dk-01.svg", "Creating"));
           } else if (mode === "lcms-dashboard") {
             showMessage("", staticTemplates.loadingModal["all"]("lcms-icon.png", "Loading", "LCMS summary areas"));
@@ -3191,6 +3193,8 @@ function initialize() {
       run = runAlgal;
     } else if (mode === "sequoia-view") {
       run = runSequoia;
+    } else if (mode === "HiForm-BMP") {
+      run = runHiForm;
     } else if (studyAreaName === "CONUS") {
       longStudyAreaName = cachedStudyAreaName;
       run = runCONUS;

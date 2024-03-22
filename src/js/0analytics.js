@@ -18,7 +18,8 @@ var analyticsObj = {'LCMS':'G-Q5Y0RQT6WG',
 					'geeViz':'G-3KQZ4670E3',
 					'TreeMap':'G-Q2J4L3ZDFV',
 					'lcms-home':'G-JD5RXX6TFK',
-					'sequoia-view':'G-15Q4KFCY98'
+					'sequoia-view':'G-15Q4KFCY98',
+					'HiForm-BMP':'G-NJ3SZE0E2J'
 // 					'LCMS-pilot':'UA-188090968-1',
 // 					'FHP':'UA-188090968-1',
 // 					'MTBS':'UA-188090968-2',
