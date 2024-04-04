@@ -294,6 +294,7 @@ function eeObjInfo(eeObj, objType, addTime, timeFormat, timePropNameIn, timeProp
   }
   // props = props.getInfo();
   // props.layerType = objType;
+
   return props;
 }
 //////////////////////////////////////////////////

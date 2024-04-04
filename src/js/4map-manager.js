@@ -359,7 +359,7 @@ function addSelectLayerToMap(item, viz, name, visible, label, fontColor, helpBox
 var intervalPeriod = 666.6666666666666;
 var timeLapseID;
 var timeLapseFrame = 0;
-var cumulativeMode = false;
+var cumulativeMode = urlParams.cumulativeMode;
 function pauseTimeLapse(id) {
   if (id === null || id === undefined) {
     id = timeLapseID;
@@ -648,6 +648,7 @@ function alignTimeLapseCheckboxes() {
   Object.keys(timeLapseObj).map(function (k) {
     if (timeLapseObj[k].isReady) {
       var checked = false;
+      urlParams.layerProps[k].visible = timeLapseObj[k].visible;
       if (timeLapseObj[k].visible) {
         checked = true;
         $("#" + k + "-time-lapse-layer-range-container").slideDown();
@@ -668,6 +669,7 @@ function alignTimeLapseCheckboxes() {
 }
 function timeLapseCheckbox(id) {
   var v = timeLapseObj[id].visible;
+
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
     pauseButtonFunction(id);
@@ -691,16 +693,24 @@ function turnOffTimeLapseCheckboxes() {
   alignTimeLapseCheckboxes();
 }
 //Toggle whether to show all layers prior to the current layer or just a single layer
+function turnOnCumulativeMode() {
+  $(".cumulativeToggler").addClass("time-lapse-active");
+  cumulativeMode = true;
+  urlParams.cumulativeMode = cumulativeMode;
+  selectFrame();
+}
+function turnOffCumulativeMode() {
+  $(".cumulativeToggler").removeClass("time-lapse-active");
+  cumulativeMode = false;
+  urlParams.cumulativeMode = cumulativeMode;
+  selectFrame();
+}
 function toggleCumulativeMode() {
   if (cumulativeMode) {
-    $(".cumulativeToggler").removeClass("time-lapse-active");
-    cumulativeMode = false;
+    turnOffCumulativeMode();
   } else {
-    $(".cumulativeToggler").addClass("time-lapse-active");
-    cumulativeMode = true;
+    turnOnCumulativeMode();
   }
-  // timeLapseFrame--;
-  selectFrame();
 }
 
 //Fill empty collections
@@ -725,9 +735,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     }
     viz.serialized = false;
   }
-  if (viz.cumulativeMode === null || viz.cumulativeMode === undefined) {
-    viz.cumulativeMode = false;
-  }
+  // if (viz.cumulativeMode === undefined || viz.cumulativeMode === null) {
+  //   viz.cumulativeMode = false;
+  // }
   if (viz.canAreaChart === undefined || viz.canAreaChart === null) {
     viz.canAreaChart = false;
   }
@@ -737,9 +747,15 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     viz.opacity = 1;
   }
 
+  if (viz.bands !== undefined && typeof viz.bands === "string") {
+    viz.bands = viz.bands.split(",");
+  }
+  if (viz.palette !== undefined && typeof viz.palette === "string") {
+    viz.palette = viz.palette.split(",");
+  }
   item = ee.ImageCollection(item);
 
-  let dictServerSide = true;
+  viz.dictServerSide = true;
   if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
     viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
   } else {
@@ -750,7 +766,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     console.log("start");
     console.log(name);
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    dictServerSide = false;
+    viz.dictServerSide = false;
     viz = addClassVizDicts(viz);
     console.log(viz);
   }
@@ -760,9 +776,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     name = "Layer " + NEXT_LAYER_ID;
   }
   var checked = "";
-  if (visible) {
-    checked = "checked";
-  }
+  // if (visible) {
+  //   checked = "checked";
+  // }
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
   // legendDivID = legendDivID.replaceAll('/','-');
@@ -774,14 +790,21 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   // legendDivID = legendDivID.replaceAll('%','-');
   // legendDivID = legendDivID.replaceAll('^','-');
 
+  if (urlParams.layerProps[legendDivID] === undefined || urlParams.layerProps[legendDivID] === null) {
+    urlParams.layerProps[legendDivID] = {};
+    urlParams.layerProps[legendDivID].visible = false;
+    urlParams.layerProps[legendDivID].opacity = viz.opacity || 1;
+  } else {
+    viz.opacity = urlParams.layerProps[legendDivID].opacity || 1;
+  }
   //AutoViz if specified
   //AutoViz if specified
   if (viz.autoViz) {
-    if (dictServerSide) {
+    if (viz.dictServerSide) {
       console.log("start");
       console.log(name);
       viz.eeObjInfo = viz.eeObjInfo.getInfo();
-      dictServerSide = false;
+      viz.dictServerSide = false;
       console.log(viz);
     }
     if (viz.bands === undefined || viz.bands === null) {
@@ -853,7 +876,6 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   timeLapseObj[legendDivID].visible = visible;
   timeLapseObj[legendDivID].state = "inactive";
   timeLapseObj[legendDivID].opacity = viz.opacity * 100;
-
   var layerContainerTitle =
     "Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.";
 
@@ -944,7 +966,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
         standardTileURLFunction(item + yr.toString() + "/", true, ""),
         vizT,
         name + " " + yr.toString(),
-        visible,
+        false,
         label,
         fontColor,
         helpBox,
@@ -989,7 +1011,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       vizT.legendTitle = name;
       vizT.opacity = 0;
       // console.log(vizT);
-      addToMap(ee.Image(img), vizT, name + " " + yr.toString(), visible, label, fontColor, helpBox, legendDivID + "-collapse-div", queryItem);
+      addToMap(ee.Image(img), vizT, name + " " + yr.toString(), false, label, fontColor, helpBox, legendDivID + "-collapse-div", queryItem);
     });
 
     // Set the time_start (which is used for pixel query charting) to the date used
@@ -1000,7 +1022,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
 
     if (viz.canAreaChart) {
       let vizTT = copyObj(viz);
-      vizTT = setupAreaChartParams(vizTT, dictServerSide, legendDivID);
+      vizTT = setupAreaChartParams(vizTT, legendDivID);
       // viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.layerType;
       // All a 1:2 layer to area chart object if both line and sankey are specified
       if (vizTT.areaChartParams.sankey && vizTT.areaChartParams.line) {
@@ -1057,6 +1079,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     value: timeLapseObj[legendDivID].opacity / 100,
     slide: function (e, ui) {
       var opacity = ui.value;
+      urlParams.layerProps[legendDivID].opacity = opacity;
       var k = legendDivID;
       var s = $("#" + k + "-opacity-slider").slider();
       s.slider("option", "value", ui.value);
@@ -1181,39 +1204,53 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
 }
 /////////////////////////////////////////////////////
 // Function to set up area charting params given viz params from addLayer
-function setupAreaChartParams(viz, dictServerSide, legendDivID) {
+function setupAreaChartParams(viz, legendDivID) {
   // viz = copyObj(viz);
   viz.areaChartParams = viz.areaChartParams || {};
   viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
   viz.areaChartParams.line = viz.areaChartParams.line || viz.areaChartParams.sankey == false;
   viz.areaChartParams.id = legendDivID;
-  if ((viz.bands === undefined || viz.bands === null) && dictServerSide) {
+  if (
+    (viz.areaChartParams.bandNames === undefined || viz.areaChartParams.bandNames === null) &&
+    (viz.bands === undefined || viz.bands === null) &&
+    viz.dictServerSide
+  ) {
     console.log("start");
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    dictServerSide = false;
+    viz.dictServerSide = false;
     console.log(viz);
   }
-  viz.areaChartParams.bandNames = viz.bands || viz.eeObjInfo.bandNames;
+  viz.areaChartParams.bandNames = viz.areaChartParams.bandNames || viz.bands || viz.eeObjInfo.bandNames;
 
-  if ((viz.class_names === undefined || viz.class_names === null) && dictServerSide) {
+  if (viz.autoViz && (viz.class_names === undefined || viz.class_names === null) && viz.dictServerSide) {
     console.log("start");
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
 
     console.log(viz);
-    dictServerSide = false;
+    viz.dictServerSide = false;
   }
-  if (viz.class_names === undefined || viz.class_names === null) {
+  if ((viz.autoViz && viz.class_names === undefined) || viz.class_names === null) {
     viz = addClassVizDicts(viz);
     viz.areaChartParams.class_dicts_added = true;
+  } else if (
+    (viz.areaChartParams.palette === undefined || viz.areaChartParams.palette === null) &&
+    viz.min !== undefined &&
+    viz.min !== null &&
+    viz.max !== undefined &&
+    viz.max !== null &&
+    viz.palette !== undefined &&
+    viz.palette !== null
+  ) {
+    viz.areaChartParams.palette_lookup = toObj(range(viz.min, viz.max + 1), get_poly_gradient_ct(viz.palette, viz.min, viz.max));
   }
-
   viz.areaChartParams.class_values = viz.class_values;
   viz.areaChartParams.class_names = viz.class_names;
   viz.areaChartParams.class_palette = viz.class_palette;
   viz.areaChartParams.class_visibility = viz.class_visibility;
 
   viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.eeObjectType;
-
+  viz.areaChartParams.eeObjInfo = viz.eeObjInfo;
+  viz.areaChartParams.dictServerSide = viz.dictServerSide;
   return viz;
 }
 /////////////////////////////////////////////////////
@@ -1225,8 +1262,7 @@ function addClassVizDicts(viz) {
     let bns = cls_names_keys.map((k) => k.split("_class_names")[0]);
 
     bns = bns.filter((bn) => viz.eeObjInfo.bandNames.indexOf(bn) > -1);
-
-    if (bns.length === 1) {
+    if (bns.length >= 1) {
       viz.autoViz = true;
       viz.class_names = {};
       viz.class_values = {};
@@ -1300,8 +1336,14 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   }
   viz.isTimeLapse = viz.isTimeLapse || false;
 
-  let dictServerSide = true;
-  if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+  viz.dictServerSide = true;
+  if (
+    viz.layerType !== "geoJSONVector" &&
+    viz.layerType !== "tileMapService" &&
+    viz.layerType !== "dynamicMapService" &&
+    (viz.eeObjInfo === undefined || viz.eeObjInfo === null)
+  ) {
+    // console.log(reverseTypeLookup[viz.layerType]);
     viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
   } else {
     viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
@@ -1317,20 +1359,20 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     console.log("start");
     console.log(name);
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    dictServerSide = false;
+    viz.dictServerSide = false;
     viz = addClassVizDicts(viz);
     console.log(viz);
   }
 
   //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
   if (viz.layerType === null || viz.layerType === undefined) {
-    if (dictServerSide) {
+    if (viz.dictServerSide) {
       console.log("start");
       console.log(name);
       viz.eeObjInfo = viz.eeObjInfo.getInfo();
       console.log(viz);
-      dictServerSide = false;
-      viz = addClassVizDicts(viz);
+      viz.dictServerSide = false;
+      // viz = addClassVizDicts(viz);
     }
     var eeType = viz.eeObjInfo.layerType;
 
@@ -1402,6 +1444,12 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
       viz.addToLegend = false;
     }
   }
+  if (viz.bands !== undefined && typeof viz.bands === "string") {
+    viz.bands = viz.bands.split(",");
+  }
+  if (viz.palette !== undefined && typeof viz.palette === "string") {
+    viz.palette = viz.palette.split(",");
+  }
 
   //Handle legend
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
@@ -1415,10 +1463,22 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   // legendDivID = legendDivID.replaceAll('%','-');
   // legendDivID = legendDivID.replaceAll('^','-');
 
+  // Handle layer visibility caching
+  if (viz.isTimeLapse === false) {
+    if (urlParams.layerProps[legendDivID] === undefined || urlParams.layerProps[legendDivID] === null) {
+      urlParams.layerProps[legendDivID] = {};
+      urlParams.layerProps[legendDivID].visible = visible === undefined ? true : visible;
+      urlParams.layerProps[legendDivID].opacity = viz.opacity || 1;
+    } else {
+      visible = urlParams.layerProps[legendDivID].visible;
+      viz.opacity = urlParams.layerProps[legendDivID].opacity;
+    }
+  }
+
   // Handle area charting
   if (viz.canAreaChart) {
-    viz = setupAreaChartParams(viz, dictServerSide, legendDivID);
-
+    viz = setupAreaChartParams(viz, legendDivID);
+    console.log(viz.areaChartParams);
     // All a 1:2 layer to area chart object if both line and sankey are specified
     if (viz.areaChartParams.sankey && viz.areaChartParams.line) {
       let areaChartParamsLine = copyObj(viz.areaChartParams);
@@ -1445,9 +1505,6 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   }
   if (viz.opacity == null) {
     viz.opacity = 1;
-  }
-  if (viz.bands !== undefined && typeof viz.bands === "string") {
-    viz.bands = viz.bands.split(",");
   }
 
   var layerObjKeys = Object.keys(layerObj);
@@ -1495,11 +1552,11 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
 
   //AutoViz if specified
   if (viz.autoViz && viz.isTimeLapse === false) {
-    if (dictServerSide) {
+    if (viz.dictServerSide) {
       console.log("start");
       console.log(name);
       viz.eeObjInfo = viz.eeObjInfo.getInfo();
-      dictServerSide = false;
+      viz.dictServerSide = false;
       viz = addClassVizDicts(viz);
       console.log(viz);
     }
@@ -2142,7 +2199,7 @@ function reRun() {
   intervalPeriod = 666.6666666;
   timeLapseID = null;
   timeLapseFrame = 0;
-  cumulativeMode = false;
+  cumulativeMode = urlParams.cumulativeMode;
   NEXT_LAYER_ID = 1;
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
@@ -2238,6 +2295,13 @@ function rgbToHex(r, g, b) {
 }
 //Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
 function hexToRgb(hex) {
+  if (hex.indexOf("#") === 0) {
+    hex = hex.slice(1);
+  }
+  // convert 3-digit hex to 6-digits.
+  if (hex.length === 3) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
@@ -2323,6 +2387,114 @@ function randomColors(n) {
   }
   return out;
 }
+//////////////////////////////////
+// Get a linearly interpolated color ramp of n colors
+function linear_gradient(start_hex, finish_hex = "#FFFFFF", n = 10) {
+  // returns a gradient list of (n) colors between
+  // two hex colors. start_hex and finish_hex
+  // should be the full six-digit color string,
+  // inlcuding the number sign ("#FFFFFF")
+  // Starting and ending colors in RGB form
+  s = Object.values(hexToRgb(start_hex));
+  f = Object.values(hexToRgb(finish_hex));
+
+  // Initilize a list of the output colors with the starting color
+  RGB_list = [s];
+  // Calcuate a color at each evenly spaced value of t from 1 to n
+  range(1, n).map((t) => {
+    // Interpolate RGB vector for color at the current value of t
+
+    curr_vector = range(0, 3).map((j) => {
+      // console.log(f[j] - s[j]);
+      return parseInt(s[j] + (parseFloat(t) / (n - 1)) * (f[j] - s[j]));
+    });
+    // Add it to our list of output colors
+    RGB_list.push(curr_vector);
+  });
+  let hex_list = RGB_list.map(rgbToHex);
+  // console.log(hex_list);
+  // // print(RGB_list)
+  return hex_list;
+}
+// Get 1 or more gradients between pairs of given colors for a total of n colors
+function polylinear_gradient(colors, n) {
+  // returns a list of colors forming linear gradients between
+  // all sequential pairs of colors. "n" specifies the total
+  // number of desired output colors
+  // The number of colors per individual linear gradient
+  n_out = parseInt(parseFloat(n) / (colors.length - 1)) + 1;
+  // console.log(n_out);
+  // print(('n',n))
+  // print(('n_out',n_out))
+  // If we don't have an even number of color values, we will remove equally spaced values at the end.
+  apply_offset = false;
+  if (n % n_out !== 0) {
+    apply_offset = true;
+    n_out = n_out + 1;
+    // print(('new n_out',n_out))
+  }
+  // console.log(apply_offset);
+  // returns dictionary defined by color_dict()
+  gradient_dict = linear_gradient(colors[0], colors[1], n_out);
+
+  if (colors.length > 2) {
+    range(1, colors.length - 1).map((col) => {
+      next = linear_gradient(colors[col], colors[col + 1], n_out).slice(1);
+      gradient_dict = gradient_dict.concat(next);
+      // ["hex", "r", "g", "b"].map(k=>gradient_dict[k] += next[k].slice(1))
+      // Exclude first point to avoid duplicates
+    });
+  }
+  // console.log(gradient_dict);
+  // // Remove equally spaced values here.
+  if (apply_offset === true) {
+    // indList = list(range(len(gradient_dict['hex'])))
+    offset = gradient_dict.length - n;
+    sliceval = [];
+    // print(('len(gradient_dict)',len(gradient_dict['hex'])))
+    // print(('offset',offset))
+    range(1, offset + 1).map((i) => sliceval.push(parseInt((gradient_dict.length * i) / parseFloat(offset + 2))));
+    // console.log(("sliceval", sliceval));
+    let out = [];
+    for (const [index, element] of gradient_dict.entries()) {
+      // console.log([index, element]);
+
+      if (sliceval.indexOf(index) === -1) {
+        out.push(element);
+      }
+      // console.log(index, element);
+    }
+    gradient_dict = out;
+    // console.log(gradient_dict);
+    // console.log(gradient_dict.length);
+    //     ["hex", "r", "g", "b"].map(k=>{
+    //         gradient_dict[k] = [
+    //             i for j, i in enumerate(gradient_dict[k]) if j not in sliceval
+    //         ]
+    //       })
+    //     // print(('new len dict', len(gradient_dict['hex'])))
+  }
+  return gradient_dict;
+}
+// Get a linearly interpolated set of colors from a given set of colors, spanning between a min and max (inclusive)
+function get_poly_gradient_ct(palette, min, max) {
+  // Take a palette and a set of min and max stretch values to get a 1:1 value to color hex list
+
+  // Args:
+  //     palette (list): A list of hex code colors that will be interpolated
+
+  //     min (int): The min value for the stretch
+
+  //     max (int): The max value for the stretch
+
+  // Returns:
+  //     list: A list of linearly interpolated hex codes where there is 1:1 color to value from min-max (inclusive)
+
+  ramp = polylinear_gradient(palette, max - min + 1);
+  return ramp;
+}
+// let t = get_poly_gradient_ct(["#FFFF00", "FF0000"], -0.005, 0.1);
+// console.log(t);
 //////////////////////////////////
 //Taken from: https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
 var colorList = [
