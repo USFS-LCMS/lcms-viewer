@@ -1139,48 +1139,56 @@ function runDynamic() {
   //  Map.centerObject(geometry)
 }
 
-function runDynamic() {
-  var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8"); //.filter('study_area=="CONUS"');
-  Map.addLayer(lcms.select([1]), { autoViz: true, canAreaChart: true }, "LCMS Land Cover");
+// function runDynamic() {
+//   var lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8"); //.filter('study_area=="CONUS"');
+//   Map.addLayer(
+//     lcms.select([1]).mode(), //.set(lcms.first().toDictionary()),
+//     {
+//       // autoViz: true,
+//       canAreaChart: true,
+//       areaChartParams: { reducer: ee.Reducer.min() },
+//     },
+//     "LCMS Land Cover"
+//   );
 
-  // areaChart.addLayer(lcms.select([0, 1]), {}, "LCMS");
-  // areaChart.addLayer(lcms.select(["Change_Raw_Probability.*"]), {}, "LCMS Change Prob");
-  // # Map.turnOnInspector()
-  // areaChart.populateChartLayerSelect();
+//   // areaChart.addLayer(lcms.select([0, 1]), {}, "LCMS");
+//   // areaChart.addLayer(lcms.select(["Change_Raw_Probability.*"]), {}, "LCMS Change Prob");
+//   // # Map.turnOnInspector()
+//   // areaChart.populateChartLayerSelect();
 
-  var composites = ee.ImageCollection("projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7");
+//   var composites = ee.ImageCollection("projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7");
 
-  let viz = vizParamsFalse10k;
-  viz["canAreaChart"] = true;
-  viz["areaChartParams"] = { bandNames: "blue,green,red,nir,swir1,swir2" };
+//   let viz = {}; //vizParamsFalse10k;
+//   viz["canAreaChart"] = true;
+//   // viz["areaChartParams"] = { bandNames: "blue,green,red,nir,swir1,swir2" };
 
-  let years = range(1985, 2023);
-  composites = ee.ImageCollection(
-    years.map((yr) => {
-      let t = composites.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
-      return t;
-    })
-  );
-  Map.addTimeLapse(composites, viz, "LCMS Composites");
-  // areaChart.turnOnAutoAreaCharting();
-  Map.turnOnAutoAreaCharting();
-  // Map.turnOnAutoAreaCharting();
-  //   var c = ee.ImageCollection("projects/lcms-292214/assets/Paper/Rasters_v2022-8/StandReplacing");
+//   let years = range(1985, 1990);
+//   composites = ee.ImageCollection(
+//     years.map((yr) => {
+//       let t = composites.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+//       return t;
+//     })
+//   );
+//   // Map.addTimeLapse(composites, viz, "LCMS Composites");
+//   // areaChart.turnOnAutoAreaCharting();
+//   Map.turnOnAutoAreaCharting();
+//   // Map.turnOnAutoAreaCharting();
+//   //   var c = ee.ImageCollection("projects/lcms-292214/assets/Paper/Rasters_v2022-8/StandReplacing");
 
-  //   Map.addLayer(
-  //     c,
-  //     {
-  //       canAreaChart: true,
-  //       min: 0,
-  //       max: 0.1,
-  //       reducer: ee.Reducer.stdDev(),
-  //       areaChartParams: {
-  //         palette: "08F,D80",
-  //         reducer: ee.Reducer.frequencyHistogram(),
-  //       },
-  //     },
-  //     "Stand Replacing"
-  //   );
+//   //   Map.addLayer(
+//   //     c,
+//   //     {
+//   //       canAreaChart: true,
+//   //       min: 0,
+//   //       max: 0.1,
+//   //       reducer: ee.Reducer.stdDev(),
+//   //       areaChartParams: {
+//   //         palette: "08F,D80",
+//   //         reducer: ee.Reducer.frequencyHistogram(),
+//   //       },
+//   //     },
+//   //     "Stand Replacing"
+//   //   );
 
-  //   Map.turnOnAutoAreaCharting();
-}
+//   //   Map.turnOnAutoAreaCharting();
+// }

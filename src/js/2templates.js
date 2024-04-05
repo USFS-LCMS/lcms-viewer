@@ -2644,6 +2644,12 @@ function addLayer(layer) {
     $("#" + spinnerID + "2").hide();
     $("#" + spinnerID + "3").hide();
     vizToggleCleanup();
+
+    if (!layer.viz.isTimeLapse) {
+      if (areaChart.autoChartingOn && layer.viz.canAreaChart) {
+        areaChart.chartMapExtent();
+      }
+    }
   }
   //Function to handle turning on different layer types
   function turnOn() {
@@ -2696,6 +2702,11 @@ function addLayer(layer) {
       // }
     }
     vizToggleCleanup();
+    if (!layer.viz.isTimeLapse) {
+      if (areaChart.autoChartingOn && layer.viz.canAreaChart) {
+        areaChart.chartMapExtent();
+      }
+    }
   }
   //Some functions to keep layers tidy
   function vizToggleCleanup() {

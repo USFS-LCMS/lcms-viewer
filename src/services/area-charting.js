@@ -48,7 +48,7 @@ function areaChartCls() {
   this.autoChartingOn = false;
   this.firstRun = true;
 
-  this.sankeyTransitionPeriodYearBuffer = 2;
+  this.sankeyTransitionPeriodYearBuffer = 0;
 
   //////////////////////////////////////////////////////////////////////////
   // Function for cleanup of all area chart layers and output divs
@@ -170,7 +170,8 @@ function areaChartCls() {
       obj.stackedAreaChart = params.stackedAreaChart || false;
       obj.steppedLine = params.steppedLine || false;
       obj.label = obj.name;
-
+      obj.shouldUnmask = params.shouldUnmask || false;
+      obj.unmaskValue = params.unmaskValue || 0;
       obj.xAxisLabel = params.xAxisLabel || obj.layerType === "ImageCollection" ? "Year" : "";
       obj.xAxisLabels = params.xAxisLabels;
 
@@ -187,8 +188,8 @@ function areaChartCls() {
       obj.xTickDateFormat = params.xTickDateFormat || null;
       obj.chartDecimalProportion = params.chartDecimalProportion;
       obj.chartPrecision = params.chartPrecision;
-      obj.scale = params.scale || null;
-      obj.transform = params.transform || [30, 0, -2361915, 0, -30, 3177735];
+      obj.scale = params.scale || scale;
+      obj.transform = params.transform || transform;
       obj.crs = params.crs || crs;
       obj.autoScale = params.autoScale || true; // Whether to set the reducer resolution to a larger number below a specified zoom (next param)
       obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 11; // Above this zoom level, it won't change the scale/transform of teh reducer
@@ -254,29 +255,30 @@ function areaChartCls() {
             obj.dictServerSide = false;
             console.log(params.eeObjInfo);
           }
-          if (Object.keys(params.eeObjInfo).indexOf(obj.xAxisProperty) === -1) {
+          if (obj.layerType === "ImageCollection" && Object.keys(params.eeObjInfo).indexOf(obj.xAxisProperty) === -1) {
             console.log("need to add x axis property value");
-            if (obj.layerType === "ImageCollection") {
-              // console.log(params.eeObjInfo);
-              obj.item = obj.item.map(function (img) {
-                return img.set("year", img.date().format(obj.dateFormat));
-              });
-              // obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
+            // if (obj.layerType === "ImageCollection") {
+            // console.log(params.eeObjInfo);
+            obj.item = obj.item.map(function (img) {
+              return img.set("year", img.date().format(obj.dateFormat));
+            });
+            // obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
 
-              // obj.item = tempItem;
-              // console.log("here");
-              // console.log(obj.xAxisLabels);
-            } else {
-              obj.item = obj.item.set("year", obj.item.date().format(obj.dateFormat));
-              // obj.xAxisLabels = [obj.item.get(obj.xAxisProperty).getInfo()];
-              // obj.item = tempItem;
-            }
+            // obj.item = tempItem;
+            // console.log("here");
+            // console.log(obj.xAxisLabels);
+            // }
+            // else {
+            //   obj.item = obj.item.set("year", obj.item.date().format(obj.dateFormat));
+            //   // obj.xAxisLabels = [obj.item.get(obj.xAxisProperty).getInfo()];
+            //   // obj.item = tempItem;
+            // }
           }
 
           if (obj.layerType === "ImageCollection") {
             obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
           } else {
-            obj.xAxisLabels = [obj.item.get(obj.xAxisProperty).getInfo()];
+            obj.xAxisLabels = [""]; //[obj.item.get(obj.xAxisProperty).getInfo()];
           }
         }
         obj.xAxisLabels = obj.xAxisLabels.map((l) => (isNaN(parseInt(l)) ? l : parseInt(l)));
@@ -554,7 +556,7 @@ function areaChartCls() {
         };
       });
     } else {
-      // console.log(colors);
+      colors = colors || [randomColor()];
       colors = colors.indexOf(null) > -1 ? colors.map((c) => randomColor()) : colors;
       table[0] = table[0].map((n) => n.slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"));
       var data = [
@@ -781,7 +783,12 @@ function areaChartCls() {
                   let colors = [];
                   let outCSV = [];
 
-                  selectedObj.class_names[bn].map((l) => labels.push(`${sankeyTransitionPeriods[0].join("-")} ${l}`));
+                  selectedObj.class_names[bn].map((l) => {
+                    let sankeyTransitionPeriod = sankeyTransitionPeriods[0];
+                    sankeyTransitionPeriod =
+                      sankeyTransitionPeriod[0] === sankeyTransitionPeriod[1] ? sankeyTransitionPeriod[0] : sankeyTransitionPeriod.join("-");
+                    labels.push(`${sankeyTransitionPeriod} ${l}`);
+                  });
                   selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                   Object.keys(counts).map((transitionPeriod) => {
@@ -789,7 +796,12 @@ function areaChartCls() {
                     let offset1 = (transitionPeriodI - 1) * selectedObj.class_names[bn].length;
                     let offset2 = transitionPeriodI * selectedObj.class_names[bn].length;
                     //Append labels and colors
-                    selectedObj.class_names[bn].map((l) => labels.push(`${sankeyTransitionPeriods[transitionPeriodI].join("-")} ${l}`));
+                    selectedObj.class_names[bn].map((l) => {
+                      let sankeyTransitionPeriod = sankeyTransitionPeriods[transitionPeriodI];
+                      sankeyTransitionPeriod =
+                        sankeyTransitionPeriod[0] === sankeyTransitionPeriod[1] ? sankeyTransitionPeriod[0] : sankeyTransitionPeriod.join("-");
+                      labels.push(`${sankeyTransitionPeriod} ${l}`);
+                    });
                     selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                     let countsTransitionPeriod = counts[transitionPeriod];
@@ -826,10 +838,20 @@ function areaChartCls() {
                     });
                     // console.log(countLookup);
                     outCSV.push(
-                      [""].concat(selectedObj.class_names[bn].map((nm) => `${nm.replace(/[^A-Za-z0-9]/g, "-")} ${transitionPeriod.split("---")[1]} `))
+                      [""].concat(
+                        selectedObj.class_names[bn].map((nm) => {
+                          let tp = transitionPeriod.split("---")[1];
+                          let tps = tp.split("-");
+                          tp = tps[0] === tps[1] ? tps[0] : tp;
+                          return `${nm.replace(/[^A-Za-z0-9]/g, "-")} ${tp} `;
+                        })
+                      )
                     );
                     selectedObj.class_names[bn].map((nm1) => {
-                      let line = [`${nm1.replace(/[^A-Za-z0-9]/g, "-")} ${transitionPeriod.split("---")[0]}`];
+                      let tp = transitionPeriod.split("---")[0];
+                      let tps = tp.split("-");
+                      tp = tps[0] === tps[1] ? tps[0] : tp;
+                      let line = [`${nm1.replace(/[^A-Za-z0-9]/g, "-")} ${tp}`];
                       selectedObj.class_names[bn].map((nm2) => {
                         let v = countLookup[`${nm1}---${nm2}`];
                         v = v !== undefined ? v : 0;
@@ -882,6 +904,10 @@ function areaChartCls() {
         // console.log(header);
         // console.log(areaChartCollectionStack.bandNames().getInfo());
         areaChartCollectionStack = areaChartCollectionStack.rename(selectedObj.stackBandNames);
+
+        if (selectedObj.shouldUnmask) {
+          areaChartCollectionStack = areaChartCollectionStack.unmask(selectedObj.unmaskValue);
+        }
         // console.log(areaChartCollectionStack.bandNames().getInfo());
         // this.getZonalStats(areaChartCollectionStack, area, selectedObj.reducer);
 

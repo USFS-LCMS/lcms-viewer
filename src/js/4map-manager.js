@@ -668,13 +668,17 @@ function alignTimeLapseCheckboxes() {
   });
 }
 function timeLapseCheckbox(id) {
-  var v = timeLapseObj[id].visible;
+  let tObj = timeLapseObj[id];
+  var v = tObj.visible;
 
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
     pauseButtonFunction(id);
   } else {
     stopTimeLapse(id);
+  }
+  if (areaChart.autoChartingOn && tObj.viz.canAreaChart) {
+    areaChart.chartMapExtent();
   }
   alignTimeLapseCheckboxes();
 }
@@ -1019,8 +1023,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     if (viz.dateField !== "system:time_start" || viz.canAreaChart) {
       item = ee.ImageCollection(cT);
     }
-
+    // console.log(viz.canAreaChart);
     if (viz.canAreaChart) {
+      // console.log("here");
       let vizTT = copyObj(viz);
       vizTT = setupAreaChartParams(vizTT, legendDivID);
       // viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.layerType;
@@ -1046,6 +1051,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       timeLapseObj[legendDivID].viz = vizTT;
       timeLapseObj[legendDivID].legendDivID = legendDivID;
       // console.log(params);
+    } else {
+      timeLapseObj[legendDivID].viz = viz;
+      timeLapseObj[legendDivID].legendDivID = legendDivID;
     }
   }
   //If its a tile map service, don't wait
@@ -1210,6 +1218,7 @@ function setupAreaChartParams(viz, legendDivID) {
   viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
   viz.areaChartParams.line = viz.areaChartParams.line || viz.areaChartParams.sankey == false;
   viz.areaChartParams.id = legendDivID;
+  viz.areaChartParams.dateFormat = viz.areaChartParams.dateFormat || viz.dateFormat || "YYYY";
   if (
     (viz.areaChartParams.bandNames === undefined || viz.areaChartParams.bandNames === null) &&
     (viz.bands === undefined || viz.bands === null) &&
@@ -1234,6 +1243,8 @@ function setupAreaChartParams(viz, legendDivID) {
     viz.areaChartParams.class_dicts_added = true;
   } else if (
     (viz.areaChartParams.palette === undefined || viz.areaChartParams.palette === null) &&
+    viz.areaChartParams.reducer !== undefined &&
+    viz.areaChartParams.reducer !== null &&
     viz.min !== undefined &&
     viz.min !== null &&
     viz.max !== undefined &&
