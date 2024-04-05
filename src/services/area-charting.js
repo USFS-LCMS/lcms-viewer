@@ -277,11 +277,13 @@ function areaChartCls() {
 
           if (obj.layerType === "ImageCollection") {
             obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
+            // console.log(obj.xAxisLabels);
           } else {
             obj.xAxisLabels = [""]; //[obj.item.get(obj.xAxisProperty).getInfo()];
           }
         }
-        obj.xAxisLabels = obj.xAxisLabels.map((l) => (isNaN(parseInt(l)) ? l : parseInt(l)));
+        obj.xAxisLabels = obj.xAxisLabels.map((l) => (isNaN(parseInt(l)) || (typeof l === "string" && l.indexOf("-") > -1) ? l : parseInt(l)));
+        // console.log(obj.xAxisLabels);
         // console.log(obj.xAxisLabels);
         if (obj.layerType === "ImageCollection") {
           obj.stackBandNames = [];

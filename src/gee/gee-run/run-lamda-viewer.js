@@ -83,7 +83,7 @@ function runLAMDA() {
         max: output_type_stretch[output_type]["stretch"],
         canAreaChart: true,
         palette: continuous_palette_chastain,
-        dateFormat: "YYMMdd",
+        dateFormat: "YY-MM-dd",
         advanceInterval: "day",
         legendLabelLeftAfter: output_type_stretch[output_type]["legendLabel"],
         legendLabelRightAfter: output_type_stretch[output_type]["legendLabel"],
@@ -94,7 +94,7 @@ function runLAMDA() {
         max: 254,
         canAreaChart: true,
         palette: continuous_palette_chastain,
-        dateFormat: "YYMMdd",
+        dateFormat: "YY-MM-dd",
         advanceInterval: "day",
       };
 
@@ -108,7 +108,7 @@ function runLAMDA() {
         canAreaChart: true,
         autoViz: true,
         // palette: "ffaa00,e10000,e100c5",
-        dateFormat: "YYMMdd",
+        dateFormat: "YY-MM-dd",
         advanceInterval: "day",
         areaChartParams: { shouldUnmask: true },
         // classLegendDict: {
