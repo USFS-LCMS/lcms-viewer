@@ -558,11 +558,11 @@ function runSequoia() {
       strokeColor: "eb7a38", //orange
       layerType: "geeVectorImage",
     },
-    "Monitoring Sites",
+    "Trees of Special Interest",//"Monitoring Sites",
     true,
     null,
     null,
-    "Trees of special interest"
+    "Monitoring Sites"//"Trees of special interest"
   );
   Map.addLayer(
     potentialLossSites.map((f) => {
@@ -572,11 +572,11 @@ function runSequoia() {
       strokeColor: "FF0", // yellow,
       layerType: "geeVectorImage",
     },
-    "Monitoring Sites Flagged for Potential Loss",
+    "Trees of Special Interest Flagged for Potential Loss",
     true,
     null,
     null,
-    "Trees of special interest that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
+    "Monitoring sites that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
   );
   Map.addLayer(studyArea, { strokeColor: "0000FF", layerType: "geeVectorImage" }, "Study Area", true);
 
