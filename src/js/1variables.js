@@ -618,6 +618,12 @@ if (urlParams.projectID !== null && urlParams.projectID !== undefined && urlPara
   projectID = urlParams.projectID;
 }
 
+if (urlParams.layerProps === undefined || urlParams.layerProps === null) {
+  urlParams.layerProps = {};
+}
+if (urlParams.cumulativeMode === undefined || urlParams.cumulativeMode === null) {
+  urlParams.cumulativeMode = false;
+}
 var plotsOn = false;
 
 /////////////////////////////////////////////////////

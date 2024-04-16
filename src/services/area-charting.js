@@ -48,7 +48,7 @@ function areaChartCls() {
   this.autoChartingOn = false;
   this.firstRun = true;
 
-  this.sankeyTransitionPeriodYearBuffer = 2;
+  this.sankeyTransitionPeriodYearBuffer = 0;
 
   //////////////////////////////////////////////////////////////////////////
   // Function for cleanup of all area chart layers and output divs
@@ -61,6 +61,15 @@ function areaChartCls() {
   //////////////////////////////////////////////////////////////////////////
   // Add chart layer object
   this.addLayer = function (eeLayer, params = {}, name, shouldChart = true) {
+    if (params !== null && params !== undefined && params.serialized !== null && params.serialized !== undefined && params.serialized === true) {
+      eeLayer = ee.Deserializer.decode(eeLayer);
+
+      if (params.reducer !== undefined && params.reducer !== null) {
+        params.reducer = ee.Deserializer.fromJSON(params.reducer);
+      }
+      params.serialized = false;
+    }
+
     // this.outstandingAddLayers++;
     // setTimeout(() => {
     $("#map-defined-area-chart-label").show();
@@ -71,7 +80,26 @@ function areaChartCls() {
     obj.id = params.id || obj.name.replaceAll(" ", "-") + "-" + this.areaChartID.toString();
     obj.id = obj.id.replace(/[^A-Za-z0-9]/g, "-");
 
-    obj.layerType = params.layerType || ee.Algorithms.ObjectType(eeLayer).getInfo();
+    if (params.dictServerSide !== undefined && params.dictServerSide !== null) {
+      obj.dictServerSide = params.dictServerSide;
+    } else {
+      obj.dictServerSide = true;
+    }
+
+    params.eeObjInfo = params.eeObjInfo || getImagesLib.eeObjInfo(eeLayer, obj.layerType);
+    // console.log(params.eeObjInfo);
+    if (params.layerType === undefined || params.layerType === null) {
+      if (obj.dictServerSide === true) {
+        console.log("start");
+        params.eeObjInfo = params.eeObjInfo.getInfo();
+        obj.dictServerSide = false;
+        console.log(params.eeObjInfo);
+      }
+      obj.layerType = params.eeObjInfo.layerType;
+    } else {
+      obj.layerType = params.layerType;
+    }
+
     eeLayer = obj.layerType === "ImageCollection" ? ee.ImageCollection(eeLayer) : ee.Image(eeLayer);
     // console.log(obj.layerType);
     if (obj.layerType !== "ImageCollection" && obj.layerType !== "Image") {
@@ -96,14 +124,11 @@ function areaChartCls() {
       // let bandNames = obj.layerType === "ImageCollection" ? eeLayer.first().bandNames() : eeLayer.bandNames();
       // let dict = obj.layerType === "ImageCollection" ? eeLayer.first().toDictionary() : eeLayer.toDictionary();
 
-      let dictServerSide = true;
-      params.eeObjInfo = getImagesLib.eeObjInfo(eeLayer, obj.layerType);
-
       if (params.bandNames === undefined || params.bandNames === null) {
-        if (dictServerSide) {
+        if (obj.dictServerSide) {
           console.log("start");
           params.eeObjInfo = params.eeObjInfo.getInfo();
-          dictServerSide = false;
+          obj.dictServerSide = false;
           console.log(params);
         }
         obj.bandNames = params.eeObjInfo.bandNames;
@@ -113,13 +138,11 @@ function areaChartCls() {
 
       obj.bandNames = typeof obj.bandNames === "string" ? obj.bandNames.split(",") : obj.bandNames;
 
-      //   console.log(dict);
-      console.log(params);
       if ((params.class_names === undefined || params.class_names === null) && params.class_dicts_added !== true) {
-        if (dictServerSide) {
+        if (obj.dictServerSide) {
           console.log("start");
           params.eeObjInfo = params.eeObjInfo.getInfo();
-          dictServerSide = false;
+          obj.dictServerSide = false;
           console.log(params);
         }
         params = addClassVizDicts(params);
@@ -138,17 +161,20 @@ function areaChartCls() {
         obj.bandNames = Object.keys(obj.class_names);
         obj.item = obj.item.select(obj.bandNames);
       }
-      obj.palette = params.palette || Array(obj.bandNames.length).fill(null);
+      obj.palette = params.palette; // || Array(obj.bandNames.length).fill(null);
       if (typeof obj.palette === "string") {
         obj.palette = obj.palette.split(",");
       }
-
+      obj.palette_lookup = params.palette_lookup;
       obj.chartType = params.chartType || "line";
       obj.stackedAreaChart = params.stackedAreaChart || false;
       obj.steppedLine = params.steppedLine || false;
       obj.label = obj.name;
-
+      obj.shouldUnmask = params.shouldUnmask || false;
+      obj.unmaskValue = params.unmaskValue || 0;
       obj.xAxisLabel = params.xAxisLabel || obj.layerType === "ImageCollection" ? "Year" : "";
+      obj.xAxisLabels = params.xAxisLabels;
+
       obj.xAxisProperty = params.xAxisProperty || obj.layerType === "ImageCollection" ? "year" : "system:index";
       obj.size = obj.layerType === "ImageCollection" ? obj.item.size().getInfo() : 1;
 
@@ -162,8 +188,8 @@ function areaChartCls() {
       obj.xTickDateFormat = params.xTickDateFormat || null;
       obj.chartDecimalProportion = params.chartDecimalProportion;
       obj.chartPrecision = params.chartPrecision;
-      obj.scale = params.scale || null;
-      obj.transform = params.transform || [30, 0, -2361915, 0, -30, 3177735];
+      obj.scale = params.scale || scale;
+      obj.transform = params.transform || transform;
       obj.crs = params.crs || crs;
       obj.autoScale = params.autoScale || true; // Whether to set the reducer resolution to a larger number below a specified zoom (next param)
       obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 11; // Above this zoom level, it won't change the scale/transform of teh reducer
@@ -222,23 +248,42 @@ function areaChartCls() {
           obj.sankey_class_palette[bn] = bn_sankey_class_palette;
         });
       } else {
-        if (obj.xAxisProperty === "year") {
-          if (obj.layerType === "ImageCollection") {
-            let tempItem = obj.item.map(function (img) {
+        if (obj.xAxisLabels === undefined || obj.xAxisLabels === null) {
+          if (obj.dictServerSide) {
+            console.log("start");
+            params.eeObjInfo = params.eeObjInfo.getInfo();
+            obj.dictServerSide = false;
+            console.log(params.eeObjInfo);
+          }
+          if (obj.layerType === "ImageCollection" && Object.keys(params.eeObjInfo).indexOf(obj.xAxisProperty) === -1) {
+            console.log("need to add x axis property value");
+            // if (obj.layerType === "ImageCollection") {
+            // console.log(params.eeObjInfo);
+            obj.item = obj.item.map(function (img) {
               return img.set("year", img.date().format(obj.dateFormat));
             });
-            obj.xAxisLabels = tempItem.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
-          } else {
-            let tempItem = obj.item.set("year", obj.item.date().format(obj.dateFormat));
-            obj.xAxisLabels = [tempItem.get(obj.xAxisProperty).getInfo()];
+            // obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
+
+            // obj.item = tempItem;
+            // console.log("here");
+            // console.log(obj.xAxisLabels);
+            // }
+            // else {
+            //   obj.item = obj.item.set("year", obj.item.date().format(obj.dateFormat));
+            //   // obj.xAxisLabels = [obj.item.get(obj.xAxisProperty).getInfo()];
+            //   // obj.item = tempItem;
+            // }
           }
-        } else {
+
           if (obj.layerType === "ImageCollection") {
             obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
+            // console.log(obj.xAxisLabels);
           } else {
-            obj.xAxisLabels = [obj.item.get(obj.xAxisProperty).getInfo()];
+            obj.xAxisLabels = [""]; //[obj.item.get(obj.xAxisProperty).getInfo()];
           }
         }
+        obj.xAxisLabels = obj.xAxisLabels.map((l) => (isNaN(parseInt(l)) || (typeof l === "string" && l.indexOf("-") > -1) ? l : parseInt(l)));
+        // console.log(obj.xAxisLabels);
         // console.log(obj.xAxisLabels);
         if (obj.layerType === "ImageCollection") {
           obj.stackBandNames = [];
@@ -250,10 +295,18 @@ function areaChartCls() {
           // Mosaic if many :1 image to xAxisLabel exists
           if (obj.size > obj.xAxisLabels.length) {
             console.log("Mosaicking for single image per x label");
+            // console.log(obj.xAxisLabels);
+            // console.log(obj.size);
+            // console.log(obj.item.first().getInfo());
+            // console.log(obj.xAxisProperty);
             let temp = [];
+
             obj.xAxisLabels.map((l) => {
-              l = isNaN(parseInt(l)) ? l : parseInt(l);
-              temp.push(obj.item.filter(ee.Filter.eq(obj.xAxisProperty, l)).mosaic().set(obj.xAxisProperty, l));
+              // l = isNaN(parseInt(l)) ? l : parseInt(l);
+              let t = obj.item.filter(ee.Filter.eq(obj.xAxisProperty, l));
+              let f = t.first();
+              t = t.mosaic().copyProperties(f).set(obj.xAxisProperty, l);
+              temp.push(t);
             });
             obj.size = temp.length;
             obj.item = ee.ImageCollection(temp);
@@ -494,17 +547,18 @@ function areaChartCls() {
       // console.log(yColumns);
       // console.log(xColumn);
       var data = yColumns.map((i) => {
+        let c = colors !== undefined ? colors[i - iOffset] : null;
         return {
           x: xColumn,
           y: arrayColumn(table, i).map(smartToFixed),
           // mode: "lines",
           visible: visible[i - 1],
           name: header[i].slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"),
-          line: { color: colors[i - iOffset] },
+          line: { color: c },
         };
       });
     } else {
-      // console.log(colors);
+      colors = colors || [randomColor()];
       colors = colors.indexOf(null) > -1 ? colors.map((c) => randomColor()) : colors;
       table[0] = table[0].map((n) => n.slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"));
       var data = [
@@ -634,7 +688,7 @@ function areaChartCls() {
             selectedChartLayers.push([o.legendDivID, o.visible]);
           }
         });
-      console.log(selectedChartLayers);
+      // console.log(selectedChartLayers);
       selectedChartLayers = Object.fromEntries(selectedChartLayers.filter(([k, v]) => v));
     } else {
       selectedChartLayers = Object.fromEntries(Object.entries(checkboxSelectedChartLayers).filter(([k, v]) => v));
@@ -731,7 +785,12 @@ function areaChartCls() {
                   let colors = [];
                   let outCSV = [];
 
-                  selectedObj.class_names[bn].map((l) => labels.push(`${sankeyTransitionPeriods[0].join("-")} ${l}`));
+                  selectedObj.class_names[bn].map((l) => {
+                    let sankeyTransitionPeriod = sankeyTransitionPeriods[0];
+                    sankeyTransitionPeriod =
+                      sankeyTransitionPeriod[0] === sankeyTransitionPeriod[1] ? sankeyTransitionPeriod[0] : sankeyTransitionPeriod.join("-");
+                    labels.push(`${sankeyTransitionPeriod} ${l}`);
+                  });
                   selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                   Object.keys(counts).map((transitionPeriod) => {
@@ -739,7 +798,12 @@ function areaChartCls() {
                     let offset1 = (transitionPeriodI - 1) * selectedObj.class_names[bn].length;
                     let offset2 = transitionPeriodI * selectedObj.class_names[bn].length;
                     //Append labels and colors
-                    selectedObj.class_names[bn].map((l) => labels.push(`${sankeyTransitionPeriods[transitionPeriodI].join("-")} ${l}`));
+                    selectedObj.class_names[bn].map((l) => {
+                      let sankeyTransitionPeriod = sankeyTransitionPeriods[transitionPeriodI];
+                      sankeyTransitionPeriod =
+                        sankeyTransitionPeriod[0] === sankeyTransitionPeriod[1] ? sankeyTransitionPeriod[0] : sankeyTransitionPeriod.join("-");
+                      labels.push(`${sankeyTransitionPeriod} ${l}`);
+                    });
                     selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                     let countsTransitionPeriod = counts[transitionPeriod];
@@ -776,10 +840,20 @@ function areaChartCls() {
                     });
                     // console.log(countLookup);
                     outCSV.push(
-                      [""].concat(selectedObj.class_names[bn].map((nm) => `${nm.replace(/[^A-Za-z0-9]/g, "-")} ${transitionPeriod.split("---")[1]} `))
+                      [""].concat(
+                        selectedObj.class_names[bn].map((nm) => {
+                          let tp = transitionPeriod.split("---")[1];
+                          let tps = tp.split("-");
+                          tp = tps[0] === tps[1] ? tps[0] : tp;
+                          return `${nm.replace(/[^A-Za-z0-9]/g, "-")} ${tp} `;
+                        })
+                      )
                     );
                     selectedObj.class_names[bn].map((nm1) => {
-                      let line = [`${nm1.replace(/[^A-Za-z0-9]/g, "-")} ${transitionPeriod.split("---")[0]}`];
+                      let tp = transitionPeriod.split("---")[0];
+                      let tps = tp.split("-");
+                      tp = tps[0] === tps[1] ? tps[0] : tp;
+                      let line = [`${nm1.replace(/[^A-Za-z0-9]/g, "-")} ${tp}`];
                       selectedObj.class_names[bn].map((nm2) => {
                         let v = countLookup[`${nm1}---${nm2}`];
                         v = v !== undefined ? v : 0;
@@ -832,6 +906,10 @@ function areaChartCls() {
         // console.log(header);
         // console.log(areaChartCollectionStack.bandNames().getInfo());
         areaChartCollectionStack = areaChartCollectionStack.rename(selectedObj.stackBandNames);
+
+        if (selectedObj.shouldUnmask) {
+          areaChartCollectionStack = areaChartCollectionStack.unmask(selectedObj.unmaskValue);
+        }
         // console.log(areaChartCollectionStack.bandNames().getInfo());
         // this.getZonalStats(areaChartCollectionStack, area, selectedObj.reducer);
 
@@ -849,16 +927,34 @@ function areaChartCls() {
                 let colors = [];
                 let visible = [];
                 if (selectedObj.isThematic === true) {
+                  selectedObj.class_namesT = {};
                   selectedObj.bandNames.map((bn) => {
                     let bnL = bn.replace(/[^A-Za-z0-9]/g, "-");
                     let nameStart = `${bnL}-`;
-                    let class_namesT = selectedObj.class_names !== null ? selectedObj.class_names[bn] : Object.keys(counts[bn]);
-                    let class_paletteT =
-                      selectedObj.class_palette !== null
-                        ? selectedObj.class_palette[bn]
-                        : selectedObj.palette !== null
-                        ? selectedObj.palette
-                        : Object.keys(counts[bn]).map((c) => null);
+                    let class_namesT;
+                    if (selectedObj.class_names !== null) {
+                      class_namesT = selectedObj.class_names[bn];
+                    } else if (counts[bn] !== undefined) {
+                      class_namesT = Object.keys(counts[bn]);
+                    } else {
+                      let bnsT = Object.keys(counts).filter((k) => k.indexOf(bn) > -1);
+                      class_namesT = [];
+                      bnsT.map((bnT) => (class_namesT = class_namesT.concat(Object.keys(counts[bnT]))));
+                      class_namesT = unique(class_namesT);
+                      // console.log(class_namesT);
+                      selectedObj.class_namesT[bn] = class_namesT;
+                    }
+                    let class_paletteT;
+                    if (selectedObj.class_palette !== null) {
+                      class_paletteT = selectedObj.class_palette[bn];
+                    } else if (selectedObj.palette !== undefined && selectedObj.palette !== null) {
+                      class_paletteT = selectedObj.palette;
+                    } else if (selectedObj.palette_lookup !== undefined && selectedObj.palette_lookup !== null) {
+                      class_paletteT = class_namesT.map((cn) => selectedObj.palette_lookup[cn]);
+                    } else {
+                      class_paletteT = class_namesT.map((c) => null);
+                    }
+                    // console.log(class_paletteT);
                     if (selectedObj.bandNames.length == 1) {
                       nameStart = "";
                     }
@@ -900,8 +996,8 @@ function areaChartCls() {
                     if (selectedObj.isThematic) {
                       selectedObj.bandNames.map((bn) => {
                         let countsT = counts[`${xLabel}${selectedObj.splitStr}${bn}`];
-                        let values = selectedObj.class_values[bn];
-                        let names = selectedObj.class_names[bn];
+                        let values = selectedObj.class_values !== null ? selectedObj.class_values[bn] : selectedObj.class_namesT[bn];
+                        let names = selectedObj.class_names !== null ? selectedObj.class_names[bn] : selectedObj.class_namesT[bn];
                         let pixelTotal = sum(Object.values(countsT)) || 0;
                         if (areaChartFormat === "Percentage") {
                           mult = (1 / pixelTotal) * 100;

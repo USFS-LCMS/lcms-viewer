@@ -406,7 +406,15 @@ function runSequoia() {
   var sekiLiveTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive");
   var tharpsSequoias = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias");
   var sierraGroves = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py");
+  // var deadTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/filtered_dead_trees");
 
+  // Map.addLayer(
+  //   deadTrees.map((f) => {
+  //     return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
+  //   }),
+  //   {},
+  //   "Dead Trees"
+  // );
   // Add MTBS layers to Reference data
   Map.addLayer(
     mtbs.count(),

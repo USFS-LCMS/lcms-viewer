@@ -15,6 +15,7 @@ function runLAMDA() {
   var bucketName = "lamda-products";
   var study_areas = ["CONUS", "AK"];
   var output_types = ["Z", "TDD"];
+  Map.setQueryTransform([240, 0, -2361915, 0, -240, 3177735]);
   var output_type_stretch = {
     Z: {
       scale_factor: 1000,
@@ -80,8 +81,10 @@ function runLAMDA() {
       var raw_viz = {
         min: output_type_stretch[output_type]["stretch"] * -1,
         max: output_type_stretch[output_type]["stretch"],
+        canAreaChart: true,
+        areaChartParams: { minZoomSpecifiedScale: 9 },
         palette: continuous_palette_chastain,
-        dateFormat: "YYMMdd",
+        dateFormat: "YY-MM-dd",
         advanceInterval: "day",
         legendLabelLeftAfter: output_type_stretch[output_type]["legendLabel"],
         legendLabelRightAfter: output_type_stretch[output_type]["legendLabel"],
@@ -90,22 +93,31 @@ function runLAMDA() {
       var eight_bit_viz = {
         min: 0,
         max: 254,
+        canAreaChart: true,
+        areaChartParams: { minZoomSpecifiedScale: 9 },
         palette: continuous_palette_chastain,
-        dateFormat: "YYMMdd",
+        dateFormat: "YY-MM-dd",
         advanceInterval: "day",
       };
+
+      var persistence_values = [1, 2, 3];
+      var persistence_names = ["1 Detection", "2 Detections", "3 or More Detections"];
+      var persistence_palette = "ffaa00,e10000,e100c5".split(",");
       var persistence_viz = {
-        min: 1,
-        max: 3,
-        opacity: 1,
-        palette: "ffaa00,e10000,e100c5",
-        dateFormat: "YYMMdd",
+        // min: 1,
+        // max: 3,
+        // opacity: 1,
+        canAreaChart: true,
+        autoViz: true,
+        // palette: "ffaa00,e10000,e100c5",
+        dateFormat: "YY-MM-dd",
         advanceInterval: "day",
-        classLegendDict: {
-          "1 Detection": "ffaa00",
-          "2 Detections": "e10000",
-          "3 or More Detections": "e100c5",
-        },
+        areaChartParams: { shouldUnmask: true, minZoomSpecifiedScale: 9 },
+        // classLegendDict: {
+        //   "1 Detection": "ffaa00",
+        //   "2 Detections": "e10000",
+        //   "3 or More Detections": "e100c5",
+        // },
       };
       var persistenceT = persistence.filter((n) => n.indexOf(output_type) > -1);
       var rawsT = raws.filter((n) => n.indexOf(output_type) > -1);
@@ -132,6 +144,12 @@ function runLAMDA() {
       }
 
       if (persistenceT.length > 0) {
+        let bn = `LAMDA_${output_type}`;
+        let vizProps = {};
+        vizProps[`${bn}_class_names`] = persistence_names;
+        vizProps[`${bn}_class_values`] = persistence_values;
+        vizProps[`${bn}_class_palette`] = persistence_palette;
+
         var persistence_c = ee.ImageCollection.fromImages(
           persistence_days.map(function (persistence_day) {
             var t = persistenceT.filter((n) => n.indexOf("_jds" + persistence_day) > -1);
@@ -144,12 +162,13 @@ function runLAMDA() {
               )
               .mosaic()
               .selfMask()
-              .set("system:time_start", getDate(t[0], "_jds", 2));
+              .set("system:time_start", getDate(t[0], "_jds", 2))
+              .set(vizProps);
             // console.log(output_type+' '+persistence_day);console.log(t);
             // Map.addLayer(img,persistence_viz,`${output_type} ${persistence_day} persistence`,false);
             return img;
           })
-        ).select([0], [`LAMDA ${output_type}`]);
+        ).select([0], [bn]);
 
         //      var persistence_c = persistence.map(function(t){
         //          var img = ee.Image.loadGeoTIFF(`gs://${bucketName}/${t}`)
@@ -161,6 +180,9 @@ function runLAMDA() {
         Map.addTimeLapse(persistence_c, persistence_viz, `${output_type} persistence`);
       }
     });
+
+    // Map.turnOnInspector();
+    Map.turnOnAutoAreaCharting();
     //    // pixelChartCollections[`${study_area}-pixel-charting`] =  {
     //      //     'label':`${study_area} Time Series`,
     //      //     'collection':joined,

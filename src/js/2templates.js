@@ -2496,7 +2496,7 @@ function addLayer(layer) {
     timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
     isDraggable = "not-draggable-layer";
   }
-  if (layer.layerType === "geeVector" || layer.layerType === "geoJSONVector") {
+  if (layer.layerType === "geeVector" || layer.layerType === "geoJSONVector" || layer.layerType === "dynamicMapService") {
     isDraggable = "not-draggable-layer";
   }
   //Set up layer control container
@@ -2519,6 +2519,9 @@ function addLayer(layer) {
     value: layer.opacity * 100,
     slide: function (e, ui) {
       layer.opacity = ui.value / 100;
+      if (layer.viz.isTimeLapse === false) {
+        urlParams.layerProps[layer.id].opacity = layer.opacity;
+      }
       // console.log(layer.opacity);
       if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
         layer.layer.setOpacity(layer.opacity);
@@ -2594,6 +2597,9 @@ function addLayer(layer) {
   //Function to handle turning off of different types of layers
   function turnOff() {
     ga("send", "event", "layer-off", layer.layerType, layer.name);
+    if (!layer.viz.isTimeLapse) {
+      urlParams.layerProps[id].visible = false;
+    }
     if (layer.layerType === "dynamicMapService") {
       layer.layer.setMap(null);
       layer.visible = false;
@@ -2638,12 +2644,19 @@ function addLayer(layer) {
     $("#" + spinnerID + "2").hide();
     $("#" + spinnerID + "3").hide();
     vizToggleCleanup();
+
+    if (!layer.viz.isTimeLapse) {
+      if (areaChart.autoChartingOn && layer.viz.canAreaChart) {
+        areaChart.chartMapExtent();
+      }
+    }
   }
   //Function to handle turning on different layer types
   function turnOn() {
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       turnOffTimeLapseCheckboxes();
+      urlParams.layerProps[id].visible = true;
     }
     if (layer.layerType === "dynamicMapService") {
       layer.layer.setMap(map);
@@ -2662,7 +2675,9 @@ function addLayer(layer) {
         layer.percent = 100;
         updateProgress();
       }
-      layer.layer.setOpacity(layer.opacity);
+      if (!layer.viz.isTimeLapse) {
+        layer.layer.setOpacity(layer.opacity);
+      }
       if (layer.layerType !== "tileMapService" && layer.layerType !== "dynamicMapService" && layer.canQuery) {
         queryObj[queryID].visible = layer.visible;
       }
@@ -2687,6 +2702,11 @@ function addLayer(layer) {
       // }
     }
     vizToggleCleanup();
+    if (!layer.viz.isTimeLapse) {
+      if (areaChart.autoChartingOn && layer.viz.canAreaChart) {
+        areaChart.chartMapExtent();
+      }
+    }
   }
   //Some functions to keep layers tidy
   function vizToggleCleanup() {
@@ -2807,6 +2827,9 @@ function addLayer(layer) {
           .copyProperties(layer.imageCollection.first())
           .set(layer.item.toDictionary())
       );
+      if (layer.viz.selfMask === true) {
+        layer.item = layer.item.selfMask();
+      }
 
       //Handle vectors
     } else if (layer.layerType === "geeVectorImage" || layer.layerType === "geeVector") {
@@ -2933,6 +2956,11 @@ function addLayer(layer) {
             "background",
             `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
           );
+
+          if (timeLapseObj[layer.viz.timeLapseID].userChosenVisible === true) {
+            console.log("here");
+            $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").click();
+          }
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
@@ -3106,6 +3134,13 @@ function addLayer(layer) {
           $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").show();
 
           timeLapseObj[layer.viz.timeLapseID].isReady = true;
+
+          if (urlParams.layerProps[layer.viz.timeLapseID].visible === true) {
+            timeLapseCheckbox(layer.viz.timeLapseID);
+          }
+          if (urlParams.cumulativeMode === true) {
+            turnOnCumulativeMode();
+          }
         }
       }
       $("#" + visibleLabelID).show();

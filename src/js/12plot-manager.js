@@ -73,7 +73,7 @@ function loadPlots(plotProjectObj) {
         addPlot(f);
       });
       // console.log(json)
-      Map2.addLayer(
+      Map.addLayer(
         json,
         { layerType: "geoJSONVector", strokeColor: "#F00" },
         plotProjectObj.name + " Plots",
