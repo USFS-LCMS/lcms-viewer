@@ -181,6 +181,32 @@ h5 {
   padding-right: 0px;
   padding-top: 0.1rem;
 }
+.legend-container {
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.5rem;
+}
+.legend-colorRamp {
+  font-size: 0.9rem;
+  width: 5rem;
+}
+.colorRamp {
+  /* position: absolute; */
+  /* left: 0px; */
+  /* top: 0px; */
+  /* display: inline-block; */
+  width: 1.5rem;
+  height: 3rem;
+}
+.colorRamp-labels {
+  padding-left: 2rem;
+}
+.top-colorRamp-label {
+  padding-top: 0rem;
+}
+.bottom-colorRamp-label {
+  padding-top: 0.5rem;
+}
 .row {
   margin-right: 0rem;
   margin-left: 0rem;

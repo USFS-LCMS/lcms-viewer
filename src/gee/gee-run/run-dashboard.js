@@ -113,14 +113,14 @@ function runDashboard() {
       unique_fieldname: "DISTRICTNA",
       visible: false,
       color: "FF8",
-      title: "USFS Forest District boundaries",
+      title: "U.S. Department of Agriculture, Forest Service Forest District boundaries",
     },
     "USFS Forests": {
       path: "Forests",
       unique_fieldname: "FORESTNAME",
       visible: false,
       color: "8F8",
-      title: "USFS Forest boundaries",
+      title: "U.S. Department of Agriculture, Forest Service Forest boundaries",
     },
   };
   if (urlParams.onlyIncludeFacts == true) {
@@ -216,7 +216,9 @@ function runDashboard() {
 
   let lcmsRun = {};
   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
-  lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten());
+  lcmsRun.lcms = ee.ImageCollection(
+    ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten()
+  );
 
   //Get properties image
   lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());

@@ -701,7 +701,7 @@ function runDynamic() {
   // areaChart.addLayer(lcpri, { sankey: true }, "LCMAP LC Transition", false);
   lcmsRun.lcms = ee
     // .ImageCollection("projects/lcms-292214/assets/Final_Outputs/2022-8/HAWAII")
-    .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
+    .ImageCollection(studyAreaDict[studyAreaName].final_collections[1])
     .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]);
 
   // .filter('study_area=="CONUS"');
@@ -789,46 +789,6 @@ function runDynamic() {
 
   // lcmsRun.lcms = lcmsRun.lcms.map((img) => img.set("Change_class_visibility", changeVisibility));
   // console.log(lcmsRun.lcms.first().bandNames().getInfo());
-  // let allLossYearPalette = [
-  //   "#ffffe5",
-  //   "#fffddf",
-  //   "#fffcd9",
-  //   "#fffbd3",
-  //   "#fffacd",
-  //   "#fff9c7",
-  //   "#fff7bc",
-  //   "#fef4b5",
-  //   "#fef1af",
-  //   "#feeea9",
-  //   "#feeba3",
-  //   "#fee597",
-  //   "#fee391",
-  //   "#fede87",
-  //   "#feda7e",
-  //   "#fed574",
-  //   "#fecc61",
-  //   "#fec858",
-  //   "#fec44f",
-  //   "#febd49",
-  //   "#feb744",
-  //   "#feab39",
-  //   "#fea533",
-  //   "#fe9f2e",
-  //   "#fe9929",
-  //   "#fb9326",
-  //   "#f68720",
-  //   "#f3811d",
-  //   "#f17b1a",
-  //   "#ee7517",
-  //   "#ec7014",
-  //   "#e76a11",
-  //   "#e2650e",
-  //   "#de600c",
-  //   "#d95b09",
-  //   "#d55607",
-  //   "#d05104",
-  //   "#cc4c02",
-  // ];
 
   // Map.addLayer(lcms.select([0]), { autoViz: true, reducer: ee.Reducer.max() }, "LCMS Change", true);
 

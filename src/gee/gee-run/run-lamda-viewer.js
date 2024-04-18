@@ -121,7 +121,7 @@ function runLAMDA() {
       };
       var persistenceT = persistence.filter((n) => n.indexOf(output_type) > -1);
       var rawsT = raws.filter((n) => n.indexOf(output_type) > -1);
-
+      console.log(rawsT);
       if (rawsT.length > 0) {
         var raw_c = ee
           .ImageCollection(

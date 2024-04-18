@@ -438,7 +438,7 @@ function runAncillary() {
   // Terra-Climate
   ////////////////////////////////////////////////////////////
   var pdsiStartYear = 1984;
-  var pdsiEndYear = 2022;
+  var pdsiEndYear = 2023;
   var terra = ee.ImageCollection("IDAHO_EPSCOR/TERRACLIMATE").filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
   var terra_pdsi = terra.select("pdsi").map(function (img) {
     return img.multiply(0.01).copyProperties(img, ["system:time_start"]).copyProperties(img);

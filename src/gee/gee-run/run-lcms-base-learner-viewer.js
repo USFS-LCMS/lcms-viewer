@@ -28,7 +28,7 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  var vizYears = range(startYear, endYear, 5);
+  var vizYears = range(startYear, endYear, 1);
   if (vizYears[vizYears.length - 2] !== endYear) {
     vizYears.push(endYear);
   }
@@ -37,11 +37,11 @@ function runBaseLearner() {
 
   var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten());
   // Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
-  var lt_props = lt.first().toDictionary().getInfo();
-
+  var maxSegs = lt.first().toDictionary().get("maxSegments").getInfo();
+  console.log(maxSegs);
   // Convert stacked outputs into collection of fitted, magnitude, slope, duration, etc values for each year
   // Divide by 10000 (0.0001) so values are back to original values (0-1 or -1-1)
-  var lt_fit = cdl.batchSimpleLTFit(lt, startYear, endYear, bandNames, bandPropertyName, arrayMode, lt_props["maxSegments"], 0.0001);
+  var lt_fit = cdl.batchSimpleLTFit(lt, startYear, endYear, bandNames, bandPropertyName, arrayMode, maxSegs, 0.0001);
   lt_fit = lt_fit.select([".*_fitted"]);
   var ltSynthViz = copyObj(getImagesLib.vizParamsFalse);
   ltSynthViz.years = vizYears;

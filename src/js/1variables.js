@@ -141,7 +141,7 @@ function constructUrlSearch(maxLen = 5000) {
 /*Load global variables*/
 let cachedSettingskey = "settings";
 let startYear = 1985;
-let endYear = 2022;
+let endYear = 2023;
 let startJulian = 153; //190;
 let endJulian = 274; //250;
 let layerObj = null;
@@ -172,7 +172,7 @@ const studyAreaDict = {
     center: [37.5334105816903, -105.6787109375, 5],
     crs: "EPSG:5070",
     startYear: 1985,
-    endYear: 2022,
+    endYear: 2023,
     conusSA: "projects/lcms-292214/assets/CONUS-Ancillary-Data/conus",
     conusLossThresh: 0.23,
     conusFastLossThresh: 0.29,
@@ -255,7 +255,7 @@ const studyAreaDict = {
         color: "c2b34a",
       },
     },
-    final_collections: ["USFS/GTAC/LCMS/v2022-8"],
+    final_collections: ["USFS/GTAC/LCMS/v2022-8", "USFS/GTAC/LCMS/v2023-9"],
     composite_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection",
