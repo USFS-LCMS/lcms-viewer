@@ -902,7 +902,12 @@ function runDynamic() {
     }
     Map.addLayer(
       lcmsRun.lcms.select([c]),
-      { layerType: "geeImageCollection", autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: true, visible: visible } },
+      {
+        layerType: "geeImageCollection",
+        autoViz: true,
+        canAreaChart: true,
+        areaChartParams: { stackedAreaChart: false, line: true, sankey: true, visible: visible },
+      },
       c.replaceAll("_", " "),
       false
     );

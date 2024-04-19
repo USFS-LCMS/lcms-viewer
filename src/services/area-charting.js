@@ -148,6 +148,7 @@ function areaChartCls() {
         params = addClassVizDicts(params);
       }
       obj.rangeSlider = params.rangeSlider === true ? {} : null;
+
       obj.item = eeLayer.select(obj.bandNames);
       obj.class_names = params.class_names || null;
       obj.class_values = params.class_values || null;
@@ -167,7 +168,7 @@ function areaChartCls() {
       }
       obj.palette_lookup = params.palette_lookup;
       obj.chartType = params.chartType || "line";
-      obj.stackedAreaChart = params.stackedAreaChart || false;
+      obj.stackedAreaChart = params.stackedAreaChart == true ? 0 : undefined;
       obj.steppedLine = params.steppedLine || false;
       obj.label = obj.name;
       obj.shouldUnmask = params.shouldUnmask || false;
@@ -484,6 +485,8 @@ function areaChartCls() {
       paper_bgcolor: this.plot_bgcolor,
 
       autosize: true,
+      width: this.chartWidth,
+      height: this.chartHeight,
       margin: {
         l: 25,
         r: 25,
@@ -552,9 +555,13 @@ function areaChartCls() {
           x: xColumn,
           y: arrayColumn(table, i).map(smartToFixed),
           // mode: "lines",
+
+          stackgroup: selectedObj.stackedAreaChart,
+          mode: "lines+markers",
           visible: visible[i - 1],
           name: header[i].slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"),
-          line: { color: c },
+          line: { color: c, width: 1 },
+          marker: { size: 3 },
         };
       });
     } else {
@@ -565,6 +572,7 @@ function areaChartCls() {
         {
           x: table[0],
           y: table[1],
+          stackgroup: selectedObj.stackedAreaChart,
           type: "bar",
           name: selectedObj.name,
           marker: {
@@ -574,6 +582,7 @@ function areaChartCls() {
       ];
     }
     // console.log(data);
+
     var plotLayout = {
       plot_bgcolor: this.plot_bgcolor,
       paper_bgcolor: this.plot_bgcolor,
@@ -586,13 +595,13 @@ function areaChartCls() {
 
       margin: {
         l: 50,
-        r: 10,
+        r: 25,
         b: 50,
         t: 50,
         pad: 0,
       },
-      width: selectedObj.chartWidth,
-      height: selectedObj.chartHeight,
+      width: this.chartWidth,
+      height: this.chartHeight,
       title: {
         text: outFilename,
       },
@@ -709,6 +718,9 @@ function areaChartCls() {
       let transformT = structuredClone(selectedObj.transform);
       let scaleMult = 1;
       let nominalScale = scaleT || transformT[0];
+      let divWidth = $("#legendDiv").width() - convertRemToPixels(2);
+      this.chartWidth = selectedObj.chartWidth || divWidth;
+      this.chartHeight = selectedObj.chartHeight || parseInt(divWidth * 0.7);
       if (selectedObj.autoScale) {
         // console.log("here");
         // console.log(selectedObj.autoScale);
