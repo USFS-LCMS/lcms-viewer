@@ -759,18 +759,21 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   }
   item = ee.ImageCollection(item);
 
-  viz.dictServerSide = true;
+  viz.dictServerSide = viz.dictServerSide !== undefined ? viz.dictServerSide : true;
   if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
     viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
-  } else {
+  } else if (viz.dictServerSide === true) {
     viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
   }
 
   if (viz.autoViz === true && (viz.class_names === undefined || viz.class_names === null)) {
-    console.log("start");
-    console.log(name);
-    viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    viz.dictServerSide = false;
+    if (viz.dictServerSide) {
+      console.log("start");
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      viz.dictServerSide = false;
+    }
+
     viz = addClassVizDicts(viz);
     console.log(viz);
   }
@@ -2220,7 +2223,6 @@ function reRun() {
   });
 
   $("#export-list").empty();
-
   Object.values(featureObj).map(function (f) {
     f.setMap(null);
   });
@@ -2255,7 +2257,7 @@ function reRun() {
 
     setupAreaLayerSelection();
     addLabelOverlay();
-    if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS") {
+    if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS" && !urlParams.dynamic) {
       //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
       showMessage("No Transition Charting", "The year range must be 5 years or more to perform transition charting");
     }
@@ -3760,7 +3762,7 @@ function initialize() {
 
       addLabelOverlay();
 
-      if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS") {
+      if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS" && !urlParams.dynamic) {
         //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
         showMessage("No Transition Charting", "The year range must be 5 years or more to perform transition charting");
       }

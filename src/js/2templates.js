@@ -320,7 +320,7 @@ const staticTemplates = {
       `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
                 <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
             </div>
-            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
+            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the U.S. Department of Agriculture, Forest Service Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
            
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
@@ -381,7 +381,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,
       ""
@@ -444,7 +444,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,
       ""
@@ -509,7 +509,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`
     ),
@@ -520,7 +520,7 @@ const staticTemplates = {
             This prototype tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
+    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY U.S. Department of Agriculture, Forest Service partners'>
         <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
         
        
@@ -884,7 +884,7 @@ const staticTemplates = {
                                 <section class = 'row '>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
-                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                         </a>
                                     </div>
                                     <div class = 'col-lg-10'>
@@ -1049,7 +1049,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -1201,7 +1201,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -1316,7 +1316,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="" target="_blank">
-                                    <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about our field collaborators ">
+                                    <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about our field collaborators ">
                                 </a>
                                 
                                 <a href="" target="_blank" >
@@ -1326,7 +1326,7 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 <a href="" target="_blank">
                                     <p class = 'support-text'>
-                                    USFS units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
+                                    U.S. Department of Agriculture, Forest Service units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
                                 </a>
                             </div>
                         </section>
@@ -1956,6 +1956,15 @@ function formatDT(__dt) {
   // var minutes = zeroPad(__dt.getMinutes(), 2);
   // var seconds = zeroPad(__dt.getSeconds(), 2);
   return month + "/" + date + "/" + year.toString().slice(2, 4); //+ ' ' + hours + ':' + minutes + ':' + seconds;
+}
+function formatDT2(__dt) {
+  var year = __dt.getFullYear();
+  var month = zeroPad(__dt.getMonth() + 1, 2);
+  var date = zeroPad(__dt.getDate(), 2);
+  // var hours = zeroPad(__dt.getHours(), 2);
+  // var minutes = zeroPad(__dt.getMinutes(), 2);
+  // var seconds = zeroPad(__dt.getSeconds(), 2);
+  return `${year.toString().slice(2, 4)}${month}${date}`;
 }
 function formatDTJulian(__dt) {
   // var year = __dt.getFullYear();
@@ -3229,8 +3238,9 @@ function addLayer(layer) {
 
       ee.Image(mapItem).getMap(layer.usedViz, function (eeLayer, failure) {
         if (eeLayer === undefined && layer.mapServiceTryNumber <= 1) {
-          queryObj[queryID].queryItem = layer.item;
-          layer.item = layer.item.visualize();
+          console.log(`Failed to load map service: ${layer.name}`);
+          // queryObj[queryID].queryItem = layer.item;
+          // layer.item = layer.item.visualize();
           getGEEMapService();
         } else {
           geeAltService(eeLayer, failure);

@@ -688,6 +688,7 @@ function runGTAC() {
 
 function runDynamic() {
   areaChart.clearLayers();
+
   let lcmsRun = {};
   let lcmap_dict = {
     LC_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -716,7 +717,7 @@ function runDynamic() {
   //   .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
   //   .filter(ee.Filter.calendarRange(1990, 2022, "year"));
   // .filter('study_area=="CONUS"');
-  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear, endYear, "year"));
+  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(urlParams.startYear, urlParams.endYear, "year"));
   // lcmsRun.lcms = lcmsRun.lcms.map((img) => img.set(lcmsRun.props));
   // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
 
@@ -871,9 +872,12 @@ function runDynamic() {
   // print(i.bandNames().getInfo());
   // Map.addLayer(i, {});
 
-  lcms = ee.ImageCollection("USFS/GTAC/LCMS/v2022-8").filter('study_area=="CONUS"'); //.select([".*Raw.*"]);
+  // lcms = ee
+  //   .ImageCollection("USFS/GTAC/LCMS/v2022-8")
+  //   .filter('study_area=="CONUS"')
+  //   .filter(ee.Filter.calendarRange(urlParams.startYear, urlParams.endYear, "year")); //.select([".*Raw.*"]);
 
-  lcms = lcms.map((img) => img.set("Change_class_visibility", [false, true, true, true, false]));
+  // lcms = lcms.map((img) => img.set("Change_class_visibility", [false, true, true, true, false]));
   // lcms = lcms.map((img) => img.set("Land_Cover_class_palette", newPalette));
   // console.log(lcms.getInfo());
   // Map.addLayer(lcms.select([1]), {
@@ -893,14 +897,16 @@ function runDynamic() {
     null,
     "MTBS Fire Boundaries"
   );
-  ["Land_Use", "Land_Cover", "Change"].map((c) => {
+  let mFun = urlParams.addLCMSTimeLapsesOn == "yes" ? Map.addTimeLapse : Map.addLayer;
+  ["Change", "Land_Cover", "Land_Use"].map((c) => {
     let visible;
     if (c === "Change") {
       visible = changeVisibility;
     } else {
       visible;
     }
-    Map.addLayer(
+
+    mFun(
       lcmsRun.lcms.select([c]),
       {
         layerType: "geeImageCollection",
@@ -909,7 +915,7 @@ function runDynamic() {
         areaChartParams: { stackedAreaChart: false, line: true, sankey: true, visible: visible },
       },
       c.replaceAll("_", " "),
-      false
+      true
     );
   });
 
@@ -948,7 +954,7 @@ function runDynamic() {
         palette: changeClassDict[k].palette,
         canAreaChart: true,
         layerType: "geeImage",
-        areaChartParams: { reducer: ee.Reducer.frequencyHistogram(), rangeSlider: true },
+        areaChartParams: { reducer: ee.Reducer.frequencyHistogram(), rangeSlider: true, shouldUnmask: false },
       },
       k,
       changeClassDict[k].visible
@@ -970,6 +976,7 @@ function runDynamic() {
   // areaChart.addLayer(lcmsRun.lcms);
 
   // areaChart.populateChartLayerSelect();
+  // Map.turnOnInspector()
   Map.turnOnAutoAreaCharting();
   $("#pixel-chart-label").hide();
   //   // console.log(lcms.first().select([".*_Raw_Prob.*"]).bandNames().getInfo());

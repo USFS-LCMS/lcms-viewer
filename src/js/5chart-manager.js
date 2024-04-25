@@ -435,6 +435,7 @@ var getQueryImages = function (lng, lat) {
         },
       };
       // console.log(value.table);console.log(containerID)
+      console.log(value.table);
       Plotly.newPlot(containerID, value.table, plotLayout, buttonOptions);
       // console.log(value);
     } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
@@ -552,9 +553,10 @@ var getQueryImages = function (lng, lat) {
               return {
                 x: xColumn,
                 y: arrayColumn(yColumns, i).map(smartToFixed),
-                type: "scatter",
+                mode: "lines+markers",
                 name: c.slice(0, 50).chunk(15).join("<br>"),
-                line: { color: color },
+                line: { color: color, width: 1 },
+                marker: { size: 3 },
               };
             });
 

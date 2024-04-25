@@ -169,9 +169,9 @@ function areaChartCls() {
       obj.palette_lookup = params.palette_lookup;
       obj.chartType = params.chartType || "line";
       obj.stackedAreaChart = params.stackedAreaChart == true ? 0 : undefined;
-      obj.steppedLine = params.steppedLine || false;
+      obj.steppedLine = params.steppedLine == true ? true : false;
       obj.label = obj.name;
-      obj.shouldUnmask = params.shouldUnmask || false;
+      obj.shouldUnmask = params.shouldUnmask == true ? true : false;
       obj.unmaskValue = params.unmaskValue || 0;
       obj.xAxisLabel = params.xAxisLabel || obj.layerType === "ImageCollection" ? "Year" : "";
       obj.xAxisLabels = params.xAxisLabels;
@@ -348,12 +348,13 @@ function areaChartCls() {
     let all_sankey_years = Object.values(this.areaChartObj).filter((v) => v.sankey_years !== undefined);
     if (all_sankey_years.length > 0) {
       all_sankey_years = Object.values(all_sankey_years).map((v) => v.sankey_years);
-      let start = all_sankey_years.map((v) => v[0]).min();
-      let end = all_sankey_years.map((v) => v[1]).max();
-      $("#first-transition-row td input:first").val(start);
-      $("#first-transition-row td input:last").val(start + this.sankeyTransitionPeriodYearBuffer);
-      $("#last-transition-row td input:first").val(end - this.sankeyTransitionPeriodYearBuffer);
-      $("#last-transition-row td input:last").val(end);
+      activeStartYear = all_sankey_years.map((v) => v[0]).min();
+      activeEndYear = all_sankey_years.map((v) => v[1]).max();
+
+      $("#first-transition-row td input:first").val(activeStartYear);
+      $("#first-transition-row td input:last").val(activeStartYear + this.sankeyTransitionPeriodYearBuffer);
+      $("#last-transition-row td input:first").val(activeEndYear - this.sankeyTransitionPeriodYearBuffer);
+      $("#last-transition-row td input:last").val(activeEndYear);
     }
   };
   //////////////////////////////////////////////////////////////////////////
@@ -518,6 +519,7 @@ function areaChartCls() {
   };
 
   this.makeChart = function (table, name, colors, visible, selectedObj) {
+    // console.log(table);
     // let selectedObj = this.areaChartObj[whichAreaChartCollection];
     let outFilename = `${selectedObj.name} Summary ${name}`;
     if (selectedObj.chartDecimalProportion !== undefined && selectedObj.chartDecimalProportion !== null) {
@@ -568,6 +570,10 @@ function areaChartCls() {
       colors = colors || [randomColor()];
       colors = colors.indexOf(null) > -1 ? colors.map((c) => randomColor()) : colors;
       table[0] = table[0].map((n) => n.slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"));
+
+      if (selectedObj.shouldUnmask) {
+        table[0] = table[0].slice();
+      }
       var data = [
         {
           x: table[0],
@@ -655,19 +661,41 @@ function areaChartCls() {
       if (this.firstRun) {
         $("#area-collection-dropdown-container").hide();
 
-        $("#query-spinner").append(
-          `<img  id = 'query-spinner-img' alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa" src="./src/assets/images/GEE_logo_transparent.png"  style='height:2rem;'><div class="progressbar progress-pulse"  id='query-progressbar' title='Percent of layers that have finished downloading chart summary data'>
-        <span  style="width: 0% ;padding-top:0.15rem;">0%</span>
+        // $("#query-spinner").append(
+        //   `<div style='display:inline-block'>
+
+        //   <div class="progressbar progress-pulse"  id='query-progressbar' title='Percent of layers that have finished downloading chart summary data'>
+        // <span  style="width: 0% ;padding-top:0.15rem;">0%</span>
+        // </div>
+        // </div>`
+        // );
+
+        $("#query-spinner").append(`
+        <div id="areaChart-progress-container" >
+        <span style="display: flex;">
+        <img id="query-spinner-img" class="fa-spin progress-spinner"  src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
+          0.8
+        )}" alt="GEE logo image">
+        
+        <div class="progressbar progress-pulse" id="query-progressbar" title="'Percent of layers that have finished downloading chart summary data">
+            <span style="width: 100%;">100%</span>
         </div>
-        <span id = 'summary-spinner-message'></span>`
-        );
+        
+        
+        </span>
+        
+        
+        
+        </div>`);
+        $("#areaChart-progress-container").width($("#chart-collapse-label-label").width() - $("#areaChart-progress-container").width());
         this.firstRun = false;
       }
     }
   };
   this.teardownChartProgress = function () {
-    $("#query-spinner-img").remove();
-    $("#query-progressbar").remove();
+    $("#areaChart-progress-container").remove();
+    // $("#query-spinner-img").remove();
+    // $("#query-progressbar").remove();
     $("#legendDiv").css("max-width", "");
     $("#legendDiv").css("max-height", "60%");
     $("#chart-collapse-div").empty();
@@ -975,7 +1003,7 @@ function areaChartCls() {
                       header.push(`${nameStart}${cn}`);
                     });
                     class_paletteT.map((color) => {
-                      color = color !== null && color[0] !== "#" ? `#${color}` : color;
+                      color = color !== null && color !== undefined && color[0] !== "#" ? `#${color}` : color;
                       colors.push(color);
                     });
                     if (selectedObj.class_visibility !== null && selectedObj.class_visibility[bn] !== undefined) {

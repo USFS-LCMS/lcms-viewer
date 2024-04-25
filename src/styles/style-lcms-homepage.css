@@ -175,6 +175,18 @@ h5 {
   background-color: #1b1716aa;
   color: var(--deep-brown-10);
 }
+.large-legend {
+  font-size: 0.8rem;
+  position: relative;
+  width: 100%;
+}
+.large-legend ul.legend-labels {
+  list-style: none;
+}
+.large-legend ul.legend-labels li {
+  display: inline-block;
+  margin-right: 10px;
+}
 .legend-labels {
   margin-bottom: 0px;
   padding-left: 0.1rem;
