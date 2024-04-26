@@ -400,52 +400,98 @@ function runGTAC() {
         false
       );
 
-      var lcmsAttr = ee
-        .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution")
-        .filter(ee.Filter.calendarRange(startYear, endYear, "year"));
-      // var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
-
-      // lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
-      lcmsAttr_merged = lcmsAttr;
-
-      var stack = [];
-      ee.List.sequence(startYear, endYear)
-        .getInfo()
-        .map(function (year) {
-          var imgYr = lcmsAttr_merged.filter(ee.Filter.calendarRange(year, year, "year"));
-          imgYr = imgYr.mosaic().copyProperties(ee.Image(imgYr.first())).copyProperties(ee.Image(imgYr.first()), ["system:time_start"]);
-          stack.push(imgYr);
-        });
-
-      lcmsAttr_stack = ee.ImageCollection(stack);
-
-      var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
-      // console.log('attrVals',attrVals)
-
-      var palette = "3d4551,d54309,AD3100,FFFF00,C6C600,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D8D898,D46C40,F39268,00A398,1B1716".split(",");
-
-      var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals), palette).map(([k, v]) => [k, v]));
-      var attrQueryDict = Object.fromEntries(zip(range(1, Object.keys(attrVals).length + 1), Object.keys(attrVals)).map(([k, v]) => [k, v]));
-      // console.log('attrClassLegendDict',attrClassLegendDict)
-      // console.log('attrQueryDict',attrQueryDict)
-      // console.log(lcmsAttr.size().getInfo())
-
-      Map.addTimeLapse(
-        lcmsAttr_stack.map((img) => img.updateMask(img.gt(1).and(img.lt(16)))),
-        {
-          min: 1,
-          max: 16,
-          palette: palette,
-          classLegendDict: attrClassLegendDict,
-          queryDict: attrQueryDict,
-        },
-        "LCMS Change Attributes",
-        false
-      );
       // Map.addLayer(lcmsRun.lcms.select([0]),{autoViz:true},'Change')
       //Map.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
     }
+    let change_attribution_bn = "Change_Attribute";
+    var lcmsAttr = ee
+      .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution")
+      .filter(ee.Filter.calendarRange(startYear, endYear, "year"))
+      .select([0], ["Change_Attribute"]);
+    const caVizDict = {};
+    caVizDict[`${change_attribution_bn}_class_names`] = [
+      "Wildfire",
+      "Prescribed Burn",
+      "Timber Harvest or Other Tree Loss Disturbance Agent > 1.5 hectare",
+      "Timber Harvest or Other Tree Loss Disturbance Agent < 1.5 hectare",
+      "Timber Harvest or Other Fast Disturbance Agent in Protected Lands",
+      "Tropical Hurricane",
+      "Tornado or Other Wind Event",
+      "Water Desiccation",
+      "Water Inundation",
+      "Drought Stress, Timber Harvest or Other Disturbance Agent",
+      "Other Fast Disturbance Agent in Non-Treed Landscape",
+      "Southern Pine Beetle",
+      "Insect, Disease or Climate Stress",
+      "Gain",
+      "Stable",
+      "Non-processing Area",
+    ];
 
+    caVizDict[`${change_attribution_bn}_class_values`] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
+    caVizDict[`${change_attribution_bn}_class_palette`] = [
+      "d54309",
+      "AD3100",
+      "FFFF00",
+      "C6C600",
+      "DAA520",
+      "FFB6C1",
+      "FF8397",
+      "897044",
+      "9EAAD7",
+      "898944",
+      "D8D898",
+      "D46C40",
+      "F39268",
+      "00A398",
+      "3d4551",
+      "1B1716",
+    ];
+    lcmsAttr = lcmsAttr.map((img) => {
+      let out = img.where(img.eq(16), 17);
+      return out.where(img.eq(1), 16).subtract(1).set(caVizDict).copyProperties(img, ["system:time_start"]);
+    });
+    Map.addLayer(lcmsAttr, { autoViz: true, reducer: ee.Reducer.min() }, "Change Attributes (beta)");
+    // var lcmsAttr_AK = ee.ImageCollection('projects/lcms-292214/assets/R10/AK/Landcover-Landuse-Change/v2022-8-Change_Attribution').filter(ee.Filter.calendarRange(startYear,endYear,'year'));
+
+    // // lcmsAttr_merged = lcmsAttr.merge(lcmsAttr_AK)
+    // lcmsAttr_merged = lcmsAttr;
+
+    // var stack = [];
+    // ee.List.sequence(startYear, endYear)
+    //   .getInfo()
+    //   .map(function (year) {
+    //     var imgYr = lcmsAttr_merged.filter(ee.Filter.calendarRange(year, year, "year"));
+    //     imgYr = imgYr.mosaic().copyProperties(ee.Image(imgYr.first())).copyProperties(ee.Image(imgYr.first()), ["system:time_start"]);
+    //     stack.push(imgYr);
+    //   });
+
+    // lcmsAttr_stack = ee.ImageCollection(stack);
+
+    // var attrVals = JSON.parse(lcmsAttr_stack.first().toDictionary().getInfo().changeAttributionVals);
+    // // console.log('attrVals',attrVals)
+
+    // var palette = "3d4551,d54309,AD3100,FFFF00,C6C600,DAA520,FFB6C1,FF8397,897044,9EAAD7,898944,D8D898,D46C40,F39268,00A398,1B1716".split(",");
+
+    // var attrClassLegendDict = Object.fromEntries(zip(Object.keys(attrVals), palette).map(([k, v]) => [k, v]));
+    // var attrQueryDict = Object.fromEntries(zip(range(1, Object.keys(attrVals).length + 1), Object.keys(attrVals)).map(([k, v]) => [k, v]));
+    // // console.log('attrClassLegendDict',attrClassLegendDict)
+    // // console.log('attrQueryDict',attrQueryDict)
+    // // console.log(lcmsAttr.size().getInfo())
+
+    // Map.addTimeLapse(
+    //   lcmsAttr_stack.map((img) => img.updateMask(img.gt(1).and(img.lt(16)))),
+    //   {
+    //     min: 1,
+    //     max: 16,
+    //     palette: palette,
+    //     classLegendDict: attrClassLegendDict,
+    //     queryDict: attrQueryDict,
+    //   },
+    //   "LCMS Change Attributes",
+    //   false
+    // );
     //Bring in time lapses
 
     //Mask out stable and non processing area mask for change time lapse
