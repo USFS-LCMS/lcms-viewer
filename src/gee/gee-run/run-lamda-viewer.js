@@ -79,8 +79,8 @@ function runLAMDA() {
     console.log(`Persistence days: ${persisetence_days_center}`);
     console.log(`Raw days: ${raw_days}`);
 
-    let persistence_dates = persisetence_days_center.map((d) => parseInt(formatDT2(new Date.fromDayofYear(d, year)))).sort();
-    let raw_dates = raw_days.map((d) => parseInt(formatDT2(new Date.fromDayofYear(d, year)))).sort();
+    let persistence_dates = persisetence_days_center.map((d) => formatDT2(new Date.fromDayofYear(d, year))).sort();
+    let raw_dates = raw_days.map((d) => formatDT2(new Date.fromDayofYear(d, year))).sort();
     console.log(persistence_dates);
     console.log(raw_dates);
     // console.log(names);

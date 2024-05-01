@@ -2370,6 +2370,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   addCollapse(
     "sidebar-left",
+    "wayback-layer-list-collapse-label",
+    "wayback-layer-list-collapse-div",
+    "ESRI WayBack DATA",
+    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/esri-logo.png">`,
+    true,
+    null,
+    "ESRI Wayback layers to view on map"
+  );
+  addCollapse(
+    "sidebar-left",
     "reference-layer-list-collapse-label",
     "reference-layer-list-collapse-div",
     "PLOT DATA",
@@ -2391,6 +2401,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#wayback-layer-list-collapse-div").append(`<ul id="wayback-layer-list" class = "layer-list"></ul>`);
+  $("#wayback-layer-list-collapse-div").append(
+    `<div id = 'wayback-metadata-loading' style='display:none;'>
+      <img id = 'wayback-metadata-loading-spinner' class = 'progress-spinner' src="./src/assets/images/esri-logo.png" height="${convertRemToPixels(
+        1
+      )}"  alt="ESRI logo image">Acquiring WayBack Imagery Metadata
+        
+      </div>
+    <div id="wayback-metadata" class = ""></div>
+    `
+  );
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
   plotsOn = true;
 }

@@ -380,7 +380,8 @@ function setFrameOpacity(frame, opacity) {
     value: opacity,
   });
 }
-//Function to shoe a specific frame
+let turnOffLayersWhenTimeLapseIsOn = true;
+//Function to show a specific frame
 function selectFrame(id, fromYearSlider, advanceOne) {
   if (id === null || id === undefined) {
     id = timeLapseID;
@@ -394,7 +395,10 @@ function selectFrame(id, fromYearSlider, advanceOne) {
   timeLapseID = id;
 
   if (timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady) {
-    turnOffLayers();
+    if (turnOffLayersWhenTimeLapseIsOn) {
+      turnOffLayers();
+    }
+
     turnOnTimeLapseLayers();
     var slidersT = timeLapseObj[timeLapseID].sliders;
     if (timeLapseFrame > slidersT.length - 1) {
@@ -402,36 +406,41 @@ function selectFrame(id, fromYearSlider, advanceOne) {
     } else if (timeLapseFrame < 0) {
       timeLapseFrame = slidersT.length - 1;
     }
-
-    if (!eval(cumulativeMode) || timeLapseFrame === 0) {
-      slidersT.map(function (s) {
-        try {
-          setFrameOpacity(s, 0);
-        } catch (err) {}
-      });
-    } else {
-      slidersT.slice(0, timeLapseFrame).map(function (s) {
-        try {
-          setFrameOpacity(s, timeLapseObj[timeLapseID].opacity);
-        } catch (err) {}
-      });
+    if (timeLapseObj[timeLapseID].layerType !== "tileMapService") {
+      if (!eval(cumulativeMode) || timeLapseFrame === 0) {
+        slidersT.map(function (s) {
+          try {
+            setFrameOpacity(s, 0);
+          } catch (err) {}
+        });
+      } else {
+        slidersT.slice(0, timeLapseFrame).map(function (s) {
+          try {
+            setFrameOpacity(s, timeLapseObj[timeLapseID].opacity);
+          } catch (err) {}
+        });
+      }
     }
-
     var frame = slidersT[timeLapseFrame];
     try {
+      if (timeLapseObj[timeLapseID].layerType === "tileMapService") {
+        $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
+        timeLapseObj[timeLapseID].lastTurnOn = timeLapseObj[timeLapseID].layerVisibleIDs[timeLapseFrame];
+        $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
+      }
       setFrameOpacity(frame, timeLapseObj[timeLapseID].opacity);
       if (!fromYearSlider) {
         Object.keys(timeLapseObj).map(function (k) {
           var s = $("#" + k + "-year-slider").slider();
-          s.slider("option", "value", timeLapseObj[k].years[timeLapseFrame]);
-          $("#" + k + "-year-slider-handle-label").text(timeLapseObj[k].years[timeLapseFrame]);
+          s.slider("option", "value", timeLapseFrame);
+          $("#" + k + "-year-slider-handle-label").text(timeLapseObj[k].yearLookup[timeLapseFrame]);
         });
       }
     } catch (err) {}
     $("#" + timeLapseID + "-year-label").show();
     // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $("#time-lapse-year-label").show();
-    $("#time-lapse-year-label").html(`Time lapse date: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`);
+    $("#time-lapse-year-label").html(`Time lapse date: ${timeLapseObj[timeLapseID].yearLookup[timeLapseFrame]}`);
     // if(advanceOne){timeLapseFrame++};
   }
 }
@@ -596,9 +605,11 @@ function turnOnTimeLapseLayers(id) {
   if (timeLapseObj[id].isReady) {
     if (timeLapseObj[id].visible === false) {
       timeLapseObj[id].visible = true;
-      timeLapseObj[id].layerVisibleIDs.map(function (i) {
-        $("#" + i).click();
-      });
+      if (timeLapseObj[id].layerType !== "tileMapService") {
+        timeLapseObj[id].layerVisibleIDs.map(function (i) {
+          $("#" + i).click();
+        });
+      }
     }
     queryObj[id].visible = timeLapseObj[id].visible;
   }
@@ -610,9 +621,11 @@ function turnOffTimeLapseLayers(id) {
   if (timeLapseObj[id].isReady) {
     if (timeLapseObj[id].visible === true) {
       timeLapseObj[id].visible = false;
-      timeLapseObj[id].layerVisibleIDs.map(function (i) {
-        $("#" + i).click();
-      });
+      if (timeLapseObj[id].layerType !== "tileMapService") {
+        timeLapseObj[id].layerVisibleIDs.map(function (i) {
+          $("#" + i).click();
+        });
+      }
     }
     queryObj[id].visible = timeLapseObj[id].visible;
   }
@@ -757,12 +770,15 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   if (viz.palette !== undefined && typeof viz.palette === "string") {
     viz.palette = viz.palette.split(",");
   }
-  item = ee.ImageCollection(item);
+
+  if (viz.layerType !== "tileMapService") {
+    item = ee.ImageCollection(item);
+  }
 
   viz.dictServerSide = viz.dictServerSide !== undefined ? viz.dictServerSide : true;
-  if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+  if (viz.layerType !== "tileMapService" && (viz.eeObjInfo === undefined || viz.eeObjInfo === null)) {
     viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
-  } else if (viz.dictServerSide === true) {
+  } else if (viz.layerType !== "tileMapService" && viz.dictServerSide === true) {
     viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
   }
 
@@ -832,7 +848,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
   viz.timeLapseID = legendDivID;
-  viz.layerType = "geeImage";
+  viz.layerType = viz.layerType !== "tileMapService" ? "geeImage" : viz.layerType;
 
   if (viz.dateFormat === null || viz.dateFormat === undefined) {
     viz.dateFormat = "YYYY";
@@ -850,7 +866,11 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   //Pull out years if not provided
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
-  if (viz.years === null || viz.years === undefined) {
+  if (viz.layerType === "tileMapService") {
+    console.log("here");
+    // viz.layerType = "tileMapService";
+    viz.years = Object.keys(item);
+  } else if (viz.layerType !== "tileMapService" && (viz.years === null || viz.years === undefined)) {
     console.log("start computing years");
     viz.years = unique(
       item
@@ -858,7 +878,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
         .toList(10000, 0)
         .map(function (img) {
           var d = ee.Date(ee.Image(img).get(viz.dateField));
-          return ee.Number.parse(d.format(viz.dateFormat.replaceAll("-", ""))).int32();
+          return d.format(viz.dateFormat);
         })
         .getInfo()
     );
@@ -869,10 +889,13 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   }
 
   //Set up time laps object entry
-  var startYearT = viz.years[0];
-  var endYearT = viz.years[viz.years.length - 1];
+  viz.yearsI = range(0, viz.years.length);
+  viz.yearLookup = dictFromKeyValues(viz.yearsI, viz.years);
   timeLapseObj[legendDivID].years = viz.years;
-  timeLapseObj[legendDivID].frames = ee.List.sequence(0, viz.years.length - 1).getInfo();
+  timeLapseObj[legendDivID].yearsI = viz.yearsI;
+  timeLapseObj[legendDivID].layerType = viz.layerType;
+  timeLapseObj[legendDivID].yearLookup = viz.years;
+  timeLapseObj[legendDivID].frames = range(0, viz.years.length - 1);
   timeLapseObj[legendDivID].nFrames = viz.years.length;
   timeLapseObj[legendDivID].loadingLayerIDs = [];
   timeLapseObj[legendDivID].loadingTilesLayerIDs = [];
@@ -960,9 +983,11 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
 
   //Add in layers
 
-  if (viz.timeLapseType === "tileMapService") {
-    viz.layerType = "tileMapService";
-    viz.years.map(function (yr) {
+  if (viz.layerType === "tileMapService") {
+    // viz.layerType = "tileMapService";
+    viz.years = Object.keys(item);
+
+    Object.keys(item).map((yr) => {
       if (yr !== viz.years[0]) {
         viz.addToLegend = false;
         viz.addToClassLegend = false;
@@ -970,7 +995,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       var vizT = Object.assign({}, viz);
       vizT.year = yr;
       addToMap(
-        standardTileURLFunction(item + yr.toString() + "/", true, ""),
+        superSimpleTileURLFunction(item[yr]),
         vizT,
         name + " " + yr.toString(),
         false,
@@ -981,12 +1006,15 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
         queryItem
       );
     });
+    // viz.years.map(function (yr) {
+
+    // });
   } else {
     var dummyImage = ee.Image(item.first());
     var cT = [];
     viz.years.map(function (yr) {
       // Get the date
-      var d = ee.Date.parse(viz.dateFormat.replaceAll("-", ""), yr.toString());
+      var d = ee.Date.parse(viz.dateFormat, yr.toString());
 
       // Filter and find the image
       if (viz.dateField !== "system:time_start") {
@@ -1060,7 +1088,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     }
   }
   //If its a tile map service, don't wait
-  if (viz.timeLapseType === "tileMapService") {
+  if (viz.layerType === "tileMapService") {
     timeLapseObj[legendDivID].isReady = true;
     $("#" + legendDivID + "-toggle-checkbox-label").show();
     $("#" + legendDivID + "-loading-spinner").hide();
@@ -1105,18 +1133,18 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   }
   //The year slider
   $("#" + legendDivID + "-year-slider").slider({
-    min: startYearT,
-    max: endYearT,
+    min: viz.yearsI[0],
+    max: viz.yearsI[viz.yearsI.length - 1],
     step: 1,
-    value: startYearT,
+    value: viz.yearsI[0],
     slide: function (e, ui) {
-      var yr = ui.value;
-      var i = viz.years.indexOf(yr);
+      var i = ui.value; //viz.years.indexOf(yr);
+      var yr = viz.yearLookup[i];
       timeLapseFrame = i;
       Object.keys(timeLapseObj).map(function (k) {
         var s = $("#" + k + "-year-slider").slider();
         s.slider("option", "value", ui.value);
-        $("#" + k + "-year-slider-handle-label").text(ui.value);
+        $("#" + k + "-year-slider-handle-label").text(yr);
       });
       if (timeLapseObj[legendDivID].isReady) {
         clearAllFrames();
@@ -1350,17 +1378,17 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   }
   viz.isTimeLapse = viz.isTimeLapse || false;
 
-  viz.dictServerSide = true;
-  if (
-    viz.layerType !== "geoJSONVector" &&
-    viz.layerType !== "tileMapService" &&
-    viz.layerType !== "dynamicMapService" &&
-    (viz.eeObjInfo === undefined || viz.eeObjInfo === null)
-  ) {
-    // console.log(reverseTypeLookup[viz.layerType]);
-    viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
-  } else {
-    viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+  if (viz.layerType !== "geoJSONVector" && viz.layerType !== "tileMapService" && viz.layerType !== "dynamicMapService") {
+    if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+      // console.log(reverseTypeLookup[viz.layerType]);
+      viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
+      viz.dictServerSide = true;
+    } else if (Object.keys(viz.eeObjInfo).indexOf("layerType") > -1) {
+      viz.dictServerSide = false;
+    } else {
+      viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+      viz.dictServerSide = true;
+    }
   }
 
   if (
@@ -1370,10 +1398,14 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     viz.layerType !== "tileMapService" &&
     viz.layerType !== "dynamicMapService"
   ) {
-    console.log("start");
-    console.log(name);
-    viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    viz.dictServerSide = false;
+    if (viz.dictServerSide) {
+      console.log("start");
+      console.log(viz.dictServerSide);
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      viz.dictServerSide = false;
+    }
+
     viz = addClassVizDicts(viz);
     console.log(viz);
   }

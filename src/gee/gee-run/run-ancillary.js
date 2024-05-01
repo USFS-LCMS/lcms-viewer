@@ -316,8 +316,9 @@ function runAncillary() {
     [
       { baseURL: "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=", minZoom: 2 },
       {
-        baseURL: "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
-        minZoom: 15,
+        baseURL:
+          "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
+        minZoom: 12,
       },
     ],
     { layerType: "dynamicMapService", addToClassLegend: true, classLegendDict: nwiLegendDict },
@@ -712,5 +713,15 @@ function runAncillary() {
     chartTableDict: chartTableDict,
   };
   populatePixelChartDropdown();
+
+  // Bring in wayback
+
+  turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers
+  setupWayback();
   // addChartJS(d,'test1');
 }
+
+// runAncillary = function () {
+//   turnOffLayersWhenTimeLapseIsOn = false;
+//   setupWayback();
+// };

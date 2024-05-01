@@ -901,8 +901,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
   var study_areas = {
     SEAK: {
       startYear: 1985,
-      endYear: 2022,
-      version: "2022-8",
+      endYear: 2023,
+      version: "2023-9",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],
@@ -913,8 +913,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
     },
     CONUS: {
       startYear: 1985,
-      endYear: 2022,
-      version: "2022-8",
+      endYear: 2023,
+      version: "2023-9",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],
@@ -925,8 +925,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
     },
     PRUSVI: {
       startYear: 1985,
-      endYear: 2020,
-      version: "2020-6",
+      endYear: 2022,
+      version: "2022-8",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],

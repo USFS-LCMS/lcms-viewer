@@ -96,6 +96,7 @@ function loadPlots(plotProjectObj) {
   //  	.then(json => console.log(json));
   //  	 addPlotgeoJSON(plotProjectObj.path)
 }
+
 function addPlot(obj) {
   // console.log(obj);
   $("#" + obj.name.replaceAll(" ", "-") + "-plot-list").append(`

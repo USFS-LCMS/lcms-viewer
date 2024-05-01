@@ -68,6 +68,29 @@ function copyText(element, messageBoxId) {
     $("#" + messageBoxId).html("Copied text to clipboard");
   }
 }
+function decodeURL(url) {
+  let out = {};
+  url = url.split("?")[1].split("&");
+  url.map(function (str) {
+    var decodedParam = decodeURIComponent(str.split("=")[1]);
+    try {
+      out[str.split("=")[0]] = JSON.parse(decodedParam);
+    } catch (err) {
+      out[str.split("=")[0]] = decodedParam;
+    }
+  });
+  return out;
+}
+function encodeJSON(json) {
+  var outURL = "?";
+
+  Object.keys(json).map((p) => {
+    outURL += p + "=" + encodeURIComponent(JSON.stringify(json[p])).replace(/[!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+    +"&";
+  });
+  outURL = outURL.slice(0, outURL.length - 1);
+  return outURL;
+}
 function parseUrlSearch() {
   // console.log(window.location.search == '')
   let urlParamsStr = window.location.search;

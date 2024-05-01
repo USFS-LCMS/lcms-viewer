@@ -54,7 +54,9 @@ function downloadSelectedAreas(id) {
     message += "</li>";
     showMessage(
       "Downloads Started",
-      "The following downloads have started. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<hr>" + message + "</ul></li>"
+      "The following downloads have started. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<hr>" +
+        message +
+        "</ul></li>"
     );
     // setTimeout(()=>{
     if (mode !== "TreeMap") {

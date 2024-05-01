@@ -183,11 +183,11 @@ function runGTAC() {
         false
       );
     }
-    let change_attribution_bn = "Change_Attribute";
+    let change_attribution_bn = "Cause_of_Change";
     var lcmsAttr = ee
       .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution")
       .filter(ee.Filter.calendarRange(startYear, endYear, "year"))
-      .select([0], ["Change_Attribute"]);
+      .select([0], [change_attribution_bn]);
     const caVizDict = {};
     caVizDict[`${change_attribution_bn}_class_names`] = [
       "Wildfire",
@@ -232,7 +232,17 @@ function runGTAC() {
       let out = img.where(img.eq(16), 17);
       return out.where(img.eq(1), 16).subtract(1).set(caVizDict).copyProperties(img, ["system:time_start"]);
     });
-    Map.addLayer(lcmsAttr, { autoViz: true, reducer: ee.Reducer.min() }, "Change Attributes (beta)", false);
+    const addLayerFun = urlParams.addLCMSTimeLapsesOn === "yes" ? Map.addTimeLapse : Map.addLayer;
+    addLayerFun(
+      lcmsAttr,
+      {
+        title: `The minimum value of the cause of change from ${startYear} to ${endYear}, assigned using a rule-based classifier within the hierarchy found in the legend`,
+        autoViz: true,
+        reducer: ee.Reducer.min(),
+      },
+      "Cause of Change (beta)",
+      false
+    );
 
     lcmsRun.slowLoss = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Slow_Loss"], ["Change", "Prob"]), 2);
     lcmsRun.slowLossCount = lcmsRun.slowLoss.select(["Year"]).count();
@@ -709,23 +719,25 @@ function runDynamic() {
   // areaChart.addLayer(lcpri, { sankey: false }, "LCMAP LC Annual", false);
   // areaChart.addLayer(lcpri, { sankey: true }, "LCMAP LC Transition", false);
   lcmsRun.lcms = ee
-    // .ImageCollection("projects/lcms-292214/assets/Final_Outputs/2022-8/HAWAII")
-    .ImageCollection(studyAreaDict[studyAreaName].final_collections[1])
+    .ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].final_collections.map((c) => ee.ImageCollection(c))).flatten())
     .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]);
 
   // .filter('study_area=="CONUS"');
-
+  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(urlParams.startYear, urlParams.endYear, "year"));
   //Get properties image
-  lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());
-  lcmsRun.props = lcmsRun.f.toDictionary().getInfo();
-  // console.log(lcmsRun.props)
+  lcmsRun.hasProps = lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"]));
+  lcmsRun.f = ee.Image(lcmsRun.hasProps.first());
+  lcmsRun.props = getImagesLib.eeObjInfo(lcmsRun.lcms).getInfo();
+  // lcmsRun.props.layerType = "ImageCollection";
+  console.log(lcmsRun.props);
+  // console.log(lcmsRun.lcms.first().bandNames().getInfo());
   // lcmsRun.lcms = ee
   //   .ImageCollection("projects/lcms-292214/assets/Final_Outputs/2022-8/HAWAII")
   //   // .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
   //   .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
   //   .filter(ee.Filter.calendarRange(1990, 2022, "year"));
   // .filter('study_area=="CONUS"');
-  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(urlParams.startYear, urlParams.endYear, "year"));
+
   // lcmsRun.lcms = lcmsRun.lcms.map((img) => img.set(lcmsRun.props));
   // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
 
@@ -906,6 +918,7 @@ function runDynamic() {
     "MTBS Fire Boundaries"
   );
   let mFun = urlParams.addLCMSTimeLapsesOn == "yes" ? Map.addTimeLapse : Map.addLayer;
+
   ["Change", "Land_Cover", "Land_Use"].map((c) => {
     let visible;
     if (c === "Change") {
@@ -913,17 +926,19 @@ function runDynamic() {
     } else {
       visible;
     }
-
+    lcmsRun.props.bandNames = [c];
     mFun(
       lcmsRun.lcms.select([c]),
       {
         layerType: "geeImageCollection",
         autoViz: true,
         canAreaChart: true,
+        // dictServerSide: false,
+        eeObjInfo: lcmsRun.props,
         areaChartParams: { stackedAreaChart: false, line: true, sankey: true, visible: visible },
       },
       c.replaceAll("_", " "),
-      false
+      true
     );
   });
 
@@ -960,9 +975,19 @@ function runDynamic() {
         min: urlParams.startYear,
         max: urlParams.endYear,
         palette: changeClassDict[k].palette,
+        bands: "year",
         canAreaChart: true,
         layerType: "geeImage",
-        areaChartParams: { reducer: ee.Reducer.frequencyHistogram(), rangeSlider: true, shouldUnmask: false },
+        eeObjInfo: {
+          bandNames: ["year"],
+          layerType: "Image",
+        },
+        areaChartParams: {
+          reducer: ee.Reducer.frequencyHistogram(),
+          rangeSlider: true,
+          shouldUnmask: false,
+          bandNames: ["year"],
+        },
       },
       k,
       changeClassDict[k].visible

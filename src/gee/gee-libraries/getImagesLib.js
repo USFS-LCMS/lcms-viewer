@@ -260,7 +260,7 @@ function eeObjInfo(eeObj, objType, addTime, timeFormat, timePropNameIn, timeProp
   // console.log(objType);
   if (objType.indexOf("Collection") > -1) {
     // allProps = eeObj.toDictionary();
-    // size = eeObj.size();
+    size = eeObj.size();
 
     if (objType === "ImageCollection") {
       bandNames = ee.Image(ee.ImageCollection(eeObj).first()).bandNames();
@@ -296,6 +296,14 @@ function eeObjInfo(eeObj, objType, addTime, timeFormat, timePropNameIn, timeProp
   // props.layerType = objType;
 
   return props;
+}
+//////////////////////////////////////////////////
+// Companion function to see if an object is on the server or client
+function eeObjServerSide(obj, refKeys = ["I", "args", "U", "Bl"]) {
+  let objKeys = Object.keys(obj);
+  let i = refKeys.map((k) => objKeys.indexOf(k));
+  i = i.min();
+  return i > -1;
 }
 //////////////////////////////////////////////////
 //Function to set null value for export or conversion to arrays
@@ -4596,6 +4604,7 @@ exports.HoCalcAlgorithm2 = function (image) {
 // END FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 exports.eeObjInfo = eeObjInfo;
+exports.eeObjServerSide = eeObjServerSide;
 exports.sieve = sieve;
 exports.setNoData = setNoData;
 exports.addSensorBand = addSensorBand;

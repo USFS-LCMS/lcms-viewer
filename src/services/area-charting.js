@@ -177,8 +177,14 @@ function areaChartCls() {
       obj.xAxisLabels = params.xAxisLabels;
 
       obj.xAxisProperty = params.xAxisProperty || obj.layerType === "ImageCollection" ? "year" : "system:index";
-      obj.size = obj.layerType === "ImageCollection" ? obj.item.size().getInfo() : 1;
-
+      console.log("start size");
+      obj.size = 1;
+      if (obj.layerType === "ImageCollection") {
+        console.log(params.eeObjInfo);
+        obj.size = params.eeObjInfo.size !== undefined ? params.eeObjInfo.size : obj.item.size().getInfo();
+      }
+      // obj.size = obj.layerType === "ImageCollection" ? obj.item.size().getInfo() : 1;
+      console.log(obj.size);
       obj.dateFormat = params.dateFormat || "YYYY";
       obj.chartLabelFontSize = params.chartLabelFontSize || 10;
       obj.chartAxisTitleFontSize = params.chartAxisTitleFontSize || 12;
@@ -377,8 +383,12 @@ function areaChartCls() {
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to get the current map bounds json string
-  this.getMapExtentCoordsStr = function () {
-    return Object.values(map.getBounds().toJSON()).map(smartToFixed).join(",");
+  this.getMapExtentCoordsStr = function (joinStr = ",", coordOrder = ["west", "north", "east", "south"]) {
+    let coordJSON = map.getBounds().toJSON();
+    return coordOrder
+      .map((k) => coordJSON[k])
+      .map(smartToFixed)
+      .join(joinStr);
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to start area charting whenever the map moves
