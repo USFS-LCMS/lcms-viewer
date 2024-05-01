@@ -1053,9 +1053,9 @@ function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplie
   let areaChartCollectionStack = areaChartCollection.toBands();
   let xLabels = areaChartCollection.aggregate_histogram(xAxisProperty).keys();
   areaChartCollectionStack = areaChartCollectionStack.rename(xLabels);
-  areaChartCollectionStack.reduceRegion(kwargs.zonalReducer, area, scale, crs, transform, true, 1e13, 4).evaluate((counts) => {
-    console.log(counts);
-  });
+  // areaChartCollectionStack.reduceRegion(kwargs.zonalReducer, area, scale, crs, transform, true, 1e13, 4).evaluate((counts) => {
+  //   console.log(counts);
+  // });
   // console.log(areaChartCollectionStack.bandNames().getInfo());
   // console.log(counts.getInfo());
   return areaChartCollection.toList(10000, 0).map(function (img) {
