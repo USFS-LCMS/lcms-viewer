@@ -1392,12 +1392,7 @@ const staticTemplates = {
   queryTip: "Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.",
   pixelChartDiv: `<div>Double-click on map to query ${mode} data time series<br></div>`,
   pixelChartTip: "Double-click on map to look at the full time series of " + mode + " outputs for a pixel.",
-  mapDefinedAreaChartDiv: `<div  id="map-defined" >
-                                            <label>Provide name for area selected for charting (optional):</label>
-                                            <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="map-defined-area-name" class="form-control my-1" id="map-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                            
-        		            			</div>
-                                	</div>`,
+  mapDefinedAreaChartDiv: `<div  id="map-defined" ></div>`,
   userDefinedAreaChartDiv: `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
@@ -1411,6 +1406,7 @@ const staticTemplates = {
   showChartButton: `<div class = 'py-2'>
                                 <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                                 </div>`,
+  mapDefinedAreaChartTip: "Charts will automatically update to summarize the current view extent after you pan or zoom on the map.",
   userDefinedAreaChartTip:
     "Click on map to select an area to summarize " +
     mode +
@@ -1851,8 +1847,14 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
-function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels) {
-  $("#" + containerID).append(`<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`);
+function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels, hoverText = "", appendMethod = "append") {
+  let containerHTML = `<form  title = '${hoverText}' class = 'simple-radio' ><p class = 'param-title'>${title}</p><ul class = 'checkboxList' id = '${checkboxID}' ></ul></form>`;
+  if (appendMethod === "append") {
+    $("#" + containerID).append(containerHTML);
+  } else {
+    $("#" + containerID).prepend(containerHTML);
+  }
+
   eval(`if(window.${variable} === undefined){window.${variable} = []}`);
   let ki = 0;
   labels = labels || [];
@@ -1875,8 +1877,8 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList, lab
       checked = "";
     }
     eval(`window.${variable} = optionList`);
-    $("#" + checkboxID).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
-                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label>`);
+    $("#" + checkboxID).append(`<li><input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label></li>`);
 
     $("#" + checkboxCheckboxID).change(function () {
       optionList[$(this).val()] = $(this)[0].checked;

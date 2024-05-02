@@ -775,11 +775,14 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     item = ee.ImageCollection(item);
   }
 
-  viz.dictServerSide = viz.dictServerSide !== undefined ? viz.dictServerSide : true;
   if (viz.layerType !== "tileMapService" && (viz.eeObjInfo === undefined || viz.eeObjInfo === null)) {
     viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
-  } else if (viz.layerType !== "tileMapService" && viz.dictServerSide === true) {
+    viz.dictServerSide = true;
+  } else if (viz.layerType !== "tileMapService" && Object.keys(viz.eeObjInfo).indexOf("layerType") > -1) {
+    viz.dictServerSide = false;
+  } else if (viz.layerType !== "tileMapService") {
     viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+    viz.dictServerSide = true;
   }
 
   if (viz.autoViz === true && (viz.class_names === undefined || viz.class_names === null)) {
@@ -1407,7 +1410,7 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     }
 
     viz = addClassVizDicts(viz);
-    console.log(viz);
+    // console.log(viz);
   }
 
   //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
@@ -1524,7 +1527,7 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   // Handle area charting
   if (viz.canAreaChart) {
     viz = setupAreaChartParams(viz, legendDivID);
-    console.log(viz.areaChartParams);
+    // console.log(viz.areaChartParams);
     // All a 1:2 layer to area chart object if both line and sankey are specified
     if (viz.areaChartParams.sankey && viz.areaChartParams.line) {
       let areaChartParamsLine = copyObj(viz.areaChartParams);
@@ -3752,7 +3755,12 @@ function initialize() {
       var geeRunError;
       function loadRun() {
         try {
+          console.log("running");
+          let runStartTime = new Date();
           run();
+          let runEndTime = new Date();
+          let runTime = (runEndTime - runStartTime) / 1000;
+          console.log(`Run time: ${runTime} seconds`);
           loaded = true;
         } catch (err) {
           geeRunError = err;

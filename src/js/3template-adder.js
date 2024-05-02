@@ -2574,7 +2574,7 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     staticTemplates.mapDefinedAreaChartDiv,
     false,
     `toggleTool(toolFunctions.area.mapBounds)`,
-    staticTemplates.userDefinedAreaChartTipHover
+    staticTemplates.mapDefinedAreaChartTipHover
   );
   addSubAccordianCard(
     "tools-accordian",

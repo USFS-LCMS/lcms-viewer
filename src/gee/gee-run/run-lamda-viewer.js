@@ -124,7 +124,7 @@ function runLAMDA() {
         canAreaChart: true,
         dictServerSide: false,
         eeObjInfo: rawObjInfo[output_type],
-        areaChartParams: { minZoomSpecifiedScale: 9 },
+        areaChartParams: { minZoomSpecifiedScale: 9, xAxisLabels: raw_dates },
         palette: continuous_palette_chastain,
         dateFormat: "YY-MM-dd",
         years: raw_dates,
@@ -139,7 +139,7 @@ function runLAMDA() {
         canAreaChart: true,
         dictServerSide: false,
         eeObjInfo: rawObjInfo[output_type],
-        areaChartParams: { minZoomSpecifiedScale: 9 },
+        areaChartParams: { minZoomSpecifiedScale: 9, xAxisLabels: raw_dates },
         palette: continuous_palette_chastain,
         dateFormat: "YY-MM-dd",
         years: raw_dates,
@@ -154,7 +154,7 @@ function runLAMDA() {
         dateFormat: "YY-MM-dd",
         years: persistence_dates,
         advanceInterval: "day",
-        areaChartParams: { shouldUnmask: true, minZoomSpecifiedScale: 9 },
+        areaChartParams: { shouldUnmask: true, minZoomSpecifiedScale: 9, xAxisLabels: persistence_dates },
       };
 
       var persistenceT = persistence.filter((n) => n.indexOf(output_type) > -1);

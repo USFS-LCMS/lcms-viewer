@@ -80,13 +80,9 @@ function areaChartCls() {
     obj.id = params.id || obj.name.replaceAll(" ", "-") + "-" + this.areaChartID.toString();
     obj.id = obj.id.replace(/[^A-Za-z0-9]/g, "-");
 
-    if (params.dictServerSide !== undefined && params.dictServerSide !== null) {
-      obj.dictServerSide = params.dictServerSide;
-    } else {
-      obj.dictServerSide = true;
-    }
-
     params.eeObjInfo = params.eeObjInfo || getImagesLib.eeObjInfo(eeLayer, obj.layerType);
+
+    obj.dictServerSide = eeObjServerSide(params.eeObjInfo);
     // console.log(params.eeObjInfo);
     if (params.layerType === undefined || params.layerType === null) {
       if (obj.dictServerSide === true) {
@@ -177,14 +173,14 @@ function areaChartCls() {
       obj.xAxisLabels = params.xAxisLabels;
 
       obj.xAxisProperty = params.xAxisProperty || obj.layerType === "ImageCollection" ? "year" : "system:index";
-      console.log("start size");
+      // console.log("start size");
       obj.size = 1;
       if (obj.layerType === "ImageCollection") {
-        console.log(params.eeObjInfo);
+        // console.log(params.eeObjInfo);
         obj.size = params.eeObjInfo.size !== undefined ? params.eeObjInfo.size : obj.item.size().getInfo();
       }
       // obj.size = obj.layerType === "ImageCollection" ? obj.item.size().getInfo() : 1;
-      console.log(obj.size);
+      // console.log(obj.size);
       obj.dateFormat = params.dateFormat || "YYYY";
       obj.chartLabelFontSize = params.chartLabelFontSize || 10;
       obj.chartAxisTitleFontSize = params.chartAxisTitleFontSize || 12;
@@ -230,9 +226,18 @@ function areaChartCls() {
         obj.sankey_class_palette = {};
 
         if (obj.sankeyTransitionPeriods === undefined || obj.sankeyTransitionPeriods === null) {
-          let firstYear = ee.Number.parse(obj.item.sort("system:time_start").first().date().format(obj.dateFormat));
-          let lastYear = ee.Number.parse(obj.item.sort("system:time_start", false).first().date().format(obj.dateFormat));
-          obj.sankey_years = ee.List([firstYear, lastYear]).getInfo();
+          let first_last_years = obj.item.reduceColumns(ee.Reducer.minMax(), ["system:time_start"]);
+          first_last_years = ee
+            .Dictionary(first_last_years)
+            .values()
+            .map((n) => ee.Date(n).format(obj.dateFormat))
+            .sort();
+
+          // let t1 = new Date();
+          obj.sankey_years = params.sankey_years || first_last_years.getInfo();
+          // let t2 = new Date();
+          // console.log(obj.sankey_years);
+          // console.log(t2 - t1);
         }
         // else {
         //   obj.sankey_years = [obj.sankeyTransitionPeriods[0][0], obj.sankeyTransitionPeriods[obj.sankeyTransitionPeriods.length - 1][1]];
@@ -328,13 +333,25 @@ function areaChartCls() {
 
       if (obj.class_names !== null && Object.keys(obj.class_names).length > 0) {
         obj.isThematic = true;
-        obj.reducer = params.reducer || ee.Reducer.frequencyHistogram();
+        if (params.reducer !== undefined && params.reducer !== null) {
+          obj.reducer = params.reducer;
+          obj.reducerString = params.reducerString || obj.reducer.getInfo().type.split("Reducer.")[1];
+        } else {
+          obj.reducer = ee.Reducer.frequencyHistogram();
+          obj.reducerString = "frequencyHistogram";
+        }
       } else {
         obj.isThematic = false;
-        obj.reducer = params.reducer || ee.Reducer.mean();
+        if (params.reducer !== undefined && params.reducer !== null) {
+          obj.reducer = params.reducer;
+          obj.reducerString = params.reducerString || obj.reducer.getInfo().type.split("Reducer.")[1];
+        } else {
+          obj.reducer = ee.Reducer.mean();
+          obj.reducerString = "mean";
+        }
       }
       obj.visible = params.visible;
-      obj.reducerString = obj.reducer.getInfo().type.split("Reducer.")[1];
+
       obj.isThematic = obj.reducerString === "frequencyHistogram" ? true : obj.isThematic;
       obj.yAxisLabel = obj.yAxisLabel || obj.reducerString === "frequencyHistogram" ? undefined : obj.reducerString.toTitle();
 
@@ -1128,7 +1145,16 @@ function areaChartCls() {
       labels.push(obj.name);
     });
 
-    addCheckboxes(this.layerSelectContainerID, this.layerSelectID, "Chart Layers", "checkboxSelectedChartLayers", selectedObj, labels);
+    addCheckboxes(
+      this.layerSelectContainerID,
+      this.layerSelectID,
+      "Chart Layers",
+      "checkboxSelectedChartLayers",
+      selectedObj,
+      labels,
+      "Choose which layers to include in area summary charts",
+      "prepend"
+    );
 
     $("#" + this.layerSelectID).change(() => {
       if (this.autoChartingOn) {
