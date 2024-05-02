@@ -3,28 +3,26 @@
 
 // Recursively get all wayback services that are part of the Wayback group
 // https://www.arcgis.com/home/group.html?id=0f3189e1d1414edfad860b697b7d8311
-function getWayBackServices(start = 1, results = [], callback) {
-  let allTemplateQuery = `https://www.arcgis.com/sharing/rest/content/groups/0f3189e1d1414edfad860b697b7d8311/search?q=%20%20-type%3A%22Code%20Attachment%22%20-type%3A%22Featured%20Items%22%20-type%3A%22Symbol%20Set%22%20-type%3A%22Color%20Set%22%20-type%3A%22Windows%20Viewer%20Add%20In%22%20-type%3A%22Windows%20Viewer%20Configuration%22%20-type%3A%22Map%20Area%22%20-typekeywords%3A%22MapAreaPackage%22%20-type%3A%22Indoors%20Map%20Configuration%22%20-typekeywords%3A%22SMX%22&num=100&start=${start}&sortField=&sortOrder=asc&f=json`;
-  var out = $.ajax({
-    type: "GET",
-    url: allTemplateQuery,
-    success: function (json) {
-      results = results.concat(json.results);
-      if (json.nextStart !== -1) {
-        getWayBackServices(json.nextStart, results, callback);
-      } else {
-        callback(results);
-      }
-    },
-    error: function (request, status, errorThrown) {
-      console.log(status);
-    },
-  });
-}
-
-// Wrapper for setting up Wayback
-function setupWayback() {
-  // Function to parse the services that are part of the Wayback group
+function esri_wayback() {
+  function getServices(start = 1, results = []) {
+    let allTemplateQuery = `https://www.arcgis.com/sharing/rest/content/groups/0f3189e1d1414edfad860b697b7d8311/search?q=%20%20-type%3A%22Code%20Attachment%22%20-type%3A%22Featured%20Items%22%20-type%3A%22Symbol%20Set%22%20-type%3A%22Color%20Set%22%20-type%3A%22Windows%20Viewer%20Add%20In%22%20-type%3A%22Windows%20Viewer%20Configuration%22%20-type%3A%22Map%20Area%22%20-typekeywords%3A%22MapAreaPackage%22%20-type%3A%22Indoors%20Map%20Configuration%22%20-typekeywords%3A%22SMX%22&num=100&start=${start}&sortField=&sortOrder=asc&f=json`;
+    var out = $.ajax({
+      type: "GET",
+      url: allTemplateQuery,
+      success: function (json) {
+        results = results.concat(json.results);
+        if (json.nextStart !== -1) {
+          // console.log(results);
+          getServices(json.nextStart, results);
+        } else {
+          parseWayback(results);
+        }
+      },
+      error: function (request, status, errorThrown) {
+        console.log(status);
+      },
+    });
+  }
   function parseWayback(results) {
     // Find the non metadata tile services
     const nonMetadata = results.filter(
@@ -125,15 +123,15 @@ function setupWayback() {
                 let d = f.SRC_DATE2;
                 d = d === null ? "NA" : new Date(d).toStringFormat();
                 $("#wayback-metadata").append(`
-                <ul  style = 'margin-bottom: 0px;'>
-                <li style='font-weight:bold;'>Acquisition Date: ${d}</li>
-                <div class='hl'></div>
-                <li>Source: ${f.NICE_DESC} (${f.SRC_DESC})</li>
-                <li>World Imagery Version: ${new Date("20" + k).toStringFormat()}</li>
-                <li>Resolution: ${f.SAMP_RES.toFixed(2)} (m)</li>
-                <li>Accuracy: ${f.SRC_ACC.toFixed(2)} (m)</li>
-                
-                </ul>`);
+              <ul  style = 'margin-bottom: 0px;'>
+              <li style='font-weight:bold;'>Acquisition Date: ${d}</li>
+              <div class='hl'></div>
+              <li>Source: ${f.NICE_DESC} (${f.SRC_DESC})</li>
+              <li>World Imagery Version: ${new Date("20" + k).toStringFormat()}</li>
+              <li>Resolution: ${f.SAMP_RES.toFixed(2)} (m)</li>
+              <li>Accuracy: ${f.SRC_ACC.toFixed(2)} (m)</li>
+              
+              </ul>`);
 
                 // Hide spinners
                 $("#wayback-metadata-loading-spinner").removeClass("fa-spin");
@@ -184,7 +182,26 @@ function setupWayback() {
       getMetadata();
     });
   }
+  // Wrapper for setting up Wayback
+  this.initialize = function () {
+    // Function to parse the services that are part of the Wayback group
 
-  // Start the whole thing
-  getWayBackServices(1, [], parseWayback);
+    // Start the whole thing
+    getServices(1, []);
+  };
+
+  // Function to add UI container for Wayback timelapse and metadata
+  this.addWaybackUIContainer = function (containerID = "#layer-list-collapse-div") {
+    $(containerID).append(`<ul id="wayback-layer-list" class = "layer-list"></ul>`);
+    $(containerID).append(
+      `<div id = 'wayback-metadata-loading' style='display:none;'>
+    <img id = 'wayback-metadata-loading-spinner' class = 'progress-spinner' src="./src/assets/images/esri-logo.png" height="${convertRemToPixels(
+      1
+    )}"  alt="ESRI logo image">Acquiring WayBack Imagery Metadata
+      
+    </div>
+  <div id="wayback-metadata" class = ""></div>
+  `
+    );
+  };
 }

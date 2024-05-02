@@ -867,7 +867,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
   if (viz.layerType === "tileMapService") {
-    console.log("here");
+    // console.log("here");
     // viz.layerType = "tileMapService";
     viz.years = Object.keys(item);
   } else if (viz.layerType !== "tileMapService" && (viz.years === null || viz.years === undefined)) {

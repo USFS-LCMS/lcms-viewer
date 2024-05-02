@@ -717,11 +717,15 @@ function runAncillary() {
   // Bring in wayback
 
   turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers
-  setupWayback();
+  let wayback = new esri_wayback();
+  wayback.addWaybackUIContainer();
+  wayback.initialize();
   // addChartJS(d,'test1');
 }
 
 // runAncillary = function () {
 //   turnOffLayersWhenTimeLapseIsOn = false;
-//   setupWayback();
+//   let wayback = new esri_wayback();
+//   wayback.addWaybackUIContainer();
+//   wayback.initialize();
 // };
