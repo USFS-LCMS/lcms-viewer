@@ -143,7 +143,7 @@ function runGTAC() {
       Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
       bandNames: ["Land_Cover"],
       layerType: "ImageCollection",
-      size: 39,
+      size: lcmsRun.years.length,
     }; //eeObjInfo(lcmsRun.forProps, "ImageCollection").getInfo();
     console.log(lcmsRun.props);
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
@@ -203,6 +203,12 @@ function runGTAC() {
       .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution")
       .filter(ee.Filter.calendarRange(startYear, endYear, "year"))
       .select([0], [change_attribution_bn]);
+
+    let lastCOCYear = 2022;
+    if (endYear < lastCOCYear) {
+      lastCOCYear = endYear;
+    }
+    lcmsRun.COCYears = range(startYear, lastCOCYear + 1);
     let cocObjInfo = {
       Cause_of_Change_class_names: [
         "Wildfire",
@@ -243,8 +249,9 @@ function runGTAC() {
       Cause_of_Change_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
       bandNames: ["Cause_of_Change"],
       layerType: "ImageCollection",
-      size: 38,
+      size: lcmsRun.COCYears.length,
     };
+
     lcmsAttr = lcmsAttr.map((img) => {
       let out = img.where(img.eq(16), 17);
       return out.where(img.eq(1), 16).subtract(1).set(cocObjInfo).copyProperties(img, ["system:time_start"]);
@@ -668,6 +675,8 @@ function runGTAC() {
       }
       populateAreaChartDropdown();
     } else {
+      areaChart.clearLayers();
+
       ["Change", "Land_Cover", "Land_Use"].map((bn) => {
         let bnTitle = bn.replace("_", " ");
         lcmsRun.props.bandNames = [bn];
@@ -693,20 +702,18 @@ function runGTAC() {
           false
         );
       });
-      let lastAreaChartYear = 2022;
-      if (endYear < lastAreaChartYear) {
-        lastAreaChartYear = endYear;
-      }
+
       let cocVisibility = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false];
       areaChart.addLayer(
         lcmsAttr,
-        { visible: cocVisibility, eeObjInfo: cocObjInfo, xAxisLabels: range(startYear, lastAreaChartYear + 1) },
-        "Cause of Change (beta) Annual"
+        { visible: cocVisibility, eeObjInfo: cocObjInfo, xAxisLabels: lcmsRun.COCYears },
+        "Cause of Change (beta) Annual",
+        false
       );
       areaChart.addLayer(
         lcmsAttr,
         {
-          sankey_years: [startYear, lastAreaChartYear],
+          sankey_years: [startYear, lastCOCYear],
           sankey: true,
           visible: cocVisibility,
           eeObjInfo: cocObjInfo,
@@ -715,6 +722,7 @@ function runGTAC() {
         "Cause of Change (beta) Transition",
         false
       );
+
       areaChart.populateChartLayerSelect();
       // areaChart.startAutoCharting();
       // Map.turnOnAutoAreaCharting();

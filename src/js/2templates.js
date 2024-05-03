@@ -727,7 +727,7 @@ const staticTemplates = {
   studyAreaDropdownButtonDisabledTooltip: `Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
   reRunButtonEnabledTooltip: `Once finished changing parameters, press this button to refresh map layers`,
   reRunButtonDisabledTooltip: `Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
-  reRunButton: `<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' title="">Submit</button>`,
+  reRunButton: `<button id = 'reRun-button' onclick = 'reRun()' class = 'btn   ' title="">Submit</button>`,
   addTimelapsesButton: `<button id = 'addTimelapses-button' onclick = 'addLCMSTimeLapses()' class = 'mb-1 ml-1 btn ' title="Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading">Add LCMS Time Lapses To Map</button>`,
   downloadDiv: `<div class = 'py-2'>
                         <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
@@ -1848,7 +1848,7 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
 function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels, hoverText = "", appendMethod = "append") {
-  let containerHTML = `<form  title = '${hoverText}' class = 'simple-radio' ><p class = 'param-title'>${title}</p><ul class = 'checkboxList' id = '${checkboxID}' ></ul></form>`;
+  let containerHTML = `<form  id = '${checkboxID}'  title = '${hoverText}' class = 'simple-radio' ><p class = 'param-title'>${title}</p><ul class = 'checkboxList' id = '${checkboxID}-list' ></ul></form>`;
   if (appendMethod === "append") {
     $("#" + containerID).append(containerHTML);
   } else {
@@ -1877,7 +1877,7 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList, lab
       checked = "";
     }
     eval(`window.${variable} = optionList`);
-    $("#" + checkboxID).append(`<li><input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+    $("#" + checkboxID + "-list").append(`<li><input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
                                  <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label></li>`);
 
     $("#" + checkboxCheckboxID).change(function () {

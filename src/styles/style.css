@@ -132,6 +132,9 @@ body {
   outline: none !important;
   vertical-align: middle !important;
 }
+#reRun-button {
+  margin-bottom: 0.5rem !important;
+}
 .shepherd-button {
   background-color: var(--deep-brown-100) !important;
   padding: 0.1rem 0.2rem;

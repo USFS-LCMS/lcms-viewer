@@ -2548,7 +2548,7 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     "Choose which " + mode + " time series to summarize."
   );
   $("#area-chart-params-div").append(`<hr>`);
-  $("#parameters-collapse-div").append(`<hr>`);
+  // $("#parameters-collapse-div").append(`<hr>`);
   addMultiRadio("area-chart-params-div", "area-summary-format", "Area Units", "areaChartFormat", { Percentage: true, Acres: false, Hectares: false });
   if (mode === "LCMS" || mode === "geeViz") {
     //&& (urlParams.sankey==='true' || urlParams.beta ==='true')){

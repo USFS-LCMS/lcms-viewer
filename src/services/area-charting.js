@@ -53,6 +53,7 @@ function areaChartCls() {
   //////////////////////////////////////////////////////////////////////////
   // Function for cleanup of all area chart layers and output divs
   this.clearLayers = function () {
+    this.clearChartLayerSelect();
     this.areaChartObj = {};
     this.areaChartID = 1;
     // this.makeChartID = 0;
@@ -520,13 +521,13 @@ function areaChartCls() {
         r: 25,
         b: 25,
         t: 50,
-        pad: 4,
+        pad: 0,
       },
     };
     var config = {
       toImageButtonOptions: {
         format: "png", // one of png, svg, jpeg, webp
-        filename: name,
+        filename: name.replaceAll("<br>", " "),
         width: 1000,
         height: 600,
       },
@@ -534,7 +535,7 @@ function areaChartCls() {
       displayModeBar: false,
     };
     // return Plotly.newPlot(canvasID, data, layout, config);
-    let outFilename = `${name}`;
+    let outFilename = name.replaceAll("<br>", " ");
     // let downloadCSVButton = this.getDownloadCSVButton(selectedObj.id, outFilename);
     // let
     let tempGraphDivID = `${this.chartContainerID}-${selectedObj.id}-${bn}`;
@@ -548,7 +549,8 @@ function areaChartCls() {
   this.makeChart = function (table, name, colors, visible, selectedObj) {
     // console.log(table);
     // let selectedObj = this.areaChartObj[whichAreaChartCollection];
-    let outFilename = `${selectedObj.name} Summary ${name}`;
+    let outFilename = `${selectedObj.name} ${name}`;
+    let chartTitle = `${selectedObj.name}<br>${name}`;
     if (selectedObj.chartDecimalProportion !== undefined && selectedObj.chartDecimalProportion !== null) {
       chartDecimalProportion = selectedObj.chartDecimalProportion;
     }
@@ -621,13 +623,14 @@ function areaChartCls() {
       paper_bgcolor: this.plot_bgcolor,
       font: {
         family: this.plot_font,
+        size: selectedObj.chartLabelFontSize,
       },
       legend: {
         font: { size: selectedObj.chartLabelFontSize },
       },
 
       margin: {
-        l: 50,
+        l: 35,
         r: 25,
         b: 50,
         t: 50,
@@ -636,7 +639,7 @@ function areaChartCls() {
       width: this.chartWidth,
       height: this.chartHeight,
       title: {
-        text: outFilename,
+        text: chartTitle,
       },
       xaxis: {
         tickangle: 45,
@@ -938,12 +941,16 @@ function areaChartCls() {
                   outCSV = outCSV.map((r) => r.join(",")).join("\n");
                   selectedObj.tableExportData[bn] = outCSV;
                   labels = labels.map((l) => l.slice(0, selectedObj.chartLabelMaxLength).chunk(selectedObj.chartLabelMaxWidth).join("<br>"));
+                  let bnNameTitle = bn.replaceAll("_", " ") + " ";
+                  if (selectedObj.bandNames.length === 1 || selectedObj.name.indexOf(bnNameTitle) > -1) {
+                    bnNameTitle = "";
+                  }
                   this.makeSankeyChart(
                     sankey_dict,
                     labels,
                     colors,
                     bn,
-                    `${selectedObj.name} Sankey ${bn.replaceAll("_", " ")} ${name} (${nominalScale}m)`,
+                    `${selectedObj.name} ${bnNameTitle}<br>${name} (${nominalScale}m)`,
                     selectedObj,
                     outCSV
                   );
@@ -1134,6 +1141,9 @@ function areaChartCls() {
     });
   };
   //////////////////////////////////////////////////////////////////////////
+  this.clearChartLayerSelect = function () {
+    $("#" + this.layerSelectID).remove();
+  };
   // If checkbox layer selection is used, instantiate it with this function to populate the checkboxes
   this.populateChartLayerSelect = function () {
     this.chartLayerSelectFromMapLayers = false;
