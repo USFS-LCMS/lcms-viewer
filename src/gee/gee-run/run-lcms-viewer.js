@@ -200,11 +200,11 @@ function runGTAC() {
     });
     let change_attribution_bn = "Cause_of_Change";
     var lcmsAttr = ee
-      .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2022-8/v2022-8-Change_Attribution")
+      .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2023-9/v2023-9-Change_Attribution")
       .filter(ee.Filter.calendarRange(startYear, endYear, "year"))
       .select([0], [change_attribution_bn]);
 
-    let lastCOCYear = 2022;
+    let lastCOCYear = 2023;
     if (endYear < lastCOCYear) {
       lastCOCYear = endYear;
     }
@@ -213,51 +213,58 @@ function runGTAC() {
       Cause_of_Change_class_names: [
         "Wildfire",
         "Prescribed Burn",
-        "Timber Harvest or Other Tree Loss Disturbance Agent > 1.5 hectare",
-        "Timber Harvest or Other Tree Loss Disturbance Agent < 1.5 hectare",
-        "Timber Harvest or Other Fast Disturbance Agent in Protected Lands",
+        "Timber Harvest or other tree loss disturbance agent > 1.5 hectare",
+        "Timber Harvest or other tree loss disturbance agent < 1.5 hectare",
+        "Timber Harvest or other tree loss disturbance agent > 1.5 hectare in protected lands",
+        "Timber Harvest or other tree loss disturbance agent < 1.5 hectare in protected lands",
+        "Low Magnitude Tree Loss",
         "Tropical Hurricane",
-        "Tornado or Other Wind Event",
+        "Tornado or other wind event",
         "Water Desiccation",
         "Water Inundation",
-        "Drought Stress, Timber Harvest or Other Disturbance Agent",
-        "Other Fast Disturbance Agent in Non-Treed Landscape",
-        "Southern Pine Beetle",
-        "Insect, Disease or Climate Stress",
+        "Drought Stress, Timber Harvest or other disturbance agent",
+        "Other Fast Disturbance Agent in non-treed landscape",
+        "Insect, Disease or Climate Stress low magnitude loss",
+        "Insect, Disease or Climate Stress high magnitude loss",
+        "Other Slow Loss in non-treed landscape",
         "Gain",
         "Stable",
-        "Non-processing Area",
+        "Non-processing area",
       ],
       Cause_of_Change_class_palette: [
-        "d54309",
+        "D54309",
         "AD3100",
         "FFFF00",
         "C6C600",
-        "DAA520",
+        "B7A18E",
+        "A48870",
+        "8B7058",
         "FFB6C1",
         "FF8397",
-        "897044",
-        "9EAAD7",
-        "898944",
-        "D8D898",
-        "D46C40",
+        "CFD9FA",
+        "8692BF",
+        "C2C26D",
+        "D2D25D",
+        "F7B99F",
         "F39268",
+        "f07844",
         "00A398",
         "3d4551",
-        "1B1716",
+        "1b1716",
       ],
-      Cause_of_Change_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+      Cause_of_Change_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
       bandNames: ["Cause_of_Change"],
       layerType: "ImageCollection",
       size: lcmsRun.COCYears.length,
     };
 
     lcmsAttr = lcmsAttr.map((img) => {
-      let out = img.where(img.eq(16), 17);
-      return out.where(img.eq(1), 16).subtract(1).set(cocObjInfo).copyProperties(img, ["system:time_start"]);
+      let out = img.where(img.eq(19).or(img.eq(0)), 20);
+      return out.where(img.eq(1), 19).subtract(1).set(cocObjInfo).copyProperties(img, ["system:time_start"]);
     });
 
     const addLayerFun = urlParams.addLCMSTimeLapsesOn === "yes" ? Map.addTimeLapse : Map.addLayer;
+
     addLayerFun(
       lcmsAttr,
       {
@@ -703,7 +710,7 @@ function runGTAC() {
         );
       });
 
-      let cocVisibility = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false];
+      let cocVisibility = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false];
       areaChart.addLayer(
         lcmsAttr,
         { visible: cocVisibility, eeObjInfo: cocObjInfo, xAxisLabels: lcmsRun.COCYears },
