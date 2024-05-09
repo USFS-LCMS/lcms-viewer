@@ -2234,215 +2234,227 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     );
   }
 } else if (mode === "HiForm-BMP") {
+
+  var selectedState;
+  var selectedCounty;
+  var statesDict = {
+    "Alabama" : "01",
+    "Alaska" : "02",
+    "Arizono" : "04",
+    "Arkansas" : "05",
+    "California" : "06",
+    "Colorado" : "08",
+    "Connecticut" : "09",
+    "Delaware" : "10",
+    "District of Columbia" : "11",
+    "Florida" : "12",
+    "Georgia" : "13",
+    "Hawaii" : "15",
+    "Idaho" : "16",
+    "Illinois" : "17",
+    "Indiana" : "18",
+    "Iowa" : "19",
+    "Kansas" : "20",
+    "Kentucky" : "21",
+    "Louisiana" : "22",
+    "Maine" : "23",
+    "Maryland" : "24",
+    "Massachusetts" : "25",
+    "Michigan" : "26",
+    "Minnesota" : "27",
+    "Mississippi" : "28",
+    "Missouri" : "29",
+    "Montana" : "30",
+    "Nebraska" : "31",
+    "Nevada" : "32",
+    "New Hampshire" : "33",
+    "New Jersey" : "34",
+    "New Mexico" : "35",
+    "New York" : "36",
+    "North Carolina" : "37",
+    "North Dakota" : "38",
+    "Ohio" : "39",
+    "Oklahoma" : "40",
+    "Oregon" : "41",
+    "Pennsylvania" : "42",
+    "Rhode Island" : "44",
+    "South Carolina" : "45",
+    "South Dakaota" : "46",
+    "Tennessee" : "47",
+    "Texas" : "48",
+    "Utah" : "49",
+    "Vermont" : "50",
+    "Virginia" : "51",
+    "Washington" : "53",
+    "West Virginia" : "54",
+    "Wisconsin" : "55",
+    "Wyoming" : "56",
+
+  }
+  var stateList = [
+    "Alabama",
+    "Alaska",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "District of Columbia",
+    "Florida",
+    "Georgia",
+    "Guam",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming"
+  ]
+  
   addCollapse(
     "sidebar-left",
-    "parameters-collapse-label",
-    "parameters-collapse-div",
-    "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    "select-aoi-label",
+    "select-aoi-div",
+    "Select Area of Interest",
+    '<i role="img" class="fa fa-mouse-pointer mr-1" aria-hidden="true"></i>',
     true,
     null,
-    "Adjust parameters used to prepare analysis window"
+    "Select are of interest for the Hi-Form BMP Tool"
   );
-  var minYear = 2017;
-  var maxYear = new Date().getFullYear();
-  var dayOfYear = new Date().dayofYear();
-  if (urlParams.preStartYear == null || urlParams.preStartYear == undefined) {
-    urlParams.preStartYear = minYear;
-  }
-  if (urlParams.preEndYear == null || urlParams.preEndYear == undefined) {
-    urlParams.preEndYear = maxYear - 1;
-  }
-  if (urlParams.postYear == null || urlParams.postYear == undefined) {
-    urlParams.postYear = maxYear;
-  }
-  // if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
-  //   urlParams.postEndYear = maxYear;
-  // }
 
-  if (urlParams.startJulian == null || urlParams.startJulian == undefined) {
-    urlParams.startJulian = dayOfYear - 16; // = parseInt(urlParams.startYear);
-    if (urlParams.startJulian < 0) {
-      urlParams.startJulian = 0;
+  addSelectTypeRadio(
+    "select-aoi-div",
+    "select-type-radio",
+    "Choose County Selection Type",
+    "selectOption",
+    { "Select by Dropdown": true, "Select on Map": false },
+    "Title",
+    handleAoiSelectionType
+  )
+
+  function handleAoiSelectionType(selection) {
+    console.log(selection)
+
+    if (selection == "Select by Dropdown") {
+      google.maps.event.clearListeners(map, "click");
+      $("#" + "dropdown-select").remove();
+      $("#" + "select-aoi-div").append(`<div id="dropdown-select""></div>`)
+
+      addDropdownStates(
+        "dropdown-select",
+        "state-select",
+        "Select a State:",
+        selectedState,
+        stateList,
+        populateCountiesDropdown
+      );
+    }
+    else if (selection == "Select on Map") {
+      $("#" + "dropdown-select").remove();
+      selectSingleCounty()
     }
   }
-  if (urlParams.endJulian == null || urlParams.endJulian == undefined) {
-    urlParams.endJulian = dayOfYear - 2; // = parseInt(urlParams.endYear);
-    if (urlParams.endJulian > 365) {
-      urlParams.endJulian = 365;
-    }
+
+  function populateCountiesDropdown(selectedState){
+    var stateFP = statesDict[selectedState];
+    console.log(selectedState);
+    console.log(stateFP);
+    var counties = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP))
+    var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo()
+    var countyList = counties.aggregate_histogram("NAME").keys().getInfo()
+    console.log(countyList)
+
+    addDropdownCounties(
+      "dropdown-select",
+      "county-select",
+      "Select a County:",
+      selectedCounty,
+      countyList,
+      stateFP,
+      stateAbr,
+      setSelectedCounty
+    );
+  };
+
+  function setSelectedCounty(selectedCounty, stateFP, stateAbr){
+    var selectedFeature = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP)).filter(ee.Filter.eq("NAME", selectedCounty));
+    Map.addLayer(selectedFeature, {palette: '66ff00', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
+    hiform_bmp_process(selectedFeature)
+    urlParams.selectedCounty = selectedFeature;
   }
-  if (urlParams.compVizParams == null || urlParams.compVizParams == undefined) {
-    urlParams.compVizParams = {
-      min: 0.1,
-      max: [0.5, 0.6, 0.6],
-      bands: "swir2,nir,red",
-      gamma: 1.6,
-    };
-  }
-  if (urlParams.diffVizParams == null || urlParams.diffVizParams == undefined) {
-    urlParams.diffVizParams = {
-      min: -0.05,
-      max: 0.05,
-      bands: ["brightness", "greenness", "wetness"],
-    };
-  }
-  if (urlParams.diffThreshs == null || urlParams.diffThreshs == undefined) {
-    urlParams.diffThreshs = { greenness: -0.05, wetness: -0.02, NBR: -0.2 };
-  }
-  if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
-    urlParams.treeDiameter = 15;
-  }
-  if (urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == undefined) {
-    urlParams.lcmsTreeMaskClasses = {
-      Trees: true,
-      "Shrubs & Trees Mix": false,
-      "Grass/Forb/Herb & Trees Mix": false,
-      "Barren & Trees Mix": false,
-    };
+  
+  function selectSingleCounty() {
+    setTimeout(() => {
+        google.maps.event.clearListeners(map, "click");
+        google.maps.event.addListener(map, "click", (e) => {
+            const lat = e.latLng.lat()
+            const lng = e.latLng.lng()
+            const point = ee.Geometry.Point([lng, lat]);
+            features = ee.FeatureCollection('TIGER/2018/Counties');
+            const selectedFeature = features.filterBounds(point);
+            var countyName = selectedFeature.first().get("NAME").getInfo()
+            var stateFP = selectedFeature.first().get("STATEFP").getInfo()
+            var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo()
+
+            Map.addLayer(selectedFeature, {palette: '66ff00', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`, true);
+            hiform_bmp_process(selectedFeature)
+            google.maps.event.clearListeners(map, "click");
+        });
+    }, 0);
   }
 
-  // $('#parameters-collapse-div').append(`<hr>`);
-
-  addDualRangeSlider(
-    "parameters-collapse-div",
-    "Analysis date range:",
-    "urlParams.startJulian",
-    "urlParams.endJulian",
-    1,
-    365,
-    urlParams.startJulian,
-    urlParams.endJulian,
-    1,
-    "julian-day-slider",
-    "julian",
-    "Select a window of dates to filter the analysis (baseline and post-disturbance)."
-  );
-  addDualRangeSlider(
-    "parameters-collapse-div",
-    "Baseline year(s):",
-    "urlParams.preStartYear",
-    "urlParams.preEndYear",
-    minYear,
-    maxYear - 1,
-    urlParams.preStartYear,
-    urlParams.preEndYear,
-    1,
-    "pre-years-slider",
-    "null",
-    "Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
-  );
-  // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
-  addRangeSlider(
-    "parameters-collapse-div",
-    "Target year:",
-    "urlParams.postYear",
-    minYear + 1,
-    maxYear,
-    urlParams.postYear,
-    1,
-    "post-years-slider",
+  addCollapse(
+    "sidebar-left",
+    "pre-post-dates-label",
+    "pre-post-dates-div",
+    "Define 'pre' and 'post' date ranges",
+    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    false,
     null,
-    "Choose year to compare against Baseline year(s)."
+    "Select pre and post date ranges for the Hi-Form BMP Tool"
   );
-
-  addSubCollapse("parameters-collapse-div", "advanced-params-label", "advanced-params-div", "Advanced Parameters", "", false, "");
-  $("#parameters-collapse-div").append("<hr>");
-  addRangeSlider(
-    "advanced-params-div",
-    "Giant Sequoia Canopy Diamater (m)",
-    "urlParams.treeDiameter",
-    5,
-    30,
-    urlParams.treeDiameter,
-    5,
-    "tree-diameter-slider",
-    "null",
-    "Specify the average diameter of a Giant Sequoia crown in meters"
-  );
-
-  addCheckboxes(
-    "advanced-params-div",
-    "lcms-tree-mask-class-checkboxes",
-    "LCMS land cover classes to include as tree to mask out non tree areas from change detection. ",
-    "lcmsTreeMaskClasses",
-    urlParams.lcmsTreeMaskClasses
-  );
-
-  // addRadio('advanced-params-div','cloud-mask-method-radio','','S2Cloudless+TDOM','CloudScore+','cloudMaskMethod','s2c','csp',null,null,'Toggle between imperial or metric units')
-
-  if (urlParams.cloudMaskMethod === null || urlParams.cloudMaskMethod === undefined) {
-    urlParams.cloudMaskMethod = {
-      "S2Cloudless-TDOM": false,
-      "CloudScore+": true,
-    };
-  }
-  addMultiRadio(
-    "advanced-params-div",
-    "cloud-mask-method-radio",
-    "Cloud Masking Method",
-    "cloudMaskMethod",
-    urlParams.cloudMaskMethod,
-    "Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024"
-  );
-
-  addJSONInputTextBox(
-    "advanced-params-div",
-    "diff-bands-thresh-input",
-    "Difference Bands and Thresholds",
-    "urlParams.diffThreshs",
-    urlParams.diffThreshs,
-    "Bands and thresholds to use for identifying change"
-  );
-
-  addJSONInputTextBox("advanced-params-div", "comp-viz-params-input", "Composite Visualization Parameters", "urlParams.compVizParams", urlParams.compVizParams, "Viz params for composite images");
-
-  addJSONInputTextBox("advanced-params-div", "diff-viz-params-input", "Difference Visualization Parameters", "urlParams.diffVizParams", urlParams.diffVizParams, "Viz params for difference image");
-
-  // Sync sliders
-  $("#post-years-slider")
-    .slider()
-    .bind("slide", function (event, ui) {
-      var yr = ui.value;
-      var needsUpdated = false;
-      if (yr <= urlParams.preEndYear) {
-        urlParams.preEndYear = yr - 1;
-        needsUpdated = true;
-      }
-      if (yr <= urlParams.preStartYear) {
-        urlParams.preStartYear = yr - 1;
-        needsUpdated = true;
-      }
-      if (needsUpdated) {
-        $("#pre-years-slider").slider("values", [urlParams.preStartYear, urlParams.preEndYear]);
-        $("#pre-years-slider-update").html(`${urlParams.preStartYear} - ${urlParams.preEndYear}`);
-      }
-    });
-  $("#pre-years-slider")
-    .slider()
-    .bind("slide", function (event, ui) {
-      var yrs = ui.values;
-      var needsUpdated = false;
-      if (yrs[0] >= urlParams.postYear) {
-        urlParams.postYear = yrs[0] + 1;
-        needsUpdated = true;
-      }
-      if (yrs[1] >= urlParams.postYear) {
-        urlParams.postYear = yrs[1] + 1;
-        needsUpdated = true;
-      }
-      if (needsUpdated) {
-        $("#post-years-slider").slider("value", urlParams.postYear);
-        $("#post-years-slider-update").html(`${urlParams.postYear}`);
-      }
-    });
 
   addCollapse(
     "sidebar-left",
     "layer-list-collapse-label",
     "layer-list-collapse-div",
-    "MAP LAYERS",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    "View HiForm BMP Results",
+    '<i role="img" class="fa fa-tree mr-1" aria-hidden="true"></i>',
     true,
     null,
     mode + " DATA layers to view on map"
@@ -2450,37 +2462,251 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addCollapse(
     "sidebar-left",
-    "reference-layer-list-collapse-label",
-    "reference-layer-list-collapse-div",
-    "REFERENCE DATA",
-    `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
+    "related-layers-label",
+    "related-layers-div",
+    "BMP Related Layers",
+    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
     false,
     null,
-    "Additional relevant layers to view on map intended to provide context for change data"
-  );
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-
-  addCollapse(
-    "sidebar-left",
-    "table-collapse-label",
-    "table-collapse-div",
-    "MONITORING SITES",
-    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
-    true,
-    ``,
-    "Giant Sequoia monitoring sites output table"
+    "View related layers for HiForm BMP"
   );
 
   addCollapse(
     "sidebar-left",
-    "tools-collapse-label",
-    "tools-collapse-div",
-    "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    "export-options-label",
+    "export-options-div",
+    "Export Options",
+    '<i role="img" class="fa fa-download mr-1" aria-hidden="true"></i>',
     false,
-    "",
-    "Tools to measure and chart data provided on the map"
+    null,
+    "Download HiForm BMP results"
   );
+
+  // addCollapse(
+  //   "sidebar-left",
+  //   "parameters-collapse-label",
+  //   "parameters-collapse-div",
+  //   "PARAMETERS",
+  //   '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+  //   false,
+  //   null,
+  //   "Adjust parameters used to prepare analysis window"
+  // );
+  // var minYear = 2017;
+  // var maxYear = new Date().getFullYear();
+  // var dayOfYear = new Date().dayofYear();
+  // if (urlParams.preStartYear == null || urlParams.preStartYear == undefined) {
+  //   urlParams.preStartYear = minYear;
+  // }
+  // if (urlParams.preEndYear == null || urlParams.preEndYear == undefined) {
+  //   urlParams.preEndYear = maxYear - 1;
+  // }
+  // if (urlParams.postYear == null || urlParams.postYear == undefined) {
+  //   urlParams.postYear = maxYear;
+  // }
+  // // if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
+  // //   urlParams.postEndYear = maxYear;
+  // // }
+
+  // if (urlParams.startJulian == null || urlParams.startJulian == undefined) {
+  //   urlParams.startJulian = dayOfYear - 16; // = parseInt(urlParams.startYear);
+  //   if (urlParams.startJulian < 0) {
+  //     urlParams.startJulian = 0;
+  //   }
+  // }
+  // if (urlParams.endJulian == null || urlParams.endJulian == undefined) {
+  //   urlParams.endJulian = dayOfYear - 2; // = parseInt(urlParams.endYear);
+  //   if (urlParams.endJulian > 365) {
+  //     urlParams.endJulian = 365;
+  //   }
+  // }
+  // if (urlParams.compVizParams == null || urlParams.compVizParams == undefined) {
+  //   urlParams.compVizParams = {
+  //     min: 0.1,
+  //     max: [0.5, 0.6, 0.6],
+  //     bands: "swir2,nir,red",
+  //     gamma: 1.6,
+  //   };
+  // }
+  // if (urlParams.diffVizParams == null || urlParams.diffVizParams == undefined) {
+  //   urlParams.diffVizParams = {
+  //     min: -0.05,
+  //     max: 0.05,
+  //     bands: ["brightness", "greenness", "wetness"],
+  //   };
+  // }
+  // if (urlParams.diffThreshs == null || urlParams.diffThreshs == undefined) {
+  //   urlParams.diffThreshs = { greenness: -0.05, wetness: -0.02, NBR: -0.2 };
+  // }
+  // if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
+  //   urlParams.treeDiameter = 15;
+  // }
+  // if (urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == undefined) {
+  //   urlParams.lcmsTreeMaskClasses = {
+  //     Trees: true,
+  //     "Shrubs & Trees Mix": false,
+  //     "Grass/Forb/Herb & Trees Mix": false,
+  //     "Barren & Trees Mix": false,
+  //   };
+  // }
+
+  // // $('#parameters-collapse-div').append(`<hr>`);
+
+  // addDualRangeSlider(
+  //   "parameters-collapse-div",
+  //   "Analysis date range:",
+  //   "urlParams.startJulian",
+  //   "urlParams.endJulian",
+  //   1,
+  //   365,
+  //   urlParams.startJulian,
+  //   urlParams.endJulian,
+  //   1,
+  //   "julian-day-slider",
+  //   "julian",
+  //   "Select a window of dates to filter the analysis (baseline and post-disturbance)."
+  // );
+  // addDualRangeSlider(
+  //   "parameters-collapse-div",
+  //   "Baseline year(s):",
+  //   "urlParams.preStartYear",
+  //   "urlParams.preEndYear",
+  //   minYear,
+  //   maxYear - 1,
+  //   urlParams.preStartYear,
+  //   urlParams.preEndYear,
+  //   1,
+  //   "pre-years-slider",
+  //   "null",
+  //   "Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
+  // );
+  // // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
+  // addRangeSlider(
+  //   "parameters-collapse-div",
+  //   "Target year:",
+  //   "urlParams.postYear",
+  //   minYear + 1,
+  //   maxYear,
+  //   urlParams.postYear,
+  //   1,
+  //   "post-years-slider",
+  //   null,
+  //   "Choose year to compare against Baseline year(s)."
+  // );
+
+  // addSubCollapse("parameters-collapse-div", "advanced-params-label", "advanced-params-div", "Advanced Parameters", "", false, "");
+  // $("#parameters-collapse-div").append("<hr>");
+  // addRangeSlider(
+  //   "advanced-params-div",
+  //   "Giant Sequoia Canopy Diamater (m)",
+  //   "urlParams.treeDiameter",
+  //   5,
+  //   30,
+  //   urlParams.treeDiameter,
+  //   5,
+  //   "tree-diameter-slider",
+  //   "null",
+  //   "Specify the average diameter of a Giant Sequoia crown in meters"
+  // );
+
+  // addCheckboxes(
+  //   "advanced-params-div",
+  //   "lcms-tree-mask-class-checkboxes",
+  //   "LCMS land cover classes to include as tree to mask out non tree areas from change detection. ",
+  //   "lcmsTreeMaskClasses",
+  //   urlParams.lcmsTreeMaskClasses
+  // );
+
+  // // addRadio('advanced-params-div','cloud-mask-method-radio','','S2Cloudless+TDOM','CloudScore+','cloudMaskMethod','s2c','csp',null,null,'Toggle between imperial or metric units')
+
+  // if (urlParams.cloudMaskMethod === null || urlParams.cloudMaskMethod === undefined) {
+  //   urlParams.cloudMaskMethod = {
+  //     "S2Cloudless-TDOM": false,
+  //     "CloudScore+": true,
+  //   };
+  // }
+  // addMultiRadio(
+  //   "advanced-params-div",
+  //   "cloud-mask-method-radio",
+  //   "Cloud Masking Method",
+  //   "cloudMaskMethod",
+  //   urlParams.cloudMaskMethod,
+  //   "Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024"
+  // );
+
+  // addJSONInputTextBox(
+  //   "advanced-params-div",
+  //   "diff-bands-thresh-input",
+  //   "Difference Bands and Thresholds",
+  //   "urlParams.diffThreshs",
+  //   urlParams.diffThreshs,
+  //   "Bands and thresholds to use for identifying change"
+  // );
+
+  // addJSONInputTextBox("advanced-params-div", "comp-viz-params-input", "Composite Visualization Parameters", "urlParams.compVizParams", urlParams.compVizParams, "Viz params for composite images");
+
+  // addJSONInputTextBox("advanced-params-div", "diff-viz-params-input", "Difference Visualization Parameters", "urlParams.diffVizParams", urlParams.diffVizParams, "Viz params for difference image");
+
+  // // Sync sliders
+  // $("#post-years-slider")
+  //   .slider()
+  //   .bind("slide", function (event, ui) {
+  //     var yr = ui.value;
+  //     var needsUpdated = false;
+  //     if (yr <= urlParams.preEndYear) {
+  //       urlParams.preEndYear = yr - 1;
+  //       needsUpdated = true;
+  //     }
+  //     if (yr <= urlParams.preStartYear) {
+  //       urlParams.preStartYear = yr - 1;
+  //       needsUpdated = true;
+  //     }
+  //     if (needsUpdated) {
+  //       $("#pre-years-slider").slider("values", [urlParams.preStartYear, urlParams.preEndYear]);
+  //       $("#pre-years-slider-update").html(`${urlParams.preStartYear} - ${urlParams.preEndYear}`);
+  //     }
+  //   });
+  // $("#pre-years-slider")
+  //   .slider()
+  //   .bind("slide", function (event, ui) {
+  //     var yrs = ui.values;
+  //     var needsUpdated = false;
+  //     if (yrs[0] >= urlParams.postYear) {
+  //       urlParams.postYear = yrs[0] + 1;
+  //       needsUpdated = true;
+  //     }
+  //     if (yrs[1] >= urlParams.postYear) {
+  //       urlParams.postYear = yrs[1] + 1;
+  //       needsUpdated = true;
+  //     }
+  //     if (needsUpdated) {
+  //       $("#post-years-slider").slider("value", urlParams.postYear);
+  //       $("#post-years-slider-update").html(`${urlParams.postYear}`);
+  //     }
+  //   });
+
+  // addCollapse(
+  //   "sidebar-left",
+  //   "reference-layer-list-collapse-label",
+  //   "reference-layer-list-collapse-div",
+  //   "REFERENCE DATA",
+  //   `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
+  //   false,
+  //   null,
+  //   "Additional relevant layers to view on map intended to provide context for change data"
+  // );
+  // $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+
+  // addCollapse(
+  //   "sidebar-left",
+  //   "tools-collapse-label",
+  //   "tools-collapse-div",
+  //   "TOOLS",
+  //   `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+  //   false,
+  //   "",
+  //   "Tools to measure and chart data provided on the map"
+  // );
 
   // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
   // addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');

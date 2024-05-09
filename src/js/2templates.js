@@ -1845,6 +1845,88 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
     eval(`${offFunction}`);
   });
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// DROPDOWN SELECT States - Hiform
+function addDropdownStates(containerID, dropdownId, label, variable, selectList, callback) {
+
+  $("#" + containerID).append(`<div id="${containerID}-container><label for="${containerID}" class="form-label mt-2">${label}</label>
+  <select id=${dropdownId} class="form-select"></select></div>`);
+
+  console.log("State Select List: " + selectList)
+
+  $(`#${dropdownId}`).append(`<option>---</option>`)
+
+  selectList.map(item => {
+    $(`#${dropdownId}`).append(`<option>${item}</option>`)
+  });
+  
+  $(`#` + dropdownId).on("input", () => {
+    selectedItem = $(`#state-select`).val()
+    console.log("State Selected: " + selectedItem)
+    callback(selectedItem)
+  });
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// DROPDOWN SELECT COUNTIES - Hiform
+function addDropdownCounties(containerID, dropdownId, label, variable, selectList, stateFP, stateAbr, callback) {
+
+  $("#" + containerID + "-container").replaceWith("")
+  $("#" + containerID).append(`<div id="${containerID}-container" class="mt-1"><label for="${containerID}" class="form-label">${label}</label>
+  <select id=${dropdownId} class="form-select"></select></div>`);
+
+  console.log("County Select List: " + selectList)
+
+  $(`#${dropdownId}`).append(`<option>---</option>`)
+  selectList.map(item => {
+    $(`#${dropdownId}`).append(`<option>${item}</option>`)
+  });
+  
+  $(`#` + dropdownId).on("input", () => {
+    selectedItem = $(`#county-select`).val()
+    console.log("County Selected: " + selectedItem)
+    callback(selectedItem, stateFP, stateAbr)
+  });
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// MultiRadio for Selection Type - Hiform
+function addSelectTypeRadio(containerID, radioID, label, variable, optionList, title, callback) {
+  $("#" + containerID).append(`<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`);
+
+  eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
+  Object.keys(optionList).map(function (k) {
+    const kID = k.replace(/[^A-Za-z0-9]/g, "-");
+    var radioCheckboxID = kID + "-checkbox";
+    var radioLabelID = radioCheckboxID + "-label";
+    if (optionList[k] === "true") {
+      optionList[k] = true;
+    } else if (optionList[k] === "false") {
+      optionList[k] = false;
+    }
+    var checked = optionList[k];
+
+    if (checked) {
+      checked = "checked";
+      eval(`window.${variable} = "${k}"`);
+    } else {
+      checked = "";
+    }
+
+    $("#" + radioID).append(`<div class="form-check form-check-inline">
+                              <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
+                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
+                            </div>`);
+    $("#" + radioCheckboxID).change(function () {
+      Object.keys(optionList).map((k) => (optionList[k] = false));
+      var v = $(this).val();
+      optionList[v] = true;
+      eval(`window.${variable} = "${v}"`);
+      callback(v)
+    });
+  });
+}
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated
