@@ -59,7 +59,7 @@ function runDashboard() {
 
   let startYearT = parseInt(urlParams.startYear);
   let endYearT = parseInt(urlParams.endYear);
-  let dashboardFolder = "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2022-8"; //'projects/lcms-292214/assets/Dashboard2';
+  let dashboardFolder = "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2023-9"; //'projects/lcms-292214/assets/Dashboard2';
   var summaries = ee.data
     .getList({
       id: dashboardFolder,
@@ -67,7 +67,7 @@ function runDashboard() {
     .map(function (t) {
       return t.id;
     });
-  // console.log(summaries.length)
+  console.log(summaries.length);
   // window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
 
   huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06").filter(ee.Filter.inList("states", ["CN", "MX", "AK", "AK,CN", "HI", "AS"]).not());
@@ -113,14 +113,14 @@ function runDashboard() {
       unique_fieldname: "DISTRICTNA",
       visible: false,
       color: "FF8",
-      title: "USFS Forest District boundaries",
+      title: "U.S. Department of Agriculture, Forest Service Forest District boundaries",
     },
     "USFS Forests": {
       path: "Forests",
       unique_fieldname: "FORESTNAME",
       visible: false,
       color: "8F8",
-      title: "USFS Forest boundaries",
+      title: "U.S. Department of Agriculture, Forest Service Forest boundaries",
     },
   };
   if (urlParams.onlyIncludeFacts == true) {
@@ -216,7 +216,9 @@ function runDashboard() {
 
   let lcmsRun = {};
   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
-  lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten());
+  lcmsRun.lcms = ee.ImageCollection(
+    ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten()
+  );
 
   //Get properties image
   lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());

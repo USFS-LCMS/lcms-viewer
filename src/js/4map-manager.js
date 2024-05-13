@@ -359,7 +359,7 @@ function addSelectLayerToMap(item, viz, name, visible, label, fontColor, helpBox
 var intervalPeriod = 666.6666666666666;
 var timeLapseID;
 var timeLapseFrame = 0;
-var cumulativeMode = false;
+var cumulativeMode = urlParams.cumulativeMode;
 function pauseTimeLapse(id) {
   if (id === null || id === undefined) {
     id = timeLapseID;
@@ -380,7 +380,8 @@ function setFrameOpacity(frame, opacity) {
     value: opacity,
   });
 }
-//Function to shoe a specific frame
+let turnOffLayersWhenTimeLapseIsOn = true;
+//Function to show a specific frame
 function selectFrame(id, fromYearSlider, advanceOne) {
   if (id === null || id === undefined) {
     id = timeLapseID;
@@ -394,7 +395,10 @@ function selectFrame(id, fromYearSlider, advanceOne) {
   timeLapseID = id;
 
   if (timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady) {
-    turnOffLayers();
+    if (turnOffLayersWhenTimeLapseIsOn) {
+      turnOffLayers();
+    }
+
     turnOnTimeLapseLayers();
     var slidersT = timeLapseObj[timeLapseID].sliders;
     if (timeLapseFrame > slidersT.length - 1) {
@@ -402,36 +406,41 @@ function selectFrame(id, fromYearSlider, advanceOne) {
     } else if (timeLapseFrame < 0) {
       timeLapseFrame = slidersT.length - 1;
     }
-
-    if (!eval(cumulativeMode) || timeLapseFrame === 0) {
-      slidersT.map(function (s) {
-        try {
-          setFrameOpacity(s, 0);
-        } catch (err) {}
-      });
-    } else {
-      slidersT.slice(0, timeLapseFrame).map(function (s) {
-        try {
-          setFrameOpacity(s, timeLapseObj[timeLapseID].opacity);
-        } catch (err) {}
-      });
+    if (timeLapseObj[timeLapseID].layerType !== "tileMapService") {
+      if (!eval(cumulativeMode) || timeLapseFrame === 0) {
+        slidersT.map(function (s) {
+          try {
+            setFrameOpacity(s, 0);
+          } catch (err) {}
+        });
+      } else {
+        slidersT.slice(0, timeLapseFrame).map(function (s) {
+          try {
+            setFrameOpacity(s, timeLapseObj[timeLapseID].opacity);
+          } catch (err) {}
+        });
+      }
     }
-
     var frame = slidersT[timeLapseFrame];
     try {
+      if (timeLapseObj[timeLapseID].layerType === "tileMapService") {
+        $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
+        timeLapseObj[timeLapseID].lastTurnOn = timeLapseObj[timeLapseID].layerVisibleIDs[timeLapseFrame];
+        $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
+      }
       setFrameOpacity(frame, timeLapseObj[timeLapseID].opacity);
       if (!fromYearSlider) {
         Object.keys(timeLapseObj).map(function (k) {
           var s = $("#" + k + "-year-slider").slider();
-          s.slider("option", "value", timeLapseObj[k].years[timeLapseFrame]);
-          $("#" + k + "-year-slider-handle-label").text(timeLapseObj[k].years[timeLapseFrame]);
+          s.slider("option", "value", timeLapseFrame);
+          $("#" + k + "-year-slider-handle-label").text(timeLapseObj[k].yearLookup[timeLapseFrame]);
         });
       }
     } catch (err) {}
     $("#" + timeLapseID + "-year-label").show();
     // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $("#time-lapse-year-label").show();
-    $("#time-lapse-year-label").html(`Time lapse date: ${timeLapseObj[timeLapseID].years[timeLapseFrame]}`);
+    $("#time-lapse-year-label").html(`Time lapse date: ${timeLapseObj[timeLapseID].yearLookup[timeLapseFrame]}`);
     // if(advanceOne){timeLapseFrame++};
   }
 }
@@ -596,9 +605,11 @@ function turnOnTimeLapseLayers(id) {
   if (timeLapseObj[id].isReady) {
     if (timeLapseObj[id].visible === false) {
       timeLapseObj[id].visible = true;
-      timeLapseObj[id].layerVisibleIDs.map(function (i) {
-        $("#" + i).click();
-      });
+      if (timeLapseObj[id].layerType !== "tileMapService") {
+        timeLapseObj[id].layerVisibleIDs.map(function (i) {
+          $("#" + i).click();
+        });
+      }
     }
     queryObj[id].visible = timeLapseObj[id].visible;
   }
@@ -610,9 +621,11 @@ function turnOffTimeLapseLayers(id) {
   if (timeLapseObj[id].isReady) {
     if (timeLapseObj[id].visible === true) {
       timeLapseObj[id].visible = false;
-      timeLapseObj[id].layerVisibleIDs.map(function (i) {
-        $("#" + i).click();
-      });
+      if (timeLapseObj[id].layerType !== "tileMapService") {
+        timeLapseObj[id].layerVisibleIDs.map(function (i) {
+          $("#" + i).click();
+        });
+      }
     }
     queryObj[id].visible = timeLapseObj[id].visible;
   }
@@ -648,6 +661,7 @@ function alignTimeLapseCheckboxes() {
   Object.keys(timeLapseObj).map(function (k) {
     if (timeLapseObj[k].isReady) {
       var checked = false;
+      urlParams.layerProps[k].visible = timeLapseObj[k].visible;
       if (timeLapseObj[k].visible) {
         checked = true;
         $("#" + k + "-time-lapse-layer-range-container").slideDown();
@@ -667,12 +681,17 @@ function alignTimeLapseCheckboxes() {
   });
 }
 function timeLapseCheckbox(id) {
-  var v = timeLapseObj[id].visible;
+  let tObj = timeLapseObj[id];
+  var v = tObj.visible;
+
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
     pauseButtonFunction(id);
   } else {
     stopTimeLapse(id);
+  }
+  if (areaChart.autoChartingOn && tObj.viz.canAreaChart) {
+    areaChart.chartMapExtent();
   }
   alignTimeLapseCheckboxes();
 }
@@ -691,16 +710,24 @@ function turnOffTimeLapseCheckboxes() {
   alignTimeLapseCheckboxes();
 }
 //Toggle whether to show all layers prior to the current layer or just a single layer
+function turnOnCumulativeMode() {
+  $(".cumulativeToggler").addClass("time-lapse-active");
+  cumulativeMode = true;
+  urlParams.cumulativeMode = cumulativeMode;
+  selectFrame();
+}
+function turnOffCumulativeMode() {
+  $(".cumulativeToggler").removeClass("time-lapse-active");
+  cumulativeMode = false;
+  urlParams.cumulativeMode = cumulativeMode;
+  selectFrame();
+}
 function toggleCumulativeMode() {
   if (cumulativeMode) {
-    $(".cumulativeToggler").removeClass("time-lapse-active");
-    cumulativeMode = false;
+    turnOffCumulativeMode();
   } else {
-    $(".cumulativeToggler").addClass("time-lapse-active");
-    cumulativeMode = true;
+    turnOnCumulativeMode();
   }
-  // timeLapseFrame--;
-  selectFrame();
 }
 
 //Fill empty collections
@@ -725,9 +752,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     }
     viz.serialized = false;
   }
-  if (viz.cumulativeMode === null || viz.cumulativeMode === undefined) {
-    viz.cumulativeMode = false;
-  }
+  // if (viz.cumulativeMode === undefined || viz.cumulativeMode === null) {
+  //   viz.cumulativeMode = false;
+  // }
   if (viz.canAreaChart === undefined || viz.canAreaChart === null) {
     viz.canAreaChart = false;
   }
@@ -737,20 +764,35 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     viz.opacity = 1;
   }
 
-  item = ee.ImageCollection(item);
+  if (viz.bands !== undefined && typeof viz.bands === "string") {
+    viz.bands = viz.bands.split(",");
+  }
+  if (viz.palette !== undefined && typeof viz.palette === "string") {
+    viz.palette = viz.palette.split(",");
+  }
 
-  let dictServerSide = true;
-  if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+  if (viz.layerType !== "tileMapService") {
+    item = ee.ImageCollection(item);
+  }
+
+  if (viz.layerType !== "tileMapService" && (viz.eeObjInfo === undefined || viz.eeObjInfo === null)) {
     viz.eeObjInfo = getImagesLib.eeObjInfo(item, "ImageCollection");
-  } else {
+    viz.dictServerSide = true;
+  } else if (viz.layerType !== "tileMapService" && Object.keys(viz.eeObjInfo).indexOf("layerType") > -1) {
+    viz.dictServerSide = false;
+  } else if (viz.layerType !== "tileMapService") {
     viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+    viz.dictServerSide = true;
   }
 
   if (viz.autoViz === true && (viz.class_names === undefined || viz.class_names === null)) {
-    console.log("start");
-    console.log(name);
-    viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    dictServerSide = false;
+    if (viz.dictServerSide) {
+      console.log("start");
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      viz.dictServerSide = false;
+    }
+
     viz = addClassVizDicts(viz);
     console.log(viz);
   }
@@ -760,9 +802,9 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     name = "Layer " + NEXT_LAYER_ID;
   }
   var checked = "";
-  if (visible) {
-    checked = "checked";
-  }
+  // if (visible) {
+  //   checked = "checked";
+  // }
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
   // legendDivID = legendDivID.replaceAll('/','-');
@@ -774,14 +816,21 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   // legendDivID = legendDivID.replaceAll('%','-');
   // legendDivID = legendDivID.replaceAll('^','-');
 
+  if (urlParams.layerProps[legendDivID] === undefined || urlParams.layerProps[legendDivID] === null) {
+    urlParams.layerProps[legendDivID] = {};
+    urlParams.layerProps[legendDivID].visible = false;
+    urlParams.layerProps[legendDivID].opacity = viz.opacity || 1;
+  } else {
+    viz.opacity = urlParams.layerProps[legendDivID].opacity || 1;
+  }
   //AutoViz if specified
   //AutoViz if specified
   if (viz.autoViz) {
-    if (dictServerSide) {
+    if (viz.dictServerSide) {
       console.log("start");
       console.log(name);
       viz.eeObjInfo = viz.eeObjInfo.getInfo();
-      dictServerSide = false;
+      viz.dictServerSide = false;
       console.log(viz);
     }
     if (viz.bands === undefined || viz.bands === null) {
@@ -802,7 +851,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
   viz.timeLapseID = legendDivID;
-  viz.layerType = "geeImage";
+  viz.layerType = viz.layerType !== "tileMapService" ? "geeImage" : viz.layerType;
 
   if (viz.dateFormat === null || viz.dateFormat === undefined) {
     viz.dateFormat = "YYYY";
@@ -820,7 +869,11 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   //Pull out years if not provided
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
-  if (viz.years === null || viz.years === undefined) {
+  if (viz.layerType === "tileMapService") {
+    // console.log("here");
+    // viz.layerType = "tileMapService";
+    viz.years = Object.keys(item);
+  } else if (viz.layerType !== "tileMapService" && (viz.years === null || viz.years === undefined)) {
     console.log("start computing years");
     viz.years = unique(
       item
@@ -828,7 +881,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
         .toList(10000, 0)
         .map(function (img) {
           var d = ee.Date(ee.Image(img).get(viz.dateField));
-          return ee.Number.parse(d.format(viz.dateFormat.replaceAll("-", ""))).int32();
+          return d.format(viz.dateFormat);
         })
         .getInfo()
     );
@@ -839,10 +892,13 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   }
 
   //Set up time laps object entry
-  var startYearT = viz.years[0];
-  var endYearT = viz.years[viz.years.length - 1];
+  viz.yearsI = range(0, viz.years.length);
+  viz.yearLookup = dictFromKeyValues(viz.yearsI, viz.years);
   timeLapseObj[legendDivID].years = viz.years;
-  timeLapseObj[legendDivID].frames = ee.List.sequence(0, viz.years.length - 1).getInfo();
+  timeLapseObj[legendDivID].yearsI = viz.yearsI;
+  timeLapseObj[legendDivID].layerType = viz.layerType;
+  timeLapseObj[legendDivID].yearLookup = viz.years;
+  timeLapseObj[legendDivID].frames = range(0, viz.years.length - 1);
   timeLapseObj[legendDivID].nFrames = viz.years.length;
   timeLapseObj[legendDivID].loadingLayerIDs = [];
   timeLapseObj[legendDivID].loadingTilesLayerIDs = [];
@@ -853,7 +909,6 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   timeLapseObj[legendDivID].visible = visible;
   timeLapseObj[legendDivID].state = "inactive";
   timeLapseObj[legendDivID].opacity = viz.opacity * 100;
-
   var layerContainerTitle =
     "Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.";
 
@@ -931,9 +986,11 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
 
   //Add in layers
 
-  if (viz.timeLapseType === "tileMapService") {
-    viz.layerType = "tileMapService";
-    viz.years.map(function (yr) {
+  if (viz.layerType === "tileMapService") {
+    // viz.layerType = "tileMapService";
+    viz.years = Object.keys(item);
+
+    Object.keys(item).map((yr) => {
       if (yr !== viz.years[0]) {
         viz.addToLegend = false;
         viz.addToClassLegend = false;
@@ -941,10 +998,10 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       var vizT = Object.assign({}, viz);
       vizT.year = yr;
       addToMap(
-        standardTileURLFunction(item + yr.toString() + "/", true, ""),
+        superSimpleTileURLFunction(item[yr]),
         vizT,
         name + " " + yr.toString(),
-        visible,
+        false,
         label,
         fontColor,
         helpBox,
@@ -952,12 +1009,15 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
         queryItem
       );
     });
+    // viz.years.map(function (yr) {
+
+    // });
   } else {
     var dummyImage = ee.Image(item.first());
     var cT = [];
     viz.years.map(function (yr) {
       // Get the date
-      var d = ee.Date.parse(viz.dateFormat.replaceAll("-", ""), yr.toString());
+      var d = ee.Date.parse(viz.dateFormat, yr.toString());
 
       // Filter and find the image
       if (viz.dateField !== "system:time_start") {
@@ -989,7 +1049,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       vizT.legendTitle = name;
       vizT.opacity = 0;
       // console.log(vizT);
-      addToMap(ee.Image(img), vizT, name + " " + yr.toString(), visible, label, fontColor, helpBox, legendDivID + "-collapse-div", queryItem);
+      addToMap(ee.Image(img), vizT, name + " " + yr.toString(), false, label, fontColor, helpBox, legendDivID + "-collapse-div", queryItem);
     });
 
     // Set the time_start (which is used for pixel query charting) to the date used
@@ -997,10 +1057,11 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     if (viz.dateField !== "system:time_start" || viz.canAreaChart) {
       item = ee.ImageCollection(cT);
     }
-
+    // console.log(viz.canAreaChart);
     if (viz.canAreaChart) {
+      // console.log("here");
       let vizTT = copyObj(viz);
-      vizTT = setupAreaChartParams(vizTT, dictServerSide, legendDivID);
+      vizTT = setupAreaChartParams(vizTT, legendDivID);
       // viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.layerType;
       // All a 1:2 layer to area chart object if both line and sankey are specified
       if (vizTT.areaChartParams.sankey && vizTT.areaChartParams.line) {
@@ -1024,10 +1085,13 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
       timeLapseObj[legendDivID].viz = vizTT;
       timeLapseObj[legendDivID].legendDivID = legendDivID;
       // console.log(params);
+    } else {
+      timeLapseObj[legendDivID].viz = viz;
+      timeLapseObj[legendDivID].legendDivID = legendDivID;
     }
   }
   //If its a tile map service, don't wait
-  if (viz.timeLapseType === "tileMapService") {
+  if (viz.layerType === "tileMapService") {
     timeLapseObj[legendDivID].isReady = true;
     $("#" + legendDivID + "-toggle-checkbox-label").show();
     $("#" + legendDivID + "-loading-spinner").hide();
@@ -1057,6 +1121,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     value: timeLapseObj[legendDivID].opacity / 100,
     slide: function (e, ui) {
       var opacity = ui.value;
+      urlParams.layerProps[legendDivID].opacity = opacity;
       var k = legendDivID;
       var s = $("#" + k + "-opacity-slider").slider();
       s.slider("option", "value", ui.value);
@@ -1071,18 +1136,18 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
   }
   //The year slider
   $("#" + legendDivID + "-year-slider").slider({
-    min: startYearT,
-    max: endYearT,
+    min: viz.yearsI[0],
+    max: viz.yearsI[viz.yearsI.length - 1],
     step: 1,
-    value: startYearT,
+    value: viz.yearsI[0],
     slide: function (e, ui) {
-      var yr = ui.value;
-      var i = viz.years.indexOf(yr);
+      var i = ui.value; //viz.years.indexOf(yr);
+      var yr = viz.yearLookup[i];
       timeLapseFrame = i;
       Object.keys(timeLapseObj).map(function (k) {
         var s = $("#" + k + "-year-slider").slider();
         s.slider("option", "value", ui.value);
-        $("#" + k + "-year-slider-handle-label").text(ui.value);
+        $("#" + k + "-year-slider-handle-label").text(yr);
       });
       if (timeLapseObj[legendDivID].isReady) {
         clearAllFrames();
@@ -1181,39 +1246,56 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
 }
 /////////////////////////////////////////////////////
 // Function to set up area charting params given viz params from addLayer
-function setupAreaChartParams(viz, dictServerSide, legendDivID) {
+function setupAreaChartParams(viz, legendDivID) {
   // viz = copyObj(viz);
   viz.areaChartParams = viz.areaChartParams || {};
   viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
   viz.areaChartParams.line = viz.areaChartParams.line || viz.areaChartParams.sankey == false;
   viz.areaChartParams.id = legendDivID;
-  if ((viz.bands === undefined || viz.bands === null) && dictServerSide) {
+  viz.areaChartParams.dateFormat = viz.areaChartParams.dateFormat || viz.dateFormat || "YYYY";
+  if (
+    (viz.areaChartParams.bandNames === undefined || viz.areaChartParams.bandNames === null) &&
+    (viz.bands === undefined || viz.bands === null) &&
+    viz.dictServerSide
+  ) {
     console.log("start");
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    dictServerSide = false;
+    viz.dictServerSide = false;
     console.log(viz);
   }
-  viz.areaChartParams.bandNames = viz.bands || viz.eeObjInfo.bandNames;
+  viz.areaChartParams.bandNames = viz.areaChartParams.bandNames || viz.bands || viz.eeObjInfo.bandNames;
 
-  if ((viz.class_names === undefined || viz.class_names === null) && dictServerSide) {
+  if (viz.autoViz && (viz.class_names === undefined || viz.class_names === null) && viz.dictServerSide) {
     console.log("start");
     viz.eeObjInfo = viz.eeObjInfo.getInfo();
 
     console.log(viz);
-    dictServerSide = false;
+    viz.dictServerSide = false;
   }
-  if (viz.class_names === undefined || viz.class_names === null) {
+  if ((viz.autoViz && viz.class_names === undefined) || viz.class_names === null) {
     viz = addClassVizDicts(viz);
     viz.areaChartParams.class_dicts_added = true;
+  } else if (
+    (viz.areaChartParams.palette === undefined || viz.areaChartParams.palette === null) &&
+    viz.areaChartParams.reducer !== undefined &&
+    viz.areaChartParams.reducer !== null &&
+    viz.min !== undefined &&
+    viz.min !== null &&
+    viz.max !== undefined &&
+    viz.max !== null &&
+    viz.palette !== undefined &&
+    viz.palette !== null
+  ) {
+    viz.areaChartParams.palette_lookup = toObj(range(viz.min, viz.max + 1), get_poly_gradient_ct(viz.palette, viz.min, viz.max));
   }
-
   viz.areaChartParams.class_values = viz.class_values;
   viz.areaChartParams.class_names = viz.class_names;
   viz.areaChartParams.class_palette = viz.class_palette;
   viz.areaChartParams.class_visibility = viz.class_visibility;
 
   viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.eeObjectType;
-
+  viz.areaChartParams.eeObjInfo = viz.eeObjInfo;
+  viz.areaChartParams.dictServerSide = viz.dictServerSide;
   return viz;
 }
 /////////////////////////////////////////////////////
@@ -1225,8 +1307,7 @@ function addClassVizDicts(viz) {
     let bns = cls_names_keys.map((k) => k.split("_class_names")[0]);
 
     bns = bns.filter((bn) => viz.eeObjInfo.bandNames.indexOf(bn) > -1);
-
-    if (bns.length === 1) {
+    if (bns.length >= 1) {
       viz.autoViz = true;
       viz.class_names = {};
       viz.class_values = {};
@@ -1300,11 +1381,17 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   }
   viz.isTimeLapse = viz.isTimeLapse || false;
 
-  let dictServerSide = true;
-  if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
-    viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
-  } else {
-    viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+  if (viz.layerType !== "geoJSONVector" && viz.layerType !== "tileMapService" && viz.layerType !== "dynamicMapService") {
+    if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
+      // console.log(reverseTypeLookup[viz.layerType]);
+      viz.eeObjInfo = getImagesLib.eeObjInfo(item, reverseTypeLookup[viz.layerType]);
+      viz.dictServerSide = true;
+    } else if (Object.keys(viz.eeObjInfo).indexOf("layerType") > -1) {
+      viz.dictServerSide = false;
+    } else {
+      viz.eeObjInfo = ee.Dictionary(viz.eeObjInfo);
+      viz.dictServerSide = true;
+    }
   }
 
   if (
@@ -1314,23 +1401,27 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
     viz.layerType !== "tileMapService" &&
     viz.layerType !== "dynamicMapService"
   ) {
-    console.log("start");
-    console.log(name);
-    viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    dictServerSide = false;
+    if (viz.dictServerSide) {
+      console.log("start");
+      console.log(viz.dictServerSide);
+      console.log(name);
+      viz.eeObjInfo = viz.eeObjInfo.getInfo();
+      viz.dictServerSide = false;
+    }
+
     viz = addClassVizDicts(viz);
-    console.log(viz);
+    // console.log(viz);
   }
 
   //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
   if (viz.layerType === null || viz.layerType === undefined) {
-    if (dictServerSide) {
+    if (viz.dictServerSide) {
       console.log("start");
       console.log(name);
       viz.eeObjInfo = viz.eeObjInfo.getInfo();
       console.log(viz);
-      dictServerSide = false;
-      viz = addClassVizDicts(viz);
+      viz.dictServerSide = false;
+      // viz = addClassVizDicts(viz);
     }
     var eeType = viz.eeObjInfo.layerType;
 
@@ -1402,6 +1493,12 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
       viz.addToLegend = false;
     }
   }
+  if (viz.bands !== undefined && typeof viz.bands === "string") {
+    viz.bands = viz.bands.split(",");
+  }
+  if (viz.palette !== undefined && typeof viz.palette === "string") {
+    viz.palette = viz.palette.split(",");
+  }
 
   //Handle legend
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
@@ -1415,10 +1512,22 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   // legendDivID = legendDivID.replaceAll('%','-');
   // legendDivID = legendDivID.replaceAll('^','-');
 
+  // Handle layer visibility caching
+  if (viz.isTimeLapse === false) {
+    if (urlParams.layerProps[legendDivID] === undefined || urlParams.layerProps[legendDivID] === null) {
+      urlParams.layerProps[legendDivID] = {};
+      urlParams.layerProps[legendDivID].visible = visible === undefined ? true : visible;
+      urlParams.layerProps[legendDivID].opacity = viz.opacity || 1;
+    } else {
+      visible = urlParams.layerProps[legendDivID].visible;
+      viz.opacity = urlParams.layerProps[legendDivID].opacity;
+    }
+  }
+
   // Handle area charting
   if (viz.canAreaChart) {
-    viz = setupAreaChartParams(viz, dictServerSide, legendDivID);
-
+    viz = setupAreaChartParams(viz, legendDivID);
+    // console.log(viz.areaChartParams);
     // All a 1:2 layer to area chart object if both line and sankey are specified
     if (viz.areaChartParams.sankey && viz.areaChartParams.line) {
       let areaChartParamsLine = copyObj(viz.areaChartParams);
@@ -1445,9 +1554,6 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
   }
   if (viz.opacity == null) {
     viz.opacity = 1;
-  }
-  if (viz.bands !== undefined && typeof viz.bands === "string") {
-    viz.bands = viz.bands.split(",");
   }
 
   var layerObjKeys = Object.keys(layerObj);
@@ -1495,11 +1601,11 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
 
   //AutoViz if specified
   if (viz.autoViz && viz.isTimeLapse === false) {
-    if (dictServerSide) {
+    if (viz.dictServerSide) {
       console.log("start");
       console.log(name);
       viz.eeObjInfo = viz.eeObjInfo.getInfo();
-      dictServerSide = false;
+      viz.dictServerSide = false;
       viz = addClassVizDicts(viz);
       console.log(viz);
     }
@@ -2142,7 +2248,7 @@ function reRun() {
   intervalPeriod = 666.6666666;
   timeLapseID = null;
   timeLapseFrame = 0;
-  cumulativeMode = false;
+  cumulativeMode = urlParams.cumulativeMode;
   NEXT_LAYER_ID = 1;
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
@@ -2152,7 +2258,6 @@ function reRun() {
   });
 
   $("#export-list").empty();
-
   Object.values(featureObj).map(function (f) {
     f.setMap(null);
   });
@@ -2187,7 +2292,7 @@ function reRun() {
 
     setupAreaLayerSelection();
     addLabelOverlay();
-    if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS") {
+    if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS" && !urlParams.dynamic) {
       //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
       showMessage("No Transition Charting", "The year range must be 5 years or more to perform transition charting");
     }
@@ -2238,6 +2343,13 @@ function rgbToHex(r, g, b) {
 }
 //Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
 function hexToRgb(hex) {
+  if (hex.indexOf("#") === 0) {
+    hex = hex.slice(1);
+  }
+  // convert 3-digit hex to 6-digits.
+  if (hex.length === 3) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
@@ -2323,6 +2435,114 @@ function randomColors(n) {
   }
   return out;
 }
+//////////////////////////////////
+// Get a linearly interpolated color ramp of n colors
+function linear_gradient(start_hex, finish_hex = "#FFFFFF", n = 10) {
+  // returns a gradient list of (n) colors between
+  // two hex colors. start_hex and finish_hex
+  // should be the full six-digit color string,
+  // inlcuding the number sign ("#FFFFFF")
+  // Starting and ending colors in RGB form
+  s = Object.values(hexToRgb(start_hex));
+  f = Object.values(hexToRgb(finish_hex));
+
+  // Initilize a list of the output colors with the starting color
+  RGB_list = [s];
+  // Calcuate a color at each evenly spaced value of t from 1 to n
+  range(1, n).map((t) => {
+    // Interpolate RGB vector for color at the current value of t
+
+    curr_vector = range(0, 3).map((j) => {
+      // console.log(f[j] - s[j]);
+      return parseInt(s[j] + (parseFloat(t) / (n - 1)) * (f[j] - s[j]));
+    });
+    // Add it to our list of output colors
+    RGB_list.push(curr_vector);
+  });
+  let hex_list = RGB_list.map(rgbToHex);
+  // console.log(hex_list);
+  // // print(RGB_list)
+  return hex_list;
+}
+// Get 1 or more gradients between pairs of given colors for a total of n colors
+function polylinear_gradient(colors, n) {
+  // returns a list of colors forming linear gradients between
+  // all sequential pairs of colors. "n" specifies the total
+  // number of desired output colors
+  // The number of colors per individual linear gradient
+  n_out = parseInt(parseFloat(n) / (colors.length - 1)) + 1;
+  // console.log(n_out);
+  // print(('n',n))
+  // print(('n_out',n_out))
+  // If we don't have an even number of color values, we will remove equally spaced values at the end.
+  apply_offset = false;
+  if (n % n_out !== 0) {
+    apply_offset = true;
+    n_out = n_out + 1;
+    // print(('new n_out',n_out))
+  }
+  // console.log(apply_offset);
+  // returns dictionary defined by color_dict()
+  gradient_dict = linear_gradient(colors[0], colors[1], n_out);
+
+  if (colors.length > 2) {
+    range(1, colors.length - 1).map((col) => {
+      next = linear_gradient(colors[col], colors[col + 1], n_out).slice(1);
+      gradient_dict = gradient_dict.concat(next);
+      // ["hex", "r", "g", "b"].map(k=>gradient_dict[k] += next[k].slice(1))
+      // Exclude first point to avoid duplicates
+    });
+  }
+  // console.log(gradient_dict);
+  // // Remove equally spaced values here.
+  if (apply_offset === true) {
+    // indList = list(range(len(gradient_dict['hex'])))
+    offset = gradient_dict.length - n;
+    sliceval = [];
+    // print(('len(gradient_dict)',len(gradient_dict['hex'])))
+    // print(('offset',offset))
+    range(1, offset + 1).map((i) => sliceval.push(parseInt((gradient_dict.length * i) / parseFloat(offset + 2))));
+    // console.log(("sliceval", sliceval));
+    let out = [];
+    for (const [index, element] of gradient_dict.entries()) {
+      // console.log([index, element]);
+
+      if (sliceval.indexOf(index) === -1) {
+        out.push(element);
+      }
+      // console.log(index, element);
+    }
+    gradient_dict = out;
+    // console.log(gradient_dict);
+    // console.log(gradient_dict.length);
+    //     ["hex", "r", "g", "b"].map(k=>{
+    //         gradient_dict[k] = [
+    //             i for j, i in enumerate(gradient_dict[k]) if j not in sliceval
+    //         ]
+    //       })
+    //     // print(('new len dict', len(gradient_dict['hex'])))
+  }
+  return gradient_dict;
+}
+// Get a linearly interpolated set of colors from a given set of colors, spanning between a min and max (inclusive)
+function get_poly_gradient_ct(palette, min, max) {
+  // Take a palette and a set of min and max stretch values to get a 1:1 value to color hex list
+
+  // Args:
+  //     palette (list): A list of hex code colors that will be interpolated
+
+  //     min (int): The min value for the stretch
+
+  //     max (int): The max value for the stretch
+
+  // Returns:
+  //     list: A list of linearly interpolated hex codes where there is 1:1 color to value from min-max (inclusive)
+
+  ramp = polylinear_gradient(palette, max - min + 1);
+  return ramp;
+}
+// let t = get_poly_gradient_ct(["#FFFF00", "FF0000"], -0.005, 0.1);
+// console.log(t);
 //////////////////////////////////
 //Taken from: https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
 var colorList = [
@@ -3535,7 +3755,12 @@ function initialize() {
       var geeRunError;
       function loadRun() {
         try {
+          console.log("running");
+          let runStartTime = new Date();
           run();
+          let runEndTime = new Date();
+          let runTime = (runEndTime - runStartTime) / 1000;
+          console.log(`Run time: ${runTime} seconds`);
           loaded = true;
         } catch (err) {
           geeRunError = err;
@@ -3577,7 +3802,7 @@ function initialize() {
 
       addLabelOverlay();
 
-      if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS") {
+      if (urlParams.endYear - urlParams.startYear < 5 && mode === "LCMS" && !urlParams.dynamic) {
         //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
         showMessage("No Transition Charting", "The year range must be 5 years or more to perform transition charting");
       }

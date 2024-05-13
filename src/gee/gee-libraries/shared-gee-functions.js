@@ -162,9 +162,9 @@ function setSameDate(img, month = 6, day = 1) {
 
 // --------Add MTBS and IDS Layers-------------------------------
 var idsStartYear = 1997;
-var idsEndYear = 2022;
+var idsEndYear = 2023;
 var idsMinYear = 1997;
-var idsMaxYear = 2022;
+var idsMaxYear = 2023;
 function getIDSCollection() {
   if (startYear > idsMinYear && startYear <= idsMaxYear) {
     idsStartYear = startYear;
@@ -773,7 +773,7 @@ function getHansen(whichLayerList) {
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "reference-layer-list";
   }
-  var hansen = ee.Image("UMD/hansen/global_forest_change_2022_v1_10").reproject("EPSG:4326", null, 30);
+  var hansen = ee.Image("UMD/hansen/global_forest_change_2023_v1_11").reproject("EPSG:4326", null, 30);
 
   var hansenClientBoundary = {
     type: "Polygon",
@@ -790,7 +790,7 @@ function getHansen(whichLayerList) {
   // print(hansenClientBoundary);
   var hansenLoss = hansen.select(["lossyear"]).selfMask().add(2000).int16();
   var hansenStartYear = 2001;
-  var hansenEndYear = 2022;
+  var hansenEndYear = 2023;
 
   if (startYear > hansenStartYear) {
     hansenStartYear = startYear;
@@ -901,8 +901,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
   var study_areas = {
     SEAK: {
       startYear: 1985,
-      endYear: 2022,
-      version: "2022-8",
+      endYear: 2023,
+      version: "2023-9",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],
@@ -913,8 +913,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
     },
     CONUS: {
       startYear: 1985,
-      endYear: 2022,
-      version: "2022-8",
+      endYear: 2023,
+      version: "2023-9",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],
@@ -925,8 +925,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
     },
     PRUSVI: {
       startYear: 1985,
-      endYear: 2020,
-      version: "2020-6",
+      endYear: 2022,
+      version: "2022-8",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],

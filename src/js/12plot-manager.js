@@ -73,7 +73,7 @@ function loadPlots(plotProjectObj) {
         addPlot(f);
       });
       // console.log(json)
-      Map2.addLayer(
+      Map.addLayer(
         json,
         { layerType: "geoJSONVector", strokeColor: "#F00" },
         plotProjectObj.name + " Plots",
@@ -96,6 +96,7 @@ function loadPlots(plotProjectObj) {
   //  	.then(json => console.log(json));
   //  	 addPlotgeoJSON(plotProjectObj.path)
 }
+
 function addPlot(obj) {
   // console.log(obj);
   $("#" + obj.name.replaceAll(" ", "-") + "-plot-list").append(`

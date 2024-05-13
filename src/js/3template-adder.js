@@ -2368,6 +2368,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
+  // addCollapse(
+  //   "sidebar-left",
+  //   "wayback-layer-list-collapse-label",
+  //   "wayback-layer-list-collapse-div",
+  //   "ESRI WayBack DATA",
+  //   `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/esri-logo.png">`,
+  //   true,
+  //   null,
+  //   "ESRI Wayback layers to view on map"
+  // );
   addCollapse(
     "sidebar-left",
     "reference-layer-list-collapse-label",
@@ -2391,6 +2401,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
   plotsOn = true;
 }
@@ -2524,7 +2535,7 @@ if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
 }
 // if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
-if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS" || mode === "geeViz") {
+if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS" || mode === "geeViz" || mode === "LAMDA") {
   $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse("tools-accordian", "area-chart-params-label", "area-chart-params-div", "Area Tools Parameters", "", false, "");
   $("#area-chart-params-label").prop("title", "Click here to select which LCMS products to chart, and change which area units are used. ");
@@ -2537,7 +2548,7 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     "Choose which " + mode + " time series to summarize."
   );
   $("#area-chart-params-div").append(`<hr>`);
-  $("#parameters-collapse-div").append(`<hr>`);
+  // $("#parameters-collapse-div").append(`<hr>`);
   addMultiRadio("area-chart-params-div", "area-summary-format", "Area Units", "areaChartFormat", { Percentage: true, Acres: false, Hectares: false });
   if (mode === "LCMS" || mode === "geeViz") {
     //&& (urlParams.sankey==='true' || urlParams.beta ==='true')){
@@ -2563,7 +2574,7 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     staticTemplates.mapDefinedAreaChartDiv,
     false,
     `toggleTool(toolFunctions.area.mapBounds)`,
-    staticTemplates.userDefinedAreaChartTipHover
+    staticTemplates.mapDefinedAreaChartTipHover
   );
   addSubAccordianCard(
     "tools-accordian",

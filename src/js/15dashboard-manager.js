@@ -280,7 +280,23 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
 
   var colors = {
     Change: ["3d4551", "f39268", "d54309", "00a398", "1B1716"].map((c) => "#" + c),
-    Land_Cover: ["005e00", "008000", "00cc00", "b3ff1a", "99ff99", "b30088", "e68a00", "ffad33", "ffe0b3", "ffff00", "AA7700", "d3bf9b", "ffffff", "4780f3", "1B1716"].map((c) => "#" + c),
+    Land_Cover: [
+      "005e00",
+      "008000",
+      "00cc00",
+      "b3ff1a",
+      "99ff99",
+      "b30088",
+      "e68a00",
+      "ffad33",
+      "ffe0b3",
+      "ffff00",
+      "AA7700",
+      "d3bf9b",
+      "ffffff",
+      "4780f3",
+      "1B1716",
+    ].map((c) => "#" + c),
     Land_Use: ["efff6b", "ff2ff8", "1b9d0c", "97ffff", "a1a1a1", "c2b34a", "1B1716"].map((c) => "#" + c),
   };
   var names = {
@@ -331,7 +347,16 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   // var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
   // var chartWhich = ['Change','Land_Cover','Land_Use'];
   if (annualOrTransition === "transition") {
-    names["Land_Cover"] = ["Trees", "Tall Shrubs", "Shrubs", "Grass/Forb/Herb", "Barren or Impervious", "Snow or Ice", "Water", "Non-Processing Area Mask"];
+    names["Land_Cover"] = [
+      "Trees",
+      "Tall Shrubs",
+      "Shrubs",
+      "Grass/Forb/Herb",
+      "Barren or Impervious",
+      "Snow or Ice",
+      "Water",
+      "Non-Processing Area Mask",
+    ];
     colors["Land_Cover"] = ["#005e00", "#b30088", "#e68a00", "#ffff00", "#d3bf9b", "#ffffff", "#4780f3", "#1B1716"];
   }
 
@@ -975,7 +1000,10 @@ function updateDashboardHighlights(limit = 10) {
 
                   //   $(`#${navID}-boxplots`).append(`<div id='${navID}-boxplot-${rowI}'></div>`)
                   //   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
-                  $(`#${navID}-table`).append(`<tr id = '${navID}----${tr[0].replace(/[^A-Za-z0-9]/g, "-")}' class = 'highlights-row' title= '${sigTitle}'>
+                  $(`#${navID}-table`).append(`<tr id = '${navID}----${tr[0].replace(
+                    /[^A-Za-z0-9]/g,
+                    "-"
+                  )}' class = 'highlights-row' title= '${sigTitle}'>
 									<th class = 'highlights-entry ${sigClass}'>${tr[0]}</th>
 									<td class = 'highlights-entry ${sigClass}'>${tr[1]} &plusmn ${tr[3]}</td>
 									
@@ -1124,7 +1152,9 @@ function updateDashboardCharts() {
     .filter((k) => annualTransition[k])
     .map((k) => k.toLowerCase());
 
-  let dashboardLayersToChart = Object.values(layerObj).filter((v) => v.viz.dashboardSummaryLayer && v.visible && Object.keys(v.dashboardSelectedFeatures).length > 0);
+  let dashboardLayersToChart = Object.values(layerObj).filter(
+    (v) => v.viz.dashboardSummaryLayer && v.visible && Object.keys(v.dashboardSelectedFeatures).length > 0
+  );
   if (dashboardLayersToChart.length > 0) {
     // $('.dashboard-results-container').show();
     // $('.dashboard-results-container').css('height',dashboardResultsHeight);
@@ -1465,7 +1495,9 @@ function makeDashboardReport() {
       dashboardReport.currentY += dashboardReport.margin;
       dashboardReport.addText(`Chart Results`, 18);
       dashboardReport.addText(
-        `The following charts depict the ${chartFormat.toLowerCase()} of all selected summary areas for a given summary area set for each class from ${urlParams.startYear} to ${
+        `The following charts depict the ${chartFormat.toLowerCase()} of all selected summary areas for a given summary area set for each class from ${
+          urlParams.startYear
+        } to ${
           urlParams.endYear
         } (See tables below for names of summary areas included in these charts). These charts can be useful to identify broad trends of change within and between different classes.`,
         12
@@ -1481,9 +1513,9 @@ function makeDashboardReport() {
       dashboardReport.addPlotlyPlots();
       dashboardReport.addText(`Tabular Results`, 18);
       dashboardReport.addText(
-        `The following tables depict the ${chartFormat.toLowerCase()} of each summary area that LCMS identified as a given class in the ${urlParams.startYear} and ${
-          urlParams.endYear
-        }. The "Change" column is computed by subtracting the first year from the last year.`,
+        `The following tables depict the ${chartFormat.toLowerCase()} of each summary area that LCMS identified as a given class in the ${
+          urlParams.startYear
+        } and ${urlParams.endYear}. The "Change" column is computed by subtracting the first year from the last year.`,
         12
       );
       dashboardReport.addText(
@@ -1504,7 +1536,11 @@ function makeDashboardReport() {
         12
       );
       dashboardReport.addText(`ci =critical value*sqrt((TS Weighted Proportion*(1-TS Weighted Proportion))/TS Weighted Total).`, 12);
-      dashboardReport.addText(`Based on Olofsson et al 2014 Equations 10 and 11.`, 12, window.location.href.split("/dashboard.html")[0] + "/literature/Olofsson_et_al_2014.pdf");
+      dashboardReport.addText(
+        `Based on Olofsson et al 2014 Equations 10 and 11.`,
+        12,
+        window.location.href.split("/dashboard.html")[0] + "/literature/Olofsson_et_al_2014.pdf"
+      );
       dashboardReport.addText(
         `This number is then added and subtracted from each amount for each class. If an amount of a given class in the first year does not intersect the amount in the last year, it is highlighted as being a signficant change in the tables below. Many summary areas had insufficient reference samples in some classes for some years to compute confidence intervals. In those instances, the confidence interval is denoted as "NA" and a significance test cannot be performed.`,
         12
