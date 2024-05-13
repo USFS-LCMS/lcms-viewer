@@ -16,6 +16,27 @@ function runAncillary() {
 
   Map.addLayer(ak_land_cover, { autoViz: true }, "AK LandCover - LCMS 2016", false);
 
+
+  // AK Existing veg
+  
+//   var KPLegendDict = {
+//     "Freshwater- Forested and Shrub wetland": "008836",
+//     "Freshwater Emergent wetland": "7fc31c",
+//     "Freshwater pond": "688cc0",
+//     "Estuarine and Marine wetland": "66c2a5",
+//     "Riverine": "0190bf",
+//     "Lakes": "13007c",
+//     "Estuarine and Marine Deepwater": "007c88",
+//     "Other Freshwater wetland": "b28653",
+//   };
+  
+//   // add R10 Kenai Peninsula 2017 layer
+//   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
+//   //,classLegendDict:KPLegendDict
+// },'AK Kenai Tall Shrub % Cover 2017',false)
+  
+
+
   // Hawaii Vegetation Layers
   //////////////////////////////////////////////////////
 
