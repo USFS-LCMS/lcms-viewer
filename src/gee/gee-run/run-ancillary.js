@@ -19,6 +19,27 @@ function runAncillary() {
     'AK LandCover - LCMS 2016',
     false)
 
+
+  // AK Existing veg
+  
+//   var KPLegendDict = {
+//     "Freshwater- Forested and Shrub wetland": "008836",
+//     "Freshwater Emergent wetland": "7fc31c",
+//     "Freshwater pond": "688cc0",
+//     "Estuarine and Marine wetland": "66c2a5",
+//     "Riverine": "0190bf",
+//     "Lakes": "13007c",
+//     "Estuarine and Marine Deepwater": "007c88",
+//     "Other Freshwater wetland": "b28653",
+//   };
+  
+//   // add R10 Kenai Peninsula 2017 layer
+//   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
+//   //,classLegendDict:KPLegendDict
+// },'AK Kenai Tall Shrub % Cover 2017',false)
+  
+
+
   // Hawaii Vegetation Layers
   //////////////////////////////////////////////////////
 
@@ -33,7 +54,7 @@ function runAncillary() {
   //   "HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1"
   // );
 
-  var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/hi_hawaii_2010_ccap_hires_landcover_20150120");
+  var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/R5/Hawaii/Ancillary/hi_hawaii_2010_ccap_hires_landcover_20150120");
 
   var hi_veg_ccap_dict = {
     0: "Background",
@@ -111,7 +132,7 @@ function runAncillary() {
 
   // Hawaii Wetland data
   ///////////////////////////////////////////////
-  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/HI_wetlands");
+  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands");
   nwi_hi = nwi_hi.map(function (f) {
     return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
   });
