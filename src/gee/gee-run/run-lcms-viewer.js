@@ -145,7 +145,7 @@ function runGTAC() {
       layerType: "ImageCollection",
       size: lcmsRun.years.length,
     }; //eeObjInfo(lcmsRun.forProps, "ImageCollection").getInfo();
-    console.log(lcmsRun.props);
+    // console.log(lcmsRun.props);
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
 
     ["Land_Use", "Land_Cover"].map((b) => {
@@ -200,7 +200,7 @@ function runGTAC() {
     });
     let change_attribution_bn = "Cause_of_Change";
     var lcmsAttr = ee
-      .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2023-9/v2023-9-Change_Attribution")
+      .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2023-9/v2023-9-Cause_of_Change")
       .filter(ee.Filter.calendarRange(startYear, endYear, "year"))
       .select([0], [change_attribution_bn]);
 
@@ -272,7 +272,7 @@ function runGTAC() {
         autoViz: true,
         eeObjInfo: cocObjInfo,
         reducer: ee.Reducer.min(),
-        years: lcmsRun.years,
+        years: lcmsRun.COCYears,
       },
       "Cause of Change (beta)",
       false

@@ -30,7 +30,7 @@ function runAncillary() {
   //   "HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1"
   // );
 
-  var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/hi_hawaii_2010_ccap_hires_landcover_20150120");
+  var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/R5/Hawaii/Ancillary/hi_hawaii_2010_ccap_hires_landcover_20150120");
 
   var hi_veg_ccap_dict = {
     0: "Background",
@@ -108,7 +108,7 @@ function runAncillary() {
 
   // Hawaii Wetland data
   ///////////////////////////////////////////////
-  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/HI-Ancillary-Data/HI_wetlands");
+  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands");
   nwi_hi = nwi_hi.map(function (f) {
     return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
   });

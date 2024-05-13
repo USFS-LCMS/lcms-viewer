@@ -2508,28 +2508,28 @@ if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
 if (mode === "geeViz") {
   $("#pixel-chart-label").remove();
   $("#share-button").remove();
-  $("#tools-accordian").append(`<hr>`);
-  //Sync tooltip toggle
-  var tShowToolTipModal = true;
-  if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
-    tShowToolTipModal = localStorage.showToolTipModal;
-  }
-  addRadio(
-    "tools-accordian",
-    "tooltip-radio",
-    "Show tool tips",
-    "Yes",
-    "No",
-    "localStorage.showToolTipModal",
-    "true",
-    "false",
-    "",
-    "",
-    "Whether to show tool tips to help explain how to use the tools."
-  );
-  if (tShowToolTipModal === "false") {
-    $("#tooltip-radio-second_toggle_label").click();
-  }
+  // $("#tools-accordian").append(`<hr>`);
+  // //Sync tooltip toggle
+  // var tShowToolTipModal = true;
+  // if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
+  //   tShowToolTipModal = localStorage.showToolTipModal;
+  // }
+  // addRadio(
+  //   "tools-accordian",
+  //   "tooltip-radio",
+  //   "Show tool tips",
+  //   "Yes",
+  //   "No",
+  //   "localStorage.showToolTipModal",
+  //   "true",
+  //   "false",
+  //   "",
+  //   "",
+  //   "Whether to show tool tips to help explain how to use the tools."
+  // );
+  // if (tShowToolTipModal === "false") {
+  //   $("#tooltip-radio-second_toggle_label").click();
+  // }
 }
 if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
