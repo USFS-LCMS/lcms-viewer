@@ -45,6 +45,7 @@ function areaChartCls() {
 
   this.plot_bgcolor = "#D6D1CA";
   this.plot_font = "Roboto Condensed, sans-serif";
+  this.areaChartingOn = false;
   this.autoChartingOn = false;
   this.firstRun = true;
   this.chartHWRatio = 0.7;
@@ -183,9 +184,10 @@ function areaChartCls() {
       // obj.size = obj.layerType === "ImageCollection" ? obj.item.size().getInfo() : 1;
       // console.log(obj.size);
       obj.dateFormat = params.dateFormat || "YYYY";
+      obj.chartTitleFontSize = params.chartTitleFontSize || 10;
       obj.chartLabelFontSize = params.chartLabelFontSize || 10;
-      obj.chartAxisTitleFontSize = params.chartAxisTitleFontSize || 12;
-      obj.chartLabelMaxWidth = params.chartLabelMaxWidth || 15;
+      obj.chartAxisTitleFontSize = params.chartAxisTitleFontSize || 10;
+      obj.chartLabelMaxWidth = params.chartLabelMaxWidth || 16;
       obj.chartLabelMaxLength = params.chartLabelMaxLength || 50;
       obj.chartWidth = params.chartWidth;
       obj.chartHeight = params.chartHeight;
@@ -199,6 +201,7 @@ function areaChartCls() {
       obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 11; // Above this zoom level, it won't change the scale/transform of teh reducer
       obj.maxAutoScale = 2 ** 6; // Max n scale can be multiplied by (ideally 2**n)
       obj.sankeyTransitionPeriods = params.sankeyTransitionPeriods;
+      obj.sankeyMinPercentage = params.sankeyMinPercentage !== undefined ? params.sankeyMinPercentage : 1;
       obj.plots = {};
       obj.tableExportData = {};
       obj.splitStr = "----";
@@ -466,19 +469,20 @@ function areaChartCls() {
   //////////////////////////////////////////////////////////////////////////
   // Returns the ui elements for downloading png and csv outputs
   this.getDownloadButtonGroup = function (id, bn, outFilename) {
-    return `<div class="btn-group" role="group" >
+    return `<div class="btn-group areaChart-download-btn-group" role="group" >
   <button type="button" class="btn btn-secondary" onclick = "exportToCsv2('${id}','${bn}','${outFilename}.csv')" title = "Click to download ${outFilename}.csv tabular data">CSV</button>
   
-  <button type="button" class="btn btn-secondary" onclick = "downloadPlotlyAreaChartWrapper('${id}','${bn}','${outFilename}.png')" title = "Click to download ${outFilename}.png graph data">PNG</button>
+  <button type="button" class="btn btn-secondary" onclick = "downloadPlotlyAreaChartWrapper('${id}','${bn}','${outFilename}.png')" title = "Click to download ${outFilename}.png chart">PNG</button>
 </div>`;
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to handle creating a sankey chart from given prepared dictionary
-  this.makeSankeyChart = function (sankey_dict, labels, colors, bn, name, selectedObj, csvData, thickness = 35, nodePad = 25) {
-    sankey_dict.hovertemplate = "%{value}" + chartFormatDict[areaChartFormat].label + " %{source.label}-%{target.label}<extra></extra>";
+  this.makeSankeyChart = function (sankey_dict, labels, colors, bn, name, selectedObj, csvData, thickness = 35, nodePad = 15) {
+    sankey_dict.hovertemplate = "%{value}" + chartFormatDict[areaChartFormat].label + "<br>%{source.label}<br>%{target.label}<extra></extra>";
     let yAxisLabel = selectedObj.yAxisLabel || chartFormatDict[areaChartFormat].label;
     var data = {
       type: "sankey",
+      textfont: { size: selectedObj.chartLabelFontSize },
       orientation: "h",
       node: {
         pad: nodePad,
@@ -489,8 +493,9 @@ function areaChartCls() {
         },
         label: labels,
         color: colors,
-        // opacity: 0.5,
-        hovertemplate: "%{value}" + yAxisLabel + " %{label}<extra></extra>",
+
+        opacity: 0.5,
+        hovertemplate: "%{value}" + yAxisLabel + "<br>%{label}<extra></extra>",
       },
 
       link: sankey_dict,
@@ -498,6 +503,7 @@ function areaChartCls() {
     // console.log(labels);
     // console.log(colors);
     // console.log(sankey_dict);
+    // console.log(data);
     var data = [data];
 
     // let h = parseInt($('#chart-modal-body').width()*0.5);
@@ -506,7 +512,7 @@ function areaChartCls() {
     var plotLayout = {
       title: name,
       font: {
-        size: selectedObj.chartLabelFontSize,
+        size: selectedObj.chartTitleFontSize,
         family: this.plot_font,
       },
       plot_bgcolor: this.plot_bgcolor,
@@ -622,7 +628,7 @@ function areaChartCls() {
       paper_bgcolor: this.plot_bgcolor,
       font: {
         family: this.plot_font,
-        size: selectedObj.chartLabelFontSize,
+        size: selectedObj.chartTitleFontSize,
       },
       legend: {
         font: { size: selectedObj.chartLabelFontSize },
@@ -718,6 +724,7 @@ function areaChartCls() {
         </div>`);
         $("#areaChart-progress-container").width($("#chart-collapse-label-label").width() - $("#areaChart-progress-container").width());
         this.firstRun = false;
+        this.areaChartingOn = true;
       }
     }
   };
@@ -730,6 +737,7 @@ function areaChartCls() {
     $("#chart-collapse-div").empty();
     $("#chart-collapse-label-chart-collapse-div").hide();
     this.firstRun = true;
+    this.areaChartingOn = false;
   };
   //////////////////////////////////////////////////////////////////////////
   // Primary function to handle charting a given area
@@ -775,7 +783,7 @@ function areaChartCls() {
       let transformT = structuredClone(selectedObj.transform);
       let scaleMult = 1;
       let nominalScale = scaleT || transformT[0];
-      let divWidth = $("#legendDiv").width() - convertRemToPixels(2);
+      let divWidth = $("#" + getWalkThroughCollapseContainerID()).width() - convertRemToPixels(2);
       this.chartWidth = selectedObj.chartWidth || divWidth;
       this.chartHeight = selectedObj.chartHeight || parseInt(divWidth * this.chartHWRatio);
       if (selectedObj.autoScale) {
@@ -838,7 +846,7 @@ function areaChartCls() {
                 showMessage("Area Charting Error", `Encountered the following error while summarizing ${selectedObj.name}<br>${failure}`);
               } else {
                 // console.log(counts);
-                if (makeChartID === this.makeChartID) {
+                if (this.areaChartingOn === true && this.makeChartID === this.makeChartID) {
                   let transitionPeriodI = 1;
 
                   let sankey_dict = {
@@ -876,15 +884,15 @@ function areaChartCls() {
                     selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                     let countsTransitionPeriod = counts[transitionPeriod];
-                    let values = Object.values(countsTransitionPeriod);
-                    let pixelTotal = sum(values);
+                    let rawValues = Object.values(countsTransitionPeriod);
+                    let pixelTotal = sum(rawValues);
                     let mult;
                     if (areaChartFormat === "Percentage") {
                       mult = (1 / pixelTotal) * 100;
                     } else {
                       mult = chartFormatDict[areaChartFormat].mult * scaleMult;
                     }
-                    values = values.map((v) => smartToFixed(v * mult));
+                    let values = rawValues.map((v) => smartToFixed(v * mult));
                     let classes = Object.keys(countsTransitionPeriod).map((cls) => cls.split("0990").map((n) => parseInt(n)));
                     // console.log(classes);
                     let vi = 0;
@@ -895,9 +903,12 @@ function areaChartCls() {
                       let color_value1 = selectedObj.class_palette[bn][class_valueI1];
                       let class_valueI2 = selectedObj.class_values[bn].indexOf(cls[1]);
                       let color_value2 = selectedObj.class_palette[bn][class_valueI2];
-                      sankey_dict.source.push(class_valueI1 + offset1);
-                      sankey_dict.target.push(class_valueI2 + offset2);
-                      sankey_dict.value.push(values[vi]);
+                      if ((rawValues[vi] / pixelTotal) * 100 >= selectedObj.sankeyMinPercentage) {
+                        sankey_dict.source.push(class_valueI1 + offset1);
+                        sankey_dict.target.push(class_valueI2 + offset2);
+                        sankey_dict.value.push(values[vi]);
+                      }
+
                       // console.log(color_value1,color_value2)
                       // console.log(blendColors(color_value1,color_value2))
                       // console.log(selectedObj.plot_bgcolor)
@@ -989,7 +1000,7 @@ function areaChartCls() {
         areaChartCollectionStack
           .reduceRegion(selectedObj.reducer, area, scaleT, selectedObj.crs, transformT, true, 1e13, 4)
           .evaluate((counts, failure) => {
-            if (makeChartID === this.makeChartID) {
+            if (this.areaChartingOn && makeChartID === this.makeChartID) {
               if (failure !== undefined) {
                 showMessage("Area Charting Error", `Encountered the following error while summarizing ${selectedObj.name}<br>${failure}`);
               } else {
@@ -1181,18 +1192,20 @@ function areaChartCls() {
   //////////////////////////////////////////////////////////////////////////
   // Function to manage progress spinner and bar
   this.updateProgress = function () {
-    let p = 0;
-    if (this.maxOutStandingChartRequests[this.makeChartID] > 0) {
-      p = parseInt((1 - this.outstandingChartRequests[this.makeChartID] / this.maxOutStandingChartRequests[this.makeChartID]) * 100);
-    }
+    if (this.areaChartingOn) {
+      let p = 0;
+      if (this.maxOutStandingChartRequests[this.makeChartID] > 0) {
+        p = parseInt((1 - this.outstandingChartRequests[this.makeChartID] / this.maxOutStandingChartRequests[this.makeChartID]) * 100);
+      }
 
-    updateProgress(".progressbar", p);
+      updateProgress(".progressbar", p);
 
-    if (p === 100) {
-      $("#query-spinner-img").removeClass("fa-spin");
-      // $(".hl").last().remove();
-    } else {
-      $("#query-spinner-img").addClass("fa-spin");
+      if (p === 100) {
+        $("#query-spinner-img").removeClass("fa-spin");
+        // $(".hl").last().remove();
+      } else {
+        $("#query-spinner-img").addClass("fa-spin");
+      }
     }
   };
 }

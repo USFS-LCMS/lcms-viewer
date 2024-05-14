@@ -188,6 +188,7 @@ function runGTAC() {
           {
             title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${endYear}.`,
             autoViz: true,
+            queryParams: { palette: ["00897b"] },
             layerType: "geeImageCollection",
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
@@ -213,20 +214,20 @@ function runGTAC() {
       Cause_of_Change_class_names: [
         "Wildfire",
         "Prescribed Burn",
-        "Timber Harvest or other tree loss disturbance agent > 1.5 hectare",
-        "Timber Harvest or other tree loss disturbance agent < 1.5 hectare",
-        "Timber Harvest or other tree loss disturbance agent > 1.5 hectare in protected lands",
-        "Timber Harvest or other tree loss disturbance agent < 1.5 hectare in protected lands",
+        "Large Timber Harvest", //"Timber Harvest or other tree loss disturbance agent > 1.5 hectare",
+        "Small Timber Harvest", //"Timber Harvest or other tree loss disturbance agent < 1.5 hectare",
+        "Large Timber Harvest Protected", //"Timber Harvest or other tree loss disturbance agent > 1.5 hectare in protected lands",
+        "Small Timber Harvest Protected", //"Timber Harvest or other tree loss disturbance agent < 1.5 hectare in protected lands",
         "Low Magnitude Tree Loss",
-        "Tropical Hurricane",
-        "Tornado or other wind event",
-        "Water Desiccation",
-        "Water Inundation",
-        "Drought Stress, Timber Harvest or other disturbance agent",
-        "Other Fast Disturbance Agent in non-treed landscape",
-        "Insect, Disease or Climate Stress low magnitude loss",
-        "Insect, Disease or Climate Stress high magnitude loss",
-        "Other Slow Loss in non-treed landscape",
+        "Tropical Cyclone",
+        "Wind",
+        "Desiccation",
+        "Inundation",
+        "Drought Stress", //, Timber Harvest or other disturbance agent",
+        "Non-tree Fast Loss", //"Other Fast Disturbance Agent in non-treed landscape",
+        "Low Mag Stress", //Insect, Disease or Climate Stress low magnitude loss",
+        "Hi Mag Stress", //"Insect, Disease or Climate Stress high magnitude loss",
+        "Non-tree Slow Loss", //"Other Slow Loss in non-treed landscape",
         "Gain",
         "Stable",
         "Non-processing area",
@@ -270,6 +271,7 @@ function runGTAC() {
       {
         title: `The minimum value of the cause of change from ${startYear} to ${endYear}, assigned using a rule-based classifier within the hierarchy found in the legend`,
         autoViz: true,
+        queryParams: { palette: ["00897b"] },
         eeObjInfo: cocObjInfo,
         reducer: ee.Reducer.min(),
         years: lcmsRun.COCYears,
@@ -412,90 +414,6 @@ function runGTAC() {
         "Gain Duration",
         false
       );
-    }
-
-    if (urlParams.addTCC2021 === true || urlParams.beta === true) {
-      var nlcdTCC2021 = ee.ImageCollection("projects/nlcd-tcc/assets/CONUS-TCC/Final-products/2021-4").select([0]);
-      var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[0]).filter('study_area=="CONUS"');
-      var props = lcms.first().toDictionary().getInfo();
-      var change = lcms.select(["Change"]);
-      var changeNames = props["Change_class_names"];
-      var changeValues = props["Change_class_values"];
-      var changeDict = Object.fromEntries(zip(changeValues, changeNames));
-      var lcmsTCC = joinCollections(change, nlcdTCC2021);
-      var nlcdTCCYrs = lcmsTCC
-        .aggregate_histogram("year")
-        .keys()
-        .getInfo()
-        .map((n) => parseInt(n));
-
-      var tccDiff = [];
-      for (var i = 0; i < nlcdTCCYrs.length - 1; i++) {
-        var yr1 = nlcdTCCYrs[i];
-        var yr2 = nlcdTCCYrs[i + 1];
-        var nlcdTCC2021Pre = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first());
-        var nlcdTCC2021Post = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first());
-        var diff = nlcdTCC2021Post
-          .select(["Science_Percent_Tree_Canopy_Cover"])
-          .subtract(nlcdTCC2021Pre.select(["Science_Percent_Tree_Canopy_Cover"]))
-          .int16();
-        var diffStack = ee
-          .ImageCollection(
-            changeValues.slice(1, 4).map((cv) => {
-              var cb = nlcdTCC2021Post.select(["Change"]).eq(cv);
-              return diff.updateMask(cb);
-            })
-          )
-          .toBands()
-          .rename(Object.values(changeDict).slice(1, 4));
-        tccDiff.push(diffStack);
-      }
-      tccDiff = ee.ImageCollection(tccDiff);
-      var tccGain = tccDiff.map((img) => img.updateMask(img.gte(0))).sum();
-      var tccLoss = tccDiff.map((img) => img.updateMask(img.lte(0))).sum();
-
-      Map.addLayer(
-        tccLoss.select(["Slow Loss"]),
-        {
-          min: -50,
-          max: -5,
-          palette: "D00,F5DEB3",
-          layerType: "geeImage",
-          legendLabelLeftAfter: "% TCC",
-          legendLabelRightAfter: "% TCC",
-        },
-        "TCC Slow Loss Mag",
-        false
-      );
-
-      Map.addLayer(
-        tccLoss.select(["Fast Loss"]),
-        {
-          min: -50,
-          max: -5,
-          layerType: "geeImage",
-          palette: "D00,F5DEB3",
-          legendLabelLeftAfter: "% TCC",
-          legendLabelRightAfter: "% TCC",
-        },
-        "TCC Fast Loss Mag",
-        false
-      );
-      Map.addLayer(
-        tccGain.select(["Gain"]),
-        {
-          min: 0,
-          max: 50,
-          palette: "F5DEB3,006400",
-          legendLabelLeftAfter: "% TCC",
-          legendLabelRightAfter: "% TCC",
-        },
-        "TCC Gain Mag",
-        false
-      );
-
-      // Map.addLayer(lcmsRun.lcms.select([0]),{autoViz:true},'Change')
-      //Map.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
     }
 
     //Bring in time lapses
@@ -693,8 +611,9 @@ function runGTAC() {
         }
         areaChart.addLayer(
           lcmsRun.lcms.select([bn]),
-          { eeObjInfo: lcmsRun.props, visible: visibility, xAxisLabels: range(startYear, endYear + 1) },
-          bnTitle + " Annual"
+          { eeObjInfo: lcmsRun.props, visible: visibility, xAxisLabels: lcmsRun.years },
+          bnTitle + " Annual",
+          true
         );
         areaChart.addLayer(
           lcmsRun.lcms.select([bn]),
@@ -703,7 +622,8 @@ function runGTAC() {
             sankey: true,
             eeObjInfo: lcmsRun.props,
             visible: visibility,
-            xAxisLabels: range(startYear, endYear + 1),
+            xAxisLabels: lcmsRun.years,
+            sankeyMinPercentage: 1,
           },
           bnTitle + " Transition",
           false
@@ -724,20 +644,130 @@ function runGTAC() {
           sankey: true,
           visible: cocVisibility,
           eeObjInfo: cocObjInfo,
-          // xAxisLabels: range(startYear, lastAreaChartYear + 1),
+          xAxisLabels: lcmsRun.COCYears,
+          sankeyMinPercentage: 1,
         },
         "Cause of Change (beta) Transition",
         false
       );
+      if (urlParams.addTCC2021 === true || urlParams.beta === true) {
+        let minTCCYear = 2008;
+        let maxTCCYear = 2021;
 
+        minTCCYear = startYear > minTCCYear ? startYear : minTCCYear;
+        maxTCCYear = endYear < maxTCCYear ? endYear : maxTCCYear;
+        let nlcdTCCYrs = range(minTCCYear, maxTCCYear + 1);
+
+        var nlcdTCC2021 = ee
+          .ImageCollection("projects/nlcd-tcc/assets/CONUS-TCC/Final-products/2021-4")
+          .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
+        areaChart.addLayer(
+          nlcdTCC2021.select([0, 2]),
+          {
+            palette: "080,0F0",
+            xAxisLabels: nlcdTCCYrs,
+            eeObjInfo: {
+              bandNames: ["Science_Percent_Tree_Canopy_Cover", "NLCD_Percent_Tree_Canopy_Cover"],
+
+              layerType: "ImageCollection",
+              size: nlcdTCCYrs.length,
+            },
+          },
+          "NLCD TCC"
+        );
+        nlcdTCC2021 = nlcdTCC2021.select([0]);
+        var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[1]).filter('study_area=="CONUS"');
+        var props = lcmsRun.props; // lcms.first().toDictionary().getInfo();
+        var change = lcms.select(["Change"]);
+        var changeNames = props["Change_class_names"];
+        var changeValues = props["Change_class_values"];
+        var changeDict = Object.fromEntries(zip(changeValues, changeNames));
+        var lcmsTCC = joinCollections(change, nlcdTCC2021);
+
+        // .aggregate_histogram("year")
+        // .keys()
+        // .getInfo()
+        // .map((n) => parseInt(n));
+
+        var tccDiff = [];
+        for (var i = 0; i < nlcdTCCYrs.length - 1; i++) {
+          var yr1 = nlcdTCCYrs[i];
+          var yr2 = nlcdTCCYrs[i + 1];
+          var nlcdTCC2021Pre = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first());
+          var nlcdTCC2021Post = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first());
+          var diff = nlcdTCC2021Post
+            .select(["Science_Percent_Tree_Canopy_Cover"])
+            .subtract(nlcdTCC2021Pre.select(["Science_Percent_Tree_Canopy_Cover"]))
+            .int16();
+          var diffStack = ee
+            .ImageCollection(
+              changeValues.slice(1, 4).map((cv) => {
+                var cb = nlcdTCC2021Post.select(["Change"]).eq(cv);
+                return diff.updateMask(cb);
+              })
+            )
+            .toBands()
+            .rename(Object.values(changeDict).slice(1, 4));
+          tccDiff.push(diffStack);
+        }
+        tccDiff = ee.ImageCollection(tccDiff);
+        var tccGain = tccDiff.map((img) => img.updateMask(img.gte(0))).sum();
+        var tccLoss = tccDiff.map((img) => img.updateMask(img.lte(0))).sum();
+
+        Map.addLayer(
+          tccLoss.select(["Slow Loss"]),
+          {
+            min: -50,
+            max: -5,
+            palette: "D00,F5DEB3",
+            layerType: "geeImage",
+            legendLabelLeftAfter: "% TCC",
+            legendLabelRightAfter: "% TCC",
+          },
+          "TCC Slow Loss Mag",
+          false
+        );
+
+        Map.addLayer(
+          tccLoss.select(["Fast Loss"]),
+          {
+            min: -50,
+            max: -5,
+            layerType: "geeImage",
+            palette: "D00,F5DEB3",
+            legendLabelLeftAfter: "% TCC",
+            legendLabelRightAfter: "% TCC",
+          },
+          "TCC Fast Loss Mag",
+          false
+        );
+        Map.addLayer(
+          tccGain.select(["Gain"]),
+          {
+            min: 0,
+            max: 50,
+            layerType: "geeImage",
+            palette: "F5DEB3,006400",
+            legendLabelLeftAfter: "% TCC",
+            legendLabelRightAfter: "% TCC",
+          },
+          "TCC Gain Mag",
+          false
+        );
+
+        // Map.addLayer(lcmsRun.lcms.select([0]),{autoViz:true},'Change')
+        //Map.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
+      }
       areaChart.populateChartLayerSelect();
       // areaChart.startAutoCharting();
-      Map.turnOnAutoAreaCharting();
+      // Map.turnOnAutoAreaCharting();
       // $("#pixel-chart-label").hide();
     }
+
     // $("#user-defined-area-chart-label").click();
     getSelectLayers(true);
     populatePixelChartDropdown();
+    // Map.turnOnInspector();
 
     // $('#query-label').click()
     // $('#pixel-chart-label').click();

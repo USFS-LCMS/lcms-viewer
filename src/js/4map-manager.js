@@ -189,23 +189,33 @@ function synchronousCenterObject(feature) {
   });
   map.fitBounds(bounds);
 }
-function centerObject(fc) {
-  try {
-    fc.geometry()
-      .bounds(100)
-      .evaluate(function (feature) {
-        synchronousCenterObject(feature);
-      });
-  } catch (err) {
+function centerObject(fc, async = true) {
+  if (async) {
     try {
-      fc.bounds(100).evaluate(function (feature) {
-        // console.log(feature);
-        synchronousCenterObject(feature);
-      });
+      fc.geometry()
+        .bounds(100)
+        .evaluate((f) => synchronousCenterObject(f));
     } catch (err) {
+      try {
+        fc.bounds(100).evaluate((f) => synchronousCenterObject(f));
+      } catch (err) {
+        console.log(err);
+      }
       console.log(err);
     }
-    console.log(err);
+  } else {
+    try {
+      let f = fc.geometry().bounds(100).getInfo();
+      synchronousCenterObject(f);
+    } catch (err) {
+      try {
+        let f = fc.bounds(100).getInfo();
+        synchronousCenterObject(f);
+      } catch (err) {
+        console.log(err);
+      }
+      console.log(err);
+    }
   }
 }
 ///////////////////////////////////////////////////////////////////
@@ -2073,8 +2083,8 @@ function mp() {
   this.addFeatureView = function (assetId, visParams, name, visible, maxZoom, helpBox, whichLayerList) {
     addFeatureView(assetId, visParams, name, visible, maxZoom, helpBox, whichLayerList);
   };
-  this.centerObject = function (fc) {
-    centerObject(fc);
+  this.centerObject = function (fc, async = true) {
+    centerObject(fc, async);
   };
   this.setTitle = function (title) {
     $("#title-banner").html(title);

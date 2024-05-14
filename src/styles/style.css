@@ -596,6 +596,9 @@ div.dataTables_info {
   font-size: 0.75rem;
   margin-top: 0.5rem !important;
 }
+.areaChart-download-btn-group {
+  margin-left: 1.8rem;
+}
 .pac-container {
   background-color: var(--deep-brown-20);
 }

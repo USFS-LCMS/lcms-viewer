@@ -357,8 +357,14 @@ var getQueryImages = function (lng, lat) {
 
         var allYValues = range(yMin, yMax + 1);
         // console.log(allYValues);
-        var allYLabels = allYValues.map((v) => q.queryDict[v] || v.toString());
-        // console.log(allYLabels);
+        var allYLabels = allYValues.map((v) => {
+          if (yValues.indexOf(v) === -1) {
+            return " ";
+          } else {
+            return q.queryDict[v] || v.toString();
+          }
+        });
+        console.log(allYLabels);
         var yLabelMaxLinesT = yLabelMaxLines;
         var brokenLabels;
         function breakLabels() {
@@ -948,7 +954,7 @@ function chartUserDefinedArea() {
       // var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
       // udpName += addon;
 
-      Map.centerObject(userArea);
+      Map.centerObject(userArea, false);
       if (Object.keys(areaChart.areaChartObj).length > 0) {
         areaChart.clearCharts();
         areaChart.chartArea(userArea, udpName);
@@ -1870,7 +1876,7 @@ function downloadChartJS(chart, name) {
   ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "png");
 }
 
-function scalePlotlyChartLayout(layout, scale = 2) {
+function scalePlotlyChart(data, layout, scale = 2) {
   try {
     layout.font.size = parseInt(layout.font.size * scale);
   } catch (err) {}
@@ -1897,21 +1903,47 @@ function scalePlotlyChartLayout(layout, scale = 2) {
       } catch (err) {}
     });
   }
+
+  let outData = [];
+  data.map((d) => {
+    try {
+      d.textfont.size = parseInt(d.textfont.size * scale);
+    } catch (err) {}
+    try {
+      d.node.pad = parseInt(d.node.pad * scale);
+    } catch (err) {}
+    try {
+      d.node.thickness = parseInt(d.node.thickness * scale);
+    } catch (err) {}
+    try {
+      d.line.width = parseInt(d.line.width * scale);
+    } catch (err) {}
+    try {
+      d.marker.size = parseInt(d.marker.size * scale);
+    } catch (err) {}
+    outData.push(d);
+  });
   console.log(layout);
-  return layout;
+  console.log(data);
+  return [outData, layout];
 }
 function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, scale = 2, chartContainerID = "chart-download-canvas") {
   var currentChart = document.getElementById(chartContainerID);
-  let width = currentChart.layout.width * scale;
-  let height = currentChart.layout.height * scale;
+
+  let width = currentChart.layout.width;
+  let height = currentChart.layout.height;
 
   if (useBiggerFrame) {
-    Plotly.update(currentChart, null, scalePlotlyChartLayout(currentChart.layout, scale));
+    width = width * scale;
+    height = height * scale;
+    let dataLayout = scalePlotlyChart(currentChart.data, currentChart.layout, scale);
+    Plotly.update(currentChart, dataLayout[0], dataLayout[1]);
   }
   Plotly.downloadImage(chartContainerID, { format: "png", width: width, height: height, filename: name });
   ga("send", "event", mode, getActiveTools()[0] + "-plotly-chartDownload", "png");
   if (useBiggerFrame) {
-    Plotly.update(currentChart, null, scalePlotlyChartLayout(currentChart.layout, 1 / scale));
+    let dataLayout = scalePlotlyChart(currentChart.data, currentChart.layout, 1 / scale);
+    Plotly.update(currentChart, dataLayout[0], dataLayout[1]);
   }
 }
 Chart.pluginService.register({

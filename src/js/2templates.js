@@ -1883,8 +1883,8 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList, lab
     $("#" + checkboxCheckboxID).change(function () {
       optionList[$(this).val()] = $(this)[0].checked;
       eval(`window.${variable} = optionList`);
-      console.log("Checkbox change");
-      console.log(optionList);
+      // console.log("Checkbox change");
+      // console.log(optionList);
     });
     ki++;
   });
