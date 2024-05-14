@@ -1869,34 +1869,50 @@ function downloadChartJS(chart, name) {
   delete link;
   ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "png");
 }
-function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, width, height) {
-  let dims = {};
-  if (useBiggerFrame) {
-    width = 2000;
-    height = 1000;
-    Plotly.update("chart-download-canvas", null, {
-      font: { size: 20 },
-      margin: {
-        l: 50,
-        r: 50,
-        b: 50,
-        t: 75,
-        pad: 4,
-      },
-    });
-    dims = { width: width, height: height };
-  }
 
-  plotlyDownloadChartObject.then((chart) => {
-    Plotly.toImage(chart, dims).then(function (url) {
-      var link = document.createElement("a");
-      link.download = name;
-      link.href = url;
-      link.click();
-      delete link;
+function scalePlotlyChartLayout(layout, scale = 2) {
+  try {
+    layout.font.size = parseInt(layout.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.legend.font.size = parseInt(layout.legend.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.xaxis.title.font.size = parseInt(layout.xaxis.title.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.xaxis.tickfont.size = parseInt(layout.xaxis.tickfont.size * scale);
+  } catch (err) {}
+  try {
+    layout.yaxis.title.font.size = parseInt(layout.yaxis.title.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.yaxis.tickfont.size = parseInt(layout.yaxis.tickfont.size * scale);
+  } catch (err) {}
+
+  if (layout.margin !== undefined) {
+    ["l", "r", "b", "t", "pad"].map((k) => {
+      try {
+        layout.margin[k] = parseInt(layout.margin[k] * scale);
+      } catch (err) {}
     });
-    ga("send", "event", mode, getActiveTools()[0] + "-sankey-chartDownload", "png");
-  });
+  }
+  console.log(layout);
+  return layout;
+}
+function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, scale = 2, chartContainerID = "chart-download-canvas") {
+  var currentChart = document.getElementById(chartContainerID);
+  let width = currentChart.layout.width * scale;
+  let height = currentChart.layout.height * scale;
+
+  if (useBiggerFrame) {
+    Plotly.update(currentChart, null, scalePlotlyChartLayout(currentChart.layout, scale));
+  }
+  Plotly.downloadImage(chartContainerID, { format: "png", width: width, height: height, filename: name });
+  ga("send", "event", mode, getActiveTools()[0] + "-plotly-chartDownload", "png");
+  if (useBiggerFrame) {
+    Plotly.update(currentChart, null, scalePlotlyChartLayout(currentChart.layout, 1 / scale));
+  }
 }
 Chart.pluginService.register({
   beforeDraw: function (chart, easing) {

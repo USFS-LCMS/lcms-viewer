@@ -732,7 +732,7 @@ function runGTAC() {
 
       areaChart.populateChartLayerSelect();
       // areaChart.startAutoCharting();
-      // Map.turnOnAutoAreaCharting();
+      Map.turnOnAutoAreaCharting();
       // $("#pixel-chart-label").hide();
     }
     // $("#user-defined-area-chart-label").click();

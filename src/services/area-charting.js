@@ -25,7 +25,7 @@ function exportToCsv2(areaObjID, bn, filename) {
 //////////////////////////////////////////////////////////////////////////
 function downloadPlotlyAreaChartWrapper(areaObjID, bn, filename) {
   console.log(areaChart.areaChartObj[areaObjID].plots[bn]);
-  downloadPlotly(areaChart.areaChartObj[areaObjID].plots[bn], filename, false);
+  downloadPlotly(areaChart.areaChartObj[areaObjID].plots[bn].plot, filename, true, 2, areaChart.areaChartObj[areaObjID].plots[bn].containerID);
 }
 //////////////////////////////////////////////////////////////////////////
 function areaChartCls() {
@@ -47,7 +47,7 @@ function areaChartCls() {
   this.plot_font = "Roboto Condensed, sans-serif";
   this.autoChartingOn = false;
   this.firstRun = true;
-
+  this.chartHWRatio = 0.7;
   this.sankeyTransitionPeriodYearBuffer = 0;
 
   //////////////////////////////////////////////////////////////////////////
@@ -471,7 +471,6 @@ function areaChartCls() {
   
   <button type="button" class="btn btn-secondary" onclick = "downloadPlotlyAreaChartWrapper('${id}','${bn}','${outFilename}.png')" title = "Click to download ${outFilename}.png graph data">PNG</button>
 </div>`;
-    //   return `<div href="#" class = 'btn area-chart-download-btn' title = "Click to download ${outFilename}" onclick = "downloadPlotlyAreaChartWrapper('${id}','${bn}','${outFilename}.png')"><img alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg"><img alt="Downloads icon" src="./src/assets/Icons_svg/graph_ffffff.svg"></div>`;
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to handle creating a sankey chart from given prepared dictionary
@@ -543,7 +542,7 @@ function areaChartCls() {
     let downloadButtons = this.getDownloadButtonGroup(selectedObj.id, bn, outFilename);
     $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div>${downloadButtons}<div class = 'hl'></div>`);
     var graphDiv = document.getElementById(tempGraphDivID);
-    selectedObj.plots[bn] = Plotly.newPlot(graphDiv, data, plotLayout, config);
+    selectedObj.plots[bn] = { containerID: tempGraphDivID, plot: Plotly.newPlot(graphDiv, data, plotLayout, config) };
   };
 
   this.makeChart = function (table, name, colors, visible, selectedObj) {
@@ -681,7 +680,7 @@ function areaChartCls() {
     $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div>
     ${downloadButtons}<div class = 'hl'></div>`);
     var graphDiv = document.getElementById(tempGraphDivID);
-    selectedObj.plots["line"] = Plotly.newPlot(graphDiv, data, plotLayout, buttonOptions);
+    selectedObj.plots["line"] = { containerID: tempGraphDivID, plot: Plotly.newPlot(graphDiv, data, plotLayout, buttonOptions) };
   };
   this.setupChartProgress = function () {
     if (Object.keys(this.areaChartObj).length > 0) {
@@ -778,7 +777,7 @@ function areaChartCls() {
       let nominalScale = scaleT || transformT[0];
       let divWidth = $("#legendDiv").width() - convertRemToPixels(2);
       this.chartWidth = selectedObj.chartWidth || divWidth;
-      this.chartHeight = selectedObj.chartHeight || parseInt(divWidth * 0.7);
+      this.chartHeight = selectedObj.chartHeight || parseInt(divWidth * this.chartHWRatio);
       if (selectedObj.autoScale) {
         // console.log("here");
         // console.log(selectedObj.autoScale);
