@@ -1168,7 +1168,7 @@ function areaChartCls() {
     addCheckboxes(
       this.layerSelectContainerID,
       this.layerSelectID,
-      "Chart Layers",
+      "Area Chart Layers",
       "checkboxSelectedChartLayers",
       selectedObj,
       labels,

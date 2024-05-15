@@ -804,7 +804,7 @@ function addTimeLapseToMap(item, viz, name, visible, label, fontColor, helpBox, 
     }
 
     viz = addClassVizDicts(viz);
-    console.log(viz);
+    // console.log(viz);
   }
 
   // console.log(viz);

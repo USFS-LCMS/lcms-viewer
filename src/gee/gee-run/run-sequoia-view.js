@@ -335,7 +335,7 @@ function runSequoia() {
         // fixedHeader: true,
         paging: false,
         searching: true,
-        order: [3],
+        order: [1],
         responsive: true,
         dom: "Bfrtip",
         buttons: [
