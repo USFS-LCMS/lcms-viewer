@@ -52,7 +52,7 @@ var toolFunctions = {
   },
   area: {
     mapBounds: {
-      on: 'stopAllTools();areaChart.startAutoCharting();showTip("SUMMARIZE BY MAP BOUNDS AREA","<div>Move map to update area summary chart</div>");',
+      on: 'stopAllTools();areaChart.startAutoCharting();showTip("SUMMARIZE BY MAP BOUNDS AREA",staticTemplates.mapDefinedAreaChartTip);',
       off: "stopAllTools()",
       state: false,
       title: "Area Tools-Map Extent Area Tool",

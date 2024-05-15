@@ -114,7 +114,7 @@ function getExistingChangeData(changeThresh, showLayers) {
     changeThresh = 50;
   }
   var startYear = 1985;
-  var endYear = 2022;
+  var endYear = 2023;
 
   // var glriEnsemble = ee.Image('projects/glri-phase3/changeMaps/ensembleOutputs/NBR_NDVI_TCBGAngle_swir1_swir2_median_LT_Ensemble');
 

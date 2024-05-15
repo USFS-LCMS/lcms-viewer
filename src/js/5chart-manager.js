@@ -357,8 +357,14 @@ var getQueryImages = function (lng, lat) {
 
         var allYValues = range(yMin, yMax + 1);
         // console.log(allYValues);
-        var allYLabels = allYValues.map((v) => q.queryDict[v] || v.toString());
-        // console.log(allYLabels);
+        var allYLabels = allYValues.map((v) => {
+          if (yValues.indexOf(v) === -1) {
+            return " ";
+          } else {
+            return q.queryDict[v] || v.toString();
+          }
+        });
+        console.log(allYLabels);
         var yLabelMaxLinesT = yLabelMaxLines;
         var brokenLabels;
         function breakLabels() {
@@ -435,6 +441,7 @@ var getQueryImages = function (lng, lat) {
         },
       };
       // console.log(value.table);console.log(containerID)
+      console.log(value.table);
       Plotly.newPlot(containerID, value.table, plotLayout, buttonOptions);
       // console.log(value);
     } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
@@ -552,9 +559,10 @@ var getQueryImages = function (lng, lat) {
               return {
                 x: xColumn,
                 y: arrayColumn(yColumns, i).map(smartToFixed),
-                type: "scatter",
+                mode: "lines+markers",
                 name: c.slice(0, 50).chunk(15).join("<br>"),
-                line: { color: color },
+                line: { color: color, width: 1 },
+                marker: { size: 3 },
               };
             });
 
@@ -946,7 +954,7 @@ function chartUserDefinedArea() {
       // var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
       // udpName += addon;
 
-      Map.centerObject(userArea);
+      Map.centerObject(userArea, false);
       if (Object.keys(areaChart.areaChartObj).length > 0) {
         areaChart.clearCharts();
         areaChart.chartArea(userArea, udpName);
@@ -1051,9 +1059,9 @@ function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplie
   let areaChartCollectionStack = areaChartCollection.toBands();
   let xLabels = areaChartCollection.aggregate_histogram(xAxisProperty).keys();
   areaChartCollectionStack = areaChartCollectionStack.rename(xLabels);
-  areaChartCollectionStack.reduceRegion(kwargs.zonalReducer, area, scale, crs, transform, true, 1e13, 4).evaluate((counts) => {
-    console.log(counts);
-  });
+  // areaChartCollectionStack.reduceRegion(kwargs.zonalReducer, area, scale, crs, transform, true, 1e13, 4).evaluate((counts) => {
+  //   console.log(counts);
+  // });
   // console.log(areaChartCollectionStack.bandNames().getInfo());
   // console.log(counts.getInfo());
   return areaChartCollection.toList(10000, 0).map(function (img) {
@@ -1867,34 +1875,76 @@ function downloadChartJS(chart, name) {
   delete link;
   ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "png");
 }
-function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, width, height) {
-  let dims = {};
-  if (useBiggerFrame) {
-    width = 2000;
-    height = 1000;
-    Plotly.update("chart-download-canvas", null, {
-      font: { size: 20 },
-      margin: {
-        l: 50,
-        r: 50,
-        b: 50,
-        t: 75,
-        pad: 4,
-      },
+
+function scalePlotlyChart(data, layout, scale = 2) {
+  try {
+    layout.font.size = parseInt(layout.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.legend.font.size = parseInt(layout.legend.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.xaxis.title.font.size = parseInt(layout.xaxis.title.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.xaxis.tickfont.size = parseInt(layout.xaxis.tickfont.size * scale);
+  } catch (err) {}
+  try {
+    layout.yaxis.title.font.size = parseInt(layout.yaxis.title.font.size * scale);
+  } catch (err) {}
+  try {
+    layout.yaxis.tickfont.size = parseInt(layout.yaxis.tickfont.size * scale);
+  } catch (err) {}
+
+  if (layout.margin !== undefined) {
+    ["l", "r", "b", "t", "pad"].map((k) => {
+      try {
+        layout.margin[k] = parseInt(layout.margin[k] * scale);
+      } catch (err) {}
     });
-    dims = { width: width, height: height };
   }
 
-  plotlyDownloadChartObject.then((chart) => {
-    Plotly.toImage(chart, dims).then(function (url) {
-      var link = document.createElement("a");
-      link.download = name;
-      link.href = url;
-      link.click();
-      delete link;
-    });
-    ga("send", "event", mode, getActiveTools()[0] + "-sankey-chartDownload", "png");
+  let outData = [];
+  data.map((d) => {
+    try {
+      d.textfont.size = parseInt(d.textfont.size * scale);
+    } catch (err) {}
+    try {
+      d.node.pad = parseInt(d.node.pad * scale);
+    } catch (err) {}
+    try {
+      d.node.thickness = parseInt(d.node.thickness * scale);
+    } catch (err) {}
+    try {
+      d.line.width = parseInt(d.line.width * scale);
+    } catch (err) {}
+    try {
+      d.marker.size = parseInt(d.marker.size * scale);
+    } catch (err) {}
+    outData.push(d);
   });
+  console.log(layout);
+  console.log(data);
+  return [outData, layout];
+}
+function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, scale = 2, chartContainerID = "chart-download-canvas") {
+  var currentChart = document.getElementById(chartContainerID);
+
+  let width = currentChart.layout.width;
+  let height = currentChart.layout.height;
+
+  if (useBiggerFrame) {
+    width = width * scale;
+    height = height * scale;
+    let dataLayout = scalePlotlyChart(currentChart.data, currentChart.layout, scale);
+    Plotly.update(currentChart, dataLayout[0], dataLayout[1]);
+  }
+  Plotly.downloadImage(chartContainerID, { format: "png", width: width, height: height, filename: name });
+  ga("send", "event", mode, getActiveTools()[0] + "-plotly-chartDownload", "png");
+  if (useBiggerFrame) {
+    let dataLayout = scalePlotlyChart(currentChart.data, currentChart.layout, 1 / scale);
+    Plotly.update(currentChart, dataLayout[0], dataLayout[1]);
+  }
 }
 Chart.pluginService.register({
   beforeDraw: function (chart, easing) {

@@ -2368,6 +2368,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
+  // addCollapse(
+  //   "sidebar-left",
+  //   "wayback-layer-list-collapse-label",
+  //   "wayback-layer-list-collapse-div",
+  //   "ESRI WayBack DATA",
+  //   `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/esri-logo.png">`,
+  //   true,
+  //   null,
+  //   "ESRI Wayback layers to view on map"
+  // );
   addCollapse(
     "sidebar-left",
     "reference-layer-list-collapse-label",
@@ -2391,6 +2401,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
   plotsOn = true;
 }
@@ -2497,28 +2508,28 @@ if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
 if (mode === "geeViz") {
   $("#pixel-chart-label").remove();
   $("#share-button").remove();
-  $("#tools-accordian").append(`<hr>`);
-  //Sync tooltip toggle
-  var tShowToolTipModal = true;
-  if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
-    tShowToolTipModal = localStorage.showToolTipModal;
-  }
-  addRadio(
-    "tools-accordian",
-    "tooltip-radio",
-    "Show tool tips",
-    "Yes",
-    "No",
-    "localStorage.showToolTipModal",
-    "true",
-    "false",
-    "",
-    "",
-    "Whether to show tool tips to help explain how to use the tools."
-  );
-  if (tShowToolTipModal === "false") {
-    $("#tooltip-radio-second_toggle_label").click();
-  }
+  // $("#tools-accordian").append(`<hr>`);
+  // //Sync tooltip toggle
+  // var tShowToolTipModal = true;
+  // if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
+  //   tShowToolTipModal = localStorage.showToolTipModal;
+  // }
+  // addRadio(
+  //   "tools-accordian",
+  //   "tooltip-radio",
+  //   "Show tool tips",
+  //   "Yes",
+  //   "No",
+  //   "localStorage.showToolTipModal",
+  //   "true",
+  //   "false",
+  //   "",
+  //   "",
+  //   "Whether to show tool tips to help explain how to use the tools."
+  // );
+  // if (tShowToolTipModal === "false") {
+  //   $("#tooltip-radio-second_toggle_label").click();
+  // }
 }
 if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
@@ -2537,7 +2548,7 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     "Choose which " + mode + " time series to summarize."
   );
   $("#area-chart-params-div").append(`<hr>`);
-  $("#parameters-collapse-div").append(`<hr>`);
+  // $("#parameters-collapse-div").append(`<hr>`);
   addMultiRadio("area-chart-params-div", "area-summary-format", "Area Units", "areaChartFormat", { Percentage: true, Acres: false, Hectares: false });
   if (mode === "LCMS" || mode === "geeViz") {
     //&& (urlParams.sankey==='true' || urlParams.beta ==='true')){
@@ -2563,7 +2574,7 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     staticTemplates.mapDefinedAreaChartDiv,
     false,
     `toggleTool(toolFunctions.area.mapBounds)`,
-    staticTemplates.userDefinedAreaChartTipHover
+    staticTemplates.mapDefinedAreaChartTipHover
   );
   addSubAccordianCard(
     "tools-accordian",

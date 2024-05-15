@@ -268,7 +268,7 @@ const staticTemplates = {
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -284,11 +284,11 @@ const staticTemplates = {
                                     <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
       `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd>
                                     </p>`,
-      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                                <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                                <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                                 <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                                 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                             </div>`
@@ -301,12 +301,12 @@ const staticTemplates = {
                                     </div>
                                     <p>The LCMS Dashboard application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
       `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -320,14 +320,14 @@ const staticTemplates = {
       `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
                 <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
             </div>
-            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
+            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the U.S. Department of Agriculture, Forest Service Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
            
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
       `
     <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
-    <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+    <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
     <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
 </div>`,
@@ -381,7 +381,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,
       ""
@@ -444,7 +444,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,
       ""
@@ -509,7 +509,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`
     ),
@@ -520,7 +520,7 @@ const staticTemplates = {
             This prototype tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
+    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY U.S. Department of Agriculture, Forest Service partners'>
         <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
         
        
@@ -664,7 +664,7 @@ const staticTemplates = {
         <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
         <div class="tab-content" id="highlights-table-divs"></div>
         <div id ='highlights-disclaimer-div' >
-        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
     </p></div>
     </div>`,
   dashboardHighlightsDiv: `<div id='dashboard-highlights-container' class='dashboard-highlights bg-black col-sm-7 col-md-4 col-xl-3'>
@@ -684,7 +684,7 @@ const staticTemplates = {
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         `,
@@ -727,7 +727,7 @@ const staticTemplates = {
   studyAreaDropdownButtonDisabledTooltip: `Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
   reRunButtonEnabledTooltip: `Once finished changing parameters, press this button to refresh map layers`,
   reRunButtonDisabledTooltip: `Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
-  reRunButton: `<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' title="">Submit</button>`,
+  reRunButton: `<button id = 'reRun-button' onclick = 'reRun()' class = 'btn   ' title="">Submit</button>`,
   addTimelapsesButton: `<button id = 'addTimelapses-button' onclick = 'addLCMSTimeLapses()' class = 'mb-1 ml-1 btn ' title="Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading">Add LCMS Time Lapses To Map</button>`,
   downloadDiv: `<div class = 'py-2'>
                         <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
@@ -736,7 +736,7 @@ const staticTemplates = {
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
   lcmsProductionDownloadDiv: `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2022.8)</span>
+                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2023.9)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -759,7 +759,7 @@ const staticTemplates = {
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Southeastern Alaska (v2022.8)</span>
+                                          <li><span class="caret caret-down">Southeastern Alaska (v2023.9)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -782,7 +782,7 @@ const staticTemplates = {
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2020.6)</span>
+                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2022.8)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -884,7 +884,7 @@ const staticTemplates = {
                                 <section class = 'row '>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
-                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                         </a>
                                     </div>
                                     <div class = 'col-lg-10'>
@@ -992,10 +992,10 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (CONUS and SEAK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (CONUS and SEAK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (PRUSVI)</a>
                                 </li>   
                             </div>
                         </div>
@@ -1049,7 +1049,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -1144,10 +1144,10 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (CONUS and SEAK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (CONUS and SEAK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (PRUSVI)</a>
                                 </li>   
                             </div>
                         </div>
@@ -1201,7 +1201,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -1316,7 +1316,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="" target="_blank">
-                                    <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about our field collaborators ">
+                                    <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about our field collaborators ">
                                 </a>
                                 
                                 <a href="" target="_blank" >
@@ -1326,7 +1326,7 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 <a href="" target="_blank">
                                     <p class = 'support-text'>
-                                    USFS units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
+                                    U.S. Department of Agriculture, Forest Service units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
                                 </a>
                             </div>
                         </section>
@@ -1392,12 +1392,7 @@ const staticTemplates = {
   queryTip: "Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.",
   pixelChartDiv: `<div>Double-click on map to query ${mode} data time series<br></div>`,
   pixelChartTip: "Double-click on map to look at the full time series of " + mode + " outputs for a pixel.",
-  mapDefinedAreaChartDiv: `<div  id="map-defined" >
-                                            <label>Provide name for area selected for charting (optional):</label>
-                                            <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="map-defined-area-name" class="form-control my-1" id="map-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
-                                            
-        		            			</div>
-                                	</div>`,
+  mapDefinedAreaChartDiv: `<div  id="map-defined" ></div>`,
   userDefinedAreaChartDiv: `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
@@ -1411,6 +1406,7 @@ const staticTemplates = {
   showChartButton: `<div class = 'py-2'>
                                 <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                                 </div>`,
+  mapDefinedAreaChartTip: "Charts will automatically update to summarize the current view extent after you pan or zoom on the map.",
   userDefinedAreaChartTip:
     "Click on map to select an area to summarize " +
     mode +
@@ -1851,8 +1847,14 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
-function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels) {
-  $("#" + containerID).append(`<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`);
+function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels, hoverText = "", appendMethod = "append") {
+  let containerHTML = `<form  id = '${checkboxID}'  title = '${hoverText}' class = 'simple-radio' ><p class = 'param-title'>${title}</p><ul class = 'checkboxList' id = '${checkboxID}-list' ></ul></form>`;
+  if (appendMethod === "append") {
+    $("#" + containerID).append(containerHTML);
+  } else {
+    $("#" + containerID).prepend(containerHTML);
+  }
+
   eval(`if(window.${variable} === undefined){window.${variable} = []}`);
   let ki = 0;
   labels = labels || [];
@@ -1875,14 +1877,14 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList, lab
       checked = "";
     }
     eval(`window.${variable} = optionList`);
-    $("#" + checkboxID).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
-                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label>`);
+    $("#" + checkboxID + "-list").append(`<li><input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label></li>`);
 
     $("#" + checkboxCheckboxID).change(function () {
       optionList[$(this).val()] = $(this)[0].checked;
       eval(`window.${variable} = optionList`);
-      console.log("Checkbox change");
-      console.log(optionList);
+      // console.log("Checkbox change");
+      // console.log(optionList);
     });
     ki++;
   });
@@ -1956,6 +1958,16 @@ function formatDT(__dt) {
   // var minutes = zeroPad(__dt.getMinutes(), 2);
   // var seconds = zeroPad(__dt.getSeconds(), 2);
   return month + "/" + date + "/" + year.toString().slice(2, 4); //+ ' ' + hours + ':' + minutes + ':' + seconds;
+}
+function formatDT2(__dt) {
+  var year = __dt.getFullYear();
+  var month = zeroPad(__dt.getMonth() + 1, 2);
+  var date = zeroPad(__dt.getDate(), 2);
+  // console.log(`${year.toString().slice(2, 4)}-${month}-${date}`);
+  // var hours = zeroPad(__dt.getHours(), 2);
+  // var minutes = zeroPad(__dt.getMinutes(), 2);
+  // var seconds = zeroPad(__dt.getSeconds(), 2);
+  return `${year.toString().slice(2, 4)}-${month}-${date}`;
 }
 function formatDTJulian(__dt) {
   // var year = __dt.getFullYear();
@@ -2655,7 +2667,10 @@ function addLayer(layer) {
   function turnOn() {
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
-      turnOffTimeLapseCheckboxes();
+      if (turnOffLayersWhenTimeLapseIsOn) {
+        turnOffTimeLapseCheckboxes();
+      }
+
       urlParams.layerProps[id].visible = true;
     }
     if (layer.layerType === "dynamicMapService") {
@@ -3229,8 +3244,9 @@ function addLayer(layer) {
 
       ee.Image(mapItem).getMap(layer.usedViz, function (eeLayer, failure) {
         if (eeLayer === undefined && layer.mapServiceTryNumber <= 1) {
-          queryObj[queryID].queryItem = layer.item;
-          layer.item = layer.item.visualize();
+          console.log(`Failed to load map service: ${layer.name}`);
+          // queryObj[queryID].queryItem = layer.item;
+          // layer.item = layer.item.visualize();
           getGEEMapService();
         } else {
           geeAltService(eeLayer, failure);
