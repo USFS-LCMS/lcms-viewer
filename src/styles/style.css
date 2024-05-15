@@ -1362,6 +1362,13 @@ textarea {
   margin-right: 0.3rem;
   color: var(--black) !important;
 }
+.links-bottombar {
+  text-decoration: underline !important;
+  /* font-size: 0.5rem; */
+  /* font-weight: bold; */
+  margin-right: 0.3rem;
+  color: var(--white) !important;
+}
 
 .intro-modal-links:active {
   transform: translate(4px) translateY(4px);

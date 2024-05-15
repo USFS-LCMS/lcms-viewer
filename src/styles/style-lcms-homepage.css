@@ -300,9 +300,11 @@ nav {
   list-style: square;
 }
 .application-examples {
-  margin-top: 2rem;
+  margin-top: 3rem;
 }
-
+.conus-pane {
+  margin-bottom: 0.5rem;
+}
 .bg-white .homepage-link {
   color: var(--deep-brown-100);
 }
@@ -321,6 +323,13 @@ nav {
   transform: translate(0.3rem) translateY(0.3rem) !important;
 }
 
+.links-home-bottombar {
+  text-decoration: underline !important;
+  /* font-size: 0.5rem; */
+  /* font-weight: bold; */
+  /* margin-right: 0.3rem; */
+  color: var(--deep-brown-20) !important;
+}
 body,
 label {
   cursor: text;

@@ -1237,7 +1237,7 @@ class report {
       this.doc.text(this.margin / 2, this.currentY, `Geospatial Technology and Applications Center | ${new Date().toStringFormat()}`);
       this.currentY += 5;
       this.doc.setFontSize(10);
-      this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: v2022.8 | Dashboard Version: 2023.2`);
+      this.doc.text(this.margin / 2, this.currentY, `LCMS Data Version: v2023.9 | Dashboard Version: 2024.1`);
       // doc.setFont(undefined,'bold');
       // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
       // doc.setFont(undefined,'normal');
@@ -1484,10 +1484,10 @@ function makeDashboardReport() {
       12
     );
     dashboardReport.addText(
-      `This report was generated from the LCMS Dashboard 2023.1 version. The LCMS Dashboard is intended to simplify the use of LCMS data by providing pre-computed summaries for various areas of interest throughout the United States. The LCMS Dashboard is currently under review. We would appreciate any feedback you may have. See the helpdesk link below.`,
+      `This report was generated from the LCMS Dashboard 2024.1 version. The LCMS Dashboard is intended to simplify the use of LCMS data by providing pre-computed summaries for various areas of interest throughout the United States. The LCMS Dashboard is currently under review. We would appreciate any feedback you may have. See the helpdesk link below.`,
       12
     );
-    dashboardReport.addText(`Detailed methods can be found here`, 12, "https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf");
+    dashboardReport.addText(`Detailed methods can be found here`, 12, "https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf");
 
     dashboardReport.addText(`${staticTemplates.dashboardHighlightsDisclaimerText}`, 10);
 

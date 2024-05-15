@@ -133,7 +133,7 @@
       <div class="home-section">
         <h2>APPLICATIONS</h2>
         <div class='row bg-dark'>
-          <div class="col-md-6">
+          <div class="col-md-6 conus-pane">
             <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
             <img style='width:95%' alt="Map of LCMS Change Loss and Gain output across the U.S."
@@ -170,7 +170,6 @@
             </ul>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Forest loss and growth in response to disturbance</p>
             <div style="position:relative">
               <img style='width:100%;' alt="Example area showing LCMS Change over Colorado"
                 src="./src/assets/images/Northern_Colorado-Change_wYears.gif">
@@ -194,7 +193,6 @@
             <p>Changes from insects, disease, and wildfire, Colo.</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Forest responding to natural and human-caused disturbance</p>
             <div style="position:relative">
               <img style='width:100%;' alt="Example area showing LCMS Change over Oregon"
                 src="./src/assets/images/Oregon_Wildfire-Change_wYears.gif">
@@ -221,7 +219,7 @@
         </div>
         <hr>
         <div class='row bg-dark'>
-          <div class="col-md-6">
+          <div class="col-md-6 conus-pane">
             <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
             <img style='width:100%' alt="Map of LCMS Land Cover output across the U.S."
@@ -247,13 +245,11 @@
           </div>
 
           <div class="col-md-3 application-examples">
-            <p>Water loss caused by water consumption & decadal drought</p>
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over Lake Mead"
               src="./src/assets/images/Lake_Mead-Land_Cover_wYears.gif">
-            <p>Change in Lake Mead water level, Nev.</p>
+            <p>Change in Lake Mead water level, Nev. caused by water consumption & decadal drought</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Glacial retreat</p>
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over the Columbia Glacier"
               src="./src/assets/images/Columbia_Glacier-Land_Cover_wYears.gif">
             <p>Change in extent of the Columbia Glacier, Alaska</p>
@@ -261,7 +257,7 @@
         </div>
         <hr>
         <div class='row bg-dark'>
-          <div class="col-md-6">
+          <div class="col-md-6 conus-pane">
             <h3>Monitor annual land use changes</h3>
             <p>Intended human use of the land that represents economic and cultural activities practiced at a given
               place</p>
@@ -282,13 +278,13 @@
 
 
           <div class="col-md-3 application-examples">
-            <p>Land use conversion from forest to developed</p>
+
             <img style='width:100%;' alt="Example area showing LCMS land use changing over Atlanta"
               src="./src/assets/images/Atlanta-Land_Use_wYears.gif">
             <p>Urban development of Atlanta, Ga.</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Land use conversion from rangeland to developed</p>
+
             <img style='width:100%;' alt="Example area showing LCMS land use changing over Las Vegas"
               src="./src/assets/images/Las_Vegas-Land_Use_wYears.gif">
             <p>Urban development of Las Vegas, Nev.</p>
@@ -1927,7 +1923,7 @@
                 </li>
                 <li style='margin-top:1rem'>
                   <a title="Click on link to open LCMS PRUSVI methods document in a new browser tab"
-                    href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf"
+                    href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf"
                     class="homepage-link" target="_blank">LCMS PRUSVI methods document</a>
                 </li>
               </ul>
@@ -1982,7 +1978,7 @@
             </ul>
             <ul>
               <a title="Click on link to open LCMS PRUSVI methods document"
-                href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf"
+                href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf"
                 class="homepage-link" target="_blank">LCMS PRUSVI methods document</a>
             </ul>
           </li>
@@ -2019,7 +2015,7 @@
     <div id="contact" class="container-fluid bg-dark">
       <div class='row home-section'>
         <h2>CONTACT</h2>
-        <div class="col-sm-12">
+        <div class="col-sm-6">
           <div class="gtac-address">
             <a href="https://www.fs.usda.gov/about-agency/gtac" class='homepage-link' target="_blank"
               title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC.">
@@ -2029,6 +2025,21 @@
           </div>
           <a class='homepage-link' href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"> Contact Us
           </a>
+
+        </div>
+        <div class="col-sm-6">
+
+          <li><a href="https://www.usda.gov/privacy-policy/" class='homepage-link' target="_blank">
+              Privacy Policy</a>
+          </li>
+          <li> <a href="https://www.usda.gov/accessibility-statement/" class='homepage-link' target="_blank">
+              Accessibility Statement</a>
+          </li>
+          <li> <a href="https://www.fs.usda.gov/about-agency/disclaimers-important-notices" class='homepage-link'
+              target="_blank">
+              Disclaimers</a>
+          </li>
+
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="./src/assets/images/GEE_logo_transparent.png" class='home-image-icon-bar'
               alt="Powered by Google Earth Engine" href="#"
@@ -2047,6 +2058,9 @@
               style='background-color: var(--deep-brown-10);padding:1px;margin-right:0px' class='home-image-icon-bar'
               href="#" title="Click to learn more about the U.S. Forest Service">
           </a>
+        </div>
+        <div class="col-sm-4">
+
         </div>
       </div>
     </div>

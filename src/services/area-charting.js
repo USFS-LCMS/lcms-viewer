@@ -201,7 +201,7 @@ function areaChartCls() {
       obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 11; // Above this zoom level, it won't change the scale/transform of teh reducer
       obj.maxAutoScale = 2 ** 6; // Max n scale can be multiplied by (ideally 2**n)
       obj.sankeyTransitionPeriods = params.sankeyTransitionPeriods;
-      obj.sankeyMinPercentage = params.sankeyMinPercentage !== undefined ? params.sankeyMinPercentage : 1;
+      obj.sankeyMinPercentage = params.sankeyMinPercentage !== undefined ? params.sankeyMinPercentage : 0.5;
       obj.plots = {};
       obj.tableExportData = {};
       obj.splitStr = "----";
