@@ -356,7 +356,8 @@ function createHurricaneDamageWrapper(rows) {
   //   var right = rows.slice(1,rows.length);
   //   var paired = ee.List(left).zip(right).getInfo();
   //   // console.log(paired)
-  var c = ee.ImageCollection(rows.map(createHurricaneWindFields));
+  //var c = ee.ImageCollection(rows.map(createHurricaneWindFields));
+  var c = ee.ImageCollection("projects/lcms-292214/assets/Ancillary/storm-tracks/JC_20240109_1400_gust_alb84")
   //   }));
   //   // Map.addLayer(c)
 
