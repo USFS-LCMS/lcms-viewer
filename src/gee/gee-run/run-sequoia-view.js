@@ -425,6 +425,24 @@ function runSequoia() {
   var sierraGroves = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py");
   // var deadTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/filtered_dead_trees");
 
+  // Add Canopy Height Layer to reference layers
+  var canopyHeight = ee.ImageCollection('projects/meta-forest-monitoring-okw37/assets/CanopyHeight').mosaic();
+  Map.addLayer(
+    canopyHeight,
+    {
+      'min': 0,
+      'max': 25,
+      'layerType': "geeImage",
+      'palette': ["440154","414487","2A788E","22A884","7AD151","FDE725"]
+    },
+    `Tree Canopy Height (m)`,
+    false,
+    null,
+    null,
+    `Tolan et al. (2023). "Sub-meter resolution canopy height maps using self-supervised learning and a vision transformer trained on Aerial and GEDI Lidar"`,
+    "reference-layer-list"
+  );
+
   // Add MTBS layers to Reference data
   Map.addLayer(
     mtbs.count(),
