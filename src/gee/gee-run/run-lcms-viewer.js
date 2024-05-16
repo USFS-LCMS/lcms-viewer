@@ -13,6 +13,9 @@ function runGTAC() {
     summaryMethod = urlParams.summaryMethod.toTitle();
     getLCMSVariables();
 
+    const addLayerFun = urlParams.addLCMSTimeLapsesOn === "yes" ? Map.addTimeLapse : Map.addLayer;
+    const timeLapseEnding = urlParams.addLCMSTimeLapsesOn === "yes" ? " Time Lapse" : "";
+
     ga("send", "event", "lcms-gtac-viewer-run", "year_range", `${startYear}_${endYear}`);
     ga("send", "event", "lcms-gtac-viewer-run", "analysis_mode", analysisMode);
     ga("send", "event", "lcms-gtac-viewer-run", "timelapse_on", urlParams.addLCMSTimeLapsesOn);
@@ -146,12 +149,29 @@ function runGTAC() {
       size: lcmsRun.years.length,
     }; //eeObjInfo(lcmsRun.forProps, "ImageCollection").getInfo();
     // console.log(lcmsRun.props);
-    //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
 
+    //Bring in time lapses
+
+    //Mask out stable and non processing area mask for change time lapse
+    lcmsRun.tlChange = lcmsRun.lcms.select(["Change"]).map(function (img) {
+      return img.updateMask(img.gte(2).and(img.lt(5))).copyProperties(img);
+    });
+    // lcmsRun.tlLC = lcmsRun.lcms.select(["Land_Cover"]); //.map(function(img){return img.updateMask(img.lt(15)).copyProperties(img)});
+    // lcmsRun.tlLU = lcmsRun.lcms.select(["Land_Use"]); //.map(function(img){return img.updateMask(img.lt(7)).copyProperties(img)});
+
+    if (urlParams.addLCMSTimeLapsesOn === "yes") {
+      lcmsRun.props.bandNames = ["Change"];
+      Map.addTimeLapse(lcmsRun.tlChange, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "Change Time Lapse", true);
+      // lcmsRun.props.bandNames = ["Land_Cover"];
+      // Map.addTimeLapse(lcmsRun.tlLC, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Cover Time Lapse", false);
+      // lcmsRun.props.bandNames = ["Land_Use"];
+      // Map.addTimeLapse(lcmsRun.tlLU, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Use Time Lapse", false);
+    }
+    //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
     ["Land_Use", "Land_Cover"].map((b) => {
       let tTitle = b.replaceAll("_", " ");
       lcmsRun.props.bandNames = [b];
-      if (analysisMode === "advanced") {
+      if (analysisMode === "advanced" && urlParams.addLCMSTimeLapsesOn === "no") {
         Map.addLayer(
           lcmsRun.lcms.select([b]).filter(ee.Filter.calendarRange(startYear, startYear + lcmsRun.thematicChangeYearBuffer, "year")),
           {
@@ -183,7 +203,7 @@ function runGTAC() {
         // Map.addLayer(lcChangeObj.change.set('bounds',clientBoundary),lcChangeObj.viz,lcLayerName + ' Change' ,false);
         // Map.addLayer(luChangeObj.change.set('bounds',clientBoundary),luChangeObj.viz,luLayerName + ' Change' ,false);
       } else {
-        Map.addLayer(
+        addLayerFun(
           lcmsRun.lcms.select([b]),
           {
             title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${endYear}.`,
@@ -193,8 +213,9 @@ function runGTAC() {
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
+            years: lcmsRun.years,
           },
-          tTitle,
+          `${tTitle} ${timeLapseEnding}`,
           false
         );
       }
@@ -264,8 +285,6 @@ function runGTAC() {
       return out.where(img.eq(1), 19).subtract(1).set(cocObjInfo).copyProperties(img, ["system:time_start"]);
     });
 
-    const addLayerFun = urlParams.addLCMSTimeLapsesOn === "yes" ? Map.addTimeLapse : Map.addLayer;
-
     addLayerFun(
       lcmsAttr,
       {
@@ -276,7 +295,7 @@ function runGTAC() {
         reducer: ee.Reducer.min(),
         years: lcmsRun.COCYears,
       },
-      "Cause of Change (beta)",
+      `Cause of Change (beta) ${timeLapseEnding}`,
       false
     );
 
@@ -414,24 +433,6 @@ function runGTAC() {
         "Gain Duration",
         false
       );
-    }
-
-    //Bring in time lapses
-
-    //Mask out stable and non processing area mask for change time lapse
-    lcmsRun.tlChange = lcmsRun.lcms.select(["Change"]).map(function (img) {
-      return img.updateMask(img.gte(2).and(img.lt(5))).copyProperties(img);
-    });
-    lcmsRun.tlLC = lcmsRun.lcms.select(["Land_Cover"]); //.map(function(img){return img.updateMask(img.lt(15)).copyProperties(img)});
-    lcmsRun.tlLU = lcmsRun.lcms.select(["Land_Use"]); //.map(function(img){return img.updateMask(img.lt(7)).copyProperties(img)});
-
-    if (urlParams.addLCMSTimeLapsesOn === "yes") {
-      lcmsRun.props.bandNames = ["Change"];
-      Map.addTimeLapse(lcmsRun.tlChange, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Change Time Lapse", true);
-      lcmsRun.props.bandNames = ["Land_Cover"];
-      Map.addTimeLapse(lcmsRun.tlLC, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Cover Time Lapse", false);
-      lcmsRun.props.bandNames = ["Land_Use"];
-      Map.addTimeLapse(lcmsRun.tlLU, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Use Time Lapse", false);
     }
 
     //Set up pixel charting change time series

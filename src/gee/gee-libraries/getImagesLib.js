@@ -299,9 +299,14 @@ function eeObjInfo(eeObj, objType, addTime, timeFormat, timePropNameIn, timeProp
 }
 //////////////////////////////////////////////////
 // Companion function to see if an object is on the server or client
-function eeObjServerSide(obj, refKeys = ["I", "args", "U", "Bl"]) {
-  let objKeys = Object.keys(obj);
-  let i = refKeys.map((k) => objKeys.indexOf(k));
+function eeObjServerSide(obj, refKeys) {
+  if (refKeys === undefined || refKeys === null) {
+    refKeys = ["I", "args", "U", "Bl"];
+  }
+  var objKeys = Object.keys(obj);
+  var i = refKeys.map(function (k) {
+    return objKeys.indexOf(k);
+  });
   i = i.min();
   return i > -1;
 }
@@ -1001,8 +1006,9 @@ function getS2() {
   }
 
   // This needs to happen AFTER the mosaicking step or else we still have edge artifacts
+  // Update on 15 May 2024 to only include spectral bands since qa bands are null after ~Feb 2024
   s2s = s2s.map(function (img) {
-    return img.updateMask(img.mask().reduce(ee.Reducer.min()));
+    return img.updateMask(img.select(sensorBandNameDict[args.toaOrSR]).mask().reduce(ee.Reducer.min()));
   });
 
   return s2s.set(args);
