@@ -2120,7 +2120,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     };
   }
   if (urlParams.diffThreshs == null || urlParams.diffThreshs == undefined) {
-    urlParams.diffThreshs = { greenness: -0.05, wetness: -0.02, NBR: -0.2 };
+    urlParams.diffThreshs = { greenness: -0.04, wetness: -0.015, NBR: -0.15 }; // old thresholds: greenness: -0.05, wetness: -0.02, NBR: -0.2
   }
   if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
     urlParams.treeDiameter = 15;

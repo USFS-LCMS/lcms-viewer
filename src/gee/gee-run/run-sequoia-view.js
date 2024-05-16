@@ -38,6 +38,8 @@ function runSequoia() {
   ga("send", "event", "sequoia-view-run", "date_params", `${preStartYear}-${preEndYear}__${postYear}__${startJulianFormatted}-${endJulianFormatted}`);
   // Bring in the monitoring sites
   var monitoring_sites = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest");
+  // var monitoring_sites = ee.FeatureCollection("projects/lcms-292214/assets/Ancillary/filtered_dead_trees");
+  // var monitoring_sites = ee.FeatureCollection("projects/lcms-292214/assets/Ancillary/SEKI_LiveTreesSubset");
 
   // Bring in the TCH NAIP-based change outputs for projection and snap raster
   var tchC = ee
@@ -386,6 +388,21 @@ function runSequoia() {
     });
   });
 
+  // create heatmap layer
+  kernelRadius = 20 // pixels
+  var densityPoints = potentialLossSites.map(function(yesTrees){
+    return yesTrees.set('dummy',1);
+  });
+
+  function heatmap(fc, radius) {
+    var pointImg = fc.reduceToImage(['dummy'],ee.Reducer.first()).unmask(0);
+    var kernel = ee.Kernel.circle(radius)
+    var result = pointImg.convolve(kernel);
+    return result.clip(studyArea);//.updateMask(result.neq(0));
+  };
+  var heatmapImg = heatmap(densityPoints,kernelRadius);
+  var heatmapGradient = ['lightgreen','yellow','red'];
+
   // Bring in MTBS data : start MTBS data in 2012 at onset of 2012-2016 drought period
   var mtbs = ee
     .ImageCollection("USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1")
@@ -408,13 +425,6 @@ function runSequoia() {
   var sierraGroves = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py");
   // var deadTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/filtered_dead_trees");
 
-  // Map.addLayer(
-  //   deadTrees.map((f) => {
-  //     return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
-  //   }),
-  //   {},
-  //   "Dead Trees"
-  // );
   // Add MTBS layers to Reference data
   Map.addLayer(
     mtbs.count(),
@@ -530,6 +540,35 @@ function runSequoia() {
     `SEGI trees of the Tharps Burn Project`,
     "reference-layer-list"
   ); // {'strokeColor':'eb7a38'} =orange
+  Map.addLayer(
+    heatmapImg,
+    {
+      'min':0, 'max':0.002, 'palette':heatmapGradient, 'opacity':0.6, 'classLegendDict':{'No Flagged Trees':'lightgreen', 'Low Density of Flagged Trees':'Yellow','Medium Density of Flagged Trees':'Orange','High Density of Flagged Trees':'red'}
+    },
+    `Heatmap`,
+    false,
+    null,
+    null,
+    `A density heatmap of flagged trees of special interest found in proximity to one another`,
+    "reference-layer-list"
+  )
+
+  // // filtered dead trees for commission analysis  
+  // Map.addLayer(
+  //   deadTrees.map((f) => {
+  //     return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
+  //   }),
+  //   {
+  //     strokeColor: "BF40BF", // purple
+  //     layerType: "geeVectorImage",
+  //   },
+  //   `Dead Trees`,
+  //   false,
+  //   null,
+  //   null,
+  //   null,
+  //   "reference-layer-list"
+  // );
 
   // Add the analysis layers to the map
   Map.addLayer(preComp, urlParams.compVizParams, `Pre Composite ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`, false);
