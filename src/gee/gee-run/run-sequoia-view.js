@@ -558,27 +558,6 @@ function runSequoia() {
     `SEGI trees of the Tharps Burn Project`,
     "reference-layer-list"
   ); // {'strokeColor':'eb7a38'} =orange
-  Map.addLayer(
-    heatmapImg,
-    {
-      min: 0,
-      max: 0.002,
-      palette: heatmapGradient,
-      opacity: 0.6,
-      classLegendDict: {
-        "No Flagged Trees": "lightgreen",
-        "Low Density of Flagged Trees": "Yellow",
-        "Medium Density of Flagged Trees": "Orange",
-        "High Density of Flagged Trees": "red",
-      },
-    },
-    `Heatmap`,
-    false,
-    null,
-    null,
-    `A density heatmap of flagged trees of special interest found in proximity to one another`,
-    "reference-layer-list"
-  );
 
   // // filtered dead trees for commission analysis
   // Map.addLayer(
@@ -607,6 +586,29 @@ function runSequoia() {
   if (applyLCMSTreeMask) {
     changeHeuristicForMap = changeHeuristicForMap.updateMask(lcmsTreeMask);
   }
+
+  // Density heatmap of 'yes' flagged fields
+  Map.addLayer(
+    heatmapImg,
+    {
+      min: 0,
+      max: 0.002,
+      palette: heatmapGradient,
+      opacity: 0.6,
+      layerType: "geeImage",
+      classLegendDict: {
+        "No Flagged Trees": "lightgreen",
+        "Low Density of Flagged Trees": "Yellow",
+        "Medium Density of Flagged Trees": "Orange",
+        "High Density of Flagged Trees": "red",
+      },
+    },
+    `Heatmap`,
+    false,
+    null,
+    null,
+    `A density heatmap of flagged trees of special interest found in proximity to one another`
+  );
 
   Map.addLayer(
     changeHeuristicForMap,
