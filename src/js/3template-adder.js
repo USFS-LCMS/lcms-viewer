@@ -2072,7 +2072,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
     true,
     null,
-    "Adjust parameters used to prepare analysis window"
+    "Adjust parameters used to prepare change analysis window"
   );
   var minYear = 2017;
   var maxYear = new Date().getFullYear();
@@ -2120,7 +2120,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     };
   }
   if (urlParams.diffThreshs == null || urlParams.diffThreshs == undefined) {
-    urlParams.diffThreshs = { greenness: -0.05, wetness: -0.02, NBR: -0.2 };
+    urlParams.diffThreshs = { greenness: -0.04, wetness: -0.015, NBR: -0.15 }; // old thresholds: greenness: -0.05, wetness: -0.02, NBR: -0.2
   }
   if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
     urlParams.treeDiameter = 15;
@@ -2138,7 +2138,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addDualRangeSlider(
     "parameters-collapse-div",
-    "Analysis date range:",
+    "Change Analysis date range:",
     "urlParams.startJulian",
     "urlParams.endJulian",
     1,
@@ -2152,7 +2152,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   addDualRangeSlider(
     "parameters-collapse-div",
-    "Baseline year(s):",
+    "Pre-Change year(s):",
     "urlParams.preStartYear",
     "urlParams.preEndYear",
     minYear,
@@ -2162,12 +2162,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "pre-years-slider",
     "null",
-    "Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
+    "Choose a year or range or years to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
   );
   // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
   addRangeSlider(
     "parameters-collapse-div",
-    "Target year:",
+    "Post-Change year:",
     "urlParams.postYear",
     minYear + 1,
     maxYear,
@@ -2175,7 +2175,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "post-years-slider",
     null,
-    "Choose year to compare against Baseline year(s)."
+    "Choose post-change year to compare against Baseline year(s)."
   );
 
   addSubCollapse("parameters-collapse-div", "advanced-params-label", "advanced-params-div", "Advanced Parameters", "", false, "");
@@ -2298,7 +2298,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "sidebar-left",
     "reference-layer-list-collapse-label",
     "reference-layer-list-collapse-div",
-    "REFERENCE DATA",
+    "MANAGEMENT DATA", //"REFERENCE DATA"
     `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     false,
     null,

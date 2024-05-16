@@ -330,6 +330,9 @@ nav {
   /* margin-right: 0.3rem; */
   color: var(--deep-brown-20) !important;
 }
+.list-group-item {
+  padding-left: 0.5rem;
+}
 body,
 label {
   cursor: text;

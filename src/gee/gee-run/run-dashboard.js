@@ -234,7 +234,51 @@ function runDashboard() {
     return t.copyProperties(lcmsRun.f).set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });
   lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms);
+  let lcms_props = {
+    Change_class_names: ["Stable", "Slow Loss", "Fast Loss", "Gain", "Non-Processing Area Mask"],
+    Change_class_palette: ["3d4551", "f39268", "d54309", "00a398", "1b1716"],
+    Change_class_values: [1, 2, 3, 4, 5],
+    Land_Cover_class_names: [
+      "Trees",
+      "Tall Shrubs & Trees Mix (SEAK Only)",
+      "Shrubs & Trees Mix",
+      "Grass/Forb/Herb & Trees Mix",
+      "Barren & Trees Mix",
+      "Tall Shrubs (SEAK Only)",
+      "Shrubs",
+      "Grass/Forb/Herb & Shrubs Mix",
+      "Barren & Shrubs Mix",
+      "Grass/Forb/Herb",
+      "Barren & Grass/Forb/Herb Mix",
+      "Barren or Impervious",
+      "Snow or Ice",
+      "Water",
+      "Non-Processing Area Mask",
+    ],
+    Land_Cover_class_palette: [
+      "005e00",
+      "008000",
+      "00cc00",
+      "b3ff1a",
+      "99ff99",
+      "b30088",
+      "e68a00",
+      "ffad33",
+      "ffe0b3",
+      "ffff00",
+      "aa7700",
+      "d3bf9b",
+      "ffffff",
+      "4780f3",
+      "1b1716",
+    ],
+    Land_Cover_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    Land_Use_class_names: ["Agriculture", "Developed", "Forest", "Non-Forest Wetland", "Other", "Rangeland or Pasture", "Non-Processing Area Mask"],
+    Land_Use_class_palette: ["efff6b", "ff2ff8", "1b9d0c", "97ffff", "a1a1a1", "c2b34a", "1b1716"],
+    Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
 
+    layerType: "Image",
+  };
   let firstComparisonLayerI = false;
   ["Land_Cover", "Land_Use"].map((nm) => {
     // console.log(nm)
@@ -253,6 +297,7 @@ function runDashboard() {
       pre,
       {
         autoViz: true,
+        eeObjInfo: lcms_props,
         opacity: 0.3,
         layerType: "geeImage",
       },
@@ -267,6 +312,7 @@ function runDashboard() {
       post,
       {
         autoViz: true,
+        eeObjInfo: lcms_props,
         opacity: 0.1,
         layerType: "geeImage",
       },
