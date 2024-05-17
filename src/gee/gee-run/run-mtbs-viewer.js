@@ -14,7 +14,7 @@ function runMTBS() {
   var nlcdLCObj = mtbsAndNLCD.NLCD;
   mtbsC = mtbsAndNLCD.MTBS.collection;
   getNAIP();
-  var yearsCli = ee.List.sequence(startYear, endYear).getInfo();
+  var yearsCli = range(startYear, endYear + 1);
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
   //   var stop = start + 999;
   //   var nameEnd = start.toString()+'_'+stop.toString();
@@ -68,14 +68,18 @@ function runMTBS() {
     true,
     null,
     null,
-    "Delineated perimeters of each MTBS mapped fire from " + startYear.toString() + "-" + endYear.toString() + ". Areas can have multiple mapped fires."
+    "Delineated perimeters of each MTBS mapped fire from " +
+      startYear.toString() +
+      "-" +
+      endYear.toString() +
+      ". Areas can have multiple mapped fires."
   );
 
   // var years = ee.List.sequence(startYear,mtbs)
 
   var chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict")).combine(mtbsC.get("chartTableDict")).getInfo();
 
-  var nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, ee.List.sequence(startYear, endYear).getInfo()).map(setSameDate);
+  var nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
   var forCharting = joinCollections(mtbsC, nlcdLCFilled, false);
   var timeLapseSeverityViz = JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz));
   timeLapseSeverityViz.years = yearsCli;

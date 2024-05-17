@@ -6,6 +6,8 @@
   <title>LCMS-Home</title>
   <link rel="icon" href="./src/assets/images/lcms-icon.png">
   <meta charset="utf-8">
+  <meta name="description"
+    content="U.S. Department of Agriculture, Forest Service Landscape Change Monitoring System (LCMS) Hompage. Describes what LCMS is and how to access the data">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Jquery -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"
@@ -109,9 +111,9 @@
         </div>
         <div class="col-sm-8">
           <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S."
-            src="./src/assets/images/CONUS_v2023-9_Change_loss.png" />
-          <ul class='legend-container'>
-            <li class="legend-colorRamp"
+            src="./src/assets/images/CONUS_v2023-9_Change_Loss.png" />
+          <div class='legend-container'>
+            <div class="legend-colorRamp"
               title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
               <div class="legend-title">Fast & Slow Loss Year</div>
               <div>
@@ -124,8 +126,8 @@
                 </div>
 
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -138,8 +140,8 @@
             <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
             <img style='width:95%' alt="Map of LCMS Change Loss and Gain output across the U.S."
               src="./src/assets/images/CONUS_v2023-9_Change_Loss_Gain.png" />
-            <ul class='legend-container'>
-              <li class="legend-colorRamp"
+            <div class='legend-container'>
+              <div class="legend-colorRamp"
                 title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
                 <div class="legend-title">Fast & Slow Loss Year</div>
                 <div>
@@ -152,9 +154,9 @@
                   </div>
 
                 </div>
-              </li>
+              </div>
               <div class='hl'></div>
-              <li class="legend-colorRamp"
+              <div class="legend-colorRamp"
                 title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
                 <div class="legend-title">Gain Year</div>
                 <div>
@@ -166,8 +168,8 @@
                   </div>
 
                 </div>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
           <div class="col-md-3 application-examples">
             <div style="position:relative">
@@ -297,14 +299,14 @@
         <h2>DATA DESCRIPTIONS</h2>
         <div class="row bg-dark data-descriptions-row data-descriptions-header" id="data-descriptions-header-row">
           <div class="col-sm-2 teal80"> Name </div>
-          <div class="col-sm-8 teal80"> Description </div>
-          <div class="col-sm-2 teal80"> Example </div>
+          <div class="col-sm-7 teal80"> Description </div>
+          <div class="col-sm-3 teal80"> Example </div>
         </div>
         <div class="row bg-dark py-2 data-descriptions-row">
           <div class="col-sm-2">
             <p class="data-description-classes">Change</p>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-7">
             <b>Change classes represent the most recent state of vegetation cover change</b>
             <ul class='list-group'>
               <li class="list-group-item bg-dark">Fast Loss: <smalltext>Vegetation cover loss caused by short-duration
@@ -329,7 +331,7 @@
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf" class="homepage-link"
               target="_blank">For additional information about LCMS change classes see the LCMS methods document</a>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <img width='100%' alt="Example map of LCMS Loss over California"
               src="./src/assets/images/Fountain_Wildfire-Change_wYears.gif">
           </div>
@@ -338,7 +340,7 @@
           <div class="col-sm-2">
             <p class="data-description-classes">Land Cover</p>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-7">
             <b>Land cover classes represent the vegetation or other biophysical attributes of the land surface</b>
             <div class="row data-descriptions-classes-row">
               <div class="col-sm-6">
@@ -368,7 +370,7 @@
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf" class="homepage-link"
               target="_blank">For additional information about LCMS land cover classes see the LCMS methods document</a>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <img width='100%' alt="Example area showing LCMS land cover changing over the Great Salt Lake"
               src="./src/assets/images/Great_Salt_Lake-Land_Cover_wYears.gif">
           </div>
@@ -377,7 +379,7 @@
           <div class="col-sm-2">
             <p class="data-description-classes">Land Use</p>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-7">
             <b>Land use classes represent how biophysical attributes are intended to be used by humans</b>
             <div class="row data-descriptions-classes-row">
               <div class="col-sm-6">
@@ -399,7 +401,7 @@
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf" class="homepage-link"
               target="_blank">For additional information about LCMS land use classes see the LCMS methods document</a>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <img width='100%' alt="Example area showing LCMS land use changing over Denver"
               src="./src/assets/images/Denver-Land_Use_wYears.gif">
           </div>
@@ -1955,17 +1957,14 @@
             Puerto Rico and U.S. Virgin Islands (PRUSVI). Future mapping efforts will extend to Hawaiʻi. </p>
           <h3>Literature</h3>
           <li>
-            <ul>
-              <a href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link"
-                target='_blank'>Healey et al 2018</a>
+            <ul href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link" target='_blank'>Healey
+              et al 2018
             </ul>
-            <ul>
-              <a href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen et
-                al 2017</a>
+            <ul href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen et
+              al 2017
             </ul>
-            <ul>
-              <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link"
-                target='_blank'>Cohen et al 2018</a>
+            <ul href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link" target='_blank'>Cohen
+              et al 2018
             </ul>
           </li>
           <h3>LCMS Methods</h3>

@@ -211,7 +211,7 @@ function getAspectObj() {
   var dem = ee.Image("USGS/SRTMGL1_003");
   var aspect = ee.Terrain.aspect(dem).int16();
   var aspectBinWidth = 90;
-  var aspectBreaks = ee.List.sequence(0, 360, aspectBinWidth).slice(0, -1);
+  var aspectBreaks = range(0, 360 + 1, aspectBinWidth).slice(0, -1);
   var from = [];
   var to = [];
   var lookupDict = ee.Dictionary({});
@@ -224,7 +224,7 @@ function getAspectObj() {
   var lookupNumbers = ee.List([]);
   var colorDict = ee.Dictionary({});
 
-  aspectBreaks.getInfo().map(function (b) {
+  aspectBreaks.map(function (b) {
     b = ee.Number(b);
     var s = b;
     var e = b.add(aspectBinWidth).subtract(1);
@@ -300,7 +300,7 @@ function getNLCDObj() {
     "Woody Wetlands",
     "Emergent Herbaceous Wetlands",
   ];
-  var nlcdFullClassCodes = ee.List.sequence(nlcdLCMin, nlcdLCMax).getInfo();
+  var nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1); //ee.List.sequence(nlcdLCMin, nlcdLCMax).getInfo();
   var nlcdLCVizDict = {};
   var nlcdLCQueryDict = {};
   var nlcdLegendDict = {};
