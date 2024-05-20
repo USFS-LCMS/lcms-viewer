@@ -67,7 +67,7 @@ function runDashboard() {
     .map(function (t) {
       return t.id;
     });
-  console.log(summaries.length);
+  // console.log(summaries.length);
   // window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
 
   huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06").filter(ee.Filter.inList("states", ["CN", "MX", "AK", "AK,CN", "HI", "AS"]).not());
@@ -292,7 +292,7 @@ function runDashboard() {
       .select([nm])
       .mode()
       .copyProperties(lcmsRun.f);
-
+    lcms_props.bandNames = [nm];
     Map.addLayer(
       pre,
       {

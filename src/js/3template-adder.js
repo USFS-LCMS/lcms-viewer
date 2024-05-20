@@ -2895,7 +2895,7 @@ if (mode === "lcms-dashboard") {
 
   var dragBox;
   function dashboardSelectionModeChange() {
-    console.log(dashboardAreaSelectionMode);
+    // console.log(dashboardAreaSelectionMode);
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
       startDashboardViewExtentSelect();
