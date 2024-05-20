@@ -858,7 +858,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
       ],
       [
         `MAP LAYERS`,
-        `Monitoring site locations, image composites used to flag potentially declining sites, the change/not-change layers, and LCMS tree mask are available for viewing. After submitting date parameters for an analysis, any monitoring site locations that may be flagged for potential decline during that period will appear in a separate layer. Turn on and off layers using the radio buttons on the left side of each layer. Opacity (transparency) can be adjusted with the slider on the right.`,
+        `Monitoring site locations, image composites used to flag potentially declining sites, the change/not-change layers, and LCMS tree mask are available for viewing. After submitting date parameters for an analysis, any monitoring site locations that may be flagged for potential decline during that period will appear in a separate layer. Additionally, any monitoring site locations that may be flagged for potential decline during that period will populate a density (of flagged trees in proximity to one another) heatmap layer. Turn on and off layers using the radio buttons on the left side of each layer. Opacity (transparency) can be adjusted with the slider on the right.`,
         "#layer-list-collapse-label",
         "right-end",
         [0, 2],
