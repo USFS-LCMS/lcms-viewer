@@ -6,6 +6,8 @@
   <title>LCMS-Home</title>
   <link rel="icon" href="./src/assets/images/lcms-icon.png">
   <meta charset="utf-8">
+  <meta name="description"
+    content="U.S. Department of Agriculture, Forest Service Landscape Change Monitoring System (LCMS) Hompage. Describes what LCMS is and how to access the data">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Jquery -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"
@@ -109,9 +111,9 @@
         </div>
         <div class="col-sm-8">
           <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S."
-            src="./src/assets/images/CONUS_v2023-9_Change_loss.png" />
-          <ul class='legend-container'>
-            <li class="legend-colorRamp"
+            src="./src/assets/images/CONUS_v2023-9_Change_Loss.png" />
+          <div class='legend-container'>
+            <div class="legend-colorRamp"
               title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
               <div class="legend-title">Fast & Slow Loss Year</div>
               <div>
@@ -124,8 +126,8 @@
                 </div>
 
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -133,13 +135,13 @@
       <div class="home-section">
         <h2>APPLICATIONS</h2>
         <div class='row bg-dark'>
-          <div class="col-md-6">
+          <div class="col-md-6 conus-pane">
             <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
             <img style='width:95%' alt="Map of LCMS Change Loss and Gain output across the U.S."
               src="./src/assets/images/CONUS_v2023-9_Change_Loss_Gain.png" />
-            <ul class='legend-container'>
-              <li class="legend-colorRamp"
+            <div class='legend-container'>
+              <div class="legend-colorRamp"
                 title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
                 <div class="legend-title">Fast & Slow Loss Year</div>
                 <div>
@@ -152,9 +154,9 @@
                   </div>
 
                 </div>
-              </li>
+              </div>
               <div class='hl'></div>
-              <li class="legend-colorRamp"
+              <div class="legend-colorRamp"
                 title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
                 <div class="legend-title">Gain Year</div>
                 <div>
@@ -166,11 +168,10 @@
                   </div>
 
                 </div>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Forest loss and growth in response to disturbance</p>
             <div style="position:relative">
               <img style='width:100%;' alt="Example area showing LCMS Change over Colorado"
                 src="./src/assets/images/Northern_Colorado-Change_wYears.gif">
@@ -194,7 +195,6 @@
             <p>Changes from insects, disease, and wildfire, Colo.</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Forest responding to natural and human-caused disturbance</p>
             <div style="position:relative">
               <img style='width:100%;' alt="Example area showing LCMS Change over Oregon"
                 src="./src/assets/images/Oregon_Wildfire-Change_wYears.gif">
@@ -221,7 +221,7 @@
         </div>
         <hr>
         <div class='row bg-dark'>
-          <div class="col-md-6">
+          <div class="col-md-6 conus-pane">
             <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
             <img style='width:100%' alt="Map of LCMS Land Cover output across the U.S."
@@ -247,13 +247,11 @@
           </div>
 
           <div class="col-md-3 application-examples">
-            <p>Water loss caused by water consumption & decadal drought</p>
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over Lake Mead"
               src="./src/assets/images/Lake_Mead-Land_Cover_wYears.gif">
-            <p>Change in Lake Mead water level, Nev.</p>
+            <p>Change in Lake Mead water level, Nev. caused by water consumption & decadal drought</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Glacial retreat</p>
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over the Columbia Glacier"
               src="./src/assets/images/Columbia_Glacier-Land_Cover_wYears.gif">
             <p>Change in extent of the Columbia Glacier, Alaska</p>
@@ -261,7 +259,7 @@
         </div>
         <hr>
         <div class='row bg-dark'>
-          <div class="col-md-6">
+          <div class="col-md-6 conus-pane">
             <h3>Monitor annual land use changes</h3>
             <p>Intended human use of the land that represents economic and cultural activities practiced at a given
               place</p>
@@ -282,13 +280,13 @@
 
 
           <div class="col-md-3 application-examples">
-            <p>Land use conversion from forest to developed</p>
+
             <img style='width:100%;' alt="Example area showing LCMS land use changing over Atlanta"
               src="./src/assets/images/Atlanta-Land_Use_wYears.gif">
             <p>Urban development of Atlanta, Ga.</p>
           </div>
           <div class="col-md-3 application-examples">
-            <p>Land use conversion from rangeland to developed</p>
+
             <img style='width:100%;' alt="Example area showing LCMS land use changing over Las Vegas"
               src="./src/assets/images/Las_Vegas-Land_Use_wYears.gif">
             <p>Urban development of Las Vegas, Nev.</p>
@@ -301,29 +299,30 @@
         <h2>DATA DESCRIPTIONS</h2>
         <div class="row bg-dark data-descriptions-row data-descriptions-header" id="data-descriptions-header-row">
           <div class="col-sm-2 teal80"> Name </div>
-          <div class="col-sm-8 teal80"> Description </div>
-          <div class="col-sm-2 teal80"> Example </div>
+          <div class="col-sm-7 teal80"> Description </div>
+          <div class="col-sm-3 teal80"> Example </div>
         </div>
         <div class="row bg-dark py-2 data-descriptions-row">
           <div class="col-sm-2">
             <p class="data-description-classes">Change</p>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-7">
             <b>Change classes represent the most recent state of vegetation cover change</b>
-            <ul class='data-descriptions-classes-row'>
-              <li>
-                <b>There are 4 change classes:</b>
-              </li>
-              <li>Fast Loss: <smalltext>Vegetation cover loss caused by short-duration events. For example, a fire or
+            <ul class='list-group'>
+              <li class="list-group-item bg-dark">Fast Loss: <smalltext>Vegetation cover loss caused by short-duration
+                  events. For example, a fire or
                   harvest that causes rapid vegetation cover change.</smalltext>
               </li>
-              <li>Slow Loss: <smalltext>Vegetation cover loss caused by long-duration events. For example, mountain pine
-                  beetle-caused mortality in Rocky Mountain forests.</smalltext>
+              <li class="list-group-item bg-dark">Slow Loss: <smalltext>Vegetation cover loss caused by long-duration
+                  events. For example, mountain pine
+                  beetle-caused mortality in Rocky Mountain forests.</smallte xt>
               </li>
-              <li>Gain: <smalltext>Vegetation cover growth after a loss of vegetation cover. For example, new growth of
-                  tree saplings following a fire or harvest.</smalltext>
+              <li class="list-group-item bg-dark">Gain: <smalltext>Vegetation cover growth after a loss of vegetation
+                  cover. For example, new growth of
+                  tree saplings following a fire o r harvest.</smalltext>
               </li>
-              <li>Stable: <smalltext>Where no significant change is evident in the spectral response and the trend is
+              <li class="list-group-item bg-dark">Stable: <smalltext>Where no significant change is evident in the
+                  spectral response and the trend is
                   essentially flat. Agricultural systems and wetlands are commonly highly variable spectrally through
                   time, and are thus considered stable but ephemeral.</smalltext>
               </li>
@@ -332,7 +331,7 @@
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf" class="homepage-link"
               target="_blank">For additional information about LCMS change classes see the LCMS methods document</a>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <img width='100%' alt="Example map of LCMS Loss over California"
               src="./src/assets/images/Fountain_Wildfire-Change_wYears.gif">
           </div>
@@ -341,30 +340,29 @@
           <div class="col-sm-2">
             <p class="data-description-classes">Land Cover</p>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-7">
             <b>Land cover classes represent the vegetation or other biophysical attributes of the land surface</b>
             <div class="row data-descriptions-classes-row">
-              <b class="row">There are 14 land cover classes: </b>
               <div class="col-sm-6">
-                <ul>
-                  <li>Trees </li>
-                  <li>Tall Shrubs-Trees (Alaska only) </li>
-                  <li>Shrubs-Trees </li>
-                  <li>Grass-Trees </li>
-                  <li>Barren-Trees </li>
-                  <li>Tall-Shrub (Alaska only) </li>
-                  <li>Shrubs </li>
+                <ul class='list-group'>
+                  <li class="list-group-item bg-dark">Trees </li>
+                  <li class="list-group-item bg-dark">Tall Shrubs-Trees (Alaska only) </li>
+                  <li class="list-group-item bg-dark">Shrubs-Trees </li>
+                  <li class="list-group-item bg-dark">Grass-Trees </li>
+                  <li class="list-group-item bg-dark">Barren-Trees </li>
+                  <li class="list-group-item bg-dark">Tall-Shrub (Alaska only) </li>
+                  <li class="list-group-item bg-dark">Shrubs </li>
                 </ul>
               </div>
               <div class="col-sm-6">
-                <ul>
-                  <li>Grass-Shrubs </li>
-                  <li>Barren-Shrubs
-                  <li>Grass </li>
-                  <li>Barren-Grass </li>
-                  <li>Barren-Impervious </li>
-                  <li>Snow or ice </li>
-                  <li>Water </li>
+                <ul class='list-group'>
+                  <li class="list-group-item bg-dark">Grass-Shrubs </li>
+                  <li class="list-group-item bg-dark">Barren-Shrubs
+                  <li class="list-group-item bg-dark">Grass </li>
+                  <li class="list-group-item bg-dark">Barren-Grass </li>
+                  <li class="list-group-item bg-dark">Barren-Impervious </li>
+                  <li class="list-group-item bg-dark">Snow or ice </li>
+                  <li class="list-group-item bg-dark">Water </li>
                 </ul>
               </div>
             </div>
@@ -372,7 +370,7 @@
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf" class="homepage-link"
               target="_blank">For additional information about LCMS land cover classes see the LCMS methods document</a>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <img width='100%' alt="Example area showing LCMS land cover changing over the Great Salt Lake"
               src="./src/assets/images/Great_Salt_Lake-Land_Cover_wYears.gif">
           </div>
@@ -381,22 +379,21 @@
           <div class="col-sm-2">
             <p class="data-description-classes">Land Use</p>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-7">
             <b>Land use classes represent how biophysical attributes are intended to be used by humans</b>
             <div class="row data-descriptions-classes-row">
-              <b class="row">There are 6 land use classes: </b>
               <div class="col-sm-6">
-                <ul>
-                  <li>Agriculture </li>
-                  <li>Developed </li>
-                  <li>Forest </li>
+                <ul class='list-group'>
+                  <li class="list-group-item bg-dark">Agriculture </li>
+                  <li class="list-group-item bg-dark">Developed </li>
+                  <li class="list-group-item bg-dark">Forest </li>
                 </ul>
               </div>
               <div class="col-sm-6">
-                <ul>
-                  <li>Non-forest Wetland </li>
-                  <li>Other </li>
-                  <li>Rangeland or Pasture </li>
+                <ul class='list-group'>
+                  <li class="list-group-item bg-dark">Non-forest Wetland </li>
+                  <li class="list-group-item bg-dark">Other </li>
+                  <li class="list-group-item bg-dark">Rangeland or Pasture </li>
                 </ul>
               </div>
             </div>
@@ -404,7 +401,7 @@
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf" class="homepage-link"
               target="_blank">For additional information about LCMS land use classes see the LCMS methods document</a>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <img width='100%' alt="Example area showing LCMS land use changing over Denver"
               src="./src/assets/images/Denver-Land_Use_wYears.gif">
           </div>
@@ -1927,7 +1924,7 @@
                 </li>
                 <li style='margin-top:1rem'>
                   <a title="Click on link to open LCMS PRUSVI methods document in a new browser tab"
-                    href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf"
+                    href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2022-8_Methods.pdf"
                     class="homepage-link" target="_blank">LCMS PRUSVI methods document</a>
                 </li>
               </ul>
@@ -1960,17 +1957,14 @@
             Puerto Rico and U.S. Virgin Islands (PRUSVI). Future mapping efforts will extend to Hawaiʻi. </p>
           <h3>Literature</h3>
           <li>
-            <ul>
-              <a href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link"
-                target='_blank'>Healey et al 2018</a>
+            <ul href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link" target='_blank'>Healey
+              et al 2018
             </ul>
-            <ul>
-              <a href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen et
-                al 2017</a>
+            <ul href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen et
+              al 2017
             </ul>
-            <ul>
-              <a href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link"
-                target='_blank'>Cohen et al 2018</a>
+            <ul href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link" target='_blank'>Cohen
+              et al 2018
             </ul>
           </li>
           <h3>LCMS Methods</h3>
@@ -1982,7 +1976,7 @@
             </ul>
             <ul>
               <a title="Click on link to open LCMS PRUSVI methods document"
-                href="https://staging-data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf"
+                href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2023-9_Methods.pdf"
                 class="homepage-link" target="_blank">LCMS PRUSVI methods document</a>
             </ul>
           </li>
@@ -2019,7 +2013,7 @@
     <div id="contact" class="container-fluid bg-dark">
       <div class='row home-section'>
         <h2>CONTACT</h2>
-        <div class="col-sm-12">
+        <div class="col-sm-6">
           <div class="gtac-address">
             <a href="https://www.fs.usda.gov/about-agency/gtac" class='homepage-link' target="_blank"
               title="LCMS is produced by the Geospatial Technology and Applications Center (GTAC). Click to learn more about GTAC.">
@@ -2029,6 +2023,21 @@
           </div>
           <a class='homepage-link' href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"> Contact Us
           </a>
+
+        </div>
+        <div class="col-sm-6">
+
+          <li><a href="https://www.usda.gov/privacy-policy/" class='homepage-link' target="_blank">
+              Privacy Policy</a>
+          </li>
+          <li> <a href="https://www.usda.gov/accessibility-statement/" class='homepage-link' target="_blank">
+              Accessibility Statement</a>
+          </li>
+          <li> <a href="https://www.fs.usda.gov/about-agency/disclaimers-important-notices" class='homepage-link'
+              target="_blank">
+              Disclaimers</a>
+          </li>
+
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="./src/assets/images/GEE_logo_transparent.png" class='home-image-icon-bar'
               alt="Powered by Google Earth Engine" href="#"
@@ -2047,6 +2056,9 @@
               style='background-color: var(--deep-brown-10);padding:1px;margin-right:0px' class='home-image-icon-bar'
               href="#" title="Click to learn more about the U.S. Forest Service">
           </a>
+        </div>
+        <div class="col-sm-4">
+
         </div>
       </div>
     </div>

@@ -389,19 +389,18 @@ function runSequoia() {
   });
 
   // create heatmap layer
-  kernelRadius = 30 // pixels
-  var densityPoints = potentialLossSites.map(function(yesTrees){
-    return yesTrees.set('dummy',1);
+  kernelRadius = 30; // pixels
+  var densityPoints = potentialLossSites.map(function (yesTrees) {
+    return yesTrees.set("dummy", 1);
   });
 
   function heatmap(fc, radius) {
-    var pointImg = fc.reduceToImage(['dummy'],ee.Reducer.first()).unmask(0);
-    // var kernel = ee.Kernel.circle(radius).add(ee.Kernel.gaussian(radius*2, radius/2));
+    var pointImg = fc.reduceToImage(["dummy"], ee.Reducer.first()).unmask(0);
     var kernel = ee.Kernel.gaussian(radius, radius/2).add(ee.Kernel.circle(radius*2));
     var result = pointImg.convolve(kernel);
-    return result.updateMask(result.neq(0)); //return result.clip(studyArea)
+    return result.updateMask(result.neq(0));
   };
-  var heatmapImg = heatmap(densityPoints,kernelRadius);
+  var heatmapImg = heatmap(densityPoints, kernelRadius);
   var heatmapGradient = ['lightgray','yellow','red'];
 
   // Bring in MTBS data : start MTBS data in 2012 at onset of 2012-2016 drought period
@@ -427,14 +426,14 @@ function runSequoia() {
   // var deadTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/filtered_dead_trees");
 
   // Add Canopy Height Layer to reference layers
-  var canopyHeight = ee.ImageCollection('projects/meta-forest-monitoring-okw37/assets/CanopyHeight').mosaic();
+  var canopyHeight = ee.ImageCollection("projects/meta-forest-monitoring-okw37/assets/CanopyHeight").mosaic();
   Map.addLayer(
     canopyHeight,
     {
-      'min': 0,
-      'max': 25,
-      'layerType': "geeImage",
-      'palette': ["440154","414487","2A788E","22A884","7AD151","FDE725"]
+      min: 0,
+      max: 25,
+      layerType: "geeImage",
+      palette: ["440154", "414487", "2A788E", "22A884", "7AD151", "FDE725"],
     },
     `Tree Canopy Height (m)`,
     false,
@@ -560,7 +559,7 @@ function runSequoia() {
     "reference-layer-list"
   ); // {'strokeColor':'eb7a38'} =orange
 
-  // // filtered dead trees for commission analysis  
+  // // filtered dead trees for commission analysis
   // Map.addLayer(
   //   deadTrees.map((f) => {
   //     return ee.Feature(f).buffer(urlParams.treeDiameter / 2);
@@ -592,15 +591,25 @@ function runSequoia() {
   Map.addLayer(
     heatmapImg,
     {
-      min:0, max:0.002, palette:heatmapGradient, opacity:0.75, layerType: 'geeImage', classLegendDict:{'No Flagged Trees':'lightgray', 'Low Density of Flagged Trees':'Yellow','Medium Density of Flagged Trees':'Orange','High Density of Flagged Trees':'red'}
+      min: 0,
+      max: 0.002,
+      palette: heatmapGradient,
+      opacity: 0.75,
+      layerType: "geeImage",
+      classLegendDict: {
+        "No Flagged Trees": "lightgray",
+        "Low Density of Flagged Trees": "Yellow",
+        "Medium Density of Flagged Trees": "Orange",
+        "High Density of Flagged Trees": "red",
+      },
     },
     `Heatmap of Flagged Trees of Special Interest`,
     false,
     null,
     null,
-    `A density heatmap of flagged trees of special interest found in proximity to one another`,
+    `A density heatmap of flagged trees of special interest found in proximity to one another`
   );
-    
+
   Map.addLayer(
     changeHeuristicForMap,
     {
@@ -625,11 +634,11 @@ function runSequoia() {
       strokeColor: "eb7a38", //orange
       layerType: "geeVectorImage",
     },
-    "Trees of Special Interest",//"Monitoring Sites",
+    "Trees of Special Interest", //"Monitoring Sites",
     true,
     null,
     null,
-    "Monitoring Sites"//"Trees of special interest"
+    "Monitoring Sites" //"Trees of special interest"
   );
   Map.addLayer(
     potentialLossSites.map((f) => {

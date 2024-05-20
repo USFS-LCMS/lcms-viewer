@@ -2508,6 +2508,7 @@ if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
 if (mode === "geeViz") {
   $("#pixel-chart-label").remove();
   $("#share-button").remove();
+  $("#usda-notices").remove();
   // $("#tools-accordian").append(`<hr>`);
   // //Sync tooltip toggle
   // var tShowToolTipModal = true;

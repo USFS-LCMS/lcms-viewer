@@ -3555,7 +3555,7 @@ function initialize() {
         .reduceRegion(ee.Reducer.first(), ee.Geometry.Point([center.lng(), center.lat()]))
         .get("elevation");
       elevation.evaluate(function (thisElevation) {
-        if (thisElevation !== null) {
+        if (thisElevation !== undefined && thisElevation !== null) {
           var thisElevationFt = parseInt(thisElevation * 3.28084);
           lastElevation = "Elevation: " + thisElevation.toString() + "(m), " + thisElevationFt.toString() + "(ft),";
         } else {

@@ -28,7 +28,7 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  var vizYears = range(startYear, endYear, 1);
+  var vizYears = range(startYear, endYear, 5);
   if (vizYears[vizYears.length - 2] !== endYear) {
     vizYears.push(endYear);
   }

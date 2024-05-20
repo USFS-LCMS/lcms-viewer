@@ -206,7 +206,9 @@ const staticTemplates = {
                         
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
-                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg">
+                    <a href="home.html" target="_blank" title = 'Click to visit the LCMS Homepage'>
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
+                    </a>
                     <div class="vl title-banner-icon"></div>
                     <img id='title-banner-icon-right' class = 'title-banner-icon' style = 'height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
                     <div  class='my-0 title-banner-label'>
@@ -631,6 +633,17 @@ const staticTemplates = {
         			<span id = 'gee-queue-len' class = 'px-1' style="display:none;" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
                     <span class = 'px-1' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading: <span id='number-gee-tiles-downloading'>0</span></span>
                     <span title="Current location and elevation of mouse pointer and map zoom level and respective map scale" class = 'px-1'  id='current-mouse-position'  ></span>
+                    <span id = 'usda-notices' > <a href="https://earthengine.google.com/" target="_blank">
+                      <a href="https://www.usda.gov/privacy-policy/" class='links-bottombar' target="_blank">
+                      Privacy Policy
+                      </a>
+                      <a href="https://www.usda.gov/accessibility-statement/" class='links-bottombar' target="_blank">
+                      Accessibility Statement
+                      </a>
+                      <a href="https://www.fs.usda.gov/about-agency/disclaimers-important-notices" class='links-bottombar' target="_blank">
+                      Disclaimers
+                      </a>
+                    </span>
                     <span id = 'contributor-logos' style='display:none;'> 
                         <a href="https://earthengine.google.com/" target="_blank">
                             <img src="./src/assets/images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
@@ -1080,7 +1093,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2023). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1232,7 +1245,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2023). Landscape Change Monitoring System Dashboard [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/dashboard.html (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). Landscape Change Monitoring System Dashboard [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/dashboard.html (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1352,7 +1365,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2023). ${mode} [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/${mode}.html (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). ${mode} [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/${mode}.html (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
