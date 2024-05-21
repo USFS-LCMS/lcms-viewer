@@ -726,7 +726,7 @@ if (urlParams.currentlySelectedHighlightTab == null || urlParams.currentlySelect
 }
 function getHighlightsTabListener() {
   return $("a.nav-link").click((e) => {
-    console.log(e);
+    // console.log(e);
     urlParams.currentlySelectedHighlightTab = e.currentTarget.id;
   });
 }

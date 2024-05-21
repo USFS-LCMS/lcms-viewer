@@ -676,6 +676,48 @@ function runGTAC() {
           },
           "NLCD TCC"
         );
+
+        let tccMin = 1;
+        let tccMax = 80;
+        let tccPalette = "FFF,080";
+        let tcclegendLabelLeftAfter = "% TCC";
+        let tcclegendLabelRightAfter = "% TCC";
+        let tccNameEnding = "Time Lapse";
+        let tccLayer = nlcdTCC2021.select([0, 2]).map((img) => img.selfMask());
+        if (urlParams.addLCMSTimeLapsesOn === "no") {
+          // tccMin = 0;
+          // tccMax = 10;
+          tccLayer = nlcdTCC2021.select([0, 2]);
+          // tcclegendLabelLeftAfter = "% TCC StdDev";
+          // tcclegendLabelRightAfter = "% TCC StdDev";
+          tccNameEnding = "Mean";
+          // tccPa
+        }
+        addLayerFun(
+          tccLayer,
+          {
+            min: tccMin,
+            max: tccMax,
+            bands: ["NLCD_Percent_Tree_Canopy_Cover"],
+            palette: tccPalette,
+            selfMask: true,
+            legendLabelLeftAfter: tcclegendLabelLeftAfter,
+            legendLabelRightAfter: tcclegendLabelRightAfter,
+            xAxisLabels: nlcdTCCYrs,
+            reducer: ee.Reducer.mean(),
+            eeObjInfo: {
+              bandNames: ["Science_Percent_Tree_Canopy_Cover", "NLCD_Percent_Tree_Canopy_Cover"],
+
+              layerType: "ImageCollection",
+              size: nlcdTCCYrs.length,
+            },
+            years: nlcdTCCYrs,
+            queryParams: { palette: ["080", "0F0"] },
+          },
+          `TCC ${tccNameEnding}`
+        );
+        // }
+
         nlcdTCC2021 = nlcdTCC2021.select([0]);
         var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[1]).filter('study_area=="CONUS"');
         var props = lcmsRun.props; // lcms.first().toDictionary().getInfo();
