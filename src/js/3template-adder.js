@@ -2237,10 +2237,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   var selectedState;
   var selectedCounty;
+  urlParams.preDate1 = "2022-05-21"
+  urlParams.preDate2 = "2022-08-21"
+  urlParams.postDate1 = "2023-07-21"
+  urlParams.postDate2 = "2023-09-21"
+
   var statesDict = {
     "Alabama" : "01",
     "Alaska" : "02",
-    "Arizono" : "04",
+    "Arizona" : "04",
     "Arkansas" : "05",
     "California" : "06",
     "Colorado" : "08",
@@ -2279,7 +2284,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Pennsylvania" : "42",
     "Rhode Island" : "44",
     "South Carolina" : "45",
-    "South Dakaota" : "46",
+    "South Dakota" : "46",
     "Tennessee" : "47",
     "Texas" : "48",
     "Utah" : "49",
@@ -2291,60 +2296,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Wyoming" : "56",
 
   }
-  var stateList = [
-    "Alabama",
-    "Alaska",
-    "Arizona",
-    "Arkansas",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "District of Columbia",
-    "Florida",
-    "Georgia",
-    "Guam",
-    "Hawaii",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Maine",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Pennsylvania",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Vermont",
-    "Virginia",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming"
-  ]
+  
   
   addCollapse(
     "sidebar-left",
@@ -2367,20 +2319,23 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     handleAoiSelectionType
   )
 
+  //Initial Set Up
+  handleAoiSelectionType("Select by Dropdown")
+
   function handleAoiSelectionType(selection) {
     console.log(selection)
 
     if (selection == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
       $("#" + "dropdown-select").remove();
-      $("#" + "select-aoi-div").append(`<div id="dropdown-select""></div>`)
+      $("#" + "select-aoi-div").append(`<div id="dropdown-select"></div>`)
 
       addDropdownStates(
         "dropdown-select",
         "state-select",
         "Select a State:",
         selectedState,
-        stateList,
+        Object.keys(statesDict),//stateList,
         populateCountiesDropdown
       );
     }
@@ -2392,12 +2347,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   function populateCountiesDropdown(selectedState){
     var stateFP = statesDict[selectedState];
-    console.log(selectedState);
-    console.log(stateFP);
-    var counties = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP))
-    var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo()
-    var countyList = counties.aggregate_histogram("NAME").keys().getInfo()
-    console.log(countyList)
+    var counties = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP));
+    var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo();
+    var countyList = counties.aggregate_histogram("NAME").keys().getInfo();
 
     addDropdownCounties(
       "dropdown-select",
@@ -2413,30 +2365,33 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   function setSelectedCounty(selectedCounty, stateFP, stateAbr){
     var selectedFeature = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP)).filter(ee.Filter.eq("NAME", selectedCounty));
-    Map.addLayer(selectedFeature, {palette: '66ff00', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
-    hiform_bmp_process(selectedFeature)
+    Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
+    Map.centerObject(selectedFeature);
     urlParams.selectedCounty = selectedFeature;
-  }
+    $("#process-button").removeAttr('disabled');
+  };
   
   function selectSingleCounty() {
     setTimeout(() => {
         google.maps.event.clearListeners(map, "click");
         google.maps.event.addListener(map, "click", (e) => {
-            const lat = e.latLng.lat()
-            const lng = e.latLng.lng()
+            const lat = e.latLng.lat();
+            const lng = e.latLng.lng();
             const point = ee.Geometry.Point([lng, lat]);
             features = ee.FeatureCollection('TIGER/2018/Counties');
             const selectedFeature = features.filterBounds(point);
             var countyName = selectedFeature.first().get("NAME").getInfo()
             var stateFP = selectedFeature.first().get("STATEFP").getInfo()
-            var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo()
-
-            Map.addLayer(selectedFeature, {palette: '66ff00', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`, true);
-            hiform_bmp_process(selectedFeature)
-            google.maps.event.clearListeners(map, "click");
+            var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo();
+            console.log("LAYER OBJ")
+            console.log(layerObj)
+            Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`, true);
+            Map.centerObject(selectedFeature);
+            urlParams.selectedCounty = selectedFeature;
+            $("#process-button").removeAttr('disabled');
         });
     }, 0);
-  }
+  };
 
   addCollapse(
     "sidebar-left",
@@ -2444,18 +2399,54 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "pre-post-dates-div",
     "Define 'pre' and 'post' date ranges",
     '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
-    false,
+    true,
     null,
     "Select pre and post date ranges for the Hi-Form BMP Tool"
   );
 
+  addHiFormDatePicker(
+    'pre-post-dates-div',
+    'date-picker-container',
+    urlParams.preDate1,
+    urlParams.preDate2,
+    urlParams.postDate1,
+    urlParams.postDate2
+  );
+
+  function preDateOneHandler(e) {
+    console.log("Date Selected (Pre1): " + e.target.value);
+    urlParams.preDate1 = e.target.value;
+  }
+
+  function preDateTwoHandler(e) {
+    console.log("Date Selected (Pre2): " + e.target.value);
+    urlParams.preDate2 = e.target.value;
+  }
+
+  function postDateOneHandler(e) {
+    console.log("Date Selected (Post1): " + e.target.value);
+    urlParams.postDate1 = e.target.value;
+  }
+
+  function postDateTwoHandler(e) {
+    console.log("Date Selected (Post2): " + e.target.value);
+    urlParams.postDate2 = e.target.value;
+  }
+
+  function handleProcess() {
+    $("#layer-list-collapse-div").toggleClass("collapsed show");
+    $("#layer-list-collapse-label").removeClass("collapsed");
+    $("#layer-list-collapse-label").prop("ariaExpanded", true);
+    hiform_bmp_process()
+  };
+
   addCollapse(
     "sidebar-left",
-    "layer-list-collapse-label",
+    "layer-list-collapse",
     "layer-list-collapse-div",
     "View HiForm BMP Results",
     '<i role="img" class="fa fa-tree mr-1" aria-hidden="true"></i>',
-    true,
+    false,
     null,
     mode + " DATA layers to view on map"
   );

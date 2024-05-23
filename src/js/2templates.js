@@ -1847,13 +1847,13 @@ function addRadio(containerDivID, radioID, title, onLabel, offLabel, variable, v
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// DROPDOWN SELECT States - Hiform
+// HiForm-BMP Stuff
+//////////////////////////////////////////////////////////////////////////////////////////////
+// DROPDOWN SELECT STATES - Hiform
 function addDropdownStates(containerID, dropdownId, label, variable, selectList, callback) {
 
-  $("#" + containerID).append(`<div id="${containerID}-container><label for="${containerID}" class="form-label mt-2">${label}</label>
-  <select id=${dropdownId} class="form-select"></select></div>`);
-
-  console.log("State Select List: " + selectList)
+  $("#" + containerID).append(`<div id="${containerID}-container><label for="${containerID}" class="form-label">${label}</label>
+  <select id=${dropdownId} class="form-select mb-2"></select></div>`);
 
   $(`#${dropdownId}`).append(`<option>---</option>`)
 
@@ -1873,10 +1873,8 @@ function addDropdownStates(containerID, dropdownId, label, variable, selectList,
 function addDropdownCounties(containerID, dropdownId, label, variable, selectList, stateFP, stateAbr, callback) {
 
   $("#" + containerID + "-container").replaceWith("")
-  $("#" + containerID).append(`<div id="${containerID}-container" class="mt-1"><label for="${containerID}" class="form-label">${label}</label>
-  <select id=${dropdownId} class="form-select"></select></div>`);
-
-  console.log("County Select List: " + selectList)
+  $("#" + containerID).append(`<div id="${containerID}-container" class="mt-2"><label for="${containerID}" class="form-label">${label}</label>
+  <select id=${dropdownId} class="form-select mb-2"></select></div>`);
 
   $(`#${dropdownId}`).append(`<option>---</option>`)
   selectList.map(item => {
@@ -1914,7 +1912,7 @@ function addSelectTypeRadio(containerID, radioID, label, variable, optionList, t
       checked = "";
     }
 
-    $("#" + radioID).append(`<div class="form-check form-check-inline">
+    $("#" + radioID).append(`<div class="form-check form-check-inline mb-2">
                               <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
                               <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
                             </div>`);
@@ -1927,6 +1925,42 @@ function addSelectTypeRadio(containerID, radioID, label, variable, optionList, t
     });
   });
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Date Picker - Hiform
+function addHiFormDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+  $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
+  $("#" + datepickerID).append(`<div id="pre-ranges-div">
+                                <p class = 'param-title'>Define Pre Date Range</p>
+                                <input type="date" id="pre-date-one" class="mt-2 mr-2" value="${defaultDate1}" onchange="preDateOneHandler(event)">
+                                <input type="date" id="pre-date-two" class="mt-2 mb-2" value="${defaultDate2}" onchange="preDateTwoHandler(event)">
+                              </div>`);
+  
+  $("#" + datepickerID).append(`<div id="post-ranges-div">
+                                <p class = 'param-title'>Define Post Date Range</p>
+                                <input type="date" id="post-date-one" class="mt-2 mr-2" value="${defaultDate3}" onchange="postDateOneHandler(event)">
+                                <input type="date" id="post-date-two" class="mt-2 mb-2" value="${defaultDate4}" onchange="postDateTwoHandler(event)">
+                              </div>`);
+  
+  $("#" + containerID).append(`<div id="process-div" title="Select a county and define date ranges to process.">
+                                <p class = 'param-title'>Process HiForm Results</p>
+                                <input type="button" id="process-button" class="mb-2" value="Process HiForm BMP" onclick="handleProcess()">
+                              </div>`);
+
+  $('#process-button').attr('disabled','disabled');
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Date Picker - Hiform
+function addProcessButton(containerID, datepickerID, label, variable, title, callback) {
+  $("#" + containerID).append(`<div>
+                                <p class = 'param-title'>Define Post Date Range</p>
+                                <input type="button" id="process-button" class="mt-2 mb-2" value="Process" onclick="hiform_bmp_process()">
+                              </div>`);
+
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated

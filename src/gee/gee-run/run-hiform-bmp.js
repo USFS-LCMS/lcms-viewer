@@ -4,42 +4,27 @@
 
 function runHiForm() {
 
-    
-
     var tigerline_counties = ee.FeatureCollection('TIGER/2018/Counties');
     // var generalized_counties = ee.FeatureCollection('users/timberharvestmap/cb_2022_us_county_5m_southeast');
-    Map.addLayer(tigerline_counties,{palette: '66ff00'}, 'US Counties', true);
-
-    // Set initial Event Handler
-    handleAoiSelectionType("Select by Dropdown")
-
-    //////////////////////////////////////////////
-    // Create Parameters for HiForm-BMP Processing
-
-    // Select a single county
-
-    // var generalized_county_selected = ee.FeatureCollection('users/timberharvestmap/gen_co20m_minatt_east')
-    //     .filter(ee.Filter.eq("co_st2", 'Madison, AL'));
-
-    // print(generalized_county_selected, 'county(s) selected');
-
-    // Map.addLayer(generalized_county_selected, {palette: '66ff00'}, 'county selected', false);
-
-    //var geometry = generalized_county_selected;
-
-    //hiform_bmp_process(geometry);
+    Map.addLayer(tigerline_counties, {strokeColor: 'FFF', strokeWeight: 1.5, layerType:'geeVectorImage'}, 'US Counties', true);
+    
 }
 
-function hiform_bmp_process(geometry) {
+function hiform_bmp_process() {
 
-    var geoBounds = geometry.geometry().bounds()
+    var geometry = urlParams.selectedCounty;
+    var geoBounds = geometry.geometry().bounds();
+
+    console.log("Running HiForm BMP Process with Parameters")
+    console.log(urlParams.preDate1, urlParams.preDate2, urlParams.postDate1, urlParams.postDate2)
 
     /////////////////////////////////////////////////////////
     // Load a Sentinel2 pre-disturbance image
     /////////////////////////////////////////////////////////
 
     var pre = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
-        .filterDate('2022-05-21', '2022-08-21')
+        //.filterDate('2022-05-21', '2022-08-21')
+        .filterDate(urlParams.preDate1, urlParams.preDate2)
         .filterBounds(geoBounds);
 
     //console.log(pre.size().getInfo())
@@ -76,12 +61,10 @@ function hiform_bmp_process(geometry) {
     /////////////////////////////////////////////////////////
 
     var post = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
-    //var post = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') 
-
-    .filterDate('2023-07-21', '2023-09-21') //  1yr growing season baseline, DEFAULT
-    // .filterDate('2022-05-01', '2022-06-21') //  within growing season baseline, display the pre natural color to look for cloud contamination
-
-    .filterBounds(geoBounds);
+        //.filterDate('2023-07-21', '2023-09-21') //  1yr growing season baseline, DEFAULT
+        // .filterDate('2022-05-01', '2022-06-21') //  within growing season baseline, display the pre natural color to look for cloud contamination
+        .filterDate(urlParams.postDate1, urlParams.postDate2)
+        .filterBounds(geoBounds);
 
     // Add NDVI and DATE as separate bands to image layer stack
     var addNDVI = function(post) {
