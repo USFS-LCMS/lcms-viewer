@@ -207,13 +207,16 @@ const staticTemplates = {
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
                     <a href="home.html" target="_blank" title = 'Click to visit the LCMS Homepage'>
-                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
                     </a>
                     <div class="vl title-banner-icon"></div>
-                    <img id='title-banner-icon-right' class = 'title-banner-icon' style = 'height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
-                    <div  class='my-0 title-banner-label'>
+                    <img id='title-banner-icon-right' class = 'title-banner-icon'  >
+                    <div  class='my-0 title-banner-label'>  
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
                 </div>`,
+  // topBanner: ` <div class='title-banner white'>
+  // <span>${topBannerParams.leftWords} <p class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</p> ${topBannerParams.rightWords}</p>
+  // </div>`,
 
   studyAreaDropdown: `<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
@@ -311,8 +314,6 @@ const staticTemplates = {
                             <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-                        </div>
-
                         </div>`,
       "Loading LCMS summary areas. This can take some time"
     ),
@@ -704,8 +705,8 @@ const staticTemplates = {
   dashboardProgressDiv: `<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
-          0.8
-        )}"  alt="GEE logo image">
+    0.8
+  )}"  alt="GEE logo image">
         
         <div class="progressbar progress-pulse" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
             <span  style="width: 0%;">0%</span>
@@ -2419,8 +2420,7 @@ function addClassLegendContainer(classLegendContainerID, legendContainerID, clas
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${
-      obj.className
+    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className
     }</li>`
   );
 }

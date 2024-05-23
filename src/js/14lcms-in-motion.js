@@ -427,7 +427,7 @@ require([
         // Oct 1 - Oct 31
         fullTimeExtent: {
           start: new Date("1985-7-1"),
-          end: new Date("2022-7-1"),
+          end: new Date("2023-7-1"),
         },
         stops: {
           interval: {

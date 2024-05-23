@@ -29,11 +29,24 @@ function runGTAC() {
     //Bring in ref layers
     getHansen();
 
-    var whp = ee.ImageCollection("projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential").mosaic().rename(["whp"]);
+    var whp = ee
+      .ImageCollection(
+        "projects/lcms-292214/assets/CONUS-Ancillary-Data/RMRS_Wildfire_Hazard_Potential"
+      )
+      .mosaic()
+      .rename(["whp"]);
     let whpObjInfo = {
       bandNames: ["whp"],
       layerType: "Image",
-      whp_class_names: ["Very Low", "Low", "Moderate", "High", "Very High", "Non-burnable", "Water"],
+      whp_class_names: [
+        "Very Low",
+        "Low",
+        "Moderate",
+        "High",
+        "Very High",
+        "Non-burnable",
+        "Water",
+      ],
       whp_class_palette: ["38A800", "D1FF73", "FFFF00", "FFAA00", "FF0000", "B2B2B2", "0070FF"],
       whp_class_values: [1, 2, 3, 4, 5, 6, 7],
     };
@@ -71,9 +84,18 @@ function runGTAC() {
       Year: "of most recent",
       Prob: "of most probable",
     };
-    lcmsRun.minGainProb = [studyAreaDict[studyAreaName].conusGainThresh, studyAreaDict[studyAreaName].akGainThresh].min();
-    lcmsRun.minSlowLossProb = [studyAreaDict[studyAreaName].conusSlowLossThresh, studyAreaDict[studyAreaName].akSlowLossThresh].min();
-    lcmsRun.minFastLossProb = [studyAreaDict[studyAreaName].conusFastLossThresh, studyAreaDict[studyAreaName].akFastLossThresh].min();
+    lcmsRun.minGainProb = [
+      studyAreaDict[studyAreaName].conusGainThresh,
+      studyAreaDict[studyAreaName].akGainThresh,
+    ].min();
+    lcmsRun.minSlowLossProb = [
+      studyAreaDict[studyAreaName].conusSlowLossThresh,
+      studyAreaDict[studyAreaName].akSlowLossThresh,
+    ].min();
+    lcmsRun.minFastLossProb = [
+      studyAreaDict[studyAreaName].conusFastLossThresh,
+      studyAreaDict[studyAreaName].akFastLossThresh,
+    ].min();
     lcmsRunFuns.getMaskedWYr = function (c, code) {
       return c.map(function (img) {
         var yr = ee.Date(img.get("system:time_start")).get("year");
@@ -87,7 +109,13 @@ function runGTAC() {
 
     lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
     lcmsRun.lcms = ee.ImageCollection(
-      ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten()
+      ee
+        .FeatureCollection(
+          lcmsRun.lcms.map(f =>
+            ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
+          )
+        )
+        .flatten()
     );
 
     lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYear, endYear, "year"));
@@ -96,7 +124,9 @@ function runGTAC() {
     //Mosaic all study areas
     lcmsRun.lcms = ee.List.sequence(startYear, endYear).map(function (yr) {
       var t = lcmsRun.lcms.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
-      return t.copyProperties(lcmsRun.f).set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+      return t
+        .copyProperties(lcmsRun.f)
+        .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
     });
     lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms);
 
@@ -141,8 +171,24 @@ function runGTAC() {
         "1b1716",
       ],
       Land_Cover_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-      Land_Use_class_names: ["Agriculture", "Developed", "Forest", "Non-Forest Wetland", "Other", "Rangeland or Pasture", "Non-Processing Area Mask"],
-      Land_Use_class_palette: ["efff6b", "ff2ff8", "1b9d0c", "97ffff", "a1a1a1", "c2b34a", "1b1716"],
+      Land_Use_class_names: [
+        "Agriculture",
+        "Developed",
+        "Forest",
+        "Non-Forest Wetland",
+        "Other",
+        "Rangeland or Pasture",
+        "Non-Processing Area Mask",
+      ],
+      Land_Use_class_palette: [
+        "efff6b",
+        "ff2ff8",
+        "1b9d0c",
+        "97ffff",
+        "a1a1a1",
+        "c2b34a",
+        "1b1716",
+      ],
       Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
       bandNames: ["Land_Cover"],
       layerType: "ImageCollection",
@@ -161,21 +207,36 @@ function runGTAC() {
 
     if (urlParams.addLCMSTimeLapsesOn === "yes") {
       lcmsRun.props.bandNames = ["Change"];
-      Map.addTimeLapse(lcmsRun.tlChange, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "Change Time Lapse", true);
+      Map.addTimeLapse(
+        lcmsRun.tlChange,
+        { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years },
+        "Change Time Lapse",
+        true
+      );
       // lcmsRun.props.bandNames = ["Land_Cover"];
       // Map.addTimeLapse(lcmsRun.tlLC, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Cover Time Lapse", false);
       // lcmsRun.props.bandNames = ["Land_Use"];
       // Map.addTimeLapse(lcmsRun.tlLU, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Use Time Lapse", false);
     }
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
-    ["Land_Use", "Land_Cover"].map((b) => {
+    ["Land_Use", "Land_Cover"].map(b => {
       let tTitle = b.replaceAll("_", " ");
       lcmsRun.props.bandNames = [b];
       if (analysisMode === "advanced" && urlParams.addLCMSTimeLapsesOn === "no") {
         Map.addLayer(
-          lcmsRun.lcms.select([b]).filter(ee.Filter.calendarRange(startYear, startYear + lcmsRun.thematicChangeYearBuffer, "year")),
+          lcmsRun.lcms
+            .select([b])
+            .filter(
+              ee.Filter.calendarRange(
+                startYear,
+                startYear + lcmsRun.thematicChangeYearBuffer,
+                "year"
+              )
+            ),
           {
-            title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${startYear + lcmsRun.thematicChangeYearBuffer}.`,
+            title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${
+              startYear + lcmsRun.thematicChangeYearBuffer
+            }.`,
             autoViz: true,
             layerType: "geeImageCollection",
             reducer: ee.Reducer.mode(),
@@ -187,9 +248,15 @@ function runGTAC() {
         );
 
         Map.addLayer(
-          lcmsRun.lcms.select([b]).filter(ee.Filter.calendarRange(endYear - lcmsRun.thematicChangeYearBuffer, endYear, "year")),
+          lcmsRun.lcms
+            .select([b])
+            .filter(
+              ee.Filter.calendarRange(endYear - lcmsRun.thematicChangeYearBuffer, endYear, "year")
+            ),
           {
-            title: `Most common ${tTitle.toLowerCase()} class from ${endYear - lcmsRun.thematicChangeYearBuffer} to ${endYear}.`,
+            title: `Most common ${tTitle.toLowerCase()} class from ${
+              endYear - lcmsRun.thematicChangeYearBuffer
+            } to ${endYear}.`,
             autoViz: true,
             layerType: "geeImageCollection",
             reducer: ee.Reducer.mode(),
@@ -222,7 +289,9 @@ function runGTAC() {
     });
     let change_attribution_bn = "Cause_of_Change";
     var lcmsAttr = ee
-      .ImageCollection("projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2023-9/v2023-9-Cause_of_Change")
+      .ImageCollection(
+        "projects/lcms-292214/assets/CONUS-LCMS/Landcover-Landuse-Change/v2023-9/v2023-9-Cause_of_Change"
+      )
       .filter(ee.Filter.calendarRange(startYear, endYear, "year"))
       .select([0], [change_attribution_bn]);
 
@@ -274,15 +343,21 @@ function runGTAC() {
         "3d4551",
         "1b1716",
       ],
-      Cause_of_Change_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+      Cause_of_Change_class_values: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+      ],
       bandNames: ["Cause_of_Change"],
       layerType: "ImageCollection",
       size: lcmsRun.COCYears.length,
     };
 
-    lcmsAttr = lcmsAttr.map((img) => {
+    lcmsAttr = lcmsAttr.map(img => {
       let out = img.where(img.eq(19).or(img.eq(0)), 20);
-      return out.where(img.eq(1), 19).subtract(1).set(cocObjInfo).copyProperties(img, ["system:time_start"]);
+      return out
+        .where(img.eq(1), 19)
+        .subtract(1)
+        .set(cocObjInfo)
+        .copyProperties(img, ["system:time_start"]);
     });
 
     addLayerFun(
@@ -299,15 +374,24 @@ function runGTAC() {
       false
     );
 
-    lcmsRun.slowLoss = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Slow_Loss"], ["Change", "Prob"]), 2);
+    lcmsRun.slowLoss = lcmsRunFuns.getMaskedWYr(
+      lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Slow_Loss"], ["Change", "Prob"]),
+      2
+    );
     lcmsRun.slowLossCount = lcmsRun.slowLoss.select(["Year"]).count();
     lcmsRun.slowLoss = lcmsRun.slowLoss.qualityMosaic(summaryMethod);
 
-    lcmsRun.fastLoss = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Fast_Loss"], ["Change", "Prob"]), 3);
+    lcmsRun.fastLoss = lcmsRunFuns.getMaskedWYr(
+      lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Fast_Loss"], ["Change", "Prob"]),
+      3
+    );
     lcmsRun.fastLossCount = lcmsRun.fastLoss.select(["Year"]).count();
     lcmsRun.fastLoss = lcmsRun.fastLoss.qualityMosaic(summaryMethod);
 
-    lcmsRun.gain = lcmsRunFuns.getMaskedWYr(lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Fast_Loss"], ["Change", "Prob"]), 4);
+    lcmsRun.gain = lcmsRunFuns.getMaskedWYr(
+      lcmsRun.lcms.select(["Change", "Change_Raw_Probability_Fast_Loss"], ["Change", "Prob"]),
+      4
+    );
     lcmsRun.gainCount = lcmsRun.gain.select(["Year"]).count();
     lcmsRun.gain = lcmsRun.gain.qualityMosaic(summaryMethod);
 
@@ -440,13 +524,20 @@ function runGTAC() {
 
     //Bring in composites
     lcmsRun.composites = ee.ImageCollection(
-      ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten()
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].composite_collections.map(f => ee.ImageCollection(f))
+        )
+        .flatten()
     );
 
     lcmsRun.composites = ee.ImageCollection(
       ee.List.sequence(startYear, endYear, 1).map(function (yr) {
         return getImagesLib.simpleAddIndices(
-          lcmsRun.composites.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()),
+          lcmsRun.composites
+            .filter(ee.Filter.calendarRange(yr, yr, "year"))
+            .mosaic()
+            .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()),
           1
         );
       })
@@ -454,10 +545,21 @@ function runGTAC() {
     // Map.addTimeLapse(lcmsRun.composites.limit(5),{min:500,max:5000,bands:'swir1,nir,red'},'Composite Time Lapse');
 
     //Set up CCDC
-    lcmsRun.ccdcIndicesSelector = ["tStart", "tEnd", "tBreak", "changeProb", lcmsRun.whichIndex + "_.*", "NDVI_.*"];
+    lcmsRun.ccdcIndicesSelector = [
+      "tStart",
+      "tEnd",
+      "tBreak",
+      "changeProb",
+      lcmsRun.whichIndex + "_.*",
+      "NDVI_.*",
+    ];
     lcmsRun.ccdc = ee.ImageCollection(
       ee
-        .FeatureCollection(studyAreaDict[studyAreaName].ccdc_collections.map((f) => ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector)))
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].ccdc_collections.map(f =>
+            ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector)
+          )
+        )
         .flatten()
     );
 
@@ -467,7 +569,11 @@ function runGTAC() {
     var whichHarmonics = [1, 2, 3];
     var fillGaps = true;
     var fraction = 0.6657534246575343;
-    var annualImages = changeDetectionLib.simpleGetTimeImageCollection(ee.Number(startYear + fraction), ee.Number(endYear + 1 + fraction), 1);
+    var annualImages = changeDetectionLib.simpleGetTimeImageCollection(
+      ee.Number(startYear + fraction),
+      ee.Number(endYear + 1 + fraction),
+      1
+    );
     lcmsRun.fittedCCDC = changeDetectionLib
       .predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics)
       .select([lcmsRun.whichIndex + "_CCDC_fitted"], ["CCDC Fitted " + lcmsRun.whichIndex])
@@ -475,7 +581,13 @@ function runGTAC() {
     // console.log(lcmsRun.fittedCCDC.getInfo());
     //Set up LANDTRENDR
     lcmsRun.lt = ee
-      .ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten())
+      .ImageCollection(
+        ee
+          .FeatureCollection(
+            studyAreaDict[studyAreaName].lt_collections.map(f => ee.ImageCollection(f))
+          )
+          .flatten()
+      )
       .filter(ee.Filter.eq("band", lcmsRun.whichIndex))
       .select([0])
       .max();
@@ -483,7 +595,7 @@ function runGTAC() {
     lcmsRun.fittedAsset = changeDetectionLib
       .simpleLTFit(lcmsRun.lt, 1984, 2023, lcmsRun.whichIndex, true, 9)
       .select([`${lcmsRun.whichIndex}_LT_fitted`], ["LANDTRENDR Fitted " + lcmsRun.whichIndex])
-      .map((i) => {
+      .map(i => {
         return i.divide(10000).float().copyProperties(i, ["system:time_start"]);
       });
     // Map.addLayer(lcmsRun.fittedAsset,{},'lt fitted')
@@ -493,22 +605,34 @@ function runGTAC() {
       lcmsRun.fittedAsset,
       false
     );
-    lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection, lcmsRun.fittedCCDC, false);
+    lcmsRun.changePixelChartCollection = joinCollections(
+      lcmsRun.changePixelChartCollection,
+      lcmsRun.fittedCCDC,
+      false
+    );
     // console.log(lcmsRun.changePixelChartCollection.getInfo())
     //Set up change prob outputs for pixel charting
     lcmsRun.probCollection = lcmsRun.lcms
-      .select(["Change_Raw_Probability_.*"], ["Slow Loss Probability", "Fast Loss Probability", "Gain Probability"])
+      .select(
+        ["Change_Raw_Probability_.*"],
+        ["Slow Loss Probability", "Fast Loss Probability", "Gain Probability"]
+      )
       .map(function (img) {
         return img.divide(100).copyProperties(img, ["system:time_start"]);
       });
 
-    lcmsRun.changePixelChartCollection = joinCollections(lcmsRun.changePixelChartCollection, lcmsRun.probCollection, false);
+    lcmsRun.changePixelChartCollection = joinCollections(
+      lcmsRun.changePixelChartCollection,
+      lcmsRun.probCollection,
+      false
+    );
 
     pixelChartCollections["all-loss-gain-" + lcmsRun.whichIndex] = {
       label: "LCMS Change Time Series",
       collection: lcmsRun.changePixelChartCollection, //chartCollection.select(['Raw.*','LANDTRENDR.*','.*Loss Probability','Gain Probability']),
       chartColors: chartColorsDict.allLossGain2,
-      tooltip: "Chart slow loss, fast loss, gain and the " + lcmsRun.whichIndex + " vegetation index",
+      tooltip:
+        "Chart slow loss, fast loss, gain and the " + lcmsRun.whichIndex + " vegetation index",
       xAxisLabel: "Year",
       yAxisLabel: "Model Confidence or Index Value",
       fieldsHidden: [true, true, true, false, false, false],
@@ -552,7 +676,7 @@ function runGTAC() {
         var names = lcmsRun.props[`${bn}_class_names`];
         var numbers = lcmsRun.props[`${bn}_class_values`];
         var colors = lcmsRun.props[`${bn}_class_palette`];
-        names = names.map((nm) => nm.replaceAll(" (SEAK Only)", ""));
+        names = names.map(nm => nm.replaceAll(" (SEAK Only)", ""));
         var areaC = formatAreaChartCollection(c, numbers, names);
         // console.log(areaC.first().bandNames().getInfo());
         var bnTitle = bn.replaceAll("_", " ");
@@ -579,7 +703,7 @@ function runGTAC() {
       };
 
       var lcmsBnsForCharting = ["Change", "Land_Cover", "Land_Use"];
-      lcmsBnsForCharting.map((bn) => {
+      lcmsBnsForCharting.map(bn => {
         lcmsRunFuns.addAreaChartClass(bn);
       });
       if (endYear - startYear >= 5) {
@@ -591,7 +715,7 @@ function runGTAC() {
         // $('#transition-periods-container').show();
         // updateSankeyPeriods(transitionChartYearInterval);
 
-        lcmsBnsForCharting.map((bn) => {
+        lcmsBnsForCharting.map(bn => {
           addSankey(lcmsRun, bn);
         });
       } else if (endYear - startYear < 5) {
@@ -603,7 +727,7 @@ function runGTAC() {
     } else {
       areaChart.clearLayers();
 
-      ["Change", "Land_Cover", "Land_Use"].map((bn) => {
+      ["Change", "Land_Cover", "Land_Use"].map(bn => {
         let bnTitle = bn.replace("_", " ");
         lcmsRun.props.bandNames = [bn];
         let visibility;
@@ -612,7 +736,11 @@ function runGTAC() {
         }
         areaChart.addLayer(
           lcmsRun.lcms.select([bn]),
-          { eeObjInfo: lcmsRun.props, visible: visibility, xAxisLabels: lcmsRun.years },
+          {
+            eeObjInfo: lcmsRun.props,
+            visible: visibility,
+            xAxisLabels: lcmsRun.years,
+          },
           bnTitle + " Annual",
           true
         );
@@ -631,10 +759,34 @@ function runGTAC() {
         );
       });
 
-      let cocVisibility = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false];
+      let cocVisibility = [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+      ];
       areaChart.addLayer(
         lcmsAttr,
-        { visible: cocVisibility, eeObjInfo: cocObjInfo, xAxisLabels: lcmsRun.COCYears },
+        {
+          visible: cocVisibility,
+          eeObjInfo: cocObjInfo,
+          xAxisLabels: lcmsRun.COCYears,
+        },
         "Cause of Change (beta) Annual",
         false
       );
@@ -683,7 +835,7 @@ function runGTAC() {
         let tcclegendLabelLeftAfter = "% TCC";
         let tcclegendLabelRightAfter = "% TCC";
         let tccNameEnding = "Time Lapse";
-        let tccLayer = nlcdTCC2021.select([0, 2]).map((img) => img.selfMask());
+        let tccLayer = nlcdTCC2021.select([0, 2]).map(img => img.selfMask());
         if (urlParams.addLCMSTimeLapsesOn === "no") {
           // tccMin = 0;
           // tccMax = 10;
@@ -719,7 +871,9 @@ function runGTAC() {
         // }
 
         nlcdTCC2021 = nlcdTCC2021.select([0]);
-        var lcms = ee.ImageCollection(studyAreaDict[studyAreaName].final_collections[1]).filter('study_area=="CONUS"');
+        var lcms = ee
+          .ImageCollection(studyAreaDict[studyAreaName].final_collections[1])
+          .filter('study_area=="CONUS"');
         var props = lcmsRun.props; // lcms.first().toDictionary().getInfo();
         var change = lcms.select(["Change"]);
         var changeNames = props["Change_class_names"];
@@ -736,15 +890,19 @@ function runGTAC() {
         for (var i = 0; i < nlcdTCCYrs.length - 1; i++) {
           var yr1 = nlcdTCCYrs[i];
           var yr2 = nlcdTCCYrs[i + 1];
-          var nlcdTCC2021Pre = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first());
-          var nlcdTCC2021Post = ee.Image(lcmsTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first());
+          var nlcdTCC2021Pre = ee.Image(
+            lcmsTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first()
+          );
+          var nlcdTCC2021Post = ee.Image(
+            lcmsTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first()
+          );
           var diff = nlcdTCC2021Post
             .select(["Science_Percent_Tree_Canopy_Cover"])
             .subtract(nlcdTCC2021Pre.select(["Science_Percent_Tree_Canopy_Cover"]))
             .int16();
           var diffStack = ee
             .ImageCollection(
-              changeValues.slice(1, 4).map((cv) => {
+              changeValues.slice(1, 4).map(cv => {
                 var cb = nlcdTCC2021Post.select(["Change"]).eq(cv);
                 return diff.updateMask(cb);
               })
@@ -754,8 +912,8 @@ function runGTAC() {
           tccDiff.push(diffStack);
         }
         tccDiff = ee.ImageCollection(tccDiff);
-        var tccGain = tccDiff.map((img) => img.updateMask(img.gte(0))).sum();
-        var tccLoss = tccDiff.map((img) => img.updateMask(img.lte(0))).sum();
+        var tccGain = tccDiff.map(img => img.updateMask(img.gte(0))).sum();
+        var tccLoss = tccDiff.map(img => img.updateMask(img.lte(0))).sum();
 
         Map.addLayer(
           tccLoss.select(["Slow Loss"]),
@@ -874,20 +1032,50 @@ function runDynamic() {
   let lcmsRun = {};
   let lcmap_dict = {
     LC_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    LC_class_names: ["Developed", "Cropland", "Grass/Shrub", "Tree Cover", "Water", "Wetlands", "Ice/Snow", "Barren", "Class Change"],
-    LC_class_palette: ["E60000", "A87000", "E3E3C2", "1D6330", "476BA1", "BAD9EB", "FFFFFF", "B3B0A3", "A201FF"],
+    LC_class_names: [
+      "Developed",
+      "Cropland",
+      "Grass/Shrub",
+      "Tree Cover",
+      "Water",
+      "Wetlands",
+      "Ice/Snow",
+      "Barren",
+      "Class Change",
+    ],
+    LC_class_palette: [
+      "E60000",
+      "A87000",
+      "E3E3C2",
+      "1D6330",
+      "476BA1",
+      "BAD9EB",
+      "FFFFFF",
+      "B3B0A3",
+      "A201FF",
+    ],
   };
-  let lcpri = ee.ImageCollection("projects/sat-io/open-datasets/LCMAP/LCPRI").select(["b1"], ["LC"]);
-  lcpri = lcpri.map((img) => img.set(lcmap_dict));
+  let lcpri = ee
+    .ImageCollection("projects/sat-io/open-datasets/LCMAP/LCPRI")
+    .select(["b1"], ["LC"]);
+  lcpri = lcpri.map(img => img.set(lcmap_dict));
   // Map.addLayer(lcpri, { autoViz: true, canAreaChart: true, areaChartParams: { line: true, sankey: true } }, "LCMAP LC", true);
   // areaChart.addLayer(lcpri, { sankey: false }, "LCMAP LC Annual", false);
   // areaChart.addLayer(lcpri, { sankey: true }, "LCMAP LC Transition", false);
   lcmsRun.lcms = ee
-    .ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].final_collections.map((c) => ee.ImageCollection(c))).flatten())
+    .ImageCollection(
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].final_collections.map(c => ee.ImageCollection(c))
+        )
+        .flatten()
+    )
     .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]);
 
   // .filter('study_area=="CONUS"');
-  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(urlParams.startYear, urlParams.endYear, "year"));
+  lcmsRun.lcms = lcmsRun.lcms.filter(
+    ee.Filter.calendarRange(urlParams.startYear, urlParams.endYear, "year")
+  );
   //Get properties image
   lcmsRun.hasProps = lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"]));
   lcmsRun.f = ee.Image(lcmsRun.hasProps.first());
@@ -930,7 +1118,15 @@ function runDynamic() {
       "1b1716",
     ],
     Land_Cover_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    Land_Use_class_names: ["Agriculture", "Developed", "Forest", "Non-Forest Wetland", "Other", "Rangeland or Pasture", "Non-Processing Area Mask"],
+    Land_Use_class_names: [
+      "Agriculture",
+      "Developed",
+      "Forest",
+      "Non-Forest Wetland",
+      "Other",
+      "Rangeland or Pasture",
+      "Non-Processing Area Mask",
+    ],
     Land_Use_class_palette: ["efff6b", "ff2ff8", "1b9d0c", "97ffff", "a1a1a1", "c2b34a", "1b1716"],
     Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
     bandNames: [
@@ -1024,7 +1220,7 @@ function runDynamic() {
   // );
   let raw = lcmsRun.lcms.select(["Land_Cover_Raw.*"]);
   let bns = raw.first().bandNames();
-  let bnsOut = bns.map((bn) => ee.String(bn).split("Land_Cover_Raw_Probability_").get(1));
+  let bnsOut = bns.map(bn => ee.String(bn).split("Land_Cover_Raw_Probability_").get(1));
 
   // console.log(bns.getInfo());
   // console.log(bnsOut.getInfo());
@@ -1081,7 +1277,7 @@ function runDynamic() {
   // console.log(nlcd.first().bandNames().getInfo());
   nlcd = nlcd.select([0]);
   var nlcd_class_names = ee.List(nlcd.first().toDictionary().get("landcover_class_names"));
-  nlcd_class_names = nlcd_class_names.map((nm) => {
+  nlcd_class_names = nlcd_class_names.map(nm => {
     return ee.String(nm).split(": ").get(0);
   });
 
@@ -1125,7 +1321,10 @@ function runDynamic() {
   // // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
   // // console.log(perims.get('bounds').getInfo())
 
-  mtbsBoundaries = mtbsBoundaries.filterDate(ee.Date.fromYMD(urlParams.startYear, 1, 1), ee.Date.fromYMD(urlParams.endYear, 12, 31));
+  mtbsBoundaries = mtbsBoundaries.filterDate(
+    ee.Date.fromYMD(urlParams.startYear, 1, 1),
+    ee.Date.fromYMD(urlParams.endYear, 12, 31)
+  );
   i = ee.Image([1, 2]);
   // print(i.bandNames().getInfo());
   // Map.addLayer(i, {});
@@ -1148,7 +1347,11 @@ function runDynamic() {
 
   Map.addSelectLayer(
     mtbsBoundaries,
-    { strokeColor: "00F", layerType: "geeVectorImage", selectLayerNameProperty: "Incid_Name" },
+    {
+      strokeColor: "00F",
+      layerType: "geeVectorImage",
+      selectLayerNameProperty: "Incid_Name",
+    },
     "MTBS Fire Boundaries",
     false,
     null,
@@ -1157,7 +1360,7 @@ function runDynamic() {
   );
   let mFun = urlParams.addLCMSTimeLapsesOn == "yes" ? Map.addTimeLapse : Map.addLayer;
 
-  ["Change", "Land_Cover", "Land_Use"].map((c) => {
+  ["Change", "Land_Cover", "Land_Use"].map(c => {
     let visible;
     if (c === "Change") {
       visible = changeVisibility;
@@ -1226,10 +1429,16 @@ function runDynamic() {
     Gain: { code: 4, visible: false, palette: "c5ee93,00a398" },
   };
 
-  Object.keys(changeClassDict).map((k) => {
+  Object.keys(changeClassDict).map(k => {
     let changeYear = lcmsRun.lcms
       .select([0])
-      .map((img) => ee.Image(img.date().get("year")).int16().rename(["year"]).updateMask(img.eq(changeClassDict[k].code)))
+      .map(img =>
+        ee
+          .Image(img.date().get("year"))
+          .int16()
+          .rename(["year"])
+          .updateMask(img.eq(changeClassDict[k].code))
+      )
       .max();
     Map.addLayer(
       changeYear,

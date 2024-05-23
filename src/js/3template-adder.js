@@ -408,6 +408,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#tables-collapse-div").append(staticTemplates.dashboardHighlightsContainer);
 
   $("#charts-collapse-div").removeClass("px-5");
+  $("#charts-collapse-div").addClass("px-3");
   $("#tables-collapse-div").removeClass("px-5");
   $(".plotly-chart").css("margin-left", "");
   $("#charts-collapse-label").on("click", () => {
