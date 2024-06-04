@@ -1941,24 +1941,17 @@ function addHiFormDatePicker(containerID, datepickerID, defaultDate1, defaultDat
                                 <input type="date" id="post-date-one" class="mt-2 mr-2" value="${defaultDate3}" onchange="postDateOneHandler(event)">
                                 <input type="date" id="post-date-two" class="mt-2 mb-2" value="${defaultDate4}" onchange="postDateTwoHandler(event)">
                               </div>`);
-  
-  $("#" + containerID).append(`<div id="process-div" title="Select a county and define date ranges to process.">
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Process Button - Hiform
+function addHiFormProcessButton(containerID) {
+  $("#" + containerID).append(`<div id="process-button-div" title="Select a county and define date ranges to process.">
                                 <p class = 'param-title'>Process HiForm Results</p>
                                 <input type="button" id="process-button" class="mb-2" value="Process HiForm BMP" onclick="handleProcess()">
                               </div>`);
 
   $('#process-button').attr('disabled','disabled');
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-// Date Picker - Hiform
-function addProcessButton(containerID, datepickerID, label, variable, title, callback) {
-  $("#" + containerID).append(`<div>
-                                <p class = 'param-title'>Define Post Date Range</p>
-                                <input type="button" id="process-button" class="mt-2 mb-2" value="Process" onclick="hiform_bmp_process()">
-                              </div>`);
-
-
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

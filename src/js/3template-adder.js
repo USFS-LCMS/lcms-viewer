@@ -2433,6 +2433,34 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.postDate2 = e.target.value;
   }
 
+  addSubCollapse(
+    "pre-post-dates-div", 
+    "advanced-params-label",
+     "advanced-params-div", 
+     "Advanced Parameters", 
+     "",
+     false,
+     "");
+
+  var correctionTypeOption = "TOA"
+  addSelectTypeRadio(
+    "advanced-params-div",
+    "correction-type-radio",
+    "Choose Image Correction Type",
+    "correctionTypeOption",
+    { "TOA": true, "SR": false },
+    "Choose either Top of Atmosphere or Surface Reflectance Correction Type",
+    logConsolePlz
+  );
+
+  function logConsolePlz() {
+    console.log(correctionTypeOption)
+  }
+
+  addHiFormProcessButton(
+    "pre-post-dates-div"
+  )
+
   function handleProcess() {
     $("#layer-list-collapse-div").toggleClass("collapsed show");
     $("#layer-list-collapse-label").removeClass("collapsed");
