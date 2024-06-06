@@ -2485,6 +2485,12 @@ addSubAccordianCard(
   `toggleTool(toolFunctions.pixel.query)`,
   staticTemplates.queryTipHover
 );
+
+if (mode == "TreeMap"){
+  // Add Data Clipping Tools section to the tools accordian and add link to a GEE clipping script
+  $("#tools-accordian").append(staticTemplates.TreeMapGEEClippingDiv);
+}
+
 if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
   addSubAccordianCard(
     "tools-accordian",
