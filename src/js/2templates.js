@@ -817,13 +817,14 @@ const staticTemplates = {
                                             </ul>
                                           </li>
                                         </ul>`,
-  TreeMapGEEClippingDiv: `<h5 class='pt-2' style='border-top: 0.1em solid black;'>Data Clipping Tools</h5>
-                            <div class=" px-0 py-2 sub-sub-panel-title-collapsed" style='border-top: 0.1em solid var(--deep-brown-30);'>
+  TreeMapGEEClippingDiv: `<h5 class='pt-2' style='border-top: 0.1em solid black;'>Data Clipping</h5>
+                            <div class=" px-0 py-0 sub-sub-panel-title-collapsed">
                               <a href="https://code.earthengine.google.com/6a10868aa172b8082a0d11bc0c54ea8c" target="_blank" title="Use a Google Earth Engine script template to download attributes clipped to polygon of interest.">
                                 Clip and download data with Google Earth Engine
                               </a>
                             </div>`,
-  TreeMapDownloadDiv: `<ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
+  TreeMapDownloadDiv: `<h5 class='pt-2'>CONUS Datasets</h5>
+                      <ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
                                             <li><span class="caret" title="Download individual attributes of TreeMap.">Individual Attributes</span>
