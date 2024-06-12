@@ -2060,6 +2060,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
   $("#download-collapse-div").append(staticTemplates.TreeMapDownloadDiv);
+  $("#download-collapse-div").append(staticTemplates.TreeMapGEEClippingDiv);
   $("#support-collapse-div").append(staticTemplates.TreeMapSupportDiv);
   //$('#download-collapse-div').append(staticTemplates.TreeMapDownloadDiv);
   //setupDropdownTreeMapDownloads()
@@ -2485,11 +2486,6 @@ addSubAccordianCard(
   `toggleTool(toolFunctions.pixel.query)`,
   staticTemplates.queryTipHover
 );
-
-if (mode == "TreeMap"){
-  // Add Data Clipping Tools section to the tools accordian and add link to a GEE clipping script
-  $("#tools-accordian").append(staticTemplates.TreeMapGEEClippingDiv);
-}
 
 if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
   addSubAccordianCard(
