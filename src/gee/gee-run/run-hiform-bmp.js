@@ -7,7 +7,47 @@ function runHiForm() {
     var tigerline_counties = ee.FeatureCollection('TIGER/2018/Counties');
     // var generalized_counties = ee.FeatureCollection('users/timberharvestmap/cb_2022_us_county_5m_southeast');
     Map.addLayer(tigerline_counties, {strokeColor: 'FFF', strokeWeight: 1.5, layerType:'geeVectorImage'}, 'US Counties', true);
-    
+
+
+    ///// Add Reference Layers to HiForm Related Layers List
+
+    // Streams
+    // var streams = ee.Image('users/timberharvestmap/nhd_ga');  // change this 'ga' to your 2-letter state abbrev, lowercase
+    //{palette: ['0700d6']}
+    var streams = ee.ImageCollection("GLCF/GLS_WATER");
+    Map.addLayer(streams, {}, 'Streams', false, null, null, `Test`, "related-layer-list");
+
+    // Floodplain
+
+    var floodplains = ee.Image('users/timberharvestmap/floodplains_eastern_epaeast');
+    Map.addLayer(floodplains, {palette: ['0700d6']}, 'Floodplains (Bottomland Hardwoods)', false, null, null, `Test`, "related-layer-list");
+
+    // % Slope
+    var dataset = ee.Image('USGS/3DEP/10m');
+    var elevation = dataset.select('elevation');
+    var slope = ee.Terrain.slope(elevation);
+    var percent_slope = slope.divide(180).multiply(Math.PI).tan().multiply(100).rename('percent').round();
+    var slopeVisParam = {
+        min: 0.0,
+        max: 100,
+        bands: ["percent"],
+        opacity: 1,
+        palette: ["9aa15d", "b9cc6c", "d6e21f", "fff705", "ffd611", "ffb613", "ff8b13", "ff6e08", "ff500d", "ff0000", "de0101", "c21301", "970000", "6a0b0b", "4f5854", "77857f", "9bada5", "ac90af", "8d62c4", "582897"]
+    }
+    Map.addLayer(percent_slope, slopeVisParam, `Percent Slope`, false, null, null, `Test`, "related-layer-list");
+
+    // Hillshade
+    var dataset = ee.Image('USGS/3DEP/10m');
+    var elevation = dataset.select('elevation');
+    var hillshade = ee.Terrain.hillshade(elevation);
+    var hillshadeVisParam = {
+        min: 0.0,
+        max: 255.0,
+        gamma: 0.50,
+        opacity: 0.50
+    }
+    Map.addLayer(hillshade, hillshadeVisParam, `Hillshade`, false, null, null, `Test`, "related-layer-list");
+
 }
 
 function hiform_bmp_process() {

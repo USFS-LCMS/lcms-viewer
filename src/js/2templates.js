@@ -1928,19 +1928,22 @@ function addSelectTypeRadio(containerID, radioID, label, variable, optionList, t
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Date Picker - Hiform
-function addHiFormDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+function addHiFormPreDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   $("#" + datepickerID).append(`<div id="pre-ranges-div">
                                 <p class = 'param-title'>Define Pre Date Range</p>
-                                <input type="date" id="pre-date-one" class="mt-2 mr-2" value="${defaultDate1}" onchange="preDateOneHandler(event)">
-                                <input type="date" id="pre-date-two" class="mt-2 mb-2" value="${defaultDate2}" onchange="preDateTwoHandler(event)">
+                                <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
+                                <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
                               </div>`);
+}
+
+function addHiFormCustomPostPicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+  $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   
-  $("#" + datepickerID).append(`<div id="post-ranges-div">
-                                <p class = 'param-title'>Define Post Date Range</p>
-                                <input type="date" id="post-date-one" class="mt-2 mr-2" value="${defaultDate3}" onchange="postDateOneHandler(event)">
-                                <input type="date" id="post-date-two" class="mt-2 mb-2" value="${defaultDate4}" onchange="postDateTwoHandler(event)">
-                              </div>`);
+  $("#define-post-date-options").append(`<div id="post-ranges-div">
+                                          <input type="date" id="post-date-one" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
+                                          <input type="date" id="post-date-two" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
+                                        </div>`);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

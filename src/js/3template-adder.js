@@ -2237,10 +2237,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   var selectedState;
   var selectedCounty;
-  urlParams.preDate1 = "2022-05-21"
-  urlParams.preDate2 = "2022-08-21"
-  urlParams.postDate1 = "2023-07-21"
-  urlParams.postDate2 = "2023-09-21"
+  urlParams.preDate1;// = "2022-05-21"
+  urlParams.preDate2;// = "2022-08-21"
+  urlParams.postDate1;// = "2023-07-21"
+  urlParams.postDate2;// = "2023-09-21"
+  var correctionTypeOption = "TOA"
 
   var statesDict = {
     "Alabama" : "01",
@@ -2368,7 +2369,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
     Map.centerObject(selectedFeature);
     urlParams.selectedCounty = selectedFeature;
-    $("#process-button").removeAttr('disabled');
+    toggleProcessButton();
   };
   
   function selectSingleCounty() {
@@ -2388,10 +2389,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
             Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`, true);
             Map.centerObject(selectedFeature);
             urlParams.selectedCounty = selectedFeature;
-            $("#process-button").removeAttr('disabled');
+            toggleProcessButton();
         });
     }, 0);
   };
+
+  function toggleProcessButton() {
+    if (urlParams.preDate1 && urlParams.preDate2 && urlParams.postDate1 && urlParams.postDate2 && urlParams.selectedCounty) {
+      $("#process-button").removeAttr('disabled');
+    } else {
+      $("#process-button").attr('disabled','disabled');
+    }
+  }
 
   addCollapse(
     "sidebar-left",
@@ -2404,33 +2413,94 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Select pre and post date ranges for the Hi-Form BMP Tool"
   );
 
-  addHiFormDatePicker(
+  addHiFormPreDatePicker(
     'pre-post-dates-div',
-    'date-picker-container',
-    urlParams.preDate1,
-    urlParams.preDate2,
-    urlParams.postDate1,
-    urlParams.postDate2
+    'pre-date-picker-container'
   );
+
+  addSelectTypeRadio(
+    'pre-post-dates-div',
+    "define-post-date-options",
+    "Define Post Date Range",
+    "testOption",
+    { "Custom": true, "6 Month": false, "1 Year": false },
+    "Choose a post date range option",
+    toggleCustomPostDate
+  );
+  
+  addHiFormCustomPostPicker(
+    'pre-post-dates-div',
+    'post-date-picker-container'
+  );
+
+  toggleCustomPostDate("Custom")
+
+  function toggleCustomPostDate(selection) {
+    if (selection == "Custom") {
+      $("#post-ranges-div").show();
+    } else {
+      $("#post-ranges-div").hide()
+    }
+  }
 
   function preDateOneHandler(e) {
     console.log("Date Selected (Pre1): " + e.target.value);
     urlParams.preDate1 = e.target.value;
+
+    // Set Pre Date Min and Value
+    var bufferDate = new Date(e.target.value);
+    bufferDate.setDate(bufferDate.getDate() + 14);
+    newDate2 = bufferDate.toISOString().substr(0,10);
+    $("#pre-date-two").attr("min", e.target.value);
+    $("#pre-date-two").attr("value", newDate2);
+    $("#pre-date-two").val(newDate2);
+    urlParams.preDate2 = newDate2;
+    console.log("Date Selected (Pre2): " + urlParams.preDate2);
+
+    toggleProcessButton()
   }
 
   function preDateTwoHandler(e) {
     console.log("Date Selected (Pre2): " + e.target.value);
     urlParams.preDate2 = e.target.value;
+
+    toggleProcessButton()
   }
 
   function postDateOneHandler(e) {
-    console.log("Date Selected (Post1): " + e.target.value);
-    urlParams.postDate1 = e.target.value;
+
+    // Validation (Post must be larger than Pre)
+    if (urlParams.preDate2 > e.target.value) {
+      $("#post-date-one").attr("value", "");
+      $("#post-date-one").val("");
+      $("#post-date-two").attr("value", "");
+      $("#post-date-two").val("");
+      urlParams.postDate1 = null;
+      urlParams.postDate2 = null;
+      alert("Post Date Range must start after the selected Pre Date Range")
+    } else {
+      console.log("Date Selected (Post1): " + e.target.value);
+      urlParams.postDate1 = e.target.value;
+
+      // Set Post Date Min and Value
+      var bufferDate = new Date(e.target.value);
+      bufferDate.setDate(bufferDate.getDate() + 14);
+      newDate2 = bufferDate.toISOString().substr(0,10);
+      $("#post-date-two").attr("min", e.target.value);
+      $("#post-date-two").attr("value", newDate2);
+      $("#post-date-two").val(newDate2);
+      urlParams.postDate2 = newDate2;
+      console.log("Date Selected (Post2): " + urlParams.postDate2);
+    }
+
+    toggleProcessButton()
   }
 
   function postDateTwoHandler(e) {
     console.log("Date Selected (Post2): " + e.target.value);
     urlParams.postDate2 = e.target.value;
+
+    toggleProcessButton()
   }
 
   addSubCollapse(
@@ -2442,7 +2512,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
      false,
      "");
 
-  var correctionTypeOption = "TOA"
   addSelectTypeRadio(
     "advanced-params-div",
     "correction-type-radio",
@@ -2450,10 +2519,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "correctionTypeOption",
     { "TOA": true, "SR": false },
     "Choose either Top of Atmosphere or Surface Reflectance Correction Type",
-    logConsolePlz
+    changeCorrectionTypeOption
   );
 
-  function logConsolePlz() {
+  function changeCorrectionTypeOption() {
     console.log(correctionTypeOption)
   }
 
@@ -2462,9 +2531,20 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   )
 
   function handleProcess() {
+    // Open or Close Accordians
     $("#layer-list-collapse-div").toggleClass("collapsed show");
     $("#layer-list-collapse-label").removeClass("collapsed");
     $("#layer-list-collapse-label").prop("ariaExpanded", true);
+
+    $("#pre-post-dates-label-label").addClass("collapsed");
+    $("#pre-post-dates-div").removeClass("show");
+    $("#pre-post-dates-label").prop("ariaExpanded", false);
+
+    $("#select-aoi-label-label").addClass("collapsed");
+    $("#select-aoi-div").removeClass("show");
+    $("#select-aoi-label").prop("ariaExpanded", false);
+
+    // Run HiForm Process
     hiform_bmp_process()
   };
 
@@ -2479,6 +2559,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     mode + " DATA layers to view on map"
   );
 
+  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
   addCollapse(
     "sidebar-left",
     "related-layers-label",
@@ -2489,6 +2571,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "View related layers for HiForm BMP"
   );
+
+  $("#related-layers-div").append(`<ul id="related-layer-list" class = "layer-list"></ul>`);
 
   addCollapse(
     "sidebar-left",
@@ -2501,400 +2585,171 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Download HiForm BMP results"
   );
 
-  // addCollapse(
-  //   "sidebar-left",
-  //   "parameters-collapse-label",
-  //   "parameters-collapse-div",
-  //   "PARAMETERS",
-  //   '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
-  //   false,
-  //   null,
-  //   "Adjust parameters used to prepare analysis window"
-  // );
-  // var minYear = 2017;
-  // var maxYear = new Date().getFullYear();
-  // var dayOfYear = new Date().dayofYear();
-  // if (urlParams.preStartYear == null || urlParams.preStartYear == undefined) {
-  //   urlParams.preStartYear = minYear;
-  // }
-  // if (urlParams.preEndYear == null || urlParams.preEndYear == undefined) {
-  //   urlParams.preEndYear = maxYear - 1;
-  // }
-  // if (urlParams.postYear == null || urlParams.postYear == undefined) {
-  //   urlParams.postYear = maxYear;
-  // }
-  // // if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
-  // //   urlParams.postEndYear = maxYear;
-  // // }
+  
 
-  // if (urlParams.startJulian == null || urlParams.startJulian == undefined) {
-  //   urlParams.startJulian = dayOfYear - 16; // = parseInt(urlParams.startYear);
-  //   if (urlParams.startJulian < 0) {
-  //     urlParams.startJulian = 0;
-  //   }
-  // }
-  // if (urlParams.endJulian == null || urlParams.endJulian == undefined) {
-  //   urlParams.endJulian = dayOfYear - 2; // = parseInt(urlParams.endYear);
-  //   if (urlParams.endJulian > 365) {
-  //     urlParams.endJulian = 365;
-  //   }
-  // }
-  // if (urlParams.compVizParams == null || urlParams.compVizParams == undefined) {
-  //   urlParams.compVizParams = {
-  //     min: 0.1,
-  //     max: [0.5, 0.6, 0.6],
-  //     bands: "swir2,nir,red",
-  //     gamma: 1.6,
-  //   };
-  // }
-  // if (urlParams.diffVizParams == null || urlParams.diffVizParams == undefined) {
-  //   urlParams.diffVizParams = {
-  //     min: -0.05,
-  //     max: 0.05,
-  //     bands: ["brightness", "greenness", "wetness"],
-  //   };
-  // }
-  // if (urlParams.diffThreshs == null || urlParams.diffThreshs == undefined) {
-  //   urlParams.diffThreshs = { greenness: -0.05, wetness: -0.02, NBR: -0.2 };
-  // }
-  // if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
-  //   urlParams.treeDiameter = 15;
-  // }
-  // if (urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == undefined) {
-  //   urlParams.lcmsTreeMaskClasses = {
-  //     Trees: true,
-  //     "Shrubs & Trees Mix": false,
-  //     "Grass/Forb/Herb & Trees Mix": false,
-  //     "Barren & Trees Mix": false,
-  //   };
-  // }
+//   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
-  // // $('#parameters-collapse-div').append(`<hr>`);
+//   if (urlParams.canExport === true) {
+//     canExport = urlParams.canExport;
+//     addCollapse(
+//       "sidebar-left",
+//       "download-collapse-label",
+//       "download-collapse-div",
+//       "DOWNLOAD DATA",
+//       `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+//       false,
+//       ``,
+//       "Download " + mode + " products for further analysis"
+//     );
+//   }
+// } else {
+//   addCollapse(
+//     "sidebar-left",
+//     "layer-list-collapse-label",
+//     "layer-list-collapse-div",
+//     "ANCILLARY DATA",
+//     `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+//     true,
+//     null,
+//     mode + " DATA layers to view on map"
+//   );
+//   addCollapse(
+//     "sidebar-left",
+//     "reference-layer-list-collapse-label",
+//     "reference-layer-list-collapse-div",
+//     "PLOT DATA",
+//     `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+//     false,
+//     null,
+//     "Additional relevant layers to view on map intended to provide context for " + mode + " DATA"
+//   );
 
-  // addDualRangeSlider(
-  //   "parameters-collapse-div",
-  //   "Analysis date range:",
-  //   "urlParams.startJulian",
-  //   "urlParams.endJulian",
-  //   1,
-  //   365,
-  //   urlParams.startJulian,
-  //   urlParams.endJulian,
-  //   1,
-  //   "julian-day-slider",
-  //   "julian",
-  //   "Select a window of dates to filter the analysis (baseline and post-disturbance)."
-  // );
-  // addDualRangeSlider(
-  //   "parameters-collapse-div",
-  //   "Baseline year(s):",
-  //   "urlParams.preStartYear",
-  //   "urlParams.preEndYear",
-  //   minYear,
-  //   maxYear - 1,
-  //   urlParams.preStartYear,
-  //   urlParams.preEndYear,
-  //   1,
-  //   "pre-years-slider",
-  //   "null",
-  //   "Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
-  // );
-  // // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
-  // addRangeSlider(
-  //   "parameters-collapse-div",
-  //   "Target year:",
-  //   "urlParams.postYear",
-  //   minYear + 1,
-  //   maxYear,
-  //   urlParams.postYear,
-  //   1,
-  //   "post-years-slider",
-  //   null,
-  //   "Choose year to compare against Baseline year(s)."
-  // );
+//   addCollapse(
+//     "sidebar-left",
+//     "tools-collapse-label",
+//     "tools-collapse-div",
+//     "TOOLS",
+//     `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+//     false,
+//     "",
+//     "Tools to measure and chart data provided on the map"
+//   );
 
-  // addSubCollapse("parameters-collapse-div", "advanced-params-label", "advanced-params-div", "Advanced Parameters", "", false, "");
-  // $("#parameters-collapse-div").append("<hr>");
-  // addRangeSlider(
-  //   "advanced-params-div",
-  //   "Giant Sequoia Canopy Diamater (m)",
-  //   "urlParams.treeDiameter",
-  //   5,
-  //   30,
-  //   urlParams.treeDiameter,
-  //   5,
-  //   "tree-diameter-slider",
-  //   "null",
-  //   "Specify the average diameter of a Giant Sequoia crown in meters"
-  // );
-
-  // addCheckboxes(
-  //   "advanced-params-div",
-  //   "lcms-tree-mask-class-checkboxes",
-  //   "LCMS land cover classes to include as tree to mask out non tree areas from change detection. ",
-  //   "lcmsTreeMaskClasses",
-  //   urlParams.lcmsTreeMaskClasses
-  // );
-
-  // // addRadio('advanced-params-div','cloud-mask-method-radio','','S2Cloudless+TDOM','CloudScore+','cloudMaskMethod','s2c','csp',null,null,'Toggle between imperial or metric units')
-
-  // if (urlParams.cloudMaskMethod === null || urlParams.cloudMaskMethod === undefined) {
-  //   urlParams.cloudMaskMethod = {
-  //     "S2Cloudless-TDOM": false,
-  //     "CloudScore+": true,
-  //   };
-  // }
-  // addMultiRadio(
-  //   "advanced-params-div",
-  //   "cloud-mask-method-radio",
-  //   "Cloud Masking Method",
-  //   "cloudMaskMethod",
-  //   urlParams.cloudMaskMethod,
-  //   "Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024"
-  // );
-
-  // addJSONInputTextBox(
-  //   "advanced-params-div",
-  //   "diff-bands-thresh-input",
-  //   "Difference Bands and Thresholds",
-  //   "urlParams.diffThreshs",
-  //   urlParams.diffThreshs,
-  //   "Bands and thresholds to use for identifying change"
-  // );
-
-  // addJSONInputTextBox("advanced-params-div", "comp-viz-params-input", "Composite Visualization Parameters", "urlParams.compVizParams", urlParams.compVizParams, "Viz params for composite images");
-
-  // addJSONInputTextBox("advanced-params-div", "diff-viz-params-input", "Difference Visualization Parameters", "urlParams.diffVizParams", urlParams.diffVizParams, "Viz params for difference image");
-
-  // // Sync sliders
-  // $("#post-years-slider")
-  //   .slider()
-  //   .bind("slide", function (event, ui) {
-  //     var yr = ui.value;
-  //     var needsUpdated = false;
-  //     if (yr <= urlParams.preEndYear) {
-  //       urlParams.preEndYear = yr - 1;
-  //       needsUpdated = true;
-  //     }
-  //     if (yr <= urlParams.preStartYear) {
-  //       urlParams.preStartYear = yr - 1;
-  //       needsUpdated = true;
-  //     }
-  //     if (needsUpdated) {
-  //       $("#pre-years-slider").slider("values", [urlParams.preStartYear, urlParams.preEndYear]);
-  //       $("#pre-years-slider-update").html(`${urlParams.preStartYear} - ${urlParams.preEndYear}`);
-  //     }
-  //   });
-  // $("#pre-years-slider")
-  //   .slider()
-  //   .bind("slide", function (event, ui) {
-  //     var yrs = ui.values;
-  //     var needsUpdated = false;
-  //     if (yrs[0] >= urlParams.postYear) {
-  //       urlParams.postYear = yrs[0] + 1;
-  //       needsUpdated = true;
-  //     }
-  //     if (yrs[1] >= urlParams.postYear) {
-  //       urlParams.postYear = yrs[1] + 1;
-  //       needsUpdated = true;
-  //     }
-  //     if (needsUpdated) {
-  //       $("#post-years-slider").slider("value", urlParams.postYear);
-  //       $("#post-years-slider-update").html(`${urlParams.postYear}`);
-  //     }
-  //   });
-
-  // addCollapse(
-  //   "sidebar-left",
-  //   "reference-layer-list-collapse-label",
-  //   "reference-layer-list-collapse-div",
-  //   "REFERENCE DATA",
-  //   `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
-  //   false,
-  //   null,
-  //   "Additional relevant layers to view on map intended to provide context for change data"
-  // );
-  // $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-
-  // addCollapse(
-  //   "sidebar-left",
-  //   "tools-collapse-label",
-  //   "tools-collapse-div",
-  //   "TOOLS",
-  //   `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
-  //   false,
-  //   "",
-  //   "Tools to measure and chart data provided on the map"
-  // );
-
-  // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
-  // addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
-
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
-
-  $("#parameters-collapse-div").append(staticTemplates.reRunButton);
-
-  if (urlParams.canExport === true) {
-    canExport = urlParams.canExport;
-    addCollapse(
-      "sidebar-left",
-      "download-collapse-label",
-      "download-collapse-div",
-      "DOWNLOAD DATA",
-      `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
-      false,
-      ``,
-      "Download " + mode + " products for further analysis"
-    );
-  }
-} else {
-  addCollapse(
-    "sidebar-left",
-    "layer-list-collapse-label",
-    "layer-list-collapse-div",
-    "ANCILLARY DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
-    true,
-    null,
-    mode + " DATA layers to view on map"
-  );
-  addCollapse(
-    "sidebar-left",
-    "reference-layer-list-collapse-label",
-    "reference-layer-list-collapse-div",
-    "PLOT DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
-    false,
-    null,
-    "Additional relevant layers to view on map intended to provide context for " + mode + " DATA"
-  );
-
-  addCollapse(
-    "sidebar-left",
-    "tools-collapse-label",
-    "tools-collapse-div",
-    "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
-    false,
-    "",
-    "Tools to measure and chart data provided on the map"
-  );
-
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-  plotsOn = true;
-} 
+//   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+//   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+//   plotsOn = true;
+// } 
 
 
-$("body").append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
-$(".legendDiv").css("bottom", "1rem");
-$(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
-addLegendCollapse();
-/////////////////////////////////////////////////////////////////
-//Construct tool options for different modes
+// $("body").append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
+// $(".legendDiv").css("bottom", "1rem");
+// $(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
+// addLegendCollapse();
+// /////////////////////////////////////////////////////////////////
+// //Construct tool options for different modes
 
-addAccordianContainer("tools-collapse-div", "tools-accordian");
-$("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`);
-// $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
-addSubAccordianCard(
-  "tools-accordian",
-  "measure-distance-label",
-  "measure-distance-div",
-  "Distance Measuring",
-  staticTemplates.distanceDiv,
-  false,
-  `toggleTool(toolFunctions.measuring.distance)`,
-  staticTemplates.distanceTipHover
-);
+// addAccordianContainer("tools-collapse-div", "tools-accordian");
+// $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`);
+// // $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
+// addSubAccordianCard(
+//   "tools-accordian",
+//   "measure-distance-label",
+//   "measure-distance-div",
+//   "Distance Measuring",
+//   staticTemplates.distanceDiv,
+//   false,
+//   `toggleTool(toolFunctions.measuring.distance)`,
+//   staticTemplates.distanceTipHover
+// );
 
-// <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
-addSubAccordianCard(
-  "tools-accordian",
-  "measure-area-label",
-  "measure-area-div",
-  "Area Measuring",
-  staticTemplates.areaDiv,
-  false,
-  `toggleTool(toolFunctions.measuring.area)`,
-  staticTemplates.areaTipHover
-);
-addRadio(
-  "measure-distance-div",
-  "metricOrImperialDistance-radio",
-  "",
-  "Imperial",
-  "Metric",
-  "metricOrImperialDistance",
-  "imperial",
-  "metric",
-  "updateDistance()",
-  "updateDistance()",
-  "Toggle between imperial or metric units"
-);
+// // <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
+// addSubAccordianCard(
+//   "tools-accordian",
+//   "measure-area-label",
+//   "measure-area-div",
+//   "Area Measuring",
+//   staticTemplates.areaDiv,
+//   false,
+//   `toggleTool(toolFunctions.measuring.area)`,
+//   staticTemplates.areaTipHover
+// );
+// addRadio(
+//   "measure-distance-div",
+//   "metricOrImperialDistance-radio",
+//   "",
+//   "Imperial",
+//   "Metric",
+//   "metricOrImperialDistance",
+//   "imperial",
+//   "metric",
+//   "updateDistance()",
+//   "updateDistance()",
+//   "Toggle between imperial or metric units"
+// );
 
-addRadio(
-  "measure-area-div",
-  "metricOrImperialArea-radio",
-  "",
-  "Imperial",
-  "Metric",
-  "metricOrImperialArea",
-  "imperial",
-  "metric",
-  "updateArea()",
-  "updateArea()",
-  "Toggle between imperial or metric units"
-);
+// addRadio(
+//   "measure-area-div",
+//   "metricOrImperialArea-radio",
+//   "",
+//   "Imperial",
+//   "Metric",
+//   "metricOrImperialArea",
+//   "imperial",
+//   "metric",
+//   "updateArea()",
+//   "updateArea()",
+//   "Toggle between imperial or metric units"
+// );
 
-addShapeEditToolbar("measure-distance-div", "measure-distance-div-icon-bar", "undoDistanceMeasuring()", "resetPolyline()");
-addColorPicker("measure-distance-div-icon-bar", "distance-color-picker", "updateDistanceColor", distancePolylineOptions.strokeColor);
+// addShapeEditToolbar("measure-distance-div", "measure-distance-div-icon-bar", "undoDistanceMeasuring()", "resetPolyline()");
+// addColorPicker("measure-distance-div-icon-bar", "distance-color-picker", "updateDistanceColor", distancePolylineOptions.strokeColor);
 
-addShapeEditToolbar("measure-area-div", "measure-area-div-icon-bar", "undoAreaMeasuring()", "resetPolys()");
-addColorPicker("measure-area-div-icon-bar", "area-color-picker", "updateAreaColor", areaPolygonOptions.strokeColor);
+// addShapeEditToolbar("measure-area-div", "measure-area-div-icon-bar", "undoAreaMeasuring()", "resetPolys()");
+// addColorPicker("measure-area-div-icon-bar", "area-color-picker", "updateAreaColor", areaPolygonOptions.strokeColor);
 
-// addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
-$("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
-addSubAccordianCard("tools-accordian", "query-label", "query-div", "Query Visible Map Layers", staticTemplates.queryDiv, false, `toggleTool(toolFunctions.pixel.query)`, staticTemplates.queryTipHover);
-if (["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1) {
-  addSubAccordianCard(
-    "tools-accordian",
-    "pixel-chart-label",
-    "pixel-chart-div",
-    "Query " + mode + " Time Series",
-    staticTemplates.pixelChartDiv,
-    false,
-    `toggleTool(toolFunctions.pixel.chart)`,
-    staticTemplates.pixelChartTipHover
-  );
-  addDropdown("pixel-chart-div", "pixel-collection-dropdown", "Choose which " + mode + " time series to chart", "whichPixelChartCollection", "Choose which " + mode + " time series to chart.");
-}
-// $('#pixel-chart-div').append(staticTemplates.showChartButton);
-// addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
-if (mode === "geeViz") {
-  $("#pixel-chart-label").remove();
-  $("#share-button").remove();
-  $("#tools-accordian").append(`<hr>`);
-  //Sync tooltip toggle
-  var tShowToolTipModal = true;
-  if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
-    tShowToolTipModal = localStorage.showToolTipModal;
-  }
-  addRadio(
-    "tools-accordian",
-    "tooltip-radio",
-    "Show tool tips",
-    "Yes",
-    "No",
-    "localStorage.showToolTipModal",
-    "true",
-    "false",
-    "",
-    "",
-    "Whether to show tool tips to help explain how to use the tools."
-  );
-  if (tShowToolTipModal === "false") {
-    $("#tooltip-radio-second_toggle_label").click();
-  }
+// // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
+// $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
+// addSubAccordianCard("tools-accordian", "query-label", "query-div", "Query Visible Map Layers", staticTemplates.queryDiv, false, `toggleTool(toolFunctions.pixel.query)`, staticTemplates.queryTipHover);
+// if (["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1) {
+//   addSubAccordianCard(
+//     "tools-accordian",
+//     "pixel-chart-label",
+//     "pixel-chart-div",
+//     "Query " + mode + " Time Series",
+//     staticTemplates.pixelChartDiv,
+//     false,
+//     `toggleTool(toolFunctions.pixel.chart)`,
+//     staticTemplates.pixelChartTipHover
+//   );
+//   addDropdown("pixel-chart-div", "pixel-collection-dropdown", "Choose which " + mode + " time series to chart", "whichPixelChartCollection", "Choose which " + mode + " time series to chart.");
+// }
+// // $('#pixel-chart-div').append(staticTemplates.showChartButton);
+// // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
+// if (mode === "geeViz") {
+//   $("#pixel-chart-label").remove();
+//   $("#share-button").remove();
+//   $("#tools-accordian").append(`<hr>`);
+//   //Sync tooltip toggle
+//   var tShowToolTipModal = true;
+//   if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
+//     tShowToolTipModal = localStorage.showToolTipModal;
+//   }
+//   addRadio(
+//     "tools-accordian",
+//     "tooltip-radio",
+//     "Show tool tips",
+//     "Yes",
+//     "No",
+//     "localStorage.showToolTipModal",
+//     "true",
+//     "false",
+//     "",
+//     "",
+//     "Whether to show tool tips to help explain how to use the tools."
+//   );
+//   if (tShowToolTipModal === "false") {
+//     $("#tooltip-radio-second_toggle_label").click();
+//   }
 }
 if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
