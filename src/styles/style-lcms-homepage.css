@@ -175,11 +175,49 @@ h5 {
   background-color: #1b1716aa;
   color: var(--deep-brown-10);
 }
+.large-legend {
+  font-size: 0.8rem;
+  position: relative;
+  width: 100%;
+}
+.large-legend ul.legend-labels {
+  list-style: none;
+}
+.large-legend ul.legend-labels li {
+  display: inline-block;
+  margin-right: 10px;
+}
 .legend-labels {
   margin-bottom: 0px;
   padding-left: 0.1rem;
   padding-right: 0px;
   padding-top: 0.1rem;
+}
+.legend-container {
+  position: absolute;
+  bottom: 0.1rem;
+  right: 0.1rem;
+}
+.legend-colorRamp {
+  font-size: 0.9rem;
+  width: 5rem;
+}
+.colorRamp {
+  /* position: absolute; */
+  /* left: 0px; */
+  /* top: 0px; */
+  /* display: inline-block; */
+  width: 1.5rem;
+  height: 3rem;
+}
+.colorRamp-labels {
+  padding-left: 2rem;
+}
+.top-colorRamp-label {
+  padding-top: 0rem;
+}
+.bottom-colorRamp-label {
+  padding-top: 0.5rem;
 }
 .row {
   margin-right: 0rem;
@@ -262,9 +300,11 @@ nav {
   list-style: square;
 }
 .application-examples {
-  margin-top: 2rem;
+  margin-top: 3rem;
 }
-
+.conus-pane {
+  margin-bottom: 0.5rem;
+}
 .bg-white .homepage-link {
   color: var(--deep-brown-100);
 }
@@ -283,6 +323,16 @@ nav {
   transform: translate(0.3rem) translateY(0.3rem) !important;
 }
 
+.links-home-bottombar {
+  text-decoration: underline !important;
+  /* font-size: 0.5rem; */
+  /* font-weight: bold; */
+  /* margin-right: 0.3rem; */
+  color: var(--deep-brown-20) !important;
+}
+.list-group-item {
+  padding-left: 0.5rem;
+}
 body,
 label {
   cursor: text;

@@ -59,7 +59,7 @@ function runDashboard() {
 
   let startYearT = parseInt(urlParams.startYear);
   let endYearT = parseInt(urlParams.endYear);
-  let dashboardFolder = "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2022-8"; //'projects/lcms-292214/assets/Dashboard2';
+  let dashboardFolder = "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2023-9"; //'projects/lcms-292214/assets/Dashboard2';
   var summaries = ee.data
     .getList({
       id: dashboardFolder,
@@ -67,7 +67,7 @@ function runDashboard() {
     .map(function (t) {
       return t.id;
     });
-  // console.log(summaries.length)
+  // console.log(summaries.length);
   // window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
 
   huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06").filter(ee.Filter.inList("states", ["CN", "MX", "AK", "AK,CN", "HI", "AS"]).not());
@@ -113,14 +113,14 @@ function runDashboard() {
       unique_fieldname: "DISTRICTNA",
       visible: false,
       color: "FF8",
-      title: "USFS Forest District boundaries",
+      title: "U.S. Department of Agriculture, Forest Service Forest District boundaries",
     },
     "USFS Forests": {
       path: "Forests",
       unique_fieldname: "FORESTNAME",
       visible: false,
       color: "8F8",
-      title: "USFS Forest boundaries",
+      title: "U.S. Department of Agriculture, Forest Service Forest boundaries",
     },
   };
   if (urlParams.onlyIncludeFacts == true) {
@@ -216,7 +216,9 @@ function runDashboard() {
 
   let lcmsRun = {};
   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
-  lcmsRun.lcms = ee.ImageCollection(ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten());
+  lcmsRun.lcms = ee.ImageCollection(
+    ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten()
+  );
 
   //Get properties image
   lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());
@@ -232,7 +234,51 @@ function runDashboard() {
     return t.copyProperties(lcmsRun.f).set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });
   lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms);
+  let lcms_props = {
+    Change_class_names: ["Stable", "Slow Loss", "Fast Loss", "Gain", "Non-Processing Area Mask"],
+    Change_class_palette: ["3d4551", "f39268", "d54309", "00a398", "1b1716"],
+    Change_class_values: [1, 2, 3, 4, 5],
+    Land_Cover_class_names: [
+      "Trees",
+      "Tall Shrubs & Trees Mix (SEAK Only)",
+      "Shrubs & Trees Mix",
+      "Grass/Forb/Herb & Trees Mix",
+      "Barren & Trees Mix",
+      "Tall Shrubs (SEAK Only)",
+      "Shrubs",
+      "Grass/Forb/Herb & Shrubs Mix",
+      "Barren & Shrubs Mix",
+      "Grass/Forb/Herb",
+      "Barren & Grass/Forb/Herb Mix",
+      "Barren or Impervious",
+      "Snow or Ice",
+      "Water",
+      "Non-Processing Area Mask",
+    ],
+    Land_Cover_class_palette: [
+      "005e00",
+      "008000",
+      "00cc00",
+      "b3ff1a",
+      "99ff99",
+      "b30088",
+      "e68a00",
+      "ffad33",
+      "ffe0b3",
+      "ffff00",
+      "aa7700",
+      "d3bf9b",
+      "ffffff",
+      "4780f3",
+      "1b1716",
+    ],
+    Land_Cover_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    Land_Use_class_names: ["Agriculture", "Developed", "Forest", "Non-Forest Wetland", "Other", "Rangeland or Pasture", "Non-Processing Area Mask"],
+    Land_Use_class_palette: ["efff6b", "ff2ff8", "1b9d0c", "97ffff", "a1a1a1", "c2b34a", "1b1716"],
+    Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
 
+    layerType: "Image",
+  };
   let firstComparisonLayerI = false;
   ["Land_Cover", "Land_Use"].map((nm) => {
     // console.log(nm)
@@ -246,11 +292,12 @@ function runDashboard() {
       .select([nm])
       .mode()
       .copyProperties(lcmsRun.f);
-
+    lcms_props.bandNames = [nm];
     Map.addLayer(
       pre,
       {
         autoViz: true,
+        eeObjInfo: lcms_props,
         opacity: 0.3,
         layerType: "geeImage",
       },
@@ -265,6 +312,7 @@ function runDashboard() {
       post,
       {
         autoViz: true,
+        eeObjInfo: lcms_props,
         opacity: 0.1,
         layerType: "geeImage",
       },

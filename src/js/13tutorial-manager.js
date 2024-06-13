@@ -818,7 +818,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
     let sequoiaTourSteps = [
       [
         `Welcome to the Giant Sequoia Viewer tour`,
-        `This tour will walk you through how to use the Giant Sequoia Viewer. <br>(If you'd like to learn how to use individual elements, ctrl+click to see the tour slide for a specific element.)`,
+        `This tour will walk you through how to use the Giant Sequoia Viewer. <br>(If you'd like to learn how to use individual elements or revisit an element after exiting the tour, you can ctrl+click on an element to see its tour slide.)`,
         "#title-banner",
         "right",
         [1, 2],
@@ -858,7 +858,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
       ],
       [
         `MAP LAYERS`,
-        `Monitoring site locations, image composites used to flag potentially declining sites, the change/not-change layers, and LCMS tree mask are available for viewing. Turn on and off layers using the radio buttons on the left side of each layer. Opacity (transparency) can be adjusted with the slider on the right.`,
+        `Monitoring site locations, image composites used to flag potentially declining sites, the change/not-change layers, and LCMS tree mask are available for viewing. After submitting date parameters for an analysis, any monitoring site locations that may be flagged for potential decline during that period will appear in a separate layer. Additionally, any monitoring site locations that may be flagged for potential decline during that period will populate a density (of flagged trees in proximity to one another) heatmap layer. Turn on and off layers using the radio buttons on the left side of each layer. Opacity (transparency) can be adjusted with the slider on the right.`,
         "#layer-list-collapse-label",
         "right-end",
         [0, 2],
@@ -867,7 +867,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
       ],
       [
         "REFERENCE DATA",
-        `Several layers of Giant Sequoia tree data are available to add context to the analysis. Turning layers on/off and adjusting opacity are the same as the Data Layers.`,
+        `Several layers of Giant Sequoia tree data are available to add context to the analysis. Turning layers on/off and adjusting opacity are the same as for the main <i>MAP LAYERS</i>.`,
         "#reference-layer-list-collapse-label",
         "right-end",
         [0, 2],
@@ -876,7 +876,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
       ],
       [
         `MONITORING SITES`,
-        `Named Giant Sequoias are flagged if they are found to display signs of potential mortality. Using this table and the accompanying imagery data in the <i>MAP LAYERS</i> above can help determine whether a tree merits further investigation.`,
+        `Named Giant Sequoias are flagged if they are found to display signs of potential mortality. Using this table and the accompanying imagery data in the <i>MAP LAYERS</i> in the left sidebar can help determine whether a tree merits further investigation.<br>Double-clicking a row in this table will zoom to that tree location on the map, and hovering on a row will highlight that tree. <br><br>After running an analysis period that flags trees for potential loss, the flagged monitoring sites will be sorted to the top of this table. While the table is scrollable, for easiest viewing of all parameters in the table, you can copy or download the entire table. `,
         "#table-collapse-label",
         "right-end",
         [0, 2],

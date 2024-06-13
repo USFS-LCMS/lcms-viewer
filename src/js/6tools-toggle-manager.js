@@ -1,4 +1,5 @@
 function stopAllTools() {
+  areaChart.stopAutoCharting();
   stopArea();
   stopDistance();
   stopQuery();
@@ -50,14 +51,20 @@ var toolFunctions = {
     },
   },
   area: {
+    mapBounds: {
+      on: 'stopAllTools();areaChart.startAutoCharting();showTip("SUMMARIZE BY MAP BOUNDS AREA",staticTemplates.mapDefinedAreaChartTip);',
+      off: "stopAllTools()",
+      state: false,
+      title: "Area Tools-Map Extent Area Tool",
+    },
     userDefined: {
-      on: 'stopAllTools();areaChartingTabSelect("#user-defined");showTip("SUMMARIZE BY USER-DEFINED AREA",staticTemplates.userDefinedAreaChartTip);',
+      on: 'stopAllTools();areaChart.setupChartProgress();areaChartingTabSelect("#user-defined");showTip("SUMMARIZE BY USER-DEFINED AREA",staticTemplates.userDefinedAreaChartTip);',
       off: "stopAllTools()",
       state: false,
       title: "Area Tools-User Defined Area Tool",
     },
     shpDefined: {
-      on: 'stopAllTools();areaChartingTabSelect("#shp-defined");showTip("SUMMARIZE BY UPLOADED AREA",staticTemplates.uploadAreaChartTip);',
+      on: 'stopAllTools();areaChart.setupChartProgress();areaChartingTabSelect("#shp-defined");showTip("SUMMARIZE BY UPLOADED AREA",staticTemplates.uploadAreaChartTip);',
       off: "stopAllTools()",
       state: false,
       title: "Area Tools-Upload an Area",
@@ -69,7 +76,7 @@ var toolFunctions = {
       title: "Area Tools-Select an Area from Dropdown",
     },
     selectInteractive: {
-      on: 'stopAllTools();turnOffVectorLayers();turnOnSelectedLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
+      on: 'stopAllTools();areaChart.setupChartProgress();turnOffVectorLayers();turnOnSelectedLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
       off: "stopAllTools();turnOffSelectLayers();",
       state: false,
       title: "Area Tools-Select an Area on map",
@@ -107,13 +114,7 @@ function updateToolStatusBar() {
   if (!somethingShown) {
     $("#current-tool-selection").append(`No active tools`);
   } else {
-    ga(
-      "send",
-      "event",
-      "tool-active",
-      mode,
-      $("#current-tool-selection").html().split(": ")[1]
-    );
+    ga("send", "event", "tool-active", mode, $("#current-tool-selection").html().split(": ")[1]);
   }
 }
 function toggleTool(tool) {

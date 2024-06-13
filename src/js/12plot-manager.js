@@ -59,10 +59,7 @@ function addPlotgeoJSON(plotGeoJSONPath) {
   map.data.setStyle({ fillOpacity: 0, strokeColor: "#F00" });
 }
 function loadPlots(plotProjectObj) {
-  if (
-    plotProjectObj["plotIDField"] === null ||
-    plotProjectObj["plotIDField"] === undefined
-  ) {
+  if (plotProjectObj["plotIDField"] === null || plotProjectObj["plotIDField"] === undefined) {
     plotProjectObj["plotIDField"] = "PLOTID";
   }
   addPlotProjectAccordian(plotProjectObj.name);
@@ -76,7 +73,7 @@ function loadPlots(plotProjectObj) {
         addPlot(f);
       });
       // console.log(json)
-      Map2.addLayer(
+      Map.addLayer(
         json,
         { layerType: "geoJSONVector", strokeColor: "#F00" },
         plotProjectObj.name + " Plots",
@@ -99,14 +96,13 @@ function loadPlots(plotProjectObj) {
   //  	.then(json => console.log(json));
   //  	 addPlotgeoJSON(plotProjectObj.path)
 }
+
 function addPlot(obj) {
   // console.log(obj);
   $("#" + obj.name.replaceAll(" ", "-") + "-plot-list").append(`
 		 <ul class = 'plot-button border-top border-bottom m-0' onclick = 'synchronousCenterObject(${JSON.stringify(
        obj.geometry
-     )});$("ul.plot-button").removeClass("simple-bg-black");$(this).addClass("simple-bg-black")'>${
-    obj.properties.PLOTID
-  }</ul>
+     )});$("ul.plot-button").removeClass("simple-bg-black");$(this).addClass("simple-bg-black")'>${obj.properties.PLOTID}</ul>
 		`);
 }
 
@@ -178,21 +174,21 @@ var CONUSpractice = {
 };
 var hiPractice = {
   name: "Hawaii Practice",
-  path: "./src/data/src/data/geojson/HI_training_30m_box.json",
+  path: "./src/data/geojson/HI_training_30m_box.json",
   plotIDField: "PLOTID",
 };
-var akPractice = {
-  name: "Alaska Practice",
+var coastalAKPractice = {
+  name: "Coastal Alaska Practice",
   path: "./src/data/geojson/AK_training_30m_box.json",
   plotIDField: "PLOTID",
 };
-var plotsGeoJSONs = [
-  hiFinal,
-  conus1,
-  hiPractice,
-  akPractice,
-  coastalAK2022
-]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
+var interiorAKPractice = {
+  name: "Interior Alaska Practice",
+  path: "./src/data/geojson/Interior_AK_locations_for_TS_training_5test_30m_box.json",
+  plotIDField: "ID",
+};
+
+var plotsGeoJSONs = [hiFinal, conus1, CONUSpractice, hiPractice, coastalAK2022, coastalAKPractice, interiorAKPractice]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
 // 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
 // })

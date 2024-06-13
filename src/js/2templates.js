@@ -212,12 +212,17 @@ const staticTemplates = {
                         
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
-                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0.25rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg">
+                    <a href="home.html" target="_blank" title = 'Click to visit the LCMS Homepage'>
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
+                    </a>
                     <div class="vl title-banner-icon"></div>
-                    <img id='title-banner-icon-right' class = 'title-banner-icon' style = 'height:1.7rem;margin-left:0.0rem;margin-right:0.1rem;margin-top:0.25rem;' >
-                    <div  class='my-0 title-banner-label'>
+                    <img id='title-banner-icon-right' class = 'title-banner-icon'  >
+                    <div  class='my-0 title-banner-label'>  
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
                 </div>`,
+  // topBanner: ` <div class='title-banner white'>
+  // <span>${topBannerParams.leftWords} <p class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</p> ${topBannerParams.rightWords}</p>
+  // </div>`,
 
   studyAreaDropdown: `<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
@@ -274,7 +279,7 @@ const staticTemplates = {
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -290,11 +295,11 @@ const staticTemplates = {
                                     <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
       `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd>
                                     </p>`,
-      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                                <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                                <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                                 <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                                 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                             </div>`
@@ -307,16 +312,14 @@ const staticTemplates = {
                                     </div>
                                     <p>The LCMS Dashboard application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
       `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
-                        </div>
-
                         </div>`,
       "Loading LCMS summary areas. This can take some time"
     ),
@@ -326,14 +329,14 @@ const staticTemplates = {
       `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
                 <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
             </div>
-            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the USFS Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
+            <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the U.S. Department of Agriculture, Forest Service Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
            
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
       `
     <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
-    <a class="intro-modal-links" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a>
+    <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
     <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
 </div>`,
@@ -387,7 +390,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,
       ""
@@ -450,7 +453,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`,
       ""
@@ -464,9 +467,10 @@ const staticTemplates = {
 `,
       `
 <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
-<h5>For access please contact Sequoia Viewer project coordinator.</h5>
+<!-- <h5>For access please contact Sequoia Viewer project coordinator.</h5> -->
 <div class ='my-3'>
-<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
+<h6><b>First time users</b>, please click below to take a tutorial on how to use the Giant Sequoia Viewer's features:</h6>
+<a class="intro-modal-links" onclick= "startTour()" id= "tutorialLink" title="Click to take a tour of the Giant Sequoia Viewer's features">TUTORIAL</a><br><br>
 <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
 
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
@@ -537,7 +541,7 @@ const staticTemplates = {
     <a class = 'intro-modal-links' title = "Visualize and explore LCMS final outputs" href = "index.html" target="_blank">LCMS Data Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore time series datasets used to create the LCMS map outputs (Includes both LandTrendr and CCDC outputs)" href = "lcms-base-learner.html" target="_blank">LCMS Base Learner Explorer</a>
     <a class = 'intro-modal-links' title = "Visualize and explore summaries of LCMS data over different areas" href = "dashboard.html" target="_blank">LCMS Dashboard</a>
-    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across USFS Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
+    <a class = 'intro-modal-links' title = "Visualize pre-made gifs illustrating patterns of change across U.S. Department of Agriculture, Forest Service Forests and Districts" href = "lcms-in-motion.html" target="_blank">LCMS-in-Motion</a>
     
 </div>`
     ),
@@ -548,7 +552,7 @@ const staticTemplates = {
             This prototype tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY USFS partners'>
+    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY U.S. Department of Agriculture, Forest Service partners'>
         <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
         
        
@@ -659,6 +663,17 @@ const staticTemplates = {
         			<span id = 'gee-queue-len' class = 'px-1' style="display:none;" title="All map layers are dynamically requested from Google Earth Engine.  The number of outstanding requests is shown here.">Queue length for maps from GEE: <span id='outstanding-gee-requests'>0</span></span>
                     <span class = 'px-1' title="The number of outstanding map layers currently loading tiles.">Number of map layers loading: <span id='number-gee-tiles-downloading'>0</span></span>
                     <span title="Current location and elevation of mouse pointer and map zoom level and respective map scale" class = 'px-1'  id='current-mouse-position'  ></span>
+                    <span id = 'usda-notices' > <a href="https://earthengine.google.com/" target="_blank">
+                      <a href="https://www.usda.gov/privacy-policy/" class='links-bottombar' target="_blank">
+                      Privacy Policy
+                      </a>
+                      <a href="https://www.usda.gov/accessibility-statement/" class='links-bottombar' target="_blank">
+                      Accessibility Statement
+                      </a>
+                      <a href="https://www.fs.usda.gov/about-agency/disclaimers-important-notices" class='links-bottombar' target="_blank">
+                      Disclaimers
+                      </a>
+                    </span>
                     <span id = 'contributor-logos' style='display:none;'> 
                         <a href="https://earthengine.google.com/" target="_blank">
                             <img src="./src/assets/images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
@@ -692,7 +707,7 @@ const staticTemplates = {
         <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
         <div class="tab-content" id="highlights-table-divs"></div>
         <div id ='highlights-disclaimer-div' >
-        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
     </p></div>
     </div>`,
   dashboardHighlightsDiv: `<div id='dashboard-highlights-container' class='dashboard-highlights bg-black col-sm-7 col-md-4 col-xl-3'>
@@ -712,15 +727,15 @@ const staticTemplates = {
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2022-8')" title="Open in-depth LCMS v2022.8 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         `,
   dashboardProgressDiv: `<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
         <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
-          0.8
-        )}"  alt="GEE logo image">
+    0.8
+  )}"  alt="GEE logo image">
         
         <div class="progressbar progress-pulse" id='highlights-progressbar' class = 'px-2' title='Percent of summary areas that have finished downloading LCMS summary data'>
             <span  style="width: 0%;">0%</span>
@@ -755,7 +770,7 @@ const staticTemplates = {
   studyAreaDropdownButtonDisabledTooltip: `Still waiting on previous map layer requests. Can change study area once the previous requests are finished.`,
   reRunButtonEnabledTooltip: `Once finished changing parameters, press this button to refresh map layers`,
   reRunButtonDisabledTooltip: `Still waiting on previous map layer requests. Can re-submit once the previous requests are finished.`,
-  reRunButton: `<button id = 'reRun-button' onclick = 'reRun()' class = 'mb-1 ml-1 btn ' title="">Submit</button>`,
+  reRunButton: `<button id = 'reRun-button' onclick = 'reRun()' class = 'btn   ' title="">Submit</button>`,
   addTimelapsesButton: `<button id = 'addTimelapses-button' onclick = 'addLCMSTimeLapses()' class = 'mb-1 ml-1 btn ' title="Add interactive time lapse of LCMS Change and Land Cover products. This will slow down the map loading">Add LCMS Time Lapses To Map</button>`,
   downloadDiv: `<div class = 'py-2'>
                         <a id = 'product-descriptions' target = '_blank'>Detailed Product Description</a>
@@ -764,7 +779,7 @@ const staticTemplates = {
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
   lcmsProductionDownloadDiv: `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2022.8)</span>
+                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2023.9)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -787,7 +802,7 @@ const staticTemplates = {
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Southeastern Alaska (v2022.8)</span>
+                                          <li><span class="caret caret-down">Southeastern Alaska (v2023.9)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -810,7 +825,7 @@ const staticTemplates = {
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2020.6)</span>
+                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2022.8)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -831,6 +846,12 @@ const staticTemplates = {
                                             </ul>
                                           </li>
                                         </ul>`,
+  TreeMapGEEClippingDiv: `<h5 class='pt-2' style='border-top: 0.1em solid black;'>Data Clipping Tools</h5>
+                            <div class=" px-0 py-2 sub-sub-panel-title-collapsed" style='border-top: 0.1em solid var(--deep-brown-30);'>
+                              <a href="https://code.earthengine.google.com/6a10868aa172b8082a0d11bc0c54ea8c" target="_blank" title="Use a Google Earth Engine script template to download attributes clipped to polygon of interest.">
+                                Clip and download data with Google Earth Engine
+                              </a>
+                            </div>`,
   TreeMapDownloadDiv: `<ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
@@ -912,7 +933,7 @@ const staticTemplates = {
                                 <section class = 'row '>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
-                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                         </a>
                                     </div>
                                     <div class = 'col-lg-10'>
@@ -966,6 +987,19 @@ const staticTemplates = {
                                     </div>
                                 </section>
                       </div>`,
+  sequoiaSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+                        <header class = 'row ' title = 'Open Giant Sequoia Viewer tutorial'>
+                            <h3 class = ' text-capitalize'>Tutorial</h3>
+                        </header>
+                        <div class = 'row ' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                            </div>
+                            <div class = 'col-lg-10'>
+                            <a class="intro-modal-links" onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">Giant Sequoia View TUTORIAL</a>
+                            </div>
+                        </div>
+                        <hr>`,
   supportDiv: `<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
@@ -1007,10 +1041,10 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (CONUS and SEAK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (CONUS and SEAK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (PRUSVI)</a>
                                 </li>   
                             </div>
                         </div>
@@ -1064,7 +1098,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -1095,7 +1129,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2023). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1159,10 +1193,10 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (CONUS and SEAK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (CONUS and SEAK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2020-6")' title = 'Open in-depth LCMS v2020.6 methods documentation'>Version 2020.6 (PRUSVI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (PRUSVI)</a>
                                 </li>   
                             </div>
                         </div>
@@ -1216,7 +1250,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">
-                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
@@ -1247,7 +1281,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2023). Landscape Change Monitoring System Dashboard [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/dashboard.html (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). Landscape Change Monitoring System Dashboard [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/dashboard.html (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1331,7 +1365,7 @@ const staticTemplates = {
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="" target="_blank">
-                                    <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="USFS Logo"  href="#"  title="Click to learn more about our field collaborators ">
+                                    <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about our field collaborators ">
                                 </a>
                                 
                                 <a href="" target="_blank" >
@@ -1341,7 +1375,7 @@ const staticTemplates = {
                             <div class = 'col-lg-10'>
                                 <a href="" target="_blank">
                                     <p class = 'support-text'>
-                                    USFS units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
+                                    U.S. Department of Agriculture, Forest Service units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
                                 </a>
                             </div>
                         </section>
@@ -1367,7 +1401,7 @@ const staticTemplates = {
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2023). ${mode} [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/${mode}.html (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). ${mode} [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/${mode}.html (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1407,6 +1441,7 @@ const staticTemplates = {
   queryTip: "Double-click on map to query the values of the visible layers.  Only layers that are turned on will be queried.",
   pixelChartDiv: `<div>Double-click on map to query ${mode} data time series<br></div>`,
   pixelChartTip: "Double-click on map to look at the full time series of " + mode + " outputs for a pixel.",
+  mapDefinedAreaChartDiv: `<div  id="map-defined" ></div>`,
   userDefinedAreaChartDiv: `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
                                             <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
@@ -1420,6 +1455,7 @@ const staticTemplates = {
   showChartButton: `<div class = 'py-2'>
                                 <button onclick = "$('#chart-modal').modal()" class = 'btn bg-black' title = "If you turned off the chart, but want to show it again" >Turn on Chart</button>
                                 </div>`,
+  mapDefinedAreaChartTip: "Charts will automatically update to summarize the current view extent after you pan or zoom on the map.",
   userDefinedAreaChartTip:
     "Click on map to select an area to summarize " +
     mode +
@@ -1783,6 +1819,17 @@ function showTip(title, message) {
     }
   });
 }
+// function to force a second opportunity for new users to open tutorial for sequoia viewer:
+function showTutorialLinkAgain(title, message) {
+  // If it is a user's first time at the site, localStorage.isFirstTime is undefined. This is then be set to false after a user clicks to do tutorial
+  $("#introModal").on("hidden.bs.modal", function () {
+    if (localStorage.isFirstTime != "false") {
+      showMessage(title, message, "secondTutorialPopUp-modal", true);
+      localStorage.isFirstTime = "false";
+    }
+  });
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to add a given study area to the study area dropdown
 function addStudyAreaToDropdown(name, toolTip) {
@@ -1961,14 +2008,23 @@ function addHiFormProcessButton(containerID) {
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated
 //Option list is formatted as {'Label 1': true, 'Label 2':false...etc}
-function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
-  $("#" + containerID).append(`<form  class = 'simple-radio' id = '${checkboxID}'><p class = 'param-title'>${title}</p></form>`);
+function addCheckboxes(containerID, checkboxID, title, variable, optionList, labels, hoverText = "", appendMethod = "append") {
+  let containerHTML = `<form  id = '${checkboxID}'  title = '${hoverText}' class = 'simple-radio' ><p class = 'param-title'>${title}</p><ul class = 'checkboxList' id = '${checkboxID}-list' ></ul></form>`;
+  if (appendMethod === "append") {
+    $("#" + containerID).append(containerHTML);
+  } else {
+    $("#" + containerID).prepend(containerHTML);
+  }
+
   eval(`if(window.${variable} === undefined){window.${variable} = []}`);
+  let ki = 0;
+  labels = labels || [];
   Object.keys(optionList).map(function (k) {
+    let kLabel = labels[ki] || k;
     // console.log(k)
     const kID = k.replace(/[^A-Za-z0-9]/g, "-");
     const checkboxCheckboxID = variable + kID + "-checkbox";
-    const checkboxLabelID = variable + checkboxCheckboxID + "-label";
+    const checkboxLabelID = variable + kID + "-label";
     if (optionList[k] === "true") {
       optionList[k] = true;
     } else if (optionList[k] === "false") {
@@ -1982,15 +2038,16 @@ function addCheckboxes(containerID, checkboxID, title, variable, optionList) {
       checked = "";
     }
     eval(`window.${variable} = optionList`);
-    $("#" + checkboxID).append(`<input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
-                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${k}</label>`);
+    $("#" + checkboxID + "-list").append(`<li><input  role="option" id="${checkboxCheckboxID}" type="checkbox" ${checked} value = '${k}' />
+                                 <label  id="${checkboxLabelID}" style = 'margin-bottom:0px;'  for="${checkboxCheckboxID}" >${kLabel}</label></li>`);
 
     $("#" + checkboxCheckboxID).change(function () {
       optionList[$(this).val()] = $(this)[0].checked;
       eval(`window.${variable} = optionList`);
-      console.log("Checkbox change");
-      console.log(optionList);
+      // console.log("Checkbox change");
+      // console.log(optionList);
     });
+    ki++;
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2038,7 +2095,9 @@ function addJSONInputTextBox(containerID, inputID, label, variable, defaultValue
   $("#" + containerID).append(`
     <hr>
     <label>${label}</label>
-    <textarea title='${title}' class="form-control" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(defaultValue)}</textarea>`);
+    <textarea title='${title}' class="form-control json-input-text-box" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
+    defaultValue
+  )}</textarea>`);
 
   $("#" + inputID).on("input", () => {
     var tJSON = $(`#${inputID}`).val();
@@ -2060,6 +2119,16 @@ function formatDT(__dt) {
   // var minutes = zeroPad(__dt.getMinutes(), 2);
   // var seconds = zeroPad(__dt.getSeconds(), 2);
   return month + "/" + date + "/" + year.toString().slice(2, 4); //+ ' ' + hours + ':' + minutes + ':' + seconds;
+}
+function formatDT2(__dt) {
+  var year = __dt.getFullYear();
+  var month = zeroPad(__dt.getMonth() + 1, 2);
+  var date = zeroPad(__dt.getDate(), 2);
+  // console.log(`${year.toString().slice(2, 4)}-${month}-${date}`);
+  // var hours = zeroPad(__dt.getHours(), 2);
+  // var minutes = zeroPad(__dt.getMinutes(), 2);
+  // var seconds = zeroPad(__dt.getSeconds(), 2);
+  return `${year.toString().slice(2, 4)}-${month}-${date}`;
 }
 function formatDTJulian(__dt) {
   // var year = __dt.getFullYear();
@@ -2245,7 +2314,9 @@ function addTab(tabTitle, tabListID, divListID, tabID, divID, tabOnClick, divHTM
     `<li class="nav-item"><a onclick = '${tabOnClick}' class="nav-link text-left text-dark tab-nav-link ${show}" id="'+tabID+'" data-toggle="tab" href="#${divID}" role="tab" aria-controls="${divID}" aria-selected="false" title="${tabToolTip}">${tabTitle}</a></li>`
   );
 
-  $("#" + divListID).append($(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`).append(divHTML));
+  $("#" + divListID).append(
+    $(`<div class="tab-pane fade ${show}" id="${divID}" role="tabpanel" aria-labelledby="${tabID}" title="${tabToolTip}"></div>`).append(divHTML)
+  );
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
 function addTabContainer(containerID, tabListID, divListID) {
@@ -2313,7 +2384,16 @@ function addAccordianContainer(parentContainerID, accordianContainerID) {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 var panelCollapseI = 1;
-function addAccordianCard(accordianContainerID, accordianCardHeaderID, accordianCardBodyID, accordianCardHeaderContent, accordianCardBodyContent, show, onclick, toolTip) {
+function addAccordianCard(
+  accordianContainerID,
+  accordianCardHeaderID,
+  accordianCardBodyID,
+  accordianCardHeaderContent,
+  accordianCardBodyContent,
+  show,
+  onclick,
+  toolTip
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2347,7 +2427,16 @@ function addAccordianCard(accordianContainerID, accordianCardHeaderID, accordian
   panelCollapseI++;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addSubAccordianCard(accordianContainerID, accordianCardHeaderID, accordianCardBodyID, accordianCardHeaderContent, accordianCardBodyContent, show, onclick, toolTip) {
+function addSubAccordianCard(
+  accordianContainerID,
+  accordianCardHeaderID,
+  accordianCardBodyID,
+  accordianCardHeaderContent,
+  accordianCardBodyContent,
+  show,
+  onclick,
+  toolTip
+) {
   var collapsed;
   if (toolTip === undefined || toolTip === null) {
     toolTip = "";
@@ -2409,7 +2498,9 @@ function addLegendCollapse() {
     getWalkThroughCollapseContainerID(),
     "chart-collapse-label",
     "chart-collapse-div",
-    "QUERY OUTPUTS",
+    `<div id='query-spinner' style = 'display:inline;'>QUERY OUTPUTS 
+    </div>
+    `,
     '<i class="fa fa-list  mx-0" aria-hidden="true"></i>',
     true,
     ``,
@@ -2436,6 +2527,19 @@ function addLegendCollapse() {
   $("#legend-collapse-div").append(`<div role="list" id="legend-fhp-div"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="time-lapse-legend-list"></div>`);
   $("#legend-collapse-div").append(`<div role="list" id="legend-area-charting-select-layer-list"></div>`);
+
+  if (mode === "sequoia-view") {
+    addCollapse(
+      getWalkThroughCollapseContainerID(), //"sidebar-left",
+      "table-collapse-label",
+      "table-collapse-div",
+      "MONITORING SITES",
+      `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+      true,
+      ``,
+      "Giant Sequoia monitoring sites output table"
+    );
+  }
 }
 function addLegendContainer(legendContainerID, containerID, show, toolTip) {
   if (containerID === undefined || containerID === null) {
@@ -2463,7 +2567,8 @@ function addClassLegendContainer(classLegendContainerID, legendContainerID, clas
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
+    `<li><span style='border: ${obj.classStrokeWeight}px solid #${obj.classStrokeColor};background:${addColorHash(obj.classColor)};'></span>${obj.className
+    }</li>`
   );
 }
 
@@ -2563,7 +2668,7 @@ function addLayer(layer) {
     timeLapseObj[layer.viz.timeLapseID].layerVisibleIDs.push(visibleID);
     isDraggable = "not-draggable-layer";
   }
-  if (layer.layerType === "geeVector" || layer.layerType === "geoJSONVector") {
+  if (layer.layerType === "geeVector" || layer.layerType === "geoJSONVector" || layer.layerType === "dynamicMapService") {
     isDraggable = "not-draggable-layer";
   }
   //Set up layer control container
@@ -2586,6 +2691,9 @@ function addLayer(layer) {
     value: layer.opacity * 100,
     slide: function (e, ui) {
       layer.opacity = ui.value / 100;
+      if (layer.viz.isTimeLapse === false) {
+        urlParams.layerProps[layer.id].opacity = layer.opacity;
+      }
       // console.log(layer.opacity);
       if (layer.layerType !== "geeVector" && layer.layerType !== "geoJSONVector") {
         layer.layer.setOpacity(layer.opacity);
@@ -2613,7 +2721,11 @@ function addLayer(layer) {
   //Progress bar controller
   function updateProgress() {
     var pct = layer.percent;
-    if (pct === 100 && mode !== "lcms-dashboard" && (layer.layerType === "geeImage" || layer.layerType === "geeVectorImage" || layer.layerType === "geeImageCollection")) {
+    if (
+      pct === 100 &&
+      mode !== "lcms-dashboard" &&
+      (layer.layerType === "geeImage" || layer.layerType === "geeVectorImage" || layer.layerType === "geeImageCollection")
+    ) {
       jitterZoom();
     }
     $("#" + containerID).css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${pct}%, transparent ${pct}%, transparent 100%)`);
@@ -2622,6 +2734,8 @@ function addLayer(layer) {
   function zoomFunction() {
     if (layer.layerType === "geeVector") {
       centerObject(layer.item);
+    } else if (layer.layerType === "geeVectorImage" && (layer.viz.bounds === undefined || layer.viz.bounds !== null)) {
+      centerObject(layer.viz.asyncBounds);
     } else if (layer.layerType === "geoJSONVector") {
       // centerObject(ee.FeatureCollection(layer.item.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))})).geometry().bounds())
       // synchronousCenterObject(layer.item.features[0].geometry)
@@ -2655,6 +2769,9 @@ function addLayer(layer) {
   //Function to handle turning off of different types of layers
   function turnOff() {
     ga("send", "event", "layer-off", layer.layerType, layer.name);
+    if (!layer.viz.isTimeLapse) {
+      urlParams.layerProps[id].visible = false;
+    }
     if (layer.layerType === "dynamicMapService") {
       layer.layer.setMap(null);
       layer.visible = false;
@@ -2699,12 +2816,22 @@ function addLayer(layer) {
     $("#" + spinnerID + "2").hide();
     $("#" + spinnerID + "3").hide();
     vizToggleCleanup();
+
+    if (!layer.viz.isTimeLapse) {
+      if (areaChart.autoChartingOn && layer.viz.canAreaChart) {
+        areaChart.chartMapExtent();
+      }
+    }
   }
   //Function to handle turning on different layer types
   function turnOn() {
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
-      turnOffTimeLapseCheckboxes();
+      if (turnOffLayersWhenTimeLapseIsOn) {
+        turnOffTimeLapseCheckboxes();
+      }
+
+      urlParams.layerProps[id].visible = true;
     }
     if (layer.layerType === "dynamicMapService") {
       layer.layer.setMap(map);
@@ -2723,7 +2850,9 @@ function addLayer(layer) {
         layer.percent = 100;
         updateProgress();
       }
-      layer.layer.setOpacity(layer.opacity);
+      if (!layer.viz.isTimeLapse) {
+        layer.layer.setOpacity(layer.opacity);
+      }
       if (layer.layerType !== "tileMapService" && layer.layerType !== "dynamicMapService" && layer.canQuery) {
         queryObj[queryID].visible = layer.visible;
       }
@@ -2748,6 +2877,11 @@ function addLayer(layer) {
       // }
     }
     vizToggleCleanup();
+    if (!layer.viz.isTimeLapse) {
+      if (areaChart.autoChartingOn && layer.viz.canAreaChart) {
+        areaChart.chartMapExtent();
+      }
+    }
   }
   //Some functions to keep layers tidy
   function vizToggleCleanup() {
@@ -2860,7 +2994,17 @@ function addLayer(layer) {
         }
       }
       var bandNames = ee.Image(layer.item.first()).bandNames();
-      layer.item = ee.ImageCollection(layer.item).reduce(layer.viz.reducer).rename(bandNames).copyProperties(layer.imageCollection.first()).set(layer.item.toDictionary());
+      layer.item = ee.Image(
+        ee
+          .ImageCollection(layer.item)
+          .reduce(layer.viz.reducer)
+          .rename(bandNames)
+          .copyProperties(layer.imageCollection.first())
+          .set(layer.item.toDictionary())
+      );
+      if (layer.viz.selfMask === true) {
+        layer.item = layer.item.selfMask();
+      }
 
       //Handle vectors
     } else if (layer.layerType === "geeVectorImage" || layer.layerType === "geeVector") {
@@ -2895,6 +3039,12 @@ function addLayer(layer) {
       }
       layer.queryItem = layer.item;
       if (layer.layerType === "geeVectorImage") {
+        try {
+          layer.viz.asyncBounds = layer.item.geometry().bounds(100, "EPSG:4326");
+        } catch (err) {
+          layer.viz.asyncBounds = layer.item.bounds(100, "EPSG:4326");
+        }
+
         layer.item = ee.Image().paint(layer.item, null, layer.viz.strokeWeight);
         layer.viz.palette = layer.viz.strokeColor;
       }
@@ -2950,6 +3100,7 @@ function addLayer(layer) {
         queryItem: layer.queryItem,
         queryDict: layer.viz.queryDict,
         type: layer.layerType,
+        queryParams: layer.viz.queryParams || {},
         name: layer.name,
         queryDateFormat: layer.viz.queryDateFormat,
       };
@@ -2961,17 +3112,30 @@ function addLayer(layer) {
       decrementOutstandingGEERequests();
       $("#" + spinnerID).hide();
       if (layer.viz.isTimeLapse) {
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(
+          (timeLapseLayerID) => timeLapseLayerID !== id
+        );
         var prop = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`);
+        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          "background",
+          `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
+        );
 
         // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
         if (timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+            "background",
+            `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
+          );
+
+          if (timeLapseObj[layer.viz.timeLapseID].userChosenVisible === true) {
+            console.log("here");
+            $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").click();
+          }
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
@@ -3022,7 +3186,9 @@ function addLayer(layer) {
               $("#" + spinnerID + "2").hide();
               decrementGEETileLayersLoading();
               if (layer.viz.isTimeLapse) {
-                timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+                timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.filter(
+                  (timeLapseLayerID) => timeLapseLayerID !== id
+                );
               }
               tileIncremented = false;
             }
@@ -3044,12 +3210,19 @@ function addLayer(layer) {
                   return [f.viz.year, f.percent].join(":");
                 })
                 .join(", ");
-              $("#" + layer.viz.timeLapseID + "-message-div").html("Loading:<br>" + loadingTimelapseLayersYears + "<hr>Not Loading:<br>" + notLoadingTimelapseLayersYears);
-              var propTiles = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
+              $("#" + layer.viz.timeLapseID + "-message-div").html(
+                "Loading:<br>" + loadingTimelapseLayersYears + "<hr>Not Loading:<br>" + notLoadingTimelapseLayersYears
+              );
+              var propTiles = parseInt(
+                (1 - timeLapseObj[layer.viz.timeLapseID].loadingTilesLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100
+              );
               // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
               $("#" + layer.viz.timeLapseID + "-loading-gear").show();
 
-              $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`);
+              $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+                "background",
+                `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
+              );
               if (propTiles < 100) {
                 // console.log(propTiles)
                 // if(timeLapseObj[layer.viz.timeLapseID] === 'play'){
@@ -3092,7 +3265,10 @@ function addLayer(layer) {
       var total = loadingTimelapseLayers + notLoadingTimelapseLayers;
       var propTiles = (1 - loadingTimelapseLayers / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100;
 
-      $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`);
+      $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+        "background",
+        `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
+      );
       if (propTiles < 100) {
         $("#" + layer.viz.timeLapseID + "-loading-gear").show();
         // console.log(propTiles)
@@ -3108,23 +3284,38 @@ function addLayer(layer) {
       decrementOutstandingGEERequests();
       $("#" + spinnerID).hide();
       if (layer.viz.isTimeLapse) {
-        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter((timeLapseLayerID) => timeLapseLayerID !== id);
+        timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs = timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.filter(
+          (timeLapseLayerID) => timeLapseLayerID !== id
+        );
         var prop = parseInt((1 - timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length / timeLapseObj[layer.viz.timeLapseID].nFrames) * 100);
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`);
+        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          "background",
+          `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
+        );
 
         // $('#'+layer.viz.timeLapseID+'-loading-count').html(`${timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length}/${timeLapseObj[layer.viz.timeLapseID].nFrames} layers to load`)
         if (timeLapseObj[layer.viz.timeLapseID].loadingLayerIDs.length === 0) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css("background", `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`);
+          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+            "background",
+            `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
+          );
 
           // $('#'+layer.viz.timeLapseID+'-icon-bar').show();
           // $('#'+layer.viz.timeLapseID+'-time-lapse-layer-range-container').show();
           $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").show();
 
           timeLapseObj[layer.viz.timeLapseID].isReady = true;
+
+          if (urlParams.layerProps[layer.viz.timeLapseID].visible === true) {
+            timeLapseCheckbox(layer.viz.timeLapseID);
+          }
+          if (urlParams.cumulativeMode === true) {
+            turnOnCumulativeMode();
+          }
         }
       }
       $("#" + visibleLabelID).show();
@@ -3203,16 +3394,19 @@ function addLayer(layer) {
         }
       });
 
-      if (vizFound == false) {
+      if (vizFound == false || layer.viz.autoViz) {
         layer.usedViz = {};
       } else {
         layer.usedViz = layer.viz;
       }
-      // console.log(layer.usedViz);
-      ee.Image(layer.item).getMap(layer.usedViz, function (eeLayer, failure) {
+
+      let mapItem = layer.viz.bands !== undefined ? ee.Image(layer.item).select(layer.viz.bands) : ee.Image(layer.item);
+
+      ee.Image(mapItem).getMap(layer.usedViz, function (eeLayer, failure) {
         if (eeLayer === undefined && layer.mapServiceTryNumber <= 1) {
-          queryObj[queryID].queryItem = layer.item;
-          layer.item = layer.item.visualize();
+          console.log(`Failed to load map service: ${layer.name}`);
+          // queryObj[queryID].queryItem = layer.item;
+          // layer.item = layer.item.visualize();
           getGEEMapService();
         } else {
           geeAltService(eeLayer, failure);
@@ -3234,6 +3428,7 @@ function addLayer(layer) {
         visible: layer.visible,
         queryItem: layer.queryItem,
         queryDict: layer.viz.queryDict,
+        queryParams: layer.viz.queryParams || {},
         type: layer.layerType,
         name: layer.name,
       };
@@ -3657,4 +3852,9 @@ function addTransitionRow() {
 }
 function removeLastTransitionRow() {
   $("#added-transition-rows tr:last").remove();
+}
+function updateProgress(id, val) {
+  var el = document.querySelector(`${id} span`);
+  el.style.width = val + "%";
+  el.innerText = val + "%";
 }

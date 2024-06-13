@@ -68,13 +68,36 @@ function copyText(element, messageBoxId) {
     $("#" + messageBoxId).html("Copied text to clipboard");
   }
 }
+function decodeURL(url) {
+  let out = {};
+  url = url.split("?")[1].split("&");
+  url.map(function (str) {
+    var decodedParam = decodeURIComponent(str.split("=")[1]);
+    try {
+      out[str.split("=")[0]] = JSON.parse(decodedParam);
+    } catch (err) {
+      out[str.split("=")[0]] = decodedParam;
+    }
+  });
+  return out;
+}
+function encodeJSON(json) {
+  var outURL = "?";
+
+  Object.keys(json).map((p) => {
+    outURL += p + "=" + encodeURIComponent(JSON.stringify(json[p])).replace(/[!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+    +"&";
+  });
+  outURL = outURL.slice(0, outURL.length - 1);
+  return outURL;
+}
 function parseUrlSearch() {
   // console.log(window.location.search == '')
   let urlParamsStr = window.location.search;
-  console.log(urlParamsStr);
+  // console.log(urlParamsStr);
   if (urlParamsStr !== "") {
     urlParamsStr = urlParamsStr.split("?")[1].split("&");
-
+    // console.log(urlParamsStr);
     urlParamsStr.map(function (str) {
       // if(str.indexOf('OBJECT---')>-1){
       // var strT = str.split('---');
@@ -86,6 +109,7 @@ function parseUrlSearch() {
       // }else{
       var decodedParam = decodeURIComponent(str.split("=")[1]);
       try {
+        // console.log(JSON.parse(decodedParam));
         urlParams[str.split("=")[0]] = JSON.parse(decodedParam);
       } catch (err) {
         urlParams[str.split("=")[0]] = decodedParam;
@@ -93,6 +117,7 @@ function parseUrlSearch() {
 
       // }
     });
+    // console.log(urlParams);
   }
   if (urlParams.id !== undefined) {
     window.open("https://tinyurl.com/" + urlParams.id, "_self");
@@ -110,8 +135,26 @@ function parseUrlSearch() {
     }
   }
 }
-function constructUrlSearch() {
+function constructUrlSearch(maxLen = 5000) {
   var outURL = "?";
+  Object.keys(urlParams).map(function (p) {
+    if (typeof urlParams[p] === "object") {
+      Object.keys(urlParams[p]).map((k) => {
+        let tp = encodeURIComponent(JSON.stringify(urlParams[p][k]));
+        if (tp.length > maxLen) {
+          // console.log(`Removing urlParam: ${urlParams[p][k]}`);
+          delete urlParams[p][k];
+        }
+      });
+    } else {
+      let tp = encodeURIComponent(JSON.stringify(urlParams[p]));
+      if (tp.length > maxLen) {
+        // console.log(`Removing urlParam: ${urlParams[p]}`);
+        delete urlParams[p];
+      }
+    }
+  });
+  // console.log(urlParams);
   Object.keys(urlParams).map(function (p) {
     outURL += p + "=" + encodeURIComponent(JSON.stringify(urlParams[p])) + "&";
   });
@@ -121,7 +164,7 @@ function constructUrlSearch() {
 /*Load global variables*/
 let cachedSettingskey = "settings";
 let startYear = 1985;
-let endYear = 2022;
+let endYear = 2023;
 let startJulian = 153; //190;
 let endJulian = 274; //250;
 let layerObj = null;
@@ -152,7 +195,7 @@ const studyAreaDict = {
     center: [37.5334105816903, -105.6787109375, 5],
     crs: "EPSG:5070",
     startYear: 1985,
-    endYear: 2022,
+    endYear: 2023,
     conusSA: "projects/lcms-292214/assets/CONUS-Ancillary-Data/conus",
     conusLossThresh: 0.23,
     conusFastLossThresh: 0.29,
@@ -235,7 +278,7 @@ const studyAreaDict = {
         color: "c2b34a",
       },
     },
-    final_collections: ["USFS/GTAC/LCMS/v2022-8"],
+    final_collections: ["USFS/GTAC/LCMS/v2022-8", "USFS/GTAC/LCMS/v2023-9"],
     composite_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection",
@@ -244,7 +287,7 @@ const studyAreaDict = {
     ],
     lt_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Base-Learners/LandTrendr-Collection",
-      "projects/lcms-292214/assets/R5/Hawaii/Base-Learners/LandTrendr-Collection-1984-2022-annual",
+      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],
@@ -598,6 +641,12 @@ if (urlParams.projectID !== null && urlParams.projectID !== undefined && urlPara
   projectID = urlParams.projectID;
 }
 
+if (urlParams.layerProps === undefined || urlParams.layerProps === null) {
+  urlParams.layerProps = {};
+}
+if (urlParams.cumulativeMode === undefined || urlParams.cumulativeMode === null) {
+  urlParams.cumulativeMode = false;
+}
 var plotsOn = false;
 
 /////////////////////////////////////////////////////
@@ -619,7 +668,10 @@ String.prototype.toProperCase = function () {
 /////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
 String.prototype.replaceAll = function (str1, str2, ignore) {
-  return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), ignore ? "gi" : "g"), typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2);
+  return this.replace(
+    new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), ignore ? "gi" : "g"),
+    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
+  );
 };
 /////////////////////////////////////////////////////
 // Taken from: https://stackoverflow.com/questions/586182/how-to-insert-an-item-into-an-array-at-a-specific-index-javascript
@@ -635,6 +687,7 @@ Number.prototype.formatNumber = function (n = 2) {
 Number.prototype.repeat = function (n = 2) {
   return Array(n).fill(this * 1);
 };
+
 /////////////////////////////////////////////////////
 // Function that tries to find the best way of limiting precision for floating point numbers
 // Will limit to the maximum of chartDecimalProportion the length of decimals or whatever chartPrecision is set to
@@ -693,6 +746,9 @@ String.prototype.toTitle = function () {
 String.prototype.chunk = function (size) {
   return this.match(new RegExp(".{1," + size + "}", "g"));
 };
+String.prototype.smartBreak = function (size = 10, joinStr = "<br>") {
+  return this.chunk(size).join(joinStr);
+};
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function () {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -710,7 +766,13 @@ Date.prototype.dayOfYear = function () {
 //
 //Taken from: https://stackoverflow.com/questions/22015684/how-do-i-zip-two-arrays-in-javascript
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
-
+const dictFromKeyValues = (a, b) => {
+  let out = {};
+  a.map((k, i) => {
+    out[k] = b[i];
+  });
+  return out;
+};
 //Taken from: https://stackoverflow.com/questions/11688692/how-to-create-a-list-of-unique-items-in-javascript
 function unique(arr) {
   let u = {},

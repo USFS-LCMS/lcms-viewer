@@ -175,7 +175,14 @@ function runTreeMap() {
 
     // live tree variables
     ["STANDHT", palettes.crameri.bamako[50], 0.1, 0.9, "STANDHT: Height of Dominant Trees (ft)", "Derived from the Forest Vegetation Simulator."],
-    ["BALIVE", palettes.crameri.bamako[50], 0.05, 0.95, "BALIVE: Live Tree Basal Area (ft²)", "Basal area in square feet per acre of all live trees ≥1.0 inch d.b.h./d.r.c. sampled in the condition."],
+    [
+      "BALIVE",
+      palettes.crameri.bamako[50],
+      0.05,
+      0.95,
+      "BALIVE: Live Tree Basal Area (ft²)",
+      "Basal area in square feet per acre of all live trees ≥1.0 inch d.b.h./d.r.c. sampled in the condition.",
+    ],
   ];
 
   var ordinalAttrs = [
@@ -199,8 +206,18 @@ function runTreeMap() {
 
   var percentAttrs = [
     // have two attributes: palette and name. default range is 0-100
-    ["GSSTK", palettes.crameri.bamako[50], "GSSTK: Growing-Stock Stocking (percent)", "The sum of stocking percent values of all growing-stock trees on the condition."],
-    ["ALSTK", palettes.crameri.bamako[50], "ALSTK: All-Live-Tree Stocking (percent)", "The sum of stocking percent values of all live trees on the condition."],
+    [
+      "GSSTK",
+      palettes.crameri.bamako[50],
+      "GSSTK: Growing-Stock Stocking (percent)",
+      "The sum of stocking percent values of all growing-stock trees on the condition.",
+    ],
+    [
+      "ALSTK",
+      palettes.crameri.bamako[50],
+      "ALSTK: All-Live-Tree Stocking (percent)",
+      "The sum of stocking percent values of all live trees on the condition.",
+    ],
     ["CANOPYPCT", palettes.crameri.bamako[50], "CANOPYPCT: Live Canopy Cover (percent)", "Derived from the Forest Vegetation Simulator."],
   ];
 
@@ -256,7 +273,7 @@ function runTreeMap() {
     viz["palette"] = palette;
     viz["classLegendDict"] = dict(zip(uniqueNames, colors));
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-
+    viz.layerType = "geeImage";
     return [attrImg, viz, attr[2]];
   }
 
@@ -280,7 +297,7 @@ function runTreeMap() {
     viz["max"] = parseInt(quantile(uniqueValues, attr[3]));
     viz["palette"] = attr[1];
     viz["title"] = `${attr[4]} || ${attr[5]}`;
-
+    viz.layerType = "geeImage";
     return [attrImg, viz, attr[4]];
   }
 
@@ -309,7 +326,7 @@ function runTreeMap() {
     var removed_nulls_palette = removeItemAll(JSON.parse(JSON.stringify(attr[1])), "000000");
     viz["classLegendDict"] = dict(zip(uniqueValues, removed_nulls_palette));
     viz["title"] = `${attr[4]} || ${attr[5]}`;
-
+    viz.layerType = "geeImage";
     return [attrImg, viz, attr[4]];
   }
 
@@ -346,7 +363,7 @@ function runTreeMap() {
     viz["max"] = 100;
     viz["palette"] = attr[1];
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-
+    viz.layerType = "geeImage";
     return [attrImg, viz, attr[2]];
   }
 
@@ -376,13 +393,15 @@ function runTreeMap() {
     //viz['max'] = parseInt(uniqueValues.median());
     viz["palette"] = attr[1];
     viz["title"] = `${attr[3]} (${attr[0]}) attribute image layer`;
-
+    viz.layerType = "geeImage";
     return [attrImg, viz, attr[3]];
   }
 
   //// Sort and add layers to the map
   // Create an array of all the layer visualization arrays returned by the respective functions
-  var metaArray = ordinalAttrs.map(getOrdinalAttr).concat(percentAttrs.map(getPercentAttr).concat(thematicAttrs.map(getThematicAttr_Colors).concat(continuousAttrs.map(getContinuousAttr))));
+  var metaArray = ordinalAttrs
+    .map(getOrdinalAttr)
+    .concat(percentAttrs.map(getPercentAttr).concat(thematicAttrs.map(getThematicAttr_Colors).concat(continuousAttrs.map(getContinuousAttr))));
 
   // Sort the meta array by the second index of each subarray
   metaArray.sort(function (a, b) {
@@ -443,6 +462,7 @@ function runTreeMap() {
       queryDict: rawQueryDict,
       addToLegend: false,
       opacity: 0,
+      layerType: "geeImage",
       title: `Raw TreeMap Identifier dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`,
     },
     "TreeMap ID"

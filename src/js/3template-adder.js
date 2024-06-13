@@ -408,6 +408,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#tables-collapse-div").append(staticTemplates.dashboardHighlightsContainer);
 
   $("#charts-collapse-div").removeClass("px-5");
+  $("#charts-collapse-div").addClass("px-3");
   $("#tables-collapse-div").removeClass("px-5");
   $(".plotly-chart").css("margin-left", "");
   $("#charts-collapse-label").on("click", () => {
@@ -462,7 +463,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (!urlParams.dashboardAreaSelectionMode) {
     urlParams.dashboardAreaSelectionMode = { "View-Extent": false, Click: true, "Drag-Box": false };
   }
-  addMultiRadio("parameters-collapse-div", "summary-area-selection-radio", "Choose how to select areas", "dashboardAreaSelectionMode", urlParams.dashboardAreaSelectionMode);
+  addMultiRadio(
+    "parameters-collapse-div",
+    "summary-area-selection-radio",
+    "Choose how to select areas",
+    "dashboardAreaSelectionMode",
+    urlParams.dashboardAreaSelectionMode
+  );
   // $('#parameters-collapse-div').append('<hr>');
 
   //addSubCollapse('parameters-collapse-div','questions-dashboard-params-label','questions-dashboard-params-div','Questions', '',false,'Pre-selected parameter combinations')
@@ -643,7 +650,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   // creates a Bootstrap dropdown to contain the questions
   function makeQuestionDropdown() {
     //addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically select certain LCMS products to summarize');
-    addDropdown("parameters-collapse-div", "questions-dashboard-dropdown", "Learn More About", "urlParams.questionVar", "Choose a Topic to automatically select certain LCMS products to summarize");
+    addDropdown(
+      "parameters-collapse-div",
+      "questions-dashboard-dropdown",
+      "Learn More About",
+      "urlParams.questionVar",
+      "Choose a Topic to automatically select certain LCMS products to summarize"
+    );
   }
 
   // populates the dropdown with the questions (keys) from the questionDict
@@ -742,7 +755,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined) {
     urlParams.pairwiseDiff = { Annual: true, "Annual-Change": false };
   }
-  addMultiRadio("advanced-dashboard-params-div", "summary-pairwise-diff-radio", "Annual Amount or Change in Annual Amount", "pairwiseDiff", urlParams.pairwiseDiff);
+  addMultiRadio(
+    "advanced-dashboard-params-div",
+    "summary-pairwise-diff-radio",
+    "Annual Amount or Change in Annual Amount",
+    "pairwiseDiff",
+    urlParams.pairwiseDiff
+  );
 
   var highlightsProductsLookup = {
     Land_Cover: "Land-Cover",
@@ -826,7 +845,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.annualTransition === null || urlParams.annualTransition === undefined) {
     urlParams.annualTransition = { Annual: true, Transition: false };
   }
-  addCheckboxes("advanced-dashboard-params-div", "annual-transition-radio", "Choose which summary methods to chart", "annualTransition", urlParams.annualTransition);
+  addCheckboxes(
+    "advanced-dashboard-params-div",
+    "annual-transition-radio",
+    "Choose which summary methods to chart",
+    "annualTransition",
+    urlParams.annualTransition
+  );
 
   $("#advanced-dashboard-params-div").append("<hr>");
 
@@ -839,7 +864,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       Gain: true,
     };
   }
-  addCheckboxes("advanced-dashboard-params-div", "change-highlights-radio", "Change Classes", "changeHighlightClasses", urlParams.changeHighlightClasses);
+  addCheckboxes(
+    "advanced-dashboard-params-div",
+    "change-highlights-radio",
+    "Change Classes",
+    "changeHighlightClasses",
+    urlParams.changeHighlightClasses
+  );
   $("#advanced-dashboard-params-div").append("<hr>");
 
   // default LC products at initial load
@@ -911,14 +942,23 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     updateDashboardHighlights();
   });
 
-  $("#analysis-year-slider-container").prop("title", "Choose which years to include in the annual charts. The first and last year of this range of years will be uses for the highlights summaries.");
+  $("#analysis-year-slider-container").prop(
+    "title",
+    "Choose which years to include in the annual charts. The first and last year of this range of years will be uses for the highlights summaries."
+  );
   $("#summary-area-selection-radio").prop(
     "title",
     'Choose how to select summary areas. "View-Extent" will automatically select all areas within the current map view extent. "Click" will all you to select areas by clicking on them. "Drag-Box" will allow you to select by creating a box'
   );
-  $("#summary-pairwise-diff-radio").prop("title", "Choose whether to show the amount or the amount of change from the previous year of the selected area(s) of each cover/use/change type");
+  $("#summary-pairwise-diff-radio").prop(
+    "title",
+    "Choose whether to show the amount or the amount of change from the previous year of the selected area(s) of each cover/use/change type"
+  );
   $("#which-products-radio").prop("title", "Choose which LCMS products to show in the charts, highlights, and report");
-  $("#annual-transition-radio").prop("title", "Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart");
+  $("#annual-transition-radio").prop(
+    "title",
+    "Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart"
+  );
   $("#change-highlights-radio").prop("title", "Choose which change classes to include in the highlights tables");
   $("#lc-highlights-radio").prop("title", "Choose which land cover classes to include in the highlights tables");
   $("#lu-highlights-radio").prop("title", "Choose which land use classes to include in the highlights tables");
@@ -1147,7 +1187,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       L9: true,
     };
   }
-  addCheckboxes("comp-params-div", "which-sensor-method-radio", "Choose which Landsat platforms to include", "whichPlatforms", urlParams.whichPlatforms);
+  addCheckboxes(
+    "comp-params-div",
+    "which-sensor-method-radio",
+    "Choose which Landsat platforms to include",
+    "whichPlatforms",
+    urlParams.whichPlatforms
+  );
 
   $("#comp-params-div").append(`<hr>`);
 
@@ -1202,7 +1248,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "fMask-Cloud-Shadow": true,
     };
   }
-  addCheckboxes("comp-params-div", "cloud-masking-checkboxes", "Choose which cloud masking methods to use", "whichCloudMasks", urlParams.whichCloudMasks);
+  addCheckboxes(
+    "comp-params-div",
+    "cloud-masking-checkboxes",
+    "Choose which cloud masking methods to use",
+    "whichCloudMasks",
+    urlParams.whichCloudMasks
+  );
   $("#comp-params-div").append(`<hr>`);
 
   var maskWaterDict = { No: false, Yes: true };
@@ -1389,7 +1441,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.endYear == null || urlParams.endYear == undefined) {
     urlParams.endYear = endYear;
   }
-  addCollapse("sidebar-left", "support-collapse-label", "support-collapse-div", "SUPPORT & FEEDBACK", `<i role="img" class="fa fa-question-circle mr-1" aria-hidden="true"></i>`, true, ``, "");
+  addCollapse(
+    "sidebar-left",
+    "support-collapse-label",
+    "support-collapse-div",
+    "SUPPORT & FEEDBACK",
+    `<i role="img" class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,
+    true,
+    ``,
+    ""
+  );
   $("#support-collapse-div").append(staticTemplates.walkThroughButton);
   $("#support-collapse-div").append(`<hr>`);
   $("#support-collapse-div").append(
@@ -1441,7 +1502,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Years of MTBS data to include"
   );
-  addMultiRadio("parameters-collapse-div", "mtbs-summary-method-radio", "How to summarize MTBS data", "mtbsSummaryMethod", { "Highest-Severity": true, "Most-Recent": false, Oldest: false });
+  addMultiRadio("parameters-collapse-div", "mtbs-summary-method-radio", "How to summarize MTBS data", "mtbsSummaryMethod", {
+    "Highest-Severity": true,
+    "Most-Recent": false,
+    Oldest: false,
+  });
 
   $("#mtbs-summary-method-radio").prop(
     "title",
@@ -1605,7 +1670,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.year = endYear;
   }
 
-  addRangeSlider("parameters-collapse-div", "Year", "urlParams.year", startYear, endYear, urlParams.year, 1, "year-slider", "", "Year of LAMDA products to show");
+  addRangeSlider(
+    "parameters-collapse-div",
+    "Year",
+    "urlParams.year",
+    startYear,
+    endYear,
+    urlParams.year,
+    1,
+    "year-slider",
+    "",
+    "Year of LAMDA products to show"
+  );
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
   addCollapse(
@@ -1631,6 +1707,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tools to measure and chart data provided on the map"
   );
 } else if (mode === "geeViz") {
+  urlParams.startYear = urlParams.startYear || startYear;
+  urlParams.endYear = urlParams.endYear || endYear;
   addCollapse(
     "sidebar-left",
     "layer-list-collapse-label",
@@ -1709,8 +1787,30 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations"
   );
-  addRangeSlider("parameters-collapse-div", "Max distance (km)", "maxDistance", 50, 500, 200, 50, "max-distance-slider", "null", "Specify max distance in km from storm track to include in output");
-  addRangeSlider("parameters-collapse-div", "Min wind (mph)", "minWind", 0, 75, 30, 5, "min-wind-slider", "null", "Specify min wind speed in mph to include in output");
+  addRangeSlider(
+    "parameters-collapse-div",
+    "Max distance (km)",
+    "maxDistance",
+    50,
+    500,
+    200,
+    50,
+    "max-distance-slider",
+    "null",
+    "Specify max distance in km from storm track to include in output"
+  );
+  addRangeSlider(
+    "parameters-collapse-div",
+    "Min wind (mph)",
+    "minWind",
+    0,
+    75,
+    30,
+    5,
+    "min-wind-slider",
+    "null",
+    "Specify min wind speed in mph to include in output"
+  );
   // addRangeSlider('parameters-collapse-div','Mod of Rupture','modRupture',2000, 20000, 8500, 100,'mod-rupture-slider','null',"Specify the modulus of rupture for the GALES model")
 
   $("#parameters-collapse-div").append(`
@@ -1973,7 +2073,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
     true,
     null,
-    "Adjust parameters used to prepare analysis window"
+    "Adjust parameters used to prepare change analysis window"
   );
   var minYear = 2017;
   var maxYear = new Date().getFullYear();
@@ -2008,6 +2108,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       min: 0.1,
       max: [0.5, 0.6, 0.6],
       bands: "swir2,nir,red",
+      layerType: "geeImage",
       gamma: 1.6,
     };
   }
@@ -2015,11 +2116,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.diffVizParams = {
       min: -0.05,
       max: 0.05,
+      layerType: "geeImage",
       bands: ["brightness", "greenness", "wetness"],
     };
   }
   if (urlParams.diffThreshs == null || urlParams.diffThreshs == undefined) {
-    urlParams.diffThreshs = { greenness: -0.05, wetness: -0.02, NBR: -0.2 };
+    urlParams.diffThreshs = { greenness: -0.04, wetness: -0.015, NBR: -0.15 }; // old thresholds: greenness: -0.05, wetness: -0.02, NBR: -0.2
   }
   if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
     urlParams.treeDiameter = 15;
@@ -2037,7 +2139,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addDualRangeSlider(
     "parameters-collapse-div",
-    "Analysis date range:",
+    "Change Analysis date range:",
     "urlParams.startJulian",
     "urlParams.endJulian",
     1,
@@ -2051,7 +2153,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   addDualRangeSlider(
     "parameters-collapse-div",
-    "Baseline year(s):",
+    "Pre-Change year(s):",
     "urlParams.preStartYear",
     "urlParams.preEndYear",
     minYear,
@@ -2061,12 +2163,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "pre-years-slider",
     "null",
-    "Choose year(s) to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
+    "Choose a year or range or years to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
   );
   // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
   addRangeSlider(
     "parameters-collapse-div",
-    "Target year:",
+    "Post-Change year:",
     "urlParams.postYear",
     minYear + 1,
     maxYear,
@@ -2074,7 +2176,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "post-years-slider",
     null,
-    "Choose year to compare against Baseline year(s)."
+    "Choose post-change year to compare against Baseline year(s)."
   );
 
   addSubCollapse("parameters-collapse-div", "advanced-params-label", "advanced-params-div", "Advanced Parameters", "", false, "");
@@ -2126,9 +2228,23 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Bands and thresholds to use for identifying change"
   );
 
-  addJSONInputTextBox("advanced-params-div", "comp-viz-params-input", "Composite Visualization Parameters", "urlParams.compVizParams", urlParams.compVizParams, "Viz params for composite images");
+  addJSONInputTextBox(
+    "advanced-params-div",
+    "comp-viz-params-input",
+    "Composite Visualization Parameters",
+    "urlParams.compVizParams",
+    urlParams.compVizParams,
+    "Viz params for composite images"
+  );
 
-  addJSONInputTextBox("advanced-params-div", "diff-viz-params-input", "Difference Visualization Parameters", "urlParams.diffVizParams", urlParams.diffVizParams, "Viz params for difference image");
+  addJSONInputTextBox(
+    "advanced-params-div",
+    "diff-viz-params-input",
+    "Difference Visualization Parameters",
+    "urlParams.diffVizParams",
+    urlParams.diffVizParams,
+    "Viz params for difference image"
+  );
 
   // Sync sliders
   $("#post-years-slider")
@@ -2183,24 +2299,24 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "sidebar-left",
     "reference-layer-list-collapse-label",
     "reference-layer-list-collapse-div",
-    "REFERENCE DATA",
+    "MANAGEMENT DATA", //"REFERENCE DATA"
     `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     false,
     null,
     "Additional relevant layers to view on map intended to provide context for change data"
   );
   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-
-  addCollapse(
-    "sidebar-left",
-    "table-collapse-label",
-    "table-collapse-div",
-    "MONITORING SITES",
-    `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
-    true,
-    ``,
-    "Giant Sequoia monitoring sites output table"
-  );
+  //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js
+  // addCollapse(
+  //   "sidebar-left",
+  //   "table-collapse-label",
+  //   "table-collapse-div",
+  //   "MONITORING SITES",
+  //   `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
+  //   true,
+  //   ``,
+  //   "Giant Sequoia monitoring sites output table"
+  // );
 
   addCollapse(
     "sidebar-left",
@@ -2214,8 +2330,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
-  // addCollapse('sidebar-left','support-collapse-label','support-collapse-div','SUPPORT',`<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,false,``,'If you need any help');
-
+  addCollapse(
+    "sidebar-left",
+    "support-collapse-label",
+    "support-collapse-div",
+    "SUPPORT",
+    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
+    true,
+    ``,
+    "If you need any help"
+  );
+  $("#support-collapse-div").append(staticTemplates.sequoiaSupportDiv);
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
@@ -2750,36 +2875,232 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 //   if (tShowToolTipModal === "false") {
 //     $("#tooltip-radio-second_toggle_label").click();
 //   }
+} else {
+  addCollapse(
+    "sidebar-left",
+    "layer-list-collapse-label",
+    "layer-list-collapse-div",
+    "ANCILLARY DATA",
+    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    true,
+    null,
+    mode + " DATA layers to view on map"
+  );
+  // addCollapse(
+  //   "sidebar-left",
+  //   "wayback-layer-list-collapse-label",
+  //   "wayback-layer-list-collapse-div",
+  //   "ESRI WayBack DATA",
+  //   `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/esri-logo.png">`,
+  //   true,
+  //   null,
+  //   "ESRI Wayback layers to view on map"
+  // );
+  addCollapse(
+    "sidebar-left",
+    "reference-layer-list-collapse-label",
+    "reference-layer-list-collapse-div",
+    "PLOT DATA",
+    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    false,
+    null,
+    "Additional relevant layers to view on map intended to provide context for " + mode + " DATA"
+  );
+
+  addCollapse(
+    "sidebar-left",
+    "tools-collapse-label",
+    "tools-collapse-div",
+    "TOOLS",
+    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    false,
+    "",
+    "Tools to measure and chart data provided on the map"
+  );
+
+  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
+  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  plotsOn = true;
+}
+
+$("body").append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
+$(".legendDiv").css("bottom", "1rem");
+$(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
+addLegendCollapse();
+/////////////////////////////////////////////////////////////////
+//Construct tool options for different modes
+
+addAccordianContainer("tools-collapse-div", "tools-accordian");
+$("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`);
+// $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
+addSubAccordianCard(
+  "tools-accordian",
+  "measure-distance-label",
+  "measure-distance-div",
+  "Distance Measuring",
+  staticTemplates.distanceDiv,
+  false,
+  `toggleTool(toolFunctions.measuring.distance)`,
+  staticTemplates.distanceTipHover
+);
+
+// <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
+addSubAccordianCard(
+  "tools-accordian",
+  "measure-area-label",
+  "measure-area-div",
+  "Area Measuring",
+  staticTemplates.areaDiv,
+  false,
+  `toggleTool(toolFunctions.measuring.area)`,
+  staticTemplates.areaTipHover
+);
+addRadio(
+  "measure-distance-div",
+  "metricOrImperialDistance-radio",
+  "",
+  "Imperial",
+  "Metric",
+  "metricOrImperialDistance",
+  "imperial",
+  "metric",
+  "updateDistance()",
+  "updateDistance()",
+  "Toggle between imperial or metric units"
+);
+
+addRadio(
+  "measure-area-div",
+  "metricOrImperialArea-radio",
+  "",
+  "Imperial",
+  "Metric",
+  "metricOrImperialArea",
+  "imperial",
+  "metric",
+  "updateArea()",
+  "updateArea()",
+  "Toggle between imperial or metric units"
+);
+
+addShapeEditToolbar("measure-distance-div", "measure-distance-div-icon-bar", "undoDistanceMeasuring()", "resetPolyline()");
+addColorPicker("measure-distance-div-icon-bar", "distance-color-picker", "updateDistanceColor", distancePolylineOptions.strokeColor);
+
+addShapeEditToolbar("measure-area-div", "measure-area-div-icon-bar", "undoAreaMeasuring()", "resetPolys()");
+addColorPicker("measure-area-div-icon-bar", "area-color-picker", "updateAreaColor", areaPolygonOptions.strokeColor);
+
+// addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
+$("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
+addSubAccordianCard(
+  "tools-accordian",
+  "query-label",
+  "query-div",
+  "Query Visible Map Layers",
+  staticTemplates.queryDiv,
+  false,
+  `toggleTool(toolFunctions.pixel.query)`,
+  staticTemplates.queryTipHover
+);
+
+if (mode == "TreeMap"){
+  // Add Data Clipping Tools section to the tools accordian and add link to a GEE clipping script
+  $("#tools-accordian").append(staticTemplates.TreeMapGEEClippingDiv);
+}
+
+if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
+  addSubAccordianCard(
+    "tools-accordian",
+    "pixel-chart-label",
+    "pixel-chart-div",
+    "Query " + mode + " Time Series",
+    staticTemplates.pixelChartDiv,
+    false,
+    `toggleTool(toolFunctions.pixel.chart)`,
+    staticTemplates.pixelChartTipHover
+  );
+  addDropdown(
+    "pixel-chart-div",
+    "pixel-collection-dropdown",
+    "Choose which " + mode + " time series to chart",
+    "whichPixelChartCollection",
+    "Choose which " + mode + " time series to chart."
+  );
+}
+// $('#pixel-chart-div').append(staticTemplates.showChartButton);
+// addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
+if (mode === "geeViz") {
+  $("#pixel-chart-label").remove();
+  $("#share-button").remove();
+  $("#usda-notices").remove();
+  // $("#tools-accordian").append(`<hr>`);
+  // //Sync tooltip toggle
+  // var tShowToolTipModal = true;
+  // if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
+  //   tShowToolTipModal = localStorage.showToolTipModal;
+  // }
+  // addRadio(
+  //   "tools-accordian",
+  //   "tooltip-radio",
+  //   "Show tool tips",
+  //   "Yes",
+  //   "No",
+  //   "localStorage.showToolTipModal",
+  //   "true",
+  //   "false",
+  //   "",
+  //   "",
+  //   "Whether to show tool tips to help explain how to use the tools."
+  // );
+  // if (tShowToolTipModal === "false") {
+  //   $("#tooltip-radio-second_toggle_label").click();
+  // }
 }
 if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
 }
 // if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
-if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS") {
+if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS" || mode === "geeViz" || mode === "LAMDA") {
   $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   addSubCollapse("tools-accordian", "area-chart-params-label", "area-chart-params-div", "Area Tools Parameters", "", false, "");
   $("#area-chart-params-label").prop("title", "Click here to select which LCMS products to chart, and change which area units are used. ");
-  // $('#tools-accordian').append(`<hr>`);
-  addDropdown("area-chart-params-div", "area-collection-dropdown", "Choose which " + mode + " product to summarize", "whichAreaChartCollection", "Choose which " + mode + " time series to summarize.");
-  // $('#area-chart-params-div').append(`<hr>`);
-  $("#parameters-collapse-div").append(`<hr>`);
+  // $("#tools-accordian").append(`<hr>`);
+  addDropdown(
+    "area-chart-params-div",
+    "area-collection-dropdown",
+    "Choose which " + mode + " product to summarize",
+    "whichAreaChartCollection",
+    "Choose which " + mode + " time series to summarize."
+  );
+  $("#area-chart-params-div").append(`<hr>`);
+  // $("#parameters-collapse-div").append(`<hr>`);
   addMultiRadio("area-chart-params-div", "area-summary-format", "Area Units", "areaChartFormat", { Percentage: true, Acres: false, Hectares: false });
-  if (mode === "LCMS") {
+  if (mode === "LCMS" || mode === "geeViz") {
     //&& (urlParams.sankey==='true' || urlParams.beta ==='true')){
     var activeStartYear = urlParams.startYear;
     var activeEndYear = urlParams.endYear;
     $("#area-chart-params-div").append(`<div id='transition-periods-container'></div>`);
-    $("#transition-periods-container").hide();
-    $("#area-collection-dropdown").change((e) => {
-      if ($("#area-collection-dropdown").val().indexOf("-transition") > -1) {
-        $("#transition-periods-container").show();
-      } else {
-        $("#transition-periods-container").hide();
-      }
-    });
+    // $("#transition-periods-container").hide();
+    // $("#area-collection-dropdown").change((e) => {
+    //   if ($("#area-collection-dropdown").val().indexOf("-transition") > -1) {
+    //     $("#transition-periods-container").show();
+    //   } else {
+    //     $("#transition-periods-container").hide();
+    //   }
+    // });
   }
 
   $("#area-summary-format").prop("title", "Choose how to summarize area- as a percentage of the area, acres, or hectares.");
+  addSubAccordianCard(
+    "tools-accordian",
+    "map-defined-area-chart-label",
+    "map-defined-area-chart-div",
+    "Map Extent Area",
+    staticTemplates.mapDefinedAreaChartDiv,
+    false,
+    `toggleTool(toolFunctions.area.mapBounds)`,
+    staticTemplates.mapDefinedAreaChartTipHover
+  );
   addSubAccordianCard(
     "tools-accordian",
     "user-defined-area-chart-label",
@@ -2946,6 +3267,7 @@ function resizeViewerPanes() {
   if (mode !== "lcms-dashboard") {
     moveCollapse("chart-collapse");
     moveCollapse("legend-collapse");
+    moveCollapse("table-collapse");
   }
 
   $(".legendDiv").css("bottom", "1rem");
@@ -3004,12 +3326,18 @@ function resizeDashboardPanes() {
   } catch (err) {
     console.log(err);
   }
-  $(".dashboard-results-toggler").css("right", `${(($("#dashboard-results-container-right").width() - convertRemToPixels(3)) / $("body").width()) * 100}%`);
+  $(".dashboard-results-toggler").css(
+    "right",
+    `${(($("#dashboard-results-container-right").width() - convertRemToPixels(3)) / $("body").width()) * 100}%`
+  );
   // $(document).ready(function(){resizeDashboardPanes()})
 }
 if (mode === "lcms-dashboard") {
   $("body").append(staticTemplates.dashboardResultsToggler);
-  $(".dashboard-results-toggler").css("right", `${(($("#dashboard-results-container-right").width() - convertRemToPixels(3)) / $("body").width()) * 100}%`);
+  $(".dashboard-results-toggler").css(
+    "right",
+    `${(($("#dashboard-results-container-right").width() - convertRemToPixels(3)) / $("body").width()) * 100}%`
+  );
   var dashboardScrollLeft = 0;
   var dashboardScrollTop = { left: 0, right: 0 };
   if (urlParams.showHighlightsBar === undefined || urlParams.showHighlightsBar === null) {
@@ -3105,7 +3433,7 @@ if (mode === "lcms-dashboard") {
 
   var dragBox;
   function dashboardSelectionModeChange() {
-    console.log(dashboardAreaSelectionMode);
+    // console.log(dashboardAreaSelectionMode);
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
       startDashboardViewExtentSelect();

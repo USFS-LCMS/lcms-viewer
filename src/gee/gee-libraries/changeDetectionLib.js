@@ -114,7 +114,7 @@ function getExistingChangeData(changeThresh, showLayers) {
     changeThresh = 50;
   }
   var startYear = 1985;
-  var endYear = 2022;
+  var endYear = 2023;
 
   // var glriEnsemble = ee.Image('projects/glri-phase3/changeMaps/ensembleOutputs/NBR_NDVI_TCBGAngle_swir1_swir2_median_LT_Ensemble');
 
@@ -667,7 +667,7 @@ function addLossGainToMap(lossGainStack, startYear, endYear, lossMagMin, lossMag
     layerType: "geeImage",
   };
 
-  var vizParamsDuration = { min: 1, max: 5, palette: changeDurationPalette };
+  var vizParamsDuration = { min: 1, max: 5, palette: changeDurationPalette, layerType: "geeImage" };
   howManyToPull.map(function (i) {
     var lossStackI = lossGainStack.select([".*_loss_.*_" + i.toString()]);
     var gainStackI = lossGainStack.select([".*_gain_.*_" + i.toString()]);
@@ -750,7 +750,15 @@ function simpleLANDTRENDR(
   // Add the change outputs to the map if specified to do so
   if (addToMap) {
     // Map.addLayer(joinedTS,{},'Raw and Fitted Time Series',true);
-    addLossGainToMap(lossGainStack, startYear, endYear, (lossMagThresh - 0.7) * multBy, lossMagThresh * multBy, gainMagThresh * multBy, (gainMagThresh + 0.7) * multBy);
+    addLossGainToMap(
+      lossGainStack,
+      startYear,
+      endYear,
+      (lossMagThresh - 0.7) * multBy,
+      lossMagThresh * multBy,
+      gainMagThresh * multBy,
+      (gainMagThresh + 0.7) * multBy
+    );
   }
   return [multLT(lt, multBy), lossGainStack];
 }
@@ -973,7 +981,11 @@ function fitStackToCollection(stack, maxSegments, startYear, endYear) {
 
           //Find if the year is the first and include the left year if it is
           //Otherwise, do not include the left year
-          yrImage = ee.Algorithms.If(yr.eq(startYear), yrImage.updateMask(segYearsLeft.lte(yr).and(segYearsRight.gte(yr))), yrImage.updateMask(segYearsLeft.lt(yr).and(segYearsRight.gte(yr))));
+          yrImage = ee.Algorithms.If(
+            yr.eq(startYear),
+            yrImage.updateMask(segYearsLeft.lte(yr).and(segYearsRight.gte(yr))),
+            yrImage.updateMask(segYearsLeft.lt(yr).and(segYearsRight.gte(yr)))
+          );
 
           yrImage = ee.Image(yrImage).rename(["yr"]).int16();
 
@@ -1208,7 +1220,18 @@ function batchSimpleLTFit(ltStacks, startYear, endYear, indexNames, bandProperty
 // If using vertStack format, this will not work if there are masked values in the vertStack. Must use getImagesLib.setNoData prior to
 // calling this function
 // Have to apply LandTrendr changeDirection to both Verdet and Landtrendr before applying convertToLossGain()
-function convertToLossGain(ltStack, format, lossMagThresh, lossSlopeThresh, gainMagThresh, gainSlopeThresh, slowLossDurationThresh, chooseWhichLoss, chooseWhichGain, howManyToPull) {
+function convertToLossGain(
+  ltStack,
+  format,
+  lossMagThresh,
+  lossSlopeThresh,
+  gainMagThresh,
+  gainSlopeThresh,
+  slowLossDurationThresh,
+  chooseWhichLoss,
+  chooseWhichGain,
+  howManyToPull
+) {
   if (lossMagThresh === undefined || lossMagThresh === null) {
     lossMagThresh = -0.15;
   }
@@ -2184,12 +2207,31 @@ function thresholdZAndTrend(zAndTrendCollection, zThresh, slopeThresh, startYear
   var zChange = thresholdChange(zCollection, -zThresh, dir).select(".*_change");
   var trendChange = thresholdChange(trendCollection, -slopeThresh, dir).select(".*_change");
 
-  Map.addLayer(zChange.max().select([0]), { min: startYear, max: endYear, palette: "FF0,F00" }, "Z Most Recent Change Year " + negativeOrPositiveChange, true);
-  Map.addLayer(trendChange.max().select([0]), { min: startYear, max: endYear, palette: "FF0,F00" }, "Trend Most Recent Change Year " + negativeOrPositiveChange, false);
+  Map.addLayer(
+    zChange.max().select([0]),
+    { min: startYear, max: endYear, palette: "FF0,F00" },
+    "Z Most Recent Change Year " + negativeOrPositiveChange,
+    true
+  );
+  Map.addLayer(
+    trendChange.max().select([0]),
+    { min: startYear, max: endYear, palette: "FF0,F00" },
+    "Trend Most Recent Change Year " + negativeOrPositiveChange,
+    false
+  );
   return { zChange: zChange, trendChange: trendChange };
 }
 
-function thresholdZAndTrendSubtle(zAndTrendCollection, zThreshLow, zThreshHigh, slopeThreshLow, slopeThreshHigh, startYear, endYear, negativeOrPositiveChange) {
+function thresholdZAndTrendSubtle(
+  zAndTrendCollection,
+  zThreshLow,
+  zThreshHigh,
+  slopeThreshLow,
+  slopeThreshHigh,
+  startYear,
+  endYear,
+  negativeOrPositiveChange
+) {
   if (negativeOrPositiveChange === null || negativeOrPositiveChange === undefined) {
     negativeOrPositiveChange = "negative";
   }
@@ -2208,8 +2250,18 @@ function thresholdZAndTrendSubtle(zAndTrendCollection, zThreshLow, zThreshHigh, 
   var zChange = thresholdSubtleChange(zCollection, -zThreshLow, -zThreshHigh, dir).select(".*_change");
   var trendChange = thresholdSubtleChange(trendCollection, -slopeThreshLow, -slopeThreshHigh, dir).select(".*_change");
 
-  Map.addLayer(zChange.max().select([0]), { min: startYear, max: endYear, palette: colorRamp }, "Z Most Recent Change Year " + negativeOrPositiveChange, false);
-  Map.addLayer(trendChange.max().select([0]), { min: startYear, max: endYear, palette: colorRamp }, "Trend Most Recent Change Year " + negativeOrPositiveChange, false);
+  Map.addLayer(
+    zChange.max().select([0]),
+    { min: startYear, max: endYear, palette: colorRamp },
+    "Z Most Recent Change Year " + negativeOrPositiveChange,
+    false
+  );
+  Map.addLayer(
+    trendChange.max().select([0]),
+    { min: startYear, max: endYear, palette: colorRamp },
+    "Trend Most Recent Change Year " + negativeOrPositiveChange,
+    false
+  );
 }
 /////////////////////////////////////////////////////////////////////////////
 //-------------------- BEGIN CCDC Helper Functions -------------------//
@@ -2255,7 +2307,12 @@ function simpleCCDCPrediction(img, timeBandName, whichHarmonics, whichBands) {
       whichBands.map(function (bn) {
         bn = ee.String(bn);
         return ee
-          .Image([intercepts.select(bn.cat("_.*")), slopes.select(bn.cat("_.*")), sins.select(bn.cat("_.*")).multiply(sinHarm), coss.select(bn.cat("_.*")).multiply(cosHarm)])
+          .Image([
+            intercepts.select(bn.cat("_.*")),
+            slopes.select(bn.cat("_.*")),
+            sins.select(bn.cat("_.*")).multiply(sinHarm),
+            coss.select(bn.cat("_.*")).multiply(cosHarm),
+          ])
           .reduce(ee.Reducer.sum());
       })
     )
@@ -2325,7 +2382,18 @@ function getCCDCSegCoeffs(timeImg, ccdcImg, fillGaps) {
 // will be counted in the following year.
 // 10/21 LSC modified to allow for using pixel-wise composite dates instead of one date for each year.
 // To do this, set annualizeWithCompositeDates == true and provide a composite image collection with a 'year' and 'julianDay' band.
-function annualizeCCDC(ccdcImg, startYear, endYear, startJulian, endJulian, tEndExtrapolationPeriod, yearStartMonth, yearStartDay, annualizeWithCompositeDates, compositeCollection) {
+function annualizeCCDC(
+  ccdcImg,
+  startYear,
+  endYear,
+  startJulian,
+  endJulian,
+  tEndExtrapolationPeriod,
+  yearStartMonth,
+  yearStartDay,
+  annualizeWithCompositeDates,
+  compositeCollection
+) {
   if (annualizeWithCompositeDates === undefined || annualizeWithCompositeDates === null) {
     annualizeWithCompositeDates = false;
   }
@@ -2518,7 +2586,12 @@ function getTimeImageCollectionFromComposites(startJulian, endJulian, compositeC
 
     // Fill masked Values with median fraction
     var compositeMask = ee.Image(newDateImg).mask();
-    var out = ee.Image(newDateImg).addBands(medianValues.updateMask(compositeMask.not())).reduce(ee.Reducer.max()).rename("year").copyProperties(dateImg, ["system:time_start"]);
+    var out = ee
+      .Image(newDateImg)
+      .addBands(medianValues.updateMask(compositeMask.not()))
+      .reduce(ee.Reducer.max())
+      .rename("year")
+      .copyProperties(dateImg, ["system:time_start"]);
 
     return out;
   });
