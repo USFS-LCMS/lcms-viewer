@@ -189,7 +189,7 @@ var interiorAKPractice = {
 };
 
 var interiorAK = {
-  name: "Interior Alaska",/
+  name: "Interior Alaska",
   path: "./src/data/geojson/Interior_AK_plots_selected_30m_box.json",
   plotIDField: "PLOTID",
 };
