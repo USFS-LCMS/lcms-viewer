@@ -163,7 +163,7 @@ var prviFinal = {
   plotIDField: "PLOTID",
 };
 var hiFinal = {
-  name: "HI",
+  name: "HI Original",
   path: "./src/data/geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.json",
   plotIDField: "PLOTID",
 };
@@ -193,8 +193,13 @@ var interiorAK = {
   plotIDField: "PLOTID",
 };
 
+var Hawaii2024 = {
+  name: "Hawaii2024",
+  path: "./src/data/geojson/Additional_HI_Training_Pts_30m_box.json",
+  plotIDField: "PLOTID",
+};
 
-var plotsGeoJSONs = [hiFinal, conus1, CONUSpractice, hiPractice, coastalAK2022, coastalAKPractice, interiorAKPractice, interiorAK]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
+var plotsGeoJSONs = [interiorAKPractice, interiorAK, Hawaii2024, hiFinal, CONUSpractice, coastalAKPractice,  ]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
 // 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
 // })

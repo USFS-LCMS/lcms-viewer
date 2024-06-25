@@ -63,8 +63,7 @@ function runAncillary() {
   Map.addLayer(
     ak_wetland_uaa,
     { layerType: "geeImage", min: 1, max: 9, palette: ak_wetland_uaa_palette, classLegendDict: ak_wetland_uaa_LegendDict, queryDict: ak_wetland_uaa_dict },
-    "AK Wetlands (UAA)",
-    1
+    "AK Wetlands (UAA)", false
   ); 
 
 // Alaska Vegetation Composite from University of Alaska 
@@ -260,7 +259,7 @@ Map.addLayer(
   ak_vegetation_uaa,
   { layerType: "geeImage", min: 1, max: 58, palette: ak_vegetation_uaa_palette, classLegendDict: ak_vegetation_uaa_LegendDict, queryDict: ak_vegetation_uaa_dict },
   "AK Vegetation (UAA)",
-  1
+  false
 ); 
 
   // AK Existing veg -  KenaiVegVectorMapService2019 - Tall Shrub Canopy Cover (ID: 3)
