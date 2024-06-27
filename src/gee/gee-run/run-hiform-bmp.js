@@ -4,9 +4,10 @@
 
 function runHiForm() {
 
-    var tigerline_counties = ee.FeatureCollection('TIGER/2018/Counties');
+    var region8_fps = ["01", "05", "12", "13", "21", "22", "28", "37", "40", "45", "47", "48", "51"]
+    var region8 = ee.FeatureCollection('TIGER/2018/Counties').filter(ee.Filter.inList("STATEFP", region8_fps));
     // var generalized_counties = ee.FeatureCollection('users/timberharvestmap/cb_2022_us_county_5m_southeast');
-    Map.addLayer(tigerline_counties, {strokeColor: 'FFF', strokeWeight: 1.5, layerType:'geeVectorImage'}, 'US Counties', true);
+    Map.addLayer(region8, {strokeColor: 'FFF', strokeWeight: 1.5, layerType:'geeVectorImage'}, 'US Counties', true);
 
 
     ///// Add Reference Layers to HiForm Related Layers List
@@ -14,13 +15,8 @@ function runHiForm() {
     // Streams
     // var streams = ee.Image('users/timberharvestmap/nhd_ga');  // change this 'ga' to your 2-letter state abbrev, lowercase
     //{palette: ['0700d6']}
-    var streams = ee.ImageCollection("GLCF/GLS_WATER");
-    Map.addLayer(streams, {}, 'Streams', false, null, null, `Test`, "related-layer-list");
-
-    // Floodplain
-
-    var floodplains = ee.Image('users/timberharvestmap/floodplains_eastern_epaeast');
-    Map.addLayer(floodplains, {palette: ['0700d6']}, 'Floodplains (Bottomland Hardwoods)', false, null, null, `Test`, "related-layer-list");
+    //var streams = ee.ImageCollection("GLCF/GLS_WATER");
+    //Map.addLayer(streams, {}, 'Streams', false, null, null, `Test`, "related-layer-list");
 
     // % Slope
     var dataset = ee.Image('USGS/3DEP/10m');
@@ -32,7 +28,9 @@ function runHiForm() {
         max: 100,
         bands: ["percent"],
         opacity: 1,
-        palette: ["9aa15d", "b9cc6c", "d6e21f", "fff705", "ffd611", "ffb613", "ff8b13", "ff6e08", "ff500d", "ff0000", "de0101", "c21301", "970000", "6a0b0b", "4f5854", "77857f", "9bada5", "ac90af", "8d62c4", "582897"]
+        palette: ["9aa15d", "b9cc6c", "d6e21f", "fff705", "ffd611", "ffb613", "ff8b13", "ff6e08", "ff500d", "ff0000", "de0101", "c21301", "970000", "6a0b0b", "4f5854", "77857f", "9bada5", "ac90af", "8d62c4", "582897"],
+        addToLegend: true,
+        layerType: "geeImage"
     }
     Map.addLayer(percent_slope, slopeVisParam, `Percent Slope`, false, null, null, `Test`, "related-layer-list");
 
@@ -48,6 +46,11 @@ function runHiForm() {
     }
     Map.addLayer(hillshade, hillshadeVisParam, `Hillshade`, false, null, null, `Test`, "related-layer-list");
 
+    // Floodplain
+
+    var floodplains = ee.Image('users/timberharvestmap/floodplains_eastern_epaeast');
+    Map.addLayer(floodplains, {palette: ['0700d6']}, 'Floodplains (Bottomland Hardwoods)', false, null, null, `Test`, "related-layer-list");
+
 }
 
 function hiform_bmp_process() {
@@ -62,16 +65,36 @@ function hiform_bmp_process() {
     // Load a Sentinel2 pre-disturbance image
     /////////////////////////////////////////////////////////
 
-    var pre = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
-        //.filterDate('2022-05-21', '2022-08-21')
-        .filterDate(urlParams.preDate1, urlParams.preDate2)
-        .filterBounds(geoBounds);
+    // var pre = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
+    //     //.filterDate('2022-05-21', '2022-08-21')
+    //     .filterDate(urlParams.preDate1, urlParams.preDate2)
+    //     .filterBounds(geoBounds);
 
-    //console.log(pre.size().getInfo())
+    // console.log(pre.size().getInfo())
+    var preDate1 = new Date(urlParams.preDate1)
+    var preDate2 = new Date(urlParams.preDate2)
+
+    preStartJulian = parseInt(ee.Date(urlParams.preDate1).format('DDD').getInfo())
+    preEndJulian = parseInt(ee.Date(urlParams.preDate2).format('DDD').getInfo())
+    
+    console.log(preDate1.getYear() + 1900, preDate2.getYear() + 1900, preStartJulian, preEndJulian)
+
+    var pre = getImagesLib.getProcessedSentinel2Scenes({
+        studyArea: geoBounds,
+        startYear: preDate1.getYear() + 1900,
+        endYear: preDate2.getYear() + 1900,
+        startJulian: preStartJulian,
+        endJulian: preEndJulian,
+        convertToDailyMosaics: false,
+        applyTDOM: false,
+        applyCloudScorePlus: true,
+        applyCloudProbability: false,
+        toaOrSA: urlParams.correctionTypeOption
+      });
 
     // Add NDVI and DATE as separate bands to image layer stack
     var addNDVI = function(pre) {
-        var ndvi = pre.normalizedDifference(['B8', 'B4']).rename('NDVI');
+        var ndvi = pre.normalizedDifference(['nir', 'red']).rename('NDVI');
         return pre.addBands(ndvi);
     };
 
@@ -91,24 +114,60 @@ function hiform_bmp_process() {
     var greenest_pre2_clip = greenest_pre2.clip(geometry);
 
     // Display the 'pre' date raster with random colors
-    Map.addLayer(greenest_pre2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'pre date raster', false);
+    Map.addLayer(greenest_pre2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Pre Date Raster', false);
 
+    Map.addExport(
+        greenest_pre2_clip.select('date'),
+        `Pre_Date_Raster`,
+        10,
+        true,
+        {}
+      );
+
+    
     //  Display pre products
-    Map.addLayer(greenest_pre2_clip.select(['B4', 'B3', 'B2']), {min: 0, max: 2000, addToLegend: false, layerType: 'geeImage'}, 'pre natural color composite', false);
+    Map.addLayer(greenest_pre2_clip, vizParamsTrue, 'Pre Natural Color Composite', true);
+    
+    Map.addExport(
+        greenest_pre2_clip.select(['red', 'blue', 'green']),
+        `Pre_Natural_Color_Composite`,
+        10,
+        true,
+        {}
+      );
 
     /////////////////////////////////////////////////////////
     // Load a Sentinel2 post-disturbance image
     /////////////////////////////////////////////////////////
 
-    var post = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
-        //.filterDate('2023-07-21', '2023-09-21') //  1yr growing season baseline, DEFAULT
-        // .filterDate('2022-05-01', '2022-06-21') //  within growing season baseline, display the pre natural color to look for cloud contamination
-        .filterDate(urlParams.postDate1, urlParams.postDate2)
-        .filterBounds(geoBounds);
+    // var post = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
+    //     //.filterDate('2023-07-21', '2023-09-21') //  1yr growing season baseline, DEFAULT
+    //     // .filterDate('2022-05-01', '2022-06-21') //  within growing season baseline, display the pre natural color to look for cloud contamination
+    //     .filterDate(urlParams.postDate1, urlParams.postDate2)
+    //     .filterBounds(geoBounds);
+
+    var postDate1 = new Date(urlParams.postDate1)
+    var postDate2 = new Date(urlParams.postDate2)
+
+    postStartJulian = parseInt(ee.Date(urlParams.postDate1).format('DDD').getInfo())
+    postEndJulian = parseInt(ee.Date(urlParams.postDate2).format('DDD').getInfo())
+    
+
+    var post = getImagesLib.getProcessedSentinel2Scenes({
+        studyArea: geoBounds,
+        startYear: postDate1.getYear() + 1900,
+        endYear: postDate2.getYear() + 1900,
+        startJulian: postStartJulian,
+        endJulian: postEndJulian,
+        convertToDailyMosaics: false,
+        applyTDOM: false,
+        applyCloudScorePlus: true,
+        applyCloudProbability: false,
+        });
 
     // Add NDVI and DATE as separate bands to image layer stack
     var addNDVI = function(post) {
-    var ndvi = post.normalizedDifference(['B8', 'B4']).rename('NDVI');
+    var ndvi = post.normalizedDifference(['nir', 'red']).rename('NDVI');
     return post.addBands(ndvi);
     };
 
@@ -128,11 +187,28 @@ function hiform_bmp_process() {
     var greenest_post2_clip = greenest_post2.clip(geometry); 
 
     // Display the 'post' date raster with random colors
-    Map.addLayer(greenest_post2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'post date raster', false);
+    Map.addLayer(greenest_post2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Post Date Raster', false);
+
+    Map.addExport(
+        greenest_post2_clip.select('date'),
+        `Post_Date_Raster`,
+        10,
+        true,
+        {}
+      );
 
     //  Display post products
-    Map.addLayer(greenest_post2_clip.select(['B4', 'B3', 'B2']), {min: 0, max: 2000, addToLegend: false, layerType: 'geeImage'}, 'post natural color composite', false); 
-
+    Map.addLayer(greenest_post2_clip, vizParamsTrue, 'Post Natural Color Composite', true); 
+    
+    Map.addExport(
+        greenest_post2_clip.select(['red', 'blue', 'green']),
+        `Post_Natural_Color_Composite`,
+        10,
+        true,
+        {}
+      );
+    
+    
     // /////////////////////////////////////////////////////////
     // // Calculate Absolute NDVI Change
     // ////////////////////////////////////////////////////////
@@ -438,7 +514,16 @@ function hiform_bmp_process() {
         color: 2,
         width: 1
     });
-    Map.addLayer(outline2.clip(geoBounds), {palette: '3DED97', layerType : 'geeImage'}, 'moderate NDVI change (green outline poly)');
+    Map.addLayer(outline2.clip(geoBounds), {palette: '3DED97', layerType : 'geeImage'}, 'Moderate NDVI Change (green outline poly)');
+
+    Map.addExport(
+        outline2.clip(geoBounds),
+        `Moderate_NDVI_Change (Green Outline)`,
+        10,
+        true,
+        {}
+      );
+
     //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
     //Export.table.toDrive({collection: vectors, description: 'polys_large_patch_pine_thold', fileFormat: 'SHP'}); 
@@ -452,7 +537,7 @@ function hiform_bmp_process() {
 
     var centroids2 = vectors2.map(function(f) {
     return f.centroid({maxError:1})});
-    Map.addLayer(centroids2, {color: 'green'}, 'moderate NDVI decline (green points)', false);
+    //Map.addLayer(centroids2, {color: 'green', layerType: 'geeImage'}, 'moderate NDVI decline (green points)', false);
 
     //print(centroids,'centroids');
 
@@ -538,7 +623,15 @@ function hiform_bmp_process() {
         width: 1
     });
     //Map.addLayer(outline.clip(geometry), {palette: 'FF2400'}, 'severe NDVI change (red outline poly)');
-    Map.addLayer(outline.clip(geometry), {palette: 'FF2400'}, 'severe NDVI change (red outline poly)');
+    Map.addLayer(outline.clip(geometry), {palette: 'FF2400'}, 'Sever NDVI Change (red outline poly)');
+
+    Map.addExport(
+        outline.clip(geometry),
+        `Severe_NDVI_Change (Red Outline)`,
+        10,
+        true,
+        {}
+      );
     //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
     //Export.table.toDrive({collection: vectors, description: 'polys_large_patch_pine_thold', fileFormat: 'SHP'}); 
@@ -552,7 +645,7 @@ function hiform_bmp_process() {
 
     var centroids = vectors.map(function(f) {
     return f.centroid({maxError:1})});
-    Map.addLayer(centroids, {color: 'red'}, 'severe NDVI change (red points)', false);
+    //Map.addLayer(centroids, {color: 'red'}, 'severe NDVI change (red points)', false);
 
     //print(centroids,'centroids');
 
@@ -573,6 +666,14 @@ function hiform_bmp_process() {
 
     // TODO: EXISTING Export.table.toDrive({collection: centroids, description: 'severe_NDVI_change_centroids_SHAPEFILE', fileFormat: 'SHP'}); 
     // TODO: EXISTING Export.table.toDrive({collection: centroidsExport,  selectors: ['lat', 'long'], description: 'severe_NDVI_change_centroids_TEXTFILE', fileFormat: 'CSV'});
+
+    
+}
+
+function add_exports() {
+    console.log("Here")
+
+    Map.addExport(greenest_pre2_clip.select(['B4', 'B3', 'B2']).multiply(10000).int16(), `Pre Composite`, 10, true, {})
 }
 
 

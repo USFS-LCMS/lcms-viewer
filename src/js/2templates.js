@@ -1973,23 +1973,24 @@ function addSelectTypeRadio(containerID, radioID, label, variable, optionList, t
   });
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Date Picker - Hiform
-function addHiFormPreDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+function addHiFormPostDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
-  $("#" + datepickerID).append(`<div id="pre-ranges-div">
-                                <p class = 'param-title'>Define Pre Date Range</p>
-                                <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
-                                <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
+  $("#" + datepickerID).append(`<div id="post-ranges-div">
+                                <p class = 'param-title'>Define Post Date Range</p>
+                                <input type="date" id="post-date-one" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
+                                <input type="date" id="post-date-two" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
                               </div>`);
 }
 
-function addHiFormCustomPostPicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+function addHiFormCustomPrePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   
-  $("#define-post-date-options").append(`<div id="post-ranges-div">
-                                          <input type="date" id="post-date-one" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
-                                          <input type="date" id="post-date-two" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
+  $("#define-pre-date-options").append(`<div id="pre-ranges-div">
+                                          <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
+                                          <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
                                         </div>`);
 }
 
@@ -2002,6 +2003,45 @@ function addHiFormProcessButton(containerID) {
                               </div>`);
 
   $('#process-button').attr('disabled','disabled');
+}
+
+function addHiFormResetButton(containerID) {
+  $("#" + containerID).append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
+                                <input type="button" id="reset-button" class="mb-2" value="Reset HiForm Results" onclick="handleHiFormReset()">
+                              </div>`);
+
+  $('#reset-button').attr('disabled','disabled');
+}
+
+function addHiFormExport(containerDiv) {
+  $("#" + containerDiv).append(`<div class = 'py-2' id = 'export-list-container'>
+                        <h5>Choose which images to export:</h5>
+                        <div class = 'py-2' id="export-list"></div>
+                        <hr>
+                        <div class = 'pl-3'>
+                            <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
+                              <label for="export-crs">Projection: </label>
+                              <div class="form-group pl-1">
+                                <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
+                              </div>
+                            </form>
+                            
+                            <hr>  
+                            <div class = 'pt-1 pb-3' >
+                                <div id = 'export-button-div'>
+                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                </div>
+                                <hr>
+                                <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
+						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
+								</span>
+                                <div id = 'export-count-div' ></div>
+                            </div>  
+                        </div>
+                        
+                    </div>`)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

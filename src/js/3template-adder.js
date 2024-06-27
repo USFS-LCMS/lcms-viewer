@@ -2362,64 +2362,68 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   var selectedState;
   var selectedCounty;
+  //urlParams.selectedCounty = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", "01")).filter(ee.Filter.eq("NAME", "Madison"))
+  var selectedLayerId;
   urlParams.preDate1;// = "2022-05-21"
   urlParams.preDate2;// = "2022-08-21"
   urlParams.postDate1;// = "2023-07-21"
   urlParams.postDate2;// = "2023-09-21"
-  var correctionTypeOption = "TOA"
+  urlParams.correctionTypeOption = "TOA"
+
+  var region8_fps = ["01", "05", "12", "13", "21", "22", "28", "37", "40", "45", "47", "48", "51"];
 
   var statesDict = {
     "Alabama" : "01",
-    "Alaska" : "02",
-    "Arizona" : "04",
+    // "Alaska" : "02",
+    // "Arizona" : "04",
     "Arkansas" : "05",
-    "California" : "06",
-    "Colorado" : "08",
-    "Connecticut" : "09",
-    "Delaware" : "10",
-    "District of Columbia" : "11",
+    // "California" : "06",
+    // "Colorado" : "08",
+    // "Connecticut" : "09",
+    // "Delaware" : "10",
+    // "District of Columbia" : "11",
     "Florida" : "12",
     "Georgia" : "13",
-    "Hawaii" : "15",
-    "Idaho" : "16",
-    "Illinois" : "17",
-    "Indiana" : "18",
-    "Iowa" : "19",
-    "Kansas" : "20",
+    // "Hawaii" : "15",
+    // "Idaho" : "16",
+    // "Illinois" : "17",
+    // "Indiana" : "18",
+    // "Iowa" : "19",
+    // "Kansas" : "20",
     "Kentucky" : "21",
     "Louisiana" : "22",
-    "Maine" : "23",
-    "Maryland" : "24",
-    "Massachusetts" : "25",
-    "Michigan" : "26",
-    "Minnesota" : "27",
+    // "Maine" : "23",
+    // "Maryland" : "24",
+    // "Massachusetts" : "25",
+    // "Michigan" : "26",
+    // "Minnesota" : "27",
     "Mississippi" : "28",
-    "Missouri" : "29",
-    "Montana" : "30",
-    "Nebraska" : "31",
-    "Nevada" : "32",
-    "New Hampshire" : "33",
-    "New Jersey" : "34",
-    "New Mexico" : "35",
-    "New York" : "36",
+    // "Missouri" : "29",
+    // "Montana" : "30",
+    // "Nebraska" : "31",
+    // "Nevada" : "32",
+    // "New Hampshire" : "33",
+    // "New Jersey" : "34",
+    // "New Mexico" : "35",
+    // "New York" : "36",
     "North Carolina" : "37",
-    "North Dakota" : "38",
-    "Ohio" : "39",
+    // "North Dakota" : "38",
+    // "Ohio" : "39",
     "Oklahoma" : "40",
-    "Oregon" : "41",
-    "Pennsylvania" : "42",
-    "Rhode Island" : "44",
+    // "Oregon" : "41",
+    // "Pennsylvania" : "42",
+    // "Rhode Island" : "44",
     "South Carolina" : "45",
-    "South Dakota" : "46",
+    // "South Dakota" : "46",
     "Tennessee" : "47",
     "Texas" : "48",
-    "Utah" : "49",
-    "Vermont" : "50",
+    // "Utah" : "49",
+    // "Vermont" : "50",
     "Virginia" : "51",
-    "Washington" : "53",
-    "West Virginia" : "54",
-    "Wisconsin" : "55",
-    "Wyoming" : "56",
+    // "Washington" : "53",
+    // "West Virginia" : "54",
+    // "Wisconsin" : "55",
+    // "Wyoming" : "56",
 
   }
   
@@ -2450,8 +2454,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   function handleAoiSelectionType(selection) {
     console.log(selection)
+    urlParams.aoiSelectionType = selection;
 
-    if (selection == "Select by Dropdown") {
+    if (urlParams.aoiSelectionType == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
       $("#" + "dropdown-select").remove();
       $("#" + "select-aoi-div").append(`<div id="dropdown-select"></div>`)
@@ -2465,7 +2470,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         populateCountiesDropdown
       );
     }
-    else if (selection == "Select on Map") {
+    else if (urlParams.aoiSelectionType == "Select on Map") {
       $("#" + "dropdown-select").remove();
       selectSingleCounty()
     }
@@ -2490,10 +2495,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   };
 
   function setSelectedCounty(selectedCounty, stateFP, stateAbr){
-    var selectedFeature = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP)).filter(ee.Filter.eq("NAME", selectedCounty));
-    Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
+    Map.removeLayer(selectedLayerId)
+    var region8_counties = ee.FeatureCollection('TIGER/2018/Counties').filter(ee.Filter.inList("STATEFP", region8_fps));
+    var selectedFeature = region8_counties.filter(ee.Filter.eq("STATEFP", stateFP)).filter(ee.Filter.eq("NAME", selectedCounty));
+    selectedLayerId = Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
     Map.centerObject(selectedFeature);
     urlParams.selectedCounty = selectedFeature;
+    exportArea = selectedFeature;
     toggleProcessButton();
   };
   
@@ -2501,19 +2509,21 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     setTimeout(() => {
         google.maps.event.clearListeners(map, "click");
         google.maps.event.addListener(map, "click", (e) => {
+            Map.removeLayer(selectedLayerId)
             const lat = e.latLng.lat();
             const lng = e.latLng.lng();
             const point = ee.Geometry.Point([lng, lat]);
-            features = ee.FeatureCollection('TIGER/2018/Counties');
+            features = region8_counties = ee.FeatureCollection('TIGER/2018/Counties').filter(ee.Filter.inList("STATEFP", region8_fps));;
             const selectedFeature = features.filterBounds(point);
             var countyName = selectedFeature.first().get("NAME").getInfo()
             var stateFP = selectedFeature.first().get("STATEFP").getInfo()
             var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo();
             console.log("LAYER OBJ")
             console.log(layerObj)
-            Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`, true);
+            selectedLayerId = Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`,  true);
             Map.centerObject(selectedFeature);
             urlParams.selectedCounty = selectedFeature;
+            exportArea = selectedFeature;
             toggleProcessButton();
         });
     }, 0);
@@ -2531,50 +2541,58 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "sidebar-left",
     "pre-post-dates-label",
     "pre-post-dates-div",
-    "Define 'pre' and 'post' date ranges",
+    "Define 'post' and 'pre' date ranges",
     '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
     true,
     null,
-    "Select pre and post date ranges for the Hi-Form BMP Tool"
+    "Select post and pre date ranges for the Hi-Form BMP Tool"
   );
 
-  addHiFormPreDatePicker(
-    'pre-post-dates-div',
-    'pre-date-picker-container'
-  );
-
-  addSelectTypeRadio(
-    'pre-post-dates-div',
-    "define-post-date-options",
-    "Define Post Date Range",
-    "testOption",
-    { "Custom": true, "6 Month": false, "1 Year": false },
-    "Choose a post date range option",
-    toggleCustomPostDate
-  );
-  
-  addHiFormCustomPostPicker(
+  addHiFormPostDatePicker(
     'pre-post-dates-div',
     'post-date-picker-container'
   );
 
-  toggleCustomPostDate("Custom")
+  addSelectTypeRadio(
+    'pre-post-dates-div',
+    "define-pre-date-options",
+    "Define Pre Date Range",
+    "testOption",
+    { "6 Month": true, "1 Year": false, "Custom": false, },
+    "Choose a pre date range option",
+    toggleCustomPostDate
+  );
+
+  $("#define-pre-date-options").append(`<div id="selected-date-range"><h6>Pre Date Range:</h6></div>`)
+  $("#selected-date-range").append(`<p id="selected-date-range-contents"></p>`)
+  
+  addHiFormCustomPrePicker(
+    'pre-post-dates-div',
+    'pre-date-picker-container'
+  );
+
+  toggleCustomPostDate()
+  urlParams.selectedPreDateRangeType = "6 Month";
 
   function toggleCustomPostDate(selection) {
     if (selection == "Custom") {
-      $("#post-ranges-div").show();
+      $("#pre-ranges-div").show();
     } else {
-      $("#post-ranges-div").hide()
+      $("#pre-ranges-div").hide();
     }
+
+    urlParams.selectedPreDateRangeType = selection;
+    handleSelectedPreDateType()
   }
 
   function preDateOneHandler(e) {
+    
     console.log("Date Selected (Pre1): " + e.target.value);
     urlParams.preDate1 = e.target.value;
 
     // Set Pre Date Min and Value
     var bufferDate = new Date(e.target.value);
-    bufferDate.setDate(bufferDate.getDate() + 14);
+    bufferDate.setDate(bufferDate.getDate() + 28);
     newDate2 = bufferDate.toISOString().substr(0,10);
     $("#pre-date-two").attr("min", e.target.value);
     $("#pre-date-two").attr("value", newDate2);
@@ -2594,37 +2612,70 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   function postDateOneHandler(e) {
 
-    // Validation (Post must be larger than Pre)
-    if (urlParams.preDate2 > e.target.value) {
-      $("#post-date-one").attr("value", "");
-      $("#post-date-one").val("");
-      $("#post-date-two").attr("value", "");
-      $("#post-date-two").val("");
-      urlParams.postDate1 = null;
-      urlParams.postDate2 = null;
-      alert("Post Date Range must start after the selected Pre Date Range")
-    } else {
-      console.log("Date Selected (Post1): " + e.target.value);
-      urlParams.postDate1 = e.target.value;
+    console.log("Date Selected (Post1): " + e.target.value);
+    urlParams.postDate1 = e.target.value;
 
-      // Set Post Date Min and Value
-      var bufferDate = new Date(e.target.value);
-      bufferDate.setDate(bufferDate.getDate() + 14);
-      newDate2 = bufferDate.toISOString().substr(0,10);
-      $("#post-date-two").attr("min", e.target.value);
-      $("#post-date-two").attr("value", newDate2);
-      $("#post-date-two").val(newDate2);
-      urlParams.postDate2 = newDate2;
-      console.log("Date Selected (Post2): " + urlParams.postDate2);
-    }
+    // Set Post Date 2 Min and Value
+    var bufferDate = new Date(e.target.value);
+    bufferDate.setDate(bufferDate.getDate() + 28);
+    newDate2 = bufferDate.toISOString().substr(0,10);
+    $("#post-date-two").attr("min", e.target.value);
+    $("#post-date-two").attr("value", newDate2);
+    $("#post-date-two").val(newDate2);
+    urlParams.postDate2 = newDate2;
+    console.log("Date Selected (Post2): " + urlParams.postDate2);
+    
+    handleSelectedPreDateType()
 
     toggleProcessButton()
+  }
+
+  function handleSelectedPreDateType() {
+    // Set Pre Date if not custom range
+    if (urlParams.selectedPreDateRangeType == "1 Year") {
+      var ogdate = new Date(urlParams.postDate1)
+      ogdate.setMonth(ogdate.getMonth() - 12)
+      date_format = ogdate.toISOString().substr(0,10)
+
+      urlParams.preDate1 = date_format
+
+      var ogdate2 = new Date(urlParams.postDate2)
+      ogdate2.setMonth(ogdate2.getMonth() - 12)
+      date_format2 = ogdate2.toISOString().substr(0,10)
+
+      urlParams.preDate2 = date_format2
+
+      console.log("Date Selected (Pre1): " + urlParams.preDate1)
+      console.log("Date Selected (Pre2): " + urlParams.preDate2)
+      $("#selected-date-range").show()
+      $("#selected-date-range-contents").text(`${urlParams.preDate1} ---- ${urlParams.preDate2}`)
+    } else if (urlParams.selectedPreDateRangeType == "6 Month") {
+      var ogdate = new Date(urlParams.postDate1)
+      ogdate.setMonth(ogdate.getMonth() - 6)
+      date_format = ogdate.toISOString().substr(0,10)
+
+      urlParams.preDate1 = date_format
+
+      var ogdate2 = new Date(urlParams.postDate2)
+      ogdate2.setMonth(ogdate2.getMonth() - 6)
+      date_format2 = ogdate2.toISOString().substr(0,10)
+
+      urlParams.preDate2 = date_format2
+
+      console.log("Date Selected (Pre1): " + urlParams.preDate1)
+      console.log("Date Selected (Pre2): " + urlParams.preDate2)
+      $("#selected-date-range").show()
+      $("#selected-date-range-contents").text(`${urlParams.preDate1} ---- ${urlParams.preDate2}`)
+    } else {
+      $("#selected-date-range").hide()
+    }
   }
 
   function postDateTwoHandler(e) {
     console.log("Date Selected (Post2): " + e.target.value);
     urlParams.postDate2 = e.target.value;
 
+    handleSelectedPreDateType()
     toggleProcessButton()
   }
 
@@ -2649,6 +2700,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   function changeCorrectionTypeOption() {
     console.log(correctionTypeOption)
+    urlParams.correctionTypeOption = correctionTypeOption
   }
 
   addHiFormProcessButton(
@@ -2656,6 +2708,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   )
 
   function handleProcess() {
+    // Check Parameters
+    if (urlParams.preDate2 >= urlParams.postDate1) {
+      alert("The Pre Date Range cannot be after the Post Date Range nor should they overlap")
+      return
+    }
+    
+    // Allow Reset Button
+    $('#reset-button').removeAttr('disabled');
+
+    // Disable ReRun
+    google.maps.event.clearListeners(map, "click");
+
     // Open or Close Accordians
     $("#layer-list-collapse-div").toggleClass("collapsed show");
     $("#layer-list-collapse-label").removeClass("collapsed");
@@ -2668,6 +2732,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     $("#select-aoi-label-label").addClass("collapsed");
     $("#select-aoi-div").removeClass("show");
     $("#select-aoi-label").prop("ariaExpanded", false);
+
+    // Hide Contents of Parameter Selection Div
+    $("#select-aoi-div").hide();
+    $("#pre-post-dates-div").hide();
 
     // Run HiForm Process
     hiform_bmp_process()
@@ -2686,6 +2754,48 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
 
+  addHiFormResetButton("layer-list-collapse-div")
+
+  function handleHiFormReset() {
+    // Make Paramters Visible again
+    $("#select-aoi-div").show();
+    $("#pre-post-dates-div").show();
+
+    // Open or Close Accordians
+    $("#layer-list-collapse-label").addClass("collapsed");
+    $("#layer-list-collapse-div").removeClass("show");
+    $("#layer-list-collapse-label").prop("ariaExpanded", false);
+
+    $("#pre-post-dates-div").toggleClass("collapsed show");
+    $("#pre-post-dates-label").removeClass("collapsed");
+    $("#pre-post-dates-label").prop("ariaExpanded", true);
+
+    $("#select-aoi-div").toggleClass("collapsed show");
+    $("#select-aoi-label").removeClass("collapsed");
+    $("#select-aoi-label-label").prop("ariaExpanded", true);
+
+    // Reset Map
+    reRun()
+
+    // setTimeout(() => {
+    //   console.log("Resetting Map");
+    // }, 5000);
+
+    // ReAdd Select AOI
+    $("#select-aoi-div").empty()
+    addSelectTypeRadio(
+      "select-aoi-div",
+      "select-type-radio",
+      "Choose County Selection Type",
+      "selectOption",
+      { "Select by Dropdown": true, "Select on Map": false },
+      "Title",
+      handleAoiSelectionType
+    )
+    handleAoiSelectionType("Select by Dropdown")
+    
+  }
+
   addCollapse(
     "sidebar-left",
     "related-layers-label",
@@ -2701,180 +2811,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addCollapse(
     "sidebar-left",
-    "export-options-label",
-    "export-options-div",
-    "Export Options",
-    '<i role="img" class="fa fa-download mr-1" aria-hidden="true"></i>',
+    "download-collapse-label",
+    "download-collapse-div",
+    "Download Data",
+    `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
     false,
     null,
     "Download HiForm BMP results"
   );
-
+  
+  addHiFormExport("download-collapse-div")
   
 
-//   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
-
-//   if (urlParams.canExport === true) {
-//     canExport = urlParams.canExport;
-//     addCollapse(
-//       "sidebar-left",
-//       "download-collapse-label",
-//       "download-collapse-div",
-//       "DOWNLOAD DATA",
-//       `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
-//       false,
-//       ``,
-//       "Download " + mode + " products for further analysis"
-//     );
-//   }
-// } else {
-//   addCollapse(
-//     "sidebar-left",
-//     "layer-list-collapse-label",
-//     "layer-list-collapse-div",
-//     "ANCILLARY DATA",
-//     `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
-//     true,
-//     null,
-//     mode + " DATA layers to view on map"
-//   );
-//   addCollapse(
-//     "sidebar-left",
-//     "reference-layer-list-collapse-label",
-//     "reference-layer-list-collapse-div",
-//     "PLOT DATA",
-//     `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
-//     false,
-//     null,
-//     "Additional relevant layers to view on map intended to provide context for " + mode + " DATA"
-//   );
-
-//   addCollapse(
-//     "sidebar-left",
-//     "tools-collapse-label",
-//     "tools-collapse-div",
-//     "TOOLS",
-//     `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
-//     false,
-//     "",
-//     "Tools to measure and chart data provided on the map"
-//   );
-
-//   $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
-//   $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
-//   plotsOn = true;
-// } 
-
-
-// $("body").append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
-// $(".legendDiv").css("bottom", "1rem");
-// $(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
-// addLegendCollapse();
-// /////////////////////////////////////////////////////////////////
-// //Construct tool options for different modes
-
-// addAccordianContainer("tools-collapse-div", "tools-accordian");
-// $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`);
-// // $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
-// addSubAccordianCard(
-//   "tools-accordian",
-//   "measure-distance-label",
-//   "measure-distance-div",
-//   "Distance Measuring",
-//   staticTemplates.distanceDiv,
-//   false,
-//   `toggleTool(toolFunctions.measuring.distance)`,
-//   staticTemplates.distanceTipHover
-// );
-
-// // <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
-// addSubAccordianCard(
-//   "tools-accordian",
-//   "measure-area-label",
-//   "measure-area-div",
-//   "Area Measuring",
-//   staticTemplates.areaDiv,
-//   false,
-//   `toggleTool(toolFunctions.measuring.area)`,
-//   staticTemplates.areaTipHover
-// );
-// addRadio(
-//   "measure-distance-div",
-//   "metricOrImperialDistance-radio",
-//   "",
-//   "Imperial",
-//   "Metric",
-//   "metricOrImperialDistance",
-//   "imperial",
-//   "metric",
-//   "updateDistance()",
-//   "updateDistance()",
-//   "Toggle between imperial or metric units"
-// );
-
-// addRadio(
-//   "measure-area-div",
-//   "metricOrImperialArea-radio",
-//   "",
-//   "Imperial",
-//   "Metric",
-//   "metricOrImperialArea",
-//   "imperial",
-//   "metric",
-//   "updateArea()",
-//   "updateArea()",
-//   "Toggle between imperial or metric units"
-// );
-
-// addShapeEditToolbar("measure-distance-div", "measure-distance-div-icon-bar", "undoDistanceMeasuring()", "resetPolyline()");
-// addColorPicker("measure-distance-div-icon-bar", "distance-color-picker", "updateDistanceColor", distancePolylineOptions.strokeColor);
-
-// addShapeEditToolbar("measure-area-div", "measure-area-div-icon-bar", "undoAreaMeasuring()", "resetPolys()");
-// addColorPicker("measure-area-div-icon-bar", "area-color-picker", "updateAreaColor", areaPolygonOptions.strokeColor);
-
-// // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
-// $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
-// addSubAccordianCard("tools-accordian", "query-label", "query-div", "Query Visible Map Layers", staticTemplates.queryDiv, false, `toggleTool(toolFunctions.pixel.query)`, staticTemplates.queryTipHover);
-// if (["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1) {
-//   addSubAccordianCard(
-//     "tools-accordian",
-//     "pixel-chart-label",
-//     "pixel-chart-div",
-//     "Query " + mode + " Time Series",
-//     staticTemplates.pixelChartDiv,
-//     false,
-//     `toggleTool(toolFunctions.pixel.chart)`,
-//     staticTemplates.pixelChartTipHover
-//   );
-//   addDropdown("pixel-chart-div", "pixel-collection-dropdown", "Choose which " + mode + " time series to chart", "whichPixelChartCollection", "Choose which " + mode + " time series to chart.");
-// }
-// // $('#pixel-chart-div').append(staticTemplates.showChartButton);
-// // addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
-// if (mode === "geeViz") {
-//   $("#pixel-chart-label").remove();
-//   $("#share-button").remove();
-//   $("#tools-accordian").append(`<hr>`);
-//   //Sync tooltip toggle
-//   var tShowToolTipModal = true;
-//   if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
-//     tShowToolTipModal = localStorage.showToolTipModal;
-//   }
-//   addRadio(
-//     "tools-accordian",
-//     "tooltip-radio",
-//     "Show tool tips",
-//     "Yes",
-//     "No",
-//     "localStorage.showToolTipModal",
-//     "true",
-//     "false",
-//     "",
-//     "",
-//     "Whether to show tool tips to help explain how to use the tools."
-//   );
-//   if (tShowToolTipModal === "false") {
-//     $("#tooltip-radio-second_toggle_label").click();
-//   }
 } else {
   addCollapse(
     "sidebar-left",

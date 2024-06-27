@@ -1791,6 +1791,8 @@ function addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLaye
 
   addLayer(layer);
   layerCount++;
+
+  return layer.id
 }
 
 //////////////////////////////////////////////////////
@@ -2051,8 +2053,22 @@ function addFeatureView(assetId, visParams, name, visible, maxZoom, helpBox, whi
 //Set up Map2 object
 function mp() {
   this.addLayer = function (item, viz, name, visible, label, fontColor, helpBox, whichLayerList, queryItem) {
-    addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLayerList, queryItem);
+    return addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLayerList, queryItem);
   };
+  this.removeLayer = function (layerId) {
+    if (layerId) {
+      map.overlayMapTypes.setAt(layerObj[layerId].layerId, null)
+      console.log(`${layerId}-container-${layerObj[layerId].ID}`)
+      $(`#${layerId}-container-${layerObj[layerId].ID}`).remove()
+      $(`#${layerId}`).remove()
+
+      if (layerObj[layerId].canQuery) {
+        console.log(`${layerId}-${layerObj[layerId].ID}`)
+        delete(queryObj[`${layerId}-${layerObj[layerId].ID}`])
+      }
+      delete(layerObj[layerId])
+    } 
+  }
   this.addSerializedLayer = function (item, viz, name, visible, label, fontColor, helpBox, whichLayerList, queryItem) {
     viz.serialized = true;
     addToMap(item, viz, name, visible, label, fontColor, helpBox, whichLayerList, queryItem);
@@ -2262,7 +2278,7 @@ function reRun() {
   NEXT_LAYER_ID = 1;
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
-  ["layer-list", "reference-layer-list", "area-charting-select-layer-list", "fhp-div", "time-lapse-legend-list"].map(function (l) {
+  ["layer-list", "reference-layer-list", "area-charting-select-layer-list", "fhp-div", "time-lapse-legend-list", "related-layer-list"].map(function (l) {
     $("#" + l).empty();
     $("#legend-" + l).empty();
   });
