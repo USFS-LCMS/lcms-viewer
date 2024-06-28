@@ -188,7 +188,13 @@ var interiorAKPractice = {
   plotIDField: "ID",
 };
 
-var plotsGeoJSONs = [hiFinal, conus1, CONUSpractice, hiPractice, coastalAK2022, coastalAKPractice, interiorAKPractice]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
+var interiorAK = {
+  name: "Interior Alaska",
+  path: "./src/data/geojson/Interior_AK_plots_selected_30m_box.json",
+  plotIDField: "PLOTID",
+};
+
+var plotsGeoJSONs = [hiFinal, conus1, CONUSpractice, hiPractice, coastalAK2022, coastalAKPractice, interiorAKPractice, interiorAK]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
 // 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
 // })

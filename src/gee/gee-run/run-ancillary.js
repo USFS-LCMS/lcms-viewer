@@ -7,6 +7,9 @@ function runAncillary() {
 
   // AK Vegetation Layers
   ////////////////////////////////////////////
+
+  // LCMS v2022-8 Coastal Alaska
+
   var ak_land_cover = ee
     .ImageCollection("USFS/GTAC/LCMS/v2022-8")
     .filterDate("2016", "2017") // range: [1985, 2022]
@@ -18,6 +21,268 @@ function runAncillary() {
     ak_land_cover,
     { autoViz: true },
     "AK LandCover - LCMS 2016",
+    false
+  );
+
+  // Alaska Wetlands layer from University of Alaska
+
+  var ak_wetland_uaa = ee.Image(
+    "projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaWetlandComposite_20240613"
+  );
+
+  var ak_wetland_uaa_dict = {
+    1: "Estuarine and Marine Deepwater",
+    2: "Estuarine and Marine Wetland",
+    3: "Freshwater Bryophyte",
+    4: "Freshwater Emergent Wetland",
+    5: "Freshwater Forested/Shrub Wetland",
+    6: "Freshwater Pond",
+    7: "Lake",
+    8: "Riverine",
+    9: "Upland",
+  };
+
+  var ak_wetland_uaa_palette = [
+    "007d88",
+    "63c9a9",
+    "d8f03b",
+    "7fcb11",
+    "00892f",
+    "658dc7",
+    "07007c",
+    "0000c6",
+    "e6e1da",
+  ];
+
+  var ak_wetland_uaa_LegendDict = {
+    "Estuarine and Marine Deepwater": "007d88",
+    "Estuarine and Marine Wetland": "63c9a9",
+    "Freshwater Bryophyte": "d8f03b",
+    "Freshwater Emergent Wetland": "7fcb11",
+    "Freshwater Forested/Shrub Wetland": "00892f",
+    "Freshwater Pond": "658dc7",
+    Lake: "07007c",
+    Riverine: "0000c6",
+    Upland: "e6e1da",
+  };
+
+  Map.addLayer(
+    ak_wetland_uaa,
+    {
+      min: 1,
+      max: 9,
+      palette: ak_wetland_uaa_palette,
+      classLegendDict: ak_wetland_uaa_LegendDict,
+      queryDict: ak_wetland_uaa_dict,
+    },
+    "AK Wetlands (UAA)",
+    false
+  );
+
+  // Alaska Vegetation Composite from University of Alaska
+
+  var ak_vegetation_uaa = ee.Image(
+    "projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaVegetationCompositeReclass_20240623"
+  );
+
+  var ak_vegetation_uaa_dict = {
+    1: "Algal Bed (Freshwater) (Southern Alaska)",
+    2: "Algal Bed (Tidal-Subtidal) (Southern Alaska)",
+    3: "Bareground",
+    4: "Bareground (Beach or Tide Flat) (Southern Alaska)",
+    5: "Deciduous Forest (Open-Closed)",
+    6: "Deciduous Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)",
+    7: "Deciduous Forest (Woodland-Closed) (Southern Alaska)",
+    8: "Dwarf Shrub",
+    9: "Dwarf Shrub (Southern Alaska)",
+    10: "Dwarf Shrub or Dwarf Shrub-Lichen",
+    11: "Dwarf Shrub, or Herbaceous (Mesic) (Southern Alaska)",
+    12: "Dwarf Shrub-Lichen",
+    13: "Fire Scar",
+    14: "Freshwater or Saltwater",
+    15: "Hemlock (Woodland-Closed)",
+    16: "Hemlock-Sitka Spruce (Woodland-Closed)",
+    17: "Herbaceous (Aquatic)",
+    18: "Herbaceous (Aquatic) (Southern Alaska)",
+    19: "Herbaceous (Marsh) (Interior Alaska, Cook Inlet Basin)",
+    20: "Herbaceous (Marsh) (Northern and Western Alaska)",
+    21: "Herbaceous (Mesic)",
+    22: "Herbaceous (Mesic) (Interior Alaska, Cook Inlet Basin)",
+    23: "Herbaceous (Mesic) (Northern and Western Alaska)",
+    24: "Herbaceous (Mesic) (Northern and Western Alaska) or Tussock Tundra (Herbaceous)",
+    25: "Herbaceous (Mesic) (Southern Alaska)",
+    26: "Herbaceous (Peatland) (Southern Alaska)",
+    27: "Herbaceous (Tidal) (Southern Alaska)",
+    28: "Herbaceous (Wet) (Interior Alaska, Cook Inlet Basin)",
+    29: "Herbaceous (Wet) (Northern and Western Alaska)",
+    30: "Herbaceous (Wet) (Northern and Western Alaska) or Herbaceous (Marsh) (Northern and Western Alaska)",
+    31: "Herbaceous (Wet-Marsh) (Southern Alaska)",
+    32: "Herbaceous (Wet-Marsh) (Tidal)",
+    33: "Herbaceous (Wet-Marsh), or Herbaceous (Tidal), or Herbaceous (Peatland) (Southern Alaska)",
+    34: "Ice-Snow",
+    35: "Lichen",
+    36: "Low Shrub",
+    37: "Low Shrub (Peatland) (Southern Alaska)",
+    38: "Low Shrub (Tidal) (Southern Alaska)",
+    39: "Low Shrub or Tall Shrub (Open-Closed)",
+    40: "Low Shrub/Lichen",
+    41: "Low-Tall Shrub (Southern Alaska)",
+    42: "Moss",
+    43: "Moss (Peatland) (Southern Alaska)",
+    44: "Moss (Southern Alaska)",
+    45: "Needleleaf Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)",
+    46: "Needleleaf Forest (Woodland-Closed) (Southern Alaska)",
+    47: "Needleleaf Forest (Woodland-Open) (Peatland) (Southern Alaska)",
+    48: "Saltwater",
+    49: "Sitka Spruce (Woodland-Closed)",
+    50: "Sparse Vegetation (Interior Alaska, Cook Inlet Basin)",
+    51: "Sparse Vegetation (Northern and Western Alaska)",
+    52: "Tall Shrub (Open-Closed)",
+    53: "Tussock Tundra (Low shrub or Herbaceous)",
+    54: "Urban, Agriculture, Road",
+    55: "White Spruce or Black Spruce (Open-Closed)",
+    56: "White Spruce or Black Spruce (Woodland)",
+    57: "White Spruce or Black Spruce-Deciduous (Open-Closed)",
+    58: "White Spruce or Black Spruce/Lichen (Woodland-Open)",
+  };
+
+  var ak_vegetation_uaa_palette = [
+    "adffff",
+    "adffff",
+    "4f4f4f",
+    "4f4f4f",
+    "ffb340",
+    "c49735",
+    "c9401e",
+    "ff8cff",
+    "ff6bff",
+    "ffd9ff",
+    "ffc7e1",
+    "ffe6ff",
+    "black",
+    "0077ff",
+    "287300",
+    "1ca600",
+    "adffff",
+    "adffff",
+    "adffff",
+    "96e3fa",
+    "61bdff",
+    "fcfc35",
+    "ffff8c",
+    "ffffcc",
+    "c1fdff",
+    "5effff",
+    "86d5eb",
+    "adffff",
+    "a1ffbb",
+    "59ffc2",
+    "adffff",
+    "00c7bd",
+    "00a199",
+    "white",
+    "ffd6e6",
+    "ffcfcf",
+    "ffbaba",
+    "cc9b9b",
+    "f712ff",
+    "ffd8cf",
+    "859e9a",
+    "ffcff0",
+    "eabaff",
+    "ffbae7",
+    "04de17",
+    "02ba14",
+    "009e10",
+    "54a7ff",
+    "007308",
+    "bfbfbf",
+    "e3e3e3",
+    "ff0808",
+    "bec251",
+    "black",
+    "009c68",
+    "6e7d60",
+    "ffb114",
+    "daff73",
+  ];
+
+  var ak_vegetation_uaa_LegendDict = {
+    "Algal Bed (Freshwater) (Southern Alaska)": "adffff",
+    "Algal Bed (Tidal-Subtidal) (Southern Alaska)": "adffff",
+    Bareground: "4f4f4f",
+    "Bareground (Beach or Tide Flat) (Southern Alaska)": "4f4f4f",
+    "Deciduous Forest (Open-Closed)": "ffb340",
+    "Deciduous Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)":
+      "c49735",
+    "Deciduous Forest (Woodland-Closed) (Southern Alaska)": "c9401e",
+    "Dwarf Shrub": "ff8cff",
+    "Dwarf Shrub (Southern Alaska)": "ff6bff",
+    "Dwarf Shrub or Dwarf Shrub-Lichen": "ffd9ff",
+    "Dwarf Shrub, or Herbaceous (Mesic) (Southern Alaska)": "ffc7e1",
+    "Dwarf Shrub-Lichen": "ffe6ff",
+    "Fire Scar": "black",
+    "Freshwater or Saltwater": "0077ff",
+    "Hemlock (Woodland-Closed)": "287300",
+    "Hemlock-Sitka Spruce (Woodland-Closed)": "1ca600",
+    "Herbaceous (Aquatic)": "adffff",
+    "Herbaceous (Aquatic) (Southern Alaska)": "adffff",
+    "Herbaceous (Marsh) (Interior Alaska, Cook Inlet Basin)": "adffff",
+    "Herbaceous (Marsh) (Northern and Western Alaska)": "96e3fa",
+    "Herbaceous (Mesic)": "61bdff",
+    "Herbaceous (Mesic) (Interior Alaska, Cook Inlet Basin)": "fcfc35",
+    "Herbaceous (Mesic) (Northern and Western Alaska)": "ffff8c",
+    "Herbaceous (Mesic) (Northern and Western Alaska) or Tussock Tundra (Herbaceous)":
+      "ffffcc",
+    "Herbaceous (Mesic) (Southern Alaska)": "c1fdff",
+    "Herbaceous (Peatland) (Southern Alaska)": "5effff",
+    "Herbaceous (Tidal) (Southern Alaska)": "86d5eb",
+    "Herbaceous (Wet) (Interior Alaska, Cook Inlet Basin)": "adffff",
+    "Herbaceous (Wet) (Northern and Western Alaska)": "a1ffbb",
+    "Herbaceous (Wet) (Northern and Western Alaska) or Herbaceous (Marsh) (Northern and Western Alaska)":
+      "59ffc2",
+    "Herbaceous (Wet-Marsh) (Southern Alaska)": "adffff",
+    "Herbaceous (Wet-Marsh) (Tidal)": "00c7bd",
+    "Herbaceous (Wet-Marsh), or Herbaceous (Tidal), or Herbaceous (Peatland) (Southern Alaska)":
+      "00a199",
+    "Ice-Snow": "white",
+    Lichen: "ffd6e6",
+    "Low Shrub": "ffcfcf",
+    "Low Shrub (Peatland) (Southern Alaska)": "ffbaba",
+    "Low Shrub (Tidal) (Southern Alaska)": "cc9b9b",
+    "Low Shrub or Tall Shrub (Open-Closed)": "f712ff",
+    "Low Shrub/Lichen": "ffd8cf",
+    "Low-Tall Shrub (Southern Alaska)": "859e9a",
+    Moss: "ffcff0",
+    "Moss (Peatland) (Southern Alaska)": "eabaff",
+    "Moss (Southern Alaska)": "ffbae7",
+    "Needleleaf Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)":
+      "04de17",
+    "Needleleaf Forest (Woodland-Closed) (Southern Alaska)": "02ba14",
+    "Needleleaf Forest (Woodland-Open) (Peatland) (Southern Alaska)": "009e10",
+    Saltwater: "54a7ff",
+    "Sitka Spruce (Woodland-Closed)": "007308",
+    "Sparse Vegetation (Interior Alaska, Cook Inlet Basin)": "bfbfbf",
+    "Sparse Vegetation (Northern and Western Alaska)": "e3e3e3",
+    "Tall Shrub (Open-Closed)": "ff0808",
+    "Tussock Tundra (Low shrub or Herbaceous)": "bec251",
+    "Urban, Agriculture, Road": "black",
+    "White Spruce or Black Spruce (Open-Closed)": "009c68",
+    "White Spruce or Black Spruce (Woodland)": "6e7d60",
+    "White Spruce or Black Spruce-Deciduous (Open-Closed)": "ffb114",
+    "White Spruce or Black Spruce/Lichen (Woodland-Open)": "daff73",
+  };
+
+  Map.addLayer(
+    ak_vegetation_uaa,
+    {
+      min: 1,
+      max: 58,
+      palette: ak_vegetation_uaa_palette,
+      classLegendDict: ak_vegetation_uaa_LegendDict,
+      queryDict: ak_vegetation_uaa_dict,
+    },
+    "AK Vegetation (UAA)",
     false
   );
 
@@ -224,7 +489,7 @@ function runAncillary() {
     "Woody Wetlands",
     "Emergent Herbaceous Wetlands",
   ];
-  var nlcdFullClassCodes = ee.List.sequence(nlcdLCMin, nlcdLCMax).getInfo();
+  var nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
   var nlcdLCVizDict = {};
   var nlcdLCQueryDict = {};
   var nlcdLegendDict = {};
@@ -493,19 +758,19 @@ function runAncillary() {
   var cdlValues = ee.List(d.get("cropland_class_values"));
   var cdlPalette = ee.List(d.get("cropland_class_palette"));
   var cdlQueryDict = {};
-  cdlValues
-    .zip(cdlNames)
-    .getInfo()
-    .map(function (l) {
-      cdlQueryDict[l[0]] = l[1];
-    });
-  var cdlLegendDict = {};
-  cdlNames
-    .zip(cdlPalette)
-    .getInfo()
-    .map(function (l) {
-      cdlLegendDict[l[0]] = l[1];
-    });
+  // cdlValues
+  //   .zip(cdlNames)
+  //   .getInfo()
+  //   .map(function (l) {
+  //     cdlQueryDict[l[0]] = l[1];
+  //   });
+  // var cdlLegendDict = {};
+  // cdlNames
+  //   .zip(cdlPalette)
+  //   .getInfo()
+  //   .map(function (l) {
+  //     cdlLegendDict[l[0]] = l[1];
+  //   });
   // var cdl2 = ee.Image('USDA/NASS/CDL/2018').select([0]);
   // var palette = cdl2.get('cropland_class_palette').getInfo();
 
@@ -524,7 +789,7 @@ function runAncillary() {
       .copyProperties(img, ["system:time_start"])
       .copyProperties(img);
   });
-  var years = ee.List.sequence(pdsiStartYear, pdsiEndYear).getInfo();
+  var years = range(pdsiStartYear, pdsiEndYear + 1);
   var annualPDSI = years.map(function (yr) {
     var startDate = ee.Date.fromYMD(yr - 1, 10, 1);
     var endDate = ee.Date.fromYMD(yr, 9, 30);
