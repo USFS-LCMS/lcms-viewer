@@ -4,7 +4,9 @@ function runTreeMap() {
   // All attributes collection
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
-  var attrC = ee.ImageCollection("projects/treemap-386222/assets/Final_Outputs/TreeMap_2016");
+  var attrC = ee.ImageCollection(
+    "projects/treemap-386222/assets/Final_Outputs/TreeMap_2016"
+  );
 
   // All attributes available
   // This list is currently only used for reference to creat the thematic and continuous lists below
@@ -174,7 +176,14 @@ function runTreeMap() {
     ],
 
     // live tree variables
-    ["STANDHT", palettes.crameri.bamako[50], 0.1, 0.9, "STANDHT: Height of Dominant Trees (ft)", "Derived from the Forest Vegetation Simulator."],
+    [
+      "STANDHT",
+      palettes.crameri.bamako[50],
+      0.1,
+      0.9,
+      "STANDHT: Height of Dominant Trees (ft)",
+      "Derived from the Forest Vegetation Simulator.",
+    ],
     [
       "BALIVE",
       palettes.crameri.bamako[50],
@@ -218,7 +227,12 @@ function runTreeMap() {
       "ALSTK: All-Live-Tree Stocking (percent)",
       "The sum of stocking percent values of all live trees on the condition.",
     ],
-    ["CANOPYPCT", palettes.crameri.bamako[50], "CANOPYPCT: Live Canopy Cover (percent)", "Derived from the Forest Vegetation Simulator."],
+    [
+      "CANOPYPCT",
+      palettes.crameri.bamako[50],
+      "CANOPYPCT: Live Canopy Cover (percent)",
+      "Derived from the Forest Vegetation Simulator.",
+    ],
   ];
 
   // Function to get a thematic attribute image service
@@ -273,7 +287,7 @@ function runTreeMap() {
     viz["palette"] = palette;
     viz["classLegendDict"] = dict(zip(uniqueNames, colors));
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-    viz.layerType = "geeImage";
+
     return [attrImg, viz, attr[2]];
   }
 
@@ -297,7 +311,7 @@ function runTreeMap() {
     viz["max"] = parseInt(quantile(uniqueValues, attr[3]));
     viz["palette"] = attr[1];
     viz["title"] = `${attr[4]} || ${attr[5]}`;
-    viz.layerType = "geeImage";
+
     return [attrImg, viz, attr[4]];
   }
 
@@ -323,10 +337,13 @@ function runTreeMap() {
 
     // set up legend - for values and palette
     // Remove '000000' values from palette
-    var removed_nulls_palette = removeItemAll(JSON.parse(JSON.stringify(attr[1])), "000000");
+    var removed_nulls_palette = removeItemAll(
+      JSON.parse(JSON.stringify(attr[1])),
+      "000000"
+    );
     viz["classLegendDict"] = dict(zip(uniqueValues, removed_nulls_palette));
     viz["title"] = `${attr[4]} || ${attr[5]}`;
-    viz.layerType = "geeImage";
+
     return [attrImg, viz, attr[4]];
   }
 
@@ -363,7 +380,7 @@ function runTreeMap() {
     viz["max"] = 100;
     viz["palette"] = attr[1];
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-    viz.layerType = "geeImage";
+
     return [attrImg, viz, attr[2]];
   }
 
@@ -393,7 +410,7 @@ function runTreeMap() {
     //viz['max'] = parseInt(uniqueValues.median());
     viz["palette"] = attr[1];
     viz["title"] = `${attr[3]} (${attr[0]}) attribute image layer`;
-    viz.layerType = "geeImage";
+
     return [attrImg, viz, attr[3]];
   }
 
@@ -401,7 +418,15 @@ function runTreeMap() {
   // Create an array of all the layer visualization arrays returned by the respective functions
   var metaArray = ordinalAttrs
     .map(getOrdinalAttr)
-    .concat(percentAttrs.map(getPercentAttr).concat(thematicAttrs.map(getThematicAttr_Colors).concat(continuousAttrs.map(getContinuousAttr))));
+    .concat(
+      percentAttrs
+        .map(getPercentAttr)
+        .concat(
+          thematicAttrs
+            .map(getThematicAttr_Colors)
+            .concat(continuousAttrs.map(getContinuousAttr))
+        )
+    );
 
   // Sort the meta array by the second index of each subarray
   metaArray.sort(function (a, b) {
@@ -425,7 +450,7 @@ function runTreeMap() {
     } else {
       var visible = false;
     }
-    Map2.addLayer(layer[0], layer[1], layer[2], visible);
+    Map.addLayer(layer[0], layer[1], layer[2], visible);
   }
   ////
 
@@ -456,13 +481,12 @@ function runTreeMap() {
   // Bring in raw TreeMap layer and add it to the map
   rawTreeMap = attrC.filter(ee.Filter.eq("attribute", "Value")).first(); //ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
 
-  Map2.addLayer(
+  Map.addLayer(
     rawTreeMap.randomVisualizer(),
     {
       queryDict: rawQueryDict,
       addToLegend: false,
       opacity: 0,
-      layerType: "geeImage",
       title: `Raw TreeMap Identifier dataset values. This dataset is useful to see spatial groupings of individual modeled plot values. When queried, all attributes are provided for the queried pixel.`,
     },
     "TreeMap ID"

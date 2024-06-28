@@ -1,6 +1,9 @@
 function runDashboard() {
   console.log("running dashboard");
-  let tryDirs = ["./geojson/", "https://storage.googleapis.com/lcms-dashboard-fast/"];
+  let tryDirs = [
+    "./geojson/",
+    "https://storage.googleapis.com/lcms-dashboard-fast/",
+  ];
   let tryDirI = 0;
   let fipsDict = ee.Dictionary({
     "01": "AL",
@@ -59,7 +62,8 @@ function runDashboard() {
 
   let startYearT = parseInt(urlParams.startYear);
   let endYearT = parseInt(urlParams.endYear);
-  let dashboardFolder = "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2023-9"; //'projects/lcms-292214/assets/Dashboard2';
+  let dashboardFolder =
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2023-9"; //'projects/lcms-292214/assets/Dashboard2';
   var summaries = ee.data
     .getList({
       id: dashboardFolder,
@@ -70,7 +74,11 @@ function runDashboard() {
   // console.log(summaries.length);
   // window.lcmsTS = ee.FeatureCollection('projects/lcms-292214/assets/CONUS-LCMS/TimeSync/CONUS_TimeSync_Annualized_Table_Merged_secLC_v2');
 
-  huc6_conus = ee.FeatureCollection("USGS/WBD/2017/HUC06").filter(ee.Filter.inList("states", ["CN", "MX", "AK", "AK,CN", "HI", "AS"]).not());
+  huc6_conus = ee
+    .FeatureCollection("USGS/WBD/2017/HUC06")
+    .filter(
+      ee.Filter.inList("states", ["CN", "MX", "AK", "AK,CN", "HI", "AS"]).not()
+    );
   // Map.addLayer(huc6_conus,{layerType:'geeVectorImage'},'HUC06')
   var summaryAreas = {
     // "HUC 6": {
@@ -113,7 +121,8 @@ function runDashboard() {
       unique_fieldname: "DISTRICTNA",
       visible: false,
       color: "FF8",
-      title: "U.S. Department of Agriculture, Forest Service Forest District boundaries",
+      title:
+        "U.S. Department of Agriculture, Forest Service Forest District boundaries",
     },
     "USFS Forests": {
       path: "Forests",
@@ -126,7 +135,11 @@ function runDashboard() {
   if (urlParams.onlyIncludeFacts == true) {
     summaryAreas = {};
   }
-  if (urlParams.onlyIncludeFacts == true || urlParams.includeFacts == true || urlParams.beta === true) {
+  if (
+    urlParams.onlyIncludeFacts == true ||
+    urlParams.includeFacts == true ||
+    urlParams.beta === true
+  ) {
     console.log("Including FACTS treatment polygons");
     summaryAreas["FACTS Fuel Treatments"] = {
       path: "FACTS_Fuel_Treatments",
@@ -201,7 +214,6 @@ function runDashboard() {
         summariesT,
         {
           strokeColor: summaryAreaObj.color,
-          layerType: "geeVectorImage",
           dashboardSummaryLayer: true,
           dashboardFieldName: summaryAreaObj.unique_fieldname,
           dashboardSummaryMode: "hybrid",
@@ -217,25 +229,47 @@ function runDashboard() {
   let lcmsRun = {};
   lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
   lcmsRun.lcms = ee.ImageCollection(
-    ee.FeatureCollection(lcmsRun.lcms.map((f) => ee.ImageCollection(f).select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]))).flatten()
+    ee
+      .FeatureCollection(
+        lcmsRun.lcms.map((f) =>
+          ee
+            .ImageCollection(f)
+            .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
+        )
+      )
+      .flatten()
   );
 
   //Get properties image
-  lcmsRun.f = ee.Image(lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first());
+  lcmsRun.f = ee.Image(
+    lcmsRun.lcms.filter(ee.Filter.notNull(["Change_class_names"])).first()
+  );
   lcmsRun.props = lcmsRun.f.getInfo().properties;
   // console.log(lcmsRun.props)
 
-  lcmsRun.lcms = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT, endYearT, "year"));
+  lcmsRun.lcms = lcmsRun.lcms.filter(
+    ee.Filter.calendarRange(startYearT, endYearT, "year")
+  );
   // console.log(lcmsRun.lcms.aggregate_histogram ('study_area').getInfo())
 
   //Mosaic all study areas
   lcmsRun.lcms = ee.List.sequence(startYearT, endYearT).map(function (yr) {
-    var t = lcmsRun.lcms.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
-    return t.copyProperties(lcmsRun.f).set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+    var t = lcmsRun.lcms
+      .filter(ee.Filter.calendarRange(yr, yr, "year"))
+      .mosaic();
+    return t
+      .copyProperties(lcmsRun.f)
+      .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });
   lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms);
   let lcms_props = {
-    Change_class_names: ["Stable", "Slow Loss", "Fast Loss", "Gain", "Non-Processing Area Mask"],
+    Change_class_names: [
+      "Stable",
+      "Slow Loss",
+      "Fast Loss",
+      "Gain",
+      "Non-Processing Area Mask",
+    ],
     Change_class_palette: ["3d4551", "f39268", "d54309", "00a398", "1b1716"],
     Change_class_values: [1, 2, 3, 4, 5],
     Land_Cover_class_names: [
@@ -272,9 +306,27 @@ function runDashboard() {
       "4780f3",
       "1b1716",
     ],
-    Land_Cover_class_values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    Land_Use_class_names: ["Agriculture", "Developed", "Forest", "Non-Forest Wetland", "Other", "Rangeland or Pasture", "Non-Processing Area Mask"],
-    Land_Use_class_palette: ["efff6b", "ff2ff8", "1b9d0c", "97ffff", "a1a1a1", "c2b34a", "1b1716"],
+    Land_Cover_class_values: [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    ],
+    Land_Use_class_names: [
+      "Agriculture",
+      "Developed",
+      "Forest",
+      "Non-Forest Wetland",
+      "Other",
+      "Rangeland or Pasture",
+      "Non-Processing Area Mask",
+    ],
+    Land_Use_class_palette: [
+      "efff6b",
+      "ff2ff8",
+      "1b9d0c",
+      "97ffff",
+      "a1a1a1",
+      "c2b34a",
+      "1b1716",
+    ],
     Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
 
     layerType: "Image",
@@ -305,7 +357,9 @@ function runDashboard() {
       firstComparisonLayerI,
       null,
       null,
-      `Most common ${nm.replace("_", " ")} class from ${startYearT} to ${startYearT + 2}`,
+      `Most common ${nm.replace("_", " ")} class from ${startYearT} to ${
+        startYearT + 2
+      }`,
       "reference-layer-list"
     );
     Map.addLayer(
@@ -320,7 +374,9 @@ function runDashboard() {
       firstComparisonLayerI,
       null,
       null,
-      `Most common ${nm.replace("_", " ")} class from ${endYearT - 2} to ${endYearT}`,
+      `Most common ${nm.replace("_", " ")} class from ${
+        endYearT - 2
+      } to ${endYearT}`,
       "reference-layer-list"
     );
 
@@ -348,7 +404,9 @@ function runDashboard() {
     },
   };
   Object.keys(code_dict).map((k) => {
-    let changeT = lcmsRun.lcms.filter(ee.Filter.calendarRange(startYearT, endYearT, "year")).select(["Change"]);
+    let changeT = lcmsRun.lcms
+      .filter(ee.Filter.calendarRange(startYearT, endYearT, "year"))
+      .select(["Change"]);
     changeT = changeT
       .map((img) =>
         ee.Image.constant(ee.Number(img.date().get("year")))
@@ -396,7 +454,9 @@ function runDashboard() {
   setTimeout(() => {
     dashboardSelectionModeChange();
     if (dashboardAreaSelectionMode !== "View-Extent") {
-      $("#introModal-body").append('<p style="font-weight:bold;font-size:1.5rem;">Click on map to select summary areas</p>');
+      $("#introModal-body").append(
+        '<p style="font-weight:bold;font-size:1.5rem;">Click on map to select summary areas</p>'
+      );
     }
   }, 100);
 }

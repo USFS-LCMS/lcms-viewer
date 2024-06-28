@@ -9,12 +9,22 @@ function runAlgal() {
     $("#query-label").click();
   }
 
-  let ab = ee.ImageCollection("projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images");
+  let ab = ee.ImageCollection(
+    "projects/gtac-algal-blooms/assets/outputs/HAB-RF-Images"
+  );
   //ab = ab.filter(ee.Filter.eq('studyAreaName',"WY-MT-CO-UT-ID2"))
   ab = ab.filter(ee.Filter.eq("studyAreaName", "WY-GYE"));
   // console.log(ab.first().getInfo())
 
-  ab = ab.filter(ee.Filter.calendarRange(parseInt(urlParams.startYear), parseInt(urlParams.endYear), "year")).filter(ee.Filter.calendarRange(130, 300));
+  ab = ab
+    .filter(
+      ee.Filter.calendarRange(
+        parseInt(urlParams.startYear),
+        parseInt(urlParams.endYear),
+        "year"
+      )
+    )
+    .filter(ee.Filter.calendarRange(130, 300));
 
   // Add filter for asset whichModel property (WDEQ vs HCB)
   ab_wdeq = ab.filter(ee.Filter.eq("whichModel", "WDEQ"));
@@ -38,7 +48,7 @@ function runAlgal() {
       min: 0, //25000
       max: 3000000, //5000000
       palette: palettes.matplotlib.plasma[7],
-      dateFormat: "YYMMdd",
+      dateFormat: "YY-MM-dd",
       advanceInterval: "day",
       dateField: "system:time_end",
       legendNumbersWithCommas: true,
@@ -53,7 +63,7 @@ function runAlgal() {
       min: 10000000, //200000000
       max: 100000000, //1000000000
       palette: palettes.matplotlib.plasma[7],
-      dateFormat: "YYMMdd",
+      dateFormat: "YY-MM-dd",
       advanceInterval: "day",
       dateField: "system:time_end",
       legendNumbersWithCommas: true,
@@ -69,7 +79,7 @@ function runAlgal() {
       min: 0, //1000
       max: 8000, //5000
       palette: palettes.matplotlib.plasma[7],
-      dateFormat: "YYMMdd",
+      dateFormat: "YY-MM-dd",
       advanceInterval: "day",
       dateField: "system:time_end",
       legendNumbersWithCommas: true,
@@ -84,7 +94,7 @@ function runAlgal() {
       min: 3000000, //2000000
       max: 30000000, //10000000
       palette: palettes.matplotlib.plasma[7],
-      dateFormat: "YYMMdd",
+      dateFormat: "YY-MM-dd",
       advanceInterval: "day",
       dateField: "system:time_end",
       legendNumbersWithCommas: true,

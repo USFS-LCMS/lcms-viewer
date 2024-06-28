@@ -8,10 +8,18 @@ function runBaseLearner() {
   var cdl = changeDetectionLib;
   var gil = getImagesLib;
 
-  var whichIndices = Object.keys(whichIndices2).filter((k) => whichIndices2[k] == true);
+  var whichIndices = Object.keys(whichIndices2).filter(
+    (k) => whichIndices2[k] == true
+  );
 
   var composites = ee.ImageCollection(
-    ee.FeatureCollection(studyAreaDict[studyAreaName].composite_collections.map((f) => ee.ImageCollection(f))).flatten()
+    ee
+      .FeatureCollection(
+        studyAreaDict[studyAreaName].composite_collections.map((f) =>
+          ee.ImageCollection(f)
+        )
+      )
+      .flatten()
   );
 
   composites = ee.ImageCollection(
@@ -35,17 +43,36 @@ function runBaseLearner() {
   compViz.years = vizYears;
   Map.addTimeLapse(composites, compViz, "Raw Composites", false);
 
-  var lt = ee.ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].lt_collections.map((f) => ee.ImageCollection(f))).flatten());
+  var lt = ee.ImageCollection(
+    ee
+      .FeatureCollection(
+        studyAreaDict[studyAreaName].lt_collections.map((f) =>
+          ee.ImageCollection(f)
+        )
+      )
+      .flatten()
+  );
   // Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
   var maxSegs = lt.first().toDictionary().get("maxSegments").getInfo();
   console.log(maxSegs);
   // Convert stacked outputs into collection of fitted, magnitude, slope, duration, etc values for each year
   // Divide by 10000 (0.0001) so values are back to original values (0-1 or -1-1)
-  var lt_fit = cdl.batchSimpleLTFit(lt, startYear, endYear, bandNames, bandPropertyName, arrayMode, maxSegs, 0.0001);
+  var lt_fit = cdl.batchSimpleLTFit(
+    lt,
+    startYear,
+    endYear,
+    bandNames,
+    bandPropertyName,
+    arrayMode,
+    maxSegs,
+    0.0001
+  );
   lt_fit = lt_fit.select([".*_fitted"]);
   var ltSynthViz = copyObj(getImagesLib.vizParamsFalse);
   ltSynthViz.years = vizYears;
-  ltSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_LT_fitted`);
+  ltSynthViz.bands = getImagesLib.vizParamsFalse.bands
+    .split(",")
+    .map((bn) => `${bn}_LT_fitted`);
   ltSynthViz.reducer = ee.Reducer.median();
   // Vizualize image collection for charting (opacity set to 0 so it will chart but not be visible)
   // Map.addLayer(lt_fit.select(["NBR_LT_fitted"]), {}, "LT Fit TS", false);
@@ -94,7 +121,17 @@ function runBaseLearner() {
       howManyToPull
     );
     var lossGainStack = cdl.LTLossGainExportPrep(lossGainDict, bandName, 1);
-    cdl.addLossGainToMap(lossGainStack, startYear, endYear, lossMagThresh - 0.7, lossMagThresh, gainMagThresh, gainMagThresh + 0.7);
+    cdl.addLossGainToMap(
+      lossGainStack,
+      startYear,
+      endYear,
+      lossMagThresh - 0.7,
+      lossMagThresh,
+      gainMagThresh,
+      gainMagThresh + 0.7,
+      bandName,
+      howManyToPull
+    );
   });
 
   // Map.addLayer(lt);
@@ -102,7 +139,9 @@ function runBaseLearner() {
   // ////////////////////////////////////////////////////////////////////////////////////////
 
   var ccdcIndices = Object.keys(whichIndices2).filter((i) => whichIndices2[i]);
-  var ccdcOriginalIndices = Object.keys(whichIndices2).filter((i) => whichIndices2[i]);
+  var ccdcOriginalIndices = Object.keys(whichIndices2).filter(
+    (i) => whichIndices2[i]
+  );
   if (ccdcIndices.indexOf("NDVI") == -1) {
     ccdcIndices.push("NDVI");
   }
@@ -130,8 +169,27 @@ function runBaseLearner() {
   // var tEndExtrapolationPeriod = 1; //Period in years to extrapolate if needed
 
   var ccdcImg = ee
-    .ImageCollection(ee.FeatureCollection(studyAreaDict[studyAreaName].ccdc_collections.map((f) => ee.ImageCollection(f))).flatten())
-    .select(["tStart", "tEnd", "tBreak", "changeProb", "red.*", "nir.*", "swir1.*", "swir2.*", "NDVI.*", "NBR.*"]);
+    .ImageCollection(
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].ccdc_collections.map((f) =>
+            ee.ImageCollection(f)
+          )
+        )
+        .flatten()
+    )
+    .select([
+      "tStart",
+      "tEnd",
+      "tBreak",
+      "changeProb",
+      "red.*",
+      "nir.*",
+      "swir1.*",
+      "swir2.*",
+      "NDVI.*",
+      "NBR.*",
+    ]);
   var f = ee.Image(ccdcImg.first());
   ccdcImg = ee.Image(ccdcImg.mosaic().copyProperties(f)); //;
 
@@ -156,47 +214,106 @@ function runBaseLearner() {
   var endJulian = 365;
 
   // #Add the raw array image
-  Map.addLayer(ccdcImg, { opacity: 0, layerType: "geeImage" }, "Raw CCDC Output", false);
+  Map.addLayer(
+    ccdcImg,
+    { opacity: 0, layerType: "geeImage" },
+    "Raw CCDC Output",
+    false
+  );
 
   // #Apply the CCDC harmonic model across a time series
   // #First get a time series of time images
-  var yearImages = changeDetectionLib.getTimeImageCollection(startYear, endYear, startJulian, endJulian, 0.1);
+  var yearImages = changeDetectionLib.getTimeImageCollection(
+    startYear,
+    endYear,
+    startJulian,
+    endJulian,
+    0.1
+  );
 
   // #Then predict the CCDC models
-  var ccdcFitted = changeDetectionLib.predictCCDC(ccdcImg, yearImages, fillGaps, whichHarmonics);
+  var ccdcFitted = changeDetectionLib.predictCCDC(
+    ccdcImg,
+    yearImages,
+    fillGaps,
+    whichHarmonics
+  );
   var ccdcSynthViz = copyObj(getImagesLib.vizParamsFalse);
-  ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands.split(",").map((bn) => `${bn}_CCDC_fitted`);
+  ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands
+    .split(",")
+    .map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
   ccdcSynthViz.years = vizYears;
-  var annualImages = changeDetectionLib.getTimeImageCollection(startYear, endYear + 1, startJulian, endJulian, 1);
-  annualImages = annualImages.map((img) => setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))); //.map(setSameDate);
+  var annualImages = changeDetectionLib.getTimeImageCollection(
+    startYear,
+    endYear + 1,
+    startJulian,
+    endJulian,
+    1
+  );
+  annualImages = annualImages.map((img) =>
+    setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))
+  ); //.map(setSameDate);
   // #Then predict the CCDC models
-  var annualPredictedCCDC = changeDetectionLib.predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics);
-  Map.addTimeLapse(annualPredictedCCDC.select([".*_fitted"]), ccdcSynthViz, `CCDC Synthetic Composite`, false);
+  var annualPredictedCCDC = changeDetectionLib.predictCCDC(
+    ccdcImg,
+    annualImages,
+    fillGaps,
+    whichHarmonics
+  );
+  Map.addTimeLapse(
+    annualPredictedCCDC.select([".*_fitted"]),
+    ccdcSynthViz,
+    `CCDC Synthetic Composite`,
+    false
+  );
 
   // #Extract the change years and magnitude
-  changeObj = changeDetectionLib.ccdcChangeDetection(ccdcImg, changeDetectionBandName);
+  changeObj = changeDetectionLib.ccdcChangeDetection(
+    ccdcImg,
+    changeDetectionBandName
+  );
 
   Map.addLayer(
     changeObj[sortingMethod]["loss"]["year"],
-    { min: startYear, max: endYear, palette: changeDetectionLib.lossYearPalette, layerType: "geeImage" },
+    {
+      min: startYear,
+      max: endYear,
+      palette: changeDetectionLib.lossYearPalette,
+      layerType: "geeImage",
+    },
     "CCDC Loss Year"
   );
   Map.addLayer(
     changeObj[sortingMethod]["loss"]["mag"],
-    { min: -0.5, max: -0.1, palette: changeDetectionLib.lossMagPalette, layerType: "geeImage" },
+    {
+      min: -0.5,
+      max: -0.1,
+      palette: changeDetectionLib.lossMagPalette,
+      layerType: "geeImage",
+    },
     "CCDC Loss Mag",
     false
   );
   Map.addLayer(
     changeObj[sortingMethod]["gain"]["year"],
-    { min: startYear, max: endYear, palette: changeDetectionLib.gainYearPalette, layerType: "geeImage" },
+    {
+      min: startYear,
+      max: endYear,
+      palette: changeDetectionLib.gainYearPalette,
+      layerType: "geeImage",
+    },
     "CCDC Gain Year",
     false
   );
   Map.addLayer(
     changeObj[sortingMethod]["gain"]["mag"],
-    { min: 0.05, max: 0.2, palette: changeDetectionLib.gainMagPalette, layerType: "geeImage" },
+    {
+      min: 0.05,
+      max: 0.2,
+      palette: changeDetectionLib.gainMagPalette,
+      layerType: "geeImage",
+    },
     "CCDC Gain Mag",
     false
   );
@@ -418,7 +535,11 @@ function runBaseLearner() {
     lt_fit.select(final_lt_bns),
     false
   );
-  fittedTS = getImagesLib.joinCollections(fittedTS, annualPredictedCCDC.select(final_ccdc_bns), false);
+  fittedTS = getImagesLib.joinCollections(
+    fittedTS,
+    annualPredictedCCDC.select(final_ccdc_bns),
+    false
+  );
 
   // console.log(fittedTS.first().getInfo());
   // Map.addLayer(fittedTS, {}, "Raw and LT Fitted");
@@ -481,7 +602,8 @@ function runBaseLearner() {
     label: "Raw Composite, LandTrendr, and CCDC Fitted Time Series",
     collection: fittedTS,
     xAxisLabel: "Year",
-    tooltip: "Query Raw Composite, LandTrendr, and CCDC fitted value for each year",
+    tooltip:
+      "Query Raw Composite, LandTrendr, and CCDC fitted value for each year",
     chartColors: palettes.colorbrewer.Set1[9],
   };
 

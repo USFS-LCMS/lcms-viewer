@@ -46,11 +46,26 @@ $("#sidebar-left-header").append(staticTemplates.placesSearchDiv);
 // fitTestCustom('title-banner',$('#title-banner').width()-50)
 
 // $('#study-area-label').fitText(1.8);
-if (["LCMS", "lcms-base-learner", "Ancillary", "LT", "IDS", "lcms-dashboard"].indexOf(mode) > -1) {
-  $("#title-banner-icon-right").attr("src", "./src/assets/images/logo_icon_lcms-data-viewer.svg");
+if (
+  [
+    "LCMS",
+    "lcms-base-learner",
+    "Ancillary",
+    "LT",
+    "IDS",
+    "lcms-dashboard",
+  ].indexOf(mode) > -1
+) {
+  $("#title-banner-icon-right").attr(
+    "src",
+    "./src/assets/images/logo_icon_lcms-data-viewer.svg"
+  );
   $("#title-banner-icon-right").attr("alt", "LCMS icon");
 } else if (mode === "MTBS") {
-  $("#title-banner-icon-right").attr("src", "./src/assets/images/mtbs-logo.png");
+  $("#title-banner-icon-right").attr(
+    "src",
+    "./src/assets/images/mtbs-logo.png"
+  );
   $("#title-banner-icon-right").attr("alt", "MTBS icon");
 } else {
   $("#title-banner-icon-right").hide();
@@ -65,7 +80,9 @@ function adjustTitleBanner() {
   $("#title-banner").fitText(1.6);
   setTimeout(() => {
     $("#title-banner").addClass("noWrap");
-    $(".title-banner-icon").height($(".title-banner-label").height() - convertRemToPixels(0.5));
+    $(".title-banner-icon").height(
+      $(".title-banner-label").height() - convertRemToPixels(0.5)
+    );
     $("#title-banner").removeClass("noWrap");
   }, 500);
 }
@@ -105,7 +122,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.endYear == null || urlParams.endYear == undefined) {
     urlParams.endYear = endYear;
   }
-  if (urlParams.addLCMSTimeLapsesOn == null || urlParams.addLCMSTimeLapsesOn == undefined) {
+  if (
+    urlParams.addLCMSTimeLapsesOn == null ||
+    urlParams.addLCMSTimeLapsesOn == undefined
+  ) {
     urlParams.addLCMSTimeLapsesOn = "no";
   }
 
@@ -274,7 +294,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "Threshold window for detecting gain.  Any gain probability greater than or equal to this value will be flagged as gain "
     );
     $("#advanced-radio-container").append(`<hr>`);
-    $("#advanced-radio-container").append(`<div id = 'fast-slow-threshold-container' ></div>`);
+    $("#advanced-radio-container").append(
+      `<div id = 'fast-slow-threshold-container' ></div>`
+    );
     addRangeSlider(
       "fast-slow-threshold-container",
       "Choose slow loss threshold:",
@@ -339,8 +361,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
   //Set up layer lists
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
+  $("#reference-layer-list-collapse-div").append(
+    `<ul id="reference-layer-list" class = "layer-list"></ul>`
+  );
 
   if (mode === "LCMS") {
     function populateLCMSDownloads() {
@@ -350,14 +376,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       for (i = 0; i < toggler.length; i++) {
         toggler[i].addEventListener("click", function () {
           // console.log(this)
-          this.parentElement.querySelector(".nested").classList.toggle("active");
+          this.parentElement
+            .querySelector(".nested")
+            .classList.toggle("active");
           // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
           this.classList.toggle("caret-down");
           // this.classList.toggle("treeOff");
         });
       }
     }
-    $("#download-collapse-div").append(staticTemplates.lcmsProductionDownloadDiv);
+    $("#download-collapse-div").append(
+      staticTemplates.lcmsProductionDownloadDiv
+    );
   } else {
     $("#download-collapse-div").append(staticTemplates.downloadDiv);
   }
@@ -405,7 +435,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tabular LCMS summary results"
   );
 
-  $("#tables-collapse-div").append(staticTemplates.dashboardHighlightsContainer);
+  $("#tables-collapse-div").append(
+    staticTemplates.dashboardHighlightsContainer
+  );
 
   $("#charts-collapse-div").removeClass("px-5");
   $("#charts-collapse-div").addClass("px-3");
@@ -461,7 +493,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "If you need any help"
   );
   if (!urlParams.dashboardAreaSelectionMode) {
-    urlParams.dashboardAreaSelectionMode = { "View-Extent": false, Click: true, "Drag-Box": false };
+    urlParams.dashboardAreaSelectionMode = {
+      "View-Extent": false,
+      Click: true,
+      "Drag-Box": false,
+    };
   }
   addMultiRadio(
     "parameters-collapse-div",
@@ -606,7 +642,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     },
     customQuestion: {
       title: "Custom - Choose your own Advanced Parameters to summarize",
-      hoverText: "All products turned on for charting but empty until populated by user",
+      hoverText:
+        "All products turned on for charting but empty until populated by user",
       productHighlightClasses: {
         "Land-Cover": true,
         "Land-Use": true,
@@ -662,7 +699,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   // populates the dropdown with the questions (keys) from the questionDict
   function populateQuestionDropdown() {
     Object.keys(questionDict).map((k) => {
-      addDropdownItem("questions-dashboard-dropdown", questionDict[k].title, k, questionDict[k].hoverText);
+      addDropdownItem(
+        "questions-dashboard-dropdown",
+        questionDict[k].title,
+        k,
+        questionDict[k].hoverText
+      );
     });
   }
 
@@ -746,11 +788,25 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     }
   );
 
-  addSubCollapse("parameters-collapse-div", "advanced-dashboard-params-label", "advanced-dashboard-params-div", "Advanced Parameters", "", false, "");
+  addSubCollapse(
+    "parameters-collapse-div",
+    "advanced-dashboard-params-label",
+    "advanced-dashboard-params-div",
+    "Advanced Parameters",
+    "",
+    false,
+    ""
+  );
   if (urlParams.chartUnits === null || urlParams.chartUnits === undefined) {
     urlParams.chartUnits = { Percentage: true, Acres: false, Hectares: false };
   }
-  addMultiRadio("advanced-dashboard-params-div", "which-units-radio", "Chart Area Units", "chartFormat", urlParams.chartUnits);
+  addMultiRadio(
+    "advanced-dashboard-params-div",
+    "which-units-radio",
+    "Chart Area Units",
+    "chartFormat",
+    urlParams.chartUnits
+  );
 
   if (urlParams.pairwiseDiff === null || urlParams.pairwiseDiff === undefined) {
     urlParams.pairwiseDiff = { Annual: true, "Annual-Change": false };
@@ -832,7 +888,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       .map((v) => highlightsChangeLookup[v]);
   }
   // all three LCMS products turned on by default at initial load
-  if (urlParams.productHighlightClasses === null || urlParams.productHighlightClasses === undefined) {
+  if (
+    urlParams.productHighlightClasses === null ||
+    urlParams.productHighlightClasses === undefined
+  ) {
     urlParams.productHighlightClasses = {
       Change: true,
       "Land-Cover": true,
@@ -842,7 +901,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   // addCheckboxes('advanced-dashboard-params-div','which-products-radio','Choose which LCMS outputs to chart','productHighlightClasses',urlParams.productHighlightClasses);
   var productHighlightClasses = urlParams.productHighlightClasses;
 
-  if (urlParams.annualTransition === null || urlParams.annualTransition === undefined) {
+  if (
+    urlParams.annualTransition === null ||
+    urlParams.annualTransition === undefined
+  ) {
     urlParams.annualTransition = { Annual: true, Transition: false };
   }
   addCheckboxes(
@@ -856,7 +918,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#advanced-dashboard-params-div").append("<hr>");
 
   // default change products at initial load
-  if (urlParams.changeHighlightClasses === null || urlParams.changeHighlightClasses === undefined) {
+  if (
+    urlParams.changeHighlightClasses === null ||
+    urlParams.changeHighlightClasses === undefined
+  ) {
     urlParams.changeHighlightClasses = {
       Stable: false,
       "Slow-Loss": true,
@@ -874,7 +939,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#advanced-dashboard-params-div").append("<hr>");
 
   // default LC products at initial load
-  if (urlParams.lcHighlightClasses === null || urlParams.lcHighlightClasses === undefined) {
+  if (
+    urlParams.lcHighlightClasses === null ||
+    urlParams.lcHighlightClasses === undefined
+  ) {
     urlParams.lcHighlightClasses = {
       Trees: true,
       "Tall-Shrubs": false,
@@ -885,11 +953,20 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       Water: false,
     };
   }
-  addCheckboxes("advanced-dashboard-params-div", "lc-highlights-radio", "Land Cover Classes", "lcHighlightClasses", urlParams.lcHighlightClasses);
+  addCheckboxes(
+    "advanced-dashboard-params-div",
+    "lc-highlights-radio",
+    "Land Cover Classes",
+    "lcHighlightClasses",
+    urlParams.lcHighlightClasses
+  );
 
   $("#advanced-dashboard-params-div").append("<hr>");
   // default LU products at initial load
-  if (urlParams.luHighlightClasses === null || urlParams.luHighlightClasses === undefined) {
+  if (
+    urlParams.luHighlightClasses === null ||
+    urlParams.luHighlightClasses === undefined
+  ) {
     urlParams.luHighlightClasses = {
       Agriculture: false,
       Developed: false,
@@ -899,8 +976,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "Rangeland-or-Pasture": false,
     };
   }
-  addCheckboxes("advanced-dashboard-params-div", "lu-highlights-radio", "Land Use Classes", "luHighlightClasses", urlParams.luHighlightClasses);
-  $("#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio").change(() => {
+  addCheckboxes(
+    "advanced-dashboard-params-div",
+    "lu-highlights-radio",
+    "Land Use Classes",
+    "luHighlightClasses",
+    urlParams.luHighlightClasses
+  );
+  $(
+    "#lc-highlights-radio,#lu-highlights-radio,#change-highlights-radio"
+  ).change(() => {
     if (Object.values(urlParams.changeHighlightClasses).indexOf(true) > -1) {
       urlParams.productHighlightClasses["Change"] = true;
     } else {
@@ -928,7 +1013,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.ciLevel = { 90: false, 95: true, 99: false };
   }
 
-  addMultiRadio("advanced-dashboard-params-div", "ci-level-radio", "Confidence Interval Significance Level", "ciLevel", urlParams.ciLevel);
+  addMultiRadio(
+    "advanced-dashboard-params-div",
+    "ci-level-radio",
+    "Confidence Interval Significance Level",
+    "ciLevel",
+    urlParams.ciLevel
+  );
 
   $("#which-units-radio,#which-products-radio").change(() => {
     updateDashboardCharts();
@@ -954,17 +1045,38 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "title",
     "Choose whether to show the amount or the amount of change from the previous year of the selected area(s) of each cover/use/change type"
   );
-  $("#which-products-radio").prop("title", "Choose which LCMS products to show in the charts, highlights, and report");
+  $("#which-products-radio").prop(
+    "title",
+    "Choose which LCMS products to show in the charts, highlights, and report"
+  );
   $("#annual-transition-radio").prop(
     "title",
     "Choose which chart type to show. Annual will show the percent for each year while transition will show a Sankey chart"
   );
-  $("#change-highlights-radio").prop("title", "Choose which change classes to include in the highlights tables");
-  $("#lc-highlights-radio").prop("title", "Choose which land cover classes to include in the highlights tables");
-  $("#lu-highlights-radio").prop("title", "Choose which land use classes to include in the highlights tables");
-  $("#which-units-radio").prop("title", "Choose which units to represent summary areas in charts and tables");
-  $("#ci-level-radio").prop("title", "Choose which significance level to use for computing the confidence interval and significant change");
-  $("#annualTransitionannualTransitionTransition-checkbox-label").prop("title", "Select this to show Sankey charts");
+  $("#change-highlights-radio").prop(
+    "title",
+    "Choose which change classes to include in the highlights tables"
+  );
+  $("#lc-highlights-radio").prop(
+    "title",
+    "Choose which land cover classes to include in the highlights tables"
+  );
+  $("#lu-highlights-radio").prop(
+    "title",
+    "Choose which land use classes to include in the highlights tables"
+  );
+  $("#which-units-radio").prop(
+    "title",
+    "Choose which units to represent summary areas in charts and tables"
+  );
+  $("#ci-level-radio").prop(
+    "title",
+    "Choose which significance level to use for computing the confidence interval and significant change"
+  );
+  $("#annualTransitionannualTransitionTransition-checkbox-label").prop(
+    "title",
+    "Select this to show Sankey charts"
+  );
   // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
   // $('#parameters-collapse-div').append()
 
@@ -983,8 +1095,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   // let selectionModeDiv = `<div><i class="fa fa-draw-polygon"></i>
   //                         </div>`
   // $('#parameters-collapse-div').append(selectionModeDiv);
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
+  $("#reference-layer-list-collapse-div").append(
+    `<ul id="reference-layer-list" class = "layer-list"></ul>`
+  );
 } else if (mode === "lcms-base-learner") {
   canExport = false;
   startYear = 1984;
@@ -1039,9 +1155,23 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Years of LCMS data to include for land cover, land use, loss, and gain"
   );
-  addCheckboxes("parameters-collapse-div", "index-choice-checkboxes", "Choose which indices to analyze", "whichIndices2", urlParams.whichIndices2);
+  addCheckboxes(
+    "parameters-collapse-div",
+    "index-choice-checkboxes",
+    "Choose which indices to analyze",
+    "whichIndices2",
+    urlParams.whichIndices2
+  );
 
-  addSubCollapse("parameters-collapse-div", "lt-params-label", "lt-params-div", "LANDTRENDR Params", "", false, "");
+  addSubCollapse(
+    "parameters-collapse-div",
+    "lt-params-label",
+    "lt-params-div",
+    "LANDTRENDR Params",
+    "",
+    false,
+    ""
+  );
   // addSubCollapse('parameters-collapse-div','ccdc-params-label','ccdc-params-div','CCDC Params', '',false,'')
 
   addRangeSlider(
@@ -1086,7 +1216,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "LCMS DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
   addCollapse(
     "sidebar-left",
     "tools-collapse-label",
@@ -1143,7 +1275,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Adjust parameters used to filter and sort " + mode + " products"
   );
 
-  addSubCollapse("parameters-collapse-div", "comp-params-label", "comp-params-div", "Landsat Composite Params", "", false, "");
+  addSubCollapse(
+    "parameters-collapse-div",
+    "comp-params-label",
+    "comp-params-div",
+    "Landsat Composite Params",
+    "",
+    false,
+    ""
+  );
   $("#comp-params-div").append(`<hr>`);
 
   addDualRangeSlider(
@@ -1173,11 +1313,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "julian-day-slider",
     "julian",
-    "Days of year of " + mode + " data to include for land cover, land use, loss, and gain"
+    "Days of year of " +
+      mode +
+      " data to include for land cover, land use, loss, and gain"
   );
   $("#comp-params-div").append(`<hr>`);
 
-  if (urlParams.whichPlatforms === null || urlParams.whichPlatforms === undefined) {
+  if (
+    urlParams.whichPlatforms === null ||
+    urlParams.whichPlatforms === undefined
+  ) {
     urlParams.whichPlatforms = {
       L4: true,
       L5: true,
@@ -1236,10 +1381,19 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     Object.keys(compMethodDict).map((k) => (compMethodDict[k] = false));
     compMethodDict[urlParams.compMethod] = true;
   }
-  addMultiRadio("comp-params-div", "comp-method-radio", "Compositing method", "urlParams.compMethod", compMethodDict);
+  addMultiRadio(
+    "comp-params-div",
+    "comp-method-radio",
+    "Compositing method",
+    "urlParams.compMethod",
+    compMethodDict
+  );
   $("#comp-params-div").append(`<hr>`);
 
-  if (urlParams.whichCloudMasks === null || urlParams.whichCloudMasks === undefined) {
+  if (
+    urlParams.whichCloudMasks === null ||
+    urlParams.whichCloudMasks === undefined
+  ) {
     urlParams.whichCloudMasks = {
       "fMask-Snow": true,
       cloudScore: false,
@@ -1262,7 +1416,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     Object.keys(maskWaterDict).map((k) => (maskWaterDict[k] = false));
     maskWaterDict[urlParams.maskWater] = true;
   }
-  addMultiRadio("comp-params-div", "water-mask-radio", "Mask out water", "urlParams.maskWater", maskWaterDict);
+  addMultiRadio(
+    "comp-params-div",
+    "water-mask-radio",
+    "Mask out water",
+    "urlParams.maskWater",
+    maskWaterDict
+  );
 
   // $('#parameters-collapse-div').append(`<hr>`);
   // addRadio('parameters-collapse-div','cloudScore-cloud-radio','Apply CloudScore','No','Yes','applyCloudScore','no','yes','','',"Whether to apply Google's Landsat CloudScore algorithm")
@@ -1271,7 +1431,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   // $('#parameters-collapse-div').append(`<hr>`);
   // addRadio('parameters-collapse-div','fmask-cloud-shadow-radio','Apply Fmask cloud shadow mask','Yes','No','applyFmaskCloudShadow','yes','no','','','Whether to apply Fmask cloud shadow mask')
 
-  addSubCollapse("parameters-collapse-div", "lt-params-label", "lt-params-div", "LANDTRENDR Params", "", false, "");
+  addSubCollapse(
+    "parameters-collapse-div",
+    "lt-params-label",
+    "lt-params-div",
+    "LANDTRENDR Params",
+    "",
+    false,
+    ""
+  );
 
   if (urlParams.whichIndices === null || urlParams.whichIndices === undefined) {
     urlParams.whichIndices = {
@@ -1285,7 +1453,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       tcAngleBG: false,
     };
   }
-  addCheckboxes("lt-params-div", "index-choice-checkboxes", "Choose which indices to analyze", "whichIndices", urlParams.whichIndices);
+  addCheckboxes(
+    "lt-params-div",
+    "index-choice-checkboxes",
+    "Choose which indices to analyze",
+    "whichIndices",
+    urlParams.whichIndices
+  );
   $("#lt-params-div").append(`<hr>`);
 
   var LTSortByDict = {
@@ -1300,9 +1474,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     Object.keys(LTSortByDict).map((k) => (LTSortByDict[k] = false));
     LTSortByDict[urlParams.LTSortBy] = true;
   }
-  addMultiRadio("lt-params-div", "lt-sort-radio", "Choose method to summarize LANDTRENDR change", "urlParams.LTSortBy", LTSortByDict);
+  addMultiRadio(
+    "lt-params-div",
+    "lt-sort-radio",
+    "Choose method to summarize LANDTRENDR change",
+    "urlParams.LTSortBy",
+    LTSortByDict
+  );
 
-  if (urlParams.lossMagThresh === null || urlParams.lossMagThresh === undefined) {
+  if (
+    urlParams.lossMagThresh === null ||
+    urlParams.lossMagThresh === undefined
+  ) {
     urlParams.lossMagThresh = -0.15;
   }
   addRangeSlider(
@@ -1318,7 +1501,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "The threshold to detect loss for each LANDTRENDR segment.  Any difference between start and end values for a given segement less than this threshold will be flagged as loss"
   );
 
-  if (urlParams.lossSlopeThresh === null || urlParams.lossSlopeThresh === undefined) {
+  if (
+    urlParams.lossSlopeThresh === null ||
+    urlParams.lossSlopeThresh === undefined
+  ) {
     urlParams.lossSlopeThresh = -0.1;
   }
   addRangeSlider(
@@ -1334,7 +1520,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "The threshold to detect loss for each LANDTRENDR segment.  Any slope of a given segement less than this threshold will be flagged as loss"
   );
 
-  if (urlParams.gainMagThresh === null || urlParams.gainMagThresh === undefined) {
+  if (
+    urlParams.gainMagThresh === null ||
+    urlParams.gainMagThresh === undefined
+  ) {
     urlParams.gainMagThresh = 0.1;
   }
   addRangeSlider(
@@ -1350,7 +1539,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "The threshold to detect gain for each LANDTRENDR segment.  Any difference between start and end values for a given segement greater than this threshold will be flagged as gain"
   );
 
-  if (urlParams.gainSlopeThresh === null || urlParams.gainSlopeThresh === undefined) {
+  if (
+    urlParams.gainSlopeThresh === null ||
+    urlParams.gainSlopeThresh === undefined
+  ) {
     urlParams.gainSlopeThresh = 0.1;
   }
   addRangeSlider(
@@ -1366,7 +1558,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "The threshold to detect gain for each LANDTRENDR segment.  Any slope of a given segement greater than this threshold will be flagged as gain"
   );
 
-  if (urlParams.howManyToPull === null || urlParams.howManyToPull === undefined) {
+  if (
+    urlParams.howManyToPull === null ||
+    urlParams.howManyToPull === undefined
+  ) {
     urlParams.howManyToPull = 1;
   }
   addRangeSlider(
@@ -1410,7 +1605,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
 
   addCollapse(
     "sidebar-left",
@@ -1480,7 +1677,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Puerto-Rico": false,
   };
 
-  addMultiRadio("parameters-collapse-div", "mtbs-zoom-to-radio", "Zoom to MTBS Mapping Area", "mtbsMappingArea", mtbsZoomToDict);
+  addMultiRadio(
+    "parameters-collapse-div",
+    "mtbs-zoom-to-radio",
+    "Zoom to MTBS Mapping Area",
+    "mtbsMappingArea",
+    mtbsZoomToDict
+  );
   $("#mtbs-zoom-to-radio").prop("title", "Zoom to MTBS region");
   $("#mtbs-zoom-to-radio").change(function () {
     console.log(mtbsMappingArea);
@@ -1502,11 +1705,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Years of MTBS data to include"
   );
-  addMultiRadio("parameters-collapse-div", "mtbs-summary-method-radio", "How to summarize MTBS data", "mtbsSummaryMethod", {
-    "Highest-Severity": true,
-    "Most-Recent": false,
-    Oldest: false,
-  });
+  addMultiRadio(
+    "parameters-collapse-div",
+    "mtbs-summary-method-radio",
+    "How to summarize MTBS data",
+    "mtbsSummaryMethod",
+    {
+      "Highest-Severity": true,
+      "Most-Recent": false,
+      Oldest: false,
+    }
+  );
 
   $("#mtbs-summary-method-radio").prop(
     "title",
@@ -1533,7 +1742,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
     false,
     null,
-    "Additional relevant layers to view on map intended to provide context for " + mode + " DATA"
+    "Additional relevant layers to view on map intended to provide context for " +
+      mode +
+      " DATA"
   );
 
   addCollapse(
@@ -1547,8 +1758,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tools to measure and chart data provided on the map"
   );
 
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
+  $("#reference-layer-list-collapse-div").append(
+    `<ul id="reference-layer-list" class = "layer-list"></ul>`
+  );
 
   $("#introModal-body").append(staticTemplates.walkThroughButton);
 } else if (mode === "TEST" || mode === "IDS") {
@@ -1562,7 +1777,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
 
   addCollapse(
     "sidebar-left",
@@ -1621,7 +1838,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
 
   addCollapse(
     "sidebar-left",
@@ -1694,7 +1913,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
 
   addCollapse(
     "sidebar-left",
@@ -1719,7 +1940,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
   addCollapse(
     "sidebar-left",
     "tools-collapse-label",
@@ -1742,7 +1965,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       var coordsR = fr.geometry.coordinates;
 
       var fm = JSON.parse(JSON.stringify(fl));
-      fm.geometry.coordinates = [(coordsL[0] + coordsR[0]) / 2.0, (coordsL[1] + coordsR[1]) / 2.0];
+      fm.geometry.coordinates = [
+        (coordsL[0] + coordsR[0]) / 2.0,
+        (coordsL[1] + coordsR[1]) / 2.0,
+      ];
 
       interpProps.map(function (prop) {
         var lProp = fl.properties[prop];
@@ -1862,7 +2088,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         while (iterations > 0 && rows.length * 2 < 1500) {
           console.log("Refining");
           console.log(refinementIterations);
-          rows = refineFeatures(rows, ["lat", "lon", "wspd", "pres", "date", "year"]);
+          rows = refineFeatures(rows, [
+            "lat",
+            "lon",
+            "wspd",
+            "pres",
+            "date",
+            "year",
+          ]);
           console.log(rows.length);
           iterations--;
         }
@@ -1995,7 +2228,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
   addCollapse(
     "sidebar-left",
     "tools-collapse-label",
@@ -2017,7 +2252,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Download " + mode + " products for further analysis"
   );
 } else if (mode === "TreeMap") {
-  $("head").append(`<script type="text/javascript" src="./src/assets/palettes/forest-type-palette.js"></script>`);
+  $("head").append(
+    `<script type="text/javascript" src="./src/assets/palettes/forest-type-palette.js"></script>`
+  );
   addCollapse(
     "sidebar-left",
     "layer-list-collapse-label",
@@ -2058,7 +2295,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     ``,
     "If you need any help"
   );
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
   $("#download-collapse-div").append(staticTemplates.TreeMapDownloadDiv);
   $("#download-collapse-div").append(staticTemplates.TreeMapGEEClippingDiv);
   $("#support-collapse-div").append(staticTemplates.TreeMapSupportDiv);
@@ -2127,7 +2366,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.treeDiameter == null || urlParams.treeDiameter == undefined) {
     urlParams.treeDiameter = 15;
   }
-  if (urlParams.lcmsTreeMaskClasses == null || urlParams.lcmsTreeMaskClasses == undefined) {
+  if (
+    urlParams.lcmsTreeMaskClasses == null ||
+    urlParams.lcmsTreeMaskClasses == undefined
+  ) {
     urlParams.lcmsTreeMaskClasses = {
       Trees: true,
       "Shrubs & Trees Mix": false,
@@ -2180,7 +2422,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Choose post-change year to compare against Baseline year(s)."
   );
 
-  addSubCollapse("parameters-collapse-div", "advanced-params-label", "advanced-params-div", "Advanced Parameters", "", false, "");
+  addSubCollapse(
+    "parameters-collapse-div",
+    "advanced-params-label",
+    "advanced-params-div",
+    "Advanced Parameters",
+    "",
+    false,
+    ""
+  );
   $("#parameters-collapse-div").append("<hr>");
   addRangeSlider(
     "advanced-params-div",
@@ -2205,7 +2455,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   // addRadio('advanced-params-div','cloud-mask-method-radio','','S2Cloudless+TDOM','CloudScore+','cloudMaskMethod','s2c','csp',null,null,'Toggle between imperial or metric units')
 
-  if (urlParams.cloudMaskMethod === null || urlParams.cloudMaskMethod === undefined) {
+  if (
+    urlParams.cloudMaskMethod === null ||
+    urlParams.cloudMaskMethod === undefined
+  ) {
     urlParams.cloudMaskMethod = {
       "S2Cloudless-TDOM": false,
       "CloudScore+": true,
@@ -2262,8 +2515,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         needsUpdated = true;
       }
       if (needsUpdated) {
-        $("#pre-years-slider").slider("values", [urlParams.preStartYear, urlParams.preEndYear]);
-        $("#pre-years-slider-update").html(`${urlParams.preStartYear} - ${urlParams.preEndYear}`);
+        $("#pre-years-slider").slider("values", [
+          urlParams.preStartYear,
+          urlParams.preEndYear,
+        ]);
+        $("#pre-years-slider-update").html(
+          `${urlParams.preStartYear} - ${urlParams.preEndYear}`
+        );
       }
     });
   $("#pre-years-slider")
@@ -2306,7 +2564,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "Additional relevant layers to view on map intended to provide context for change data"
   );
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  $("#reference-layer-list-collapse-div").append(
+    `<ul id="reference-layer-list" class = "layer-list"></ul>`
+  );
   //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js
   // addCollapse(
   //   "sidebar-left",
@@ -2342,7 +2602,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "If you need any help"
   );
   $("#support-collapse-div").append(staticTemplates.sequoiaSupportDiv);
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
 
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
@@ -2388,7 +2650,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
     false,
     null,
-    "Additional relevant layers to view on map intended to provide context for " + mode + " DATA"
+    "Additional relevant layers to view on map intended to provide context for " +
+      mode +
+      " DATA"
   );
 
   addCollapse(
@@ -2402,13 +2666,19 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tools to measure and chart data provided on the map"
   );
 
-  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+  $("#layer-list-collapse-div").append(
+    `<ul id="layer-list" class = "layer-list"></ul>`
+  );
 
-  $("#reference-layer-list-collapse-div").append(`<ul id="reference-layer-list" class = "layer-list"></ul>`);
+  $("#reference-layer-list-collapse-div").append(
+    `<ul id="reference-layer-list" class = "layer-list"></ul>`
+  );
   plotsOn = true;
 }
 
-$("body").append(`<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`);
+$("body").append(
+  `<div class = 'legendDiv flexcroll col-sm-5 col-md-3 col-lg-3 col-xl-2 p-0 m-0' id = 'legendDiv'></div>`
+);
 $(".legendDiv").css("bottom", "1rem");
 $(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
 addLegendCollapse();
@@ -2416,7 +2686,9 @@ addLegendCollapse();
 //Construct tool options for different modes
 
 addAccordianContainer("tools-collapse-div", "tools-accordian");
-$("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`);
+$("#tools-accordian").append(
+  `<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`
+);
 // $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
 addSubAccordianCard(
   "tools-accordian",
@@ -2468,14 +2740,36 @@ addRadio(
   "Toggle between imperial or metric units"
 );
 
-addShapeEditToolbar("measure-distance-div", "measure-distance-div-icon-bar", "undoDistanceMeasuring()", "resetPolyline()");
-addColorPicker("measure-distance-div-icon-bar", "distance-color-picker", "updateDistanceColor", distancePolylineOptions.strokeColor);
+addShapeEditToolbar(
+  "measure-distance-div",
+  "measure-distance-div-icon-bar",
+  "undoDistanceMeasuring()",
+  "resetPolyline()"
+);
+addColorPicker(
+  "measure-distance-div-icon-bar",
+  "distance-color-picker",
+  "updateDistanceColor",
+  distancePolylineOptions.strokeColor
+);
 
-addShapeEditToolbar("measure-area-div", "measure-area-div-icon-bar", "undoAreaMeasuring()", "resetPolys()");
-addColorPicker("measure-area-div-icon-bar", "area-color-picker", "updateAreaColor", areaPolygonOptions.strokeColor);
+addShapeEditToolbar(
+  "measure-area-div",
+  "measure-area-div-icon-bar",
+  "undoAreaMeasuring()",
+  "resetPolys()"
+);
+addColorPicker(
+  "measure-area-div-icon-bar",
+  "area-color-picker",
+  "updateAreaColor",
+  areaPolygonOptions.strokeColor
+);
 
 // addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
-$("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`);
+$("#tools-accordian").append(
+  `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`
+);
 addSubAccordianCard(
   "tools-accordian",
   "query-label",
@@ -2539,10 +2833,30 @@ if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
 }
 // if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
-if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS" || mode === "geeViz" || mode === "LAMDA") {
-  $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
-  addSubCollapse("tools-accordian", "area-chart-params-label", "area-chart-params-div", "Area Tools Parameters", "", false, "");
-  $("#area-chart-params-label").prop("title", "Click here to select which LCMS products to chart, and change which area units are used. ");
+if (
+  mode === "LCMS-pilot" ||
+  mode === "MTBS" ||
+  mode === "IDS" ||
+  mode === "LCMS" ||
+  mode === "geeViz" ||
+  mode === "LAMDA"
+) {
+  $("#tools-accordian").append(
+    `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
+  );
+  addSubCollapse(
+    "tools-accordian",
+    "area-chart-params-label",
+    "area-chart-params-div",
+    "Area Tools Parameters",
+    "",
+    false,
+    ""
+  );
+  $("#area-chart-params-label").prop(
+    "title",
+    "Click here to select which LCMS products to chart, and change which area units are used. "
+  );
   // $("#tools-accordian").append(`<hr>`);
   addDropdown(
     "area-chart-params-div",
@@ -2553,12 +2867,20 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
   );
   $("#area-chart-params-div").append(`<hr>`);
   // $("#parameters-collapse-div").append(`<hr>`);
-  addMultiRadio("area-chart-params-div", "area-summary-format", "Area Units", "areaChartFormat", { Percentage: true, Acres: false, Hectares: false });
+  addMultiRadio(
+    "area-chart-params-div",
+    "area-summary-format",
+    "Area Units",
+    "areaChartFormat",
+    { Percentage: true, Acres: false, Hectares: false }
+  );
   if (mode === "LCMS" || mode === "geeViz") {
     //&& (urlParams.sankey==='true' || urlParams.beta ==='true')){
     var activeStartYear = urlParams.startYear;
     var activeEndYear = urlParams.endYear;
-    $("#area-chart-params-div").append(`<div id='transition-periods-container'></div>`);
+    $("#area-chart-params-div").append(
+      `<div id='transition-periods-container'></div>`
+    );
     // $("#transition-periods-container").hide();
     // $("#area-collection-dropdown").change((e) => {
     //   if ($("#area-collection-dropdown").val().indexOf("-transition") > -1) {
@@ -2569,7 +2891,10 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     // });
   }
 
-  $("#area-summary-format").prop("title", "Choose how to summarize area- as a percentage of the area, acres, or hectares.");
+  $("#area-summary-format").prop(
+    "title",
+    "Choose how to summarize area- as a percentage of the area, acres, or hectares."
+  );
   addSubAccordianCard(
     "tools-accordian",
     "map-defined-area-chart-label",
@@ -2635,8 +2960,18 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
     "null",
     "If the selected area is very large and/or has a lot of vertices, it may not compute. In this instance, clear out any existing selections (trash can button below), and increase this value. The selected polygon will be simplified using a max error in meters equal to this value upon selection. Generally between 50 and 150 will get most areas to work."
   );
-  addShapeEditToolbar("user-defined-edit-toolbar", "user-defined-area-icon-bar", "undoUserDefinedAreaCharting()", "restartUserDefinedAreaCarting()");
-  addColorPicker("user-defined-area-icon-bar", "user-defined-color-picker", "updateUDPColor", udpOptions.strokeColor);
+  addShapeEditToolbar(
+    "user-defined-edit-toolbar",
+    "user-defined-area-icon-bar",
+    "undoUserDefinedAreaCharting()",
+    "restartUserDefinedAreaCarting()"
+  );
+  addColorPicker(
+    "user-defined-area-icon-bar",
+    "user-defined-color-picker",
+    "updateUDPColor",
+    udpOptions.strokeColor
+  );
 
   addShapeEditToolbar(
     "select-features-edit-toolbar",
@@ -2649,7 +2984,10 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
   $("#tools-accordian").append(`<hr>`);
   //Sync tooltip toggle
   var tShowToolTipModal = true;
-  if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
+  if (
+    localStorage.showToolTipModal !== null &&
+    localStorage.showToolTipModal !== undefined
+  ) {
     tShowToolTipModal = localStorage.showToolTipModal;
   }
   addRadio(
@@ -2671,7 +3009,9 @@ if (mode === "LCMS-pilot" || mode === "MTBS" || mode === "IDS" || mode === "LCMS
 }
 // Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
 if (mode === "sequoia-view") {
-  $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
+  $("#tools-accordian").append(
+    `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
+  );
   //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
   addSubAccordianCard(
     "tools-accordian",
@@ -2686,10 +3026,12 @@ if (mode === "sequoia-view") {
 }
 //Add some logos for different modes
 if (mode === "MTBS" || mode === "Ancillary") {
-  $("#contributor-logos").prepend(`<a href="https://www.usgs.gov/" target="_blank" >
+  $("#contributor-logos")
+    .prepend(`<a href="https://www.usgs.gov/" target="_blank" >
                                     <img src="./src/assets/images/usgslogo.png" class = 'image-icon-bar' alt="USGS logo" title="Click to learn more about the US Geological Survey">
                                   </a>`);
-  $("#contributor-logos").prepend(`<a href="https://www.mtbs.gov/" target="_blank" >
+  $("#contributor-logos")
+    .prepend(`<a href="https://www.mtbs.gov/" target="_blank" >
                                     <img src="./src/assets/images/mtbs-logo-large.png" class = 'image-icon-bar' alt="MTBS logo" title="Click to learn more about MTBS">
                                   </a>`);
 }
@@ -2697,7 +3039,11 @@ if (mode === "MTBS" || mode === "Ancillary") {
 if (canExport) {
   // console.log('here')
   $("#download-collapse-div").append(staticTemplates.exportContainer);
-  if (localStorage.export_crs !== undefined && localStorage.export_crs !== null && localStorage.export_crs.indexOf("EPSG") > -1) {
+  if (
+    localStorage.export_crs !== undefined &&
+    localStorage.export_crs !== null &&
+    localStorage.export_crs.indexOf("EPSG") > -1
+  ) {
     $("#export-crs").val(localStorage.export_crs);
   } else {
     localStorage.export_crs = $("#export-crs").val();
@@ -2736,8 +3082,14 @@ function resizeViewerPanes() {
   }
 
   $(".legendDiv").css("bottom", "1rem");
-  $(".legendDiv").css("max-height", window.innerHeight - convertRemToPixels(1) + 1);
-  $(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
+  $(".legendDiv").css(
+    "max-height",
+    window.innerHeight - convertRemToPixels(1) + 1
+  );
+  $(".sidebar").css(
+    "max-height",
+    $("body").height() - $(".bottombar").height()
+  );
   // moveCollapse('plot-collapse');
   if (walkThroughAdded) {
     moveCollapse("walk-through-collapse");
@@ -2749,36 +3101,68 @@ function resizeViewerPanes() {
 
 function resizeDashboardPanes() {
   console.log("resized");
-  let layerWidth = $("#layer-list-collapse-label-layer-list-collapse-div").width(); //+5;
+  let layerWidth = $(
+    "#layer-list-collapse-label-layer-list-collapse-div"
+  ).width(); //+5;
   let bottomHeight = $(".bottombar").height();
   let resultsHeight = $("#dashboard-results-container").height();
   let sidebarHeight = $("#sidebar-left-container").height();
   let expanderHeight = $("#dashboard-results-expander").height();
   let highlightsWidth = $(".dashboard-highlights").width();
   let highlightsHeight = $(".dashboard-highlights").height();
-  $("#sidebar-left-container").css("max-height", window.innerHeight - bottomHeight);
-  if (sidebarHeight + bottomHeight + resultsHeight + expanderHeight < window.innerHeight) {
+  $("#sidebar-left-container").css(
+    "max-height",
+    window.innerHeight - bottomHeight
+  );
+  if (
+    sidebarHeight + bottomHeight + resultsHeight + expanderHeight <
+    window.innerHeight
+  ) {
     $("#dashboard-results-container").css("left", 0);
-    if (highlightsHeight < window.innerHeight - resultsHeight - expanderHeight) {
+    if (
+      highlightsHeight <
+      window.innerHeight - resultsHeight - expanderHeight
+    ) {
       $("#dashboard-results-container").css("max-width", window.innerWidth);
     } else {
-      $("#dashboard-results-container").css("max-width", window.innerWidth - highlightsWidth);
+      $("#dashboard-results-container").css(
+        "max-width",
+        window.innerWidth - highlightsWidth
+      );
     }
   } else {
     $("#dashboard-results-container").css("left", layerWidth);
-    if (highlightsHeight < window.innerHeight - resultsHeight - expanderHeight) {
-      $("#dashboard-results-container").css("max-width", window.innerWidth - layerWidth);
+    if (
+      highlightsHeight <
+      window.innerHeight - resultsHeight - expanderHeight
+    ) {
+      $("#dashboard-results-container").css(
+        "max-width",
+        window.innerWidth - layerWidth
+      );
       $(".dashboard-highlights").css("height");
     } else {
-      $("#dashboard-results-container").css("max-width", window.innerWidth - layerWidth - highlightsWidth);
+      $("#dashboard-results-container").css(
+        "max-width",
+        window.innerWidth - layerWidth - highlightsWidth
+      );
     }
   }
 
-  $("#dashboard-results-container").css("bottom", bottomHeight + expanderHeight - 1);
+  $("#dashboard-results-container").css(
+    "bottom",
+    bottomHeight + expanderHeight - 1
+  );
   if (resultsHeight > 0) {
-    $(".dashboard-highlights").css("max-height", window.innerHeight - bottomHeight);
+    $(".dashboard-highlights").css(
+      "max-height",
+      window.innerHeight - bottomHeight
+    );
   } else {
-    $(".dashboard-highlights").css("max-height", window.innerHeight - bottomHeight);
+    $(".dashboard-highlights").css(
+      "max-height",
+      window.innerHeight - bottomHeight
+    );
   }
 
   // $('.chart').css('height',$('#dashboard-results-container').height())
@@ -2793,7 +3177,12 @@ function resizeDashboardPanes() {
   }
   $(".dashboard-results-toggler").css(
     "right",
-    `${(($("#dashboard-results-container-right").width() - convertRemToPixels(3)) / $("body").width()) * 100}%`
+    `${
+      (($("#dashboard-results-container-right").width() -
+        convertRemToPixels(3)) /
+        $("body").width()) *
+      100
+    }%`
   );
   // $(document).ready(function(){resizeDashboardPanes()})
 }
@@ -2801,11 +3190,19 @@ if (mode === "lcms-dashboard") {
   $("body").append(staticTemplates.dashboardResultsToggler);
   $(".dashboard-results-toggler").css(
     "right",
-    `${(($("#dashboard-results-container-right").width() - convertRemToPixels(3)) / $("body").width()) * 100}%`
+    `${
+      (($("#dashboard-results-container-right").width() -
+        convertRemToPixels(3)) /
+        $("body").width()) *
+      100
+    }%`
   );
   var dashboardScrollLeft = 0;
   var dashboardScrollTop = { left: 0, right: 0 };
-  if (urlParams.showHighlightsBar === undefined || urlParams.showHighlightsBar === null) {
+  if (
+    urlParams.showHighlightsBar === undefined ||
+    urlParams.showHighlightsBar === null
+  ) {
     urlParams.showHighlightsBar = true;
   }
   if (!urlParams.showHighlightsBar) {
@@ -2832,16 +3229,23 @@ if (mode === "lcms-dashboard") {
       this,
       "scrollTimer",
       setTimeout(function () {
-        dashboardScrollTop[dashboardResultsLocation] = $(dashboardScrollDict[dashboardResultsLocation]).scrollTop();
+        dashboardScrollTop[dashboardResultsLocation] = $(
+          dashboardScrollDict[dashboardResultsLocation]
+        ).scrollTop();
         // console.log(`Scrolling stopped ${dashboardScrollTop[dashboardResultsLocation]}`)
       }, 250)
     );
   };
   var turnOnScrollMonitoring = function () {
-    $(dashboardScrollDict[dashboardResultsLocation]).scroll(resultsScrollHandler);
+    $(dashboardScrollDict[dashboardResultsLocation]).scroll(
+      resultsScrollHandler
+    );
   };
   var turnOffScrollMonitoring = function () {
-    $(dashboardScrollDict[dashboardResultsLocation]).off("scroll", resultsScrollHandler);
+    $(dashboardScrollDict[dashboardResultsLocation]).off(
+      "scroll",
+      resultsScrollHandler
+    );
   };
 
   $(".panel-title").click((e) => {
@@ -2861,7 +3265,9 @@ if (mode === "lcms-dashboard") {
           // console.log(e.target.id)
           if (e.target.id === expander.id) {
             expander.mouseDown = true;
-            expander.originalBackgroundColor = $(`#${expander.id}`).css("background-color");
+            expander.originalBackgroundColor = $(`#${expander.id}`).css(
+              "background-color"
+            );
             $(`#${expander.id}`).css("background-color", "#00BFA5");
 
             $("body").css("user-select", "none");
@@ -2872,7 +3278,10 @@ if (mode === "lcms-dashboard") {
             console.log("mouseUp");
             expander.mouseDown = false;
             expander.mouseUpFun(e);
-            $(`#${expander.id}`).css("background-color", expander.originalBackgroundColor);
+            $(`#${expander.id}`).css(
+              "background-color",
+              expander.originalBackgroundColor
+            );
             $("body").css("user-select", "auto");
           }
         });
@@ -2885,7 +3294,8 @@ if (mode === "lcms-dashboard") {
   expander.setDragID("dashboard-results-expander");
 
   expander.mouseUpFun = (e) => {
-    dashboardResultsHeight = window.innerHeight - e.pageY - $(`#${expander.id}`).height();
+    dashboardResultsHeight =
+      window.innerHeight - e.pageY - $(`#${expander.id}`).height();
     $(".dashboard-results-container").css("height", dashboardResultsHeight);
 
     updateDashboardCharts();
@@ -2927,7 +3337,9 @@ if (mode === "lcms-dashboard") {
       } catch (err) {}
     }
   }
-  $("#summary-area-selection-radio").change(() => dashboardSelectionModeChange());
+  $("#summary-area-selection-radio").change(() =>
+    dashboardSelectionModeChange()
+  );
   var showPairwiseDiff;
   pairwiseDiffFun = () => {
     if (pairwiseDiff === "Annual-Change") {
@@ -2973,7 +3385,8 @@ function toggleHighlights() {
   $("#dashboard-results-list").toggle("collapse");
   setTimeout(() => {
     resizeDashboardPanes();
-    urlParams.showHighlightsBar = $("#dashboard-results-list").css("display") !== "none";
+    urlParams.showHighlightsBar =
+      $("#dashboard-results-list").css("display") !== "none";
     turnOnScrollMonitoring();
   }, 500);
 }

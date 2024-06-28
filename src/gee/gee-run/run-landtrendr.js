@@ -1,5 +1,12 @@
 function runLT() {
-  var sensorLookup = { L4: "LANDSAT_4", L5: "LANDSAT_5", "L7-SLC-On": "LANDSAT_7", "L7-SLC-Off": "LANDSAT_7", L8: "LANDSAT_8", L9: "LANDSAT_9" };
+  var sensorLookup = {
+    L4: "LANDSAT_4",
+    L5: "LANDSAT_5",
+    "L7-SLC-On": "LANDSAT_7",
+    "L7-SLC-Off": "LANDSAT_7",
+    L8: "LANDSAT_8",
+    L9: "LANDSAT_9",
+  };
   var whichSensors = [];
   Object.keys(urlParams.whichPlatforms).map((k) => {
     if (urlParams.whichPlatforms[k] == true) {
@@ -10,7 +17,11 @@ function runLT() {
   // console.log(whichSensors);
   //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
-  var hansen = ee.Image("UMD/hansen/global_forest_change_2021_v1_9").select(["lossyear"]).selfMask().add(2000);
+  var hansen = ee
+    .Image("UMD/hansen/global_forest_change_2021_v1_9")
+    .select(["lossyear"])
+    .selfMask()
+    .add(2000);
   Map.addLayer(
     hansen,
     {
@@ -43,7 +54,13 @@ function runLT() {
   var years = [];
   var c = [];
   for (var year = urlParams.startYear; year <= urlParams.endYear; year++) {
-    var imgsT = imgs.filter(ee.Filter.calendarRange(year - urlParams.yearBuffer, year + urlParams.yearBuffer, "year"));
+    var imgsT = imgs.filter(
+      ee.Filter.calendarRange(
+        year - urlParams.yearBuffer,
+        year + urlParams.yearBuffer,
+        "year"
+      )
+    );
     imgsT = getImagesLib.fillEmptyCollections(imgsT, dummyImage);
     var count = imgsT.select([0]).count();
     var img;
@@ -53,14 +70,22 @@ function runLT() {
       img = getImagesLib.medoidMosaicMSD(imgsT, ["nir", "swir1", "swir2"]);
     }
 
-    img = img.updateMask(count.gte(urlParams.minObs)).set("system:time_start", ee.Date.fromYMD(year, 6, 1).millis());
-    var nameEnd = (year - urlParams.yearBuffer).toString() + "-" + (year + urlParams.yearBuffer).toString();
+    img = img
+      .updateMask(count.gte(urlParams.minObs))
+      .set("system:time_start", ee.Date.fromYMD(year, 6, 1).millis());
+    var nameEnd =
+      (year - urlParams.yearBuffer).toString() +
+      "-" +
+      (year + urlParams.yearBuffer).toString();
     // print(year);
     // if(year%5 ==0 || year === startYear || year === endYear){
     //   Map.addLayer(img,{min:0.1,max:[0.4,0.6,0.4],bands:'swir2,nir,red'},'Composite '+nameEnd,false);
     // }
     Map.addExport(
-      img.select(["blue", "green", "red", "nir", "swir1", "swir2"]).multiply(10000).int16(),
+      img
+        .select(["blue", "green", "red", "nir", "swir1", "swir2"])
+        .multiply(10000)
+        .int16(),
       "Landsat_Composite_" + nameEnd,
       30,
       false,
@@ -76,7 +101,9 @@ function runLT() {
   if (urlParams.maskWater === "Yes") {
     var jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
 
-    jrcWater = jrcWater.updateMask(jrcWater.neq(0)).reproject("EPSG:4326", null, 30);
+    jrcWater = jrcWater
+      .updateMask(jrcWater.neq(0))
+      .reproject("EPSG:4326", null, 30);
 
     Map.addLayer(
       jrcWater,
@@ -91,12 +118,13 @@ function runLT() {
         queryDict: {
           1: "Water 50% time or more 1984-2018",
         },
-        layerType: "geeImage",
       },
       "JRC Water",
       false
     );
-    srCollection = srCollection.map((img) => img.updateMask(jrcWater.mask().not()));
+    srCollection = srCollection.map((img) =>
+      img.updateMask(jrcWater.mask().not())
+    );
   }
 
   // Run LT and get output stack
@@ -131,8 +159,10 @@ function runLT() {
     var lossStack = lossGainStack.select([".*_LT_loss_.*"]);
     var gainStack = lossGainStack.select([".*_LT_gain_.*"]);
     var nameEnd = `${urlParams.startYear}_${urlParams.endYear}_${urlParams.startJulian}_${urlParams.endJulian}}`;
-    var lossName = `LandTrendr_${indexName}_${urlParams.LTSortBy}_Loss_Stack_` + nameEnd;
-    var gainName = `LandTrendr_${indexName}_${urlParams.LTSortBy}_Gain_Stack_` + nameEnd;
+    var lossName =
+      `LandTrendr_${indexName}_${urlParams.LTSortBy}_Loss_Stack_` + nameEnd;
+    var gainName =
+      `LandTrendr_${indexName}_${urlParams.LTSortBy}_Gain_Stack_` + nameEnd;
     // Map.addLayer(lossStack, {}, "LossStack");
     Map.addExport(lossStack, lossName, 30, true, {}, -32768);
     Map.addExport(gainStack, gainName, 30, true, {}, -32768);
@@ -148,11 +178,14 @@ function runLT() {
         1 / multBy
       )
       .select([".*_LT_fitted"]);
-    // Map.addLayer(decompressedC, { layerType: "geeImageCollection" }, "Decompressed LT Output " + indexName, false);
+    // Map.addLayer(decompressedC, { }, "Decompressed LT Output " + indexName, false);
 
     chartCollectionT = joinCollections(chartCollectionT, decompressedC, false);
   });
 
-  pixelChartCollections["landsat"] = { label: "landsat", collection: chartCollectionT };
+  pixelChartCollections["landsat"] = {
+    label: "landsat",
+    collection: chartCollectionT,
+  };
   populatePixelChartDropdown();
 }

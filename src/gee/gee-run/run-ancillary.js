@@ -14,28 +14,30 @@ function runAncillary() {
     .first()
     .select("Land_Cover");
 
-  Map.addLayer(ak_land_cover, { autoViz: true }, "AK LandCover - LCMS 2016", false);
-
+  Map.addLayer(
+    ak_land_cover,
+    { autoViz: true },
+    "AK LandCover - LCMS 2016",
+    false
+  );
 
   // AK Existing veg
-  
-//   var KPLegendDict = {
-//     "Freshwater- Forested and Shrub wetland": "008836",
-//     "Freshwater Emergent wetland": "7fc31c",
-//     "Freshwater pond": "688cc0",
-//     "Estuarine and Marine wetland": "66c2a5",
-//     "Riverine": "0190bf",
-//     "Lakes": "13007c",
-//     "Estuarine and Marine Deepwater": "007c88",
-//     "Other Freshwater wetland": "b28653",
-//   };
-  
-//   // add R10 Kenai Peninsula 2017 layer
-//   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
-//   //,classLegendDict:KPLegendDict
-// },'AK Kenai Tall Shrub % Cover 2017',false)
-  
 
+  //   var KPLegendDict = {
+  //     "Freshwater- Forested and Shrub wetland": "008836",
+  //     "Freshwater Emergent wetland": "7fc31c",
+  //     "Freshwater pond": "688cc0",
+  //     "Estuarine and Marine wetland": "66c2a5",
+  //     "Riverine": "0190bf",
+  //     "Lakes": "13007c",
+  //     "Estuarine and Marine Deepwater": "007c88",
+  //     "Other Freshwater wetland": "b28653",
+  //   };
+
+  //   // add R10 Kenai Peninsula 2017 layer
+  //   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
+  //   //,classLegendDict:KPLegendDict
+  // },'AK Kenai Tall Shrub % Cover 2017',false)
 
   // Hawaii Vegetation Layers
   //////////////////////////////////////////////////////
@@ -51,7 +53,9 @@ function runAncillary() {
   //   "HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1"
   // );
 
-  var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/R5/Hawaii/Ancillary/hi_hawaii_2010_ccap_hires_landcover_20150120");
+  var hi_veg_ccap = ee.Image(
+    "projects/lcms-292214/assets/R5/Hawaii/Ancillary/hi_hawaii_2010_ccap_hires_landcover_20150120"
+  );
 
   var hi_veg_ccap_dict = {
     0: "Background",
@@ -122,14 +126,22 @@ function runAncillary() {
 
   Map.addLayer(
     hi_veg_ccap,
-    { layerType: "geeImage", min: 1, max: 20, palette: hi_veg_ccap_palette, classLegendDict: hi_veg_ccap_LegendDict, queryDict: hi_veg_ccap_dict },
+    {
+      min: 1,
+      max: 20,
+      palette: hi_veg_ccap_palette,
+      classLegendDict: hi_veg_ccap_LegendDict,
+      queryDict: hi_veg_ccap_dict,
+    },
     "HI Veg NOAA CCAP 2010",
     false
   );
 
   // Hawaii Wetland data
   ///////////////////////////////////////////////
-  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands");
+  var nwi_hi = ee.FeatureCollection(
+    "projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands"
+  );
   nwi_hi = nwi_hi.map(function (f) {
     return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
   });
@@ -140,7 +152,7 @@ function runAncillary() {
     .reduceToImage(["WETLAND_TY_NO"], ee.Reducer.first())
     .rename(["NWI"])
     .set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis());
-  //Map.addLayer(nwi_hi_rast, { layerType: "geeImage", min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
+  //Map.addLayer(nwi_hi_rast, {  min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
 
   // Standard Ancillary Data Layers - CONUS
   ////////////////////////////////////////////////////////////////////
@@ -153,7 +165,10 @@ function runAncillary() {
 
   function getYear(img) {
     var yr = img.id().split("_").get(-1);
-    img = img.set("system:time_start", ee.Date.fromYMD(ee.Number.parse(yr), 6, 1).millis());
+    img = img.set(
+      "system:time_start",
+      ee.Date.fromYMD(ee.Number.parse(yr), 6, 1).millis()
+    );
     return img;
   }
   nlcdLCMS = nlcdLCMS.map(getYear);
@@ -183,7 +198,10 @@ function runAncillary() {
     "6c9fb8",
   ]; //nlcd.get('system:visualization_0_palette').getInfo().split(',');
 
-  var nlcdClassCodes = [11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90, 95];
+  var nlcdClassCodes = [
+    11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90,
+    95,
+  ];
   var nlcdClassNames = [
     "Open Water",
     "Perennial Ice/Snow",
@@ -242,11 +260,16 @@ function runAncillary() {
       .distinct();
     return ee.ImageCollection(
       years.map(function (yr) {
-        return c.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+        return c
+          .filter(ee.Filter.calendarRange(yr, yr, "year"))
+          .mosaic()
+          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
       })
     );
   }
-  var nlcdLC = nlcd.filter(ee.Filter.listContains("bns", "landcover")).select(["landcover"]);
+  var nlcdLC = nlcd
+    .filter(ee.Filter.listContains("bns", "landcover"))
+    .select(["landcover"]);
   nlcdLC = annualMosaicCollection(nlcdLC);
   var nlcdLCYears = nlcdLC
     .toList(10000, 0)
@@ -255,7 +278,9 @@ function runAncillary() {
     })
     .distinct();
 
-  var nlcdImpv = nlcd.filter(ee.Filter.listContains("bns", "impervious")).select(["impervious"]);
+  var nlcdImpv = nlcd
+    .filter(ee.Filter.listContains("bns", "impervious"))
+    .select(["impervious"]);
   nlcdImpv = annualMosaicCollection(nlcdImpv);
   var nlcdImpvYears = nlcdImpv
     .toList(10000, 0)
@@ -264,7 +289,9 @@ function runAncillary() {
     })
     .distinct();
 
-  var nlcdTCC = nlcd.filter(ee.Filter.listContains("bns", "percent_tree_cover")).select(["percent_tree_cover"]);
+  var nlcdTCC = nlcd
+    .filter(ee.Filter.listContains("bns", "percent_tree_cover"))
+    .select(["percent_tree_cover"]);
   nlcdTCC = annualMosaicCollection(nlcdTCC);
   var nlcdTCCYears = nlcdTCC
     .toList(10000, 0)
@@ -326,23 +353,45 @@ function runAncillary() {
     6: "Lake",
     7: "Riverine",
   };
-  var nwi_palette = ["007c88", "66c2a5", "7fc31c", "008836", "688cc0", "13007c", "0190bf"];
+  var nwi_palette = [
+    "007c88",
+    "66c2a5",
+    "7fc31c",
+    "008836",
+    "688cc0",
+    "13007c",
+    "0190bf",
+  ];
   Map.addLayer(
     nwi_hi_rast,
-    { layerType: "geeImage", min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict },
+    {
+      min: 1,
+      max: 7,
+      palette: nwi_palette,
+      classLegendDict: nwiLegendDict,
+      queryDict: nwi_dict,
+    },
     "HI NWI",
     false
   );
   Map.addLayer(
     [
-      { baseURL: "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=", minZoom: 2 },
+      {
+        baseURL:
+          "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
+        minZoom: 2,
+      },
       {
         baseURL:
           "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
         minZoom: 12,
       },
     ],
-    { layerType: "dynamicMapService", addToClassLegend: true, classLegendDict: nwiLegendDict },
+    {
+      layerType: "dynamicMapService",
+      addToClassLegend: true,
+      classLegendDict: nwiLegendDict,
+    },
     "NWI",
     false
   );
@@ -353,7 +402,12 @@ function runAncillary() {
 
   // ESRI Land cover
   /////////////////////////////////////////////////
-  esri_lc_dict = { Water: "008", Trees: "080", "Flooded Vegetation": "088", "Built Area": "D00" };
+  esri_lc_dict = {
+    Water: "008",
+    Trees: "080",
+    "Flooded Vegetation": "088",
+    "Built Area": "D00",
+  };
   // Map.addLayer([{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:0,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1483272000000'},{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:11,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1483272000000'}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'ESRI LC 2017',true)
 
   // Map.addLayer([{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:0,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1577880000000'},{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:11,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1577880000000'}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'ESRI LC 2021',true)
@@ -461,16 +515,23 @@ function runAncillary() {
   ////////////////////////////////////////////////////////////
   var pdsiStartYear = 1984;
   var pdsiEndYear = 2023;
-  var terra = ee.ImageCollection("IDAHO_EPSCOR/TERRACLIMATE").filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
+  var terra = ee
+    .ImageCollection("IDAHO_EPSCOR/TERRACLIMATE")
+    .filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
   var terra_pdsi = terra.select("pdsi").map(function (img) {
-    return img.multiply(0.01).copyProperties(img, ["system:time_start"]).copyProperties(img);
+    return img
+      .multiply(0.01)
+      .copyProperties(img, ["system:time_start"])
+      .copyProperties(img);
   });
   var years = ee.List.sequence(pdsiStartYear, pdsiEndYear).getInfo();
   var annualPDSI = years.map(function (yr) {
     var startDate = ee.Date.fromYMD(yr - 1, 10, 1);
     var endDate = ee.Date.fromYMD(yr, 9, 30);
     var yearPDSI = terra_pdsi.filter(ee.Filter.date(startDate, endDate));
-    var meanPDSI = yearPDSI.reduce(ee.Reducer.mean()).set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+    var meanPDSI = yearPDSI
+      .reduce(ee.Reducer.mean())
+      .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
     return ee.Image(meanPDSI);
   });
   annualPDSI = ee.ImageCollection(annualPDSI);
@@ -510,7 +571,9 @@ function runAncillary() {
   // Map.addLayer(prUSVI_ch_2018,{min:1,max:15,palette:palettes.crameri.bamako[50].reverse(),legendLabelLeftAfter:'(m)',legendLabelRightAfter:'(m)'},'PRUSVI 2018 Canopy Height',false);
 
   var vi_2007 = ee
-    .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007")
+    .Image(
+      "projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007"
+    )
     .add(50)
     .byte()
     .set("system:time_start", ee.Date.fromYMD(2007, 6, 1).millis());
@@ -527,17 +590,29 @@ function runAncillary() {
     .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_VI_2000")
     .set("system:time_start", ee.Date.fromYMD(2000, 6, 1).millis());
   var mona = ee
-    .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_Mona_2008")
+    .Image(
+      "projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_Mona_2008"
+    )
     .set("system:time_start", ee.Date.fromYMD(2008, 6, 1).millis());
   var pr_2010 = ee
-    .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Landcover_2010_PR_CCAP")
+    .Image(
+      "projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Landcover_2010_PR_CCAP"
+    )
     .add(27)
     .byte()
     .set("system:time_start", ee.Date.fromYMD(2010, 6, 1).millis());
 
-  var pr_2000 = ee.ImageCollection([pr_2000, mona, vi_2000]).mosaic().set("system:time_start", ee.Date.fromYMD(2000, 6, 1).millis());
+  var pr_2000 = ee
+    .ImageCollection([pr_2000, mona, vi_2000])
+    .mosaic()
+    .set("system:time_start", ee.Date.fromYMD(2000, 6, 1).millis());
 
-  var prvi_lc_collection = ee.ImageCollection.fromImages([pr_1991, pr_2000, vi_2007, pr_2010]);
+  var prvi_lc_collection = ee.ImageCollection.fromImages([
+    pr_1991,
+    pr_2000,
+    vi_2007,
+    pr_2010,
+  ]);
   prvi_lc_collection = prvi_lc_collection.map(function (img) {
     return img.add(1).copyProperties(img, ["system:time_start"]);
   });
@@ -547,27 +622,66 @@ function runAncillary() {
     1: { Name: "High-Medium Density Urban", Color: "ab0000" },
     2: { Name: "Low-Medium Density Urban", Color: "d99482" },
     3: { Name: "Herbaceous Agriculture - Cultivated Lands", Color: "ffff00" },
-    4: { Name: "Active Sun Coffee and Mixed Woody Agriculture", Color: "ffcc00" },
-    5: { Name: "Pasture, Hay or Inactive Agriculture (e.g. abandoned sugar cane)", Color: "ffff66" },
-    6: { Name: "Pasture, Hay or other Grassy Areas (e.g. soccer fields)", Color: "ffcc66" },
+    4: {
+      Name: "Active Sun Coffee and Mixed Woody Agriculture",
+      Color: "ffcc00",
+    },
+    5: {
+      Name: "Pasture, Hay or Inactive Agriculture (e.g. abandoned sugar cane)",
+      Color: "ffff66",
+    },
+    6: {
+      Name: "Pasture, Hay or other Grassy Areas (e.g. soccer fields)",
+      Color: "ffcc66",
+    },
     7: { Name: "Drought Deciduous Open Woodland", Color: "00cc00" },
     8: { Name: "Drought Deciduous Dense Woodland", Color: "006600" },
-    9: { Name: "Deciduous, Evergreen Coastal and Mixed Forest or Shrubland with Succulents", Color: "9900ff" },
-    10: { Name: "Semi-Deciduous and Drought Deciduous Forest on Alluvium and Non-Carbonate Substrates", Color: "66ff66" },
-    11: { Name: "Semi-Deciduous and Drought Deciduous Forest on Karst (includes semi-evergreen forest)", Color: "003300" },
-    12: { Name: "Drought Deciduous, Semi-deciduous and Seasonal Evergreen Forest on Serpentine", Color: "66ff33" },
-    13: { Name: "Seasonal Evergreen and Semi-Deciduous Forest on Karst", Color: "3333ff" },
+    9: {
+      Name: "Deciduous, Evergreen Coastal and Mixed Forest or Shrubland with Succulents",
+      Color: "9900ff",
+    },
+    10: {
+      Name: "Semi-Deciduous and Drought Deciduous Forest on Alluvium and Non-Carbonate Substrates",
+      Color: "66ff66",
+    },
+    11: {
+      Name: "Semi-Deciduous and Drought Deciduous Forest on Karst (includes semi-evergreen forest)",
+      Color: "003300",
+    },
+    12: {
+      Name: "Drought Deciduous, Semi-deciduous and Seasonal Evergreen Forest on Serpentine",
+      Color: "66ff33",
+    },
+    13: {
+      Name: "Seasonal Evergreen and Semi-Deciduous Forest on Karst",
+      Color: "3333ff",
+    },
     14: { Name: "Seasonal Evergreen and Evergreen Forest", Color: "3333cc" },
-    15: { Name: "Seasonal Evergreen Forest with Coconut Palm", Color: "6666ff" },
-    16: { Name: "Evergreen and Seasonal Evergreen Forest on Karst", Color: "333399" },
+    15: {
+      Name: "Seasonal Evergreen Forest with Coconut Palm",
+      Color: "6666ff",
+    },
+    16: {
+      Name: "Evergreen and Seasonal Evergreen Forest on Karst",
+      Color: "333399",
+    },
     17: { Name: "Evergreen Forest on Serpentine", Color: "6600ff" },
-    18: { Name: "Elfin, Sierra Palm, Transitional and Tall Cloud Forest", Color: "66ffcc" },
-    19: { Name: "Emergent Wetlands Including Seasonally Flooded Pasture", Color: "00ffff" },
+    18: {
+      Name: "Elfin, Sierra Palm, Transitional and Tall Cloud Forest",
+      Color: "66ffcc",
+    },
+    19: {
+      Name: "Emergent Wetlands Including Seasonally Flooded Pasture",
+      Color: "00ffff",
+    },
     20: { Name: "Salt or Mud Flats", Color: "999966" },
     21: { Name: "Mangrove", Color: "006666" },
     22: { Name: "Seaonally Flooded Savannahs and Woodlands", Color: "006699" },
     23: { Name: "Pterocarpus Swamp", Color: "0099cc" },
-    24: { Name: "Tidally Flooded Evergreen Dwarf-Shrubland and Forb Vegetation", Color: "33cccc" },
+    24: {
+      Name: "Tidally Flooded Evergreen Dwarf-Shrubland and Forb Vegetation",
+      Color: "33cccc",
+    },
     25: { Name: "Quarries", Color: "996633" },
     26: { Name: "Coastal Sand and Rock", Color: "cc9900" },
     27: { Name: "Bare Soil (including bulldozed land)", Color: "996600" },
@@ -609,9 +723,18 @@ function runAncillary() {
     63: { Name: "Dry Noncalcareous Shrubland", Color: "788026" },
     64: { Name: "Dry Noncalcareous Open Shrubland", Color: "bfc969" },
     65: { Name: "Dry Noncalcareous Woodland", Color: "9ead52" },
-    66: { Name: "Lowland Moist Alluvial Evergreen Gallery Forest", Color: "003d00" },
-    67: { Name: "Lowland Moist Noncalcareous Evergreen Forest", Color: "004d00" },
-    68: { Name: "Lowland Moist Noncalcareous Evergreen Gallery Forest", Color: "2e361c" },
+    66: {
+      Name: "Lowland Moist Alluvial Evergreen Gallery Forest",
+      Color: "003d00",
+    },
+    67: {
+      Name: "Lowland Moist Noncalcareous Evergreen Forest",
+      Color: "004d00",
+    },
+    68: {
+      Name: "Lowland Moist Noncalcareous Evergreen Gallery Forest",
+      Color: "2e361c",
+    },
     69: { Name: "Lowland Moist Noncalcareous Shrubland", Color: "5c630f" },
     70: { Name: "Lowland Moist Noncalcareous Open Shrubland", Color: "96a33b" },
     71: { Name: "Lowland Moist Noncalcareous Woodland", Color: "4f5c26" },
@@ -622,8 +745,14 @@ function runAncillary() {
     76: { Name: "Mangrove Forest and Shrubland", Color: "6b2e6b" },
     77: { Name: "Dry Grassland and Pastures", Color: "f5f5db" },
     78: { Name: "Moist Grassland and Pastures", Color: "d9d978" },
-    79: { Name: "Seasonally Flooded Herbaceous Nonsaline Wetlands", Color: "85c7a1" },
-    80: { Name: "Seasonally Flooded Herbaceous Saline Wetlands", Color: "e3adba" },
+    79: {
+      Name: "Seasonally Flooded Herbaceous Nonsaline Wetlands",
+      Color: "85c7a1",
+    },
+    80: {
+      Name: "Seasonally Flooded Herbaceous Saline Wetlands",
+      Color: "e3adba",
+    },
     81: { Name: "Emergent Herbaceous Saline Wetlands", Color: "5cb582" },
     82: { Name: "Emergent Herbaceous Nonsaline Wetlands", Color: "d68594" },
     83: { Name: "Hay and Row Crops", Color: "ffbd42" },
@@ -691,7 +820,10 @@ function runAncillary() {
   nlcdTCC = batchFillCollection(nlcdTCC, years).map(setSameDate);
   nlcdImpv = batchFillCollection(nlcdImpv, years).map(setSameDate);
 
-  nwi_hi_rast = batchFillCollection(ee.ImageCollection([nwi_hi_rast]), years).map(setSameDate);
+  nwi_hi_rast = batchFillCollection(
+    ee.ImageCollection([nwi_hi_rast]),
+    years
+  ).map(setSameDate);
 
   // Format for Charting
   /////////////////////////////////////////
@@ -699,13 +831,29 @@ function runAncillary() {
   // prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
   // prvi_winds = batchFillCollection(prvi_winds.select([0,1,2]),years).map(setSameDate);
   // prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
-  var forCharting = joinCollections(mtbs.select([0], ["MTBS Burn Severity"]), annualPDSI.select([0], ["PDSI"]), false); //cdl.select([0],['Cropland Data']),false);
+  var forCharting = joinCollections(
+    mtbs.select([0], ["MTBS Burn Severity"]),
+    annualPDSI.select([0], ["PDSI"]),
+    false
+  ); //cdl.select([0],['Cropland Data']),false);
   // forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
   forCharting = joinCollections(forCharting, idsCollection, false);
-  forCharting = joinCollections(forCharting, nlcdLC.select([0], ["NLCD Landcover"]), false);
+  forCharting = joinCollections(
+    forCharting,
+    nlcdLC.select([0], ["NLCD Landcover"]),
+    false
+  );
   // forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
-  forCharting = joinCollections(forCharting, nlcdTCC.select([0], ["NLCD % Tree Canopy Cover"]), false);
-  forCharting = joinCollections(forCharting, nlcdImpv.select([0], ["NLCD % Impervious"]), false);
+  forCharting = joinCollections(
+    forCharting,
+    nlcdTCC.select([0], ["NLCD % Tree Canopy Cover"]),
+    false
+  );
+  forCharting = joinCollections(
+    forCharting,
+    nlcdImpv.select([0], ["NLCD % Impervious"]),
+    false
+  );
   // forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
   // forCharting  = joinCollections(forCharting,prvi_winds, false);
   // forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);

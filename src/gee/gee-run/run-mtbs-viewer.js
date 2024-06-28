@@ -7,7 +7,13 @@ function runMTBS() {
   chartMTBSByAspect = true;
   getLCMSVariables();
 
-  ga("send", "event", "mtbs-viewer-run", "year_range", `${startYear}_${endYear}`);
+  ga(
+    "send",
+    "event",
+    "mtbs-viewer-run",
+    "year_range",
+    `${startYear}_${endYear}`
+  );
 
   var mtbsAndNLCD = getMTBSAndNLCD("anc", "layer-list", true);
 
@@ -28,8 +34,24 @@ function runMTBS() {
   //   })
   // })
   var perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  var inFields = ["Incid_Name", "Incid_Type", "Event_ID", "irwinID", "Ignition Date", "BurnBndAc", "Asmnt_Type"];
-  var outFields = ["Incident Name", "Incident Type", "MTBS Event ID", "IRWIN ID", "Ignition Date", "Acres", "Assessment Type"];
+  var inFields = [
+    "Incid_Name",
+    "Incid_Type",
+    "Event_ID",
+    "irwinID",
+    "Ignition Date",
+    "BurnBndAc",
+    "Asmnt_Type",
+  ];
+  var outFields = [
+    "Incident Name",
+    "Incident Type",
+    "MTBS Event ID",
+    "IRWIN ID",
+    "Ignition Date",
+    "Acres",
+    "Assessment Type",
+  ];
   perims = perims.map(function (f) {
     var d = ee.Date(f.get("Ig_Date"));
     var formatted = d.format("YYYY-MM-dd");
@@ -62,7 +84,6 @@ function runMTBS() {
     perims,
     {
       strokeColor: "00F",
-      layerType: "geeVectorImage",
     },
     "MTBS Burn Perimeters",
     true,
@@ -77,13 +98,25 @@ function runMTBS() {
 
   // var years = ee.List.sequence(startYear,mtbs)
 
-  var chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict")).combine(mtbsC.get("chartTableDict")).getInfo();
+  var chartTableDict = ee
+    .Dictionary(nlcdLCObj.collection.get("chartTableDict"))
+    .combine(mtbsC.get("chartTableDict"))
+    .getInfo();
 
-  var nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
+  var nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(
+    setSameDate
+  );
   var forCharting = joinCollections(mtbsC, nlcdLCFilled, false);
-  var timeLapseSeverityViz = JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz));
+  var timeLapseSeverityViz = JSON.parse(
+    JSON.stringify(mtbsAndNLCD.MTBSSeverityViz)
+  );
   timeLapseSeverityViz.years = yearsCli;
-  Map.addTimeLapse(mtbsC, timeLapseSeverityViz, "MTBS Burn Severity Time Lapse", false);
+  Map.addTimeLapse(
+    mtbsC,
+    timeLapseSeverityViz,
+    "MTBS Burn Severity Time Lapse",
+    false
+  );
   // forCharting = forCharting.set('chartTableDict',chartTableDict);
   // forCharting = forCharting.set('legends',chartTableDict)
   // nlcdLC = batchFillCollection(nlcdLCObj.collection,years).map(setSameDate);
@@ -99,8 +132,8 @@ function runMTBS() {
 
   getSelectLayers();
   // toggleCumulativeMode();
-  // Map.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0',layerType:'geeVectorImage'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
-  // Map.addSelectLayer(huc4,{strokeColor:'00F',layerType:'geeVectorImage'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
+  // Map.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
+  // Map.addSelectLayer(huc4,{strokeColor:'00F'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
   // $('#select-area-interactive-chart-label').click();
   // $('#tools-collapse-label-label').click();
 }
