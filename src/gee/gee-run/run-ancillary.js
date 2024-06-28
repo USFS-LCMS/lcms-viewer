@@ -81,6 +81,8 @@ function runAncillary() {
 
   // Alaska Vegetation Composite from University of Alaska
 
+  // Alaska Wetlands layer from University of Alaska
+
   var ak_vegetation_uaa = ee.Image(
     "projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaVegetationCompositeReclass_20240623"
   );
@@ -286,7 +288,23 @@ function runAncillary() {
     false
   );
 
-  // AK Existing veg
+  // AK Existing veg -  KenaiVegVectorMapService2019 - Tall Shrub Canopy Cover (ID: 3)
+
+  //   var KPLegendDict = {
+  //     "Freshwater- Forested and Shrub wetland": "008836",
+  //     "Freshwater Emergent wetland": "7fc31c",
+  //     "Freshwater pond": "688cc0",
+  //     "Estuarine and Marine wetland": "66c2a5",
+  //     "Riverine": "0190bf",
+  //     "Lakes": "13007c",
+  //     "Estuarine and Marine Deepwater": "007c88",
+  //     "Other Freshwater wetland": "b28653",
+  //   };
+
+  //   // add R10 Kenai Peninsula 2017 layer
+  //   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
+  //   //,classLegendDict:KPLegendDict
+  // },'AK Kenai Tall Shrub % Cover 2017',false)
 
   //   var KPLegendDict = {
   //     "Freshwater- Forested and Shrub wetland": "008836",
@@ -577,7 +595,6 @@ function runAncillary() {
   // nlcdTCCYears.getInfo().map(function(yr){
   //   var nlcdTCCYr = nlcdTCC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
   //   Map.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
-
   // });
 
   //Add NAIP to viewer
@@ -585,7 +602,8 @@ function runAncillary() {
   // var naip = ee.ImageCollection("USDA/NAIP/DOQQ").select([0,1,2],['R','G','B']);
   // naipYears.map(function(yr){
   //   var naipT = naip.filter(ee.Filter.calendarRange(yr,yr,'year'));
-  //   Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
+  //  Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
+  //  Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false, 0.5);
   // });
 
   // MTBS
@@ -627,6 +645,7 @@ function runAncillary() {
     "13007c",
     "0190bf",
   ];
+
   Map.addLayer(
     nwi_hi_rast,
     {
@@ -639,6 +658,7 @@ function runAncillary() {
     "HI NWI",
     false
   );
+
   Map.addLayer(
     [
       {
@@ -660,6 +680,7 @@ function runAncillary() {
     "NWI",
     false
   );
+
   // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
   //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
   //                 8,11,
@@ -667,6 +688,7 @@ function runAncillary() {
 
   // ESRI Land cover
   /////////////////////////////////////////////////
+
   esri_lc_dict = {
     Water: "008",
     Trees: "080",
@@ -749,6 +771,7 @@ function runAncillary() {
 
   // Cropland  // Cropland Data Layers
   ////////////////////////////////////////
+
   // var cdl = ee.Image('USDA/NASS/CDL/2014').select([0]);
   var cdl = ee.ImageCollection("USDA/NASS/CDL").select([0], ["cdl"]);
 
