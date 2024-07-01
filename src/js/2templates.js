@@ -92,6 +92,12 @@ const titles = {
     rightWords: "Viewer",
     title: "Sequoia View",
   },
+  "HiForm-BMP": {
+    leftWords: "HiForm",
+    centerWords: "Timber Harvest",
+    rightWords: "BMP Tool",
+    title: "HiForm Timber Harvest BMP Tool",
+  },
 };
 ///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {
@@ -472,6 +478,29 @@ const staticTemplates = {
 <div class ='my-3'>
 <h6><b>First time users</b>, please click below to take a tutorial on how to use the Giant Sequoia Viewer's features:</h6>
 <a class="intro-modal-links" onclick= "startTour()" id= "tutorialLink" title="Click to take a tour of the Giant Sequoia Viewer's features">TUTORIAL</a><br><br>
+<a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
+
+<a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+</div>
+<div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
+<a class = 'intro-modal-links' title = "Visualize and explore LAMDA products" href = "lamda-downloads.html" target="_blank">LAMDA Explorer</a>
+
+
+</div>`,
+      ""
+    ),
+    "HiForm-BMP": getIntroModal(
+      "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
+      "Welcome to the Giant Sequoia Viewer!",
+      `<li>
+<p class="pb-2 ">This near real-time program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide first cut alarm of potentially declining named Giant Sequoias and the ability to view available remote sensing image data.</p>
+</li>
+`,
+      `
+<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<h5>For access please contact Sequoia Viewer project coordinator.</h5>
+<div class ='my-3'>
+<a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
 <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
 
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
@@ -1973,6 +2002,158 @@ function addRadio(
     eval(`${offFunction}`);
   });
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// HiForm-BMP Stuff
+//////////////////////////////////////////////////////////////////////////////////////////////
+// DROPDOWN SELECT STATES - Hiform
+function addDropdownStates(containerID, dropdownId, label, variable, selectList, callback) {
+
+  $("#" + containerID).append(`<div id="${containerID}-container><label for="${containerID}" class="form-label">${label}</label>
+  <select id=${dropdownId} class="form-select mb-2"></select></div>`);
+
+  $(`#${dropdownId}`).append(`<option>---</option>`)
+
+  selectList.map(item => {
+    $(`#${dropdownId}`).append(`<option>${item}</option>`)
+  });
+  
+  $(`#` + dropdownId).on("input", () => {
+    selectedItem = $(`#state-select`).val()
+    console.log("State Selected: " + selectedItem)
+    callback(selectedItem)
+  });
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// DROPDOWN SELECT COUNTIES - Hiform
+function addDropdownCounties(containerID, dropdownId, label, variable, selectList, stateFP, stateAbr, callback) {
+
+  $("#" + containerID + "-container").replaceWith("")
+  $("#" + containerID).append(`<div id="${containerID}-container" class="mt-2"><label for="${containerID}" class="form-label">${label}</label>
+  <select id=${dropdownId} class="form-select mb-2"></select></div>`);
+
+  $(`#${dropdownId}`).append(`<option>---</option>`)
+  selectList.map(item => {
+    $(`#${dropdownId}`).append(`<option>${item}</option>`)
+  });
+  
+  $(`#` + dropdownId).on("input", () => {
+    selectedItem = $(`#county-select`).val()
+    console.log("County Selected: " + selectedItem)
+    callback(selectedItem, stateFP, stateAbr)
+  });
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// MultiRadio for Selection Type - Hiform
+function addSelectTypeRadio(containerID, radioID, label, variable, optionList, title, callback) {
+  $("#" + containerID).append(`<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`);
+
+  eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
+  Object.keys(optionList).map(function (k) {
+    const kID = k.replace(/[^A-Za-z0-9]/g, "-");
+    var radioCheckboxID = kID + "-checkbox";
+    var radioLabelID = radioCheckboxID + "-label";
+    if (optionList[k] === "true") {
+      optionList[k] = true;
+    } else if (optionList[k] === "false") {
+      optionList[k] = false;
+    }
+    var checked = optionList[k];
+
+    if (checked) {
+      checked = "checked";
+      eval(`window.${variable} = "${k}"`);
+    } else {
+      checked = "";
+    }
+
+    $("#" + radioID).append(`<div class="form-check form-check-inline mb-2">
+                              <input role="option" class="form-check-input" type="radio" name="inlineRadioOptions" id="${radioCheckboxID}" ${checked} value="${k}">
+                              <label class="form-check-label" for="${radioCheckboxID}">${k}</label>
+                            </div>`);
+    $("#" + radioCheckboxID).change(function () {
+      Object.keys(optionList).map((k) => (optionList[k] = false));
+      var v = $(this).val();
+      optionList[v] = true;
+      eval(`window.${variable} = "${v}"`);
+      callback(v)
+    });
+  });
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Date Picker - Hiform
+function addHiFormPostDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+  $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
+  $("#" + datepickerID).append(`<div id="post-ranges-div">
+                                <p class = 'param-title'>Define Post Date Range</p>
+                                <input type="date" id="post-date-one" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
+                                <input type="date" id="post-date-two" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
+                              </div>`);
+}
+
+function addHiFormCustomPrePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+  $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
+  
+  $("#define-pre-date-options").append(`<div id="pre-ranges-div">
+                                          <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
+                                          <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
+                                        </div>`);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Process Button - Hiform
+function addHiFormProcessButton(containerID) {
+  $("#" + containerID).append(`<div id="process-button-div" title="Select a county and define date ranges to process.">
+                                <p class = 'param-title'>Process HiForm Results</p>
+                                <input type="button" id="process-button" class="mb-2" value="Process HiForm BMP" onclick="handleProcess()">
+                              </div>`);
+
+  $('#process-button').attr('disabled','disabled');
+}
+
+function addHiFormResetButton(containerID) {
+  $("#" + containerID).append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
+                                <input type="button" id="reset-button" class="mb-2" value="Reset HiForm Results" onclick="handleHiFormReset()">
+                              </div>`);
+
+  $('#reset-button').attr('disabled','disabled');
+}
+
+function addHiFormExport(containerDiv) {
+  $("#" + containerDiv).append(`<div class = 'py-2' id = 'export-list-container'>
+                        <h5>Choose which images to export:</h5>
+                        <div class = 'py-2' id="export-list"></div>
+                        <hr>
+                        <div class = 'pl-3'>
+                            <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
+                              <label for="export-crs">Projection: </label>
+                              <div class="form-group pl-1">
+                                <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
+                              </div>
+                            </form>
+                            
+                            <hr>  
+                            <div class = 'pt-1 pb-3' >
+                                <div id = 'export-button-div'>
+                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                </div>
+                                <hr>
+                                <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
+						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
+								</span>
+                                <div id = 'export-count-div' ></div>
+                            </div>  
+                        </div>
+                        
+                    </div>`)
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Function to set up a checkbox list
 //Will set up an object under the variable name with the optionList that is updated

@@ -437,7 +437,12 @@ function exportImages() {
   if (exportArea === null || exportArea === undefined) {
     showMessage("Error", "No export area selected. Select area by clicking on the <kbd>Draw area to download</kbd> button and then draw a polygon on the map.");
   } else {
-    var fc = googleMapPolygonToGEEPolygon(exportArea);
+    try {
+      var fc = googleMapPolygonToGEEPolygon(exportArea);
+    } catch (error) {
+      console.log(error)
+      var fc = exportArea
+    }
     var exportCRS = $("#export-crs").val();
     // closePopup();
     // console.log(exportImageDict);

@@ -2621,6 +2621,471 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "Download " + mode + " products for further analysis"
     );
   }
+} else if (mode === "HiForm-BMP") {
+
+  var selectedState;
+  var selectedCounty;
+  //urlParams.selectedCounty = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", "01")).filter(ee.Filter.eq("NAME", "Madison"))
+  var selectedLayerId;
+  urlParams.preDate1;// = "2022-05-21"
+  urlParams.preDate2;// = "2022-08-21"
+  urlParams.postDate1;// = "2023-07-21"
+  urlParams.postDate2;// = "2023-09-21"
+  urlParams.correctionTypeOption = "TOA"
+
+  var region8_fps = ["01", "05", "12", "13", "21", "22", "28", "37", "40", "45", "47", "48", "51"];
+
+  var statesDict = {
+    "Alabama" : "01",
+    // "Alaska" : "02",
+    // "Arizona" : "04",
+    "Arkansas" : "05",
+    // "California" : "06",
+    // "Colorado" : "08",
+    // "Connecticut" : "09",
+    // "Delaware" : "10",
+    // "District of Columbia" : "11",
+    "Florida" : "12",
+    "Georgia" : "13",
+    // "Hawaii" : "15",
+    // "Idaho" : "16",
+    // "Illinois" : "17",
+    // "Indiana" : "18",
+    // "Iowa" : "19",
+    // "Kansas" : "20",
+    "Kentucky" : "21",
+    "Louisiana" : "22",
+    // "Maine" : "23",
+    // "Maryland" : "24",
+    // "Massachusetts" : "25",
+    // "Michigan" : "26",
+    // "Minnesota" : "27",
+    "Mississippi" : "28",
+    // "Missouri" : "29",
+    // "Montana" : "30",
+    // "Nebraska" : "31",
+    // "Nevada" : "32",
+    // "New Hampshire" : "33",
+    // "New Jersey" : "34",
+    // "New Mexico" : "35",
+    // "New York" : "36",
+    "North Carolina" : "37",
+    // "North Dakota" : "38",
+    // "Ohio" : "39",
+    "Oklahoma" : "40",
+    // "Oregon" : "41",
+    // "Pennsylvania" : "42",
+    // "Rhode Island" : "44",
+    "South Carolina" : "45",
+    // "South Dakota" : "46",
+    "Tennessee" : "47",
+    "Texas" : "48",
+    // "Utah" : "49",
+    // "Vermont" : "50",
+    "Virginia" : "51",
+    // "Washington" : "53",
+    // "West Virginia" : "54",
+    // "Wisconsin" : "55",
+    // "Wyoming" : "56",
+
+  }
+  
+  
+  addCollapse(
+    "sidebar-left",
+    "select-aoi-label",
+    "select-aoi-div",
+    "Select Area of Interest",
+    '<i role="img" class="fa fa-mouse-pointer mr-1" aria-hidden="true"></i>',
+    true,
+    null,
+    "Select are of interest for the Hi-Form BMP Tool"
+  );
+
+  addSelectTypeRadio(
+    "select-aoi-div",
+    "select-type-radio",
+    "Choose County Selection Type",
+    "selectOption",
+    { "Select by Dropdown": true, "Select on Map": false },
+    "Title",
+    handleAoiSelectionType
+  )
+
+  //Initial Set Up
+  handleAoiSelectionType("Select by Dropdown")
+
+  function handleAoiSelectionType(selection) {
+    console.log(selection)
+    urlParams.aoiSelectionType = selection;
+
+    if (urlParams.aoiSelectionType == "Select by Dropdown") {
+      google.maps.event.clearListeners(map, "click");
+      $("#" + "dropdown-select").remove();
+      $("#" + "select-aoi-div").append(`<div id="dropdown-select"></div>`)
+
+      addDropdownStates(
+        "dropdown-select",
+        "state-select",
+        "Select a State:",
+        selectedState,
+        Object.keys(statesDict),//stateList,
+        populateCountiesDropdown
+      );
+    }
+    else if (urlParams.aoiSelectionType == "Select on Map") {
+      $("#" + "dropdown-select").remove();
+      selectSingleCounty()
+    }
+  }
+
+  function populateCountiesDropdown(selectedState){
+    var stateFP = statesDict[selectedState];
+    var counties = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", stateFP));
+    var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo();
+    var countyList = counties.aggregate_histogram("NAME").keys().getInfo();
+
+    addDropdownCounties(
+      "dropdown-select",
+      "county-select",
+      "Select a County:",
+      selectedCounty,
+      countyList,
+      stateFP,
+      stateAbr,
+      setSelectedCounty
+    );
+  };
+
+  function setSelectedCounty(selectedCounty, stateFP, stateAbr){
+    Map.removeLayer(selectedLayerId)
+    var region8_counties = ee.FeatureCollection('TIGER/2018/Counties').filter(ee.Filter.inList("STATEFP", region8_fps));
+    var selectedFeature = region8_counties.filter(ee.Filter.eq("STATEFP", stateFP)).filter(ee.Filter.eq("NAME", selectedCounty));
+    selectedLayerId = Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${selectedCounty}, ${stateAbr}`, true);
+    Map.centerObject(selectedFeature);
+    urlParams.selectedCounty = selectedFeature;
+    exportArea = selectedFeature;
+    toggleProcessButton();
+  };
+  
+  function selectSingleCounty() {
+    setTimeout(() => {
+        google.maps.event.clearListeners(map, "click");
+        google.maps.event.addListener(map, "click", (e) => {
+            Map.removeLayer(selectedLayerId)
+            const lat = e.latLng.lat();
+            const lng = e.latLng.lng();
+            const point = ee.Geometry.Point([lng, lat]);
+            features = region8_counties = ee.FeatureCollection('TIGER/2018/Counties').filter(ee.Filter.inList("STATEFP", region8_fps));;
+            const selectedFeature = features.filterBounds(point);
+            var countyName = selectedFeature.first().get("NAME").getInfo()
+            var stateFP = selectedFeature.first().get("STATEFP").getInfo()
+            var stateAbr = ee.FeatureCollection("TIGER/2018/States").filter(ee.Filter.eq("STATEFP", stateFP)).first().get('STUSPS').getInfo();
+            console.log("LAYER OBJ")
+            console.log(layerObj)
+            selectedLayerId = Map.addLayer(selectedFeature, {strokeColor: '0BFFFF', layerType: 'geeVectorImage'}, `${countyName}, ${stateAbr}`,  true);
+            Map.centerObject(selectedFeature);
+            urlParams.selectedCounty = selectedFeature;
+            exportArea = selectedFeature;
+            toggleProcessButton();
+        });
+    }, 0);
+  };
+
+  function toggleProcessButton() {
+    if (urlParams.preDate1 && urlParams.preDate2 && urlParams.postDate1 && urlParams.postDate2 && urlParams.selectedCounty) {
+      $("#process-button").removeAttr('disabled');
+    } else {
+      $("#process-button").attr('disabled','disabled');
+    }
+  }
+
+  addCollapse(
+    "sidebar-left",
+    "pre-post-dates-label",
+    "pre-post-dates-div",
+    "Define 'post' and 'pre' date ranges",
+    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    true,
+    null,
+    "Select post and pre date ranges for the Hi-Form BMP Tool"
+  );
+
+  addHiFormPostDatePicker(
+    'pre-post-dates-div',
+    'post-date-picker-container'
+  );
+
+  addSelectTypeRadio(
+    'pre-post-dates-div',
+    "define-pre-date-options",
+    "Define Pre Date Range",
+    "testOption",
+    { "6 Month": true, "1 Year": false, "Custom": false, },
+    "Choose a pre date range option",
+    toggleCustomPostDate
+  );
+
+  $("#define-pre-date-options").append(`<div id="selected-date-range"><h6>Pre Date Range:</h6></div>`)
+  $("#selected-date-range").append(`<p id="selected-date-range-contents"></p>`)
+  
+  addHiFormCustomPrePicker(
+    'pre-post-dates-div',
+    'pre-date-picker-container'
+  );
+
+  toggleCustomPostDate()
+  urlParams.selectedPreDateRangeType = "6 Month";
+
+  function toggleCustomPostDate(selection) {
+    if (selection == "Custom") {
+      $("#pre-ranges-div").show();
+    } else {
+      $("#pre-ranges-div").hide();
+    }
+
+    urlParams.selectedPreDateRangeType = selection;
+    handleSelectedPreDateType()
+  }
+
+  function preDateOneHandler(e) {
+    
+    console.log("Date Selected (Pre1): " + e.target.value);
+    urlParams.preDate1 = e.target.value;
+
+    // Set Pre Date Min and Value
+    var bufferDate = new Date(e.target.value);
+    bufferDate.setDate(bufferDate.getDate() + 28);
+    newDate2 = bufferDate.toISOString().substr(0,10);
+    $("#pre-date-two").attr("min", e.target.value);
+    $("#pre-date-two").attr("value", newDate2);
+    $("#pre-date-two").val(newDate2);
+    urlParams.preDate2 = newDate2;
+    console.log("Date Selected (Pre2): " + urlParams.preDate2);
+
+    toggleProcessButton()
+  }
+
+  function preDateTwoHandler(e) {
+    console.log("Date Selected (Pre2): " + e.target.value);
+    urlParams.preDate2 = e.target.value;
+
+    toggleProcessButton()
+  }
+
+  function postDateOneHandler(e) {
+
+    console.log("Date Selected (Post1): " + e.target.value);
+    urlParams.postDate1 = e.target.value;
+
+    // Set Post Date 2 Min and Value
+    var bufferDate = new Date(e.target.value);
+    bufferDate.setDate(bufferDate.getDate() + 28);
+    newDate2 = bufferDate.toISOString().substr(0,10);
+    $("#post-date-two").attr("min", e.target.value);
+    $("#post-date-two").attr("value", newDate2);
+    $("#post-date-two").val(newDate2);
+    urlParams.postDate2 = newDate2;
+    console.log("Date Selected (Post2): " + urlParams.postDate2);
+    
+    handleSelectedPreDateType()
+
+    toggleProcessButton()
+  }
+
+  function handleSelectedPreDateType() {
+    // Set Pre Date if not custom range
+    if (urlParams.selectedPreDateRangeType == "1 Year") {
+      var ogdate = new Date(urlParams.postDate1)
+      ogdate.setMonth(ogdate.getMonth() - 12)
+      date_format = ogdate.toISOString().substr(0,10)
+
+      urlParams.preDate1 = date_format
+
+      var ogdate2 = new Date(urlParams.postDate2)
+      ogdate2.setMonth(ogdate2.getMonth() - 12)
+      date_format2 = ogdate2.toISOString().substr(0,10)
+
+      urlParams.preDate2 = date_format2
+
+      console.log("Date Selected (Pre1): " + urlParams.preDate1)
+      console.log("Date Selected (Pre2): " + urlParams.preDate2)
+      $("#selected-date-range").show()
+      $("#selected-date-range-contents").text(`${urlParams.preDate1} ---- ${urlParams.preDate2}`)
+    } else if (urlParams.selectedPreDateRangeType == "6 Month") {
+      var ogdate = new Date(urlParams.postDate1)
+      ogdate.setMonth(ogdate.getMonth() - 6)
+      date_format = ogdate.toISOString().substr(0,10)
+
+      urlParams.preDate1 = date_format
+
+      var ogdate2 = new Date(urlParams.postDate2)
+      ogdate2.setMonth(ogdate2.getMonth() - 6)
+      date_format2 = ogdate2.toISOString().substr(0,10)
+
+      urlParams.preDate2 = date_format2
+
+      console.log("Date Selected (Pre1): " + urlParams.preDate1)
+      console.log("Date Selected (Pre2): " + urlParams.preDate2)
+      $("#selected-date-range").show()
+      $("#selected-date-range-contents").text(`${urlParams.preDate1} ---- ${urlParams.preDate2}`)
+    } else {
+      $("#selected-date-range").hide()
+    }
+  }
+
+  function postDateTwoHandler(e) {
+    console.log("Date Selected (Post2): " + e.target.value);
+    urlParams.postDate2 = e.target.value;
+
+    handleSelectedPreDateType()
+    toggleProcessButton()
+  }
+
+  addSubCollapse(
+    "pre-post-dates-div", 
+    "advanced-params-label",
+     "advanced-params-div", 
+     "Advanced Parameters", 
+     "",
+     false,
+     "");
+
+  addSelectTypeRadio(
+    "advanced-params-div",
+    "correction-type-radio",
+    "Choose Image Correction Type",
+    "correctionTypeOption",
+    { "TOA": true, "SR": false },
+    "Choose either Top of Atmosphere or Surface Reflectance Correction Type",
+    changeCorrectionTypeOption
+  );
+
+  function changeCorrectionTypeOption() {
+    console.log(correctionTypeOption)
+    urlParams.correctionTypeOption = correctionTypeOption
+  }
+
+  addHiFormProcessButton(
+    "pre-post-dates-div"
+  )
+
+  function handleProcess() {
+    // Check Parameters
+    if (urlParams.preDate2 >= urlParams.postDate1) {
+      alert("The Pre Date Range cannot be after the Post Date Range nor should they overlap")
+      return
+    }
+    
+    // Allow Reset Button
+    $('#reset-button').removeAttr('disabled');
+
+    // Disable ReRun
+    google.maps.event.clearListeners(map, "click");
+
+    // Open or Close Accordians
+    $("#layer-list-collapse-div").toggleClass("collapsed show");
+    $("#layer-list-collapse-label").removeClass("collapsed");
+    $("#layer-list-collapse-label").prop("ariaExpanded", true);
+
+    $("#pre-post-dates-label-label").addClass("collapsed");
+    $("#pre-post-dates-div").removeClass("show");
+    $("#pre-post-dates-label").prop("ariaExpanded", false);
+
+    $("#select-aoi-label-label").addClass("collapsed");
+    $("#select-aoi-div").removeClass("show");
+    $("#select-aoi-label").prop("ariaExpanded", false);
+
+    // Hide Contents of Parameter Selection Div
+    $("#select-aoi-div").hide();
+    $("#pre-post-dates-div").hide();
+
+    // Run HiForm Process
+    hiform_bmp_process()
+  };
+
+  addCollapse(
+    "sidebar-left",
+    "layer-list-collapse",
+    "layer-list-collapse-div",
+    "View HiForm BMP Results",
+    '<i role="img" class="fa fa-tree mr-1" aria-hidden="true"></i>',
+    false,
+    null,
+    mode + " DATA layers to view on map"
+  );
+
+  $("#layer-list-collapse-div").append(`<ul id="layer-list" class = "layer-list"></ul>`);
+
+  addHiFormResetButton("layer-list-collapse-div")
+
+  function handleHiFormReset() {
+    // Make Paramters Visible again
+    $("#select-aoi-div").show();
+    $("#pre-post-dates-div").show();
+
+    // Open or Close Accordians
+    $("#layer-list-collapse-label").addClass("collapsed");
+    $("#layer-list-collapse-div").removeClass("show");
+    $("#layer-list-collapse-label").prop("ariaExpanded", false);
+
+    $("#pre-post-dates-div").toggleClass("collapsed show");
+    $("#pre-post-dates-label").removeClass("collapsed");
+    $("#pre-post-dates-label").prop("ariaExpanded", true);
+
+    $("#select-aoi-div").toggleClass("collapsed show");
+    $("#select-aoi-label").removeClass("collapsed");
+    $("#select-aoi-label-label").prop("ariaExpanded", true);
+
+    // Reset Map
+    reRun()
+
+    // setTimeout(() => {
+    //   console.log("Resetting Map");
+    // }, 5000);
+
+    // ReAdd Select AOI
+    $("#select-aoi-div").empty()
+    addSelectTypeRadio(
+      "select-aoi-div",
+      "select-type-radio",
+      "Choose County Selection Type",
+      "selectOption",
+      { "Select by Dropdown": true, "Select on Map": false },
+      "Title",
+      handleAoiSelectionType
+    )
+    handleAoiSelectionType("Select by Dropdown")
+    
+  }
+
+  addCollapse(
+    "sidebar-left",
+    "related-layers-label",
+    "related-layers-div",
+    "BMP Related Layers",
+    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    false,
+    null,
+    "View related layers for HiForm BMP"
+  );
+
+  $("#related-layers-div").append(`<ul id="related-layer-list" class = "layer-list"></ul>`);
+
+  addCollapse(
+    "sidebar-left",
+    "download-collapse-label",
+    "download-collapse-div",
+    "Download Data",
+    `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+    false,
+    null,
+    "Download HiForm BMP results"
+  );
+  
+  //addHiFormExport("download-collapse-div")
+  
+
 } else {
   addCollapse(
     "sidebar-left",
@@ -3012,6 +3477,20 @@ if (mode === "sequoia-view") {
   $("#tools-accordian").append(
     `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
   );
+  //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
+  addSubAccordianCard(
+    "tools-accordian",
+    "upload-area-chart-label",
+    "upload-area-chart-div",
+    "Upload an Area",
+    staticTemplates.uploadShpToMapLayerDiv,
+    false,
+    "toggleTool(toolFunctions.area.shpDefined)",
+    staticTemplates.uploadAreaChartTipHover
+  );
+}
+if (mode === "HiForm-BMP") {
+  $("#tools-accordian").append(`<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`);
   //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
   addSubAccordianCard(
     "tools-accordian",
