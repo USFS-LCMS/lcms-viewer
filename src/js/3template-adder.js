@@ -2820,7 +2820,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Download HiForm BMP results"
   );
   
-  addHiFormExport("download-collapse-div")
+  //addHiFormExport("download-collapse-div")
   
 
 } else {
