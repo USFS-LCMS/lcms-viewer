@@ -17,269 +17,310 @@ function runAncillary() {
     .first()
     .select("Land_Cover");
 
-  Map.addLayer(ak_land_cover, { autoViz: true }, "AK LandCover - LCMS 2016", false);
+  Map.addLayer(
+    ak_land_cover,
+    { autoViz: true },
+    "AK LandCover - LCMS 2016",
+    false
+  );
 
   // Alaska Wetlands layer from University of Alaska
 
-  var ak_wetland_uaa = ee.Image("projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaWetlandComposite_20240613");
+  var ak_wetland_uaa = ee.Image(
+    "projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaWetlandComposite_20240613"
+  );
 
   var ak_wetland_uaa_dict = {
-    
-    1: 'Estuarine and Marine Deepwater',
-    2: 'Estuarine and Marine Wetland',
-    3: 'Freshwater Bryophyte',
-    4: 'Freshwater Emergent Wetland',
-    5: 'Freshwater Forested/Shrub Wetland',
-    6: 'Freshwater Pond',
-    7: 'Lake',
-    8: 'Riverine',
-    9: 'Upland'
+    1: "Estuarine and Marine Deepwater",
+    2: "Estuarine and Marine Wetland",
+    3: "Freshwater Bryophyte",
+    4: "Freshwater Emergent Wetland",
+    5: "Freshwater Forested/Shrub Wetland",
+    6: "Freshwater Pond",
+    7: "Lake",
+    8: "Riverine",
+    9: "Upland",
   };
 
   var ak_wetland_uaa_palette = [
-    '007d88',
-    '63c9a9',
-    'd8f03b',
-    '7fcb11',
-    '00892f',
-    '658dc7',
-    '07007c',
-    '0000c6',
-    'e6e1da'
+    "007d88",
+    "63c9a9",
+    "d8f03b",
+    "7fcb11",
+    "00892f",
+    "658dc7",
+    "07007c",
+    "0000c6",
+    "e6e1da",
   ];
 
   var ak_wetland_uaa_LegendDict = {
-    'Estuarine and Marine Deepwater': '007d88',
-    'Estuarine and Marine Wetland': '63c9a9',
-    'Freshwater Bryophyte': 'd8f03b',
-    'Freshwater Emergent Wetland': '7fcb11',
-    'Freshwater Forested/Shrub Wetland': '00892f',
-    'Freshwater Pond': '658dc7',
-    'Lake': '07007c',
-    'Riverine': '0000c6',
-    'Upland': 'e6e1da'
+    "Estuarine and Marine Deepwater": "007d88",
+    "Estuarine and Marine Wetland": "63c9a9",
+    "Freshwater Bryophyte": "d8f03b",
+    "Freshwater Emergent Wetland": "7fcb11",
+    "Freshwater Forested/Shrub Wetland": "00892f",
+    "Freshwater Pond": "658dc7",
+    Lake: "07007c",
+    Riverine: "0000c6",
+    Upland: "e6e1da",
   };
 
   Map.addLayer(
     ak_wetland_uaa,
-    { layerType: "geeImage", min: 1, max: 9, palette: ak_wetland_uaa_palette, classLegendDict: ak_wetland_uaa_LegendDict, queryDict: ak_wetland_uaa_dict },
+    {
+      min: 1,
+      max: 9,
+      palette: ak_wetland_uaa_palette,
+      classLegendDict: ak_wetland_uaa_LegendDict,
+      queryDict: ak_wetland_uaa_dict,
+    },
     "AK Wetlands (UAA)",
     false
-  ); 
+  );
 
-// Alaska Vegetation Composite from University of Alaska 
+  // Alaska Vegetation Composite from University of Alaska
 
-var ak_vegetation_uaa = ee.Image("projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaVegetationCompositeReclass_20240623");
+  // Alaska Wetlands layer from University of Alaska
 
-var ak_vegetation_uaa_dict = {
-  1:	'Algal Bed (Freshwater) (Southern Alaska)',
-  2:	'Algal Bed (Tidal-Subtidal) (Southern Alaska)',
-  3:	'Bareground',
-  4:	'Bareground (Beach or Tide Flat) (Southern Alaska)',
-  5:	'Deciduous Forest (Open-Closed)',
-  6:	'Deciduous Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)',
-  7:	'Deciduous Forest (Woodland-Closed) (Southern Alaska)',
-  8:	'Dwarf Shrub',
-  9:	'Dwarf Shrub (Southern Alaska)',
-  10:	'Dwarf Shrub or Dwarf Shrub-Lichen',
-  11:	'Dwarf Shrub, or Herbaceous (Mesic) (Southern Alaska)',
-  12:	'Dwarf Shrub-Lichen',
-  13:	'Fire Scar',
-  14:	'Freshwater or Saltwater',
-  15:	'Hemlock (Woodland-Closed)',
-  16:	'Hemlock-Sitka Spruce (Woodland-Closed)',
-  17:	'Herbaceous (Aquatic)',
-  18:	'Herbaceous (Aquatic) (Southern Alaska)',
-  19:	'Herbaceous (Marsh) (Interior Alaska, Cook Inlet Basin)',
-  20:	'Herbaceous (Marsh) (Northern and Western Alaska)',
-  21:	'Herbaceous (Mesic)',
-  22:	'Herbaceous (Mesic) (Interior Alaska, Cook Inlet Basin)',
-  23:	'Herbaceous (Mesic) (Northern and Western Alaska)',
-  24:	'Herbaceous (Mesic) (Northern and Western Alaska) or Tussock Tundra (Herbaceous)',
-  25:	'Herbaceous (Mesic) (Southern Alaska)',
-  26:	'Herbaceous (Peatland) (Southern Alaska)',
-  27:	'Herbaceous (Tidal) (Southern Alaska)',
-  28:	'Herbaceous (Wet) (Interior Alaska, Cook Inlet Basin)',
-  29:	'Herbaceous (Wet) (Northern and Western Alaska)',
-  30:	'Herbaceous (Wet) (Northern and Western Alaska) or Herbaceous (Marsh) (Northern and Western Alaska)',
-  31:	'Herbaceous (Wet-Marsh) (Southern Alaska)',
-  32:	'Herbaceous (Wet-Marsh) (Tidal)',
-  33:	'Herbaceous (Wet-Marsh), or Herbaceous (Tidal), or Herbaceous (Peatland) (Southern Alaska)',
-  34:	'Ice-Snow',
-  35:	'Lichen',
-  36:	'Low Shrub',
-  37:	'Low Shrub (Peatland) (Southern Alaska)',
-  38:	'Low Shrub (Tidal) (Southern Alaska)',
-  39:	'Low Shrub or Tall Shrub (Open-Closed)',
-  40:	'Low Shrub/Lichen',
-  41:	'Low-Tall Shrub (Southern Alaska)',
-  42:	'Moss',
-  43:	'Moss (Peatland) (Southern Alaska)',
-  44:	'Moss (Southern Alaska)',
-  45:	'Needleleaf Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)',
-  46:	'Needleleaf Forest (Woodland-Closed) (Southern Alaska)',
-  47:	'Needleleaf Forest (Woodland-Open) (Peatland) (Southern Alaska)',
-  48:	'Saltwater',
-  49:	'Sitka Spruce (Woodland-Closed)',
-  50:	'Sparse Vegetation (Interior Alaska, Cook Inlet Basin)',
-  51:	'Sparse Vegetation (Northern and Western Alaska)',
-  52:	'Tall Shrub (Open-Closed)',
-  53:	'Tussock Tundra (Low shrub or Herbaceous)',
-  54:	'Urban, Agriculture, Road',
-  55:	'White Spruce or Black Spruce (Open-Closed)',
-  56:	'White Spruce or Black Spruce (Woodland)',
-  57:	'White Spruce or Black Spruce-Deciduous (Open-Closed)',
-  58:	'White Spruce or Black Spruce/Lichen (Woodland-Open)',
-};
+  var ak_vegetation_uaa = ee.Image(
+    "projects/lcms-292214/assets/R10/AK/Ancillary/AlaskaVegetationCompositeReclass_20240623"
+  );
 
-var ak_vegetation_uaa_palette = [
-  'adffff',
-  'adffff',
-  '4f4f4f',
-  '4f4f4f',
-  'ffb340',
-  'c49735',
-  'c9401e',
-  'ff8cff',
-  'ff6bff',
-  'ffd9ff',
-  'ffc7e1',
-  'ffe6ff',
-  'black',
-  '0077ff',
-  '287300',
-  '1ca600',
-  'adffff',
-  'adffff',
-  'adffff',
-  '96e3fa',
-  '61bdff',
-  'fcfc35',
-  'ffff8c',
-  'ffffcc',
-  'c1fdff',
-  '5effff',
-  '86d5eb',
-  'adffff',
-  'a1ffbb',
-  '59ffc2',
-  'adffff',
-  '00c7bd',
-  '00a199',
-  'white',
-  'ffd6e6',
-  'ffcfcf',
-  'ffbaba',
-  'cc9b9b',
-  'f712ff',
-  'ffd8cf',
-  '859e9a',
-  'ffcff0',
-  'eabaff',
-  'ffbae7',
-  '04de17',
-  '02ba14',
-  '009e10',
-  '54a7ff',
-  '007308',
-  'bfbfbf',
-  'e3e3e3',
-  'ff0808',
-  'bec251',
-  'black',
-  '009c68',
-  '6e7d60',
-  'ffb114',
-  'daff73'
-];
+  var ak_vegetation_uaa_dict = {
+    1: "Algal Bed (Freshwater) (Southern Alaska)",
+    2: "Algal Bed (Tidal-Subtidal) (Southern Alaska)",
+    3: "Bareground",
+    4: "Bareground (Beach or Tide Flat) (Southern Alaska)",
+    5: "Deciduous Forest (Open-Closed)",
+    6: "Deciduous Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)",
+    7: "Deciduous Forest (Woodland-Closed) (Southern Alaska)",
+    8: "Dwarf Shrub",
+    9: "Dwarf Shrub (Southern Alaska)",
+    10: "Dwarf Shrub or Dwarf Shrub-Lichen",
+    11: "Dwarf Shrub, or Herbaceous (Mesic) (Southern Alaska)",
+    12: "Dwarf Shrub-Lichen",
+    13: "Fire Scar",
+    14: "Freshwater or Saltwater",
+    15: "Hemlock (Woodland-Closed)",
+    16: "Hemlock-Sitka Spruce (Woodland-Closed)",
+    17: "Herbaceous (Aquatic)",
+    18: "Herbaceous (Aquatic) (Southern Alaska)",
+    19: "Herbaceous (Marsh) (Interior Alaska, Cook Inlet Basin)",
+    20: "Herbaceous (Marsh) (Northern and Western Alaska)",
+    21: "Herbaceous (Mesic)",
+    22: "Herbaceous (Mesic) (Interior Alaska, Cook Inlet Basin)",
+    23: "Herbaceous (Mesic) (Northern and Western Alaska)",
+    24: "Herbaceous (Mesic) (Northern and Western Alaska) or Tussock Tundra (Herbaceous)",
+    25: "Herbaceous (Mesic) (Southern Alaska)",
+    26: "Herbaceous (Peatland) (Southern Alaska)",
+    27: "Herbaceous (Tidal) (Southern Alaska)",
+    28: "Herbaceous (Wet) (Interior Alaska, Cook Inlet Basin)",
+    29: "Herbaceous (Wet) (Northern and Western Alaska)",
+    30: "Herbaceous (Wet) (Northern and Western Alaska) or Herbaceous (Marsh) (Northern and Western Alaska)",
+    31: "Herbaceous (Wet-Marsh) (Southern Alaska)",
+    32: "Herbaceous (Wet-Marsh) (Tidal)",
+    33: "Herbaceous (Wet-Marsh), or Herbaceous (Tidal), or Herbaceous (Peatland) (Southern Alaska)",
+    34: "Ice-Snow",
+    35: "Lichen",
+    36: "Low Shrub",
+    37: "Low Shrub (Peatland) (Southern Alaska)",
+    38: "Low Shrub (Tidal) (Southern Alaska)",
+    39: "Low Shrub or Tall Shrub (Open-Closed)",
+    40: "Low Shrub/Lichen",
+    41: "Low-Tall Shrub (Southern Alaska)",
+    42: "Moss",
+    43: "Moss (Peatland) (Southern Alaska)",
+    44: "Moss (Southern Alaska)",
+    45: "Needleleaf Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)",
+    46: "Needleleaf Forest (Woodland-Closed) (Southern Alaska)",
+    47: "Needleleaf Forest (Woodland-Open) (Peatland) (Southern Alaska)",
+    48: "Saltwater",
+    49: "Sitka Spruce (Woodland-Closed)",
+    50: "Sparse Vegetation (Interior Alaska, Cook Inlet Basin)",
+    51: "Sparse Vegetation (Northern and Western Alaska)",
+    52: "Tall Shrub (Open-Closed)",
+    53: "Tussock Tundra (Low shrub or Herbaceous)",
+    54: "Urban, Agriculture, Road",
+    55: "White Spruce or Black Spruce (Open-Closed)",
+    56: "White Spruce or Black Spruce (Woodland)",
+    57: "White Spruce or Black Spruce-Deciduous (Open-Closed)",
+    58: "White Spruce or Black Spruce/Lichen (Woodland-Open)",
+  };
 
-var ak_vegetation_uaa_LegendDict = {
-  'Algal Bed (Freshwater) (Southern Alaska)': 'adffff',
-  'Algal Bed (Tidal-Subtidal) (Southern Alaska)': 'adffff',
-  'Bareground': '4f4f4f',
-  'Bareground (Beach or Tide Flat) (Southern Alaska)': '4f4f4f',
-  'Deciduous Forest (Open-Closed)': 'ffb340',
-  'Deciduous Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)': 'c49735',
-  'Deciduous Forest (Woodland-Closed) (Southern Alaska)': 'c9401e',
-  'Dwarf Shrub': 'ff8cff',
-  'Dwarf Shrub (Southern Alaska)': 'ff6bff',
-  'Dwarf Shrub or Dwarf Shrub-Lichen': 'ffd9ff',
-  'Dwarf Shrub, or Herbaceous (Mesic) (Southern Alaska)': 'ffc7e1',
-  'Dwarf Shrub-Lichen': 'ffe6ff',
-  'Fire Scar': 'black',
-  'Freshwater or Saltwater': '0077ff',
-  'Hemlock (Woodland-Closed)': '287300',
-  'Hemlock-Sitka Spruce (Woodland-Closed)': '1ca600',
-  'Herbaceous (Aquatic)': 'adffff',
-  'Herbaceous (Aquatic) (Southern Alaska)': 'adffff',
-  'Herbaceous (Marsh) (Interior Alaska, Cook Inlet Basin)': 'adffff',
-  'Herbaceous (Marsh) (Northern and Western Alaska)': '96e3fa',
-  'Herbaceous (Mesic)': '61bdff',
-  'Herbaceous (Mesic) (Interior Alaska, Cook Inlet Basin)': 'fcfc35',
-  'Herbaceous (Mesic) (Northern and Western Alaska)': 'ffff8c',
-  'Herbaceous (Mesic) (Northern and Western Alaska) or Tussock Tundra (Herbaceous)': 'ffffcc',
-  'Herbaceous (Mesic) (Southern Alaska)': 'c1fdff',
-  'Herbaceous (Peatland) (Southern Alaska)': '5effff',
-  'Herbaceous (Tidal) (Southern Alaska)': '86d5eb',
-  'Herbaceous (Wet) (Interior Alaska, Cook Inlet Basin)': 'adffff',
-  'Herbaceous (Wet) (Northern and Western Alaska)': 'a1ffbb',
-  'Herbaceous (Wet) (Northern and Western Alaska) or Herbaceous (Marsh) (Northern and Western Alaska)': '59ffc2',
-  'Herbaceous (Wet-Marsh) (Southern Alaska)': 'adffff',
-  'Herbaceous (Wet-Marsh) (Tidal)': '00c7bd',
-  'Herbaceous (Wet-Marsh), or Herbaceous (Tidal), or Herbaceous (Peatland) (Southern Alaska)': '00a199',
-  'Ice-Snow': 'white',
-  'Lichen': 'ffd6e6',
-  'Low Shrub': 'ffcfcf',
-  'Low Shrub (Peatland) (Southern Alaska)': 'ffbaba',
-  'Low Shrub (Tidal) (Southern Alaska)': 'cc9b9b',
-  'Low Shrub or Tall Shrub (Open-Closed)': 'f712ff',
-  'Low Shrub/Lichen': 'ffd8cf',
-  'Low-Tall Shrub (Southern Alaska)': '859e9a',
-  'Moss': 'ffcff0',
-  'Moss (Peatland) (Southern Alaska)': 'eabaff',
-  'Moss (Southern Alaska)': 'ffbae7',
-  'Needleleaf Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)': '04de17',
-  'Needleleaf Forest (Woodland-Closed) (Southern Alaska)': '02ba14',
-  'Needleleaf Forest (Woodland-Open) (Peatland) (Southern Alaska)': '009e10',
-  'Saltwater': '54a7ff',
-  'Sitka Spruce (Woodland-Closed)': '007308',
-  'Sparse Vegetation (Interior Alaska, Cook Inlet Basin)': 'bfbfbf',
-  'Sparse Vegetation (Northern and Western Alaska)': 'e3e3e3',
-  'Tall Shrub (Open-Closed)': 'ff0808',
-  'Tussock Tundra (Low shrub or Herbaceous)': 'bec251',
-  'Urban, Agriculture, Road': 'black',
-  'White Spruce or Black Spruce (Open-Closed)': '009c68',
-  'White Spruce or Black Spruce (Woodland)': '6e7d60',
-  'White Spruce or Black Spruce-Deciduous (Open-Closed)': 'ffb114',
-  'White Spruce or Black Spruce/Lichen (Woodland-Open)': 'daff73'
-};
+  var ak_vegetation_uaa_palette = [
+    "adffff",
+    "adffff",
+    "4f4f4f",
+    "4f4f4f",
+    "ffb340",
+    "c49735",
+    "c9401e",
+    "ff8cff",
+    "ff6bff",
+    "ffd9ff",
+    "ffc7e1",
+    "ffe6ff",
+    "black",
+    "0077ff",
+    "287300",
+    "1ca600",
+    "adffff",
+    "adffff",
+    "adffff",
+    "96e3fa",
+    "61bdff",
+    "fcfc35",
+    "ffff8c",
+    "ffffcc",
+    "c1fdff",
+    "5effff",
+    "86d5eb",
+    "adffff",
+    "a1ffbb",
+    "59ffc2",
+    "adffff",
+    "00c7bd",
+    "00a199",
+    "white",
+    "ffd6e6",
+    "ffcfcf",
+    "ffbaba",
+    "cc9b9b",
+    "f712ff",
+    "ffd8cf",
+    "859e9a",
+    "ffcff0",
+    "eabaff",
+    "ffbae7",
+    "04de17",
+    "02ba14",
+    "009e10",
+    "54a7ff",
+    "007308",
+    "bfbfbf",
+    "e3e3e3",
+    "ff0808",
+    "bec251",
+    "black",
+    "009c68",
+    "6e7d60",
+    "ffb114",
+    "daff73",
+  ];
 
-Map.addLayer(
-  ak_vegetation_uaa,
-  { layerType: "geeImage", min: 1, max: 58, palette: ak_vegetation_uaa_palette, classLegendDict: ak_vegetation_uaa_LegendDict, queryDict: ak_vegetation_uaa_dict },
-  "AK Vegetation (UAA)",
-  false
-);
+  var ak_vegetation_uaa_LegendDict = {
+    "Algal Bed (Freshwater) (Southern Alaska)": "adffff",
+    "Algal Bed (Tidal-Subtidal) (Southern Alaska)": "adffff",
+    Bareground: "4f4f4f",
+    "Bareground (Beach or Tide Flat) (Southern Alaska)": "4f4f4f",
+    "Deciduous Forest (Open-Closed)": "ffb340",
+    "Deciduous Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)":
+      "c49735",
+    "Deciduous Forest (Woodland-Closed) (Southern Alaska)": "c9401e",
+    "Dwarf Shrub": "ff8cff",
+    "Dwarf Shrub (Southern Alaska)": "ff6bff",
+    "Dwarf Shrub or Dwarf Shrub-Lichen": "ffd9ff",
+    "Dwarf Shrub, or Herbaceous (Mesic) (Southern Alaska)": "ffc7e1",
+    "Dwarf Shrub-Lichen": "ffe6ff",
+    "Fire Scar": "black",
+    "Freshwater or Saltwater": "0077ff",
+    "Hemlock (Woodland-Closed)": "287300",
+    "Hemlock-Sitka Spruce (Woodland-Closed)": "1ca600",
+    "Herbaceous (Aquatic)": "adffff",
+    "Herbaceous (Aquatic) (Southern Alaska)": "adffff",
+    "Herbaceous (Marsh) (Interior Alaska, Cook Inlet Basin)": "adffff",
+    "Herbaceous (Marsh) (Northern and Western Alaska)": "96e3fa",
+    "Herbaceous (Mesic)": "61bdff",
+    "Herbaceous (Mesic) (Interior Alaska, Cook Inlet Basin)": "fcfc35",
+    "Herbaceous (Mesic) (Northern and Western Alaska)": "ffff8c",
+    "Herbaceous (Mesic) (Northern and Western Alaska) or Tussock Tundra (Herbaceous)":
+      "ffffcc",
+    "Herbaceous (Mesic) (Southern Alaska)": "c1fdff",
+    "Herbaceous (Peatland) (Southern Alaska)": "5effff",
+    "Herbaceous (Tidal) (Southern Alaska)": "86d5eb",
+    "Herbaceous (Wet) (Interior Alaska, Cook Inlet Basin)": "adffff",
+    "Herbaceous (Wet) (Northern and Western Alaska)": "a1ffbb",
+    "Herbaceous (Wet) (Northern and Western Alaska) or Herbaceous (Marsh) (Northern and Western Alaska)":
+      "59ffc2",
+    "Herbaceous (Wet-Marsh) (Southern Alaska)": "adffff",
+    "Herbaceous (Wet-Marsh) (Tidal)": "00c7bd",
+    "Herbaceous (Wet-Marsh), or Herbaceous (Tidal), or Herbaceous (Peatland) (Southern Alaska)":
+      "00a199",
+    "Ice-Snow": "white",
+    Lichen: "ffd6e6",
+    "Low Shrub": "ffcfcf",
+    "Low Shrub (Peatland) (Southern Alaska)": "ffbaba",
+    "Low Shrub (Tidal) (Southern Alaska)": "cc9b9b",
+    "Low Shrub or Tall Shrub (Open-Closed)": "f712ff",
+    "Low Shrub/Lichen": "ffd8cf",
+    "Low-Tall Shrub (Southern Alaska)": "859e9a",
+    Moss: "ffcff0",
+    "Moss (Peatland) (Southern Alaska)": "eabaff",
+    "Moss (Southern Alaska)": "ffbae7",
+    "Needleleaf Forest (Open-Closed) (Seasonally Flooded) (Southern Alaska)":
+      "04de17",
+    "Needleleaf Forest (Woodland-Closed) (Southern Alaska)": "02ba14",
+    "Needleleaf Forest (Woodland-Open) (Peatland) (Southern Alaska)": "009e10",
+    Saltwater: "54a7ff",
+    "Sitka Spruce (Woodland-Closed)": "007308",
+    "Sparse Vegetation (Interior Alaska, Cook Inlet Basin)": "bfbfbf",
+    "Sparse Vegetation (Northern and Western Alaska)": "e3e3e3",
+    "Tall Shrub (Open-Closed)": "ff0808",
+    "Tussock Tundra (Low shrub or Herbaceous)": "bec251",
+    "Urban, Agriculture, Road": "black",
+    "White Spruce or Black Spruce (Open-Closed)": "009c68",
+    "White Spruce or Black Spruce (Woodland)": "6e7d60",
+    "White Spruce or Black Spruce-Deciduous (Open-Closed)": "ffb114",
+    "White Spruce or Black Spruce/Lichen (Woodland-Open)": "daff73",
+  };
 
-  // AK Existing veg
-  
-//   var KPLegendDict = {
-//     "Freshwater- Forested and Shrub wetland": "008836",
-//     "Freshwater Emergent wetland": "7fc31c",
-//     "Freshwater pond": "688cc0",
-//     "Estuarine and Marine wetland": "66c2a5",
-//     "Riverine": "0190bf",
-//     "Lakes": "13007c",
-//     "Estuarine and Marine Deepwater": "007c88",
-//     "Other Freshwater wetland": "b28653",
-//   };
-  
-//   // add R10 Kenai Peninsula 2017 layer
-//   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
-//   //,classLegendDict:KPLegendDict
-// },'AK Kenai Tall Shrub % Cover 2017',false)
-  
+  Map.addLayer(
+    ak_vegetation_uaa,
+    {
+      min: 1,
+      max: 58,
+      palette: ak_vegetation_uaa_palette,
+      classLegendDict: ak_vegetation_uaa_LegendDict,
+      queryDict: ak_vegetation_uaa_dict,
+    },
+    "AK Vegetation (UAA)",
+    false
+  );
 
+  // AK Existing veg -  KenaiVegVectorMapService2019 - Tall Shrub Canopy Cover (ID: 3)
+
+  //   var KPLegendDict = {
+  //     "Freshwater- Forested and Shrub wetland": "008836",
+  //     "Freshwater Emergent wetland": "7fc31c",
+  //     "Freshwater pond": "688cc0",
+  //     "Estuarine and Marine wetland": "66c2a5",
+  //     "Riverine": "0190bf",
+  //     "Lakes": "13007c",
+  //     "Estuarine and Marine Deepwater": "007c88",
+  //     "Other Freshwater wetland": "b28653",
+  //   };
+
+  //   // add R10 Kenai Peninsula 2017 layer
+  //   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
+  //   //,classLegendDict:KPLegendDict
+  // },'AK Kenai Tall Shrub % Cover 2017',false)
+
+  //   var KPLegendDict = {
+  //     "Freshwater- Forested and Shrub wetland": "008836",
+  //     "Freshwater Emergent wetland": "7fc31c",
+  //     "Freshwater pond": "688cc0",
+  //     "Estuarine and Marine wetland": "66c2a5",
+  //     "Riverine": "0190bf",
+  //     "Lakes": "13007c",
+  //     "Estuarine and Marine Deepwater": "007c88",
+  //     "Other Freshwater wetland": "b28653",
+  //   };
+
+  //   // add R10 Kenai Peninsula 2017 layer
+  //   Map2.addLayer([{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:0},{baseURL:'https://apps.fs.usda.gov/fsgisx02/rest/services/r10/KenaiVegVectorMapService2019/MapServer/3',minZoom:12}],{layerType:'imageService',addToClassLegend: true
+  //   //,classLegendDict:KPLegendDict
+  // },'AK Kenai Tall Shrub % Cover 2017',false)
 
   // Hawaii Vegetation Layers
   //////////////////////////////////////////////////////
@@ -295,7 +336,9 @@ Map.addLayer(
   //   "HI Veg data from https://geoportal.hawaii.gov/datasets/8991d678dfc94b5d984df9117ca11ba1"
   // );
 
-  var hi_veg_ccap = ee.Image("projects/lcms-292214/assets/R5/Hawaii/Ancillary/hi_hawaii_2010_ccap_hires_landcover_20150120");
+  var hi_veg_ccap = ee.Image(
+    "projects/lcms-292214/assets/R5/Hawaii/Ancillary/hi_hawaii_2010_ccap_hires_landcover_20150120"
+  );
 
   var hi_veg_ccap_dict = {
     0: "Background",
@@ -366,14 +409,22 @@ Map.addLayer(
 
   Map.addLayer(
     hi_veg_ccap,
-    { layerType: "geeImage", min: 1, max: 20, palette: hi_veg_ccap_palette, classLegendDict: hi_veg_ccap_LegendDict, queryDict: hi_veg_ccap_dict },
+    {
+      min: 1,
+      max: 20,
+      palette: hi_veg_ccap_palette,
+      classLegendDict: hi_veg_ccap_LegendDict,
+      queryDict: hi_veg_ccap_dict,
+    },
     "HI Veg NOAA CCAP 2010",
     false
   );
 
   // Hawaii Wetland data
   ///////////////////////////////////////////////
-  var nwi_hi = ee.FeatureCollection("projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands");
+  var nwi_hi = ee.FeatureCollection(
+    "projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands"
+  );
   nwi_hi = nwi_hi.map(function (f) {
     return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
   });
@@ -384,7 +435,7 @@ Map.addLayer(
     .reduceToImage(["WETLAND_TY_NO"], ee.Reducer.first())
     .rename(["NWI"])
     .set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis());
-  //Map.addLayer(nwi_hi_rast, { layerType: "geeImage", min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
+  //Map.addLayer(nwi_hi_rast, {  min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
 
   // Standard Ancillary Data Layers - CONUS
   ////////////////////////////////////////////////////////////////////
@@ -397,7 +448,10 @@ Map.addLayer(
 
   function getYear(img) {
     var yr = img.id().split("_").get(-1);
-    img = img.set("system:time_start", ee.Date.fromYMD(ee.Number.parse(yr), 6, 1).millis());
+    img = img.set(
+      "system:time_start",
+      ee.Date.fromYMD(ee.Number.parse(yr), 6, 1).millis()
+    );
     return img;
   }
   nlcdLCMS = nlcdLCMS.map(getYear);
@@ -427,7 +481,10 @@ Map.addLayer(
     "6c9fb8",
   ]; //nlcd.get('system:visualization_0_palette').getInfo().split(',');
 
-  var nlcdClassCodes = [11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90, 95];
+  var nlcdClassCodes = [
+    11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90,
+    95,
+  ];
   var nlcdClassNames = [
     "Open Water",
     "Perennial Ice/Snow",
@@ -450,7 +507,7 @@ Map.addLayer(
     "Woody Wetlands",
     "Emergent Herbaceous Wetlands",
   ];
-  var nlcdFullClassCodes = ee.List.sequence(nlcdLCMin, nlcdLCMax).getInfo();
+  var nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
   var nlcdLCVizDict = {};
   var nlcdLCQueryDict = {};
   var nlcdLegendDict = {};
@@ -486,11 +543,16 @@ Map.addLayer(
       .distinct();
     return ee.ImageCollection(
       years.map(function (yr) {
-        return c.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+        return c
+          .filter(ee.Filter.calendarRange(yr, yr, "year"))
+          .mosaic()
+          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
       })
     );
   }
-  var nlcdLC = nlcd.filter(ee.Filter.listContains("bns", "landcover")).select(["landcover"]);
+  var nlcdLC = nlcd
+    .filter(ee.Filter.listContains("bns", "landcover"))
+    .select(["landcover"]);
   nlcdLC = annualMosaicCollection(nlcdLC);
   var nlcdLCYears = nlcdLC
     .toList(10000, 0)
@@ -499,7 +561,9 @@ Map.addLayer(
     })
     .distinct();
 
-  var nlcdImpv = nlcd.filter(ee.Filter.listContains("bns", "impervious")).select(["impervious"]);
+  var nlcdImpv = nlcd
+    .filter(ee.Filter.listContains("bns", "impervious"))
+    .select(["impervious"]);
   nlcdImpv = annualMosaicCollection(nlcdImpv);
   var nlcdImpvYears = nlcdImpv
     .toList(10000, 0)
@@ -508,7 +572,9 @@ Map.addLayer(
     })
     .distinct();
 
-  var nlcdTCC = nlcd.filter(ee.Filter.listContains("bns", "percent_tree_cover")).select(["percent_tree_cover"]);
+  var nlcdTCC = nlcd
+    .filter(ee.Filter.listContains("bns", "percent_tree_cover"))
+    .select(["percent_tree_cover"]);
   nlcdTCC = annualMosaicCollection(nlcdTCC);
   var nlcdTCCYears = nlcdTCC
     .toList(10000, 0)
@@ -529,7 +595,6 @@ Map.addLayer(
   // nlcdTCCYears.getInfo().map(function(yr){
   //   var nlcdTCCYr = nlcdTCC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
   //   Map.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
-
   // });
 
   //Add NAIP to viewer
@@ -537,7 +602,8 @@ Map.addLayer(
   // var naip = ee.ImageCollection("USDA/NAIP/DOQQ").select([0,1,2],['R','G','B']);
   // naipYears.map(function(yr){
   //   var naipT = naip.filter(ee.Filter.calendarRange(yr,yr,'year'));
-  //   Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
+  //  Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
+  //  Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false, 0.5);
   // });
 
   // MTBS
@@ -570,28 +636,51 @@ Map.addLayer(
     6: "Lake",
     7: "Riverine",
   };
-  var nwi_palette = ["007c88", "66c2a5", "7fc31c", "008836", "688cc0", "13007c", "0190bf"];
+  var nwi_palette = [
+    "007c88",
+    "66c2a5",
+    "7fc31c",
+    "008836",
+    "688cc0",
+    "13007c",
+    "0190bf",
+  ];
+
   Map.addLayer(
     nwi_hi_rast,
-    { layerType: "geeImage", min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict },
+    {
+      min: 1,
+      max: 7,
+      palette: nwi_palette,
+      classLegendDict: nwiLegendDict,
+      queryDict: nwi_dict,
+    },
     "HI NWI",
     false
   );
+
   Map.addLayer(
     [
-      { 
-        baseURL: "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=", 
-        minZoom: 2 
+      {
+        baseURL:
+          "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
+        minZoom: 2,
       },
       {
-        baseURL: "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
+        baseURL:
+          "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
         minZoom: 12,
       },
     ],
-    { layerType: "dynamicMapService", addToClassLegend: true, classLegendDict: nwiLegendDict },
+    {
+      layerType: "dynamicMapService",
+      addToClassLegend: true,
+      classLegendDict: nwiLegendDict,
+    },
     "NWI",
     false
   );
+
   // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
   //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
   //                 8,11,
@@ -599,7 +688,13 @@ Map.addLayer(
 
   // ESRI Land cover
   /////////////////////////////////////////////////
-  esri_lc_dict = { Water: "008", Trees: "080", "Flooded Vegetation": "088", "Built Area": "D00" };
+
+  esri_lc_dict = {
+    Water: "008",
+    Trees: "080",
+    "Flooded Vegetation": "088",
+    "Built Area": "D00",
+  };
   // Map.addLayer([{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:0,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1483272000000'},{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:11,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1483272000000'}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'ESRI LC 2017',true)
 
   // Map.addLayer([{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:0,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1577880000000'},{baseURL:'https://env1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer/exportImage?f=image&bbox=',minZoom:11,ending:'&compressionQuality=75&format=jpgpng&mosaicRule=%7B%22ascending%22%3Atrue%2C%22mosaicMethod%22%3A%22esriMosaicNorthwest%22%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&renderingRule=%7B%22rasterFunction%22%3A%22Cartographic%20Renderer%20-%20Legend%20and%20Attribute%20Table%22%7D&time=1577880000000'}],{layerType:'dynamicMapService',addToClassLegend: true,classLegendDict:nwiLegendDict},'ESRI LC 2021',true)
@@ -676,6 +771,7 @@ Map.addLayer(
 
   // Cropland  // Cropland Data Layers
   ////////////////////////////////////////
+
   // var cdl = ee.Image('USDA/NASS/CDL/2014').select([0]);
   var cdl = ee.ImageCollection("USDA/NASS/CDL").select([0], ["cdl"]);
 
@@ -685,19 +781,19 @@ Map.addLayer(
   var cdlValues = ee.List(d.get("cropland_class_values"));
   var cdlPalette = ee.List(d.get("cropland_class_palette"));
   var cdlQueryDict = {};
-  cdlValues
-    .zip(cdlNames)
-    .getInfo()
-    .map(function (l) {
-      cdlQueryDict[l[0]] = l[1];
-    });
-  var cdlLegendDict = {};
-  cdlNames
-    .zip(cdlPalette)
-    .getInfo()
-    .map(function (l) {
-      cdlLegendDict[l[0]] = l[1];
-    });
+  // cdlValues
+  //   .zip(cdlNames)
+  //   .getInfo()
+  //   .map(function (l) {
+  //     cdlQueryDict[l[0]] = l[1];
+  //   });
+  // var cdlLegendDict = {};
+  // cdlNames
+  //   .zip(cdlPalette)
+  //   .getInfo()
+  //   .map(function (l) {
+  //     cdlLegendDict[l[0]] = l[1];
+  //   });
   // var cdl2 = ee.Image('USDA/NASS/CDL/2018').select([0]);
   // var palette = cdl2.get('cropland_class_palette').getInfo();
 
@@ -707,16 +803,23 @@ Map.addLayer(
   ////////////////////////////////////////////////////////////
   var pdsiStartYear = 1984;
   var pdsiEndYear = 2023;
-  var terra = ee.ImageCollection("IDAHO_EPSCOR/TERRACLIMATE").filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
+  var terra = ee
+    .ImageCollection("IDAHO_EPSCOR/TERRACLIMATE")
+    .filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
   var terra_pdsi = terra.select("pdsi").map(function (img) {
-    return img.multiply(0.01).copyProperties(img, ["system:time_start"]).copyProperties(img);
+    return img
+      .multiply(0.01)
+      .copyProperties(img, ["system:time_start"])
+      .copyProperties(img);
   });
-  var years = ee.List.sequence(pdsiStartYear, pdsiEndYear).getInfo();
+  var years = range(pdsiStartYear, pdsiEndYear + 1);
   var annualPDSI = years.map(function (yr) {
     var startDate = ee.Date.fromYMD(yr - 1, 10, 1);
     var endDate = ee.Date.fromYMD(yr, 9, 30);
     var yearPDSI = terra_pdsi.filter(ee.Filter.date(startDate, endDate));
-    var meanPDSI = yearPDSI.reduce(ee.Reducer.mean()).set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+    var meanPDSI = yearPDSI
+      .reduce(ee.Reducer.mean())
+      .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
     return ee.Image(meanPDSI);
   });
   annualPDSI = ee.ImageCollection(annualPDSI);
@@ -756,7 +859,9 @@ Map.addLayer(
   // Map.addLayer(prUSVI_ch_2018,{min:1,max:15,palette:palettes.crameri.bamako[50].reverse(),legendLabelLeftAfter:'(m)',legendLabelRightAfter:'(m)'},'PRUSVI 2018 Canopy Height',false);
 
   var vi_2007 = ee
-    .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007")
+    .Image(
+      "projects/lcms-292214/assets/R8/PR_USVI/Ancillary/usvi_land_cover_usvigap_2007"
+    )
     .add(50)
     .byte()
     .set("system:time_start", ee.Date.fromYMD(2007, 6, 1).millis());
@@ -773,17 +878,29 @@ Map.addLayer(
     .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_VI_2000")
     .set("system:time_start", ee.Date.fromYMD(2000, 6, 1).millis());
   var mona = ee
-    .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_Mona_2008")
+    .Image(
+      "projects/lcms-292214/assets/R8/PR_USVI/Ancillary/LandCover_Mona_2008"
+    )
     .set("system:time_start", ee.Date.fromYMD(2008, 6, 1).millis());
   var pr_2010 = ee
-    .Image("projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Landcover_2010_PR_CCAP")
+    .Image(
+      "projects/lcms-292214/assets/R8/PR_USVI/Ancillary/Landcover_2010_PR_CCAP"
+    )
     .add(27)
     .byte()
     .set("system:time_start", ee.Date.fromYMD(2010, 6, 1).millis());
 
-  var pr_2000 = ee.ImageCollection([pr_2000, mona, vi_2000]).mosaic().set("system:time_start", ee.Date.fromYMD(2000, 6, 1).millis());
+  var pr_2000 = ee
+    .ImageCollection([pr_2000, mona, vi_2000])
+    .mosaic()
+    .set("system:time_start", ee.Date.fromYMD(2000, 6, 1).millis());
 
-  var prvi_lc_collection = ee.ImageCollection.fromImages([pr_1991, pr_2000, vi_2007, pr_2010]);
+  var prvi_lc_collection = ee.ImageCollection.fromImages([
+    pr_1991,
+    pr_2000,
+    vi_2007,
+    pr_2010,
+  ]);
   prvi_lc_collection = prvi_lc_collection.map(function (img) {
     return img.add(1).copyProperties(img, ["system:time_start"]);
   });
@@ -793,27 +910,66 @@ Map.addLayer(
     1: { Name: "High-Medium Density Urban", Color: "ab0000" },
     2: { Name: "Low-Medium Density Urban", Color: "d99482" },
     3: { Name: "Herbaceous Agriculture - Cultivated Lands", Color: "ffff00" },
-    4: { Name: "Active Sun Coffee and Mixed Woody Agriculture", Color: "ffcc00" },
-    5: { Name: "Pasture, Hay or Inactive Agriculture (e.g. abandoned sugar cane)", Color: "ffff66" },
-    6: { Name: "Pasture, Hay or other Grassy Areas (e.g. soccer fields)", Color: "ffcc66" },
+    4: {
+      Name: "Active Sun Coffee and Mixed Woody Agriculture",
+      Color: "ffcc00",
+    },
+    5: {
+      Name: "Pasture, Hay or Inactive Agriculture (e.g. abandoned sugar cane)",
+      Color: "ffff66",
+    },
+    6: {
+      Name: "Pasture, Hay or other Grassy Areas (e.g. soccer fields)",
+      Color: "ffcc66",
+    },
     7: { Name: "Drought Deciduous Open Woodland", Color: "00cc00" },
     8: { Name: "Drought Deciduous Dense Woodland", Color: "006600" },
-    9: { Name: "Deciduous, Evergreen Coastal and Mixed Forest or Shrubland with Succulents", Color: "9900ff" },
-    10: { Name: "Semi-Deciduous and Drought Deciduous Forest on Alluvium and Non-Carbonate Substrates", Color: "66ff66" },
-    11: { Name: "Semi-Deciduous and Drought Deciduous Forest on Karst (includes semi-evergreen forest)", Color: "003300" },
-    12: { Name: "Drought Deciduous, Semi-deciduous and Seasonal Evergreen Forest on Serpentine", Color: "66ff33" },
-    13: { Name: "Seasonal Evergreen and Semi-Deciduous Forest on Karst", Color: "3333ff" },
+    9: {
+      Name: "Deciduous, Evergreen Coastal and Mixed Forest or Shrubland with Succulents",
+      Color: "9900ff",
+    },
+    10: {
+      Name: "Semi-Deciduous and Drought Deciduous Forest on Alluvium and Non-Carbonate Substrates",
+      Color: "66ff66",
+    },
+    11: {
+      Name: "Semi-Deciduous and Drought Deciduous Forest on Karst (includes semi-evergreen forest)",
+      Color: "003300",
+    },
+    12: {
+      Name: "Drought Deciduous, Semi-deciduous and Seasonal Evergreen Forest on Serpentine",
+      Color: "66ff33",
+    },
+    13: {
+      Name: "Seasonal Evergreen and Semi-Deciduous Forest on Karst",
+      Color: "3333ff",
+    },
     14: { Name: "Seasonal Evergreen and Evergreen Forest", Color: "3333cc" },
-    15: { Name: "Seasonal Evergreen Forest with Coconut Palm", Color: "6666ff" },
-    16: { Name: "Evergreen and Seasonal Evergreen Forest on Karst", Color: "333399" },
+    15: {
+      Name: "Seasonal Evergreen Forest with Coconut Palm",
+      Color: "6666ff",
+    },
+    16: {
+      Name: "Evergreen and Seasonal Evergreen Forest on Karst",
+      Color: "333399",
+    },
     17: { Name: "Evergreen Forest on Serpentine", Color: "6600ff" },
-    18: { Name: "Elfin, Sierra Palm, Transitional and Tall Cloud Forest", Color: "66ffcc" },
-    19: { Name: "Emergent Wetlands Including Seasonally Flooded Pasture", Color: "00ffff" },
+    18: {
+      Name: "Elfin, Sierra Palm, Transitional and Tall Cloud Forest",
+      Color: "66ffcc",
+    },
+    19: {
+      Name: "Emergent Wetlands Including Seasonally Flooded Pasture",
+      Color: "00ffff",
+    },
     20: { Name: "Salt or Mud Flats", Color: "999966" },
     21: { Name: "Mangrove", Color: "006666" },
     22: { Name: "Seaonally Flooded Savannahs and Woodlands", Color: "006699" },
     23: { Name: "Pterocarpus Swamp", Color: "0099cc" },
-    24: { Name: "Tidally Flooded Evergreen Dwarf-Shrubland and Forb Vegetation", Color: "33cccc" },
+    24: {
+      Name: "Tidally Flooded Evergreen Dwarf-Shrubland and Forb Vegetation",
+      Color: "33cccc",
+    },
     25: { Name: "Quarries", Color: "996633" },
     26: { Name: "Coastal Sand and Rock", Color: "cc9900" },
     27: { Name: "Bare Soil (including bulldozed land)", Color: "996600" },
@@ -855,9 +1011,18 @@ Map.addLayer(
     63: { Name: "Dry Noncalcareous Shrubland", Color: "788026" },
     64: { Name: "Dry Noncalcareous Open Shrubland", Color: "bfc969" },
     65: { Name: "Dry Noncalcareous Woodland", Color: "9ead52" },
-    66: { Name: "Lowland Moist Alluvial Evergreen Gallery Forest", Color: "003d00" },
-    67: { Name: "Lowland Moist Noncalcareous Evergreen Forest", Color: "004d00" },
-    68: { Name: "Lowland Moist Noncalcareous Evergreen Gallery Forest", Color: "2e361c" },
+    66: {
+      Name: "Lowland Moist Alluvial Evergreen Gallery Forest",
+      Color: "003d00",
+    },
+    67: {
+      Name: "Lowland Moist Noncalcareous Evergreen Forest",
+      Color: "004d00",
+    },
+    68: {
+      Name: "Lowland Moist Noncalcareous Evergreen Gallery Forest",
+      Color: "2e361c",
+    },
     69: { Name: "Lowland Moist Noncalcareous Shrubland", Color: "5c630f" },
     70: { Name: "Lowland Moist Noncalcareous Open Shrubland", Color: "96a33b" },
     71: { Name: "Lowland Moist Noncalcareous Woodland", Color: "4f5c26" },
@@ -868,8 +1033,14 @@ Map.addLayer(
     76: { Name: "Mangrove Forest and Shrubland", Color: "6b2e6b" },
     77: { Name: "Dry Grassland and Pastures", Color: "f5f5db" },
     78: { Name: "Moist Grassland and Pastures", Color: "d9d978" },
-    79: { Name: "Seasonally Flooded Herbaceous Nonsaline Wetlands", Color: "85c7a1" },
-    80: { Name: "Seasonally Flooded Herbaceous Saline Wetlands", Color: "e3adba" },
+    79: {
+      Name: "Seasonally Flooded Herbaceous Nonsaline Wetlands",
+      Color: "85c7a1",
+    },
+    80: {
+      Name: "Seasonally Flooded Herbaceous Saline Wetlands",
+      Color: "e3adba",
+    },
     81: { Name: "Emergent Herbaceous Saline Wetlands", Color: "5cb582" },
     82: { Name: "Emergent Herbaceous Nonsaline Wetlands", Color: "d68594" },
     83: { Name: "Hay and Row Crops", Color: "ffbd42" },
@@ -937,7 +1108,10 @@ Map.addLayer(
   nlcdTCC = batchFillCollection(nlcdTCC, years).map(setSameDate);
   nlcdImpv = batchFillCollection(nlcdImpv, years).map(setSameDate);
 
-  nwi_hi_rast = batchFillCollection(ee.ImageCollection([nwi_hi_rast]), years).map(setSameDate);
+  nwi_hi_rast = batchFillCollection(
+    ee.ImageCollection([nwi_hi_rast]),
+    years
+  ).map(setSameDate);
 
   // Format for Charting
   /////////////////////////////////////////
@@ -945,13 +1119,29 @@ Map.addLayer(
   // prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
   // prvi_winds = batchFillCollection(prvi_winds.select([0,1,2]),years).map(setSameDate);
   // prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
-  var forCharting = joinCollections(mtbs.select([0], ["MTBS Burn Severity"]), annualPDSI.select([0], ["PDSI"]), false); //cdl.select([0],['Cropland Data']),false);
+  var forCharting = joinCollections(
+    mtbs.select([0], ["MTBS Burn Severity"]),
+    annualPDSI.select([0], ["PDSI"]),
+    false
+  ); //cdl.select([0],['Cropland Data']),false);
   // forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
   forCharting = joinCollections(forCharting, idsCollection, false);
-  forCharting = joinCollections(forCharting, nlcdLC.select([0], ["NLCD Landcover"]), false);
+  forCharting = joinCollections(
+    forCharting,
+    nlcdLC.select([0], ["NLCD Landcover"]),
+    false
+  );
   // forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
-  forCharting = joinCollections(forCharting, nlcdTCC.select([0], ["NLCD % Tree Canopy Cover"]), false);
-  forCharting = joinCollections(forCharting, nlcdImpv.select([0], ["NLCD % Impervious"]), false);
+  forCharting = joinCollections(
+    forCharting,
+    nlcdTCC.select([0], ["NLCD % Tree Canopy Cover"]),
+    false
+  );
+  forCharting = joinCollections(
+    forCharting,
+    nlcdImpv.select([0], ["NLCD % Impervious"]),
+    false
+  );
   // forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
   // forCharting  = joinCollections(forCharting,prvi_winds, false);
   // forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);

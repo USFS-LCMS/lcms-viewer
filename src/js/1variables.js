@@ -9,47 +9,111 @@ function setUrl(url) {
   history.pushState(obj, obj.Title, obj.Url);
 }
 function baseUrl() {
-  return window.location.protocol + "//" + window.location.host + window.location.pathname;
+  return (
+    window.location.protocol +
+    "//" +
+    window.location.host +
+    window.location.pathname
+  );
 }
 function eliminateSearchUrl() {
   setUrl(baseUrl());
 }
 function updatePageUrl() {
-  pageUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + constructUrlSearch();
+  pageUrl =
+    window.location.protocol +
+    "//" +
+    window.location.host +
+    window.location.pathname +
+    constructUrlSearch();
 }
 var fullShareURL;
-function TweetThis(preURL = "", postURL = "", openInNewTab = false, showMessageBox = true, onlyURL = false) {
+const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
+// const tiny_json_url = "http://localhost:3000";
+function storeParams(store_api = `${tiny_json_url}/store`) {
+  Map.showSpinner();
+  $.ajax({
+    type: "POST",
+    url: store_api,
+    data: JSON.stringify(urlParams),
+    contentType: "application/json; charset=utf-8",
+  }).then((id) => {
+    console.log(id);
+
+    setUrl(`${baseUrl()}?id=${id}`);
+    Map.hideSpinner();
+  });
+}
+function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
+  let params = $.ajax({
+    type: "POST",
+    async: false,
+    url: retrieve_api,
+    data: JSON.stringify({ id: id }),
+    contentType: "application/json; charset=utf-8",
+  });
+  if (params.statusText === "OK") {
+    params = JSON.parse(params.responseText);
+    console.log("Retrieved params:");
+    console.log(params);
+
+    Object.keys(params).map((k) => {
+      urlParams[k] = params[k];
+    });
+  } else {
+    setTimeout(
+      () =>
+        showMessage(
+          "ID Failure",
+          `Cannot find parameters for ID: ${id}. Using default parameters.`
+        ),
+      500
+    );
+  }
+}
+
+function TweetThis(
+  preURL = "",
+  postURL = "",
+  openInNewTab = false,
+  showMessageBox = true,
+  onlyURL = false
+) {
   updatePageUrl();
 
-  $.get("https://tinyurl.com/api-create.php", { url: pageUrl }, function (tinyURL) {
-    console.log(tinyURL);
-    let key = tinyURL.split("//tinyurl.com/")[1];
-    let shareURL = pageUrl.split("?")[0] + "?id=" + key;
-    let fullURL = preURL + shareURL + postURL;
-    // console.log(fullURL);
-    ga("send", "event", mode + "-share", pageUrl, shareURL);
-    console.log("shared");
-    if (openInNewTab) {
-      let win = window.open(fullURL, "_blank");
-      win.focus();
-    } else if (showMessageBox) {
-      var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
+  $.get(
+    "https://tinyurl.com/api-create.php",
+    { url: pageUrl },
+    function (tinyURL) {
+      console.log(tinyURL);
+      let key = tinyURL.split("//tinyurl.com/")[1];
+      let shareURL = pageUrl.split("?")[0] + "?id=" + key;
+      let fullURL = preURL + shareURL + postURL;
+      // console.log(fullURL);
+      ga("send", "event", mode + "-share", pageUrl, shareURL);
+      console.log("shared");
+      if (openInNewTab) {
+        let win = window.open(fullURL, "_blank");
+        win.focus();
+      } else if (showMessageBox) {
+        var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
                                 <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white"></button>
                                 <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:70%;" class = "form-control mx-1">
                                </div>
                                <div id = 'copiedMessageBox' class = 'pl-4'</div>
                                `;
-      showMessage("Share link", message);
-      if (mode !== "geeViz") {
-        $("#shareLinkMessageBox").append(staticTemplates.shareButtons);
+        showMessage("Share link", message);
+        if (mode !== "geeViz") {
+          $("#shareLinkMessageBox").append(staticTemplates.shareButtons);
+        }
+      } else if (onlyURL) {
+        fullShareURL = fullURL;
       }
-    } else if (onlyURL) {
-      fullShareURL = fullURL;
+      if (openInNewTab === false && !onlyURL) {
+        setUrl(fullURL);
+      }
     }
-    if (openInNewTab === false && !onlyURL) {
-      setUrl(fullURL);
-    }
-  });
+  );
 }
 
 function copyText(element, messageBoxId) {
@@ -85,7 +149,13 @@ function encodeJSON(json) {
   var outURL = "?";
 
   Object.keys(json).map((p) => {
-    outURL += p + "=" + encodeURIComponent(JSON.stringify(json[p])).replace(/[!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+    outURL +=
+      p +
+      "=" +
+      encodeURIComponent(JSON.stringify(json[p])).replace(
+        /[!'()*]/g,
+        (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+      );
     +"&";
   });
   outURL = outURL.slice(0, outURL.length - 1);
@@ -99,30 +169,24 @@ function parseUrlSearch() {
     urlParamsStr = urlParamsStr.split("?")[1].split("&");
     // console.log(urlParamsStr);
     urlParamsStr.map(function (str) {
-      // if(str.indexOf('OBJECT---')>-1){
-      // var strT = str.split('---');
-      // if(urlParams[strT[1]] === undefined){
-      //   urlParams[strT[1]] = {};
-      // }
-      // urlParams[strT[1]][strT[2].split('=')[0]] = strT[2].split('=')[1];
-      // urlParams[str.split('=')[0]] = JSON.parse(decodeURIComponent(str.split('=')[1].split('OBJECT---')[1]));
-      // }else{
       var decodedParam = decodeURIComponent(str.split("=")[1]);
       try {
-        // console.log(JSON.parse(decodedParam));
         urlParams[str.split("=")[0]] = JSON.parse(decodedParam);
       } catch (err) {
         urlParams[str.split("=")[0]] = decodedParam;
       }
-
-      // }
     });
     // console.log(urlParams);
   }
   if (urlParams.id !== undefined) {
-    window.open("https://tinyurl.com/" + urlParams.id, "_self");
-    if (typeof Storage !== "undefined") {
-      localStorage.setItem("cachedID", urlParams.id);
+    if (urlParams.id.indexOf("-") > -1) {
+      retrieveParams(urlParams.id);
+      delete urlParams.id;
+    } else {
+      window.open("https://tinyurl.com/" + urlParams.id, "_self");
+      if (typeof Storage !== "undefined") {
+        localStorage.setItem("cachedID", urlParams.id);
+      }
     }
   } else {
     // TweetThis(null,null,false,false);
@@ -426,7 +490,15 @@ let NEXT_LAYER_ID = 1,
   layerChildID = 0;
 let layerCount = 0,
   refreshNumber = 0;
-let uri, uriName, csvName, dataTable, chartOptions, infowindow, queryGeoJSON, marker, mtbsSummaryMethod;
+let uri,
+  uriName,
+  csvName,
+  dataTable,
+  chartOptions,
+  infowindow,
+  queryGeoJSON,
+  marker,
+  mtbsSummaryMethod;
 
 const selectedFeaturesJSON = {};
 const selectionTracker = {};
@@ -587,14 +659,33 @@ let chartColorI = 0;
 let chartColorsDict = {
   standard: ["#050", "#0A0", "#e6194B", "#14d4f4"],
   advanced: ["#050", "#0A0", "#9A6324", "#6f6f6f", "#e6194B", "#14d4f4"],
-  advancedBeta: ["#050", "#0A0", "#9A6324", "#6f6f6f", "#e6194B", "#14d4f4", "#808", "#f58231"],
+  advancedBeta: [
+    "#050",
+    "#0A0",
+    "#9A6324",
+    "#6f6f6f",
+    "#e6194B",
+    "#14d4f4",
+    "#808",
+    "#f58231",
+  ],
   coreLossGain: ["#050", "#0A0", "#e6194B", "#14d4f4"],
   allLossGain: ["#050", "#0A0", "#e6194B", "#808", "#f58231", "#14d4f4"],
   allLossGain2: ["#050", "#0A0", "#0E0", "f39268", "d54309", "00a398"],
   allLossGain2Area: ["f39268", "d54309", "00a398", "ffbe2e"],
   test: ["#9A6324", "#6f6f6f", "#e6194B", "#14d4f4", "#880088", "#f58231"],
   testArea: ["#e6194B", "#14d4f4", "#880088", "#f58231"],
-  ancillary: ["#cc0066", "#660033", "#9933ff", "#330080", "#ff3300", "#47d147", "#00cc99", "#ff9966", "#b37700"],
+  ancillary: [
+    "#cc0066",
+    "#660033",
+    "#9933ff",
+    "#330080",
+    "#ff3300",
+    "#47d147",
+    "#00cc99",
+    "#ff9966",
+    "#b37700",
+  ],
 };
 
 let chartColors = chartColorsDict.standard;
@@ -625,26 +716,49 @@ const zoomDict = {
 
 // See https://github.com/google/earthengine-api/blob/327fd96cf4fefda30c8a0d5da62d18c1d6844ea5/javascript/src/ee.js#L76 for param info for initializing to GEE
 // Allow GEE to be initialized either using a server-side proxy or an access token
-if (urlParams.geeAuthProxyURL == null || urlParams.geeAuthProxyURL == undefined) {
+if (
+  urlParams.geeAuthProxyURL == null ||
+  urlParams.geeAuthProxyURL == undefined
+) {
   urlParams.geeAuthProxyURL = "https://rcr-ee-proxy-2.herokuapp.com";
 }
 let authProxyAPIURL = urlParams.geeAuthProxyURL;
 let geeAPIURL = "https://earthengine.googleapis.com";
 
-if (urlParams.accessToken !== null && urlParams.accessToken !== undefined && urlParams.accessToken !== "null" && urlParams.accessToken !== "None") {
+if (
+  urlParams.accessToken !== null &&
+  urlParams.accessToken !== undefined &&
+  urlParams.accessToken !== "null" &&
+  urlParams.accessToken !== "None"
+) {
   authProxyAPIURL = null;
   geeAPIURL = null;
-  ee.data.setAuthToken("", "Bearer", urlParams.accessToken, 3600, [], undefined, false);
+  ee.data.setAuthToken(
+    "",
+    "Bearer",
+    urlParams.accessToken,
+    3600,
+    [],
+    undefined,
+    false
+  );
 }
 var projectID = null;
-if (urlParams.projectID !== null && urlParams.projectID !== undefined && urlParams.projectID !== "None") {
+if (
+  urlParams.projectID !== null &&
+  urlParams.projectID !== undefined &&
+  urlParams.projectID !== "None"
+) {
   projectID = urlParams.projectID;
 }
 
 if (urlParams.layerProps === undefined || urlParams.layerProps === null) {
   urlParams.layerProps = {};
 }
-if (urlParams.cumulativeMode === undefined || urlParams.cumulativeMode === null) {
+if (
+  urlParams.cumulativeMode === undefined ||
+  urlParams.cumulativeMode === null
+) {
   urlParams.cumulativeMode = false;
 }
 var plotsOn = false;
@@ -669,14 +783,20 @@ String.prototype.toProperCase = function () {
 //Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
 String.prototype.replaceAll = function (str1, str2, ignore) {
   return this.replace(
-    new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), ignore ? "gi" : "g"),
+    new RegExp(
+      str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
+      ignore ? "gi" : "g"
+    ),
     typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
 /////////////////////////////////////////////////////
 // Taken from: https://stackoverflow.com/questions/586182/how-to-insert-an-item-into-an-array-at-a-specific-index-javascript
 Array.prototype.insert = function (index) {
-  this.splice.apply(this, [index, 0].concat(Array.prototype.slice.call(arguments, 1)));
+  this.splice.apply(
+    this,
+    [index, 0].concat(Array.prototype.slice.call(arguments, 1))
+  );
   return this;
 };
 /////////////////////////////////////////////////////
@@ -751,7 +871,20 @@ String.prototype.smartBreak = function (size = 10, joinStr = "<br>") {
 };
 //Function to produce monthDayNumber monthName year format date string
 Date.prototype.toStringFormat = function () {
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const yr = this.getFullYear();
   const month = months[this.getMonth()];
   const day = this.getDate();

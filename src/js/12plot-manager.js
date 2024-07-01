@@ -59,7 +59,10 @@ function addPlotgeoJSON(plotGeoJSONPath) {
   map.data.setStyle({ fillOpacity: 0, strokeColor: "#F00" });
 }
 function loadPlots(plotProjectObj) {
-  if (plotProjectObj["plotIDField"] === null || plotProjectObj["plotIDField"] === undefined) {
+  if (
+    plotProjectObj["plotIDField"] === null ||
+    plotProjectObj["plotIDField"] === undefined
+  ) {
     plotProjectObj["plotIDField"] = "PLOTID";
   }
   addPlotProjectAccordian(plotProjectObj.name);
@@ -102,7 +105,9 @@ function addPlot(obj) {
   $("#" + obj.name.replaceAll(" ", "-") + "-plot-list").append(`
 		 <ul class = 'plot-button border-top border-bottom m-0' onclick = 'synchronousCenterObject(${JSON.stringify(
        obj.geometry
-     )});$("ul.plot-button").removeClass("simple-bg-black");$(this).addClass("simple-bg-black")'>${obj.properties.PLOTID}</ul>
+     )});$("ul.plot-button").removeClass("simple-bg-black");$(this).addClass("simple-bg-black")'>${
+    obj.properties.PLOTID
+  }</ul>
 		`);
 }
 
@@ -163,7 +168,7 @@ var prviFinal = {
   plotIDField: "PLOTID",
 };
 var hiFinal = {
-  name: "HI",
+  name: "HI Original",
   path: "./src/data/geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.json",
   plotIDField: "PLOTID",
 };
@@ -187,14 +192,26 @@ var interiorAKPractice = {
   path: "./src/data/geojson/Interior_AK_locations_for_TS_training_5test_30m_box.json",
   plotIDField: "ID",
 };
-
 var interiorAK = {
   name: "Interior Alaska",
   path: "./src/data/geojson/Interior_AK_plots_selected_30m_box.json",
   plotIDField: "PLOTID",
 };
 
-var plotsGeoJSONs = [hiFinal, conus1, CONUSpractice, hiPractice, coastalAK2022, coastalAKPractice, interiorAKPractice, interiorAK]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
+var Hawaii2024 = {
+  name: "Hawaii2024",
+  path: "./src/data/geojson/Additional_HI_Training_Pts_30m_box.json",
+  plotIDField: "PLOTID",
+};
+
+var plotsGeoJSONs = [
+  interiorAKPractice,
+  interiorAK,
+  Hawaii2024,
+  hiFinal,
+  CONUSpractice,
+  coastalAKPractice,
+]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
 // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
 // 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
 // })

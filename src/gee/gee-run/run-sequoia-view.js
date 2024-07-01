@@ -7,7 +7,13 @@ var site_highlights_dict = {};
 // }
 function runSequoia() {
   // First get a unique id url with all the parameters used to make the outputs
-  TweetThis((preURL = ""), (postURL = ""), (openInNewTab = false), (showMessageBox = false), (onlyURL = true));
+  // TweetThis(
+  //   (preURL = ""),
+  //   (postURL = ""),
+  //   (openInNewTab = false),
+  //   (showMessageBox = false),
+  //   (onlyURL = true)
+  // );
 
   // Empty any existing table if it exists and add a spinner to let user know the table is being computed
   $("#table-collapse-div").empty();
@@ -35,15 +41,25 @@ function runSequoia() {
   endJulianFormatted = formatDTJulian(Date.fromDayofYear(endJulian)); //ee.Date.parse('YYYY-DDD',`2003-${endJulian}`).format('MM/dd').getInfo()
 
   //Send run event for Google Analytics
-  ga("send", "event", "sequoia-view-run", "date_params", `${preStartYear}-${preEndYear}__${postYear}__${startJulianFormatted}-${endJulianFormatted}`);
+  ga(
+    "send",
+    "event",
+    "sequoia-view-run",
+    "date_params",
+    `${preStartYear}-${preEndYear}__${postYear}__${startJulianFormatted}-${endJulianFormatted}`
+  );
   // Bring in the monitoring sites
-  var monitoring_sites = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest");
+  var monitoring_sites = ee.FeatureCollection(
+    "projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest"
+  );
   // var monitoring_sites = ee.FeatureCollection("projects/lcms-292214/assets/Ancillary/filtered_dead_trees");
   // var monitoring_sites = ee.FeatureCollection("projects/lcms-292214/assets/Ancillary/SEKI_LiveTreesSubset");
 
   // Bring in the TCH NAIP-based change outputs for projection and snap raster
   var tchC = ee
-    .ImageCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH")
+    .ImageCollection(
+      "projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH"
+    )
     .filter(ee.Filter.stringContains("system:index", "v3shadows_extract_gfch"));
 
   var projection = tchC.first().projection().getInfo();
@@ -55,7 +71,10 @@ function runSequoia() {
   // Make studyArea
   // Hard coded to the bounds of the monitoring sites unless someone defines the urlParam useMapBoundsAsStudyArea
   var studyArea;
-  if (urlParams.useMapBoundsAsStudyArea === undefined || urlParams.useMapBoundsAsStudyArea !== true) {
+  if (
+    urlParams.useMapBoundsAsStudyArea === undefined ||
+    urlParams.useMapBoundsAsStudyArea !== true
+  ) {
     studyArea = monitoring_sites.geometry().bounds(500, crs);
   } else {
     studyArea = eeBoundsPoly;
@@ -101,7 +120,9 @@ function runSequoia() {
   });
 
   // Filter out pre and post images
-  var preS2s = s2s.filter(ee.Filter.calendarRange(preStartYear, preEndYear, "year"));
+  var preS2s = s2s.filter(
+    ee.Filter.calendarRange(preStartYear, preEndYear, "year")
+  );
   var postS2s = s2s.filter(ee.Filter.calendarRange(postYear, postYear, "year"));
 
   // Compute median composites and their difference
@@ -146,7 +167,6 @@ function runSequoia() {
       lcmsTreeMask.selfMask(),
       {
         palette: "0A0",
-        layerType: "geeImage",
         classLegendDict: {
           "LCMS Tree Mask": "0A0",
         },
@@ -174,7 +194,11 @@ function runSequoia() {
   let tableDownloadName = `Giant_Sequoia_Monitoring_Sites_Sentinel2_Change_Table_pre${preStartYear}-${preEndYear}__post${postYear}_dates${startJulianFormatted}-${endJulianFormatted}`;
 
   // Apply change thresholds by bands specified
-  var changeHeuristic = compDiff.select(changeBands).lt(changeThresholds).reduce(ee.Reducer.mode()).rename(["Potential_Loss"]);
+  var changeHeuristic = compDiff
+    .select(changeBands)
+    .lt(changeThresholds)
+    .reduce(ee.Reducer.mode())
+    .rename(["Potential_Loss"]);
 
   // Stack all bands to be included in table
   var stack = ee.Image.cat([
@@ -190,10 +214,19 @@ function runSequoia() {
   // Compute the mean for the radius of a Giant Sequoia for each site
   let summarizedSites = stack
     .focalMean(urlParams.treeDiameter / 2, "circle", "meters")
-    .reduceRegions(monitoring_sites, ee.Reducer.first(), null, crs, transform, 4);
+    .reduceRegions(
+      monitoring_sites,
+      ee.Reducer.first(),
+      null,
+      crs,
+      transform,
+      4
+    );
 
   // create FC of loss sites
-  var potentialLossSites = summarizedSites.filter(ee.Filter.eq("Potential_Loss", 1));
+  var potentialLossSites = summarizedSites.filter(
+    ee.Filter.eq("Potential_Loss", 1)
+  );
 
   // Download the sites table
   summarizedSites.evaluate((t, failure) => {
@@ -203,7 +236,8 @@ function runSequoia() {
     // showMessage('Finished summarizing monitoring sites',JSON.stringify(t))
 
     //Set up output table
-    $("#table-collapse-div").append(`<div id = "monitoring-sites-table-container">
+    $("#table-collapse-div")
+      .append(`<div id = "monitoring-sites-table-container">
                                       <table
                                       class="table table-hover report-table"
                                       id="monitoring-sites-table"
@@ -214,21 +248,30 @@ function runSequoia() {
                                   </div>`);
 
     // Find the property names of only the spectral bands
-    var spectralProps = Object.keys(t.features[0].properties).filter((p) => changeBands.indexOf(p.split("_")[0]) > -1);
+    var spectralProps = Object.keys(t.features[0].properties).filter(
+      (p) => changeBands.indexOf(p.split("_")[0]) > -1
+    );
 
     // The location properties
     var locProps = ["Longitude", "Latitude"];
 
     // Concat all column names for the header
     var allProps = [labelProperty, "Potential_Loss"];
-    allProps = allProps.concat(monitoringSitesPropertyNames).concat(spectralProps).concat(locProps);
+    allProps = allProps
+      .concat(monitoringSitesPropertyNames)
+      .concat(spectralProps)
+      .concat(locProps);
 
     // Add in the table header
-    $(`#monitoring-sites-table`).append(`<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`);
+    $(`#monitoring-sites-table`).append(
+      `<thead><tr class = ' highlights-table-section-title' id='mon-sites-table-header'></tr></thead>`
+    );
 
     // Add columns within the header for each of the props concatenated above
     allProps.map((prop) => {
-      $("#mon-sites-table-header").append(`<td class = 'highlights-entry '>${prop.replaceAll("_", " ")}</td>`);
+      $("#mon-sites-table-header").append(
+        `<td class = 'highlights-entry '>${prop.replaceAll("_", " ")}</td>`
+      );
     });
 
     // Set up hover icon
@@ -255,7 +298,9 @@ function runSequoia() {
     // Iterate across each feature and set up the table row
     t.features.map((f) => {
       var rowID = `seq-mon-site-${siteID}`;
-      $(`#monitoring-sites-table`).append(`<tr class = 'highlights-row' id='${rowID}'></tr>`);
+      $(`#monitoring-sites-table`).append(
+        `<tr class = 'highlights-row' id='${rowID}'></tr>`
+      );
       // Add in the label prop value
       var l = f.properties[labelProperty];
       // if(potLossV===null){potLossV=''}
@@ -263,10 +308,14 @@ function runSequoia() {
       // Add in the potential loss column value
       var potLossV = f.properties["Potential_Loss"];
       // if(potLossV===null){potLossV=''}
-      $(`#${rowID}`).append(`<td class = 'highlights-entry '>${potLossDict[potLossV]}</td>`);
+      $(`#${rowID}`).append(
+        `<td class = 'highlights-entry '>${potLossDict[potLossV]}</td>`
+      );
       // Add the props of the site itself
       monitoringSitesPropertyNames.map((prop) => {
-        $(`#${rowID}`).append(`<td class = 'highlights-entry '>${f.properties[prop]}</td>`);
+        $(`#${rowID}`).append(
+          `<td class = 'highlights-entry '>${f.properties[prop]}</td>`
+        );
       });
 
       // Add any spectral properties
@@ -290,7 +339,9 @@ function runSequoia() {
       site_highlights_dict[rowID] = [
         f.properties.Longitude,
         f.properties.Latitude,
-        `${f.properties[labelProperty]} | Potential Loss: ${potLossDict[f.properties["Potential_Loss"]]}`,
+        `${f.properties[labelProperty]} | Potential Loss: ${
+          potLossDict[f.properties["Potential_Loss"]]
+        }`,
       ];
 
       siteID++;
@@ -373,17 +424,33 @@ function runSequoia() {
         ],
       });
       // Change appearance of table container
-      $(`#monitoring-sites-table-container`).addClass(`bg-white highlights-table`);
+      $(`#monitoring-sites-table-container`).addClass(
+        `bg-white highlights-table`
+      );
 
       // Set hover text
-      $(".dt-buttons.btn-group.flex-wrap").prop("title", "Download this table to any of these formats for local/offline use");
-      $("#monitoring-sites-table_filter").prop("title", "Filter named Giant Sequoias here");
+      $(".dt-buttons.btn-group.flex-wrap").prop(
+        "title",
+        "Download this table to any of these formats for local/offline use"
+      );
+      $("#monitoring-sites-table_filter").prop(
+        "title",
+        "Filter named Giant Sequoias here"
+      );
       // Hide the table loading spinner
       $("#sequoia-mon-loading-div").hide();
 
       // Listen for downloading of table and log event
-      $("#monitoring-sites-table_wrapper>div.dt-buttons>button.buttons-html5 ").on("click", (e) => {
-        ga("send", "event", "sequoia-monarch-table-download", e.target.innerText, tableDownloadName);
+      $(
+        "#monitoring-sites-table_wrapper>div.dt-buttons>button.buttons-html5 "
+      ).on("click", (e) => {
+        ga(
+          "send",
+          "event",
+          "sequoia-monarch-table-download",
+          e.target.innerText,
+          tableDownloadName
+        );
       });
     });
   });
@@ -396,12 +463,14 @@ function runSequoia() {
 
   function heatmap(fc, radius) {
     var pointImg = fc.reduceToImage(["dummy"], ee.Reducer.first()).unmask(0);
-    var kernel = ee.Kernel.gaussian(radius, radius/2).add(ee.Kernel.circle(radius*2));
+    var kernel = ee.Kernel.gaussian(radius, radius / 2).add(
+      ee.Kernel.circle(radius * 2)
+    );
     var result = pointImg.convolve(kernel);
     return result.updateMask(result.neq(0));
-  };
+  }
   var heatmapImg = heatmap(densityPoints, kernelRadius);
-  var heatmapGradient = ['lightgray','yellow','red'];
+  var heatmapGradient = ["lightgray", "yellow", "red"];
 
   // Bring in MTBS data : start MTBS data in 2012 at onset of 2012-2016 drought period
   var mtbs = ee
@@ -420,19 +489,29 @@ function runSequoia() {
   var sekiNorthTAO = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI"
   );
-  var sekiLiveTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive");
-  var tharpsSequoias = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias");
-  var sierraGroves = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py");
+  var sekiLiveTrees = ee.FeatureCollection(
+    "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive"
+  );
+  var tharpsSequoias = ee.FeatureCollection(
+    "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias"
+  );
+  var sierraGroves = ee.FeatureCollection(
+    "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py"
+  );
   // var deadTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/filtered_dead_trees");
 
   // Add Canopy Height Layer to reference layers
-  var canopyHeight = ee.ImageCollection("projects/meta-forest-monitoring-okw37/assets/CanopyHeight").mosaic();
+  var canopyHeight = ee
+    .ImageCollection(
+      "projects/meta-forest-monitoring-okw37/assets/CanopyHeight"
+    )
+    .mosaic();
   Map.addLayer(
     canopyHeight,
     {
       min: 0,
       max: 25,
-      layerType: "geeImage",
+
       palette: ["440154", "414487", "2A788E", "22A884", "7AD151", "FDE725"],
     },
     `Tree Canopy Height (m)`,
@@ -449,14 +528,16 @@ function runSequoia() {
     {
       min: 1,
       max: 4,
-      layerType: "geeImage",
+
       palette: "BD1600,E2F400,0C2780",
     },
     `MTBS Burn Count ${preStartYear - 5}-${postYear}`,
     false,
     null,
     null,
-    `Number of mapped MTBS burns from ${preStartYear - 5} to ${postYear} with low, moderate, or high severity`,
+    `Number of mapped MTBS burns from ${
+      preStartYear - 5
+    } to ${postYear} with low, moderate, or high severity`,
     "reference-layer-list"
   );
   Map.addLayer(
@@ -464,14 +545,16 @@ function runSequoia() {
     {
       min: preStartYear - 5,
       max: postYear,
-      layerType: "geeImage",
+
       palette: "ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02",
     },
     `MTBS Most Recent Burn Year ${preStartYear - 5}-${postYear}`,
     false,
     null,
     null,
-    `Most recent mapped MTBS burn from ${preStartYear - 5} to ${postYear} with low, moderate, or high severity`,
+    `Most recent mapped MTBS burn from ${
+      preStartYear - 5
+    } to ${postYear} with low, moderate, or high severity`,
     "reference-layer-list"
   );
   Map.addLayer(
@@ -479,7 +562,7 @@ function runSequoia() {
     {
       min: 2,
       max: 4,
-      layerType: "geeImage",
+
       palette: "7fffd4,FF0,F00",
       queryDict: {
         2: "Low",
@@ -496,7 +579,9 @@ function runSequoia() {
     false,
     null,
     null,
-    `Highest severity mapped MTBS burn from ${preStartYear - 5} to ${postYear} with low, moderate, or high severity`,
+    `Highest severity mapped MTBS burn from ${
+      preStartYear - 5
+    } to ${postYear} with low, moderate, or high severity`,
     "reference-layer-list"
   );
 
@@ -505,7 +590,6 @@ function runSequoia() {
     sierraGroves,
     {
       strokeColor: "953822",
-      layerType: "geeVectorImage",
     },
     `Sequoia Groves of the Sierra Nevada`,
     false,
@@ -518,7 +602,6 @@ function runSequoia() {
     sekiNorthTAO,
     {
       strokeColor: "10755c",
-      layerType: "geeVectorImage",
     },
     `Tree Approximate Objects (TAO)`,
     false,
@@ -533,7 +616,6 @@ function runSequoia() {
     }),
     {
       strokeColor: "85bd04",
-      layerType: "geeVectorImage",
     },
     `SEKI Live Sequoia Trees`,
     false,
@@ -549,7 +631,6 @@ function runSequoia() {
     }),
     {
       strokeColor: "BF40BF", // purple
-      layerType: "geeVectorImage",
     },
     `Tharps Burn Project Sequoias`,
     false,
@@ -566,7 +647,7 @@ function runSequoia() {
   //   }),
   //   {
   //     strokeColor: "BF40BF", // purple
-  //     layerType: "geeVectorImage",
+  //
   //   },
   //   `Dead Trees`,
   //   false,
@@ -577,8 +658,18 @@ function runSequoia() {
   // );
 
   // Add the analysis layers to the map
-  Map.addLayer(preComp, urlParams.compVizParams, `Pre Composite ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`, false);
-  Map.addLayer(postComp, urlParams.compVizParams, `Post Composite ${postYear} ${startJulianFormatted}-${endJulianFormatted}`, false);
+  Map.addLayer(
+    preComp,
+    urlParams.compVizParams,
+    `Pre Composite ${preStartYear}-${preEndYear} ${startJulianFormatted}-${endJulianFormatted}`,
+    false
+  );
+  Map.addLayer(
+    postComp,
+    urlParams.compVizParams,
+    `Post Composite ${postYear} ${startJulianFormatted}-${endJulianFormatted}`,
+    false
+  );
 
   Map.addLayer(compDiff, urlParams.diffVizParams, "Pre-Post Composite", false);
 
@@ -595,7 +686,7 @@ function runSequoia() {
       max: 0.002,
       palette: heatmapGradient,
       opacity: 0.75,
-      layerType: "geeImage",
+
       classLegendDict: {
         "No Flagged Trees": "lightgray",
         "Low Density of Flagged Trees": "Yellow",
@@ -614,7 +705,7 @@ function runSequoia() {
     changeHeuristicForMap,
     {
       palette: "E20",
-      layerType: "geeImage",
+
       classLegendDict: {
         Loss: "E20",
       },
@@ -632,7 +723,6 @@ function runSequoia() {
     }),
     {
       strokeColor: "eb7a38", //orange
-      layerType: "geeVectorImage",
     },
     "Trees of Special Interest", //"Monitoring Sites",
     true,
@@ -646,7 +736,6 @@ function runSequoia() {
     }),
     {
       strokeColor: "FF0", // yellow,
-      layerType: "geeVectorImage",
     },
     "Trees of Special Interest Flagged for Potential Loss",
     true,
@@ -654,7 +743,12 @@ function runSequoia() {
     null,
     "Monitoring sites that have been flagged for potential decline (None until the user submits an analysis period for which trees become flagged)."
   );
-  Map.addLayer(studyArea, { strokeColor: "0000FF", layerType: "geeVectorImage" }, "Study Area", true);
+  Map.addLayer(
+    studyArea,
+    { strokeColor: "0000FF", layerType: "geeVectorImage" },
+    "Study Area",
+    true
+  );
 
   if (urlParams.canExport) {
     var exportBands = ["blue", "green", "red", "nir", "swir1", "swir2"];
@@ -670,7 +764,13 @@ function runSequoia() {
       true,
       {}
     );
-    Map.addExport(postComp.select(exportBands).multiply(10000).int16(), `S2_Composite_yr${postYear}_jds${startJulian}-${endJulian}`, 10, true, {});
+    Map.addExport(
+      postComp.select(exportBands).multiply(10000).int16(),
+      `S2_Composite_yr${postYear}_jds${startJulian}-${endJulian}`,
+      10,
+      true,
+      {}
+    );
     Map.addExport(
       compDiff.select(exportBands).multiply(10000).int16(),
       `S2_Composite_Diff_preYrs${preStartYear}-${preEndYear}_postYr${postYear}_jds${startJulian}-${endJulian}`,

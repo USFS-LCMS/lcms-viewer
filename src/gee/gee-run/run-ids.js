@@ -1,10 +1,20 @@
 function runIDS() {
   var studyAreaName = "USFS LCMS 1984-2020";
   var idsColor = "0EE";
-  ga("send", "event", "lcms-gtac-ids-viewer-run", "year_range", `${idsMinYear}_${idsMaxYear}`);
+  ga(
+    "send",
+    "event",
+    "lcms-gtac-ids-viewer-run",
+    "year_range",
+    `${idsMinYear}_${idsMaxYear}`
+  );
   getLCMSVariables();
   var lcmsC = studyAreaDict[studyAreaName].final_collections;
-  lcmsC = ee.ImageCollection(ee.FeatureCollection(lcmsC.map((f) => ee.ImageCollection(f))).flatten()).select(["Change", "Change_Raw.*"]);
+  lcmsC = ee
+    .ImageCollection(
+      ee.FeatureCollection(lcmsC.map((f) => ee.ImageCollection(f))).flatten()
+    )
+    .select(["Change", "Change_Raw.*"]);
 
   var years = ee.List.sequence(idsMinYear, idsMaxYear);
 
@@ -47,7 +57,10 @@ function runIDS() {
         })
         .unmask(256);
       // Map.addLayer(idsT,{},'IDS ' +yr.getInfo().toString(),false)
-      var lcmsT = lcmsC.filter(ee.Filter.calendarRange(yr, yr, "year")).first().select(["Change"]);
+      var lcmsT = lcmsC
+        .filter(ee.Filter.calendarRange(yr, yr, "year"))
+        .first()
+        .select(["Change"]);
 
       lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)));
       lcmsT = lcmsT
@@ -60,23 +73,42 @@ function runIDS() {
       var out = idsT.where(lcmsT.neq(256).and(idsT.eq(256)), lcmsT);
       out = ee.Image(out.updateMask(out.neq(256))).byte();
 
-      return out.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()).float();
+      return out
+        .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
+        .float();
     })
   );
 
-  var lcmsChangeClassesForArea = formatAreaChartCollection(lcmsC.select(["Change"]), [2, 3, 4], ["Slow Loss", "Fast Loss", "Gain"]);
+  var lcmsChangeClassesForArea = formatAreaChartCollection(
+    lcmsC.select(["Change"]),
+    [2, 3, 4],
+    ["Slow Loss", "Fast Loss", "Gain"]
+  );
 
   var idsLCMSTSForArea = ee.ImageCollection(
     years.map(function (yr) {
       var idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
       //     // console.log(yr);
       //     // console.log(idsT.limit(100).size().getInfo())
-      var lcmsT = ee.Image(lcmsChangeClassesForArea.filter(ee.Filter.calendarRange(yr, yr, "year")).first());
+      var lcmsT = ee.Image(
+        lcmsChangeClassesForArea
+          .filter(ee.Filter.calendarRange(yr, yr, "year"))
+          .first()
+      );
       idsT = idsT.reduceToImage(["constant"], ee.Reducer.first()).unmask(0);
-      var out = lcmsT.addBands(idsT).rename(["LCMS Slow Loss", "LCMS Fast Loss", "LCMS Gain", "IDS Polygon"]);
+      var out = lcmsT
+        .addBands(idsT)
+        .rename([
+          "LCMS Slow Loss",
+          "LCMS Fast Loss",
+          "LCMS Gain",
+          "IDS Polygon",
+        ]);
 
       //     // out = out.visualize({min:1,max:2,palette:'FF0,0FF'})
-      return out.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()).float();
+      return out
+        .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
+        .float();
     })
   );
 
@@ -104,7 +136,6 @@ function runIDS() {
     ids,
     {
       strokeColor: "D0D",
-      layerType: "geeVectorImage",
     },
     "IDS Polygons",
     false,
@@ -113,12 +144,25 @@ function runIDS() {
     "IDS Select Polygons. Turn on layer and click on any area wanted to include in chart"
   );
   getSelectLayers();
-  lcmsC = lcmsC.select(["Change_Raw.*"], ["Slow Loss Prob", "Fast Loss Prob", "Gain Prob"]);
+  lcmsC = lcmsC.select(
+    ["Change_Raw.*"],
+    ["Slow Loss Prob", "Fast Loss Prob", "Gain Prob"]
+  );
   var idsLCMSTS = years.map(function (yr) {
-    var lcmsT = lcmsC.filter(ee.Filter.calendarRange(yr, yr, "year")).first().divide(100);
+    var lcmsT = lcmsC
+      .filter(ee.Filter.calendarRange(yr, yr, "year"))
+      .first()
+      .divide(100);
     var idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
-    idsT = idsT.reduceToImage(["constant"], ee.Reducer.first()).unmask(0).rename(["IDS Polygon"]);
-    return lcmsT.addBands(idsT).float().set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis()).float();
+    idsT = idsT
+      .reduceToImage(["constant"], ee.Reducer.first())
+      .unmask(0)
+      .rename(["IDS Polygon"]);
+    return lcmsT
+      .addBands(idsT)
+      .float()
+      .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
+      .float();
   });
   idsLCMSTS = ee.ImageCollection(idsLCMSTS);
   pixelChartCollections["test"] = {

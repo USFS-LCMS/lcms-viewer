@@ -10,7 +10,9 @@ function runLAMDA() {
     return d.millis();
   };
   var year = parseInt(urlParams.year);
-  $("#layer-list-collapse-label-label:first-child").html("LAMDA Data: " + year.toString());
+  $("#layer-list-collapse-label-label:first-child").html(
+    "LAMDA Data: " + year.toString()
+  );
 
   var bucketName = "lamda-products";
   var study_areas = ["CONUS", "AK"];
@@ -43,15 +45,27 @@ function runLAMDA() {
   function makeTS(json) {
     areaChart.clearLayers();
     //  json = json.items;
-    var continuous_palette_chastain = ["a83800", "ff5500", "e0e0e0", "a4ff73", "38a800"];
+    var continuous_palette_chastain = [
+      "a83800",
+      "ff5500",
+      "e0e0e0",
+      "a4ff73",
+      "38a800",
+    ];
     // console.log(json[0]);
     var selectedYear = year.toString();
-    json = json.filter((f) => f.name.indexOf("ay" + selectedYear) > -1 || f.name.indexOf(selectedYear + "_jd") > -1);
+    json = json.filter(
+      (f) =>
+        f.name.indexOf("ay" + selectedYear) > -1 ||
+        f.name.indexOf(selectedYear + "_jd") > -1
+    );
     var names = json.map((nm) => nm.name);
     names = names.filter((nm) => nm.indexOf(".tif") == nm.length - 4);
     // var eight_bits= names.filter(i => i.indexOf('_8bit')>-1)
     var persistence = names.filter((i) => i.indexOf("_persistence") > -1);
-    var raws = names.filter((i) => i.indexOf("_8bit") == -1 && i.indexOf("_persistence") == -1);
+    var raws = names.filter(
+      (i) => i.indexOf("_8bit") == -1 && i.indexOf("_persistence") == -1
+    );
 
     // var eight_bit_days = [];
     // eight_bits.map(function(nm){
@@ -79,8 +93,12 @@ function runLAMDA() {
     console.log(`Persistence days: ${persisetence_days_center}`);
     console.log(`Raw days: ${raw_days}`);
 
-    let persistence_dates = persisetence_days_center.map((d) => formatDT2(new Date.fromDayofYear(d, year))).sort();
-    let raw_dates = raw_days.map((d) => formatDT2(new Date.fromDayofYear(d, year))).sort();
+    let persistence_dates = persisetence_days_center
+      .map((d) => formatDT2(new Date.fromDayofYear(d, year)))
+      .sort();
+    let raw_dates = raw_days
+      .map((d) => formatDT2(new Date.fromDayofYear(d, year)))
+      .sort();
     console.log(persistence_dates);
     console.log(raw_dates);
     // console.log(names);
@@ -89,15 +107,17 @@ function runLAMDA() {
     const rawObjInfo = {
       Z: {
         bandNames: ["LAMDA Z"],
-        layerType: "ImageCollection",
       },
       TDD: {
         bandNames: ["LAMDA TDD"],
-        layerType: "ImageCollection",
       },
     };
     const persistence_values = [1, 2, 3];
-    const persistence_names = ["1 Detection", "2 Detections", "3 or More Detections"];
+    const persistence_names = [
+      "1 Detection",
+      "2 Detections",
+      "3 or More Detections",
+    ];
     const persistence_palette = "ffaa00,e10000,e100c5".split(",");
 
     const persistenceObjInfo = {
@@ -106,14 +126,12 @@ function runLAMDA() {
         LAMDA_Z_class_palette: persistence_palette,
         LAMDA_Z_class_values: persistence_values,
         bandNames: ["LAMDA_Z"],
-        layerType: "ImageCollection",
       },
       TDD: {
         LAMDA_TDD_class_names: persistence_names,
         LAMDA_TDD_class_palette: persistence_palette,
         LAMDA_TDD_class_values: persistence_values,
         bandNames: ["LAMDA_TDD"],
-        layerType: "ImageCollection",
       },
     };
 
@@ -154,7 +172,11 @@ function runLAMDA() {
         dateFormat: "YY-MM-dd",
         years: persistence_dates,
         advanceInterval: "day",
-        areaChartParams: { shouldUnmask: true, minZoomSpecifiedScale: 9, xAxisLabels: persistence_dates },
+        areaChartParams: {
+          shouldUnmask: true,
+          minZoomSpecifiedScale: 9,
+          xAxisLabels: persistence_dates,
+        },
       };
 
       var persistenceT = persistence.filter((n) => n.indexOf(output_type) > -1);
@@ -168,7 +190,9 @@ function runLAMDA() {
               var img = ee
                 .ImageCollection(
                   t.map(function (nm) {
-                    return ee.Image.loadGeoTIFF(`gs://${bucketName}/${nm}`).divide(output_type_stretch[output_type]["scale_factor"]);
+                    return ee.Image.loadGeoTIFF(
+                      `gs://${bucketName}/${nm}`
+                    ).divide(output_type_stretch[output_type]["scale_factor"]);
                   })
                 )
                 .mosaic()
@@ -190,7 +214,9 @@ function runLAMDA() {
 
         var persistence_c = ee.ImageCollection.fromImages(
           persistence_days.map(function (persistence_day) {
-            var t = persistenceT.filter((n) => n.indexOf("_jds" + persistence_day) > -1);
+            var t = persistenceT.filter(
+              (n) => n.indexOf("_jds" + persistence_day) > -1
+            );
             // console.log(`${persistence_day} ${t}`);
             var img = ee
               .ImageCollection(
@@ -215,7 +241,11 @@ function runLAMDA() {
         //          return img
         //        })
         //        persistence_c = ee.ImageCollection.fromImages(persistence_c)
-        Map.addTimeLapse(persistence_c, persistence_viz, `${output_type} persistence`);
+        Map.addTimeLapse(
+          persistence_c,
+          persistence_viz,
+          `${output_type} persistence`
+        );
       }
     });
 
