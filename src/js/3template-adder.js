@@ -2631,6 +2631,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.postDate1; // = "2023-07-21"
   urlParams.postDate2; // = "2023-09-21"
   urlParams.correctionTypeOption = "TOA";
+  canExport = true;
 
   var region8_fps = [
     "01",
@@ -3129,6 +3130,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Download HiForm BMP results"
   );
 
+  addHiFormExport("download-collapse-div");
+
   //addHiFormExport("download-collapse-div")
 } else {
   addCollapse(
@@ -3563,7 +3566,9 @@ if (mode === "MTBS" || mode === "Ancillary") {
 //Handle exporting if chosen
 if (canExport) {
   // console.log('here')
-  $("#download-collapse-div").append(staticTemplates.exportContainer);
+  if (mode !== "HiForm-BMP") {
+    $("#download-collapse-div").append(staticTemplates.exportContainer);
+  }
   if (
     localStorage.export_crs !== undefined &&
     localStorage.export_crs !== null &&

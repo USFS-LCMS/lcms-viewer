@@ -2318,6 +2318,20 @@ function mp() {
       queryItem
     );
   };
+  this.removeLayer = function (layerId) {
+    if (layerId) {
+      map.overlayMapTypes.setAt(layerObj[layerId].layerId, null);
+      console.log(`${layerId}-container-${layerObj[layerId].ID}`);
+      $(`#${layerId}-container-${layerObj[layerId].ID}`).remove();
+      $(`#${layerId}`).remove();
+
+      if (layerObj[layerId].canQuery) {
+        console.log(`${layerId}-${layerObj[layerId].ID}`);
+        delete queryObj[`${layerId}-${layerObj[layerId].ID}`];
+      }
+      delete layerObj[layerId];
+    }
+  };
   this.addSerializedLayer = function (
     item,
     viz,
