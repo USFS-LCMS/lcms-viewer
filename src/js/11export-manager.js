@@ -71,7 +71,14 @@ function makePopup() {
     var sExport = exportImageDict[k]["shouldExport"];
     if (sExport) {
       var outputList = document.querySelector("popup-output-list");
-      outputList.insertBefore("<input type='checkbox' checked = true value = '" + k + "'onclick='checkFunction(this);'>" + exportImageDict[k]["name"] + "</label>", outputList.firstChild);
+      outputList.insertBefore(
+        "<input type='checkbox' checked = true value = '" +
+          k +
+          "'onclick='checkFunction(this);'>" +
+          exportImageDict[k]["name"] +
+          "</label>",
+        outputList.firstChild
+      );
       // $("#popupList").append("<input type='checkbox' checked = true value = '"+k+"'onclick='checkFunction(this);'>"+exportImageDict[k]["name"]+"</label>")
     } else {
       // $("#popupList").append("<input type='checkbox'  value = '"+k+"'onclick='checkFunction(this);'>"+exportImageDict[k]["name"]+"</label>")
@@ -137,7 +144,13 @@ function deleteLastExportVertex(e) {
 }
 function resetExportArea(e) {
   // console.log(e.key);
-  if (e === undefined || e.key === undefined || e.key == "Delete" || e.key == "d" || e.key == "Backspace") {
+  if (
+    e === undefined ||
+    e.key === undefined ||
+    e.key == "Delete" ||
+    e.key == "d" ||
+    e.key == "Backspace"
+  ) {
     selectExportArea();
   }
 }
@@ -190,7 +203,10 @@ cancelAllTasks = function () {
   var tasksCancelledList = "\nIDs:";
   var taskList = ee.data.getTaskList().tasks;
   taskList.map(function (task) {
-    if ((task.state === "RUNNING" || task.state === "READY") && Object.keys(cachedEEExports).indexOf(task.description) > -1) {
+    if (
+      (task.state === "RUNNING" || task.state === "READY") &&
+      Object.keys(cachedEEExports).indexOf(task.description) > -1
+    ) {
       print("Cancelling task: " + task.id);
       ee.data.cancelTask(task.id);
       tasksCancelledList = tasksCancelledList + "\n" + task.id;
@@ -200,7 +216,10 @@ cancelAllTasks = function () {
   // taskCount = 0;
   // updateSpinner();
   $("#summary-spinner").hide();
-  showMessage("Cancelling Completed", "Tasks cancelled: " + tasksCancelled.toString() + "\n" + tasksCancelledList);
+  showMessage(
+    "Cancelling Completed",
+    "Tasks cancelled: " + tasksCancelled.toString() + "\n" + tasksCancelledList
+  );
   trackExports();
 };
 downloadMetadata = function () {
@@ -291,16 +310,41 @@ function trackExports() {
         var timeDiff = now - st;
 
         timeDiff = new Date(timeDiff);
-        var timeDiffShow = zeroPad(timeDiff.getMinutes(), 2) + ":" + zeroPad(timeDiff.getSeconds(), 2);
-        taskIDList = taskIDList + t.description.chunk(40).join("<br>") + "<br>Status: " + t.state + " <br>Processing Time: " + timeDiffShow + "<hr>";
-        taskIDListTitle = taskIDListTitle + t.description + " Status: " + t.state + " Processing Time: " + timeDiffShow + "\n";
-      } else if (t.state === "COMPLETED" && cachedEEExport.downloaded === false) {
+        var timeDiffShow =
+          zeroPad(timeDiff.getMinutes(), 2) +
+          ":" +
+          zeroPad(timeDiff.getSeconds(), 2);
+        taskIDList =
+          taskIDList +
+          t.description.chunk(40).join("<br>") +
+          "<br>Status: " +
+          t.state +
+          " <br>Processing Time: " +
+          timeDiffShow +
+          "<hr>";
+        taskIDListTitle =
+          taskIDListTitle +
+          t.description +
+          " Status: " +
+          t.state +
+          " Processing Time: " +
+          timeDiffShow +
+          "\n";
+      } else if (
+        t.state === "COMPLETED" &&
+        cachedEEExport.downloaded === false
+      ) {
         // var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.description].outputName +'.tif'
         // downloadExport(tOutputName,cachedEEExports[t.description].outputName +'.tif')
         downloadFiles(cachedEEExports[t.description].outputName);
         // exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
 
-        showMessage("SUCCESS!", '<p style = "margin:5px;">' + cachedEEExports[t.description].outputName + ' has successfully downloaded! </p><p style = "margin:3px;">');
+        showMessage(
+          "SUCCESS!",
+          '<p style = "margin:5px;">' +
+            cachedEEExports[t.description].outputName +
+            ' has successfully downloaded! </p><p style = "margin:3px;">'
+        );
         // sleep(2000);
         // window.open(tOutputName);
         cachedEEExports[t.description]["downloaded"] = true;
@@ -373,27 +417,45 @@ function updateSpinner() {
     $("#download-spinner").css({ visibility: "hidden" });
   } else if (taskCount > 0 && taskCount <= 5) {
     $("#download-spinner").css({ visibility: "visible" });
-    $("#download-spinner").attr("src", "./src/assets/images/spinner" + taskCount.toString() + ".gif");
+    $("#download-spinner").attr(
+      "src",
+      "./src/assets/images/spinner" + taskCount.toString() + ".gif"
+    );
   } else {
     $("#download-spinner").attr("src", "./src/assets/images/spinnerGT5.gif");
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-function getIDAndParams(eeImage, exportOutputName, exportCRS, exportScale, fc, noDataValue) {
+function getIDAndParams(
+  eeImage,
+  exportOutputName,
+  exportCRS,
+  exportScale,
+  fc,
+  noDataValue
+) {
   $("#summary-spinner").show();
   eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue, false)); //.reproject(exportCRS,null,exportScale);
   // var imageJson = eeImage.serialize();//ee.Serializer.toJSON(eeImage);
   $("#export-message-container").text("Exporting:" + exportOutputName);
 
-  outputURL = "https://console.cloud.google.com/m/cloudstorage/b/" + bucketName + "/o/" + exportOutputName + ".tif"; //Currently cannot handle multiple tile exports for very large exports
+  outputURL =
+    "https://console.cloud.google.com/m/cloudstorage/b/" +
+    bucketName +
+    "/o/" +
+    exportOutputName +
+    ".tif"; //Currently cannot handle multiple tile exports for very large exports
 
   print("exporting");
   try {
     var region = JSON.stringify(fc.geometry().bounds().getInfo());
   } catch (error) {
     if (error.message.indexOf("LinearRing requires at least 3 points.") > -1) {
-      showMessage("Invalid Export Area Polygons", 'Press "Clear All Shapes" button and redraw export areas<br>ensuring each drawn polygon has at least 3 points');
+      showMessage(
+        "Invalid Export Area Polygons",
+        'Press "Clear All Shapes" button and redraw export areas<br>ensuring each drawn polygon has at least 3 points'
+      );
     } else {
       showMessage("Something Went Wrong", error.message);
     }
@@ -414,8 +476,9 @@ function getIDAndParams(eeImage, exportOutputName, exportCRS, exportScale, fc, n
     shardSize: 256,
     fileDimensions: 256 * 75,
     fileFormat: "GEO_TIFF",
+    formatOptions: { noData: noDataValue },
   };
-
+  console.log(params);
   //Set up a task and update the spinner
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
@@ -428,20 +491,25 @@ function googleMapPolygonToGEEPolygon(googleMapPolygon) {
   path = path.map(function (p) {
     return [p.lng(), p.lat()];
   });
-  var geePolygon = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(path))]);
+  var geePolygon = ee.FeatureCollection([
+    ee.Feature(ee.Geometry.Polygon(path)),
+  ]);
   // print(geePolygon);
   // Map2.addLayer(geePolygon)
   return geePolygon;
 }
 function exportImages() {
   if (exportArea === null || exportArea === undefined) {
-    showMessage("Error", "No export area selected. Select area by clicking on the <kbd>Draw area to download</kbd> button and then draw a polygon on the map.");
+    showMessage(
+      "Error",
+      "No export area selected. Select area by clicking on the <kbd>Draw area to download</kbd> button and then draw a polygon on the map."
+    );
   } else {
     try {
       var fc = googleMapPolygonToGEEPolygon(exportArea);
     } catch (error) {
-      console.log(error)
-      var fc = exportArea
+      console.log(error);
+      var fc = exportArea;
     }
     var exportCRS = $("#export-crs").val();
     // closePopup();
@@ -459,7 +527,14 @@ function exportImages() {
         var exportName = exportObject["name"] + nowSuffix;
         var noDataValue = exportObject["noDataValue"];
         exportsSubmitted += exportName + "<br>";
-        var IDAndParams = getIDAndParams(exportObject["eeImage"], exportName, exportCRS, exportObject["res"], fc, noDataValue);
+        var IDAndParams = getIDAndParams(
+          exportObject["eeImage"],
+          exportName,
+          exportCRS,
+          exportObject["res"],
+          fc,
+          noDataValue
+        );
 
         //Start processing
         // function startTask(){
@@ -475,10 +550,14 @@ function exportImages() {
         //     })};
         // startTask();
         console.log(IDAndParams);
-        ee.data.startProcessing(IDAndParams["taskId"], IDAndParams["params"], () => {
-          meta_template_strT = "{}";
-          cacheExport(exportName, exportName, meta_template_strT);
-        });
+        ee.data.startProcessing(
+          IDAndParams["taskId"],
+          IDAndParams["params"],
+          () => {
+            meta_template_strT = "{}";
+            cacheExport(exportName, exportName, meta_template_strT);
+          }
+        );
 
         // var metadataParams = exportObject['metadataParams']
         // meta_template_strT = '{}';//meta_template_str;
@@ -511,7 +590,10 @@ function exportImages() {
       }
     });
     if (exportsStarted === 0) {
-      showMessage("Nothing to Export!", "No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again.");
+      showMessage(
+        "Nothing to Export!",
+        "No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again."
+      );
     } else {
       $("#summary-spinner").show();
       showMessage(
@@ -535,6 +617,15 @@ function displayExports(fc) {
     var exportObject = exportImageDict[k];
     var now = Date().split(" ");
     var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
-    addToMap(exportObject["eeImage"].clip(fc), exportObject["vizParams"], exportObject["name"] + nowSuffix, false, null, null, null, "export-layer-list");
+    addToMap(
+      exportObject["eeImage"].clip(fc),
+      exportObject["vizParams"],
+      exportObject["name"] + nowSuffix,
+      false,
+      null,
+      null,
+      null,
+      "export-layer-list"
+    );
   });
 }

@@ -17,7 +17,10 @@ function downloadURI() {
 }
 
 function clearUploadedAreas() {
-  if (selectionTracker.uploadedLayerIndices === undefined || selectionTracker.uploadedLayerIndices === null) {
+  if (
+    selectionTracker.uploadedLayerIndices === undefined ||
+    selectionTracker.uploadedLayerIndices === null
+  ) {
     selectionTracker.uploadedLayerIndices = [];
   }
   // selectionTracker.uploadedLayerIndices.reverse().map(function(index){
@@ -36,25 +39,36 @@ function clearSelectedAreas() {
 }
 
 function removeLastSelectArea() {
-  selectionTracker.selectedFeatures = selectionTracker.selectedFeatures.slice(0, selectionTracker.selectedFeatures.length - 1);
+  selectionTracker.selectedFeatures = selectionTracker.selectedFeatures.slice(
+    0,
+    selectionTracker.selectedFeatures.length - 1
+  );
   updateSelectedAreasNameList();
   updateSelectedAreaArea();
-  var lastIndex = selectionTracker.seletedFeatureLayerIndices[selectionTracker.seletedFeatureLayerIndices.length - 1];
+  var lastIndex =
+    selectionTracker.seletedFeatureLayerIndices[
+      selectionTracker.seletedFeatureLayerIndices.length - 1
+    ];
   map.overlayMapTypes.setAt(lastIndex, null);
-  selectionTracker.seletedFeatureLayerIndices = selectionTracker.seletedFeatureLayerIndices.slice(
-    0,
-    selectionTracker.seletedFeatureLayerIndices.length - 1
-  );
+  selectionTracker.seletedFeatureLayerIndices =
+    selectionTracker.seletedFeatureLayerIndices.slice(
+      0,
+      selectionTracker.seletedFeatureLayerIndices.length - 1
+    );
   $("#area-charting-selected-layer-list li:first-child").remove();
 }
 function updateSelectedAreasNameList() {
-  var selectedFeatures = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
+  var selectedFeatures = ee
+    .FeatureCollection(selectionTracker.selectedFeatures)
+    .flatten();
 
   //    $('#select-features-list-spinner').show();
 
   // $('#selected-features-list').empty();
 
-  var namesList = ee.List(ee.Dictionary(selectedFeatures.aggregate_histogram("name")).keys());
+  var namesList = ee.List(
+    ee.Dictionary(selectedFeatures.aggregate_histogram("name")).keys()
+  );
 
   namesList.evaluate(function (names, failure) {
     if (failure !== undefined) {
@@ -69,7 +83,9 @@ function updateSelectedAreasNameList() {
   });
 }
 function updateSelectedAreaArea() {
-  var selectedFeatures = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
+  var selectedFeatures = ee
+    .FeatureCollection(selectionTracker.selectedFeatures)
+    .flatten();
 
   $("#select-features-area-spinner").show();
 
@@ -78,7 +94,12 @@ function updateSelectedAreaArea() {
     if (failure !== undefined) {
       showMessage("Error", failure);
     } else {
-      $("#selected-features-area").html((values * 0.0001).formatNumber() + " hectares / " + (values * 0.000247105).formatNumber() + " acres");
+      $("#selected-features-area").html(
+        (values * 0.0001).formatNumber() +
+          " hectares / " +
+          (values * 0.000247105).formatNumber() +
+          " acres"
+      );
 
       $("#select-features-area-spinner").hide();
     }
@@ -101,7 +122,9 @@ function setupAreaLayerSelection() {
 
       Object.keys(selectedFeaturesJSON).map(function (k) {
         if (layerObj[selectedFeaturesJSON[k].id].visible) {
-          var selectedFeaturesT = selectedFeaturesJSON[k].eeObject.filterBounds(ee.Geometry.Point(coords));
+          var selectedFeaturesT = selectedFeaturesJSON[k].eeObject.filterBounds(
+            ee.Geometry.Point(coords)
+          );
 
           var namesList = ee.List(selectedFeaturesT.aggregate_array("name"));
 
@@ -120,9 +143,17 @@ function setupAreaLayerSelection() {
                 }
                 selectionTracker.selectedFeatures.push(selectedFeaturesT);
 
-                var layerName = "Selected " + selectedFeaturesJSON[k].layerName + " " + nms.join("-").replaceAll("&", "-");
+                var layerName =
+                  "Selected " +
+                  selectedFeaturesJSON[k].layerName +
+                  " " +
+                  nms.join("-").replaceAll("&", "-");
                 if (simplifyMaxError !== 0) {
-                  layerName = "Simplified (" + simplifyMaxError.toString() + "m)- " + layerName;
+                  layerName =
+                    "Simplified (" +
+                    simplifyMaxError.toString() +
+                    "m)- " +
+                    layerName;
                 }
                 Map2.addLayer(
                   selectedFeaturesT,
@@ -168,7 +199,12 @@ function updateUserDefinedAreaArea() {
   Object.values(udpPolygonObj).map(function (poly) {
     area += google.maps.geometry.spherical.computeArea(poly.getPath());
   });
-  $("#user-defined-features-area").html((area * 0.0001).formatNumber() + " hectares / " + (area * 0.000247105).formatNumber() + " acres");
+  $("#user-defined-features-area").html(
+    (area * 0.0001).formatNumber() +
+      " hectares / " +
+      (area * 0.000247105).formatNumber() +
+      " acres"
+  );
 }
 function turnOffVectorLayers() {
   $(".vector-layer-checkbox").trigger("turnOffAllVectors");
@@ -205,7 +241,9 @@ function chartSelectedAreas() {
   // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
   // console.log(selectedFeatures);
   // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
-  var selectedFeatures = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
+  var selectedFeatures = ee
+    .FeatureCollection(selectionTracker.selectedFeatures)
+    .flatten();
   if (Object.keys(areaChart.areaChartObj).length === 0) {
     $("#summary-spinner").slideDown();
   }
@@ -224,7 +262,14 @@ function chartSelectedAreas() {
         areaChart.chartArea(selectedFeatures, title);
       } else {
         $("#summary-spinner").slideUp();
-        makeAreaChart(selectedFeatures, title + " " + areaChartCollections[whichAreaChartCollection].label + " Summary", true);
+        makeAreaChart(
+          selectedFeatures,
+          title +
+            " " +
+            areaChartCollections[whichAreaChartCollection].label +
+            " Summary",
+          true
+        );
       }
     } else {
       showMessage(
@@ -251,9 +296,12 @@ var getQueryImages = function (lng, lat) {
   $("#summary-spinner").slideDown();
   // $('#query-container').empty();
 
-  var nameEnd = " Queried Values for Lng " + lng.toFixed(3) + " Lat " + lat.toFixed(3);
+  var nameEnd =
+    " Queried Values for Lng " + lng.toFixed(3) + " Lat " + lat.toFixed(3);
   var queryContent = `<div>
-							<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng.toFixed(3).toString()} lat: ${lat.toFixed(3).toString()}</h6>
+							<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng
+                .toFixed(3)
+                .toString()} lat: ${lat.toFixed(3).toString()}</h6>
 							<li id = 'query-list-container'></li>
 							
 						</div>`;
@@ -282,22 +330,30 @@ var getQueryImages = function (lng, lat) {
     // console.log(value);
     var containerID = k + "-container-" + idI.toString();
     idI++;
-    $("#query-list-container").append(`<table class="table table-hover bg-white">
+    $("#query-list-container")
+      .append(`<table class="table table-hover bg-white">
 												<tbody>
 													<tr class = 'bg-black'><th></th></tr>
 												</tbody>
 											  </table>`);
     if (value === null || value === undefined) {
-      $("#query-list-container").append(`<table class="table table-hover bg-white">
+      $("#query-list-container")
+        .append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
       $("#" + containerID).append(`<tr><th>${q.name}</th><th>NULL</th></tr>`);
     } else if (q.type === "geeImage") {
-      $("#query-list-container").append(`<table class="table table-hover bg-white">
+      $("#query-list-container")
+        .append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
       let valueKeys = Object.keys(value);
-      if (valueKeys.length === 4 && valueKeys.indexOf("viz-blue") > -1 && valueKeys.indexOf("viz-green") > -1 && valueKeys.indexOf("viz-red") > -1) {
+      if (
+        valueKeys.length === 4 &&
+        valueKeys.indexOf("viz-blue") > -1 &&
+        valueKeys.indexOf("viz-green") > -1 &&
+        valueKeys.indexOf("viz-red") > -1
+      ) {
         let mainKey = valueKeys.filter((f) => f.indexOf("viz-") === -1)[0];
         var tValue = JSON.stringify(value[mainKey]);
         if (q.queryDict !== null && q.queryDict !== undefined) {
@@ -306,10 +362,14 @@ var getQueryImages = function (lng, lat) {
           tValue = smartToFixed(tValue);
         }
 
-        $("#" + containerID).append(`<tr><th>${q.name}</th><td>${tValue}</td></tr>`);
+        $("#" + containerID).append(
+          `<tr><th>${q.name}</th><td>${tValue}</td></tr>`
+        );
       } else {
         if (Object.keys(value).length > 1) {
-          $("#" + containerID).append(`<tr><th colspan=2 style="text-align:left;">${q.name}</th</tr>`);
+          $("#" + containerID).append(
+            `<tr><th colspan=2 style="text-align:left;">${q.name}</th</tr>`
+          );
           // $('#'+containerID).append(`<tr><th>Band Name</th><th>Value</th></tr>`);
         }
 
@@ -332,13 +392,19 @@ var getQueryImages = function (lng, lat) {
 
             // var queryLine =  kt+ ': '+v + "<br>";
             if (Object.keys(value).length > 1) {
-              $("#" + containerID).append(`<tr><td>${kt}</td><td>${v}</td></tr>`);
+              $("#" + containerID).append(
+                `<tr><td>${kt}</td><td>${v}</td></tr>`
+              );
             } else {
-              $("#" + containerID).append(`<tr><th>${q.name}</th><td>${v}</td></tr>`);
+              $("#" + containerID).append(
+                `<tr><th>${q.name}</th><td>${v}</td></tr>`
+              );
             }
           } catch (err) {
             console.log(`Click query error: ${err}`);
-            $("#" + containerID).append(`<tr><td>${kt}</td><td>${JSON.stringify(v)}</td></tr>`);
+            $("#" + containerID).append(
+              `<tr><td>${kt}</td><td>${JSON.stringify(v)}</td></tr>`
+            );
           }
         });
       }
@@ -370,7 +436,10 @@ var getQueryImages = function (lng, lat) {
         function breakLabels() {
           var totalLines = 0;
           brokenLabels = allYLabels.map((l) => {
-            var chunks = l.slice(0, yLabelMaxLength).chunk(yLabelBreakLength).slice(0, yLabelMaxLinesT);
+            var chunks = l
+              .slice(0, yLabelMaxLength)
+              .chunk(yLabelBreakLength)
+              .slice(0, yLabelMaxLinesT);
             totalLines = totalLines + chunks.length;
             return chunks.join("<br>");
           });
@@ -387,8 +456,12 @@ var getQueryImages = function (lng, lat) {
           tickfont: { size: yLabelFontSize },
         };
       }
-      $("#query-list-container").append(`<ul class = 'bg-black dropdown-divider'></ul>`);
-      $("#query-list-container").append(`<ul class = 'm-0 p-0 bg-white' id = '${containerID}'></ul>`);
+      $("#query-list-container").append(
+        `<ul class = 'bg-black dropdown-divider'></ul>`
+      );
+      $("#query-list-container").append(
+        `<ul class = 'm-0 p-0 bg-white' id = '${containerID}'></ul>`
+      );
       let chartWidthC = 600;
       if (queryWindowMode === "infoWindow") {
         infowindow.setOptions({ maxWidth: 1200 });
@@ -441,21 +514,26 @@ var getQueryImages = function (lng, lat) {
         },
       };
       // console.log(value.table);console.log(containerID)
-      console.log(value.table);
+      // console.log(value.table);
       Plotly.newPlot(containerID, value.table, plotLayout, buttonOptions);
       // console.log(value);
     } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
-      $("#query-list-container").append(`<table class="table table-hover bg-white">
+      $("#query-list-container")
+        .append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
 
       var infoKeys = Object.keys(value);
-      $("#" + containerID).append(`<tr><th>${q.name}</th><th>Attribute Table</th></tr>`);
+      $("#" + containerID).append(
+        `<tr><th>${q.name}</th><th>Attribute Table</th></tr>`
+      );
       // queryContent += `<tr><th>Attribute Name</th><th>Attribute Value</th></tr>`;
 
       infoKeys.map(function (name) {
         var valueT = value[name];
-        $("#" + containerID).append(`<tr><th>${name}</th><td>${valueT}</td></tr>`);
+        $("#" + containerID).append(
+          `<tr><th>${name}</th><td>${valueT}</td></tr>`
+        );
       });
     }
 
@@ -485,7 +563,10 @@ var getQueryImages = function (lng, lat) {
 
   if (keyCount === 0) {
     $("#summary-spinner").slideUp();
-    showMessage("No Layers to Query!", "No visible layers to query. Please turn on any layers you would like to query");
+    showMessage(
+      "No Layers to Query!",
+      "No visible layers to query. Please turn on any layers you would like to query"
+    );
   }
   clearQueryGeoJSON();
   keysToShow.map(function (k) {
@@ -496,11 +577,22 @@ var getQueryImages = function (lng, lat) {
       ga("send", "event", mode, "pixelQuery-" + q.type, q.name);
       if (q.type === "geeImage") {
         var img = ee.Image(q.queryItem);
-        img.reduceRegion(ee.Reducer.first(), clickPt, scale, crs, transform, true, 1e13, 4).evaluate(function (values) {
-          keyI++;
+        img
+          .reduceRegion(
+            ee.Reducer.first(),
+            clickPt,
+            scale,
+            crs,
+            transform,
+            true,
+            1e13,
+            4
+          )
+          .evaluate(function (values) {
+            keyI++;
 
-          makeQueryTable(values, q, k);
-        });
+            makeQueryTable(values, q, k);
+          });
       } else if (q.type === "geeImageCollection") {
         var dateFormat = q.queryDateFormat;
         // console.log(`Query date format: ${dateFormat}`);
@@ -524,7 +616,9 @@ var getQueryImages = function (lng, lat) {
             var timeColumnN = header.indexOf("time");
             var idColumnN = header.indexOf("id");
 
-            var ids = arrayColumn(values, idColumnN).filter((v, i, a) => a.indexOf(v) === i);
+            var ids = arrayColumn(values, idColumnN).filter(
+              (v, i, a) => a.indexOf(v) === i
+            );
             var expectedLength = ids.length;
             if (values.length > expectedLength) {
               console.log("reducing number of inputs");
@@ -555,7 +649,10 @@ var getQueryImages = function (lng, lat) {
               return v.slice(4);
             });
             var tableList = yColumnNames.map(function (c, i) {
-              let color = q.queryParams.palette !== undefined ? q.queryParams.palette[i] : undefined;
+              let color =
+                q.queryParams.palette !== undefined
+                  ? q.queryParams.palette[i]
+                  : undefined;
               return {
                 x: xColumn,
                 y: arrayColumn(yColumns, i).map(smartToFixed),
@@ -572,7 +669,9 @@ var getQueryImages = function (lng, lat) {
             makeQueryTable(null, q, k);
           }
         }
-        if (c.first().propertyNames().getInfo().indexOf("system:time_start") > -1) {
+        if (
+          c.first().propertyNames().getInfo().indexOf("system:time_start") > -1
+        ) {
           c = c.sort("system:time_start").map(function (img) {
             return img.set("system:time_start", img.date().format(dateFormat));
           });
@@ -671,7 +770,9 @@ var getQueryImages = function (lng, lat) {
           var features = q.queryItem.filterBounds(clickPt);
         } catch (err) {
           // console.log(err);
-          var features = ee.FeatureCollection([q.queryItem]).filterBounds(clickPt);
+          var features = ee
+            .FeatureCollection([q.queryItem])
+            .filterBounds(clickPt);
         }
         features.evaluate(function (values) {
           // console.log(values);
@@ -711,7 +812,12 @@ function populateChartDropdown(id, collectionDict, whichChartCollectionVar) {
   eval(whichChartCollectionVar + " = keys[0]");
   if (keys.length > 1) {
     Object.keys(collectionDict).map(function (k) {
-      addDropdownItem(id, collectionDict[k].label, k, collectionDict[k].tooltip);
+      addDropdownItem(
+        id,
+        collectionDict[k].label,
+        k,
+        collectionDict[k].tooltip
+      );
     });
     $("#" + id + "-container").show();
   } else {
@@ -719,10 +825,18 @@ function populateChartDropdown(id, collectionDict, whichChartCollectionVar) {
   }
 }
 function populateAreaChartDropdown() {
-  populateChartDropdown("area-collection-dropdown", areaChartCollections, "whichAreaChartCollection");
+  populateChartDropdown(
+    "area-collection-dropdown",
+    areaChartCollections,
+    "whichAreaChartCollection"
+  );
 }
 function populatePixelChartDropdown() {
-  populateChartDropdown("pixel-collection-dropdown", pixelChartCollections, "whichPixelChartCollection");
+  populateChartDropdown(
+    "pixel-collection-dropdown",
+    pixelChartCollections,
+    "whichPixelChartCollection"
+  );
 }
 // $('#area-collection-dropdown').change(function(){
 //   console.log(whichAreaChartCollection);
@@ -741,10 +855,14 @@ function setupFSB() {
   // var fieldName = 'FORESTNAME';
 
   var nfsFieldName = "FORESTNAME";
-  var nfs = ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries");
+  var nfs = ee.FeatureCollection(
+    "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries"
+  );
 
   var npsFieldName = "PARKNAME";
-  var nps = ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries");
+  var nps = ee.FeatureCollection(
+    "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries"
+  );
 
   nfs = nfs.map(function (f) {
     return f.set("label", f.get(nfsFieldName));
@@ -758,14 +876,20 @@ function setupFSB() {
   fieldName = "label";
 
   if (areaChartCollections[whichAreaChartCollection] !== undefined) {
-    fsb = fsb.filterBounds(areaChartCollections[whichAreaChartCollection].collection.geometry());
+    fsb = fsb.filterBounds(
+      areaChartCollections[whichAreaChartCollection].collection.geometry()
+    );
 
-    var names = ee.List(ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys());
+    var names = ee.List(
+      ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys()
+    );
     ee.Dictionary.fromLists(names, names).evaluate(function (d) {
       // print('d');print(d);
       var mySelect = $("#forestBoundaries");
       var choose;
-      mySelect.append($("<option></option>").val(choose).html("Choose an area"));
+      mySelect.append(
+        $("<option></option>").val(choose).html("Choose an area")
+      );
       $.each(d, function (val, text) {
         mySelect.append($("<option></option>").val(val).html(text));
       });
@@ -821,7 +945,12 @@ function areaChartingTabSelect(target) {
 // listenForUserDefinedAreaCharting();
 function restartUserDefinedAreaCarting(e) {
   // console.log(e);
-  if (e === undefined || e.key == "Delete" || e.key == "d" || e.key == "Backspace") {
+  if (
+    e === undefined ||
+    e.key == "Delete" ||
+    e.key == "d" ||
+    e.key == "Backspace"
+  ) {
     areaChartingTabSelect(whichAreaDrawingMethod);
     areaChart.clearCharts();
     updateUserDefinedAreaArea();
@@ -862,9 +991,21 @@ function startUserDefinedAreaCharting() {
   // udp = new google.maps.Polyline(udpOptions);
 
   udpPolygonObj[udpPolygonNumber].setMap(map);
-  google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "click", updateUserDefinedAreaArea);
-  google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "mouseup", updateUserDefinedAreaArea);
-  google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "dragend", updateUserDefinedAreaArea);
+  google.maps.event.addListener(
+    udpPolygonObj[udpPolygonNumber],
+    "click",
+    updateUserDefinedAreaArea
+  );
+  google.maps.event.addListener(
+    udpPolygonObj[udpPolygonNumber],
+    "mouseup",
+    updateUserDefinedAreaArea
+  );
+  google.maps.event.addListener(
+    udpPolygonObj[udpPolygonNumber],
+    "dragend",
+    updateUserDefinedAreaArea
+  );
 
   mapHammer = new Hammer(document.getElementById("map"));
   // google.maps.event.addDomListener(mapDiv, 'click', function(event) {
@@ -885,15 +1026,39 @@ function startUserDefinedAreaCharting() {
     udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
     udpPolygonObj[udpPolygonNumber].setPath(path);
     udpPolygonObj[udpPolygonNumber].setMap(map);
-    google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "click", updateUserDefinedAreaArea);
-    google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "mouseup", updateUserDefinedAreaArea);
-    google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "dragend", updateUserDefinedAreaArea);
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "click",
+      updateUserDefinedAreaArea
+    );
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "mouseup",
+      updateUserDefinedAreaArea
+    );
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "dragend",
+      updateUserDefinedAreaArea
+    );
     udpPolygonNumber++;
     udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
     udpPolygonObj[udpPolygonNumber].setMap(map);
-    google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "click", updateUserDefinedAreaArea);
-    google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "mouseup", updateUserDefinedAreaArea);
-    google.maps.event.addListener(udpPolygonObj[udpPolygonNumber], "dragend", updateUserDefinedAreaArea);
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "click",
+      updateUserDefinedAreaArea
+    );
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "mouseup",
+      updateUserDefinedAreaArea
+    );
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "dragend",
+      updateUserDefinedAreaArea
+    );
 
     updateUserDefinedAreaArea();
     //        google.maps.event.clearListeners(mapDiv, 'dblclick');
@@ -980,30 +1145,55 @@ function chartChosenArea() {
   // var fieldName = 'FORESTNAME';
 
   var chosenArea = $("#forestBoundaries").val();
-  var chosenAreaName = chosenArea + " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
+  var chosenAreaName =
+    chosenArea +
+    " " +
+    areaChartCollections[whichAreaChartCollection].label +
+    " Summary";
   var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName, chosenArea));
 
   makeAreaChart(chosenAreaGeo, chosenAreaName);
   // console.log('Charting ' + chosenArea);
 }
-function convertToStack(areaChartCollection, xAxisProperty = "year", dateFormat = "YYYY") {
+function convertToStack(
+  areaChartCollection,
+  xAxisProperty = "year",
+  dateFormat = "YYYY"
+) {
   if (xAxisProperty === "year") {
     areaChartCollection = areaChartCollection.map(function (img) {
       return img.set("year", img.date().format(dateFormat));
     });
   }
   var oBns = areaChartCollection.first().bandNames();
-  var xProps = ee.List(areaChartCollection.toList(10000, 0).map((img) => ee.Image(img).get(xAxisProperty)));
+  var xProps = ee.List(
+    areaChartCollection
+      .toList(10000, 0)
+      .map((img) => ee.Image(img).get(xAxisProperty))
+  );
   var stack = areaChartCollection.toBands();
   var bns = stack.bandNames();
   var bnsOut = bns.map((bn) => {
     var i = ee.Number.parse(ee.String(bn).split("_").get(0));
-    return ee.String(xProps.get(i)).cat("---").cat(ee.String(bn).split("_").slice(1, null).join("_"));
+    return ee
+      .String(xProps.get(i))
+      .cat("---")
+      .cat(ee.String(bn).split("_").slice(1, null).join("_"));
   });
   return stack.rename(bnsOut).set({ xProps: xProps, bns: oBns });
 }
 
-function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplier, dateFormat, crs, transform, scale, kwargs) {
+function getAreaSummaryTable(
+  areaChartCollection,
+  area,
+  xAxisProperty,
+  multiplier,
+  dateFormat,
+  crs,
+  transform,
+  scale,
+  kwargs
+) {
   if (xAxisProperty === null || xAxisProperty === undefined) {
     xAxisProperty = "year";
   }
@@ -1067,7 +1257,16 @@ function getAreaSummaryTable(areaChartCollection, area, xAxisProperty, multiplie
   return areaChartCollection.toList(10000, 0).map(function (img) {
     img = ee.Image(img);
     // img = ee.Image(img).clip(area);
-    var t = img.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2), area, scale, crs, transform, true, 1e13, 4);
+    var t = img.reduceRegion(
+      ee.Reducer.fixedHistogram(0, 2, 2),
+      area,
+      scale,
+      crs,
+      transform,
+      true,
+      1e13,
+      4
+    );
     var xAxisLabel = img.get(xAxisProperty);
     // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
     // var lossT = t.slice(0,2,null);
@@ -1133,8 +1332,18 @@ function makeAreaChart(area, name, userDefined) {
   if (areaChartCollections[whichAreaChartCollection].type === "transition") {
     // console.log('here');console.log(area);
     $("#summary-spinner").slideDown();
-    let startYear = areaChartCollections[whichAreaChartCollection].collection.sort("system:time_start").first().date().get("year").getInfo();
-    let endYear = areaChartCollections[whichAreaChartCollection].collection.sort("system:time_start", false).first().date().get("year").getInfo();
+    let startYear = areaChartCollections[whichAreaChartCollection].collection
+      .sort("system:time_start")
+      .first()
+      .date()
+      .get("year")
+      .getInfo();
+    let endYear = areaChartCollections[whichAreaChartCollection].collection
+      .sort("system:time_start", false)
+      .first()
+      .date()
+      .get("year")
+      .getInfo();
 
     let transitionPeriods = getTransitionRowData();
     if (transitionPeriods !== null) {
@@ -1150,7 +1359,16 @@ function makeAreaChart(area, name, userDefined) {
 
       let img = ee.Image(transitionClasses).clip(area);
 
-      let table = img.reduceRegion(ee.Reducer.fixedHistogram(0, 3, 3), bounds, scale, crs, transform, true, 1e13, 4);
+      let table = img.reduceRegion(
+        ee.Reducer.fixedHistogram(0, 3, 3),
+        bounds,
+        scale,
+        crs,
+        transform,
+        true,
+        1e13,
+        4
+      );
 
       table.evaluate((t, failure) => {
         if (failure !== undefined && currentChartID === thisChartID) {
@@ -1169,8 +1387,18 @@ function makeAreaChart(area, name, userDefined) {
           let label_code_i = 0;
           let years = [];
           let geojsonT = {};
-          Object.keys(t).map((k) => years.push(k.split("---")[0].split("--")[0], k.split("---")[1].split("--")[0]));
-          Object.keys(t).map((k) => raw_labels.push(k.split("---")[0].split("--")[1], k.split("---")[1].split("--")[1]));
+          Object.keys(t).map((k) =>
+            years.push(
+              k.split("---")[0].split("--")[0],
+              k.split("---")[1].split("--")[0]
+            )
+          );
+          Object.keys(t).map((k) =>
+            raw_labels.push(
+              k.split("---")[0].split("--")[1],
+              k.split("---")[1].split("--")[1]
+            )
+          );
           years = unique(years);
           raw_labels = unique(raw_labels)
             .map((n) => parseInt(n))
@@ -1203,11 +1431,23 @@ function makeAreaChart(area, name, userDefined) {
             let endYearPair = years[yri];
             yri++;
             let dataMatrixHeader = [""];
-            raw_labels.map((l) => dataMatrixHeader.push(endYearPair + " " + areaChartCollections[whichAreaChartCollection].names[l - 1]));
+            raw_labels.map((l) =>
+              dataMatrixHeader.push(
+                endYearPair +
+                  " " +
+                  areaChartCollections[whichAreaChartCollection].names[l - 1]
+              )
+            );
             dataMatrix.push(dataMatrixHeader);
 
             raw_labels.map((from) => {
-              let row = [startYearPair + " " + areaChartCollections[whichAreaChartCollection].names[from - 1]];
+              let row = [
+                startYearPair +
+                  " " +
+                  areaChartCollections[whichAreaChartCollection].names[
+                    from - 1
+                  ],
+              ];
               raw_labels.map((to) => {
                 let k = `${startYearPair}--${from}---${endYearPair}--${to}`;
                 let v = t[k][1][1] * mult;
@@ -1226,10 +1466,18 @@ function makeAreaChart(area, name, userDefined) {
             const startRange = k.split("---")[0].split("--")[0];
             const endRange = k.split("---")[1].split("--")[0];
 
-            const transitionFromClassI = parseInt(k.split("---")[0].split("--")[1]) - 1;
-            const transitionToClassI = parseInt(k.split("---")[1].split("--")[1]) - 1;
-            const transitionFromClassName = areaChartCollections[whichAreaChartCollection].names[transitionFromClassI];
-            const transitionToClassName = areaChartCollections[whichAreaChartCollection].names[transitionToClassI];
+            const transitionFromClassI =
+              parseInt(k.split("---")[0].split("--")[1]) - 1;
+            const transitionToClassI =
+              parseInt(k.split("---")[1].split("--")[1]) - 1;
+            const transitionFromClassName =
+              areaChartCollections[whichAreaChartCollection].names[
+                transitionFromClassI
+              ];
+            const transitionToClassName =
+              areaChartCollections[whichAreaChartCollection].names[
+                transitionToClassI
+              ];
             const v = t[k][1][1] * mult;
 
             const fromLabel = startRange + " " + transitionFromClassName;
@@ -1241,8 +1489,16 @@ function makeAreaChart(area, name, userDefined) {
             sankey_dict.value.push(v);
           });
 
-          function getSankeyPlot(canvasID, thickness = 20, nodePad = 25, fontSize = 10) {
-            sankey_dict.hovertemplate = "%{value}" + chartFormatDict[areaChartFormat].label + " %{source.label}-%{target.label}<extra></extra>";
+          function getSankeyPlot(
+            canvasID,
+            thickness = 20,
+            nodePad = 25,
+            fontSize = 10
+          ) {
+            sankey_dict.hovertemplate =
+              "%{value}" +
+              chartFormatDict[areaChartFormat].label +
+              " %{source.label}-%{target.label}<extra></extra>";
 
             var data = {
               type: "sankey",
@@ -1256,7 +1512,10 @@ function makeAreaChart(area, name, userDefined) {
                 },
                 label: labels,
                 color: sankeyPalette,
-                hovertemplate: "%{value}" + chartFormatDict[areaChartFormat].label + " %{label}<extra></extra>",
+                hovertemplate:
+                  "%{value}" +
+                  chartFormatDict[areaChartFormat].label +
+                  " %{label}<extra></extra>",
               },
 
               link: sankey_dict,
@@ -1299,9 +1558,19 @@ function makeAreaChart(area, name, userDefined) {
           }
 
           configChartModal("Plotly");
-          getSankeyPlot("chart-canvas", (thickness = 20), (nodePad = 25), (fontSize = 10));
+          getSankeyPlot(
+            "chart-canvas",
+            (thickness = 20),
+            (nodePad = 25),
+            (fontSize = 10)
+          );
 
-          plotlyDownloadChartObject = getSankeyPlot("chart-download-canvas", (thickness = 40), (nodePad = 20), (fontSize = 20));
+          plotlyDownloadChartObject = getSankeyPlot(
+            "chart-download-canvas",
+            (thickness = 40),
+            (nodePad = 20),
+            (fontSize = 20)
+          );
 
           $("#chart-download-dropdown").empty();
           $("#chart-modal-footer").append(`<div class="dropdown">
@@ -1333,15 +1602,28 @@ function makeAreaChart(area, name, userDefined) {
           area.evaluate(function (i, failure) {
             areaGeoJson = i;
             areaGeoJson["properties"] = geojsonT;
-            if (failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null) {
+            if (
+              failure === undefined &&
+              areaGeoJson !== undefined &&
+              areaGeoJson !== null
+            ) {
               $("#chart-download-dropdown").append(
                 `<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`
               );
             } else {
-              showMessage("Error", "Could not convert summary area to geoJSON " + failure);
+              showMessage(
+                "Error",
+                "Could not convert summary area to geoJSON " + failure
+              );
             }
           });
-          ga("send", "event", mode, "sankeyAreaChart", whichAreaChartCollection);
+          ga(
+            "send",
+            "event",
+            mode,
+            "sankeyAreaChart",
+            whichAreaChartCollection
+          );
           $("#chart-modal").modal();
         }
         $("#summary-spinner").slideUp();
@@ -1350,8 +1632,10 @@ function makeAreaChart(area, name, userDefined) {
       $("#summary-spinner").slideUp();
     }
   } else {
-    var areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
-    var xAxisProperty = areaChartCollections[whichAreaChartCollection].xAxisProperty;
+    var areaChartCollection =
+      areaChartCollections[whichAreaChartCollection].collection;
+    var xAxisProperty =
+      areaChartCollections[whichAreaChartCollection].xAxisProperty;
     var xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
     var yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
     var dateFormat = areaChartCollections[whichAreaChartCollection].dateFormat;
@@ -1367,14 +1651,20 @@ function makeAreaChart(area, name, userDefined) {
     yAxisLabel = areaChartFormatDict[areaChartFormat].label;
     var totalArea = area.area(1000);
     if (["Acres", "Hectares"].indexOf(areaChartFormat) > -1) {
-      multiplier = totalArea.multiply(areaChartFormatDict[areaChartFormat].mult);
+      multiplier = totalArea.multiply(
+        areaChartFormatDict[areaChartFormat].mult
+      );
     } else {
       multiplier = areaChartFormatDict[areaChartFormat].mult;
     }
 
     var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
     bandNames = bandNames.map(function (bn) {
-      return bn.replaceAll("_", " ") + " " + areaChartFormatDict[areaChartFormat].label;
+      return (
+        bn.replaceAll("_", " ") +
+        " " +
+        areaChartFormatDict[areaChartFormat].label
+      );
     });
     bandNames.unshift(xAxisProperty);
 
@@ -1407,7 +1697,12 @@ function makeAreaChart(area, name, userDefined) {
         var endTime = new Date();
         var dt = endTime - startTime;
         // console.log('dt: '+dt.toString())
-        if (failure !== undefined && iteration < maxIterations && currentChartID === thisChartID && dt < maxTime) {
+        if (
+          failure !== undefined &&
+          iteration < maxIterations &&
+          currentChartID === thisChartID &&
+          dt < maxTime
+        ) {
           // $('#area-charting-message-box').empty();
           // $('#area-charting-message-box').html(failure	);
           evalTable();
@@ -1416,16 +1711,30 @@ function makeAreaChart(area, name, userDefined) {
           tableT.unshift(bandNames);
           console.log(tableT);
           $("#summary-spinner").slideUp();
-          var stackedAreaChart = areaChartCollections[whichAreaChartCollection].stacked;
-          var steppedLine = areaChartCollections[whichAreaChartCollection].steppedLine;
+          var stackedAreaChart =
+            areaChartCollections[whichAreaChartCollection].stacked;
+          var steppedLine =
+            areaChartCollections[whichAreaChartCollection].steppedLine;
           var colors = areaChartCollections[whichAreaChartCollection].colors;
-          var chartType = areaChartCollections[whichAreaChartCollection].chartType;
-          var fieldsHidden = areaChartCollections[whichAreaChartCollection].fieldsHidden;
+          var chartType =
+            areaChartCollections[whichAreaChartCollection].chartType;
+          var fieldsHidden =
+            areaChartCollections[whichAreaChartCollection].fieldsHidden;
           if (chartType === null || chartType === undefined) {
             chartType = "line";
           }
           ga("send", "event", mode, "areaChart", whichAreaChartCollection);
-          addChartJS(tableT, name, chartType, stackedAreaChart, steppedLine, colors, xAxisLabel, yAxisLabel, fieldsHidden);
+          addChartJS(
+            tableT,
+            name,
+            chartType,
+            stackedAreaChart,
+            steppedLine,
+            colors,
+            xAxisLabel,
+            yAxisLabel,
+            fieldsHidden
+          );
 
           // areaChartingTabSelect(whichAreaDrawingMethod);
           // map.setOptions({draggableCursor:'hand'});
@@ -1434,12 +1743,19 @@ function makeAreaChart(area, name, userDefined) {
           area.evaluate(function (i, failure) {
             areaGeoJson = i;
             areaGeoJson[name] = tableT;
-            if (failure === undefined && areaGeoJson !== undefined && areaGeoJson !== null) {
+            if (
+              failure === undefined &&
+              areaGeoJson !== undefined &&
+              areaGeoJson !== null
+            ) {
               $("#chart-download-dropdown").append(
                 `<a class="dropdown-item" href="#" onclick = "exportJSON('${name}.geojson', areaGeoJson)">geoJSON</a>`
               );
             } else {
-              showMessage("Error", "Could not convert summary area to geoJSON " + failure);
+              showMessage(
+                "Error",
+                "Could not convert summary area to geoJSON " + failure
+              );
             }
           });
           // }
@@ -1451,14 +1767,19 @@ function makeAreaChart(area, name, userDefined) {
 
           // areaChartingTabSelect(whichAreaDrawingMethod);
           if (
-            failure.indexOf("Dictionary.toArray: Unable to convert dictionary to array") > -1 ||
+            failure.indexOf(
+              "Dictionary.toArray: Unable to convert dictionary to array"
+            ) > -1 ||
             failure.indexOf("Array: Parameter 'values' is required.") > -1
           ) {
             failure =
               "Most likely selected area does not overlap with selected LCMS study area<br>Please select area that overlaps with products<br>Raw Error Message:<br>" +
               failure;
           }
-          showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again', failure);
+          showMessage(
+            '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',
+            failure
+          );
         }
         iteration++;
       });
@@ -1527,7 +1848,12 @@ function runShpDefinedCharting() {
         var nFeatures = area.size().getInfo();
         console.log(nFeatures);
         if (nFeatures == 0) {
-          showMessage("No Features Found", "Found " + nFeatures.toString() + " in provided file. Please select a file with features.");
+          showMessage(
+            "No Features Found",
+            "Found " +
+              nFeatures.toString() +
+              " in provided file. Please select a file with features."
+          );
           $("#summary-spinner").hide();
           return;
         }
@@ -1554,7 +1880,10 @@ function runShpDefinedCharting() {
                 'Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.'
               );
             } else {
-              showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!', err);
+              showMessage(
+                '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',
+                err
+              );
             }
             $("#summary-spinner").hide();
             return;
@@ -1566,7 +1895,10 @@ function runShpDefinedCharting() {
               'Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.'
             );
           } else {
-            showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!', err);
+            showMessage(
+              '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',
+              err
+            );
           }
           $("#summary-spinner").hide();
           return;
@@ -1574,7 +1906,16 @@ function runShpDefinedCharting() {
       }
       // var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 
-      Map2.addLayer(area, { isUploadedLayer: true }, name, true, null, null, name + " for area summarizing", "area-charting-shp-layer-list");
+      Map2.addLayer(
+        area,
+        { isUploadedLayer: true },
+        name,
+        true,
+        null,
+        null,
+        name + " for area summarizing",
+        "area-charting-shp-layer-list"
+      );
       Map.centerObject(area);
       $("#summary-spinner").slideUp();
       if (Object.keys(areaChart.areaChartObj).length > 0) {
@@ -1585,7 +1926,10 @@ function runShpDefinedCharting() {
       }
     });
   } else {
-    showMessage("No Summary Area Selected", "Please select a .zip shapefile or a .geojson file to summarize across");
+    showMessage(
+      "No Summary Area Selected",
+      "Please select a .zip shapefile or a .geojson file to summarize across"
+    );
   }
 }
 // new function based on runShpDefinedCharting that is for adding a user defined shp, geojson, etc without doing any charting -EH
@@ -1686,17 +2030,32 @@ function runShpDefinedAddLayer() {
           "reference-layer-list"
         );
       } else {
-        Map2.addLayer(convertedRaw, { layerType: "geoJSONVector" }, name, true, null, null, name, "reference-layer-list");
+        Map2.addLayer(
+          convertedRaw,
+          { layerType: "geoJSONVector" },
+          name,
+          true,
+          null,
+          null,
+          name,
+          "reference-layer-list"
+        );
       }
     });
   } else {
-    showMessage("No Summary Area Selected", "Please select a .zip shapefile or a .geojson file to add to viewer");
+    showMessage(
+      "No Summary Area Selected",
+      "Please select a .zip shapefile or a .geojson file to add to viewer"
+    );
   }
 }
 function startShpDefinedCharting() {
   // clearUploadedAreas();
   turnOnUploadedLayers();
-  if (selectionTracker.uploadedLayerIndices === undefined || selectionTracker.uploadedLayerIndices === null) {
+  if (
+    selectionTracker.uploadedLayerIndices === undefined ||
+    selectionTracker.uploadedLayerIndices === null
+  ) {
     selectionTracker.uploadedLayerIndices = [];
   }
 
@@ -1802,7 +2161,10 @@ function getImageCollectionValuesForCharting(pt) {
     print(allValues);
     return allValues;
   } catch (err) {
-    showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Charting error', err.message);
+    showMessage(
+      '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Charting error',
+      err.message
+    );
   } //reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
 }
 Date.prototype.yyyymmdd = function () {
@@ -1884,13 +2246,17 @@ function scalePlotlyChart(data, layout, scale = 2) {
     layout.legend.font.size = parseInt(layout.legend.font.size * scale);
   } catch (err) {}
   try {
-    layout.xaxis.title.font.size = parseInt(layout.xaxis.title.font.size * scale);
+    layout.xaxis.title.font.size = parseInt(
+      layout.xaxis.title.font.size * scale
+    );
   } catch (err) {}
   try {
     layout.xaxis.tickfont.size = parseInt(layout.xaxis.tickfont.size * scale);
   } catch (err) {}
   try {
-    layout.yaxis.title.font.size = parseInt(layout.yaxis.title.font.size * scale);
+    layout.yaxis.title.font.size = parseInt(
+      layout.yaxis.title.font.size * scale
+    );
   } catch (err) {}
   try {
     layout.yaxis.tickfont.size = parseInt(layout.yaxis.tickfont.size * scale);
@@ -1927,7 +2293,13 @@ function scalePlotlyChart(data, layout, scale = 2) {
   console.log(data);
   return [outData, layout];
 }
-function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, scale = 2, chartContainerID = "chart-download-canvas") {
+function downloadPlotly(
+  plotlyDownloadChartObject,
+  name,
+  useBiggerFrame = true,
+  scale = 2,
+  chartContainerID = "chart-download-canvas"
+) {
   var currentChart = document.getElementById(chartContainerID);
 
   let width = currentChart.layout.width;
@@ -1936,26 +2308,53 @@ function downloadPlotly(plotlyDownloadChartObject, name, useBiggerFrame = true, 
   if (useBiggerFrame) {
     width = width * scale;
     height = height * scale;
-    let dataLayout = scalePlotlyChart(currentChart.data, currentChart.layout, scale);
+    let dataLayout = scalePlotlyChart(
+      currentChart.data,
+      currentChart.layout,
+      scale
+    );
     Plotly.update(currentChart, dataLayout[0], dataLayout[1]);
   }
-  Plotly.downloadImage(chartContainerID, { format: "png", width: width, height: height, filename: name });
-  ga("send", "event", mode, getActiveTools()[0] + "-plotly-chartDownload", "png");
+  Plotly.downloadImage(chartContainerID, {
+    format: "png",
+    width: width,
+    height: height,
+    filename: name,
+  });
+  ga(
+    "send",
+    "event",
+    mode,
+    getActiveTools()[0] + "-plotly-chartDownload",
+    "png"
+  );
   if (useBiggerFrame) {
-    let dataLayout = scalePlotlyChart(currentChart.data, currentChart.layout, 1 / scale);
+    let dataLayout = scalePlotlyChart(
+      currentChart.data,
+      currentChart.layout,
+      1 / scale
+    );
     Plotly.update(currentChart, dataLayout[0], dataLayout[1]);
   }
 }
 Chart.pluginService.register({
   beforeDraw: function (chart, easing) {
-    if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+    if (
+      chart.config.options.chartArea &&
+      chart.config.options.chartArea.backgroundColor
+    ) {
       var helpers = Chart.helpers;
       var ctx = chart.chart.ctx;
       var chartArea = chart.chartArea;
 
       ctx.save();
       ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-      ctx.fillRect(chartArea.left - 90, chartArea.top - 40, chartArea.right - chartArea.left + 190, chartArea.bottom - chartArea.top + 350);
+      ctx.fillRect(
+        chartArea.left - 90,
+        chartArea.top - 40,
+        chartArea.right - chartArea.left + 190,
+        chartArea.bottom - chartArea.top + 350
+      );
       ctx.restore();
     }
   },
@@ -1966,7 +2365,12 @@ var dataToTable = function (dataset) {
 
   var columnCount = 0;
   jQuery.each(dataset.datasets, function (idx, item) {
-    html += '<th style="background-color:' + item.fillColor + ';">' + item.label + "</th>";
+    html +=
+      '<th style="background-color:' +
+      item.fillColor +
+      ';">' +
+      item.label +
+      "</th>";
     columnCount += 1;
   });
 
@@ -1979,7 +2383,9 @@ var dataToTable = function (dataset) {
         '<td style="background-color:' +
         dataset.datasets[i].fillColor +
         ';">' +
-        (dataset.datasets[i].data[idx] === "0" ? "-" : dataset.datasets[i].data[idx]) +
+        (dataset.datasets[i].data[idx] === "0"
+          ? "-"
+          : dataset.datasets[i].data[idx]) +
         "</td>";
     }
     html += "</tr>";
@@ -1991,7 +2397,10 @@ var dataToTable = function (dataset) {
 };
 var chartJSChart, plotlyDownloadChartObject;
 var chartType;
-if (localStorage.tableOrChart === undefined || localStorage.tableOrChart === null) {
+if (
+  localStorage.tableOrChart === undefined ||
+  localStorage.tableOrChart === null
+) {
   // if(mode === 'MTBS'){localStorage.tableOrChart = 'table'}
   // else{
   localStorage.tableOrChart = "chart";
@@ -2016,14 +2425,18 @@ function configChartModal(chartPlatform = "chartJS") {
   clearModal("chart-modal");
   // if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
 
-  $("#chart-modal-body").append(`<div id = 'chart-modal-graph-table-container' class = 'flexcroll chart-table-graph-container'></div>`);
+  $("#chart-modal-body").append(
+    `<div id = 'chart-modal-graph-table-container' class = 'flexcroll chart-table-graph-container'></div>`
+  );
 
   if (chartPlatform === "chartJS") {
-    $("#chart-modal-graph-table-container").append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
+    $("#chart-modal-graph-table-container")
+      .append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
 	    													<canvas id="chart-canvas" width="${canvasWidth}" height = "${canvasHeight}" ></canvas>
 	    												</div>`);
   } else {
-    $("#chart-modal-graph-table-container").append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
+    $("#chart-modal-graph-table-container")
+      .append(`<div id = 'chart-modal-graph-container' class = 'pb-2'>
 	    													<div id="chart-canvas"></div>
 	    													<div id="chart-download-canvas" style="display:none;"></div>
 	    												</div>`);
@@ -2033,7 +2446,17 @@ function configChartModal(chartPlatform = "chartJS") {
     `<div id="chart-table" style = 'display:none;' width="${canvasWidth}" height = "${canvasHeight}" ></div>`
   );
 }
-function addChartJS(dt, title, chartType, stacked, steppedLine, colors, xAxisLabel, yAxisLabel, fieldsHidden) {
+function addChartJS(
+  dt,
+  title,
+  chartType,
+  stacked,
+  steppedLine,
+  colors,
+  xAxisLabel,
+  yAxisLabel,
+  fieldsHidden
+) {
   var displayXAxis = true;
   var displayYAxis = true;
   if (fieldsHidden === null || fieldsHidden === undefined) {
@@ -2271,9 +2694,11 @@ function dataTableNumbersToNames(dataTable) {
   // catch(err){chartTableDict = null};
   if (
     pixelChartCollections[whichPixelChartCollection].chartTableDict !== null &&
-    pixelChartCollections[whichPixelChartCollection].chartTableDict !== undefined
+    pixelChartCollections[whichPixelChartCollection].chartTableDict !==
+      undefined
   ) {
-    chartTableDict = pixelChartCollections[whichPixelChartCollection].chartTableDict;
+    chartTableDict =
+      pixelChartCollections[whichPixelChartCollection].chartTableDict;
   } else {
     chartTableDict = null;
   }
@@ -2289,7 +2714,12 @@ function dataTableNumbersToNames(dataTable) {
 
       var tableValue;
       // console.log(chartTableDict[label]);console.log(value);
-      if (chartTableDict !== null && chartTableDict[label] !== null && chartTableDict[label] !== undefined && value !== undefined) {
+      if (
+        chartTableDict !== null &&
+        chartTableDict[label] !== null &&
+        chartTableDict[label] !== undefined &&
+        value !== undefined
+      ) {
         var keys = Object.keys(chartTableDict[label]);
         var whichKey = keys.filter(function (k) {
           return Math.abs(k - value) < 0.0001;
@@ -2329,7 +2759,8 @@ function dataTableNumbersToNames(dataTable) {
   return outTable;
 }
 function htmlTable(table) {
-  var html = '<div class = "flexcroll chart-table text-black"><table class="table  table-hover">';
+  var html =
+    '<div class = "flexcroll chart-table text-black"><table class="table  table-hover">';
   html += "<thead><tr>";
   var header = dataTable[0];
 
@@ -2353,40 +2784,272 @@ function htmlTable(table) {
 }
 
 var d = [
-  ["time", "NDVI", "NDVI_LT_fitted", "Land Cover Class", "Land Use Class", "Loss Probability", "Gain Probability"],
-  ["1985", 0.6456953642384106, null, 0.6000000238418579, 0.30000001192092896, 0.019999999552965164, 0],
-  ["1986", 0.6456953642384106, 0.6573789473684211, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["1987", 0.6456953642384106, 0.6598578947368421, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["1988", 0.6934156378600823, 0.6623368421052632, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["1989", 0.6934156378600823, 0.6648157894736842, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["1990", 0.6934156378600823, 0.6672947368421053, 0.6000000238418579, 0.30000001192092896, 0, 0],
+  [
+    "time",
+    "NDVI",
+    "NDVI_LT_fitted",
+    "Land Cover Class",
+    "Land Use Class",
+    "Loss Probability",
+    "Gain Probability",
+  ],
+  [
+    "1985",
+    0.6456953642384106,
+    null,
+    0.6000000238418579,
+    0.30000001192092896,
+    0.019999999552965164,
+    0,
+  ],
+  [
+    "1986",
+    0.6456953642384106,
+    0.6573789473684211,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "1987",
+    0.6456953642384106,
+    0.6598578947368421,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "1988",
+    0.6934156378600823,
+    0.6623368421052632,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "1989",
+    0.6934156378600823,
+    0.6648157894736842,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "1990",
+    0.6934156378600823,
+    0.6672947368421053,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
   ["1991", null, 0.6697736842105264, null, null, null, null],
   ["1992", null, 0.6722526315789473, null, null, null, null],
   ["1993", null, 0.6747315789473685, null, null, null, null],
-  ["1994", 0.6439862542955326, 0.6772105263157895, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["1995", 0.6439862542955326, 0.6796894736842105, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["1996", 0.6439862542955326, 0.6821684210526316, 0.6000000238418579, 0.30000001192092896, 0, 0],
+  [
+    "1994",
+    0.6439862542955326,
+    0.6772105263157895,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "1995",
+    0.6439862542955326,
+    0.6796894736842105,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "1996",
+    0.6439862542955326,
+    0.6821684210526316,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
   ["1997", null, 0.6846473684210527, null, null, null, null],
-  ["1998", 0.7261107729762629, 0.6871263157894737, 0.6000000238418579, 0.30000001192092896, 0.1599999964237213, 0],
-  ["1999", 0.7261107729762629, 0.6896052631578948, 0.6000000238418579, 0.30000001192092896, 0.07999999821186066, 0],
-  ["2000", 0.6856763925729443, 0.6920842105263157, 0.6000000238418579, 0.30000001192092896, 0.09000000357627869, 0],
-  ["2001", 0.6856763925729443, 0.6945631578947369, 0.6000000238418579, 0.30000001192092896, 0.07000000029802322, 0],
-  ["2002", 0.7016229712858926, 0.6970421052631579, 0.6000000238418579, 0.30000001192092896, 0.05000000074505806, 0],
-  ["2003", 0.6268958543983821, 0.6995210526315789, 0.6000000238418579, 0.30000001192092896, 0, 0],
-  ["2004", 0.766839378238342, 0.7020000000000001, 0.6000000238418579, 0.30000001192092896, 0, 0],
+  [
+    "1998",
+    0.7261107729762629,
+    0.6871263157894737,
+    0.6000000238418579,
+    0.30000001192092896,
+    0.1599999964237213,
+    0,
+  ],
+  [
+    "1999",
+    0.7261107729762629,
+    0.6896052631578948,
+    0.6000000238418579,
+    0.30000001192092896,
+    0.07999999821186066,
+    0,
+  ],
+  [
+    "2000",
+    0.6856763925729443,
+    0.6920842105263157,
+    0.6000000238418579,
+    0.30000001192092896,
+    0.09000000357627869,
+    0,
+  ],
+  [
+    "2001",
+    0.6856763925729443,
+    0.6945631578947369,
+    0.6000000238418579,
+    0.30000001192092896,
+    0.07000000029802322,
+    0,
+  ],
+  [
+    "2002",
+    0.7016229712858926,
+    0.6970421052631579,
+    0.6000000238418579,
+    0.30000001192092896,
+    0.05000000074505806,
+    0,
+  ],
+  [
+    "2003",
+    0.6268958543983821,
+    0.6995210526315789,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
+  [
+    "2004",
+    0.766839378238342,
+    0.7020000000000001,
+    0.6000000238418579,
+    0.30000001192092896,
+    0,
+    0,
+  ],
   ["2005", 0.1652502360717658, 0.1652, 0.10000000149011612, 0.5, 0.75, 0],
-  ["2006", 0.37468030690537085, 0.21481538461538469, 0.10000000149011612, 0.6000000238418579, 0.07999999821186066, 0.07999999821186066],
-  ["2007", 0.37468030690537085, 0.26443076923076925, 0.4000000059604645, 0.6000000238418579, 0.09000000357627869, 0.05999999865889549],
-  ["2008", 0.44536882972823066, 0.3140461538461539, 0.10000000149011612, 0.5, 0.12999999523162842, 0.12999999523162842],
-  ["2009", 0.3751962323390895, 0.3636615384615385, 0.4000000059604645, 0.6000000238418579, 0.019999999552965164, 0.07999999821186066],
-  ["2010", 0.3751962323390895, 0.41327692307692304, 0.4000000059604645, 0.6000000238418579, 0, 0.10999999940395355],
-  ["2011", 0.4737417943107221, 0.4628923076923077, 0.4000000059604645, 0.6000000238418579, 0.05999999865889549, 0.07999999821186066],
-  ["2012", 0.5301810865191147, 0.5125076923076924, 0.4000000059604645, 0.6000000238418579, 0.12999999523162842, 0.10000000149011612],
-  ["2013", 0.5709251101321586, 0.562123076923077, 0.4000000059604645, 0.6000000238418579, 0.05000000074505806, 0.8399999737739563],
-  ["2014", 0.569609507640068, 0.6117384615384616, 0.4000000059604645, 0.30000001192092896, 0, 0.6499999761581421],
-  ["2015", 0.6380090497737556, 0.6613538461538462, 0.4000000059604645, 0.6000000238418579, 0.019999999552965164, 0.8700000047683716],
-  ["2016", 0.7084615384615386, 0.7109692307692308, 0.4000000059604645, 0.30000001192092896, 0, 0.75],
-  ["2017", 0.7672530446549392, 0.7605846153846154, 0.4000000059604645, 0.30000001192092896, 0, 0.6499999761581421],
+  [
+    "2006",
+    0.37468030690537085,
+    0.21481538461538469,
+    0.10000000149011612,
+    0.6000000238418579,
+    0.07999999821186066,
+    0.07999999821186066,
+  ],
+  [
+    "2007",
+    0.37468030690537085,
+    0.26443076923076925,
+    0.4000000059604645,
+    0.6000000238418579,
+    0.09000000357627869,
+    0.05999999865889549,
+  ],
+  [
+    "2008",
+    0.44536882972823066,
+    0.3140461538461539,
+    0.10000000149011612,
+    0.5,
+    0.12999999523162842,
+    0.12999999523162842,
+  ],
+  [
+    "2009",
+    0.3751962323390895,
+    0.3636615384615385,
+    0.4000000059604645,
+    0.6000000238418579,
+    0.019999999552965164,
+    0.07999999821186066,
+  ],
+  [
+    "2010",
+    0.3751962323390895,
+    0.41327692307692304,
+    0.4000000059604645,
+    0.6000000238418579,
+    0,
+    0.10999999940395355,
+  ],
+  [
+    "2011",
+    0.4737417943107221,
+    0.4628923076923077,
+    0.4000000059604645,
+    0.6000000238418579,
+    0.05999999865889549,
+    0.07999999821186066,
+  ],
+  [
+    "2012",
+    0.5301810865191147,
+    0.5125076923076924,
+    0.4000000059604645,
+    0.6000000238418579,
+    0.12999999523162842,
+    0.10000000149011612,
+  ],
+  [
+    "2013",
+    0.5709251101321586,
+    0.562123076923077,
+    0.4000000059604645,
+    0.6000000238418579,
+    0.05000000074505806,
+    0.8399999737739563,
+  ],
+  [
+    "2014",
+    0.569609507640068,
+    0.6117384615384616,
+    0.4000000059604645,
+    0.30000001192092896,
+    0,
+    0.6499999761581421,
+  ],
+  [
+    "2015",
+    0.6380090497737556,
+    0.6613538461538462,
+    0.4000000059604645,
+    0.6000000238418579,
+    0.019999999552965164,
+    0.8700000047683716,
+  ],
+  [
+    "2016",
+    0.7084615384615386,
+    0.7109692307692308,
+    0.4000000059604645,
+    0.30000001192092896,
+    0,
+    0.75,
+  ],
+  [
+    "2017",
+    0.7672530446549392,
+    0.7605846153846154,
+    0.4000000059604645,
+    0.30000001192092896,
+    0,
+    0.6499999761581421,
+  ],
 ];
 var d = [
   [
@@ -2473,7 +3136,9 @@ function getEveryOther(values) {
 }
 
 function makeLegend(legendDicts) {
-  $("#chart-modal-graph-container").append(`<div id = 'chart-legend' style = 'font-size:0.7em;' class = 'text-dark'></div>`);
+  $("#chart-modal-graph-container").append(
+    `<div id = 'chart-legend' style = 'font-size:0.7em;' class = 'text-dark'></div>`
+  );
   Object.keys(legendDicts).map(function (k) {
     var title = k;
     try {
@@ -2489,8 +3154,12 @@ function makeLegend(legendDicts) {
 										<table  style = 'display:inline-block;vertical-align:top' class = 'table-bordered' id = '${legendID}-table'></table>
 									</div>`);
 
-    $("#" + legendID + "-table").append(`<tr id = '${legendID}-table-names'></tr>`);
-    $("#" + legendID + "-table").append(`<tr id = '${legendID}-table-values'></tr>`);
+    $("#" + legendID + "-table").append(
+      `<tr id = '${legendID}-table-names'></tr>`
+    );
+    $("#" + legendID + "-table").append(
+      `<tr id = '${legendID}-table-values'></tr>`
+    );
     Object.keys(legendDict).map(function (k) {
       $("#" + legendID + "-table-names").append(`<td>${k}</td>`);
     });
@@ -2505,7 +3174,8 @@ function startPixelChartCollection() {
   mapHammer = new Hammer(document.getElementById("map"));
 
   mapHammer.on("doubletap", function (event) {
-    chartCollection = pixelChartCollections[whichPixelChartCollection].collection;
+    chartCollection =
+      pixelChartCollections[whichPixelChartCollection].collection;
 
     // if(pixelChartCollections[whichPixelChartCollection].chartColors !== undefined && pixelChartCollections[whichPixelChartCollection].chartColors !== null){
     // 	chartColors = pixelChartCollections[whichPixelChartCollection].chartColors;
@@ -2524,7 +3194,10 @@ function startPixelChartCollection() {
     var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 
     uriName =
-      pixelChartCollections[whichPixelChartCollection].label.replaceAll(" ", "_") +
+      pixelChartCollections[whichPixelChartCollection].label.replaceAll(
+        " ",
+        "_"
+      ) +
       "_lng_" +
       center.lng().toFixed(4).toString() +
       "_lat_" +
@@ -2560,10 +3233,18 @@ function startPixelChartCollection() {
           // v.slice(1).map(function(vt){d.push(vt)})
           var d = v[0];
 
-          if (pixelChartCollections[whichPixelChartCollection].simplifyDate === false) {
+          if (
+            pixelChartCollections[whichPixelChartCollection].simplifyDate ===
+            false
+          ) {
             var y = new Date(d).toGMTString();
-          } else if (pixelChartCollections[whichPixelChartCollection].semiSimpleDate === true) {
-            var y = `${new Date(d).getFullYear()}-${new Date(d).getMonth() + 1}-${new Date(d).getDate()}`;
+          } else if (
+            pixelChartCollections[whichPixelChartCollection].semiSimpleDate ===
+            true
+          ) {
+            var y = `${new Date(d).getFullYear()}-${
+              new Date(d).getMonth() + 1
+            }-${new Date(d).getDate()}`;
           } else {
             var y = (new Date(d).getYear() + 1900).toString();
           }
@@ -2607,36 +3288,41 @@ function startPixelChartCollection() {
     let getRegionWrapperCallLimit = 2;
     let getRegionCallCount = 0;
     function getRegionWrapper() {
-      icT.getRegion(plotBounds, scale, crs, transform).evaluate(function (values, failure) {
-        $("#summary-spinner").slideUp();
-        // if(values === undefined ||  values === null){
-        // 	showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
-        // }
-        if (failure !== undefined && failure !== null) {
-          showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again', failure);
-        }
-        if (values !== undefined && values !== null && values.length > 1) {
-          var expectedLength = icT.size().getInfo() + 1;
-          if (values.length > expectedLength) {
-            console.log("reducing number of inputs");
-            // console.log(expectedLength);
-            // console.log(values);
-            values = values.slice(0, expectedLength);
-            // values = getEveryOther(values);
+      icT
+        .getRegion(plotBounds, scale, crs, transform)
+        .evaluate(function (values, failure) {
+          $("#summary-spinner").slideUp();
+          // if(values === undefined ||  values === null){
+          // 	showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
+          // }
+          if (failure !== undefined && failure !== null) {
+            showMessage(
+              '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',
+              failure
+            );
           }
-          chartValues(values);
-        } else if (values.length == 1) {
-          console.log(values);
-          console.log("Values length == 1. Trying again");
-          getRegionCallCount++;
-          if (getRegionCallCount < getRegionWrapperCallLimit) {
-            getRegionWrapper();
+          if (values !== undefined && values !== null && values.length > 1) {
+            var expectedLength = icT.size().getInfo() + 1;
+            if (values.length > expectedLength) {
+              console.log("reducing number of inputs");
+              // console.log(expectedLength);
+              // console.log(values);
+              values = values.slice(0, expectedLength);
+              // values = getEveryOther(values);
+            }
+            chartValues(values);
+          } else if (values.length == 1) {
+            console.log(values);
+            console.log("Values length == 1. Trying again");
+            getRegionCallCount++;
+            if (getRegionCallCount < getRegionWrapperCallLimit) {
+              getRegionWrapper();
+            }
+          } else {
+            console.log(values);
+            showMessage("Charting Error", "Unknown Error<br>Try again");
           }
-        } else {
-          console.log(values);
-          showMessage("Charting Error", "Unknown Error<br>Try again");
-        }
-      });
+        });
     }
     getRegionWrapper();
   });
@@ -2689,7 +3375,13 @@ function exportJSON(filename, json) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "geoJSON");
+    ga(
+      "send",
+      "event",
+      mode,
+      getActiveTools()[0] + "-chartDownload",
+      "geoJSON"
+    );
   }
 }
 
@@ -2697,7 +3389,8 @@ function exportToCsv(filename, rows) {
   var processRow = function (row) {
     var finalVal = "";
     for (var j = 0; j < row.length; j++) {
-      var innerValue = row[j] === null || row[j] === undefined ? "" : row[j].toString();
+      var innerValue =
+        row[j] === null || row[j] === undefined ? "" : row[j].toString();
       if (row[j] instanceof Date) {
         innerValue = row[j].toLocaleString();
       }

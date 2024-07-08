@@ -1990,8 +1990,6 @@ function addToMap(
 
   addLayer(layer);
   layerCount++;
-
-  return layer.id
 }
 
 //////////////////////////////////////////////////////
@@ -2308,7 +2306,7 @@ function mp() {
     whichLayerList,
     queryItem
   ) {
-    return addToMap(
+    addToMap(
       item,
       viz,
       name,
@@ -2319,20 +2317,6 @@ function mp() {
       whichLayerList,
       queryItem
     );
-  };
-  this.removeLayer = function (layerId) {
-    if (layerId) {
-      map.overlayMapTypes.setAt(layerObj[layerId].layerId, null)
-      console.log(`${layerId}-container-${layerObj[layerId].ID}`)
-      $(`#${layerId}-container-${layerObj[layerId].ID}`).remove()
-      $(`#${layerId}`).remove()
-
-      if (layerObj[layerId].canQuery) {
-        console.log(`${layerId}-${layerObj[layerId].ID}`)
-        delete(queryObj[`${layerId}-${layerObj[layerId].ID}`])
-      }
-      delete(layerObj[layerId])
-    } 
   };
   this.addSerializedLayer = function (
     item,
@@ -2473,13 +2457,11 @@ function mp() {
     eeImage,
     name,
     res,
-    resMin,
-    resMax,
-    resStep,
     Export,
-    vizParams
+    metadataParams,
+    noDataValue
   ) {
-    addExport(eeImage, name, res, resMin, resMax, resStep, Export, vizParams);
+    addExport(eeImage, name, res, Export, metadataParams, noDataValue);
   };
   this.addPlot = function (nameLngLat) {
     addPlot(nameLngLat);
@@ -2667,8 +2649,7 @@ function reRun() {
     } else if (
       mode === "STORM" ||
       mode === "Bloom-Mapper" ||
-      mode === "sequoia-view" ||
-      mode === "HiForm-BMP"
+      mode === "sequoia-view"
     ) {
       showMessage("", staticTemplates.loadingModal["all"]("", "Updating"));
     } else {
@@ -2711,7 +2692,6 @@ function reRun() {
     "area-charting-select-layer-list",
     "fhp-div",
     "time-lapse-legend-list",
-    "related-layer-list",
   ].map(function (l) {
     $("#" + l).empty();
     $("#legend-" + l).empty();
@@ -3606,8 +3586,6 @@ function dropdownUpdateStudyArea(whichOne) {
     run = runBaseLearner;
   } else if (mode === "sequoia-view") {
     run = runSequoia;
-  } else if (mode === "HiForm-BMP") {
-    run = runHiForm;
   } else if (studyAreaName === "CONUS") {
     run = runCONUS;
   } else {
@@ -4285,8 +4263,7 @@ function initialize() {
             mode === "STORM" ||
             mode === "Bloom-Mapper" ||
             mode === "sequoia-view" ||
-            mode === "TreeMap" ||
-            mode === "HiForm-BMP"
+            mode === "TreeMap"
           ) {
             showMessage(
               "",
@@ -4392,8 +4369,6 @@ function initialize() {
       run = runAlgal;
     } else if (mode === "sequoia-view") {
       run = runSequoia;
-    } else if (mode === "HiForm-BMP") {
-      run = runHiForm;
     } else if (studyAreaName === "CONUS") {
       longStudyAreaName = cachedStudyAreaName;
       run = runCONUS;

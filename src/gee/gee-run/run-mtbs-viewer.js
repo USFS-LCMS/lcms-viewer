@@ -14,12 +14,13 @@ function runMTBS() {
     "year_range",
     `${startYear}_${endYear}`
   );
-
+  getNAIP(null, true);
+  turnOffLayersWhenTimeLapseIsOn = false;
   var mtbsAndNLCD = getMTBSAndNLCD("anc", "layer-list", true);
 
   var nlcdLCObj = mtbsAndNLCD.NLCD;
   mtbsC = mtbsAndNLCD.MTBS.collection;
-  getNAIP();
+
   var yearsCli = range(startYear, endYear + 1);
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
   //   var stop = start + 999;
@@ -65,6 +66,7 @@ function runMTBS() {
   perims = perims.filter(ee.Filter.lte("Year", endYear));
 
   perims = perims.select(inFields, outFields);
+  // console.log(perims.size().getInfo());
   // perims = perims.map(function(f){
   //   f = ee.Feature(f);
   //   var d = ee.Number(f.get('StartDay')).format('%02d');
@@ -131,6 +133,7 @@ function runMTBS() {
   populatePixelChartDropdown();
 
   getSelectLayers();
+
   // toggleCumulativeMode();
   // Map.addSelectLayer(resolveEcoRegions,{strokeColor:'0F0'},'Select Which EcoRegion',false,null,null,'Ecoregion selection');
   // Map.addSelectLayer(huc4,{strokeColor:'00F'},'Select Which HUC 4',false,null,null,'HUC 4 selection');

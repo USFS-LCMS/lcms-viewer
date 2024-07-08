@@ -461,8 +461,8 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
   var mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1"; //'projects/gtac-mtbs/assets/burn_severity_mosaics/MTBS';//'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
 
   var mtbsEndYear = endYear;
-  if (endYear > 2021) {
-    mtbsEndYear = 2021;
+  if (endYear > 2022) {
+    mtbsEndYear = 2022;
   }
 
   var mtbsYears = ee.List.sequence(1984, mtbsEndYear);
@@ -917,51 +917,62 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
     return [mtbs, undefined, undefined];
   }
 }
-function getNAIP(whichLayerList) {
-  if (whichLayerList === null || whichLayerList === undefined) {
-    whichLayerList = "reference-layer-list";
-  }
-  var naipYears = [
-    [2003, 2007],
-    [2008, 2008],
-    [2009, 2011],
-    [2012, 2014],
-    [2015, 2017],
-    [2018, 2020],
-  ];
-
+function getNAIP(whichLayerList, timeLapse) {
+  whichLayerList = whichLayerList || "reference-layer-list";
+  timeLapse = timeLapse !== null && timeLapse !== undefined ? timeLapse : false;
   var naip = ee
     .ImageCollection("USDA/NAIP/DOQQ")
     .select([0, 1, 2], ["R", "G", "B"]);
-  // naip = naip.map(function(img){
-  //   var y = ee.Date(img.get('system:time_start')).get('year');
-  //   y = ee.Image(y).rename(['NAIP Year']);
-  //   var out = img.addBands(y).copyProperties(img,['system:time_start']);
-  //   return out
 
-  // })
-  naipYears.map(function (yr) {
-    var naipT = naip
-      .filter(ee.Filter.calendarRange(yr[0], yr[1], "year"))
-      .mosaic()
-      .byte()
-      .set("bounds", clientBoundsDict.CONUS);
-
-    Map.addLayer(
-      naipT,
-      { addToLegend: false, min: 25, max: 225 },
-      "NAIP " + yr[0].toString() + "-" + yr[1].toString(),
+  if (timeLapse === true) {
+    naipYears = range(2003, 2022 + 1);
+    Map.addTimeLapse(
+      naip,
+      { addToLegend: false, min: 25, max: 225, years: naipYears, mosaic: true },
+      "NAIP Time Lapse",
       false,
       null,
       null,
       "The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the " +
-        yr[0].toString() +
+        naipYears[0].toString() +
         " to the " +
-        yr[1].toString() +
+        naipYears[1].toString() +
         " agricultural growing season in the continental U.S.",
       whichLayerList
     );
-  });
+  } else {
+    var naipYears = [
+      [2003, 2007],
+      [2008, 2008],
+      [2009, 2011],
+      [2012, 2014],
+      [2015, 2017],
+      [2018, 2020],
+      [2021, 2022],
+    ];
+    naipYears.map(function (yr) {
+      var naipT = naip
+        .filter(ee.Filter.calendarRange(yr[0], yr[1], "year"))
+        .mosaic()
+        .byte()
+        .set("bounds", clientBoundsDict.CONUS);
+
+      Map.addLayer(
+        naipT,
+        { addToLegend: false, min: 25, max: 225 },
+        `NAIP ${yr[0]}-${yr[1]}`,
+        false,
+        null,
+        null,
+        "The National Agriculture Imagery Program (NAIP) acquired aerial imagery from " +
+          yr[0].toString() +
+          " to the " +
+          yr[1].toString() +
+          " agricultural growing season in the continental U.S.",
+        whichLayerList
+      );
+    });
+  }
 }
 function getHansen(whichLayerList) {
   if (whichLayerList === null || whichLayerList === undefined) {

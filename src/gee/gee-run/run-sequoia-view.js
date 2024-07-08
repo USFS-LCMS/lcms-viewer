@@ -48,6 +48,10 @@ function runSequoia() {
     "date_params",
     `${preStartYear}-${preEndYear}__${postYear}__${startJulianFormatted}-${endJulianFormatted}`
   );
+
+  getNAIP(null, true);
+  turnOffLayersWhenTimeLapseIsOn = false;
+
   // Bring in the monitoring sites
   var monitoring_sites = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest"
