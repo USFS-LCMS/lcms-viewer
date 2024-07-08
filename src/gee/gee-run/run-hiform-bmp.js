@@ -120,19 +120,19 @@ function hiform_bmp_process() {
         greenest_pre2_clip.select('date'),
         `Pre_Date_Raster`,
         10,
-        true,
+        false,
         {}
       );
 
     
     //  Display pre products
-    Map.addLayer(greenest_pre2_clip, vizParamsTrue, 'Pre Natural Color Composite', true);
+    Map.addLayer(greenest_pre2_clip, vizParamsTrue, 'Pre Natural Color Composite', false);
     
     Map.addExport(
-        greenest_pre2_clip.select(['red', 'blue', 'green']),
+        greenest_pre2_clip.select(['red', 'blue', 'green']).multiply(10000).int16(),
         `Pre_Natural_Color_Composite`,
         10,
-        true,
+        false,
         {}
       );
 
@@ -163,6 +163,7 @@ function hiform_bmp_process() {
         applyTDOM: false,
         applyCloudScorePlus: true,
         applyCloudProbability: false,
+        toaOrSA: urlParams.correctionTypeOption
         });
 
     // Add NDVI and DATE as separate bands to image layer stack
@@ -193,18 +194,20 @@ function hiform_bmp_process() {
         greenest_post2_clip.select('date'),
         `Post_Date_Raster`,
         10,
-        true,
-        {}
+        false,
+        {},
+        0
       );
 
+
     //  Display post products
-    Map.addLayer(greenest_post2_clip, vizParamsTrue, 'Post Natural Color Composite', true); 
+    Map.addLayer(greenest_post2_clip, vizParamsTrue, 'Post Natural Color Composite', false); 
     
     Map.addExport(
-        greenest_post2_clip.select(['red', 'blue', 'green']),
+        greenest_post2_clip.select(['red', 'blue', 'green']).multiply(10000).int16(),
         `Post_Natural_Color_Composite`,
         10,
-        true,
+        false,
         {}
       );
     
@@ -231,15 +234,28 @@ function hiform_bmp_process() {
     //////  ASSIGN PRIOR GROWING SEASON PERIOD FOR SUMMER MAX COMPOSITING
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var gsmax = ee.ImageCollection('COPERNICUS/S2_HARMONIZED') 
-    //var gsmax = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') 
-    //var gsavg = ee.ImageCollection('COPERNICUS/S2_HARMONIZED') // use average/mean on single dates
+    // var gsmax = ee.ImageCollection('COPERNICUS/S2_HARMONIZED') 
+    // //var gsmax = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') 
+    // //var gsavg = ee.ImageCollection('COPERNICUS/S2_HARMONIZED') // use average/mean on single dates
 
 
-    .filterDate('2022-05-01', '2022-09-21')
-    //.filterDate('2020-06-01', '2020-09-21')
+    // .filterDate('2022-05-01', '2022-09-21')
+    // //.filterDate('2020-06-01', '2020-09-21')
 
-    .filterBounds(geoBounds);
+    //.filterBounds(geoBounds);
+
+    var gsmax = getImagesLib.getProcessedSentinel2Scenes({
+        studyArea: geoBounds,
+        startYear: 2022,
+        endYear: 2022,
+        startJulian: 121,
+        endJulian: 244,
+        convertToDailyMosaics: false,
+        applyTDOM: false,
+        applyCloudScorePlus: true,
+        applyCloudProbability: false,
+        toaOrSA: urlParams.correctionTypeOption
+        });
 
     //print(gsmax,"gsmax");
     //print(gsavg,"gsavg");
@@ -262,7 +278,7 @@ function hiform_bmp_process() {
     var dateBand = ee.Image.constant(dateNumber).uint32().rename('date');
     return img.addBands(dateBand);}
 
-    var withNDVIDATE_gsmax = gsmax.map(addNDVI).map(addDate); 
+    var withNDVIDATE_gsmax = gsmax.map(addDate); 
     //var withNDVIDATE_gsavg = gsavg.map(addNDVI).map(addDate); 
 
     // Lists 'collection return' to console with NDVI and DATE band added
@@ -294,13 +310,27 @@ function hiform_bmp_process() {
     //////   ASSIGN PRIOR WINTER SEASON PERIOD FOR THE LEAF-OFF SEASON MAX
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var winmax = ee.ImageCollection('COPERNICUS/S2_HARMONIZED') 
-    //var winmax = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+    // var winmax = ee.ImageCollection('COPERNICUS/S2_HARMONIZED') 
+    // //var winmax = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
 
-    .filterDate('2022-01-01', '2022-03-15')
-    //.filterDate('2020-01-01', '2020-03-01')  
+    // .filterDate('2022-01-01', '2022-03-15')
+    // //.filterDate('2020-01-01', '2020-03-01')  
 
-    .filterBounds(geoBounds);
+    // .filterBounds(geoBounds);
+
+
+    var winmax = getImagesLib.getProcessedSentinel2Scenes({
+        studyArea: geoBounds,
+        startYear: 2022,
+        endYear: 2022,
+        startJulian: 1,
+        endJulian: 74,
+        convertToDailyMosaics: false,
+        applyTDOM: false,
+        applyCloudScorePlus: true,
+        applyCloudProbability: false,
+        toaOrSA: urlParams.correctionTypeOption
+        });
 
     //print(winmax,"winmax");
 
@@ -317,7 +347,7 @@ function hiform_bmp_process() {
     var dateBand = ee.Image.constant(dateNumber).uint32().rename('date');
     return img.addBands(dateBand);}
 
-    var withNDVIDATE_winmax = winmax.map(addNDVI).map(addDate); 
+    var withNDVIDATE_winmax = winmax.map(addDate); 
 
 
     // // Lists 'collection return' to console with NDVI layer added to band stack
@@ -514,14 +544,15 @@ function hiform_bmp_process() {
         color: 2,
         width: 1
     });
-    Map.addLayer(outline2.clip(geoBounds), {palette: '3DED97', layerType : 'geeImage'}, 'Moderate NDVI Change (green outline poly)');
+    Map.addLayer(outline2, {palette: '3DED97', min: 1, max: 1}, 'Moderate NDVI Change (green outline poly)');
 
     Map.addExport(
-        outline2.clip(geoBounds),
+        zones2.unmask(0).byte(),
         `Moderate_NDVI_Change (Green Outline)`,
         10,
         true,
-        {}
+        {},
+        255
       );
 
     //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
@@ -623,14 +654,14 @@ function hiform_bmp_process() {
         width: 1
     });
     //Map.addLayer(outline.clip(geometry), {palette: 'FF2400'}, 'severe NDVI change (red outline poly)');
-    Map.addLayer(outline.clip(geometry), {palette: 'FF2400'}, 'Sever NDVI Change (red outline poly)');
-
+    Map.addLayer(outline, {palette: 'FF2400', min: 1, max: 1}, 'Severe NDVI Change (red outline poly)');
     Map.addExport(
-        outline.clip(geometry),
+        zones.unmask(0).byte(),
         `Severe_NDVI_Change (Red Outline)`,
         10,
         true,
-        {}
+        {},
+        255
       );
     //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
@@ -670,11 +701,7 @@ function hiform_bmp_process() {
     
 }
 
-function add_exports() {
-    console.log("Here")
 
-    Map.addExport(greenest_pre2_clip.select(['B4', 'B3', 'B2']).multiply(10000).int16(), `Pre Composite`, 10, true, {})
-}
 
 
 function get_sld_intervals() {

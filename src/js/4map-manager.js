@@ -441,13 +441,13 @@ function selectFrame(id, fromYearSlider, advanceOne) {
         slidersT.map(function (s) {
           try {
             setFrameOpacity(s, 0);
-          } catch (err) {}
+          } catch (err) { }
         });
       } else {
         slidersT.slice(0, timeLapseFrame).map(function (s) {
           try {
             setFrameOpacity(s, timeLapseObj[timeLapseID].opacity);
-          } catch (err) {}
+          } catch (err) { }
         });
       }
     }
@@ -469,7 +469,7 @@ function selectFrame(id, fromYearSlider, advanceOne) {
           );
         });
       }
-    } catch (err) {}
+    } catch (err) { }
     $("#" + timeLapseID + "-year-label").show();
     // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $("#time-lapse-year-label").show();
@@ -551,7 +551,7 @@ function clearAllFrames() {
     slidersT.map(function (s) {
       try {
         setFrameOpacity(s, 0);
-      } catch (err) {}
+      } catch (err) { }
     });
   });
 }
@@ -1016,26 +1016,24 @@ function addTimeLapseToMap(
                                   <div class = 'time-lapse-layer-range-container' >
                                     <div title = 'Opacity' id='${legendDivID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>
                                       <div id='${legendDivID}-opacity-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                        <div style = 'display:none;' id='${legendDivID}-opacity-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
-    timeLapseObj[legendDivID].opacity / 100
-  }</div>
+                                        <div style = 'display:none;' id='${legendDivID}-opacity-slider-handle-label' class = 'time-lapse-slider-handle-label'>${timeLapseObj[legendDivID].opacity / 100
+    }</div>
                                       </div>
                                     </div>
                                     <div id='${legendDivID}-time-lapse-layer-range-container' style = 'display:none;'>
                                       <div title = 'Frame Date' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range-first'>
                                         <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                          <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
-    viz.years[0]
-  }</div>
+                                          <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${viz.years[0]
+    }</div>
                                         </div>
                                       </div>
                                     
                                       <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-time-lapse-layer-range'>
                                         <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
                                           <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${(
-    1 /
-    (intervalPeriod / 1000)
-  ).toFixed(1)}fps</div>
+      1 /
+      (intervalPeriod / 1000)
+    ).toFixed(1)}fps</div>
                                         </div>
                                       </div>
                                     </div>
@@ -2329,10 +2327,10 @@ function mp() {
 
       if (layerObj[layerId].canQuery) {
         console.log(`${layerId}-${layerObj[layerId].ID}`)
-        delete(queryObj[`${layerId}-${layerObj[layerId].ID}`])
+        delete (queryObj[`${layerId}-${layerObj[layerId].ID}`])
       }
-      delete(layerObj[layerId])
-    } 
+      delete (layerObj[layerId])
+    }
   };
   this.addSerializedLayer = function (
     item,
@@ -2472,14 +2470,12 @@ function mp() {
   this.addExport = function (
     eeImage,
     name,
-    res,
-    resMin,
-    resMax,
-    resStep,
-    Export,
-    vizParams
+    res, 
+    Export, 
+    metadataParams, 
+    noDataValue
   ) {
-    addExport(eeImage, name, res, resMin, resMax, resStep, Export, vizParams);
+    addExport(eeImage, name, res, Export, metadataParams, noDataValue);
   };
   this.addPlot = function (nameLngLat) {
     addPlot(nameLngLat);
@@ -2619,12 +2615,12 @@ if (urlParams.addLayer === "false" || urlParams.addLayer === false) {
   Object.keys(Map2)
     .filter((k) => k.indexOf("add") > -1)
     .map((k) => {
-      Map2[k] = function () {};
+      Map2[k] = function () { };
     });
   Object.keys(Map)
     .filter((k) => k.indexOf("add") > -1)
     .map((k) => {
-      Map[k] = function () {};
+      Map[k] = function () { };
     });
 }
 
@@ -2731,7 +2727,7 @@ function reRun() {
   exportImageDict = {};
   try {
     clearDownloadDropdown();
-  } catch (err) {}
+  } catch (err) { }
   google.maps.event.clearListeners(mapDiv, "click");
 
   //Rerun the GEE code
@@ -2820,10 +2816,10 @@ function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
     : null;
 }
 function blendColors(color1, color2, weight = 0.5) {
@@ -3276,7 +3272,7 @@ function stopListening() {
     google.maps.event.clearListeners(areaPolygonObj[polyNumber], "dragend");
     window.removeEventListener("keydown", resetPolys);
     window.removeEventListener("keydown", deleteLastAreaVertex);
-  } catch (err) {}
+  } catch (err) { }
 }
 function clearPoly(id) {
   areaPolygonObj[id].setMap(null);
@@ -3297,7 +3293,7 @@ function clearPolys() {
 function stopArea() {
   try {
     mapHammer.destroy();
-  } catch (err) {}
+  } catch (err) { }
   map.setOptions({ disableDoubleClickZoom: true });
 
   clearPolys();
@@ -3324,7 +3320,7 @@ function startDistance() {
   map.setOptions({ draggableCursor: "crosshair" });
   try {
     distancePolyline.destroy();
-  } catch (err) {}
+  } catch (err) { }
 
   distancePolyline = new google.maps.Polyline(distancePolylineOptions);
   distancePolyline.setMap(map);
@@ -3368,7 +3364,7 @@ function stopDistance() {
     distancePolyline.setMap(null);
     map.setOptions({ draggableCursor: "hand" });
     infowindow.setMap(null);
-  } catch (err) {}
+  } catch (err) { }
 }
 function resetPolyline(e) {
   if (
@@ -3593,7 +3589,7 @@ function dropdownUpdateStudyArea(whichOne) {
     (mode === "LCMS-pilot" && studyAreaDict[longStudyAreaName].isPilot == false)
   ) {
     run = runGTAC;
-    run = function () {};
+    run = function () { };
   } else if (mode === "LCMS-pilot") {
     run = runUSFS;
   } else if (mode === "STORM") {
@@ -4139,15 +4135,15 @@ function initialize() {
 
     $("#current-mouse-position").html(
       "Lng: " +
-        cLng +
-        ", Lat: " +
-        cLat +
-        ", " +
-        elevation +
-        " Zoom: " +
-        zoom +
-        ", 1:" +
-        zoomDict[zoom]
+      cLng +
+      ", Lat: " +
+      cLat +
+      ", " +
+      elevation +
+      " Zoom: " +
+      zoom +
+      ", 1:" +
+      zoomDict[zoom]
     );
   }
 
