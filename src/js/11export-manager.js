@@ -28,19 +28,45 @@ function downloadFiles(id) {
     url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
   }).done(function (json) {
     json = json.items;
+
+    let message = '<ul class = "my-1">';
     json.map(function (item) {
       if (item.id.indexOf(id) > -1) {
-        var link = document.createElement("a");
-        link.setAttribute("href", item.mediaLink);
-        link.setAttribute("download", item.name);
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        sleep(1000);
-        document.body.removeChild(link);
-        sleep(1000);
+        message += `<li class = "m-0"><a href = "${item.mediaLink}" target = "_blank">${item.name}</a></li>`;
       }
     });
+    message += "</ul>";
+    setTimeout(() => {
+      if ($("#export-complete-message").hasClass("show")) {
+        appendMessage2(
+          `<hr>${id} has successfully exported! The following downloads are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          "export-complete-message"
+        );
+      } else {
+        showMessage(
+          "Export Finished",
+          `${id} has successfully exported! The following downloads are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          "export-complete-message"
+        );
+      }
+    }, 100);
+    setTimeout(
+      () =>
+        json.map(function (item) {
+          if (item.id.indexOf(id) > -1) {
+            var link = document.createElement("a");
+            link.setAttribute("href", item.mediaLink);
+            link.setAttribute("download", item.name);
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            sleep(1000);
+            document.body.removeChild(link);
+            sleep(1000);
+          }
+        }),
+      500
+    );
   });
 }
 
@@ -339,12 +365,6 @@ function trackExports() {
         downloadFiles(cachedEEExports[t.description].outputName);
         // exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
 
-        showMessage(
-          "SUCCESS!",
-          '<p style = "margin:5px;">' +
-            cachedEEExports[t.description].outputName +
-            ' has successfully downloaded! </p><p style = "margin:3px;">'
-        );
         // sleep(2000);
         // window.open(tOutputName);
         cachedEEExports[t.description]["downloaded"] = true;
@@ -433,10 +453,31 @@ function getIDAndParams(
   exportCRS,
   exportScale,
   fc,
-  noDataValue
+  noDataValue,
+  eeType,
+  fileFormat
 ) {
   $("#summary-spinner").show();
-  eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue, false)); //.reproject(exportCRS,null,exportScale);
+
+  if (eeType === "Image") {
+    eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue, false)); //.reproject(exportCRS,null,exportScale);
+
+    try {
+      var region = JSON.stringify(fc.geometry().bounds().getInfo());
+    } catch (error) {
+      if (
+        error.message.indexOf("LinearRing requires at least 3 points.") > -1
+      ) {
+        showMessage(
+          "Invalid Export Area Polygons",
+          'Press "Clear All Shapes" button and redraw export areas<br>ensuring each drawn polygon has at least 3 points'
+        );
+      } else {
+        showMessage("Something Went Wrong", error.message);
+      }
+    }
+  }
+
   // var imageJson = eeImage.serialize();//ee.Serializer.toJSON(eeImage);
   $("#export-message-container").text("Exporting:" + exportOutputName);
 
@@ -447,24 +488,25 @@ function getIDAndParams(
     exportOutputName +
     ".tif"; //Currently cannot handle multiple tile exports for very large exports
 
-  print("exporting");
-  try {
-    var region = JSON.stringify(fc.geometry().bounds().getInfo());
-  } catch (error) {
-    if (error.message.indexOf("LinearRing requires at least 3 points.") > -1) {
-      showMessage(
-        "Invalid Export Area Polygons",
-        'Press "Clear All Shapes" button and redraw export areas<br>ensuring each drawn polygon has at least 3 points'
-      );
-    } else {
-      showMessage("Something Went Wrong", error.message);
-    }
+  console.log(eeType);
+
+  if (eeType === "Geometry") {
+    eeImage = ee.Feature(eeImage);
+    eeImage = ee.FeatureCollection([eeImage]);
+  } else if (eeType === "Feature") {
+    eeImage = ee.FeatureCollection([eeImage]);
   }
 
+  let exportTypeDict = {
+    Image: { type: "EXPORT_IMAGE", format: "GEO_TIFF" },
+    Geometry: { type: "EXPORT_FEATURES", format: "SHP" },
+    Feature: { type: "EXPORT_FEATURES", format: "SHP" },
+    FeatureCollection: { type: "EXPORT_FEATURES", format: "SHP" },
+  };
   //Set up parameter object
   var params = {
     element: eeImage,
-    type: "EXPORT_IMAGE",
+    type: exportTypeDict[eeType].type,
     description: exportOutputName,
     region: region,
     outputBucket: bucketName,
@@ -475,7 +517,7 @@ function getIDAndParams(
     maxPixels: 1e13,
     shardSize: 256,
     fileDimensions: 256 * 75,
-    fileFormat: "GEO_TIFF",
+    fileFormat: fileFormat,
     formatOptions: { noData: noDataValue },
   };
   console.log(params);
@@ -499,41 +541,48 @@ function googleMapPolygonToGEEPolygon(googleMapPolygon) {
   return geePolygon;
 }
 function exportImages() {
-  if (exportArea === null || exportArea === undefined) {
-    showMessage(
-      "Error",
-      "No export area selected. Select area by clicking on the <kbd>Draw area to download</kbd> button and then draw a polygon on the map."
-    );
-  } else {
-    try {
-      var fc = googleMapPolygonToGEEPolygon(exportArea);
-    } catch (error) {
-      console.log(error);
-      var fc = exportArea;
-    }
-    var exportCRS = $("#export-crs").val();
-    // closePopup();
-    // console.log(exportImageDict);
-    // console.log('yay');
-    var now = Date().split(" ");
-    var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
-    var exportsStarted = 0;
-    var exportsSubmitted = "";
-    Object.keys(exportImageDict).map(function (k) {
-      var exportObject = exportImageDict[k];
-
+  var exportCRS = $("#export-crs").val();
+  // closePopup();
+  // console.log(exportImageDict);
+  // console.log('yay');
+  var now = Date().split(" ");
+  var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
+  var exportsStarted = 0;
+  var exportsSubmitted = "";
+  let exportAreaProvided = exportArea !== null && exportArea !== undefined;
+  let needToDrawPoly = false;
+  Object.keys(exportImageDict).map(function (k) {
+    var exportObject = exportImageDict[k];
+    if (
+      exportObject.eeType === "Image" &&
+      exportAreaProvided === false &&
+      exportObject["shouldExport"] === true
+    ) {
+      needToDrawPoly = true;
+    } else if (exportObject.eeType !== "Image" || exportAreaProvided) {
+      let fc;
+      if (exportObject.eeType === "Image") {
+        try {
+          fc = googleMapPolygonToGEEPolygon(exportArea);
+        } catch (error) {
+          console.log(error);
+          fc = exportArea;
+        }
+      }
       if (exportObject["shouldExport"] === true) {
         exportsStarted++;
         var exportName = exportObject["name"] + nowSuffix;
         var noDataValue = exportObject["noDataValue"];
         exportsSubmitted += exportName + "<br>";
         var IDAndParams = getIDAndParams(
-          exportObject["eeImage"],
+          exportObject.eeImage,
           exportName,
           exportCRS,
-          exportObject["res"],
+          exportObject.res,
           fc,
-          noDataValue
+          noDataValue,
+          exportObject.eeType,
+          exportObject.fileFormat
         );
 
         //Start processing
@@ -588,23 +637,28 @@ function exportImages() {
         // cacheExport(exportName,exportName,meta_template_strT);
         // exportMetadata(exportObject['name']+nowSuffix + '_metadata.html', meta_template_strT)
       }
-    });
-    if (exportsStarted === 0) {
-      showMessage(
-        "Nothing to Export!",
-        "No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again."
-      );
-    } else {
-      $("#summary-spinner").show();
-      showMessage(
-        "Success!",
-        '<div class = "dropdown-divider"></div>The following exports were submitted:<br>' +
-          exportsSubmitted +
-          '<div class = "dropdown-divider"></div>They will start running shortly. Once finished, they will automatically download. The current status of exports can be followed by hovering over the gear spinner in the bottom right corner of the <kbd>DOWNLOAD DATA</kbd> menu'
-      );
     }
-    $("#summary-spinner").hide();
+  });
+  if (needToDrawPoly) {
+    showMessage(
+      "Error",
+      "No export area selected. Select area by clicking on the <kbd>Draw area to download</kbd> button and then draw a polygon on the map."
+    );
+  } else if (exportsStarted === 0) {
+    showMessage(
+      "Nothing to Export!",
+      "No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again."
+    );
+  } else {
+    $("#summary-spinner").show();
+    showMessage(
+      "Exports Started",
+      "<hr>The following exports were submitted:<br>" +
+        exportsSubmitted +
+        "<hr>They will start running shortly. Once finished, they will automatically download. The current status of exports can be followed by hovering over the gear spinner in the lower portion of the <kbd>DOWNLOAD DATA</kbd> menu"
+    );
   }
+  $("#summary-spinner").hide();
 }
 function processFeatures2(fc, shoudExport) {
   exportFC = fc;

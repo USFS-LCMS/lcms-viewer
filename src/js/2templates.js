@@ -205,7 +205,7 @@ const staticTemplates = {
                             <hr>  
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
-                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
                                     <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
                                 </div>
                                 <hr>
@@ -705,7 +705,7 @@ const staticTemplates = {
   dashboardResultsContainer: `<div id='dashboard-results-container-right' class='dashboard-highlights bg-black  col-md-6 col-lg-4 '>
         
         <div id = 'dashboard-download-button-container'>
-            <button class=' dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' title='Click to download PDF report containing the summaries currently being displayed.' >
+            <button class='dashboard-download-button ' id='dashboard-download-button' onclick='makeDashboardReport()' title='Click to download PDF report containing the summaries currently being displayed.' >
                     <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
                     Download Report
             </button>
@@ -2007,48 +2007,74 @@ function addRadio(
 // HiForm-BMP Stuff
 //////////////////////////////////////////////////////////////////////////////////////////////
 // DROPDOWN SELECT STATES - Hiform
-function addDropdownStates(containerID, dropdownId, label, variable, selectList, callback) {
-
-  $("#" + containerID).append(`<div id="${containerID}-container><label for="${containerID}" class="form-label">${label}</label>
+function addDropdownStates(
+  containerID,
+  dropdownId,
+  label,
+  variable,
+  selectList,
+  callback
+) {
+  $("#" + containerID)
+    .append(`<div id="${containerID}-container><label for="${containerID}" class="form-label">${label}</label>
   <select id=${dropdownId} class="form-select mb-2"></select></div>`);
 
-  $(`#${dropdownId}`).append(`<option>---</option>`)
+  $(`#${dropdownId}`).append(`<option>---</option>`);
 
-  selectList.map(item => {
-    $(`#${dropdownId}`).append(`<option>${item}</option>`)
+  selectList.map((item) => {
+    $(`#${dropdownId}`).append(`<option>${item}</option>`);
   });
-  
+
   $(`#` + dropdownId).on("input", () => {
-    selectedItem = $(`#state-select`).val()
-    console.log("State Selected: " + selectedItem)
-    callback(selectedItem)
+    selectedItem = $(`#state-select`).val();
+    console.log("State Selected: " + selectedItem);
+    callback(selectedItem);
   });
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // DROPDOWN SELECT COUNTIES - Hiform
-function addDropdownCounties(containerID, dropdownId, label, variable, selectList, stateFP, stateAbr, callback) {
-
-  $("#" + containerID + "-container").replaceWith("")
-  $("#" + containerID).append(`<div id="${containerID}-container" class="mt-2"><label for="${containerID}" class="form-label">${label}</label>
+function addDropdownCounties(
+  containerID,
+  dropdownId,
+  label,
+  variable,
+  selectList,
+  stateFP,
+  stateAbr,
+  callback
+) {
+  $("#" + containerID + "-container").replaceWith("");
+  $("#" + containerID)
+    .append(`<div id="${containerID}-container" class="mt-2"><label for="${containerID}" class="form-label">${label}</label>
   <select id=${dropdownId} class="form-select mb-2"></select></div>`);
 
-  $(`#${dropdownId}`).append(`<option>---</option>`)
-  selectList.map(item => {
-    $(`#${dropdownId}`).append(`<option>${item}</option>`)
+  $(`#${dropdownId}`).append(`<option>---</option>`);
+  selectList.map((item) => {
+    $(`#${dropdownId}`).append(`<option>${item}</option>`);
   });
-  
+
   $(`#` + dropdownId).on("input", () => {
-    selectedItem = $(`#county-select`).val()
-    console.log("County Selected: " + selectedItem)
-    callback(selectedItem, stateFP, stateAbr)
+    selectedItem = $(`#county-select`).val();
+    console.log("County Selected: " + selectedItem);
+    callback(selectedItem, stateFP, stateAbr);
   });
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // MultiRadio for Selection Type - Hiform
-function addSelectTypeRadio(containerID, radioID, label, variable, optionList, title, callback) {
-  $("#" + containerID).append(`<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`);
+function addSelectTypeRadio(
+  containerID,
+  radioID,
+  label,
+  variable,
+  optionList,
+  title,
+  callback
+) {
+  $("#" + containerID).append(
+    `<form  title='${title}' class = 'simple-radio' id = '${radioID}'><p class = 'param-title'>${label}</p></form>`
+  );
 
   eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
   Object.keys(optionList).map(function (k) {
@@ -2078,15 +2104,21 @@ function addSelectTypeRadio(containerID, radioID, label, variable, optionList, t
       var v = $(this).val();
       optionList[v] = true;
       eval(`window.${variable} = "${v}"`);
-      callback(v)
+      callback(v);
     });
   });
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Date Picker - Hiform
-function addHiFormPostDatePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+function addHiFormPostDatePicker(
+  containerID,
+  datepickerID,
+  defaultDate1,
+  defaultDate2,
+  defaultDate3,
+  defaultDate4
+) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   $("#" + datepickerID).append(`<div id="post-ranges-div">
                                 <p class = 'param-title'>Define Post Date Range</p>
@@ -2095,9 +2127,16 @@ function addHiFormPostDatePicker(containerID, datepickerID, defaultDate1, defaul
                               </div>`);
 }
 
-function addHiFormCustomPrePicker(containerID, datepickerID, defaultDate1, defaultDate2, defaultDate3, defaultDate4) {
+function addHiFormCustomPrePicker(
+  containerID,
+  datepickerID,
+  defaultDate1,
+  defaultDate2,
+  defaultDate3,
+  defaultDate4
+) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
-  
+
   $("#define-pre-date-options").append(`<div id="pre-ranges-div">
                                           <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
                                           <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
@@ -2107,24 +2146,27 @@ function addHiFormCustomPrePicker(containerID, datepickerID, defaultDate1, defau
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Process Button - Hiform
 function addHiFormProcessButton(containerID) {
-  $("#" + containerID).append(`<div id="process-button-div" title="Select a county and define date ranges to process.">
+  $("#" + containerID)
+    .append(`<div id="process-button-div" title="Select a county and define date ranges to process.">
                                 <p class = 'param-title'>Process HiForm Results</p>
                                 <input type="button" id="process-button" class="mb-2" value="Process HiForm BMP" onclick="handleProcess()">
                               </div>`);
 
-  $('#process-button').attr('disabled','disabled');
+  $("#process-button").attr("disabled", "disabled");
 }
 
 function addHiFormResetButton(containerID) {
-  $("#" + containerID).append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
+  $("#" + containerID)
+    .append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
                                 <input type="button" id="reset-button" class="mb-2" value="Reset HiForm Results" onclick="handleHiFormReset()">
                               </div>`);
 
-  $('#reset-button').attr('disabled','disabled');
+  $("#reset-button").attr("disabled", "disabled");
 }
 
 function addHiFormExport(containerDiv) {
-  $("#" + containerDiv).append(`<div class = 'py-2' id = 'export-list-container'>
+  $("#" + containerDiv)
+    .append(`<div class = 'py-2' id = 'export-list-container'>
                         <h5>Choose which images to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
@@ -2139,7 +2181,7 @@ function addHiFormExport(containerDiv) {
                             <hr>  
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
-                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected images across selected area'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export Images</button>
+                                    <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
                                     <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
                                 </div>
                                 <hr>
@@ -2151,7 +2193,7 @@ function addHiFormExport(containerDiv) {
                             </div>  
                         </div>
                         
-                    </div>`)
+                    </div>`);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

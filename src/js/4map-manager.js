@@ -1326,6 +1326,8 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   if (Export) {
     checked = "checked";
   }
+  objType = getImagesLib.getObjType(eeImage);
+  console.log(objType);
 
   var now = Date().split(" ");
   var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
@@ -1347,11 +1349,24 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
     eeImage: eeImage,
     name: name,
     res: res,
+    eeType: objType,
     shouldExport: Export,
     metadataParams: metadataParams,
     noDataValue: noDataValue,
+    fileFormat: objType === "Image" ? "GEO_TIFF" : "SHP",
   };
   // var exportList = document.querySelector("export-list");
+  let rightInput =
+    objType === "Image"
+      ? `<input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'>`
+      : `<select id = '${name}-format-${exportID}' title= 'Select output format' class="form-control export-format-input form-select ">
+          <option title = 'Export ${name} as a ESRI shapefile (will result in multiple files)' value = 'SHP'>Shapefile</option>
+          <option title = 'Export ${name} as a CSV' value = 'CSV'>CSV</option>
+          <option title = 'Export ${name} as a geoJSON' value='GEO_JSON'>geoJSON</option>
+          <option title = 'Export ${name} as a KML' value='KML'>KML</option>
+          <option title = 'Export ${name} as a KMZ' value='KMZ'>KMZ</option>
+          <option title = 'Export ${name} as a TensorFlow record' value='TF_RECORD_TABLE'>TF Record</option>
+        </select>`;
   $("#export-list").append(`<div class = 'input-group'>
                               <span  class="input-group-addon">
                                 <input  id = '${name}-checkbox-${exportID}' type="checkbox" ${checked} >
@@ -1359,14 +1374,23 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
                               </span>
                               
                               <input  id = '${name}-name-${exportID}' class="form-control export-name-input" type="text" value="${exportElement.name}" title = 'Change export name if needed'>
-                              <input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'>
+                              ${rightInput}
                             </div>`);
+
   $("#" + name + "-name-" + exportID.toString()).on("input", function () {
     exportImageDict[exportElement.ID].name = $(this).val();
   });
-  $("#" + name + "-res-" + exportID.toString()).on("input", function () {
-    exportImageDict[exportElement.ID].res = parseInt($(this).val());
-  });
+  if (objType === "Image") {
+    $("#" + name + "-res-" + exportID.toString()).on("input", function () {
+      exportImageDict[exportElement.ID].res = parseInt($(this).val());
+    });
+  } else {
+    $("#" + name + "-format-" + exportID.toString()).on("input", function () {
+      console.log($(this).val());
+      exportImageDict[exportElement.ID].fileFormat = $(this).val();
+    });
+  }
+
   $("#" + name + "-checkbox-" + exportID.toString()).on("change", function () {
     exportImageDict[exportElement.ID].shouldExport = this.checked;
   });

@@ -30,30 +30,38 @@ function updatePageUrl() {
 var fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
 // const tiny_json_url = "http://localhost:3000";
-function storeParams(store_api = `${tiny_json_url}/store`) {
-  Map.showSpinner();
-  $.ajax({
+function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
+  if (showSpinner) {
+    setTimeout(() => Map.showSpinner(), 0);
+  }
+
+  let res = $.ajax({
     type: "POST",
     url: store_api,
+    async: false,
     data: JSON.stringify(urlParams),
     contentType: "application/json; charset=utf-8",
-  }).then((id) => {
-    console.log(id);
-
-    setUrl(`${baseUrl()}?id=${id}`);
-    Map.hideSpinner();
   });
+  if (res.statusText === "OK") {
+    let id = res.responseText;
+    console.log(id);
+    fullShareURL = `${baseUrl()}?id=${id}`;
+    setUrl(fullShareURL);
+  }
+  if (showSpinner) {
+    setTimeout(() => Map.hideSpinner(), 0);
+  }
 }
 function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
-  let params = $.ajax({
+  let res = $.ajax({
     type: "POST",
     async: false,
     url: retrieve_api,
     data: JSON.stringify({ id: id }),
     contentType: "application/json; charset=utf-8",
   });
-  if (params.statusText === "OK") {
-    params = JSON.parse(params.responseText);
+  if (res.statusText === "OK") {
+    let params = JSON.parse(res.responseText);
     console.log("Retrieved params:");
     console.log(params);
 
