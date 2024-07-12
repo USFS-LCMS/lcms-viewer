@@ -32,20 +32,20 @@ function downloadFiles(id) {
     let message = '<ul class = "my-1">';
     json.map(function (item) {
       if (item.id.indexOf(id) > -1) {
-        message += `<li class = "m-0"><a href = "${item.mediaLink}" target = "_blank">${item.name}</a></li>`;
+        message += `<li class = "m-0"><a class = 'intro-modal-links' href = "${item.mediaLink}" target = "_blank">${item.name}</a></li>`;
       }
     });
     message += "</ul>";
     setTimeout(() => {
       if ($("#export-complete-message").hasClass("show")) {
         appendMessage2(
-          `<hr>${id} has successfully exported! The following downloads are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          `<hr>${id} has successfully exported! The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
           "export-complete-message"
         );
       } else {
         showMessage(
           "Export Finished",
-          `${id} has successfully exported! The following downloads are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          `${id} has successfully exported! The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
           "export-complete-message"
         );
       }
@@ -71,8 +71,30 @@ function downloadFiles(id) {
 }
 
 var cachedEEExports = null;
-if (typeof Storage !== "undefined") {
-  cachedEEExports = JSON.parse(localStorage.getItem("cachedEEExports"));
+if (
+  typeof Storage !== "undefined" &&
+  localStorage.cachedEEExports2 !== undefined &&
+  localStorage.cachedEEExports2[mode] !== undefined
+) {
+  cachedEEExports = JSON.parse(localStorage.cachedEEExports2[mode]);
+} else if (
+  typeof Storage !== "undefined" &&
+  localStorage.cachedEEExports2 === undefined
+) {
+  let t = {};
+  t[mode] = {};
+  localStorage.cachedEEExports2 = JSON.stringify(t);
+} else if (
+  typeof Storage !== "undefined" &&
+  localStorage.cachedEEExports2 !== undefined
+) {
+  let currentCache = JSON.parse(localStorage.cachedEEExports2);
+  if (currentCache[mode] === undefined) {
+    currentCache[mode] = {};
+    localStorage.cachedEEExports2 = JSON.stringify(currentCache);
+  }
+
+  cachedEEExports = JSON.parse(localStorage.cachedEEExports2)[mode];
 }
 if (cachedEEExports === null) {
   cachedEEExports = {};
@@ -223,31 +245,57 @@ function selectExportArea() {
   });
 }
 //Function to look for running ee tasks and request cancellation
+function cancelSingleTask(task) {
+  if (Object.keys(cachedEEExports).indexOf(task.description) > -1) {
+    print("Cancelling task: " + task.id);
+    ee.data.cancelTask(task.id);
+  }
+}
 cancelAllTasks = function () {
   $("#summary-spinner").show();
   var tasksCancelled = 0;
-  var tasksCancelledList = "\nIDs:";
+  var tasksCancelledList = "\nNames:";
   var taskList = ee.data.getTaskList().tasks;
   taskList.map(function (task) {
     if (
       (task.state === "RUNNING" || task.state === "READY") &&
       Object.keys(cachedEEExports).indexOf(task.description) > -1
     ) {
-      print("Cancelling task: " + task.id);
+      print("Cancelling task: " + task.description);
       ee.data.cancelTask(task.id);
-      tasksCancelledList = tasksCancelledList + "\n" + task.id;
+      tasksCancelledList = tasksCancelledList + "<br>" + task.description;
       tasksCancelled++;
     }
   });
+
   // taskCount = 0;
   // updateSpinner();
   $("#summary-spinner").hide();
   showMessage(
     "Cancelling Completed",
-    "Tasks cancelled: " + tasksCancelled.toString() + "\n" + tasksCancelledList
+    "Tasks cancelled: " +
+      tasksCancelled.toString() +
+      "<br>" +
+      tasksCancelledList
   );
   trackExports();
 };
+
+function cancelTask(description) {
+  var task = ee.data
+    .getTaskList()
+    .tasks.filter((t) => t.description === description)[0];
+
+  cancelSingleTask(task);
+  $(`#${description}-export-tracking-row`).remove();
+  let exportCount = parseInt($("#export-count").html());
+  exportCount--;
+  $("#export-count").text(exportCount.toString());
+  if (exportCount === 0) {
+    $("#export-spinner").hide();
+    $("#export-count-div").html(``);
+  }
+}
 downloadMetadata = function () {
   console.log("downloading metadta");
   var url = "./src/assets/images/lcms_metadata_beta.pdf";
@@ -310,65 +358,87 @@ downloadTraining = function () {
   link.click();
 };
 ////////////////////////////////////////////////
+
 function trackExports() {
   exportList = [];
-  var taskIDList = "Exporting: ";
+  $("#export-count-div").empty();
+  $("#export-count-div").append(`
+                    <table  class="table " id="export-tracking-table">
+                    <thead>
+                    
+                        <tr>
+                            
+                            <th class="text-center">
+                                Name
+                            </th>
+                            <th class="text-center">
+                                Status
+                            </th>
+                            <th class="text-center">
+                                Run Time
+                            </th>
+                            
+                            
+                        </tr>
+                    </thead>
+                    <tbody id='export-tracking-rows'></tbody>
+                    </table>`);
   var taskIDListTitle = "Exporting: ";
   taskCount = 0;
-  var taskList = ee.data.getTaskList().tasks;
-  if (taskList.length > 10) {
-    taskList = taskList.slice(0, 40);
-  }
+  var taskList = ee.data
+    .getTaskList()
+    .tasks.filter(
+      (t) => Object.keys(cachedEEExports).indexOf(t.description) > -1
+    );
+  // console.log(taskList);
 
   taskList.map(function (t) {
-    // if(Object.keys(cachedEEExports).indexOf(t.id) >-1 ){
-    //     console.log('adding task to past ee export list')
-    //     pastEEExports[t.id] = [t.state,false,t.description];
-    //     }
-    if (Object.keys(cachedEEExports).indexOf(t.description) > -1) {
-      var cachedEEExport = cachedEEExports[t.description];
+    var cachedEEExport = cachedEEExports[t.description];
 
-      if (t.state === "RUNNING" || t.state === "READY") {
-        taskCount++;
-        // cachedEEExport.status = t.status
-        var st = cachedEEExport["start-time"];
-        var now = new Date();
+    if (
+      t.state === "RUNNING" ||
+      t.state === "READY" ||
+      t.state === "COMPLETED"
+    ) {
+      taskCount++;
+      // cachedEEExport.status = t.status
+      // console.log(t);
+      if (t.state === "READY") {
+        timeDiff = "NA";
+      } else {
+        var st = t.start_timestamp_ms;
+        var now = t.update_timestamp_ms;
         var timeDiff = now - st;
-
-        timeDiff = new Date(timeDiff);
-        var timeDiffShow =
-          zeroPad(timeDiff.getMinutes(), 2) +
-          ":" +
-          zeroPad(timeDiff.getSeconds(), 2);
-        taskIDList =
-          taskIDList +
-          t.description.chunk(40).join("<br>") +
-          "<br>Status: " +
-          t.state +
-          " <br>Processing Time: " +
-          timeDiffShow +
-          "<hr>";
-        taskIDListTitle =
-          taskIDListTitle +
-          t.description +
-          " Status: " +
-          t.state +
-          " Processing Time: " +
-          timeDiffShow +
-          "\n";
-      } else if (
-        t.state === "COMPLETED" &&
-        cachedEEExport.downloaded === false
-      ) {
-        // var tOutputName = 'https://storage.googleapis.com/'+bucketName+'/'+cachedEEExports[t.description].outputName +'.tif'
-        // downloadExport(tOutputName,cachedEEExports[t.description].outputName +'.tif')
-        downloadFiles(cachedEEExports[t.description].outputName);
-        // exportMetadata(cachedEEExports[t.id].outputName +'_metadata.html',cachedEEExports[t.id].metadata)
-
-        // sleep(2000);
-        // window.open(tOutputName);
-        cachedEEExports[t.description]["downloaded"] = true;
+        timeDiff = new Date(timeDiff).toISOString().slice(11, 19);
       }
+      let exportRowBtn = `
+                            <button title = 'Click to cancel export task "${t.description}"' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="cancelTask('${t.description}' )" id="${t.description}-cancel-export-button"><i class=" export-pulse fa fa-close "></i></button>
+                          `;
+
+      if (t.state === "COMPLETED") {
+        exportRowBtn = `<button title = 'Click to download outputs: "${t.description}"' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="downloadFiles('${t.description}' )" id="${t.description}-download-export-button"><i class="fa fa-cloud-download teal "></i></button>`;
+      }
+      let exportRow = `<tr id = "${t.description}-export-tracking-row">
+                                            <td>
+                                            ${t.description
+                                              .chunk(10)
+                                              .join("<br>")}
+                                            </td>
+                                            <td>
+                                            ${t.state}
+                                            </td>
+                                            <td>
+                                            ${timeDiff}
+                                            </td>
+                                            <td>
+                                            ${exportRowBtn}
+                                            </td>
+                                          </tr>`;
+      $(`#export-tracking-rows`).append(exportRow);
+    }
+    if (t.state === "COMPLETED" && cachedEEExport.downloaded === false) {
+      downloadFiles(cachedEEExports[t.description].outputName);
+      cachedEEExports[t.description]["downloaded"] = true;
     }
   });
 
@@ -394,9 +464,9 @@ function trackExports() {
   // })
 
   // localStorage.setItem("pastEEExports",JSON.stringify(pastEEExports));
-  $("#export-spinner").show();
+  // $("#export-spinner").show();
   document.getElementById("export-spinner").title = taskIDListTitle;
-  $("#export-count-div").html(taskIDList);
+  // $("#export-count-div").html(taskIDList);
 
   //   $('#export-count-div').append(`<div id = "export-tasks-table-container">
   // 								<table
@@ -408,7 +478,9 @@ function trackExports() {
   // 								></table>
   // 							</div>`);
   $("#export-count").text(taskCount.toString());
-  localStorage.setItem("cachedEEExports", JSON.stringify(cachedEEExports));
+  let currentCache = JSON.parse(localStorage.cachedEEExports2);
+  currentCache[mode] = cachedEEExports;
+  localStorage.cachedEEExports2 = JSON.stringify(currentCache);
 
   if (taskCount === 0) {
     $("#export-spinner").hide();
@@ -425,7 +497,10 @@ function cacheExport(id, outputName, metadata) {
     outputName: outputName,
     metadata: metadata,
   };
-  localStorage.setItem("cachedEEExports", JSON.stringify(cachedEEExports));
+
+  let currentCache = JSON.parse(localStorage.cachedEEExports2);
+  currentCache[mode] = cachedEEExports;
+  localStorage.cachedEEExports2 = JSON.stringify(currentCache);
   trackExports();
 }
 if (canExport) {
@@ -546,7 +621,15 @@ function exportImages() {
   // console.log(exportImageDict);
   // console.log('yay');
   var now = Date().split(" ");
-  var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
+  var nowSuffix =
+    "_" +
+    now[2] +
+    "_" +
+    now[1] +
+    "_" +
+    now[3] +
+    "_" +
+    now[4].replaceAll(":", "-");
   var exportsStarted = 0;
   var exportsSubmitted = "";
   let exportAreaProvided = exportArea !== null && exportArea !== undefined;
@@ -647,7 +730,7 @@ function exportImages() {
   } else if (exportsStarted === 0) {
     showMessage(
       "Nothing to Export!",
-      "No images are selected for exporting. Please select any images you would like to export and then press the <kbd>Export Images</kbd> button again."
+      "No layers are selected for exporting. Please select any images you would like to export and then press the <kbd>Export</kbd> button again."
     );
   } else {
     $("#summary-spinner").show();

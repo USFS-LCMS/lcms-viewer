@@ -451,6 +451,7 @@ function runTreeMap() {
       var visible = false;
     }
     Map.addLayer(layer[0], layer[1], layer[2], visible);
+    Map.addExport(layer[0].float(), layer[2], 30, false, {}, -32768);
   }
   ////
 
@@ -491,7 +492,7 @@ function runTreeMap() {
     },
     "TreeMap ID"
   );
-
+  Map.addExport(rawTreeMap.int32(), "TreeMap ID", 30, false, {}, 0);
   queryWindowMode = "sidePane";
   $("#query-label").click();
 }

@@ -744,6 +744,19 @@ div.dataTables_info {
   }
 }
 
+.export-pulse {
+  animation: export-pulse 5s infinite;
+}
+
+@keyframes export-pulse {
+  0%,
+  100% {
+    color: var(--teal-50);
+  }
+  50% {
+    color: var(--teal-100);
+  }
+}
 .progress-overlay {
   position: absolute;
   left: 0;

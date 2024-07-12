@@ -187,18 +187,20 @@ const staticTemplates = {
                                                               ${authErrorMessageContact}
     `,
   exportContainer: `<div class = 'py-2' id = 'export-list-container'>
-                        <h5>Choose which images to export:</h5>
+                        <h5>Choose which data to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
                         <div class = 'pl-3'>
+                            <h5 title="Provide a projection crs and draw an area for image exports">Image export parameters</h5>
                             <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
                               <label for="export-crs">Projection: </label>
                               <div class="form-group pl-1">
                                 <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
                               </div>
                             </form>
-                            <div class = 'py-2' id = 'export-area-drawing-div'>
-                                <button class = 'btn' onclick = 'selectExportArea()' title = 'Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
+                            <div class = 'pt-2' id = 'export-area-drawing-div'>
+                                
+                                <button class = 'btn' onclick = 'selectExportArea()' title = 'Needed for image exports. Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
                                 <a href="#" onclick = 'undoExportArea()' title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
@@ -206,16 +208,19 @@ const staticTemplates = {
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
                                     <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
-                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'><i class="pr-1 fa fa-close" aria-hidden="true"></i>Cancel All Exports</button>
                                 </div>
-                                <hr>
-                                <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
-						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
-						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
-								</span>
-                                <div id = 'export-count-div' ></div>
-                            </div>  
+                                
+                                
+                            </div> 
+                            
                         </div>
+                        
+                        <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
+                            <img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+                            <strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
+                        </span>
+                        <div id = 'export-count-div' ></div> 
                         
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
@@ -2167,7 +2172,7 @@ function addHiFormResetButton(containerID) {
 function addHiFormExport(containerDiv) {
   $("#" + containerDiv)
     .append(`<div class = 'py-2' id = 'export-list-container'>
-                        <h5>Choose which images to export:</h5>
+                        <h5>Choose which data to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
                         <div class = 'pl-3'>
@@ -2182,7 +2187,7 @@ function addHiFormExport(containerDiv) {
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
                                     <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
-                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'></i>Cancel All Exports</button>
+                                    <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'><i class="pr-1 fa fa-close" aria-hidden="true"></i>Cancel All Exports</button>
                                 </div>
                                 <hr>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
@@ -4317,9 +4322,9 @@ function getTransitionRowData() {
     return null;
   }
 }
-function setupTransitionPeriodUI() {
-  $("#transition-periods-container").empty();
-  $("#transition-periods-container").append(`
+function setupTransitionPeriodUI(containerID = "transition-periods-container") {
+  $(`#${containerID}`).empty();
+  $(`#${containerID}`).append(`
   <hr>
   <div class="row pb-2" title='Select Periods for Transition Area Charting. Please ensure each period does not completely overlap with the one preceeding it.'>
       <div style='padding-left:0.5rem;padding-right:0.5rem;width:100%;'>

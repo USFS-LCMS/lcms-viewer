@@ -2252,6 +2252,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Download " + mode + " products for further analysis"
   );
 } else if (mode === "TreeMap") {
+  canExport = true;
   $("head").append(
     `<script type="text/javascript" src="./src/assets/palettes/forest-type-palette.js"></script>`
   );
