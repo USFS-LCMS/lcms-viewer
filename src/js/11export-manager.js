@@ -39,13 +39,13 @@ function downloadFiles(id) {
     setTimeout(() => {
       if ($("#export-complete-message").hasClass("show")) {
         appendMessage2(
-          `<hr>${id} has successfully exported! The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          `<hr>${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
           "export-complete-message"
         );
       } else {
         showMessage(
           "Export Finished",
-          `${id} has successfully exported! The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          `${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
           "export-complete-message"
         );
       }
@@ -100,40 +100,6 @@ if (cachedEEExports === null) {
   cachedEEExports = {};
 }
 
-function updatePopup(value) {
-  var tempName = "EE_Export_Image_" + exportScale.toString() + "m_" + exportCRS;
-  var now = Date().split(" ");
-  var nowSuffix = now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
-  exportOutputName = tempName + "_" + nowSuffix; //Add date
-
-  document.getElementById("popup-text-input").value = exportOutputName;
-}
-
-function makePopup() {
-  // document.getElementById('popup-text-input').value = 'testName';
-  document.getElementById("popup").style.display = "block";
-  // var exportNameList = JSON.stringify({'ti':'ee.Image(1)'});
-
-  var exportKeys = Object.keys(exportImageDict);
-  exportKeys.map(function (k) {
-    var sExport = exportImageDict[k]["shouldExport"];
-    if (sExport) {
-      var outputList = document.querySelector("popup-output-list");
-      outputList.insertBefore(
-        "<input type='checkbox' checked = true value = '" +
-          k +
-          "'onclick='checkFunction(this);'>" +
-          exportImageDict[k]["name"] +
-          "</label>",
-        outputList.firstChild
-      );
-      // $("#popupList").append("<input type='checkbox' checked = true value = '"+k+"'onclick='checkFunction(this);'>"+exportImageDict[k]["name"]+"</label>")
-    } else {
-      // $("#popupList").append("<input type='checkbox'  value = '"+k+"'onclick='checkFunction(this);'>"+exportImageDict[k]["name"]+"</label>")
-    }
-    // $("#popupList").append('<input type="checkbox" name="image" value="'+k+'" onclick="checkFunction(this)" onchange="checkFunction(this)"> '+k+'<br>');
-  });
-}
 var selectedExportDict = {};
 function checkFunction(v) {
   console.log(v.checked + " " + v.value);
@@ -247,54 +213,59 @@ function selectExportArea() {
 //Function to look for running ee tasks and request cancellation
 function cancelSingleTask(task) {
   if (Object.keys(cachedEEExports).indexOf(task.description) > -1) {
-    print("Cancelling task: " + task.id);
+    print("Cancelling task: " + task.description);
     ee.data.cancelTask(task.id);
+
+    showMessage("Task Cancel Completed", "Task cancelled: " + task.description);
   }
 }
 cancelAllTasks = function () {
   $("#summary-spinner").show();
   var tasksCancelled = 0;
   var tasksCancelledList = "\nNames:";
-  var taskList = ee.data.getTaskList().tasks;
-  taskList.map(function (task) {
-    if (
-      (task.state === "RUNNING" || task.state === "READY") &&
-      Object.keys(cachedEEExports).indexOf(task.description) > -1
-    ) {
-      print("Cancelling task: " + task.description);
-      ee.data.cancelTask(task.id);
-      tasksCancelledList = tasksCancelledList + "<br>" + task.description;
-      tasksCancelled++;
-    }
-  });
+  ee.data.getTaskList((taskList) => {
+    taskList = taskList.tasks;
+    taskList.map(function (task) {
+      if (
+        (task.state === "RUNNING" || task.state === "READY") &&
+        Object.keys(cachedEEExports).indexOf(task.description) > -1
+      ) {
+        print("Cancelling task: " + task.description);
+        ee.data.cancelTask(task.id);
+        tasksCancelledList = tasksCancelledList + "<br>" + task.description;
+        tasksCancelled++;
+      }
+    });
 
-  // taskCount = 0;
-  // updateSpinner();
-  $("#summary-spinner").hide();
-  showMessage(
-    "Cancelling Completed",
-    "Tasks cancelled: " +
-      tasksCancelled.toString() +
-      "<br>" +
-      tasksCancelledList
-  );
-  trackExports();
+    // taskCount = 0;
+    // updateSpinner();
+    $("#summary-spinner").hide();
+    showMessage(
+      "Task Cancelling Completed",
+      "Tasks cancelled: " +
+        tasksCancelled.toString() +
+        "<br>" +
+        tasksCancelledList
+    );
+    trackExports();
+  });
 };
 
 function cancelTask(description) {
-  var task = ee.data
-    .getTaskList()
-    .tasks.filter((t) => t.description === description)[0];
+  ee.data.getTaskList((tasks) => {
+    let task = tasks.tasks.filter((t) => t.description === description)[0];
 
-  cancelSingleTask(task);
-  $(`#${description}-export-tracking-row`).remove();
-  let exportCount = parseInt($("#export-count").html());
-  exportCount--;
-  $("#export-count").text(exportCount.toString());
-  if (exportCount === 0) {
-    $("#export-spinner").hide();
-    $("#export-count-div").html(``);
-  }
+    cancelSingleTask(task);
+    $(`#${description}-export-tracking-row`).slideUp();
+
+    let exportCount = parseInt($("#export-count").html());
+    exportCount--;
+    $("#export-count").text(exportCount.toString());
+    if (exportCount === 0) {
+      $("#export-spinner").hide();
+      $("#export-count-div").html(``);
+    }
+  });
 }
 downloadMetadata = function () {
   console.log("downloading metadta");
@@ -361,131 +332,164 @@ downloadTraining = function () {
 
 function trackExports() {
   exportList = [];
-  $("#export-count-div").empty();
-  $("#export-count-div").append(`
-                    <table  class="table " id="export-tracking-table">
-                    <thead>
-                    
-                        <tr>
-                            
-                            <th class="text-center">
-                                Name
-                            </th>
-                            <th class="text-center">
-                                Status
-                            </th>
-                            <th class="text-center">
-                                Run Time
-                            </th>
-                            
-                            
-                        </tr>
-                    </thead>
-                    <tbody id='export-tracking-rows'></tbody>
-                    </table>`);
+
   var taskIDListTitle = "Exporting: ";
   taskCount = 0;
-  var taskList = ee.data
-    .getTaskList()
-    .tasks.filter(
+  ee.data.getTaskList((taskList) => {
+    taskList = taskList.tasks.filter(
       (t) => Object.keys(cachedEEExports).indexOf(t.description) > -1
     );
-  // console.log(taskList);
+    // console.log(taskList);
+    $("#export-count-div").empty();
+    // $("#export-count-div").append(`
+    //                   <table  class="table " id="export-tracking-table">
+    //                   <thead>
 
-  taskList.map(function (t) {
-    var cachedEEExport = cachedEEExports[t.description];
+    //                       <tr>
 
-    if (
-      t.state === "RUNNING" ||
-      t.state === "READY" ||
-      t.state === "COMPLETED"
-    ) {
-      taskCount++;
-      // cachedEEExport.status = t.status
-      // console.log(t);
-      if (t.state === "READY") {
-        timeDiff = "NA";
-      } else {
-        var st = t.start_timestamp_ms;
-        var now = t.update_timestamp_ms;
-        var timeDiff = now - st;
-        timeDiff = new Date(timeDiff).toISOString().slice(11, 19);
-      }
-      let exportRowBtn = `
-                            <button title = 'Click to cancel export task "${t.description}"' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="cancelTask('${t.description}' )" id="${t.description}-cancel-export-button"><i class=" export-pulse fa fa-close "></i></button>
+    //                           <th class="text-center">
+    //                               Name
+    //                           </th>
+    //                           <th class="text-center">
+    //                               Status
+    //                           </th>
+    //                           <th class="text-center">
+    //                               Run Time
+    //                           </th>
+    //                           <th class="text-center">
+    //                               Export Type
+    //                           </th>
+
+    //                       </tr>
+    //                   </thead>
+    //                   <tbody id='export-tracking-rows'></tbody>
+    //                   </table>`);
+    $("#export-count-div").append(`
+                      <div  class = 'tracking-list' id="export-tracking-rows">
+                      
+                      </div>`);
+    taskList.map(function (t) {
+      var cachedEEExport = cachedEEExports[t.description];
+
+      if (
+        t.state === "RUNNING" ||
+        t.state === "READY" ||
+        t.state === "COMPLETED"
+      ) {
+        taskCount++;
+        // cachedEEExport.status = t.status
+        // console.log(t);
+        if (t.state === "READY") {
+          timeDiff = "NA";
+        } else {
+          var st = t.start_timestamp_ms;
+          var now = t.update_timestamp_ms;
+          var timeDiff = now - st;
+          timeDiff = new Date(timeDiff).toISOString().slice(11, 19);
+        }
+        let icon_color_class = t.state === "COMPLETED" ? "teal" : "db-100";
+        let exportRowBtn = `
+                            <div title = 'Click to cancel export task "${t.description}"' class="export-tracking-btn " onclick="cancelTask('${t.description}' )" id="${t.description}-cancel-export-button"><i class="fa fa-close ${icon_color_class}"></i></div>
                           `;
+        let exportTypeBtn =
+          t.task_type === "EXPORT_IMAGE"
+            ? `<i title = '${t.description} export type: Image' class="fa fa-image ${icon_color_class}"></i>`
+            : `<i title = '${t.description} export type: Vector' class="fa fa-table ${icon_color_class}"></i>`;
 
-      if (t.state === "COMPLETED") {
-        exportRowBtn = `<button title = 'Click to download outputs: "${t.description}"' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="downloadFiles('${t.description}' )" id="${t.description}-download-export-button"><i class="fa fa-cloud-download teal "></i></button>`;
+        if (t.state === "COMPLETED") {
+          exportRowBtn = `<div title = 'Click to download outputs: "${t.description}"' class="export-tracking-btn" onclick="downloadFiles('${t.description}' )" id="${t.description}-download-export-button"><i class="fa fa-cloud-download ${icon_color_class}"></i></div>`;
+        }
+
+        let exportRow = `<div class="export-tracking-row" id = "${t.description}-export-tracking-row">
+        
+        
+        
+        <div class = 'export-description'>
+        ${t.description} 
+        </div>
+        
+        <div class = 'btn-group '>
+        <div title = '${t.description} export task run time'>${timeDiff}</div>
+        ${exportTypeBtn}
+        ${exportRowBtn}
+        </div>
+       
+        
+        
+      </div>`;
+        $(`#export-tracking-rows`).append(exportRow);
+
+        if (t.state === "COMPLETED") {
+          $(`#${t.description}-export-tracking-row`).addClass(
+            "export-tracking-complete"
+          );
+        } else {
+          $(`#${t.description}-export-tracking-row`).addClass(
+            "export-tracking-running"
+          );
+        }
+        $(`#${t.description}-export-tracking-row`).attr(
+          "title",
+          `Export ${t.description} ${t.state}`
+        );
       }
-      let exportRow = `<tr id = "${t.description}-export-tracking-row">
-                                            <td>
-                                            ${t.description
-                                              .chunk(10)
-                                              .join("<br>")}
-                                            </td>
-                                            <td>
-                                            ${t.state}
-                                            </td>
-                                            <td>
-                                            ${timeDiff}
-                                            </td>
-                                            <td>
-                                            ${exportRowBtn}
-                                            </td>
-                                          </tr>`;
-      $(`#export-tracking-rows`).append(exportRow);
+      if (t.state === "COMPLETED" && cachedEEExport.downloaded === false) {
+        downloadFiles(cachedEEExports[t.description].outputName);
+        cachedEEExports[t.description]["downloaded"] = true;
+      }
+    });
+
+    // Object.keys(pastEEExports).map(function(k){
+    //     var pe = pastEEExports[k]
+    //     // console.log(k)
+    //     // console.log(pe)
+    //     if(pe[0] === 'COMPLETED' && pe[1] === false){
+    //         var tOutputName = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+pe[2] +'.tif'
+    //         // console.log('Exporting ' + pe[2]);
+    //         pastEEExports[k] = [pe[0],true,pe[2]];
+
+    //         showMessage('SUCCESS!',
+    //              '<p style = "margin:5px;">'+ pe[2] + ' has successfully exported! </p><p style = "margin:3px;">If download does not work automatically, try following this link:</p> <a target="_blank" href="'+tOutputName+'">'+pe[2]+'</a>'
+    //              )
+    //          sleep(2000);
+    //           window.open(tOutputName);
+    //     }
+    //     // else if(pe[0] === 'FAILED' && pe[1] === false){
+    //     //     showMessage('FAILED',pe[0] + ' failed')
+    //     // }
+
+    // })
+
+    // localStorage.setItem("pastEEExports",JSON.stringify(pastEEExports));
+    // $("#export-spinner").show();
+    document.getElementById("export-spinner").title = taskIDListTitle;
+    // $("#export-count-div").html(taskIDList);
+
+    //   $('#export-count-div').append(`<div id = "export-tasks-table-container">
+    // 								<table
+    // 								class="table table-hover "
+    // 								id="export-tasks-table"
+    // 								role="tabpanel"
+    // 								tablename="Export Tasks Monitor"
+    //               title="Current status of exports"
+    // 								></table>
+    // 							</div>`);
+    $("#export-count").text(taskCount.toString());
+    let currentCache = JSON.parse(localStorage.cachedEEExports2);
+    currentCache[mode] = cachedEEExports;
+    localStorage.cachedEEExports2 = JSON.stringify(currentCache);
+
+    if (taskCount === 0) {
+      $("#export-spinner").hide();
+      $("#export-count-div").html(``);
     }
-    if (t.state === "COMPLETED" && cachedEEExport.downloaded === false) {
-      downloadFiles(cachedEEExports[t.description].outputName);
-      cachedEEExports[t.description]["downloaded"] = true;
-    }
+    let task_width = $("#sidebar-left-header").width() - convertRemToPixels(6);
+    let button_width = 85; //$(".export-tracking-row>.btn-group").first().width();
+    let label_width = task_width - button_width - convertRemToPixels(1);
+
+    $(".export-description").css("max-width", label_width);
   });
 
-  // Object.keys(pastEEExports).map(function(k){
-  //     var pe = pastEEExports[k]
-  //     // console.log(k)
-  //     // console.log(pe)
-  //     if(pe[0] === 'COMPLETED' && pe[1] === false){
-  //         var tOutputName = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+pe[2] +'.tif'
-  //         // console.log('Exporting ' + pe[2]);
-  //         pastEEExports[k] = [pe[0],true,pe[2]];
-
-  //         showMessage('SUCCESS!',
-  //              '<p style = "margin:5px;">'+ pe[2] + ' has successfully exported! </p><p style = "margin:3px;">If download does not work automatically, try following this link:</p> <a target="_blank" href="'+tOutputName+'">'+pe[2]+'</a>'
-  //              )
-  //          sleep(2000);
-  //           window.open(tOutputName);
-  //     }
-  //     // else if(pe[0] === 'FAILED' && pe[1] === false){
-  //     //     showMessage('FAILED',pe[0] + ' failed')
-  //     // }
-
-  // })
-
-  // localStorage.setItem("pastEEExports",JSON.stringify(pastEEExports));
-  // $("#export-spinner").show();
-  document.getElementById("export-spinner").title = taskIDListTitle;
-  // $("#export-count-div").html(taskIDList);
-
-  //   $('#export-count-div').append(`<div id = "export-tasks-table-container">
-  // 								<table
-  // 								class="table table-hover "
-  // 								id="export-tasks-table"
-  // 								role="tabpanel"
-  // 								tablename="Export Tasks Monitor"
-  //               title="Current status of exports"
-  // 								></table>
-  // 							</div>`);
-  $("#export-count").text(taskCount.toString());
-  let currentCache = JSON.parse(localStorage.cachedEEExports2);
-  currentCache[mode] = cachedEEExports;
-  localStorage.cachedEEExports2 = JSON.stringify(currentCache);
-
-  if (taskCount === 0) {
-    $("#export-spinner").hide();
-    $("#export-count-div").html(``);
-  }
   // console.log('just ran export checker');
   // updateSpinner();
 }
@@ -503,7 +507,9 @@ function cacheExport(id, outputName, metadata) {
   localStorage.cachedEEExports2 = JSON.stringify(currentCache);
   trackExports();
 }
+// Set up auto export tracking every 15 seconds
 if (canExport) {
+  setTimeout(() => trackExports(), 1000);
   interval2(trackExports, 15000, 100000);
 }
 
@@ -620,16 +626,10 @@ function exportImages() {
   // closePopup();
   // console.log(exportImageDict);
   // console.log('yay');
-  var now = Date().split(" ");
-  var nowSuffix =
-    "_" +
-    now[2] +
-    "_" +
-    now[1] +
-    "_" +
-    now[3] +
-    "_" +
-    now[4].replaceAll(":", "-");
+  var now = new Date().toISOString();
+  let date = now.slice(2, 10);
+  let time = now.slice(11, 19).replaceAll(":", "-");
+  now = `${date}-${time}`;
   var exportsStarted = 0;
   var exportsSubmitted = "";
   let exportAreaProvided = exportArea !== null && exportArea !== undefined;
@@ -654,7 +654,7 @@ function exportImages() {
       }
       if (exportObject["shouldExport"] === true) {
         exportsStarted++;
-        var exportName = exportObject["name"] + nowSuffix;
+        var exportName = exportObject["name"] + "_" + now;
         var noDataValue = exportObject["noDataValue"];
         exportsSubmitted += exportName + "<br>";
         var IDAndParams = getIDAndParams(

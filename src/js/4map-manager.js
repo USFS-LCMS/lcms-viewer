@@ -1327,7 +1327,7 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
     checked = "checked";
   }
   objType = getImagesLib.getObjType(eeImage);
-  console.log(objType);
+  // console.log(objType);
 
   var now = Date().split(" ");
   var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];

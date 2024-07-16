@@ -863,8 +863,8 @@ const staticTemplates = {
                                           </li>
                                         </ul>`,
   TreeMapGEEClippingDiv: `<h5 class='pt-2' style='border-top: 0.1em solid black;'>Data Clipping</h5>
-                            <div class=" px-0 py-0 sub-sub-panel-title-collapsed">
-                              <a href="https://code.earthengine.google.com/6a10868aa172b8082a0d11bc0c54ea8c" target="_blank" title="Use a Google Earth Engine script template to download attributes clipped to polygon of interest.">
+                            <div class=" px-0 py-0 sub-sub-panel-title-collapsed ">
+                              <a class = 'links' href="https://code.earthengine.google.com/6a10868aa172b8082a0d11bc0c54ea8c" target="_blank" title="Use a Google Earth Engine script template to download attributes clipped to polygon of interest.">
                                 Clip and download data with Google Earth Engine
                               </a>
                             </div>`,

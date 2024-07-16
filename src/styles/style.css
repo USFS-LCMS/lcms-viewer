@@ -26,6 +26,12 @@
   --white: #fff;
   --almost-transparent: #bfb7b0dd;
   --orange: #ff834c;
+
+  --orange-10: #ffd7b5;
+  --orange-30: #ffb38a;
+  --orange-80: #ff9248;
+  --orange-100: #ff6700;
+
   --transparent-teal: rgba(0, 137, 123, 0.3);
 
   --slider-border-radius: 2px;
@@ -123,7 +129,9 @@ body {
 .dark-gray {
   color: var(--deep-brown-10);
 }
-
+.db-100 {
+  color: var(--deep-brown-100) !important;
+}
 .teal {
   color: var(--teal-100) !important;
 }
@@ -744,19 +752,6 @@ div.dataTables_info {
   }
 }
 
-.export-pulse {
-  animation: export-pulse 5s infinite;
-}
-
-@keyframes export-pulse {
-  0%,
-  100% {
-    color: var(--teal-50);
-  }
-  50% {
-    color: var(--teal-100);
-  }
-}
 .progress-overlay {
   position: absolute;
   left: 0;
@@ -1408,7 +1403,7 @@ a:hover {
 }
 
 .btn {
-  padding: 0.3rem;
+  padding: 0.25rem 0.5rem;
 }
 
 .btn:active,
@@ -1518,6 +1513,53 @@ textarea {
 select.form-control.export-format-input:not([size]):not([multiple]) {
   height: 1.5rem;
 }
+.export-tracking-row {
+  justify-content: space-between;
+  display: flex;
+  font-size: 0.75rem;
+
+  border-bottom: 1px solid var(--deep-brown-80);
+  border-radius: 0.35rem;
+  overflow-wrap: break-word;
+  padding: 0.25rem;
+}
+/* .export-tracking-btn {
+  
+} */
+
+.export-tracking-btn {
+  background-color: #0000;
+  margin: 0px !important;
+  border: none;
+}
+.export-tracking-btn > i,
+.export-tracking-row > .btn-group > i {
+  margin-left: 0.2rem;
+  margin-top: 0.1rem;
+}
+.export-tracking-btn:active {
+  transform: translate(3px) translateY(3px);
+}
+
+.export-tracking-complete {
+  background-color: var(--deep-brown-20);
+}
+.export-tracking-running {
+  animation: export-pulse 5s infinite;
+}
+
+@keyframes export-pulse {
+  0%,
+  100% {
+    background-color: var(--teal-30);
+  }
+  50% {
+    background-color: var(--teal-80);
+  }
+}
+.tracking-list {
+  padding-left: 0rem;
+}
 /*///////////////////////////////////////////////////////////*/
 /*Modal styling*/
 
@@ -1573,6 +1615,7 @@ select.form-control.export-format-input:not([size]):not([multiple]) {
   text-decoration: underline !important;
   font-size: 1rem;
   font-weight: bold;
+  overflow-wrap: break-word;
   margin-right: 0.3rem;
   color: var(--black) !important;
 }
@@ -1586,10 +1629,7 @@ select.form-control.export-format-input:not([size]):not([multiple]) {
 }
 
 .intro-modal-links:active,
-.dashboard-download-button:active {
-  transform: translate(3px) translateY(3px);
-}
-
+.dashboard-download-button:active,
 .intro-modal-links:hover {
   font-weight: 1000;
 }
