@@ -2732,6 +2732,7 @@ function reRun() {
     "area-charting-select-layer-list",
     "fhp-div",
     "time-lapse-legend-list",
+    "related-layer-list"
   ].map(function (l) {
     $("#" + l).empty();
     $("#legend-" + l).empty();
