@@ -427,7 +427,7 @@ function runTreeMap() {
             .concat(continuousAttrs.map(getContinuousAttr))
         )
     );
-
+  console.log(metaArray);
   // Sort the meta array by the second index of each subarray
   metaArray.sort(function (a, b) {
     var nameA = a[1].title.toUpperCase(); // Ignore case
