@@ -1,5 +1,73 @@
 
-
+function runHiForm2() {
+    console.log("here");
+   
+    var geometry = ee.Geometry.Polygon([
+      [
+        [-144.3255524330655, 60.61876843815859],
+        [-144.353018253378, 60.68876359853027],
+        [-144.5233063393155, 60.70758247382545],
+        [-144.528799503378, 60.597200855879905],
+      ],
+    ]);
+   
+    let comp = getImagesLib
+      .getProcessedSentinel2Scenes(geometry, 2024, 2024, 160, 190)
+      .median();
+   
+    Map.addLayer(comp, getImagesLib.vizParamsFalse, "Comp");
+   
+    Map.centerObject(geometry);
+   
+    Map.addExport(
+      comp
+   
+        .select(["blue", "green", "red", "nir", "swir1", "swir2"])
+        .multiply(10000)
+        .int16(),
+      "comp_test",
+      30,
+      false,
+      {},
+      -32768
+    );
+   
+    Map.addExport(geometry, "geo_test", null, false);
+   
+    let threshs = [0, 0.2, 0.5, 0.8];
+    let categorires = [];
+    let ti = 1;
+    threshs.map((t) => {
+      categorires.push(
+        ee
+          .Image(0)
+          .where(comp.select(["NDVI"]).gte(t), ti)
+          .byte()
+      );
+      ti++;
+    });
+    categorires = ee.ImageCollection(categorires).max().selfMask();
+   
+    Map.addLayer(
+      categorires,
+      { min: 1, max: 5, palette: "F00,080" },
+      "NDVI Categories"
+    );
+    Map.turnOnInspector();
+    let v = categorires.reduceToVectors({
+      geometry: geometry,
+      scale: 20,
+      crs: "EPSG:32608",
+      bestEffort: true,
+      maxPixels: 1e13,
+      tileScale: 4,
+      geometryInNativeProjection: true,
+    });
+   
+    Map.addExport(v, "ndvi_categories", null, true);
+    Map.addLayer(v, {}, "NDVI Categories Vectors");
+    Map.addLayer(geometry, {}, "Study Area");
+  }
 
 
 function runHiForm() {
@@ -114,27 +182,10 @@ function hiform_bmp_process() {
     var greenest_pre2_clip = greenest_pre2.clip(geometry);
 
     // Display the 'pre' date raster with random colors
-    Map.addLayer(greenest_pre2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Pre Date Raster', false);
-
-    Map.addExport(
-        greenest_pre2_clip.select('date'),
-        `Pre_Date_Raster`,
-        10,
-        false,
-        {}
-      );
-
+    // Map.addLayer(greenest_pre2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Pre Date Raster', false);
     
     //  Display pre products
     Map.addLayer(greenest_pre2_clip, vizParamsTrue, 'Pre Natural Color Composite', false);
-    
-    Map.addExport(
-        greenest_pre2_clip.select(['red', 'blue', 'green']).multiply(10000).int16(),
-        `Pre_Natural_Color_Composite`,
-        10,
-        false,
-        {}
-      );
 
     /////////////////////////////////////////////////////////
     // Load a Sentinel2 post-disturbance image
@@ -188,16 +239,7 @@ function hiform_bmp_process() {
     var greenest_post2_clip = greenest_post2.clip(geometry); 
 
     // Display the 'post' date raster with random colors
-    Map.addLayer(greenest_post2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Post Date Raster', false);
-
-    Map.addExport(
-        greenest_post2_clip.select('date'),
-        `Post_Date_Raster`,
-        10,
-        false,
-        {},
-        0
-      );
+    // Map.addLayer(greenest_post2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Post Date Raster', false);
 
 
     //  Display post products
@@ -458,10 +500,10 @@ function hiform_bmp_process() {
     //////////////////////////////////////
     ////  ABSOLUTE CHANGE
     //////////////////////////////////////
-    Map.addLayer(absNDVIc_x100sint8.sldStyle(sld_intervals).clip(geoBounds), {layerType : 'geeImage'}, 'all-lands ndvi change', false);
+    Map.addLayer(absNDVIc_x100sint8.sldStyle(sld_intervals).clip(geoBounds), {layerType : 'geeImage'}, 'All-Lands NDVI Change', false);
 
     //Map.addLayer(absNDVIc_x100sint8.sldStyle(sld_intervals).mask(forest2019).clip(geometry), {}, 'forest ABS change', false);
-    Map.addLayer(absNDVIc_x100sint8.sldStyle(sld_intervals).mask(nlcd4_mST_mask).clip(geoBounds), {layerType : 'geeImage'}, 'forest ndvi change', false);
+    Map.addLayer(absNDVIc_x100sint8.sldStyle(sld_intervals).mask(nlcd4_mST_mask).clip(geoBounds), {layerType : 'geeImage'}, 'Forest NDVI Change', false);
 
     ////  Export forest-masked, photo-like RGB raster, pre-colorized, not editable on desktop
     //TODO: EXPORTING Export.image.toDrive({image: absNDVIc_x100sint8.sldStyle(sld_intervals).mask(nlcd4_mST_mask).clip(geometry), description: 'S2TOA_2bins_severeANDmoderate_1yrNDVIchange_092122_RGB_pre052121_072121_post072122_092122_v030923',region:geometry,'scale':10, 'maxPixels':1e13}); 
@@ -544,16 +586,9 @@ function hiform_bmp_process() {
         color: 2,
         width: 1
     });
-    Map.addLayer(outline2, {palette: '3DED97', min: 1, max: 1}, 'Moderate NDVI Change (green outline poly)');
+    Map.addLayer(vectors2, {strokeColor: '3DED97', strokeWeight: 1}, 'Moderate NDVI Change');
 
-    Map.addExport(
-        zones2.unmask(0).byte(),
-        `Moderate_NDVI_Change (Green Outline)`,
-        10,
-        true,
-        {},
-        255
-      );
+    Map.addExport(vectors2, "Moderate_NDVI_Change (Green Outline)", null, true);
 
     //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
@@ -633,14 +668,16 @@ function hiform_bmp_process() {
 
     // Convert the zones of the thresholded change to vectors
     var vectors = zones.addBands((forchange_tdn)).reduceToVectors({
-    geometry: geometry,
-    crs: forchange_tdn.projection(),
-    scale: 10,
-    geometryType: 'polygon',
-    eightConnected: false,
-    labelProperty: 'zone',
-    reducer: ee.Reducer.mean(),
-    maxPixels:1e13
+        geometry: geometry,
+        crs: forchange_tdn.projection(),
+        scale: 10,
+        geometryType: 'polygon',
+        eightConnected: false,
+        labelProperty: 'zone',
+        reducer: ee.Reducer.mean(),
+        maxPixels: 1e13,
+        tileScale: 4,
+        geometryInNativeProjection: true,
     });
 
     //Map.addLayer(vectors, {palette: 'FF2400'}, 'severe NDVI change (clear cut?) (black filled poly)', false);
@@ -654,15 +691,10 @@ function hiform_bmp_process() {
         width: 1
     });
     //Map.addLayer(outline.clip(geometry), {palette: 'FF2400'}, 'severe NDVI change (red outline poly)');
-    Map.addLayer(outline, {palette: 'FF2400', min: 1, max: 1}, 'Severe NDVI Change (red outline poly)');
-    Map.addExport(
-        zones.unmask(0).byte(),
-        `Severe_NDVI_Change (Red Outline)`,
-        10,
-        true,
-        {},
-        255
-      );
+    Map.addLayer(vectors, {strokeColor: 'FF2400', strokeWeight: 1}, 'Severe NDVI Change');
+    
+    Map.addExport(vectors, "Severe_NDVI_Change (Red Outline)", null, true);
+
     //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
     //Export.table.toDrive({collection: vectors, description: 'polys_large_patch_pine_thold', fileFormat: 'SHP'}); 

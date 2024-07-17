@@ -5,7 +5,76 @@ var seq_mon_query_clicked = false;
 var site_highlights_dict = {};
 // var exports;
 // }
-function runSequoia() {
+function runHiForm() {
+  console.log("here");
+ 
+  var geometry = ee.Geometry.Polygon([
+    [
+      [-144.3255524330655, 60.61876843815859],
+      [-144.353018253378, 60.68876359853027],
+      [-144.5233063393155, 60.70758247382545],
+      [-144.528799503378, 60.597200855879905],
+    ],
+  ]);
+ 
+  let comp = getImagesLib
+    .getProcessedSentinel2Scenes(geometry, 2024, 2024, 160, 190)
+    .median();
+ 
+  Map.addLayer(comp, getImagesLib.vizParamsFalse, "Comp");
+ 
+  Map.centerObject(geometry);
+ 
+  Map.addExport(
+    comp
+ 
+      .select(["blue", "green", "red", "nir", "swir1", "swir2"])
+      .multiply(10000)
+      .int16(),
+    "comp_test",
+    30,
+    false,
+    {},
+    -32768
+  );
+ 
+  Map.addExport(geometry, "geo_test", null, false);
+ 
+  let threshs = [0, 0.2, 0.5, 0.8];
+  let categorires = [];
+  let ti = 1;
+  threshs.map((t) => {
+    categorires.push(
+      ee
+        .Image(0)
+        .where(comp.select(["NDVI"]).gte(t), ti)
+        .byte()
+    );
+    ti++;
+  });
+  categorires = ee.ImageCollection(categorires).max().selfMask();
+ 
+  Map.addLayer(
+    categorires,
+    { min: 1, max: 5, palette: "F00,080" },
+    "NDVI Categories"
+  );
+  Map.turnOnInspector();
+  let v = categorires.reduceToVectors({
+    geometry: geometry,
+    scale: 20,
+    crs: "EPSG:32608",
+    bestEffort: true,
+    maxPixels: 1e13,
+    tileScale: 4,
+    geometryInNativeProjection: true,
+  });
+ 
+  Map.addExport(v, "ndvi_categories", null, true);
+  Map.addLayer(v, {}, "NDVI Categories Vectors");
+  Map.addLayer(geometry, {}, "Study Area");
+}
+function runSequoia2() {
   // First get a unique id url with all the parameters used to make the outputs
   // TweetThis(
   //   (preURL = ""),

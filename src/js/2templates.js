@@ -496,22 +496,22 @@ const staticTemplates = {
     ),
     "HiForm-BMP": getIntroModal(
       "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
-      "Welcome to the Giant Sequoia Viewer!",
+      "Welcome to the <i>HiForm</i> BMP Tool!",
       `<li>
-<p class="pb-2 ">This near real-time program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide first cut alarm of potentially declining named Giant Sequoias and the ability to view available remote sensing image data.</p>
+<p class="pb-2 ">This application utilizes Google Earth Engine and 10m Sentinel-2 satellite imagery with a 5-day repeat frequency to identify locations of timber harvest and more moderate silvicultural treatments. State agencies monitor these activities to ensure compliance with water quality Best Management Practices (BMPs). Users define a timeframe for forest-only change analysis, which can generate short- and long-term forest change products. These outputs help prioritize site monitoring efforts and can be exported in various formats. The application also provides BMP-related data layers to help interpret local topographic and hydrologic conditions.
+This tool was built using workflow components developed for the <i>HiForm</i> (“Hi-resolution Forest mapping”) forest disturbance mapping application, visit <a title="hiform link" href="https://hiform.org" target="_blank" >hiform.org</a> for more information
+</p>
 </li>
 `,
       `
 <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
-<h5>For access please contact Sequoia Viewer project coordinator.</h5>
+
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
-<a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
+<a class = "intro-modal-links" title = "HiForm BMP Help Document" href = "" target="_blank" >Help Document</a>
 
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
 </div>
-<div class ='my-3' title='There are additional change data visualization tools available in these other sites'>Other EXPLORERS:
-<a class = 'intro-modal-links' title = "Visualize and explore LAMDA products" href = "lamda-downloads.html" target="_blank">LAMDA Explorer</a>
 
 
 </div>`,
@@ -2119,10 +2119,6 @@ function addSelectTypeRadio(
 function addHiFormPostDatePicker(
   containerID,
   datepickerID,
-  defaultDate1,
-  defaultDate2,
-  defaultDate3,
-  defaultDate4
 ) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   $("#" + datepickerID).append(`<div id="post-ranges-div">
@@ -2135,10 +2131,6 @@ function addHiFormPostDatePicker(
 function addHiFormCustomPrePicker(
   containerID,
   datepickerID,
-  defaultDate1,
-  defaultDate2,
-  defaultDate3,
-  defaultDate4
 ) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
 
@@ -2146,6 +2138,24 @@ function addHiFormCustomPrePicker(
                                           <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
                                           <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
                                         </div>`);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Add Current AOI Paramaters Display - Hiform
+function addCurrentAOIParametersDisplay() {
+  $(`#select-aoi-label-select-aoi-div`).append(`<div id="select-aoi-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
+                                                    SPACE
+                                                </div>`);
+  $(`#select-aoi-current-params`).hide()
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Add Current Date Paramaters Display - Hiform
+function addCurrentDateParametersDisplay() {
+  $(`#pre-post-dates-label-pre-post-dates-div`).append(`<div id="date-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
+                                                    SPACE
+                                                </div>`);
+  $(`#date-current-params`).hide()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2163,7 +2173,7 @@ function addHiFormProcessButton(containerID) {
 function addHiFormResetButton(containerID) {
   $("#" + containerID)
     .append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
-                                <input type="button" id="reset-button" class="mb-2" value="Reset HiForm Results" onclick="handleHiFormReset()">
+                                <input type="button" id="reset-button" class="mb-2" value="Restart Analysis" onclick="handleHiFormReset()">
                               </div>`);
 
   $("#reset-button").attr("disabled", "disabled");
@@ -2198,7 +2208,8 @@ function addHiFormExport(containerDiv) {
                             </div>  
                         </div>
                         
-                    </div>`);
+                    </div>`
+                    );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

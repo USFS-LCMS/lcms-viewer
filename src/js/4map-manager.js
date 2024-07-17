@@ -2014,6 +2014,8 @@ function addToMap(
 
   addLayer(layer);
   layerCount++;
+
+  return layer.id
 }
 
 //////////////////////////////////////////////////////
@@ -2330,7 +2332,7 @@ function mp() {
     whichLayerList,
     queryItem
   ) {
-    addToMap(
+    return addToMap(
       item,
       viz,
       name,
@@ -3624,6 +3626,8 @@ function dropdownUpdateStudyArea(whichOne) {
     run = runBaseLearner;
   } else if (mode === "sequoia-view") {
     run = runSequoia;
+  } else if (mode === "HiForm-BMP") {
+    run = runHiForm;
   } else if (studyAreaName === "CONUS") {
     run = runCONUS;
   } else {
@@ -4407,6 +4411,8 @@ function initialize() {
       run = runAlgal;
     } else if (mode === "sequoia-view") {
       run = runSequoia;
+    } else if (mode === "HiForm-BMP") {
+      run = runHiForm;
     } else if (studyAreaName === "CONUS") {
       longStudyAreaName = cachedStudyAreaName;
       run = runCONUS;

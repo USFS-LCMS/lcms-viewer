@@ -2725,6 +2725,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     handleAoiSelectionType
   );
 
+  addCurrentAOIParametersDisplay()
+
   //Initial Set Up
   handleAoiSelectionType("Select by Dropdown");
 
@@ -2856,6 +2858,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "Select post and pre date ranges for the Hi-Form BMP Tool"
   );
+
+  addCurrentDateParametersDisplay()
 
   addHiFormPostDatePicker("pre-post-dates-div", "post-date-picker-container");
 
@@ -3041,9 +3045,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     $("#select-aoi-div").removeClass("show");
     $("#select-aoi-label").prop("ariaExpanded", false);
 
-    // Hide Contents of Parameter Selection Div
+    // // Hide Contents of Parameter Selection Div
     $("#select-aoi-div").hide();
     $("#pre-post-dates-div").hide();
+
+    // Show Selected Parameters Div
+    $(`#select-aoi-current-params`).show()
+    $(`#date-current-params`).show()
 
     // Run HiForm Process
     hiform_bmp_process();
@@ -3067,9 +3075,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addHiFormResetButton("layer-list-collapse-div");
 
   function handleHiFormReset() {
-    // Make Paramters Visible again
+    // Make Parameters Visible again and Hide the Param Display
     $("#select-aoi-div").show();
     $("#pre-post-dates-div").show();
+    $(`#select-aoi-current-params`).hide()
+    $(`#date-current-params`).hide()
 
     // Open or Close Accordians
     $("#layer-list-collapse-label").addClass("collapsed");
