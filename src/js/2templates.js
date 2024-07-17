@@ -2144,7 +2144,8 @@ function addHiFormCustomPrePicker(
 // Add Current AOI Paramaters Display - Hiform
 function addCurrentAOIParametersDisplay() {
   $(`#select-aoi-label-select-aoi-div`).append(`<div id="select-aoi-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
-                                                    SPACE
+                                                  <div id="display-aoi-selection-title">Selected County:</div>
+                                                  <div id="display-aoi-selection"></div>
                                                 </div>`);
   $(`#select-aoi-current-params`).hide()
 }
@@ -2153,8 +2154,11 @@ function addCurrentAOIParametersDisplay() {
 // Add Current Date Paramaters Display - Hiform
 function addCurrentDateParametersDisplay() {
   $(`#pre-post-dates-label-pre-post-dates-div`).append(`<div id="date-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
-                                                    SPACE
-                                                </div>`);
+                                                            <div id="post-display-date-selection-title">Post Date Range:</div>
+                                                            <div id="post-display-date-selection"></div>
+                                                            <div id="pre-display-date-selection-title">Pre Date Range:</div>
+                                                            <div id="pre-display-date-selection"></div>
+                                                        </div>`);
   $(`#date-current-params`).hide()
 }
 

@@ -2794,6 +2794,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     );
     Map.centerObject(selectedFeature);
     urlParams.selectedCounty = selectedFeature;
+    selectedCountyAndStateStr = `${selectedCounty}, ${stateAbr}`;
     exportArea = selectedFeature;
     toggleProcessButton();
   }
@@ -2828,6 +2829,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         );
         Map.centerObject(selectedFeature);
         urlParams.selectedCounty = selectedFeature;
+        selectedCountyAndStateStr = `${countyName}, ${stateAbr}`;
         exportArea = selectedFeature;
         toggleProcessButton();
       });
@@ -3025,6 +3027,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       );
       return;
     }
+
+    // Set Display Params
+    $(`#display-aoi-selection`).html(selectedCountyAndStateStr)
+    $(`#pre-display-date-selection`).html(`${urlParams.preDate1} - ${urlParams.preDate2}`)
+    $(`#post-display-date-selection`).html(`${urlParams.postDate1} - ${urlParams.postDate2}`)
 
     // Allow Reset Button
     $("#reset-button").removeAttr("disabled");
