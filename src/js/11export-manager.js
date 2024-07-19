@@ -401,9 +401,6 @@ function trackExports() {
         }
 
         let exportRow = `<div class="export-tracking-row" id = "${t.description}-export-tracking-row">
-        
-        
-        
         <div class = 'export-description'>
         ${t.description} 
         </div>
@@ -413,9 +410,6 @@ function trackExports() {
         ${exportTypeBtn}
         ${exportRowBtn}
         </div>
-       
-        
-        
       </div>`;
         $(`#export-tracking-rows`).append(exportRow);
 

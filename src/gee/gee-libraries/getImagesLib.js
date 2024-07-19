@@ -285,6 +285,14 @@ function copyObj(obj) {
   });
   return out;
 }
+function reverseObj(obj) {
+  var out = {};
+  Object.keys(obj).map(function (k) {
+    let v = obj[k];
+    out[v] = k;
+  });
+  return out;
+}
 ///////////////////////////////////////////////////////////////////
 //Function to compute range list on client side
 function range(start, stop, step) {

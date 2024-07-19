@@ -956,6 +956,21 @@ function dict(array) {
   array.map((r) => (out[r[0]] = r[1]));
   return out;
 }
+function copyObj(obj) {
+  var out = {};
+  Object.keys(obj).map(function (k) {
+    out[k] = obj[k];
+  });
+  return out;
+}
+function reverseObj(obj) {
+  var out = {};
+  Object.keys(obj).map(function (k) {
+    let v = obj[k];
+    out[v] = k;
+  });
+  return out;
+}
 ////////////////////////
 //Taken from: https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
 // sort array ascending

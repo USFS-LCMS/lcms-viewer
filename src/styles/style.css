@@ -152,7 +152,10 @@ body {
   background-color: var(--deep-brown-100) !important;
   color: var(--deep-brown-20) !important;
 }
-
+.bg-tan {
+  background-color: var(--deep-brown-20) !important;
+  color: var(--deep-brown-100) !important;
+}
 .bg-black,
 .btn {
   background-color: var(--black) !important;
@@ -1481,6 +1484,12 @@ input[type="radio"].form-check-input:checked + label:before {
   letter-spacing: 0.2em;
 }
 
+input[type="date"] {
+  background: transparent;
+  color: var(--deep-brown-100);
+  background-color: var(--deep-brown-20);
+  color-scheme: dark;
+}
 /* allow space for check mark */
 
 textarea {

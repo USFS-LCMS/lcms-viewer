@@ -775,19 +775,22 @@ var getQueryImages = function (lng, lat) {
             .filterBounds(clickPt);
         }
         features.evaluate(function (values) {
-          // console.log(values);
+          console.log(values);
           keyI++;
+          if (values !== undefined) {
+            queryGeoJSON.addGeoJson(values);
 
-          queryGeoJSON.addGeoJson(values);
+            var features = values.features;
 
-          var features = values.features;
-
-          if (features.length === 0) {
-            makeQueryTable(null, q, k);
+            if (features.length === 0) {
+              makeQueryTable(null, q, k);
+            } else {
+              features.map(function (f) {
+                makeQueryTable(f.properties, q, k);
+              });
+            }
           } else {
-            features.map(function (f) {
-              makeQueryTable(f.properties, q, k);
-            });
+            makeQueryTable(null, q, k);
           }
         });
       }
@@ -2099,6 +2102,7 @@ function startQuery() {
   }
   google.maps.event.clearListeners(mapDiv, "dblclick");
   google.maps.event.clearListeners(mapDiv, "click");
+
   map.setOptions({ draggableCursor: "help" });
   map.setOptions({ cursor: "help" });
   mapHammer = new Hammer(document.getElementById("map"));

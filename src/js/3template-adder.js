@@ -2631,78 +2631,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.preDate2; // = "2022-08-21"
   urlParams.postDate1; // = "2023-07-21"
   urlParams.postDate2; // = "2023-09-21"
-  urlParams.correctionTypeOption = "TOA";
+  urlParams.correctionTypeOption;
   canExport = true;
-
-  var region8_fps = [
-    "01",
-    "05",
-    "12",
-    "13",
-    "21",
-    "22",
-    "28",
-    "37",
-    "40",
-    "45",
-    "47",
-    "48",
-    "51",
-  ];
-
-  var statesDict = {
-    Alabama: "01",
-    // "Alaska" : "02",
-    // "Arizona" : "04",
-    Arkansas: "05",
-    // "California" : "06",
-    // "Colorado" : "08",
-    // "Connecticut" : "09",
-    // "Delaware" : "10",
-    // "District of Columbia" : "11",
-    Florida: "12",
-    Georgia: "13",
-    // "Hawaii" : "15",
-    // "Idaho" : "16",
-    // "Illinois" : "17",
-    // "Indiana" : "18",
-    // "Iowa" : "19",
-    // "Kansas" : "20",
-    Kentucky: "21",
-    Louisiana: "22",
-    // "Maine" : "23",
-    // "Maryland" : "24",
-    // "Massachusetts" : "25",
-    // "Michigan" : "26",
-    // "Minnesota" : "27",
-    Mississippi: "28",
-    // "Missouri" : "29",
-    // "Montana" : "30",
-    // "Nebraska" : "31",
-    // "Nevada" : "32",
-    // "New Hampshire" : "33",
-    // "New Jersey" : "34",
-    // "New Mexico" : "35",
-    // "New York" : "36",
-    "North Carolina": "37",
-    // "North Dakota" : "38",
-    // "Ohio" : "39",
-    Oklahoma: "40",
-    // "Oregon" : "41",
-    // "Pennsylvania" : "42",
-    // "Rhode Island" : "44",
-    "South Carolina": "45",
-    // "South Dakota" : "46",
-    Tennessee: "47",
-    Texas: "48",
-    // "Utah" : "49",
-    // "Vermont" : "50",
-    Virginia: "51",
-    // "Washington" : "53",
-    // "West Virginia" : "54",
-    // "Wisconsin" : "55",
-    // "Wyoming" : "56",
-  };
 
   addCollapse(
     "sidebar-left",
@@ -2715,26 +2645,29 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Select are of interest for the Hi-Form BMP Tool"
   );
 
+  if (!urlParams.aoiSelectionType) {
+    urlParams.aoiSelectionType = {
+      "Select by Dropdown": true,
+      "Select on Map": false,
+    };
+  }
+
   addSelectTypeRadio(
     "select-aoi-div",
     "select-type-radio",
     "Choose County Selection Type",
     "selectOption",
-    { "Select by Dropdown": true, "Select on Map": false },
+    urlParams.aoiSelectionType,
     "Title",
     handleAoiSelectionType
   );
 
-  addCurrentAOIParametersDisplay()
-
-  //Initial Set Up
-  handleAoiSelectionType("Select by Dropdown");
+  addCurrentAOIParametersDisplay();
 
   function handleAoiSelectionType(selection) {
     console.log(selection);
-    urlParams.aoiSelectionType = selection;
 
-    if (urlParams.aoiSelectionType == "Select by Dropdown") {
+    if (selectOption == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
       $("#" + "dropdown-select").remove();
       $("#" + "select-aoi-div").append(`<div id="dropdown-select"></div>`);
@@ -2744,46 +2677,39 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         "state-select",
         "Select a State:",
         selectedState,
-        Object.keys(statesDict), //stateList,
+        availableStates, //stateList,
         populateCountiesDropdown
       );
-    } else if (urlParams.aoiSelectionType == "Select on Map") {
+    } else if (selectOption == "Select on Map") {
       $("#" + "dropdown-select").remove();
       selectSingleCounty();
     }
   }
 
   function populateCountiesDropdown(selectedState) {
-    var stateFP = statesDict[selectedState];
-    var counties = ee
-      .FeatureCollection("TIGER/2018/Counties")
-      .filter(ee.Filter.eq("STATEFP", stateFP));
-    var stateAbr = ee
-      .FeatureCollection("TIGER/2018/States")
-      .filter(ee.Filter.eq("STATEFP", stateFP))
-      .first()
-      .get("STUSPS")
-      .getInfo();
-    var countyList = counties.aggregate_histogram("NAME").keys().getInfo();
+    var state = allStates.filter((s) => s.NAME === selectedState)[0];
+    var counties = allCounties
+      .filter((c) => c.STATEFP === state.STATEFP)
+      .map((c) => c.NAME)
+      .sort();
 
     addDropdownCounties(
       "dropdown-select",
       "county-select",
       "Select a County:",
       selectedCounty,
-      countyList,
-      stateFP,
-      stateAbr,
+      counties,
+      state.STATEFP,
+      state.STUSPS,
       setSelectedCounty
     );
   }
 
   function setSelectedCounty(selectedCounty, stateFP, stateAbr) {
     Map.removeLayer(selectedLayerId);
-    var region8_counties = ee
+
+    window.selectedFeature = ee
       .FeatureCollection("TIGER/2018/Counties")
-      .filter(ee.Filter.inList("STATEFP", region8_fps));
-    var selectedFeature = region8_counties
       .filter(ee.Filter.eq("STATEFP", stateFP))
       .filter(ee.Filter.eq("NAME", selectedCounty));
     selectedLayerId = Map.addLayer(
@@ -2793,9 +2719,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       true
     );
     Map.centerObject(selectedFeature);
-    urlParams.selectedCounty = selectedFeature;
+    urlParams.selectedState = stateAbr;
+    urlParams.selectedCounty = selectedCounty;
     selectedCountyAndStateStr = `${selectedCounty}, ${stateAbr}`;
-    exportArea = selectedFeature;
+    exportArea = window.selectedFeature;
     toggleProcessButton();
   }
 
@@ -2803,24 +2730,19 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     setTimeout(() => {
       google.maps.event.clearListeners(map, "click");
       google.maps.event.addListener(map, "click", (e) => {
+        setTimeout(() => Map.showSpinner(), 100);
         Map.removeLayer(selectedLayerId);
         const lat = e.latLng.lat();
         const lng = e.latLng.lng();
         const point = ee.Geometry.Point([lng, lat]);
-        features = region8_counties = ee
-          .FeatureCollection("TIGER/2018/Counties")
-          .filter(ee.Filter.inList("STATEFP", region8_fps));
-        const selectedFeature = features.filterBounds(point);
+        features = ee.FeatureCollection("TIGER/2018/Counties");
+
+        window.selectedFeature = features.filterBounds(point);
         var countyName = selectedFeature.first().get("NAME").getInfo();
         var stateFP = selectedFeature.first().get("STATEFP").getInfo();
-        var stateAbr = ee
-          .FeatureCollection("TIGER/2018/States")
-          .filter(ee.Filter.eq("STATEFP", stateFP))
-          .first()
-          .get("STUSPS")
-          .getInfo();
-        console.log("LAYER OBJ");
-        console.log(layerObj);
+        var stateAbr = allStates.filter((s) => s.STATEFP === stateFP)[0].STUSPS;
+
+        console.log(stateFP);
         selectedLayerId = Map.addLayer(
           selectedFeature,
           { strokeColor: "0BFFFF", layerType: "geeVectorImage" },
@@ -2828,10 +2750,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           true
         );
         Map.centerObject(selectedFeature);
-        urlParams.selectedCounty = selectedFeature;
+        urlParams.selectedState = stateAbr;
+        urlParams.selectedCounty = countyName;
         selectedCountyAndStateStr = `${countyName}, ${stateAbr}`;
-        exportArea = selectedFeature;
+        exportArea = window.selectedFeature;
         toggleProcessButton();
+        setTimeout(() => Map.hideSpinner(), 100);
       });
     }, 0);
   }
@@ -2842,7 +2766,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       urlParams.preDate2 &&
       urlParams.postDate1 &&
       urlParams.postDate2 &&
-      urlParams.selectedCounty
+      window.selectedFeature
     ) {
       $("#process-button").removeAttr("disabled");
     } else {
@@ -2861,16 +2785,22 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Select post and pre date ranges for the Hi-Form BMP Tool"
   );
 
-  addCurrentDateParametersDisplay()
+  addCurrentDateParametersDisplay();
 
   addHiFormPostDatePicker("pre-post-dates-div", "post-date-picker-container");
-
+  if (!urlParams.preDateRange) {
+    urlParams.preDateRange = {
+      "6 Month": true,
+      "1 Year": false,
+      Custom: false,
+    };
+  }
   addSelectTypeRadio(
     "pre-post-dates-div",
     "define-pre-date-options",
     "Define Pre Date Range",
-    "testOption",
-    { "6 Month": true, "1 Year": false, Custom: false },
+    "selectedPreDateRangeType",
+    urlParams.preDateRange,
     "Choose a pre date range option",
     toggleCustomPostDate
   );
@@ -2883,16 +2813,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addHiFormCustomPrePicker("pre-post-dates-div", "pre-date-picker-container");
 
   toggleCustomPostDate();
-  urlParams.selectedPreDateRangeType = "6 Month";
 
-  function toggleCustomPostDate(selection) {
-    if (selection == "Custom") {
+  function toggleCustomPostDate() {
+    if (selectedPreDateRangeType === "Custom") {
       $("#pre-ranges-div").show();
     } else {
       $("#pre-ranges-div").hide();
     }
 
-    urlParams.selectedPreDateRangeType = selection;
     handleSelectedPreDateType();
   }
 
@@ -2941,46 +2869,51 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   function handleSelectedPreDateType() {
     // Set Pre Date if not custom range
-    if (urlParams.selectedPreDateRangeType == "1 Year") {
-      var ogdate = new Date(urlParams.postDate1);
-      ogdate.setMonth(ogdate.getMonth() - 12);
-      date_format = ogdate.toISOString().substr(0, 10);
+    if (
+      urlParams.postDate1 !== undefined &&
+      urlParams.postDate2 !== undefined
+    ) {
+      if (selectedPreDateRangeType == "1 Year") {
+        var ogdate = new Date(urlParams.postDate1);
+        ogdate.setMonth(ogdate.getMonth() - 12);
+        date_format = ogdate.toISOString().substr(0, 10);
 
-      urlParams.preDate1 = date_format;
+        urlParams.preDate1 = date_format;
 
-      var ogdate2 = new Date(urlParams.postDate2);
-      ogdate2.setMonth(ogdate2.getMonth() - 12);
-      date_format2 = ogdate2.toISOString().substr(0, 10);
+        var ogdate2 = new Date(urlParams.postDate2);
+        ogdate2.setMonth(ogdate2.getMonth() - 12);
+        date_format2 = ogdate2.toISOString().substr(0, 10);
 
-      urlParams.preDate2 = date_format2;
+        urlParams.preDate2 = date_format2;
 
-      console.log("Date Selected (Pre1): " + urlParams.preDate1);
-      console.log("Date Selected (Pre2): " + urlParams.preDate2);
-      $("#selected-date-range").show();
-      $("#selected-date-range-contents").text(
-        `${urlParams.preDate1} ---- ${urlParams.preDate2}`
-      );
-    } else if (urlParams.selectedPreDateRangeType == "6 Month") {
-      var ogdate = new Date(urlParams.postDate1);
-      ogdate.setMonth(ogdate.getMonth() - 6);
-      date_format = ogdate.toISOString().substr(0, 10);
+        console.log("Date Selected (Pre1): " + urlParams.preDate1);
+        console.log("Date Selected (Pre2): " + urlParams.preDate2);
+        $("#selected-date-range").show();
+        $("#selected-date-range-contents").text(
+          `${urlParams.preDate1} ---- ${urlParams.preDate2}`
+        );
+      } else if (selectedPreDateRangeType == "6 Month") {
+        var ogdate = new Date(urlParams.postDate1);
+        ogdate.setMonth(ogdate.getMonth() - 6);
+        date_format = ogdate.toISOString().substr(0, 10);
 
-      urlParams.preDate1 = date_format;
+        urlParams.preDate1 = date_format;
 
-      var ogdate2 = new Date(urlParams.postDate2);
-      ogdate2.setMonth(ogdate2.getMonth() - 6);
-      date_format2 = ogdate2.toISOString().substr(0, 10);
+        var ogdate2 = new Date(urlParams.postDate2);
+        ogdate2.setMonth(ogdate2.getMonth() - 6);
+        date_format2 = ogdate2.toISOString().substr(0, 10);
 
-      urlParams.preDate2 = date_format2;
+        urlParams.preDate2 = date_format2;
 
-      console.log("Date Selected (Pre1): " + urlParams.preDate1);
-      console.log("Date Selected (Pre2): " + urlParams.preDate2);
-      $("#selected-date-range").show();
-      $("#selected-date-range-contents").text(
-        `${urlParams.preDate1} ---- ${urlParams.preDate2}`
-      );
-    } else {
-      $("#selected-date-range").hide();
+        console.log("Date Selected (Pre1): " + urlParams.preDate1);
+        console.log("Date Selected (Pre2): " + urlParams.preDate2);
+        $("#selected-date-range").show();
+        $("#selected-date-range-contents").text(
+          `${urlParams.preDate1} ---- ${urlParams.preDate2}`
+        );
+      } else {
+        $("#selected-date-range").hide();
+      }
     }
   }
 
@@ -3001,20 +2934,32 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     false,
     ""
   );
-
+  if (!urlParams.correctionTypeOption) {
+    urlParams.correctionTypeOption = { TOA: true, SR: false };
+  }
   addSelectTypeRadio(
     "advanced-params-div",
     "correction-type-radio",
     "Choose Image Correction Type",
     "correctionTypeOption",
-    { TOA: true, SR: false },
+    urlParams.correctionTypeOption,
     "Choose either Top of Atmosphere or Surface Reflectance Correction Type",
     changeCorrectionTypeOption
+  );
+  if (!urlParams.exportCRS) {
+    urlParams.exportCRS = "EPSG:5070";
+  }
+  addInputTextBox(
+    "advanced-params-div",
+    "export-crs",
+    "Projection",
+    "urlParams.exportCRS",
+    urlParams.exportCRS,
+    'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '
   );
 
   function changeCorrectionTypeOption() {
     console.log(correctionTypeOption);
-    urlParams.correctionTypeOption = correctionTypeOption;
   }
 
   addHiFormProcessButton("pre-post-dates-div");
@@ -3022,22 +2967,24 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   function handleProcess() {
     // Check Parameters
     if (urlParams.preDate2 >= urlParams.postDate1) {
-      alert(
+      showMessage(
+        "Invalid Dates Provided",
         "The Pre Date Range cannot be after the Post Date Range nor should they overlap"
       );
       return;
     }
 
     // Set Display Params
-    $(`#display-aoi-selection`).html(selectedCountyAndStateStr)
-    $(`#pre-display-date-selection`).html(`${urlParams.preDate1} - ${urlParams.preDate2}`)
-    $(`#post-display-date-selection`).html(`${urlParams.postDate1} - ${urlParams.postDate2}`)
+    $(`#display-aoi-selection`).html(selectedCountyAndStateStr);
+    $(`#pre-display-date-selection`).html(
+      `${urlParams.preDate1} - ${urlParams.preDate2}`
+    );
+    $(`#post-display-date-selection`).html(
+      `${urlParams.postDate1} - ${urlParams.postDate2}`
+    );
 
     // Allow Reset Button
     $("#reset-button").removeAttr("disabled");
-
-    // Disable ReRun
-    google.maps.event.clearListeners(map, "click");
 
     // Open or Close Accordians
     $("#layer-list-collapse-div").toggleClass("collapsed show");
@@ -3057,11 +3004,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     $("#pre-post-dates-div").hide();
 
     // Show Selected Parameters Div
-    $(`#select-aoi-current-params`).show()
-    $(`#date-current-params`).show()
+    $(`#select-aoi-current-params`).show();
+    $(`#date-current-params`).show();
 
     // Run HiForm Process
     hiform_bmp_process();
+
+    // Clear click listener
+    google.maps.event.clearListeners(map, "click");
   }
 
   addCollapse(
@@ -3085,8 +3035,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     // Make Parameters Visible again and Hide the Param Display
     $("#select-aoi-div").show();
     $("#pre-post-dates-div").show();
-    $(`#select-aoi-current-params`).hide()
-    $(`#date-current-params`).hide()
+    $(`#select-aoi-current-params`).hide();
+    $(`#date-current-params`).hide();
 
     // Open or Close Accordians
     $("#layer-list-collapse-label").addClass("collapsed");
@@ -3101,6 +3051,21 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     $("#select-aoi-label").removeClass("collapsed");
     $("#select-aoi-label-label").prop("ariaExpanded", true);
 
+    delete urlParams.postDate1;
+    delete urlParams.postDate2;
+    delete urlParams.preDate1;
+    delete urlParams.preDate2;
+
+    delete urlParams.selectedCounty;
+    delete urlParams.selectedState;
+
+    $("#post-date-one").val("");
+    $("#post-date-two").val("");
+    $("#pre-date-one").val("");
+    $("#pre-date-two").val("");
+
+    $("#selected-date-range").hide();
+
     // Reset Map
     reRun();
 
@@ -3110,16 +3075,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
     // ReAdd Select AOI
     $("#select-aoi-div").empty();
+
     addSelectTypeRadio(
       "select-aoi-div",
       "select-type-radio",
       "Choose County Selection Type",
       "selectOption",
-      { "Select by Dropdown": true, "Select on Map": false },
+      urlParams.aoiSelectionType,
       "Title",
       handleAoiSelectionType
     );
-    handleAoiSelectionType("Select by Dropdown");
+    handleAoiSelectionType(selectOption);
   }
 
   addCollapse(
@@ -3136,7 +3102,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#related-layers-div").append(
     `<ul id="related-layer-list" class = "layer-list"></ul>`
   );
-
+  addCollapse(
+    "sidebar-left",
+    "tools-collapse-label",
+    "tools-collapse-div",
+    "TOOLS",
+    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    false,
+    "",
+    "Tools to measure and chart data provided on the map"
+  );
   addCollapse(
     "sidebar-left",
     "download-collapse-label",
@@ -3311,7 +3286,9 @@ addSubAccordianCard(
   staticTemplates.queryTipHover
 );
 
-if (["Bloom-Mapper", "TreeMap", "sequoia-view"].indexOf(mode) === -1) {
+if (
+  ["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1
+) {
   addSubAccordianCard(
     "tools-accordian",
     "pixel-chart-label",
@@ -3554,22 +3531,22 @@ if (mode === "sequoia-view") {
     staticTemplates.uploadAreaChartTipHover
   );
 }
-if (mode === "HiForm-BMP") {
-  $("#tools-accordian").append(
-    `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
-  );
-  //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
-  addSubAccordianCard(
-    "tools-accordian",
-    "upload-area-chart-label",
-    "upload-area-chart-div",
-    "Upload an Area",
-    staticTemplates.uploadShpToMapLayerDiv,
-    false,
-    "toggleTool(toolFunctions.area.shpDefined)",
-    staticTemplates.uploadAreaChartTipHover
-  );
-}
+// if (mode === "HiForm-BMP") {
+//   $("#tools-accordian").append(
+//     `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
+//   );
+//   //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
+//   addSubAccordianCard(
+//     "tools-accordian",
+//     "upload-area-chart-label",
+//     "upload-area-chart-div",
+//     "Upload an Area",
+//     staticTemplates.uploadShpToMapLayerDiv,
+//     false,
+//     "toggleTool(toolFunctions.area.shpDefined)",
+//     staticTemplates.uploadAreaChartTipHover
+//   );
+// }
 //Add some logos for different modes
 if (mode === "MTBS" || mode === "Ancillary") {
   $("#contributor-logos")
@@ -3590,6 +3567,7 @@ if (canExport) {
   if (
     localStorage.export_crs !== undefined &&
     localStorage.export_crs !== null &&
+    urlParams.exportCRS === undefined &&
     localStorage.export_crs.indexOf("EPSG") > -1
   ) {
     $("#export-crs").val(localStorage.export_crs);

@@ -2021,8 +2021,8 @@ function addDropdownStates(
   callback
 ) {
   $("#" + containerID)
-    .append(`<div id="${containerID}-container><label for="${containerID}" class="form-label">${label}</label>
-  <select id=${dropdownId} class="form-select mb-2"></select></div>`);
+    .append(`<div id="${containerID}-container class="form-group "><label for="${containerID}" class="form-label">${label}</label>
+  <select id=${dropdownId} class="form-select mb-2 bg-tan"></select></div>`);
 
   $(`#${dropdownId}`).append(`<option>---</option>`);
 
@@ -2052,7 +2052,7 @@ function addDropdownCounties(
   $("#" + containerID + "-container").replaceWith("");
   $("#" + containerID)
     .append(`<div id="${containerID}-container" class="mt-2"><label for="${containerID}" class="form-label">${label}</label>
-  <select id=${dropdownId} class="form-select mb-2"></select></div>`);
+  <select id=${dropdownId} class="form-select mb-2 bg-tan"></select></div>`);
 
   $(`#${dropdownId}`).append(`<option>---</option>`);
   selectList.map((item) => {
@@ -2116,10 +2116,7 @@ function addSelectTypeRadio(
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Date Picker - Hiform
-function addHiFormPostDatePicker(
-  containerID,
-  datepickerID,
-) {
+function addHiFormPostDatePicker(containerID, datepickerID) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   $("#" + datepickerID).append(`<div id="post-ranges-div">
                                 <p class = 'param-title'>Define Post Date Range</p>
@@ -2128,10 +2125,7 @@ function addHiFormPostDatePicker(
                               </div>`);
 }
 
-function addHiFormCustomPrePicker(
-  containerID,
-  datepickerID,
-) {
+function addHiFormCustomPrePicker(containerID, datepickerID) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
 
   $("#define-pre-date-options").append(`<div id="pre-ranges-div">
@@ -2143,23 +2137,25 @@ function addHiFormCustomPrePicker(
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Add Current AOI Paramaters Display - Hiform
 function addCurrentAOIParametersDisplay() {
-  $(`#select-aoi-label-select-aoi-div`).append(`<div id="select-aoi-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
+  $(`#select-aoi-label-select-aoi-div`)
+    .append(`<div id="select-aoi-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
                                                   <div id="display-aoi-selection-title">Selected County:</div>
                                                   <div id="display-aoi-selection"></div>
                                                 </div>`);
-  $(`#select-aoi-current-params`).hide()
+  $(`#select-aoi-current-params`).hide();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Add Current Date Paramaters Display - Hiform
 function addCurrentDateParametersDisplay() {
-  $(`#pre-post-dates-label-pre-post-dates-div`).append(`<div id="date-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
+  $(`#pre-post-dates-label-pre-post-dates-div`)
+    .append(`<div id="date-current-params" class="panel-collapse collapse panel-body show px-5 py-0">
                                                             <div id="post-display-date-selection-title">Post Date Range:</div>
                                                             <div id="post-display-date-selection"></div>
                                                             <div id="pre-display-date-selection-title">Pre Date Range:</div>
                                                             <div id="pre-display-date-selection"></div>
                                                         </div>`);
-  $(`#date-current-params`).hide()
+  $(`#date-current-params`).hide();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2168,7 +2164,7 @@ function addHiFormProcessButton(containerID) {
   $("#" + containerID)
     .append(`<div id="process-button-div" title="Select a county and define date ranges to process.">
                                 <p class = 'param-title'>Process HiForm Results</p>
-                                <input type="button" id="process-button" class="mb-2" value="Process HiForm BMP" onclick="handleProcess()">
+                                <input type="button" id="process-button" class="mb-2 btn" value="Process HiForm BMP" onclick="handleProcess()">
                               </div>`);
 
   $("#process-button").attr("disabled", "disabled");
@@ -2177,7 +2173,7 @@ function addHiFormProcessButton(containerID) {
 function addHiFormResetButton(containerID) {
   $("#" + containerID)
     .append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
-                                <input type="button" id="reset-button" class="mb-2" value="Restart Analysis" onclick="handleHiFormReset()">
+                                <input type="button" id="reset-button" class="mb-2 btn" value="Restart Analysis" onclick="handleHiFormReset()">
                               </div>`);
 
   $("#reset-button").attr("disabled", "disabled");
@@ -2190,14 +2186,7 @@ function addHiFormExport(containerDiv) {
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
                         <div class = 'pl-3'>
-                            <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
-                              <label for="export-crs">Projection: </label>
-                              <div class="form-group pl-1">
-                                <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
-                              </div>
-                            </form>
                             
-                            <hr>  
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
                                     <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
@@ -2212,8 +2201,7 @@ function addHiFormExport(containerDiv) {
                             </div>  
                         </div>
                         
-                    </div>`
-                    );
+                    </div>`);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2346,6 +2334,32 @@ function addJSONInputTextBox(
     var tJSON = $(`#${inputID}`).val();
     // console.log(JSON.parse(tJSON));
     eval(`window.${variable} = JSON.parse(tJSON)`);
+  });
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Function to add vanilla text input widget
+function addInputTextBox(
+  containerID,
+  inputID,
+  label,
+  variable,
+  defaultValue,
+  title
+) {
+  eval(
+    `if(window.${variable} === undefined){window.${variable} = "${defaultValue}"}`
+  );
+
+  $("#" + containerID).append(`<form class="form-inline" title='${title}'>
+                                <label for="${inputID}" class = 'mr-1'>${label} </label>
+                                <div class="form-group">
+                                  <input type="text" id="${inputID}"  value="${defaultValue}" class="form-control">
+                                </div>
+                              </form>`);
+
+  $("#" + inputID).on("input", () => {
+    var t = $(`#${inputID}`).val();
+    eval(`window.${variable} = "${$(`#${inputID}`).val()}"`);
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2882,6 +2896,9 @@ function addLegendCollapse() {
   );
   $("#legend-collapse-div").append(
     `<div role="list" id="legend-reference-layer-list"></div>`
+  );
+  $("#legend-collapse-div").append(
+    `<div role="list" id="legend-related-layer-list"></div>`
   );
   $("#legend-collapse-div").append(
     `<div role="list" id="legend-fhp-div"></div>`
