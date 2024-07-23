@@ -2786,12 +2786,26 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   addCurrentDateParametersDisplay();
+  var maxPostDate = new Date();
+  maxPostDate.setDate(maxPostDate.getDate() - 2);
+  maxPostDate = maxPostDate.toISOString().slice(0, 10);
+  var maxPreDate = new Date();
+  maxPreDate.setDate(maxPreDate.getDate() - 3);
+  maxPreDate = maxPreDate.toISOString().slice(0, 10);
 
-  addHiFormPostDatePicker("pre-post-dates-div", "post-date-picker-container");
+  var minPreDate = "2016-01-01";
+  var minPostDate = "2017-01-01";
+
+  addHiFormPostDatePicker(
+    "pre-post-dates-div",
+    "post-date-picker-container",
+    minPostDate,
+    maxPostDate
+  );
   if (!urlParams.preDateRange) {
     urlParams.preDateRange = {
-      "6 Month": true,
-      "1 Year": false,
+      "6 Month": false,
+      "1 Year": true,
       Custom: false,
     };
   }
@@ -2810,7 +2824,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   $("#selected-date-range").append(`<p id="selected-date-range-contents"></p>`);
 
-  addHiFormCustomPrePicker("pre-post-dates-div", "pre-date-picker-container");
+  addHiFormCustomPrePicker(
+    "pre-post-dates-div",
+    "pre-date-picker-container",
+    minPreDate,
+    maxPreDate
+  );
 
   toggleCustomPostDate();
 
@@ -2828,15 +2847,24 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     console.log("Date Selected (Pre1): " + e.target.value);
     urlParams.preDate1 = e.target.value;
 
-    // Set Pre Date Min and Value
-    var bufferDate = new Date(e.target.value);
-    bufferDate.setDate(bufferDate.getDate() + 28);
-    newDate2 = bufferDate.toISOString().substr(0, 10);
-    $("#pre-date-two").attr("min", e.target.value);
-    $("#pre-date-two").attr("value", newDate2);
-    $("#pre-date-two").val(newDate2);
-    urlParams.preDate2 = newDate2;
-    console.log("Date Selected (Pre2): " + urlParams.preDate2);
+    // Fill in the pre date two if it's blank 28 days later or the end of the available data period or just before selected post period
+    if ($("#pre-date-two").val() === "") {
+      let bufferDate = advanceDate(urlParams.preDate1, 28);
+
+      if (bufferDate > maxPreDate) {
+        bufferDate = maxPreDate;
+      }
+
+      urlParams.preDate2 = bufferDate;
+      $("#pre-date-two").val(urlParams.preDate2);
+    }
+
+    // Constrain pre date 2 to always be equal or after pre date 1
+    if (urlParams.preDate1 > urlParams.preDate2) {
+      urlParams.preDate2 = urlParams.preDate1;
+      $("#pre-date-two").val(urlParams.preDate2);
+    }
+    $("#pre-date-one").val(urlParams.preDate1);
 
     toggleProcessButton();
   }
@@ -2845,25 +2873,56 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     console.log("Date Selected (Pre2): " + e.target.value);
     urlParams.preDate2 = e.target.value;
 
+    // Fill in the pre date one if it's blank 28 days before or the end of the available data period or just before selected post period
+    if ($("#pre-date-one").val() === "") {
+      let bufferDate = advanceDate(urlParams.preDate1, -28);
+
+      if (bufferDate < minPreDate) {
+        bufferDate = maxPreDate;
+      }
+
+      urlParams.preDate1 = bufferDate;
+      $("#pre-date-one").val(urlParams.preDate1);
+    }
+
+    // Constrain pre date 1 to always be equal or before pre date 2
+    if (urlParams.preDate2 < urlParams.preDate1) {
+      urlParams.preDate1 = urlParams.preDate2;
+      $("#pre-date-one").val(urlParams.preDate1);
+    }
+    $("#pre-date-two").val(urlParams.preDate2);
+
     toggleProcessButton();
   }
-
+  // Advance string date or date object by n days
+  // Input date object or date string YYYY-MM-dd
+  // Returns date string YYYY-MM-dd
+  function advanceDate(d, nDays) {
+    d = new Date(d);
+    d.setDate(d.getDate() + nDays);
+    return d.toISOString().slice(0, 10);
+  }
   function postDateOneHandler(e) {
     console.log("Date Selected (Post1): " + e.target.value);
     urlParams.postDate1 = e.target.value;
+    // Fill in the post date two if it's blank 28 days later or the end of the available data period
+    if ($("#post-date-two").val() === "") {
+      let bufferDate = advanceDate(urlParams.postDate1, 28);
 
-    // Set Post Date 2 Min and Value
-    var bufferDate = new Date(e.target.value);
-    bufferDate.setDate(bufferDate.getDate() + 28);
-    newDate2 = bufferDate.toISOString().substr(0, 10);
-    $("#post-date-two").attr("min", e.target.value);
-    $("#post-date-two").attr("value", newDate2);
-    $("#post-date-two").val(newDate2);
-    urlParams.postDate2 = newDate2;
-    console.log("Date Selected (Post2): " + urlParams.postDate2);
+      if (bufferDate > maxPostDate) {
+        bufferDate = maxPostDate;
+      }
+      urlParams.postDate2 = bufferDate;
+      $("#post-date-two").val(urlParams.postDate2);
+    }
+
+    // Constrain post date 2 to always be equal or after post date 1
+    if (urlParams.postDate1 > urlParams.postDate2) {
+      urlParams.postDate2 = urlParams.postDate1;
+      $("#post-date-two").val(urlParams.postDate2);
+    }
 
     handleSelectedPreDateType();
-
     toggleProcessButton();
   }
 
@@ -2873,46 +2932,54 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       urlParams.postDate1 !== undefined &&
       urlParams.postDate2 !== undefined
     ) {
-      if (selectedPreDateRangeType == "1 Year") {
+      if (selectedPreDateRangeType === "1 Year") {
         var ogdate = new Date(urlParams.postDate1);
         ogdate.setMonth(ogdate.getMonth() - 12);
-        date_format = ogdate.toISOString().substr(0, 10);
+        date_format = ogdate.toISOString().slice(0, 10);
 
         urlParams.preDate1 = date_format;
 
         var ogdate2 = new Date(urlParams.postDate2);
         ogdate2.setMonth(ogdate2.getMonth() - 12);
-        date_format2 = ogdate2.toISOString().substr(0, 10);
+        date_format2 = ogdate2.toISOString().slice(0, 10);
 
         urlParams.preDate2 = date_format2;
 
-        console.log("Date Selected (Pre1): " + urlParams.preDate1);
-        console.log("Date Selected (Pre2): " + urlParams.preDate2);
+        // console.log("Date Selected (Pre1): " + urlParams.preDate1);
+        // console.log("Date Selected (Pre2): " + urlParams.preDate2);
         $("#selected-date-range").show();
         $("#selected-date-range-contents").text(
           `${urlParams.preDate1} ---- ${urlParams.preDate2}`
         );
-      } else if (selectedPreDateRangeType == "6 Month") {
+      } else if (selectedPreDateRangeType === "6 Month") {
         var ogdate = new Date(urlParams.postDate1);
         ogdate.setMonth(ogdate.getMonth() - 6);
-        date_format = ogdate.toISOString().substr(0, 10);
+        date_format = ogdate.toISOString().slice(0, 10);
 
         urlParams.preDate1 = date_format;
 
         var ogdate2 = new Date(urlParams.postDate2);
         ogdate2.setMonth(ogdate2.getMonth() - 6);
-        date_format2 = ogdate2.toISOString().substr(0, 10);
+        date_format2 = ogdate2.toISOString().slice(0, 10);
 
         urlParams.preDate2 = date_format2;
 
-        console.log("Date Selected (Pre1): " + urlParams.preDate1);
-        console.log("Date Selected (Pre2): " + urlParams.preDate2);
+        // console.log("Date Selected (Pre1): " + urlParams.preDate1);
+        // console.log("Date Selected (Pre2): " + urlParams.preDate2);
         $("#selected-date-range").show();
         $("#selected-date-range-contents").text(
           `${urlParams.preDate1} ---- ${urlParams.preDate2}`
         );
       } else {
         $("#selected-date-range").hide();
+        urlParams.preDate1 =
+          $("#pre-date-one").val() !== ""
+            ? $("#pre-date-one").val()
+            : urlParams.preDate1;
+        urlParams.preDate2 =
+          $("#pre-date-two").val() !== ""
+            ? $("#pre-date-two").val()
+            : urlParams.preDate2;
       }
     }
   }
@@ -2920,6 +2987,21 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   function postDateTwoHandler(e) {
     console.log("Date Selected (Post2): " + e.target.value);
     urlParams.postDate2 = e.target.value;
+    $("#post-date-two").val(urlParams.postDate2);
+
+    // Fill in the post date one if it's blank 28 days before
+    if ($("#post-date-one").val() === "") {
+      var bufferDate = advanceDate(urlParams.postDate2, -28);
+      urlParams.postDate1 = bufferDate;
+      $("#post-date-one").val(urlParams.postDate1);
+      console.log("Date Selected (Post1): " + urlParams.postDate1);
+    }
+
+    // Constrain post date 1 to always be equal or before post date 2
+    if (urlParams.postDate2 < urlParams.postDate1) {
+      urlParams.postDate1 = urlParams.postDate2;
+      $("#post-date-one").val(urlParams.postDate1);
+    }
 
     handleSelectedPreDateType();
     toggleProcessButton();
@@ -2949,13 +3031,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (!urlParams.exportCRS) {
     urlParams.exportCRS = "EPSG:5070";
   }
+  $("#advanced-params-div").append("<hr>");
   addInputTextBox(
     "advanced-params-div",
     "export-crs",
     "Projection",
     "urlParams.exportCRS",
     urlParams.exportCRS,
-    'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '
+    'Provide projection for exports. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '
   );
 
   function changeCorrectionTypeOption() {
@@ -2967,10 +3050,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   function handleProcess() {
     // Check Parameters
     if (urlParams.preDate2 >= urlParams.postDate1) {
-      showMessage(
-        "Invalid Dates Provided",
-        "The Pre Date Range cannot be after the Post Date Range nor should they overlap"
+      setTimeout(
+        () =>
+          showMessage(
+            "Invalid Dates Provided",
+            "The Pre Date Range cannot be after the Post Date Range nor should they overlap",
+            "date-alert-modal"
+          ),
+        0
       );
+      // alert("test");
       return;
     }
 
@@ -2984,31 +3073,33 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     );
 
     // Allow Reset Button
-    $("#reset-button").removeAttr("disabled");
+    // $("#reset-button").removeAttr("disabled");
 
     // Open or Close Accordians
-    $("#layer-list-collapse-div").toggleClass("collapsed show");
-    $("#layer-list-collapse-label").removeClass("collapsed");
-    $("#layer-list-collapse-label").prop("ariaExpanded", true);
+    // $("#layer-list-collapse-div").toggleClass("collapsed show");
+    $("#layer-list-collapse-div").removeClass("collapse");
+    $("#layer-list-collapse-div").addClass("show");
+    // $("#layer-list-collapse-label").prop("ariaExpanded", true);
 
-    $("#pre-post-dates-label-label").addClass("collapsed");
-    $("#pre-post-dates-div").removeClass("show");
-    $("#pre-post-dates-label").prop("ariaExpanded", false);
+    // $("#pre-post-dates-label-label").addClass("collapsed");
+    // $("#pre-post-dates-div").removeClass("show");
+    // $("#pre-post-dates-label").prop("ariaExpanded", false);
 
-    $("#select-aoi-label-label").addClass("collapsed");
-    $("#select-aoi-div").removeClass("show");
-    $("#select-aoi-label").prop("ariaExpanded", false);
+    // $("#select-aoi-label-label").addClass("collapsed");
+    // $("#select-aoi-div").removeClass("show");
+    // $("#select-aoi-label").prop("ariaExpanded", false);
 
     // // Hide Contents of Parameter Selection Div
-    $("#select-aoi-div").hide();
-    $("#pre-post-dates-div").hide();
+    // $("#select-aoi-div").hide();
+    // $("#pre-post-dates-div").hide();
 
     // Show Selected Parameters Div
-    $(`#select-aoi-current-params`).show();
-    $(`#date-current-params`).show();
+    // $(`#select-aoi-current-params`).show();
+    // $(`#date-current-params`).show();
 
     // Run HiForm Process
     hiform_bmp_process();
+    // reRun();
 
     // Clear click listener
     google.maps.event.clearListeners(map, "click");
@@ -3029,7 +3120,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     `<ul id="layer-list" class = "layer-list"></ul>`
   );
 
-  addHiFormResetButton("layer-list-collapse-div");
+  // addHiFormResetButton("layer-list-collapse-div");
 
   function handleHiFormReset() {
     // Make Parameters Visible again and Hide the Param Display

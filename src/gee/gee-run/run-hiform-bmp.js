@@ -149,7 +149,7 @@ function runHiForm() {
     false,
     null,
     null,
-    `Test`,
+    `USGS 3DEP 10m percent slope`,
     "related-layer-list"
   );
 
@@ -170,7 +170,7 @@ function runHiForm() {
     false,
     null,
     null,
-    `Test`,
+    `USGS 3DEP 10m hillshade`,
     "related-layer-list"
   );
 
@@ -218,11 +218,13 @@ function runHiForm() {
     $("#post-date-two").val(urlParams.postDate2);
   }
   if (urlParams.preDate1 !== undefined) {
+    console.log("yes");
     $("#pre-date-one").val(urlParams.preDate1);
   }
   if (urlParams.preDate2 !== undefined) {
-    $("#pre-date-two").val(urlParams.postDate2);
+    $("#pre-date-two").val(urlParams.preDate2);
   }
+
   toggleProcessButton();
   if ($("#process-button").attr("disabled") === undefined) {
     handleProcess();
@@ -274,7 +276,7 @@ function hiform_bmp_process() {
     applyTDOM: false,
     applyCloudScorePlus: true,
     applyCloudProbability: false,
-    toaOrSA: correctionTypeOption,
+    toaOrSR: correctionTypeOption,
   });
 
   // Add NDVI and DATE as separate bands to image layer stack
@@ -297,7 +299,7 @@ function hiform_bmp_process() {
   var greenest_pre2 = pre2.qualityMosaic("NDVI");
 
   // Perform clip on larger extent 'bounds' image to geometry or shapefile
-  var greenest_pre2_clip = greenest_pre2;
+  var greenest_pre2_clip = greenest_pre2.clip(geometry);
 
   // Display the 'pre' date raster with random colors
   // Map.addLayer(greenest_pre2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Pre Date Raster', false);
@@ -307,13 +309,19 @@ function hiform_bmp_process() {
     greenest_pre2_clip,
     vizParamsTrue,
     "Pre Natural Color Composite",
-    false
+    false,
+    null,
+    null,
+    `Natural color max NDVI composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
   Map.addLayer(
     greenest_pre2_clip,
     getImagesLib.vizParamsFalse,
     "Pre False Color Composite",
-    false
+    false,
+    null,
+    null,
+    `False color max NDVI composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
 
   /////////////////////////////////////////////////////////
@@ -342,22 +350,8 @@ function hiform_bmp_process() {
     applyTDOM: false,
     applyCloudScorePlus: true,
     applyCloudProbability: false,
-    toaOrSA: correctionTypeOption,
+    toaOrSR: correctionTypeOption,
   });
-
-  // Add NDVI and DATE as separate bands to image layer stack
-  var addNDVI = function (post) {
-    var ndvi = post.normalizedDifference(["nir", "red"]).rename("NDVI");
-    return post.addBands(ndvi);
-  };
-
-  function addDate(img) {
-    var date = ee.Date(img.get("system:time_start"));
-    var dateString = date.format("yyyyMMdd");
-    var dateNumber = ee.Number.parse(dateString);
-    var dateBand = ee.Image(dateNumber).uint32().rename("date");
-    return img.addBands(dateBand);
-  }
 
   var post2 = post.map(addNDVI).map(addDate);
 
@@ -365,7 +359,7 @@ function hiform_bmp_process() {
   var greenest_post2 = post2.qualityMosaic("NDVI");
 
   // Perform clip on larger extent 'bounds' image to geometry or shapefile
-  var greenest_post2_clip = greenest_post2;
+  var greenest_post2_clip = greenest_post2.clip(geometry);
 
   // Display the 'post' date raster with random colors
   // Map.addLayer(greenest_post2_clip.select('date').randomVisualizer(), {addToLegend: false, layerType: 'geeImage'}, 'Post Date Raster', false);
@@ -375,13 +369,19 @@ function hiform_bmp_process() {
     greenest_post2_clip,
     vizParamsTrue,
     "Post Natural Color Composite",
-    false
+    false,
+    null,
+    null,
+    `Natural color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
   Map.addLayer(
     greenest_post2_clip,
     getImagesLib.vizParamsFalse,
     "Post False Color Composite",
-    false
+    false,
+    null,
+    null,
+    `False color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
 
   Map.addExport(
@@ -389,7 +389,7 @@ function hiform_bmp_process() {
       .select(["blue", "green", "red", "nir", "swir1", "swir2"])
       .multiply(10000)
       .int16(),
-    `Post_Composite`,
+    `Post_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,
     10,
     false,
     {}
@@ -426,17 +426,19 @@ function hiform_bmp_process() {
 
   //.filterBounds(geoBounds);
 
+  let priorYear = parseInt(urlParams.preDate1.split("-")[0]) - 1;
+
   var gsmax = getImagesLib.getProcessedSentinel2Scenes({
     studyArea: geoBounds,
-    startYear: 2022,
-    endYear: 2022,
+    startYear: priorYear,
+    endYear: priorYear,
     startJulian: 121,
     endJulian: 244,
     convertToDailyMosaics: false,
     applyTDOM: false,
     applyCloudScorePlus: true,
     applyCloudProbability: false,
-    toaOrSA: correctionTypeOption,
+    toaOrSR: correctionTypeOption,
   });
 
   //print(gsmax,"gsmax");
@@ -486,15 +488,15 @@ function hiform_bmp_process() {
 
   var winmax = getImagesLib.getProcessedSentinel2Scenes({
     studyArea: geoBounds,
-    startYear: 2022,
-    endYear: 2022,
+    startYear: priorYear,
+    endYear: priorYear,
     startJulian: 1,
     endJulian: 74,
     convertToDailyMosaics: false,
     applyTDOM: false,
     applyCloudScorePlus: true,
     applyCloudProbability: false,
-    toaOrSA: correctionTypeOption,
+    toaOrSR: correctionTypeOption,
   });
 
   //print(winmax,"winmax");
@@ -548,7 +550,7 @@ function hiform_bmp_process() {
   //Map.addLayer(mean_ST2_x100sint8.select('NDVI'), {}, 'find bin break mean_ST2_x100sint8', false);
 
   var mean_ST2_x100sint8_binned = mean_ST2_x100sint8.select(["NDVI"]).gte(45);
-  //Map.addLayer(mean_ST2_x100sint8_binned, {}, 'binned break', false);
+  // Map.addLayer(mean_ST2_x100sint8_binned.selfMask(), {}, "binned break", false);
 
   var mean_ST2_x100sint8_binnedMASK = mean_ST2_x100sint8_binned.mask(
     mean_ST2_x100sint8_binned
@@ -622,8 +624,9 @@ function hiform_bmp_process() {
 
   // masking all 4-forest classes with meanST
   var nlcd4_mST_mask = nlcd_wild
-    .mask(nlcd_wild)
-    .mask(mean_ST2_x100sint8_binned.mask(mean_ST2_x100sint8_binned));
+    .selfMask()
+    .updateMask(mean_ST2_x100sint8_binned)
+    .updateMask(mean_ST2_x100sint8_binned);
   // Map.addLayer(nlcd_wild_mask, {}, 'nlcd_wild', false);
   // Map.addLayer(mST_mask, {}, 'mST_mask', false);
   // Map.addLayer(nlcd4_mST_mask, {}, 'nlcd4_mST_mask', false);
@@ -631,20 +634,31 @@ function hiform_bmp_process() {
   //////////////////////////////////////
   ////  ABSOLUTE CHANGE
   //////////////////////////////////////
-  Map.addLayer(absNDVIc_x100sint8, ndviRamp, "All-Lands NDVI Change", false);
+  Map.addLayer(
+    absNDVIc_x100sint8,
+    ndviRamp,
+    "All-Lands NDVI Change",
+    false,
+    null,
+    null,
+    `NDVI change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+  );
   // Map.addLayer(
   //   absNDVIc_x100sint8.clip(geoBounds).sldStyle(sld_intervals),
   //   {},
   //   "All-Lands NDVI Change sld",
   //   false
   // );
-  var projection = ee.Projection("EPSG:5070").atScale(20);
+  // var projection = ee.Projection("EPSG:5070").atScale(20);
   //Map.addLayer(absNDVIc_x100sint8.sldStyle(sld_intervals).mask(forest2019), {}, 'forest ABS change', false);
   Map.addLayer(
-    absNDVIc_x100sint8.mask(nlcd4_mST_mask),
+    absNDVIc_x100sint8.updateMask(nlcd4_mST_mask),
     ndviRamp,
     "Forest NDVI Change",
-    false
+    false,
+    null,
+    null,
+    `NDVI forest change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
 
   ////  Export forest-masked, photo-like RGB raster, pre-colorized, not editable on desktop
@@ -741,16 +755,30 @@ function hiform_bmp_process() {
 
   Map.addLayer(
     zones2,
-    { min: 1, max: 1, palette: "FF0" },
-    "Mod NDVI Change Rast"
+    {
+      min: 1,
+      max: 1,
+      palette: "3DED97",
+      classLegendDict: { "Moderate NDVI Change": "3DED97" },
+    },
+    "Mod NDVI Change",
+    true,
+    null,
+    null,
+    `Moderate NDVI change between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
-  Map.addLayer(
-    vectors2,
-    { strokeColor: "3DED97", strokeWeight: 1 },
-    "Moderate NDVI Change"
-  );
+  // Map.addLayer(
+  //   vectors2,
+  //   { strokeColor: "3DED97", strokeWeight: 1 },
+  //   "Moderate NDVI Change"
+  // );
 
-  Map.addExport(vectors2, "Moderate_NDVI_Change (Green Outline)", null, true);
+  Map.addExport(
+    vectors2,
+    `Moderate_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+    null,
+    true
+  );
 
   //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
@@ -763,32 +791,32 @@ function hiform_bmp_process() {
 
   // Compute centroids of each polygon
 
-  var centroids2 = vectors2.map(function (f) {
-    return f.centroid({ maxError: 1 });
-  });
+  // var centroids2 = vectors2.map(function (f) {
+  //   return f.centroid({ maxError: 1 });
+  // });
   //Map.addLayer(centroids2, {color: 'green', layerType: 'geeImage'}, 'moderate NDVI decline (green points)', false);
 
   //print(centroids,'centroids');
 
   // Transform coordinates into properties in the table.
-  var centroidsExport2 = centroids2.map(function (feature) {
-    // Get geometry
-    var coordinates2 = feature
-      .geometry()
-      // Transform it to the desired EPSG code. Here WGS 84
-      .transform("epsg:4326")
-      // Get coordinates as a list
-      .coordinates();
-    // Get both entries of coordinates and set them as new properties
-    var resul2 = feature.set(
-      "long",
-      coordinates2.get(0),
-      "lat",
-      coordinates2.get(1)
-    );
-    // Remove geometry
-    return resul2.setGeometry(null);
-  });
+  // var centroidsExport2 = centroids2.map(function (feature) {
+  //   // Get geometry
+  //   var coordinates2 = feature
+  //     .geometry()
+  //     // Transform it to the desired EPSG code. Here WGS 84
+  //     .transform("epsg:4326")
+  //     // Get coordinates as a list
+  //     .coordinates();
+  //   // Get both entries of coordinates and set them as new properties
+  //   var resul2 = feature.set(
+  //     "long",
+  //     coordinates2.get(0),
+  //     "lat",
+  //     coordinates2.get(1)
+  //   );
+  //   // Remove geometry
+  //   return resul2.setGeometry(null);
+  // });
 
   // TODO: EXISTING Export.table.toDrive({collection: centroids2, description: 'moderate_NDVI_change_centroids_SHAPEFILE', fileFormat: 'SHP'});
   // TODO: EXISTING Export.table.toDrive({collection: centroidsExport2,  selectors: ['lat', 'long'], description: 'moderate_NDVI_change_centroids_TEXTFILE', fileFormat: 'CSV'});
@@ -859,13 +887,32 @@ function hiform_bmp_process() {
     width: 1,
   });
   //Map.addLayer(outline, {palette: 'FF2400'}, 'severe NDVI change (red outline poly)');
-  Map.addLayer(
-    fp,
-    { strokeColor: "FF2400", strokeWeight: 1 },
-    "Severe NDVI Change"
-  );
+  // Map.addLayer(
+  //   fp,
+  //   { strokeColor: "FF2400", strokeWeight: 1 },
+  //   "Severe NDVI Change"
+  // );
 
-  Map.addExport(vectors, "Severe_NDVI_Change", null, true);
+  Map.addLayer(
+    zones,
+    {
+      min: 1,
+      max: 1,
+      palette: "FF2400",
+      classLegendDict: { "Severe NDVI Change": "FF2400" },
+    },
+    "Severe NDVI Change",
+    true,
+    null,
+    null,
+    `Severe NDVI change between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+  );
+  Map.addExport(
+    vectors,
+    `Severe_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+    null,
+    true
+  );
 
   //Map.addLayer(vectors, {}, 'pslrg polyon vectors as fc');
 
@@ -878,32 +925,32 @@ function hiform_bmp_process() {
 
   // Compute centroids of each polygon
 
-  var centroids = vectors.map(function (f) {
-    return f.centroid({ maxError: 1 });
-  });
-  //Map.addLayer(centroids, {color: 'red'}, 'severe NDVI change (red points)', false);
+  // var centroids = vectors.map(function (f) {
+  //   return f.centroid({ maxError: 1 });
+  // });
+  // //Map.addLayer(centroids, {color: 'red'}, 'severe NDVI change (red points)', false);
 
-  //print(centroids,'centroids');
+  // //print(centroids,'centroids');
 
-  // Transform coordinates into properties in the table.
-  var centroidsExport = centroids.map(function (feature) {
-    // Get geometry
-    var coordinates = feature
-      .geometry()
-      // Transform it to the desired EPSG code. Here WGS 84
-      .transform("epsg:4326")
-      // Get coordinates as a list
-      .coordinates();
-    // Get both entries of coordinates and set them as new properties
-    var resul = feature.set(
-      "long",
-      coordinates.get(0),
-      "lat",
-      coordinates.get(1)
-    );
-    // Remove geometry
-    return resul.setGeometry(null);
-  });
+  // // Transform coordinates into properties in the table.
+  // var centroidsExport = centroids.map(function (feature) {
+  //   // Get geometry
+  //   var coordinates = feature
+  //     .geometry()
+  //     // Transform it to the desired EPSG code. Here WGS 84
+  //     .transform("epsg:4326")
+  //     // Get coordinates as a list
+  //     .coordinates();
+  //   // Get both entries of coordinates and set them as new properties
+  //   var resul = feature.set(
+  //     "long",
+  //     coordinates.get(0),
+  //     "lat",
+  //     coordinates.get(1)
+  //   );
+  //   // Remove geometry
+  //   return resul.setGeometry(null);
+  // });
   Map.turnOnInspector();
   // TODO: EXISTING Export.table.toDrive({collection: centroids, description: 'severe_NDVI_change_centroids_SHAPEFILE', fileFormat: 'SHP'});
   // TODO: EXISTING Export.table.toDrive({collection: centroidsExport,  selectors: ['lat', 'long'], description: 'severe_NDVI_change_centroids_TEXTFILE', fileFormat: 'CSV'});

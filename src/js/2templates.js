@@ -2116,21 +2116,21 @@ function addSelectTypeRadio(
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Date Picker - Hiform
-function addHiFormPostDatePicker(containerID, datepickerID) {
+function addHiFormPostDatePicker(containerID, datepickerID, minDate, maxDate) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   $("#" + datepickerID).append(`<div id="post-ranges-div">
                                 <p class = 'param-title'>Define Post Date Range</p>
-                                <input type="date" id="post-date-one" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
-                                <input type="date" id="post-date-two" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
+                                <input type="date" id="post-date-one" min=${minDate} max="${maxDate}" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
+                                <input type="date" id="post-date-two" min=${minDate} max="${maxDate}" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
                               </div>`);
 }
 
-function addHiFormCustomPrePicker(containerID, datepickerID) {
+function addHiFormCustomPrePicker(containerID, datepickerID, minDate, maxDate) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
 
   $("#define-pre-date-options").append(`<div id="pre-ranges-div">
-                                          <input type="date" id="pre-date-one" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
-                                          <input type="date" id="pre-date-two" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
+                                          <input type="date" id="pre-date-one" min=${minDate} max="${maxDate}" class="mt-2 mr-2" onchange="preDateOneHandler(event)">
+                                          <input type="date" id="pre-date-two" min=${minDate} max="${maxDate}" class="mt-2 mb-2" onchange="preDateTwoHandler(event)">
                                         </div>`);
 }
 
@@ -2162,9 +2162,8 @@ function addCurrentDateParametersDisplay() {
 // Process Button - Hiform
 function addHiFormProcessButton(containerID) {
   $("#" + containerID)
-    .append(`<div id="process-button-div" title="Select a county and define date ranges to process.">
-                                <p class = 'param-title'>Process HiForm Results</p>
-                                <input type="button" id="process-button" class="mb-2 btn" value="Process HiForm BMP" onclick="handleProcess()">
+    .append(`<hr><div class = 'pb-2' id="process-button-div" title="Select a county and define date ranges to process.">
+                                <input title = 'Click to run HiForm BMP using your selected paramters' type="button" id="process-button" class="mb-2 btn" value="Process HiForm BMP" onclick="reRun()">
                               </div>`);
 
   $("#process-button").attr("disabled", "disabled");
@@ -2185,7 +2184,7 @@ function addHiFormExport(containerDiv) {
                         <h5>Choose which data to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
-                        <div class = 'pl-3'>
+                        <div >
                             
                             <div class = 'pt-1 pb-3' >
                                 <div id = 'export-button-div'>
