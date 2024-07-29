@@ -2169,6 +2169,8 @@ function addHiFormProcessButton(containerID) {
   $("#process-button").attr("disabled", "disabled");
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Reset Button - Hiform
 function addHiFormResetButton(containerID) {
   $("#" + containerID)
     .append(`<div id="process-button-div" class="text-center mt-2" title="Select a county and define date ranges to process.">
@@ -2178,6 +2180,22 @@ function addHiFormResetButton(containerID) {
   $("#reset-button").attr("disabled", "disabled");
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// HiForm Support Info - Hiform
+function addHiFormSupport(containerID) {
+  $("#" + containerID)
+    .append(`<div id="support-div" class="" title="Support Resources">
+              <h5><i>HiForm</i> BMP Support and Resources</h5>
+              <div class="mt-4">
+                <input type="button" id="tour-button" class="btn" value="Tour HiForm BMP" onclick="startTour()">
+                <p class="mt-2">Access the HiForm Help Document <a href="#">here</a></p>
+                <p>Send and email to our <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >helpdesk</a></p?
+              </div>
+            </div>`);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Export (Minus Select Area) - Hiform
 function addHiFormExport(containerDiv) {
   $("#" + containerDiv)
     .append(`<div class = 'py-2' id = 'export-list-container'>

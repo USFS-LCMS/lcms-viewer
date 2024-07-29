@@ -3216,7 +3216,19 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addHiFormExport("download-collapse-div");
 
-  //addHiFormExport("download-collapse-div")
+  addCollapse(
+    "sidebar-left",
+    "hiform-support-label",
+    "hiform-support-div",
+    "Support",
+    '<i role="img" class="fa fa-question-circle  mr-1" aria-hidden="true"></i>',
+    false,
+    null,
+    "Access HiForm BMP Support Resources"
+  );
+
+  addHiFormSupport("hiform-support-div")
+
 } else {
   addCollapse(
     "sidebar-left",
