@@ -775,7 +775,7 @@ var getQueryImages = function (lng, lat) {
             .filterBounds(clickPt);
         }
         features.evaluate(function (values) {
-          console.log(values);
+          // console.log(values);
           keyI++;
           if (values !== undefined) {
             queryGeoJSON.addGeoJson(values);

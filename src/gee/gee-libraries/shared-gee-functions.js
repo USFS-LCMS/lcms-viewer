@@ -1474,3 +1474,105 @@ function getSelectLayers(short) {
       ". Turn on layer and click on any fire wanted to include in chart"
   );
 }
+
+function superSimpleGetS2(
+  studyArea,
+  startDate,
+  endDate,
+  toaOrSR = "TOA",
+  applyCloudScorePlus = true,
+  cloudScorePlusThresh = 0.6,
+  cloudScorePlusScore = "cs"
+) {
+  var s2CollectionDict = {
+    TOA: "COPERNICUS/S2_HARMONIZED",
+    SR: "COPERNICUS/S2_SR_HARMONIZED",
+  };
+  var sensorBandDict = {
+    SR: [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "B8A",
+      "B9",
+      "B11",
+      "B12",
+    ],
+    TOA: [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "B8A",
+      "B9",
+      "B10",
+      "B11",
+      "B12",
+    ],
+  };
+  var sensorBandNameDict = {
+    SR: [
+      "cb",
+      "blue",
+      "green",
+      "red",
+      "re1",
+      "re2",
+      "re3",
+      "nir",
+      "nir2",
+      "waterVapor",
+      "swir1",
+      "swir2",
+    ],
+    TOA: [
+      "cb",
+      "blue",
+      "green",
+      "red",
+      "re1",
+      "re2",
+      "re3",
+      "nir",
+      "nir2",
+      "waterVapor",
+      "cirrus",
+      "swir1",
+      "swir2",
+    ],
+  };
+  // var s2s = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
+  var s2s = ee
+    .ImageCollection(s2CollectionDict[toaOrSR])
+    .filterDate(startDate, endDate)
+    .filterBounds(studyArea);
+  s2s = s2s.select(sensorBandDict[toaOrSR], sensorBandNameDict[toaOrSR]);
+
+  if (applyCloudScorePlus === true) {
+    var cloudScorePlus = ee
+      .ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
+      .select([cloudScorePlusScore], ["cloudScorePlus"]);
+
+    s2s = s2s.linkCollection(cloudScorePlus, ["cloudScorePlus"]);
+
+    s2s = s2s.map(function (img) {
+      return img.updateMask(
+        img.select(["cloudScorePlus"]).gte(cloudScorePlusThresh)
+      );
+    });
+  }
+  return s2s;
+}
+function addNDVI(pre) {
+  var ndvi = pre.normalizedDifference(["nir", "red"]).rename("NDVI");
+  return pre.addBands(ndvi);
+}

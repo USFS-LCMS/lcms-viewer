@@ -1017,6 +1017,108 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                         </div>
                         <hr>`,
+  hiformSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+                      <header class = 'row ' title = 'Open HiForm-BMP tutorial'>
+                          <h3 class = ' text-capitalize'>Tutorial</h3>
+                      </header>
+                      <div class = 'row ' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
+                          <div class = 'col-lg-2 p-0 m-0'>
+                              <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                          </div>
+                          <div class = 'col-lg-10'>
+                          <a class="intro-modal-links" onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the HiForm-BMP Tool">HiForm-BMP TUTORIAL</a>
+                          </div>
+                      </div>
+                      <hr>
+                      
+                        <header class = 'row'>
+                            <h3 class = ' text-capitalize'>Acknowledgements</h3>
+                        </header>
+                        <section class = 'row '>
+                        <div class = 'col-lg-2 p-0 m-0'>
+                            <a href="https://hiform.org/" target="_blank">
+                            <img src="./src/assets/images/hiform-logo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about HiForm">
+                            </a>
+                        </div>
+                        <div class = 'col-lg-10'>
+                            <a href="https://hiform.org/" target="_blank">
+                                <p class = 'support-text'>The Southern Research Station provides the scientific foundation, original workflow, and user community of HiForm-BMP.</p>
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
+                                <img src="./src/assets/images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row '>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://www.redcastleresources.com/" target="_blank">
+                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for the adaptation of the original HiForm-BMP workflow to this interface and delivery at GTAC.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                      
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <img src="./src/assets/images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    
+                                </a>
+                            </div>
+                            <div class = 'col-lg-10'>
+                                <a href="https://earthengine.google.com/" target="_blank">
+                                    <p class = 'support-text'>HiForm-BMP utilizes Google Earth Engine for its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google.</p>
+                                </a>
+                            </div>
+                        </section>
+                        <hr>
+                        <section class = 'row'>
+                            <div class = 'col-lg-2 p-0 m-0'>
+                                <h2>"..."</h2>
+                            </div>
+                            <div class = 'col-lg-10  support-text'>
+                                    Suggested citation: 
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). HiForm Timber Harvest BMP Tool[Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/hiform-bmp.html (Accessed: ${new Date().toStringFormat()}).
+                                    </p>
+                                    <span>
+                                        <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
+                                        </button>
+                                        <p id = 'copiedCitationMessageBox'></p>
+                                    </span>
+                            </div>
+                        </section>
+                        <hr>
+                                <header class ='row'>
+                                    <h3 class ='text-capitalize'>Contact</h3>
+                                </header>
+                                <section class = 'row '>
+                                    <div class = 'col-lg-2 p-0 m-0'>
+                                        <img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/hiform-logo.png'>
+                                    </div>
+                                    <div class = 'col-lg-10'>
+                                      <p>Please send questions to:</p>
+                                      <p>Steve Norman, Research Ecologist (steven.norman@usda.gov)</p>
+                                    
+                                    Bill Christie, Remote Sensing / Geospatial Analyst (william.m.christie@usda.gov)
+                                    </div>
+                                </section>`,
   supportDiv: `<div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
@@ -2181,20 +2283,6 @@ function addHiFormResetButton(containerID) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// HiForm Support Info - Hiform
-function addHiFormSupport(containerID) {
-  $("#" + containerID)
-    .append(`<div id="support-div" class="" title="Support Resources">
-              <h5><i>HiForm</i> BMP Support and Resources</h5>
-              <div class="mt-4">
-                <input type="button" id="tour-button" class="btn" value="Tour HiForm BMP" onclick="startTour()">
-                <p class="mt-2">Access the HiForm Help Document <a href="#">here</a></p>
-                <p>Send and email to our <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >helpdesk</a></p?
-              </div>
-            </div>`);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////
 // Export (Minus Select Area) - Hiform
 function addHiFormExport(containerDiv) {
   $("#" + containerDiv)
@@ -2923,6 +3011,10 @@ function addLegendCollapse() {
   $("#legend-collapse-div").append(
     `<div role="list" id="time-lapse-legend-list"></div>`
   );
+  $("#legend-collapse-div").append(
+    `<div role="list" id="legend-county-selection-layer-list"></div>`
+  );
+
   $("#legend-collapse-div").append(
     `<div role="list" id="legend-area-charting-select-layer-list"></div>`
   );

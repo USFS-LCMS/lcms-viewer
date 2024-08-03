@@ -189,15 +189,25 @@ function synchronousCenterObject(feature) {
   });
   map.fitBounds(bounds);
 }
-function centerObject(fc, async = true) {
+function centerObject(fc, async = true, callback) {
   if (async) {
     try {
       fc.geometry()
         .bounds(100)
-        .evaluate((f) => synchronousCenterObject(f));
+        .evaluate((f) => {
+          synchronousCenterObject(f);
+          if (typeof callback === "function") {
+            callback();
+          }
+        });
     } catch (err) {
       try {
-        fc.bounds(100).evaluate((f) => synchronousCenterObject(f));
+        fc.bounds(100).evaluate((f) => {
+          synchronousCenterObject(f);
+          if (typeof callback === "function") {
+            callback();
+          }
+        });
       } catch (err) {
         console.log(err);
       }
@@ -207,10 +217,16 @@ function centerObject(fc, async = true) {
     try {
       let f = fc.geometry().bounds(100).getInfo();
       synchronousCenterObject(f);
+      if (typeof callback === "function") {
+        callback();
+      }
     } catch (err) {
       try {
         let f = fc.bounds(100).getInfo();
         synchronousCenterObject(f);
+        if (typeof callback === "function") {
+          callback();
+        }
       } catch (err) {
         console.log(err);
       }
@@ -2347,7 +2363,7 @@ function mp() {
   this.removeLayer = function (layerId) {
     if (layerId) {
       map.overlayMapTypes.setAt(layerObj[layerId].layerId, null);
-      console.log(`${layerId}-container-${layerObj[layerId].ID}`);
+      // console.log(`${layerId}-container-${layerObj[layerId].ID}`);
       $(`#${layerId}-container-${layerObj[layerId].ID}`).remove();
       $(`#${layerId}`).remove();
 
@@ -2525,8 +2541,8 @@ function mp() {
       whichLayerList
     );
   };
-  this.centerObject = function (fc, async = true) {
-    centerObject(fc, async);
+  this.centerObject = function (fc, async = true, callback) {
+    centerObject(fc, async, callback);
   };
   this.setCenter = function (lng, lat, zoom) {
     centerMap(lng, lat, zoom);
@@ -2733,6 +2749,7 @@ function reRun() {
     "fhp-div",
     "time-lapse-legend-list",
     "related-layer-list",
+    "county-selection-layer-list",
   ].map(function (l) {
     $("#" + l).empty();
     $("#legend-" + l).empty();

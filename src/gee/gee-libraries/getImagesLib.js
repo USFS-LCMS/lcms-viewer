@@ -1235,6 +1235,7 @@ function getS2() {
     convertToDailyMosaics: true,
     addCloudProbability: false, //LSC
     addCloudScorePlus: true,
+    cloudScorePlusScore: "cs",
   };
 
   var args = prepArgumentsObject(arguments, defaultArgs);
@@ -1350,7 +1351,8 @@ function getS2() {
     var missing = s2sIds.removeAll(cloudProbabilitiesIds);
     print("Missing cloud probability ids:", missing);
     print("N s2 images before joining with cloud prob:", s2s.size());
-    s2s = joinCollections(s2s, cloudProbabilities, false, "system:index");
+    // s2s = joinCollections(s2s, cloudProbabilities, false, "system:index");
+    s2s = s2s.linkCollection(cloudProbabilities, ["cloud_probability"]);
     print("N s2 images after joining with cloud prob:", s2s.size());
   }
 
@@ -1360,10 +1362,10 @@ function getS2() {
     );
     var cloudScorePlus = ee
       .ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
-      .filterDate(args.startDate, args.endDate.advance(1, "day"))
-      .filter(ee.Filter.calendarRange(args.startJulian, args.endJulian))
-      .filterBounds(args.studyArea)
-      .select(["cs"], ["cloudScorePlus"]);
+      // .filterDate(args.startDate, args.endDate.advance(1, "day"))
+      // .filter(ee.Filter.calendarRange(args.startJulian, args.endJulian))
+      // .filterBounds(args.studyArea)
+      .select([args.cloudScorePlusScore], ["cloudScorePlus"]);
 
     var cloudScorePlusIds = ee.List(
       ee.Dictionary(cloudScorePlus.aggregate_histogram("system:index")).keys()
@@ -1375,7 +1377,8 @@ function getS2() {
     var missing = s2sIds.removeAll(cloudScorePlusIds);
     print("Missing cloud probability ids:", missing);
     print("N s2 images before joining with cloudScore+:", s2s.size());
-    s2s = joinCollections(s2s, cloudScorePlus, false, "system:index");
+    // s2s = joinCollections(s2s, cloudScorePlus, false, "system:index");
+    s2s = s2s.linkCollection(cloudScorePlus, ["cloudScorePlus"]);
 
     print("N s2 images after joining with cloudScore+:", s2s.size());
   }
@@ -4371,6 +4374,7 @@ function getProcessedSentinel2Scenes() {
     cloudProbThresh: 40,
     applyCloudScorePlus: true,
     cloudScorePlusThresh: 0.6,
+    cloudScorePlusScore: "cs",
   };
 
   var args = prepArgumentsObject(arguments, defaultArgs);

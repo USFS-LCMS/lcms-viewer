@@ -367,10 +367,18 @@ function showWalkThroughI() {
     $("#walk-through-collapse-div").addClass("show");
     showWalkThroughPopupMessage(dict.message);
     $("#walk-through-popup-progress").empty();
-    $("#walk-through-popup-progress").append((tI + 1).toString() + "/" + walkThroughKeysOrder[mode].length.toString());
+    $("#walk-through-popup-progress").append(
+      (tI + 1).toString() + "/" + walkThroughKeysOrder[mode].length.toString()
+    );
   }
 }
-if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" || mode === "sequoia-view" || mode === "HiForm-BMP") {
+if (
+  mode === "lcms-dashboard" ||
+  mode === "Bloom-Mapper" ||
+  mode === "TreeMap" ||
+  mode === "sequoia-view" ||
+  mode === "HiForm-BMP"
+) {
   // https://shepherdjs.dev/docs/tutorial-02-usage.html
   var tour = new Shepherd.Tour({
     defaultStepOptions: {
@@ -490,7 +498,14 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
         [0, 2],
         "progress-tour-modal",
       ],
-      ["Clear Everything", `You can clear all selected areas by clicking this button`, "#erase-all-dashboard-selected", "right", [0, 2], "erase-all-tour-modal"],
+      [
+        "Clear Everything",
+        `You can clear all selected areas by clicking this button`,
+        "#erase-all-dashboard-selected",
+        "right",
+        [0, 2],
+        "erase-all-tour-modal",
+      ],
       [
         "Adjusting the parameters",
         `There are many parameters that can be adjusted. Each of these parameters will automatically update the summaries you see in the bottom and right panes. Clicking the <i class="fa fa-share-alt teal "></i> icon above will create a unique link that contains your current view extent and parameter choices for easy sharing.`,
@@ -703,7 +718,15 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
         "year-slider-tour-modal",
         "#parameters-collapse-label-label",
       ],
-      ["Updating Map", `Click this button to update the maps to reflect your chosen parameters`, "#reRun-button", "right", [0, 2], "rerun-button-tour-modal", "#parameters-collapse-label-label"],
+      [
+        "Updating Map",
+        `Click this button to update the maps to reflect your chosen parameters`,
+        "#reRun-button",
+        "right",
+        [0, 2],
+        "rerun-button-tour-modal",
+        "#parameters-collapse-label-label",
+      ],
       [
         `${mode} Timelapse Layers`,
         `Turn on and off ${mode} timelapse layers using the radio buttons on the left side of each layer. Timelapse controls allow for the viewing and annimation of the time series of outputs. All dates shown in each time lapse are the date of the end of the compositing period for that frame. The input data include the cloud / cloud shadow free median value from that date to 4 weeks prior.`,
@@ -789,7 +812,15 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
         "chart-tour-modal",
         "#chart-collapse-label-label",
       ],
-      [`Visible layer legends`, `Any visible layer will have a legend shown here. `, "#legend-collapse-label", "right-end", [0, 2], "legend-tour-modal", "#legend-collapse-label-label"],
+      [
+        `Visible layer legends`,
+        `Any visible layer will have a legend shown here. `,
+        "#legend-collapse-label",
+        "right-end",
+        [0, 2],
+        "legend-tour-modal",
+        "#legend-collapse-label-label",
+      ],
       [
         `Download TreeMap Data`,
         `You can download individual TreeMap attribute images or the original Research Dataset here for your own analysis. You can select one or many individual attributes at a time using <kbd>ctrl</kbd> or <kbd>shift</kbd> to select more than one item at a time.`,
@@ -912,7 +943,7 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
       [
         "Share, Search, Navigate",
         `<ul>
-                            <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent and parameter choices for easy sharing.</li>
+                            <li>Clicking the <i class="fa fa-share-alt teal "></i> icon will create a unique link that contains your current view extent, selected area, dates, and parameter choices for easy sharing.</li>
                             <li>You can search and navigate to a location or county using the ‘Search Places’ control window.</li>
                             <li>Clicking the <i class="fa fa-chevron-left teal "></i> <i class="fa fa-chevron-right teal "></i> will take you back or forward a view extent.</li>
                             </ul>`,
@@ -922,49 +953,208 @@ if (mode === "lcms-dashboard" || mode === "Bloom-Mapper" || mode === "TreeMap" |
         "search-tour-modal",
       ],
       [
-        "Adjusting the parameters",
-        `Date parameters can be adjusted to select different baseline length compared to a date range more current, like the current year.<br><br>A popular way to quickly get a quality 1-year change product, is to use the previous year's full growing season for the 'Pre Date Range’ (ex: 06-01-2023 thru 08-30-2023), then for the 'Post Date Range’, use a time period that begins a month previous to, and ending to the current date.  If too cloudy (in the post), expand the ‘post’ date range to begin more than a month before the current date.<br><br>See the Tutorial for more information`,
+        "Selecting an Area",
+        `<ul>
+          <li>Choose a county to run <b>HiForm-BMP</b> over using dropdown selection menus or by clicking on the map.</li>
+          <li>When clicking on the map, there will be a small delay between when you click and when the county draws on the map.</li>
+          <li>Currently, only one county can be selected at a time. Selecting a county after one is already selected with replace the selected county with the newly selected county.</li>
+        </ul>`,
+        "#select-aoi-label",
+        "right",
+        [0, 2],
+        "aoi-params-tour-modal",
+        "#select-aoi-label-label",
+      ],
+      [
+        "Adjusting the date parameters",
+        `<ul>
+          <li>Date parameters can be adjusted to select dates for pre and post depending on the specific change you are targeting.</li>
+          <li>For example, a popular way to quickly get a quality 1-year change product, is to use a time period starting a month prior to the current date, ending near the current date.</li>
+          <li>When you select the post date, a corresponding date either 28 days from the selected date or two days prior to the present date will automatically be selected</li>
+          <li>Then choose <kbd>1 Year</kbd> (default) to automatically choose a year prior for the <kbd>Pre Date Range</kbd></li>
+          <li>You can also choose to provide a <kbd>Custom</kbd> date range for the <kbd>Pre Date Range</kbd>. When you select this option, another set of date menus will appear.</li>
+          <li>If either the pre or post dates are too cloudy (will be shown as holes in the resulting maps), expand the date range(s).</li>
+          <li><b>WARNING</b> - Pre and post dates cannot overlap. While you can select overlapping dates, when you click the <kbd>Process HiForm BMP</kbd> button, it will present a warning message and the process will not run.
+        </ul>`,
         "#pre-post-dates-label",
         "right",
         [0, 2],
-        "params-tour-modal",
+        "date-params-tour-modal",
         "#pre-post-dates-label-label",
       ],
       [
-        " Advanced Parameters - Choose Image Correction Type",
-        `“TOA” (Top-of-Atmosphere), denotes the use of a less aggressive set of image corrections.<br><br>Selecting “SR” (Surface Reflectance) adds more aggressive image corrections, such as attempting to remove cloud-shadows.<br><br>Conversely, selecting this correction type can over-correct the image composite that create undesirable image artifacts which may affecting results`,
+        "Advanced Parameters",
+        `<ul>
+            <li>Choose the image correction method and projection for exported data</li>
+            <li>“TOA” (Top-of-Atmosphere) uses Sentinel-2 Level 1C top of atmosphere reflectance data. This can result in artifacts due to haze, but avoids terrain-correction related artifacts.</li>
+            <li>“SR” (Surface Reflectance) uses Sentinel-2 Level 2A surface reflectance data. These data can minimize the impact of haze and terain shadows. Selecting this correction type can over-correct some terrain as well as non-terrestrial surfaces (e.g. snow/ice and water) </li>
+          </ul>`,
         "#advanced-params-label",
         "right",
         [0, 2],
         "advanced-params-tour-modal",
-        "#advanced-params-label>h5",
+        "#advanced-params-label",
+      ],
+      [
+        "Run HiForm BMP",
+        `<ul>
+            <li>Once you have selected a county and valid dates, this button will be activated.</li>
+            <li>You can then run the <i>HiForm BMP</i> process by clicking on the <kbd>Process HiForm BMP</kbd> button</li>
+            <li>Often you will get results you feel can be improved. You can change any parameter (county, dates, etc) and re-click this button to rerun the entire process</li>
+          </ul>`,
+        "#process-button-div",
+        "right-end",
+        [0, 2],
+        "run-hiform-button-tour-modal",
+        "#pre-post-dates-label-label",
       ],
       [
         `View  <i>HiForm</i>  BMP Results `,
-        `Starting at the bottom are the ‘Pre natural color’ image composite (baseline) and the ‘Post natural color’ image composite (view both for the presence of clouds).  Next are the NDVI continuous-change rasters in both an ‘all-lands’ and ‘forest-only’ version using 2021 NLCD.  Lastly are two polygons layers representing potential silvicultural activities, they are defined by the intensity of their negative NDVI decline.<br><br>Layers can be turned on/off by the radio buttons on the left, and their transparency/opacity adjusted by the sliders on the right.<br><br>Selecting the “Reset HiForm Results” control reconfigures the application to be run again.
+        `<ul>
+            <li>Starting at the bottom are the ‘Pre natural color’ image composite (baseline) and the ‘Post natural color’ image composite (view both for the presence of clouds).</li>
+            <li>Next are the NDVI continuous-change rasters in both an ‘all-lands’ and ‘forest-only’ version using 2021 NLCD.</li>
+            <li>Lastly are two polygons layers representing potential silvicultural activities, they are defined by the intensity of their negative NDVI decline.</li>
+            <li>Layers can be turned on/off by the radio buttons on the left, and their transparency/opacity adjusted by the sliders on the right.</li>
+            <li>Selecting the “Reset HiForm Results” control reconfigures the application to be run again.</li>
+          </ul>
         `,
         "#layer-list-collapse-label",
-        "right-end",
+        "right",
         [0, 2],
         "layer-list-tour-modal",
         "#layer-list-collapse-label-label",
       ],
       [
         "BMP Related Data Layers",
-        `These layers are provided to be used by themselves, or in conjunction with the output polygon results to identify local topographic and hydrologic conditions which can help assess a sites potential water related issues.`,
+        `<ul>
+          <li>These layers are to be used by themselves or in conjunction with the output polygon results to identify local topographic and hydrologic conditions. This can help assess a sites potential water related issues.
+          </li>
+        </ul>`,
         "#related-layers-label",
-        "right-end",
+        "right",
         [0, 2],
         "reference-layer-list-tour-modal",
         "#related-layers-label-label",
       ],
       [
-        `Download Data`,
-        `Users can opt to download results pertaining to (1) the ‘red’ Severe NDVI Change polygons as an ESRI shapefile which are indicative of timber harvest sites, (2) the ‘green’ Moderate NDVI Change polygons which can be indicative of less severe thinning operations, or (3) the 10m post-disturbance Sentinel-2 natural color image.`,
-        "#download-collapse-label",
-        "right-end",
-        [0, 1],
+        `Exploration Tools`,
+        `<ul>
+          <li>Tools are available to measure and query map layers.</li>
+          <li>These tools can be useful for gaining further insights about the data presented.</li>
+        </ul>`,
+        "#tools-collapse-label",
+        "right",
+        [0, 2],
         "tools-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+      [
+        `TOOLS -> Measuring Tools -> Distance Measuring`,
+        `<ul>
+          <li>Activate the "Distance Measuring" tool.</li>
+          <li>Once activated, click on the map to draw a line to measure distance.</li>
+          <li>The drawn vertices can be moved by clicking and dragging. You can also adjust the midpoint of a drawn line by moving the faint grey point in the middle of a line.</li>
+          <li>Press <kbd>ctrl+z</kbd> to undo the most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear the line and start over.</li>
+          <li>There are also buttons available under the tool in the left sidebar to undo and restart drawing.</li>
+          <li>Units can be toggled between imperial and metric using the toggle switch.</li>
+          <li>If the color of the line is hard to see, it can be changed with the color picker paintbrush under the tool in the left sidebar.</li>
+        </ul>`,
+        "#measure-distance-label",
+        "right",
+        [0, 2],
+        "distance-measuring-tool-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+
+      [
+        `TOOLS -> Measuring Tools -> Area Measuring`,
+        `<ul>
+          <li>Activate the "Area Measuring" tool</li>
+          <li>Once activated, click on the map to draw polygons to measure area.</li>
+          <li>Click on the map to measure an area, double-click to complete the polygon. <kbd>ctrl+z</kbd> will undo the most recently placed point, pressing <kbd>Delete</kbd> or <kbd>Backspace</kbd> will delete the entire polygon. The polygon can be adjusted by clicking and dragging mid-points and vertices.</li>
+          <li>Buttons are available under the tool in the left sidebar to undo and restart drawing as well.</li>
+          <li>Units can be toggled between imperial and metric using the toggle switch.</li>
+          <li>If the color of the line is hard to see, it can be changed with the color picker paintbrush under the tool in the left sidebar.</li>
+          <li>Multiple areas can be measured simultaneously by continuing to click after a polygon has been completed.</li>
+        </ul>`,
+        "#measure-area-label",
+        "right",
+        [0, 2],
+        "area-measuring-tool-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+      [
+        `TOOLS -> Pixel Tools -> Query Visible Map Layers`,
+        `<ul>
+          <li>This tool will automatically be turned on when the <kbd>Process HiForm BMP</kbd> button is clicked</li>
+          <li>Activate the "Query Visible Map Layers" tool.</li>
+          <li>Once activated, anywhere you double-click will query the value of any visible layer.</li>
+          <li>The values will appear in the <i>QUERY OUTPUTS</i> panel on the right.</li>
+          <li>It can take some time to query all visible layers as the query is done on-the-fly within Google Earth Engine.</li>
+          <li>To query the map again, double-click once more.</li>
+        </ul>`,
+        "#query-label",
+        "right",
+        [0, 2],
+        "pixel-query-tool-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+      [
+        `Download Data`,
+        `<ul>
+          <li>After you press the <kbd>Process HiForm BMP</kbd> button and run the HiForm process, the resulting change data will be available for downloading.</li>
+        </ul>`,
+        "#download-collapse-label",
+        "right",
+        [0, 2],
+        "download-intro-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Choose What to Export`,
+        `<ul>
+          <li>You can opt to download results pertaining to (1) the Severe NDVI Change polygons as an ESRI shapefile (or any other vector format of choice) which are indicative of timber harvest sites, (2) the Moderate NDVI Change polygons, which can be indicative of less severe thinning operations, or (3) the post-disturbance Sentinel-2 natural color composite.</li>
+          <li>You can select or de-select any layer for exporting by clicking on the round button on the left of each layer</li>
+          <li>Each layer is given a default name. You can change this name to any name you'd like.</li>
+          <li>On the right of each image export layer is a number. This is the spatial resolution in meters for that image export. You can change it if you'd like</li>
+          <li>On the right of each vector export layer is a dropdown. This is the format the vector will be exported in. You can change it to any of these options.</li>
+        </ul>`,
+        "#export-list-container>h5",
+        "right",
+        [0, 2],
+        "download-layer-selection-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Start and Cancel Exports`,
+        `<ul>
+          <li>You can start any selected export layer (above) using the <button class="btn"><i class="pr-1 fa fa-cloud-download" ></i>Export</button> button.</li>
+          <li>You can cancel all active exports (shown below) using the <button class="btn"><i class="pr-1 fa fa-close" ></i>Cancel All Exports</button> button.</li>
+          <li>Once your exports are successfully started, a popup will be shown outlining what exports were started. Shortly after, the task list below will reflect the recently started exports and their status.
+        </ul>`,
+        "#export-button-div",
+        "right",
+        [0, 2],
+        "download-start-button-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Track Exports`,
+        `<ul>
+          <li>All previous and current exports are shown here.</li>
+          <li>From left to right, each export's name, total run time, type, and download button is provided.</li>
+          <li>Any successfully completed export within the past 10 days, from your instance of HiForm-BMP, is provided here. You can re-download the output using the <i class="fa fa-cloud-download teal"></i> button on the right of each task.</li>
+          <li>Currently active exports are shown with a pulsing teal color.</li>
+          <li>You can cancel an individual export task by clicking the <i class="fa fa-close teal"></i> icon on the right of the active export.</li>
+          <li>Once the active export successfully finishes, you will be prompted to download all files. For shapefiles, this will be a total of 6 files, while other formats and image exports will be a single download.</li>
+          <li>If you have a popup blocker, a message box is also provided with links to download all completed exports.</li>
+          <li>Sometimes very large image exports are broken into tiles. In this instance, multiple image downloads will be provided.</li>
+          <li>If your instance of HiForm-BMP restarts before an export successfully finishes, that export will be tracked the next time you open HiForm-BMP in the same browser. It will then be tracked and you will be prompted upon its successful completion.</li>
+        </ul>`,
+        "#export-tracking-rows",
+        "right",
+        [0, 2],
+        "download-start-button-tour-modal",
         "#download-collapse-label-label",
       ],
     ];

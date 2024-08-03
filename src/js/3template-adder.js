@@ -2649,6 +2649,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.aoiSelectionType = {
       "Select by Dropdown": true,
       "Select on Map": false,
+      "Select Off": false,
     };
   }
 
@@ -2658,14 +2659,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Choose County Selection Type",
     "selectOption",
     urlParams.aoiSelectionType,
-    "Title",
+    "Choose method to select county to run Hi-Form BMP across",
     handleAoiSelectionType
   );
 
   addCurrentAOIParametersDisplay();
 
   function handleAoiSelectionType(selection) {
-    console.log(selection);
+    // console.log(selection);
 
     if (selectOption == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
@@ -2683,6 +2684,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     } else if (selectOption == "Select on Map") {
       $("#" + "dropdown-select").remove();
       selectSingleCounty();
+    } else if (selectOption == "Select Off") {
+      $("#" + "dropdown-select").remove();
+      google.maps.event.clearListeners(map, "click");
     }
   }
 
@@ -2714,9 +2718,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       .filter(ee.Filter.eq("NAME", selectedCounty));
     selectedLayerId = Map.addLayer(
       selectedFeature,
-      { strokeColor: "0BFFFF", layerType: "geeVectorImage" },
+      { strokeColor: "0BFFFF", layerType: "geeVectorImage", canQuery: false },
       `${selectedCounty}, ${stateAbr}`,
-      true
+      true,
+      null,
+      null,
+      "Selected county",
+      "county-selection-layer-list"
     );
     Map.centerObject(selectedFeature);
     urlParams.selectedState = stateAbr;
@@ -2730,7 +2738,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     setTimeout(() => {
       google.maps.event.clearListeners(map, "click");
       google.maps.event.addListener(map, "click", (e) => {
-        setTimeout(() => Map.showSpinner(), 100);
+        Map.showSpinner();
+        // setTimeout(() => Map.showSpinner(), 100);
         Map.removeLayer(selectedLayerId);
         const lat = e.latLng.lat();
         const lng = e.latLng.lng();
@@ -2745,17 +2754,25 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         console.log(stateFP);
         selectedLayerId = Map.addLayer(
           selectedFeature,
-          { strokeColor: "0BFFFF", layerType: "geeVectorImage" },
+          {
+            strokeColor: "0BFFFF",
+            layerType: "geeVectorImage",
+            canQuery: false,
+          },
           `${countyName}, ${stateAbr}`,
-          true
+          true,
+          null,
+          null,
+          "Selected county",
+          "county-selection-layer-list"
         );
-        Map.centerObject(selectedFeature);
+        Map.centerObject(selectedFeature, true, Map.hideSpinner);
         urlParams.selectedState = stateAbr;
         urlParams.selectedCounty = countyName;
         selectedCountyAndStateStr = `${countyName}, ${stateAbr}`;
         exportArea = window.selectedFeature;
         toggleProcessButton();
-        setTimeout(() => Map.hideSpinner(), 100);
+        // setTimeout(() => Map.hideSpinner(), 100);
       });
     }, 0);
   }
@@ -3004,6 +3021,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     }
 
     handleSelectedPreDateType();
+
     toggleProcessButton();
   }
 
@@ -3017,7 +3035,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     ""
   );
   if (!urlParams.correctionTypeOption) {
-    urlParams.correctionTypeOption = { TOA: true, SR: false };
+    urlParams.correctionTypeOption = { TOA: false, SR: true };
   }
   addSelectTypeRadio(
     "advanced-params-div",
@@ -3098,11 +3116,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     // $(`#date-current-params`).show();
 
     // Run HiForm Process
+    $("#Select-Off-checkbox").click();
     hiform_bmp_process();
     // reRun();
-
-    // Clear click listener
-    google.maps.event.clearListeners(map, "click");
   }
 
   addCollapse(
@@ -3118,6 +3134,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   $("#layer-list-collapse-div").append(
     `<ul id="layer-list" class = "layer-list"></ul>`
+  );
+  $("#select-aoi-div").prepend(
+    `<li style='display:none;' class='pt-2' id = 'county-selection-layer-list'></li>`
   );
 
   // addHiFormResetButton("layer-list-collapse-div");
@@ -3173,7 +3192,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "Choose County Selection Type",
       "selectOption",
       urlParams.aoiSelectionType,
-      "Title",
+      "Choose method to select county to run Hi-Form BMP across",
       handleAoiSelectionType
     );
     handleAoiSelectionType(selectOption);
@@ -3226,9 +3245,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "Access HiForm BMP Support Resources"
   );
-
-  addHiFormSupport("hiform-support-div")
-
+  $("#hiform-support-div").append(staticTemplates.hiformSupportDiv);
 } else {
   addCollapse(
     "sidebar-left",

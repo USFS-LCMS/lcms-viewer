@@ -191,13 +191,21 @@ body {
 
 .shepherd-title {
   font-size: 1.25rem;
+  display: inline-block;
+  max-width: 95%;
 }
 
 .shepherd-arrow:before {
   background-color: var(--teal-100) !important;
   outline-style: solid;
 }
-
+.shepherd-text > ul > li {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.shepherd-text > ul > li:not(:last-child) {
+  border-bottom: 1px solid var(--deep-brown-10);
+}
 .eraser {
   color: var(--deep-brown-100) !important;
   cursor: pointer;
