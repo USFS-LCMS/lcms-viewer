@@ -299,7 +299,7 @@ var getQueryImages = function (lng, lat) {
   var nameEnd =
     " Queried Values for Lng " + lng.toFixed(3) + " Lat " + lat.toFixed(3);
   var queryContent = `<div>
-							<h6 style = 'font-weight:bold;'>Queried values for<br>lng: ${lng
+							<h6 style = 'font-weight:bold;padding-top:0.5rem;'>Queried values for<br>lng: ${lng
                 .toFixed(3)
                 .toString()} lat: ${lat.toFixed(3).toString()}</h6>
 							<li id = 'query-list-container'></li>
