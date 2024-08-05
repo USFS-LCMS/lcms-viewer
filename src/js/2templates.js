@@ -1056,7 +1056,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational support for this tool takes place at GTAC.</p>
                                 </a>
                             </div>
                         </section>
@@ -1463,7 +1463,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All production and support for this tool takes place at GTAC.</p>
                                 </a>
                             </div>
                         </section>
@@ -1967,6 +1967,14 @@ function appendMessage2(message, modalID) {
     modalID = "error-modal";
   }
   $("#" + modalID + "-body").append(message);
+}
+function smartShowMessage(title, message, modalID) {
+  if ($("#" + modalID).hasClass("show")) {
+    console.log("yay");
+    appendMessage2(message, modalID);
+  } else {
+    showMessage(title, message, modalID);
+  }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Show a basic tip BS modal
@@ -4179,6 +4187,7 @@ function addLayer(layer) {
       }
 
       layer.layer = groundOverlayWrapper();
+
       if (layer.visible) {
         layer.layer.setMap(map);
         layer.percent = 100;

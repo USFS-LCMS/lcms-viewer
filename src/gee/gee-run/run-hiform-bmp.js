@@ -115,7 +115,11 @@ function runHiForm() {
   );
   Map.addLayer(
     floodplains,
-    { palette: "0700d6", classLegendDict: { Floodplain: "0700d6" } },
+    {
+      palette: "0700d6",
+      classLegendDict: { Floodplain: "0700d6" },
+      opacity: 0.25,
+    },
     "Floodplains (Bottomland Hardwoods)",
     false,
     null,
@@ -144,8 +148,8 @@ function runHiForm() {
       },
       {
         baseURL:
-          "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
-        minZoom: 12,
+          "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
+        minZoom: 11,
       },
     ],
     {
@@ -200,12 +204,18 @@ function runHiForm() {
     handleProcess();
   }
 }
-
+chartPrecision = 3;
+chartDecimalProportion = 0.00001;
 function hiform_bmp_process() {
+  function addDateBand(img) {
+    var d = ee.Number.parse(img.date().format("YYYYMMdd"));
+    d = ee.Image(d).uint32();
+    return img.addBands(d.rename("Date"));
+  }
   let ndviRamp = {
     bands: "NDVI",
-    min: -1.27,
-    max: 1.27,
+    min: -0.3,
+    max: 0.3,
     palette: ndvi_palette,
   };
   var geometry = window.selectedFeature;
@@ -225,10 +235,7 @@ function hiform_bmp_process() {
     advanceDate(urlParams.preDate2, 1),
     correctionTypeOption,
     true
-  )
-    .map(addNDVI)
-    .qualityMosaic("NDVI")
-    .clip(geometry);
+  );
 
   var post = superSimpleGetS2(
     geoBounds,
@@ -236,152 +243,217 @@ function hiform_bmp_process() {
     advanceDate(urlParams.postDate2, 1),
     correctionTypeOption,
     true
-  )
-    .map(addNDVI)
-    .qualityMosaic("NDVI")
-    .clip(geometry);
-
-  Map.addLayer(
-    pre,
-    vizParamsTrue10k,
-    "Pre Natural Color Composite",
-    false,
-    null,
-    null,
-    `Natural color max NDVI composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
-  );
-  Map.addLayer(
-    post,
-    vizParamsTrue10k,
-    "Post Natural Color Composite",
-    false,
-    null,
-    null,
-    `Natural color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
   );
 
-  var diff = post.float().subtract(pre.float()).select(["NDVI"]);
+  let sizes = ee.List([pre.size(), post.size()]);
+  let nImages = sizes.getInfo();
+  let errorMessage = "";
+  if (nImages[0] === 0) {
+    errorMessage = `No Sentinel-2 images found for pre dates ${urlParams.preDate1} - ${urlParams.preDate2}. Please select a wider pre date range.<br>`;
+  }
+  if (nImages[1] === 0) {
+    errorMessage += `No Sentinel-2 images found for post dates ${urlParams.postDate1} - ${urlParams.postDate2}. Please select a wider post date range.`;
+  }
 
-  Map.addLayer(
-    diff,
-    ndviRamp,
-    "All-Lands NDVI Change",
-    false,
-    null,
-    null,
-    `NDVI change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
-  );
+  if (errorMessage !== "") {
+    setTimeout(
+      () => showMessage("Error!", errorMessage, "image-empty-error-modal"),
+      200
+    );
+  } else {
+    pre = pre
+      .map(addNDVI)
+      .map(addDateBand)
+      .qualityMosaic("NDVI")
+      .clip(geometry)
+      .clip(geoBounds);
+    post = post
+      .map(addNDVI)
+      .map(addDateBand)
+      .qualityMosaic("NDVI")
+      .clip(geometry)
+      .clip(geoBounds);
 
-  ////////////////////////////////////////////////////////////////////
-  // bring in 2021 NLCD - define 4 forest classess
-  ///////////////////////////////////////////////////////////////////
+    Map.addLayer(
+      pre.select(["blue", "green", "red", "NDVI", "Date"]),
+      vizParamsTrue10k,
+      "Pre Natural Color Composite",
+      false,
+      null,
+      null,
+      `Natural color max NDVI composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
+    Map.addLayer(
+      post.select(["blue", "green", "red", "NDVI", "Date"]),
+      vizParamsTrue10k,
+      "Post Natural Color Composite",
+      false,
+      null,
+      null,
+      `Natural color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
 
-  var nlcd_landcover_img = ee
-    .Image("USGS/NLCD_RELEASES/2021_REL/NLCD/2021")
-    .select(["landcover"]);
+    var diff = post
+      .float()
+      .subtract(pre.float())
+      .select(["NDVI"])
+      .addBands(pre.select(["Date"], ["Pre Date"]))
+      .addBands(post.select(["Date"], ["Post Date"]))
+      .clip(geoBounds);
 
-  // all 4-forest classes
-  var nlcd_wild = nlcd_landcover_img
-    .eq(41)
-    .or(nlcd_landcover_img.eq(42))
-    .or(nlcd_landcover_img.eq(43))
-    .or(nlcd_landcover_img.eq(90));
+    Map.addLayer(
+      diff,
+      ndviRamp,
+      "All-Lands NDVI Change",
+      false,
+      null,
+      null,
+      `NDVI change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
 
-  diff = diff.updateMask(nlcd_wild);
+    ////////////////////////////////////////////////////////////////////
+    // bring in 2021 NLCD - define 4 forest classess
+    ///////////////////////////////////////////////////////////////////
 
-  Map.addLayer(
-    diff,
-    ndviRamp,
-    "Forest NDVI Change",
-    false,
-    null,
-    null,
-    `NDVI forest change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
-  );
+    var nlcd_landcover_img = ee
+      .Image("USGS/NLCD_RELEASES/2021_REL/NLCD/2021")
+      .select(["landcover"]);
 
-  var mod_change = diff.select(["NDVI"]);
-  mod_change = mod_change.lte(-0.07).and(mod_change.gte(-0.19)).selfMask();
+    // all 4-forest classes
+    var nlcd_wild = nlcd_landcover_img
+      .eq(41)
+      .or(nlcd_landcover_img.eq(42))
+      .or(nlcd_landcover_img.eq(43))
+      .or(nlcd_landcover_img.eq(90));
 
-  var severe_change = diff.select(["NDVI"]);
-  severe_change = severe_change.lt(-0.19).selfMask();
+    diff = diff.updateMask(nlcd_wild).clip(geoBounds);
 
-  let mod_change_mmu = 200;
-  let severe_change_mmu = 100;
+    Map.addLayer(
+      diff,
+      ndviRamp,
+      "Forest NDVI Change",
+      false,
+      null,
+      null,
+      `NDVI forest change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
 
-  var mod_change_patch_size_mask = mod_change
-    .connectedPixelCount(mod_change_mmu, false)
-    .gte(mod_change_mmu);
-  var severe_change_patch_size_mask = severe_change
-    .connectedPixelCount(severe_change_mmu, false)
-    .gte(severe_change_mmu);
+    var mod_change = diff.select(["NDVI"]);
+    mod_change = mod_change.lte(-0.07).and(mod_change.gte(-0.19)).selfMask();
 
-  mod_change = mod_change.updateMask(mod_change_patch_size_mask);
-  severe_change = severe_change
-    .selfMask()
-    .updateMask(severe_change_patch_size_mask);
+    var severe_change = diff.select(["NDVI"]);
+    severe_change = severe_change.lt(-0.19).selfMask();
 
-  //Convert the zones of the thresholded change to vectors
-  var mod_change_vectors = mod_change.addBands(diff).reduceToVectors({
-    geometry: geoBounds,
-    crs: urlParams.exportCRS,
-    scale: 10,
-    geometryType: "polygon",
-    eightConnected: false,
-    labelProperty: "zone",
-    reducer: ee.Reducer.mean(),
-    maxPixels: 1e13,
-  });
+    let mod_change_mmu = 200;
+    let severe_change_mmu = 100;
 
-  var severe_change_vectors = severe_change.addBands(diff).reduceToVectors({
-    geometry: geoBounds,
-    crs: urlParams.exportCRS,
-    scale: 10,
-    geometryType: "polygon",
-    eightConnected: false,
-    labelProperty: "zone",
-    reducer: ee.Reducer.mean(),
-    maxPixels: 1e13,
-  });
+    var mod_change_patch_size_mask = mod_change
+      .connectedPixelCount(mod_change_mmu, false)
+      .gte(mod_change_mmu);
+    var severe_change_patch_size_mask = severe_change
+      .connectedPixelCount(severe_change_mmu, false)
+      .gte(severe_change_mmu);
 
-  Map.addLayer(
-    mod_change_vectors,
-    { strokeColor: "3DED97", strokeWeight: 1.5 },
-    "Moderate NDVI Change",
-    true,
-    null,
-    null,
-    `Moderate NDVI change between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
-  );
-  Map.addLayer(
-    severe_change_vectors,
-    { strokeColor: "FF2400", strokeWeight: 1.5 },
-    "Severe NDVI Change",
-    true,
-    null,
-    null,
-    `Severe NDVI change between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
-  );
+    mod_change = mod_change.updateMask(mod_change_patch_size_mask);
+    severe_change = severe_change
+      .selfMask()
+      .updateMask(severe_change_patch_size_mask);
 
-  Map.addExport(
-    mod_change_vectors.map((f) => f.transform(urlParams.exportCRS, 10)),
-    `Moderate_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
-    null,
-    true
-  );
+    //Convert the zones of the thresholded change to vectors
+    var mod_change_vectors = mod_change
+      .addBands(diff.select(["NDVI"]))
+      .reduceToVectors({
+        geometry: geoBounds,
+        crs: urlParams.exportCRS,
+        scale: 10,
+        geometryType: "polygon",
+        eightConnected: false,
+        labelProperty: "zone",
+        reducer: ee.Reducer.mean(),
+        maxPixels: 1e13,
+      });
 
-  Map.addExport(
-    severe_change_vectors.map((f) => f.transform(urlParams.exportCRS, 10)),
-    `Severe_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState} `,
-    null,
-    true
-  );
+    var severe_change_vectors = severe_change
+      .addBands(diff.select(["NDVI"]))
+      .reduceToVectors({
+        geometry: geoBounds,
+        crs: urlParams.exportCRS,
+        scale: 10,
+        geometryType: "polygon",
+        eightConnected: false,
+        labelProperty: "zone",
+        reducer: ee.Reducer.mean(),
+        maxPixels: 1e13,
+      });
 
-  Map.addExport(
-    post.select(["red", "green", "blue", "nir"]).int16(),
-    `Post_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,
-    10,
-    false,
-    {}
-  );
-  Map.turnOnInspector();
+    Map.addLayer(
+      mod_change_vectors,
+      { strokeColor: "3DED97", strokeWeight: 1.5 },
+      "Moderate NDVI Change",
+      true,
+      null,
+      null,
+      `Moderate NDVI change between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
+    Map.addLayer(
+      severe_change_vectors,
+      { strokeColor: "FF2400", strokeWeight: 1.5 },
+      "Severe NDVI Change",
+      true,
+      null,
+      null,
+      `Severe NDVI change between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
+
+    Map.addExport(
+      mod_change_vectors.map((f) => f.transform(urlParams.exportCRS, 10)),
+      `Moderate_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      null,
+      true
+    );
+
+    Map.addExport(
+      severe_change_vectors.map((f) => f.transform(urlParams.exportCRS, 10)),
+      `Severe_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState} `,
+      null,
+      true
+    );
+
+    Map.addExport(
+      post.select(["red", "green", "blue", "nir"]).int16(),
+      `Post_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      10,
+      false,
+      {}
+    );
+
+    let preMask = pre.select([0]).mask();
+    let postMask = post.select([0]).mask();
+    let combinedMasks = preMask
+      .and(postMask)
+      .not()
+      .selfMask()
+      .clip(geometry)
+      .clip(geoBounds);
+    console.log(combinedMasks.geometry().getInfo());
+    Map.addLayer(
+      combinedMasks,
+      {
+        min: 1,
+        max: 1,
+        opacity: 0.6,
+        palette: "000",
+        classLegendDict: { "": "000" },
+      },
+      "Clouds (not mapped)",
+      true,
+      null,
+      null,
+      "Any pixel that was always masked as cloud or cloud shadow by the cloudScore+ algorithm."
+    );
+
+    Map.turnOnInspector();
+    Map.setQueryScale(10);
+    Map.setQueryCRS(urlParams.exportCRS);
+  }
 }

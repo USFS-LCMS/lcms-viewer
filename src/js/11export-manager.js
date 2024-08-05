@@ -20,20 +20,24 @@ if (urlParams.bucketName === null || urlParams.bucketName === undefined) {
 
 var eID = 1;
 var exportFC;
+
 // exportCapability = true;
 ///////////////////////////////////////////////////////////////////
 function downloadFiles(id) {
+  let badShpExtensions = ["cpg", "fix"];
   $.ajax({
     type: "GET",
-    url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o`,
+    url: `https://storage.googleapis.com/storage/v1/b/${bucketName}/o?maxResults=100000`,
   }).done(function (json) {
-    json = json.items;
+    json = json.items.filter(
+      (i) =>
+        badShpExtensions.indexOf(i.name.split(".").pop()) === -1 &&
+        i.id.indexOf(id) > -1
+    );
 
     let message = '<ul class = "my-1">';
     json.map(function (item) {
-      if (item.id.indexOf(id) > -1) {
-        message += `<li class = "m-0"><a class = 'intro-modal-links' href = "${item.mediaLink}" target = "_blank">${item.name}</a></li>`;
-      }
+      message += `<li class = "m-0"><a class = 'intro-modal-links' href = "${item.mediaLink}" target = "_blank">${item.name}</a></li>`;
     });
     message += "</ul>";
     setTimeout(() => {
@@ -53,20 +57,19 @@ function downloadFiles(id) {
     setTimeout(
       () =>
         json.map(function (item) {
-          if (item.id.indexOf(id) > -1) {
-            var link = document.createElement("a");
-            link.setAttribute("href", item.mediaLink);
-            link.setAttribute("download", item.name);
-            link.style.visibility = "hidden";
-            document.body.appendChild(link);
-            link.click();
-            sleep(1000);
-            document.body.removeChild(link);
-            sleep(1000);
-          }
+          var link = document.createElement("a");
+          link.setAttribute("href", item.mediaLink);
+          link.setAttribute("download", item.name);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          sleep(1000);
+          document.body.removeChild(link);
+          sleep(1000);
         }),
       500
     );
+    ga("send", "event", mode + "-download-file", id, json.length);
   });
 }
 
@@ -215,7 +218,7 @@ function cancelSingleTask(task) {
   if (Object.keys(cachedEEExports).indexOf(task.description) > -1) {
     print("Cancelling task: " + task.description);
     ee.data.cancelTask(task.id);
-
+    ga("send", "event", mode + "-cancel-single-task", task.description);
     showMessage("Task Cancel Completed", "Task cancelled: " + task.description);
   }
 }
@@ -246,6 +249,12 @@ cancelAllTasks = function () {
         tasksCancelled.toString() +
         "<br>" +
         tasksCancelledList
+    );
+    ga(
+      "send",
+      "event",
+      mode + "-cancel-all-tasks",
+      tasksCancelled.length.toString()
     );
     trackExports();
   });
@@ -599,6 +608,7 @@ function getIDAndParams(
   //Set up a task and update the spinner
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
+
   // var task = ee.batch.Export.image.toCloudStorage(eeImage, exportOutputName, bucketName, exportOutputName, null, region, exportScale, exportCRS, null, 1e13, 256, 256*75);
 
   // return task;
@@ -683,6 +693,13 @@ function exportImages() {
             meta_template_strT = "{}";
             cacheExport(exportName, exportName, meta_template_strT);
           }
+        );
+        ga(
+          "send",
+          "event",
+          mode + "-start-export",
+          IDAndParams["taskId"],
+          exportName
         );
 
         // var metadataParams = exportObject['metadataParams']

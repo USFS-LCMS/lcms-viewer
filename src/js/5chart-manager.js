@@ -341,7 +341,7 @@ var getQueryImages = function (lng, lat) {
         .append(`<table class="table table-hover bg-white">
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
-      $("#" + containerID).append(`<tr><th>${q.name}</th><th>NULL</th></tr>`);
+      $("#" + containerID).append(`<tr><th>${q.name}</th><td>null</td></tr>`);
     } else if (q.type === "geeImage") {
       $("#query-list-container")
         .append(`<table class="table table-hover bg-white">
@@ -530,7 +530,7 @@ var getQueryImages = function (lng, lat) {
       // queryContent += `<tr><th>Attribute Name</th><th>Attribute Value</th></tr>`;
 
       infoKeys.map(function (name) {
-        var valueT = value[name];
+        var valueT = smartToFixed(value[name]);
         $("#" + containerID).append(
           `<tr><th>${name}</th><td>${valueT}</td></tr>`
         );
@@ -775,7 +775,7 @@ var getQueryImages = function (lng, lat) {
             .filterBounds(clickPt);
         }
         features.evaluate(function (values) {
-          // console.log(values);
+          console.log(values);
           keyI++;
           if (values !== undefined) {
             queryGeoJSON.addGeoJson(values);
