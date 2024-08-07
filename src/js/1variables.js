@@ -907,6 +907,7 @@ Date.prototype.dayOfYear = function () {
 //
 //Taken from: https://stackoverflow.com/questions/22015684/how-do-i-zip-two-arrays-in-javascript
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
+const cbind = (a, b) => a.map((k, i) => k.concat([b[i]]));
 const dictFromKeyValues = (a, b) => {
   let out = {};
   a.map((k, i) => {

@@ -580,7 +580,9 @@ function getIDAndParams(
   } else if (eeType === "Feature") {
     eeImage = ee.FeatureCollection([eeImage]);
   }
-
+  if (eeType !== "Image") {
+    eeImage = eeImage.map((f) => f.transform(exportCRS, 10));
+  }
   let exportTypeDict = {
     Image: { type: "EXPORT_IMAGE", format: "GEO_TIFF" },
     Geometry: { type: "EXPORT_FEATURES", format: "SHP" },
@@ -626,7 +628,8 @@ function googleMapPolygonToGEEPolygon(googleMapPolygon) {
   return geePolygon;
 }
 function exportImages() {
-  var exportCRS = $("#export-crs").val();
+  let exportCRST = $("#export-crs").val() || exportCRS;
+  console.log(exportCRST);
   // closePopup();
   // console.log(exportImageDict);
   // console.log('yay');
@@ -664,7 +667,7 @@ function exportImages() {
         var IDAndParams = getIDAndParams(
           exportObject.eeImage,
           exportName,
-          exportCRS,
+          exportCRST,
           exportObject.res,
           fc,
           noDataValue,

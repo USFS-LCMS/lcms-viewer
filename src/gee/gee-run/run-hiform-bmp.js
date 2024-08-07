@@ -261,6 +261,10 @@ function hiform_bmp_process() {
       200
     );
   } else {
+    window.exportCRS = pre.first().select(["blue"]).projection().getInfo()[
+      "crs"
+    ];
+
     pre = pre
       .map(addNDVI)
       .map(addDateBand)
@@ -273,6 +277,32 @@ function hiform_bmp_process() {
       .qualityMosaic("NDVI")
       .clip(geometry)
       .clip(geoBounds);
+    // function getPctlStretch(
+    //   img,
+    //   bandNames = ["red", "green", "blue"],
+    //   minPctl = 1,
+    //   maxPctl = 99
+    // ) {
+    //   let stats = img
+    //     .select(bandNames)
+    //     .reduceRegion(
+    //       ee.Reducer.percentile([minPctl, maxPctl]),
+    //       geoBounds,
+    //       300,
+    //       exportCRS,
+    //       null,
+    //       true,
+    //       1e13,
+    //       4
+    //     )
+    //     .getInfo();
+    //   let mins = bandNames.map((b) => stats[`${b}_p${minPctl}`]);
+    //   let maxes = bandNames.map((b) => stats[`${b}_p${maxPctl}`]);
+
+    //   return { min: mins, max: maxes, bands: bandNames };
+    // }
+    // let compViz = getPctlStretch(pre.add(post).divide(2));
+    // console.log(compViz);
 
     Map.addLayer(
       pre.select(["blue", "green", "red", "NDVI", "Date"]),
@@ -364,7 +394,7 @@ function hiform_bmp_process() {
       .addBands(diff.select(["NDVI"]))
       .reduceToVectors({
         geometry: geoBounds,
-        crs: urlParams.exportCRS,
+        crs: exportCRS,
         scale: 10,
         geometryType: "polygon",
         eightConnected: false,
@@ -377,7 +407,7 @@ function hiform_bmp_process() {
       .addBands(diff.select(["NDVI"]))
       .reduceToVectors({
         geometry: geoBounds,
-        crs: urlParams.exportCRS,
+        crs: exportCRS,
         scale: 10,
         geometryType: "polygon",
         eightConnected: false,
@@ -406,14 +436,14 @@ function hiform_bmp_process() {
     );
 
     Map.addExport(
-      mod_change_vectors.map((f) => f.transform(urlParams.exportCRS, 10)),
+      mod_change_vectors,
       `Moderate_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       null,
       true
     );
 
     Map.addExport(
-      severe_change_vectors.map((f) => f.transform(urlParams.exportCRS, 10)),
+      severe_change_vectors,
       `Severe_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState} `,
       null,
       true
@@ -444,8 +474,11 @@ function hiform_bmp_process() {
         opacity: 0.6,
         palette: "000",
         classLegendDict: { "": "000" },
+        queryDict: {
+          1: "Cloud or cloud shadow - no clear pixels available for mapping",
+        },
       },
-      "Clouds (not mapped)",
+      "Clouds (underlying area not mapped)",
       true,
       null,
       null,
@@ -454,6 +487,6 @@ function hiform_bmp_process() {
 
     Map.turnOnInspector();
     Map.setQueryScale(10);
-    Map.setQueryCRS(urlParams.exportCRS);
+    Map.setQueryCRS(exportCRS);
   }
 }

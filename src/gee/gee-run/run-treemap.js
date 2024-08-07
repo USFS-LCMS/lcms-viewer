@@ -282,12 +282,22 @@ function runTreeMap() {
         palette.push("000");
       }
     });
-
+    let props = {};
+    props[`${attr[0]}_class_values`] = uniqueValues;
+    props[`${attr[0]}_class_names`] = uniqueNames;
+    props[`${attr[0]}_class_palette`] = colors;
+    attrImg = attrImg.set(props);
     // Specify the palette and the legend dictionary with the unique names and colors
     viz["palette"] = palette;
     viz["classLegendDict"] = dict(zip(uniqueNames, colors));
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-
+    viz["canAreaChart"] = true;
+    viz["areaChartParams"] = {
+      barChartMaxClasses: 15,
+      // chartLabelMaxLength: 25,
+      chartLabelMaxWidth: 13,
+      chartLabelFontSize: 9,
+    };
     return [attrImg, viz, attr[2]];
   }
 
@@ -380,8 +390,8 @@ function runTreeMap() {
     viz["max"] = 100;
     viz["palette"] = attr[1];
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-
-    return [attrImg, viz, attr[2]];
+    // viz["canAreaChart"] = true;
+    return [attrImg, viz, attr[2], 255];
   }
 
   // Function to get a continuous attribute image service and use standard deviation as the min/max
@@ -450,7 +460,9 @@ function runTreeMap() {
     } else {
       var visible = false;
     }
+
     Map.addLayer(layer[0], layer[1], layer[2], visible);
+
     Map.addExport(layer[0].float(), layer[2], 30, false, {}, -32768);
   }
   ////
@@ -494,5 +506,9 @@ function runTreeMap() {
   );
   Map.addExport(rawTreeMap.int32(), "TreeMap ID", 30, false, {}, 0);
   queryWindowMode = "sidePane";
-  $("#query-label").click();
+
+  // Map.turnOnInspector();
+  getLCMSVariables();
+  getSelectLayers(true);
+  Map.turnOnAutoAreaCharting();
 }

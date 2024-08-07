@@ -985,10 +985,9 @@ if (
       [
         "Advanced Parameters",
         `<ul>
-            <li>Choose the image correction method and projection for exported data</li>
+            <li>Choose the image atmospheric correction method</li>
             <li>“TOA” (Top-of-Atmosphere) uses Sentinel-2 Level 1C top of atmosphere reflectance data. This can result in artifacts due to haze, but avoids terrain-correction related artifacts.</li>
             <li>“SR” (Surface Reflectance) uses Sentinel-2 Level 2A surface reflectance data. These data can minimize the impact of haze and terain shadows. Selecting this correction type can over-correct some terrain as well as non-terrestrial surfaces (e.g. snow/ice and water) </li>
-            <li>Provide a projection to use for all data downloads (below). Accepts WKT or EPSG formats. Some common EPSG strings are: Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917)</li>
           </ul>`,
         "#advanced-params-label",
         "right",

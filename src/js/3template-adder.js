@@ -3046,18 +3046,18 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Choose either Top of Atmosphere or Surface Reflectance Correction Type",
     changeCorrectionTypeOption
   );
-  if (!urlParams.exportCRS) {
-    urlParams.exportCRS = "EPSG:5070";
-  }
-  $("#advanced-params-div").append("<hr>");
-  addInputTextBox(
-    "advanced-params-div",
-    "export-crs",
-    "Projection",
-    "urlParams.exportCRS",
-    urlParams.exportCRS,
-    'Provide projection for exports. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '
-  );
+  // if (!urlParams.exportCRS) {
+  //   urlParams.exportCRS = "EPSG:5070";
+  // }
+  // $("#advanced-params-div").append("<hr>");
+  // addInputTextBox(
+  //   "advanced-params-div",
+  //   "export-crs",
+  //   "Projection",
+  //   "urlParams.exportCRS",
+  //   urlParams.exportCRS,
+  //   'Provide projection for exports. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '
+  // );
 
   function changeCorrectionTypeOption() {
     console.log(correctionTypeOption);
@@ -3466,7 +3466,8 @@ if (
   mode === "IDS" ||
   mode === "LCMS" ||
   mode === "geeViz" ||
-  mode === "LAMDA"
+  mode === "LAMDA" ||
+  mode === "TreeMap"
 ) {
   $("#tools-accordian").append(
     `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`

@@ -498,7 +498,7 @@ button {
 .title-banner-icon {
   height: 1.7rem;
   margin-left: 0rem;
-  margin-right: 0.1rem;
+  /* margin-right: 0.1rem; */
   margin-top: 0.25rem;
 }
 
