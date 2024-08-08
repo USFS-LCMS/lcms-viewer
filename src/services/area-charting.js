@@ -749,26 +749,22 @@ function areaChartCls() {
       if (selectedObj.shouldUnmask) {
         table[0] = table[0].slice();
       }
-      // if (table[0].length > selectedObj.barChartMaxClasses) {
-      //   let totalClases = table[0].length;
-      //   let pctlCut = 1 - selectedObj.barChartMaxClasses / totalClases;
-      //   let min = quantile(table[1], pctlCut);
-      //   console.log(pctlCut);
-      //   console.log(min);
-      //   let z = zip(table[0], table[1]);
-      //   z = cbind(z, colors);
-      //   console.log(z);
-      //   // let zc = zip(table[1], colors);
-      //   z = z.filter((r) => r[1] > min);
-      //   console.log(z);
-      //   // zc = zc.filter((r) => r[0] > 0);
-      //   table = [];
-      //   table.push(z.map((r) => r[0]));
-      //   table.push(z.map((r) => r[1]));
-      //   colors = z.map((r) => r[2]);
-      // }
-      // console.log(table);
-      // console.log(colors);
+      if (table[0].length > selectedObj.barChartMaxClasses) {
+        let totalClases = table[0].length;
+        let pctlCut = 1 - selectedObj.barChartMaxClasses / totalClases;
+        let values = copyArray(table[1]);
+        let min = quantile(values, pctlCut);
+        let z = zip(table[0], table[1]);
+        z = cbind(z, colors);
+
+        z = z.filter((r) => r[1] > min);
+        table = [];
+        table.push(z.map((r) => r[0]));
+        table.push(z.map((r) => r[1]));
+        colors = z.map((r) => r[2]);
+      }
+      console.log(table);
+      console.log(colors);
       var data = [
         {
           x: table[0],

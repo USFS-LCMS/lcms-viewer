@@ -295,6 +295,8 @@ function runTreeMap() {
     viz["areaChartParams"] = {
       barChartMaxClasses: 15,
       // chartLabelMaxLength: 25,
+      chartDecimalProportion: 0.005,
+      chartPrecision: 3,
       chartLabelMaxWidth: 13,
       chartLabelFontSize: 9,
     };
@@ -510,5 +512,6 @@ function runTreeMap() {
   // Map.turnOnInspector();
   getLCMSVariables();
   getSelectLayers(true);
+
   Map.turnOnAutoAreaCharting();
 }

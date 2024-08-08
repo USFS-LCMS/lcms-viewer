@@ -3847,6 +3847,7 @@ function addLayer(layer) {
 
             layer.layer.setOpacity(layer.opacity);
           } else {
+            layer.map.overlayMapTypes.setAt(layer.layerId, null);
             $("#" + layer.legendDivID).hide();
             layer.rangeOpacity = 0;
           }
@@ -3991,6 +3992,7 @@ function addLayer(layer) {
             $("#" + layer.legendDivID).show();
           } else {
             layer.rangeOpacity = 0;
+            layer.map.overlayMapTypes.setAt(layer.layerId, null);
           }
           $("#" + spinnerID).hide();
           $("#" + visibleLabelID).show();
@@ -4159,6 +4161,7 @@ function addLayer(layer) {
       layer.layer.setOpacity(layer.opacity);
     } else {
       layer.rangeOpacity = 0;
+      layer.map.overlayMapTypes.setAt(layer.layerId, null);
     }
     $("#" + spinnerID).hide();
     $("#" + visibleLabelID).show();

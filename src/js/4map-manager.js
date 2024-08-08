@@ -2726,6 +2726,7 @@ function reRun() {
   clearSelectedAreas();
   clearUploadedAreas();
   layerChildID = 0;
+  layerCount = 0;
   geeTileLayersDownloading = 0;
   updateGEETileLayersLoading();
 
@@ -2760,10 +2761,10 @@ function reRun() {
     f.setMap(null);
   });
   featureObj = {};
-  map.overlayMapTypes.getArray().forEach(function (element, index) {
-    map.overlayMapTypes.setAt(index, null);
-  });
-
+  // map.overlayMapTypes.getArray().forEach(function (element, index) {
+  //   map.overlayMapTypes.setAt(index, null);
+  // });
+  map.overlayMapTypes.clear();
   refreshNumber++;
 
   exportImageDict = {};
@@ -2789,18 +2790,19 @@ function reRun() {
     }
 
     setupAreaLayerSelection();
-    addLabelOverlay();
-    if (
-      urlParams.endYear - urlParams.startYear < 5 &&
-      mode === "LCMS" &&
-      !urlParams.dynamic
-    ) {
-      //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
-      showMessage(
-        "No Transition Charting",
-        "The year range must be 5 years or more to perform transition charting"
-      );
-    }
+    // addLabelOverlay();
+    smartAddLabelOverlay();
+    // if (
+    //   urlParams.endYear - urlParams.startYear < 5 &&
+    //   mode === "LCMS" &&
+    //   !urlParams.dynamic
+    // ) {
+    //   //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
+    //   showMessage(
+    //     "No Transition Charting",
+    //     "The year range must be 5 years or more to perform transition charting"
+    //   );
+    // }
   }, 1500);
 
   // $('#error-modal').toggleClass('show');
@@ -3936,8 +3938,15 @@ function addLabelOverlay() {
   labelOverlayAdded = true;
 }
 function removeLabelOverlay() {
-  map.overlayMapTypes.setAt(Object.keys(layerObj).length, null);
+  map.overlayMapTypes.removeAt(Object.keys(layerObj).length);
   labelOverlayAdded = false;
+}
+function smartAddLabelOverlay() {
+  if (map.mapTypeId === "satellite") {
+    removeLabelOverlay();
+  } else {
+    addLabelOverlay();
+  }
 }
 function toggleLabelOverlay() {
   if (labelOverlayAdded) {
@@ -4288,15 +4297,10 @@ function initialize() {
     // setTimeout(function(){updateViewList = true;},10)
   }
   //Listen for zoom change and update bottom bar
-
   google.maps.event.addListener(map, "maptypeid_changed", function () {
     console.log("map type id changed");
     urlParams.mapTypeId = map.mapTypeId;
-    if (map.mapTypeId === "satellite") {
-      removeLabelOverlay();
-    } else {
-      addLabelOverlay();
-    }
+    smartAddLabelOverlay();
   });
 
   //Keep track of map bounds and zoom changes
@@ -4507,19 +4511,20 @@ function initialize() {
         showMessage("GEE Script Error", geeRunError);
       }
 
-      addLabelOverlay();
+      // addLabelOverlay();
+      smartAddLabelOverlay();
 
-      if (
-        urlParams.endYear - urlParams.startYear < 5 &&
-        mode === "LCMS" &&
-        !urlParams.dynamic
-      ) {
-        //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
-        showMessage(
-          "No Transition Charting",
-          "The year range must be 5 years or more to perform transition charting"
-        );
-      }
+      // if (
+      //   urlParams.endYear - urlParams.startYear < 5 &&
+      //   mode === "LCMS" &&
+      //   !urlParams.dynamic
+      // ) {
+      //   //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
+      //   showMessage(
+      //     "No Transition Charting",
+      //     "The year range must be 5 years or more to perform transition charting"
+      //   );
+      // }
     }, 1500);
   }
   function eeInitFailureCallback(failure) {
