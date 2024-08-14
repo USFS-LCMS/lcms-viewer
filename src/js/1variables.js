@@ -32,7 +32,7 @@ const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
 // const tiny_json_url = "http://localhost:3000";
 function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
   if (showSpinner) {
-    setTimeout(() => Map.showSpinner(), 0);
+    setTimeout(() => Map.showSpinner(), 100);
   }
 
   let res = $.ajax({
@@ -49,7 +49,7 @@ function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
     setUrl(fullShareURL);
   }
   if (showSpinner) {
-    setTimeout(() => Map.hideSpinner(), 0);
+    setTimeout(() => Map.hideSpinner(), 100);
   }
 }
 function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {

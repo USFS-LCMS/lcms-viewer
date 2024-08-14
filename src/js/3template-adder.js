@@ -2639,7 +2639,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addCollapse(
     "sidebar-left",
     "select-aoi-label",
-    "select-aoi-div",
+    "select-aoi-pane",
     "Select Area of Interest",
     '<i role="img" class="fa fa-mouse-pointer mr-1" aria-hidden="true"></i>',
     true,
@@ -2647,6 +2647,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Select are of interest for the Hi-Form BMP Tool"
   );
 
+  $("#select-aoi-pane").append(`<div id="select-aoi-div"></div>
+                                <div class='hl'></div>
+                                <div id="select-aoi-div" class='pb-2'>
+                                <p style='font-weight:bold;margin-bottom:0.5rem;' title = 'County map layers shown to help with selecting an area to run HiForm-BMP across'>AOI Selection Layers</p>
+                                  <li style=''  id = 'county-selection-layer-list'></li>
+                                </div>`);
   if (!urlParams.aoiSelectionType) {
     urlParams.aoiSelectionType = {
       "Select by Dropdown": true,
@@ -2672,8 +2678,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
     if (selectOption == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
-      $("#" + "dropdown-select").remove();
-      $("#" + "select-aoi-div").append(`<div id="dropdown-select"></div>`);
+      $("#dropdown-select").remove();
+      $("#select-aoi-div").append(`<div id="dropdown-select"></div>`);
 
       addDropdownStates(
         "dropdown-select",
@@ -2866,9 +2872,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     console.log("Date Selected (Pre1): " + e.target.value);
     urlParams.preDate1 = e.target.value;
 
-    // Fill in the pre date two if it's blank 28 days later or the end of the available data period or just before selected post period
+    // Fill in the pre date two if it's blank 60 days later or the end of the available data period or just before selected post period
     if ($("#pre-date-two").val() === "") {
-      let bufferDate = advanceDate(urlParams.preDate1, 28);
+      let bufferDate = advanceDate(urlParams.preDate1, 60);
 
       if (bufferDate > maxPreDate) {
         bufferDate = maxPreDate;
@@ -2892,9 +2898,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     console.log("Date Selected (Pre2): " + e.target.value);
     urlParams.preDate2 = e.target.value;
 
-    // Fill in the pre date one if it's blank 28 days before or the end of the available data period or just before selected post period
+    // Fill in the pre date one if it's blank 60 days before or the end of the available data period or just before selected post period
     if ($("#pre-date-one").val() === "") {
-      let bufferDate = advanceDate(urlParams.preDate1, -28);
+      let bufferDate = advanceDate(urlParams.preDate1, -60);
 
       if (bufferDate < minPreDate) {
         bufferDate = maxPreDate;
@@ -2924,9 +2930,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   function postDateOneHandler(e) {
     console.log("Date Selected (Post1): " + e.target.value);
     urlParams.postDate1 = e.target.value;
-    // Fill in the post date two if it's blank 28 days later or the end of the available data period
+    // Fill in the post date two if it's blank 60 days later or the end of the available data period
     if ($("#post-date-two").val() === "") {
-      let bufferDate = advanceDate(urlParams.postDate1, 28);
+      let bufferDate = advanceDate(urlParams.postDate1, 60);
 
       if (bufferDate > maxPostDate) {
         bufferDate = maxPostDate;
@@ -3008,9 +3014,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.postDate2 = e.target.value;
     $("#post-date-two").val(urlParams.postDate2);
 
-    // Fill in the post date one if it's blank 28 days before
+    // Fill in the post date one if it's blank 60 days before
     if ($("#post-date-one").val() === "") {
-      var bufferDate = advanceDate(urlParams.postDate2, -28);
+      var bufferDate = advanceDate(urlParams.postDate2, -60);
       urlParams.postDate1 = bufferDate;
       $("#post-date-one").val(urlParams.postDate1);
       console.log("Date Selected (Post1): " + urlParams.postDate1);
@@ -3136,9 +3142,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   $("#layer-list-collapse-div").append(
     `<ul id="layer-list" class = "layer-list"></ul>`
-  );
-  $("#select-aoi-div").prepend(
-    `<li style='display:none;' class='pt-2' id = 'county-selection-layer-list'></li>`
   );
 
   // addHiFormResetButton("layer-list-collapse-div");
