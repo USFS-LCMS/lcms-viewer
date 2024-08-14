@@ -2625,6 +2625,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 } else if (mode === "HiForm-BMP") {
   var selectedState;
   var selectedCounty;
+  initialZoomLevel = 6;
+  initialCenter = [34.750453053659456, -85.56084152109133];
   //urlParams.selectedCounty = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", "01")).filter(ee.Filter.eq("NAME", "Madison"))
   var selectedLayerId;
   urlParams.preDate1; // = "2022-05-21"
@@ -2804,7 +2806,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addCurrentDateParametersDisplay();
   var maxPostDate = new Date();
-  maxPostDate.setDate(maxPostDate.getDate() - 2);
+  // maxPostDate.setDate(maxPostDate.getDate() - 2);
   maxPostDate = maxPostDate.toISOString().slice(0, 10);
   var maxPreDate = new Date();
   maxPreDate.setDate(maxPreDate.getDate() - 3);

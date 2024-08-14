@@ -207,6 +207,8 @@ function runHiForm() {
 chartPrecision = 3;
 chartDecimalProportion = 0.00001;
 function hiform_bmp_process() {
+  let runStartTime = new Date();
+
   function addDateBand(img) {
     var d = ee.Number.parse(img.date().format("YYYYMMdd"));
     d = ee.Image(d).uint32();
@@ -465,7 +467,7 @@ function hiform_bmp_process() {
       .selfMask()
       .clip(geometry)
       .clip(geoBounds);
-    console.log(combinedMasks.geometry().getInfo());
+    // console.log(combinedMasks.geometry().getInfo());
     Map.addLayer(
       combinedMasks,
       {
@@ -485,8 +487,13 @@ function hiform_bmp_process() {
       "Any pixel that was always masked as cloud or cloud shadow by the cloudScore+ algorithm."
     );
 
-    Map.turnOnInspector();
-    Map.setQueryScale(10);
-    Map.setQueryCRS(exportCRS);
+    setTimeout(() => {
+      Map.turnOnInspector();
+      Map.setQueryScale(10);
+      Map.setQueryCRS(exportCRS);
+    }, 500);
   }
+  let runEndTime = new Date();
+  let runTime = (runEndTime - runStartTime) / 1000;
+  console.log(`HiForm Run time: ${runTime} seconds`);
 }

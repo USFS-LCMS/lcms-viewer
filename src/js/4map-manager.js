@@ -2705,7 +2705,8 @@ function reRun() {
     } else if (
       mode === "STORM" ||
       mode === "Bloom-Mapper" ||
-      mode === "sequoia-view"
+      mode === "sequoia-view" ||
+      mode === "HiForm-BMP"
     ) {
       showMessage("", staticTemplates.loadingModal["all"]("", "Updating"));
     } else {
@@ -4327,7 +4328,8 @@ function initialize() {
             mode === "STORM" ||
             mode === "Bloom-Mapper" ||
             mode === "sequoia-view" ||
-            mode === "TreeMap"
+            mode === "TreeMap" ||
+            mode === "HiForm-BMP"
           ) {
             showMessage(
               "",

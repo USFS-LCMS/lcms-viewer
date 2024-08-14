@@ -147,7 +147,7 @@ function getIntroModal(
                         </div>
                         ${middleText}
                         ${bottomText}
-                        <div class = ' ml-0 m-0' id = 'intro-modal-loading-div'>
+                        <div class = 'mt-3' id = 'intro-modal-loading-div'>
                             <p >
                               <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
                                 ${loadingText}. 
@@ -511,10 +511,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 <a class = "intro-modal-links" title = "HiForm BMP Help Document" href = "" target="_blank" >Help Document</a>
 
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
-</div>
-
-
-</div>`,
+`,
       ""
     ),
     STORM: getIntroModal(
