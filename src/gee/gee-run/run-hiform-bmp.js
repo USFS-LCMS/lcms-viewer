@@ -450,7 +450,13 @@ function hiform_bmp_process() {
       null,
       true
     );
-
+    Map.addExport(
+      diff.select(["NDVI"]).multiply(10000).int16(),
+      `Forest NDVI Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      10,
+      false,
+      {}
+    );
     Map.addExport(
       post.select(["red", "green", "blue", "nir"]).int16(),
       `Post_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,

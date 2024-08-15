@@ -1374,7 +1374,7 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   // var exportList = document.querySelector("export-list");
   let rightInput =
     objType === "Image"
-      ? `<input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'>`
+      ? `<input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'><p title= 'Change export spatial resolution (meters) if needed' class='form-control export-res-input-label' >m</p>`
       : `<select id = '${name}-format-${exportID}' title= 'Select output format' class="form-control export-format-input form-select ">
           <option title = 'Export ${name} as a ESRI shapefile (will result in multiple files)' value = 'SHP'>Shapefile</option>
           <option title = 'Export ${name} as a CSV' value = 'CSV'>CSV</option>

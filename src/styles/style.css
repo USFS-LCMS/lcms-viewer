@@ -1518,6 +1518,16 @@ textarea {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
 }
+.export-res-input-label {
+  background-color: var(--deep-brown-20);
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  max-width: 1.25rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
 .export-format-input {
   max-width: 7rem;
 

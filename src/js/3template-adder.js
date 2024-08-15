@@ -2648,8 +2648,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#select-aoi-pane").append(`<div id="select-aoi-div"></div>
-                                <div class='hl'></div>
-                                <div id="select-aoi-div" class='pb-2'>
+                               
+                                <div id="select-aoi-layer-div" style='display:none;' class='pb-2'>
                                 <p style='font-weight:bold;margin-bottom:0.5rem;' title = 'County map layers shown to help with selecting an area to run HiForm-BMP across'>AOI Selection Layers</p>
                                   <li style=''  id = 'county-selection-layer-list'></li>
                                 </div>`);
@@ -2811,12 +2811,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   addCurrentDateParametersDisplay();
-  var maxPostDate = new Date();
-  // maxPostDate.setDate(maxPostDate.getDate() - 2);
-  maxPostDate = maxPostDate.toISOString().slice(0, 10);
-  var maxPreDate = new Date();
-  maxPreDate.setDate(maxPreDate.getDate() - 3);
-  maxPreDate = maxPreDate.toISOString().slice(0, 10);
+  var maxPostDate = advanceDate(new Date(), 0);
+  var maxPreDate = advanceDate(new Date(), -3);
+
+  urlParams.postDate1 = urlParams.postDate1 || advanceDate(maxPostDate, -60);
+  urlParams.postDate2 = urlParams.postDate2 || maxPostDate;
 
   var minPreDate = "2016-01-01";
   var minPostDate = "2017-01-01";
@@ -2825,7 +2824,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "pre-post-dates-div",
     "post-date-picker-container",
     minPostDate,
-    maxPostDate
+    maxPostDate,
+    urlParams.postDate1,
+    urlParams.postDate2
   );
   if (!urlParams.preDateRange) {
     urlParams.preDateRange = {

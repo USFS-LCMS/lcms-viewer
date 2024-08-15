@@ -2223,12 +2223,19 @@ function addSelectTypeRadio(
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Date Picker - Hiform
-function addHiFormPostDatePicker(containerID, datepickerID, minDate, maxDate) {
+function addHiFormPostDatePicker(
+  containerID,
+  datepickerID,
+  minDate,
+  maxDate,
+  defaultStart,
+  defaultEnd
+) {
   $("#" + containerID).append(`<div id="${datepickerID}"></div>`);
   $("#" + datepickerID).append(`<div id="post-ranges-div">
                                 <p class = 'param-title'>Define Post Date Range</p>
-                                <input type="date" id="post-date-one" min=${minDate} max="${maxDate}" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
-                                <input type="date" id="post-date-two" min=${minDate} max="${maxDate}" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
+                                <input type="date" value="${defaultStart}" id="post-date-one" min=${minDate} max="${maxDate}" class="mt-2 mr-2" onchange="postDateOneHandler(event)">
+                                <input type="date" value="${defaultEnd}" id="post-date-two" min=${minDate} max="${maxDate}" class="mt-2 mb-2" onchange="postDateTwoHandler(event)">
                               </div>`);
 }
 
