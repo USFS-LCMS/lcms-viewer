@@ -45,32 +45,6 @@ function resizeWindow() {
   w = window.innerWidth;
   $("#splash").css({ "max-height": h - 50 });
   $(".esri-popup__main-container").css({ "max-height": h - 50 });
-  // $('.esri-popup__main-container').css({'width':w-50})
-  // var headerHeight = $('#headerDiv').height();
-  // var bottomHeight = $('#bottomDiv').height();
-  // // $('#selected-area-list').css({'height':h/3*2-100});
-  // // $('#selected-area-div').css({'height':h/3*2-100});
-
-  // if(w>h){
-  //   $('#headerDiv').css({'left':$('#nameDiv').width()+$('.esri-zoom').width()+20})
-  //   $('.entire').css({'float':'left','width':'45%'});
-  //   $('.left').css({'float':'left','width':'10%'});
-  //   $('.right').css({'float':'right','width':'45%'});
-  //   // $('.bottom').css({'position': 'absolute','bottom': '0'});
-  //   $("#viewDiv").height(h);
-  //   $("#chartDiv").height(h);
-  //   $("#nameDiv").height(h);
-  //   // $('#legend-div').css({'float':'top','max-height':h/3});
-  //   // $('#selected-area-div').css({'float':'bottom','height':h-$('#legend-div').height()-100});
-  // }else{
-  //   $("#viewDiv").height((window.innerHeight-(headerHeight*1.2))/2);
-  //   $("#chartDiv").height((window.innerHeight-(headerHeight*1.2))/2);
-  //   $('.left').css({'float':'top','width':'100%'});
-  //   $('.right').css({'float':'bottom','width':'100%'});
-  // }
-  // $('#lcms-icon').height($('#dashboard-title').innerHeight()*0.6);
-
-  // $('#chartDiv').css('overflow-y','visible');
 }
 ///////////////////////////////////////////////////////////////////////
 // Check to see if gifs can be viewed
@@ -143,7 +117,14 @@ require([
   let isFirstLayer = true;
   var firstLayer;
 
-  function addGifAreas(path, name, labelFieldname, outlineColor, fillColor, isFeatureService) {
+  function addGifAreas(
+    path,
+    name,
+    labelFieldname,
+    outlineColor,
+    fillColor,
+    isFeatureService
+  ) {
     const gif_dir = "https://storage.googleapis.com/lcms-gifs/";
     const template = {
       title: null,
@@ -168,49 +149,6 @@ require([
                       </li>
                     </ul>`,
     };
-    // const template = {
-    //   title: null,
-    //   docked:true,
-    //   content:  [{
-    //     // The following creates a piechart in addition to an image. The chart is
-    //     // also set  up to work with related tables.
-    //     // Autocasts as new MediaContent()
-    //     type: "media",
-    //     medianInfosTooltip: "Legends",
-    //     // Autocasts as array of MediaInfo objects
-    //     mediaInfos: [
-    //     { tooltip: "Test",
-    //       title: null,
-    //       type: "image", // Autocasts as new ImageMediaInfo object
-    //       // Autocasts as new ImageMediaInfoValue object
-    //       value: {
-    //         "sourceURL": gif_dir+'{GIFNAMECHANGE}',
-    //         "linkURL":  gif_dir+'{GIFNAMECHANGE}',
-
-    //       }
-    //     },
-    //     {
-    //       title: null,
-    //       type: "image", // Autocasts as new ImageMediaInfo object
-    //       // Autocasts as new ImageMediaInfoValue object
-    //       value: {
-    //         "sourceURL":  gif_dir+'{GIFNAMELANDCOVER}',
-    //         "linkURL":  gif_dir+'{GIFNAMELANDCOVER}',
-    //       }
-    //     },
-    //     {
-    //       title: null,
-    //       type: "image", // Autocasts as new ImageMediaInfo object
-    //       // Autocasts as new ImageMediaInfoValue object
-    //       value: {
-    //         "sourceURL": gif_dir+'{GIFNAMELANDUSE}',
-    //         "linkURL":  gif_dir+'{GIFNAMELANDUSE}',
-    //       }
-    //     }
-    //     ]
-    //   }]
-
-    // };
 
     const renderer = {
       type: "simple", // autocasts as new SimpleRenderer()
@@ -236,15 +174,12 @@ require([
           // autocast as new Font()
           family: "Ubuntu Mono",
           size: 12,
-          // weight: "bold"
         },
       },
-      // labelPlacement: "above-right",
+
       labelExpressionInfo: {
         expression: "$feature." + labelFieldname,
       },
-      // maxScale: 0,
-      // minScale: 30000000,
     };
 
     if (isFeatureService) {
@@ -284,7 +219,8 @@ require([
     });
   }
   function checkTimeLapseVisible() {
-    let anyVisible = Object.values(timeLapseVisible).filter((k) => k).length > 0;
+    let anyVisible =
+      Object.values(timeLapseVisible).filter((k) => k).length > 0;
     if (anyVisible) {
       $("#timeSlider").show();
     } else {
@@ -397,22 +333,26 @@ require([
       },
     });
 
-    // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer','USFS Forests','FORESTNAME','#1B1716',[ 0, 122, 0, 0.5 ],true);
-    // addGifAreas('https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RangerDistricts_01/MapServer','USFS Districts','DISTRICTNAME','#1B171A',[ 0, 122, 122, 0.5 ],true);
-
     view.when(() => {
       $("#intro-div-content").append(introDivContent[gcpWorking.toString()]);
       $("#dontShowAgainCheckbox").change(function () {
         console.log(this.checked);
         localStorage["showIntroModal-landscapes-in-motion"] = !this.checked;
       });
-      if (localStorage["showIntroModal-landscapes-in-motion"] === undefined || localStorage["showIntroModal-landscapes-in-motion"] === null) {
+      if (
+        localStorage["showIntroModal-landscapes-in-motion"] === undefined ||
+        localStorage["showIntroModal-landscapes-in-motion"] === null
+      ) {
         localStorage["showIntroModal-landscapes-in-motion"] = "true";
       }
       if (localStorage["showIntroModal-landscapes-in-motion"] === "true") {
         $("#intro-div").show();
       }
-      if (localStorage.initView !== undefined && localStorage.initView !== null && localStorage.initView !== "null") {
+      if (
+        localStorage.initView !== undefined &&
+        localStorage.initView !== null &&
+        localStorage.initView !== "null"
+      ) {
         view.goTo(JSON.parse(localStorage.initView));
       }
 
@@ -445,15 +385,14 @@ require([
       });
 
       // Add the expand instance to the ui
-      // view.ui.add(timeSlider, "bottom-right");
+
       function setExtent() {
-        // firstLayer.when(()=>{
-        // zoomToFullLayerExtent = function(){
-        //     view.extent = firstLayer.fullExtent;
-        // }
-        if (localStorage.initView === undefined || localStorage.initView === null || localStorage.initView === "null") {
+        if (
+          localStorage.initView === undefined ||
+          localStorage.initView === null ||
+          localStorage.initView === "null"
+        ) {
           console.log("setting extent");
-          // zoomToFullLayerExtent();
           view.goTo(defaultView);
         }
         watchUtils.whenTrue(view, "stationary", function (evt) {
@@ -463,13 +402,10 @@ require([
             zoom: view.zoom,
           });
         });
-
-        // }
       }
 
       setExtent();
 
-      // });
       var basemapGallery = new Expand({
         content: new BasemapGallery({
           view: view,
@@ -519,9 +455,6 @@ require([
         console.log(event);
         // The layer visible in the view at the time of the trigger.
         var visibleLayer = event.item.layer;
-
-        //.visible ?
-        //USALayer : censusLayer;
 
         // Capture the action id.
         var id = event.action.id;

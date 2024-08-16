@@ -12,7 +12,6 @@ function esri_wayback() {
       success: function (json) {
         results = results.concat(json.results);
         if (json.nextStart !== -1) {
-          // console.log(results);
           getServices(json.nextStart, results);
         } else {
           parseWayback(results);
@@ -76,7 +75,9 @@ function esri_wayback() {
 
     //////////////////////////////////////////////////////////////////////
     // Setup metadata
-    const waybackTimeLapseID = Object.keys(timeLapseObj).filter((f) => f.indexOf("WayBack") > -1)[0];
+    const waybackTimeLapseID = Object.keys(timeLapseObj).filter(
+      (f) => f.indexOf("WayBack") > -1
+    )[0];
     let metadataRequestID = 0;
 
     // Function to get Wayback metadata based on current map center
@@ -84,7 +85,11 @@ function esri_wayback() {
       $("#wayback-metadata").empty();
 
       // Populate metadata if the time lapse is on
-      if (timeLapseID !== undefined && timeLapseID !== null && timeLapseObj[waybackTimeLapseID].visible) {
+      if (
+        timeLapseID !== undefined &&
+        timeLapseID !== null &&
+        timeLapseObj[waybackTimeLapseID].visible
+      ) {
         // Ensure any outstanding requests get ignored by issuing a new request id
         metadataRequestID++;
         let thisMetadataRequestID = metadataRequestID;
@@ -102,7 +107,10 @@ function esri_wayback() {
         const zOffset = 21;
         const metadataMinZoom = 4;
         const metadataMaxZoom = 13;
-        let z = zOffset - map.zoom >= metadataMinZoom ? zOffset - map.zoom : metadataMinZoom;
+        let z =
+          zOffset - map.zoom >= metadataMinZoom
+            ? zOffset - map.zoom
+            : metadataMinZoom;
         z = z >= metadataMaxZoom ? metadataMaxZoom : z;
 
         // Template metadata REST call
@@ -115,7 +123,11 @@ function esri_wayback() {
           url: metadataQueryTemplate,
           success: function (json) {
             // Ensure response is populated and still the same request ID
-            if (metadataRequestID == thisMetadataRequestID && json !== undefined && json.features.length > 0) {
+            if (
+              metadataRequestID == thisMetadataRequestID &&
+              json !== undefined &&
+              json.features.length > 0
+            ) {
               // Parse the features (usually just one) and populate UI
               json.features.map((f) => {
                 f = f.attributes;
@@ -127,7 +139,9 @@ function esri_wayback() {
               <li style='font-weight:bold;'>Acquisition Date: ${d}</li>
               <div class='hl'></div>
               <li>Source: ${f.NICE_DESC} (${f.SRC_DESC})</li>
-              <li>World Imagery Version: ${new Date("20" + k).toStringFormat()}</li>
+              <li>World Imagery Version: ${new Date(
+                "20" + k
+              ).toStringFormat()}</li>
               <li>Resolution: ${f.SAMP_RES.toFixed(2)} (m)</li>
               <li>Accuracy: ${f.SRC_ACC.toFixed(2)} (m)</li>
               
@@ -191,8 +205,12 @@ function esri_wayback() {
   };
 
   // Function to add UI container for Wayback timelapse and metadata
-  this.addWaybackUIContainer = function (containerID = "#layer-list-collapse-div") {
-    $(containerID).append(`<ul id="wayback-layer-list" class = "layer-list"></ul>`);
+  this.addWaybackUIContainer = function (
+    containerID = "#layer-list-collapse-div"
+  ) {
+    $(containerID).append(
+      `<ul id="wayback-layer-list" class = "layer-list"></ul>`
+    );
     $(containerID).append(
       `<div id = 'wayback-metadata-loading' style='display:none;'>
     <img id = 'wayback-metadata-loading-spinner' class = 'progress-spinner' src="./src/assets/images/esri-logo.png" height="${convertRemToPixels(

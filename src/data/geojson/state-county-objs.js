@@ -1,4 +1,4 @@
-var region8_fps = [
+const region8_fps = [
   "01",
   "05",
   "12",
@@ -14,7 +14,7 @@ var region8_fps = [
   "51",
 ];
 
-var allStates = [
+const allStates = [
   {
     NAME: "United States Virgin Islands",
     STATEFP: "78",
@@ -297,12 +297,12 @@ var allStates = [
   },
 ];
 
-var availableStates = allStates
+const availableStates = allStates
   .filter((s) => region8_fps.indexOf(s.STATEFP) > -1)
   .map((s) => s.NAME)
   .sort();
 
-var allCounties = [
+const allCounties = [
   {
     COUNTYFP: "510",
     NAME: "St. Louis",

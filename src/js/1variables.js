@@ -29,7 +29,6 @@ function updatePageUrl() {
 }
 var fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
-// const tiny_json_url = "http://localhost:3000";
 function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
   if (showSpinner) {
     setTimeout(() => Map.showSpinner(), 100);
@@ -97,7 +96,6 @@ function TweetThis(
       let key = tinyURL.split("//tinyurl.com/")[1];
       let shareURL = pageUrl.split("?")[0] + "?id=" + key;
       let fullURL = preURL + shareURL + postURL;
-      // console.log(fullURL);
       ga("send", "event", mode + "-share", pageUrl, shareURL);
       console.log("shared");
       if (openInNewTab) {
@@ -132,7 +130,6 @@ function copyText(element, messageBoxId) {
     text = $("#" + element).val();
   }
   $temp.val(text).select();
-  // $temp.setSelectionRange(0, 99999); /*For mobile devices*/
   document.execCommand("copy");
   $temp.remove();
   /* Alert the copied text */
@@ -170,12 +167,9 @@ function encodeJSON(json) {
   return outURL;
 }
 function parseUrlSearch() {
-  // console.log(window.location.search == '')
   let urlParamsStr = window.location.search;
-  // console.log(urlParamsStr);
   if (urlParamsStr !== "") {
     urlParamsStr = urlParamsStr.split("?")[1].split("&");
-    // console.log(urlParamsStr);
     urlParamsStr.map(function (str) {
       var decodedParam = decodeURIComponent(str.split("=")[1]);
       try {
@@ -184,7 +178,6 @@ function parseUrlSearch() {
         urlParams[str.split("=")[0]] = decodedParam;
       }
     });
-    // console.log(urlParams);
   }
   if (urlParams.id !== undefined) {
     if (urlParams.id.indexOf("-") > -1) {
@@ -197,7 +190,6 @@ function parseUrlSearch() {
       }
     }
   } else {
-    // TweetThis(null,null,false,false);
     if (typeof Storage !== "undefined") {
       var id = localStorage.getItem("cachedID");
       if (id !== null && id !== undefined && id !== "null") {
@@ -214,19 +206,16 @@ function constructUrlSearch(maxLen = 5000) {
       Object.keys(urlParams[p]).map((k) => {
         let tp = encodeURIComponent(JSON.stringify(urlParams[p][k]));
         if (tp.length > maxLen) {
-          // console.log(`Removing urlParam: ${urlParams[p][k]}`);
           delete urlParams[p][k];
         }
       });
     } else {
       let tp = encodeURIComponent(JSON.stringify(urlParams[p]));
       if (tp.length > maxLen) {
-        // console.log(`Removing urlParam: ${urlParams[p]}`);
         delete urlParams[p];
       }
     }
   });
-  // console.log(urlParams);
   Object.keys(urlParams).map(function (p) {
     outURL += p + "=" + encodeURIComponent(JSON.stringify(urlParams[p])) + "&";
   });
@@ -237,21 +226,16 @@ function constructUrlSearch(maxLen = 5000) {
 let cachedSettingskey = "settings";
 let startYear = 1985;
 let endYear = 2023;
-let startJulian = 153; //190;
-let endJulian = 274; //250;
+let startJulian = 153;
+let endJulian = 274;
 let layerObj = null;
 let crs = "EPSG:5070";
 let transform = [30, 0, -2361915.0, 0, -30, 3177735.0];
-let scale = null; //30;
-
-// Module import variables
-// var getImageslib;
-// var changeDetectionLib;
+let scale = null;
 
 // Query charting floating point prevision parameters
 let chartPrecision = 3;
 let chartDecimalProportion = 0.25;
-
 let queryObj = {},
   timeLapseObj = {};
 dashboardObj = {};

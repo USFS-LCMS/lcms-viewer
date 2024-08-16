@@ -49,8 +49,6 @@ function clearModal(modalID) {
   if (modalID === null || modalID === undefined) {
     modalID = "modal-id";
   }
-  // $('#'+modalID).empty();
-
   $("#" + modalID + "-title .modal-title").html("");
   $("#" + modalID + "-header").html("");
   $("#" + modalID + "-body").html("");
@@ -102,11 +100,8 @@ function populateLCMSDownloads() {
 
   for (i = 0; i < toggler.length; i++) {
     toggler[i].addEventListener("click", function () {
-      // console.log(this)
       this.parentElement.querySelector(".nested").classList.toggle("active");
-      // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
       this.classList.toggle("caret-down");
-      // this.classList.toggle("treeOff");
     });
   }
 }
@@ -128,7 +123,6 @@ function downloadByUrl(url) {
   link.target = "_blank";
   var downloadName = url.substr(url.lastIndexOf("/") + 1);
 
-  // link.download ='hello';// downloadName;
   link.setAttribute("download", downloadName);
 
   console.log(link);
@@ -158,11 +152,9 @@ function downloadSelectedAreas(id) {
         message +
         "</ul></li>"
     );
-    // setTimeout(()=>{
+
     showSurveyModal("downloadedLCMSTif", true);
-    // },2000)
   }
-  // var urlList = `<li>`
 }
 
 var surveyPopupShown = false;
@@ -188,13 +180,11 @@ function showSurveyModal(source, appendMessage = false) {
     }
   }
 
-  // if(!surveyPopupShown){
   $("#dontShowSurveyAgainCheckbox").change(function () {
     console.log(this.checked);
     localStorage["showSurveyPopupModal-" + mode] = !this.checked;
   });
   surveyPopupShown = true;
-  // }
 }
 
 function openLCMSSurvey(fromWhere) {
@@ -237,17 +227,10 @@ $(document).ready(function () {
   addEventListener("resize", (e) => {
     resizePanes();
   });
-  // $('#navbar-toggler-button').on('click',e=>{
-  //   console.log(e)
-  //   resizePanes();
-  // })
 
   const ro = new ResizeObserver((e) => {
     resizePanes();
   });
   // Only observe the second box
   ro.observe(document.querySelector("#navbar"));
-  // $('.carousel').carousel({
-  //   interval: 8000
-  // })
 });

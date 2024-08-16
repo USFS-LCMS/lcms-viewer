@@ -117,7 +117,6 @@ if (mode === "MTBS") {
 //////////////////////////////////////////////////////////////////////
 /*Add anything to head not already there*/
 $("head").append(`<title>${titles[mode].title}</title>`);
-// $('head').append(`<script type="text/javascript" src="./src/assets/palettes/gena-gee-palettes.js"></script>`);
 let topBannerParams = titles[mode];
 let studyAreaDropdownLabel = `<h5 class = 'teal p-0 caret nav-link dropdown-toggle ' id = 'studyAreaDropdownLabel'>Bridger-Teton National Forest</h5> `;
 /////////////////////////////////////////////////////////////////////
@@ -130,6 +129,14 @@ function getIntroModal(
   bottomText,
   loadingText = "Creating map services within Google Earth Engine"
 ) {
+  //Sync tooltip toggle
+  var tShowSplash = true;
+  if (
+    localStorage["showIntroModal-" + mode] !== null &&
+    localStorage["showIntroModal-" + mode] !== undefined
+  ) {
+    tShowSplash = localStorage["showIntroModal-" + mode];
+  }
   return `<div class="modal fade modal-full-screen-styling"  id="introModal" tabindex="-1" role="dialog" >
                 <div style='max-width:700px;' class="modal-dialog" role="document">
                     <div class="modal-content text-dark modal-content-full-screen-styling" >
@@ -155,7 +162,7 @@ function getIntroModal(
                         </div>
                        
                         <div class="form-check  pl-0 mt-3 mb-2">
-                            <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+                            <input role="option" type="checkbox" class="form-check-input" id="dontShowAgainCheckbox"   name = 'dontShowAgain' value = '${tShowSplash}'>
                             <label class=" text-uppercase form-check-label " for="dontShowAgainCheckbox" >Don't show again</label>
                         </div>
                     </div>
@@ -232,9 +239,6 @@ const staticTemplates = {
                     <div  class='my-0 title-banner-label'>  
                     ${topBannerParams.leftWords} <span class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</span> ${topBannerParams.rightWords}</div>
                 </div>`,
-  // topBanner: ` <div class='title-banner white'>
-  // <span>${topBannerParams.leftWords} <p class = 'gray' style="font-weight:1000;font-family: 'Roboto Black', sans-serif;">${topBannerParams.centerWords}</p> ${topBannerParams.rightWords}</p>
-  // </div>`,
 
   studyAreaDropdown: `<li   id = 'study-area-dropdown' class="nav-item dropdown navbar-dark navbar-nav nav-link p-0 col-12  "  data-toggle="dropdown">
 		                <h5 href = '#' onclick = "$('#sidebar-left').show('fade');$('#study-area-list').toggle();" class = 'teal-study-area-label p-0 caret nav-link dropdown-toggle ' id='study-area-label'></h5> 
@@ -499,7 +503,7 @@ const staticTemplates = {
       "Welcome to the <i>HiForm</i> BMP Tool!",
       `<li>
 <p class="pb-2 ">This application utilizes Google Earth Engine and 10m Sentinel-2 satellite imagery with a 5-day repeat frequency to identify locations of timber harvest and more moderate silvicultural treatments. State agencies monitor these activities to ensure compliance with water quality Best Management Practices (BMPs). Users define a timeframe for forest-only change analysis, which can generate short- and long-term forest change products. These outputs help prioritize site monitoring efforts and can be exported in various formats. The application also provides BMP-related data layers to help interpret local topographic and hydrologic conditions.
-This tool was built using workflow components developed for the <i>HiForm</i> (‚ÄúHi-resolution Forest mapping‚Äù) forest disturbance mapping application, visit <a title="hiform link" href="https://hiform.org" target="_blank" >hiform.org</a> for more information
+This tool was built using workflow components developed for the <i>HiForm</i> (‚ÄúHi-resolution Forest mapping‚Äù) forest disturbance mapping application, visit <a class = 'intro-modal-links' title="Click to visit hiform.org" href="https://hiform.org" target="_blank" >hiform.org</a> for more information
 </p>
 </li>
 `,
@@ -508,9 +512,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
 
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
-<a class = "intro-modal-links" title = "HiForm BMP Help Document" href = "" target="_blank" >Help Document</a>
-
-<a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
+<a  class = 'intro-modal-links' onclick = 'downloadHiFormTutorial()' title="Click to launch tutorial that explains how to utilize the HiForm-BMP tool">USERS' GUIDE</a>
+  
+<a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: william.m.christie@usda.gov" >HELPDESK/FEEDBACK</a> 
 `,
       ""
     ),
@@ -529,7 +533,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
         <ul class="intro-list">
           <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
           </li>
-          <li title = 'The Southern Research Station provided the original methods for this data explorer.'><a class="intro-modal-links" href="https://www.srs.fs.usda.gov/" target="_blank">SRS</a> Southern Research Station
+          <li title = 'The U.S. Department of Agriculture Forest Service, Southern Research Station provided the original methods for this data explorer.'><a class="intro-modal-links" href="https://www.srs.fs.usda.gov/" target="_blank">SRS</a> Southern Research Station
                                   </li>
             <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
             </li>
@@ -760,15 +764,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
         
         
         </div>`,
-  //     dashboardDownloadReportButton:`<div class='dashboard-download-div' id = 'download-dashboard-report-container' title='Click to download charts and tables in a single pdf report.'>
-  //     <button class='btn dashboard-download-button' id='dashboard-download-button' onclick='makeDashboardReport()' >
-  //       <i class="fa fa-download dashboard-download-icon" aria-hidden="true"></i>
-  //       Download Report
 
-  //     </button>
-
-  //   </div>
-  //  `,
   walkThroughPopup: `<div class = 'walk-through-popup'>
                             <div id = 'walk-through-popup-content' class = 'walk-through-popup-content'></div>
 	                       		<hr>
@@ -878,7 +874,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                                           </ul>
                                         </li>
                                     </ul>`,
-  TreeMapSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+  TreeMapSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
+                      </div>
+                      <hr><div  class = 'py-2 pl-3 pr-1'>
                                 <header class = 'row'>
                                     <h3 class = ' text-capitalize'>TreeMap Resources</h3>
                                 </header>
@@ -1001,7 +999,10 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                                     </div>
                                 </section>
                       </div>`,
-  sequoiaSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+  sequoiaSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
+                        </div>
+                        <hr>
+                        <div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open Giant Sequoia Viewer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1014,16 +1015,19 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                             </div>
                         </div>
                         <hr>`,
-  hiformSupportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+  hiformSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
+                      </div>
+                      <hr>
                       <header class = 'row ' title = 'Open HiForm-BMP tutorial'>
                           <h3 class = ' text-capitalize'>Tutorial</h3>
                       </header>
-                      <div class = 'row ' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
+                      <div class = 'row ' id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
                           <div class = 'col-lg-2 p-0 m-0'>
                               <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
                           </div>
                           <div class = 'col-lg-10'>
-                          <a class="intro-modal-links" onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the HiForm-BMP Tool">HiForm-BMP TUTORIAL</a>
+                          <a class="intro-modal-links" style = 'display:block;' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the HiForm-BMP Tool">Online <b>Tour</b></a>
+                          <a  class = 'intro-modal-links' style = 'display:block;'  onclick = 'downloadHiFormTutorial()' title="Click to launch tutorial that explains how to utilize the HiForm-BMP tool">Users' Guide PDF</a>
                           </div>
                       </div>
                       <hr>
@@ -1039,7 +1043,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                         </div>
                         <div class = 'col-lg-10'>
                             <a href="https://hiform.org/" target="_blank">
-                                <p class = 'support-text'>The Southern Research Station provides the scientific foundation, original workflow, and user community of HiForm-BMP.</p>
+                                <p class = 'support-text'>The U.S. Department of Agriculture Forest Service, Southern Research Station provides the scientific foundation, original workflow, and user community of HiForm-BMP.</p>
                             </a>
                         </div>
                     </section>
@@ -1111,12 +1115,16 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                                     </div>
                                     <div class = 'col-lg-10'>
                                       <p>Please send questions to:</p>
-                                      <p>Steve Norman, Research Ecologist (steven.norman@usda.gov)</p>
-                                    
-                                    Bill Christie, Remote Sensing / Geospatial Analyst (william.m.christie@usda.gov)
+                                      
+                                      <a style='display:block;' class = "intro-modal-links" href = "mailto: william.m.christie@usda.gov">Bill Christie, Remote Sensing / Geospatial Analyst</a>
+                                      <br>
+                                      <a style='display:block;' class = "intro-modal-links" href = "mailto: steven.norman@usda.gov">Steven Norman, Research Ecologist</a>
+                                      
                                     </div>
                                 </section>`,
-  supportDiv: `<div  class = 'py-2 pl-3 pr-1'>
+  supportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
+                </div>
+                <hr><div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1268,7 +1276,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                             </div>
                         </section>
         			</div>`,
-  supportDivDashboard: `<div  class = 'py-2 pl-3 pr-1'>
+  supportDivDashboard: `<div id = 'toggle-show-splash-screen-radio-container'>
+                        </div>
+                        <hr><div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1420,7 +1430,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (‚
                             </div>
                         </section>
         			</div>`,
-  supportDivAlgal: `<div  class = 'py-2 pl-3 pr-1'>
+  supportDivAlgal: `<div id = 'toggle-show-splash-screen-radio-container'>
+                    </div>
+                    <hr><div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open ${mode} tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1652,9 +1664,6 @@ Object.keys(staticTemplates)
   });
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
 //Start functions that add/remove and control elements
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Center map on user's location
@@ -1731,6 +1740,7 @@ function addDropdown(containerID, dropdownID, title, variable, tooltip) {
 								</div>`);
   $("select#" + dropdownID).on("change", function (value) {
     eval(`window.${variable} = $(this).val()`);
+    // variable = $(this).val()
   });
 }
 
@@ -1956,19 +1966,23 @@ function showMessage(title, message, modalID, show) {
     $("#" + modalID).modal();
   }
 }
-function appendMessage2(message, modalID) {
+function appendMessage2(title, message, modalID) {
   if (message === undefined || message === null) {
     message = "";
   }
   if (modalID === undefined || modalID === null) {
     modalID = "error-modal";
   }
-  $("#" + modalID + "-body").append(message);
+  $("#" + modalID + "-body").append(`<div class='hl bg-dark'></div>
+                                    <div>
+                                    <h4>${title}</h4>
+                                      ${message}
+                                    </div`);
 }
-function smartShowMessage(title, message, modalID) {
+function smartShowMessage(title, message, modalID = "error-modal") {
   if ($("#" + modalID).hasClass("show")) {
     console.log("yay");
-    appendMessage2(message, modalID);
+    appendMessage2(title, message, modalID);
   } else {
     showMessage(title, message, modalID);
   }
@@ -1977,36 +1991,38 @@ function smartShowMessage(title, message, modalID) {
 //Show a basic tip BS modal
 function showTip(title, message) {
   if (
-    localStorage.showToolTipModal == undefined ||
-    localStorage.showToolTipModal == "undefined"
+    localStorage["showToolTipModal-" + mode] == undefined ||
+    localStorage["showToolTipModal-" + mode] == "undefined"
   ) {
-    localStorage.showToolTipModal = "true";
+    localStorage["showToolTipModal-" + mode] = "true";
   }
-  if (localStorage.showToolTipModal === "true" && walkThroughAdded == false) {
-    showMessage(
+  if (
+    localStorage["showToolTipModal-" + mode] === "true" &&
+    walkThroughAdded == false
+  ) {
+    smartShowMessage(
       "",
-      '<span class = "font-weight-bold text-uppercase" >' +
-        title +
-        " </span><span>" +
-        message +
-        "</span>",
-      "tip-modal",
-      false
+      `<span class = "font-weight-bold text-uppercase" >
+        ${title}
+        </span>
+        has been activated.
+        <span>
+        ${message}
+        </span>
+        <form class="form-inline pt-3 pb-0">
+          <div class="form-check  mr-0">
+            <input role="option" type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
+            <label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
+          </div>
+        </form>`,
+      "introModal"
     );
-
-    $("#tip-modal-body").append(`<form class="form-inline pt-3 pb-0">
-								  <div class="form-check  mr-0">
-                                	<input role="option" type="checkbox" class="form-check-input" id="dontShowTipAgainCheckbox"   name = 'dontShowAgain' value = 'true'>
-                                	<label class=" text-uppercase form-check-label " for="dontShowTipAgainCheckbox" >Turn off tips</label>
-                            		</div>
-								</form>`);
-    $("#tip-modal").modal().show();
   }
   $("#dontShowTipAgainCheckbox").change(function () {
-    localStorage.showToolTipModal = !this.checked;
-    if (localStorage.showToolTipModal === "false") {
+    localStorage["showToolTipModal-" + mode] = !this.checked;
+    if (localStorage["showToolTipModal-" + mode] === "false") {
       $("#tooltip-radio-second_toggle_label").click();
-    } else if (localStorage.showToolTipModal === "true") {
+    } else if (localStorage["showToolTipModal-" + mode] === "true") {
       $("#tooltip-radio-first_toggle_label").click();
     }
   });
@@ -2030,7 +2046,6 @@ function addStudyAreaToDropdown(name, toolTip) {
     `<a id = '${id}' name = '${name}' class="dropdown-item "   data-toggle="tooltip" title="${toolTip}">${name}</a>`
   );
   $("#" + id).on("click", function () {
-    // $('#summary-spinner').show();
     $("#study-area-list").hide();
     longStudyAreaName = this.name;
     dropdownUpdateStudyArea(this.name);
@@ -2071,7 +2086,7 @@ function addToggle(
     var value = valueDict[$("#" + toggleID).prop("checked")];
     eval(`window.${variable} = value;`);
 
-    eval(`${onChangeFunction}`);
+    onChangeFunction();
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2107,11 +2122,16 @@ function addRadio(
   $("#" + radioID + "-first_toggle").change(function () {
     eval(`window.${variable} = '${valueOn}';`);
 
-    eval(`${onFunction}`);
+    if (onFunction !== undefined && onFunction !== null) {
+      eval(`${onFunction}()`);
+    }
   });
   $("#" + radioID + "-second_toggle").change(function () {
     eval(`window.${variable} = '${valueOff}';`);
-    eval(`${offFunction}`);
+
+    if (offFunction !== undefined && offFunction !== null) {
+      eval(`${offFunction}()`);
+    }
   });
 }
 
@@ -2372,8 +2392,6 @@ function addCheckboxes(
     $("#" + checkboxCheckboxID).change(function () {
       optionList[$(this).val()] = $(this)[0].checked;
       eval(`window.${variable} = optionList`);
-      // console.log("Checkbox change");
-      // console.log(optionList);
     });
     ki++;
   });
@@ -2431,26 +2449,27 @@ function addJSONInputTextBox(
   containerID,
   inputID,
   label,
-  variable,
-  defaultValue,
+  valueObj,
+  valueKey,
+  value,
   title
 ) {
-  eval(
-    `if(window.${variable} === undefined){window.${variable} = ${JSON.stringify(
-      defaultValue
-    )}}`
-  );
   $("#" + containerID).append(`
     <hr>
     <label>${label}</label>
     <textarea title='${title}' class="form-control json-input-text-box" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
-    defaultValue
+    value
   )}</textarea>`);
 
   $("#" + inputID).on("input", () => {
     var tJSON = $(`#${inputID}`).val();
-    // console.log(JSON.parse(tJSON));
-    eval(`window.${variable} = JSON.parse(tJSON)`);
+    if (typeof valueObj === "object") {
+      valueObj[valueKey] = JSON.parse(tJSON);
+      console.log(valueObj[valueKey]);
+    } else {
+      valueObj = JSON.parse(tJSON);
+      console.log(valueObj);
+    }
   });
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2489,29 +2508,18 @@ function formatDT(__dt) {
   var year = __dt.getFullYear();
   var month = zeroPad(__dt.getMonth() + 1, 2);
   var date = zeroPad(__dt.getDate(), 2);
-  // var hours = zeroPad(__dt.getHours(), 2);
-  // var minutes = zeroPad(__dt.getMinutes(), 2);
-  // var seconds = zeroPad(__dt.getSeconds(), 2);
-  return month + "/" + date + "/" + year.toString().slice(2, 4); //+ ' ' + hours + ':' + minutes + ':' + seconds;
+  return month + "/" + date + "/" + year.toString().slice(2, 4);
 }
 function formatDT2(__dt) {
   var year = __dt.getFullYear();
   var month = zeroPad(__dt.getMonth() + 1, 2);
   var date = zeroPad(__dt.getDate(), 2);
-  // console.log(`${year.toString().slice(2, 4)}-${month}-${date}`);
-  // var hours = zeroPad(__dt.getHours(), 2);
-  // var minutes = zeroPad(__dt.getMinutes(), 2);
-  // var seconds = zeroPad(__dt.getSeconds(), 2);
   return `${year.toString().slice(2, 4)}-${month}-${date}`;
 }
 function formatDTJulian(__dt) {
-  // var year = __dt.getFullYear();
   var month = zeroPad(__dt.getMonth() + 1, 2);
   var date = zeroPad(__dt.getDate(), 2);
-  // var hours = zeroPad(__dt.getHours(), 2);
-  // var minutes = zeroPad(__dt.getMinutes(), 2);
-  // var seconds = zeroPad(__dt.getSeconds(), 2);
-  return month + "/" + date; //+ ' ' + hours + ':' + minutes + ':' + seconds;
+  return month + "/" + date;
 }
 
 Date.fromDayofYear = function (n, y) {
@@ -2541,9 +2549,6 @@ function setUpDualRangeSlider(
   slideFun,
   stopFun
 ) {
-  // var dt_from = "2000/11/01";
-  // var dt_to = "2015/11/24";
-  // $("#"+updateID +" .ui-slider .ui-slider-handle").css( {"width": '3px'} );
   if (mode === undefined || mode === null) {
     mode = "date";
   }
@@ -2553,7 +2558,6 @@ function setUpDualRangeSlider(
   if (defaultMax === undefined || defaultMax === null) {
     defaultMax = max;
   }
-  // if(step === undefined  || step === null){step = 1};
 
   if (mode === "date") {
     min = new Date(min);
@@ -2561,7 +2565,7 @@ function setUpDualRangeSlider(
     step = step * 24 * 60 * 60;
     defaultMin = new Date(defaultMin);
     defaultMax = new Date(defaultMax);
-    // step = step*60*60*24
+
     $("#" + updateID).html(formatDT(defaultMin) + " - " + formatDT(defaultMax));
   } else if (mode === "julian") {
     min = Date.fromDayofYear(min);

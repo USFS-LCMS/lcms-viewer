@@ -3,61 +3,6 @@
 //Set up some globals
 var mapDiv = document.getElementById("map");
 
-// tableConverter = function(dataTableT){
-
-//   // var x = [dataTableT[0]]
-//   // x[0][0] = 'Year'
-//   // dataTableT.slice(1).map(function(i){
-
-//   //   i[0] = (i[0].getYear()+1900).toString()
-//   //   x.push(i)
-//   // })
-//   // dataTableT   = x
-// var lcDict = {
-//   '0': 'No data',
-// '1': 'Barren',
-// '2': 'Grass/forb/herb',
-// '3': 'Impervious',
-// '4': 'Shrubs',
-// '5': 'Snow/ice',
-// '6': 'Trees',
-// '7': 'Water'
-// };
-
-// var luDict = {
-//   '0': 'No data',
-// '1': 'Agriculture',
-// '2': 'Developed',
-// '3': 'Forest',
-// '4': 'Non-forest wetland',
-// '5': 'Other',
-// '6': 'Rangeland'
-// };
-
-// var cpDict = {
-//   '0': 'No Data',
-//   '1': 'Stable',
-//   '2':'Growth/recovery',
-//   '3': 'Fire',
-//   '4': 'Harvest',
-//   '5': 'Other'
-// }
-
-//   // if(dataTableT[0].length > 5){
-//   if(analysisMode === 'advanced'){
-//     // console.log('convertinggggggg tabbbbbbbble' );
-//     var isFirst = true;
-//     dataTableT = dataTableT.map(function(i){if(isFirst === false){i[3] = lcDict[Math.round(i[3]*10)]};isFirst = false;return i});
-//     var isFirst = true;
-//     dataTableT = dataTableT.map(function(i){if(isFirst === false){i[4] = luDict[Math.round(i[4]*10)]};isFirst = false;return i});
-//     var isFirst = true;
-//     // dataTableT = dataTableT.map(function(i){if(isFirst === false){i[5] = cpDict[parseInt(i[5]*10)]};isFirst = false;return i});
-// //       dataTableT = dataTableT.map(function(i){i[2] = cdlDict[i[2]];return i})
-//   }
-
-//       return dataTableT
-//     };
-
 function copyObj(mainObj) {
   let objCopy = {}; // objCopy will store a copy of the mainObj
   let key;
@@ -161,17 +106,15 @@ function tileXYZToQuadKey(x, y, z) {
   for (var i = z; i > 0; i--) {
     var digit = 0;
     var mask = 1 << (i - 1);
-    // print(mask);
-    // print(i);
+
     if ((x & mask) != 0) {
       digit = digit + 1;
     }
-    // print((x & mask))
-    // print(digit)
+
     if ((y & mask) != 0) {
       digit = digit + 2;
     }
-    // print(digit)
+
     quadKey = quadKey + digit.toString();
   }
   return quadKey;
@@ -265,8 +208,7 @@ function convertToGeoJSON(formID) {
     contentType: false,
     error: function (err) {
       console.log(err);
-      // console.log("AJAX error in request: " + JSON.stringify(err, null, 2));
-      // showMessage("Error!", "Error converting file: <hr>" + err.responseJSON.msg.replace("\n", "<br>"));
+
       $("#summary-spinner").hide();
     },
   });
@@ -285,9 +227,7 @@ function compressGeoJSON(geoJSON, reductionFactor) {
               return index % reductionFactor === 0;
             });
           }
-          return pts; //.map(function(pt){
-          //   return [parseFloat(pt[0].toFixed(decimalPlaces)),parseFloat(pt[1].toFixed(decimalPlaces))]
-          // })
+          return pts;
         });
       });
     } else {
@@ -297,9 +237,7 @@ function compressGeoJSON(geoJSON, reductionFactor) {
             return index % reductionFactor === 0;
           });
         }
-        return poly; //.map(function(pt){
-        // return [parseFloat(pt[0].toFixed(decimalPlaces)),parseFloat(pt[1].toFixed(decimalPlaces))]
-        // })
+        return poly;
       });
     }
     return f;
@@ -338,7 +276,6 @@ function clearPlots() {
   var plotElements = document.getElementById("pt-list");
   print(plotElements);
   while (plotElements.firstChild) {
-    // print('removing')
     plotElements.removeChild(plotElements.firstChild);
   }
   plotDictID = 1;
@@ -361,7 +298,6 @@ function setPlotColor(ID) {
   for (var i = 0; i < plotElements.length; i++) {
     plotElements[i].style.outline = "none";
   }
-  // console.log(plotElements[0])
   plotElements[plotElements.length - ID].style.outline = "#FFF solid";
 }
 function setPlotProjectColor(ID) {
@@ -370,7 +306,6 @@ function setPlotProjectColor(ID) {
   for (var i = 0; i < plotElements.length; i++) {
     plotElements[i].style.outline = "none";
   }
-  // console.log(plotElements[0])
   plotElements[plotElements.length - ID].style.outline = "#FFF dotted";
 }
 /////////////////////////////////////////////////////
@@ -487,12 +422,10 @@ function selectFrame(id, fromYearSlider, advanceOne) {
       }
     } catch (err) {}
     $("#" + timeLapseID + "-year-label").show();
-    // $('#'+timeLapseID+'-year-label').html(timeLapseObj[timeLapseID].years[timeLapseFrame])
     $("#time-lapse-year-label").show();
     $("#time-lapse-year-label").html(
       `Time lapse date: ${timeLapseObj[timeLapseID].yearLookup[timeLapseFrame]}`
     );
-    // if(advanceOne){timeLapseFrame++};
   }
 }
 function advanceOneFrame() {
@@ -529,7 +462,6 @@ function forwardOneFrame(id) {
   if (timeLapseObj[timeLapseID].isReady) {
     clearAllFrames();
     pauseTimeLapse();
-    // year++;
     advanceOneFrame();
     alignTimeLapseCheckboxes();
   }
@@ -539,7 +471,6 @@ function backOneFrame(id) {
   if (timeLapseObj[timeLapseID].isReady) {
     clearAllFrames();
     pauseTimeLapse();
-
     timeLapseFrame--;
     selectFrame();
     alignTimeLapseCheckboxes();
@@ -609,7 +540,6 @@ function stopTimeLapse(id) {
   $("#time-lapse-year-label").empty();
   $("#time-lapse-year-label").hide();
   timeLapseID = null;
-  // turnOffAllTimeLapseLayers();
   pauseAll();
   clearAllFrames();
 }
@@ -707,7 +637,6 @@ function jitterZoom(fromButton) {
     tDiff > 20000 ||
     fromButton
   ) {
-    // console.log(tDiff)
     console.log("jittering zoom");
     var z = map.getZoom();
     updateViewList = false;
@@ -845,9 +774,7 @@ function addTimeLapseToMap(
     }
     viz.serialized = false;
   }
-  // if (viz.cumulativeMode === undefined || viz.cumulativeMode === null) {
-  //   viz.cumulativeMode = false;
-  // }
+
   if (viz.canAreaChart === undefined || viz.canAreaChart === null) {
     viz.canAreaChart = false;
   }
@@ -896,27 +823,15 @@ function addTimeLapseToMap(
     }
 
     viz = addClassVizDicts(viz);
-    // console.log(viz);
   }
 
-  // console.log(viz);
   if (name == undefined || name == null) {
     name = "Layer " + NEXT_LAYER_ID;
   }
   var checked = "";
-  // if (visible) {
-  //   checked = "checked";
-  // }
+
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
-  // legendDivID = legendDivID.replaceAll('/','-');
-  // legendDivID = legendDivID.replaceAll('(','-');
-  // legendDivID = legendDivID.replaceAll(')','-');
-  // legendDivID = legendDivID.replaceAll('&','-');
-  // legendDivID = legendDivID.replaceAll(',','-');
-  // legendDivID = legendDivID.replaceAll('.','-');
-  // legendDivID = legendDivID.replaceAll('%','-');
-  // legendDivID = legendDivID.replaceAll('^','-');
 
   if (
     urlParams.layerProps[legendDivID] === undefined ||
@@ -928,7 +843,6 @@ function addTimeLapseToMap(
   } else {
     viz.opacity = urlParams.layerProps[legendDivID].opacity || 1;
   }
-  //AutoViz if specified
   //AutoViz if specified
   if (viz.autoViz) {
     if (viz.dictServerSide) {
@@ -981,8 +895,6 @@ function addTimeLapseToMap(
   //Years need to be client-side
   //Assumes the provided image collection has time property under system:time_start property
   if (viz.layerType === "tileMapService") {
-    // console.log("here");
-    // viz.layerType = "tileMapService";
     viz.years = Object.keys(item);
   } else if (
     viz.layerType !== "tileMapService" &&
@@ -1002,7 +914,6 @@ function addTimeLapseToMap(
 
     console.log("done computing years");
     console.log(viz.years);
-    // console.log(viz)
   }
 
   //Set up time laps object entry
@@ -1087,23 +998,16 @@ function addTimeLapseToMap(
   var prevent = false;
   var delay = 200;
   $("#" + legendDivID + "-name-span").click(function () {
-    // showMessage('test')
     setTimeout(function () {
       if (!prevent) {
         timeLapseCheckbox(legendDivID);
       }
     }, delay);
   });
-  // $('#'+ legendDivID + '-name-span').dblclick(function(){
-  //   // showMessage('test',item.get('bounds').getInfo())
-  //   // printEE(item.get('bounds'))
-  //   // synchronousCenterObject(item.get('bounds'))
-  //   })
 
   //Add in layers
 
   if (viz.layerType === "tileMapService") {
-    // viz.layerType = "tileMapService";
     viz.years = Object.keys(item);
 
     Object.keys(item).map((yr) => {
@@ -1125,9 +1029,6 @@ function addTimeLapseToMap(
         queryItem
       );
     });
-    // viz.years.map(function (yr) {
-
-    // });
   } else {
     var dummyImage = ee.Image(item.first());
     var cT = [];
@@ -1144,7 +1045,6 @@ function addTimeLapseToMap(
             d.advance(1, viz.advanceInterval).millis()
           )
         );
-        // var img = item.filter.and(ee.Filter.gte(viz.dateField,d.millis()),ee.Filter.lt(viz.dateField,d.advance(1,viz.advanceInterval).millis()));
         img = fillEmptyCollections(img, dummyImage);
       } else {
         // This method fails with different dateFields than system:time_start
@@ -1178,7 +1078,7 @@ function addTimeLapseToMap(
       vizT.canAreaChart = false;
       vizT.legendTitle = name;
       vizT.opacity = 0;
-      // console.log(vizT);
+
       addToMap(
         ee.Image(img),
         vizT,
@@ -1197,12 +1097,9 @@ function addTimeLapseToMap(
     if (viz.dateField !== "system:time_start" || viz.canAreaChart) {
       item = ee.ImageCollection(cT);
     }
-    // console.log(viz.canAreaChart);
     if (viz.canAreaChart) {
-      // console.log("here");
       let vizTT = copyObj(viz);
       vizTT = setupAreaChartParams(vizTT, legendDivID);
-      // viz.areaChartParams.layerType = viz.areaChartParams.layerType || viz.layerType;
       // All a 1:2 layer to area chart object if both line and sankey are specified
       if (vizTT.areaChartParams.sankey && vizTT.areaChartParams.line) {
         let areaChartParamsLine = copyObj(vizTT.areaChartParams);
@@ -1216,15 +1113,12 @@ function addTimeLapseToMap(
         areaChartParamsSankey.line = false;
         areaChartParamsSankey.id = `${vizTT.areaChartParams.id}-----sankey`;
 
-        // vizTT.areaChartParams.line = false;
         areaChart.addLayer(item, areaChartParamsSankey, name, visible);
       } else {
-        // console.log(vizTT.areaChartParams);
         areaChart.addLayer(item, vizTT.areaChartParams, name, visible);
       }
       timeLapseObj[legendDivID].viz = vizTT;
       timeLapseObj[legendDivID].legendDivID = legendDivID;
-      // console.log(params);
     } else {
       timeLapseObj[legendDivID].viz = viz;
       timeLapseObj[legendDivID].legendDivID = legendDivID;
@@ -1284,7 +1178,7 @@ function addTimeLapseToMap(
     step: 1,
     value: viz.yearsI[0],
     slide: function (e, ui) {
-      var i = ui.value; //viz.years.indexOf(yr);
+      var i = ui.value;
       var yr = viz.yearLookup[i];
       timeLapseFrame = i;
       Object.keys(timeLapseObj).map(function (k) {
@@ -1330,7 +1224,7 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
     res = 30;
   }
   if (metadataParams === null || metadataParams === undefined) {
-    metadataParams = {}; //'studyAreaName':studyAreaName,'version':'v2019.1','summaryMethod':summaryMethod,'whichOne':'Gain Year','startYear':startYear,'endYear':endYear,'description':'this is a description'}
+    metadataParams = {};
   }
   if (Export === null || Export === undefined) {
     Export = true;
@@ -1343,16 +1237,11 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
     checked = "checked";
   }
   objType = getImagesLib.getObjType(eeImage);
-  // console.log(objType);
 
   var now = Date().split(" ");
   var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
 
-  name = name; //+ nowSuffix
   name = name.replace(/[^A-Za-z0-9]/g, "_");
-  // name = name.replace(/\s+/g,'_')
-  // name = name.replaceAll('(','_')
-  // name = name.replaceAll(')','_')
   exportElement.res = res;
   exportElement.name = name;
 
@@ -1371,7 +1260,6 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
     noDataValue: noDataValue,
     fileFormat: objType === "Image" ? "GEO_TIFF" : "SHP",
   };
-  // var exportList = document.querySelector("export-list");
   let rightInput =
     objType === "Image"
       ? `<input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'><p title= 'Change export spatial resolution (meters) if needed' class='form-control export-res-input-label' >m</p>`
@@ -1416,7 +1304,6 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
 /////////////////////////////////////////////////////
 // Function to set up area charting params given viz params from addLayer
 function setupAreaChartParams(viz, legendDivID) {
-  // viz = copyObj(viz);
   viz.areaChartParams = viz.areaChartParams || {};
   viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
   viz.areaChartParams.line =
@@ -1486,7 +1373,6 @@ function setupAreaChartParams(viz, legendDivID) {
 /////////////////////////////////////////////////////
 //Function to add lookup dictionaries from info (assumes info is within an object and named eeObjInfo)
 function addClassVizDicts(viz) {
-  // console.log(viz);
   let cls_names_keys = Object.keys(viz.eeObjInfo).filter(
     (k) => k.indexOf("_class_names") > -1
   );
@@ -1501,7 +1387,6 @@ function addClassVizDicts(viz) {
       viz.class_palette = {};
       viz.class_visibility = {};
       bns.map((bn) => {
-        // console.log(bn);
         let cns = viz.eeObjInfo[`${bn}_class_names`];
         let cvs = viz.eeObjInfo[`${bn}_class_values`];
         let cp = viz.eeObjInfo[`${bn}_class_palette`];
@@ -1529,7 +1414,6 @@ function getLookupDicts(bandName, class_values, class_names, class_palette) {
 
   legendDict = toObj(value_name, palette);
   queryDict = toObj(values, names);
-  // console.log(values);
   return { classLegendDict: legendDict, queryDict: queryDict };
 }
 var typeLookup = {
@@ -1553,7 +1437,6 @@ function addToMap(
   whichLayerList,
   queryItem
 ) {
-  // $('#layer-list-collapse-label-message').html(`Loading: ${name}`)
   if (viz === undefined || viz === null) {
     viz = {};
   }
@@ -1598,8 +1481,6 @@ function addToMap(
     if (viz.eeObjInfo === undefined || viz.eeObjInfo === null) {
       let t =
         reverseTypeLookup[viz.layerType] || getImagesLib.getObjType(item, name);
-      // console.log(t);
-      // console.log(reverseTypeLookup[viz.layerType]);
       viz.eeObjInfo = getImagesLib.eeObjInfo(item, t);
       viz.dictServerSide = true;
     } else if (getImagesLib.eeObjServerSide(viz.eeObjInfo) === false) {
@@ -1623,20 +1504,11 @@ function addToMap(
     }
 
     viz = addClassVizDicts(viz);
-    // console.log(viz);
   }
 
   //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
   if (viz.layerType === null || viz.layerType === undefined) {
-    // if (viz.dictServerSide) {
-    //   console.log("start");
-    //   console.log(name);
-    //   viz.eeObjInfo = viz.eeObjInfo.getInfo();
-    //   console.log(viz);
-    //   viz.dictServerSide = false;
-    //   // viz = addClassVizDicts(viz);
-    // }
-    var eeType = getImagesLib.getObjType(item, "addLayer"); //viz.eeObjInfo.layerType;
+    var eeType = getImagesLib.getObjType(item, "addLayer");
 
     if (eeType === "Feature") {
       item = ee.FeatureCollection([item]);
@@ -1649,8 +1521,6 @@ function addToMap(
     viz.eeObjectType = reverseTypeLookup[viz.layerType];
   }
 
-  // console.log(name + ': '+viz.layerType)
-  // console.log(item.bandNames())
   if (viz.layerType === "geoJSONVector") {
     viz.canQuery = false;
   }
@@ -1716,14 +1586,6 @@ function addToMap(
   //Handle legend
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
-  // legendDivID = legendDivID.replaceAll('/','-');
-  // legendDivID = legendDivID.replaceAll('(','-');
-  // legendDivID = legendDivID.replaceAll(')','-');
-  // legendDivID = legendDivID.replaceAll('&','-');
-  // legendDivID = legendDivID.replaceAll(',','-');
-  // legendDivID = legendDivID.replaceAll('.','-');
-  // legendDivID = legendDivID.replaceAll('%','-');
-  // legendDivID = legendDivID.replaceAll('^','-');
 
   // Handle layer visibility caching
   if (viz.isTimeLapse === false) {
@@ -1744,7 +1606,7 @@ function addToMap(
   // Handle area charting
   if (viz.canAreaChart) {
     viz = setupAreaChartParams(viz, legendDivID);
-    // console.log(viz.areaChartParams);
+
     // All a 1:2 layer to area chart object if both line and sankey are specified
     if (viz.areaChartParams.sankey && viz.areaChartParams.line) {
       let areaChartParamsLine = copyObj(viz.areaChartParams);
@@ -1758,13 +1620,10 @@ function addToMap(
       areaChartParamsSankey.line = false;
       areaChartParamsSankey.id = `${viz.areaChartParams.id}-----sankey`;
 
-      // viz.areaChartParams.line = false;
       areaChart.addLayer(item, areaChartParamsSankey, name, visible);
     } else {
-      // console.log(viz.areaChartParams);
       areaChart.addLayer(item, viz.areaChartParams, name, visible);
     }
-    // console.log(params);
   }
   if (visible == null) {
     visible = true;
@@ -1790,7 +1649,7 @@ function addToMap(
   if (viz.title !== null && viz.title !== undefined) {
     helpBox = viz.title;
   }
-  var layer = {}; //document.createElement("ee-layer");
+  var layer = {};
 
   layer.ID = NEXT_LAYER_ID;
   NEXT_LAYER_ID += 1;
@@ -1965,9 +1824,9 @@ function addToMap(
       viz.layerType !== "geoJSONVector" &&
       viz.layerType !== "geeVectorImage"
     ) {
-      var legendKeys = Object.keys(viz.classLegendDict); //.reverse();
+      var legendKeys = Object.keys(viz.classLegendDict);
       legendKeys.map(function (lk) {
-        var legend = {}; //document.createElement("ee-class-legend");
+        var legend = {};
         legend.name = name;
 
         legend.helpBoxMessage = helpBox;
@@ -2027,7 +1886,6 @@ function addToMap(
   layer.layerId = layerCount;
   layer.currentGEERunID = currentGEERunID;
   //Add the layer
-
   addLayer(layer);
   layerCount++;
 
@@ -2064,7 +1922,7 @@ function standardTileURLFunction(url, xThenY, fileExtension, token) {
       return url + zoom + "/" + x + "/" + coord.y + fileExtension + token;
     } else {
       return url + zoom + "/" + coord.y + "/" + x + fileExtension + token;
-    } //+ (new Date()).getTime();
+    }
   };
 }
 function superSimpleTileURLFunction(url) {
@@ -2111,8 +1969,6 @@ function addRESTToMap(
   layer.map = map;
   layer.helpBoxMessage = helpBox;
   layer.visible = visible;
-  // layer.label = label;
-  // layer.fontColor = fontColor;
   layer.helpBox = helpBox;
   layer.maxZoom = maxZoom;
 
@@ -2136,7 +1992,7 @@ function point2LatLng(x, y) {
     var m = document.getElementById("map");
     x = x - m.offsetLeft;
     y = y - m.offsetTop;
-    // console.log('converting div to lat lng');console.log(x.toString() + ' ' + y.toString());
+
     var topRight = map
       .getProjection()
       .fromLatLngToPoint(map.getBounds().getNorthEast());
@@ -2179,10 +2035,8 @@ function getGroundOverlay(baseUrl, minZoom, ending) {
 
     var ulx = bounds[keys[1]][keysX[0]];
     var lrx = bounds[keys[1]][keysX[1]];
-    // if(ulx > lrx){ulx = -180;}
     var ulxy = [ulx, bounds[keys[0]][keysY[0]]];
     var lrxy = [lrx, bounds[keys[0]][keysY[1]]];
-    // console.log('b');console.log(ulxy);console.log(lrxy);
     var ulxyMercator = llToNAD83(ulxy[0], ulxy[1]);
     var lrxyMercator = llToNAD83(lrxy[0], lrxy[1]);
 
@@ -2259,7 +2113,6 @@ function addDynamicToMap(
   layer.groundOverlayFunction = groundOverlayWrapper;
   layer.helpBox = helpBox;
 
-  // layer.baseUrl = baseUrl;
   layer.visible = visible;
   layer.item = item;
   layer.name = name;
@@ -2287,7 +2140,6 @@ function addFeatureToMap(
     var layer = new google.maps.Data({ fillOpacity: 0, strokeColor: "#F00" });
     layer.addGeoJson(v);
     layer.setMap(map);
-    // map.overlayMapTypes.setAt(this.layerId, v);
   });
 }
 var featureViewObj = {};
@@ -2321,12 +2173,6 @@ function addFeatureView(
 
   var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
-  // legendDivID = legendDivID.replaceAll('/','-');
-  // legendDivID = legendDivID.replaceAll('(','-');
-  // legendDivID = legendDivID.replaceAll(')','-');
-  // legendDivID = legendDivID.replaceAll('&','-');
-  // legendDivID = legendDivID.replaceAll(',','-');
-  // legendDivID = legendDivID.replaceAll('.','-');
 
   NEXT_LAYER_ID++;
   featureViewObj[legendDivID] = {
@@ -2363,7 +2209,6 @@ function mp() {
   this.removeLayer = function (layerId) {
     if (layerId) {
       map.overlayMapTypes.setAt(layerObj[layerId].layerId, null);
-      // console.log(`${layerId}-container-${layerObj[layerId].ID}`);
       $(`#${layerId}-container-${layerObj[layerId].ID}`).remove();
       $(`#${layerId}`).remove();
 
@@ -2719,8 +2564,6 @@ function reRun() {
     showMessage("Loading Updated Layers", staticTemplates.loadingModal[mode]);
   }
 
-  // showMessage('Loading Updated Layers',staticTemplates.loadingModal);
-  // showMessage('Loading',staticTemplates.loadingModal)
   setGEERunID();
 
   //Clean out current map, legend, etc
@@ -2762,9 +2605,7 @@ function reRun() {
     f.setMap(null);
   });
   featureObj = {};
-  // map.overlayMapTypes.getArray().forEach(function (element, index) {
-  //   map.overlayMapTypes.setAt(index, null);
-  // });
+
   map.overlayMapTypes.clear();
   refreshNumber++;
 
@@ -2776,14 +2617,7 @@ function reRun() {
 
   //Rerun the GEE code
   setTimeout(function () {
-    // try{
     run();
-    // }catch(err){
-    // console.log(err);
-    // console.log('Failed to load GEE run function. Waiting 5 seconds to retry')
-    // setTimeout(()=>run(), 5000);
-
-    // }
 
     if (mode !== "lcms-dashboard") {
       $(".modal").modal("hide");
@@ -2791,23 +2625,8 @@ function reRun() {
     }
 
     setupAreaLayerSelection();
-    // addLabelOverlay();
     smartAddLabelOverlay();
-    // if (
-    //   urlParams.endYear - urlParams.startYear < 5 &&
-    //   mode === "LCMS" &&
-    //   !urlParams.dynamic
-    // ) {
-    //   //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
-    //   showMessage(
-    //     "No Transition Charting",
-    //     "The year range must be 5 years or more to perform transition charting"
-    //   );
-    // }
   }, 1500);
-
-  // $('#error-modal').toggleClass('show');
-  // $('#summary-spinner').hide();
 }
 ////////////////////////////////////////////////////////////////////////
 // Taken from: https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
@@ -2961,15 +2780,13 @@ function linear_gradient(start_hex, finish_hex = "#FFFFFF", n = 10) {
     // Interpolate RGB vector for color at the current value of t
 
     curr_vector = range(0, 3).map((j) => {
-      // console.log(f[j] - s[j]);
       return parseInt(s[j] + (parseFloat(t) / (n - 1)) * (f[j] - s[j]));
     });
     // Add it to our list of output colors
     RGB_list.push(curr_vector);
   });
   let hex_list = RGB_list.map(rgbToHex);
-  // console.log(hex_list);
-  // // print(RGB_list)
+
   return hex_list;
 }
 // Get 1 or more gradients between pairs of given colors for a total of n colors
@@ -2979,17 +2796,14 @@ function polylinear_gradient(colors, n) {
   // number of desired output colors
   // The number of colors per individual linear gradient
   n_out = parseInt(parseFloat(n) / (colors.length - 1)) + 1;
-  // console.log(n_out);
-  // print(('n',n))
-  // print(('n_out',n_out))
+
   // If we don't have an even number of color values, we will remove equally spaced values at the end.
   apply_offset = false;
   if (n % n_out !== 0) {
     apply_offset = true;
     n_out = n_out + 1;
-    // print(('new n_out',n_out))
   }
-  // console.log(apply_offset);
+
   // returns dictionary defined by color_dict()
   gradient_dict = linear_gradient(colors[0], colors[1], n_out);
 
@@ -2997,42 +2811,29 @@ function polylinear_gradient(colors, n) {
     range(1, colors.length - 1).map((col) => {
       next = linear_gradient(colors[col], colors[col + 1], n_out).slice(1);
       gradient_dict = gradient_dict.concat(next);
-      // ["hex", "r", "g", "b"].map(k=>gradient_dict[k] += next[k].slice(1))
+
       // Exclude first point to avoid duplicates
     });
   }
-  // console.log(gradient_dict);
+
   // // Remove equally spaced values here.
   if (apply_offset === true) {
-    // indList = list(range(len(gradient_dict['hex'])))
     offset = gradient_dict.length - n;
     sliceval = [];
-    // print(('len(gradient_dict)',len(gradient_dict['hex'])))
-    // print(('offset',offset))
+
     range(1, offset + 1).map((i) =>
       sliceval.push(
         parseInt((gradient_dict.length * i) / parseFloat(offset + 2))
       )
     );
-    // console.log(("sliceval", sliceval));
+
     let out = [];
     for (const [index, element] of gradient_dict.entries()) {
-      // console.log([index, element]);
-
       if (sliceval.indexOf(index) === -1) {
         out.push(element);
       }
-      // console.log(index, element);
     }
     gradient_dict = out;
-    // console.log(gradient_dict);
-    // console.log(gradient_dict.length);
-    //     ["hex", "r", "g", "b"].map(k=>{
-    //         gradient_dict[k] = [
-    //             i for j, i in enumerate(gradient_dict[k]) if j not in sliceval
-    //         ]
-    //       })
-    //     // print(('new len dict', len(gradient_dict['hex'])))
   }
   return gradient_dict;
 }
@@ -3053,8 +2854,7 @@ function get_poly_gradient_ct(palette, min, max) {
   ramp = polylinear_gradient(palette, max - min + 1);
   return ramp;
 }
-// let t = get_poly_gradient_ct(["#FFFF00", "FF0000"], -0.005, 0.1);
-// console.log(t);
+
 //////////////////////////////////
 //Taken from: https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
 var colorList = [
@@ -3130,20 +2930,18 @@ function startArea() {
     var unitName;
     var unitMultiplier;
     var keys = Object.keys(areaPolygonObj);
-    // console.log('keys');console.log(keys);
+
     var totalArea = 0;
     var totalWithArea = 0;
     var outString = "";
     function areaWrapper(key) {
-      // console.log('key');console.log(key);
-      // print('Adding in: '+key.toString());
       var pathT = areaPolygonObj[key].getPath().getArray();
 
       if (pathT.length > 0) {
-        clickCoords = clickLngLat; //pathT[pathT.length-1];
+        clickCoords = clickLngLat;
         console.log(clickCoords);
         console.log(pathT);
-        // console.log(clickCoords);console.log(pathT.length);
+
         area = google.maps.geometry.spherical.computeArea(
           areaPolygonObj[key].getPath()
         );
@@ -3293,13 +3091,11 @@ function undoDistanceMeasuring() {
   updateDistance();
 }
 function deleteLastAreaVertex(e) {
-  // console.log(e);
   if (e.key == "z" && e.ctrlKey) {
     undoAreaMeasuring();
   }
 }
 function deleteLastDistanceVertex(e) {
-  // console.log(e);
   if (e.key == "z" && e.ctrlKey) {
     undoDistanceMeasuring();
   }
@@ -3354,7 +3150,6 @@ function resetPolygon() {
   polyNumber = parseInt(lastKey);
   polyNumber++;
   startArea();
-  // console.log(areaPolygonObj)
 }
 function newPolygon() {
   stopArea();
@@ -3448,57 +3243,7 @@ updateDistance = function () {
     $(".gm-ui-hover-effect").hide();
   }
 };
-// function getDistance(lat1,lon1,lat2,lon2){
-//     var R = 6371e3; // metres
-//     var phi1 = lat1* Math.PI / 180;
-//     var phi2 = lat2* Math.PI / 180;
-//     var deltaPhi = (lat2-lat1)* Math.PI / 180;
-//     var deltaLambda = (lon2-lon1)* Math.PI / 180;
 
-//     var a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
-//             Math.cos(phi1) * Math.cos(phi2) *
-//             Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
-//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//     var d = R * c;
-//     return d
-// }
-
-// function addFusionTable1(id){
-// var layer1 = new google.maps.FusionTablesLayer({
-//           query: {
-//             select: 'geometry',
-//             from: id
-//           },
-//           styles: [{
-//       polygonOptions: {
-//         // fillColor: '#00FF00',
-//         fillOpacity: 0.0000000000001,
-//         strokeColor:'#FF0000',
-//         strokeWeight : 2
-//       }
-//     }]
-//     // map:map
-//         });
-//     layer1.setMap(map);
-//     }
-// function addFusionTable2(id){
-// var layer2 = new google.maps.FusionTablesLayer({
-//           query: {
-//             select: 'geometry',
-//             from: id
-//           },
-//           styles: [{
-//       polygonOptions: {
-//         // fillColor: '#00FF00',
-//         fillOpacity: 0.0000000000001,
-//         strokeColor:'#FF0000',
-//         strokeWeight : 2
-//       }
-//     }]
-//         });
-// layer2.setMap(map);
-
-//     }
 ////////////////////////////////////////////////////////////////
 //Setup drag box selection object
 function addDragBox() {
@@ -3536,8 +3281,6 @@ function addDragBox() {
     } else {
       dragBox.onStopFunctions.map((fun) => fun());
     }
-
-    // dragBox.polygon.setMap(null);
   };
   dragBox.expand = function (e) {
     dragBox.currentDragLocation = { lng: e.latLng.lng(), lat: e.latLng.lat() };
@@ -3773,7 +3516,6 @@ function initSearchBox() {
   // Create the search box and link it to the UI element.
   var input = document.getElementById("pac-input");
   var searchBox = new google.maps.places.SearchBox(input);
-  // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
   // Bias the SearchBox results towards current map's viewport.
   map.addListener("bounds_changed", function () {
@@ -3994,7 +3736,6 @@ function initialize() {
     minZoom: 2,
     disableDefaultUI: false,
     disableDoubleClickZoom: true,
-    // maxZoom: 15,
     mapTypeId: urlParams.mapTypeId,
     streetViewControl: true,
     fullscreenControl: false,
@@ -4002,7 +3743,7 @@ function initialize() {
       position: google.maps.ControlPosition.TOP_RIGHT,
       mapTypeIds: mapTypeIds,
     },
-    // fullscreenControlOptions:{position: google.maps.ControlPosition.RIGHT_TOP},
+
     streetViewControlOptions: {
       position: google.maps.ControlPosition.RIGHT_TOP,
     },
@@ -4023,7 +3764,6 @@ function initialize() {
   //Set up caching of study area
   if (typeof Storage !== "undefined") {
     cachedStudyAreaName = localStorage.getItem("cachedStudyAreaName");
-    // console.log(urlParams.studyAreaName)
 
     if (
       urlParams.studyAreaName !== null &&
@@ -4083,30 +3823,6 @@ function initialize() {
   // trackView()
   map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-  //Associate the styled map with the MapTypeId and set it to display.
-  // map.mapTypes.set('dark_mode', styledMapType);
-  // const drawingManager = new google.maps.drawing.DrawingManager({
-  //   drawingMode: google.maps.drawing.OverlayType.Marker,
-  //   drawingControl: true,
-  //   drawingControlOptions: {
-  //     position: google.maps.ControlPosition.TOP_CENTER,
-  //     drawingModes: [
-
-  //       google.maps.drawing.OverlayType.RECTANGLE,
-  //       google.maps.drawing.OverlayType.POLYGON,
-
-  //     ],
-  //   },
-
-  // });
-  // drawingManager.setMap(map);
-  //  $("#rectangle-drawing-btn").click( function(){
-  //      drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
-  // });
-
-  //  $("#polygon-drawing-btn")square-drawing-btn.click( function(){
-  //        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-  //   });
   //Listen for street view use
   //Adapted from: https://stackoverflow.com/questions/7251738/detecting-google-maps-streetview-mode
   var thePanorama = map.getStreetView();
@@ -4147,44 +3863,8 @@ function initialize() {
 
   placeholderID = 1;
 
-  // function addWMS(url,name,maxZoom,xThenY){
-  //   if(maxZoom === null || maxZoom === undefined  ){
-  //     maxZoom = 19;
-  //   }
-  //   if(xThenY === null || xThenY === undefined  ){
-  //     xThenY = false;
-  //   }
-  //     var imageMapType =  new google.maps.ImageMapType({
-  //     getTileUrl: function(coord, zoom) {
-  //         // "Wrap" x (logitude) at 180th meridian properly
-  //         // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib
-  //         var tilesPerGlobe = 1 << zoom;
-  //         var x = coord.x % tilesPerGlobe;
-  //         if (x < 0) {
-  //             x = tilesPerGlobe+x;
-  //         }
-  //         // Wrap y (latitude) in a like manner if you want to enable vertical infinite scroll
-  //         // return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/" + zoom + "/" + x + "/" + coord.y + "?access_token=pk.eyJ1IjoiaWhvdXNtYW4iLCJhIjoiY2ltcXQ0cnljMDBwNHZsbTQwYXRtb3FhYiJ9.Sql6G9QR_TQ-OaT5wT6f5Q"
-  //         if(xThenY ){
-  //             return url+ zoom + "/" + x + "/" + coord.y +".png?";
-  //         }
-  //         else{return url+ zoom + "/" + coord.y + "/" +x  +".png?";}//+ (new Date()).getTime();
-
-  //     },
-  //     tileSize: new google.maps.Size(256, 256),
-  //     name: name,
-  //     maxZoom: maxZoom
-
-  // })
-
-  //     map.mapTypes.set('Placeholder' + placeholderID.toString(),imageMapType )
-  //     placeholderID  ++;
-  // }
-
   //Set up cursor info in bottom bar
   function updateMousePositionAndZoom(cLng, cLat, zoom, elevation) {
-    // $('.legendDiv').css('bottom',$('.bottombar').height());
-
     $("#current-mouse-position").html(
       "Lng: " +
         cLng +
@@ -4201,7 +3881,6 @@ function initialize() {
 
   //Set up elevation api
 
-  // var elevator = new google.maps.ElevationService;
   var lastElevation = 0;
   var elevationCheckTime = 0;
 
@@ -4241,13 +3920,10 @@ function initialize() {
 
   //Listen for mouse movement and update bottom bar
   map.addListener("mousemove", function (event) {
-    // console.log(event)
-    // var x =event.clientX;
-    // var y = event.clientY;
-    var center = event.latLng; //point2LatLng(x,y);
+    var center = event.latLng;
     if (center !== null) {
       var zoom = map.getZoom();
-      // var center = event.latLng;
+
       mouseLat = center.lat().toFixed(4).toString();
       mouseLng = center.lng().toFixed(4).toString();
       var now = new Date().getTime();
@@ -4262,7 +3938,6 @@ function initialize() {
     }
   });
   function trackViewChange() {
-    // console.log('idle')
     zoom = map.getZoom();
     var mapCenter = map.getCenter();
     var mapCenterLng = mapCenter.lng();
@@ -4273,7 +3948,6 @@ function initialize() {
 
     trackView();
 
-    // console.log('bounds changed');
     var coords = Object.values(map.getBounds().toJSON());
     updateMousePositionAndZoom(mouseLng, mouseLat, zoom, lastElevation);
     try {
@@ -4294,8 +3968,6 @@ function initialize() {
       })
     );
     updateViewList = true;
-
-    // setTimeout(function(){updateViewList = true;},10)
   }
   //Listen for zoom change and update bottom bar
   google.maps.event.addListener(map, "maptypeid_changed", function () {
@@ -4305,13 +3977,11 @@ function initialize() {
   });
 
   //Keep track of map bounds and zoom changes
-  // google.maps.event.addListener(map,'zoom_changed',trackViewChange)
   google.maps.event.addListener(map, "idle", trackViewChange);
 
   //Specify proxy server location
   //Proxy server used for EE and GCS auth
   //RCR appspot proxy costs $$
-  // ee.initialize("https://rcr-ee-proxy-server2.appspot.com/api","https://earthengine.googleapis.com/map",function(){
   //Initialize GEE
   function showSplash() {
     setTimeout(function () {
@@ -4359,21 +4029,21 @@ function initialize() {
       }
 
       $("#dontShowAgainCheckbox").change(function () {
-        // console.log(this.checked);
         localStorage["showIntroModal-" + mode] = !this.checked;
+        if (localStorage["showIntroModal-" + mode] === "false") {
+          $("#showIntroModal-radio-second_toggle_label").click();
+        } else if (localStorage["showIntroModal-" + mode] === "true") {
+          $("#showIntroModal-radio-first_toggle_label").click();
+        }
       });
     }, 500);
   }
   function loadGEELibraries() {
-    // if (mode !== "geeViz") {
     let geeModules = [
       "./src/gee/gee-libraries/getImagesLib.js",
       "./src/gee/gee-libraries/changeDetectionLib.js",
     ];
     batchLoad(geeModules, eeInitSuccessCallback);
-    // } else {
-    //   eeInitSuccessCallback();
-    // }
   }
   function eeInitSuccessCallback() {
     //Set up the correct GEE run function
@@ -4446,7 +4116,7 @@ function initialize() {
     } else {
       run = runUSFS;
     }
-    // run = function(){};
+
     //Bring in downloads if needed
     if (mode === "LCMS") {
       setupDropdownTreeDownloads(studyAreaName);
@@ -4494,13 +4164,13 @@ function initialize() {
       }
 
       setupAreaLayerSelection();
-      // setupFSB();
+
       //Bring in plots of they're turned on
       if (plotsOn) {
         addPlotCollapse();
         loadAllPlots();
       }
-      // if(mode !== 'lcms-dashboard'){
+
       if (localStorage["showIntroModal-" + mode] !== "true") {
         $(".modal").modal("hide");
         $(".modal-backdrop").remove();
@@ -4513,20 +4183,7 @@ function initialize() {
         showMessage("GEE Script Error", geeRunError);
       }
 
-      // addLabelOverlay();
       smartAddLabelOverlay();
-
-      // if (
-      //   urlParams.endYear - urlParams.startYear < 5 &&
-      //   mode === "LCMS" &&
-      //   !urlParams.dynamic
-      // ) {
-      //   //&&(urlParams.sankey==='true' || urlParams.beta ==='true') ){
-      //   showMessage(
-      //     "No Transition Charting",
-      //     "The year range must be 5 years or more to perform transition charting"
-      //   );
-      // }
     }, 1500);
   }
   function eeInitFailureCallback(failure) {

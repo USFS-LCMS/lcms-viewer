@@ -18,11 +18,10 @@ function chartDashboardFeature(
   updateCharts = true,
   deselectOnClick = true
 ) {
-  // console.log(r);
   let featureName = r.properties[layer.viz.dashboardFieldName]
     .toString()
     .replace(/[^A-Za-z0-9]/g, "-");
-  // console.log(featureName)
+
   if (
     Object.keys(layer.dashboardSelectedFeatures).indexOf(featureName) === -1
   ) {
@@ -55,15 +54,6 @@ function chartDashboardFeature(
     }
     getCoords(r.geometry);
 
-    // var infoContent = `<table class="table table-hover bg-white">
-    // <tbody>`
-
-    // Object.keys(info).map(function(name){
-    //     var value = info[name];
-    //     infoContent +=`<tr><th>${name}</th><td>${value}</td></tr>`;
-    // });
-    // infoContent +=`</tbody></table>`;
-
     layer.dashboardSelectedFeatures[featureName].polyList.map((p) => {
       p.setOptions(notHoverFeatureStyling);
       p.setMap(map);
@@ -85,13 +75,9 @@ function chartDashboardFeature(
       }
       layer.dashboardSelectedFeatures[featureName].listeners.push(
         google.maps.event.addListener(p, "mouseover", (event) => {
-          // console.log('mouseover: ')
-
           let selector = `#${
             urlParams.currentlySelectedHighlightTab.split("-tab")[0]
           }----${featureName}`;
-          // console.log(selector);
-          // console.log(event)
           $(selector).addClass("dashboard-row-hover");
           try {
             layer.dashboardSelectedFeatures[featureName].polyList.map((p) =>
@@ -104,13 +90,10 @@ function chartDashboardFeature(
       );
       layer.dashboardSelectedFeatures[featureName].listeners.push(
         google.maps.event.addListener(p, "mouseout", (event) => {
-          // console.log('mouseout: ')
           let selector = `#${
             urlParams.currentlySelectedHighlightTab.split("-tab")[0]
           }----${featureName}`;
-          // console.log(selector);
           $(selector).removeClass("dashboard-row-hover");
-          // console.log(event)
           try {
             layer.dashboardSelectedFeatures[featureName].polyList.map((p) =>
               p.setOptions(notHoverFeatureStyling)
@@ -122,14 +105,8 @@ function chartDashboardFeature(
       );
     });
   }
-  // else{
-  // 	console.log(`Removing ${featureName}`)
-  // 	layer.dashboardSelectedFeatures[featureName].polyList.map(p=>p.setMap(null));
-  // 	delete layer.dashboardSelectedFeatures[featureName];
-  // }
 
   let selectedNames = Object.keys(layer.dashboardSelectedFeatures).join(",");
-  // $('#dashboard-results-collapse-div').append(selectedNames);
   if (updateCharts) {
     updateDashboardCharts();
     updateDashboardHighlights();
@@ -155,12 +132,7 @@ function startDashboardClickLayerSelect() {
       var ft = ee
         .Feature(layer.queryItem.filterBounds(pt).first())
         .simplify(5000, "EPSG:4326");
-
-      // console.log(`${l.name} ${ft.size().getInfo()}`)
-      // console.log(ft.getInfo())
-
       ft.evaluate((r, failure) => {
-        // console.log(r);
         if (r !== undefined) {
           if (layer.selectedDashboardGEEFeatures === undefined) {
             layer.selectedDashboardGEEFeatures = ee.FeatureCollection([ft]);
@@ -178,13 +150,11 @@ function startDashboardClickLayerSelect() {
         if (pLoaded === 100) {
           $("#loading-spinner-logo").hide();
           $("#dashboard-download-button").prop("disabled", false);
-          // setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
         }
       });
     });
   }
   map.addListener("click", function (event) {
-    // console.log(event);
     updateSelectedDashboardFeatures(event);
   });
 }
@@ -250,7 +220,6 @@ function dashboardBoxSelect() {
       .flatten()
       .size()
       .evaluate((n) => {
-        // console.log(n);
         if (n > 0 && thisBoxSelectID === boxSelectID) {
           var i = 1;
           visibleDashboardLayers.map((layer) => {
@@ -259,9 +228,7 @@ function dashboardBoxSelect() {
             let selectedAttributes = selectedFeatures
               .toList(10000, 0)
               .map((f) => ee.Feature(f).toDictionary());
-            // selectedAttributes.getInfo(f=>console.log(f))
             let selectedProj = selectedFeatures.first().geometry().projection();
-            // selectedFeatures = selectedFeatures.map(f=>f.simplify(500, selectedProj));
             selectedFeatures.evaluate((f, failure) => {
               if (failure !== undefined) {
                 console.log(`Failure: ${failure}`);
@@ -287,20 +254,12 @@ function dashboardBoxSelect() {
                   if (dashboardAreaSelectionMode === "Drag-Box") {
                     dragBox.startListening();
                   }
-                  // setTimeout(()=>$('#loading-spinner').slideUp(),5.000);
                 }
                 i++;
               });
             });
           });
         }
-        // else{
-        // 	updateProgress('.progressbar',100);
-        // 	$('#loading-spinner-logo').hide();
-        // 	$('#summary-area-selection-radio').css('pointer-events','auto');
-        // 	if(dashboardAreaSelectionMode==='Drag-Box'){dragBox.startListening()}
-
-        // 	}
       });
   }
 }
@@ -322,9 +281,7 @@ function startDashboardViewExtentSelect() {
   );
 }
 var dashboardPlotlyDownloadURLs;
-// var chartFormat = 'Acres';//Options are: Percentage, Acres, Hectares
 function makeDashboardCharts(layer, whichOne, annualOrTransition) {
-  // console.log(layer)
   dashboardPlotlyDownloadURLs = [];
 
   var colors = {
@@ -417,8 +374,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   fieldsHidden.Land_Use.push(true);
   fieldsHidden.Land_Cover.push(true);
   let total_area_fieldname = "total_area";
-  // var titleField = 'TCA_ID'//'LMPU_NAME'//'outID';
-  // var chartWhich = ['Change','Land_Cover','Land_Use'];
   if (annualOrTransition === "transition") {
     names["Land_Cover"] = [
       "Trees",
@@ -447,7 +402,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   var chartID = `chart-canvas-${layer.id}-${whichOne}-${annualOrTransition}`;
   var colorsI = 0;
   var selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
-  // console.log(selectedFeatureNames)
   if (selectedFeatureNames.length > 1) {
     var area_names =
       "LCMS Summary for " + selectedFeatureNames.length.toString() + " areas";
@@ -459,7 +413,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   ///////////////////////////////////////////////////////////////////////
   //Iterate across each field name and add up totals
   //First get 2-d array of all areas for each then sum the columns and divide by total area
-
   var t1 = new Date();
   let results = {};
   results.features = selectedFeatureNames.map(
@@ -468,9 +421,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   var years = results.features[0].properties["years_" + annualOrTransition]
     .split(",")
     .sort();
-
-  // console.log(years)
-  // console.log(results.features)
   if (annualOrTransition === "transition") {
     var tableDict = {};
     var fieldNames = Object.keys(results.features[0].properties)
@@ -490,8 +440,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
         var total_areaF = parseFloat(f.properties[total_area_fieldname]);
         total_area = total_area + total_areaF * scale ** 2;
       });
-
-      // console.log(total)
       var colSums = [];
       for (var col = 0; col < total[0].length; col++) {
         var colSum = 0;
@@ -510,11 +458,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
         tableDict[fn] = colSums;
       }
     });
-    // console.log(tableDict);
-
-    // console.log(whichOne);console.log(fieldNames)
     //Clean out existing chart
-
     $(`#${chartID}`).remove();
     //Add new chart
     $("#charts-collapse-div").append(
@@ -523,9 +467,8 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     $("#charts-collapse-div").append(
       `<div class = "plotly-chart plotly-chart-download" id="${chartID}-download"><div>`
     );
-    // $('#chartDiv').append('<hr>');
+
     //Set up chart object
-    // var chartJSChart = new Chart($(`#${chartID}`),{
     // add data
     var yri = 0;
     var data = [];
@@ -538,7 +481,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       return yr.split("_")[0];
     });
     allYears.push(years[years.length - 1].split("_")[1]);
-    // console.log(allYears)
     allYears.map((yr) => {
       names[whichOne].map((nm) => {
         var outNm = yr + " " + nm;
@@ -550,8 +492,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
         sankeyPalette.push(nm);
       });
     });
-    // console.log(tableDict)
-    // console.log(label_code_dict);
     years.map((yr) => {
       var startRange = yr.split("_")[0];
       var endRange = yr.split("_")[1];
@@ -573,7 +513,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       yri++;
     });
 
-    // console.log(sankey_dict)
     sankey_dict.hovertemplate =
       "%{value}" +
       chartFormatDict[chartFormat].label +
@@ -601,11 +540,9 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     };
 
     var data = [data];
-    // let plotHeight =$('#dashboard-results-div').height()-convertRemToPixels(2);
-    // let plotWidth=plotHeight*1.5;
 
-    let plotWidth = $("#charts-collapse-div").width() - 2; //chartHeight*1.5;
-    let plotHeight = parseInt(plotWidth / 1.3); //$('#dashboard-results-div').height()-convertRemToPixels(1);
+    let plotWidth = $("#charts-collapse-div").width() - 2;
+    let plotHeight = parseInt(plotWidth / 1.3);
 
     var layout = {
       title: `<b>${name}</b>`,
@@ -629,7 +566,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       toImageButtonOptions: {
         format: "png", // one of png, svg, jpeg, webp
         filename: name,
-        //width:1000,height:600,
       },
       scrollZoom: true,
       displayModeBar: false,
@@ -640,7 +576,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     layout2.font.size = 20;
     layout2.margin.t = 80;
     layout2.margin.pad = 20;
-    // console.log([layout2.font.size,layout.font.size])
+
     Plotly.newPlot(`${chartID}-download`, data, layout2, config).then(
       (chart) => {
         Plotly.toImage(chart, { width: 1200, height: 800 }).then((url) =>
@@ -648,7 +584,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
         );
       }
     );
-    //  layout.font.size=8;
     Plotly.newPlot(`${chartID}`, data, layout, config);
   } else if (annualOrTransition === "annual") {
     var startI = years.indexOf(urlParams.startYear.toString());
@@ -656,18 +591,14 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     years = years.slice(startI, endI);
     if (showPairwiseDiff) {
       years = years.slice(1, years.length);
-      // console.log(`Diff years: ${years}`)
     }
-    // console.log(years)
     fieldNames = fieldNames.filter((v) => v.indexOf(whichOne) > -1).sort();
-    // console.log(fieldNames)
 
     var t = fieldNames.map(function (k) {
       var total_area = 0;
       var total = [];
 
       results.features.map(function (f) {
-        // console.log(f.attributes)
         try {
           var scale = f.properties.scale;
 
@@ -681,7 +612,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
           total_area = total_area + total_areaF;
         } catch (err) {
           console.log("No LCMS summary for: " + f.properties[titleField]);
-          //           // console.log(err);
         }
       });
 
@@ -721,16 +651,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       } catch (err) {
         fieldHidden = false;
       }
-      //   'label':label,
-      //   pointStyle: 'circle',
-      //   pointRadius:1,
-      //   'data':data,
-      //   'fill':false,
-      //   'borderColor':color,
-      //   'lineTension':0,
-      //   'borderWidth':2,
-      //   'steppedLine':steppedLine,
-      //   'showLine':true,
+
       let classColor =
         colors[whichOne][names[whichOne].indexOf(k.split("---")[1])];
       var out = {
@@ -758,12 +679,11 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     } catch (err) {}
     $(`#${chartID}`).remove();
 
-    let chartWidth = $("#charts-collapse-div").width() - 2; //convertRemToPixels(35)-5;//chartHeight*1.5;
-    let chartHeight = parseInt(chartWidth / 1.5); //$('#dashboard-results-div').height()-convertRemToPixels(1);
+    let chartWidth = $("#charts-collapse-div").width() - 2;
+    let chartHeight = parseInt(chartWidth / 1.5);
     $("#charts-collapse-div").append(
       `<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`
     );
-    // $('#chartDiv').append('<hr>');
     //Set up chart object
     var chartJSChart = new Chart($(`#${chartID}`), {
       type: "line",
@@ -771,10 +691,6 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        // height:chartHeight,
-        // width:chartWidth,
-        // width:chartHeight*2,
-        //   aspectRatio: 1.5,
         title: {
           display: true,
           position: "top",
@@ -835,7 +751,6 @@ if (
 }
 function getHighlightsTabListener() {
   return $("a.nav-link").click((e) => {
-    // console.log(e);
     urlParams.currentlySelectedHighlightTab = e.currentTarget.id;
   });
 }
@@ -852,7 +767,6 @@ function updateDashboardHighlights(limit = 10) {
   let startYearI = available_years.indexOf(parseInt(urlParams.startYear));
   let endYearI = available_years.indexOf(parseInt(urlParams.endYear));
 
-  // console.log([startYearI,endYearI])
   let dashboardLayersToHighlight = Object.values(layerObj).filter(
     (v) => v.viz.dashboardSummaryLayer && v.visible
   );
@@ -864,22 +778,12 @@ function updateDashboardHighlights(limit = 10) {
   let classesToHighlight = 0;
   let firstID;
   if (dashboardLayersToHighlight.length > 0) {
-    // $('#highlights-loading-spinner-logo').show();
-    // updateProgress('#highlights-progressbar',0);
     dashboardLayersToHighlight.map((f) => {
-      // let fc = f.queryItem.filterBounds(eeBoundsPoly);
       fc = Object.values(f.dashboardSelectedFeatures).map((f) => f.geojson);
       let fieldName = f.viz.dashboardFieldName;
-      // let featureName = f.properties[fieldName].toString();
-
-      // console.log(f.selectedTSData.size().getInfo())
-
-      // console.log(fc.first().getInfo())
-      // Map2.addLayer(fc,{},f.name+' bounds')
       Object.keys(highlightLCMSProducts).map((k) => {
         if (chartWhich.indexOf(k) > -1) {
           let product_name = k.replaceAll("_", " ");
-          // console.log(product_name)
           let tab_name = f.name;
           let classes = highlightLCMSProducts[k];
           classesToHighlight = classesToHighlight + classes.length;
@@ -889,12 +793,9 @@ function updateDashboardHighlights(limit = 10) {
               var ts_class_name = `TS---${k}---${cls}`;
               let t = [];
               let ft = fc.map((f) => {
-                // 					f = ee.Feature(f);
                 let props = f.properties;
-                // console.log(ts_class_name)
 
                 let tsProps = props[ts_class_name].split(",");
-                // console.log(tsProps)
 
                 // From http://www.stat.yale.edu/Courses/1997-98/101/catinf.htm
                 // Advised in Olofsson et al 2014 Equations 10 and 11
@@ -913,7 +814,7 @@ function updateDashboardHighlights(limit = 10) {
                 let startTSCount = parseFloat(tsCounts[startYearI]);
                 let endTSCount = parseFloat(tsCounts[endYearI]);
 
-                let ci = ciDict[ciLevel]; //1.96;
+                let ci = ciDict[ciLevel];
                 let startCI =
                   ci *
                   Math.sqrt((startTSProp * (1 - startTSProp)) / startTSCount);
@@ -948,8 +849,6 @@ function updateDashboardHighlights(limit = 10) {
                     totalArea * chartFormatDict[chartFormat].mult * endTSProp;
                 }
 
-                // console.log(cls);
-                // console.log([cls,startTSProp,endTSProp,startTSCount,endTSCount,startCI,endCI])
                 let isSig = false;
                 if (startTSProp === 0) {
                   startCI = "NA";
@@ -1006,18 +905,7 @@ function updateDashboardHighlights(limit = 10) {
                   rel.toFixed(chartFormatDict[chartFormat].places),
                   isSig,
                 ]);
-                // 					return f.set({'1start':startAtr,'2end':endAtr,'3start-end_diff':diff })
               });
-              // let sortMethod = highlightsSortingDict[cls];
-              // if(sortMethod==='asc'){
-              // 	t= t.sort(function(a,b) {
-              // 		return a[3] - b[3];
-              // 	});
-              // }else{
-              // 	t= t.sort(function(a,b) {
-              // 		return b[3] - a[3];
-              // 	});
-              // }
 
               let nmT = `${f.viz.dashboardFieldName}`;
               let startYrAbbrv = urlParams.startYear.toString().slice(2, 4);
@@ -1026,10 +914,6 @@ function updateDashboardHighlights(limit = 10) {
               function parseResults(t, header) {
                 totalLoaded++;
                 let pLoaded = (totalLoaded / totalToLoad) * 100;
-                // updateProgress('#highlights-progressbar',pLoaded);
-                // if(pLoaded===100){
-                // $('#highlights-loading-spinner-logo').hide();
-                // }
                 let nRows = t.length;
                 let areasN = "areas";
                 if (nRows === 1) {
@@ -1038,7 +922,6 @@ function updateDashboardHighlights(limit = 10) {
                 let clsID = cls.replaceAll("/", "-");
                 clsID = clsID.replaceAll(" ", "-");
                 let navID = `${f.legendDivID}----${k}----${clsID}`;
-                // console.log(navID);
                 let isActive = "";
                 if (isFirst) {
                   isActive = " show active";
@@ -1101,46 +984,6 @@ function updateDashboardHighlights(limit = 10) {
                     sigTitle = `Significant change detected (${ciLevel}% CI)`;
                   }
 
-                  // var data = [
-                  // 	{
-                  // 	  x: [urlParams.startYear, urlParams.endYear],
-                  // 	  y: [tr[1], tr[3]],
-                  // 	  error_y: {
-                  // 		type: 'data',
-                  // 		array: [tr[2], tr[4]],
-                  // 		visible: true
-                  // 	  },
-                  // 	  type: 'scatter'
-                  // 	}
-                  //   ];
-                  //   var layout = {
-                  // 	title: tr[0],
-                  // 	font: {
-                  // 	size: 12
-                  // 	},
-                  // 	autosize: true,
-                  // 	margin: {
-                  // 	l: 25,
-                  // 	r: 25,
-                  // 	b: 25,
-                  // 	t: 50,
-                  // 	pad: 4
-                  // 	},
-                  // 	paper_bgcolor: '#D6D1CA',
-                  // 	plot_bgcolor: '#D6D1CA'
-                  // }
-                  // var config = {
-                  // 	toImageButtonOptions: {
-                  // 		format: 'png', // one of png, svg, jpeg, webp
-                  // 		filename: tr[0],
-                  // 		width:1000,height:600
-                  // 	},
-                  // 	scrollZoom: false,
-                  // 	displayModeBar: false
-                  // 	};
-
-                  //   $(`#${navID}-boxplots`).append(`<div id='${navID}-boxplot-${rowI}'></div>`)
-                  //   Plotly.newPlot(`${navID}-boxplot-${rowI}`, data, layout,config);
                   $(`#${navID}-table`)
                     .append(`<tr id = '${navID}----${tr[0].replace(
                     /[^A-Za-z0-9]/g,
@@ -1169,10 +1012,6 @@ function updateDashboardHighlights(limit = 10) {
                     responsive: true,
                     dom: "Bfrtip",
                     buttons: [
-                      // {
-                      // 	extend: 'colvis',
-                      // 	title: 'Data export'
-                      // },
                       {
                         extend: "copyHtml5",
                         title: downloadName.replaceAll("_", " "),
@@ -1208,29 +1047,17 @@ function updateDashboardHighlights(limit = 10) {
                   $(`#${navID}-table-container`).addClass(
                     `tab-pane fade bg-white highlights-table ${isActive}`
                   );
-
-                  // $('.dataTables_length').addClass('bs-select');
                 });
               }
-              // totalToLoad = totalToLoad+2;
               if (t.length > 0) {
                 parseResults(t, "Change");
               }
-
-              // parseResults(bottom,'Loss')
-              // 				// console.log(bottoms.getInfo())
             });
           }
         }
       });
     });
-    // if(classesToHighlight===0){$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);}
   }
-  // else{
-  // 	$('#highlights-loading-spinner-logo').hide();updateProgress('#highlights-progressbar',100);
-  // }
-
-  // $('#highlights-table-divs').prepend(staticTemplates.dashboardDownloadReportButton)
 
   getHighlightsTabListener();
   if (
@@ -1244,7 +1071,6 @@ function updateDashboardHighlights(limit = 10) {
     }
   }
   resizeDashboardPanes();
-  // console.log(dashboardLayersToHighlight)
   function getFeatures(id) {
     return layerObj[id.split("----")[0]].dashboardSelectedFeatures[
       id.split("----")[3]
@@ -1255,7 +1081,6 @@ function updateDashboardHighlights(limit = 10) {
     highlightFeatures.map((f) => {
       f.setOptions(hoverFeatureStyling);
     });
-    // console.log(highlightFeatures);
   });
 
   // Any time the mouse leaves the table, get rid of any marker
@@ -1268,21 +1093,14 @@ function updateDashboardHighlights(limit = 10) {
   $(".dataTable.table>tbody>tr").on("dblclick", function (e) {
     console.log("double clicked");
     let highlightFeatures = getFeatures(e.currentTarget.id);
-    // let lats = [];
-    // let lngs = [];
     let bounds = new google.maps.LatLngBounds();
     highlightFeatures.map((f) => {
       let coords = f.getPath().getArray();
       coords.map((coord) => {
-        // lats.push(coord.lat());
-        // lngs.push(coord.lng());
         bounds.extend(coord);
       });
     });
-    // console.log(lats);
-    // console.log(lngs);
     map.fitBounds(bounds);
-    // console.log( bounds.toJSON())
   });
 }
 
@@ -1290,14 +1108,7 @@ function updateDashboardCharts() {
   let lastScrollLeft = dashboardScrollLeft;
   let lastScrollTop = dashboardScrollTop[dashboardResultsLocation];
   turnOffScrollMonitoring();
-  // console.log(`Scroll left coord: ${lastScrollLeft}`)
-  // $('.dashboard-results').empty();
-  // $('#dashboard-results-div').empty();
   $("#charts-collapse-div").empty();
-  // $('.dashboard-results-container').hide();
-  // $('.dashboard-results-container').css('height','0rem');
-
-  // $('.dashboard-results-container').hide();
   let visible, chartModes;
   chartWhich = Object.keys(productHighlightClasses)
     .filter((k) => productHighlightClasses[k])
@@ -1313,24 +1124,14 @@ function updateDashboardCharts() {
       Object.keys(v.dashboardSelectedFeatures).length > 0
   );
   if (dashboardLayersToChart.length > 0) {
-    // $('.dashboard-results-container').show();
-    // $('.dashboard-results-container').css('height',dashboardResultsHeight);
-    // resizeDashboardPanes();
     chartWhich.map((w) => {
       dashboardLayersToChart.map((layer) => {
         chartModes.map((chartMode) => makeDashboardCharts(layer, w, chartMode));
       });
     });
-
-    // $( ".dashboard-results" ).scrollLeft(lastScrollLeft);
     $(dashboardScrollDict[dashboardResultsLocation]).scrollTop(lastScrollTop);
     turnOnScrollMonitoring();
   }
-  // else{
-  // 	resizeDashboardPanes();
-  // }
-
-  // setTimeout(makeDashboardReport(),1000);
 }
 
 //////////////////////////////////////////////////
@@ -1342,22 +1143,6 @@ class report {
       this.h = this.doc.internal.pageSize.height;
       this.w = this.doc.internal.pageSize.width;
       this.margin = 10;
-
-      // Robotofont class (contains text needed to read ttf files)
-      // const robotoNormal = reportFonts.getRobotoNormal();
-      // const robotoBold = reportFonts.getRobotoBold();
-      // const arialNormal = reportFonts.getArial();
-      // const arialBold = reportFonts.getArialBold();
-      // this.doc.addFileToVFS("RobotoCondensed-Regular-normal.ttf", robotoNormal);
-      // this.doc.addFont("RobotoCondensed-Regular-normal.ttf", "RobotoCondensed", "normal");
-      // this.doc.addFileToVFS("RobotoCondensed-Bold-normal.ttf", robotoBold);
-      // this.doc.addFont("RobotoCondensed-Bold-normal.ttf", "RobotoCondensed", "bold");
-      // this.doc.addFileToVFS("FontsFree-Net-arial-bold.ttf", arialBold);
-      // this.doc.addFont("FontsFree-Net-arial-bold.ttf", "Arial", "bold");
-      // this.doc.addFileToVFS("arial-normal.ttf", arialNormal);
-      // this.doc.addFont("arial-normal.ttf", "Arial", "normal");
-
-      // this.doc.setFont('Arial', 'normal');
 
       //header
       //header color block
@@ -1373,9 +1158,7 @@ class report {
       var usdaLogo = new Image();
       usdaLogo.src = "./src/assets/images/logos_usda-fs_bn-dk-01.PNG"; //"./src/assets/images/usdalogo.png";
       this.doc.addImage(usdaLogo, "PNG", 5, 4, 16 * 2, 13); //, 15);
-      // var fsLogo = new Image();
-      // fsLogo.src = "./src/assets/images/usfslogo.png";
-      // this.doc.addImage(fsLogo, 'PNG', 27, 3, 14, 15); //x,y,w,h
+
       var lcmsLogo = new Image();
       lcmsLogo.src = "./src/assets/images/lcms-icon.png";
 
@@ -1402,7 +1185,7 @@ class report {
         this.currentY,
         this.w - this.margin / 2,
         this.currentY
-      ); //x,y,w,h
+      );
       this.currentY += 5;
       this.doc.text(
         this.margin / 2,
@@ -1416,20 +1199,15 @@ class report {
         this.currentY,
         `LCMS Data Version: v2023.9 | Dashboard Version: 2024.1`
       );
-      // doc.setFont(undefined,'bold');
-      // doc.text(margin+widthPng+19, headerTextHeight, "LCMS");
-      // doc.setFont(undefined,'normal');
-      // doc.text(margin+ widthPng+ 32,headerTextHeight,'Report');
+
       this.currentY += 3;
       this.doc.setFillColor(55, 46, 44);
-      // this.doc.setFillColor(3, 74, 48); //169,209,142);
 
-      //doc.setTextColor(8,124,124);
       this.doc.rect(0, this.currentY, 600, 20, "F"); //x, y, w, h, style
 
       this.doc.setFontSize(22);
 
-      this.doc.setTextColor(0, 137, 123); //0,0,0);
+      this.doc.setTextColor(0, 137, 123);
       this.doc.setFont(undefined, "bold");
       this.currentY += 3;
       this.doc.addImage(
@@ -1449,7 +1227,7 @@ class report {
       var lineHeight =
         this.doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM") /
         this.doc.internal.scaleFactor;
-      var lines = 1; //splittedText.length  // splitted text is a string array
+      var lines = 1; // splitted text is a string array
       var blockHeight = lines * lineHeight;
       this.currentY += blockHeight + 10;
       this.doc.setFont(undefined, "normal");
@@ -1464,7 +1242,7 @@ class report {
       var lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
       var lines = wrapQuestion.length; // splitted text is a string array
       var blockHeight = lines * lineHeight;
-      this.currentY += blockHeight; //-18
+      this.currentY += blockHeight;
     };
     this.checkForRoom = function (additional = 0) {
       if (this.currentY + this.margin + additional > this.h) {
@@ -1491,7 +1269,6 @@ class report {
       let textBlockHeight = this.doc.getTextDimensions(textWrap).h;
       let textHeight = this.doc.getTextDimensions(text).h;
       this.checkForRoom(textBlockHeight);
-      // console.log(textHeight);
       this.currentY += textHeight;
       if (link === null || link === undefined) {
         this.doc.text(this.margin, this.currentY, textWrap);
@@ -1510,7 +1287,6 @@ class report {
       maxWidth = null,
       callback = null
     ) {
-      // const d = $(selector);
       const d = document.querySelector(selector);
       const aspectRatio = d.clientHeight / d.clientWidth;
       let imgW;
@@ -1522,7 +1298,6 @@ class report {
 
       const h = imgW * aspectRatio;
       const margin = this.margin;
-      // this.currentY += this.margin;
 
       if (preceedingText !== null && preceedingText !== undefined) {
         let textHeight = this.getTextHeight(
@@ -1537,17 +1312,12 @@ class report {
 
       var that = this;
       const currentY = this.currentY;
-      // let dataURL = d.toDataURL("image/jpg", 1.0);
-      // this.doc.addImage(dataURL, 'JPEG', this.margin, this.currentY, this.w, h ,{compresion:'NONE'});
 
       html2canvas(d, {
         useCORS: true,
         allowTaint: false,
-        // scale: 3,
-        // backgroundColor: null,
       }).then((canvas) => {
         var imgData = canvas.toDataURL("image/png");
-        // console.log('Report Image URL: '+imgData);
         console.log([margin, currentY, imgW, h, aspectRatio]);
 
         that.doc.addImage(imgData, "PNG", margin, currentY, imgW, h);
@@ -1555,14 +1325,6 @@ class report {
         that.checkForRoom();
         callback();
       });
-      // domtoimage.toPng(d, { quality: 0.95 })
-      //     .then(function (imgData) {
-      //         console.log([margin, currentY, imgW, h,aspectRatio ])
-      //         that.doc.addImage(imgData, 'PNG', margin, currentY, imgW, h );
-      //         that.currentY += h;
-      //         that.checkForRoom();
-      //         callback();
-      //     });
     };
     this.outstandingCharts = 0;
     this.addChartJS = function (id) {
@@ -1571,22 +1333,17 @@ class report {
       console.log(`Adding chart: ${id}`);
 
       const canvas0 = document.getElementById(id);
-      // const legend_div= document.getElementById("chart-canvas-Change-"+thisFC+"-js-legend");
       let chartHeight = canvas0.height;
       let chartWidth = canvas0.width;
       let aspectRatio = chartHeight / chartWidth;
       let chartW = this.w - this.margin * 4;
       let chartH = chartW * aspectRatio;
       this.checkForRoom(chartH + this.margin);
-      // doc.setFillColor(204,204,204,0);
-      // doc.rect(margin,currentY,chartW, chartH)
       //for some reason changing this first chart to a png (not jpeg) fixes issue with black chart background
       let dataURL = canvas0.toDataURL("image/jpg", 1.0);
       let link = document.createElement("a");
       link.download = id;
       link.href = dataURL;
-      // link.click();
-      // console.log(imgURL)
       this.doc.addImage(
         dataURL,
         "JPG",
@@ -1598,7 +1355,6 @@ class report {
       );
       this.currentY = this.currentY + chartH + this.margin;
       that.outstandingCharts--;
-      // return 'done';
     };
     this.addPlotlyPlots = function () {
       let chartHeight = 400;
@@ -1633,7 +1389,6 @@ class report {
           margin: { left: that.margin, right: that.margin },
         });
         that.currentY = that.doc.lastAutoTable.finalY;
-        // console.log(that.doc.lastAutoTable);
       });
     };
     this.addPageNumbers = function (fontSize = 10) {
@@ -1653,7 +1408,6 @@ class report {
       this.doc.setFontSize(fs);
     };
     this.download = function (outFilename) {
-      // console.log(this.doc)
       this.doc.save(outFilename + ".pdf");
     };
   }
@@ -1668,8 +1422,6 @@ function makeDashboardReport() {
     mapTypeControl: false,
     scaleControl: false,
     streetViewControl: false,
-    // rotateControl: false,
-    // fullscreenControl: false
   });
   var sidebarTogglerClicked = false;
   var collapseClicked = [];
@@ -1743,7 +1495,6 @@ function makeDashboardReport() {
           dashboardReport.addChartJS(id);
         }
       });
-      // dashboardReport.doc.addPage();
       dashboardReport.addPlotlyPlots();
       dashboardReport.addText(`Tabular Results`, 18);
       dashboardReport.addText(
@@ -1808,8 +1559,6 @@ function makeDashboardReport() {
         mapTypeControl: true,
         scaleControl: true,
         streetViewControl: true,
-        // rotateControl: false,
-        // fullscreenControl: false
       });
     }
     function addLegend() {

@@ -14,22 +14,17 @@ function downloadByUrl(url) {
   link.target = "_blank";
   var downloadName = url.substr(url.lastIndexOf("/") + 1);
 
-  // link.download ='hello';// downloadName;
   link.setAttribute("download", downloadName);
 
   print(link);
   link.click();
 
   ga("send", "event", mode + "-download", "image-download", downloadName);
-  // var urlAux = url + '.aux.xml';
-  // print(urlAux)
-  // var downloadNameAux = url.substr(url.lastIndexOf('/') + 1)+'.aux.xml';
-  // link=document.createElement('a');
-  // link.href = urlAux;
-  // link.download = downloadNameAux;
-  // link.click();
 
-  showMessage("Download Started", "Your download of " + downloadName + " has started.");
+  showMessage(
+    "Download Started",
+    "Your download of " + downloadName + " has started."
+  );
 
   return downloadName;
 }
@@ -58,14 +53,11 @@ function downloadSelectedAreas(id) {
         message +
         "</ul></li>"
     );
-    // setTimeout(()=>{
+
     if (mode !== "TreeMap") {
       showSurveyModal("downloadedLCMSTif", true);
     }
-
-    // },2000)
   }
-  // var urlList = `<li>`
 }
 var surveyPopupShown = false;
 function showSurveyModal(source, appendMessage = false) {
@@ -78,19 +70,23 @@ function showSurveyModal(source, appendMessage = false) {
                         </div>`;
   if (localStorage["showSurveyPopupModal-" + mode] !== "false") {
     if (!appendMessage) {
-      showMessage("We would really appreciate your feedback!", takeSurveyModalText);
+      showMessage(
+        "We would really appreciate your feedback!",
+        takeSurveyModalText
+      );
     } else {
-      appendMessage2(`<hr><p style='font-size:1.2rem;font-weight:bold;'>We would really appreciate your feedback!</p>${takeSurveyModalText}`);
+      appendMessage2(
+        `We would really appreciate your feedback!`,
+        takeSurveyModalText
+      );
     }
   }
 
-  // if(!surveyPopupShown){
   $("#dontShowSurveyAgainCheckbox").change(function () {
     console.log(this.checked);
     localStorage["showSurveyPopupModal-" + mode] = !this.checked;
   });
   surveyPopupShown = true;
-  // }
 }
 
 function openLCMSSurvey(fromWhere) {
@@ -108,26 +104,22 @@ function downloadTutorial() {
   link.click();
   ga("send", "event", mode + "-download", "tutorial-download", tutorial_name);
   showSurveyModal("downloadedTutorial");
-  // link.setAttribute("download", filename);
 }
 function downloadMethods(version) {
   var link = document.createElement("a");
   var methods_name = "LCMS_" + version + "_Methods.pdf";
-  // link.href = './tutorials/'+methods_name;
 
-  link.href = "https://data.fs.usda.gov/geodata/rastergateway/LCMS/" + methods_name;
+  link.href =
+    "https://data.fs.usda.gov/geodata/rastergateway/LCMS/" + methods_name;
   link.target = "_blank";
   link.click();
   ga("send", "event", mode + "-download", "methods-download", methods_name);
   showSurveyModal("downloadedMethodsDoc");
-  // link.setAttribute("download", filename);
 }
 function downloadAnyMethods(path) {
   var link = document.createElement("a");
-  // var methods_name ='LCMS_'+version+'_Methods.pdf';
-  // link.href = './tutorials/'+methods_name;
 
-  link.href = path; //'https://data.fs.usda.gov/geodata/rastergateway/LCMS/'+methods_name;
+  link.href = path;
   link.target = "_blank";
   link.click();
   ga("send", "event", mode + "_methods-download", path);

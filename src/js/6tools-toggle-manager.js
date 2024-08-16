@@ -7,8 +7,6 @@ function stopAllTools() {
   stopAreaCharting();
   stopCharting();
   clearQueryGeoJSON();
-  // clearQueryGeoJSON();
-  // clearSelectedAreas();
   turnOffUploadedLayers();
 
   turnOffSelectLayers();
@@ -114,14 +112,18 @@ function updateToolStatusBar() {
   if (!somethingShown) {
     $("#current-tool-selection").append(`No active tools`);
   } else {
-    ga("send", "event", "tool-active", mode, $("#current-tool-selection").html().split(": ")[1]);
+    ga(
+      "send",
+      "event",
+      "tool-active",
+      mode,
+      $("#current-tool-selection").html().split(": ")[1]
+    );
   }
 }
 function toggleTool(tool) {
   if (tool.state) {
     eval(tool.off);
-
-    // tool.state = false
   } else {
     eval(tool.on);
     tool.state = true;
@@ -130,10 +132,3 @@ function toggleTool(tool) {
 }
 
 updateToolStatusBar();
-// var paragraphs = document.getElementsByClassName("collapse-title");
-// for (var i = 0; i < paragraphs.length; i++) {
-//   var paragraph = paragraphs.item(i);
-//   paragraph.style.setProperty("font-size", "0.5em", null);
-//   paragraph.style.setProperty("padding", "0.0em", null);
-//   paragraph.style.setProperty("margin", "0.0em", null);
-// }

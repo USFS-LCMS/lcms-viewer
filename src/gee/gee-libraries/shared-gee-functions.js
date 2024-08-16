@@ -137,7 +137,6 @@ function getTransitionClasses(
   let stackC = [];
   let value_combos = [];
   values.map((i1) => values.map((i2) => value_combos.push([i1, i2])));
-  // console.log(value_combos);
   for (var i = 0; i < periods.length - 1; i++) {
     const startPeriod = periods[i];
     const endPeriod = periods[i + 1];
@@ -151,8 +150,6 @@ function getTransitionClasses(
     const end = collection
       .filter(ee.Filter.calendarRange(endPeriod[0], endPeriod[1], "year"))
       .mode();
-    // Map.addLayer(start.copyProperties(collection.first()),viz,'Start {}'.format(startPeriod_str),False)
-    // Map.addLayer(end.copyProperties(collection.first()),viz,'End {}'.format(endPeriod_str),False)
 
     let stack = [];
     let bandNames = [];
@@ -171,7 +168,6 @@ function getTransitionClasses(
     stackC.push(stack);
   }
   stackC = ee.Image.cat(stackC);
-  // Map.addLayer(stackC,{'opacity':0},'Transition Combos')
   return stackC;
 }
 function addSankey(lcmsRun, bn) {
@@ -180,7 +176,6 @@ function addSankey(lcmsRun, bn) {
   var palette = lcmsRun.props[bn + "_class_palette"];
   var bnTitle = bn.replaceAll("_", " ");
 
-  // console.log(transitionClasses.bandNames().getInfo())
   areaChartCollections[`${bn}-transition`] = {
     label: `LCMS ${bnTitle} Transition`,
     type: "transition",
@@ -212,7 +207,7 @@ function batchFillCollection(c, expectedYears) {
     );
   });
   var out = c.merge(missingCollection).sort("system:time_start");
-  return out; //.map(function(img){return img.unmask(255)});
+  return out;
 }
 function setSameDate(img, month = 6, day = 1) {
   var yr = ee.Date(img.get("system:time_start")).get("year");
@@ -235,8 +230,7 @@ function getIDSCollection() {
   } else {
     idsEndYear = idsMaxYear;
   }
-  // console.log('IDS Years:');console.log(idsStartYear);console.log(idsEndYear);
-  // var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
+
   var idsFolder = "projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS";
   try {
     var ids = ee.data.getList({ id: idsFolder }).map(function (t) {
@@ -271,7 +265,7 @@ function getIDSCollection() {
         .rename(["Damage_Agent", "Damage_Type"]);
     });
     dcaCollection = ee.ImageCollection.fromImages(dcaCollection);
-    // console.log(dcaCollection.size().getInfo())
+
     return { imageCollection: dcaCollection, featureCollection: ids };
   } catch (err) {
     console.log(err);
@@ -329,7 +323,7 @@ function getAspectObj() {
 
   var aspectLookupDict = ee.Dictionary.fromLists(lookupNumbers, lookupNames);
   var aspectBinned = aspect.remap(from, to);
-  // Map.addLayer(aspectBinned,{min:0,max:360},'Aspect Binned');
+
   return {
     image: aspectBinned,
     lookupDict: aspectLookupDict,
@@ -338,8 +332,8 @@ function getAspectObj() {
 }
 function getNLCDObj() {
   var nlcdYears = [2001, 2004, 2006, 2008, 2011, 2013, 2016, 2019];
-  var nlcdLCMax = 95; //parseInt(nlcd.get('system:visualization_0_max').getInfo());
-  var nlcdLCMin = 0; //parseInt(nlcd.get('system:visualization_0_min').getInfo());
+  var nlcdLCMax = 95;
+  var nlcdLCMin = 0;
   var nlcdLCPalette = [
     "466b9f",
     "d1def8",
@@ -361,7 +355,7 @@ function getNLCDObj() {
     "ab6c28",
     "b8d9eb",
     "6c9fb8",
-  ]; //nlcd.get('system:visualization_0_palette').getInfo().split(',');
+  ];
 
   var nlcdClassCodes = [
     11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90,
@@ -389,7 +383,7 @@ function getNLCDObj() {
     "Woody Wetlands",
     "Emergent Herbaceous Wetlands",
   ];
-  var nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1); //ee.List.sequence(nlcdLCMin, nlcdLCMax).getInfo();
+  var nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
   var nlcdLCVizDict = {};
   var nlcdLCQueryDict = {};
   var nlcdLegendDict = {};
@@ -406,7 +400,7 @@ function getNLCDObj() {
       nlcdLCVizDict[i] = "000";
     }
   });
-  // console.log(nlcdLCQueryDict);
+
   var nlcdLegendDictReverse = {};
   Object.keys(nlcdLegendDict)
     .reverse()
@@ -416,10 +410,9 @@ function getNLCDObj() {
   var nlcd = ee
     .ImageCollection("USGS/NLCD_RELEASES/2019_REL/NLCD")
     .select(["landcover"], ["NLCD Landcover"])
-    // .map(function(img){return img.set('system:time_start',ee.Date.fromYMD(ee.Number.parse(img.id()),6,1).millis())})
+
     .sort("system:time_start");
   var nlcdC = nlcdYears.map(function (nlcdYear) {
-    // if(nlcdYear >= startYear  && nlcdYear <= endYear){
     var nlcdT = nlcd
       .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
       .mosaic();
@@ -430,7 +423,7 @@ function getNLCDObj() {
     return nlcdT;
   });
   nlcdC = ee.ImageCollection(nlcdC);
-  // console.log(nlcdC.getInfo());
+
   var chartTableDict = {
     "NLCD Landcover": nlcdLCQueryDict,
   };
@@ -458,7 +451,7 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     mtbsSummaryMethod = "Highest-Severity";
   }
 
-  var mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1"; //'projects/gtac-mtbs/assets/burn_severity_mosaics/MTBS';//'projects/USFS/DAS/MTBS/BurnSeverityMosaics';
+  var mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1";
 
   var mtbsEndYear = endYear;
   if (endYear > 2022) {
@@ -477,7 +470,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
 
   mtbs = mtbs.map(function (img) {
     return img.select([0], ["burnSeverity"]).byte();
-    // .updateMask(img.neq(0).and(img.neq(6)))
   });
 
   var mtbs = mtbs.map(function (img) {
@@ -509,11 +501,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
   };
   var mtbsSummarized = mtbs.qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod]);
   var mtbsCount = mtbs.select([2]).count();
-  // var mtbsDistinct = mtbs.select([0]).reduce(ee.Reducer.countDistinct());
-  // var multipleSame = mtbsCount.gt(1).and(mtbsDistinct.gt(1))
-  // multipleSame = multipleSame.selfMask()
-  // Map.addLayer(mtbsDistinct,{min:1,max:3,palette:'00F,F00'},'Distinct',false);
-  // Map.addLayer(multipleSame,{min:1,max:1,palette:'F00'},'multipleSame',false);
 
   var mtbsClassDict = {
     "Unburned to Low": "006400",
@@ -538,9 +525,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
       Object.values(mtbsQueryClassDict),
       true
     );
-    // console.log(mtbs.select([0]).getInfo())
-    // console.log(Object.keys(mtbsQueryClassDict),Object.values(mtbsQueryClassDict))
-    // Map.addLayer(mtbsStack,{},'mtbs stack')
     areaChartCollections["mtbs"] = {
       collection: mtbsStack,
       colors: Object.values(mtbsClassDict),
@@ -617,10 +601,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
   if (chartMTBSByNLCD) {
     var nlcdObj = getNLCDObj();
 
-    // {'collection':nlcdC,'years':nlcdYears,'palette':nlcdLCPalette,'vizDict':nlcdLCVizDict,'queryDict':nlcdLCQueryDict,'legendDict':nlcdLegendDict,'legendDictReverse':nlcdLegendDictReverse}
-    // var nlcd = nlcdObj.collection;
-    // var nlcdYears = nlcdObj.years;
-
     Map.addTimeLapse(
       nlcdObj.collection,
       {
@@ -641,7 +621,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     );
 
     nlcdObj.years.map(function (nlcdYear) {
-      // if(nlcdYear >= startYear  && nlcdYear <= mtbsEndYear){
       var nlcdT = nlcdObj.collection
         .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
         .mosaic();
@@ -659,8 +638,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
         Object.values(mtbsQueryClassDict),
         true
       );
-
-      // Map.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
 
       areaChartCollections["mtbsNLCD" + nlcdYear.toString()] = {
         collection: mtbsByNLCDStack,
@@ -683,7 +660,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     var aspectObj = getAspectObj();
     var aspectBinned = aspectObj.image;
     var aspectLookupDict = aspectObj.lookupDict.getInfo();
-    // var aspectColorDict = aspectObj.colorDict.getInfo();
     var mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
       var name = aspectLookupDict[k];
       var out = mtbsMaxSeverity
@@ -698,9 +674,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
       Object.values(mtbsQueryClassDict),
       true
     );
-    // console.log(mtbsByAspectStack.getInfo())
-    // print(mtbsByAspectStack.getInfo())
-    //      Map.addLayer(nlcdT.set('bounds',clientBoundsDict.All),{min:nlcdObj.min,max:nlcdObj.max,palette:Object.values(nlcdObj.vizDict),addToClassLegend: true,classLegendDict:nlcdObj.legendDictReverse,queryDict: nlcdObj.queryDict},'NLCD '+nlcdYear.toString(),false,null,null,'NLCD landcover classes for '+nlcdYear.toString(),'reference-layer-list');
 
     areaChartCollections["mtbsAspect"] = {
       collection: mtbsByAspectStack,
@@ -715,7 +688,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     };
   }
 
-  // print(mtbsStack.getInfo());
   var severityViz = {
     queryDict: mtbsQueryClassDict,
     min: 1,
@@ -798,12 +770,7 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
     whichLayerList = "reference-layer-list";
   }
   var idsCollections = getIDSCollection();
-  // console.log('ids collections:');console.log(idsCollections)
   var mtbs_path = "projects/USFS/DAS/MTBS/BurnSeverityMosaics";
-
-  // var ned = ee.Image('USGS/NED');
-  // var hillshade = ee.Terrain.hillshade(ned);
-  // Map.addLayer(hillshade,{min:0,max:255},'hillshade')
   var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
   var nlcd_tcc = ee
     .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
@@ -825,20 +792,6 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
     "NLCD Tree Canopy Cover v2021-4",
     whichLayerList
   );
-  // Map.addLayer(ee.Image(0),{min:0,max:0,palette:'000',opacity:0.8});
-  // [2016].map(function (yr) {
-  //   var tcc = nlcd.filter(ee.Filter.calendarRange(yr, yr, "year")).select(["percent_tree_cover"]).mosaic();
-  //   Map.addLayer(
-  //     tcc.updateMask(tcc.gte(1)).set("bounds", clientBoundsDict.CONUS),
-  //     { min: 1, max: 90, palette: palettes.crameri.bamako[50].reverse() },
-  //     "NLCD Tree Canopy Cover " + yr.toString(),
-  //     false,
-  //     null,
-  //     null,
-  //     "NLCD " + yr.toString() + " Tree Canopy Cover",
-  //     whichLayerList
-  //   );
-  // });
 
   if (idsCollections !== undefined) {
     var idsYr = idsCollections.featureCollection
@@ -898,12 +851,6 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
         ")",
       whichLayerList
     );
-
-    // Map.addLayer(idsCollection.select(['IDS Mort Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Mortality Survey Count',false,null,null, 'Number of times an area was recorded as mortality by the IDS survey',whichLayerList);
-    // Map.addLayer(idsCollection.select(['IDS Mort Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Mortality',false,null,null, 'Most recent year an area was recorded as mortality by the IDS survey',whichLayerList);
-
-    // Map.addLayer(idsCollection.select(['IDS Defol Type']).count().set('bounds',clientBoundsDict.All),{'min':1,'max':Math.floor((idsEndYear-idsStartYear)/4),palette:declineYearPalette},'IDS Defoliation Survey Count',false,null,null, 'Number of times an area was recorded as defoliation by the IDS survey',whichLayerList);
-    // Map.addLayer(idsCollection.select(['IDS Defol Type Year']).max().set('bounds',clientBoundsDict.All),{min:startYear,max:endYear,palette:declineYearPalette},'IDS Most Recent Year of Defoliation',false,null,null, 'Most recent year an area was recorded as defoliation by the IDS survey',whichLayerList);
   }
 
   var mtbs = getMTBSAndNLCD(studyAreaName, whichLayerList).MTBS.collection;
@@ -993,8 +940,7 @@ function getHansen(whichLayerList) {
         [-180, -90],
       ],
     ],
-  }; //hansen.geometry().bounds(1000).getInfo();
-  // print(hansenClientBoundary);
+  };
   var hansenLoss = hansen.select(["lossyear"]).selfMask().add(2000).int16();
   var hansenStartYear = 2001;
   var hansenEndYear = 2023;
@@ -1005,15 +951,7 @@ function getHansen(whichLayerList) {
   if (endYear < hansenEndYear) {
     hansenEndYear = endYear;
   }
-  // console.log([hansenStartYear,hansenEndYear])
-  // var hansenYears = ee.List.sequence(hansenStartYear,hansenEndYear);
-  // var hansenC =ee.ImageCollection.fromImages(hansenYears.map(function(yr){
-  //   yr = ee.Number(yr);
-  //   var t = ee.Image(yr).updateMask(hansenLoss.eq(yr)).set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-  //   return t;
-  // }));
-  // var hansenYearsCli = hansenYears.getInfo();
-  // Map.addTimeLapse(hansenC,{min:startYear,max:endYear,palette:declineYearPalette,years:hansenYearsCli},'Hansen Loss Time Lapse',false,null,null,'Hansen Global Forest Change year of loss',whichLayerList)
+
   var hansenGain = hansen.select(["gain"]);
   hansenLoss = hansenLoss.updateMask(
     hansenLoss.gte(startYear).and(hansenLoss.lte(endYear))
@@ -1278,14 +1216,12 @@ function getSelectLayers(short) {
 
     return f.set("system:time_start", f.get("Ig_Date"));
   });
-  // // perims = ee.FeatureCollection(perims.copyProperties(mtbs,['bounds']));
-  // // console.log(perims.get('bounds').getInfo())
 
   perims = perims.filterDate(
     ee.Date.fromYMD(startYear, 1, 1),
     ee.Date.fromYMD(endYear, 12, 31)
   );
-  // perims = perims.filter(ee.Filter.lte('Date',ee.Date.fromYMD(endYear,12,31)));
+
   var huc4 = ee.FeatureCollection("USGS/WBD/2017/HUC04");
   var huc8 = ee.FeatureCollection("USGS/WBD/2017/HUC08");
   var huc12 = ee.FeatureCollection("USGS/WBD/2017/HUC12");
@@ -1320,8 +1256,6 @@ function getSelectLayers(short) {
     "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019"
   );
   if (short === null || short === undefined || short === false) {
-    // Map.addSelectLayer(tiles,{strokeColor:'BB0',},'TCC Processing Tiles',false,null,null,'TCC Processing Tiles. Turn on layer and click on any area wanted to include in chart');
-
     Map.addSelectLayer(
       bia,
       { strokeColor: "0F0" },
@@ -1380,14 +1314,6 @@ function getSelectLayers(short) {
       "Omernik and Griffith 2014 Level 4 EPA Ecoregions. Turn on layer and click on any ecoregion wanted to include in chart"
     );
 
-    // Map.addSelectLayer(usfs_regions,{strokeColor:'0F0',},'National Forest Regions',false,null,null,'National Forest regional boundaries. Turn on layer and click on any Region wanted to include in chart');
-
-    // Map.addSelectLayer(wilderness,{strokeColor:'80F',},'Wilderness',false,null,null,'Wilderness boundaries. Turn on layer and click on any winderness wanted to include in chart');
-
-    // Map.addSelectLayer(b,{strokeColor:'00F',},'National Forests2',false,null,null,'National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart');
-
-    // Map.addSelectLayer(nps,{strokeColor:'F0F',},'National Parks',false,null,null,'National Park boundaries. Turn on layer and click on any Park wanted to include in chart');
-
     Map.addSelectLayer(
       otherLands,
       { strokeColor: "DD0" },
@@ -1427,7 +1353,7 @@ function getSelectLayers(short) {
     null,
     "TIGER, 2018, U.S. Urban Areas (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart"
   );
-  // Map.addSelectLayer(msas2,{strokeColor:'88F',},'US Census Urban Areas',false,null,null,'TIGER, 2018, U.S. MSAs  (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart');
+
   Map.addSelectLayer(
     nps,
     { strokeColor: "F0F" },
@@ -1550,20 +1476,19 @@ function superSimpleGetS2(
       "swir2",
     ],
   };
-  // var s2s = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')
+
   var s2s = ee
     .ImageCollection(s2CollectionDict[toaOrSR])
     .filterDate(startDate, endDate)
     .filterBounds(studyArea);
   s2s = s2s.select(sensorBandDict[toaOrSR], sensorBandNameDict[toaOrSR]);
 
+  var cloudScorePlus = ee
+    .ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
+    .select([cloudScorePlusScore], ["cloudScorePlus"]);
+
+  s2s = s2s.linkCollection(cloudScorePlus, ["cloudScorePlus"]);
   if (applyCloudScorePlus === true) {
-    var cloudScorePlus = ee
-      .ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
-      .select([cloudScorePlusScore], ["cloudScorePlus"]);
-
-    s2s = s2s.linkCollection(cloudScorePlus, ["cloudScorePlus"]);
-
     s2s = s2s.map(function (img) {
       return img.updateMask(
         img.select(["cloudScorePlus"]).gte(cloudScorePlusThresh)

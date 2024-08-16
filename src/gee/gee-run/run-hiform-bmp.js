@@ -214,14 +214,34 @@ function hiform_bmp_process() {
     d = ee.Image(d).uint32();
     return img.addBands(d.rename("Date"));
   }
+
+  let clsLegendDict = {
+    "0.26 to 2.00": "#000096",
+    "0.11 to 0.25": "#0000FF",
+    "0.60 to 0.10": "#0070FF",
+    "-0.30 to 0.50": "#6EBFFF",
+    "-0.40 to -0.60": "#D2D2D2",
+    "-0.70 to -0.90": "#FFFFBE",
+    "-0.10 to -0.12": "#FFFF00",
+    "-0.13 to -0.15": "#FFD37F",
+    "-0.16 to -0.18": "#FFAA00",
+    "-0.19 to -0.21": "#E64C00",
+    "-0.22 to -0.25": "#A80000",
+    "-0.26 to -0.29": "#730000",
+    "-0.30 to -0.33": "#343434",
+    "-0.34 to -0.37": "#4C0073",
+    "-0.38 to -2.00": "#8400A8",
+  };
+
   let ndviRamp = {
     bands: "NDVI",
-    min: -0.3,
-    max: 0.3,
+    min: -0.38,
+    max: 0.26,
+    classLegendDict: clsLegendDict,
     palette: ndvi_palette,
   };
-  var geometry = window.selectedFeature;
-  var geoBounds = geometry.geometry().bounds();
+  let geometry = window.selectedFeature;
+  let geoBounds = geometry.geometry().bounds();
 
   console.log("Running HiForm BMP Process with Parameters");
   console.log(
@@ -231,7 +251,7 @@ function hiform_bmp_process() {
     urlParams.postDate2
   );
 
-  var pre = superSimpleGetS2(
+  let pre = superSimpleGetS2(
     geoBounds,
     urlParams.preDate1,
     advanceDate(urlParams.preDate2, 1),
@@ -239,7 +259,7 @@ function hiform_bmp_process() {
     true
   );
 
-  var post = superSimpleGetS2(
+  let post = superSimpleGetS2(
     geoBounds,
     urlParams.postDate1,
     advanceDate(urlParams.postDate2, 1),
@@ -247,7 +267,7 @@ function hiform_bmp_process() {
     true
   );
 
-  let sizes = ee.List([pre.size(), post.size()]);
+  let sizes = ee.List([pre.limit(1).size(), post.limit(1).size()]);
   let nImages = sizes.getInfo();
   let errorMessage = "";
   if (nImages[0] === 0) {
@@ -267,64 +287,78 @@ function hiform_bmp_process() {
       "crs"
     ];
 
-    pre = pre
-      .map(addNDVI)
-      .map(addDateBand)
-      .qualityMosaic("NDVI")
-      .clip(geometry)
-      .clip(geoBounds);
-    post = post
-      .map(addNDVI)
-      .map(addDateBand)
-      .qualityMosaic("NDVI")
-      .clip(geometry)
-      .clip(geoBounds);
-    // function getPctlStretch(
-    //   img,
-    //   bandNames = ["red", "green", "blue"],
-    //   minPctl = 1,
-    //   maxPctl = 99
-    // ) {
-    //   let stats = img
-    //     .select(bandNames)
-    //     .reduceRegion(
-    //       ee.Reducer.percentile([minPctl, maxPctl]),
-    //       geoBounds,
-    //       300,
-    //       exportCRS,
-    //       null,
-    //       true,
-    //       1e13,
-    //       4
-    //     )
-    //     .getInfo();
-    //   let mins = bandNames.map((b) => stats[`${b}_p${minPctl}`]);
-    //   let maxes = bandNames.map((b) => stats[`${b}_p${maxPctl}`]);
+    pre = pre.map(addNDVI).map(addDateBand);
+    let preCount = pre.select(["NDVI"]).count().rename(["Pre_Count"]);
 
-    //   return { min: mins, max: maxes, bands: bandNames };
-    // }
-    // let compViz = getPctlStretch(pre.add(post).divide(2));
-    // console.log(compViz);
+    pre = pre.qualityMosaic("NDVI").clip(geometry).clip(geoBounds);
+
+    post = post.map(addNDVI).map(addDateBand);
+
+    let postCount = post.select(["NDVI"]).count().rename(["Post_Count"]);
+    console.log(preCount.bandNames().getInfo());
+    post = post.qualityMosaic("NDVI").clip(geometry).clip(geoBounds);
 
     Map.addLayer(
-      pre.select(["blue", "green", "red", "NDVI", "Date"]),
-      vizParamsTrue10k,
-      "Pre Natural Color Composite",
+      pre.select(["Date"]).randomVisualizer(),
+      { addToLegend: false },
+      "Pre Date Used",
       false,
       null,
       null,
-      `Natural color max NDVI composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+      `Pre date used in composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
     );
+    // console.log(pre.bandNames().getInfo());
     Map.addLayer(
-      post.select(["blue", "green", "red", "NDVI", "Date"]),
-      vizParamsTrue10k,
-      "Post Natural Color Composite",
+      post.select(["Date"]).randomVisualizer(),
+      { addToLegend: false },
+      "Post Date Used",
       false,
       null,
       null,
-      `Natural color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+      `Post date used in composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
+    let preWClouds = superSimpleGetS2(
+      geoBounds,
+      urlParams.preDate1,
+      advanceDate(urlParams.preDate2, 1),
+      correctionTypeOption,
+      false
     );
 
+    let postWClouds = superSimpleGetS2(
+      geoBounds,
+      urlParams.postDate1,
+      advanceDate(urlParams.postDate2, 1),
+      correctionTypeOption,
+      false
+    );
+    postWClouds = postWClouds.map(addNDVI).map(addDateBand);
+    preWClouds = preWClouds.map(addNDVI).map(addDateBand);
+
+    Map.addLayer(
+      preWClouds
+        .qualityMosaic("NDVI")
+        .clip(geometry)
+        .select(["blue", "green", "red", "NDVI", "Date"]),
+      vizParamsTrue10k,
+      "Pre With Clouds Natural Color Composite",
+      false,
+      null,
+      null,
+      `No cloud masking natural color max NDVI composite from ${urlParams.preDate1} to ${urlParams.preDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
+    Map.addLayer(
+      postWClouds
+        .qualityMosaic("NDVI")
+        .clip(geometry)
+        .select(["blue", "green", "red", "NDVI", "Date"]),
+      vizParamsTrue10k,
+      "Post With Clouds Natural Color Composite",
+      false,
+      null,
+      null,
+      `No cloud masking natural color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
     var diff = post
       .float()
       .subtract(pre.float())
@@ -406,7 +440,11 @@ function hiform_bmp_process() {
       });
 
     var severe_change_vectors = severe_change
-      .addBands(diff.select(["NDVI"]))
+      .addBands(diff.select(["NDVI"], ["Post-Pre_NDVI"]))
+      .addBands(pre.select(["cloudScorePlus"], ["Pre_CloudScorePlus"]))
+      .addBands(post.select(["cloudScorePlus"], ["Post_CloudScorePlus"]))
+      .addBands(preCount)
+      .addBands(postCount)
       .reduceToVectors({
         geometry: geoBounds,
         crs: exportCRS,
@@ -480,8 +518,8 @@ function hiform_bmp_process() {
         min: 1,
         max: 1,
         opacity: 0.6,
-        palette: "000",
-        classLegendDict: { "": "000" },
+        palette: "#000",
+        classLegendDict: { "": "#000" },
         queryDict: {
           1: "Cloud or cloud shadow - no clear pixels available for mapping",
         },

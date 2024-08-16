@@ -11,7 +11,6 @@ function downloadURI() {
     link.download = uriName + ".png";
     link.href = uri;
     link.click();
-    // document.body.removeChild(link);
     delete link;
   }
 }
@@ -23,9 +22,7 @@ function clearUploadedAreas() {
   ) {
     selectionTracker.uploadedLayerIndices = [];
   }
-  // selectionTracker.uploadedLayerIndices.reverse().map(function(index){
-  //    	map.overlayMapTypes.setAt(index,null)
-  //    });
+
   turnOffUploadedLayers();
   $("#area-charting-shp-layer-list").empty();
 }
@@ -62,10 +59,6 @@ function updateSelectedAreasNameList() {
     .FeatureCollection(selectionTracker.selectedFeatures)
     .flatten();
 
-  //    $('#select-features-list-spinner').show();
-
-  // $('#selected-features-list').empty();
-
   var namesList = ee.List(
     ee.Dictionary(selectedFeatures.aggregate_histogram("name")).keys()
   );
@@ -75,11 +68,7 @@ function updateSelectedAreasNameList() {
       showMessage("Error", failure);
     } else {
       selectionTracker.selectedNames = names;
-      // names.map(function(nm){
-      // $('#selected-features-list').append(`<ul>${nm}</ul>`);
-      // })
     }
-    //        $('#select-features-list-spinner').hide();
   });
 }
 function updateSelectedAreaArea() {
@@ -111,11 +100,9 @@ function setupAreaLayerSelection() {
   selectionTracker.selectedFeatures = [];
   selectionTracker.selectedNames = [];
   selectionTracker.seletedFeatureLayerIndices = [];
-  // turnOffSelectLayers();
   $("#selected-features-list").empty();
   $("#area-charting-selected-layer-list").empty();
 
-  // Map2.addLayer(allSelectLayers,{layerType:'geeVectorImage'},'all select layers')
   map.addListener("click", function (event) {
     if (getActiveTools().indexOf("Area Tools-Select an Area on map") > -1) {
       var coords = [event.latLng.lng(), event.latLng.lat()];
@@ -176,24 +163,6 @@ function setupAreaLayerSelection() {
   });
 }
 
-// function updateSelectedAreaArea(){
-// 	var selectedFeatures = getSelectedGEEFeatureCollection();
-// 	if(selectedFeatures === undefined){
-// 		$('#selected-features-area').html('0 hectares / 0 acres');
-// 	}else{
-// 		$('#selected-features-area').html('Updating');
-// 		$('#select-features-area-spinner').show();
-// 		// selectedFeatures.evaluate(function(values){console.log(values)})
-// 		// ee.Array(selectedFeatures.toList(10000,0).map(function(f){return ee.Feature(f).area()})).reduce(ee.Reducer.sum(),[0])
-// 		ee.Feature(selectedFeatures.union().first()).area(1000)
-// 		.evaluate(function(values,error){
-// 			if(values === undefined){values = 0;console.log(error)};
-//         	$('#selected-features-area').html((values*0.0001).formatNumber() + ' hectares / '+(values*0.000247105).formatNumber() + ' acres');
-//         	$('#select-features-area-spinner').hide();
-//     	})
-// 	}
-
-// }
 function updateUserDefinedAreaArea() {
   var area = 0;
   Object.values(udpPolygonObj).map(function (poly) {
@@ -225,11 +194,7 @@ function turnOffUploadedLayers() {
 function turnOnUploadedLayers() {
   $(".vector-layer-checkbox").trigger("turnOnAllUploadedLayers");
 }
-function turnOffSelectGeoJSON() {
-  // Object.keys(selectedFeaturesJSON).map(function(k){
-  //        selectedFeaturesJSON[k].geoJSON.forEach(function(f){selectedFeaturesJSON[k].geoJSON.setMap(null)});
-  //    })
-}
+function turnOffSelectGeoJSON() {}
 function turnOnSelectGeoJSON() {
   Object.keys(selectedFeaturesJSON).map(function (k) {
     selectedFeaturesJSON[k].geoJSON.forEach(function (f) {
@@ -238,9 +203,6 @@ function turnOnSelectGeoJSON() {
   });
 }
 function chartSelectedAreas() {
-  // Map2.addLayer(selectedFeatures,{layerType :'geeVector'},'Selected Areas');
-  // console.log(selectedFeatures);
-  // console.log(ee.FeatureCollection(selectedFeatures).getInfo());
   var selectedFeatures = ee
     .FeatureCollection(selectionTracker.selectedFeatures)
     .flatten();
@@ -294,7 +256,6 @@ var getQueryImages = function (lng, lat) {
   $(".gm-ui-hover-effect").show();
   var outDict = {};
   $("#summary-spinner").slideDown();
-  // $('#query-container').empty();
 
   var nameEnd =
     " Queried Values for Lng " + lng.toFixed(3) + " Lat " + lat.toFixed(3);
@@ -327,7 +288,6 @@ var getQueryImages = function (lng, lat) {
 
   var idI = 1;
   function makeQueryTable(value, q, k) {
-    // console.log(value);
     var containerID = k + "-container-" + idI.toString();
     idI++;
     $("#query-list-container")
@@ -356,9 +316,13 @@ var getQueryImages = function (lng, lat) {
       ) {
         let mainKey = valueKeys.filter((f) => f.indexOf("viz-") === -1)[0];
         var tValue = JSON.stringify(value[mainKey]);
+        tValue =
+          tValue.indexOf(".") > -1 ? parseFloat(tValue) : parseInt(tValue);
         if (q.queryDict !== null && q.queryDict !== undefined) {
-          tValue = q.queryDict[parseInt(tValue)];
+          tValue = q.queryDict[tValue];
         } else {
+          console.log(tValue);
+          console.log(typeof tValue);
           tValue = smartToFixed(tValue);
         }
 
@@ -370,7 +334,6 @@ var getQueryImages = function (lng, lat) {
           $("#" + containerID).append(
             `<tr><th colspan=2 style="text-align:left;">${q.name}</th</tr>`
           );
-          // $('#'+containerID).append(`<tr><th>Band Name</th><th>Value</th></tr>`);
         }
 
         Object.keys(value).map(function (kt) {
@@ -390,7 +353,6 @@ var getQueryImages = function (lng, lat) {
               }
             }
 
-            // var queryLine =  kt+ ': '+v + "<br>";
             if (Object.keys(value).length > 1) {
               $("#" + containerID).append(
                 `<tr><td>${kt}</td><td>${v}</td></tr>`
@@ -409,8 +371,6 @@ var getQueryImages = function (lng, lat) {
         });
       }
     } else if (q.type === "geeImageCollection") {
-      // console.log(q);
-
       var yAxisLabels = { tickfont: { size: yLabelFontSize } };
 
       if (q.queryDict !== undefined && q.queryDict !== null) {
@@ -422,7 +382,6 @@ var getQueryImages = function (lng, lat) {
         var yMax = yValues.max();
 
         var allYValues = range(yMin, yMax + 1);
-        // console.log(allYValues);
         var allYLabels = allYValues.map((v) => {
           if (yValues.indexOf(v) === -1) {
             return " ";
@@ -513,10 +472,8 @@ var getQueryImages = function (lng, lat) {
           format: "png",
         },
       };
-      // console.log(value.table);console.log(containerID)
-      // console.log(value.table);
+
       Plotly.newPlot(containerID, value.table, plotLayout, buttonOptions);
-      // console.log(value);
     } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
       $("#query-list-container")
         .append(`<table class="table table-hover bg-white">
@@ -527,7 +484,6 @@ var getQueryImages = function (lng, lat) {
       $("#" + containerID).append(
         `<tr><th>${q.name}</th><th>Attribute Table</th></tr>`
       );
-      // queryContent += `<tr><th>Attribute Name</th><th>Attribute Value</th></tr>`;
 
       infoKeys.map(function (name) {
         var valueT = smartToFixed(value[name]);
@@ -541,14 +497,8 @@ var getQueryImages = function (lng, lat) {
       map.setOptions({ draggableCursor: "help" });
       map.setOptions({ cursor: "help" });
       $("#summary-spinner").slideUp();
-      // queryContent += `<tr class = 'bg-black'><th></th><td></td></tr>`;
-      // queryContent +=`</tbody></table>`;
-      // infowindow.setContent(queryContent);
-      // infowindow.open(map);
     }
   }
-  // queryContent += queryLine;
-  // $('#query-container').append(queryLine);
   var keys = Object.keys(queryObj);
   var keysToShow = [];
   keys.map(function (k) {
@@ -557,7 +507,6 @@ var getQueryImages = function (lng, lat) {
       keysToShow.push(k);
     }
   });
-  // console.log(keysToShow);
   var keyCount = keysToShow.length;
   var keyI = 0;
 
@@ -595,7 +544,6 @@ var getQueryImages = function (lng, lat) {
           });
       } else if (q.type === "geeImageCollection") {
         var dateFormat = q.queryDateFormat;
-        // console.log(`Query date format: ${dateFormat}`);
         if (dateFormat === null || dateFormat === undefined) {
           dateFormat = defaultQueryDateFormat;
         }
@@ -606,7 +554,6 @@ var getQueryImages = function (lng, lat) {
         var c = ee.ImageCollection(q.queryItem);
         var plotBounds = clickPt.buffer(plotRadius).bounds();
         function getCollectionValues(values) {
-          // console.log(values);
           keyI++;
           if (values.length > 1) {
             var header = values[0];
@@ -630,20 +577,12 @@ var getQueryImages = function (lng, lat) {
             var xColumn;
             var xLabel;
             if (hasTime) {
-              // xColumn = arrayColumn(values,timeColumnN).map(function(d){
-              // 	// var date = new Date(d);
-              // 	// var day = date.getDate().toString().padStart(2,'0');
-              // 	// var month = (date.getMonth()+1).toString().padStart(2,'0');
-              // 	// var year = date.getFullYear().toString();
-              // 	return d;//year + '-' + month + '-' + day;
-              // });
               xColumn = arrayColumn(values, timeColumnN);
               xLabel = "Time";
             } else {
               xColumn = arrayColumn(values, idColumnN);
               xLabel = "ID";
             }
-            // var yColumns = ee.Image(c.first()).bandNames().getInfo();
             var yColumnNames = header.slice(4);
             yColumns = values.map(function (v) {
               return v.slice(4);
@@ -679,8 +618,6 @@ var getQueryImages = function (lng, lat) {
 
         var getRegionCall = c.getRegion(plotBounds, scale, crs, transform);
         getRegionCall.evaluate(function (values, failure) {
-          // console.log('values');
-          // console.log(values);
           if (values !== undefined && values !== null) {
             getCollectionValues(values);
           } else {
@@ -691,91 +628,15 @@ var getQueryImages = function (lng, lat) {
             showMessage("Error", failure);
           }
         });
-
-        // var cT = c.filterBounds(clickPt);
-        // var anyImages = cT.limit(1).size().getInfo()>0;
-        // if(anyImages){
-        // 	var dateIDs = ee.List(cT.toList(10000,0).map(img=>ee.List([ee.Image(img).id(),ee.Image(img).get('system:time_start')])));
-
-        // 	var cTBns = cT.first().bandNames();
-        // 	var totalBands = dateIDs.length().multiply(cTBns.length());
-        // 	// console.log(totalBands.getInfo())
-        // 	var table2 = cT.getRegion(plotBounds, scale, crs, transform);//.slice(0,totalBands);
-        // 	console.log(table2.getInfo())
-        // 	var table = cT.toBands().reduceRegion(ee.Reducer.firstNonNull(),clickPt,scale,crs,transform,true,1e13,4)
-        // 	var allTables = ee.Dictionary({'table':table,'bandNames':cTBns,'dateIDs':dateIDs})
-        // 	allTables.evaluate(function(values,failure){
-
-        // 		keyI++;
-        // 		if(values !== undefined && values !== null){
-        // 			// console.log(values);
-        // 			values['id_date_lookup'] = toDict(arrayColumn(values.dateIDs,0),arrayColumn(values.dateIDs,1));
-        // 			values['ids'] = arrayColumn(values.dateIDs,0);
-        // 			// console.log(values);
-
-        // 			var header = ['id','date'];
-        // 			values.bandNames.map(bandName=>{header.push(bandName)})
-        // 			var out_table = [];
-        // 			values.ids.map(id=>{
-
-        // 				var date = values['id_date_lookup'][id];
-        // 				var row = [id,date];
-        // 				// console.log(date)
-        // 				values.bandNames.map(bandName=>{
-        // 					var v = values.table[id+'_'+bandName];
-        // 					row.push(smartToFixed(v));
-        // 				});
-        // 				var allNull = row.slice(2).filter(n=>n!==null).length==0;
-        // 				if(!allNull){
-        // 					out_table.push(row);
-        // 				}
-        // 			});
-        // 			// var yColumns = ee.Image(c.first()).bandNames().getInfo();
-        // 			var yColumnNames = 	header.slice(2);
-        // 			var xLabel = 'Time';
-        // 			var xColumn = arrayColumn(out_table,1);
-        // 			if(xColumn.indexOf(null)>-1){
-        // 				xColumn = arrayColumn(out_table,0);
-        // 				xLabel = 'ID';
-        // 			}
-        // 			// console.log(xColumn);
-
-        // 			// console.log(yColumnNames);
-        // 			// yColumns = out_table.map(function(v){return v.slice(4)});
-        // 			var tableList = yColumnNames.map(function(c,i){
-        // 				return {
-        // 				x: xColumn,
-        // 				y: arrayColumn(out_table,i+2),
-        // 				type: 'scatter',
-        // 				name:c
-        // 				}
-        // 			})
-
-        // 			makeQueryTable({table:tableList,xLabel:xLabel},q,k);
-        // 			// console.log(arrayColumn(out_table,2));
-        // 			// console.log(out_table);
-        // 			// console.log(lngLat);
-        // 			// console.log(failure);
-        // 		}else{
-        // 			makeQueryTable(null,q,k);
-        // 		}
-
-        // 	if(failure !== undefined && failure !== null){showMessage('Error',failure);}
-
-        // })
-        // }else{keyI++;makeQueryTable(null,q,k);}
-        // c.reduceRegion(ee.Reducer.first(),clickPt,null,'EPSG:5070',[30,0,-2361915.0,0,-30,3177735.0]).evaluate(function(value){keyI++;makeQueryTable(value,q,k);})
       } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
         try {
           var features = q.queryItem.filterBounds(clickPt);
         } catch (err) {
-          // console.log(err);
           var features = ee
             .FeatureCollection([q.queryItem])
             .filterBounds(clickPt);
         }
         features.evaluate(function (values) {
-          // console.log(values);
           keyI++;
           if (values !== undefined) {
             queryGeoJSON.addGeoJson(values);
@@ -794,24 +655,13 @@ var getQueryImages = function (lng, lat) {
           }
         });
       }
-
-      // outDict[k] = value;
     }
   });
 };
 var fsb;
-// var fieldName = 'NAME';
-// var fsbPath = 'TIGER/2018/Counties';
-
-// var fieldName = 'name';
-// var fsbPath = 'USGS/WBD/2017/HUC10';
-
-// var fieldName = 'FORESTNAME';
-// var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries';
 function populateChartDropdown(id, collectionDict, whichChartCollectionVar) {
   $("#" + id).empty();
   var keys = Object.keys(collectionDict);
-  // console.log(keys)
   eval(whichChartCollectionVar + " = keys[0]");
   if (keys.length > 1) {
     Object.keys(collectionDict).map(function (k) {
@@ -841,22 +691,11 @@ function populatePixelChartDropdown() {
     "whichPixelChartCollection"
   );
 }
-// $('#area-collection-dropdown').change(function(){
-//   console.log(whichAreaChartCollection);
-//   // setupFSB();
-// })
-// var fieldName = 'PARKNAME';
-// var fsbPath = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries';
+
 function setupFSB() {
   $("#forestBoundaries").empty();
   $("#forestBoundaries").hide();
-  // $('#summary-spinner').slideDown();
   $("#select-area-spinner").show();
-  // $('#select-area-spinner').addClass(`fa-spin fa fa-spinner`);
-
-  // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
-  // var fieldName = 'FORESTNAME';
-
   var nfsFieldName = "FORESTNAME";
   var nfs = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries"
@@ -887,7 +726,6 @@ function setupFSB() {
       ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys()
     );
     ee.Dictionary.fromLists(names, names).evaluate(function (d) {
-      // print('d');print(d);
       var mySelect = $("#forestBoundaries");
       var choose;
       mySelect.append(
@@ -896,7 +734,6 @@ function setupFSB() {
       $.each(d, function (val, text) {
         mySelect.append($("<option></option>").val(val).html(text));
       });
-      // $('#select-area-spinner').removeClass('fa-spin fa fa-spinner');
       $("#select-area-spinner").hide();
       $("#forestBoundaries").show();
     });
@@ -906,21 +743,9 @@ function setupFSB() {
 var udp;
 var udpList = [];
 var whichAreaDrawingMethod;
-
-// function startAreaCharting(){
-// 	console.log('starting area charting');
-// 	// $('#areaChartingTabs').slideDown();
-// 	$("#charting-parameters").slideDown();
-// 	if(whichAreaDrawingMethod === '#user-defined'){console.log('starting user defined area charting');startUserDefinedAreaCharting();}
-//   	else if(whichAreaDrawingMethod === '#shp-defined'){$('#areaUpload').slideDown();startShpDefinedCharting();}
-//   	else if(whichAreaDrawingMethod === '#pre-defined'){$('#pre-defined').slideDown();}
-
-// }
 function areaChartingTabSelect(target) {
   stopAreaCharting();
   stopCharting();
-  // $('#charting-container').slideDown();
-  // $("#charting-parameters").slideDown();
 
   whichAreaDrawingMethod = target;
   if (target === "#user-defined") {
@@ -933,21 +758,9 @@ function areaChartingTabSelect(target) {
     map.setOptions({ draggableCursor: "pointer" });
     map.setOptions({ cursor: "pointer" });
   }
-  // startAreaCharting();
 }
-// function listenForUserDefinedAreaCharting(){
-//   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 
-//   var target = $(e.target).attr("href") // activated tab
-
-//   console.log(target);
-//   areaChartingTabSelect(target);
-//   });
-
-// }
-// listenForUserDefinedAreaCharting();
 function restartUserDefinedAreaCarting(e) {
-  // console.log(e);
   if (
     e === undefined ||
     e.key == "Delete" ||
@@ -957,11 +770,9 @@ function restartUserDefinedAreaCarting(e) {
     areaChartingTabSelect(whichAreaDrawingMethod);
     areaChart.clearCharts();
     updateUserDefinedAreaArea();
-    //startUserDefinedAreaCharting();
   }
 }
 function undoUserDefinedAreaCharting(e) {
-  // console.log(e);
   if (e === undefined || (e.key == "z" && e.ctrlKey)) {
     try {
       udpPolygonObj[udpPolygonNumber].getPath().pop(1);
@@ -974,13 +785,9 @@ function undoUserDefinedAreaCharting(e) {
       udpPolygonObj[udpPolygonNumber].getPath().pop(1);
     }
     updateUserDefinedAreaArea();
-
-    // udpList.pop(1);
   }
 }
 function startUserDefinedAreaCharting() {
-  // udpList = [];
-
   map.setOptions({ draggableCursor: "crosshair" });
   map.setOptions({ disableDoubleClickZoom: true });
   google.maps.event.clearListeners(mapDiv, "dblclick");
@@ -991,7 +798,6 @@ function startUserDefinedAreaCharting() {
     udp.setMap(null);
   } catch (err) {}
   udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
-  // udp = new google.maps.Polyline(udpOptions);
 
   udpPolygonObj[udpPolygonNumber].setMap(map);
   google.maps.event.addListener(
@@ -1011,19 +817,16 @@ function startUserDefinedAreaCharting() {
   );
 
   mapHammer = new Hammer(document.getElementById("map"));
-  // google.maps.event.addDomListener(mapDiv, 'click', function(event) {
   mapHammer.on("tap", function (event) {
     var path = udpPolygonObj[udpPolygonNumber].getPath();
     var x = event.center.x;
     var y = event.center.y;
     clickLngLat = point2LatLng(x, y);
-    // udpList.push([clickLngLat.lng(),clickLngLat.lat()])
     path.push(clickLngLat);
     updateUserDefinedAreaArea();
   });
 
   mapHammer.on("doubletap", function () {
-    // 	$('#summary-spinner').slideDown();
     var path = udpPolygonObj[udpPolygonNumber].getPath();
     udpPolygonObj[udpPolygonNumber].setMap(null);
     udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
@@ -1064,32 +867,7 @@ function startUserDefinedAreaCharting() {
     );
 
     updateUserDefinedAreaArea();
-    //        google.maps.event.clearListeners(mapDiv, 'dblclick');
-    //    	google.maps.event.clearListeners(mapDiv, 'click');
-    //    	map.setOptions({draggableCursor:'hand'});
-    // 		map.setOptions({cursor:'hand'});
-    // 		mapHammer.destroy()
-    // 		// var geoJson = {'type':'Polygon',
-    // 		// 	'geometry':[udpList]};
-    // 	try{
-    // 		var userArea = ee.FeatureCollection([ee.Feature(ee.Geometry.Polygon(udpList))]);
-
-    // 	// $('#areaUpload').slideDown();
-
-    //   	// $("#charting-parameters").slideDown();
-    //   	var udpName = $('#user-defined-area-name').val();
-    //   	if(udpName === ''){udpName = 'User Defined Area '+userDefinedI.toString() ;userDefinedI++;};
-    //   	var addon = ' '+ areaChartCollections[whichAreaChartCollection].label+ ' Summary';
-    //   	udpName +=  addon
-    // 	// Map2.addLayer(userArea,{},udpName,false)
-    // 	// console.log(userArea.getInfo());
-    // 	makeAreaChart(userArea,udpName,true);
-    // 	}
-    // 	catch(err){areaChartingTabSelect(whichAreaDrawingMethod);showMessage('Error',err);}
   });
-  // google.maps.event.addDomListener(mapDiv, 'dblclick', function() {
-
-  // });
 }
 function chartUserDefinedArea() {
   try {
@@ -1119,8 +897,6 @@ function chartUserDefinedArea() {
         udpName = "User Defined Area " + userDefinedI.toString();
         userDefinedI++;
       }
-      // var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
-      // udpName += addon;
 
       Map.centerObject(userArea, false);
       if (Object.keys(areaChart.areaChartObj).length > 0) {
@@ -1136,16 +912,12 @@ function chartUserDefinedArea() {
   }
 }
 function chartChosenArea() {
-  // $('#charting-container').slideDown();
-  // $("#charting-parameters").slideDown();
   $("#summary-spinner").slideDown();
   try {
     udp.setMap(null);
   } catch (err) {}
   map.setOptions({ draggableCursor: "progress" });
   map.setOptions({ cursor: "progress" });
-  // var fsb = ee.FeatureCollection('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries');
-  // var fieldName = 'FORESTNAME';
 
   var chosenArea = $("#forestBoundaries").val();
   var chosenAreaName =
@@ -1156,7 +928,6 @@ function chartChosenArea() {
   var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName, chosenArea));
 
   makeAreaChart(chosenAreaGeo, chosenAreaName);
-  // console.log('Charting ' + chosenArea);
 }
 function convertToStack(
   areaChartCollection,
@@ -1215,31 +986,6 @@ function getAreaSummaryTable(
   if ((scale === null || scale === undefined) && transform === null) {
     scale = 30;
   }
-  // else{scale = null};
-
-  // Newer stack-based method
-  // var stack = convertToStack(areaChartCollection,xAxisProperty,dateFormat);
-
-  // var t2 = stack.reduceRegion(ee.Reducer.fixedHistogram(0, 2, 2),area,scale,crs,transform,true,1e13,4);
-  // // console.log(t2)
-  // // console.log(ee.List(ee.Dictionary(t2).values()).get(0).getInfo())
-  // var xProps = ee.List(stack.get('xProps'));
-  // var bns = ee.List(stack.get('bns'));
-  // var sum = ee.Array(t2.values().get(0)).slice(1,1,2).project([0]).reduce(ee.Reducer.sum(),[0]).get([0]);
-  // // console.log(sum.getInfo());
-  // var t2Formatted = xProps.map(xProp=>{
-  // 	var row = bns.map(bn=>{
-  // 		var a = t2.get(ee.String(xProp).cat('---').cat(bn));
-  // 		a = ee.Array(a).slice(1,1,2).project([0]);
-  // 		// var sum = ee.Number(a.reduce(ee.Reducer.sum(),[0]).get([0]));
-  // 		a = ee.Number(a.toList().get(1));
-  // 		var pct = a.divide(sum).multiply(multiplier);
-  // 		return pct;
-  // 	})
-  // 	return ee.List([xProp]).cat(row);
-  // });
-
-  // return t2Formatted;
 
   // Older area charting method
   if (xAxisProperty === "year") {
@@ -1252,14 +998,9 @@ function getAreaSummaryTable(
   let areaChartCollectionStack = areaChartCollection.toBands();
   let xLabels = areaChartCollection.aggregate_histogram(xAxisProperty).keys();
   areaChartCollectionStack = areaChartCollectionStack.rename(xLabels);
-  // areaChartCollectionStack.reduceRegion(kwargs.zonalReducer, area, scale, crs, transform, true, 1e13, 4).evaluate((counts) => {
-  //   console.log(counts);
-  // });
-  // console.log(areaChartCollectionStack.bandNames().getInfo());
-  // console.log(counts.getInfo());
+
   return areaChartCollection.toList(10000, 0).map(function (img) {
     img = ee.Image(img);
-    // img = ee.Image(img).clip(area);
     var t = img.reduceRegion(
       ee.Reducer.fixedHistogram(0, 2, 2),
       area,
@@ -1271,17 +1012,7 @@ function getAreaSummaryTable(
       4
     );
     var xAxisLabel = img.get(xAxisProperty);
-    // t = ee.Dictionary(t).toArray().slice(1,1,2).project([0]);
-    // var lossT = t.slice(0,2,null);
-    // var gainT = t.slice(0,0,2);
-    // var lossSum = lossT.reduce(ee.Reducer.sum(),[0]).get([0]);
-    // var gainSum = gainT.reduce(ee.Reducer.sum(),[0]).get([0]);
-    // var lossPct = ee.Number.parse(lossT.get([1]).divide(lossSum).multiply(100).format('%.2f'));
-    // var gainPct = ee.Number.parse(gainT.get([1]).divide(gainSum).multiply(100).format('%.2f'));
-    // return [year,lossPct,gainPct];//ee.List([lossSum]);
     t = ee.Dictionary(t);
-    // var values = t.values();
-    // var keys = t.keys();
     var sum;
     values = bandNames.map(function (bn) {
       var a = t.get(bn);
@@ -1322,18 +1053,14 @@ function makeAreaChart(area, name, userDefined) {
   }
 
   areaChartingCount++;
-  // closeChart();
-  // document.getElementById('curve_chart_big').style.display = 'none';
   var fColor = randomColor().slice(1, 7);
 
-  // updateProgress(50);
   area = area.set("source", "LCMS_data_explorer");
   0;
   centerObject(area);
   area = area.geometry();
 
   if (areaChartCollections[whichAreaChartCollection].type === "transition") {
-    // console.log('here');console.log(area);
     $("#summary-spinner").slideDown();
     let startYear = areaChartCollections[whichAreaChartCollection].collection
       .sort("system:time_start")
@@ -1357,7 +1084,6 @@ function makeAreaChart(area, name, userDefined) {
         areaChartCollections[whichAreaChartCollection].bandName
       );
 
-      // var chartFormatDict = {'Percentage': {'mult':'NA','label':'% Area'}, 'Acres': {'mult':0.000247105,'label':' Acres'}, 'Hectares': {'mult':0.0001,'label':' Hectares'}};
       let bounds = area.bounds(maxError, crs).transform(crs, maxError);
 
       let img = ee.Image(transitionClasses).clip(area);
@@ -1461,9 +1187,8 @@ function makeAreaChart(area, name, userDefined) {
             dataMatrix.push([""]);
           });
           dataMatrix = dataMatrix.slice(0, dataMatrix.length - 1);
-          // console.log(dataMatrix);
 
-          dataTable = dataMatrix; //[['From Class','To Class',chartFormatDict[areaChartFormat].label]];
+          dataTable = dataMatrix;
 
           Object.keys(t).map((k) => {
             const startRange = k.split("---")[0].split("--")[0];
@@ -1528,9 +1253,6 @@ function makeAreaChart(area, name, userDefined) {
             console.log(sankey_dict);
             var data = [data];
 
-            // let h = parseInt($('#chart-modal-body').width()*0.5);
-            // let w = $('#chart-modal-body').width();
-            // console.log(h);console.log(w);
             var layout = {
               title: name,
               font: {
@@ -1683,7 +1405,6 @@ function makeAreaChart(area, name, userDefined) {
       areaChartCollections[whichAreaChartCollection]
     );
 
-    // var bandNames = ee.Image(1).rename(['Year']).addBands(ee.Image(areaChartCollection.first())).bandNames().getInfo().map(function(i){return i.replaceAll('_',' ')});
     var iteration = 0;
     var maxIterations = 60;
     var success = false;
@@ -1691,26 +1412,18 @@ function makeAreaChart(area, name, userDefined) {
     var startTime = new Date();
     var tableT;
     function evalTable() {
-      // console.log('Evaluating area chart tables');
       table.evaluate(function (tableT, failure) {
-        // print(iteration);
-        // print(tableT);
-        // print(failure);
-        // print(areaChartingCount);
         var endTime = new Date();
         var dt = endTime - startTime;
-        // console.log('dt: '+dt.toString())
+
         if (
           failure !== undefined &&
           iteration < maxIterations &&
           currentChartID === thisChartID &&
           dt < maxTime
         ) {
-          // $('#area-charting-message-box').empty();
-          // $('#area-charting-message-box').html(failure	);
           evalTable();
         } else if (failure === undefined && currentChartID === thisChartID) {
-          // tableT.unshift(['year','Loss %','Gain %']);
           tableT.unshift(bandNames);
           console.log(tableT);
           $("#summary-spinner").slideUp();
@@ -1739,10 +1452,6 @@ function makeAreaChart(area, name, userDefined) {
             fieldsHidden
           );
 
-          // areaChartingTabSelect(whichAreaDrawingMethod);
-          // map.setOptions({draggableCursor:'hand'});
-          // map.setOptions({cursor:'hand'});
-          // if(whichAreaDrawingMethod === '#user-defined'){
           area.evaluate(function (i, failure) {
             areaGeoJson = i;
             areaGeoJson[name] = tableT;
@@ -1765,10 +1474,6 @@ function makeAreaChart(area, name, userDefined) {
           areaChartingCount--;
         } else if (failure !== undefined) {
           $("#summary-spinner").slideUp();
-          // map.setOptions({draggableCursor:'hand'});
-          // map.setOptions({cursor:'hand'});
-
-          // areaChartingTabSelect(whichAreaDrawingMethod);
           if (
             failure.indexOf(
               "Dictionary.toArray: Unable to convert dictionary to array"
@@ -1827,10 +1532,7 @@ function runShpDefinedCharting() {
     $("#summary-spinner").slideDown();
 
     var name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
-    // var addon = " " + areaChartCollections[whichAreaChartCollection].label + " Summary";
-    // if (name.indexOf(addon) === -1) {
-    //   name += addon;
-    // }
+
     map.setOptions({ draggableCursor: "progress" });
     map.setOptions({ cursor: "progress" });
 
@@ -1907,9 +1609,8 @@ function runShpDefinedCharting() {
           return;
         }
       }
-      // var area  =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));//.geometry()//.dissolve(1000,ee.Projection('EPSG:4326'));
 
-      Map2.addLayer(
+      Map.addLayer(
         area,
         { isUploadedLayer: true },
         name,
@@ -1937,18 +1638,9 @@ function runShpDefinedCharting() {
 }
 // new function based on runShpDefinedCharting that is for adding a user defined shp, geojson, etc without doing any charting -EH
 function runShpDefinedAddLayer() {
-  //clearUploadedAreas();
   if (jQuery("#areaUpload")[0].files.length > 0) {
-    //try{udp.setMap(null);}
-    //catch(err){console.log(err)};
-
-    //$('#summary-spinner').slideDown();
-
     var name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
-    //var addon = ' '+ areaChartCollections[whichAreaChartCollection].label + ' Summary';
-    //if(name.indexOf(addon) === -1){
-    //	name += addon;
-    //}
+
     map.setOptions({ draggableCursor: "progress" });
     map.setOptions({ cursor: "progress" });
 
@@ -1956,65 +1648,6 @@ function runShpDefinedAddLayer() {
       console.log("successfully converted to JSON");
       console.log(convertedRaw);
 
-      //console.log('compressing geoJSON')
-      //var converted = compressGeoJSON(convertedRaw,uploadReductionFactor);
-      //console.log(converted);
-      ////////////First try assuming the geoJSON has spatial info/////////////
-      // var area =ee.FeatureCollection(convertedRaw.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
-      // 	console.log('N features to add to map ');
-      // 	var nFeatures = area.size().getInfo()
-      // 	console.log(nFeatures);
-      // 	if(nFeatures == 0){
-      // 		showMessage('No Features Found','Found '+nFeatures.toString() + ' in provided file. Please select a file with features.');
-      // 		$('#summary-spinner').hide();
-      // 		return
-      // 	}
-      /*	
-		try{
-			var area =ee.FeatureCollection(converted.features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}));
-			console.log('N features to add to map ');
-			var nFeatures = area.size().getInfo()
-			console.log(nFeatures);
-			if(nFeatures == 0){
-				showMessage('No Features Found','Found '+nFeatures.toString() + ' in provided file. Please select a file with features.');
-				$('#summary-spinner').hide();
-				return
-			}
-			} 
-		//Fix it if not
-		catch(err){
-			err = err.toString();
-			console.log('Error');console.log(err);
-			if(err.indexOf('Error: Invalid GeoJSON geometry:') > -1){
-				try{
-					var area =ee.FeatureCollection(fixGeoJSONZ(converted).features.map(function(t){return ee.Feature(t).dissolve(100,ee.Projection('EPSG:4326'))}))	
-					console.log('N features to summarize ');
-					console.log(area.size().getInfo());
-					}
-				catch(err){
-					err = err.toString();
-					console.log(err)
-					if(err.indexOf('413')>-1){
-						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.')
-					}else{
-						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',err)
-					}
-					$('#summary-spinner').hide();
-					return;
-					
-				};
-				}
-			else{
-				
-				if(err.indexOf('413')>-1){
-						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!','Provided vector has too many vertices.<br>Try increasing the "Vertex Reduction Factor" slider by one and then rerunning.')
-					}else{
-						showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error Ingesting Study Area!',err)
-					}
-				$('#summary-spinner').hide();
-				return;
-				}*
-			};*/
       if (
         convertedRaw.features.map(function (f) {
           f.geometry.type == "Point" || "MultiPoint";
@@ -2053,7 +1686,6 @@ function runShpDefinedAddLayer() {
   }
 }
 function startShpDefinedCharting() {
-  // clearUploadedAreas();
   turnOnUploadedLayers();
   if (
     selectionTracker.uploadedLayerIndices === undefined ||
@@ -2061,13 +1693,11 @@ function startShpDefinedCharting() {
   ) {
     selectionTracker.uploadedLayerIndices = [];
   }
-
-  // $('#areaUpload').change(function(){runShpDefinedCharting()})
 }
 function stopAreaCharting() {
   window.removeEventListener("keydown", restartUserDefinedAreaCarting);
   window.removeEventListener("keydown", undoUserDefinedAreaCharting);
-  // console.log('stopping area charting');
+
   try {
     Object.keys(udpPolygonObj).map(function (k) {
       udpPolygonObj[k].setMap(null);
@@ -2076,18 +1706,9 @@ function stopAreaCharting() {
     udpPolygonNumber = 1;
     updateUserDefinedAreaArea();
   } catch (err) {}
-  //   $('#areaChartingTabs').slideUp();
+
   $("#areaUpload").unbind("change");
-  // $("#charting-parameters").slideUp();
-  // $('#user-defined').slideUp();
-  // $('#shp-defined').slideUp();
-  // $('#pre-defined').slideUp();
   $("#summary-spinner").slideUp();
-  // // $('#areaUpload').slideUp();
-  // google.maps.event.clearListeners(mapDiv, 'dblclick');
-  //    google.maps.event.clearListeners(mapDiv, 'click');
-  // updateProgress(1);
-  // closeChart();
 }
 
 function startQuery() {
@@ -2107,14 +1728,13 @@ function startQuery() {
   map.setOptions({ cursor: "help" });
   mapHammer = new Hammer(document.getElementById("map"));
   mapHammer.on("doubletap", function (e) {
-    // google.maps.event.addDomListener(mapDiv,"dblclick", function (e) {
     $("#summary-spinner").slideDown();
     map.setOptions({ draggableCursor: "progress" });
     map.setOptions({ cursor: "progress" });
 
     print("Map was double clicked");
-    var x = e.center.x; //clientX;
-    var y = e.center.y; //console.log(x);
+    var x = e.center.x;
+    var y = e.center.y;
     center = point2LatLng(x, y);
 
     var pt = ee.Geometry.Point([center.lng(), center.lat()]);
@@ -2125,22 +1745,14 @@ function startQuery() {
 
     getQueryImages(center.lng(), center.lat());
   });
-  // mapHammer.on("tap",function(e){
-  // // 	infowindow.setMap(null);
-  // 	clearQueryGeoJSON();
-  // })
-  // map.addListener("click", function(){infowindow.setMap(null);clearQueryGeoJSON();});
-  // document.getElementById('query-container').style.display = 'block';
 }
 function stopQuery() {
-  // print('stopping');
   try {
     mapHammer.destroy();
     map.setOptions({ draggableCursor: "hand" });
     map.setOptions({ cursor: "hand" });
-    // $('#query-container').text('Double click on map to query values of displayed layers at a location');
+
     google.maps.event.clearListeners(mapDiv, "dblclick");
-    // google.maps.event.clearInstanceListeners(map);
     map.setOptions({ cursor: "hand" });
     infowindow.setMap(null);
     marker.setMap(null);
@@ -2148,18 +1760,10 @@ function stopQuery() {
     $("#chart-collapse-div").empty();
     $("#chart-collapse-label-chart-collapse-div").hide();
   } catch (err) {}
-
-  // document.getElementById('query-container').style.display = 'none';
 }
 function getImageCollectionValuesForCharting(pt) {
-  // var timeSeries = years.map(function(yr){
-  // 	var imageT = l5s.filterDate(ee.Date.fromYMD(yr,1,1),ee.Date.fromYMD(yr,12,31)).median().set('system:time_start',ee.Date.fromYMD(yr,6,1).millis());
-  // 	return imageT
-  // })
-  // timeSeries = ee.ImageCollection.fromImages(timeSeries);
   var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
   var tryCount = 2;
-  // print(icT.getRegion(pt.buffer(plotRadius),plotScale))
   try {
     var allValues = icT.getRegion(pt, scale, crs, transform).evaluate();
     print(allValues);
@@ -2169,22 +1773,17 @@ function getImageCollectionValuesForCharting(pt) {
       '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Charting error',
       err.message
     );
-  } //reRun();setTimeout(function(){icT.getRegion(pt.buffer(plotRadius),plotScale).getInfo();},5000)}
+  }
 }
 Date.prototype.yyyymmdd = function () {
-  var mm = this.getMonth() + 1; // getMonth() is zero-based
+  var mm = this.getMonth() + 1; // is zero-based
   var dd = this.getDate();
 
   return [this.getFullYear(), !mm[1] && "0", mm, !dd[1] && "0", dd].join(""); // padding
 };
 function getDataTable(pt) {
-  // var chartScale = plotScale;
-  // var chartPtSize = plotRadius;
-  // addToMap(pt.buffer(chartPtSize));
-
   var values = getImageCollectionValuesForCharting(pt);
   globalChartValues = values;
-  // var values = imageCollectionForCharting.getRegion(pt.buffer(chartPtSize),chartScale).getInfo();
 
   if (chartIncludeDate) {
     var startColumn = 3;
@@ -2218,18 +1817,6 @@ function getDataTable(pt) {
 
   return forChart;
 }
-
-// function changeChartType(newType,showExpanded){
-// 	if(!showExpanded){showExpanded = false};
-// 	newType.checked = true;
-// 	$(newType).checked = true;
-// 	chartType = newType.value;
-// 	uriName = mode+'_Product_Time_Series_for_lng_' +center.lng().toFixed(4).toString() + '_' + center.lat().toFixed(4).toString(); //+ ' Res: ' +plotScale.toString() + '(m) Radius: ' + plotRadius	.toString() + '(m)';
-// 	csvName = uriName + '.csv'
-// 	document.getElementById('curve_chart').style.display = 'none';
-// 	// setTimeout(function(){updateProgress(80);},0);
-// 	Chart(showExpanded);
-// }
 
 //////////////////////////////////////////////////////////////////
 //ChartJS code
@@ -2405,14 +1992,10 @@ if (
   localStorage.tableOrChart === undefined ||
   localStorage.tableOrChart === null
 ) {
-  // if(mode === 'MTBS'){localStorage.tableOrChart = 'table'}
-  // else{
   localStorage.tableOrChart = "chart";
-  // };
 }
 
 addModal("main-container", "chart-modal");
-//addModalTitle('chart-modal','test');$('#chart-modal-body').append('hello');$('#chart-modal').modal();
 function configChartModal(chartPlatform = "chartJS") {
   var h = $(document).height();
   var w = $(document).width();
@@ -2424,10 +2007,7 @@ function configChartModal(chartPlatform = "chartJS") {
     canvasWidth = "100%";
   }
 
-  // console.log(dt);
-  // $('#'+modalID).html('');
   clearModal("chart-modal");
-  // if(title !== null && title !== undefined){addModalTitle('chart-modal',title)}
 
   $("#chart-modal-body").append(
     `<div id = 'chart-modal-graph-table-container' class = 'flexcroll chart-table-graph-container'></div>`
@@ -2487,18 +2067,12 @@ function addChartJS(
     steppedLine = false;
   }
 
-  // console.log('starting convert to table')
   dataTable = dataTableNumbersToNames(dt);
-  // console.log('finished convert to table')
   configChartModal();
-
   var data = dt.slice(1);
-  // console.log(data);
   var firstColumn = arrayColumn(data, 0);
-  // console.log(firstColumn)
   var columnN = dt[1].length;
   var columns = range(1, columnN);
-  // console.log('starting to convert to chart')
   var datasets = columns.map(function (i) {
     var fieldHidden = false;
     if (fieldsHidden !== null) {
@@ -2507,7 +2081,6 @@ function addChartJS(
     var col = arrayColumn(dt, i);
     var label = col[0];
     var data = col.slice(1);
-    // console.log(data)
     data = data.map(function (i) {
       var out;
       try {
@@ -2518,9 +2091,7 @@ function addChartJS(
 
       return out;
     });
-    // console.log(data)
 
-    // var color = randomRGBColor();
     var color = colors[(i - 1) % colors.length];
     if (color.indexOf("#") === -1) {
       color = "#" + color;
@@ -2544,11 +2115,8 @@ function addChartJS(
       out["backgroundColor"] = color;
     }
     return out;
-    // console.log(label);console.log(data)
   });
-  // console.log('finished to convert to chart')
   chartColorI = 0;
-  // console.log(datasets)
   try {
     chartJSChart.destroy();
   } catch (err) {}
@@ -2560,7 +2128,6 @@ function addChartJS(
         display: true,
         position: "top",
         text: title.replaceAll("_", " "),
-        // fontColor: '#000',
         fontSize: 16,
       },
       legend: {
@@ -2657,13 +2224,7 @@ function change(newType, stacked, steppedLine) {
   currentScales.yAxes[0].stacked = stacked;
   config.options.scales = currentScales;
   if (stacked) {
-    // config.options.scales = {
-    // 	yAxes: [{ stacked: stacked }],//,ticks:{min:0,max:100}}],
-    // 	xAxes: [{ stacked: stacked }]
-    // }
-
     var datasets = config.data.datasets;
-    // console.log(datasets);
     datasets = datasets.map(function (dataset) {
       dataset["fill"] = true;
       dataset["backgroundColor"] = dataset["borderColor"];
@@ -2672,16 +2233,10 @@ function change(newType, stacked, steppedLine) {
     });
     config.data.datasets = datasets;
   } else {
-    // config.options.scales = {
-    // 	yAxes: [{ stacked: stacked }],
-    // 	xAxes: [{ stacked: stacked }]
-    // }
     var datasets = config.data.datasets;
-    // console.log(datasets);
     datasets = datasets.map(function (dataset) {
       dataset["fill"] = false;
       dataset["steppedLine"] = false;
-      // dataset['backgroundColor'] = null;
       return dataset;
     });
     config.data.datasets = datasets;
@@ -2694,8 +2249,6 @@ var testTable = JSON.parse(
   '[["id","longitude","latitude","time","Raw NDVI","LANDTRENDR Fitted NDVI","Land Cover Class","Land Use Class","Loss Probability","Gain Probability"],["Landsat_Fmask_allL7_SR_medoid_1984_1986_190_250_1_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1985",-109.74183328494144,42.94571387213776,486432000000,0.6041558441558442,0.61475,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1985_1987_190_250_2_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1986",-109.74183328494144,42.94571387213776,517968000000,0.6490280777537797,0.6148,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1986_1988_190_250_3_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1987",-109.74183328494144,42.94571387213776,549504000000,0.6315240083507307,0.61485,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1987_1989_190_250_4_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1988",-109.74183328494144,42.94571387213776,581126400000,0.6315240083507307,0.6149,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1988_1990_190_250_5_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1989",-109.74183328494144,42.94571387213776,612662400000,0.6353887399463807,0.61495,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1989_1991_190_250_6_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1990",-109.74183328494144,42.94571387213776,644198400000,0.6176795580110498,0.615,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1990_1992_190_250_7_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1991",-109.74183328494144,42.94571387213776,675734400000,0.5684689236988377,0.61505,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1991_1993_190_250_8_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1992",-109.74183328494144,42.94571387213776,707356800000,0.5684689236988377,0.6151,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1992_1994_190_250_9_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1993",-109.74183328494144,42.94571387213776,738892800000,0.6082029141932002,0.61515,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1993_1995_190_250_10_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1994",-109.74183328494144,42.94571387213776,770428800000,0.5819209039548022,0.6152000000000001,0.699999988079071,0.30000001192092896,0.05000000074505806,0],["Landsat_Fmask_allL7_SR_medoid_1994_1996_190_250_11_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1995",-109.74183328494144,42.94571387213776,801964800000,0.6067796610169491,0.6152500000000001,0.699999988079071,0.30000001192092896,0.05000000074505806,0],["Landsat_Fmask_allL7_SR_medoid_1995_1997_190_250_12_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1996",-109.74183328494144,42.94571387213776,833587200000,0.6067796610169491,0.6153000000000001,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1996_1998_190_250_13_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1997",-109.74183328494144,42.94571387213776,865123200000,0.6450617283950617,0.6153500000000001,0.699999988079071,0.30000001192092896,0.03999999910593033,0.009999999776482582],["Landsat_Fmask_allL7_SR_medoid_1997_1999_190_250_14_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1998",-109.74183328494144,42.94571387213776,896659200000,0.6450617283950617,0.6154000000000001,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1998_2000_190_250_15_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1999",-109.74183328494144,42.94571387213776,928195200000,0.6054347826086957,0.61545,0.699999988079071,0.30000001192092896,0.07999999821186066,0],["Landsat_Fmask_allL7_SR_medoid_1999_2001_190_250_16_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2000",-109.74183328494144,42.94571387213776,959817600000,0.6196961760083813,0.6155,0.699999988079071,0.30000001192092896,0.10999999940395355,0],["Landsat_Fmask_allL7_SR_medoid_2000_2002_190_250_17_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2001",-109.74183328494144,42.94571387213776,991353600000,0.625,0.61555,0.699999988079071,0.30000001192092896,0.20999999344348907,0],["Landsat_Fmask_allL7_SR_medoid_2001_2003_190_250_18_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2002",-109.74183328494144,42.94571387213776,1022889600000,0.625,0.6156,0.699999988079071,0.30000001192092896,0.3700000047683716,0],["Landsat_Fmask_allL7_SR_medoid_2002_2004_190_250_19_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2003",-109.74183328494144,42.94571387213776,1054425600000,0.5976331360946746,0.61565,0.699999988079071,0.30000001192092896,0.30000001192092896,0],["Landsat_Fmask_allL7_SR_medoid_2003_2005_190_250_20_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2004",-109.74183328494144,42.94571387213776,1086048000000,0.6184004181913225,0.6157,0.699999988079071,0.30000001192092896,0.23999999463558197,0],["Landsat_Fmask_allL7_SR_medoid_2004_2006_190_250_21_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2005",-109.74183328494144,42.94571387213776,1117584000000,0.6023643202579259,0.6050375,0.699999988079071,0.30000001192092896,0.3799999952316284,0],["Landsat_Fmask_allL7_SR_medoid_2005_2007_190_250_22_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2006",-109.74183328494144,42.94571387213776,1149120000000,0.5668202764976958,0.594375,0.699999988079071,0.30000001192092896,0.3100000023841858,0],["Landsat_Fmask_allL7_SR_medoid_2006_2008_190_250_23_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2007",-109.74183328494144,42.94571387213776,1180656000000,0.5428024868483978,0.5837125000000001,0.699999988079071,0.30000001192092896,0.7099999785423279,0],["Landsat_Fmask_allL7_SR_medoid_2007_2009_190_250_24_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2008",-109.74183328494144,42.94571387213776,1212278400000,0.6413103831204887,0.5730500000000001,0.699999988079071,0.30000001192092896,0.5099999904632568,0],["Landsat_Fmask_allL7_SR_medoid_2008_2010_190_250_25_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2009",-109.74183328494144,42.94571387213776,1243814400000,0.5547407019381875,0.5623875,0.699999988079071,0.30000001192092896,0.8799999952316284,0],["Landsat_Fmask_allL7_SR_medoid_2009_2011_190_250_26_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2010",-109.74183328494144,42.94571387213776,1275350400000,0.5532495903877663,0.551725,0.699999988079071,0.30000001192092896,0.550000011920929,0],["Landsat_Fmask_allL7_SR_medoid_2010_2012_190_250_27_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2011",-109.74183328494144,42.94571387213776,1306886400000,0.5532495903877663,0.5410625,0.699999988079071,0.30000001192092896,0.5199999809265137,0],["Landsat_Fmask_allL7_SR_medoid_2011_2013_190_250_28_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2012",-109.74183328494144,42.94571387213776,1338508800000,0.5121196493037647,0.5304,0.699999988079071,0.30000001192092896,0.7799999713897705,0.019999999552965164],["Landsat_Fmask_allL7_SR_medoid_2012_2014_190_250_29_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2013",-109.74183328494144,42.94571387213776,1370044800000,0.5759870200108166,0.5492714285714286,0.699999988079071,0.30000001192092896,0.10999999940395355,0.15000000596046448],["Landsat_Fmask_allL7_SR_medoid_2013_2015_190_250_30_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2014",-109.74183328494144,42.94571387213776,1401580800000,0.5555555555555556,0.5681428571428572,0.699999988079071,0.30000001192092896,0.17000000178813934,0.09000000357627869],["Landsat_Fmask_allL7_SR_medoid_2014_2016_190_250_31_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2015",-109.74183328494144,42.94571387213776,1433116800000,0.6195835678109173,0.5870142857142857,0.699999988079071,0.30000001192092896,0.07999999821186066,0.029999999329447746],["Landsat_Fmask_allL7_SR_medoid_2015_2017_190_250_32_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2016",-109.74183328494144,42.94571387213776,1464739200000,0.6360619469026548,0.6058857142857144,0.699999988079071,0.30000001192092896,0.14000000059604645,0.14000000059604645],["Landsat_Fmask_allL7_SR_medoid_2016_2018_190_250_33_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2017",-109.74183328494144,42.94571387213776,1496275200000,0.6152263374485596,0.6247571428571429,0.699999988079071,0.30000001192092896,0.05000000074505806,0.11999999731779099],["Landsat_Fmask_allL7_SR_medoid_2017_2019_190_250_34_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2018",-109.74183328494144,42.94571387213776,1527811200000,0.656484727090636,0.6436285714285715,0.699999988079071,0.30000001192092896,0.17000000178813934,0.1899999976158142],["Landsat_Fmask_allL7_SR_medoid_2018_2020_190_250_35_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2019",-109.74183328494144,42.94571387213776,1559347200000,0.6271186440677967,0.6625,0.699999988079071,0.30000001192092896,0.1599999964237213,0.3199999928474426]]'
 );
 function dataTableNumbersToNames(dataTable) {
-  // try{chartTableDict = chartCollection.get('chartTableDict').getInfo();}
-  // catch(err){chartTableDict = null};
   if (
     pixelChartCollections[whichPixelChartCollection].chartTableDict !== null &&
     pixelChartCollections[whichPixelChartCollection].chartTableDict !==
@@ -2707,8 +2260,7 @@ function dataTableNumbersToNames(dataTable) {
     chartTableDict = null;
   }
 
-  // console.log(chartTableDict)
-  var header = dataTable[0]; //.map(function(i){return i.toProperCase()});
+  var header = dataTable[0];
   header[0] = header[0].toProperCase();
   var outTable = [header];
   dataTable.slice(1).map(function (r) {
@@ -2717,7 +2269,7 @@ function dataTableNumbersToNames(dataTable) {
       var label = header[i];
 
       var tableValue;
-      // console.log(chartTableDict[label]);console.log(value);
+
       if (
         chartTableDict !== null &&
         chartTableDict[label] !== null &&
@@ -2728,7 +2280,7 @@ function dataTableNumbersToNames(dataTable) {
         var whichKey = keys.filter(function (k) {
           return Math.abs(k - value) < 0.0001;
         });
-        // console.log(whichKey)
+
         tableValue = chartTableDict[label][whichKey];
         if (tableValue === null || tableValue === undefined) {
           try {
@@ -2736,17 +2288,6 @@ function dataTableNumbersToNames(dataTable) {
           } catch (err) {}
           tableValue = value;
         }
-        // console.log(tableValue)
-        // console.log(keys);console.log(parseFloat(value).toString());
-        // console.log(keys.indexOf(parseFloat(value)));
-        // console.log(keys.indexOf(parseInt(value)))
-        // } && (chartTableDict[label][parseInt(value)] !== undefined || chartTableDict[label][parseFloat(value)] !== undefined)){
-        // console.log('yay');
-        // console.log(chartTableDict[label]);
-        // tableValue = chartTableDict[label][parseInt(value)];
-        // if(tableValue === undefined){
-        // 	tableValue = chartTableDict[label][parseFloat(value)];
-        // }
       } else {
         try {
           value = value.toFixed(6);
@@ -3112,17 +2653,12 @@ var d = [
 ];
 // addChartJS(d,'test1');
 
-// var legends = chartCollection.get('legends').getInfo();
-// if(legends !== null){makeLegend(legends)}
-
 function addClickMarker(plotBounds) {
   plotBounds.evaluate(function (plotBounds) {
     var coords = plotBounds.coordinates[0];
 
     marker.setMap(null);
     marker = new google.maps.Rectangle({
-      // center:{lat:center.lat(),lng:center.lng()},
-      // radius:plotRadius,
       bounds: {
         north: coords[0][1],
         south: coords[2][1],
@@ -3181,10 +2717,6 @@ function startPixelChartCollection() {
     chartCollection =
       pixelChartCollections[whichPixelChartCollection].collection;
 
-    // if(pixelChartCollections[whichPixelChartCollection].chartColors !== undefined && pixelChartCollections[whichPixelChartCollection].chartColors !== null){
-    // 	chartColors = pixelChartCollections[whichPixelChartCollection].chartColors;
-    // }
-
     areaGeoJson = null;
     $("#summary-spinner").slideDown();
     map.setOptions({ draggableCursor: "progress" });
@@ -3222,8 +2754,7 @@ function startPixelChartCollection() {
       } else {
         var startColumn = 4;
       }
-      // print('Extracted values:');
-      // print(values);
+
       var header = values[0].slice(startColumn);
       values = values
         .slice(1)
@@ -3233,8 +2764,6 @@ function startPixelChartCollection() {
         .sort(sortFunction);
       if (chartIncludeDate) {
         values = values.map(function (v) {
-          // var d = [new Date(v[0])];
-          // v.slice(1).map(function(vt){d.push(vt)})
           var d = v[0];
 
           if (
@@ -3252,19 +2781,12 @@ function startPixelChartCollection() {
           } else {
             var y = (new Date(d).getYear() + 1900).toString();
           }
-          // v = v.map(function(i){if(i === null){return i}else{return i.toFixed(3)}})
+
           v[0] = y;
           return v;
         });
       }
-      // values = values.map(function(v)
-      // 	{return v.map(function(i){
-      // 	if(i === null || i === undefined){return i}
-      // 	else if(i%1!==0){return parseFloat(i.toFixed(4))}
-      // 	else if(i%1==0){return parseInt(i)}
-      // 	else{return i}
-      // 	})
-      // });
+
       values.unshift(header);
       $("#summary-spinner").slideUp();
       map.setOptions({ draggableCursor: "help" });
@@ -3296,9 +2818,6 @@ function startPixelChartCollection() {
         .getRegion(plotBounds, scale, crs, transform)
         .evaluate(function (values, failure) {
           $("#summary-spinner").slideUp();
-          // if(values === undefined ||  values === null){
-          // 	showMessage('<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again','Error encountered while charting.<br>Most likely clicked outside study area data extent<br>Try charting an area within the selected study area');
-          // }
           if (failure !== undefined && failure !== null) {
             showMessage(
               '<i class="text-dark text-uppercase fa fa-exclamation-triangle"></i> Error! Try again',
@@ -3309,10 +2828,7 @@ function startPixelChartCollection() {
             var expectedLength = icT.size().getInfo() + 1;
             if (values.length > expectedLength) {
               console.log("reducing number of inputs");
-              // console.log(expectedLength);
-              // console.log(values);
               values = values.slice(0, expectedLength);
-              // values = getEveryOther(values);
             }
             chartValues(values);
           } else if (values.length == 1) {
@@ -3332,25 +2848,7 @@ function startPixelChartCollection() {
   });
 }
 
-// function closeChart(){
-// 	updateProgress(1);
-// 	$('#curve_chart').slideUp();
-
-// }
-// function closeBigChart(){
-// 	$('#curve_chart_big').slideUp();
-
-// }
 function stopCharting() {
-  // document.getElementById('charting-parameters').style.display = 'none';
-  // $("#charting-parameters").slideUp();
-  // $("#whichIndexForChartingRadio").slideUp();
-  // marker.setMap(null);
-  // google.maps.event.clearListeners(mapDiv, 'dblclick');
-
-  // updateProgress(1);
-  // closeChart();
-  // closeBigChart();
   try {
     mapHammer.destroy();
   } catch (err) {}

@@ -1,5 +1,5 @@
 function addPlotCollapse() {
-  var collapseContainer = "sidebar-left"; //getWalkThroughCollapseContainerID();
+  var collapseContainer = "sidebar-left";
   addCollapse(
     collapseContainer,
     "plot-collapse-label",
@@ -11,9 +11,6 @@ function addPlotCollapse() {
     "LEGEND of the layers displayed on the map"
   );
   addAccordianContainer("plot-collapse-div", "plots-accordian");
-  // $('#legend-collapse-div').append(`<legend-list   id="legend"></legend-list>`)
-  // $('#plot-collapse-div').append(`<select multiple class = 'form-control bg-black flexcroll' id="plot-list"></select>`);
-  // $('#legend-collapse-div').append(`<div id="legend-reference-layer-list"></div>`)
 }
 
 function plotListFilterFunction(id) {
@@ -36,7 +33,6 @@ function plotListFilterFunction(id) {
   }
 
   console.log(value);
-  // console.log(rows);
 }
 function addPlotProjectAccordian(name) {
   var nameID = name.replaceAll(" ", "-");
@@ -69,13 +65,11 @@ function loadPlots(plotProjectObj) {
   fetch(plotProjectObj.path)
     .then((resp) => resp.json()) // Transform the data into json
     .then(function (json) {
-      // console.log(json)
       json.features.map(function (f) {
         f.name = plotProjectObj.name;
         f.properties.PLOTID = f.properties[plotProjectObj["plotIDField"]];
         addPlot(f);
       });
-      // console.log(json)
       Map.addLayer(
         json,
         { layerType: "geoJSONVector", strokeColor: "#F00" },
@@ -86,22 +80,10 @@ function loadPlots(plotProjectObj) {
         "Plots for: " + plotProjectObj.name,
         "reference-layer-list"
       );
-      // Create and append the li's to the ul
     });
-
-  // fetch(plotProjectObj.path)
-  //  	.then(response => response.json())
-  //  	.then(json => json.features.map(function(f){
-  //  		f.name = plotProjectObj.name;
-  //  		f.properties.PLOTID = f.properties[plotProjectObj['plotIDField']];
-  // 		addPlot(f)
-  //  	}))
-  //  	.then(json => console.log(json));
-  //  	 addPlotgeoJSON(plotProjectObj.path)
 }
 
 function addPlot(obj) {
-  // console.log(obj);
   $("#" + obj.name.replaceAll(" ", "-") + "-plot-list").append(`
 		 <ul class = 'plot-button border-top border-bottom m-0' onclick = 'synchronousCenterObject(${JSON.stringify(
        obj.geometry
@@ -211,7 +193,4 @@ var plotsGeoJSONs = [
   hiFinal,
   CONUSpractice,
   coastalAKPractice,
-]; //[r4PlotsJson,lcmap,conus1];//,mls,bt,fnf];
-// [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map(function(i){
-// 	plotsGeoJSONs.push({name: 'LCMAP '+i.toString(),path:'./geojson/Set'+i.toString()+'_Polys_g.json','plotIDField':'plotid'})
-// })
+];

@@ -215,8 +215,7 @@ function runAncillary() {
     Bareground: "4f4f4f",
     "Bareground (Beach or Tide Flat) (S. Alaska)": "4f4f4f",
     "Deciduous Forest (Open-Closed)": "ffb340",
-    "Deciduous Forest (Open-Closed) (Seasonally Flooded) (S. Alaska)":
-      "c49735",
+    "Deciduous Forest (Open-Closed) (Seasonally Flooded) (S. Alaska)": "c49735",
     "Deciduous Forest (Woodland-Closed) (S. Alaska)": "c9401e",
     "Dwarf Shrub": "ff8cff",
     "Dwarf Shrub (S. Alaska)": "ff6bff",
@@ -288,22 +287,34 @@ function runAncillary() {
     false
   );
 
-  var canopyHeight = ee.ImageCollection('projects/meta-forest-monitoring-okw37/assets/CanopyHeight').mosaic();
-  Map.addLayer(canopyHeight, {
-    min: 0,
-    max: 25,
-    palette: ['f0fcfc', '5ec962', '21918c', '3b528b', '440154']
-  }, 'Canopy Height [in meters]',0);
+  var canopyHeight = ee
+    .ImageCollection(
+      "projects/meta-forest-monitoring-okw37/assets/CanopyHeight"
+    )
+    .mosaic();
+  Map.addLayer(
+    canopyHeight,
+    {
+      min: 0,
+      max: 25,
+      palette: ["f0fcfc", "5ec962", "21918c", "3b528b", "440154"],
+    },
+    "Canopy Height [in meters]",
+    0
+  );
 
-
-  var treenotree = canopyHeight.updateMask(canopyHeight.lte(6))
-  var tallShrubs = treenotree.updateMask(canopyHeight.gte(1))
-  Map.addLayer(tallShrubs, {
+  var treenotree = canopyHeight.updateMask(canopyHeight.lte(6));
+  var tallShrubs = treenotree.updateMask(canopyHeight.gte(1));
+  Map.addLayer(
+    tallShrubs,
+    {
       min: 0,
       max: 1,
-      palette: [ 'yellow']//'ed7953', 
-  }, 'Canopy height (1-6 meters)', 0);
-
+      palette: ["yellow"], //'ed7953',
+    },
+    "Canopy height (1-6 meters)",
+    0
+  );
 
   // AK Existing veg -  KenaiVegVectorMapService2019 - Tall Shrub Canopy Cover (ID: 3)
 

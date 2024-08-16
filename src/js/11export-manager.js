@@ -3,7 +3,7 @@ var submitOutputName;
 var taskId;
 var cancelAllTasks = function () {
   console.log("yay");
-}; //showMessage('Completed','Tasks cancelled: 0');};
+};
 var downloadMetadata = function () {
   console.log("yay");
 };
@@ -20,8 +20,6 @@ if (urlParams.bucketName === null || urlParams.bucketName === undefined) {
 
 var eID = 1;
 var exportFC;
-
-// exportCapability = true;
 ///////////////////////////////////////////////////////////////////
 function downloadFiles(id) {
   let badShpExtensions = ["cpg", "fix"];
@@ -43,7 +41,8 @@ function downloadFiles(id) {
     setTimeout(() => {
       if ($("#export-complete-message").hasClass("show")) {
         appendMessage2(
-          `<hr>${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          "",
+          `${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
           "export-complete-message"
         );
       } else {
@@ -160,7 +159,6 @@ function deleteLastExportVertex(e) {
   }
 }
 function resetExportArea(e) {
-  // console.log(e.key);
   if (
     e === undefined ||
     e.key === undefined ||
@@ -187,18 +185,15 @@ function selectExportArea() {
 
   exportArea.setMap(map);
   mapHammer = new Hammer(document.getElementById("map"));
-  // google.maps.event.addDomListener(mapDiv, 'click', function(event) {
   mapHammer.on("tap", function (event) {
     var path = exportArea.getPath();
     var x = event.center.x;
     var y = event.center.y;
     clickLngLat = point2LatLng(x, y);
-    // exportAreaList.push([clickLngLat.lng(),clickLngLat.lat()])
     path.push(clickLngLat);
   });
 
   mapHammer.on("doubletap", function () {
-    // $('#summary-spinner').slideDown();
     var path = exportArea.getPath();
     exportArea.setMap(null);
     exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
@@ -240,8 +235,6 @@ cancelAllTasks = function () {
       }
     });
 
-    // taskCount = 0;
-    // updateSpinner();
     $("#summary-spinner").hide();
     showMessage(
       "Task Cancelling Completed",
@@ -284,40 +277,7 @@ downloadMetadata = function () {
   link.download = url.substr(url.lastIndexOf("/") + 1);
   link.click();
 };
-// var dur_meta = 'metadata/lcms_v2019-1_metadata_template_duration.html';
-// var lu_meta = 'metadata/lcms_v2019-1_metadata_template_landcover_landuse.html';
-// var prob_meta = 'metadata/lcms_v2019-1_metadata_template_probability.html';
-// var year_meta = 'metadata/lcms_v2019-1_metadata_template_year.html';
-// var meta_template = 'metadata/lcms_v2019-1_metadata_template.html';
-// var dur_meta_str;var lu_meta_str;var prob_meta_str;var year_meta_str;var meta_template_str;
 
-// $(document).ready(function(){
-//     $.get(meta_template, function(html_string){meta_template_str = html_string;},'html');
-//   // $.get(dur_meta, function(html_string){dur_meta_str = html_string;},'html');
-//   // $.get(lu_meta, function(html_string){lu_meta_str = html_string;},'html');
-//   // $.get(prob_meta, function(html_string){prob_meta_str = html_string;},'html');
-//   // $.get(year_meta, function(html_string){year_meta_str = html_string;},'html');
-
-// });
-// function exportMetadata(filename, html_string) {
-
-//         var blob = new Blob([html_string], { type: 'text/html;charset=utf-8;' });
-//         if (navigator.msSaveBlob) { // IE 10+
-//             navigator.msSaveBlob(blob, filename);
-//         } else {
-//             var link = document.createElement("a");
-//             if (link.download !== undefined) { // feature detection
-//                 // Browsers that support HTML5 download attribute
-//                 var url = URL.createObjectURL(blob);
-//                 link.setAttribute("href", url);
-//                 link.setAttribute("download", filename);
-//                 link.style.visibility = 'hidden';
-//                 document.body.appendChild(link);
-//                 link.click();
-//                 document.body.removeChild(link);
-//             }
-//         }
-//     }
 function downloadExport(url, output) {
   var link = document.createElement("a");
   link.setAttribute("href", url);
@@ -338,7 +298,6 @@ downloadTraining = function () {
   link.click();
 };
 ////////////////////////////////////////////////
-
 function trackExports() {
   exportList = [];
 
@@ -348,31 +307,9 @@ function trackExports() {
     taskList = taskList.tasks.filter(
       (t) => Object.keys(cachedEEExports).indexOf(t.description) > -1
     );
-    // console.log(taskList);
+
     $("#export-count-div").empty();
-    // $("#export-count-div").append(`
-    //                   <table  class="table " id="export-tracking-table">
-    //                   <thead>
 
-    //                       <tr>
-
-    //                           <th class="text-center">
-    //                               Name
-    //                           </th>
-    //                           <th class="text-center">
-    //                               Status
-    //                           </th>
-    //                           <th class="text-center">
-    //                               Run Time
-    //                           </th>
-    //                           <th class="text-center">
-    //                               Export Type
-    //                           </th>
-
-    //                       </tr>
-    //                   </thead>
-    //                   <tbody id='export-tracking-rows'></tbody>
-    //                   </table>`);
     $("#export-count-div").append(`
                       <div  class = 'tracking-list' id="export-tracking-rows">
                       
@@ -386,8 +323,7 @@ function trackExports() {
         t.state === "COMPLETED"
       ) {
         taskCount++;
-        // cachedEEExport.status = t.status
-        // console.log(t);
+
         if (t.state === "READY") {
           timeDiff = "NA";
         } else {
@@ -442,41 +378,8 @@ function trackExports() {
       }
     });
 
-    // Object.keys(pastEEExports).map(function(k){
-    //     var pe = pastEEExports[k]
-    //     // console.log(k)
-    //     // console.log(pe)
-    //     if(pe[0] === 'COMPLETED' && pe[1] === false){
-    //         var tOutputName = 'https://console.cloud.google.com/m/cloudstorage/b/'+bucketName+'/o/'+pe[2] +'.tif'
-    //         // console.log('Exporting ' + pe[2]);
-    //         pastEEExports[k] = [pe[0],true,pe[2]];
-
-    //         showMessage('SUCCESS!',
-    //              '<p style = "margin:5px;">'+ pe[2] + ' has successfully exported! </p><p style = "margin:3px;">If download does not work automatically, try following this link:</p> <a target="_blank" href="'+tOutputName+'">'+pe[2]+'</a>'
-    //              )
-    //          sleep(2000);
-    //           window.open(tOutputName);
-    //     }
-    //     // else if(pe[0] === 'FAILED' && pe[1] === false){
-    //     //     showMessage('FAILED',pe[0] + ' failed')
-    //     // }
-
-    // })
-
-    // localStorage.setItem("pastEEExports",JSON.stringify(pastEEExports));
-    // $("#export-spinner").show();
     document.getElementById("export-spinner").title = taskIDListTitle;
-    // $("#export-count-div").html(taskIDList);
 
-    //   $('#export-count-div').append(`<div id = "export-tasks-table-container">
-    // 								<table
-    // 								class="table table-hover "
-    // 								id="export-tasks-table"
-    // 								role="tabpanel"
-    // 								tablename="Export Tasks Monitor"
-    //               title="Current status of exports"
-    // 								></table>
-    // 							</div>`);
     $("#export-count").text(taskCount.toString());
     let currentCache = JSON.parse(localStorage.cachedEEExports2);
     currentCache[mode] = cachedEEExports;
@@ -487,14 +390,11 @@ function trackExports() {
       $("#export-count-div").html(``);
     }
     let task_width = $("#sidebar-left-header").width() - convertRemToPixels(6);
-    let button_width = 85; //$(".export-tracking-row>.btn-group").first().width();
+    let button_width = 85;
     let label_width = task_width - button_width - convertRemToPixels(1);
 
     $(".export-description").css("max-width", label_width);
   });
-
-  // console.log('just ran export checker');
-  // updateSpinner();
 }
 function cacheExport(id, outputName, metadata) {
   cachedEEExports[id] = {
@@ -562,7 +462,6 @@ function getIDAndParams(
     }
   }
 
-  // var imageJson = eeImage.serialize();//ee.Serializer.toJSON(eeImage);
   $("#export-message-container").text("Exporting:" + exportOutputName);
 
   outputURL =
@@ -570,7 +469,7 @@ function getIDAndParams(
     bucketName +
     "/o/" +
     exportOutputName +
-    ".tif"; //Currently cannot handle multiple tile exports for very large exports
+    ".tif";
 
   console.log(eeType);
 
@@ -610,10 +509,6 @@ function getIDAndParams(
   //Set up a task and update the spinner
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
-
-  // var task = ee.batch.Export.image.toCloudStorage(eeImage, exportOutputName, bucketName, exportOutputName, null, region, exportScale, exportCRS, null, 1e13, 256, 256*75);
-
-  // return task;
 }
 function googleMapPolygonToGEEPolygon(googleMapPolygon) {
   var path = googleMapPolygon.getPath().getArray();
@@ -623,16 +518,13 @@ function googleMapPolygonToGEEPolygon(googleMapPolygon) {
   var geePolygon = ee.FeatureCollection([
     ee.Feature(ee.Geometry.Polygon(path)),
   ]);
-  // print(geePolygon);
-  // Map2.addLayer(geePolygon)
+
   return geePolygon;
 }
 function exportImages() {
   let exportCRST = $("#export-crs").val() || exportCRS;
   console.log(exportCRST);
-  // closePopup();
-  // console.log(exportImageDict);
-  // console.log('yay');
+
   var now = new Date().toISOString();
   let date = now.slice(2, 10);
   let time = now.slice(11, 19).replaceAll(":", "-");
@@ -675,19 +567,6 @@ function exportImages() {
           exportObject.fileFormat
         );
 
-        //Start processing
-        // function startTask(){
-        //     console.log('Starting task');
-        //     task.start(function(){
-        //         // console.log('here')
-        //         meta_template_strT = '{}';
-        //         cacheExport(exportName,exportName,meta_template_strT);
-        //         },
-        //     function(fail){
-        //         console.log(fail);
-        //         startTask();
-        //     })};
-        // startTask();
         console.log(IDAndParams);
         ee.data.startProcessing(
           IDAndParams["taskId"],
@@ -704,35 +583,6 @@ function exportImages() {
           IDAndParams["taskId"],
           exportName
         );
-
-        // var metadataParams = exportObject['metadataParams']
-        // meta_template_strT = '{}';//meta_template_str;
-
-        // meta_template_strT = meta_template_strT.replaceAll('FILENAME_TITLE',exportObject['name']+nowSuffix + '.tif');
-        // meta_template_strT = meta_template_strT.replaceAll('EXPORT_CRS',exportCRS);
-        // meta_template_strT = meta_template_strT.replaceAll('STARTYEAR',metadataParams.startYear);
-        // meta_template_strT = meta_template_strT.replaceAll('ENDYEAR',metadataParams.endYear);
-        // meta_template_strT = meta_template_strT.replaceAll('VERSION',metadataParams.version);
-
-        // meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_LONGNAME',metadata_parser_dict.STUDYAREA_LONGNAME[metadataParams.studyAreaName]);
-        // meta_template_strT = meta_template_strT.replaceAll('STUDYAREA_URL','https://lcms-data-explorer.appspot.com/');
-        // meta_template_strT = meta_template_strT.replaceAll('WHICHONE',metadataParams.whichOne);
-        // meta_template_strT = meta_template_strT.replaceAll('DETAILED_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][0]);
-        // meta_template_strT = meta_template_strT.replaceAll('SUPER_PARAGRAPH_DESCRIPTION',metadata_parser_dict[metadataParams.whichOne + '_Description'][1]);
-        // meta_template_strT = meta_template_strT.replaceAll('SUMMARY_METHOD',metadata_parser_dict.SUMMARYMETHOD[metadataParams.summaryMethod]);
-        // var theThesh;
-        // if(metadataParams.whichOne.split(' ')[0] == 'Loss'){theThesh = lowerThresholdDecline}
-        //     else{theThesh = lowerThresholdRecovery}
-        // meta_template_strT = meta_template_strT.replaceAll('LOWER_THRESHOLD',theThesh);
-
-        // meta_template_strT = meta_template_strT.replaceAll('CLASS_MIN',metadataParams.min);
-        // meta_template_strT = meta_template_strT.replaceAll('CLASS_MAX',metadataParams.max);
-
-        // meta_template_strT = meta_template_strT.replaceAll('OOB_ACCURACY',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_ACCURACY']);
-        // meta_template_strT = meta_template_strT.replaceAll('OOB_KAPPA',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_ACC']['OOB_KAPPA']);
-        // meta_template_strT = meta_template_strT.replaceAll('CONFUSIONMATRIX',metadata_parser_dict[metadataParams.studyAreaName + '_' +metadataParams.whichOne.split(' ')[0] + '_CONFUSIONMATRIX']);
-        // cacheExport(exportName,exportName,meta_template_strT);
-        // exportMetadata(exportObject['name']+nowSuffix + '_metadata.html', meta_template_strT)
       }
     }
   });
@@ -752,15 +602,13 @@ function exportImages() {
       "Exports Started",
       "<hr>The following exports were submitted:<br>" +
         exportsSubmitted +
-        "<hr>They will start running shortly. Once finished, they will automatically download. The current status of exports can be followed by hovering over the gear spinner in the lower portion of the <kbd>DOWNLOAD DATA</kbd> menu"
+        "<hr>They will start running shortly. Once finished, they will automatically download. The current status of exports is tracked in the lower portion of the <kbd>DOWNLOAD DATA</kbd> menu"
     );
   }
   $("#summary-spinner").hide();
 }
 function processFeatures2(fc, shoudExport) {
   exportFC = fc;
-  // print('yay');
-  // showPopup();
 }
 
 function displayExports(fc) {

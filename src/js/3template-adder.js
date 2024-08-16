@@ -14,7 +14,6 @@ $("body").append(staticTemplates.bottomBar);
 $("#main-container").append(staticTemplates.sidebarLeftToggler);
 if (mode === "lcms-dashboard") {
   $("body").append(staticTemplates.lcmsSpinner);
-  // $('body').append(staticTemplates.dashboardResultsDiv);
   $("body").append(staticTemplates.dashboardResultsContainer);
 }
 $("#sidebar-left-header").append(staticTemplates.topBanner);
@@ -40,12 +39,6 @@ if (mode === "LCMS-pilot") {
 
 $("#sidebar-left-header").append(staticTemplates.placesSearchDiv);
 
-// function fitTestCustom(fitID,desiredWidth){
-//   while($('#title-banner').width())
-// }
-// fitTestCustom('title-banner',$('#title-banner').width()-50)
-
-// $('#study-area-label').fitText(1.8);
 if (
   [
     "LCMS",
@@ -71,10 +64,6 @@ if (
   $("#title-banner-icon-right").hide();
 }
 
-//1.55 = 'LCMS data explorer.length'
-//1.6 = 'lcms data dashboard.length'
-// fittextCoeff = len*0.05+0.65
-// $('#title-banner').fitText(`${topBannerParams.leftWords} ${topBannerParams.centerWords} ${topBannerParams.rightWords}`.length*0.05+0.65);
 function adjustTitleBanner() {
   $(".title-banner-icon").height(convertRemToPixels(1.5));
   $("#title-banner").fitText(1.6);
@@ -93,11 +82,8 @@ function populateDownloads() {
   var i;
   for (i = 0; i < toggler.length; i++) {
     toggler[i].addEventListener("click", function () {
-      // console.log(this)
       this.parentElement.querySelector(".nested").classList.toggle("active");
-      // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
       this.classList.toggle("caret-down");
-      // this.classList.toggle("treeOff");
     });
   }
 }
@@ -115,7 +101,6 @@ function toggleAdvancedOff() {
 if (mode === "LCMS-pilot" || mode === "LCMS") {
   var minYear = startYear;
   var maxYear = endYear;
-  // console.log(urlParams)
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -128,8 +113,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   ) {
     urlParams.addLCMSTimeLapsesOn = "no";
   }
-
-  // console.log(urlParams)
 
   /*Construct panes in left sidebar*/
   addCollapse(
@@ -152,7 +135,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "LCMS DATA layers to view on map"
   );
-  // $('#layer-list-collapse-label').append(`<button class = 'btn' title = 'Refresh layers if tiles failed to load' id = 'refresh-tiles-button' onclick = 'jitterZoom()'><i class="fa fa-refresh"></i></button>`)
   addCollapse(
     "sidebar-left",
     "reference-layer-list-collapse-label",
@@ -196,8 +178,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "If you need any help"
   );
 
-  // $('#parameters-collapse-div').append(staticTemplates.paramsDiv);
-
   //Construct parameters form
 
   if (["standard", "advanced"].indexOf(urlParams.analysisMode) === -1) {
@@ -210,9 +190,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   var tAnalysisMode = urlParams.analysisMode;
   var tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
   if (mode === "LCMS") {
-    // $('#parameters-collapse-div').append(`<hr>`);
-    // $('#parameters-collapse-div').append(`<p>Additional Functionality:</p>`);
-    // $('#parameters-collapse-div').append(staticTemplates.addTimelapsesButton);
     addRadio(
       "parameters-collapse-div",
       "addTimeLapses-radio",
@@ -222,8 +199,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "urlParams.addLCMSTimeLapsesOn",
       "no",
       "yes",
-      "",
-      "",
+      null,
+      null,
       "Add interactive time lapse of LCMS Change, Land Cover, and Land Use products. This will slow down the map loading"
     );
     $("#parameters-collapse-div").append(`<hr>`);
@@ -240,8 +217,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "urlParams.analysisMode",
     "standard",
     "advanced",
-    "toggleAdvancedOff()",
-    "toggleAdvancedOn()",
+    "toggleAdvancedOff",
+    "toggleAdvancedOn",
     "Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"
   );
 
@@ -333,8 +310,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "applyTreeMask",
       "yes",
       "no",
-      "",
-      "",
+      null,
+      null,
       "Whether to constrain LCMS products to only treed areas. Any area LCMS classified as tree cover 2 or more years will be considered tree. Will reduce commission errors typical in agricultural and water areas, but may also reduce changes of interest in these areas."
     );
     $("#advanced-radio-container").append(`<hr>`);
@@ -349,15 +326,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "urlParams.summaryMethod",
     "year",
     "prob",
-    "",
-    "",
+    null,
+    null,
     "How to choose which value for disturbance and growth to display.  Choose the value with the highest model confidence or from the most recent year above the threshold."
   );
   urlParams.summaryMethod = tSummaryMethod;
 
   $("#advanced-radio-container").append(`<hr>`);
-  // addRadio('advanced-radio-container','whichIndex-radio','Index for charting:','NDVI','NBR','whichIndex','NDVI','NBR','','','The vegetation index that will be displayed in the "Query LCMS Time Series" tool')
-  // $('#advanced-radio-container').append(`<hr>`);
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
   //Set up layer lists
@@ -375,13 +350,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
       for (i = 0; i < toggler.length; i++) {
         toggler[i].addEventListener("click", function () {
-          // console.log(this)
           this.parentElement
             .querySelector(".nested")
             .classList.toggle("active");
-          // this.parentElement.querySelector(".nested").classList.toggle("treeOff");
+
           this.classList.toggle("caret-down");
-          // this.classList.toggle("treeOff");
         });
       }
     }
@@ -403,7 +376,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#title-banner").fitText(1.7);
   var minYear = startYear;
   var maxYear = endYear;
-  // console.log(urlParams)
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -457,7 +429,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected"
   );
-  //addDualRangeSlider('parameters-collapse-div','Choose analysis year range:','urlParams.startYear','urlParams.endYear',minYear, maxYear, urlParams.startYear, urlParams.endYear, 1,'analysis-year-slider','null','Years of LCMS data to include for land cover, land use, loss, and gain',null,()=>{updateDashboardCharts();updateDashboardHighlights();})
 
   addCollapse(
     "sidebar-left",
@@ -506,9 +477,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "dashboardAreaSelectionMode",
     urlParams.dashboardAreaSelectionMode
   );
-  // $('#parameters-collapse-div').append('<hr>');
-
-  //addSubCollapse('parameters-collapse-div','questions-dashboard-params-label','questions-dashboard-params-div','Questions', '',false,'Pre-selected parameter combinations')
   //////////////////////////////////// Add summaryArea to question dict in future////////////////////////////////////////////
   var questionDict = {
     fire: {
@@ -542,7 +510,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         "Rangeland-or-Pasture": false,
         Other: false,
       },
-      //summaryArea : {"Forests": false, "Forest-Districts": false, "Planning-Units":false, "CFLRP":false, "Census-Urban-Areas":false, "Counties":false, "HUC-6":false}
     },
     glacialRecession: {
       title: "Glacial Recession",
@@ -686,7 +653,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   // creates a Bootstrap dropdown to contain the questions
   function makeQuestionDropdown() {
-    //addDropdown('questions-dashboard-params-div','questions-dashboard-dropdown','Choose a Question','urlParams.questionVar','Choose a Question to automatically select certain LCMS products to summarize');
     addDropdown(
       "parameters-collapse-div",
       "questions-dashboard-dropdown",
@@ -712,45 +678,37 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   //////////////////////////////// add summary area as part of Question functionality in future//////////////////////////////////////////
   function selectQuestion(selectedQuestion) {
     var selectedProducts = selectedQuestion.productHighlightClasses;
-    // console.log(selectedProducts);
     Object.keys(selectedProducts).map((k) => {
       var checkboxID = `#productHighlightClasses${k}-checkbox`;
-      // console.log(checkboxID);
+
       $(checkboxID).prop("checked", selectedProducts[k]);
       urlParams.productHighlightClasses[k] = selectedProducts[k];
     });
     var selectedChangeClasses = selectedQuestion.changeHighlightClasses;
-    // console.log(selectedChangeClasses);
+
     Object.keys(selectedChangeClasses).map((k) => {
       var checkboxID = `#changeHighlightClasses${k}-checkbox`;
-      // console.log(checkboxID);
+
       $(checkboxID).prop("checked", selectedChangeClasses[k]);
       urlParams.changeHighlightClasses[k] = selectedChangeClasses[k];
     });
     var selectedLCclasses = selectedQuestion.lcHighlightClasses;
-    // console.log(selectedLCclasses);
+
     Object.keys(selectedLCclasses).map((k) => {
       var checkboxID = `#lcHighlightClasses${k}-checkbox`;
-      // console.log(checkboxID);
+
       $(checkboxID).prop("checked", selectedLCclasses[k]);
       urlParams.lcHighlightClasses[k] = selectedLCclasses[k];
     });
     var selectedluClasses = selectedQuestion.luHighlightClasses;
-    // console.log(selectedluClasses);
+
     Object.keys(selectedluClasses).map((k) => {
       var checkboxID = `#luHighlightClasses${k}-checkbox`;
-      // console.log(checkboxID);
+
       $(checkboxID).prop("checked", selectedluClasses[k]);
       urlParams.luHighlightClasses[k] = selectedluClasses[k];
     });
-    // var selectedSummaryAreas = selectedQuestion.saHighlightClasses;
-    // console.log(selectedSummaryAreas);
-    // Object.keys(selectedSummaryAreas).map(k=>{
-    //   var checkboxID = `#saHighlightClasses${k}-checkbox`;
-    //   console.log(checkboxID);
-    //   $(checkboxID).prop('checked', selectedSummaryAreas[k]);
-    //   urlParams.saHighlightClasses[k] = selectedSummaryAreas[k];
-    // })
+
     updateHighlightsProductSelectionDict();
     updateDashboardHighlights();
     updateDashboardCharts();
@@ -898,7 +856,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "Land-Use": true,
     };
   }
-  // addCheckboxes('advanced-dashboard-params-div','which-products-radio','Choose which LCMS outputs to chart','productHighlightClasses',urlParams.productHighlightClasses);
   var productHighlightClasses = urlParams.productHighlightClasses;
 
   if (
@@ -1077,24 +1034,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "title",
     "Select this to show Sankey charts"
   );
-  // $('#layer-list-collapse-div').append(staticTemplates.dashboardProgressDiv);
-  // $('#parameters-collapse-div').append()
-
-  // $('#parameters-collapse-label').hide();
-  // $('#parameters-collapse-div').hide();
-
-  //   let selectionMode;
-  //   $('#parameters-collapse-div').append(`<div id='drawing-mode-selection' class="btn-group btn-group-justified" title='Choose how to select areas'>
-  //                                           <button type="button" id = 'click-drawing-mode' value='click' class="btn btn-primary drawing-mode-selector">Click</button>
-  //                                           <button type="button" id = 'drag-drawing-mode' value = 'drag' class="btn btn-primary drawing-mode-selector">Drag</button>
-  //                                         </div>`)
-  // $('.drawing-mode-selector').on('click',function(e){
-  //   selectionMode=this.value;
-  // })
-  // $('#click-drawing-mode').click();
-  // let selectionModeDiv = `<div><i class="fa fa-draw-polygon"></i>
-  //                         </div>`
-  // $('#parameters-collapse-div').append(selectionModeDiv);
   $("#layer-list-collapse-div").append(
     `<ul id="layer-list" class = "layer-list"></ul>`
   );
@@ -1108,16 +1047,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   var minYear = startYear;
   var maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
-    urlParams.startYear = startYear; // = parseInt(urlParams.startYear);
+    urlParams.startYear = startYear;
   }
   if (urlParams.endYear == null || urlParams.endYear == undefined) {
-    urlParams.endYear = endYear; // = parseInt(urlParams.endYear);
+    urlParams.endYear = endYear;
   }
   if (urlParams.lossMagThresh == null || urlParams.lossMagThresh == undefined) {
-    urlParams.lossMagThresh = -0.15; // = parseInt(urlParams.endYear);
+    urlParams.lossMagThresh = -0.15;
   }
   if (urlParams.gainMagThresh == null || urlParams.gainMagThresh == undefined) {
-    urlParams.gainMagThresh = 0.1; // = parseInt(urlParams.endYear);
+    urlParams.gainMagThresh = 0.1;
   }
 
   if (urlParams.whichIndices2 == null || urlParams.whichIndices2 == undefined) {
@@ -1172,7 +1111,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     false,
     ""
   );
-  // addSubCollapse('parameters-collapse-div','ccdc-params-label','ccdc-params-div','CCDC Params', '',false,'')
 
   addRangeSlider(
     "lt-params-div",
@@ -1199,10 +1137,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "The threshold to detect gain for each LANDTRENDR segment.  Any difference for a given segement greater than this threshold will be flagged as gain"
   );
 
-  // addCheckboxes('ccdc-params-div','ccdc-index-choice-checkboxes','Choose which indices to include in CCDC fitted charts','whichIndices3',{'blue':false,'green':false,'red':false,'nir':false,'swir1':false,'swir2':false,'NBR':true,'NDVI':true,'NDMI':false,'wetness':false})
-  // addRangeSlider('ccdc-params-div','Change Probability Threshold','ccdcChangeProbThresh',0,1,0.8,0.1,'ccdc-change-prob-thresh-slider','','The CCDC probabibility threshold to detect change.  Any probability for a given break greater than this threshold will be flagged as change')
-
-  // $('#lt-params-div').append(`<hr>`);
   $("#parameters-collapse-div").append(`<hr>`);
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
@@ -1252,16 +1186,16 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   var minYear = startYear;
   var maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
-    urlParams.startYear = startYear; // = parseInt(urlParams.startYear);
+    urlParams.startYear = startYear;
   }
   if (urlParams.endYear == null || urlParams.endYear == undefined) {
-    urlParams.endYear = endYear; // = parseInt(urlParams.endYear);
+    urlParams.endYear = endYear;
   }
   if (urlParams.startJulian == null || urlParams.startJulian == undefined) {
-    urlParams.startJulian = startJulian; // = parseInt(urlParams.startYear);
+    urlParams.startJulian = startJulian;
   }
   if (urlParams.endJulian == null || urlParams.endJulian == undefined) {
-    urlParams.endJulian = endJulian; // = parseInt(urlParams.endYear);
+    urlParams.endJulian = endJulian;
   }
 
   addCollapse(
@@ -1423,13 +1357,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "urlParams.maskWater",
     maskWaterDict
   );
-
-  // $('#parameters-collapse-div').append(`<hr>`);
-  // addRadio('parameters-collapse-div','cloudScore-cloud-radio','Apply CloudScore','No','Yes','applyCloudScore','no','yes','','',"Whether to apply Google's Landsat CloudScore algorithm")
-  // $('#parameters-collapse-div').append(`<hr>`);
-  // addRadio('parameters-collapse-div','fmask-cloud-radio','Apply Fmask cloud mask','Yes','No','applyFmaskCloud','yes','no','','','Whether to apply Fmask cloud mask')
-  // $('#parameters-collapse-div').append(`<hr>`);
-  // addRadio('parameters-collapse-div','fmask-cloud-shadow-radio','Apply Fmask cloud shadow mask','Yes','No','applyFmaskCloudShadow','yes','no','','','Whether to apply Fmask cloud shadow mask')
 
   addSubCollapse(
     "parameters-collapse-div",
@@ -1657,7 +1584,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#support-collapse-div").append(
     `<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
   );
-  // $('#support-collapse-div').append(`<div class="dropdown-divider mb-2"</div>`);
+
   addCollapse(
     "sidebar-left",
     "parameters-collapse-label",
@@ -2037,7 +1964,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Specify min wind speed in mph to include in output"
   );
-  // addRangeSlider('parameters-collapse-div','Mod of Rupture','modRupture',2000, 20000, 8500, 100,'mod-rupture-slider','null',"Specify the modulus of rupture for the GALES model")
 
   $("#parameters-collapse-div").append(`
         <hr>
@@ -2059,8 +1985,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       fr.onload = function () {
         var rows = fr.result.split("\n");
         rows = rows.filter((row) => row.split("\t").length > 5);
-        // console.log(fr.result)
-        // console.log(rows)
         rows = rows.map(function (row) {
           row = row.split("\t");
           var out = {};
@@ -2079,10 +2003,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           out.properties.year = new Date(row[0] + " " + row[1]).getFullYear();
           return out;
         });
-        // var sa = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200').geometry();
-        // rows = ee.FeatureCollection(rows).filterBounds(sa).getInfo().features;
-        // console.log(rows)
-        // Map2.addLayer(rows)
+
         var iterations = refinementIterations;
         var initialN = rows.length;
         while (iterations > 0 && rows.length * 2 < 1500) {
@@ -2113,8 +2034,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           );
         }, 1000);
 
-        // rows = refineFeatures(rows,['lat','lon','wspd','pres','date','year']);
-
         var rowsLeft = rows.slice(0, rows.length - 1);
         var rowsRight = rows.slice(1);
         var zipped = ee.List.sequence(0, rowsLeft.length - 1)
@@ -2131,10 +2050,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
             return out;
           });
-        // console.log(zipped)
-        // Map2.addLayer(rows)
+
         $("#summary-spinner").slideUp();
-        // console.log(zipped)
+
         createHurricaneDamageWrapper(ee.FeatureCollection(zipped));
       };
 
@@ -2147,77 +2065,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       );
     }
   }
-  //   $('#parameters-collapse-div').append(`<label>Provide storm track geoJSON:</label>
-  //                                       <input rel="txtTooltip" title = 'Provide storm track geoJSON'  type="user-selected-area-name" class="form-control"  id="storm-track" placeholder="Provide storm track geoJSON" style='width:80%;'>`)
 
-  // function ingestStormTrak(){
-  //     var months = {
-  //     'JAN' : '01',
-  //     'FEB' : '02',
-  //     'MAR' : '03',
-  //     'APR' : '04',
-  //     'MAY' : '05',
-  //     'JUN' : '06',
-  //     'JUL' : '07',
-  //     'AUG' : '08',
-  //     'SEP' : '09',
-  //     'OCT' : '10',
-  //     'NOV' : '11',
-  //     'DEC' : '12'
-  //     }
-  //   if(jQuery('#stormTrackUpload')[0].files.length > 0){
-  //     $('#summary-spinner').slideDown();
-  //     convertToGeoJSON('stormTrackUpload').done(function(converted){
-
-  //       converted.features = converted.features.map(function(f){
-  //         f.properties.HR = parseFloat(f.properties['HHMM'].slice(0,2));
-  //         f.properties.MN = parseFloat(f.properties['HHMM'].slice(2));
-  //         if(Object.keys(months).indexOf(f.properties.MONTH) > -1){
-  //           f.properties.MONTH = months[f.properties.MONTH]
-  //         }
-  //         return f
-  //       })
-  //       console.log('successfully converted to JSON');
-  //       console.log(converted);
-
-  //       var iterations =0;
-  //       // var sa = ee.FeatureCollection("TIGER/2018/States").geometry();
-  //       var sa = ee.Image('projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/LF_US_EVH_200').geometry();
-  //       // converted.features = ee.FeatureCollection(converted.features).filterBounds(sa).getInfo().features;
-  //       for(iterations; iterations > 0; iterations--){
-  //         converted.features = refineFeatures(converted.features,['LAT','LON','YEAR','MONTH','DAY','INTENSITY','MSLP','HR','MN']);
-
-  //         //{"date": "Aug 16:18:00 GMT", "lat": 10.9, "lon": -25.4, "wspd": 20.0, "pres": 0.0, "FO": "O"}
-
-  //       }
-
-  //       var rows = converted.features.map(function(f){
-
-  //         var props = f.properties;
-  //         f.properties.date = new Date(props.YEAR,props.MONTH-1,props.DAY,props.HR,props.MN)
-  //         f.properties.lat = props.LAT;
-  //         f.properties.lon = props.LON;
-  //         f.properties.wspd = props.INTENSITY
-  //         f.properties.pres = props.MSLP
-  //         f.properties.name = props.STORMNAME
-  //         f.properties.year = props.YEAR;
-  //         return f;//ee.Feature(f).buffer(10000)
-  //       });
-
-  //       createHurricaneDamageWrapper(rows,true);
-  //       $('#summary-spinner').slideUp();
-
-  //         })
-  //   }else{showMessage('No storm track provided','Please select a .zip shapefile or a .geojson file to summarize across')}
-  // }
-  // $('#parameters-collapse-div').append(`<label>Provide storm track geoJSON:</label>
-  //                                       <input rel="txtTooltip" title = 'Provide storm track geoJSON'  type="user-selected-area-name" class="form-control" value = '${JSON.stringify(rows)}' id="storm-track" placeholder="Provide storm track geoJSON" style='width:80%;'>`)
-
-  // $('#parameters-collapse-div').append(`<label>Provide name for storm (optional):</label>
-  //                                       <input rel="txtTooltip" title = 'Provide a name for the storm. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name" value = 'Michael' placeholder="Name your storm!" style='width:80%;'>`)
-  // addRangeSlider('parameters-collapse-div','Choose storm year','stormYear',1980, 2030, 2018, 1,'storm-year-slider','null',"Specify year of storm")
-  // $('#parameters-collapse-div').append(`<hr>`);
-  // $('#parameters-collapse-div').append(staticTemplates.reRunButton);
   addCollapse(
     "sidebar-left",
     "layer-list-collapse-label",
@@ -2302,9 +2150,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#download-collapse-div").append(staticTemplates.TreeMapDownloadDiv);
   $("#download-collapse-div").append(staticTemplates.TreeMapGEEClippingDiv);
   $("#support-collapse-div").append(staticTemplates.TreeMapSupportDiv);
-  //$('#download-collapse-div').append(staticTemplates.TreeMapDownloadDiv);
-  //setupDropdownTreeMapDownloads()
-  //populateDownloads()
 } else if (mode === "sequoia-view") {
   addCollapse(
     "sidebar-left",
@@ -2328,18 +2173,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.postYear == null || urlParams.postYear == undefined) {
     urlParams.postYear = maxYear;
   }
-  // if(urlParams.postEndYear == null || urlParams.postEndYear == undefined){
-  //   urlParams.postEndYear = maxYear;
-  // }
 
   if (urlParams.startJulian == null || urlParams.startJulian == undefined) {
-    urlParams.startJulian = dayOfYear - 16; // = parseInt(urlParams.startYear);
+    urlParams.startJulian = dayOfYear - 16;
     if (urlParams.startJulian < 0) {
       urlParams.startJulian = 0;
     }
   }
   if (urlParams.endJulian == null || urlParams.endJulian == undefined) {
-    urlParams.endJulian = dayOfYear - 2; // = parseInt(urlParams.endYear);
+    urlParams.endJulian = dayOfYear - 2;
     if (urlParams.endJulian > 365) {
       urlParams.endJulian = 365;
     }
@@ -2409,7 +2251,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Choose a year or range or years to calculate reference (pre-change) signal. If more than one year is chosen, the baseline will be the mean signal of the years during the selected date range."
   );
-  // addDualRangeSlider('parameters-collapse-div','Target year:','urlParams.postStartYear','urlParams.postEndYear',minYear, maxYear, urlParams.postStartYear, urlParams.postEndYear, 1,'post-years-slider','null','Years to include for the target year evaluation period')
   addRangeSlider(
     "parameters-collapse-div",
     "Post-Change year:",
@@ -2454,8 +2295,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.lcmsTreeMaskClasses
   );
 
-  // addRadio('advanced-params-div','cloud-mask-method-radio','','S2Cloudless+TDOM','CloudScore+','cloudMaskMethod','s2c','csp',null,null,'Toggle between imperial or metric units')
-
   if (
     urlParams.cloudMaskMethod === null ||
     urlParams.cloudMaskMethod === undefined
@@ -2478,7 +2317,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "advanced-params-div",
     "diff-bands-thresh-input",
     "Difference Bands and Thresholds",
-    "urlParams.diffThreshs",
+    urlParams,
+    "diffThreshs",
     urlParams.diffThreshs,
     "Bands and thresholds to use for identifying change"
   );
@@ -2487,7 +2327,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "advanced-params-div",
     "comp-viz-params-input",
     "Composite Visualization Parameters",
-    "urlParams.compVizParams",
+    urlParams,
+    "compVizParams",
     urlParams.compVizParams,
     "Viz params for composite images"
   );
@@ -2496,7 +2337,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "advanced-params-div",
     "diff-viz-params-input",
     "Difference Visualization Parameters",
-    "urlParams.diffVizParams",
+    urlParams,
+    "diffVizParams",
     urlParams.diffVizParams,
     "Viz params for difference image"
   );
@@ -2568,17 +2410,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#reference-layer-list-collapse-div").append(
     `<ul id="reference-layer-list" class = "layer-list"></ul>`
   );
-  //  moved Monitoring Sites table from left sidebar to right sidebar under Legend - accomplished in 2templates.js
-  // addCollapse(
-  //   "sidebar-left",
-  //   "table-collapse-label",
-  //   "table-collapse-div",
-  //   "MONITORING SITES",
-  //   `<img class='panel-title-svg-lg'  alt="Graph icon" src="./src/assets/Icons_svg/graph_ffffff.svg">`,
-  //   true,
-  //   ``,
-  //   "Giant Sequoia monitoring sites output table"
-  // );
 
   addCollapse(
     "sidebar-left",
@@ -2591,7 +2422,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tools to measure and chart data provided on the map"
   );
 
-  // addCollapse('sidebar-left','download-collapse-label','download-collapse-div','DOWNLOAD DATA',`<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,false,``,'Download LCMS products for further analysis');
   addCollapse(
     "sidebar-left",
     "support-collapse-label",
@@ -2627,15 +2457,24 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   var selectedCounty;
   initialZoomLevel = 6;
   initialCenter = [34.750453053659456, -85.56084152109133];
-  //urlParams.selectedCounty = ee.FeatureCollection("TIGER/2018/Counties").filter(ee.Filter.eq("STATEFP", "01")).filter(ee.Filter.eq("NAME", "Madison"))
   var selectedLayerId;
-  urlParams.preDate1; // = "2022-05-21"
-  urlParams.preDate2; // = "2022-08-21"
-  urlParams.postDate1; // = "2023-07-21"
-  urlParams.postDate2; // = "2023-09-21"
+  urlParams.preDate1;
+  urlParams.preDate2;
+  urlParams.postDate1;
+  urlParams.postDate2;
   urlParams.correctionTypeOption;
   canExport = true;
-
+  function downloadHiFormTutorial() {
+    var link = document.createElement("a");
+    var tutorial_name = "HiForm_BMP_Tool_Users_Guide.pdf";
+    link.href =
+      "https://hiform.org/sites/default/files/project_files/2024-08/" +
+      tutorial_name;
+    link.target = "_blank";
+    link.click();
+    ga("send", "event", mode + "-download", "tutorial-download", tutorial_name);
+    showSurveyModal("downloadedTutorial");
+  }
   addCollapse(
     "sidebar-left",
     "select-aoi-label",
@@ -2674,8 +2513,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addCurrentAOIParametersDisplay();
 
   function handleAoiSelectionType(selection) {
-    // console.log(selection);
-
     if (selectOption == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
       $("#dropdown-select").remove();
@@ -2686,7 +2523,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         "state-select",
         "Select a State:",
         selectedState,
-        availableStates, //stateList,
+        availableStates,
         populateCountiesDropdown
       );
     } else if (selectOption == "Select on Map") {
@@ -2747,7 +2584,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       google.maps.event.clearListeners(map, "click");
       google.maps.event.addListener(map, "click", (e) => {
         Map.showSpinner();
-        // setTimeout(() => Map.showSpinner(), 100);
+
         Map.removeLayer(selectedLayerId);
         const lat = e.latLng.lat();
         const lng = e.latLng.lng();
@@ -2755,9 +2592,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         features = ee.FeatureCollection("TIGER/2018/Counties");
 
         window.selectedFeature = features.filterBounds(point);
-        var countyName = selectedFeature.first().get("NAME").getInfo();
-        var stateFP = selectedFeature.first().get("STATEFP").getInfo();
-        var stateAbr = allStates.filter((s) => s.STATEFP === stateFP)[0].STUSPS;
+        let selectedInfo = ee
+          .List([
+            selectedFeature.first().get("NAME"),
+            selectedFeature.first().get("STATEFP"),
+          ])
+          .getInfo();
+        let countyName = selectedInfo[0];
+        let stateFP = selectedInfo[1];
+        let stateAbr = allStates.filter((s) => s.STATEFP === stateFP)[0].STUSPS;
 
         console.log(stateFP);
         selectedLayerId = Map.addLayer(
@@ -2971,8 +2814,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
         urlParams.preDate2 = date_format2;
 
-        // console.log("Date Selected (Pre1): " + urlParams.preDate1);
-        // console.log("Date Selected (Pre2): " + urlParams.preDate2);
         $("#selected-date-range").show();
         $("#selected-date-range-contents").text(
           `${urlParams.preDate1} ---- ${urlParams.preDate2}`
@@ -2990,8 +2831,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
         urlParams.preDate2 = date_format2;
 
-        // console.log("Date Selected (Pre1): " + urlParams.preDate1);
-        // console.log("Date Selected (Pre2): " + urlParams.preDate2);
         $("#selected-date-range").show();
         $("#selected-date-range-contents").text(
           `${urlParams.preDate1} ---- ${urlParams.preDate2}`
@@ -3044,7 +2883,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     ""
   );
   if (!urlParams.correctionTypeOption) {
-    urlParams.correctionTypeOption = { TOA: false, SR: true };
+    urlParams.correctionTypeOption = { TOA: true, SR: false };
   }
   addSelectTypeRadio(
     "advanced-params-div",
@@ -3055,18 +2894,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Choose either Top of Atmosphere or Surface Reflectance Correction Type",
     changeCorrectionTypeOption
   );
-  // if (!urlParams.exportCRS) {
-  //   urlParams.exportCRS = "EPSG:5070";
-  // }
-  // $("#advanced-params-div").append("<hr>");
-  // addInputTextBox(
-  //   "advanced-params-div",
-  //   "export-crs",
-  //   "Projection",
-  //   "urlParams.exportCRS",
-  //   urlParams.exportCRS,
-  //   'Provide projection for exports. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '
-  // );
 
   function changeCorrectionTypeOption() {
     console.log(correctionTypeOption);
@@ -3086,7 +2913,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           ),
         0
       );
-      // alert("test");
+
       return;
     }
 
@@ -3099,35 +2926,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       `${urlParams.postDate1} - ${urlParams.postDate2}`
     );
 
-    // Allow Reset Button
-    // $("#reset-button").removeAttr("disabled");
-
     // Open or Close Accordians
-    // $("#layer-list-collapse-div").toggleClass("collapsed show");
+
     $("#layer-list-collapse-div").removeClass("collapse");
     $("#layer-list-collapse-div").addClass("show");
-    // $("#layer-list-collapse-label").prop("ariaExpanded", true);
-
-    // $("#pre-post-dates-label-label").addClass("collapsed");
-    // $("#pre-post-dates-div").removeClass("show");
-    // $("#pre-post-dates-label").prop("ariaExpanded", false);
-
-    // $("#select-aoi-label-label").addClass("collapsed");
-    // $("#select-aoi-div").removeClass("show");
-    // $("#select-aoi-label").prop("ariaExpanded", false);
-
-    // // Hide Contents of Parameter Selection Div
-    // $("#select-aoi-div").hide();
-    // $("#pre-post-dates-div").hide();
-
-    // Show Selected Parameters Div
-    // $(`#select-aoi-current-params`).show();
-    // $(`#date-current-params`).show();
 
     // Run HiForm Process
     $("#Select-Off-checkbox").click();
     hiform_bmp_process();
-    // reRun();
   }
 
   addCollapse(
@@ -3184,10 +2990,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
     // Reset Map
     reRun();
-
-    // setTimeout(() => {
-    //   console.log("Resetting Map");
-    // }, 5000);
 
     // ReAdd Select AOI
     $("#select-aoi-div").empty();
@@ -3263,16 +3065,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     mode + " DATA layers to view on map"
   );
-  // addCollapse(
-  //   "sidebar-left",
-  //   "wayback-layer-list-collapse-label",
-  //   "wayback-layer-list-collapse-div",
-  //   "ESRI WayBack DATA",
-  //   `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/esri-logo.png">`,
-  //   true,
-  //   null,
-  //   "ESRI Wayback layers to view on map"
-  // );
+
   addCollapse(
     "sidebar-left",
     "reference-layer-list-collapse-label",
@@ -3315,12 +3108,10 @@ $(".sidebar").css("max-height", $("body").height() - $(".bottombar").height());
 addLegendCollapse();
 /////////////////////////////////////////////////////////////////
 //Construct tool options for different modes
-
 addAccordianContainer("tools-collapse-div", "tools-accordian");
 $("#tools-accordian").append(
   `<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`
 );
-// $('#tools-accordian').append(staticTemplates.imperialMetricToggle);
 addSubAccordianCard(
   "tools-accordian",
   "measure-distance-label",
@@ -3332,7 +3123,6 @@ addSubAccordianCard(
   staticTemplates.distanceTipHover
 );
 
-// <variable-radio onclick1 = 'updateDistance()' onclick2 = 'updateDistance()'var='metricOrImperialDistance' title2='' name2='Metric' name1='Imperial' value2='metric' value1='imperial' type='string' href="#" rel="txtTooltip" data-toggle="tooltip" data-placement="top" title='Toggle between imperial or metric units'></variable-radio>
 addSubAccordianCard(
   "tools-accordian",
   "measure-area-label",
@@ -3352,8 +3142,8 @@ addRadio(
   "metricOrImperialDistance",
   "imperial",
   "metric",
-  "updateDistance()",
-  "updateDistance()",
+  "updateDistance",
+  "updateDistance",
   "Toggle between imperial or metric units"
 );
 
@@ -3366,8 +3156,8 @@ addRadio(
   "metricOrImperialArea",
   "imperial",
   "metric",
-  "updateArea()",
-  "updateArea()",
+  "updateArea",
+  "updateArea",
   "Toggle between imperial or metric units"
 );
 
@@ -3397,7 +3187,6 @@ addColorPicker(
   areaPolygonOptions.strokeColor
 );
 
-// addAccordianContainer('pixel-tools-collapse-div','pixel-tools-accordian');
 $("#tools-accordian").append(
   `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`
 );
@@ -3411,7 +3200,32 @@ addSubAccordianCard(
   `toggleTool(toolFunctions.pixel.query)`,
   staticTemplates.queryTipHover
 );
-
+if ($("#toggle-show-splash-screen-radio-container").length === 1) {
+  //Sync tooltip toggle
+  var tShowSplash = true;
+  if (
+    localStorage["showIntroModal-" + mode] !== null &&
+    localStorage["showIntroModal-" + mode] !== undefined
+  ) {
+    tShowSplash = localStorage["showIntroModal-" + mode];
+  }
+  addRadio(
+    "toggle-show-splash-screen-radio-container",
+    "showIntroModal-radio",
+    "Show Splash Screen",
+    "Yes",
+    "No",
+    "localStorage['showIntroModal-'+mode]",
+    "true",
+    "false",
+    null,
+    null,
+    "Whether to show splash screen when this page reloads."
+  );
+  if (tShowSplash === "false") {
+    $("#showIntroModal-radio-second_toggle_label").click();
+  }
+}
 if (
   ["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1
 ) {
@@ -3433,39 +3247,15 @@ if (
     "Choose which " + mode + " time series to chart."
   );
 }
-// $('#pixel-chart-div').append(staticTemplates.showChartButton);
-// addAccordianContainer('area-tools-collapse-div','area-tools-accordian');
+
 if (mode === "geeViz") {
   $("#pixel-chart-label").remove();
   $("#share-button").remove();
   $("#usda-notices").remove();
-  // $("#tools-accordian").append(`<hr>`);
-  // //Sync tooltip toggle
-  // var tShowToolTipModal = true;
-  // if (localStorage.showToolTipModal !== null && localStorage.showToolTipModal !== undefined) {
-  //   tShowToolTipModal = localStorage.showToolTipModal;
-  // }
-  // addRadio(
-  //   "tools-accordian",
-  //   "tooltip-radio",
-  //   "Show tool tips",
-  //   "Yes",
-  //   "No",
-  //   "localStorage.showToolTipModal",
-  //   "true",
-  //   "false",
-  //   "",
-  //   "",
-  //   "Whether to show tool tips to help explain how to use the tools."
-  // );
-  // if (tShowToolTipModal === "false") {
-  //   $("#tooltip-radio-second_toggle_label").click();
-  // }
 }
 if (mode === "LAMDA") {
   $("#pixel-chart-label").remove();
 }
-// if(mode === 'LCMS'){$('#search-share-div').addClass('pt-2')};
 if (
   mode === "LCMS-pilot" ||
   mode === "MTBS" ||
@@ -3491,7 +3281,6 @@ if (
     "title",
     "Click here to select which LCMS products to chart, and change which area units are used. "
   );
-  // $("#tools-accordian").append(`<hr>`);
   addDropdown(
     "area-chart-params-div",
     "area-collection-dropdown",
@@ -3500,7 +3289,6 @@ if (
     "Choose which " + mode + " time series to summarize."
   );
   $("#area-chart-params-div").append(`<hr>`);
-  // $("#parameters-collapse-div").append(`<hr>`);
   addMultiRadio(
     "area-chart-params-div",
     "area-summary-format",
@@ -3509,20 +3297,11 @@ if (
     { Percentage: true, Acres: false, Hectares: false }
   );
   if (mode === "LCMS" || mode === "geeViz") {
-    //&& (urlParams.sankey==='true' || urlParams.beta ==='true')){
     var activeStartYear = urlParams.startYear;
     var activeEndYear = urlParams.endYear;
     $("#area-chart-params-div").append(
       `<div id='transition-periods-container'></div>`
     );
-    // $("#transition-periods-container").hide();
-    // $("#area-collection-dropdown").change((e) => {
-    //   if ($("#area-collection-dropdown").val().indexOf("-transition") > -1) {
-    //     $("#transition-periods-container").show();
-    //   } else {
-    //     $("#transition-periods-container").hide();
-    //   }
-    // });
   }
 
   $("#area-summary-format").prop(
@@ -3559,7 +3338,6 @@ if (
     "toggleTool(toolFunctions.area.shpDefined)",
     staticTemplates.uploadAreaChartTipHover
   );
-  // addSubAccordianCard('tools-accordian','select-area-dropdown-chart-label','select-area-dropdown-chart-div','Select an Area from Dropdown',staticTemplates.selectAreaDropdownChartDiv,false,'toggleTool(toolFunctions.area.selectDropdown)',staticTemplates.selectAreaDropdownChartTipHover);
   addSubAccordianCard(
     "tools-accordian",
     "select-area-interactive-chart-label",
@@ -3615,38 +3393,38 @@ if (
     "Click to unselect most recently selected polyogn",
     "Click to clear all selected polygons"
   );
-  $("#tools-accordian").append(`<hr>`);
-  //Sync tooltip toggle
-  var tShowToolTipModal = true;
-  if (
-    localStorage.showToolTipModal !== null &&
-    localStorage.showToolTipModal !== undefined
-  ) {
-    tShowToolTipModal = localStorage.showToolTipModal;
-  }
-  addRadio(
-    "tools-accordian",
-    "tooltip-radio",
-    "Show tool tips",
-    "Yes",
-    "No",
-    "localStorage.showToolTipModal",
-    "true",
-    "false",
-    "",
-    "",
-    "Whether to show tool tips to help explain how to use the tools."
-  );
-  if (tShowToolTipModal === "false") {
-    $("#tooltip-radio-second_toggle_label").click();
-  }
+}
+$("#tools-accordian").append(`<div class="hl"></div>`);
+//Sync tooltip toggle
+var tShowToolTipModal = true;
+if (
+  localStorage["showToolTipModal-" + mode] !== null &&
+  localStorage["showToolTipModal-" + mode] !== undefined
+) {
+  tShowToolTipModal = localStorage["showToolTipModal-" + mode];
+}
+addRadio(
+  "tools-accordian",
+  "tooltip-radio",
+  "Show tool tips",
+  "Yes",
+  "No",
+  "localStorage['showToolTipModal-'+mode]",
+  "true",
+  "false",
+  null,
+  null,
+  "Whether to show tool tips to help explain how to use the tools."
+);
+if (tShowToolTipModal === "false") {
+  $("#tooltip-radio-second_toggle_label").click();
 }
 // Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
 if (mode === "sequoia-view") {
   $("#tools-accordian").append(
     `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
   );
-  //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
+
   addSubAccordianCard(
     "tools-accordian",
     "upload-area-chart-label",
@@ -3658,22 +3436,7 @@ if (mode === "sequoia-view") {
     staticTemplates.uploadAreaChartTipHover
   );
 }
-// if (mode === "HiForm-BMP") {
-//   $("#tools-accordian").append(
-//     `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
-//   );
-//   //addSubCollapse('tools-accordian','area-chart-params-label','area-chart-params-div','Area Tools Parameters', '',false,'')
-//   addSubAccordianCard(
-//     "tools-accordian",
-//     "upload-area-chart-label",
-//     "upload-area-chart-div",
-//     "Upload an Area",
-//     staticTemplates.uploadShpToMapLayerDiv,
-//     false,
-//     "toggleTool(toolFunctions.area.shpDefined)",
-//     staticTemplates.uploadAreaChartTipHover
-//   );
-// }
+
 //Add some logos for different modes
 if (mode === "MTBS" || mode === "Ancillary") {
   $("#contributor-logos")
@@ -3818,7 +3581,6 @@ function resizeDashboardPanes() {
     );
   }
 
-  // $('.chart').css('height',$('#dashboard-results-container').height())
   try {
     if ($(window).width() < 768) {
       moveDashboardResults("left");
@@ -3837,7 +3599,6 @@ function resizeDashboardPanes() {
       100
     }%`
   );
-  // $(document).ready(function(){resizeDashboardPanes()})
 }
 if (mode === "lcms-dashboard") {
   $("body").append(staticTemplates.dashboardResultsToggler);
@@ -3863,9 +3624,6 @@ if (mode === "lcms-dashboard") {
   }
   moveCollapse("legend-collapse", "sidebar-left");
 
-  // resizeDashboardPanes();
-  // $( "#dashboard-results-container-right" ).scrollTop()
-  // $("#dashboard-results-div").mouseup(()=>dashboardScrollLeft=$( "#dashboard-results-div" ).scrollLeft())
   var dashboardResultsLocation = "right";
   var dashboardMoveLocationDict = {
     right: "dashboard-results-list",
@@ -3885,7 +3643,6 @@ if (mode === "lcms-dashboard") {
         dashboardScrollTop[dashboardResultsLocation] = $(
           dashboardScrollDict[dashboardResultsLocation]
         ).scrollTop();
-        // console.log(`Scrolling stopped ${dashboardScrollTop[dashboardResultsLocation]}`)
       }, 250)
     );
   };
@@ -3915,7 +3672,6 @@ if (mode === "lcms-dashboard") {
     expander.startListening = () => {
       $("body")
         .mousedown((e) => {
-          // console.log(e.target.id)
           if (e.target.id === expander.id) {
             expander.mouseDown = true;
             expander.originalBackgroundColor = $(`#${expander.id}`).css(
@@ -3954,14 +3710,13 @@ if (mode === "lcms-dashboard") {
     updateDashboardCharts();
   };
   expander.startListening();
-  // console.log(expander);
+
   var isDragging = false;
   var wasDragging = false;
   var mouseDown = false;
 
   var dragBox;
   function dashboardSelectionModeChange() {
-    // console.log(dashboardAreaSelectionMode);
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
       startDashboardViewExtentSelect();
@@ -3975,7 +3730,6 @@ if (mode === "lcms-dashboard") {
         dragBox.addListenTo(map, "map");
         dragBox.addOnStopFunction(dashboardDragboxLayerSelect);
         dragBox.addOnStartFunction(clearAllSelectedDashboardFeatures);
-        // Object.values(layerObj).filter(l=>l.viz.dashboardSummaryLayer).map(v=>dragBox.addListenTo(v.layer,v.id))
       }
       stopDashboardViewExtentSelect();
       stopDashboardClickLayerSelect();
@@ -4011,7 +3765,7 @@ if (mode === "lcms-dashboard") {
 if (urlParams.showSidebar === undefined || urlParams.showSidebar === null) {
   urlParams.showSidebar = true;
 }
-// Handle legacy 'true' and 'false'
+
 if (urlParams.showSidebar === "true") {
   urlParams.showSidebar = true;
 } else if (urlParams.showSidebar === "false") {
@@ -4020,7 +3774,6 @@ if (urlParams.showSidebar === "true") {
 
 function toggleSidebar() {
   $("#sidebar-left").toggle("collapse");
-  // $('#title-banner').toggle('collapse');
 
   if (mode === "lcms-dashboard") {
     setTimeout(() => {

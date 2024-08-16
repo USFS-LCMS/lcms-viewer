@@ -1,7 +1,5 @@
 function exportToCsv2(areaObjID, bn, filename) {
-  // console.log(filename);
   let table = areaChart.areaChartObj[areaObjID].tableExportData[bn];
-  // console.log(table);
   var blob = new Blob([table], { type: "text/csv;charset=utf-8;" });
   if (navigator.msSaveBlob) {
     // IE 10+
@@ -84,8 +82,6 @@ function areaChartCls() {
       params.serialized = false;
     }
 
-    // this.outstandingAddLayers++;
-    // setTimeout(() => {
     $("#map-defined-area-chart-label").show();
 
     $("#area-collection-dropdown-container").hide();
@@ -102,7 +98,7 @@ function areaChartCls() {
       params.eeObjInfo || getImagesLib.eeObjInfo(eeLayer, params.layerType);
 
     obj.dictServerSide = eeObjServerSide(params.eeObjInfo);
-    // console.log(params.eeObjInfo);
+
     if (params.layerType === undefined || params.layerType === null) {
       if (obj.dictServerSide === true) {
         console.log("start");
@@ -119,7 +115,7 @@ function areaChartCls() {
       obj.layerType === "ImageCollection"
         ? ee.ImageCollection(eeLayer)
         : ee.Image(eeLayer);
-    // console.log(obj.layerType);
+
     if (obj.layerType !== "ImageCollection" && obj.layerType !== "Image") {
       setTimeout(
         () =>
@@ -139,9 +135,6 @@ function areaChartCls() {
         500
       );
     } else {
-      // let bandNames = obj.layerType === "ImageCollection" ? eeLayer.first().bandNames() : eeLayer.bandNames();
-      // let dict = obj.layerType === "ImageCollection" ? eeLayer.first().toDictionary() : eeLayer.toDictionary();
-
       if (params.bandNames === undefined || params.bandNames === null) {
         if (obj.dictServerSide) {
           console.log("start");
@@ -186,7 +179,7 @@ function areaChartCls() {
         obj.bandNames = Object.keys(obj.class_names);
         obj.item = obj.item.select(obj.bandNames);
       }
-      obj.palette = params.palette; // || Array(obj.bandNames.length).fill(null);
+      obj.palette = params.palette;
       if (typeof obj.palette === "string") {
         obj.palette = obj.palette.split(",");
       }
@@ -205,17 +198,15 @@ function areaChartCls() {
         params.xAxisProperty || obj.layerType === "ImageCollection"
           ? "year"
           : "system:index";
-      // console.log("start size");
+
       obj.size = 1;
       if (obj.layerType === "ImageCollection") {
-        // console.log(params.eeObjInfo);
         obj.size =
           params.eeObjInfo.size !== undefined
             ? params.eeObjInfo.size
             : obj.item.size().getInfo();
       }
-      // obj.size = obj.layerType === "ImageCollection" ? obj.item.size().getInfo() : 1;
-      // console.log(obj.size);
+
       obj.dateFormat = params.dateFormat || "YYYY";
       obj.chartTitleFontSize = params.chartTitleFontSize || 10;
       obj.chartLabelFontSize = params.chartLabelFontSize || 10;
@@ -243,7 +234,6 @@ function areaChartCls() {
       obj.tableExportData = {};
       obj.splitStr = "----";
 
-      // .map((yr) => parseInt(yr));
       // Control for setting only one of scale or transform - defaults to transform (since it snaps)
       if (
         params.scale !== undefined &&
@@ -284,16 +274,8 @@ function areaChartCls() {
             .map((n) => ee.Date(n).format(obj.dateFormat))
             .sort();
 
-          // let t1 = new Date();
           obj.sankey_years = params.sankey_years || first_last_years.getInfo();
-          // let t2 = new Date();
-          // console.log(obj.sankey_years);
-          // console.log(t2 - t1);
         }
-        // else {
-        //   obj.sankey_years = [obj.sankeyTransitionPeriods[0][0], obj.sankeyTransitionPeriods[obj.sankeyTransitionPeriods.length - 1][1]];
-        // }
-        // console.log(obj.sankey_years);
 
         obj.bandNames.map((bn) => {
           let bn_sankey_class_names = [];
@@ -332,22 +314,10 @@ function areaChartCls() {
             Object.keys(params.eeObjInfo).indexOf(obj.xAxisProperty) === -1
           ) {
             console.log("need to add x axis property value");
-            // if (obj.layerType === "ImageCollection") {
-            // console.log(params.eeObjInfo);
+
             obj.item = obj.item.map(function (img) {
               return img.set("year", img.date().format(obj.dateFormat));
             });
-            // obj.xAxisLabels = obj.item.aggregate_histogram(obj.xAxisProperty).keys().getInfo();
-
-            // obj.item = tempItem;
-            // console.log("here");
-            // console.log(obj.xAxisLabels);
-            // }
-            // else {
-            //   obj.item = obj.item.set("year", obj.item.date().format(obj.dateFormat));
-            //   // obj.xAxisLabels = [obj.item.get(obj.xAxisProperty).getInfo()];
-            //   // obj.item = tempItem;
-            // }
           }
 
           if (obj.layerType === "ImageCollection") {
@@ -355,9 +325,8 @@ function areaChartCls() {
               .aggregate_histogram(obj.xAxisProperty)
               .keys()
               .getInfo();
-            // console.log(obj.xAxisLabels);
           } else {
-            obj.xAxisLabels = [""]; //[obj.item.get(obj.xAxisProperty).getInfo()];
+            obj.xAxisLabels = [""];
           }
         }
         obj.xAxisLabels = obj.xAxisLabels.map((l) =>
@@ -365,8 +334,7 @@ function areaChartCls() {
             ? l
             : parseInt(l)
         );
-        // console.log(obj.xAxisLabels);
-        // console.log(obj.xAxisLabels);
+
         if (obj.layerType === "ImageCollection") {
           obj.stackBandNames = [];
           obj.xAxisLabels.map((xLabel) => {
@@ -377,14 +345,10 @@ function areaChartCls() {
           // Mosaic if many :1 image to xAxisLabel exists
           if (obj.size > obj.xAxisLabels.length) {
             console.log("Mosaicking for single image per x label");
-            // console.log(obj.xAxisLabels);
-            // console.log(obj.size);
-            // console.log(obj.item.first().getInfo());
-            // console.log(obj.xAxisProperty);
+
             let temp = [];
 
             obj.xAxisLabels.map((l) => {
-              // l = isNaN(parseInt(l)) ? l : parseInt(l);
               let t = obj.item.filter(ee.Filter.eq(obj.xAxisProperty, l));
               let f = t.first();
               t = t.mosaic().copyProperties(f).set(obj.xAxisProperty, l);
@@ -392,13 +356,10 @@ function areaChartCls() {
             });
             obj.size = temp.length;
             obj.item = ee.ImageCollection(temp);
-            // console.log(obj.item.getInfo());
           }
         } else {
           obj.stackBandNames = obj.bandNames;
         }
-
-        // console.log(obj.stackBandNames);
       }
 
       if (obj.class_names !== null && Object.keys(obj.class_names).length > 0) {
@@ -436,12 +397,9 @@ function areaChartCls() {
       this.areaChartObj[obj.id] = obj;
       this.areaChartID++;
       this.outstandingAddLayers--;
-      // if (this.outstandingAddLayers === 0) {
+
       this.autoSankeyTransitionPeriods();
-      // }
-      // console.log(this.outstandingAddLayers);
     }
-    // }, 500);
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to figure out the best transition periods for the user interface based on the intersection of provided datasets where sankeyTransitionPeriods were not provided
@@ -519,8 +477,6 @@ function areaChartCls() {
           let idleEventIDT = idleEventID;
           setTimeout(() => {
             if (idleEventID === idleEventIDT) {
-              // console.log(idleEventID, idleEventIDT);
-
               this.chartMapExtent();
             } else {
               console.log("not idle long enough");
@@ -606,15 +562,9 @@ function areaChartCls() {
 
       link: sankey_dict,
     };
-    // console.log(labels);
-    // console.log(colors);
-    // console.log(sankey_dict);
-    // console.log(data);
+
     var data = [data];
 
-    // let h = parseInt($('#chart-modal-body').width()*0.5);
-    // let w = $('#chart-modal-body').width();
-    // console.log(h);console.log(w);
     var plotLayout = {
       title: name,
       font: {
@@ -645,12 +595,11 @@ function areaChartCls() {
       scrollZoom: false,
       displayModeBar: false,
     };
-    // return Plotly.newPlot(canvasID, data, layout, config);
+
     let outFilename = name.replaceAll("<br>", " ");
-    // let downloadCSVButton = this.getDownloadCSVButton(selectedObj.id, outFilename);
-    // let
+
     let tempGraphDivID = `${this.chartContainerID}-${selectedObj.id}-${bn}`;
-    // console.log(bn);
+
     let downloadButtons = this.getDownloadButtonGroup(
       selectedObj.id,
       bn,
@@ -667,8 +616,6 @@ function areaChartCls() {
   };
 
   this.makeChart = function (table, name, colors, visible, selectedObj) {
-    // console.log(table);
-    // let selectedObj = this.areaChartObj[whichAreaChartCollection];
     let outFilename = `${selectedObj.name} ${name}`;
     let chartTitle = `${selectedObj.name}<br>${name}`;
     if (
@@ -703,8 +650,6 @@ function areaChartCls() {
       .join("\n");
     // Set up table
 
-    // console.log(downloadButton);
-    // exportToCsv(outFilename + ".csv", table);
     let yAxisLabel =
       selectedObj.yAxisLabel || chartFormatDict[areaChartFormat].label;
     if (selectedObj.layerType === "ImageCollection") {
@@ -712,17 +657,14 @@ function areaChartCls() {
       let iOffset = selectedObj.layerType === "ImageCollection" ? 1 : 0;
       let header = table[0];
       table = table.slice(1);
-      // console.log(header);
+
       let yColumns = range(1, header.length);
 
-      // console.log(yColumns);
-      // console.log(xColumn);
       var data = yColumns.map((i) => {
         let c = colors !== undefined ? colors[i - iOffset] : null;
         return {
           x: xColumn,
           y: arrayColumn(table, i).map(smartToFixed),
-          // mode: "lines",
 
           stackgroup: selectedObj.stackedAreaChart,
           mode: "lines+markers",
@@ -778,7 +720,6 @@ function areaChartCls() {
         },
       ];
     }
-    // console.log(data);
 
     var plotLayout = {
       plot_bgcolor: this.plot_bgcolor,
@@ -838,7 +779,7 @@ function areaChartCls() {
     };
 
     let tempGraphDivID = `${this.chartContainerID}-${selectedObj.id}`;
-    // let downloadCSVButton = this.getDownloadCSVButton(selectedObj.id, outFilename);
+
     let downloadButtons = this.getDownloadButtonGroup(
       selectedObj.id,
       "line",
@@ -862,15 +803,6 @@ function areaChartCls() {
       );
       if (this.firstRun) {
         $("#area-collection-dropdown-container").hide();
-
-        // $("#query-spinner").append(
-        //   `<div style='display:inline-block'>
-
-        //   <div class="progressbar progress-pulse"  id='query-progressbar' title='Percent of layers that have finished downloading chart summary data'>
-        // <span  style="width: 0% ;padding-top:0.15rem;">0%</span>
-        // </div>
-        // </div>`
-        // );
 
         $("#query-spinner").append(`
         <div id="areaChart-progress-container" >
@@ -900,8 +832,7 @@ function areaChartCls() {
   };
   this.teardownChartProgress = function () {
     $("#areaChart-progress-container").remove();
-    // $("#query-spinner-img").remove();
-    // $("#query-progressbar").remove();
+
     $("#legendDiv").css("max-width", "");
     $("#legendDiv").css("max-height", "60%");
     $("#chart-collapse-div").empty();
@@ -923,8 +854,8 @@ function areaChartCls() {
         .concat(Object.values(timeLapseObj))
         .filter((e) => e.viz.canAreaChart)
         .map((o) => {
-          let objT = o.viz.areaChartParams; //this.areaChartObj[o.legendDivID];
-          // console.log(objT);
+          let objT = o.viz.areaChartParams;
+
           if (objT.line && objT.sankey) {
             selectedChartLayers.push([`${o.legendDivID}-----line`, o.visible]);
             selectedChartLayers.push([
@@ -935,7 +866,7 @@ function areaChartCls() {
             selectedChartLayers.push([o.legendDivID, o.visible]);
           }
         });
-      // console.log(selectedChartLayers);
+
       selectedChartLayers = Object.fromEntries(
         selectedChartLayers.filter(([k, v]) => v)
       );
@@ -948,7 +879,7 @@ function areaChartCls() {
     let selectedChartObjs = Object.values(this.areaChartObj).filter(
       (v) => selectedChartLayers.indexOf(v.id) > -1
     );
-    // console.log(selectedChartLayers);
+
     this.makeChartID++;
     this.outstandingChartRequests[this.makeChartID] = 0;
     this.maxOutStandingChartRequests[this.makeChartID] = 0;
@@ -969,9 +900,6 @@ function areaChartCls() {
       this.chartHeight =
         selectedObj.chartHeight || parseInt(divWidth * this.chartHWRatio);
       if (selectedObj.autoScale) {
-        // console.log("here");
-        // console.log(selectedObj.autoScale);
-        // console.log(scaleT, transformT);
         let scaleTransform = this.autoSetScale(
           scaleT,
           transformT,
@@ -983,9 +911,6 @@ function areaChartCls() {
         scaleMult = scaleTransform[2];
         nominalScale = scaleTransform[3];
       }
-      // console.log(scaleT, transformT, scaleMult);
-      // console.log(selectedObj);
-      // $("#summary-spinner").slideDown();
 
       let makeChartID = this.makeChartID;
 
@@ -1009,7 +934,6 @@ function areaChartCls() {
                   sankeyTransitionPeriods[transitionPeriodI];
                 let sankeyTransitionPeriod2 =
                   sankeyTransitionPeriods[transitionPeriodI + 1];
-                // console.log(sankeyTransitionPeriod1, sankeyTransitionPeriod2);
                 let itemBnTransitionPeriod1 = itemBn
                   .filter(
                     ee.Filter.calendarRange(
@@ -1032,11 +956,10 @@ function areaChartCls() {
 
                 selectedObj.sankey_class_values[bn].map(
                   (sankey_class_values_pair) => {
-                    // console.log(sankey_class_values_pair);
                     outClass = parseInt(
                       `${sankey_class_values_pair[0]}0990${sankey_class_values_pair[1]}`
                     );
-                    // console.log(outClass);
+
                     transitionImg = transitionImg.where(
                       itemBnTransitionPeriod1
                         .eq(sankey_class_values_pair[0])
@@ -1057,7 +980,6 @@ function areaChartCls() {
                   .set("system:index", transitionBn)
                   .rename(`${bn}`);
                 sankeyC.push(transitionImg);
-                // console.log([sankeyTransitionPeriod, itemBnTransitionPeriod.size().getInfo()]);
               }
             );
             sankeyC = ee
@@ -1083,7 +1005,6 @@ function areaChartCls() {
                     `Encountered the following error while summarizing ${selectedObj.name}<br>${failure}`
                   );
                 } else {
-                  // console.log(counts);
                   if (
                     this.areaChartingOn === true &&
                     this.makeChartID === this.makeChartID
@@ -1094,10 +1015,6 @@ function areaChartCls() {
                       source: [],
                       target: [],
                       value: [],
-                      // color: [],
-                      // colorScale:[]
-                      // link_color:[]
-                      // opacity:[]
                     };
                     let labels = [];
                     let colors = [];
@@ -1114,7 +1031,6 @@ function areaChartCls() {
                     selectedObj.class_palette[bn].map((c) => colors.push(c));
 
                     Object.keys(counts).map((transitionPeriod) => {
-                      // console.log(transitionPeriod);
                       let offset1 =
                         (transitionPeriodI - 1) *
                         selectedObj.class_names[bn].length;
@@ -1147,11 +1063,10 @@ function areaChartCls() {
                       let classes = Object.keys(countsTransitionPeriod).map(
                         (cls) => cls.split("0990").map((n) => parseInt(n))
                       );
-                      // console.log(classes);
+
                       let vi = 0;
                       let countLookup = {};
                       classes.map((cls) => {
-                        // console.log(cls);
                         let class_valueI1 = selectedObj.class_values[
                           bn
                         ].indexOf(cls[0]);
@@ -1171,18 +1086,12 @@ function areaChartCls() {
                           sankey_dict.value.push(values[vi]);
                         }
 
-                        // console.log(color_value1,color_value2)
-                        // console.log(blendColors(color_value1,color_value2))
-                        // console.log(selectedObj.plot_bgcolor)
-                        // sankey_dict.color.push('rgba(55,46,44,0.5)');
-
-                        // sankey_dict.colorScale.push([[0, 'rgb(0,0,255)'], [1, 'rgb(255,0,0)']]);
                         countLookup[
                           `${selectedObj.class_names[bn][class_valueI1]}---${selectedObj.class_names[bn][class_valueI2]}`
                         ] = values[vi];
                         vi++;
                       });
-                      // console.log(countLookup);
+
                       outCSV.push(
                         [""].concat(
                           selectedObj.class_names[bn].map((nm) => {
@@ -1209,11 +1118,9 @@ function areaChartCls() {
                       });
                       outCSV.push([""]);
 
-                      // selectedObj.class_names[bn].map((nm)
-
                       transitionPeriodI++;
                     });
-                    // console.log(outCSV);
+
                     outCSV = outCSV.map((r) => r.join(",")).join("\n");
                     selectedObj.tableExportData[bn] = outCSV;
                     labels = labels.map((l) =>
@@ -1238,9 +1145,7 @@ function areaChartCls() {
                       selectedObj,
                       outCSV
                     );
-                    // console.log(labels);
-                    // console.log(colors);
-                    // console.log(sankey_dict);
+
                     this.outstandingChartRequests[this.makeChartID]--;
 
                     this.updateProgress();
@@ -1265,9 +1170,6 @@ function areaChartCls() {
             ? selectedObj.item.toBands()
             : selectedObj.item;
 
-        // console.log(visible);
-        // console.log(header);
-        // console.log(areaChartCollectionStack.bandNames().getInfo());
         areaChartCollectionStack = areaChartCollectionStack.rename(
           selectedObj.stackBandNames
         );
@@ -1277,8 +1179,6 @@ function areaChartCls() {
             selectedObj.unmaskValue
           );
         }
-        // console.log(areaChartCollectionStack.bandNames().getInfo());
-        // this.getZonalStats(areaChartCollectionStack, area, selectedObj.reducer);
 
         areaChartCollectionStack
           .reduceRegion(
@@ -1299,7 +1199,6 @@ function areaChartCls() {
                   `Encountered the following error while summarizing ${selectedObj.name}<br>${failure}`
                 );
               } else {
-                // console.log(counts);
                 let header =
                   selectedObj.layerType === "ImageCollection"
                     ? [selectedObj.xAxisLabel]
@@ -1330,7 +1229,7 @@ function areaChartCls() {
                           ))
                       );
                       class_namesT = unique(class_namesT);
-                      // console.log(class_namesT);
+
                       selectedObj.class_namesT[bn] = class_namesT;
                     }
                     let class_paletteT;
@@ -1351,7 +1250,7 @@ function areaChartCls() {
                     } else {
                       class_paletteT = class_namesT.map((c) => null);
                     }
-                    // console.log(class_paletteT);
+
                     if (selectedObj.bandNames.length == 1) {
                       nameStart = "";
                     }
@@ -1421,11 +1320,7 @@ function areaChartCls() {
                           mult =
                             chartFormatDict[areaChartFormat].mult * scaleMult;
                         }
-                        // console.log(mult);
-                        // console.log(selectedObj.chartScale);
-                        // console.log(chartFormatDict[areaChartFormat].scale);
-                        //   let value_name_dict = dictFromKeyValues(values, names);
-                        //   console.log();
+
                         values.map((v) => {
                           let tv = countsT[v] || 0;
                           row.push(tv * mult);
@@ -1438,11 +1333,10 @@ function areaChartCls() {
                         row.push(countsT);
                       });
                     }
-                    // console.log(row);
+
                     outTable.push(row);
                   });
                 } else {
-                  // console.log(header);
                   let row = [];
 
                   if (selectedObj.isThematic) {
@@ -1477,11 +1371,10 @@ function areaChartCls() {
                   }
                   outTable.push(row);
                 }
-                // console.log(outTable);
+
                 this.outstandingChartRequests[this.makeChartID]--;
                 this.updateProgress();
-                // console.log(this.outstandingChartRequests);
-                // console.log(colors);
+
                 this.makeChart(
                   outTable,
                   `${name} (${nominalScale}m)`,
@@ -1556,7 +1449,6 @@ function areaChartCls() {
 
       if (p === 100) {
         $("#query-spinner-img").removeClass("fa-spin");
-        // $(".hl").last().remove();
       } else {
         $("#query-spinner-img").addClass("fa-spin");
       }

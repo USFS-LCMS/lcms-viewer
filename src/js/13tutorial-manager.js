@@ -429,16 +429,13 @@ if (
     let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${totalSteps})</p>`;
     let buttons = getTourButtons(step[4], stepN, totalSteps);
     $(step[2]).mousedown(function (event) {
-      // console.log(event)
       if (event.ctrlKey) {
         console.log("Right or ctrl mouse clicked");
         console.log(step[2]);
         tour.show(step[5]);
       }
     });
-    // $(step[2]).contextmenu(function() {
-    //     return false;
-    // });
+
     stepN++;
     let obj = {
       title: title,
@@ -465,8 +462,6 @@ if (
     }
   }
   if (mode === "lcms-dashboard") {
-    // console.log('running dashboard tutorial');
-
     let dashboardTourSteps = [
       [
         "Welcome to the LCMS Dashboard tour",
@@ -673,10 +668,7 @@ if (
     ];
 
     dashboardTourSteps.map((s) => addStep(s, dashboardTourSteps.length));
-    // startTour();
   } else if (mode === "Bloom-Mapper") {
-    // console.log('running  tutorial');
-
     let algalTourSteps = [
       [
         `Welcome to the ${mode} tour`,
@@ -757,10 +749,7 @@ if (
     ];
 
     algalTourSteps.map((s) => addStep(s, algalTourSteps.length));
-    // startTour();
   } else if (mode === "TreeMap") {
-    // console.log('running  tutorial');
-
     let treemapTourSteps = [
       [
         `Welcome to the ${mode} tour`,
@@ -842,10 +831,7 @@ if (
     ];
 
     treemapTourSteps.map((s) => addStep(s, treemapTourSteps.length));
-    // startTour();
   } else if (mode === "sequoia-view") {
-    // console.log('running  tutorial');
-
     let sequoiaTourSteps = [
       [
         `Welcome to the Giant Sequoia Viewer tour`,
@@ -926,10 +912,7 @@ if (
     ];
 
     sequoiaTourSteps.map((s) => addStep(s, sequoiaTourSteps.length));
-    // startTour();
   } else if (mode === "HiForm-BMP") {
-    // console.log('running  tutorial');
-
     let hiformTourSteps = [
       [
         `Welcome to the HiForm Timber Harvest BMP Viewer`,
@@ -1169,6 +1152,5 @@ if (
     ];
 
     hiformTourSteps.map((s) => addStep(s, hiformTourSteps.length));
-    // startTour();
   }
 }
