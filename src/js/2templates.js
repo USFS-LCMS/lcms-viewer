@@ -3588,12 +3588,7 @@ function addLayer(layer) {
           rawGeoJSON: {},
           selection: ee.FeatureCollection([]),
         };
-        // selectedFeaturesJSON[layer.name].geoJSON.setMap(layer.map);
 
-        // layer.infoWindow = getInfoWindow(infoWindowXOffset);
-        // infoWindowXOffset += 30;
-        // selectedFeaturesJSON[layer.name].geoJSON.setStyle({strokeColor:invertColor(layer.viz.strokeColor)});
-        // layer.queryVector = layer.item;
         $("#" + visibleLabelID).addClass("select-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
           turnOffAll();

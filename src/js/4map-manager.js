@@ -1,7 +1,7 @@
 //Wrapper for mapping functions
 ///////////////////////////////////////////////////////////////////
 //Set up some globals
-var mapDiv = document.getElementById("map");
+const mapDiv = document.getElementById("map");
 
 function copyObj(mainObj) {
   let objCopy = {}; // objCopy will store a copy of the mainObj
@@ -13,7 +13,7 @@ function copyObj(mainObj) {
   return objCopy;
 }
 function copyArray(array) {
-  var arrayCopy = [];
+  const arrayCopy = [];
 
   array.map(function (i) {
     arrayCopy.push(i);
@@ -37,8 +37,8 @@ function range(start, stop, step) {
   if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
     return [];
   }
-  var result = [];
-  for (var i = start; step > 0 ? i < stop : i > stop; i += step) {
+  const result = [];
+  for (let i = start; step > 0 ? i < stop : i > stop; i += step) {
     result.push(i);
   }
   return result;
@@ -46,16 +46,14 @@ function range(start, stop, step) {
 ///////////////////////////////////////////////////////////////////
 //Convert lng, lat to nad 83 code
 function llToNAD83(x, y) {
-  var vertex = [x, y];
-  var smRadius = 6378136.98;
-  var smRange = smRadius * Math.PI * 2.0;
-  var smLonToX = smRange / 360.0;
-  var smRadiansOverDegrees = Math.PI / 180.0;
+  const vertex = [x, y];
+  const smRadius = 6378136.98;
+  const smRange = smRadius * Math.PI * 2.0;
+  const smLonToX = smRange / 360.0;
+  const smRadiansOverDegrees = Math.PI / 180.0;
 
   // compute x-map-unit
   vertex[0] *= smLonToX;
-
-  var y = vertex[1];
 
   // compute y-map-unit
   if (y > 86.0) {
@@ -72,25 +70,13 @@ function llToNAD83(x, y) {
 ///////////////////////////////////////////////////////////////////
 //Make an object out of to lists of keys and values
 //From:https://stackoverflow.com/questions/12199051/merge-two-arrays-of-keys-and-values-to-an-object-using-underscore answer 6
-var toObj = (ks, vs) =>
+const toObj = (ks, vs) =>
   ks.reduce((o, k, i) => {
     o[k] = vs[i];
     return o;
   }, {});
-var toDict = toObj;
-////////////////////////////////////////
-//Copy an array
-function CopyAnArray(ari1) {
-  var mxx4 = [];
-  for (var i = 0; i < ari1.length; i++) {
-    var nads2 = [];
-    for (var j = 0; j < ari1[0].length; j++) {
-      nads2.push(ari1[i][j]);
-    }
-    mxx4.push(nads2);
-  }
-  return mxx4;
-}
+const toDict = toObj;
+
 ///////////////////////////////////////////////////////////////////
 //Get a column of a 2-d array
 function arrayColumn(arr, i) {
@@ -102,10 +88,10 @@ function arrayColumn(arr, i) {
 //Convert xyz coords to quad key for map services such as Bing
 //Source: http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
 function tileXYZToQuadKey(x, y, z) {
-  var quadKey = "";
-  for (var i = z; i > 0; i--) {
-    var digit = 0;
-    var mask = 1 << (i - 1);
+  let quadKey = "";
+  for (let i = z; i > 0; i--) {
+    let digit = 0;
+    let mask = 1 << (i - 1);
 
     if ((x & mask) != 0) {
       digit = digit + 1;
@@ -126,7 +112,7 @@ function centerMap(lng, lat, zoom) {
   map.setZoom(zoom);
 }
 function synchronousCenterObject(feature) {
-  var bounds = new google.maps.LatLngBounds();
+  let bounds = new google.maps.LatLngBounds();
   feature.coordinates[0].map(function (latlng) {
     bounds.extend({ lng: latlng[0], lat: latlng[1] });
   });
@@ -181,8 +167,8 @@ function centerObject(fc, async = true, callback) {
 //Function for creating color ramp generally for a map legend
 function createColorRamp(styleName, colorList, width, height) {
   colorList = colorList.map(addColorHash);
-  var myCss = "background-image:linear-gradient(to right, ";
-  for (var i = 0; i < colorList.length; i++) {
+  let myCss = "background-image:linear-gradient(to right, ";
+  for (let i = 0; i < colorList.length; i++) {
     myCss = myCss + colorList[i].toLowerCase() + ",";
   }
   myCss = myCss.slice(0, -1) + ");";
@@ -191,16 +177,16 @@ function createColorRamp(styleName, colorList, width, height) {
 ///////////////////////////////////////////////////////////////////
 //Function to convert csv, kml, shp to geoJSON using ogre.adc4gis.com
 function convertToGeoJSON(formID) {
-  var url = "https://ogre.adc4gis.com/convert";
+  const url = "https://ogre.adc4gis.com/convert";
 
-  var data = new FormData();
+  const data = new FormData();
   // data.append("sourceSrs","EPSG:5070");
 
   data.append("targetSrs", "EPSG:4326");
   jQuery.each(jQuery("#" + formID)[0].files, function (i, file) {
     data.append("upload", file);
   });
-  var out = $.ajax({
+  const out = $.ajax({
     type: "POST",
     url: url,
     data: data,
@@ -265,49 +251,6 @@ function printEE(obj) {
   );
 }
 /////////////////////////////////////////////////////
-//Get random number within specified range
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
-}
-/////////////////////////////////////////////////////
-//Plot manager functions
-//Clear plots from plot list
-function clearPlots() {
-  var plotElements = document.getElementById("pt-list");
-  print(plotElements);
-  while (plotElements.firstChild) {
-    plotElements.removeChild(plotElements.firstChild);
-  }
-  plotDictID = 1;
-  plotIDList = [];
-  plotID = 1;
-}
-function addPlotProject(plotProjectName, plotProjectPts) {
-  var projectElement = document.createElement("ee-pt-project");
-  projectElement.name = plotProjectName;
-  projectElement.plotList = plotProjectPts;
-  projectElement.ID = plotProjectID;
-  var ptList = document.querySelector("pt-project-list");
-  ptList.insertBefore(projectElement, ptList.firstChild);
-  plotProjectID++;
-}
-
-function setPlotColor(ID) {
-  var plotElements = document.getElementsByTagName("ee-pt");
-
-  for (var i = 0; i < plotElements.length; i++) {
-    plotElements[i].style.outline = "none";
-  }
-  plotElements[plotElements.length - ID].style.outline = "#FFF solid";
-}
-function setPlotProjectColor(ID) {
-  var plotElements = document.getElementsByTagName("ee-pt-project");
-
-  for (var i = 0; i < plotElements.length; i++) {
-    plotElements[i].style.outline = "none";
-  }
-  plotElements[plotElements.length - ID].style.outline = "#FFF dotted";
-}
 /////////////////////////////////////////////////////
 //Wrapper function to add a select layer
 function addSelectLayerToMap(
@@ -337,10 +280,10 @@ function addSelectLayerToMap(
 }
 /////////////////////////////////////////////////////
 //Functions to manage time lapses
-var intervalPeriod = 666.6666666666666;
-var timeLapseID;
-var timeLapseFrame = 0;
-var cumulativeMode = urlParams.cumulativeMode;
+let intervalPeriod = 666.6666666666666;
+let timeLapseID;
+let timeLapseFrame = 0;
+let cumulativeMode = urlParams.cumulativeMode;
 function pauseTimeLapse(id) {
   if (id === null || id === undefined) {
     id = timeLapseID;
@@ -354,7 +297,7 @@ function pauseTimeLapse(id) {
 }
 
 function setFrameOpacity(frame, opacity) {
-  var s = $("#" + frame).slider();
+  let s = $("#" + frame).slider();
   s.slider("option", "value", opacity);
   s.slider("option", "slide").call(s, null, {
     handle: $(".ui-slider-handle", s),
@@ -381,7 +324,7 @@ function selectFrame(id, fromYearSlider, advanceOne) {
     }
 
     turnOnTimeLapseLayers();
-    var slidersT = timeLapseObj[timeLapseID].sliders;
+    const slidersT = timeLapseObj[timeLapseID].sliders;
     if (timeLapseFrame > slidersT.length - 1) {
       timeLapseFrame = 0;
     } else if (timeLapseFrame < 0) {
@@ -402,7 +345,7 @@ function selectFrame(id, fromYearSlider, advanceOne) {
         });
       }
     }
-    var frame = slidersT[timeLapseFrame];
+    const frame = slidersT[timeLapseFrame];
     try {
       if (timeLapseObj[timeLapseID].layerType === "tileMapService") {
         $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
@@ -413,7 +356,7 @@ function selectFrame(id, fromYearSlider, advanceOne) {
       setFrameOpacity(frame, timeLapseObj[timeLapseID].opacity);
       if (!fromYearSlider) {
         Object.keys(timeLapseObj).map(function (k) {
-          var s = $("#" + k + "-year-slider").slider();
+          const s = $("#" + k + "-year-slider").slider();
           s.slider("option", "value", timeLapseFrame);
           $("#" + k + "-year-slider-handle-label").text(
             timeLapseObj[k].yearLookup[timeLapseFrame]
@@ -489,7 +432,7 @@ function clearAllFrames() {
   turnOffAllNonActiveTimeLapseLayers();
 
   Object.keys(timeLapseObj).map(function (k) {
-    var slidersT = timeLapseObj[k].sliders;
+    const slidersT = timeLapseObj[k].sliders;
     $("#" + k + "-year-label").hide();
     $("#" + k + "-stop-button").addClass("time-lapse-active");
     $("#" + k + "-pause-button").removeClass("time-lapse-active");
@@ -548,7 +491,7 @@ function toggleTimeLapseLayers(id) {
   if (id === null || id === undefined) {
     id = timeLapseID;
   }
-  var visibleToggles = timeLapseObj[k].layerVisibleIDs;
+  const visibleToggles = timeLapseObj[k].layerVisibleIDs;
   visibleToggles.map(function (i) {
     $("#" + i).click();
   });
@@ -622,7 +565,7 @@ function turnOffTimeLapseLayers(id) {
 }
 //Function to handle tiles getting stuck when requested from GEE
 //Currently the best method seems to be to jitter the zoom to re-request the tiles from GEE
-var lastJitter;
+let lastJitter;
 function jitterZoom(fromButton) {
   if (fromButton === null || fromButton === undefined) {
     fromButton = false;
@@ -630,15 +573,15 @@ function jitterZoom(fromButton) {
   if (lastJitter === null || lastJitter === undefined) {
     lastJitter = new Date();
   }
-  var tDiff = new Date() - lastJitter;
-  var jittered = false;
+  const tDiff = new Date() - lastJitter;
+  let jittered = false;
   if (
     (tDiff > 5000 && geeTileLayersDownloading === 0) ||
     tDiff > 20000 ||
     fromButton
   ) {
     console.log("jittering zoom");
-    var z = map.getZoom();
+    const z = map.getZoom();
     updateViewList = false;
     map.setZoom(z - 1);
     updateViewList = false;
@@ -653,7 +596,7 @@ function jitterZoom(fromButton) {
 function alignTimeLapseCheckboxes() {
   Object.keys(timeLapseObj).map(function (k) {
     if (timeLapseObj[k].isReady) {
-      var checked = false;
+      let checked = false;
       urlParams.layerProps[k].visible = timeLapseObj[k].visible;
       if (timeLapseObj[k].visible) {
         checked = true;
@@ -679,8 +622,8 @@ function alignTimeLapseCheckboxes() {
   });
 }
 function timeLapseCheckbox(id) {
-  let tObj = timeLapseObj[id];
-  var v = tObj.visible;
+  const tObj = timeLapseObj[id];
+  const v = tObj.visible;
 
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
@@ -730,8 +673,8 @@ function toggleCumulativeMode() {
 
 //Fill empty collections
 function fillEmptyCollections(inCollection, dummyImage) {
-  var dummyCollection = ee.ImageCollection([dummyImage.mask(ee.Image(0))]);
-  var imageCount = inCollection.toList(1).length();
+  const dummyCollection = ee.ImageCollection([dummyImage.mask(ee.Image(0))]);
+  const imageCount = inCollection.toList(1).length();
   return ee.ImageCollection(
     ee.Algorithms.If(imageCount.gt(0), inCollection, dummyCollection)
   );
@@ -779,7 +722,7 @@ function addTimeLapseToMap(
     viz.canAreaChart = false;
   }
   //Force time lapses to be turned off on load to speed up loading
-  var visible = false;
+  visible = false;
   if (viz.opacity === undefined || viz.opacity === null) {
     viz.opacity = 1;
   }
@@ -828,9 +771,9 @@ function addTimeLapseToMap(
   if (name == undefined || name == null) {
     name = "Layer " + NEXT_LAYER_ID;
   }
-  var checked = "";
+  let checked = "";
 
-  var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
+  let legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
 
   if (
@@ -906,7 +849,7 @@ function addTimeLapseToMap(
         .sort(viz.dateField, true)
         .toList(10000, 0)
         .map(function (img) {
-          var d = ee.Date(ee.Image(img).get(viz.dateField));
+          const d = ee.Date(ee.Image(img).get(viz.dateField));
           return d.format(viz.dateFormat);
         })
         .getInfo()
@@ -934,7 +877,7 @@ function addTimeLapseToMap(
   timeLapseObj[legendDivID].visible = visible;
   timeLapseObj[legendDivID].state = "inactive";
   timeLapseObj[legendDivID].opacity = viz.opacity * 100;
-  var layerContainerTitle =
+  const layerContainerTitle =
     "Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.";
 
   //Set up container for time lapse
@@ -995,8 +938,8 @@ function addTimeLapseToMap(
     `<div id="legend-${legendDivID}-collapse-div"></div>`
   );
   onclick = 'timeLapseCheckbox("${legendDivID}")';
-  var prevent = false;
-  var delay = 200;
+  const prevent = false;
+  const delay = 200;
   $("#" + legendDivID + "-name-span").click(function () {
     setTimeout(function () {
       if (!prevent) {
@@ -1015,7 +958,7 @@ function addTimeLapseToMap(
         viz.addToLegend = false;
         viz.addToClassLegend = false;
       }
-      var vizT = Object.assign({}, viz);
+      const vizT = Object.assign({}, viz);
       vizT.year = yr;
       addToMap(
         superSimpleTileURLFunction(item[yr]),
@@ -1030,15 +973,16 @@ function addTimeLapseToMap(
       );
     });
   } else {
-    var dummyImage = ee.Image(item.first());
-    var cT = [];
+    const dummyImage = ee.Image(item.first());
+    const cT = [];
     viz.years.map(function (yr) {
       // Get the date
-      var d = ee.Date.parse(viz.dateFormat, yr.toString());
+      let img;
+      const d = ee.Date.parse(viz.dateFormat, yr.toString());
 
       // Filter and find the image
       if (viz.dateField !== "system:time_start") {
-        var img = item.filter(ee.Filter.gte(viz.dateField, d.millis()));
+        img = item.filter(ee.Filter.gte(viz.dateField, d.millis()));
         img = img.filter(
           ee.Filter.lt(
             viz.dateField,
@@ -1048,19 +992,19 @@ function addTimeLapseToMap(
         img = fillEmptyCollections(img, dummyImage);
       } else {
         // This method fails with different dateFields than system:time_start
-        var img = fillEmptyCollections(
+        img = fillEmptyCollections(
           item.filterDate(d, d.advance(1, viz.advanceInterval)),
           dummyImage
         );
       }
 
       if (viz.mosaic) {
-        var img = ee
+        img = ee
           .Image(img.mosaic())
           .set("system:time_start", d.millis())
           .copyProperties(img.first());
       } else {
-        var img = ee
+        img = ee
           .Image(img.first())
           .set("system:time_start", d.millis())
           .copyProperties(img.first());
@@ -1072,7 +1016,7 @@ function addTimeLapseToMap(
         viz.addToClassLegend = false;
         viz.classLegendDict = null;
       }
-      var vizT = Object.assign({}, viz);
+      const vizT = Object.assign({}, viz);
       vizT.year = yr;
       vizT.layerType = "geeImage";
       vizT.canAreaChart = false;
@@ -1154,10 +1098,10 @@ function addTimeLapseToMap(
     step: 0.05,
     value: timeLapseObj[legendDivID].opacity / 100,
     slide: function (e, ui) {
-      var opacity = ui.value;
+      const opacity = ui.value;
       urlParams.layerProps[legendDivID].opacity = opacity;
-      var k = legendDivID;
-      var s = $("#" + k + "-opacity-slider").slider();
+      const k = legendDivID;
+      const s = $("#" + k + "-opacity-slider").slider();
       s.slider("option", "value", ui.value);
       $("#" + k + "-opacity-slider-handle-label").text(opacity);
       timeLapseObj[k].opacity = opacity * 100;
@@ -1178,11 +1122,11 @@ function addTimeLapseToMap(
     step: 1,
     value: viz.yearsI[0],
     slide: function (e, ui) {
-      var i = ui.value;
-      var yr = viz.yearLookup[i];
+      const i = ui.value;
+      const yr = viz.yearLookup[i];
       timeLapseFrame = i;
       Object.keys(timeLapseObj).map(function (k) {
-        var s = $("#" + k + "-year-slider").slider();
+        const s = $("#" + k + "-year-slider").slider();
         s.slider("option", "value", ui.value);
         $("#" + k + "-year-slider-handle-label").text(yr);
       });
@@ -1201,9 +1145,9 @@ function addTimeLapseToMap(
     step: 0.5,
     value: 1.5,
     slide: function (e, ui) {
-      var speed = (1 / ui.value) * 1000;
+      const speed = (1 / ui.value) * 1000;
       Object.keys(timeLapseObj).map(function (k) {
-        var s = $("#" + k + "-speed-slider").slider();
+        const s = $("#" + k + "-speed-slider").slider();
         s.slider("option", "value", ui.value);
         $("#" + k + "-speed-slider-handle-label").text(
           `${ui.value.toFixed(1)}fps`
@@ -1219,7 +1163,7 @@ function addTimeLapseToMap(
 //Wrapper to add an export
 
 function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
-  var exportElement = {};
+  const exportElement = {};
   if (res === null || res === undefined) {
     res = 30;
   }
@@ -1232,14 +1176,13 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   if (noDataValue === null || noDataValue === undefined) {
     noDataValue = -32768;
   }
-  var checked = "";
+  let checked = "";
   if (Export) {
     checked = "checked";
   }
   objType = getImagesLib.getObjType(eeImage);
 
-  var now = Date().split(" ");
-  var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
+  const now = Date().split(" ");
 
   name = name.replace(/[^A-Za-z0-9]/g, "_");
   exportElement.res = res;
@@ -1416,14 +1359,14 @@ function getLookupDicts(bandName, class_values, class_names, class_palette) {
   queryDict = toObj(values, names);
   return { classLegendDict: legendDict, queryDict: queryDict };
 }
-var typeLookup = {
+const typeLookup = {
   Image: "geeImage",
   ImageCollection: "geeImageCollection",
   Feature: "geeVectorImage",
   FeatureCollection: "geeVectorImage",
   Geometry: "geeVectorImage",
 };
-var reverseTypeLookup = {};
+const reverseTypeLookup = {};
 Object.keys(typeLookup).map((k) => (reverseTypeLookup[typeLookup[k]] = k));
 
 function addToMap(
@@ -1461,7 +1404,7 @@ function addToMap(
     }
   }
 
-  var currentGEERunID = geeRunID;
+  const currentGEERunID = geeRunID;
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "layer-list";
   }
@@ -1508,7 +1451,7 @@ function addToMap(
 
   //Possible layerType: geeVector,geoJSONVector,geeImage,geeImageArray,geeImageCollection,tileMapService,dynamicMapService
   if (viz.layerType === null || viz.layerType === undefined) {
-    var eeType = getImagesLib.getObjType(item, "addLayer");
+    let eeType = getImagesLib.getObjType(item, "addLayer");
 
     if (eeType === "Feature") {
       item = ee.FeatureCollection([item]);
@@ -1584,7 +1527,7 @@ function addToMap(
   }
 
   //Handle legend
-  var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
+  let legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
 
   // Handle layer visibility caching
@@ -1632,8 +1575,8 @@ function addToMap(
     viz.opacity = 1;
   }
 
-  var layerObjKeys = Object.keys(layerObj);
-  var nameIndex = layerObjKeys.indexOf(legendDivID);
+  const layerObjKeys = Object.keys(layerObj);
+  const nameIndex = layerObjKeys.indexOf(legendDivID);
   if (nameIndex != -1) {
     visible = layerObj[legendDivID].visible;
     viz.opacity = layerObj[legendDivID].opacity;
@@ -1649,7 +1592,7 @@ function addToMap(
   if (viz.title !== null && viz.title !== undefined) {
     helpBox = viz.title;
   }
-  var layer = {};
+  const layer = {};
 
   layer.ID = NEXT_LAYER_ID;
   NEXT_LAYER_ID += 1;
@@ -1712,7 +1655,7 @@ function addToMap(
   ) {
     addLegendContainer(legendDivID, "legend-" + whichLayerList, false, helpBox);
 
-    var legend = {};
+    const legend = {};
 
     if (viz.legendTitle !== null && viz.legendTitle !== undefined) {
       legend.name = viz.legendTitle;
@@ -1721,12 +1664,13 @@ function addToMap(
     }
 
     legend.helpBoxMessage = helpBox;
+    let palette;
     if (viz.palette != null) {
-      var palette = viz.palette;
+      palette = viz.palette;
     } else {
-      var palette = "000,FFF";
+      palette = "000,FFF";
     }
-    var paletteList = palette;
+    let paletteList = palette;
     if (typeof palette === "string") {
       paletteList = paletteList.split(",");
     }
@@ -1739,7 +1683,7 @@ function addToMap(
       }
       return color;
     });
-    var colorRamp = createColorRamp(
+    const colorRamp = createColorRamp(
       "colorRamp" + colorRampIndex.toString(),
       paletteList,
       180,
@@ -1807,8 +1751,8 @@ function addToMap(
       viz.addToClassLegend === true)
   ) {
     addLegendContainer(legendDivID, "legend-" + whichLayerList, false, helpBox);
-    var classLegendContainerID = legendDivID + "-class-container";
-    var legendClassContainerName;
+    const classLegendContainerID = legendDivID + "-class-container";
+    let legendClassContainerName;
     if (viz.legendTitle !== null && viz.legendTitle !== undefined) {
       legendClassContainerName = viz.legendTitle;
     } else {
@@ -1824,9 +1768,9 @@ function addToMap(
       viz.layerType !== "geoJSONVector" &&
       viz.layerType !== "geeVectorImage"
     ) {
-      var legendKeys = Object.keys(viz.classLegendDict);
+      const legendKeys = Object.keys(viz.classLegendDict);
       legendKeys.map(function (lk) {
-        var legend = {};
+        const legend = {};
         legend.name = name;
 
         legend.helpBoxMessage = helpBox;
@@ -1838,11 +1782,11 @@ function addToMap(
         addClassLegendEntry(classLegendContainerID, legend);
       });
     } else {
-      var legend = {};
+      const legend = {};
       legend.name = name;
       legend.helpBoxMessage = helpBox;
-      var strokeColor = viz.strokeColor.slice(1);
-      var fillColor = viz.fillColor.slice(1);
+      let strokeColor = viz.strokeColor.slice(1);
+      let fillColor = viz.fillColor.slice(1);
 
       if (strokeColor.length === 3) {
         strokeColor = strokeColor
@@ -1873,7 +1817,7 @@ function addToMap(
       addClassLegendEntry(classLegendContainerID, legend);
     }
 
-    var title = {};
+    const title = {};
     title.name = name;
     title.helpBoxMessage = helpBox;
   }
@@ -1910,8 +1854,8 @@ function standardTileURLFunction(url, xThenY, fileExtension, token) {
   return function (coord, zoom) {
     // "Wrap" x (logitude) at 180th meridian properly
     // NB: Don't touch coord.x because coord param is by reference, and changing its x property breakes something in Google's lib
-    var tilesPerGlobe = 1 << zoom;
-    var x = coord.x % tilesPerGlobe;
+    const tilesPerGlobe = 1 << zoom;
+    let x = coord.x % tilesPerGlobe;
     console.log(coord, zoom, x);
     if (x < 0) {
       x = tilesPerGlobe + x;
@@ -1940,8 +1884,8 @@ function addRESTToMap(
   helpBox,
   whichLayerList
 ) {
-  var viz = {};
-  var item = ee.Image();
+  const viz = {};
+  const item = ee.Image();
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "layer-list";
   }
@@ -1959,7 +1903,7 @@ function addRESTToMap(
   if (helpBox == null) {
     helpBox = "";
   }
-  var layer = document.createElement("REST-layer");
+  const layer = document.createElement("REST-layer");
   layer.tileURLFunction = tileURLFunction;
   layer.ID = NEXT_LAYER_ID;
   NEXT_LAYER_ID += 1;
@@ -1976,7 +1920,7 @@ function addRESTToMap(
   layer.item = item;
   layer.name = name;
 
-  var layerList = document.querySelector(whichLayerList);
+  const layerList = document.querySelector(whichLayerList);
 
   layerList.insertBefore(layer, layerList.firstChild);
   layerCount++;
@@ -1987,20 +1931,20 @@ function addRESTToMap(
 //////////////////////////////////////////////////////
 //Function to convert xy space in the dom to the map
 function point2LatLng(x, y) {
-  var out;
+  let out;
   try {
-    var m = document.getElementById("map");
+    const m = document.getElementById("map");
     x = x - m.offsetLeft;
     y = y - m.offsetTop;
 
-    var topRight = map
+    const topRight = map
       .getProjection()
       .fromLatLngToPoint(map.getBounds().getNorthEast());
-    var bottomLeft = map
+    const bottomLeft = map
       .getProjection()
       .fromLatLngToPoint(map.getBounds().getSouthWest());
-    var scale = Math.pow(2, map.getZoom());
-    var worldPoint = new google.maps.Point(
+    const scale = Math.pow(2, map.getZoom());
+    const worldPoint = new google.maps.Point(
       x / scale + bottomLeft.x,
       y / scale + topRight.y
     );
@@ -2018,13 +1962,13 @@ function getGroundOverlay(baseUrl, minZoom, ending) {
     if (ending === undefined || ending === null) {
       ending = "";
     }
-    var mapHeight = $("#map").height();
-    var mapWidth = $("#map").width();
+    const mapHeight = $("#map").height();
+    const mapWidth = $("#map").width();
 
-    var bounds = map.getBounds();
-    var keys = Object.keys(bounds);
-    var keysX = Object.keys(bounds[keys[0]]);
-    var keysY = Object.keys(bounds[keys[1]]);
+    const bounds = map.getBounds();
+    const keys = Object.keys(bounds);
+    const keysX = Object.keys(bounds[keys[0]]);
+    const keysY = Object.keys(bounds[keys[1]]);
 
     eeBoundsPoly = ee.Geometry.Rectangle([
       bounds[keys[1]][keysX[0]],
@@ -2033,14 +1977,14 @@ function getGroundOverlay(baseUrl, minZoom, ending) {
       bounds[keys[0]][keysY[1]],
     ]);
 
-    var ulx = bounds[keys[1]][keysX[0]];
-    var lrx = bounds[keys[1]][keysX[1]];
-    var ulxy = [ulx, bounds[keys[0]][keysY[0]]];
-    var lrxy = [lrx, bounds[keys[0]][keysY[1]]];
-    var ulxyMercator = llToNAD83(ulxy[0], ulxy[1]);
-    var lrxyMercator = llToNAD83(lrxy[0], lrxy[1]);
+    const ulx = bounds[keys[1]][keysX[0]];
+    const lrx = bounds[keys[1]][keysX[1]];
+    const ulxy = [ulx, bounds[keys[0]][keysY[0]]];
+    const lrxy = [lrx, bounds[keys[0]][keysY[1]]];
+    const ulxyMercator = llToNAD83(ulxy[0], ulxy[1]);
+    const lrxyMercator = llToNAD83(lrxy[0], lrxy[1]);
 
-    var url =
+    const url =
       baseUrl +
       ulxyMercator.x.toString() +
       "%2C" +
@@ -2082,8 +2026,8 @@ function addDynamicToMap(
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "layer-list";
   }
-  var viz = {};
-  var item = ee.Image();
+  const viz = {};
+  const item = ee.Image();
   if (name === null || name === undefined) {
     name = "Layer " + NEXT_LAYER_ID;
   }
@@ -2100,7 +2044,7 @@ function addDynamicToMap(
       return getGroundOverlay(baseUrl1, minZoom1, ending2);
     }
   }
-  var layer = document.createElement("dynamic-layer");
+  const layer = document.createElement("dynamic-layer");
 
   layer.ID = NEXT_LAYER_ID;
   NEXT_LAYER_ID += 1;
@@ -2117,7 +2061,7 @@ function addDynamicToMap(
   layer.item = item;
   layer.name = name;
 
-  var layerList = document.querySelector(whichLayerList);
+  const layerList = document.querySelector(whichLayerList);
 
   layerList.insertBefore(layer, layerList.firstChild);
   layerCount++;
@@ -2137,12 +2081,12 @@ function addFeatureToMap(
 ) {
   console.log("adding feature: " + name);
   item.evaluate(function (v) {
-    var layer = new google.maps.Data({ fillOpacity: 0, strokeColor: "#F00" });
+    const layer = new google.maps.Data({ fillOpacity: 0, strokeColor: "#F00" });
     layer.addGeoJson(v);
     layer.setMap(map);
   });
 }
-var featureViewObj = {};
+const featureViewObj = {};
 function addFeatureView(
   assetId,
   visParams,
@@ -2159,7 +2103,7 @@ function addFeatureView(
     },
     function (tokens) {
       console.log(tokens);
-      var url =
+      const url =
         "https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/featureViews/" +
         tokens.token +
         "/tiles/";
@@ -2171,7 +2115,7 @@ function addFeatureView(
     }
   );
 
-  var legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
+  let legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
   legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
 
   NEXT_LAYER_ID++;
@@ -2495,7 +2439,7 @@ function mp() {
   };
 }
 
-var Map2 = new mp();
+const Map2 = new mp();
 Object.keys(Map2).map((k) => (Map[k] = Map2[k]));
 
 if (urlParams.addLayer === "false" || urlParams.addLayer === false) {
@@ -2514,7 +2458,7 @@ if (urlParams.addLayer === "false" || urlParams.addLayer === false) {
 ////////////////////////////////////////////////////////////////////////
 //Some helper functions
 function sleep(delay) {
-  var start = new Date().getTime();
+  const start = new Date().getTime();
   while (new Date().getTime() < start + delay);
 }
 function stringToBoolean(string) {
@@ -2632,14 +2576,14 @@ function reRun() {
 // Taken from: https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
 function mulberry32(a) {
   return function () {
-    var t = (a += 0x6d2b79f5);
+    let t = (a += 0x6d2b79f5);
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    var out = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    const out = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     return out;
   };
 }
-var randomN = mulberry32(1);
+const randomN = mulberry32(1);
 ////////////////////////////
 // Function to handle adding a hash before a hex color or add nothing if it's a color name
 function isHexColor(color, regexp = /^[0-9a-fA-F]+$/) {
@@ -2661,7 +2605,7 @@ function padLeft(nr, n, str) {
 }
 function rgbToHex(r, g, b) {
   if (typeof r == "object") {
-    var colors = r;
+    const colors = r;
     r = colors[0];
     g = colors[1];
     b = colors[2];
@@ -2677,7 +2621,7 @@ function hexToRgb(hex) {
   if (hex.length === 3) {
     hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   }
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
         r: parseInt(result[1], 16),
@@ -2723,7 +2667,7 @@ function invertColor(hex) {
     throw new Error("Invalid HEX color.");
   }
   // invert color components
-  var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+  const r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
     g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
     b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
   // pad each with zeros and return
@@ -2732,30 +2676,30 @@ function invertColor(hex) {
 
 function padZero(str, len) {
   len = len || 2;
-  var zeros = new Array(len).join("0");
+  const zeros = new Array(len).join("0");
   return (zeros + str).slice(-len);
 }
 function randomColor(mins = [100, 100, 100], maxes = [200, 200, 255]) {
-  var r = getRandomInt(mins[0], maxes[0]);
-  var g = getRandomInt(mins[1], maxes[1]);
-  var b = getRandomInt(mins[2], maxes[2]);
-  var c = rgbToHex(r, g, b);
+  const r = getRandomInt(mins[0], maxes[0]);
+  const g = getRandomInt(mins[1], maxes[1]);
+  const b = getRandomInt(mins[2], maxes[2]);
+  const c = rgbToHex(r, g, b);
   return c;
 }
 function getChartColor() {
-  var color = chartColors[chartColorI % chartColors.length];
+  const color = chartColors[chartColorI % chartColors.length];
   chartColorI++;
   return color;
 }
 function randomRGBColor() {
-  var r = getRandomInt(100, 225);
-  var g = getRandomInt(100, 225);
-  var b = getRandomInt(100, 225);
+  const r = getRandomInt(100, 225);
+  const g = getRandomInt(100, 225);
+  const b = getRandomInt(100, 225);
 
   return [r, g, b];
 }
 function randomColors(n) {
-  var out = [];
+  const out = [];
   while (n > 0) {
     out.push(randomColor());
     n = n - 1;
@@ -2857,7 +2801,7 @@ function get_poly_gradient_ct(palette, min, max) {
 
 //////////////////////////////////
 //Taken from: https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
-var colorList = [
+const colorList = [
   "#e6194b",
   "#3cb44b",
   "#ffe119",
@@ -2881,32 +2825,32 @@ var colorList = [
   "#ffffff",
   "#000000",
 ];
-var colorMod = colorList.length;
+const colorMod = colorList.length;
 function getColor() {
-  var currentColor = colorList[colorMod % colorList.length];
+  const currentColor = colorList[colorMod % colorList.length];
   colorMod++;
   return currentColor;
 }
 //Taken from: https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
 function LightenDarkenColor(col, amt) {
-  var usePound = false;
+  let usePound = false;
   if (col[0] == "#") {
     col = col.slice(1);
     usePound = true;
   }
-  var num = parseInt(col, 16);
+  const num = parseInt(col, 16);
 
-  var r = (num >> 16) + amt;
+  let r = (num >> 16) + amt;
 
   if (r > 255) r = 255;
   else if (r < 0) r = 0;
 
-  var b = ((num >> 8) & 0x00ff) + amt;
+  let b = ((num >> 8) & 0x00ff) + amt;
 
   if (b > 255) b = 255;
   else if (b < 0) b = 0;
 
-  var g = (num & 0x0000ff) + amt;
+  let g = (num & 0x0000ff) + amt;
 
   if (g > 255) g = 255;
   else if (g < 0) g = 0;
@@ -2927,15 +2871,15 @@ function startArea() {
   areaPolygonObj[polyNumber].setMap(map);
 
   updateArea = function () {
-    var unitName;
-    var unitMultiplier;
-    var keys = Object.keys(areaPolygonObj);
+    let unitName;
+    let unitMultiplier;
+    const keys = Object.keys(areaPolygonObj);
 
-    var totalArea = 0;
-    var totalWithArea = 0;
-    var outString = "";
+    let totalArea = 0;
+    let totalWithArea = 0;
+    let outString = "";
     function areaWrapper(key) {
-      var pathT = areaPolygonObj[key].getPath().getArray();
+      const pathT = areaPolygonObj[key].getPath().getArray();
 
       if (pathT.length > 0) {
         clickCoords = clickLngLat;
@@ -2946,8 +2890,8 @@ function startArea() {
           areaPolygonObj[key].getPath()
         );
 
-        var unitNames = unitNameDict[metricOrImperialArea].area;
-        var unitMultipliers = unitMultiplierDict[metricOrImperialArea].area;
+        const unitNames = unitNameDict[metricOrImperialArea].area;
+        const unitMultipliers = unitMultiplierDict[metricOrImperialArea].area;
         if (area > 0) {
           totalWithArea++;
         }
@@ -2969,15 +2913,15 @@ function startArea() {
       }
     }
     keys.map(areaWrapper);
-    var pixelProp = totalArea / 9;
+    const pixelProp = totalArea / 9;
 
     totalArea = totalArea * unitMultiplier;
     totalArea = totalArea.formatNumber();
-    var polyString = "polygon";
+    let polyString = "polygon";
     if (keys.length > 1) {
       polyString = "polygons";
     }
-    var areaContent =
+    let areaContent =
       totalWithArea.toString() +
       " " +
       polyString +
@@ -3003,7 +2947,7 @@ function setToPolygon(id) {
   }
   console.log("Setting " + id.toString() + " to polygon");
   areaPolygonOptions.strokeColor = areaPolygonObj[id].strokeColor;
-  var path = areaPolygonObj[id].getPath();
+  const path = areaPolygonObj[id].getPath();
   areaPolygonObj[id].setMap(null);
   areaPolygonObj[id] = new google.maps.Polygon(areaPolygonOptions);
   areaPolygonObj[id].setPath(path);
@@ -3014,7 +2958,7 @@ function setToPolyline(id) {
     id = polyNumber;
   }
   areaPolygonOptions.strokeColor = areaPolygonObj[id].strokeColor;
-  var path = areaPolygonObj[polyNumber].getPath();
+  const path = areaPolygonObj[polyNumber].getPath();
   areaPolygonObj[id].setMap(null);
   areaPolygonObj[id] = new google.maps.Polyline(areaPolygonOptions);
   areaPolygonObj[id].setPath(path);
@@ -3026,9 +2970,9 @@ function startListening() {
   mapHammer = new Hammer(document.getElementById("map"));
 
   mapHammer.on("tap", function (event) {
-    var path = areaPolygonObj[polyNumber].getPath();
-    var x = event.center.x;
-    var y = event.center.y;
+    const path = areaPolygonObj[polyNumber].getPath();
+    const x = event.center.x;
+    const y = event.center.y;
     clickLngLat = point2LatLng(x, y);
     path.push(clickLngLat);
     updateArea();
@@ -3123,7 +3067,7 @@ function clearPoly(id) {
 }
 function clearPolys() {
   stopListening();
-  var keys = Object.keys(areaPolygonObj);
+  const keys = Object.keys(areaPolygonObj);
   keys.map(function (k) {
     areaPolygonObj[k].setMap(null);
   });
@@ -3144,8 +3088,8 @@ function stopArea() {
 
 function resetPolygon() {
   stopListening();
-  var keys = Object.keys(areaPolygonObj);
-  var lastKey = keys[keys.length - 1];
+  const keys = Object.keys(areaPolygonObj);
+  const lastKey = keys[keys.length - 1];
   console.log("last key " + lastKey.toString());
   polyNumber = parseInt(lastKey);
   polyNumber++;
@@ -3170,9 +3114,9 @@ function startDistance() {
   mapHammer = new Hammer(document.getElementById("map"));
   mapHammer.on("doubletap", resetPolyline);
   mapHammer.on("tap", function (event) {
-    var x = event.center.x;
-    var y = event.center.y;
-    var path = distancePolyline.getPath();
+    const x = event.center.x;
+    const y = event.center.y;
+    const path = distancePolyline.getPath();
     clickLngLat = point2LatLng(x, y);
     path.push(clickLngLat);
     updateDistance();
@@ -3222,20 +3166,21 @@ updateDistance = function () {
   distance = google.maps.geometry.spherical.computeLength(
     distancePolyline.getPath()
   );
-  var pathT = distancePolyline.getPath().j;
+  const pathT = distancePolyline.getPath().j;
   clickCoords = clickLngLat; //pathT[pathT.length-1];
-  var unitNames = unitNameDict[metricOrImperialDistance].distance;
-  var unitMultipliers = unitMultiplierDict[metricOrImperialDistance].distance;
+  const unitNames = unitNameDict[metricOrImperialDistance].distance;
+  const unitMultipliers = unitMultiplierDict[metricOrImperialDistance].distance;
+  let unitName, unitMultiplier;
   if (distance >= 1000) {
-    var unitName = unitNames[1];
-    var unitMultiplier = unitMultipliers[1];
+    unitName = unitNames[1];
+    unitMultiplier = unitMultipliers[1];
   } else {
-    var unitName = unitNames[0];
-    var unitMultiplier = unitMultipliers[0];
+    unitName = unitNames[0];
+    unitMultiplier = unitMultipliers[0];
   }
   distance = distance * unitMultiplier;
   if (distance >= 0) {
-    var distanceContent = distance.formatNumber() + " " + unitName;
+    const distanceContent = distance.formatNumber() + " " + unitName;
     infowindow.setContent(distanceContent);
     infowindow.setPosition(clickCoords);
 
@@ -3366,7 +3311,7 @@ function addDragBox() {
 function dropdownUpdateStudyArea(whichOne) {
   $("#summary-spinner").show();
   resetStudyArea(whichOne);
-  var coords = studyAreaDict[whichOne].center;
+  const coords = studyAreaDict[whichOne].center;
   centerMap(coords[1], coords[0], coords[2]);
   if (mode === "Ancillary") {
     run = runAncillary;
@@ -3401,7 +3346,7 @@ function dropdownUpdateStudyArea(whichOne) {
   reRun();
 }
 //Function to set study area
-var resetStudyArea = function (whichOne) {
+const resetStudyArea = function (whichOne) {
   localStorage.setItem("cachedStudyAreaName", whichOne);
   urlParams.studyAreaName = whichOne;
   $("#studyAreaDropdown").val(whichOne);
@@ -3486,7 +3431,7 @@ var resetStudyArea = function (whichOne) {
     "null"
   );
 
-  var coords = studyAreaDict[whichOne].center;
+  const coords = studyAreaDict[whichOne].center;
   studyAreaName = studyAreaDict[whichOne].name;
   if (studyAreaName === "CONUS") {
     run = runCONUS;
@@ -3514,19 +3459,19 @@ var resetStudyArea = function (whichOne) {
 //Taken from https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
 function initSearchBox() {
   // Create the search box and link it to the UI element.
-  var input = document.getElementById("pac-input");
-  var searchBox = new google.maps.places.SearchBox(input);
+  const input = document.getElementById("pac-input");
+  const searchBox = new google.maps.places.SearchBox(input);
 
   // Bias the SearchBox results towards current map's viewport.
   map.addListener("bounds_changed", function () {
     searchBox.setBounds(map.getBounds());
   });
 
-  var markers = [];
+  let markers = [];
   // Listen for the event fired when the user selects a prediction and retrieve
   // more details for that place.
   searchBox.addListener("places_changed", function () {
-    var places = searchBox.getPlaces();
+    const places = searchBox.getPlaces();
 
     if (places.length == 0) {
       return;
@@ -3539,15 +3484,15 @@ function initSearchBox() {
     markers = [];
 
     // For each place, get the icon, name and location.
-    var bounds = new google.maps.LatLngBounds();
-    var formattedAddresses = [];
+    let bounds = new google.maps.LatLngBounds();
+    const formattedAddresses = [];
     places.forEach(function (place) {
       if (!place.geometry) {
         console.log("Returned place contains no geometry");
         return;
       }
       formattedAddresses.push(place.formatted_address);
-      var icon = {
+      const icon = {
         url: place.icon,
         size: new google.maps.Size(71, 71),
         origin: new google.maps.Point(0, 0),
@@ -3572,7 +3517,7 @@ function initSearchBox() {
         bounds.extend(place.geometry.location);
       }
     });
-    var boundsBounds = {
+    const boundsBounds = {
       south: [-85, 85],
       west: [-179, 179],
       north: [-85, 85],
@@ -3582,9 +3527,9 @@ function initSearchBox() {
     bounds = bounds.toJSON();
 
     Object.keys(bounds).map(function (key) {
-      var coord = bounds[key];
-      var min = boundsBounds[key][0];
-      var max = boundsBounds[key][1];
+      const coord = bounds[key];
+      const min = boundsBounds[key][0];
+      const max = boundsBounds[key][1];
       if (coord < min) {
         bounds[key] = min;
         showMessage(
@@ -3614,7 +3559,6 @@ function initSearchBox() {
 }
 /////////////////////////////////////////////////////////////////
 //Set up info window
-var infoWindowXOffset = 30;
 function getInfoWindow(xOffset, yOffset) {
   if (xOffset == null || xOffset === undefined) {
     xOffset = 30;
@@ -3675,7 +3619,7 @@ function forwardView() {
 }
 ////////////////////////////////////////////////////////////////
 // Create an overlay to display map labels only
-var labelOverlayAdded = false;
+let labelOverlayAdded = false;
 function addLabelOverlay() {
   map.overlayMapTypes.setAt(Object.keys(layerObj).length, labelsMapType);
   labelOverlayAdded = true;
@@ -3698,8 +3642,8 @@ function toggleLabelOverlay() {
     addLabelOverlay();
   }
 }
-var labelsMapType;
-var geeAuthenticated = false;
+let labelsMapType;
+let geeAuthenticated = false;
 //Initialize map
 function initialize() {
   labelsMapType = new google.maps.StyledMapType([
@@ -3721,7 +3665,7 @@ function initialize() {
     },
   ]);
 
-  var mapTypeIds = ["roadmap", "satellite", "hybrid", "terrain"];
+  const mapTypeIds = ["roadmap", "satellite", "hybrid", "terrain"];
   if (
     urlParams.mapTypeId === undefined ||
     (urlParams.mapTypeId === null &&
@@ -3730,7 +3674,7 @@ function initialize() {
     urlParams.mapTypeId = "hybrid";
   }
   //Set up map options
-  var mapOptions = {
+  const mapOptions = {
     center: null,
     zoom: null,
     minZoom: 2,
@@ -3756,10 +3700,10 @@ function initialize() {
     cursor: "pointer",
   };
 
-  var center = new google.maps.LatLng(initialCenter[0], initialCenter[1]);
-  var zoom = initialZoomLevel; //8;
+  let center = new google.maps.LatLng(initialCenter[0], initialCenter[1]);
+  let zoom = initialZoomLevel; //8;
 
-  var settings = null;
+  let settings = null;
 
   //Set up caching of study area
   if (typeof Storage !== "undefined") {
@@ -3825,7 +3769,7 @@ function initialize() {
 
   //Listen for street view use
   //Adapted from: https://stackoverflow.com/questions/7251738/detecting-google-maps-streetview-mode
-  var thePanorama = map.getStreetView();
+  const thePanorama = map.getStreetView();
   google.maps.event.addListener(thePanorama, "visible_changed", function () {
     if (thePanorama.getVisible()) {
       console.log("street view in use");
@@ -3881,14 +3825,14 @@ function initialize() {
 
   //Set up elevation api
 
-  var lastElevation = 0;
-  var elevationCheckTime = 0;
+  let lastElevation = 0;
+  let elevationCheckTime = 0;
 
   function getElevation(center) {
     mouseLat = center.lat().toFixed(4).toString();
     mouseLng = center.lng().toFixed(4).toString();
     try {
-      var elevation = ee
+      const elevation = ee
         .Image("USGS/SRTMGL1_003")
         .reduceRegion(
           ee.Reducer.first(),
@@ -3897,7 +3841,7 @@ function initialize() {
         .get("elevation");
       elevation.evaluate(function (thisElevation) {
         if (thisElevation !== undefined && thisElevation !== null) {
-          var thisElevationFt = parseInt(thisElevation * 3.28084);
+          thisElevationFt = parseInt(thisElevation * 3.28084);
           lastElevation =
             "Elevation: " +
             thisElevation.toString() +
@@ -3905,14 +3849,14 @@ function initialize() {
             thisElevationFt.toString() +
             "(ft),";
         } else {
-          var thisElevationFt = "NA";
+          thisElevationFt = "NA";
           lastElevation = "Elevation: NA,";
         }
 
         updateMousePositionAndZoom(mouseLng, mouseLat, zoom, lastElevation);
       });
     } catch (err) {
-      var thisElevationFt = "NA";
+      const thisElevationFt = "NA";
       lastElevation = "Elevation: NA,";
       updateMousePositionAndZoom(mouseLng, mouseLat, zoom, lastElevation);
     }
@@ -3920,14 +3864,14 @@ function initialize() {
 
   //Listen for mouse movement and update bottom bar
   map.addListener("mousemove", function (event) {
-    var center = event.latLng;
+    const center = event.latLng;
     if (center !== null) {
-      var zoom = map.getZoom();
+      const zoom = map.getZoom();
 
       mouseLat = center.lat().toFixed(4).toString();
       mouseLng = center.lng().toFixed(4).toString();
-      var now = new Date().getTime();
-      var dt = now - elevationCheckTime;
+      const now = new Date().getTime();
+      const dt = now - elevationCheckTime;
 
       if (dt > 1000) {
         getElevation(center);
@@ -3939,16 +3883,16 @@ function initialize() {
   });
   function trackViewChange() {
     zoom = map.getZoom();
-    var mapCenter = map.getCenter();
-    var mapCenterLng = mapCenter.lng();
-    var mapCenterLat = mapCenter.lat();
+    const mapCenter = map.getCenter();
+    const mapCenterLng = mapCenter.lng();
+    const mapCenterLat = mapCenter.lat();
     urlParams.lng = mapCenterLng;
     urlParams.lat = mapCenterLat;
     urlParams.zoom = zoom;
 
     trackView();
 
-    var coords = Object.values(map.getBounds().toJSON());
+    const coords = Object.values(map.getBounds().toJSON());
     updateMousePositionAndZoom(mouseLng, mouseLat, zoom, lastElevation);
     try {
       eeBoundsPoly = ee.Geometry.Rectangle(
@@ -4129,10 +4073,10 @@ function initialize() {
     setGEERunID();
 
     setTimeout(function () {
-      var loaded = false;
-      var loadTryCount = 0;
-      var maxLoadTryCount = 1;
-      var geeRunError;
+      let loaded = false;
+      let loadTryCount = 0;
+      const maxLoadTryCount = 1;
+      let geeRunError;
       function loadRun() {
         try {
           let runStartTime = new Date();
@@ -4221,7 +4165,7 @@ function initialize() {
       }
     }
   }
-  var initCount = 1;
+  let initCount = 1;
   function eeInit() {
     console.log(`Initializing GEE try number: ${initCount}`);
 
@@ -4244,9 +4188,9 @@ function initialize() {
 }
 ///////////////////////////////////////////////////////////////
 //Wait to initialize
-//Taken from: https://stackoverflow.com/questions/32808613/how-to-wait-till-the-google-maps-api-has-loaded-before-loading-a-google-maps-ove
-var mapWaitCount = 0;
-var mapWaitMax = 3;
+//Adapted from: https://stackoverflow.com/questions/32808613/how-to-wait-till-the-google-maps-api-has-loaded-before-loading-a-google-maps-ove
+let mapWaitCount = 0;
+const mapWaitMax = 3;
 //Handle failed attempts to load gmaps api
 function map_load() {
   // if you need any param
