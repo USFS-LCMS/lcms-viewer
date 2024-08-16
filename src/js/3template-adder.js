@@ -25,17 +25,6 @@ if (localStorage["showIntroModal-" + mode] == undefined) {
 }
 
 /////////////////////////////////////////////////////////////////////
-/*Add study area dropdown if LCMS*/
-if (mode === "LCMS-pilot") {
-  $("#title-banner").append(staticTemplates.studyAreaDropdown);
-  if (studyAreaSpecificPage) {
-    $("#study-area-label").removeClass("dropdown-toggle");
-  } else {
-    Object.keys(studyAreaDict).map(function (k) {
-      addStudyAreaToDropdown(k, studyAreaDict[k].popOver);
-    });
-  }
-}
 
 $("#sidebar-left-header").append(staticTemplates.placesSearchDiv);
 

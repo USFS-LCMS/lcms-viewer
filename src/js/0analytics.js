@@ -4,7 +4,7 @@
 // m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 // })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-var analyticsObj = {
+const analyticsObj = {
   LCMS: "G-Q5Y0RQT6WG",
   "lcms-dashboard": "G-F0LCQBF44V",
   LT: "G-LR0GKY8FDL",
@@ -28,13 +28,13 @@ if (window.document.documentMode) {
     "This website will not work with Microsoft Internet Explorer. Please switch to a browser such as Chrome, Firefox, Edge, Safari, etc"
   );
 }
-
+let ga4ID;
 if (window.location.search.indexOf("analytics=dev") !== -1) {
   console.log("Using dev analytics");
   ga4ID = analyticsObj["dev-viewer"];
 } else {
   console.log("Using analytics for: " + mode);
-  var ga4ID = analyticsObj[mode];
+  ga4ID = analyticsObj[mode];
   if (ga4ID === undefined) {
     console.log("Using default LCMS analytics");
     ga4ID = analyticsObj["LCMS"];

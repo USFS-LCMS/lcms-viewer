@@ -27,7 +27,7 @@ function updatePageUrl() {
     window.location.pathname +
     constructUrlSearch();
 }
-var fullShareURL;
+let fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
 function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
   if (showSpinner) {
@@ -93,16 +93,16 @@ function TweetThis(
     { url: pageUrl },
     function (tinyURL) {
       console.log(tinyURL);
-      let key = tinyURL.split("//tinyurl.com/")[1];
-      let shareURL = pageUrl.split("?")[0] + "?id=" + key;
-      let fullURL = preURL + shareURL + postURL;
+      const key = tinyURL.split("//tinyurl.com/")[1];
+      const shareURL = pageUrl.split("?")[0] + "?id=" + key;
+      const fullURL = preURL + shareURL + postURL;
       ga("send", "event", mode + "-share", pageUrl, shareURL);
       console.log("shared");
       if (openInNewTab) {
-        let win = window.open(fullURL, "_blank");
+        const win = window.open(fullURL, "_blank");
         win.focus();
       } else if (showMessageBox) {
-        var message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
+        const message = `<div class="input-group-prepend" id = 'shareLinkMessageBox'>
                                 <button onclick = 'copyText("shareLinkText","copiedMessageBox")'' title = 'Click to copy link to clipboard' class="py-0  fa fa-copy btn input-group-text bg-white"></button>
                                 <input type="text" value="${fullURL}" id="shareLinkText" style = "max-width:70%;" class = "form-control mx-1">
                                </div>
@@ -123,9 +123,9 @@ function TweetThis(
 }
 
 function copyText(element, messageBoxId) {
-  var $temp = $("<input>");
+  const $temp = $("<input>");
   $("body").append($temp);
-  var text = $("#" + element).text();
+  const text = $("#" + element).text();
   if (text === "") {
     text = $("#" + element).val();
   }
@@ -141,7 +141,7 @@ function decodeURL(url) {
   let out = {};
   url = url.split("?")[1].split("&");
   url.map(function (str) {
-    var decodedParam = decodeURIComponent(str.split("=")[1]);
+    const decodedParam = decodeURIComponent(str.split("=")[1]);
     try {
       out[str.split("=")[0]] = JSON.parse(decodedParam);
     } catch (err) {
@@ -151,7 +151,7 @@ function decodeURL(url) {
   return out;
 }
 function encodeJSON(json) {
-  var outURL = "?";
+  let outURL = "?";
 
   Object.keys(json).map((p) => {
     outURL +=
@@ -171,7 +171,7 @@ function parseUrlSearch() {
   if (urlParamsStr !== "") {
     urlParamsStr = urlParamsStr.split("?")[1].split("&");
     urlParamsStr.map(function (str) {
-      var decodedParam = decodeURIComponent(str.split("=")[1]);
+      const decodedParam = decodeURIComponent(str.split("=")[1]);
       try {
         urlParams[str.split("=")[0]] = JSON.parse(decodedParam);
       } catch (err) {
@@ -191,7 +191,7 @@ function parseUrlSearch() {
     }
   } else {
     if (typeof Storage !== "undefined") {
-      var id = localStorage.getItem("cachedID");
+      const id = localStorage.getItem("cachedID");
       if (id !== null && id !== undefined && id !== "null") {
         setUrl(baseUrl() + "?id=" + id);
         localStorage.setItem("cachedID", null);
@@ -200,7 +200,7 @@ function parseUrlSearch() {
   }
 }
 function constructUrlSearch(maxLen = 5000) {
-  var outURL = "?";
+  let outURL = "?";
   Object.keys(urlParams).map(function (p) {
     if (typeof urlParams[p] === "object") {
       Object.keys(urlParams[p]).map((k) => {
@@ -625,16 +625,16 @@ const unitNameDict = {
 let plotRadius = 15;
 let plotScale = 30;
 
-var yLabelMaxLength = 30; // Max len total per y axis label
-var yLabelBreakLength = 10; // Max len per line of a given y label
-var yLabelMaxLines = 5; // Max lines per y label
-var yLabelFontSize = 10; // Font size of y label
-var yLabelMaxTotalLines = 18; // Max lines for all y labels to avoid over-crowding
+let yLabelMaxLength = 30; // Max len total per y axis label
+let yLabelBreakLength = 10; // Max len per line of a given y label
+let yLabelMaxLines = 5; // Max lines per y label
+let yLabelFontSize = 10; // Font size of y label
+let yLabelMaxTotalLines = 18; // Max lines for all y labels to avoid over-crowding
 
-var defaultQueryDateFormat = "YYYY-MM-dd"; //Default format for dates in query time series charts
+let defaultQueryDateFormat = "YYYY-MM-dd"; //Default format for dates in query time series charts
 
 let clickBoundsColor = "#FF0";
-var areaChartFormat = "Percentage";
+let areaChartFormat = "Percentage";
 const areaChartFormatDict = {
   Percentage: { mult: 100, label: "% Area" },
   Acres: { mult: 0.000247105, label: "Acres" },
@@ -735,7 +735,7 @@ if (
     false
   );
 }
-var projectID = null;
+let projectID = null;
 if (
   urlParams.projectID !== null &&
   urlParams.projectID !== undefined &&
@@ -753,7 +753,7 @@ if (
 ) {
   urlParams.cumulativeMode = false;
 }
-var plotsOn = false;
+let plotsOn = false;
 
 /////////////////////////////////////////////////////
 //Taken from: https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript
@@ -822,7 +822,7 @@ function isNumber(n) {
 }
 
 function arraySmartToFixed(array, precision = chartPrecision) {
-  var roundedArray = [];
+  const roundedArray = [];
 
   array.forEach(function round(elem) {
     if (isNumber(elem)) {
@@ -884,7 +884,7 @@ Date.prototype.toStringFormat = function () {
 };
 // Taken from: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
 Date.prototype.dayOfYear = function () {
-  var j1 = new Date(this);
+  const j1 = new Date(this);
   j1.setMonth(0, 0);
   return Math.round((this - j1) / 8.64e7);
 };
@@ -921,12 +921,12 @@ function convertRemToPixels(rem) {
 }
 function isWrapped(id) {
   $(id).addClass("noWrap");
-  var isWrapped = $(id)[0].scrollWidth > $(id).width();
+  const isWrapped = $(id)[0].scrollWidth > $(id).width();
   $(id).removeClass("noWrap");
   return isWrapped;
 }
 function sleepFor(sleepDuration) {
-  var now = new Date().getTime();
+  const now = new Date().getTime();
   while (new Date().getTime() < now + sleepDuration) {
     /* Do nothing */
   }
@@ -942,14 +942,14 @@ function dict(array) {
   return out;
 }
 function copyObj(obj) {
-  var out = {};
+  const out = {};
   Object.keys(obj).map(function (k) {
     out[k] = obj[k];
   });
   return out;
 }
 function reverseObj(obj) {
-  var out = {};
+  const out = {};
   Object.keys(obj).map(function (k) {
     let v = obj[k];
     out[v] = k;
