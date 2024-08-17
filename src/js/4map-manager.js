@@ -2825,7 +2825,7 @@ const colorList = [
   "#ffffff",
   "#000000",
 ];
-const colorMod = colorList.length;
+let colorMod = colorList.length;
 function getColor() {
   const currentColor = colorList[colorMod % colorList.length];
   colorMod++;

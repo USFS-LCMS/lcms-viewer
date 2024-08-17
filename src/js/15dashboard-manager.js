@@ -12,6 +12,7 @@ const notHoverFeatureStyling = {
   strokeOpacity: 0,
   strokeWeight: 0,
 };
+const ciDict = { 90: 1.64, 95: 1.96, 99: 2.58 };
 function chartDashboardFeature(
   r,
   layer,

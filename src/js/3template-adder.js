@@ -67,9 +67,9 @@ function adjustTitleBanner() {
 adjustTitleBanner();
 
 function populateDownloads() {
-  var toggler = document.getElementsByClassName("caret");
-  var i;
-  for (i = 0; i < toggler.length; i++) {
+  const toggler = document.getElementsByClassName("caret");
+
+  for (let i = 0; i < toggler.length; i++) {
     toggler[i].addEventListener("click", function () {
       this.parentElement.querySelector(".nested").classList.toggle("active");
       this.classList.toggle("caret-down");
@@ -88,8 +88,8 @@ function toggleAdvancedOff() {
 /////////////////////////////////////////////////////////////////////
 /*Start adding elements to page based on chosen mode*/
 if (mode === "LCMS-pilot" || mode === "LCMS") {
-  var minYear = startYear;
-  var maxYear = endYear;
+  const minYear = startYear;
+  const maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -176,8 +176,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.summaryMethod = "year";
   }
 
-  var tAnalysisMode = urlParams.analysisMode;
-  var tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
+  const tAnalysisMode = urlParams.analysisMode;
+  const tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
   if (mode === "LCMS") {
     addRadio(
       "parameters-collapse-div",
@@ -305,7 +305,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     );
     $("#advanced-radio-container").append(`<hr>`);
   }
-  var tSummaryMethod = urlParams.summaryMethod;
+  const tSummaryMethod = urlParams.summaryMethod;
   addRadio(
     "advanced-radio-container",
     "summaryMethod-radio",
@@ -334,10 +334,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   if (mode === "LCMS") {
     function populateLCMSDownloads() {
-      var toggler = document.getElementsByClassName("caret");
-      var i;
+      const toggler = document.getElementsByClassName("caret");
 
-      for (i = 0; i < toggler.length; i++) {
+      for (let i = 0; i < toggler.length; i++) {
         toggler[i].addEventListener("click", function () {
           this.parentElement
             .querySelector(".nested")
@@ -363,8 +362,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   }
 } else if (mode === "lcms-dashboard") {
   $("#title-banner").fitText(1.7);
-  var minYear = startYear;
-  var maxYear = endYear;
+  const minYear = startYear;
+  const maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -467,7 +466,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.dashboardAreaSelectionMode
   );
   //////////////////////////////////// Add summaryArea to question dict in future////////////////////////////////////////////
-  var questionDict = {
+  window.questionDict = {
     fire: {
       title: "Post Fire Succession",
       hoverText: "Some more info about fire succession",
@@ -631,7 +630,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     },
   };
   // a variable to establish whether a 'share'/'deep' link is in play
-  var deepLink = false;
+  window.deepLink = false;
 
   // Use first listed question as default. If the questionVar is undefined/null, then the first question is default; otherwise a share link is in use
   if (urlParams.questionVar == undefined || urlParams.questionVar === null) {
@@ -666,33 +665,33 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   // changes the LCMS product selections based on the question chosen
   //////////////////////////////// add summary area as part of Question functionality in future//////////////////////////////////////////
   function selectQuestion(selectedQuestion) {
-    var selectedProducts = selectedQuestion.productHighlightClasses;
+    const selectedProducts = selectedQuestion.productHighlightClasses;
     Object.keys(selectedProducts).map((k) => {
-      var checkboxID = `#productHighlightClasses${k}-checkbox`;
+      const checkboxID = `#productHighlightClasses${k}-checkbox`;
 
       $(checkboxID).prop("checked", selectedProducts[k]);
       urlParams.productHighlightClasses[k] = selectedProducts[k];
     });
-    var selectedChangeClasses = selectedQuestion.changeHighlightClasses;
+    const selectedChangeClasses = selectedQuestion.changeHighlightClasses;
 
     Object.keys(selectedChangeClasses).map((k) => {
-      var checkboxID = `#changeHighlightClasses${k}-checkbox`;
+      const checkboxID = `#changeHighlightClasses${k}-checkbox`;
 
       $(checkboxID).prop("checked", selectedChangeClasses[k]);
       urlParams.changeHighlightClasses[k] = selectedChangeClasses[k];
     });
-    var selectedLCclasses = selectedQuestion.lcHighlightClasses;
+    const selectedLCclasses = selectedQuestion.lcHighlightClasses;
 
     Object.keys(selectedLCclasses).map((k) => {
-      var checkboxID = `#lcHighlightClasses${k}-checkbox`;
+      const checkboxID = `#lcHighlightClasses${k}-checkbox`;
 
       $(checkboxID).prop("checked", selectedLCclasses[k]);
       urlParams.lcHighlightClasses[k] = selectedLCclasses[k];
     });
-    var selectedluClasses = selectedQuestion.luHighlightClasses;
+    const selectedluClasses = selectedQuestion.luHighlightClasses;
 
     Object.keys(selectedluClasses).map((k) => {
-      var checkboxID = `#luHighlightClasses${k}-checkbox`;
+      const checkboxID = `#luHighlightClasses${k}-checkbox`;
 
       $(checkboxID).prop("checked", selectedluClasses[k]);
       urlParams.luHighlightClasses[k] = selectedluClasses[k];
@@ -766,12 +765,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.pairwiseDiff
   );
 
-  var highlightsProductsLookup = {
+  const highlightsProductsLookup = {
     Land_Cover: "Land-Cover",
     Land_Use: "Land-Use",
     Change: "Change",
   };
-  var highlightsLCLookup = {
+  const highlightsLCLookup = {
     Trees: "Trees",
     "Tall-Shrubs": "Tall Shrubs",
     Shrubs: "Shrubs",
@@ -780,7 +779,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     Water: "Water",
     "Snow-or-Ice": "Snow or Ice",
   };
-  var highlightsLULookup = {
+  const highlightsLULookup = {
     Agriculture: "Agriculture",
     Developed: "Developed",
     Forest: "Forest",
@@ -788,20 +787,20 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Rangeland-or-Pasture": "Rangeland or Pasture",
     Other: "Other",
   };
-  var highlightsChangeLookup = {
+  const highlightsChangeLookup = {
     Stable: "Stable",
     "Slow-Loss": "Slow Loss",
     "Fast-Loss": "Fast Loss",
     Gain: "Gain",
   };
 
-  var highlightLCMSProducts = {
+  window.highlightLCMSProducts = {
     Product: [],
     Land_Cover: [],
     Land_Use: [],
     Change: [],
   };
-  var highlightsSortingDict = {
+  window.highlightsSortingDict = {
     Trees: "asc",
     "Tall-Shrubs": "desc",
     Shrubs: "desc",
@@ -845,7 +844,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "Land-Use": true,
     };
   }
-  var productHighlightClasses = urlParams.productHighlightClasses;
+  window.productHighlightClasses = urlParams.productHighlightClasses;
 
   if (
     urlParams.annualTransition === null ||
@@ -954,7 +953,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   updateHighlightsProductSelectionDict();
   $("#advanced-dashboard-params-div").append("<hr>");
 
-  var ciDict = { 90: 1.64, 95: 1.96, 99: 2.58 };
   if (urlParams.ciLevel === null || urlParams.ciLevel === undefined) {
     urlParams.ciLevel = { 90: false, 95: true, 99: false };
   }
@@ -1033,8 +1031,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   canExport = false;
   startYear = 1984;
   endYear = 2023;
-  var minYear = startYear;
-  var maxYear = endYear;
+  const minYear = startYear;
+  const maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -1172,8 +1170,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   endJulian = 273;
   initialZoomLevel = 9;
   initialCenter = [37.64109979850402, -107.6917775643849];
-  var minYear = startYear;
-  var maxYear = endYear;
+  const minYear = startYear;
+  const maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -1299,7 +1297,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   $("#comp-params-div").append(`<hr>`);
 
-  var compMethodDict = { Median: false, Medoid: true };
+  const compMethodDict = { Median: false, Medoid: true };
   if (urlParams.compMethod !== null && urlParams.compMethod !== undefined) {
     Object.keys(compMethodDict).map((k) => (compMethodDict[k] = false));
     compMethodDict[urlParams.compMethod] = true;
@@ -1334,7 +1332,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   $("#comp-params-div").append(`<hr>`);
 
-  var maskWaterDict = { No: false, Yes: true };
+  const maskWaterDict = { No: false, Yes: true };
   if (urlParams.maskWater !== null && urlParams.maskWater !== undefined) {
     Object.keys(maskWaterDict).map((k) => (maskWaterDict[k] = false));
     maskWaterDict[urlParams.maskWater] = true;
@@ -1378,7 +1376,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   $("#lt-params-div").append(`<hr>`);
 
-  var LTSortByDict = {
+  const LTSortByDict = {
     largest: true,
     steepest: false,
     newest: false,
@@ -1585,7 +1583,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Adjust parameters used to filter and sort MTBS products"
   );
 
-  var mtbsZoomToDict = {
+  const mtbsZoomToDict = {
     All: true,
     CONUS: false,
     Alaska: false,
@@ -1708,7 +1706,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tools to measure and chart data provided on the map"
   );
 } else if (mode === "Bloom-Mapper") {
-  var algalRunID = 1;
+  let algalRunID = 1;
   addCollapse(
     "sidebar-left",
     "parameters-collapse-label",
@@ -1793,10 +1791,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Adjust parameters used to filter and sort LAMDA products"
   );
   startYear = 2021;
-  var endYearCutoff = new Date("2024-02-26").dayOfYear();
-  var currentDate = new Date();
+  const endYearCutoff = new Date("2024-02-26").dayOfYear();
+  const currentDate = new Date();
   endYear = currentDate.getYear() + 1900;
-  var currentDayOfYear = currentDate.dayOfYear();
+  const currentDayOfYear = currentDate.dayOfYear();
   if (currentDayOfYear < endYearCutoff) {
     endYear--;
   }
@@ -1872,24 +1870,24 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 } else if (mode === "STORM") {
   canExport = true;
   function refineFeatures(features, interpProps) {
-    var left = features.slice(0, features.length - 1);
-    var right = features.slice(1, features.length);
-    var f = [left[0]];
+    const left = features.slice(0, features.length - 1);
+    const right = features.slice(1, features.length);
+    let f = [left[0]];
     left.forEach(function (fl, i) {
-      var fr = right[i];
-      var coordsL = fl.geometry.coordinates;
-      var coordsR = fr.geometry.coordinates;
+      const fr = right[i];
+      const coordsL = fl.geometry.coordinates;
+      const coordsR = fr.geometry.coordinates;
 
-      var fm = JSON.parse(JSON.stringify(fl));
+      const fm = JSON.parse(JSON.stringify(fl));
       fm.geometry.coordinates = [
         (coordsL[0] + coordsR[0]) / 2.0,
         (coordsL[1] + coordsR[1]) / 2.0,
       ];
 
       interpProps.map(function (prop) {
-        var lProp = fl.properties[prop];
-        var rProp = fr.properties[prop];
-        var m = (rProp + lProp) / 2.0;
+        let lProp = fl.properties[prop];
+        let rProp = fr.properties[prop];
+        let m = (rProp + lProp) / 2.0;
         fm.properties[prop] = m;
       });
       f.push([fm, fr]);
@@ -1970,13 +1968,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
   function ingestStormTrack() {
     if (jQuery("#stormTrackUpload")[0].files.length > 0) {
-      var fr = new FileReader();
+      const fr = new FileReader();
       fr.onload = function () {
-        var rows = fr.result.split("\n");
+        let rows = fr.result.split("\n");
         rows = rows.filter((row) => row.split("\t").length > 5);
         rows = rows.map(function (row) {
           row = row.split("\t");
-          var out = {};
+          const out = {};
           out.type = "Feature";
           out.geometry = {};
           out.geometry.type = "Point";
@@ -1993,8 +1991,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           return out;
         });
 
-        var iterations = refinementIterations;
-        var initialN = rows.length;
+        let iterations = refinementIterations;
+        const initialN = rows.length;
         while (iterations > 0 && rows.length * 2 < 1500) {
           console.log("Refining");
           console.log(refinementIterations);
@@ -2023,22 +2021,20 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           );
         }, 1000);
 
-        var rowsLeft = rows.slice(0, rows.length - 1);
-        var rowsRight = rows.slice(1);
-        var zipped = ee.List.sequence(0, rowsLeft.length - 1)
-          .getInfo()
-          .map(function (i) {
-            var out = {};
-            out.type = "Feature";
-            out.geometry = rowsLeft[i].geometry;
+        const rowsLeft = rows.slice(0, rows.length - 1);
+        const rowsRight = rows.slice(1);
+        let zipped = range(0, rowsLeft.length).map(function (i) {
+          const out = {};
+          out.type = "Feature";
+          out.geometry = rowsLeft[i].geometry;
 
-            out.properties = {};
+          out.properties = {};
 
-            out.properties.current = rowsLeft[i].properties;
-            out.properties.future = rowsRight[i].properties;
+          out.properties.current = rowsLeft[i].properties;
+          out.properties.future = rowsRight[i].properties;
 
-            return out;
-          });
+          return out;
+        });
 
         $("#summary-spinner").slideUp();
 
@@ -2150,9 +2146,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     null,
     "Adjust parameters used to prepare change analysis window"
   );
-  var minYear = 2017;
-  var maxYear = new Date().getFullYear();
-  var dayOfYear = new Date().dayofYear();
+  const minYear = 2017;
+  const maxYear = new Date().getFullYear();
+  const dayOfYear = new Date().dayofYear();
   if (urlParams.preStartYear == null || urlParams.preStartYear == undefined) {
     urlParams.preStartYear = minYear;
   }
