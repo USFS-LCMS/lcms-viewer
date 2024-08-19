@@ -697,7 +697,7 @@ function runAncillary() {
       {
         baseURL:
           "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
-        minZoom: 12,
+        minZoom: 11,
       },
     ],
     {
@@ -1207,10 +1207,3 @@ function runAncillary() {
   wayback.initialize();
   // addChartJS(d,'test1');
 }
-
-// runAncillary = function () {
-//   turnOffLayersWhenTimeLapseIsOn = false;
-//   let wayback = new esri_wayback();
-//   wayback.addWaybackUIContainer();
-//   wayback.initialize();
-// };

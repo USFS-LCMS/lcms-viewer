@@ -3288,13 +3288,8 @@ function addLayer(layer) {
       urlParams.layerProps[id].visible = true;
     }
     if (layer.layerType === "dynamicMapService") {
-      layer.layer.setMap(map);
       layer.visible = true;
-      layer.percent = 100;
-      layer.rangeOpacity = layer.opacity;
-      setRangeSliderThumbOpacity();
-      updateProgress();
-      $("#" + layer.legendDivID).show();
+      groundOverlayWrapper();
     } else if (
       layer.layerType !== "geeVector" &&
       layer.layerType !== "geoJSONVector"
@@ -4068,43 +4063,69 @@ function addLayer(layer) {
     //Handle dynamic map services
   } else if (layer.layerType === "dynamicMapService") {
     function groundOverlayWrapper() {
+      let overlayURL;
       if (map.getZoom() > layer.item[1].minZoom) {
-        return getGroundOverlay(
+        overlayURL = getGroundOverlay(
           layer.item[1].baseURL,
           layer.item[1].minZoom,
           layer.item[1].ending
         );
       } else {
-        return getGroundOverlay(
+        overlayURL = getGroundOverlay(
           layer.item[0].baseURL,
           layer.item[0].minZoom,
           layer.item[0].ending
         );
       }
+
+      $("#" + spinnerID + "2").show();
+      layer.percent = 0;
+      updateProgress();
+
+      function checkImageExists(imageUrl, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("HEAD", imageUrl, true);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            callback();
+          } else {
+            setTimeout(function () {
+              checkImageExists(imageUrl, callback);
+            }, 1000); // Retry after 1 second
+          }
+        };
+        xhr.send();
+      }
+
+      checkImageExists(overlayURL, function () {
+        layer.layer = new google.maps.GroundOverlay(
+          overlayURL,
+          map.getBounds()
+        );
+        layer.layer.setMap(map);
+        layer.percent = 100;
+        $("#" + spinnerID + "2").hide();
+        updateProgress();
+        groundOverlayOn = true;
+        $("#" + layer.legendDivID).show();
+        layer.layer.setOpacity(layer.opacity);
+        layer.rangeOpacity = layer.opacity;
+      });
     }
     function updateGroundOverlay() {
       if (layer.layer !== null && layer.layer !== undefined) {
         layer.layer.setMap(null);
       }
 
-      layer.layer = groundOverlayWrapper();
-
       if (layer.visible) {
-        layer.layer.setMap(map);
-        layer.percent = 100;
-        updateProgress();
-        groundOverlayOn = true;
-        $("#" + layer.legendDivID).show();
-        layer.layer.setOpacity(layer.opacity);
-        layer.rangeOpacity = layer.opacity;
+        groundOverlayWrapper();
       } else {
         layer.rangeOpacity = 0;
       }
       setRangeSliderThumbOpacity();
     }
     updateGroundOverlay();
-    // if(layer.visible){layer.opacity = 1}
-    // else{this.opacity = 0}
+
     google.maps.event.addListener(map, "zoom_changed", function () {
       updateGroundOverlay();
     });

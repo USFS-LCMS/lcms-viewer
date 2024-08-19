@@ -178,10 +178,8 @@
           });
         }
         function makeLists(json) {
-          // json = json.items
-          // console.log(json.length)
           json = json.filter((f) => f.name.indexOf("ay" + selectedYear) > -1 || f.name.indexOf(selectedYear + "_jd") > -1);
-          // console.log(json)
+          
           var already_added = [];
           Object.keys(setup_dict).map(function (k) {
             addDropdown(setup_dict[k].dropdown_id, setup_dict[k].dropdown_label);
@@ -189,7 +187,6 @@
             var filesT = json.filter(function (f) {
               return f.name.endsWith(setup_dict[k].ending);
             });
-            // console.log(filesT	)
             Object.keys(study_area_dict).map(function (sak) {
               addDropdownItem(setup_dict[k].dropdown_id, study_area_dict[sak].dropdown_id, setup_dict[k].dropdown_label, study_area_dict[sak].dropdown_label);
 
@@ -207,17 +204,14 @@
               filesTT = filesTT.sort(function (a, b) {
                 return a.day - b.day;
               });
-              // console.log(filesTT)
               filesTT.map(function (p) {
                 var nm = p.name.split(".tif")[0];
-                // console.log(nm)
                 if (already_added.indexOf(p.mediaLink) == -1) {
                   $(`#${setup_dict[k].dropdown_id}_${study_area_dict[sak].dropdown_id}`)
                     .append(`<li class="list-group-item bg-black" id = "list-entry-${id}"><a class = "lamda-link" href = '${p.mediaLink}' onclick="trackDownload('${p.name}')">${p.name}</a>
 		    							
 		    							</li>`);
                   if (k !== "raw") {
-                    // console.log(k + ' '+nm)
                     $(`#list-entry-${id}`).append(
                       `<img   title = 'Click this image and hold to make bigger' class = 'pl-5' height=50 src="https://storage.googleapis.com/${bucketName}/${nm}.jpg"></img>`
                     );

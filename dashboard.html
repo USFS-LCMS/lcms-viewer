@@ -22,24 +22,24 @@
     <link rel="icon" href="./src/assets/images/lcms-icon.png" />
 
     <!-- Google Maps API -->
-    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoVKHi6UhCt6NAb1Buk5aoAd_eYZwKulA&libraries=places&callback=Function.prototype"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.56&key=AIzaSyAoVKHi6UhCt6NAb1Buk5aoAd_eYZwKulA&libraries=places&callback=Function.prototype" ></script>
 
     <!-- Google Earth Engine API -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/google/earthengine-api@v0.1.415/javascript/build/ee_api_js.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/google/earthengine-api@0.1.384/javascript/build/ee_api_js.js" integrity="sha384-tVeKMyegigBNslCtw6N8XPV6d0lspVooP+BNun6SrZw5uy4aLRu2ihAeA129D5Lo" crossorigin="anonymous"></script>
 
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js" integrity="sha384-YwCdhNQ2IwiYajqT/nGCj0FiU5SR4oIkzYP3ffzNWtu39GKBddP0M0waDU7Zwco0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" integrity="sha384-rHEtTzUO+F6AxgVJs86ZaDoE9sm0tDz/xaSt1ohRCJoeu4gkMIUvcA4cnm60Em/k" crossorigin="anonymous">
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" integrity="sha384-MI32KR77SgI9QAPUs+6R7leEOwtop70UsjEtFEezfKnMjXWx15NENsZpfDgq8m8S" crossorigin="anonymous">
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
       integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
       crossorigin="anonymous"
-    />
+    >
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
@@ -62,10 +62,8 @@
     <!-- PDF Report -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/jspdf-autotable"></script>
-    <!-- <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script> -->
-
+  
     <!-- Hammer for mobile tap and desktop click support -->
     <script src="https://hammerjs.github.io/dist/hammer.js"></script>
 
@@ -83,15 +81,14 @@
   <body>
     <script type="text/javascript" src="./src/js/1variables.js"></script>
     <script type="text/javascript">
-      // studyAreaSpecificPage = false;
+      
       initialCenter = studyAreaDict["USFS LCMS 1984-2020"].center.slice(0, 2);
       initialZoomLevel = studyAreaDict["USFS LCMS 1984-2020"].center[2];
       startYear = studyAreaDict["USFS LCMS 1984-2020"].startYear;
       endYear = studyAreaDict["USFS LCMS 1984-2020"].endYear;
-      // localStorage.setItem("cachedStudyAreaName",'lcms-dashboard')
+      
       ga("send", "event", "load", mode, "lcms-dashboard");
     </script>
-    <!-- <script type="text/javascript" src="./src/js/report-fonts.js"></script> -->
     <script type="text/javascript" src="./src/js/2templates.js"></script>
     <script type="text/javascript" src="./src/js/3template-adder.js"></script>
     <script type="text/javascript" src="./src/js/4map-manager.js"></script>

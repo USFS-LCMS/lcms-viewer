@@ -2000,12 +2000,11 @@ function getGroundOverlay(baseUrl, minZoom, ending) {
       "&f=image" +
       ending;
 
-    overlay = new google.maps.GroundOverlay(url, bounds);
-    return overlay;
+    return url;
   } else {
     url = "../src/assets/images/blank.png";
-    overlay = new google.maps.GroundOverlay(url, map.getBounds());
-    return overlay;
+
+    return url;
   }
 }
 //////////////////////////////////////////////////////
@@ -2037,13 +2036,7 @@ function addDynamicToMap(
   if (helpBox == null) {
     helpBox = "";
   }
-  function groundOverlayWrapper() {
-    if (map.getZoom() > minZoom2) {
-      return getGroundOverlay(baseUrl2, minZoom2, ending1);
-    } else {
-      return getGroundOverlay(baseUrl1, minZoom1, ending2);
-    }
-  }
+
   const layer = document.createElement("dynamic-layer");
 
   layer.ID = NEXT_LAYER_ID;
@@ -2054,7 +2047,6 @@ function addDynamicToMap(
   layer.map = map;
   layer.helpBoxMessage = helpBox;
   layer.visible = visible;
-  layer.groundOverlayFunction = groundOverlayWrapper;
   layer.helpBox = helpBox;
 
   layer.visible = visible;
