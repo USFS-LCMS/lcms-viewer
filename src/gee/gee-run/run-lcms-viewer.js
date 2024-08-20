@@ -1478,8 +1478,6 @@ function runDynamic() {
     let visible;
     if (c === "Change") {
       visible = changeVisibility;
-    } else {
-      visible;
     }
     lcmsRun.props.bandNames = [c];
     mFun(
