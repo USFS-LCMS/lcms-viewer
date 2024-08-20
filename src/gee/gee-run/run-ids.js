@@ -1,6 +1,6 @@
 function runIDS() {
-  var studyAreaName = "USFS LCMS 1984-2020";
-  var idsColor = "0EE";
+  const studyAreaName = "USFS LCMS 1984-2020";
+  const idsColor = "0EE";
   ga(
     "send",
     "event",
@@ -9,24 +9,24 @@ function runIDS() {
     `${idsMinYear}_${idsMaxYear}`
   );
   getLCMSVariables();
-  var lcmsC = studyAreaDict[studyAreaName].final_collections;
+  let lcmsC = studyAreaDict[studyAreaName].final_collections;
   lcmsC = ee
     .ImageCollection(
       ee.FeatureCollection(lcmsC.map((f) => ee.ImageCollection(f))).flatten()
     )
     .select(["Change", "Change_Raw.*"]);
 
-  var years = ee.List.sequence(idsMinYear, idsMaxYear);
+  const years = ee.List.sequence(idsMinYear, idsMaxYear);
 
   lcmsC = years.map(function (yr) {
-    var t = lcmsC.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
+    const t = lcmsC.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
     return t.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });
   lcmsC = ee.ImageCollection(lcmsC);
   // var years  = ee.List.sequence(2010,2013);
   // var idsFolder = 'projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/IDS';
-  var idsFolder = "projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS";
-  var ids = ee.data
+  const idsFolder = "projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS";
+  let ids = ee.data
     .getList({
       id: idsFolder,
     })
@@ -35,7 +35,7 @@ function runIDS() {
     });
   console.log(ids);
   ids = ids.map(function (id) {
-    var idsT = ee.FeatureCollection(id);
+    const idsT = ee.FeatureCollection(id);
     return idsT;
   });
   ids = ee.FeatureCollection(ids).flatten();
@@ -43,10 +43,10 @@ function runIDS() {
   ids = ids.map(function (f) {
     return f.set("constant", 1);
   });
-  var idsLCMS = ee.ImageCollection(
+  const idsLCMS = ee.ImageCollection(
     years.map(function (yr) {
       yr = ee.Number(yr).int16();
-      var idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
+      let idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
       idsT = ee
         .Image()
         .paint(idsT, null, 1.5)
@@ -57,7 +57,7 @@ function runIDS() {
         })
         .unmask(256);
       // Map.addLayer(idsT,{},'IDS ' +yr.getInfo().toString(),false)
-      var lcmsT = lcmsC
+      let lcmsT = lcmsC
         .filter(ee.Filter.calendarRange(yr, yr, "year"))
         .first()
         .select(["Change"]);
@@ -70,7 +70,7 @@ function runIDS() {
           palette: changePalette,
         })
         .unmask(256);
-      var out = idsT.where(lcmsT.neq(256).and(idsT.eq(256)), lcmsT);
+      let out = idsT.where(lcmsT.neq(256).and(idsT.eq(256)), lcmsT);
       out = ee.Image(out.updateMask(out.neq(256))).byte();
 
       return out
@@ -79,24 +79,24 @@ function runIDS() {
     })
   );
 
-  var lcmsChangeClassesForArea = formatAreaChartCollection(
+  const lcmsChangeClassesForArea = formatAreaChartCollection(
     lcmsC.select(["Change"]),
     [2, 3, 4],
     ["Slow Loss", "Fast Loss", "Gain"]
   );
 
-  var idsLCMSTSForArea = ee.ImageCollection(
+  const idsLCMSTSForArea = ee.ImageCollection(
     years.map(function (yr) {
-      var idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
+      let idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
       //     // console.log(yr);
       //     // console.log(idsT.limit(100).size().getInfo())
-      var lcmsT = ee.Image(
+      const lcmsT = ee.Image(
         lcmsChangeClassesForArea
           .filter(ee.Filter.calendarRange(yr, yr, "year"))
           .first()
       );
       idsT = idsT.reduceToImage(["constant"], ee.Reducer.first()).unmask(0);
-      var out = lcmsT
+      const out = lcmsT
         .addBands(idsT)
         .rename([
           "LCMS Slow Loss",
@@ -113,7 +113,7 @@ function runIDS() {
   );
 
   //   // Map.addLayer(idsLCMSTS)
-  var classLegendDict = {};
+  const classLegendDict = {};
   classLegendDict["Slow Loss"] = changePalette[0];
   classLegendDict["Fast Loss"] = changePalette[1];
   classLegendDict["Gain"] = changePalette[2];
@@ -148,12 +148,12 @@ function runIDS() {
     ["Change_Raw.*"],
     ["Slow Loss Prob", "Fast Loss Prob", "Gain Prob"]
   );
-  var idsLCMSTS = years.map(function (yr) {
-    var lcmsT = lcmsC
+  let idsLCMSTS = years.map(function (yr) {
+    const lcmsT = lcmsC
       .filter(ee.Filter.calendarRange(yr, yr, "year"))
       .first()
       .divide(100);
-    var idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
+    let idsT = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
     idsT = idsT
       .reduceToImage(["constant"], ee.Reducer.first())
       .unmask(0)

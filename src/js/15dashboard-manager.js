@@ -130,7 +130,7 @@ function startDashboardClickLayerSelect() {
     $("#loading-progress-div").show();
 
     visibleDashboardLayers.map((layer) => {
-      var ft = ee
+      const ft = ee
         .Feature(layer.queryItem.filterBounds(pt).first())
         .simplify(5000, "EPSG:4326");
       ft.evaluate((r, failure) => {
@@ -185,8 +185,8 @@ function clearAllSelectedDashboardFeatures() {
 function stopDashboardClickLayerSelect() {
   google.maps.event.clearListeners(map, "click");
 }
-var dragSelectedFeatures;
-var boxSelectID = 0;
+let dragSelectedFeatures;
+let boxSelectID = 0;
 
 function dashboardBoxSelect() {
   let visibleDashboardLayers = Object.values(layerObj).filter(
@@ -211,7 +211,7 @@ function dashboardBoxSelect() {
     $("#loading-spinner-logo").show();
     updateProgress(".progressbar", 0);
     $("#loading-progress-div").show();
-    var boundsFilter = ee.Filter.bounds(geeBox, 500);
+    const boundsFilter = ee.Filter.bounds(geeBox, 500);
 
     ee.FeatureCollection(
       visibleDashboardLayers.map((layer) =>
@@ -222,7 +222,7 @@ function dashboardBoxSelect() {
       .size()
       .evaluate((n) => {
         if (n > 0 && thisBoxSelectID === boxSelectID) {
-          var i = 1;
+          let i = 1;
           visibleDashboardLayers.map((layer) => {
             let selectedFeatures = layer.queryItem.filter(boundsFilter);
 
@@ -267,7 +267,7 @@ function dashboardBoxSelect() {
 function dashboardDragboxLayerSelect() {
   dashboardBoxSelect();
 }
-var dashboardViewExtentListener;
+let dashboardViewExtentListener;
 function stopDashboardViewExtentSelect() {
   google.maps.event.removeListener(dashboardViewExtentListener);
 }
@@ -281,11 +281,11 @@ function startDashboardViewExtentSelect() {
     }
   );
 }
-var dashboardPlotlyDownloadURLs;
+let dashboardPlotlyDownloadURLs;
 function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   dashboardPlotlyDownloadURLs = [];
 
-  var colors = {
+  const colors = {
     Change: ["3d4551", "f39268", "d54309", "00a398", "1B1716"].map(
       (c) => "#" + c
     ),
@@ -316,7 +316,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       "1B1716",
     ].map((c) => "#" + c),
   };
-  var names = {
+  const names = {
     Change: [
       "Stable",
       "Slow Loss",
@@ -351,7 +351,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       "Non-Processing Area Mask",
     ],
   };
-  var lcNamesSimpleIndices = {
+  const lcNamesSimpleIndices = {
     Trees: [0, 1, 2, 3, 4],
     "Tall-Shrubs": [5],
     Shrubs: [6, 7, 8],
@@ -360,13 +360,13 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     Water: [13],
     "Snow-or-Ice": [12],
   };
-  var lcFieldsHidden = [];
+  const lcFieldsHidden = [];
   Object.keys(urlParams.lcHighlightClasses).map((lcc) => {
     lcNamesSimpleIndices[lcc].map((i) => {
       lcFieldsHidden.push(!urlParams.lcHighlightClasses[lcc]);
     });
   });
-  var fieldsHidden = {
+  const fieldsHidden = {
     Change: Object.values(urlParams.changeHighlightClasses).map((v) => !v),
     Land_Use: Object.values(urlParams.luHighlightClasses).map((v) => !v),
     Land_Cover: lcFieldsHidden,
@@ -398,11 +398,11 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     ];
   }
 
-  var stacked = false;
+  const stacked = false;
   var fieldNames = names[whichOne].map((w) => whichOne + "---" + w);
-  var chartID = `chart-canvas-${layer.id}-${whichOne}-${annualOrTransition}`;
-  var colorsI = 0;
-  var selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
+  const chartID = `chart-canvas-${layer.id}-${whichOne}-${annualOrTransition}`;
+  let colorsI = 0;
+  const selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
   if (selectedFeatureNames.length > 1) {
     var area_names =
       "LCMS Summary for " + selectedFeatureNames.length.toString() + " areas";
@@ -410,41 +410,41 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     var area_names = selectedFeatureNames.join(", ");
   }
 
-  var name = layer.name + " " + area_names + " - " + whichOne.replace("_", " ");
+  const name = layer.name + " " + area_names + " - " + whichOne.replace("_", " ");
   ///////////////////////////////////////////////////////////////////////
   //Iterate across each field name and add up totals
   //First get 2-d array of all areas for each then sum the columns and divide by total area
-  var t1 = new Date();
+  const t1 = new Date();
   let results = {};
   results.features = selectedFeatureNames.map(
     (nm) => layer.dashboardSelectedFeatures[nm].geojson
   );
-  var years = results.features[0].properties["years_" + annualOrTransition]
+  let years = results.features[0].properties["years_" + annualOrTransition]
     .split(",")
     .sort();
   if (annualOrTransition === "transition") {
-    var tableDict = {};
+    const tableDict = {};
     var fieldNames = Object.keys(results.features[0].properties)
       .filter((v) => v.indexOf(whichOne) > -1)
       .sort();
 
     fieldNames.map((fn) => {
-      var total_area = 0;
-      var total = [];
+      let total_area = 0;
+      const total = [];
       results.features.map((f) => {
-        var t = f.properties[fn].split(",");
-        var scale = f.properties.scale;
+        const t = f.properties[fn].split(",");
+        const scale = f.properties.scale;
 
         total.push(
           f.properties[fn].split(",").map((n) => parseFloat(n) * scale ** 2)
         );
-        var total_areaF = parseFloat(f.properties[total_area_fieldname]);
+        const total_areaF = parseFloat(f.properties[total_area_fieldname]);
         total_area = total_area + total_areaF * scale ** 2;
       });
-      var colSums = [];
-      for (var col = 0; col < total[0].length; col++) {
-        var colSum = 0;
-        for (var row = 0; row < total.length; row++) {
+      let colSums = [];
+      for (let col = 0; col < total[0].length; col++) {
+        let colSum = 0;
+        for (let row = 0; row < total.length; row++) {
           colSum = colSum + total[row][col];
         }
         colSums.push(colSum);
@@ -471,20 +471,20 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
 
     //Set up chart object
     // add data
-    var yri = 0;
+    let yri = 0;
     var data = [];
-    var sankey_dict = { source: [], target: [], value: [] };
-    var sankeyPalette = [];
-    var labels = [];
-    var label_code_dict = {};
-    var label_code_i = 0;
-    var allYears = years.map((yr) => {
+    const sankey_dict = { source: [], target: [], value: [] };
+    const sankeyPalette = [];
+    const labels = [];
+    const label_code_dict = {};
+    let label_code_i = 0;
+    const allYears = years.map((yr) => {
       return yr.split("_")[0];
     });
     allYears.push(years[years.length - 1].split("_")[1]);
     allYears.map((yr) => {
       names[whichOne].map((nm) => {
-        var outNm = yr + " " + nm;
+        const outNm = yr + " " + nm;
         labels.push(outNm);
         label_code_dict[outNm] = label_code_i;
         label_code_i++;
@@ -494,18 +494,18 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       });
     });
     years.map((yr) => {
-      var startRange = yr.split("_")[0];
-      var endRange = yr.split("_")[1];
+      const startRange = yr.split("_")[0];
+      const endRange = yr.split("_")[1];
 
       Object.keys(tableDict).map((k) => {
-        var transitionClass = k.split("---")[1];
-        var transitionFromClassI = parseInt(transitionClass.split("-")[0]) - 1;
-        var transitionFromClassName = names[whichOne][transitionFromClassI];
-        var transitionToClassName =
+        const transitionClass = k.split("---")[1];
+        const transitionFromClassI = parseInt(transitionClass.split("-")[0]) - 1;
+        const transitionFromClassName = names[whichOne][transitionFromClassI];
+        const transitionToClassName =
           names[whichOne][parseInt(transitionClass.split("-")[1]) - 1];
-        var v = tableDict[k][yri];
-        var fromLabel = startRange + " " + transitionFromClassName;
-        var toLabel = endRange + " " + transitionToClassName;
+        const v = tableDict[k][yri];
+        const fromLabel = startRange + " " + transitionFromClassName;
+        const toLabel = endRange + " " + transitionToClassName;
 
         sankey_dict.source.push(label_code_dict[fromLabel]);
         sankey_dict.target.push(label_code_dict[toLabel]);
@@ -545,7 +545,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     let plotWidth = $("#charts-collapse-div").width() - 2;
     let plotHeight = parseInt(plotWidth / 1.3);
 
-    var layout = {
+    const layout = {
       title: `<b>${name}</b>`,
       font: {
         size: 10,
@@ -563,7 +563,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       height: plotHeight,
       width: plotWidth,
     };
-    var config = {
+    const config = {
       toImageButtonOptions: {
         format: "png", // one of png, svg, jpeg, webp
         filename: name,
@@ -587,21 +587,21 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     );
     Plotly.newPlot(`${chartID}`, data, layout, config);
   } else if (annualOrTransition === "annual") {
-    var startI = years.indexOf(urlParams.startYear.toString());
-    var endI = years.indexOf(urlParams.endYear.toString()) + 1;
+    const startI = years.indexOf(urlParams.startYear.toString());
+    const endI = years.indexOf(urlParams.endYear.toString()) + 1;
     years = years.slice(startI, endI);
     if (showPairwiseDiff) {
       years = years.slice(1, years.length);
     }
     fieldNames = fieldNames.filter((v) => v.indexOf(whichOne) > -1).sort();
 
-    var t = fieldNames.map(function (k) {
-      var total_area = 0;
-      var total = [];
+    const t = fieldNames.map(function (k) {
+      let total_area = 0;
+      const total = [];
 
       results.features.map(function (f) {
         try {
-          var scale = f.properties.scale;
+          const scale = f.properties.scale;
 
           total.push(
             f.properties[k]
@@ -609,17 +609,17 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
               .slice(startI, endI)
               .map((n) => parseFloat(n))
           );
-          var total_areaF = parseFloat(f.properties[total_area_fieldname]);
+          const total_areaF = parseFloat(f.properties[total_area_fieldname]);
           total_area = total_area + total_areaF;
         } catch (err) {
           console.log("No LCMS summary for: " + f.properties[titleField]);
         }
       });
 
-      var colSums = [];
-      for (var col = 0; col < total[0].length; col++) {
-        var colSum = 0;
-        for (var row = 0; row < total.length; row++) {
+      let colSums = [];
+      for (let col = 0; col < total[0].length; col++) {
+        let colSum = 0;
+        for (let row = 0; row < total.length; row++) {
           colSum = colSum + total[row][col];
         }
         colSums.push(colSum);
@@ -633,10 +633,10 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       }
 
       if (showPairwiseDiff) {
-        var pairwiseDiff = [];
-        for (var i = 0; i < colSums.length - 1; i++) {
-          var left = colSums[i];
-          var right = colSums[i + 1];
+        const pairwiseDiff = [];
+        for (let i = 0; i < colSums.length - 1; i++) {
+          const left = colSums[i];
+          const right = colSums[i + 1];
           pairwiseDiff.push(right - left);
         }
         colSums = pairwiseDiff;
@@ -655,7 +655,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
 
       let classColor =
         colors[whichOne][names[whichOne].indexOf(k.split("---")[1])];
-      var out = {
+      const out = {
         borderColor: classColor,
         data: colSums,
         label: k.split("---")[1],
@@ -743,7 +743,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     $(".chartjs-chart").css("width", chartWidth);
   }
 }
-var currentHighlightsMoveID = 1;
+let currentHighlightsMoveID = 1;
 if (
   urlParams.currentlySelectedHighlightTab == null ||
   urlParams.currentlySelectedHighlightTab == undefined
@@ -790,8 +790,8 @@ function updateDashboardHighlights(limit = 10) {
           classesToHighlight = classesToHighlight + classes.length;
           if (classes.length > 0) {
             classes.map((cls) => {
-              var class_name = `${k}---${cls}`;
-              var ts_class_name = `TS---${k}---${cls}`;
+              const class_name = `${k}---${cls}`;
+              const ts_class_name = `TS---${k}---${cls}`;
               let t = [];
               let ft = fc.map((f) => {
                 let props = f.properties;
@@ -1147,7 +1147,7 @@ class report {
 
       //header
       //header color block
-      var fontSize = 12;
+      const fontSize = 12;
       this.doc.setFontSize(fontSize);
       this.currentY = this.margin;
       this.widthPng = 36;
@@ -1156,11 +1156,11 @@ class report {
       this.clear();
 
       //header logo image
-      var usdaLogo = new Image();
+      const usdaLogo = new Image();
       usdaLogo.src = "./src/assets/images/logos_usda-fs_bn-dk-01.PNG"; //"./src/assets/images/usdalogo.png";
       this.doc.addImage(usdaLogo, "PNG", 5, 4, 16 * 2, 13); //, 15);
 
-      var lcmsLogo = new Image();
+      const lcmsLogo = new Image();
       lcmsLogo.src = "./src/assets/images/lcms-icon.png";
 
       //header text
@@ -1236,8 +1236,8 @@ class report {
       this.doc.setFontSize(26);
       this.doc.setFont(undefined, "normal");
       this.doc.setTextColor(0, 0, 0); //8,124,124)
-      var question = "How is our landscape changing?"; //change to document.getElementById("options-dropdown").value;//
-      var wrapQuestion = this.doc.splitTextToSize(question, 180);
+      const question = "How is our landscape changing?"; //change to document.getElementById("options-dropdown").value;//
+      const wrapQuestion = this.doc.splitTextToSize(question, 180);
       this.doc.text(this.margin, this.currentY, wrapQuestion);
 
       var lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
@@ -1311,14 +1311,14 @@ class report {
         this.checkForRoom(h);
       }
 
-      var that = this;
+      const that = this;
       const currentY = this.currentY;
 
       html2canvas(d, {
         useCORS: true,
         allowTaint: false,
       }).then((canvas) => {
-        var imgData = canvas.toDataURL("image/png");
+        const imgData = canvas.toDataURL("image/png");
         console.log([margin, currentY, imgW, h, aspectRatio]);
 
         that.doc.addImage(imgData, "PNG", margin, currentY, imgW, h);
@@ -1329,7 +1329,7 @@ class report {
     };
     this.outstandingCharts = 0;
     this.addChartJS = function (id) {
-      var that = this;
+      const that = this;
       that.outstandingCharts++;
       console.log(`Adding chart: ${id}`);
 
@@ -1424,9 +1424,9 @@ function makeDashboardReport() {
     scaleControl: false,
     streetViewControl: false,
   });
-  var sidebarTogglerClicked = false;
-  var collapseClicked = [];
-  var needsOpenList = ["legend-collapse", "charts-collapse"];
+  let sidebarTogglerClicked = false;
+  const collapseClicked = [];
+  const needsOpenList = ["legend-collapse", "charts-collapse"];
   if ($("#sidebar-left").css("display") === "none") {
     toggleSidebar();
     sidebarTogglerClicked = true;
@@ -1437,7 +1437,7 @@ function makeDashboardReport() {
       collapseClicked.push(needsOpen);
     }
   });
-  var dashboardReport = new report();
+  const dashboardReport = new report();
   dashboardReport.addReportHeader();
   storeParams();
   // TweetThis((preURL = ""), (postURL = ""), (openInNewTab = false), (showMessageBox = false), (onlyURL = true));
@@ -1580,7 +1580,7 @@ function makeDashboardReport() {
 
 function moveDashboardResults(location = "left") {
   if (dashboardResultsLocation !== location) {
-    var outLoc = dashboardMoveLocationDict[location];
+    const outLoc = dashboardMoveLocationDict[location];
 
     moveCollapse("charts-collapse", outLoc);
     moveCollapse("tables-collapse", outLoc);

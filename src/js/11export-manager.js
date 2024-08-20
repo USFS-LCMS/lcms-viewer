@@ -1,25 +1,25 @@
-var exportOuputName;
-var submitOutputName;
-var taskId;
-var cancelAllTasks = function () {
+let exportOuputName;
+let submitOutputName;
+let taskId;
+let cancelAllTasks = function () {
   console.log("yay");
 };
-var downloadMetadata = function () {
+let downloadMetadata = function () {
   console.log("yay");
 };
-var downloadTraining = function () {
+let downloadTraining = function () {
   console.log("yay");
 };
-var list = [];
-var bucketName; //Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
+const list = [];
+let bucketName; //Will need to set permissions for reading and writing using: gsutil acl ch -u AllUsers:W gs://example-bucket and gsutil acl ch -u AllUsers:R gs://example-bucket
 if (urlParams.bucketName === null || urlParams.bucketName === undefined) {
   bucketName = "viewer-exports";
 } else {
   bucketName = urlParams.bucketName;
 }
 
-var eID = 1;
-var exportFC;
+const eID = 1;
+let exportFC;
 ///////////////////////////////////////////////////////////////////
 function downloadFiles(id) {
   let badShpExtensions = ["cpg", "fix"];
@@ -56,7 +56,7 @@ function downloadFiles(id) {
     setTimeout(
       () =>
         json.map(function (item) {
-          var link = document.createElement("a");
+          const link = document.createElement("a");
           link.setAttribute("href", item.mediaLink);
           link.setAttribute("download", item.name);
           link.style.visibility = "hidden";
@@ -72,7 +72,7 @@ function downloadFiles(id) {
   });
 }
 
-var cachedEEExports = null;
+let cachedEEExports = null;
 if (
   typeof Storage !== "undefined" &&
   localStorage.cachedEEExports2 !== undefined &&
@@ -102,7 +102,7 @@ if (cachedEEExports === null) {
   cachedEEExports = {};
 }
 
-var selectedExportDict = {};
+const selectedExportDict = {};
 function checkFunction(v) {
   console.log(v.checked + " " + v.value);
   eval("addToMap(" + exportImageDict[v.value]["image"] + ")");
@@ -116,7 +116,7 @@ function showPopup() {
   document.getElementById("export-list").style.display = "inline-block";
 }
 function interval2(func, wait, times) {
-  var interv = (function (w, t) {
+  const interv = (function (w, t) {
     return function () {
       if (typeof t === "undefined" || t-- > 0) {
         setTimeout(interv, w);
@@ -143,7 +143,7 @@ function deleteExportArea() {
   try {
     mapHammer.destroy();
   } catch (err) {
-    var x = err;
+    const x = err;
   }
 
   exportArea.setMap(null);
@@ -186,15 +186,15 @@ function selectExportArea() {
   exportArea.setMap(map);
   mapHammer = new Hammer(document.getElementById("map"));
   mapHammer.on("tap", function (event) {
-    var path = exportArea.getPath();
-    var x = event.center.x;
-    var y = event.center.y;
+    const path = exportArea.getPath();
+    const x = event.center.x;
+    const y = event.center.y;
     clickLngLat = point2LatLng(x, y);
     path.push(clickLngLat);
   });
 
   mapHammer.on("doubletap", function () {
-    var path = exportArea.getPath();
+    const path = exportArea.getPath();
     exportArea.setMap(null);
     exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
     exportArea.setPath(path);
@@ -219,8 +219,8 @@ function cancelSingleTask(task) {
 }
 cancelAllTasks = function () {
   $("#summary-spinner").show();
-  var tasksCancelled = 0;
-  var tasksCancelledList = "\nNames:";
+  let tasksCancelled = 0;
+  let tasksCancelledList = "\nNames:";
   ee.data.getTaskList((taskList) => {
     taskList = taskList.tasks;
     taskList.map(function (task) {
@@ -271,15 +271,15 @@ function cancelTask(description) {
 }
 downloadMetadata = function () {
   console.log("downloading metadta");
-  var url = "./src/assets/images/lcms_metadata_beta.pdf";
-  var link = document.createElement("a");
+  const url = "./src/assets/images/lcms_metadata_beta.pdf";
+  const link = document.createElement("a");
   link.href = url;
   link.download = url.substr(url.lastIndexOf("/") + 1);
   link.click();
 };
 
 function downloadExport(url, output) {
-  var link = document.createElement("a");
+  const link = document.createElement("a");
   link.setAttribute("href", url);
   link.setAttribute("download", output);
   link.style.visibility = "hidden";
@@ -291,8 +291,8 @@ function downloadExport(url, output) {
 }
 downloadTraining = function () {
   console.log("downloading training");
-  var url = "./src/assets/images/LCMS_Data_Explorer_exercise1.pdf";
-  var link = document.createElement("a");
+  const url = "./src/assets/images/LCMS_Data_Explorer_exercise1.pdf";
+  const link = document.createElement("a");
   link.href = url;
   link.download = url.substr(url.lastIndexOf("/") + 1);
   link.click();
@@ -301,7 +301,7 @@ downloadTraining = function () {
 function trackExports() {
   exportList = [];
 
-  var taskIDListTitle = "Exporting: ";
+  const taskIDListTitle = "Exporting: ";
   taskCount = 0;
   ee.data.getTaskList((taskList) => {
     taskList = taskList.tasks.filter(
@@ -315,7 +315,7 @@ function trackExports() {
                       
                       </div>`);
     taskList.map(function (t) {
-      var cachedEEExport = cachedEEExports[t.description];
+      const cachedEEExport = cachedEEExports[t.description];
 
       if (
         t.state === "RUNNING" ||
@@ -327,8 +327,8 @@ function trackExports() {
         if (t.state === "READY") {
           timeDiff = "NA";
         } else {
-          var st = t.start_timestamp_ms;
-          var now = t.update_timestamp_ms;
+          const st = t.start_timestamp_ms;
+          const now = t.update_timestamp_ms;
           var timeDiff = now - st;
           timeDiff = new Date(timeDiff).toISOString().slice(11, 19);
         }
@@ -489,7 +489,7 @@ function getIDAndParams(
     FeatureCollection: { type: "EXPORT_FEATURES", format: "SHP" },
   };
   //Set up parameter object
-  var params = {
+  const params = {
     element: eeImage,
     type: exportTypeDict[eeType].type,
     description: exportOutputName,
@@ -511,11 +511,11 @@ function getIDAndParams(
   return { taskID: taskId, params: params };
 }
 function googleMapPolygonToGEEPolygon(googleMapPolygon) {
-  var path = googleMapPolygon.getPath().getArray();
+  let path = googleMapPolygon.getPath().getArray();
   path = path.map(function (p) {
     return [p.lng(), p.lat()];
   });
-  var geePolygon = ee.FeatureCollection([
+  const geePolygon = ee.FeatureCollection([
     ee.Feature(ee.Geometry.Polygon(path)),
   ]);
 
@@ -525,16 +525,16 @@ function exportImages() {
   let exportCRST = $("#export-crs").val() || exportCRS;
   console.log(exportCRST);
 
-  var now = new Date().toISOString();
+  let now = new Date().toISOString();
   let date = now.slice(2, 10);
   let time = now.slice(11, 19).replaceAll(":", "-");
   now = `${date}-${time}`;
-  var exportsStarted = 0;
-  var exportsSubmitted = "";
+  let exportsStarted = 0;
+  let exportsSubmitted = "";
   let exportAreaProvided = exportArea !== null && exportArea !== undefined;
   let needToDrawPoly = false;
   Object.keys(exportImageDict).map(function (k) {
-    var exportObject = exportImageDict[k];
+    const exportObject = exportImageDict[k];
     if (
       exportObject.eeType === "Image" &&
       exportAreaProvided === false &&
@@ -553,10 +553,10 @@ function exportImages() {
       }
       if (exportObject["shouldExport"] === true) {
         exportsStarted++;
-        var exportName = exportObject["name"] + "_" + now;
-        var noDataValue = exportObject["noDataValue"];
+        const exportName = exportObject["name"] + "_" + now;
+        const noDataValue = exportObject["noDataValue"];
         exportsSubmitted += exportName + "<br>";
-        var IDAndParams = getIDAndParams(
+        const IDAndParams = getIDAndParams(
           exportObject.eeImage,
           exportName,
           exportCRST,
@@ -613,9 +613,9 @@ function processFeatures2(fc, shoudExport) {
 
 function displayExports(fc) {
   Object.keys(exportImageDict).map(function (k) {
-    var exportObject = exportImageDict[k];
-    var now = Date().split(" ");
-    var nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
+    const exportObject = exportImageDict[k];
+    const now = Date().split(" ");
+    const nowSuffix = "_" + now[2] + "_" + now[1] + "_" + now[3] + "_" + now[4];
     addToMap(
       exportObject["eeImage"].clip(fc),
       exportObject["vizParams"],

@@ -1,5 +1,5 @@
 function addPlotCollapse() {
-  var collapseContainer = "sidebar-left";
+  const collapseContainer = "sidebar-left";
   addCollapse(
     collapseContainer,
     "plot-collapse-label",
@@ -15,10 +15,10 @@ function addPlotCollapse() {
 
 function plotListFilterFunction(id) {
   console.log(id);
-  var rows = $("#" + id)
+  const rows = $("#" + id)
     .children("tbody")
     .children("tr");
-  var value = $("#" + id + "-search")
+  const value = $("#" + id + "-search")
     .val()
     .toLowerCase();
   console.log(value);
@@ -35,9 +35,9 @@ function plotListFilterFunction(id) {
   console.log(value);
 }
 function addPlotProjectAccordian(name) {
-  var nameID = name.replaceAll(" ", "-");
+  const nameID = name.replaceAll(" ", "-");
 
-  var plotListDiv = `<input  id="${nameID}-plot-list-search" class = 'form-control bg-black ' type="text" placeholder="Search Plots.." id="myInput" onkeyup="plotListFilterFunction('${nameID}-plot-list')">
+  const plotListDiv = `<input  id="${nameID}-plot-list-search" class = 'form-control bg-black ' type="text" placeholder="Search Plots.." id="myInput" onkeyup="plotListFilterFunction('${nameID}-plot-list')">
 						<li id="${nameID}-plot-list"></li>`;
   addSubAccordianCard(
     "plots-accordian",
@@ -99,88 +99,88 @@ function loadAllPlots() {
   });
 }
 ////////////////////////////////////////////////////////
-var r4PlotsJson = {
+const r4PlotsJson = {
   name: "Region 4",
   path: "./src/data/geojson/region4_sample_9strata_NEW_g_albers_30m_box.json",
   plotIDField: "PLOTID",
 };
-var mls = {
+const mls = {
   name: "Manti La Sal",
   path: "./src/data/geojson/LCMS_Sample_1000k_MLSNF_5km_g_albers_30m_box.json",
   plotIDField: "FID_1",
 };
-var bt = {
+const bt = {
   name: "Bridger-Teton",
   path: "./src/data/geojson/LCMS_Sample_1000k_BTNF_g_albers_30m_box.json",
   plotIDField: "FID_1",
 };
-var fnf = {
+const fnf = {
   name: "Flathead",
   path: "./src/data/geojson/LCMS_Sample_1000k_FNF_GNP_g_albers_30m_box.json",
   plotIDField: "FID_1",
 };
-var lcmap = {
+const lcmap = {
   name: "First 25k",
   path: "./src/data/geojson/conus_random_25k_s_30m_box.json",
   plotIDField: "LCMS_ID",
 };
-var conus1 = {
+const conus1 = {
   name: "CONUS 2020",
   path: "./src/data/geojson/CONUS_plots_new_g_albers_30m_box.json",
   plotIDField: "PLOT_ID",
 };
-var coastalAK = {
+const coastalAK = {
   name: "Coastal AK 2020",
   path: "./src/data/geojson/CoastalAK_sample_NEW_g_albers_30m_box.json",
   plotIDField: "LCMS_ID",
 };
-var coastalAK2022 = {
+const coastalAK2022 = {
   name: "Coastal AK",
   path: "./src/data/geojson/Coastal_AK_plots_202211_final_30m_box.json",
   plotIDField: "ID",
 };
-var prviPractice = {
+const prviPractice = {
   name: "PRVI Practice",
   path: "./src/data/geojson/PR_USVI_Random_Sample_100_proj_g_albers_30m_box.json",
   plotIDField: "PLOTID",
 };
-var prviFinal = {
+const prviFinal = {
   name: "PRVI Final",
   path: "./src/data/geojson/PR_sample_1100_11strata_make_ordered_chipping_g_albers_30m_box.json",
   plotIDField: "PLOTID",
 };
-var hiFinal = {
+const hiFinal = {
   name: "HI Original",
   path: "./src/data/geojson/HI_plots_1000_selected_v2_Web_Mercator_Boxes.json",
   plotIDField: "PLOTID",
 };
-var CONUSpractice = {
+const CONUSpractice = {
   name: "CONUS Practice",
   path: "./src/data/geojson/CONUS_training_new_30m_box.json",
   plotIDField: "LCMS_ID",
 };
-var hiPractice = {
+const hiPractice = {
   name: "Hawaii Practice",
   path: "./src/data/geojson/HI_training_30m_box.json",
   plotIDField: "PLOTID",
 };
-var coastalAKPractice = {
+const coastalAKPractice = {
   name: "Coastal Alaska Practice",
   path: "./src/data/geojson/AK_training_30m_box.json",
   plotIDField: "PLOTID",
 };
-var interiorAKPractice = {
+const interiorAKPractice = {
   name: "Interior Alaska Practice",
   path: "./src/data/geojson/Interior_AK_locations_for_TS_training_5test_30m_box.json",
   plotIDField: "ID",
 };
-var interiorAK = {
+const interiorAK = {
   name: "Interior Alaska",
   path: "./src/data/geojson/Interior_AK_plots_selected_30m_box.json",
   plotIDField: "PLOTID",
 };
 
-var Hawaii2024 = {
+const Hawaii2024 = {
   name: "Hawaii2024",
   path: "./src/data/geojson/Additional_HI_Training_Pts_30m_box.json",
   plotIDField: "PLOTID",

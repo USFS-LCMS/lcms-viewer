@@ -1,18 +1,18 @@
 function runBaseLearner() {
-  var studyAreaName = "USFS LCMS 1984-2020";
-  var startYear = urlParams.startYear;
-  var endYear = urlParams.endYear;
-  var bandPropertyName = "band";
-  var arrayMode = true;
-  var bandNames;
-  var cdl = changeDetectionLib;
-  var gil = getImagesLib;
+  const studyAreaName = "USFS LCMS 1984-2020";
+  const startYear = urlParams.startYear;
+  const endYear = urlParams.endYear;
+  const bandPropertyName = "band";
+  const arrayMode = true;
+  let bandNames;
+  const cdl = changeDetectionLib;
+  const gil = getImagesLib;
 
-  var whichIndices = Object.keys(whichIndices2).filter(
+  const whichIndices = Object.keys(whichIndices2).filter(
     (k) => whichIndices2[k] == true
   );
 
-  var composites = ee.ImageCollection(
+  let composites = ee.ImageCollection(
     ee
       .FeatureCollection(
         studyAreaDict[studyAreaName].composite_collections.map((f) =>
@@ -36,14 +36,14 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  var vizYears = range(startYear, endYear, 5);
+  const vizYears = range(startYear, endYear, 5);
   if (vizYears[vizYears.length - 2] !== endYear) {
     vizYears.push(endYear);
   }
   compViz.years = vizYears;
   Map.addTimeLapse(composites, compViz, "Raw Composites", false);
 
-  var lt = ee.ImageCollection(
+  const lt = ee.ImageCollection(
     ee
       .FeatureCollection(
         studyAreaDict[studyAreaName].lt_collections.map((f) =>
@@ -53,11 +53,11 @@ function runBaseLearner() {
       .flatten()
   );
   // Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
-  var maxSegs = lt.first().toDictionary().get("maxSegments").getInfo();
+  const maxSegs = lt.first().toDictionary().get("maxSegments").getInfo();
   console.log(maxSegs);
   // Convert stacked outputs into collection of fitted, magnitude, slope, duration, etc values for each year
   // Divide by 10000 (0.0001) so values are back to original values (0-1 or -1-1)
-  var lt_fit = cdl.batchSimpleLTFit(
+  let lt_fit = cdl.batchSimpleLTFit(
     lt,
     startYear,
     endYear,
@@ -68,7 +68,7 @@ function runBaseLearner() {
     0.0001
   );
   lt_fit = lt_fit.select([".*_fitted"]);
-  var ltSynthViz = copyObj(getImagesLib.vizParamsFalse);
+  const ltSynthViz = copyObj(getImagesLib.vizParamsFalse);
   ltSynthViz.years = vizYears;
   ltSynthViz.bands = getImagesLib.vizParamsFalse.bands
     .split(",")
@@ -79,8 +79,8 @@ function runBaseLearner() {
 
   // Visualize fitted landTrendr composite
   // var fitted_bns = lt_fit.select([".*_fitted"]).first().bandNames();
-  var final_lt_bns = whichIndices.map((bn) => `${bn}_LT_fitted`);
-  var final_ccdc_bns = whichIndices.map((bn) => `${bn}_CCDC_fitted`);
+  const final_lt_bns = whichIndices.map((bn) => `${bn}_LT_fitted`);
+  const final_ccdc_bns = whichIndices.map((bn) => `${bn}_CCDC_fitted`);
 
   // var out_bns = fitted_bns.map((bn) => ee.String(bn).split("_").get(0));
 
@@ -97,18 +97,18 @@ function runBaseLearner() {
   }
   bandNames.map(function (bandName) {
     // Do basic change detection with raw LT output
-    var ltt = lt.filter(ee.Filter.eq(bandPropertyName, bandName)).mosaic();
+    let ltt = lt.filter(ee.Filter.eq(bandPropertyName, bandName)).mosaic();
     ltt = cdl.multLT(ltt, gil.changeDirDict[bandName] * 0.0001);
 
-    var lossMagThresh = urlParams.lossMagThresh;
-    var lossSlopeThresh = urlParams.lossMagThresh;
-    var gainMagThresh = urlParams.gainMagThresh;
-    var gainSlopeThresh = urlParams.gainMagThresh;
-    var slowLossDurationThresh = 3;
-    var chooseWhichLoss = "largest";
-    var chooseWhichGain = "largest";
-    var howManyToPull = 1;
-    var lossGainDict = cdl.convertToLossGain(
+    const lossMagThresh = urlParams.lossMagThresh;
+    const lossSlopeThresh = urlParams.lossMagThresh;
+    const gainMagThresh = urlParams.gainMagThresh;
+    const gainSlopeThresh = urlParams.gainMagThresh;
+    const slowLossDurationThresh = 3;
+    const chooseWhichLoss = "largest";
+    const chooseWhichGain = "largest";
+    const howManyToPull = 1;
+    const lossGainDict = cdl.convertToLossGain(
       ltt,
       "arrayLandTrendr",
       lossMagThresh,
@@ -120,7 +120,7 @@ function runBaseLearner() {
       chooseWhichGain,
       howManyToPull
     );
-    var lossGainStack = cdl.LTLossGainExportPrep(lossGainDict, bandName, 1);
+    const lossGainStack = cdl.LTLossGainExportPrep(lossGainDict, bandName, 1);
     cdl.addLossGainToMap(
       lossGainStack,
       startYear,
@@ -138,22 +138,22 @@ function runBaseLearner() {
 
   // ////////////////////////////////////////////////////////////////////////////////////////
 
-  var ccdcIndices = Object.keys(whichIndices2).filter((i) => whichIndices2[i]);
-  var ccdcOriginalIndices = Object.keys(whichIndices2).filter(
+  const ccdcIndices = Object.keys(whichIndices2).filter((i) => whichIndices2[i]);
+  const ccdcOriginalIndices = Object.keys(whichIndices2).filter(
     (i) => whichIndices2[i]
   );
   if (ccdcIndices.indexOf("NDVI") == -1) {
     ccdcIndices.push("NDVI");
   }
 
-  var ccdcAnnualBnsFrom = ccdcOriginalIndices.map(function (bn) {
+  const ccdcAnnualBnsFrom = ccdcOriginalIndices.map(function (bn) {
     return bn + "_predicted";
   });
-  var ccdcAnnualBnsTo = ccdcOriginalIndices.map(function (bn) {
+  const ccdcAnnualBnsTo = ccdcOriginalIndices.map(function (bn) {
     return bn + "_CCDC_fitted";
   });
 
-  var ccdcIndicesSelector = ["tStart", "tEnd", "tBreak", "changeProb"].concat(
+  const ccdcIndicesSelector = ["tStart", "tEnd", "tBreak", "changeProb"].concat(
     ccdcIndices.map(function (i) {
       return i + "_.*";
     })
@@ -165,10 +165,10 @@ function runBaseLearner() {
   // );
   // // console.log(ccdcIndicesSelector)
 
-  var fraction = 0.6657534246575343;
+  const fraction = 0.6657534246575343;
   // var tEndExtrapolationPeriod = 1; //Period in years to extrapolate if needed
 
-  var ccdcImg = ee
+  let ccdcImg = ee
     .ImageCollection(
       ee
         .FeatureCollection(
@@ -190,28 +190,28 @@ function runBaseLearner() {
       "NDVI.*",
       "NBR.*",
     ]);
-  var f = ee.Image(ccdcImg.first());
+  const f = ee.Image(ccdcImg.first());
   ccdcImg = ee.Image(ccdcImg.mosaic().copyProperties(f)); //;
 
   // #Specify which harmonics to use when predicting the CCDC model
   // #CCDC exports the first 3 harmonics (1 cycle/yr, 2 cycles/yr, and 3 cycles/yr)
   // #If you only want to see yearly patterns, specify [1]
   // #If you would like a tighter fit in the predicted value, include the second or third harmonic as well [1,2,3]
-  var whichHarmonics = [1, 2, 3];
+  const whichHarmonics = [1, 2, 3];
 
   // Whether to fill gaps between segments' end year and the subsequent start year to the break date
-  var fillGaps = false;
+  const fillGaps = false;
 
   // #Specify which band to use for loss and gain.
   // #This is most important for the loss and gain magnitude since the year of change will be the same for all years
-  var changeDetectionBandName = "NDVI";
+  const changeDetectionBandName = "NDVI";
 
   // # Choose whether to show the most recent ('mostRecent') or highest magnitude ('highestMag') CCDC break
-  var sortingMethod = "mostRecent";
+  const sortingMethod = "mostRecent";
   // ####################################################################################################
   // #Pull out some info about the ccdc image
-  var startJulian = 1;
-  var endJulian = 365;
+  const startJulian = 1;
+  const endJulian = 365;
 
   // #Add the raw array image
   Map.addLayer(
@@ -223,7 +223,7 @@ function runBaseLearner() {
 
   // #Apply the CCDC harmonic model across a time series
   // #First get a time series of time images
-  var yearImages = changeDetectionLib.getTimeImageCollection(
+  const yearImages = changeDetectionLib.getTimeImageCollection(
     startYear,
     endYear,
     startJulian,
@@ -232,19 +232,19 @@ function runBaseLearner() {
   );
 
   // #Then predict the CCDC models
-  var ccdcFitted = changeDetectionLib.predictCCDC(
+  const ccdcFitted = changeDetectionLib.predictCCDC(
     ccdcImg,
     yearImages,
     fillGaps,
     whichHarmonics
   );
-  var ccdcSynthViz = copyObj(getImagesLib.vizParamsFalse);
+  const ccdcSynthViz = copyObj(getImagesLib.vizParamsFalse);
   ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands
     .split(",")
     .map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
   ccdcSynthViz.years = vizYears;
-  var annualImages = changeDetectionLib.getTimeImageCollection(
+  let annualImages = changeDetectionLib.getTimeImageCollection(
     startYear,
     endYear + 1,
     startJulian,
@@ -255,7 +255,7 @@ function runBaseLearner() {
     setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))
   ); //.map(setSameDate);
   // #Then predict the CCDC models
-  var annualPredictedCCDC = changeDetectionLib.predictCCDC(
+  const annualPredictedCCDC = changeDetectionLib.predictCCDC(
     ccdcImg,
     annualImages,
     fillGaps,
@@ -543,8 +543,8 @@ function runBaseLearner() {
 
   // console.log(fittedTS.first().getInfo());
   // Map.addLayer(fittedTS, {}, "Raw and LT Fitted");
-  var ltPalette = palettes.niccoli.isol[7].reverse();
-  var ltFitColors = ee.List.sequence(0, 6, 7 / whichIndices.length)
+  const ltPalette = palettes.niccoli.isol[7].reverse();
+  const ltFitColors = ee.List.sequence(0, 6, 7 / whichIndices.length)
     .getInfo()
     .map(function (i) {
       i = Math.floor(i);
@@ -562,18 +562,18 @@ function runBaseLearner() {
   //   // chartColors: ltFitColors,
   // };
   let indicesUsed = whichIndices;
-  var ltCCDCPalette = palettes.niccoli.isol[7].reverse();
-  var ltCCDCFitColors = ee.List.sequence(0, 6, 7 / indicesUsed.length)
+  const ltCCDCPalette = palettes.niccoli.isol[7].reverse();
+  const ltCCDCFitColors = ee.List.sequence(0, 6, 7 / indicesUsed.length)
     .getInfo()
     .map(function (i) {
       i = Math.floor(i);
       return ltPalette[i % 7];
     });
 
-  var ltCCDCFitColorsFull = ltCCDCFitColors;
+  let ltCCDCFitColorsFull = ltCCDCFitColors;
   // console.log(ltCCDCFitColorsFull)
-  var opposites = ltCCDCFitColors.map(invertColor);
-  var offsetOpposites = opposites.map(function (hex) {
+  const opposites = ltCCDCFitColors.map(invertColor);
+  const offsetOpposites = opposites.map(function (hex) {
     return offsetColor(hex, 25);
   });
   ltCCDCFitColorsFull = ltCCDCFitColorsFull.concat(opposites);
@@ -594,7 +594,7 @@ function runBaseLearner() {
     ltCCDCFitColors.push(invertColor(c));
   });
   // printEE(fittedLTCCDCTS.limit(2));
-  var colorsN = indicesUsed.length;
+  let colorsN = indicesUsed.length;
   if (colorsN === 1) {
     colorsN = 3;
   }
@@ -607,7 +607,7 @@ function runBaseLearner() {
     chartColors: palettes.colorbrewer.Set1[9],
   };
 
-  var ccdcFitColors = ee.List.sequence(0, 6, 7 / 2)
+  const ccdcFitColors = ee.List.sequence(0, 6, 7 / 2)
     .getInfo()
     .map(function (i) {
       i = Math.floor(i);

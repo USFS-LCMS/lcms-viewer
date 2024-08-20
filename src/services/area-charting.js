@@ -1,15 +1,15 @@
 function exportToCsv2(areaObjID, bn, filename) {
   let table = areaChart.areaChartObj[areaObjID].tableExportData[bn];
-  var blob = new Blob([table], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob([table], { type: "text/csv;charset=utf-8;" });
   if (navigator.msSaveBlob) {
     // IE 10+
     navigator.msSaveBlob(blob, filename);
   } else {
-    var link = document.createElement("a");
+    const link = document.createElement("a");
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
       link.setAttribute("download", filename);
       link.style.visibility = "hidden";
@@ -565,7 +565,7 @@ function areaChartCls() {
 
     var data = [data];
 
-    var plotLayout = {
+    const plotLayout = {
       title: name,
       font: {
         size: selectedObj.chartTitleFontSize,
@@ -585,7 +585,7 @@ function areaChartCls() {
         pad: 0,
       },
     };
-    var config = {
+    const config = {
       toImageButtonOptions: {
         format: "png", // one of png, svg, jpeg, webp
         filename: name.replaceAll("<br>", " "),
@@ -608,7 +608,7 @@ function areaChartCls() {
     $(`#${this.chartContainerID}`).append(
       `<div id = ${tempGraphDivID}></div>${downloadButtons}<div class = 'hl'></div>`
     );
-    var graphDiv = document.getElementById(tempGraphDivID);
+    const graphDiv = document.getElementById(tempGraphDivID);
     selectedObj.plots[bn] = {
       containerID: tempGraphDivID,
       plot: Plotly.newPlot(graphDiv, data, plotLayout, config),
@@ -721,7 +721,7 @@ function areaChartCls() {
       ];
     }
 
-    var plotLayout = {
+    const plotLayout = {
       plot_bgcolor: this.plot_bgcolor,
       paper_bgcolor: this.plot_bgcolor,
       font: {
@@ -767,7 +767,7 @@ function areaChartCls() {
         },
       },
     };
-    var buttonOptions = {
+    const buttonOptions = {
       toImageButtonOptions: {
         filename: outFilename,
         width: 900,
@@ -787,7 +787,7 @@ function areaChartCls() {
     );
     $(`#${this.chartContainerID}`).append(`<div id = ${tempGraphDivID}></div>
     ${downloadButtons}<div class = 'hl'></div>`);
-    var graphDiv = document.getElementById(tempGraphDivID);
+    const graphDiv = document.getElementById(tempGraphDivID);
     selectedObj.plots["line"] = {
       containerID: tempGraphDivID,
       plot: Plotly.newPlot(graphDiv, data, plotLayout, buttonOptions),

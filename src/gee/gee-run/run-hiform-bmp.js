@@ -1,5 +1,5 @@
 function runHiForm() {
-  var region8_fps = [
+  const region8_fps = [
     "01",
     "05",
     "12",
@@ -14,7 +14,7 @@ function runHiForm() {
     "48",
     "51",
   ];
-  var region8 = ee
+  const region8 = ee
     .FeatureCollection("TIGER/2018/Counties")
     .filter(ee.Filter.inList("STATEFP", region8_fps));
   // var generalized_counties = ee.FeatureCollection('users/timberharvestmap/cb_2022_us_county_5m_southeast');
@@ -40,15 +40,15 @@ function runHiForm() {
   // % Slope
   var dataset = ee.Image("USGS/3DEP/10m");
   var elevation = dataset.select("elevation");
-  var slope = ee.Terrain.slope(elevation);
-  var percent_slope = slope
+  const slope = ee.Terrain.slope(elevation);
+  const percent_slope = slope
     .divide(180)
     .multiply(Math.PI)
     .tan()
     .multiply(100)
     .rename(["percent"])
     .round();
-  var slopeVisParam = {
+  const slopeVisParam = {
     min: 0.0,
     max: 100,
 
@@ -90,8 +90,8 @@ function runHiForm() {
   // Hillshade
   var dataset = ee.Image("USGS/3DEP/10m");
   var elevation = dataset.select("elevation");
-  var hillshade = ee.Terrain.hillshade(elevation);
-  var hillshadeVisParam = {
+  const hillshade = ee.Terrain.hillshade(elevation);
+  const hillshadeVisParam = {
     min: 0.0,
     max: 255.0,
     gamma: 0.5,
@@ -110,7 +110,7 @@ function runHiForm() {
 
   // Floodplain
 
-  var floodplains = ee.Image(
+  const floodplains = ee.Image(
     "users/timberharvestmap/floodplains_eastern_epaeast"
   );
   Map.addLayer(
@@ -128,7 +128,7 @@ function runHiForm() {
     "related-layer-list"
   );
 
-  var nwiLegendDict = {
+  const nwiLegendDict = {
     "Freshwater- Forested and Shrub wetland": "008836",
     "Freshwater Emergent wetland": "7fc31c",
     "Freshwater pond": "688cc0",
@@ -210,7 +210,7 @@ function hiform_bmp_process() {
   let runStartTime = new Date();
 
   function addDateBand(img) {
-    var d = ee.Number.parse(img.date().format("YYYYMMdd"));
+    let d = ee.Number.parse(img.date().format("YYYYMMdd"));
     d = ee.Image(d).uint32();
     return img.addBands(d.rename("Date"));
   }
@@ -359,7 +359,7 @@ function hiform_bmp_process() {
       null,
       `No cloud masking natural color max NDVI composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
     );
-    var diff = post
+    let diff = post
       .float()
       .subtract(pre.float())
       .select(["NDVI"])
@@ -381,12 +381,12 @@ function hiform_bmp_process() {
     // bring in 2021 NLCD - define 4 forest classess
     ///////////////////////////////////////////////////////////////////
 
-    var nlcd_landcover_img = ee
+    const nlcd_landcover_img = ee
       .Image("USGS/NLCD_RELEASES/2021_REL/NLCD/2021")
       .select(["landcover"]);
 
     // all 4-forest classes
-    var nlcd_wild = nlcd_landcover_img
+    const nlcd_wild = nlcd_landcover_img
       .eq(41)
       .or(nlcd_landcover_img.eq(42))
       .or(nlcd_landcover_img.eq(43))
@@ -404,19 +404,19 @@ function hiform_bmp_process() {
       `NDVI forest change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
     );
 
-    var mod_change = diff.select(["NDVI"]);
+    let mod_change = diff.select(["NDVI"]);
     mod_change = mod_change.lte(-0.07).and(mod_change.gte(-0.19)).selfMask();
 
-    var severe_change = diff.select(["NDVI"]);
+    let severe_change = diff.select(["NDVI"]);
     severe_change = severe_change.lt(-0.19).selfMask();
 
     let mod_change_mmu = 200;
     let severe_change_mmu = 100;
 
-    var mod_change_patch_size_mask = mod_change
+    const mod_change_patch_size_mask = mod_change
       .connectedPixelCount(mod_change_mmu, false)
       .gte(mod_change_mmu);
-    var severe_change_patch_size_mask = severe_change
+    const severe_change_patch_size_mask = severe_change
       .connectedPixelCount(severe_change_mmu, false)
       .gte(severe_change_mmu);
 
@@ -426,7 +426,7 @@ function hiform_bmp_process() {
       .updateMask(severe_change_patch_size_mask);
 
     //Convert the zones of the thresholded change to vectors
-    var mod_change_vectors = mod_change
+    const mod_change_vectors = mod_change
       .addBands(diff.select(["NDVI"]))
       .reduceToVectors({
         geometry: geoBounds,
@@ -439,7 +439,7 @@ function hiform_bmp_process() {
         maxPixels: 1e13,
       });
 
-    var severe_change_vectors = severe_change
+    const severe_change_vectors = severe_change
       .addBands(diff.select(["NDVI"], ["Post-Pre_NDVI"]))
       .addBands(pre.select(["cloudScorePlus"], ["Pre_CloudScorePlus"]))
       .addBands(post.select(["cloudScorePlus"], ["Post_CloudScorePlus"]))

@@ -1,5 +1,5 @@
 function runLT() {
-  var sensorLookup = {
+  const sensorLookup = {
     L4: "LANDSAT_4",
     L5: "LANDSAT_5",
     "L7-SLC-On": "LANDSAT_7",
@@ -7,7 +7,7 @@ function runLT() {
     L8: "LANDSAT_8",
     L9: "LANDSAT_9",
   };
-  var whichSensors = [];
+  const whichSensors = [];
   Object.keys(urlParams.whichPlatforms).map((k) => {
     if (urlParams.whichPlatforms[k] == true) {
       whichSensors.push(sensorLookup[k]);
@@ -17,7 +17,7 @@ function runLT() {
   // console.log(whichSensors);
   //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
-  var hansen = ee
+  const hansen = ee
     .Image("UMD/hansen/global_forest_change_2021_v1_9")
     .select(["lossyear"])
     .selfMask()
@@ -33,7 +33,7 @@ function runLT() {
     false
   );
 
-  var imgs = getImagesLib.getProcessedLandsatScenes({
+  let imgs = getImagesLib.getProcessedLandsatScenes({
     studyArea: eeBoundsPoly,
     startYear: urlParams.startYear,
     endYear: urlParams.endYear,
@@ -49,12 +49,12 @@ function runLT() {
 
   imgs = imgs.filter(ee.Filter.inList("SPACECRAFT_ID", whichSensors));
   // console.log(imgs.aggregate_histogram("SPACECRAFT_ID").getInfo());
-  var dummyImage = ee.Image(imgs.first());
+  const dummyImage = ee.Image(imgs.first());
   //Build an image collection that includes only one image per year, subset to a single band or index (you can include other bands - the first will be segmented, the others will be fit to the vertices). Note that we are using a mock function to reduce annual image collections to a single image - this can be accomplished many ways using various best-pixel-compositing methods.
-  var years = [];
-  var c = [];
-  for (var year = urlParams.startYear; year <= urlParams.endYear; year++) {
-    var imgsT = imgs.filter(
+  const years = [];
+  const c = [];
+  for (let year = urlParams.startYear; year <= urlParams.endYear; year++) {
+    let imgsT = imgs.filter(
       ee.Filter.calendarRange(
         year - urlParams.yearBuffer,
         year + urlParams.yearBuffer,
@@ -62,8 +62,8 @@ function runLT() {
       )
     );
     imgsT = getImagesLib.fillEmptyCollections(imgsT, dummyImage);
-    var count = imgsT.select([0]).count();
-    var img;
+    const count = imgsT.select([0]).count();
+    let img;
     if (urlParams.compMethod === "Median") {
       img = imgsT.median();
     } else {
@@ -73,7 +73,7 @@ function runLT() {
     img = img
       .updateMask(count.gte(urlParams.minObs))
       .set("system:time_start", ee.Date.fromYMD(year, 6, 1).millis());
-    var nameEnd =
+    const nameEnd =
       (year - urlParams.yearBuffer).toString() +
       "-" +
       (year + urlParams.yearBuffer).toString();
@@ -95,11 +95,11 @@ function runLT() {
     c.push(img);
     years.push(year);
   }
-  var srCollection = ee.ImageCollection(c);
+  let srCollection = ee.ImageCollection(c);
   // // console.log(srCollection.getInfo());
   // // Map.addLayer(srCollection.select(['NDVI','NBR']),{min:0.2,max:0.6,opacity:0},'Landsat Time Series',false);
   if (urlParams.maskWater === "Yes") {
-    var jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
+    let jrcWater = ee.Image("JRC/GSW1_1/GlobalSurfaceWater").select([4]).gt(50);
 
     jrcWater = jrcWater
       .updateMask(jrcWater.neq(0))
@@ -128,16 +128,16 @@ function runLT() {
   }
 
   // Run LT and get output stack
-  var indexList = [];
+  const indexList = [];
   Object.keys(urlParams.whichIndices).map(function (index) {
     if (urlParams.whichIndices[index]) {
       indexList.push(index);
     }
   });
-  var chartCollectionT = srCollection.select(indexList);
-  var multBy = 1000;
+  let chartCollectionT = srCollection.select(indexList);
+  const multBy = 1000;
   indexList.map((indexName) => {
-    var ltOutputs = changeDetectionLib.simpleLANDTRENDR(
+    const ltOutputs = changeDetectionLib.simpleLANDTRENDR(
       srCollection,
       urlParams.startYear,
       urlParams.endYear,
@@ -154,20 +154,20 @@ function runLT() {
       urlParams.howManyToPull,
       multBy
     );
-    var lossGainStack = ltOutputs[1].int16();
-    var rawLTForExport = ltOutputs[0];
-    var lossStack = lossGainStack.select([".*_LT_loss_.*"]);
-    var gainStack = lossGainStack.select([".*_LT_gain_.*"]);
-    var nameEnd = `${urlParams.startYear}_${urlParams.endYear}_${urlParams.startJulian}_${urlParams.endJulian}}`;
-    var lossName =
+    const lossGainStack = ltOutputs[1].int16();
+    const rawLTForExport = ltOutputs[0];
+    const lossStack = lossGainStack.select([".*_LT_loss_.*"]);
+    const gainStack = lossGainStack.select([".*_LT_gain_.*"]);
+    const nameEnd = `${urlParams.startYear}_${urlParams.endYear}_${urlParams.startJulian}_${urlParams.endJulian}}`;
+    const lossName =
       `LandTrendr_${indexName}_${urlParams.LTSortBy}_Loss_Stack_` + nameEnd;
-    var gainName =
+    const gainName =
       `LandTrendr_${indexName}_${urlParams.LTSortBy}_Gain_Stack_` + nameEnd;
     // Map.addLayer(lossStack, {}, "LossStack");
     Map.addExport(lossStack, lossName, 30, true, {}, -32768);
     Map.addExport(gainStack, gainName, 30, true, {}, -32768);
 
-    var decompressedC = changeDetectionLib
+    const decompressedC = changeDetectionLib
       .simpleLTFit(
         rawLTForExport,
         urlParams.startYear,

@@ -2332,8 +2332,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#post-years-slider")
     .slider()
     .bind("slide", function (event, ui) {
-      var yr = ui.value;
-      var needsUpdated = false;
+      const yr = ui.value;
+      let needsUpdated = false;
       if (yr <= urlParams.preEndYear) {
         urlParams.preEndYear = yr - 1;
         needsUpdated = true;
@@ -2355,8 +2355,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#pre-years-slider")
     .slider()
     .bind("slide", function (event, ui) {
-      var yrs = ui.values;
-      var needsUpdated = false;
+      const yrs = ui.values;
+      let needsUpdated = false;
       if (yrs[0] >= urlParams.postYear) {
         urlParams.postYear = yrs[0] + 1;
         needsUpdated = true;
@@ -2438,11 +2438,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     );
   }
 } else if (mode === "HiForm-BMP") {
-  var selectedState;
-  var selectedCounty;
+  let selectedState;
+  let selectedCounty;
   initialZoomLevel = 6;
   initialCenter = [34.750453053659456, -85.56084152109133];
-  var selectedLayerId;
+  let selectedLayerId;
   urlParams.preDate1;
   urlParams.preDate2;
   urlParams.postDate1;
@@ -2450,8 +2450,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.correctionTypeOption;
   canExport = true;
   function downloadHiFormTutorial() {
-    var link = document.createElement("a");
-    var tutorial_name = "HiForm_BMP_Tool_Users_Guide.pdf";
+    const link = document.createElement("a");
+    const tutorial_name = "HiForm_BMP_Tool_Users_Guide.pdf";
     link.href =
       "https://hiform.org/sites/default/files/project_files/2024-08/" +
       tutorial_name;
@@ -2521,8 +2521,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   }
 
   function populateCountiesDropdown(selectedState) {
-    var state = allStates.filter((s) => s.NAME === selectedState)[0];
-    var counties = allCounties
+    const state = allStates.filter((s) => s.NAME === selectedState)[0];
+    const counties = allCounties
       .filter((c) => c.STATEFP === state.STATEFP)
       .map((c) => c.NAME)
       .sort();
@@ -2639,14 +2639,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   addCurrentDateParametersDisplay();
-  var maxPostDate = advanceDate(new Date(), 0);
-  var maxPreDate = advanceDate(new Date(), -3);
+  const maxPostDate = advanceDate(new Date(), 0);
+  const maxPreDate = advanceDate(new Date(), -3);
 
   urlParams.postDate1 = urlParams.postDate1 || advanceDate(maxPostDate, -60);
   urlParams.postDate2 = urlParams.postDate2 || maxPostDate;
 
-  var minPreDate = "2016-01-01";
-  var minPostDate = "2017-01-01";
+  const minPreDate = "2016-01-01";
+  const minPostDate = "2017-01-01";
 
   addHiFormPostDatePicker(
     "pre-post-dates-div",
@@ -2841,7 +2841,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
     // Fill in the post date one if it's blank 60 days before
     if ($("#post-date-one").val() === "") {
-      var bufferDate = advanceDate(urlParams.postDate2, -60);
+      const bufferDate = advanceDate(urlParams.postDate2, -60);
       urlParams.postDate1 = bufferDate;
       $("#post-date-one").val(urlParams.postDate1);
       console.log("Date Selected (Post1): " + urlParams.postDate1);
@@ -3187,7 +3187,7 @@ addSubAccordianCard(
 );
 if ($("#toggle-show-splash-screen-radio-container").length === 1) {
   //Sync tooltip toggle
-  var tShowSplash = true;
+  let tShowSplash = true;
   if (
     localStorage["showIntroModal-" + mode] !== null &&
     localStorage["showIntroModal-" + mode] !== undefined
@@ -3282,8 +3282,8 @@ if (
     { Percentage: true, Acres: false, Hectares: false }
   );
   if (mode === "LCMS" || mode === "geeViz") {
-    var activeStartYear = urlParams.startYear;
-    var activeEndYear = urlParams.endYear;
+    const activeStartYear = urlParams.startYear;
+    const activeEndYear = urlParams.endYear;
     $("#area-chart-params-div").append(
       `<div id='transition-periods-container'></div>`
     );
@@ -3381,7 +3381,7 @@ if (
 }
 $("#tools-accordian").append(`<div class="hl"></div>`);
 //Sync tooltip toggle
-var tShowToolTipModal = true;
+let tShowToolTipModal = true;
 if (
   localStorage["showToolTipModal-" + mode] !== null &&
   localStorage["showToolTipModal-" + mode] !== undefined
@@ -3596,8 +3596,8 @@ if (mode === "lcms-dashboard") {
       100
     }%`
   );
-  var dashboardScrollLeft = 0;
-  var dashboardScrollTop = { left: 0, right: 0 };
+  const dashboardScrollLeft = 0;
+  const dashboardScrollTop = { left: 0, right: 0 };
   if (
     urlParams.showHighlightsBar === undefined ||
     urlParams.showHighlightsBar === null
@@ -3609,17 +3609,17 @@ if (mode === "lcms-dashboard") {
   }
   moveCollapse("legend-collapse", "sidebar-left");
 
-  var dashboardResultsLocation = "right";
-  var dashboardMoveLocationDict = {
+  const dashboardResultsLocation = "right";
+  const dashboardMoveLocationDict = {
     right: "dashboard-results-list",
     left: "charts-highlights-placeholder",
   };
-  var dashboardScrollDict = {
+  const dashboardScrollDict = {
     right: "#dashboard-results-container-right",
     left: "#sidebar-left-container",
   };
 
-  var resultsScrollHandler = function () {
+  const resultsScrollHandler = function () {
     clearTimeout($.data(this, "scrollTimer"));
     $.data(
       this,
@@ -3649,7 +3649,7 @@ if (mode === "lcms-dashboard") {
     }, 500);
   });
   function addExpander() {
-    var expander = {};
+    const expander = {};
     expander.setDragID = (id) => (expander.id = id);
     expander.mouseDown = false;
     expander.mouseUpFun;
@@ -3683,8 +3683,8 @@ if (mode === "lcms-dashboard") {
 
     return expander;
   }
-  var dashboardResultsHeight = convertRemToPixels(23);
-  var expander = addExpander();
+  let dashboardResultsHeight = convertRemToPixels(23);
+  const expander = addExpander();
   expander.setDragID("dashboard-results-expander");
 
   expander.mouseUpFun = (e) => {
@@ -3696,11 +3696,11 @@ if (mode === "lcms-dashboard") {
   };
   expander.startListening();
 
-  var isDragging = false;
-  var wasDragging = false;
-  var mouseDown = false;
+  const isDragging = false;
+  const wasDragging = false;
+  const mouseDown = false;
 
-  var dragBox;
+  let dragBox;
   function dashboardSelectionModeChange() {
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
@@ -3732,7 +3732,7 @@ if (mode === "lcms-dashboard") {
   $("#summary-area-selection-radio").change(() =>
     dashboardSelectionModeChange()
   );
-  var showPairwiseDiff;
+  let showPairwiseDiff;
   pairwiseDiffFun = () => {
     if (pairwiseDiff === "Annual-Change") {
       showPairwiseDiff = true;

@@ -226,6 +226,7 @@ function constructUrlSearch(maxLen = 5000) {
 let cachedSettingskey = "settings";
 let startYear = 1985;
 let endYear = 2023;
+let activeStartYear, activeEndYear;
 let startJulian = 153;
 let endJulian = 274;
 let layerObj = null;
@@ -514,7 +515,7 @@ let chartIncludeDate = true,
   exportVizParams,
   eeBoundsPoly,
   shapesMap;
-var whichPixelChartCollection, whichAreaChartCollection;
+let whichPixelChartCollection, whichAreaChartCollection;
 let mouseLat,
   mouseLng,
   area = 0,

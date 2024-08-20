@@ -1,4 +1,4 @@
-var walkThroughKeysOrder = {
+const walkThroughKeysOrder = {
   MTBS: [
     "intro",
     "data-layers",
@@ -281,7 +281,7 @@ walkThroughDict = {
   },
 };
 
-var resizePanes;
+let resizePanes;
 if (mode !== "lcms-dashboard") {
   resizePanes = resizeViewerPanes;
 } else {
@@ -300,7 +300,7 @@ function addWalkThroughCollapse() {
   $("#legendDiv").removeClass("col-xl-2");
   $("#legendDiv").removeClass("col-lg-3");
   ga("send", "event", mode, "walk-through-run", "walk-through-run");
-  var collapseContainer = getWalkThroughCollapseContainerID();
+  const collapseContainer = getWalkThroughCollapseContainerID();
   addCollapse(
     collapseContainer,
     "walk-through-collapse-label",
@@ -333,7 +333,7 @@ function showWalkThroughPopupMessage(message) {
   $("#walk-through-popup").show("fade");
 }
 
-var walkThroughKeyI;
+let walkThroughKeyI;
 if (walkThroughKeysOrder[mode] === undefined) {
   walkThroughKeyI = 100;
 } else {
@@ -356,8 +356,8 @@ function showWalkThroughI() {
 
   $(".sub-sub-panel-title").addClass("collapsed");
   stopAllTools();
-  var tI = walkThroughKeyI % walkThroughKeysOrder[mode].length;
-  var dict = walkThroughDict[walkThroughKeysOrder[mode][tI]];
+  const tI = walkThroughKeyI % walkThroughKeysOrder[mode].length;
+  const dict = walkThroughDict[walkThroughKeysOrder[mode][tI]];
 
   if (dict === undefined) {
     showWalkThroughPopupMessage(`All features have been shown`);
@@ -380,7 +380,7 @@ if (
   mode === "HiForm-BMP"
 ) {
   // https://shepherdjs.dev/docs/tutorial-02-usage.html
-  var tour = new Shepherd.Tour({
+  const tour = new Shepherd.Tour({
     defaultStepOptions: {
       cancelIcon: {
         enabled: true,
@@ -410,8 +410,8 @@ if (
     return tourButtons.slice(buttonIs[0], buttonIs[1]);
   }
   // Click function adapted from: https://github.com/shipshapecode/shepherd/issues/119
-  var createDelayedClick = function (selector) {
-    var wrapper = function () {
+  const createDelayedClick = function (selector) {
+    const wrapper = function () {
       return (function (sel) {
         if ($(sel).hasClass("collapsed")) {
           $(sel).click();
@@ -423,7 +423,7 @@ if (
       setTimeout(wrapper, 500);
     };
   };
-  var stepN = 1;
+  let stepN = 1;
   function addStep(step, totalSteps) {
     let title = `${step[0]}`;
     let txt = `${step[1]}<br><p style='font-size:0.75rem;'>(${stepN}/${totalSteps})</p>`;

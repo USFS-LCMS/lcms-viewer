@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////
 // Sequoia run function
 // if (mode === "sequoia-view") {
-var seq_mon_query_clicked = false;
-var site_highlights_dict = {};
+let seq_mon_query_clicked = false;
+const site_highlights_dict = {};
 // var exports;
 // }
 
@@ -28,14 +28,10 @@ function runSequoia() {
   // Callback function that gets run after getImagesLib js is loaded
   // function runSequoiaLibLoadedCallback(){
   // Make the default GEE Playground scripts exports object name shortened version of getImagesLib - gil
-  var gil = getImagesLib;
+  const gil = getImagesLib;
 
   // Pull in date params
-  var preStartYear = urlParams.preStartYear,
-    preEndYear = urlParams.preEndYear,
-    postYear = urlParams.postYear,
-    startJulian = urlParams.startJulian,
-    endJulian = urlParams.endJulian;
+  const preStartYear = urlParams.preStartYear, preEndYear = urlParams.preEndYear, postYear = urlParams.postYear, startJulian = urlParams.startJulian, endJulian = urlParams.endJulian;
 
   // Format julian days to MM/dd syntax
   startJulianFormatted = formatDTJulian(Date.fromDayofYear(startJulian)); //ee.Date.parse('YYYY-DDD',`2003-${startJulian}`).format('MM/dd').getInfo()
@@ -54,20 +50,20 @@ function runSequoia() {
   turnOffLayersWhenTimeLapseIsOn = false;
 
   // Bring in the monitoring sites
-  var monitoring_sites = ee.FeatureCollection(
+  const monitoring_sites = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/Trees_of_Special_Interest"
   );
   // var monitoring_sites = ee.FeatureCollection("projects/lcms-292214/assets/Ancillary/filtered_dead_trees");
   // var monitoring_sites = ee.FeatureCollection("projects/lcms-292214/assets/Ancillary/SEKI_LiveTreesSubset");
 
   // Bring in the TCH NAIP-based change outputs for projection and snap raster
-  var tchC = ee
+  const tchC = ee
     .ImageCollection(
       "projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/TCH"
     )
     .filter(ee.Filter.stringContains("system:index", "v3shadows_extract_gfch"));
 
-  var projection = tchC.first().projection().getInfo();
+  const projection = tchC.first().projection().getInfo();
   crs = projection.crs;
   transform = projection.transform;
   scale = null;
@@ -75,7 +71,7 @@ function runSequoia() {
 
   // Make studyArea
   // Hard coded to the bounds of the monitoring sites unless someone defines the urlParam useMapBoundsAsStudyArea
-  var studyArea;
+  let studyArea;
   if (
     urlParams.useMapBoundsAsStudyArea === undefined ||
     urlParams.useMapBoundsAsStudyArea !== true
@@ -107,12 +103,12 @@ function runSequoia() {
     );
   }
 
-  var tdomBuffer = 1;
+  let tdomBuffer = 1;
   if (urlParams.cloudMaskMethod["CloudScore+"]) {
     tdomBuffer = 0;
   }
   // Get S2 images for union of date periods
-  var s2s = getImagesLib.getProcessedSentinel2Scenes({
+  const s2s = getImagesLib.getProcessedSentinel2Scenes({
     studyArea: studyArea,
     startYear: preStartYear - tdomBuffer,
     endYear: postYear + tdomBuffer,
@@ -125,26 +121,26 @@ function runSequoia() {
   });
 
   // Filter out pre and post images
-  var preS2s = s2s.filter(
+  const preS2s = s2s.filter(
     ee.Filter.calendarRange(preStartYear, preEndYear, "year")
   );
-  var postS2s = s2s.filter(ee.Filter.calendarRange(postYear, postYear, "year"));
+  const postS2s = s2s.filter(ee.Filter.calendarRange(postYear, postYear, "year"));
 
   // Compute median composites and their difference
-  var preComp = preS2s.median();
-  var postComp = postS2s.median();
-  var compDiff = postComp.subtract(preComp);
+  const preComp = preS2s.median();
+  const postComp = postS2s.median();
+  const compDiff = postComp.subtract(preComp);
 
   // Pull in the change heuristic params
-  var changeBands = Object.keys(urlParams.diffThreshs);
-  var changeThresholds = Object.values(urlParams.diffThreshs);
+  const changeBands = Object.keys(urlParams.diffThreshs);
+  const changeThresholds = Object.values(urlParams.diffThreshs);
 
   // Define which monitoring sites table fields to include in output table and which to use as label for mouse hover on a table row
-  var monitoringSitesPropertyNames = ["Status", "Grove"];
-  var labelProperty = "Tree_Name";
+  const monitoringSitesPropertyNames = ["Status", "Grove"];
+  const labelProperty = "Tree_Name";
 
   // Pull in the LCMS land cover classes to be included in the tree mask
-  var lcms_land_cover_tree_classes = Object.values(lcmsTreeMaskClasses)
+  const lcms_land_cover_tree_classes = Object.values(lcmsTreeMaskClasses)
     .insert(1, false)
     .map((e, i) => {
       return [i + 1, e];
@@ -153,7 +149,7 @@ function runSequoia() {
     .map((n) => n[0]);
 
   // If no LCMS tree classes are selected, don't apply the mask
-  var applyLCMSTreeMask = true;
+  let applyLCMSTreeMask = true;
   if (lcms_land_cover_tree_classes.length === 0) {
     applyLCMSTreeMask = false;
   }
@@ -182,15 +178,15 @@ function runSequoia() {
   }
 
   // Make band names so pre, post, and diff can be stacked
-  var preBns = preComp
+  const preBns = preComp
     .select(changeBands)
     .bandNames()
     .map((bn) => ee.String(bn).cat(`_Comp_Pre`));
-  var postBns = postComp
+  const postBns = postComp
     .select(changeBands)
     .bandNames()
     .map((bn) => ee.String(bn).cat(`_Comp_Post`));
-  var diffBns = compDiff
+  const diffBns = compDiff
     .select(changeBands)
     .bandNames()
     .map((bn) => ee.String(bn).cat(`_Comp_Diff`));
@@ -199,14 +195,14 @@ function runSequoia() {
   let tableDownloadName = `Giant_Sequoia_Monitoring_Sites_Sentinel2_Change_Table_pre${preStartYear}-${preEndYear}__post${postYear}_dates${startJulianFormatted}-${endJulianFormatted}`;
 
   // Apply change thresholds by bands specified
-  var changeHeuristic = compDiff
+  const changeHeuristic = compDiff
     .select(changeBands)
     .lt(changeThresholds)
     .reduce(ee.Reducer.mode())
     .rename(["Potential_Loss"]);
 
   // Stack all bands to be included in table
-  var stack = ee.Image.cat([
+  let stack = ee.Image.cat([
     preComp.select(changeBands).rename(preBns),
     postComp.select(changeBands).rename(postBns),
     compDiff.select(changeBands).rename(diffBns),
@@ -229,7 +225,7 @@ function runSequoia() {
     );
 
   // create FC of loss sites
-  var potentialLossSites = summarizedSites.filter(
+  const potentialLossSites = summarizedSites.filter(
     ee.Filter.eq("Potential_Loss", 1)
   );
 
@@ -253,15 +249,15 @@ function runSequoia() {
                                   </div>`);
 
     // Find the property names of only the spectral bands
-    var spectralProps = Object.keys(t.features[0].properties).filter(
+    const spectralProps = Object.keys(t.features[0].properties).filter(
       (p) => changeBands.indexOf(p.split("_")[0]) > -1
     );
 
     // The location properties
-    var locProps = ["Longitude", "Latitude"];
+    const locProps = ["Longitude", "Latitude"];
 
     // Concat all column names for the header
-    var allProps = [labelProperty, "Potential_Loss"];
+    let allProps = [labelProperty, "Potential_Loss"];
     allProps = allProps
       .concat(monitoringSitesPropertyNames)
       .concat(spectralProps)
@@ -288,30 +284,30 @@ function runSequoia() {
       strokeColor: "#FF834C",
       scale: 10,
     };
-    var potLossDict = {
+    const potLossDict = {
       null: "No data available",
       0: "No",
       1: "Yes",
     };
-    var monSiteMarker = new google.maps.Marker({
+    const monSiteMarker = new google.maps.Marker({
       icon: svgMarker,
     });
 
-    var siteID = 1;
+    let siteID = 1;
     // make list of features that are yes for highlighting those another color:
 
     // Iterate across each feature and set up the table row
     t.features.map((f) => {
-      var rowID = `seq-mon-site-${siteID}`;
+      const rowID = `seq-mon-site-${siteID}`;
       $(`#monitoring-sites-table`).append(
         `<tr class = 'highlights-row' id='${rowID}'></tr>`
       );
       // Add in the label prop value
-      var l = f.properties[labelProperty];
+      const l = f.properties[labelProperty];
       // if(potLossV===null){potLossV=''}
       $(`#${rowID}`).append(`<td class = 'highlights-entry '>${l}</td>`);
       // Add in the potential loss column value
-      var potLossV = f.properties["Potential_Loss"];
+      const potLossV = f.properties["Potential_Loss"];
       // if(potLossV===null){potLossV=''}
       $(`#${rowID}`).append(
         `<td class = 'highlights-entry '>${potLossDict[potLossV]}</td>`
@@ -325,7 +321,7 @@ function runSequoia() {
 
       // Add any spectral properties
       spectralProps.map((prop) => {
-        var v = f.properties[prop];
+        let v = f.properties[prop];
         if (v === null) {
           v = "";
         } else {
@@ -336,7 +332,7 @@ function runSequoia() {
 
       // Add the location properties
       locProps.map((prop) => {
-        var v = f.properties[prop];
+        const v = f.properties[prop];
         $(`#${rowID}`).append(`<td class = 'highlights-entry '>${v}</td>`);
       });
 
@@ -357,7 +353,7 @@ function runSequoia() {
       // As the mouse moves over the table, set a marker and label at that location on the map
       $("#monitoring-sites-table").on("mousemove", "tr", function (e) {
         try {
-          var loc = site_highlights_dict[e.currentTarget.id];
+          const loc = site_highlights_dict[e.currentTarget.id];
           monSiteMarker.setPosition({
             lat: loc[1],
             lng: loc[0],
@@ -380,7 +376,7 @@ function runSequoia() {
 
       // When the table row is double clicked, zoom there on the map
       $("#monitoring-sites-table").on("dblclick", "tr", function (e) {
-        var loc = site_highlights_dict[e.currentTarget.id];
+        const loc = site_highlights_dict[e.currentTarget.id];
         map.setCenter({
           lat: loc[1],
           lng: loc[0],
@@ -462,51 +458,51 @@ function runSequoia() {
 
   // create heatmap layer
   kernelRadius = 30; // pixels
-  var densityPoints = potentialLossSites.map(function (yesTrees) {
+  const densityPoints = potentialLossSites.map(function (yesTrees) {
     return yesTrees.set("dummy", 1);
   });
 
   function heatmap(fc, radius) {
-    var pointImg = fc.reduceToImage(["dummy"], ee.Reducer.first()).unmask(0);
-    var kernel = ee.Kernel.gaussian(radius, radius / 2).add(
+    const pointImg = fc.reduceToImage(["dummy"], ee.Reducer.first()).unmask(0);
+    const kernel = ee.Kernel.gaussian(radius, radius / 2).add(
       ee.Kernel.circle(radius * 2)
     );
-    var result = pointImg.convolve(kernel);
+    const result = pointImg.convolve(kernel);
     return result.updateMask(result.neq(0));
   }
-  var heatmapImg = heatmap(densityPoints, kernelRadius);
-  var heatmapGradient = ["lightgray", "yellow", "red"];
+  const heatmapImg = heatmap(densityPoints, kernelRadius);
+  const heatmapGradient = ["lightgray", "yellow", "red"];
 
   // Bring in MTBS data : start MTBS data in 2012 at onset of 2012-2016 drought period
-  var mtbs = ee
+  const mtbs = ee
     .ImageCollection("USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1")
     .filter(ee.Filter.calendarRange(preStartYear - 5, postYear, "year"))
     .map((img) => {
       return img.updateMask(img.gte(2).and(img.lte(4)));
     });
-  var mtbsYr = mtbs
+  const mtbsYr = mtbs
     .map((img) => {
       return ee.Image(img.date().get("year")).updateMask(img).int16();
     })
     .max();
 
   // Bring in SEKI assets as FeatureCollections
-  var sekiNorthTAO = ee.FeatureCollection(
+  const sekiNorthTAO = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_NORTH_2016_SPECIES_AND_MORTALITY_V7_TAO_SEGI"
   );
-  var sekiLiveTrees = ee.FeatureCollection(
+  const sekiLiveTrees = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/SEKI_VEG_SequoiaTrees_pt_Alive"
   );
-  var tharpsSequoias = ee.FeatureCollection(
+  const tharpsSequoias = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/Tharps_Burn_Project_Sequoias"
   );
-  var sierraGroves = ee.FeatureCollection(
+  const sierraGroves = ee.FeatureCollection(
     "projects/gtac-lamda/assets/giant-sequoia-monitoring/Ancillary/VEG_SequoiaGroves_Public_py"
   );
   // var deadTrees = ee.FeatureCollection("projects/gtac-lamda/assets/giant-sequoia-monitoring/Inputs/filtered_dead_trees");
 
   // Add Canopy Height Layer to reference layers
-  var canopyHeight = ee
+  const canopyHeight = ee
     .ImageCollection(
       "projects/meta-forest-monitoring-okw37/assets/CanopyHeight"
     )
@@ -678,7 +674,7 @@ function runSequoia() {
 
   Map.addLayer(compDiff, urlParams.diffVizParams, "Pre-Post Composite", false);
 
-  var changeHeuristicForMap = changeHeuristic.selfMask();
+  let changeHeuristicForMap = changeHeuristic.selfMask();
   if (applyLCMSTreeMask) {
     changeHeuristicForMap = changeHeuristicForMap.updateMask(lcmsTreeMask);
   }
@@ -756,7 +752,7 @@ function runSequoia() {
   );
 
   if (urlParams.canExport) {
-    var exportBands = ["blue", "green", "red", "nir", "swir1", "swir2"];
+    const exportBands = ["blue", "green", "red", "nir", "swir1", "swir2"];
     changeBands.map((bn) => {
       if (exportBands.indexOf(bn) === -1) {
         exportBands.push(bn);

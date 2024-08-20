@@ -4,13 +4,13 @@ function runTreeMap() {
   // All attributes collection
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
-  var attrC = ee.ImageCollection(
+  const attrC = ee.ImageCollection(
     "projects/treemap-386222/assets/Final_Outputs/TreeMap_2016"
   );
 
   // All attributes available
   // This list is currently only used for reference to creat the thematic and continuous lists below
-  var attrs = [
+  const attrs = [
     "ALSTK",
     "BALIVE",
     "CANOPYPCT",
@@ -51,7 +51,7 @@ function runTreeMap() {
   //                     ['FORTYPCD','ForTypName','Algorithm Forest Type Name'],
   //                     ['FLDTYPCD','FldTypName','Field Forest Type Name']
   //                    ];
-  var thematicAttrs = [
+  const thematicAttrs = [
     [
       "FORTYPCD",
       "ForTypName",
@@ -68,7 +68,7 @@ function runTreeMap() {
 
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
   // Attributes appear in legend in reverse order from how they appear here
-  var continuousAttrs = [
+  const continuousAttrs = [
     // volume
     [
       "VOLCFNET_L",
@@ -194,7 +194,7 @@ function runTreeMap() {
     ],
   ];
 
-  var ordinalAttrs = [
+  const ordinalAttrs = [
     [
       "STDSZCD",
       palettes.custom.standsize[4],
@@ -213,7 +213,7 @@ function runTreeMap() {
     ], // ranges from 0-5
   ];
 
-  var percentAttrs = [
+  const percentAttrs = [
     // have two attributes: palette and name. default range is 0-100
     [
       "GSSTK",
@@ -238,22 +238,22 @@ function runTreeMap() {
   // Function to get a thematic attribute image service
   function getThematicAttr_Colors(attr) {
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    let attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and names from the attribute table
-    var numbers = treeMapLookup[attr[0]];
-    var names = treeMapLookup[attr[1]];
+    const numbers = treeMapLookup[attr[0]];
+    const names = treeMapLookup[attr[1]];
 
     // Zip the numbers to the names, find the unique pairs and sort them
-    var zippedValuesNames = unique(zip(numbers, names));
+    const zippedValuesNames = unique(zip(numbers, names));
     zippedValuesNames.sort();
 
     // Pull apart the sorted unique pairs
-    var uniqueValues = zippedValuesNames.map((r) => r[0]);
-    var uniqueNames = zippedValuesNames.map((r) => r[1]);
+    const uniqueValues = zippedValuesNames.map((r) => r[0]);
+    const uniqueNames = zippedValuesNames.map((r) => r[1]);
 
     // Set up visualization parameters
-    var viz = {};
+    const viz = {};
 
     // First set up a dictionary so when user queries pixel, the name is returned instead of the value
     viz["queryDict"] = dict(zippedValuesNames);
@@ -268,8 +268,8 @@ function runTreeMap() {
 
     range(viz["min"], viz["max"] + 1).map((i) => {
       if (uniqueValues.indexOf(i) > -1) {
-        var valueNameT = uniqueNames[uniqueValues.indexOf(i)];
-        var nameIndex = forestTypeLookup.names.indexOf(valueNameT);
+        const valueNameT = uniqueNames[uniqueValues.indexOf(i)];
+        const nameIndex = forestTypeLookup.names.indexOf(valueNameT);
         c = forestTypeLookup.palette[nameIndex]; // refers to forest type palette .json brought in in html
 
         // If the hex color starts with a #, remove the #
@@ -306,17 +306,17 @@ function runTreeMap() {
   // Function to get a continuous attribute image service
   function getContinuousAttr(attr) {
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
-    var numbers = treeMapLookup[attr[0]];
-    var uniqueValues = asc(unique(numbers));
+    const numbers = treeMapLookup[attr[0]];
+    let uniqueValues = asc(unique(numbers));
 
     // Filter out any value that is non RMRS (-99)
     uniqueValues = uniqueValues.filter((n) => n !== -99);
 
     // Set up renderer
-    var viz = {};
+    const viz = {};
 
     // Compute the nth percentile for the min max
     viz["min"] = parseInt(quantile(uniqueValues, attr[2]));
@@ -330,17 +330,17 @@ function runTreeMap() {
   // function to apply unique values to Ordinal attribute
   function getOrdinalAttr(attr) {
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
-    var numbers = treeMapLookup[attr[0]];
-    var uniqueValues = asc(unique(numbers));
+    const numbers = treeMapLookup[attr[0]];
+    let uniqueValues = asc(unique(numbers));
 
     // Filter out any value that is non RMRS (-99)
     uniqueValues = uniqueValues.filter((n) => n !== -99);
 
     // Set up renderer
-    var viz = {};
+    const viz = {};
 
     // Compute the nth percentile for the min max
     viz["min"] = parseInt(quantile(uniqueValues, attr[2]));
@@ -349,7 +349,7 @@ function runTreeMap() {
 
     // set up legend - for values and palette
     // Remove '000000' values from palette
-    var removed_nulls_palette = removeItemAll(
+    const removed_nulls_palette = removeItemAll(
       JSON.parse(JSON.stringify(attr[1])),
       "000000"
     );
@@ -361,7 +361,7 @@ function runTreeMap() {
 
   // Removes all items of a given value from an array
   function removeItemAll(arr, value) {
-    var i = 0;
+    let i = 0;
     while (i < arr.length) {
       if (arr[i] === value) {
         arr.splice(i, 1);
@@ -375,17 +375,17 @@ function runTreeMap() {
   // function to apply to show percentage attributes as a range from 0-100
   function getPercentAttr(attr) {
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
-    var numbers = treeMapLookup[attr[0]];
-    var uniqueValues = asc(unique(numbers));
+    const numbers = treeMapLookup[attr[0]];
+    let uniqueValues = asc(unique(numbers));
 
     // Filter out any value that is non RMRS (-99)
     uniqueValues = uniqueValues.filter((n) => n !== -99);
 
     // Set up renderer
-    var viz = {};
+    const viz = {};
 
     // Compute the nth percentile for the min max
     viz["min"] = 0;
@@ -399,22 +399,22 @@ function runTreeMap() {
   // Function to get a continuous attribute image service and use standard deviation as the min/max
   function getContinuousAttrSD(attr) {
     // Pull the attribute image
-    var attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
-    var numbers = treeMapLookup[attr[0]];
-    var uniqueValues = asc(unique(numbers));
+    const numbers = treeMapLookup[attr[0]];
+    let uniqueValues = asc(unique(numbers));
 
     // Filter out any value that is non RMRS (-99)
     uniqueValues = uniqueValues.filter((n) => n !== -99);
 
     // Set up renderer
-    var viz = {};
+    const viz = {};
 
     // Compute the SD spread for the min max
-    var sd_n = parseFloat(attr[2]);
-    var median_n = parseFloat(quantile(uniqueValues, 0.5));
-    var mean_n = parseInt(mean(uniqueValues));
+    const sd_n = parseFloat(attr[2]);
+    const median_n = parseFloat(quantile(uniqueValues, 0.5));
+    const mean_n = parseInt(mean(uniqueValues));
 
     viz["min"] = 0;
     viz["max"] = mean_n;
@@ -428,7 +428,7 @@ function runTreeMap() {
 
   //// Sort and add layers to the map
   // Create an array of all the layer visualization arrays returned by the respective functions
-  var metaArray = ordinalAttrs
+  const metaArray = ordinalAttrs
     .map(getOrdinalAttr)
     .concat(
       percentAttrs
@@ -442,8 +442,8 @@ function runTreeMap() {
   // console.log(metaArray);
   // Sort the meta array by the second index of each subarray
   metaArray.sort(function (a, b) {
-    var nameA = a[1].title.toUpperCase(); // Ignore case
-    var nameB = b[1].title.toUpperCase(); // Ignore case
+    const nameA = a[1].title.toUpperCase(); // Ignore case
+    const nameB = b[1].title.toUpperCase(); // Ignore case
     if (nameA < nameB) {
       return 1;
     }
@@ -476,7 +476,7 @@ function runTreeMap() {
     let keys = Object.keys(treeMapLookup).filter((k) => k !== "Value");
     let queryDict = {};
 
-    for (var i = 0; i < values.length; i++) {
+    for (let i = 0; i < values.length; i++) {
       let value = treeMapLookup.Value[i];
       let t = "<ul>";
       keys.map((k) => {

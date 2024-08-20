@@ -1,4 +1,4 @@
-var mtbsC;
+let mtbsC;
 function runMTBS() {
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
@@ -16,12 +16,12 @@ function runMTBS() {
   );
   getNAIP(null, true);
   turnOffLayersWhenTimeLapseIsOn = false;
-  var mtbsAndNLCD = getMTBSAndNLCD("anc", "layer-list", true);
+  const mtbsAndNLCD = getMTBSAndNLCD("anc", "layer-list", true);
 
-  var nlcdLCObj = mtbsAndNLCD.NLCD;
+  const nlcdLCObj = mtbsAndNLCD.NLCD;
   mtbsC = mtbsAndNLCD.MTBS.collection;
 
-  var yearsCli = range(startYear, endYear + 1);
+  const yearsCli = range(startYear, endYear + 1);
   // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
   //   var stop = start + 999;
   //   var nameEnd = start.toString()+'_'+stop.toString();
@@ -34,8 +34,8 @@ function runMTBS() {
   //     // Create and append the li's to the ul
   //   })
   // })
-  var perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  var inFields = [
+  let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  const inFields = [
     "Incid_Name",
     "Incid_Type",
     "Event_ID",
@@ -44,7 +44,7 @@ function runMTBS() {
     "BurnBndAc",
     "Asmnt_Type",
   ];
-  var outFields = [
+  const outFields = [
     "Incident Name",
     "Incident Type",
     "MTBS Event ID",
@@ -54,8 +54,8 @@ function runMTBS() {
     "Assessment Type",
   ];
   perims = perims.map(function (f) {
-    var d = ee.Date(f.get("Ig_Date"));
-    var formatted = d.format("YYYY-MM-dd");
+    const d = ee.Date(f.get("Ig_Date"));
+    const formatted = d.format("YYYY-MM-dd");
     return f.set({
       Year: d.get("year"),
       "Ignition Date": formatted,
@@ -100,16 +100,16 @@ function runMTBS() {
 
   // var years = ee.List.sequence(startYear,mtbs)
 
-  var chartTableDict = ee
+  const chartTableDict = ee
     .Dictionary(nlcdLCObj.collection.get("chartTableDict"))
     .combine(mtbsC.get("chartTableDict"))
     .getInfo();
 
-  var nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(
+  const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(
     setSameDate
   );
-  var forCharting = joinCollections(mtbsC, nlcdLCFilled, false);
-  var timeLapseSeverityViz = JSON.parse(
+  const forCharting = joinCollections(mtbsC, nlcdLCFilled, false);
+  const timeLapseSeverityViz = JSON.parse(
     JSON.stringify(mtbsAndNLCD.MTBSSeverityViz)
   );
   timeLapseSeverityViz.years = yearsCli;

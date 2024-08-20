@@ -13,7 +13,7 @@ function showSplash() {
   $("#intro-div").show();
 }
 function updateProgress(val) {
-  var el = document.querySelector(".progressbar span");
+  const el = document.querySelector(".progressbar span");
   el.style.width = val + "%";
   el.innerText = val + "%";
 }
@@ -21,7 +21,7 @@ function updateBottomBar() {
   if (maxLayers < layerTotal) {
     maxLayers = layerTotal;
   }
-  var pct = parseInt((1 - layerTotal / maxLayers) * 100);
+  const pct = parseInt((1 - layerTotal / maxLayers) * 100);
   updateProgress(pct);
   if (layerTotal === 0) {
     $("#loading-spinner-logo").removeClass("fa-spin");
@@ -115,7 +115,7 @@ require([
 
   let layerList = [];
   let isFirstLayer = true;
-  var firstLayer;
+  let firstLayer;
 
   function addGifAreas(
     path,
@@ -229,7 +229,7 @@ require([
   }
   function addImageryLayer(path, name, visible, isTimeLapse = false) {
     console.log(name);
-    var layer = new ImageryLayer({
+    const layer = new ImageryLayer({
       url: path,
       id: name,
       title: name,
@@ -406,7 +406,7 @@ require([
 
       setExtent();
 
-      var basemapGallery = new Expand({
+      const basemapGallery = new Expand({
         content: new BasemapGallery({
           view: view,
         }),
@@ -427,7 +427,7 @@ require([
           // and other properties. You can control the visibility of the
           // item, its title, and actions using this object.
 
-          var item = event.item;
+          const item = event.item;
 
           // An array of objects defining actions to place in the LayerList.
           // By making this array two-dimensional, you can separate similar
@@ -454,10 +454,10 @@ require([
       layerListObj.on("trigger-action", function (event) {
         console.log(event);
         // The layer visible in the view at the time of the trigger.
-        var visibleLayer = event.item.layer;
+        const visibleLayer = event.item.layer;
 
         // Capture the action id.
-        var id = event.action.id;
+        const id = event.action.id;
 
         if (id === "increase-opacity") {
           // if the increase-opacity action is triggered, then

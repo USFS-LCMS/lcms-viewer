@@ -4083,7 +4083,7 @@ function addLayer(layer) {
       updateProgress();
 
       function checkImageExists(imageUrl, callback) {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open("HEAD", imageUrl, true);
         xhr.onload = function () {
           if (xhr.status === 200) {

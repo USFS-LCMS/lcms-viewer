@@ -64,7 +64,7 @@ function runDashboard() {
   let endYearT = parseInt(urlParams.endYear);
   let dashboardFolder =
     "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Output-Summary-Areas/2023-9"; //'projects/lcms-292214/assets/Dashboard2';
-  var summaries = ee.data
+  const summaries = ee.data
     .getList({
       id: dashboardFolder,
     })
@@ -80,7 +80,7 @@ function runDashboard() {
       ee.Filter.inList("states", ["CN", "MX", "AK", "AK,CN", "HI", "AS"]).not()
     );
   // Map.addLayer(huc6_conus,{layerType:'geeVectorImage'},'HUC06')
-  var summaryAreas = {
+  let summaryAreas = {
     // "HUC 6": {
     //   path: "HUC06",
     //   color: "00E",
@@ -180,7 +180,7 @@ function runDashboard() {
     // console.log(summariesT)
     if (summariesT.length > 0) {
       summariesT = summariesT.map((id) => {
-        var f = ee.FeatureCollection(id);
+        let f = ee.FeatureCollection(id);
         f = f.map((feat) => feat.set("Path", id));
         return f;
       });
@@ -254,7 +254,7 @@ function runDashboard() {
 
   //Mosaic all study areas
   lcmsRun.lcms = ee.List.sequence(startYearT, endYearT).map(function (yr) {
-    var t = lcmsRun.lcms
+    const t = lcmsRun.lcms
       .filter(ee.Filter.calendarRange(yr, yr, "year"))
       .mosaic();
     return t

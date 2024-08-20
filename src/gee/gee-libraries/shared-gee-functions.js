@@ -12,11 +12,7 @@ function getLCMSVariables() {
   window.declineDurPalette = "BD1600,E2F400,0C2780";
   window.recoveryDurPalette = declineDurPalette;
 
-  // window.gainYearPaletteA = 'c5ee93,0f6460';
   window.gainYearPaletteA = "c5ee93,00a398";
-  // window.gainYearPaletteB = 'e0e0ff,4a50c4';
-  // window.changePaletteFull = ['3d4551','f39268','d54309','00a398','ffbe2e'];
-  // window.changePaletteFull = ['372E2C','f39268','d54309','00a398','372E2C','1B1716DD'];
   window.changePaletteFull = [
     "#3d4551",
     "#f39268",
@@ -24,13 +20,10 @@ function getLCMSVariables() {
     "#00a398",
     "#222222",
   ];
-  // window.changePaletteFull = ['3d4551','f39268','d54309','0f6460','ffbe2e'];
   window.changePalette = ["f39268", "d54309", "00a398"];
   window.whichIndices = ["NBR"];
 
   // LCMS Project Boundaries
-  // var fnf = ee.FeatureCollection('projects/USFS/LCMS-NFS/R1/FNF/FNF_Admin_Bndy');
-  // var bt_study_area = ee.FeatureCollection('projects/USFS/LCMS-NFS/R4/BT/BT_LCMS_ProjectArea_5km');
   window.bt_study_area = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/R4/BT/GTNP_admin_bndy_5km_buffer_GTNP_Merge"
   );
@@ -137,7 +130,7 @@ function getTransitionClasses(
   let stackC = [];
   let value_combos = [];
   values.map((i1) => values.map((i2) => value_combos.push([i1, i2])));
-  for (var i = 0; i < periods.length - 1; i++) {
+  for (let i = 0; i < periods.length - 1; i++) {
     const startPeriod = periods[i];
     const endPeriod = periods[i + 1];
 
@@ -171,10 +164,10 @@ function getTransitionClasses(
   return stackC;
 }
 function addSankey(lcmsRun, bn) {
-  var values = lcmsRun.props[bn + "_class_values"];
-  var names = lcmsRun.props[bn + "_class_names"];
-  var palette = lcmsRun.props[bn + "_class_palette"];
-  var bnTitle = bn.replaceAll("_", " ");
+  const values = lcmsRun.props[bn + "_class_values"];
+  const names = lcmsRun.props[bn + "_class_names"];
+  const palette = lcmsRun.props[bn + "_class_palette"];
+  const bnTitle = bn.replaceAll("_", " ");
 
   areaChartCollections[`${bn}-transition`] = {
     label: `LCMS ${bnTitle} Transition`,
@@ -189,36 +182,36 @@ function addSankey(lcmsRun, bn) {
 }
 
 function batchFillCollection(c, expectedYears) {
-  var actualYears = c
+  const actualYears = c
     .toList(10000, 0)
     .map(function (img) {
       return ee.Date(ee.Image(img).get("system:time_start")).get("year");
     })
     .distinct()
     .getInfo();
-  var missingYears = expectedYears.filter(function (x) {
+  const missingYears = expectedYears.filter(function (x) {
     return actualYears.indexOf(x) == -1;
   });
-  var dummyImage = ee.Image(c.first()).mask(ee.Image(0));
-  var missingCollection = missingYears.map(function (yr) {
+  const dummyImage = ee.Image(c.first()).mask(ee.Image(0));
+  const missingCollection = missingYears.map(function (yr) {
     return dummyImage.set(
       "system:time_start",
       ee.Date.fromYMD(yr, 1, 1).millis()
     );
   });
-  var out = c.merge(missingCollection).sort("system:time_start");
+  const out = c.merge(missingCollection).sort("system:time_start");
   return out;
 }
 function setSameDate(img, month = 6, day = 1) {
-  var yr = ee.Date(img.get("system:time_start")).get("year");
+  const yr = ee.Date(img.get("system:time_start")).get("year");
   return img.set("system:time_start", ee.Date.fromYMD(yr, month, day).millis());
 }
 
 // --------Add MTBS and IDS Layers-------------------------------
-var idsStartYear = 1997;
-var idsEndYear = 2023;
-var idsMinYear = 1997;
-var idsMaxYear = 2023;
+let idsStartYear = 1997;
+let idsEndYear = 2023;
+let idsMinYear = 1997;
+let idsMaxYear = 2023;
 function getIDSCollection() {
   if (startYear > idsMinYear && startYear <= idsMaxYear) {
     idsStartYear = startYear;
@@ -231,14 +224,14 @@ function getIDSCollection() {
     idsEndYear = idsMaxYear;
   }
 
-  var idsFolder = "projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS";
+  const idsFolder = "projects/lcms-292214/assets/CONUS-Ancillary-Data/IDS";
   try {
-    var ids = ee.data.getList({ id: idsFolder }).map(function (t) {
+    let ids = ee.data.getList({ id: idsFolder }).map(function (t) {
       return t.id;
     });
 
     ids = ids.map(function (id) {
-      var idsT = ee.FeatureCollection(id);
+      const idsT = ee.FeatureCollection(id);
       return idsT;
     });
     ids = ee.FeatureCollection(ids).flatten();
@@ -251,13 +244,13 @@ function getIDSCollection() {
       )
       .set("bounds", clientBoundsDict.CONUS);
 
-    var years = ee.List.sequence(idsStartYear, idsEndYear);
-    var dcaCollection = years.map(function (yr) {
-      var idsYr = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
-      var dcaYr = idsYr
+    const years = ee.List.sequence(idsStartYear, idsEndYear);
+    let dcaCollection = years.map(function (yr) {
+      const idsYr = ids.filter(ee.Filter.eq("SURVEY_YEA", yr));
+      const dcaYr = idsYr
         .reduceToImage(["DCA_CODE"], ee.Reducer.first())
         .divide(1000);
-      var dtYr = idsYr.reduceToImage(["DAMAGE_TYP"], ee.Reducer.first());
+      const dtYr = idsYr.reduceToImage(["DAMAGE_TYP"], ee.Reducer.first());
       return dcaYr
         .addBands(dtYr)
         .int16()
@@ -272,14 +265,14 @@ function getIDSCollection() {
   }
 }
 function getAspectObj() {
-  var dem = ee.Image("USGS/SRTMGL1_003");
-  var aspect = ee.Terrain.aspect(dem).int16();
-  var aspectBinWidth = 90;
-  var aspectBreaks = range(0, 360 + 1, aspectBinWidth).slice(0, -1);
-  var from = [];
-  var to = [];
-  var lookupDict = ee.Dictionary({});
-  var lookupNames = [
+  const dem = ee.Image("USGS/SRTMGL1_003");
+  const aspect = ee.Terrain.aspect(dem).int16();
+  const aspectBinWidth = 90;
+  let aspectBreaks = range(0, 360 + 1, aspectBinWidth).slice(0, -1);
+  let from = [];
+  let to = [];
+  const lookupDict = ee.Dictionary({});
+  let lookupNames = [
     "Northeast (0" +
       String.fromCharCode(176) +
       "-89" +
@@ -301,17 +294,17 @@ function getAspectObj() {
       String.fromCharCode(176) +
       ")",
   ];
-  var lookupNumbers = ee.List([]);
-  var colorDict = ee.Dictionary({});
+  let lookupNumbers = ee.List([]);
+  let colorDict = ee.Dictionary({});
 
   aspectBreaks.map(function (b) {
     b = ee.Number(b);
-    var s = b;
-    var e = b.add(aspectBinWidth).subtract(1);
-    var toValue = e.add(s).divide(2).round();
-    var toValueStr = ee.Number(toValue).int16().format();
-    var fromT = ee.List.sequence(s, e);
-    var toT = ee.List.repeat(toValue, aspectBinWidth);
+    const s = b;
+    const e = b.add(aspectBinWidth).subtract(1);
+    const toValue = e.add(s).divide(2).round();
+    const toValueStr = ee.Number(toValue).int16().format();
+    const fromT = ee.List.sequence(s, e);
+    const toT = ee.List.repeat(toValue, aspectBinWidth);
     lookupNumbers = lookupNumbers.cat([toValueStr]);
     from.push(fromT);
     to.push(toT);
@@ -321,8 +314,8 @@ function getAspectObj() {
   from = ee.List(from).flatten();
   to = ee.List(to).flatten();
 
-  var aspectLookupDict = ee.Dictionary.fromLists(lookupNumbers, lookupNames);
-  var aspectBinned = aspect.remap(from, to);
+  const aspectLookupDict = ee.Dictionary.fromLists(lookupNumbers, lookupNames);
+  const aspectBinned = aspect.remap(from, to);
 
   return {
     image: aspectBinned,
@@ -331,10 +324,10 @@ function getAspectObj() {
   };
 }
 function getNLCDObj() {
-  var nlcdYears = [2001, 2004, 2006, 2008, 2011, 2013, 2016, 2019];
-  var nlcdLCMax = 95;
-  var nlcdLCMin = 0;
-  var nlcdLCPalette = [
+  const nlcdYears = [2001, 2004, 2006, 2008, 2011, 2013, 2016, 2019];
+  const nlcdLCMax = 95;
+  const nlcdLCMin = 0;
+  const nlcdLCPalette = [
     "466b9f",
     "d1def8",
     "dec5c5",
@@ -357,11 +350,11 @@ function getNLCDObj() {
     "6c9fb8",
   ];
 
-  var nlcdClassCodes = [
+  const nlcdClassCodes = [
     11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90,
     95,
   ];
-  var nlcdClassNames = [
+  const nlcdClassNames = [
     "Open Water",
     "Perennial Ice/Snow",
     "Developed, Open Space",
@@ -383,14 +376,14 @@ function getNLCDObj() {
     "Woody Wetlands",
     "Emergent Herbaceous Wetlands",
   ];
-  var nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
-  var nlcdLCVizDict = {};
-  var nlcdLCQueryDict = {};
-  var nlcdLegendDict = {};
+  const nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
+  const nlcdLCVizDict = {};
+  const nlcdLCQueryDict = {};
+  const nlcdLegendDict = {};
 
-  var ii = 0;
+  let ii = 0;
   nlcdFullClassCodes.map(function (i) {
-    var index = nlcdClassCodes.indexOf(i);
+    const index = nlcdClassCodes.indexOf(i);
     if (index !== -1) {
       nlcdLCQueryDict[i] = nlcdClassNames[ii];
       nlcdLCVizDict[i] = nlcdLCPalette[ii];
@@ -401,19 +394,19 @@ function getNLCDObj() {
     }
   });
 
-  var nlcdLegendDictReverse = {};
+  const nlcdLegendDictReverse = {};
   Object.keys(nlcdLegendDict)
     .reverse()
     .map(function (k) {
       nlcdLegendDictReverse[k] = nlcdLegendDict[k];
     });
-  var nlcd = ee
+  const nlcd = ee
     .ImageCollection("USGS/NLCD_RELEASES/2019_REL/NLCD")
     .select(["landcover"], ["NLCD Landcover"])
 
     .sort("system:time_start");
-  var nlcdC = nlcdYears.map(function (nlcdYear) {
-    var nlcdT = nlcd
+  let nlcdC = nlcdYears.map(function (nlcdYear) {
+    let nlcdT = nlcd
       .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
       .mosaic();
     nlcdT = nlcdT.set(
@@ -424,7 +417,7 @@ function getNLCDObj() {
   });
   nlcdC = ee.ImageCollection(nlcdC);
 
-  var chartTableDict = {
+  const chartTableDict = {
     "NLCD Landcover": nlcdLCQueryDict,
   };
   nlcdC = nlcdC
@@ -451,17 +444,19 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     mtbsSummaryMethod = "Highest-Severity";
   }
 
-  var mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1";
+  const mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1";
 
-  var mtbsEndYear = endYear;
+  let mtbsEndYear = endYear;
   if (endYear > 2022) {
     mtbsEndYear = 2022;
   }
 
-  var mtbsYears = ee.List.sequence(1984, mtbsEndYear);
-  var mtbs = ee.ImageCollection(mtbs_path);
+  const mtbsYears = ee.List.sequence(1984, mtbsEndYear);
+  mtbs = ee.ImageCollection(mtbs_path);
   mtbs = mtbsYears.map(function (yr) {
-    var mtbsYr = mtbs.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
+    const mtbsYr = mtbs
+      .filter(ee.Filter.calendarRange(yr, yr, "year"))
+      .mosaic();
     return mtbsYr.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });
   mtbs = ee.ImageCollection.fromImages(mtbs);
@@ -472,15 +467,15 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     return img.select([0], ["burnSeverity"]).byte();
   });
 
-  var mtbs = mtbs.map(function (img) {
-    var severityRemapped = img
+  mtbs = mtbs.map(function (img) {
+    const severityRemapped = img
       .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
       .rename(["burnSeverityRemap"]);
-    var burned = img
+    let burned = img
       .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
       .rename(["burnedNotBurned"]);
     burned = burned.selfMask();
-    var burnYear = ee
+    const burnYear = ee
       .Image(ee.Date(img.get("system:time_start")).get("year"))
       .updateMask(severityRemapped.mask())
       .rename("burnYear");
@@ -494,15 +489,15 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
 
   mtbs = ee.ImageCollection(mtbs);
 
-  var mtbsSummaryDict = {
+  const mtbsSummaryDict = {
     "Highest-Severity": "burnSeverityRemap",
     "Most-Recent": "burnYear",
     Oldest: "burnYearNegative",
   };
-  var mtbsSummarized = mtbs.qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod]);
-  var mtbsCount = mtbs.select([2]).count();
+  const mtbsSummarized = mtbs.qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod]);
+  const mtbsCount = mtbs.select([2]).count();
 
-  var mtbsClassDict = {
+  const mtbsClassDict = {
     "Unburned to Low": "006400",
     Low: "7fffd4",
     Moderate: "ffff00",
@@ -512,14 +507,14 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
   };
 
   mtbsQueryClassDict = {};
-  var keyI = 1;
+  let keyI = 1;
   Object.keys(mtbsClassDict).map(function (k) {
     mtbsQueryClassDict[keyI] = k;
     keyI++;
   });
 
   if (chartMTBS === true) {
-    var mtbsStack = formatAreaChartCollection(
+    let mtbsStack = formatAreaChartCollection(
       mtbs.select([0]),
       Object.keys(mtbsQueryClassDict),
       Object.values(mtbsQueryClassDict),
@@ -597,9 +592,10 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
         ". The maximum severity is used when fires overlap. ",
     };
   }
-  var mtbsMaxSeverity = mtbs.select([0]).max();
+  let mtbsMaxSeverity = mtbs.select([0]).max();
+  let nlcdObj;
   if (chartMTBSByNLCD) {
-    var nlcdObj = getNLCDObj();
+    nlcdObj = getNLCDObj();
 
     Map.addTimeLapse(
       nlcdObj.collection,
@@ -621,18 +617,18 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     );
 
     nlcdObj.years.map(function (nlcdYear) {
-      var nlcdT = nlcdObj.collection
+      const nlcdT = nlcdObj.collection
         .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
         .mosaic();
-      var mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
-        var name = nlcdObj.queryDict[k];
-        var out = mtbsMaxSeverity
+      let mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
+        const name = nlcdObj.queryDict[k];
+        const out = mtbsMaxSeverity
           .updateMask(nlcdT.eq(ee.Number.parse(k)))
           .set("nlcd_landcover_class", name);
         return out;
       });
       mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
-      var mtbsByNLCDStack = formatAreaChartCollection(
+      let mtbsByNLCDStack = formatAreaChartCollection(
         mtbsByNLCD,
         Object.keys(mtbsQueryClassDict),
         Object.values(mtbsQueryClassDict),
@@ -657,18 +653,18 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     });
   }
   if (chartMTBSByAspect) {
-    var aspectObj = getAspectObj();
-    var aspectBinned = aspectObj.image;
-    var aspectLookupDict = aspectObj.lookupDict.getInfo();
-    var mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
-      var name = aspectLookupDict[k];
-      var out = mtbsMaxSeverity
+    const aspectObj = getAspectObj();
+    const aspectBinned = aspectObj.image;
+    const aspectLookupDict = aspectObj.lookupDict.getInfo();
+    let mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
+      const name = aspectLookupDict[k];
+      const out = mtbsMaxSeverity
         .updateMask(aspectBinned.eq(ee.Number.parse(k)))
         .set("Aspect_Bin", name);
       return out;
     });
     mtbsByAspect = ee.ImageCollection(mtbsByAspect);
-    var mtbsByAspectStack = formatAreaChartCollection(
+    const mtbsByAspectStack = formatAreaChartCollection(
       mtbsByAspect,
       Object.keys(mtbsQueryClassDict),
       Object.values(mtbsQueryClassDict),
@@ -688,7 +684,7 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     };
   }
 
-  var severityViz = {
+  const severityViz = {
     queryDict: mtbsQueryClassDict,
     min: 1,
     max: 6,
@@ -751,7 +747,7 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     whichLayerList
   );
 
-  var chartTableDict = {
+  const chartTableDict = {
     "Burn Severity": mtbsQueryClassDict,
   };
   return {
@@ -769,10 +765,10 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "reference-layer-list";
   }
-  var idsCollections = getIDSCollection();
-  var mtbs_path = "projects/USFS/DAS/MTBS/BurnSeverityMosaics";
-  var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
-  var nlcd_tcc = ee
+  const idsCollections = getIDSCollection();
+  const mtbs_path = "projects/USFS/DAS/MTBS/BurnSeverityMosaics";
+  const nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
+  const nlcd_tcc = ee
     .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
     .select([0, 2])
     .map((img) => img.selfMask());
@@ -794,10 +790,10 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
   );
 
   if (idsCollections !== undefined) {
-    var idsYr = idsCollections.featureCollection
+    const idsYr = idsCollections.featureCollection
       .reduceToImage(["SURVEY_YEA"], ee.Reducer.max())
       .set("bounds", clientBoundsDict.CONUS);
-    var idsCount = idsCollections.featureCollection
+    const idsCount = idsCollections.featureCollection
       .reduceToImage(["SURVEY_YEA"], ee.Reducer.count())
       .selfMask()
       .set("bounds", clientBoundsDict.CONUS);
@@ -853,7 +849,7 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
     );
   }
 
-  var mtbs = getMTBSAndNLCD(studyAreaName, whichLayerList).MTBS.collection;
+  const mtbs = getMTBSAndNLCD(studyAreaName, whichLayerList).MTBS.collection;
   if (idsCollections !== undefined) {
     return [
       mtbs,
@@ -867,10 +863,10 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
 function getNAIP(whichLayerList, timeLapse) {
   whichLayerList = whichLayerList || "reference-layer-list";
   timeLapse = timeLapse !== null && timeLapse !== undefined ? timeLapse : false;
-  var naip = ee
+  const naip = ee
     .ImageCollection("USDA/NAIP/DOQQ")
     .select([0, 1, 2], ["R", "G", "B"]);
-
+  let naipYears;
   if (timeLapse === true) {
     naipYears = range(2003, 2022 + 1);
     Map.addTimeLapse(
@@ -888,7 +884,7 @@ function getNAIP(whichLayerList, timeLapse) {
       whichLayerList
     );
   } else {
-    var naipYears = [
+    naipYears = [
       [2003, 2007],
       [2008, 2008],
       [2009, 2011],
@@ -898,7 +894,7 @@ function getNAIP(whichLayerList, timeLapse) {
       [2021, 2022],
     ];
     naipYears.map(function (yr) {
-      var naipT = naip
+      const naipT = naip
         .filter(ee.Filter.calendarRange(yr[0], yr[1], "year"))
         .mosaic()
         .byte()
@@ -925,11 +921,11 @@ function getHansen(whichLayerList) {
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "reference-layer-list";
   }
-  var hansen = ee
+  const hansen = ee
     .Image("UMD/hansen/global_forest_change_2023_v1_11")
     .reproject("EPSG:4326", null, 30);
 
-  var hansenClientBoundary = {
+  const hansenClientBoundary = {
     type: "Polygon",
     coordinates: [
       [
@@ -941,9 +937,9 @@ function getHansen(whichLayerList) {
       ],
     ],
   };
-  var hansenLoss = hansen.select(["lossyear"]).selfMask().add(2000).int16();
-  var hansenStartYear = 2001;
-  var hansenEndYear = 2023;
+  let hansenLoss = hansen.select(["lossyear"]).selfMask().add(2000).int16();
+  let hansenStartYear = 2001;
+  let hansenEndYear = 2023;
 
   if (startYear > hansenStartYear) {
     hansenStartYear = startYear;
@@ -952,7 +948,7 @@ function getHansen(whichLayerList) {
     hansenEndYear = endYear;
   }
 
-  var hansenGain = hansen.select(["gain"]);
+  const hansenGain = hansen.select(["gain"]);
   hansenLoss = hansenLoss.updateMask(
     hansenLoss.gte(startYear).and(hansenLoss.lte(endYear))
   );
@@ -989,38 +985,38 @@ function getHansen(whichLayerList) {
   );
 }
 function getNLCD() {
-  var nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL").select([0]);
+  const nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL").select([0]);
 
-  var nlcdForClasses = ee.Image("USGS/NLCD_RELEASES/2016_REL/2011");
-  var names = nlcdForClasses.get("landcover_class_names");
-  var palette = nlcdForClasses.get("landcover_class_palette");
-  var values = nlcdForClasses
+  const nlcdForClasses = ee.Image("USGS/NLCD_RELEASES/2016_REL/2011");
+  const names = nlcdForClasses.get("landcover_class_names");
+  const palette = nlcdForClasses.get("landcover_class_palette");
+  const values = nlcdForClasses
     .get("landcover_class_values")
     .getInfo()
     .map(function (i) {
       return i.toString();
     });
 
-  var classDict = ee.Dictionary.fromLists(values, palette).getInfo();
+  const classDict = ee.Dictionary.fromLists(values, palette).getInfo();
   print(classDict);
-  var years = nlcd
+  const years = nlcd
     .toList(1000)
     .map(function (i) {
       i = ee.Image(i);
-      var d = ee.Date(i.get("system:time_start"));
-      var y = d.get("year");
+      const d = ee.Date(i.get("system:time_start"));
+      const y = d.get("year");
       return y;
     })
     .getInfo();
-  var yearsU = [];
+  const yearsU = [];
   years.map(function (y) {
     if (yearsU.indexOf(y) == -1) {
       yearsU.push(y);
     }
   });
 
-  var nlcdMosaic = yearsU.map(function (y) {
-    var nlcdT = nlcd.filter(ee.Filter.calendarRange(y, y, "year")).mosaic();
+  let nlcdMosaic = yearsU.map(function (y) {
+    const nlcdT = nlcd.filter(ee.Filter.calendarRange(y, y, "year")).mosaic();
     return nlcdT.set("system:time_start", ee.Date.fromYMD(y, 6, 1).millis());
   });
   nlcdMosaic = ee.ImageCollection(nlcdMosaic);
@@ -1041,17 +1037,17 @@ function thresholdChange(
   if (changeDir === undefined || changeDir === null) {
     changeDir = 1;
   }
-  var bandNames = ee.Image(changeCollection.first()).bandNames();
+  let bandNames = ee.Image(changeCollection.first()).bandNames();
   bandNames = bandNames.map(function (bn) {
     return ee.String(bn).cat("_change_year");
   });
-  var change = changeCollection.map(function (img) {
-    var yr = ee.Date(img.get("system:time_start")).get("year");
-    var changeYr = img
+  const change = changeCollection.map(function (img) {
+    const yr = ee.Date(img.get("system:time_start")).get("year");
+    let changeYr = img
       .multiply(changeDir)
       .gte(changeThreshLower)
       .and(img.multiply(changeDir).lte(changeThreshUpper));
-    var yrImage = img.where(img.mask(), yr);
+    const yrImage = img.where(img.mask(), yr);
     changeYr = yrImage.updateMask(changeYr).rename(bandNames).int16();
     return img.updateMask(changeYr.mask()).addBands(changeYr);
   });
@@ -1059,9 +1055,9 @@ function thresholdChange(
 }
 
 function setupDropdownTreeDownloads(studyAreaName) {
-  var serverLocation = "https://data.fs.usda.gov/geodata/LCMS";
+  const serverLocation = "https://data.fs.usda.gov/geodata/LCMS";
 
-  var study_areas = {
+  const study_areas = {
     SEAK: {
       startYear: 1985,
       endYear: 2023,
@@ -1101,8 +1097,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
   Object.keys(study_areas).map((sa) => {
     Object.keys(study_areas[sa].products).map((product) => {
       study_areas[sa].products[product].map((m) => {
-        var id = `${sa}-${product.toLowerCase()}-${m}-downloads`;
-        var dropdownID = id + "-d";
+        const id = `${sa}-${product.toLowerCase()}-${m}-downloads`;
+        const dropdownID = id + "-d";
         $("#" + id).empty();
         $("#" + id).append(`
               <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
@@ -1112,13 +1108,13 @@ function setupDropdownTreeDownloads(studyAreaName) {
                               <hr>`);
 
         if (m === "annual") {
-          var years = range(
+          const years = range(
             study_areas[sa].startYear,
             study_areas[sa].endYear + 1
           );
           years.map((yr) => {
-            var url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
-            var name = url.substr(url.lastIndexOf("v20") + 8);
+            const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
+            const name = url.substr(url.lastIndexOf("v20") + 8);
             $("#" + dropdownID).append(
               `<option  value = "${url}">${name}</option>`
             );
@@ -1127,8 +1123,8 @@ function setupDropdownTreeDownloads(studyAreaName) {
           //https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2011.zip
         } else if (m === "summary") {
           study_areas[sa].summary_products.map((summary_product) => {
-            var url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
-            var name = url.substr(url.lastIndexOf("v20") + 8);
+            const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
+            const name = url.substr(url.lastIndexOf("v20") + 8);
             $("#" + dropdownID).append(
               `<option  value = "${url}">${name}</option>`
             );
@@ -1141,11 +1137,11 @@ function setupDropdownTreeDownloads(studyAreaName) {
 }
 
 function setupDropdownTreeMapDownloads() {
-  var att_serverLocation =
+  const att_serverLocation =
     "https://data.fs.usda.gov/geodata/rastergateway/treemap";
-  var rds_serverLocation = "https://s3-us-west-2.amazonaws.com/fs.usda.rds";
+  const rds_serverLocation = "https://s3-us-west-2.amazonaws.com/fs.usda.rds";
 
-  var attributes = [
+  const attributes = [
     "ALSTK",
     "BALIVE",
     "CANOPYPCT",
@@ -1169,13 +1165,13 @@ function setupDropdownTreeMapDownloads() {
     "VOLCFNET_L",
   ];
 
-  var rds_dict = { 2016: "RDS-2021-0074" };
+  const rds_dict = { 2016: "RDS-2021-0074" };
 
-  var tm_versions = ["2016"];
+  const tm_versions = ["2016"];
 
   tm_versions.map((ver) => {
-    var id = `TreeMap${ver}-attribute-downloads`;
-    var dropdownID = id + "-d";
+    const id = `TreeMap${ver}-attribute-downloads`;
+    const dropdownID = id + "-d";
     $("#" + id).empty();
     $("#" + id).append(`
       <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
@@ -1184,7 +1180,7 @@ function setupDropdownTreeMapDownloads() {
                       <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                       <hr>`);
     attributes.map((att) => {
-      var url = `${att_serverLocation}/docs/TreeMap${ver}_${att}.zip`;
+      const url = `${att_serverLocation}/docs/TreeMap${ver}_${att}.zip`;
       $("#" + dropdownID).append(
         `<option  value = "${url}">TreeMap${ver}_${att}</option>`
       );
@@ -1192,8 +1188,8 @@ function setupDropdownTreeMapDownloads() {
   });
 
   tm_versions.map((ver) => {
-    var id = `TreeMap${ver}-rds-downloads`;
-    var dropdownID = id + "-d";
+    const id = `TreeMap${ver}-rds-downloads`;
+    const dropdownID = id + "-d";
     $("#" + id).empty();
     $("#" + id).append(`
       <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
@@ -1202,7 +1198,7 @@ function setupDropdownTreeMapDownloads() {
                       <br>
                       <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                       <hr>`);
-    var url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
+    const url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
     $("#" + dropdownID).append(
       `<option  value = "${url}">TreeMap${ver}</option>`
     );
@@ -1210,9 +1206,9 @@ function setupDropdownTreeMapDownloads() {
 }
 
 function getSelectLayers(short) {
-  var perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
   perims = perims.map(function (f) {
-    var d = ee.Date(f.get("Ig_Date")).millis();
+    const d = ee.Date(f.get("Ig_Date")).millis();
 
     return f.set("system:time_start", f.get("Ig_Date"));
   });
@@ -1222,17 +1218,17 @@ function getSelectLayers(short) {
     ee.Date.fromYMD(endYear, 12, 31)
   );
 
-  var huc4 = ee.FeatureCollection("USGS/WBD/2017/HUC04");
-  var huc8 = ee.FeatureCollection("USGS/WBD/2017/HUC08");
-  var huc12 = ee.FeatureCollection("USGS/WBD/2017/HUC12");
-  var wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
-  var wilderness = wdpa.filter(ee.Filter.eq("DESIG", "Wilderness"));
-  var counties = ee.FeatureCollection("TIGER/2018/Counties");
-  var tiles = ee.FeatureCollection("users/jdreynolds33/Zones_New");
-  var bia = ee.FeatureCollection(
+  const huc4 = ee.FeatureCollection("USGS/WBD/2017/HUC04");
+  const huc8 = ee.FeatureCollection("USGS/WBD/2017/HUC08");
+  const huc12 = ee.FeatureCollection("USGS/WBD/2017/HUC12");
+  const wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
+  const wilderness = wdpa.filter(ee.Filter.eq("DESIG", "Wilderness"));
+  const counties = ee.FeatureCollection("TIGER/2018/Counties");
+  const tiles = ee.FeatureCollection("users/jdreynolds33/Zones_New");
+  const bia = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017"
   );
-  var ecoregions_subsections = ee.FeatureCollection(
+  let ecoregions_subsections = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections"
   );
   ecoregions_subsections = ecoregions_subsections.select(
@@ -1240,19 +1236,19 @@ function getSelectLayers(short) {
     ["NAME"],
     true
   );
-  var ecoregions = ee.FeatureCollection(
+  let ecoregions = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions"
   );
   ecoregions = ecoregions.select(["SECTION"], ["NAME"]);
-  var ecoregionsEPAL4 = ee.FeatureCollection("EPA/Ecoregions/2013/L4");
-  var district_boundaries = ee.FeatureCollection(
+  const ecoregionsEPAL4 = ee.FeatureCollection("EPA/Ecoregions/2013/L4");
+  let district_boundaries = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries"
   );
   district_boundaries = district_boundaries.select(["DISTRICTNA"], ["name"]);
-  var msas = ee.FeatureCollection(
+  const msas = ee.FeatureCollection(
     "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_Urban_Areas_2018"
   );
-  var msas2 = ee.FeatureCollection(
+  const msas2 = ee.FeatureCollection(
     "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019"
   );
   if (short === null || short === undefined || short === false) {
@@ -1410,11 +1406,11 @@ function superSimpleGetS2(
   cloudScorePlusThresh = 0.6,
   cloudScorePlusScore = "cs"
 ) {
-  var s2CollectionDict = {
+  const s2CollectionDict = {
     TOA: "COPERNICUS/S2_HARMONIZED",
     SR: "COPERNICUS/S2_SR_HARMONIZED",
   };
-  var sensorBandDict = {
+  const sensorBandDict = {
     SR: [
       "B1",
       "B2",
@@ -1445,7 +1441,7 @@ function superSimpleGetS2(
       "B12",
     ],
   };
-  var sensorBandNameDict = {
+  const sensorBandNameDict = {
     SR: [
       "cb",
       "blue",
@@ -1477,13 +1473,13 @@ function superSimpleGetS2(
     ],
   };
 
-  var s2s = ee
+  let s2s = ee
     .ImageCollection(s2CollectionDict[toaOrSR])
     .filterDate(startDate, endDate)
     .filterBounds(studyArea);
   s2s = s2s.select(sensorBandDict[toaOrSR], sensorBandNameDict[toaOrSR]);
 
-  var cloudScorePlus = ee
+  const cloudScorePlus = ee
     .ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
     .select([cloudScorePlusScore], ["cloudScorePlus"]);
 
@@ -1498,6 +1494,6 @@ function superSimpleGetS2(
   return s2s;
 }
 function addNDVI(pre) {
-  var ndvi = pre.normalizedDifference(["nir", "red"]).rename("NDVI");
+  const ndvi = pre.normalizedDifference(["nir", "red"]).rename("NDVI");
   return pre.addBands(ndvi);
 }
