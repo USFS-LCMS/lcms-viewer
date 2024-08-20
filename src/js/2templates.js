@@ -4310,15 +4310,12 @@ function getTransitionRowData() {
   const periods = [];
   const errorList = [];
   let periodsValid = true;
-  // periods.push([
-  //   parseInt($("#first-transition-row td input:first").val()),
-  //   parseInt($("#first-transition-row td input:last").val()),
-  // ]);
+  let rowI;
   if ($("#added-transition-rows tr").length <= 1) {
     periodsValid = false;
     errorList.push("noValues");
   } else {
-    let rowI = 1;
+    rowI = 1;
     $("#added-transition-rows tr").each(function () {
       const row = [];
       let colI = 0;

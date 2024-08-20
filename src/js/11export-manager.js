@@ -323,13 +323,13 @@ function trackExports() {
         t.state === "COMPLETED"
       ) {
         taskCount++;
-
+        let timeDiff;
         if (t.state === "READY") {
           timeDiff = "NA";
         } else {
           const st = t.start_timestamp_ms;
           const now = t.update_timestamp_ms;
-          let timeDiff = now - st;
+          timeDiff = now - st;
           timeDiff = new Date(timeDiff).toISOString().slice(11, 19);
         }
         let icon_color_class = t.state === "COMPLETED" ? "teal" : "db-100";
