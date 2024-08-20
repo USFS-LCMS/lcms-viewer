@@ -2875,8 +2875,6 @@ function startArea() {
 
       if (pathT.length > 0) {
         clickCoords = clickLngLat;
-        console.log(clickCoords);
-        console.log(pathT);
 
         area = google.maps.geometry.spherical.computeArea(
           areaPolygonObj[key].getPath()
@@ -2896,12 +2894,6 @@ function startArea() {
           unitName = unitNames[0];
           unitMultiplier = unitMultipliers[0];
         }
-        console.log(unitNames);
-        console.log(unitMultipliers);
-        console.log(area);
-        console.log(totalArea);
-        console.log(unitName);
-        console.log(unitMultiplier);
       }
     }
     keys.map(areaWrapper);

@@ -226,7 +226,8 @@ function constructUrlSearch(maxLen = 5000) {
 let cachedSettingskey = "settings";
 let startYear = 1985;
 let endYear = 2023;
-let activeStartYear, activeEndYear;
+let activeStartYear = 1985,
+  activeEndYear = 2023;
 let startJulian = 153;
 let endJulian = 274;
 let layerObj = null;
@@ -515,7 +516,7 @@ let chartIncludeDate = true,
   exportVizParams,
   eeBoundsPoly,
   shapesMap;
-let whichPixelChartCollection, whichAreaChartCollection;
+
 let mouseLat,
   mouseLng,
   area = 0,
@@ -635,12 +636,6 @@ let yLabelMaxTotalLines = 18; // Max lines for all y labels to avoid over-crowdi
 let defaultQueryDateFormat = "YYYY-MM-dd"; //Default format for dates in query time series charts
 
 let clickBoundsColor = "#FF0";
-let areaChartFormat = "Percentage";
-const areaChartFormatDict = {
-  Percentage: { mult: 100, label: "% Area" },
-  Acres: { mult: 0.000247105, label: "Acres" },
-  Hectares: { mult: 0.0001, label: "Hectares" },
-};
 
 let areaGeoJson;
 let areaChartingCount = 0;

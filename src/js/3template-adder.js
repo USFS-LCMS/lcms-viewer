@@ -3283,8 +3283,8 @@ if (
     { Percentage: true, Acres: false, Hectares: false }
   );
   if (mode === "LCMS" || mode === "geeViz") {
-    const activeStartYear = urlParams.startYear;
-    const activeEndYear = urlParams.endYear;
+    activeStartYear = urlParams.startYear;
+    activeEndYear = urlParams.endYear;
     $("#area-chart-params-div").append(
       `<div id='transition-periods-container'></div>`
     );

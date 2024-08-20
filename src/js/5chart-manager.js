@@ -1880,8 +1880,7 @@ function scalePlotlyChart(data, layout, scale = 2) {
     } catch (err) {}
     outData.push(d);
   });
-  console.log(layout);
-  console.log(data);
+
   return [outData, layout];
 }
 function downloadPlotly(

@@ -18,9 +18,7 @@ which_ones = [
     "services/area-charting.js",
     "js/6tools-toggle-manager.js",
 ]  # ,'7gee-lib-manager.js']
-lcmsViewerFolder = (
-    r"Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer\src"
-)
+lcmsViewerFolder = r"Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer\src"
 
 
 geeViewFolder = r"A:\GEE\gee_py_modules_package\geeViz\geeView"
@@ -41,12 +39,8 @@ which_js_libs = ["getImagesLib.js", "changeDetectionLib.js"]
 
 
 ##############################################
-# if not os.path.exists(js_min_folder):os.makedirs(js_min_folder)
 def combine_scripts():
-    # js_files = glob.glob(os.path.join(js_folder, "*.js"))
-    # js_files = [i for i in js_files if os.path.basename(i).find(".min.js") == -1]
-    # js_files = [i for i in js_files if os.path.basename(i) in which_ones]
-    # print(js_files)
+
     combined = ""
     for js_file in which_ones:
         js_file = os.path.join(lcmsViewerFolder, js_file)

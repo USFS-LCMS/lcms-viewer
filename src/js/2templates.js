@@ -4064,6 +4064,9 @@ function addLayer(layer) {
   } else if (layer.layerType === "dynamicMapService") {
     function groundOverlayWrapper() {
       let overlayURL;
+      layer.dynamicOverlayRequestID = layer.dynamicOverlayRequestID || 0;
+      layer.dynamicOverlayRequestID++;
+      let thisDynamicOverlayRequestID = layer.dynamicOverlayRequestID;
       if (map.getZoom() > layer.item[1].minZoom) {
         overlayURL = getGroundOverlay(
           layer.item[1].baseURL,
@@ -4082,13 +4085,25 @@ function addLayer(layer) {
       layer.percent = 0;
       updateProgress();
 
+      // Set up image overlay async
+      layer.layer = new google.maps.GroundOverlay(overlayURL, map.getBounds());
+      layer.layer.setMap(map);
+      layer.percent = 15;
+      updateProgress();
+      // Set up status of download checker
       function checkImageExists(imageUrl, callback) {
         const xhr = new XMLHttpRequest();
         xhr.open("HEAD", imageUrl, true);
         xhr.onload = function () {
           if (xhr.status === 200) {
-            callback();
+            if (thisDynamicOverlayRequestID === layer.dynamicOverlayRequestID) {
+              callback();
+            }
           } else {
+            layer.percent =
+              layer.percent + 10 < 90 ? layer.percent + 10 : layer.percent;
+
+            updateProgress();
             setTimeout(function () {
               checkImageExists(imageUrl, callback);
             }, 1000); // Retry after 1 second
@@ -4098,11 +4113,6 @@ function addLayer(layer) {
       }
 
       checkImageExists(overlayURL, function () {
-        layer.layer = new google.maps.GroundOverlay(
-          overlayURL,
-          map.getBounds()
-        );
-        layer.layer.setMap(map);
         layer.percent = 100;
         $("#" + spinnerID + "2").hide();
         updateProgress();
@@ -4298,35 +4308,38 @@ function addLayerSortListener(
 // Transition charting input UI setup
 function getTransitionRowData() {
   const periods = [];
+  const errorList = [];
   let periodsValid = true;
-  periods.push([
-    parseInt($("#first-transition-row td input:first").val()),
-    parseInt($("#first-transition-row td input:last").val()),
-  ]);
+  // periods.push([
+  //   parseInt($("#first-transition-row td input:first").val()),
+  //   parseInt($("#first-transition-row td input:last").val()),
+  // ]);
+  if ($("#added-transition-rows tr").length <= 1) {
+    periodsValid = false;
+    errorList.push("noValues");
+  } else {
+    let rowI = 1;
+    $("#added-transition-rows tr").each(function () {
+      const row = [];
+      let colI = 0;
+      $(this)
+        .find("td")
+        .each(function () {
+          $(this)
+            .find("input")
+            .each(function () {
+              let v = parseInt($(this).val());
+              row.push(v);
+            });
+          colI++;
+        });
+      periods.push(row);
+      rowI++;
+    });
+  }
 
-  let rowI = 1;
-  $("#added-transition-rows tr").each(function () {
-    const row = [];
-    let colI = 0;
-    $(this)
-      .find("td")
-      .each(function () {
-        $(this)
-          .find("input")
-          .each(function () {
-            let v = parseInt($(this).val());
-            row.push(v);
-          });
-        colI++;
-      });
-    periods.push(row);
-    rowI++;
-  });
-  periods.push([
-    parseInt($("#last-transition-row td input:first").val()),
-    parseInt($("#last-transition-row td input:last").val()),
-  ]);
   const errorDict = {
+    noValues: "No year pairs provided. Please add at least two rows of years.",
     blank: "One or more blank value found",
     outsideYearRange: `Found years outside available year range. Please ensure all years are >= ${activeStartYear} and <= ${activeEndYear}.`,
     backwards:
@@ -4334,7 +4347,7 @@ function getTransitionRowData() {
     overlap:
       "Please ensure all transition periods have values and are in succession of one another and do not overlap",
   };
-  const errorList = [];
+
   rowI = 0;
   periods.map((row) => {
     row.map((n) => {
@@ -4391,9 +4404,9 @@ function setupTransitionPeriodUI(containerID = "transition-periods-container") {
                       
                   </tr>
               </thead>
-              <tbody id='default-transition-start'> </tbody>
+              
       <tbody id='added-transition-rows'></tbody>
-      <tbody id='default-transition-end'></tbody>
+      
      
           </table>
 
@@ -4407,43 +4420,31 @@ function setupTransitionPeriodUI(containerID = "transition-periods-container") {
   </div>
   
 `);
-  addRow(
-    "default-transition-start",
-    "first-transition-row",
-    activeStartYear,
-    activeStartYear + 2,
-    true
-  );
-  addRow(
-    "default-transition-end",
-    "last-transition-row",
-    activeEndYear - 2,
-    activeEndYear,
-    true
-  );
+  addTransitionRow();
+  addTransitionRow();
 }
 let transitionRowI = 0;
 
 function addRow(containerID, rowID, yr1, yr2, isBookend = false) {
-  $(`#${containerID}`).append(`<tr id='${rowID}'>
+  let rows = $(`#${containerID} tr`);
+  const row = `<tr id='${rowID}'>
 
-<td>
-<input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr1}' placeholder='Enter Year' class="form-control"/>
-</td>
-<td>
-<input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr2}'  placeholder='Enter Year' class="form-control"/>
-</td>
-</tr>`);
+  <td>
+  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr1}' placeholder='Enter Year' class="form-control"/>
+  </td>
+  <td>
+  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr2}'  placeholder='Enter Year' class="form-control"/>
+  </td>
+  </tr>`;
+  if (rows.length < 2) {
+    $(`#${containerID}`).append(row);
+  } else {
+    rows.eq(-1).before(row);
+  }
 
-  if (!isBookend) {
-    $(`#${rowID}`).append(`<td>
+  $(`#${rowID}`).append(`<td>
     <button title = 'Click to remove this transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="removeRow('${rowID}')" id="${rowID}-remove-transition-row"><i class="fa fa-close teal "></i></button>
   </td>`);
-  } else {
-    $(`#${rowID}`).append(`<td>
-    <button disabled title = 'Cannot remove this transition period since it is at the start or end' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="removeRow('${rowID}')" id="${rowID}-remove-transition-row"><i class="fa fa-close gray invisible"></i></button>
-  </td>`);
-  }
 }
 
 function removeRow(rowID) {
@@ -4451,11 +4452,32 @@ function removeRow(rowID) {
   $(`#${rowID}`).remove();
 }
 function addTransitionRow() {
-  addRow("added-transition-rows", `transition-row-${transitionRowI}`, "", "");
+  let startYear = "",
+    endYear = "";
+  const nRows = $(`#added-transition-rows tr`).length;
+  if (nRows === 0) {
+    startYear = activeStartYear;
+    endYear = activeStartYear + 2;
+  } else if (nRows === 1) {
+    startYear = activeEndYear - 2;
+    endYear = activeEndYear;
+  }
+  addRow(
+    "added-transition-rows",
+    `transition-row-${transitionRowI}`,
+    startYear,
+    endYear
+  );
+  $("#added-transition-rows").sortable();
   transitionRowI++;
 }
 function removeLastTransitionRow() {
-  $("#added-transition-rows tr:last").remove();
+  let rows = $(`#added-transition-rows tr`);
+  if (rows.length < 3) {
+    $("#added-transition-rows tr:last").remove();
+  } else {
+    rows.eq(-2).remove();
+  }
 }
 function updateProgress(id, val) {
   const el = document.querySelector(`${id} span`);

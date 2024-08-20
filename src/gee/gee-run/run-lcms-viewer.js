@@ -1046,6 +1046,7 @@ function runGTAC() {
         //Map.addTimeLapse(lcmsAttr_stack,{min:1,max:16,palette:palette,classLegendDict:attrClassLegendDict,queryDict:attrQueryDict},'LCMS Change Attributes',false)
       }
       areaChart.populateChartLayerSelect();
+      areaChart.setupTransitionPeriodUI();
       // areaChart.startAutoCharting();
       // Map.turnOnAutoAreaCharting();
       // $("#pixel-chart-label").hide();

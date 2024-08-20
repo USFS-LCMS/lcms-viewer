@@ -33,7 +33,8 @@ function downloadPlotlyAreaChartWrapper(areaObjID, bn, filename) {
 }
 //////////////////////////////////////////////////////////////////////////
 function areaChartCls() {
-  setupTransitionPeriodUI();
+  this.setupTransitionPeriodUI = setupTransitionPeriodUI;
+  this.setupTransitionPeriodUI();
   this.areaChartID = 1;
   this.makeChartID = 0;
   this.outstandingAddLayers = 0;
