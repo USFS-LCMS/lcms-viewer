@@ -295,7 +295,7 @@ function hiform_bmp_process() {
     post = post.map(addNDVI).map(addDateBand);
 
     let postCount = post.select(["NDVI"]).count().rename(["Post_Count"]);
-    console.log(preCount.bandNames().getInfo());
+
     post = post.qualityMosaic("NDVI").clip(geometry).clip(geoBounds);
 
     Map.addLayer(

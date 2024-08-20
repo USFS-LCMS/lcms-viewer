@@ -442,12 +442,12 @@ function getIDAndParams(
   fileFormat
 ) {
   $("#summary-spinner").show();
-
+  let region;
   if (eeType === "Image") {
     eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue, false)); //.reproject(exportCRS,null,exportScale);
 
     try {
-      let region = JSON.stringify(fc.geometry().bounds().getInfo());
+      region = JSON.stringify(fc.geometry().bounds().getInfo());
     } catch (error) {
       if (
         error.message.indexOf("LinearRing requires at least 3 points.") > -1
@@ -470,8 +470,6 @@ function getIDAndParams(
     "/o/" +
     exportOutputName +
     ".tif";
-
-  console.log(eeType);
 
   if (eeType === "Geometry") {
     eeImage = ee.Feature(eeImage);
@@ -505,7 +503,7 @@ function getIDAndParams(
     fileFormat: fileFormat,
     formatOptions: { noData: noDataValue },
   };
-  console.log(params);
+
   //Set up a task and update the spinner
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
@@ -532,6 +530,7 @@ function exportImages() {
   let exportsStarted = 0;
   let exportsSubmitted = "";
   let exportAreaProvided = exportArea !== null && exportArea !== undefined;
+
   let needToDrawPoly = false;
   Object.keys(exportImageDict).map(function (k) {
     const exportObject = exportImageDict[k];
@@ -567,7 +566,6 @@ function exportImages() {
           exportObject.fileFormat
         );
 
-        console.log(IDAndParams);
         ee.data.startProcessing(
           IDAndParams["taskId"],
           IDAndParams["params"],

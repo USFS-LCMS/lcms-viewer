@@ -636,7 +636,11 @@ let yLabelMaxTotalLines = 18; // Max lines for all y labels to avoid over-crowdi
 let defaultQueryDateFormat = "YYYY-MM-dd"; //Default format for dates in query time series charts
 
 let clickBoundsColor = "#FF0";
-
+let areaChartFormatDict = {
+  Percentage: { mult: 100, label: "% Area" },
+  Acres: { mult: 0.000247105, label: "Acres" },
+  Hectares: { mult: 0.0001, label: "Hectares" },
+};
 let areaGeoJson;
 let areaChartingCount = 0;
 let center;

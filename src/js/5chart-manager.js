@@ -1543,8 +1543,9 @@ function runShpDefinedCharting() {
       const converted = compressGeoJSON(convertedRaw, uploadReductionFactor);
       console.log(converted);
       //First try assuming the geoJSON has spatial info
+      let area;
       try {
-        let area = ee.FeatureCollection(
+        area = ee.FeatureCollection(
           converted.features.map(function (t) {
             return ee.Feature(t).dissolve(100, ee.Projection("EPSG:4326"));
           })
@@ -1653,7 +1654,7 @@ function runShpDefinedAddLayer() {
           f.geometry.type == "Point" || "MultiPoint";
         })
       ) {
-        Map2.addLayer(
+        Map.addLayer(
           convertedRaw.features.map((pts) => {
             return ee.Feature(pts).buffer(8);
           }),
@@ -1666,7 +1667,7 @@ function runShpDefinedAddLayer() {
           "reference-layer-list"
         );
       } else {
-        Map2.addLayer(
+        Map.addLayer(
           convertedRaw,
           { layerType: "geoJSONVector" },
           name,

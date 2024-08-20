@@ -1706,7 +1706,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Tools to measure and chart data provided on the map"
   );
 } else if (mode === "Bloom-Mapper") {
-  let algalRunID = 1;
+  window.algalRunID = 1;
   addCollapse(
     "sidebar-left",
     "parameters-collapse-label",
