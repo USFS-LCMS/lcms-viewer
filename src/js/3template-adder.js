@@ -2786,14 +2786,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       urlParams.postDate1 !== undefined &&
       urlParams.postDate2 !== undefined
     ) {
+      let ogdate, ogdate2;
       if (selectedPreDateRangeType === "1 Year") {
-        var ogdate = new Date(urlParams.postDate1);
+        ogdate = new Date(urlParams.postDate1);
         ogdate.setMonth(ogdate.getMonth() - 12);
         date_format = ogdate.toISOString().slice(0, 10);
 
         urlParams.preDate1 = date_format;
 
-        var ogdate2 = new Date(urlParams.postDate2);
+        ogdate2 = new Date(urlParams.postDate2);
         ogdate2.setMonth(ogdate2.getMonth() - 12);
         date_format2 = ogdate2.toISOString().slice(0, 10);
 
@@ -2804,13 +2805,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           `${urlParams.preDate1} ---- ${urlParams.preDate2}`
         );
       } else if (selectedPreDateRangeType === "6 Month") {
-        var ogdate = new Date(urlParams.postDate1);
+        ogdate = new Date(urlParams.postDate1);
         ogdate.setMonth(ogdate.getMonth() - 6);
         date_format = ogdate.toISOString().slice(0, 10);
 
         urlParams.preDate1 = date_format;
 
-        var ogdate2 = new Date(urlParams.postDate2);
+        ogdate2 = new Date(urlParams.postDate2);
         ogdate2.setMonth(ogdate2.getMonth() - 6);
         date_format2 = ogdate2.toISOString().slice(0, 10);
 
@@ -3596,8 +3597,8 @@ if (mode === "lcms-dashboard") {
       100
     }%`
   );
-  const dashboardScrollLeft = 0;
-  const dashboardScrollTop = { left: 0, right: 0 };
+  window.dashboardScrollLeft = 0;
+  window.dashboardScrollTop = { left: 0, right: 0 };
   if (
     urlParams.showHighlightsBar === undefined ||
     urlParams.showHighlightsBar === null
@@ -3609,12 +3610,12 @@ if (mode === "lcms-dashboard") {
   }
   moveCollapse("legend-collapse", "sidebar-left");
 
-  const dashboardResultsLocation = "right";
-  const dashboardMoveLocationDict = {
+  window.dashboardResultsLocation = "right";
+  window.dashboardMoveLocationDict = {
     right: "dashboard-results-list",
     left: "charts-highlights-placeholder",
   };
-  const dashboardScrollDict = {
+  window.dashboardScrollDict = {
     right: "#dashboard-results-container-right",
     left: "#sidebar-left-container",
   };
@@ -3631,17 +3632,17 @@ if (mode === "lcms-dashboard") {
       }, 250)
     );
   };
-  var turnOnScrollMonitoring = function () {
+  function turnOnScrollMonitoring() {
     $(dashboardScrollDict[dashboardResultsLocation]).scroll(
       resultsScrollHandler
     );
-  };
-  var turnOffScrollMonitoring = function () {
+  }
+  function turnOffScrollMonitoring() {
     $(dashboardScrollDict[dashboardResultsLocation]).off(
       "scroll",
       resultsScrollHandler
     );
-  };
+  }
 
   $(".panel-title").click((e) => {
     setTimeout(() => {
@@ -3700,7 +3701,7 @@ if (mode === "lcms-dashboard") {
   const wasDragging = false;
   const mouseDown = false;
 
-  let dragBox;
+  window.dragBox;
   function dashboardSelectionModeChange() {
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
@@ -3710,7 +3711,7 @@ if (mode === "lcms-dashboard") {
       } catch (err) {}
       dashboardBoxSelect();
     } else if (dashboardAreaSelectionMode === "Drag-Box") {
-      if (dragBox === undefined) {
+      if (window.dragBox === undefined) {
         dragBox = addDragBox();
         dragBox.addListenTo(map, "map");
         dragBox.addOnStopFunction(dashboardDragboxLayerSelect);
@@ -3732,7 +3733,7 @@ if (mode === "lcms-dashboard") {
   $("#summary-area-selection-radio").change(() =>
     dashboardSelectionModeChange()
   );
-  let showPairwiseDiff;
+  window.showPairwiseDiff;
   pairwiseDiffFun = () => {
     if (pairwiseDiff === "Annual-Change") {
       showPairwiseDiff = true;

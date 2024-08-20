@@ -7,11 +7,11 @@ function sortFunction(a, b) {
 }
 function downloadURI() {
   if (uri != null && uri != undefined) {
-    var link = document.createElement("a");
+    const link = document.createElement("a");
     link.download = uriName + ".png";
     link.href = uri;
     link.click();
-    delete link;
+    // delete link;
   }
 }
 
@@ -42,7 +42,7 @@ function removeLastSelectArea() {
   );
   updateSelectedAreasNameList();
   updateSelectedAreaArea();
-  var lastIndex =
+  const lastIndex =
     selectionTracker.seletedFeatureLayerIndices[
       selectionTracker.seletedFeatureLayerIndices.length - 1
     ];
@@ -55,11 +55,11 @@ function removeLastSelectArea() {
   $("#area-charting-selected-layer-list li:first-child").remove();
 }
 function updateSelectedAreasNameList() {
-  var selectedFeatures = ee
+  const selectedFeatures = ee
     .FeatureCollection(selectionTracker.selectedFeatures)
     .flatten();
 
-  var namesList = ee.List(
+  const namesList = ee.List(
     ee.Dictionary(selectedFeatures.aggregate_histogram("name")).keys()
   );
 
@@ -72,13 +72,13 @@ function updateSelectedAreasNameList() {
   });
 }
 function updateSelectedAreaArea() {
-  var selectedFeatures = ee
+  const selectedFeatures = ee
     .FeatureCollection(selectionTracker.selectedFeatures)
     .flatten();
 
   $("#select-features-area-spinner").show();
 
-  var area = selectedFeatures.geometry().area(1000);
+  const area = selectedFeatures.geometry().area(1000);
   area.evaluate(function (values, failure) {
     if (failure !== undefined) {
       showMessage("Error", failure);
@@ -105,15 +105,15 @@ function setupAreaLayerSelection() {
 
   map.addListener("click", function (event) {
     if (getActiveTools().indexOf("Area Tools-Select an Area on map") > -1) {
-      var coords = [event.latLng.lng(), event.latLng.lat()];
+      const coords = [event.latLng.lng(), event.latLng.lat()];
 
       Object.keys(selectedFeaturesJSON).map(function (k) {
         if (layerObj[selectedFeaturesJSON[k].id].visible) {
-          var selectedFeaturesT = selectedFeaturesJSON[k].eeObject.filterBounds(
+          let selectedFeaturesT = selectedFeaturesJSON[k].eeObject.filterBounds(
             ee.Geometry.Point(coords)
           );
 
-          var namesList = ee.List(selectedFeaturesT.aggregate_array("name"));
+          const namesList = ee.List(selectedFeaturesT.aggregate_array("name"));
 
           namesList.evaluate(function (nms, failure) {
             if (failure !== undefined) {
@@ -130,7 +130,7 @@ function setupAreaLayerSelection() {
                 }
                 selectionTracker.selectedFeatures.push(selectedFeaturesT);
 
-                var layerName =
+                let layerName =
                   "Selected " +
                   selectedFeaturesJSON[k].layerName +
                   " " +
@@ -164,7 +164,7 @@ function setupAreaLayerSelection() {
 }
 
 function updateUserDefinedAreaArea() {
-  var area = 0;
+  let area = 0;
   Object.values(udpPolygonObj).map(function (poly) {
     area += google.maps.geometry.spherical.computeArea(poly.getPath());
   });
@@ -203,7 +203,7 @@ function turnOnSelectGeoJSON() {
   });
 }
 function chartSelectedAreas() {
-  var selectedFeatures = ee
+  const selectedFeatures = ee
     .FeatureCollection(selectionTracker.selectedFeatures)
     .flatten();
   if (Object.keys(areaChart.areaChartObj).length === 0) {
@@ -213,7 +213,7 @@ function chartSelectedAreas() {
     if (failure !== undefined) {
       showMessage("Error", failure);
     } else if (size !== 0) {
-      var title = $("#user-selected-area-name").val();
+      let title = $("#user-selected-area-name").val();
       if (title === "") {
         title = selectionTracker.selectedNames.join(" - ");
       }
@@ -249,17 +249,17 @@ function clearQueryGeoJSON() {
   });
 }
 // Set to infoWindow or sidebarCollapse
-var queryWindowMode = "infoWindow";
+let queryWindowMode = "infoWindow";
 queryWindowMode = "sidepane";
-var getQueryImages = function (lng, lat) {
-  var lngLat = [lng, lat];
+const getQueryImages = function (lng, lat) {
+  const lngLat = [lng, lat];
   $(".gm-ui-hover-effect").show();
-  var outDict = {};
+  const outDict = {};
   $("#summary-spinner").slideDown();
 
-  var nameEnd =
+  const nameEnd =
     " Queried Values for Lng " + lng.toFixed(3) + " Lat " + lat.toFixed(3);
-  var queryContent = `<div>
+  const queryContent = `<div>
 							<h6 style = 'font-weight:bold;padding-top:0.5rem;'>Queried values for<br>lng: ${lng
                 .toFixed(3)
                 .toString()} lat: ${lat.toFixed(3).toString()}</h6>
@@ -286,9 +286,9 @@ var getQueryImages = function (lng, lat) {
     $("#chart-collapse-div").append(queryContent);
   }
 
-  var idI = 1;
+  let idI = 1;
   function makeQueryTable(value, q, k) {
-    var containerID = k + "-container-" + idI.toString();
+    const containerID = k + "-container-" + idI.toString();
     idI++;
     $("#query-list-container")
       .append(`<table class="table table-hover bg-white">
@@ -315,7 +315,7 @@ var getQueryImages = function (lng, lat) {
         valueKeys.indexOf("viz-red") > -1
       ) {
         let mainKey = valueKeys.filter((f) => f.indexOf("viz-") === -1)[0];
-        var tValue = JSON.stringify(value[mainKey]);
+        let tValue = JSON.stringify(value[mainKey]);
         tValue =
           tValue.indexOf(".") > -1 ? parseFloat(tValue) : parseInt(tValue);
         if (q.queryDict !== null && q.queryDict !== undefined) {
@@ -338,7 +338,7 @@ var getQueryImages = function (lng, lat) {
 
         Object.keys(value).map(function (kt) {
           try {
-            var v = value[kt];
+            let v = value[kt];
 
             if (Array.isArray(v)) {
               // Limit precision
@@ -347,7 +347,7 @@ var getQueryImages = function (lng, lat) {
             } else if (!Number.isInteger(v) && v !== null) {
               v = smartToFixed(v);
             } else if (q.queryDict !== null && q.queryDict !== undefined) {
-              var t = q.queryDict[parseInt(v)];
+              const t = q.queryDict[parseInt(v)];
               if (t !== undefined) {
                 v = t;
               }
@@ -371,18 +371,18 @@ var getQueryImages = function (lng, lat) {
         });
       }
     } else if (q.type === "geeImageCollection") {
-      var yAxisLabels = { tickfont: { size: yLabelFontSize } };
+      let yAxisLabels = { tickfont: { size: yLabelFontSize } };
 
       if (q.queryDict !== undefined && q.queryDict !== null) {
         // Configure best way of showing given labels for queried pixel
         // This tries to avoid over-crowding of labels that happens when there are many long labels
         // within the queried range of values
-        var yValues = value.table[0].y.filter((n) => n !== null);
-        var yMin = yValues.min();
-        var yMax = yValues.max();
+        const yValues = value.table[0].y.filter((n) => n !== null);
+        const yMin = yValues.min();
+        const yMax = yValues.max();
 
-        var allYValues = range(yMin, yMax + 1);
-        var allYLabels = allYValues.map((v) => {
+        const allYValues = range(yMin, yMax + 1);
+        const allYLabels = allYValues.map((v) => {
           if (yValues.indexOf(v) === -1) {
             return " ";
           } else {
@@ -390,12 +390,12 @@ var getQueryImages = function (lng, lat) {
           }
         });
         console.log(allYLabels);
-        var yLabelMaxLinesT = yLabelMaxLines;
-        var brokenLabels;
+        let yLabelMaxLinesT = yLabelMaxLines;
+        let brokenLabels;
         function breakLabels() {
-          var totalLines = 0;
+          let totalLines = 0;
           brokenLabels = allYLabels.map((l) => {
-            var chunks = l
+            const chunks = l
               .slice(0, yLabelMaxLength)
               .chunk(yLabelBreakLength)
               .slice(0, yLabelMaxLinesT);
@@ -429,7 +429,7 @@ var getQueryImages = function (lng, lat) {
         $("#legendDiv").css("max-width", "575px");
         chartWidthC = 550;
       }
-      var plotLayout = {
+      const plotLayout = {
         plot_bgcolor: "#D6D1CA",
         paper_bgcolor: "#D6D1CA",
         font: {
@@ -464,7 +464,7 @@ var getQueryImages = function (lng, lat) {
         },
         yaxis: yAxisLabels,
       };
-      var buttonOptions = {
+      const buttonOptions = {
         toImageButtonOptions: {
           filename: q.name + nameEnd,
           width: 900,
@@ -480,13 +480,13 @@ var getQueryImages = function (lng, lat) {
 												<tbody id = '${containerID}'></tbody>
 											  </table>`);
 
-      var infoKeys = Object.keys(value);
+      const infoKeys = Object.keys(value);
       $("#" + containerID).append(
         `<tr><th>${q.name}</th><th>Attribute Table</th></tr>`
       );
 
       infoKeys.map(function (name) {
-        var valueT = smartToFixed(value[name]);
+        const valueT = smartToFixed(value[name]);
         $("#" + containerID).append(
           `<tr><th>${name}</th><td>${valueT}</td></tr>`
         );
@@ -499,16 +499,16 @@ var getQueryImages = function (lng, lat) {
       $("#summary-spinner").slideUp();
     }
   }
-  var keys = Object.keys(queryObj);
-  var keysToShow = [];
+  const keys = Object.keys(queryObj);
+  const keysToShow = [];
   keys.map(function (k) {
-    var q = queryObj[k];
+    const q = queryObj[k];
     if (q.visible) {
       keysToShow.push(k);
     }
   });
-  var keyCount = keysToShow.length;
-  var keyI = 0;
+  let keyCount = keysToShow.length;
+  let keyI = 0;
 
   if (keyCount === 0) {
     $("#summary-spinner").slideUp();
@@ -519,13 +519,13 @@ var getQueryImages = function (lng, lat) {
   }
   clearQueryGeoJSON();
   keysToShow.map(function (k) {
-    var q = queryObj[k];
+    const q = queryObj[k];
 
     if (q.visible) {
-      var clickPt = ee.Geometry.Point(lngLat);
+      const clickPt = ee.Geometry.Point(lngLat);
       ga("send", "event", mode, "pixelQuery-" + q.type, q.name);
       if (q.type === "geeImage") {
-        var img = ee.Image(q.queryItem);
+        const img = ee.Image(q.queryItem);
         img
           .reduceRegion(
             ee.Reducer.first(),
@@ -543,7 +543,7 @@ var getQueryImages = function (lng, lat) {
             makeQueryTable(values, q, k);
           });
       } else if (q.type === "geeImageCollection") {
-        var dateFormat = q.queryDateFormat;
+        let dateFormat = q.queryDateFormat;
         if (dateFormat === null || dateFormat === undefined) {
           dateFormat = defaultQueryDateFormat;
         }
@@ -551,22 +551,22 @@ var getQueryImages = function (lng, lat) {
         if (dateFormat.indexOf("HH:mm") > -1) {
           q.xTickDateFormat = "%Y-%m-%d\n%H:%M";
         }
-        var c = ee.ImageCollection(q.queryItem);
-        var plotBounds = clickPt.buffer(plotRadius).bounds();
+        let c = ee.ImageCollection(q.queryItem);
+        const plotBounds = clickPt.buffer(plotRadius).bounds();
         function getCollectionValues(values) {
           keyI++;
           if (values.length > 1) {
-            var header = values[0];
+            const header = values[0];
             values = values.slice(1);
 
-            var hasTime = false;
-            var timeColumnN = header.indexOf("time");
-            var idColumnN = header.indexOf("id");
+            let hasTime = false;
+            const timeColumnN = header.indexOf("time");
+            const idColumnN = header.indexOf("id");
 
-            var ids = arrayColumn(values, idColumnN).filter(
+            const ids = arrayColumn(values, idColumnN).filter(
               (v, i, a) => a.indexOf(v) === i
             );
-            var expectedLength = ids.length;
+            const expectedLength = ids.length;
             if (values.length > expectedLength) {
               console.log("reducing number of inputs");
               values = values.slice(0, expectedLength);
@@ -574,8 +574,8 @@ var getQueryImages = function (lng, lat) {
 
             hasTime = values[0][timeColumnN] !== null;
 
-            var xColumn;
-            var xLabel;
+            let xColumn;
+            let xLabel;
             if (hasTime) {
               xColumn = arrayColumn(values, timeColumnN);
               xLabel = "Time";
@@ -583,11 +583,11 @@ var getQueryImages = function (lng, lat) {
               xColumn = arrayColumn(values, idColumnN);
               xLabel = "ID";
             }
-            var yColumnNames = header.slice(4);
+            const yColumnNames = header.slice(4);
             yColumns = values.map(function (v) {
               return v.slice(4);
             });
-            var tableList = yColumnNames.map(function (c, i) {
+            const tableList = yColumnNames.map(function (c, i) {
               let color =
                 q.queryParams.palette !== undefined
                   ? q.queryParams.palette[i]
@@ -616,7 +616,7 @@ var getQueryImages = function (lng, lat) {
           });
         }
 
-        var getRegionCall = c.getRegion(plotBounds, scale, crs, transform);
+        const getRegionCall = c.getRegion(plotBounds, scale, crs, transform);
         getRegionCall.evaluate(function (values, failure) {
           if (values !== undefined && values !== null) {
             getCollectionValues(values);
@@ -629,19 +629,18 @@ var getQueryImages = function (lng, lat) {
           }
         });
       } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
+        let features;
         try {
-          var features = q.queryItem.filterBounds(clickPt);
+          features = q.queryItem.filterBounds(clickPt);
         } catch (err) {
-          var features = ee
-            .FeatureCollection([q.queryItem])
-            .filterBounds(clickPt);
+          features = ee.FeatureCollection([q.queryItem]).filterBounds(clickPt);
         }
         features.evaluate(function (values) {
           keyI++;
           if (values !== undefined) {
             queryGeoJSON.addGeoJson(values);
 
-            var features = values.features;
+            const features = values.features;
 
             if (features.length === 0) {
               makeQueryTable(null, q, k);
@@ -658,10 +657,10 @@ var getQueryImages = function (lng, lat) {
     }
   });
 };
-var fsb;
+let fsb;
 function populateChartDropdown(id, collectionDict, whichChartCollectionVar) {
   $("#" + id).empty();
-  var keys = Object.keys(collectionDict);
+  const keys = Object.keys(collectionDict);
   eval(whichChartCollectionVar + " = keys[0]");
   if (keys.length > 1) {
     Object.keys(collectionDict).map(function (k) {
@@ -696,13 +695,13 @@ function setupFSB() {
   $("#forestBoundaries").empty();
   $("#forestBoundaries").hide();
   $("#select-area-spinner").show();
-  var nfsFieldName = "FORESTNAME";
-  var nfs = ee.FeatureCollection(
+  const nfsFieldName = "FORESTNAME";
+  let nfs = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries"
   );
 
-  var npsFieldName = "PARKNAME";
-  var nps = ee.FeatureCollection(
+  const npsFieldName = "PARKNAME";
+  let nps = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries"
   );
 
@@ -722,12 +721,12 @@ function setupFSB() {
       areaChartCollections[whichAreaChartCollection].collection.geometry()
     );
 
-    var names = ee.List(
+    const names = ee.List(
       ee.Dictionary(fsb.aggregate_histogram(fieldName)).keys()
     );
     ee.Dictionary.fromLists(names, names).evaluate(function (d) {
-      var mySelect = $("#forestBoundaries");
-      var choose;
+      const mySelect = $("#forestBoundaries");
+      let choose;
       mySelect.append(
         $("<option></option>").val(choose).html("Choose an area")
       );
@@ -740,9 +739,9 @@ function setupFSB() {
   }
 }
 
-var udp;
-var udpList = [];
-var whichAreaDrawingMethod;
+let udp;
+const udpList = [];
+let whichAreaDrawingMethod;
 function areaChartingTabSelect(target) {
   stopAreaCharting();
   stopCharting();
@@ -818,16 +817,16 @@ function startUserDefinedAreaCharting() {
 
   mapHammer = new Hammer(document.getElementById("map"));
   mapHammer.on("tap", function (event) {
-    var path = udpPolygonObj[udpPolygonNumber].getPath();
-    var x = event.center.x;
-    var y = event.center.y;
+    const path = udpPolygonObj[udpPolygonNumber].getPath();
+    const x = event.center.x;
+    const y = event.center.y;
     clickLngLat = point2LatLng(x, y);
     path.push(clickLngLat);
     updateUserDefinedAreaArea();
   });
 
   mapHammer.on("doubletap", function () {
-    var path = udpPolygonObj[udpPolygonNumber].getPath();
+    const path = udpPolygonObj[udpPolygonNumber].getPath();
     udpPolygonObj[udpPolygonNumber].setMap(null);
     udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
     udpPolygonObj[udpPolygonNumber].setPath(path);
@@ -871,11 +870,11 @@ function startUserDefinedAreaCharting() {
 }
 function chartUserDefinedArea() {
   try {
-    var userArea = [];
-    var anythingToChart = false;
+    let userArea = [];
+    let anythingToChart = false;
     Object.values(udpPolygonObj).map(function (v) {
-      var coords = v.getPath().getArray();
-      var f = [];
+      const coords = v.getPath().getArray();
+      const f = [];
       coords.map(function (coord) {
         f.push([coord.lng(), coord.lat()]);
       });
@@ -892,7 +891,7 @@ function chartUserDefinedArea() {
       );
     } else {
       userArea = ee.FeatureCollection(userArea);
-      var udpName = $("#user-defined-area-name").val();
+      let udpName = $("#user-defined-area-name").val();
       if (udpName === "") {
         udpName = "User Defined Area " + userDefinedI.toString();
         userDefinedI++;
@@ -919,13 +918,13 @@ function chartChosenArea() {
   map.setOptions({ draggableCursor: "progress" });
   map.setOptions({ cursor: "progress" });
 
-  var chosenArea = $("#forestBoundaries").val();
-  var chosenAreaName =
+  const chosenArea = $("#forestBoundaries").val();
+  const chosenAreaName =
     chosenArea +
     " " +
     areaChartCollections[whichAreaChartCollection].label +
     " Summary";
-  var chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName, chosenArea));
+  const chosenAreaGeo = fsb.filter(ee.Filter.eq(fieldName, chosenArea));
 
   makeAreaChart(chosenAreaGeo, chosenAreaName);
 }
@@ -939,16 +938,16 @@ function convertToStack(
       return img.set("year", img.date().format(dateFormat));
     });
   }
-  var oBns = areaChartCollection.first().bandNames();
-  var xProps = ee.List(
+  const oBns = areaChartCollection.first().bandNames();
+  const xProps = ee.List(
     areaChartCollection
       .toList(10000, 0)
       .map((img) => ee.Image(img).get(xAxisProperty))
   );
-  var stack = areaChartCollection.toBands();
-  var bns = stack.bandNames();
-  var bnsOut = bns.map((bn) => {
-    var i = ee.Number.parse(ee.String(bn).split("_").get(0));
+  const stack = areaChartCollection.toBands();
+  const bns = stack.bandNames();
+  const bnsOut = bns.map((bn) => {
+    const i = ee.Number.parse(ee.String(bn).split("_").get(0));
     return ee
       .String(xProps.get(i))
       .cat("---")
@@ -993,7 +992,7 @@ function getAreaSummaryTable(
       return img.set("year", img.date().format(dateFormat));
     });
   }
-  var bandNames = ee.Image(areaChartCollection.first()).bandNames();
+  const bandNames = ee.Image(areaChartCollection.first()).bandNames();
 
   let areaChartCollectionStack = areaChartCollection.toBands();
   let xLabels = areaChartCollection.aggregate_histogram(xAxisProperty).keys();
@@ -1001,7 +1000,7 @@ function getAreaSummaryTable(
 
   return areaChartCollection.toList(10000, 0).map(function (img) {
     img = ee.Image(img);
-    var t = img.reduceRegion(
+    let t = img.reduceRegion(
       ee.Reducer.fixedHistogram(0, 2, 2),
       area,
       scale,
@@ -1011,22 +1010,22 @@ function getAreaSummaryTable(
       1e13,
       4
     );
-    var xAxisLabel = img.get(xAxisProperty);
+    const xAxisLabel = img.get(xAxisProperty);
     t = ee.Dictionary(t);
-    var sum;
+    let sum;
     values = bandNames.map(function (bn) {
-      var a = t.get(bn);
+      let a = t.get(bn);
       a = ee.Array(a).slice(1, 1, 2).project([0]);
       sum = ee.Number(a.reduce(ee.Reducer.sum(), [0]).get([0]));
       a = ee.Number(a.toList().get(1));
-      var pct = a.divide(sum).multiply(multiplier);
+      const pct = a.divide(sum).multiply(multiplier);
       return pct;
     });
     values = ee.List([xAxisLabel]).cat(values);
     return values;
   });
 }
-var chartFormatDict = {
+const chartFormatDict = {
   Percentage: { mult: "NA", label: "% Area", places: 2, scale: 30 },
   Acres: { mult: 0.222395, label: "Acres", places: 0, scale: 30 },
   Hectares: { mult: 0.09, label: "ha", places: 0, scale: 30 },
@@ -1038,7 +1037,7 @@ function expandChart() {
   $("#curve_chart_big_modal").modal();
   closeChart();
 }
-var currentChartID = 0;
+let currentChartID = 0;
 function cancelMakeAreaChart() {
   currentChartID++;
   $("#summary-spinner").slideUp();
@@ -1046,14 +1045,14 @@ function cancelMakeAreaChart() {
 function makeAreaChart(area, name, userDefined) {
   let maxError = 500;
   currentChartID++;
-  var thisChartID = currentChartID;
+  const thisChartID = currentChartID;
   areaGeoJson = null;
   if (userDefined === undefined || userDefined === null) {
     userDefined = false;
   }
 
   areaChartingCount++;
-  var fColor = randomColor().slice(1, 7);
+  const fColor = randomColor().slice(1, 7);
 
   area = area.set("source", "LCMS_data_explorer");
   0;
@@ -1228,7 +1227,7 @@ function makeAreaChart(area, name, userDefined) {
               chartFormatDict[areaChartFormat].label +
               " %{source.label}-%{target.label}<extra></extra>";
 
-            var data = {
+            let data = {
               type: "sankey",
               orientation: "h",
               node: {
@@ -1251,9 +1250,9 @@ function makeAreaChart(area, name, userDefined) {
             console.log(labels);
             console.log(sankeyPalette);
             console.log(sankey_dict);
-            var data = [data];
+            data = [data];
 
-            var layout = {
+            const layout = {
               title: name,
               font: {
                 size: fontSize,
@@ -1269,7 +1268,7 @@ function makeAreaChart(area, name, userDefined) {
               paper_bgcolor: "#DDD",
               plot_bgcolor: "#DDD",
             };
-            var config = {
+            const config = {
               toImageButtonOptions: {
                 format: "png", // one of png, svg, jpeg, webp
                 filename: name,
@@ -1321,7 +1320,7 @@ function makeAreaChart(area, name, userDefined) {
 												
 												`);
 
-          var chartTableHTML = htmlTable(dataTable);
+          const chartTableHTML = htmlTable(dataTable);
           $("#chart-table").append(chartTableHTML);
           toggleChartTable(localStorage.tableOrChart);
           area.evaluate(function (i, failure) {
@@ -1357,13 +1356,14 @@ function makeAreaChart(area, name, userDefined) {
       $("#summary-spinner").slideUp();
     }
   } else {
-    var areaChartCollection =
+    const areaChartCollection =
       areaChartCollections[whichAreaChartCollection].collection;
-    var xAxisProperty =
+    let xAxisProperty =
       areaChartCollections[whichAreaChartCollection].xAxisProperty;
-    var xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
-    var yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
-    var dateFormat = areaChartCollections[whichAreaChartCollection].dateFormat;
+    let xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel;
+    let yAxisLabel = areaChartCollections[whichAreaChartCollection].yAxisLabel;
+    const dateFormat =
+      areaChartCollections[whichAreaChartCollection].dateFormat;
     if (xAxisProperty === null || xAxisProperty == undefined) {
       xAxisProperty = "year";
     }
@@ -1374,7 +1374,7 @@ function makeAreaChart(area, name, userDefined) {
       yAxisLabel = "% Area";
     }
     yAxisLabel = areaChartFormatDict[areaChartFormat].label;
-    var totalArea = area.area(1000);
+    const totalArea = area.area(1000);
     if (["Acres", "Hectares"].indexOf(areaChartFormat) > -1) {
       multiplier = totalArea.multiply(
         areaChartFormatDict[areaChartFormat].mult
@@ -1383,7 +1383,7 @@ function makeAreaChart(area, name, userDefined) {
       multiplier = areaChartFormatDict[areaChartFormat].mult;
     }
 
-    var bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
+    let bandNames = ee.Image(areaChartCollection.first()).bandNames().getInfo();
     bandNames = bandNames.map(function (bn) {
       return (
         bn.replaceAll("_", " ") +
@@ -1393,7 +1393,7 @@ function makeAreaChart(area, name, userDefined) {
     });
     bandNames.unshift(xAxisProperty);
 
-    var table = getAreaSummaryTable(
+    let table = getAreaSummaryTable(
       areaChartCollection,
       area,
       xAxisProperty,
@@ -1405,16 +1405,16 @@ function makeAreaChart(area, name, userDefined) {
       areaChartCollections[whichAreaChartCollection]
     );
 
-    var iteration = 0;
-    var maxIterations = 60;
-    var success = false;
-    var maxTime = 10000;
-    var startTime = new Date();
-    var tableT;
+    let iteration = 0;
+    const maxIterations = 60;
+    const success = false;
+    const maxTime = 10000;
+    const startTime = new Date();
+    let tableT;
     function evalTable() {
       table.evaluate(function (tableT, failure) {
-        var endTime = new Date();
-        var dt = endTime - startTime;
+        const endTime = new Date();
+        const dt = endTime - startTime;
 
         if (
           failure !== undefined &&
@@ -1427,14 +1427,14 @@ function makeAreaChart(area, name, userDefined) {
           tableT.unshift(bandNames);
           console.log(tableT);
           $("#summary-spinner").slideUp();
-          var stackedAreaChart =
+          const stackedAreaChart =
             areaChartCollections[whichAreaChartCollection].stacked;
-          var steppedLine =
+          const steppedLine =
             areaChartCollections[whichAreaChartCollection].steppedLine;
-          var colors = areaChartCollections[whichAreaChartCollection].colors;
-          var chartType =
+          const colors = areaChartCollections[whichAreaChartCollection].colors;
+          let chartType =
             areaChartCollections[whichAreaChartCollection].chartType;
-          var fieldsHidden =
+          const fieldsHidden =
             areaChartCollections[whichAreaChartCollection].fieldsHidden;
           if (chartType === null || chartType === undefined) {
             chartType = "line";
@@ -1531,7 +1531,7 @@ function runShpDefinedCharting() {
 
     $("#summary-spinner").slideDown();
 
-    var name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
+    const name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
 
     map.setOptions({ draggableCursor: "progress" });
     map.setOptions({ cursor: "progress" });
@@ -1540,17 +1540,17 @@ function runShpDefinedCharting() {
       console.log("successfully converted to JSON");
       console.log(convertedRaw);
       console.log("compressing geoJSON");
-      var converted = compressGeoJSON(convertedRaw, uploadReductionFactor);
+      const converted = compressGeoJSON(convertedRaw, uploadReductionFactor);
       console.log(converted);
       //First try assuming the geoJSON has spatial info
       try {
-        var area = ee.FeatureCollection(
+        let area = ee.FeatureCollection(
           converted.features.map(function (t) {
             return ee.Feature(t).dissolve(100, ee.Projection("EPSG:4326"));
           })
         );
         console.log("N features to summarize ");
-        var nFeatures = area.size().getInfo();
+        const nFeatures = area.size().getInfo();
         console.log(nFeatures);
         if (nFeatures == 0) {
           showMessage(
@@ -1569,7 +1569,7 @@ function runShpDefinedCharting() {
         console.log(err);
         if (err.indexOf("Error: Invalid GeoJSON geometry:") > -1) {
           try {
-            var area = ee.FeatureCollection(
+            let area = ee.FeatureCollection(
               fixGeoJSONZ(converted).features.map(function (t) {
                 return ee.Feature(t).dissolve(100, ee.Projection("EPSG:4326"));
               })
@@ -1639,7 +1639,7 @@ function runShpDefinedCharting() {
 // new function based on runShpDefinedCharting that is for adding a user defined shp, geojson, etc without doing any charting -EH
 function runShpDefinedAddLayer() {
   if (jQuery("#areaUpload")[0].files.length > 0) {
-    var name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
+    const name = jQuery("#areaUpload")[0].files[0].name.split(".")[0];
 
     map.setOptions({ draggableCursor: "progress" });
     map.setOptions({ cursor: "progress" });
@@ -1733,12 +1733,12 @@ function startQuery() {
     map.setOptions({ cursor: "progress" });
 
     print("Map was double clicked");
-    var x = e.center.x;
-    var y = e.center.y;
+    const x = e.center.x;
+    const y = e.center.y;
     center = point2LatLng(x, y);
 
-    var pt = ee.Geometry.Point([center.lng(), center.lat()]);
-    var plotBounds = pt.buffer(plotRadius).bounds();
+    const pt = ee.Geometry.Point([center.lng(), center.lat()]);
+    const plotBounds = pt.buffer(plotRadius).bounds();
     addClickMarker(plotBounds);
 
     marker.setMap(map);
@@ -1762,10 +1762,10 @@ function stopQuery() {
   } catch (err) {}
 }
 function getImageCollectionValuesForCharting(pt) {
-  var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
-  var tryCount = 2;
+  const icT = ee.ImageCollection(chartCollection.filterBounds(pt));
+  const tryCount = 2;
   try {
-    var allValues = icT.getRegion(pt, scale, crs, transform).evaluate();
+    const allValues = icT.getRegion(pt, scale, crs, transform).evaluate();
     print(allValues);
     return allValues;
   } catch (err) {
@@ -1776,21 +1776,21 @@ function getImageCollectionValuesForCharting(pt) {
   }
 }
 Date.prototype.yyyymmdd = function () {
-  var mm = this.getMonth() + 1; // is zero-based
-  var dd = this.getDate();
+  const mm = this.getMonth() + 1; // is zero-based
+  const dd = this.getDate();
 
   return [this.getFullYear(), !mm[1] && "0", mm, !dd[1] && "0", dd].join(""); // padding
 };
 function getDataTable(pt) {
-  var values = getImageCollectionValuesForCharting(pt);
+  let values = getImageCollectionValuesForCharting(pt);
   globalChartValues = values;
-
+  let startColumn;
   if (chartIncludeDate) {
-    var startColumn = 3;
+    startColumn = 3;
   } else {
-    var startColumn = 4;
+    startColumn = 4;
   }
-  var header = values[0].slice(startColumn);
+  const header = values[0].slice(startColumn);
 
   values = values
     .slice(1)
@@ -1802,7 +1802,7 @@ function getDataTable(pt) {
   print(values);
   if (chartIncludeDate) {
     values = values.map(function (v) {
-      var d = [new Date(v[0])];
+      const d = [new Date(v[0])];
       v.slice(1).map(function (vt) {
         d.push(vt);
       });
@@ -1810,7 +1810,7 @@ function getDataTable(pt) {
     });
   }
 
-  var forChart = [header];
+  const forChart = [header];
   values.map(function (v) {
     forChart.push(v);
   });
@@ -1821,11 +1821,11 @@ function getDataTable(pt) {
 //////////////////////////////////////////////////////////////////
 //ChartJS code
 function downloadChartJS(chart, name) {
-  var link = document.createElement("a");
+  const link = document.createElement("a");
   link.download = name;
   link.href = chart.toBase64Image();
   link.click();
-  delete link;
+  // delete link;
   ga("send", "event", mode, getActiveTools()[0] + "-chartDownload", "png");
 }
 
@@ -1891,7 +1891,7 @@ function downloadPlotly(
   scale = 2,
   chartContainerID = "chart-download-canvas"
 ) {
-  var currentChart = document.getElementById(chartContainerID);
+  const currentChart = document.getElementById(chartContainerID);
 
   let width = currentChart.layout.width;
   let height = currentChart.layout.height;
@@ -1934,9 +1934,9 @@ Chart.pluginService.register({
       chart.config.options.chartArea &&
       chart.config.options.chartArea.backgroundColor
     ) {
-      var helpers = Chart.helpers;
-      var ctx = chart.chart.ctx;
-      var chartArea = chart.chartArea;
+      const helpers = Chart.helpers;
+      const ctx = chart.chart.ctx;
+      const chartArea = chart.chartArea;
 
       ctx.save();
       ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
@@ -1950,11 +1950,11 @@ Chart.pluginService.register({
     }
   },
 });
-var dataToTable = function (dataset) {
-  var html = "<table>";
+const dataToTable = function (dataset) {
+  let html = "<table>";
   html += '<thead><tr><th style="width:120px;">#</th>';
 
-  var columnCount = 0;
+  let columnCount = 0;
   jQuery.each(dataset.datasets, function (idx, item) {
     html +=
       '<th style="background-color:' +
@@ -1986,8 +1986,9 @@ var dataToTable = function (dataset) {
 
   return html;
 };
-var chartJSChart, plotlyDownloadChartObject;
-var chartType;
+let chartJSChart;
+window.plotlyDownloadChartObject;
+let chartType;
 if (
   localStorage.tableOrChart === undefined ||
   localStorage.tableOrChart === null
@@ -1997,8 +1998,8 @@ if (
 
 addModal("main-container", "chart-modal");
 function configChartModal(chartPlatform = "chartJS") {
-  var h = $(document).height();
-  var w = $(document).width();
+  const h = $(document).height();
+  const w = $(document).width();
   if (h / w > 1) {
     canvasHeight = "90%";
     canvasWidth = "100%";
@@ -2041,8 +2042,8 @@ function addChartJS(
   yAxisLabel,
   fieldsHidden
 ) {
-  var displayXAxis = true;
-  var displayYAxis = true;
+  let displayXAxis = true;
+  let displayYAxis = true;
   if (fieldsHidden === null || fieldsHidden === undefined) {
     fieldsHidden = null;
   }
@@ -2069,20 +2070,20 @@ function addChartJS(
 
   dataTable = dataTableNumbersToNames(dt);
   configChartModal();
-  var data = dt.slice(1);
-  var firstColumn = arrayColumn(data, 0);
-  var columnN = dt[1].length;
-  var columns = range(1, columnN);
-  var datasets = columns.map(function (i) {
-    var fieldHidden = false;
+  const data = dt.slice(1);
+  const firstColumn = arrayColumn(data, 0);
+  const columnN = dt[1].length;
+  const columns = range(1, columnN);
+  const datasets = columns.map(function (i) {
+    let fieldHidden = false;
     if (fieldsHidden !== null) {
       fieldHidden = fieldsHidden[i - 1];
     }
-    var col = arrayColumn(dt, i);
-    var label = col[0];
-    var data = col.slice(1);
+    const col = arrayColumn(dt, i);
+    const label = col[0];
+    let data = col.slice(1);
     data = data.map(function (i) {
-      var out;
+      let out;
       try {
         out = i.toFixed(6);
       } catch (err) {
@@ -2092,11 +2093,11 @@ function addChartJS(
       return out;
     });
 
-    var color = colors[(i - 1) % colors.length];
+    let color = colors[(i - 1) % colors.length];
     if (color.indexOf("#") === -1) {
       color = "#" + color;
     }
-    var out = {
+    const out = {
       label: label,
       pointStyle: "circle",
       pointRadius: 1,
@@ -2186,7 +2187,7 @@ function addChartJS(
 										</div>
 										`);
 
-  var chartTableHTML = htmlTable(dataTable);
+  const chartTableHTML = htmlTable(dataTable);
   $("#chart-table").append(chartTableHTML);
   toggleChartTable(localStorage.tableOrChart);
   $("#chart-modal").modal();
@@ -2215,16 +2216,17 @@ function change(newType, stacked, steppedLine) {
     steppedLine = false;
   }
 
-  var config = chartJSChart.config;
+  const config = chartJSChart.config;
   chartJSChart.destroy();
   config.type = newType;
 
-  var currentScales = config.options.scales;
+  const currentScales = config.options.scales;
   currentScales.xAxes[0].stacked = stacked;
   currentScales.yAxes[0].stacked = stacked;
   config.options.scales = currentScales;
+  let datasets;
   if (stacked) {
-    var datasets = config.data.datasets;
+    datasets = config.data.datasets;
     datasets = datasets.map(function (dataset) {
       dataset["fill"] = true;
       dataset["backgroundColor"] = dataset["borderColor"];
@@ -2233,7 +2235,7 @@ function change(newType, stacked, steppedLine) {
     });
     config.data.datasets = datasets;
   } else {
-    var datasets = config.data.datasets;
+    datasets = config.data.datasets;
     datasets = datasets.map(function (dataset) {
       dataset["fill"] = false;
       dataset["steppedLine"] = false;
@@ -2244,8 +2246,8 @@ function change(newType, stacked, steppedLine) {
 
   chartJSChart = new Chart($("#chart-canvas"), config);
 }
-var chartTableDict;
-var testTable = JSON.parse(
+let chartTableDict;
+const testTable = JSON.parse(
   '[["id","longitude","latitude","time","Raw NDVI","LANDTRENDR Fitted NDVI","Land Cover Class","Land Use Class","Loss Probability","Gain Probability"],["Landsat_Fmask_allL7_SR_medoid_1984_1986_190_250_1_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1985",-109.74183328494144,42.94571387213776,486432000000,0.6041558441558442,0.61475,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1985_1987_190_250_2_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1986",-109.74183328494144,42.94571387213776,517968000000,0.6490280777537797,0.6148,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1986_1988_190_250_3_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1987",-109.74183328494144,42.94571387213776,549504000000,0.6315240083507307,0.61485,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1987_1989_190_250_4_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1988",-109.74183328494144,42.94571387213776,581126400000,0.6315240083507307,0.6149,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1988_1990_190_250_5_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1989",-109.74183328494144,42.94571387213776,612662400000,0.6353887399463807,0.61495,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1989_1991_190_250_6_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1990",-109.74183328494144,42.94571387213776,644198400000,0.6176795580110498,0.615,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1990_1992_190_250_7_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1991",-109.74183328494144,42.94571387213776,675734400000,0.5684689236988377,0.61505,0.699999988079071,0.30000001192092896,0,0],["Landsat_Fmask_allL7_SR_medoid_1991_1993_190_250_8_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1992",-109.74183328494144,42.94571387213776,707356800000,0.5684689236988377,0.6151,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1992_1994_190_250_9_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1993",-109.74183328494144,42.94571387213776,738892800000,0.6082029141932002,0.61515,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1993_1995_190_250_10_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1994",-109.74183328494144,42.94571387213776,770428800000,0.5819209039548022,0.6152000000000001,0.699999988079071,0.30000001192092896,0.05000000074505806,0],["Landsat_Fmask_allL7_SR_medoid_1994_1996_190_250_11_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1995",-109.74183328494144,42.94571387213776,801964800000,0.6067796610169491,0.6152500000000001,0.699999988079071,0.30000001192092896,0.05000000074505806,0],["Landsat_Fmask_allL7_SR_medoid_1995_1997_190_250_12_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1996",-109.74183328494144,42.94571387213776,833587200000,0.6067796610169491,0.6153000000000001,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1996_1998_190_250_13_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1997",-109.74183328494144,42.94571387213776,865123200000,0.6450617283950617,0.6153500000000001,0.699999988079071,0.30000001192092896,0.03999999910593033,0.009999999776482582],["Landsat_Fmask_allL7_SR_medoid_1997_1999_190_250_14_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1998",-109.74183328494144,42.94571387213776,896659200000,0.6450617283950617,0.6154000000000001,0.699999988079071,0.30000001192092896,0.019999999552965164,0],["Landsat_Fmask_allL7_SR_medoid_1998_2000_190_250_15_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-1999",-109.74183328494144,42.94571387213776,928195200000,0.6054347826086957,0.61545,0.699999988079071,0.30000001192092896,0.07999999821186066,0],["Landsat_Fmask_allL7_SR_medoid_1999_2001_190_250_16_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2000",-109.74183328494144,42.94571387213776,959817600000,0.6196961760083813,0.6155,0.699999988079071,0.30000001192092896,0.10999999940395355,0],["Landsat_Fmask_allL7_SR_medoid_2000_2002_190_250_17_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2001",-109.74183328494144,42.94571387213776,991353600000,0.625,0.61555,0.699999988079071,0.30000001192092896,0.20999999344348907,0],["Landsat_Fmask_allL7_SR_medoid_2001_2003_190_250_18_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2002",-109.74183328494144,42.94571387213776,1022889600000,0.625,0.6156,0.699999988079071,0.30000001192092896,0.3700000047683716,0],["Landsat_Fmask_allL7_SR_medoid_2002_2004_190_250_19_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2003",-109.74183328494144,42.94571387213776,1054425600000,0.5976331360946746,0.61565,0.699999988079071,0.30000001192092896,0.30000001192092896,0],["Landsat_Fmask_allL7_SR_medoid_2003_2005_190_250_20_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2004",-109.74183328494144,42.94571387213776,1086048000000,0.6184004181913225,0.6157,0.699999988079071,0.30000001192092896,0.23999999463558197,0],["Landsat_Fmask_allL7_SR_medoid_2004_2006_190_250_21_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2005",-109.74183328494144,42.94571387213776,1117584000000,0.6023643202579259,0.6050375,0.699999988079071,0.30000001192092896,0.3799999952316284,0],["Landsat_Fmask_allL7_SR_medoid_2005_2007_190_250_22_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2006",-109.74183328494144,42.94571387213776,1149120000000,0.5668202764976958,0.594375,0.699999988079071,0.30000001192092896,0.3100000023841858,0],["Landsat_Fmask_allL7_SR_medoid_2006_2008_190_250_23_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2007",-109.74183328494144,42.94571387213776,1180656000000,0.5428024868483978,0.5837125000000001,0.699999988079071,0.30000001192092896,0.7099999785423279,0],["Landsat_Fmask_allL7_SR_medoid_2007_2009_190_250_24_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2008",-109.74183328494144,42.94571387213776,1212278400000,0.6413103831204887,0.5730500000000001,0.699999988079071,0.30000001192092896,0.5099999904632568,0],["Landsat_Fmask_allL7_SR_medoid_2008_2010_190_250_25_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2009",-109.74183328494144,42.94571387213776,1243814400000,0.5547407019381875,0.5623875,0.699999988079071,0.30000001192092896,0.8799999952316284,0],["Landsat_Fmask_allL7_SR_medoid_2009_2011_190_250_26_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2010",-109.74183328494144,42.94571387213776,1275350400000,0.5532495903877663,0.551725,0.699999988079071,0.30000001192092896,0.550000011920929,0],["Landsat_Fmask_allL7_SR_medoid_2010_2012_190_250_27_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2011",-109.74183328494144,42.94571387213776,1306886400000,0.5532495903877663,0.5410625,0.699999988079071,0.30000001192092896,0.5199999809265137,0],["Landsat_Fmask_allL7_SR_medoid_2011_2013_190_250_28_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2012",-109.74183328494144,42.94571387213776,1338508800000,0.5121196493037647,0.5304,0.699999988079071,0.30000001192092896,0.7799999713897705,0.019999999552965164],["Landsat_Fmask_allL7_SR_medoid_2012_2014_190_250_29_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2013",-109.74183328494144,42.94571387213776,1370044800000,0.5759870200108166,0.5492714285714286,0.699999988079071,0.30000001192092896,0.10999999940395355,0.15000000596046448],["Landsat_Fmask_allL7_SR_medoid_2013_2015_190_250_30_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2014",-109.74183328494144,42.94571387213776,1401580800000,0.5555555555555556,0.5681428571428572,0.699999988079071,0.30000001192092896,0.17000000178813934,0.09000000357627869],["Landsat_Fmask_allL7_SR_medoid_2014_2016_190_250_31_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2015",-109.74183328494144,42.94571387213776,1433116800000,0.6195835678109173,0.5870142857142857,0.699999988079071,0.30000001192092896,0.07999999821186066,0.029999999329447746],["Landsat_Fmask_allL7_SR_medoid_2015_2017_190_250_32_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2016",-109.74183328494144,42.94571387213776,1464739200000,0.6360619469026548,0.6058857142857144,0.699999988079071,0.30000001192092896,0.14000000059604645,0.14000000059604645],["Landsat_Fmask_allL7_SR_medoid_2016_2018_190_250_33_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2017",-109.74183328494144,42.94571387213776,1496275200000,0.6152263374485596,0.6247571428571429,0.699999988079071,0.30000001192092896,0.05000000074505806,0.11999999731779099],["Landsat_Fmask_allL7_SR_medoid_2017_2019_190_250_34_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2018",-109.74183328494144,42.94571387213776,1527811200000,0.656484727090636,0.6436285714285715,0.699999988079071,0.30000001192092896,0.17000000178813934,0.1899999976158142],["Landsat_Fmask_allL7_SR_medoid_2018_2020_190_250_35_BT-LC-LU-DND-RNR-DNDSlow-DNDFast-2019",-109.74183328494144,42.94571387213776,1559347200000,0.6271186440677967,0.6625,0.699999988079071,0.30000001192092896,0.1599999964237213,0.3199999928474426]]'
 );
 function dataTableNumbersToNames(dataTable) {
@@ -2260,15 +2262,15 @@ function dataTableNumbersToNames(dataTable) {
     chartTableDict = null;
   }
 
-  var header = dataTable[0];
+  const header = dataTable[0];
   header[0] = header[0].toProperCase();
-  var outTable = [header];
+  const outTable = [header];
   dataTable.slice(1).map(function (r) {
-    var row = [];
+    const row = [];
     jQuery.each(r, function (i, value) {
-      var label = header[i];
+      const label = header[i];
 
-      var tableValue;
+      let tableValue;
 
       if (
         chartTableDict !== null &&
@@ -2276,8 +2278,8 @@ function dataTableNumbersToNames(dataTable) {
         chartTableDict[label] !== undefined &&
         value !== undefined
       ) {
-        var keys = Object.keys(chartTableDict[label]);
-        var whichKey = keys.filter(function (k) {
+        const keys = Object.keys(chartTableDict[label]);
+        const whichKey = keys.filter(function (k) {
           return Math.abs(k - value) < 0.0001;
         });
 
@@ -2304,10 +2306,10 @@ function dataTableNumbersToNames(dataTable) {
   return outTable;
 }
 function htmlTable(table) {
-  var html =
+  let html =
     '<div class = "flexcroll chart-table text-black"><table class="table  table-hover">';
   html += "<thead><tr>";
-  var header = dataTable[0];
+  const header = dataTable[0];
 
   header.map(function (label) {
     html += '<th  class = "chart-table-first-row bg-black">' + label + "</th>";
@@ -2317,7 +2319,7 @@ function htmlTable(table) {
   table.slice(1).map(function (r) {
     html += "<tr>";
     html += '<td class = "chart-table-first-column bg-black">' + r[0] + "</td>";
-    var columnI = 1;
+    let columnI = 1;
     r.slice(1).map(function (value) {
       html += "<td>" + value + "</td>";
       columnI++;
@@ -2328,7 +2330,7 @@ function htmlTable(table) {
   return html;
 }
 
-var d = [
+let d = [
   [
     "time",
     "NDVI",
@@ -2596,7 +2598,7 @@ var d = [
     0.6499999761581421,
   ],
 ];
-var d = [
+d = [
   [
     "time",
     "landcover",
@@ -2655,7 +2657,7 @@ var d = [
 
 function addClickMarker(plotBounds) {
   plotBounds.evaluate(function (plotBounds) {
-    var coords = plotBounds.coordinates[0];
+    const coords = plotBounds.coordinates[0];
 
     marker.setMap(null);
     marker = new google.maps.Rectangle({
@@ -2680,14 +2682,15 @@ function makeLegend(legendDicts) {
     `<div id = 'chart-legend' style = 'font-size:0.7em;' class = 'text-dark'></div>`
   );
   Object.keys(legendDicts).map(function (k) {
-    var title = k;
+    const title = k;
+    let legendDict;
     try {
-      var legendDict = JSON.parse(legendDicts[k]);
+      legendDict = JSON.parse(legendDicts[k]);
     } catch (err) {
-      var legendDict = legendDicts[k];
+      legendDict = legendDicts[k];
     }
 
-    var legendID = title.replaceAll(" ", "-");
+    let legendID = title.replaceAll(" ", "-");
     legendID = legendID.replaceAll(":", "") + "-legend";
     $("#chart-legend").append(`<div  class = 'px-2' id='${legendID}'>
 										<div class = 'p-0'>${title}</div>
@@ -2720,14 +2723,14 @@ function startPixelChartCollection() {
     areaGeoJson = null;
     $("#summary-spinner").slideDown();
     map.setOptions({ draggableCursor: "progress" });
-    var x = event.center.x;
-    var y = event.center.y;
+    const x = event.center.x;
+    const y = event.center.y;
     center = point2LatLng(x, y);
 
-    var pt = ee.Geometry.Point([center.lng(), center.lat()]);
-    var plotBounds = pt.buffer(plotRadius).bounds();
+    const pt = ee.Geometry.Point([center.lng(), center.lat()]);
+    const plotBounds = pt.buffer(plotRadius).bounds();
     addClickMarker(plotBounds);
-    var icT = ee.ImageCollection(chartCollection.filterBounds(pt));
+    const icT = ee.ImageCollection(chartCollection.filterBounds(pt));
 
     uriName =
       pixelChartCollections[whichPixelChartCollection].label.replaceAll(
@@ -2749,13 +2752,14 @@ function startPixelChartCollection() {
     csvName = uriName + ".csv";
 
     function chartValues(values) {
+      let startColumn;
       if (chartIncludeDate) {
-        var startColumn = 3;
+        startColumn = 3;
       } else {
-        var startColumn = 4;
+        startColumn = 4;
       }
 
-      var header = values[0].slice(startColumn);
+      const header = values[0].slice(startColumn);
       values = values
         .slice(1)
         .map(function (v) {
@@ -2764,22 +2768,22 @@ function startPixelChartCollection() {
         .sort(sortFunction);
       if (chartIncludeDate) {
         values = values.map(function (v) {
-          var d = v[0];
-
+          const d = v[0];
+          let y;
           if (
             pixelChartCollections[whichPixelChartCollection].simplifyDate ===
             false
           ) {
-            var y = new Date(d).toGMTString();
+            y = new Date(d).toGMTString();
           } else if (
             pixelChartCollections[whichPixelChartCollection].semiSimpleDate ===
             true
           ) {
-            var y = `${new Date(d).getFullYear()}-${
+            y = `${new Date(d).getFullYear()}-${
               new Date(d).getMonth() + 1
             }-${new Date(d).getDate()}`;
           } else {
-            var y = (new Date(d).getYear() + 1900).toString();
+            y = (new Date(d).getYear() + 1900).toString();
           }
 
           v[0] = y;
@@ -2825,7 +2829,7 @@ function startPixelChartCollection() {
             );
           }
           if (values !== undefined && values !== null && values.length > 1) {
-            var expectedLength = icT.size().getInfo() + 1;
+            const expectedLength = icT.size().getInfo() + 1;
             if (values.length > expectedLength) {
               console.log("reducing number of inputs");
               values = values.slice(0, expectedLength);
@@ -2863,14 +2867,14 @@ function stopCharting() {
 function exportJSON(filename, json) {
   json = JSON.stringify(json);
 
-  var blob = new Blob([json], { type: "application/json" });
-  var url = URL.createObjectURL(blob);
+  const blob = new Blob([json], { type: "application/json" });
+  let url = URL.createObjectURL(blob);
 
-  var link = document.createElement("a");
+  const link = document.createElement("a");
   if (link.download !== undefined) {
     // feature detection
     // Browsers that support HTML5 download attribute
-    var url = URL.createObjectURL(blob);
+    url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
     link.setAttribute("download", filename);
     link.style.visibility = "hidden";
@@ -2888,16 +2892,16 @@ function exportJSON(filename, json) {
 }
 
 function exportToCsv(filename, rows) {
-  var processRow = function (row) {
-    var finalVal = "";
-    for (var j = 0; j < row.length; j++) {
-      var innerValue =
+  const processRow = function (row) {
+    let finalVal = "";
+    for (let j = 0; j < row.length; j++) {
+      let innerValue =
         row[j] === null || row[j] === undefined ? "" : row[j].toString();
       if (row[j] instanceof Date) {
         innerValue = row[j].toLocaleString();
       }
 
-      var result = innerValue.replace(/"/g, '""');
+      let result = innerValue.replace(/"/g, '""');
       if (result.search(/("|,|\n)/g) >= 0) result = '"' + result + '"';
       if (j > 0) finalVal += ",";
       finalVal += result;
@@ -2905,21 +2909,21 @@ function exportToCsv(filename, rows) {
     return finalVal + "\n";
   };
 
-  var csvFile = "";
-  for (var i = 0; i < rows.length; i++) {
+  let csvFile = "";
+  for (let i = 0; i < rows.length; i++) {
     csvFile += processRow(rows[i]);
   }
 
-  var blob = new Blob([csvFile], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob([csvFile], { type: "text/csv;charset=utf-8;" });
   if (navigator.msSaveBlob) {
     // IE 10+
     navigator.msSaveBlob(blob, filename);
   } else {
-    var link = document.createElement("a");
+    const link = document.createElement("a");
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
       link.setAttribute("download", filename);
       link.style.visibility = "hidden";

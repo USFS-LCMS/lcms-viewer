@@ -181,9 +181,9 @@ require([
         expression: "$feature." + labelFieldname,
       },
     };
-
+    let layer;
     if (isFeatureService) {
-      var layer = new FeatureLayer({
+      layer = new FeatureLayer({
         url: path,
         title: name,
         visible: isFirstLayer,
@@ -194,7 +194,7 @@ require([
         labelingInfo: [labelClass],
       });
     } else {
-      var layer = new GeoJSONLayer({
+      layer = new GeoJSONLayer({
         url: path,
         title: name,
         visible: isFirstLayer,
@@ -476,7 +476,7 @@ require([
         }
       });
 
-      var bgExpand = new Expand({
+      let bgExpand = new Expand({
         view: view,
         content: layerListObj,
         expanded: false,
@@ -491,7 +491,7 @@ require([
         view: view,
       });
 
-      var bgExpand = new Expand({
+      bgExpand = new Expand({
         view: view,
         content: legend,
         expandIconClass: "esri-icon-key",

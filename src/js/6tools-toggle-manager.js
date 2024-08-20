@@ -19,7 +19,7 @@ function stopAllTools() {
   });
   updateToolStatusBar();
 }
-var toolFunctions = {
+const toolFunctions = {
   measuring: {
     area: {
       on: 'stopAllTools();startArea();showTip("AREA MEASURING",staticTemplates.areaTip);',
@@ -82,12 +82,12 @@ var toolFunctions = {
   },
 };
 function getActiveTools() {
-  var out = [];
+  const out = [];
 
   Object.keys(toolFunctions).map(function (t) {
     Object.keys(toolFunctions[t]).map(function (tt) {
-      var state = toolFunctions[t][tt]["state"];
-      var title = toolFunctions[t][tt]["title"];
+      const state = toolFunctions[t][tt]["state"];
+      const title = toolFunctions[t][tt]["title"];
       if (state) {
         out.push(title);
       }
@@ -96,13 +96,13 @@ function getActiveTools() {
   return out;
 }
 function updateToolStatusBar() {
-  var somethingShown = false;
+  let somethingShown = false;
   $("#current-tool-selection").empty();
   $("#current-tool-selection").append(`Active tools: `);
   Object.keys(toolFunctions).map(function (t) {
     Object.keys(toolFunctions[t]).map(function (tt) {
-      var state = toolFunctions[t][tt]["state"];
-      var title = toolFunctions[t][tt]["title"];
+      const state = toolFunctions[t][tt]["state"];
+      const title = toolFunctions[t][tt]["title"];
       if (state) {
         $("#current-tool-selection").append(`${title}`);
         somethingShown = true;

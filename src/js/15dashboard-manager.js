@@ -399,18 +399,20 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
   }
 
   const stacked = false;
-  var fieldNames = names[whichOne].map((w) => whichOne + "---" + w);
+  let fieldNames = names[whichOne].map((w) => whichOne + "---" + w);
   const chartID = `chart-canvas-${layer.id}-${whichOne}-${annualOrTransition}`;
   let colorsI = 0;
   const selectedFeatureNames = Object.keys(layer.dashboardSelectedFeatures);
+  let area_names;
   if (selectedFeatureNames.length > 1) {
-    var area_names =
+    area_names =
       "LCMS Summary for " + selectedFeatureNames.length.toString() + " areas";
   } else {
-    var area_names = selectedFeatureNames.join(", ");
+    area_names = selectedFeatureNames.join(", ");
   }
 
-  const name = layer.name + " " + area_names + " - " + whichOne.replace("_", " ");
+  const name =
+    layer.name + " " + area_names + " - " + whichOne.replace("_", " ");
   ///////////////////////////////////////////////////////////////////////
   //Iterate across each field name and add up totals
   //First get 2-d array of all areas for each then sum the columns and divide by total area
@@ -424,7 +426,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     .sort();
   if (annualOrTransition === "transition") {
     const tableDict = {};
-    var fieldNames = Object.keys(results.features[0].properties)
+    fieldNames = Object.keys(results.features[0].properties)
       .filter((v) => v.indexOf(whichOne) > -1)
       .sort();
 
@@ -472,7 +474,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
     //Set up chart object
     // add data
     let yri = 0;
-    var data = [];
+    let data = [];
     const sankey_dict = { source: [], target: [], value: [] };
     const sankeyPalette = [];
     const labels = [];
@@ -499,7 +501,8 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
 
       Object.keys(tableDict).map((k) => {
         const transitionClass = k.split("---")[1];
-        const transitionFromClassI = parseInt(transitionClass.split("-")[0]) - 1;
+        const transitionFromClassI =
+          parseInt(transitionClass.split("-")[0]) - 1;
         const transitionFromClassName = names[whichOne][transitionFromClassI];
         const transitionToClassName =
           names[whichOne][parseInt(transitionClass.split("-")[1]) - 1];
@@ -519,7 +522,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       chartFormatDict[chartFormat].label +
       " %{source.label}-%{target.label}<extra></extra>";
 
-    var data = {
+    data = {
       type: "sankey",
       orientation: "h",
       node: {
@@ -540,7 +543,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       link: sankey_dict,
     };
 
-    var data = [data];
+    data = [data];
 
     let plotWidth = $("#charts-collapse-div").width() - 2;
     let plotHeight = parseInt(plotWidth / 1.3);
@@ -686,7 +689,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
       `<div  class = "chartjs-chart chart-container" ><canvas title='Click on classes on the bottom of this chart to turn them on and off' id="${chartID}"><canvas></div>`
     );
     //Set up chart object
-    var chartJSChart = new Chart($(`#${chartID}`), {
+    let chartJSChart = new Chart($(`#${chartID}`), {
       type: "line",
       data: { labels: years, datasets: t },
       options: {
@@ -1225,11 +1228,11 @@ class report {
         this.currentY,
         "LANDSCAPE CHANGE MONITORING SYSTEM"
       ); //x,y,text
-      var lineHeight =
+      let lineHeight =
         this.doc.getLineHeight("LANDSCAPE CHANGE MONITORING SYSTEM") /
         this.doc.internal.scaleFactor;
-      var lines = 1; // splitted text is a string array
-      var blockHeight = lines * lineHeight;
+      let lines = 1; // splitted text is a string array
+      let blockHeight = lines * lineHeight;
       this.currentY += blockHeight + 10;
       this.doc.setFont(undefined, "normal");
 
@@ -1240,9 +1243,9 @@ class report {
       const wrapQuestion = this.doc.splitTextToSize(question, 180);
       this.doc.text(this.margin, this.currentY, wrapQuestion);
 
-      var lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
-      var lines = wrapQuestion.length; // splitted text is a string array
-      var blockHeight = lines * lineHeight;
+      lineHeight = 12; //doc.getLineHeight(question) / doc.internal.scaleFactor
+      lines = wrapQuestion.length; // splitted text is a string array
+      blockHeight = lines * lineHeight;
       this.currentY += blockHeight;
     };
     this.checkForRoom = function (additional = 0) {

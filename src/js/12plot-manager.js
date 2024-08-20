@@ -186,7 +186,7 @@ const Hawaii2024 = {
   plotIDField: "PLOTID",
 };
 
-var plotsGeoJSONs = [
+let plotsGeoJSONs = [
   interiorAKPractice,
   interiorAK,
   Hawaii2024,

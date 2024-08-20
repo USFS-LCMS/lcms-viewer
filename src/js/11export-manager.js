@@ -180,7 +180,7 @@ function selectExportArea() {
   map.setOptions({ disableDoubleClickZoom: true });
   google.maps.event.clearListeners(mapDiv, "dblclick");
   google.maps.event.clearListeners(mapDiv, "click");
-  // var exportAreaList = [];
+
   exportArea = new google.maps.Polyline(exportAreaPolylineOptions);
 
   exportArea.setMap(map);
@@ -329,7 +329,7 @@ function trackExports() {
         } else {
           const st = t.start_timestamp_ms;
           const now = t.update_timestamp_ms;
-          var timeDiff = now - st;
+          let timeDiff = now - st;
           timeDiff = new Date(timeDiff).toISOString().slice(11, 19);
         }
         let icon_color_class = t.state === "COMPLETED" ? "teal" : "db-100";
@@ -447,7 +447,7 @@ function getIDAndParams(
     eeImage = ee.Image(eeImage.clip(fc).unmask(noDataValue, false)); //.reproject(exportCRS,null,exportScale);
 
     try {
-      var region = JSON.stringify(fc.geometry().bounds().getInfo());
+      let region = JSON.stringify(fc.geometry().bounds().getInfo());
     } catch (error) {
       if (
         error.message.indexOf("LinearRing requires at least 3 points.") > -1
