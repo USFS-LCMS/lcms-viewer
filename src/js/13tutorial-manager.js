@@ -811,12 +811,83 @@ if (
         "#legend-collapse-label-label",
       ],
       [
-        `Download TreeMap Data`,
-        `You can download individual TreeMap attribute images or the original Research Dataset here for your own analysis. You can select one or many individual attributes at a time using <kbd>ctrl</kbd> or <kbd>shift</kbd> to select more than one item at a time.`,
-        "#download-collapse-label",
+        `Download CONUS-Wide TreeMap Data`,
+        `You can download individual TreeMap attribute images or the original Research Dataset (RDS) here for your own analysis for all CONUS. You can select one or many individual attributes at a time using <kbd>ctrl</kbd> or <kbd>shift</kbd> to select more than one item at a time.`,
+        "#treemap-conus-download-header",
         "right-end",
         [0, 2],
         "download-tour-modal",
+        "#download-collapse-label-label",
+      ],
+
+      [
+        `Clip and Download Data`,
+        `<ul>
+          <li>You can also download individual TreeMap attribute images or the original Research Dataset (TreeMap_ID) over an area of your choosing. This avoids downloading all CONUS for a given attribute, but data do not have full metadata or colors/symbolizing.</li>
+        </ul>`,
+        "#data-clipping-header",
+        "right",
+        [0, 2],
+        "download-intro-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Choose What to Export`,
+        `<ul>
+          <li>You can opt to download any attribute or the original dataset (TreeMap_ID).</li>
+          <li>You can select or de-select any layer for exporting by clicking on the round button on the left of each layer</li>
+          <li>Each layer is given a default name. You can change this name to any name you'd like.</li>
+          <li>On the right of each image export layer is a number. This is the spatial resolution in meters for that image export. You can change it if you'd like</li>
+        </ul>`,
+        "#export-list-container>h5",
+        "right",
+        [0, 2],
+        "download-layer-selection-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Select Area to Download`,
+        `<ul>
+          <li>You must select and area to download using the  <button class="btn"><i class="pr-1 fa fa-pencil" ></i>Draw area to Download</button> button.</li>
+          <li>After pressing this button, draw a polygon on the map</li>
+          <li>You can remove vertices using the <i class="pr-1 fa fa-undo" ></i> button or delete your current polygon using the <i class="pr-1 fa fa-trash" ></i> button</li>
+        </ul>`,
+        "#export-area-drawing-div",
+        "right",
+        [0, 2],
+        "download-start-button-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Start and Cancel Exports`,
+        `<ul>
+          <li>You can start any selected export layer (above) using the <button class="btn"><i class="pr-1 fa fa-cloud-download" ></i>Export</button> button.</li>
+          <li>You can cancel all active exports (shown below) using the <button class="btn"><i class="pr-1 fa fa-close" ></i>Cancel All Exports</button> button.</li>
+          <li>Once your exports are successfully started, a popup will be shown outlining what exports were started. Shortly after, the task list below will reflect the recently started exports and their status.</li>
+        </ul>`,
+        "#export-button-div",
+        "right",
+        [0, 2],
+        "download-start-button-tour-modal",
+        "#download-collapse-label-label",
+      ],
+      [
+        `Track Exports`,
+        `<ul>
+          <li>All previous and current exports are shown here.</li>
+          <li>From left to right, each export's name, total run time, type, and download button is provided.</li>
+          <li>Any successfully completed export within the past 10 days, from your instance of the <i>TreeMap Data Explorer</i>, is provided here. You can re-download the output using the <i class="fa fa-cloud-download teal"></i> button on the right of each task.</li>
+          <li>Currently active exports are shown with a pulsing teal color.</li>
+          <li>You can cancel an individual export task by clicking the <i class="fa fa-close teal"></i> icon on the right of the active export.</li>
+          <li>Once the active export successfully finishes, you will be prompted to download all files. For shapefiles, this will be a total of 6 files, while other formats and image exports will be a single download.</li>
+          <li>If you have a popup blocker, a message box is also provided with links to download all completed exports.</li>
+          <li>Sometimes very large image exports are broken into tiles. In this instance, multiple image downloads will be provided.</li>
+          <li>If your instance of <i>TreeMap Data Explorer</i> restarts before an export successfully finishes, that export will be tracked the next time you open <i>TreeMap Data Explorer</i> in the same browser. It will then be tracked and you will be prompted upon its successful completion.</li>
+        </ul>`,
+        "#export-tracking-rows",
+        "right",
+        [0, 2],
+        "download-start-button-tour-modal",
         "#download-collapse-label-label",
       ],
       [
@@ -1113,7 +1184,7 @@ if (
         `<ul>
           <li>You can start any selected export layer (above) using the <button class="btn"><i class="pr-1 fa fa-cloud-download" ></i>Export</button> button.</li>
           <li>You can cancel all active exports (shown below) using the <button class="btn"><i class="pr-1 fa fa-close" ></i>Cancel All Exports</button> button.</li>
-          <li>Once your exports are successfully started, a popup will be shown outlining what exports were started. Shortly after, the task list below will reflect the recently started exports and their status.
+          <li>Once your exports are successfully started, a popup will be shown outlining what exports were started. Shortly after, the task list below will reflect the recently started exports and their status.</li>
         </ul>`,
         "#export-button-div",
         "right",

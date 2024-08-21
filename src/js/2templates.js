@@ -199,7 +199,7 @@ const staticTemplates = {
                         <hr>
                         <div class = 'pl-3'>
                             <h5 title="Provide a projection crs and draw an area for image exports">Image export parameters</h5>
-                            <form class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
+                            <form id = 'export-crs-input-container' class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
                               <label for="export-crs">Projection: </label>
                               <div class="form-group pl-1">
                                 <input type="text" id="export-crs" oninput = 'cacheCRS()' name="rg-from" value="EPSG:4326" class="form-control">
@@ -855,13 +855,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                             </ul>
                                           </li>
                                         </ul>`,
-  TreeMapGEEClippingDiv: `<h5 class='pt-2' style='border-top: 0.1em solid black;'>Data Clipping</h5>
-                            <div class=" px-0 py-0 sub-sub-panel-title-collapsed ">
-                              <a class = 'links' href="https://code.earthengine.google.com/6a10868aa172b8082a0d11bc0c54ea8c" target="_blank" title="Use a Google Earth Engine script template to download attributes clipped to polygon of interest.">
-                                Clip and download data with Google Earth Engine
-                              </a>
-                            </div>`,
-  TreeMapDownloadDiv: `<h5 class='pt-2'>CONUS Datasets</h5>
+  TreeMapGEEClippingDiv: `<div class='hl'></div><h5 class='pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h5>
+                           `,
+  TreeMapDownloadDiv: `<h5 id = 'treemap-conus-download-header' class='pt-2'>CONUS Datasets</h5>
                       <ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
@@ -916,6 +912,19 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 <header class = 'row'>
                                     <h3 class = ' text-capitalize'>Acknowledgements</h3>
                                 </header>
+                                <section class = 'row '>
+                                    <div class = 'col-lg-2 p-0 m-0'>
+                                        <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
+                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
+                                        </a>
+                                    </div>
+                                    <div class = 'col-lg-10'>
+                                        <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
+                                            <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation TreeMap is built upon. They have been instrumental in developing and publishing the original TreeMap methodology and continue to provide ongoing research and development to further improve TreeMap methods.</p>
+                                        </a>
+                                    </div>
+                                </section>
+                                <hr>
                                 <section class = 'row'>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
@@ -937,23 +946,11 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     </div>
                                     <div class = 'col-lg-10'>
                                         <a href="https://www.redcastleresources.com/" target="_blank">
-                                            <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for TreeMap's operational production, documentation, and delivery at GTAC.</p>
+                                            <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor at GTAC that has provided technical expertise for TreeMap's future operational production, documentation, delivery at the Raster Gateway, Google Earth Engine asset setup, and this <i>TreeMap Explorer</i>.</p>
                                         </a>
                                     </div>
                                 </section>
-                                <hr>
-                                <section class = 'row '>
-                                    <div class = 'col-lg-2 p-0 m-0'>
-                                        <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
-                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' alt="U.S. Department of Agriculture, Forest Service Logo"  href="#"  title="Click to learn more about the Rocky Mountain Research Station (RMRS)">
-                                        </a>
-                                    </div>
-                                    <div class = 'col-lg-10'>
-                                        <a href="https://www.fs.usda.gov/rmrs/" target="_blank">
-                                            <p class = 'support-text'>The Rocky Mountain Research Station provides the scientific foundation TreeMap is built upon. They have been instrumental in developing and publishing the original TreeMap methodology and continue to provide ongoing research and development to further improve TreeMap methods.</p>
-                                        </a>
-                                    </div>
-                                </section>
+                                
                                 
                                 <hr>
                                 <section class = 'row'>
@@ -1933,7 +1930,6 @@ function appendMessage2(title, message, modalID) {
 }
 function smartShowMessage(title, message, modalID = "error-modal") {
   if ($("#" + modalID).hasClass("show")) {
-    console.log("yay");
     appendMessage2(title, message, modalID);
   } else {
     showMessage(title, message, modalID);

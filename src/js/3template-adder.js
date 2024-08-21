@@ -3252,7 +3252,7 @@ if (
   mode === "LCMS" ||
   mode === "geeViz" ||
   mode === "LAMDA" ||
-  mode === "TreeMap"
+  (mode === "TreeMap" && urlParams.canAreaChart)
 ) {
   $("#tools-accordian").append(
     `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
@@ -3442,6 +3442,10 @@ if (canExport) {
   // console.log('here')
   if (mode !== "HiForm-BMP") {
     $("#download-collapse-div").append(staticTemplates.exportContainer);
+  }
+  if (mode === "TreeMap") {
+    $("#export-crs-input-container").remove();
+    window.exportCRS = "EPSG:5070";
   }
   if (
     localStorage.export_crs !== undefined &&

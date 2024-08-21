@@ -1,6 +1,8 @@
 ///////////////////////////////////////////////////////
 // Function to add Treemap attributes to map
 function runTreeMap() {
+  urlParams.canAreaChart =
+    urlParams.canAreaChart === undefined ? false : urlParams.canAreaChart;
   // All attributes collection
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
@@ -291,7 +293,7 @@ function runTreeMap() {
     viz["palette"] = palette;
     viz["classLegendDict"] = dict(zip(uniqueNames, colors));
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-    viz["canAreaChart"] = true;
+    viz["canAreaChart"] = urlParams.canAreaChart;
     viz["areaChartParams"] = {
       barChartMaxClasses: 15,
       // chartLabelMaxLength: 25,
@@ -509,9 +511,12 @@ function runTreeMap() {
   Map.addExport(rawTreeMap.int32(), "TreeMap ID", 30, false, {}, 0);
   queryWindowMode = "sidePane";
 
-  // Map.turnOnInspector();
-  getLCMSVariables();
-  getSelectLayers(true);
+  if (urlParams.canAreaChart) {
+    getLCMSVariables();
+    getSelectLayers(true);
 
-  Map.turnOnAutoAreaCharting();
+    Map.turnOnAutoAreaCharting();
+  } else {
+    Map.turnOnInspector();
+  }
 }
