@@ -2500,6 +2500,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   function handleAoiSelectionType(selection) {
     if (selectOption == "Select by Dropdown") {
       google.maps.event.clearListeners(map, "click");
+      map.setOptions({ draggableCursor: "" });
       $("#dropdown-select").remove();
       $("#select-aoi-div").append(`<div id="dropdown-select"></div>`);
 
@@ -2513,10 +2514,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       );
     } else if (selectOption == "Select on Map") {
       $("#" + "dropdown-select").remove();
+      map.setOptions({ draggableCursor: "pointer" });
       selectSingleCounty();
     } else if (selectOption == "Select Off") {
       $("#" + "dropdown-select").remove();
       google.maps.event.clearListeners(map, "click");
+      map.setOptions({ draggableCursor: "" });
     }
   }
 

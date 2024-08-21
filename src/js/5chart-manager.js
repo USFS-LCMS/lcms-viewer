@@ -1750,8 +1750,8 @@ function startQuery() {
 function stopQuery() {
   try {
     mapHammer.destroy();
-    map.setOptions({ draggableCursor: "hand" });
-    map.setOptions({ cursor: "hand" });
+    map.setOptions({ draggableCursor: "" });
+    map.setOptions({ cursor: "" });
 
     google.maps.event.clearListeners(mapDiv, "dblclick");
     map.setOptions({ cursor: "hand" });
@@ -2857,7 +2857,7 @@ function stopCharting() {
     mapHammer.destroy();
   } catch (err) {}
   try {
-    map.setOptions({ draggableCursor: "hand" });
+    map.setOptions({ draggableCursor: "" });
     $("#summary-spinner").slideUp();
     infowindow.setMap(null);
     marker.setMap(null);

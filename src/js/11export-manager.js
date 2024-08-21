@@ -138,8 +138,8 @@ function deleteExportArea() {
   window.removeEventListener("keydown", resetExportArea);
   google.maps.event.clearListeners(mapDiv, "dblclick");
   google.maps.event.clearListeners(mapDiv, "click");
-  map.setOptions({ draggableCursor: "hand" });
-  map.setOptions({ cursor: "hand" });
+  map.setOptions({ draggableCursor: "" });
+  map.setOptions({ cursor: "" });
   try {
     mapHammer.destroy();
   } catch (err) {
@@ -153,7 +153,6 @@ function undoExportArea() {
   exportArea.getPath().pop(1);
 }
 function deleteLastExportVertex(e) {
-  console.log(e);
   if (e.key == "z" && e.ctrlKey) {
     undoExportArea();
   }
@@ -203,8 +202,8 @@ function selectExportArea() {
     window.removeEventListener("keydown", resetExportArea);
     google.maps.event.clearListeners(mapDiv, "dblclick");
     google.maps.event.clearListeners(mapDiv, "click");
-    map.setOptions({ draggableCursor: "hand" });
-    map.setOptions({ cursor: "hand" });
+    map.setOptions({ draggableCursor: "" });
+    map.setOptions({ cursor: "" });
     mapHammer.destroy();
   });
 }

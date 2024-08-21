@@ -1208,11 +1208,11 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
       ? `<input  id = '${name}-res-${exportID}' class="form-control export-res-input" type="text" value="${exportElement.res}" title = 'Change export spatial resolution (meters) if needed'><p title= 'Change export spatial resolution (meters) if needed' class='form-control export-res-input-label' >m</p>`
       : `<select id = '${name}-format-${exportID}' title= 'Select output format' class="form-control export-format-input form-select ">
           <option title = 'Export ${name} as a ESRI shapefile (will result in multiple files)' value = 'SHP'>Shapefile</option>
-          <option title = 'Export ${name} as a CSV' value = 'CSV'>CSV</option>
+          <option class = 'optional-export-format' title = 'Export ${name} as a CSV' value = 'CSV'>CSV</option>
           <option title = 'Export ${name} as a geoJSON' value='GEO_JSON'>geoJSON</option>
           <option title = 'Export ${name} as a KML' value='KML'>KML</option>
           <option title = 'Export ${name} as a KMZ' value='KMZ'>KMZ</option>
-          <option title = 'Export ${name} as a TensorFlow record' value='TF_RECORD_TABLE'>TF Record</option>
+          <option class = 'optional-export-format' title = 'Export ${name} as a TensorFlow record' value='TF_RECORD_TABLE'>TF Record</option>
         </select>`;
   $("#export-list").append(`<div class = 'input-group'>
                               <span  class="input-group-addon">
@@ -1223,7 +1223,9 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
                               <input  id = '${name}-name-${exportID}' class="form-control export-name-input" type="text" value="${exportElement.name}" title = 'Change export name if needed'>
                               ${rightInput}
                             </div>`);
-
+  if (mode === "HiForm-BMP") {
+    $(".optional-export-format").hide();
+  }
   $("#" + name + "-name-" + exportID.toString()).on("input", function () {
     exportImageDict[exportElement.ID].name = $(this).val();
   });
@@ -3067,7 +3069,7 @@ function stopArea() {
 
   clearPolys();
   infowindow.setMap(null);
-  map.setOptions({ draggableCursor: "hand" });
+  map.setOptions({ draggableCursor: "" });
 }
 
 function resetPolygon() {
@@ -3130,7 +3132,7 @@ function stopDistance() {
       infowindow.setMap(null);
     }
     distancePolyline.setMap(null);
-    map.setOptions({ draggableCursor: "hand" });
+    map.setOptions({ draggableCursor: "" });
     infowindow.setMap(null);
   } catch (err) {}
 }
@@ -4027,7 +4029,7 @@ function initialize() {
           position: google.maps.ControlPosition.TOP_CENTER,
           style: google.maps.ZoomControlStyle.SMALL,
         },
-        draggableCursor: "pointer",
+        draggableCursor: "",
       });
     } else if (mode === "Bloom-Mapper") {
       run = runAlgal;
