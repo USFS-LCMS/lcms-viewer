@@ -1185,7 +1185,14 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   const now = Date().split(" ");
 
   name = name.replace(/[^A-Za-z0-9]/g, "_");
-  exportElement.res = res;
+  if (typeof res === "number") {
+    exportElement.transform;
+    exportElement.res = res;
+  } else {
+    exportElement.transform = res;
+    exportElement.res = res[0];
+  }
+
   exportElement.name = name;
 
   exportElement.eeImage = eeImage;
@@ -1196,7 +1203,8 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   exportImageDict[exportID] = {
     eeImage: eeImage,
     name: name,
-    res: res,
+    res: exportElement.res,
+    transform: exportElement.transform,
     eeType: objType,
     shouldExport: Export,
     metadataParams: metadataParams,
@@ -1231,7 +1239,12 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
   });
   if (objType === "Image") {
     $("#" + name + "-res-" + exportID.toString()).on("input", function () {
-      exportImageDict[exportElement.ID].res = parseInt($(this).val());
+      const resT = parseInt($(this).val());
+      exportImageDict[exportElement.ID].res = resT;
+      if (exportElement.transform !== undefined) {
+        exportImageDict[exportElement.ID].transform[0] = resT;
+        exportImageDict[exportElement.ID].transform[4] = -resT;
+      }
     });
   } else {
     $("#" + name + "-format-" + exportID.toString()).on("input", function () {

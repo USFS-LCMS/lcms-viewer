@@ -837,7 +837,7 @@ if (
           <li>You can opt to download any attribute or the original dataset (TreeMap_ID).</li>
           <li>You can select or de-select any layer for exporting by clicking on the round button on the left of each layer</li>
           <li>Each layer is given a default name. You can change this name to any name you'd like.</li>
-          <li>On the right of each image export layer is a number. This is the spatial resolution in meters for that image export. You can change it if you'd like</li>
+          
         </ul>`,
         "#export-list-container>h5",
         "right",

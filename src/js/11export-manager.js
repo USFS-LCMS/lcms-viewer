@@ -136,18 +136,19 @@ function interval2(func, wait, times) {
 function deleteExportArea() {
   window.removeEventListener("keydown", deleteLastExportVertex);
   window.removeEventListener("keydown", resetExportArea);
-  google.maps.event.clearListeners(mapDiv, "dblclick");
-  google.maps.event.clearListeners(mapDiv, "click");
+  // google.maps.event.clearListeners(mapDiv, "dblclick");
+  // google.maps.event.clearListeners(mapDiv, "click");
   map.setOptions({ draggableCursor: "" });
   map.setOptions({ cursor: "" });
   try {
-    mapHammer.destroy();
+    exportAreaHammer.destroy();
   } catch (err) {
     const x = err;
   }
 
   exportArea.setMap(null);
-  exportArea = null;
+  exportArea = new google.maps.Polyline(exportAreaPolylineOptions);
+  $("#select-export-area-btn").removeClass("btn-on");
 }
 function undoExportArea() {
   exportArea.getPath().pop(1);
@@ -168,7 +169,14 @@ function resetExportArea(e) {
     selectExportArea();
   }
 }
+let exportActiveTools = [];
+let exportAreaHammer;
 function selectExportArea() {
+  // exportActiveTools = getActiveToolsList();
+  // if (exportActiveTools.length > 0) {
+  //   eval(toolFunctions[exportActiveTools[0][0]][exportActiveTools[0][1]].off);
+  // }
+
   try {
     deleteExportArea();
   } catch (err) {}
@@ -183,16 +191,17 @@ function selectExportArea() {
   exportArea = new google.maps.Polyline(exportAreaPolylineOptions);
 
   exportArea.setMap(map);
-  mapHammer = new Hammer(document.getElementById("map"));
-  mapHammer.on("tap", function (event) {
+  exportAreaHammer = new Hammer(document.getElementById("map"));
+  exportAreaHammer.on("tap", function (event) {
     const path = exportArea.getPath();
     const x = event.center.x;
     const y = event.center.y;
     clickLngLat = point2LatLng(x, y);
     path.push(clickLngLat);
   });
+  $("#select-export-area-btn").addClass("btn-on");
 
-  mapHammer.on("doubletap", function () {
+  exportAreaHammer.on("doubletap", function () {
     const path = exportArea.getPath();
     exportArea.setMap(null);
     exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
@@ -204,7 +213,11 @@ function selectExportArea() {
     google.maps.event.clearListeners(mapDiv, "click");
     map.setOptions({ draggableCursor: "" });
     map.setOptions({ cursor: "" });
-    mapHammer.destroy();
+    exportAreaHammer.destroy();
+    $("#select-export-area-btn").removeClass("btn-on");
+    // if (exportActiveTools.length > 0) {
+    //   eval(toolFunctions[exportActiveTools[0][0]][exportActiveTools[0][1]].on);
+    // }
   });
 }
 //Function to look for running ee tasks and request cancellation
@@ -435,6 +448,7 @@ function getIDAndParams(
   exportOutputName,
   exportCRS,
   exportScale,
+  exportTransform,
   fc,
   noDataValue,
   eeType,
@@ -485,6 +499,10 @@ function getIDAndParams(
     Feature: { type: "EXPORT_FEATURES", format: "SHP" },
     FeatureCollection: { type: "EXPORT_FEATURES", format: "SHP" },
   };
+
+  if (exportTransform !== undefined) {
+    exportScale = null;
+  }
   //Set up parameter object
   const params = {
     element: eeImage,
@@ -494,7 +512,7 @@ function getIDAndParams(
     outputBucket: bucketName,
     outputPrefix: exportOutputName,
     crs: exportCRS,
-    crsTransform: null,
+    crsTransform: exportTransform,
     scale: exportScale,
     maxPixels: 1e13,
     shardSize: 256,
@@ -502,7 +520,7 @@ function getIDAndParams(
     fileFormat: fileFormat,
     formatOptions: { noData: noDataValue },
   };
-
+  console.log(params);
   //Set up a task and update the spinner
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
@@ -554,11 +572,13 @@ function exportImages() {
         const exportName = exportObject["name"] + "_" + now;
         const noDataValue = exportObject["noDataValue"];
         exportsSubmitted += exportName + "<br>";
+
         const IDAndParams = getIDAndParams(
           exportObject.eeImage,
           exportName,
           exportCRST,
           exportObject.res,
+          exportObject.transform,
           fc,
           noDataValue,
           exportObject.eeType,

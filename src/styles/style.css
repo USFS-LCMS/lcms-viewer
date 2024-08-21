@@ -1421,7 +1421,9 @@ a:hover {
   background-color: var(--teal-100) !important;
   transform: scale3d(1.05, 1, 1);
 }
-
+.btn-on {
+  background-color: var(--teal-100) !important;
+}
 .btn:hover,
 .drawing-mode-selector:hover {
   font-weight: 300;

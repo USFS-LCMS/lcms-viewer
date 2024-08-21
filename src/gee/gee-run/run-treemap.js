@@ -467,7 +467,14 @@ function runTreeMap() {
 
     Map.addLayer(layer[0], layer[1], layer[2], visible);
 
-    Map.addExport(layer[0].float(), layer[2], 30, false, {}, -32768);
+    Map.addExport(
+      layer[0].float(),
+      layer[2],
+      [30, 0, -2361915, 0, -30, 3177735],
+      false,
+      {},
+      -32768
+    );
   }
   ////
 
@@ -508,7 +515,14 @@ function runTreeMap() {
     },
     "TreeMap ID"
   );
-  Map.addExport(rawTreeMap.int32(), "TreeMap ID", 30, false, {}, 0);
+  Map.addExport(
+    rawTreeMap.int32(),
+    "TreeMap ID",
+    [30, 0, -2361915, 0, -30, 3177735],
+    false,
+    {},
+    0
+  );
   queryWindowMode = "sidePane";
 
   if (urlParams.canAreaChart) {
@@ -519,4 +533,7 @@ function runTreeMap() {
   } else {
     Map.turnOnInspector();
   }
+
+  $(".export-res-input").hide();
+  $(".export-res-input-label").hide();
 }

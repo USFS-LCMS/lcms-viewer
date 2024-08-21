@@ -207,7 +207,7 @@ const staticTemplates = {
                             </form>
                             <div class = 'pt-2' id = 'export-area-drawing-div'>
                                 
-                                <button class = 'btn' onclick = 'selectExportArea()' title = 'Needed for image exports. Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
+                                <button id = 'select-export-area-btn' class = 'btn' onclick = 'selectExportArea()' title = 'Needed for image exports. Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
                                 <a href="#" onclick = 'undoExportArea()' title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
                             </div>
