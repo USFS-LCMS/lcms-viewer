@@ -101,7 +101,6 @@ function getActiveToolsList() {
   Object.keys(toolFunctions).map(function (t) {
     Object.keys(toolFunctions[t]).map(function (tt) {
       const state = toolFunctions[t][tt]["state"];
-      const title = toolFunctions[t][tt]["title"];
       if (state) {
         out.push([t, tt]);
       }

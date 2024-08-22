@@ -427,7 +427,11 @@ function hiform_bmp_process() {
 
     //Convert the zones of the thresholded change to vectors
     const mod_change_vectors = mod_change
-      .addBands(diff.select(["NDVI"]))
+      .addBands(diff.select(["NDVI"], ["Post-Pre_NDVI"]))
+      .addBands(pre.select(["cloudScorePlus"], ["Pre_CloudScorePlus"]))
+      .addBands(post.select(["cloudScorePlus"], ["Post_CloudScorePlus"]))
+      .addBands(preCount)
+      .addBands(postCount)
       .reduceToVectors({
         geometry: geoBounds,
         crs: exportCRS,
@@ -490,11 +494,25 @@ function hiform_bmp_process() {
     );
     Map.addExport(
       diff.select(["NDVI"]).multiply(10000).int16(),
-      `Forest NDVI Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      `Forest NDVI Change Raw ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       10,
       false,
       {}
     );
+    Map.addExport(
+      diff
+        .select(["NDVI"])
+        .multiply(100)
+        .clamp(-127, 127)
+        .toInt8()
+        .sldStyle(sld_intervals_ndvi),
+      `Forest NDVI Change Colorized ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      10,
+      false,
+      {},
+      0
+    );
+
     Map.addExport(
       post.select(["red", "green", "blue", "nir"]).int16(),
       `Post_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,

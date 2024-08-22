@@ -2518,8 +2518,10 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       selectSingleCounty();
     } else if (selectOption == "Select Off") {
       $("#" + "dropdown-select").remove();
-      google.maps.event.clearListeners(map, "click");
-      map.setOptions({ draggableCursor: "" });
+      setTimeout(() => {
+        google.maps.event.clearListeners(map, "click");
+        map.setOptions({ draggableCursor: "" });
+      }, 200);
     }
   }
 
@@ -2922,6 +2924,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
     // Run HiForm Process
     $("#Select-Off-checkbox").click();
+
     hiform_bmp_process();
   }
 

@@ -136,8 +136,6 @@ function interval2(func, wait, times) {
 function deleteExportArea() {
   window.removeEventListener("keydown", deleteLastExportVertex);
   window.removeEventListener("keydown", resetExportArea);
-  // google.maps.event.clearListeners(mapDiv, "dblclick");
-  // google.maps.event.clearListeners(mapDiv, "click");
   map.setOptions({ draggableCursor: "" });
   map.setOptions({ cursor: "" });
   try {
@@ -172,11 +170,6 @@ function resetExportArea(e) {
 let exportActiveTools = [];
 let exportAreaHammer;
 function selectExportArea() {
-  // exportActiveTools = getActiveToolsList();
-  // if (exportActiveTools.length > 0) {
-  //   eval(toolFunctions[exportActiveTools[0][0]][exportActiveTools[0][1]].off);
-  // }
-
   try {
     deleteExportArea();
   } catch (err) {}
@@ -215,9 +208,6 @@ function selectExportArea() {
     map.setOptions({ cursor: "" });
     exportAreaHammer.destroy();
     $("#select-export-area-btn").removeClass("btn-on");
-    // if (exportActiveTools.length > 0) {
-    //   eval(toolFunctions[exportActiveTools[0][0]][exportActiveTools[0][1]].on);
-    // }
   });
 }
 //Function to look for running ee tasks and request cancellation

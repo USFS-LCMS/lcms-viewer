@@ -1219,7 +1219,7 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
           <option class = 'optional-export-format' title = 'Export ${name} as a CSV' value = 'CSV'>CSV</option>
           <option title = 'Export ${name} as a geoJSON' value='GEO_JSON'>geoJSON</option>
           <option title = 'Export ${name} as a KML' value='KML'>KML</option>
-          <option title = 'Export ${name} as a KMZ' value='KMZ'>KMZ</option>
+          <option class = 'optional-export-format' title = 'Export ${name} as a KMZ' value='KMZ'>KMZ</option>
           <option class = 'optional-export-format' title = 'Export ${name} as a TensorFlow record' value='TF_RECORD_TABLE'>TF Record</option>
         </select>`;
   $("#export-list").append(`<div class = 'input-group'>
