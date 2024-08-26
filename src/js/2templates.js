@@ -232,7 +232,7 @@ const staticTemplates = {
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
                     <a href="home.html" target="_blank" title = 'Click to visit the LCMS Homepage'>
-                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0px'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
                     </a>
                     <div class="vl title-banner-icon"></div>
                     <img id='title-banner-icon-right' class = 'title-banner-icon'  >
@@ -771,7 +771,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 		                        <div class="icon-bar py-1 ">
 								  <a onclick = 'previousWalkThrough()' title = 'Previous tutorial slide'><i class="fa fa-chevron-left text-black"></i></a>
 								  <a onclick = 'nextWalkThrough()'  title = 'Next tutorial slide'><i class="fa fa-chevron-right text-black"></i></a>
-								  <a id = 'walk-through-popup-progress'></a>
+								  <a id = 'walk-through-popup-progress'>
                                   <a onclick = 'removeWalkThroughCollapse()' style = 'float:right;'  title = 'Turn off Walk-Through'><i class="fa fa-stop text-black" aria-hidden="true"></i></a>
                                 </div>
 						</div>`,
@@ -899,7 +899,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 </header>
                                 <div class = 'row ' title = 'Open in-depth TreeMap methods documentation.'>
                                     <div class = 'col-lg-2 p-0 m-0'>
-                                        <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'></a> 
+                                        <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'> 
                                     </div>
                                     <div class = 'col-lg-10'>
                                         Click to open in-depth methods document:
@@ -988,7 +988,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 </header>
                                 <section class = 'row '>
                                     <div class = 'col-lg-2 p-0 m-0'>
-                                        <a title = "Send us an E-mail" href = "mailto: sm.fs.treemaphelp@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'></a> 
+                                        <a title = "Send us an E-mail" href = "mailto: sm.fs.treemaphelp@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'> 
                                     </div>
                                     <div class = 'col-lg-10'>
                                         <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.treemaphelp@usda.gov">
@@ -1005,7 +1005,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                             <a class="intro-modal-links" onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">Giant Sequoia View TUTORIAL</a>
@@ -1015,12 +1015,24 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
   hiformSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
                       </div>
                       <hr>
+                      <header class = 'row ' title = 'HiForm-BMP should be used appropriately'>
+                          <h3 class = ' text-capitalize'>Disclaimer</h3>
+                      </header>
+                      <div class = 'row ' id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
+                          <div class = 'col-lg-2 p-0 m-0'>
+                            <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/Icons_svg/caution_372e2c.svg'> 
+                          </div>
+                          <div class = 'col-lg-10'>
+                          This tool is designed to support monitoring and assessment. False positives from non-target disturbances, clouds, cloud shadows, and other atmospheric anomalies can occur. Validation for specific needs are the responsibility of the user.
+                          </div>
+                      </div>
+                      <hr>
                       <header class = 'row ' title = 'Open HiForm-BMP tutorial'>
                           <h3 class = ' text-capitalize'>Tutorial</h3>
                       </header>
                       <div class = 'row ' id="tutorialLink" title="Click to launch a tutorial that explains how to use the Giant Sequoia Viewer">
                           <div class = 'col-lg-2 p-0 m-0'>
-                              <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                              <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'> 
                           </div>
                           <div class = 'col-lg-10'>
                           <a class="intro-modal-links" style = 'display:block;' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the HiForm-BMP Tool">Online <b>Tour</b></a>
@@ -1127,7 +1139,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a id = 'tutorial-download' class = 'links' onclick = 'downloadTutorial()'>
@@ -1141,7 +1153,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                     </header>
                     <div class = 'row ' title = 'Click to help us learn how you use LCMS and how we can make it better'>
                         <div class = 'col-lg-2 p-0 m-0'>
-                            <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/Icons_svg/documentation_372e2c.svg'></a> 
+                            <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/Icons_svg/documentation_372e2c.svg'> 
                         </div>
                         <div class = 'col-lg-10'>
                             Click to open the LCMS Survey:
@@ -1157,7 +1169,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'></a> 
+                                <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
@@ -1175,7 +1187,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/lcms-icon.png'></a> 
+                                <a title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/lcms-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <li>
@@ -1265,7 +1277,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'></a> 
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
@@ -1281,7 +1293,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
@@ -1294,7 +1306,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                     </header>
                     <div class = 'row ' title = 'Click to help us learn how you use LCMS and how we can make it better'>
                         <div class = 'col-lg-2 p-0 m-0'>
-                            <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/Icons_svg/documentation_372e2c.svg'></a> 
+                            <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/Icons_svg/documentation_372e2c.svg'> 
                         </div>
                         <div class = 'col-lg-10'>
                             Click to open the LCMS Survey:
@@ -1311,7 +1323,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'></a> 
+                                <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
@@ -1329,7 +1341,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'LCMS icon' src = './src/assets/images/lcms-icon.png'></a> 
+                                <a title = "In addition to this viewer, the LCMS Homepage provides an overview of LCMS and links to other viewers to help visualize and explore other aspects of the LCMS data flow" ><img class = 'support-icons' alt = 'LCMS icon' src = './src/assets/images/lcms-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                             <li>
@@ -1419,7 +1431,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'></a> 
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">
@@ -1435,7 +1447,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' onclick="startTour()" title="Click to take a tour of the ${mode}'s features">
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'></a> 
+                                <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS ${mode}'s features">${mode} TOUR</a>
@@ -1447,7 +1459,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <div class = 'row ' title = 'Open in-depth ${mode} methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'></a> 
+                                <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
@@ -1541,7 +1553,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </header>
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
-                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'></a> 
+                                <a title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov"><img class = 'support-icons' alt = 'Email icon' src = './src/assets/images/email.png'> 
                             </div>
                             <div class = 'col-lg-10'>
                                 <a class = 'support-text' title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov">

@@ -1786,3 +1786,25 @@ function runDynamic() {
 
 //   //   Map.turnOnAutoAreaCharting();
 // }
+// runGTAC = function () {
+//   var ls = getImagesLib.getProcessedLandsatScenes(
+//     ee.Geometry.Point([-111, 41]),
+//     2024,
+//     2024,
+//     150,
+//     250,
+//     "SR"
+//   );
+//   Map.addLayer(ls.median(), getImagesLib.vizParamsTrue, "SR");
+//   var ls = getImagesLib.getProcessedLandsatScenes(
+//     ee.Geometry.Point([-111, 41]),
+//     2024,
+//     2024,
+//     150,
+//     250,
+//     "TOA"
+//   );
+//   Map.addLayer(ls.median(), getImagesLib.vizParamsTrue, "TOA");
+//   console.log(ls.size().getInfo());
+//   Map.turnOnInspector();
+// };

@@ -217,7 +217,7 @@ function chartSelectedAreas() {
       if (title === "") {
         title = selectionTracker.selectedNames.join(" - ");
       }
-      Map.centerObject(selectedFeatures);
+      Map.centerObject(selectedFeatures, false);
 
       if (Object.keys(areaChart.areaChartObj).length > 0) {
         areaChart.clearCharts();
@@ -321,8 +321,6 @@ const getQueryImages = function (lng, lat) {
         if (q.queryDict !== null && q.queryDict !== undefined) {
           tValue = q.queryDict[tValue];
         } else {
-          console.log(tValue);
-          console.log(typeof tValue);
           tValue = smartToFixed(tValue);
         }
 
@@ -484,7 +482,7 @@ const getQueryImages = function (lng, lat) {
       $("#" + containerID).append(
         `<tr><th>${q.name}</th><th>Attribute Table</th></tr>`
       );
-
+      console.log(value);
       infoKeys.map(function (name) {
         const valueT = smartToFixed(value[name]);
         $("#" + containerID).append(
@@ -1621,7 +1619,7 @@ function runShpDefinedCharting() {
         name + " for area summarizing",
         "area-charting-shp-layer-list"
       );
-      Map.centerObject(area);
+      Map.centerObject(area, false);
       $("#summary-spinner").slideUp();
       if (Object.keys(areaChart.areaChartObj).length > 0) {
         areaChart.clearCharts();

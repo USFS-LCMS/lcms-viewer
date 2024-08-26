@@ -415,14 +415,16 @@ function areaChartCls() {
       activeStartYear = all_sankey_years.map((v) => v[0]).min();
       activeEndYear = all_sankey_years.map((v) => v[1]).max();
 
-      $("#first-transition-row td input:first").val(activeStartYear);
-      $("#first-transition-row td input:last").val(
+      $("#added-transition-rows tr:first > td input:first").val(
+        activeStartYear
+      );
+      $("#added-transition-rows tr:first > td input:last").val(
         activeStartYear + this.sankeyTransitionPeriodYearBuffer
       );
-      $("#last-transition-row td input:first").val(
+      $("#added-transition-rows tr:last > td input:first").val(
         activeEndYear - this.sankeyTransitionPeriodYearBuffer
       );
-      $("#last-transition-row td input:last").val(activeEndYear);
+      $("#added-transition-rows tr:last > td input:last").val(activeEndYear);
     }
   };
   //////////////////////////////////////////////////////////////////////////

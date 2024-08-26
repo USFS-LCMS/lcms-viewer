@@ -341,7 +341,7 @@ function hiform_bmp_process() {
         .clip(geometry)
         .select(["blue", "green", "red", "NDVI", "Date"]),
       vizParamsTrue10k,
-      "Pre With Clouds Natural Color Composite",
+      "Pre Natural Color Composite",
       false,
       null,
       null,
@@ -353,7 +353,7 @@ function hiform_bmp_process() {
         .clip(geometry)
         .select(["blue", "green", "red", "NDVI", "Date"]),
       vizParamsTrue10k,
-      "Post With Clouds Natural Color Composite",
+      "Post Natural Color Composite",
       false,
       null,
       null,
@@ -366,16 +366,6 @@ function hiform_bmp_process() {
       .addBands(pre.select(["Date"], ["Pre Date"]))
       .addBands(post.select(["Date"], ["Post Date"]))
       .clip(geoBounds);
-
-    Map.addLayer(
-      diff,
-      ndviRamp,
-      "All-Lands NDVI Change",
-      false,
-      null,
-      null,
-      `NDVI change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
-    );
 
     ////////////////////////////////////////////////////////////////////
     // bring in 2021 NLCD - define 4 forest classess
@@ -392,6 +382,17 @@ function hiform_bmp_process() {
       .or(nlcd_landcover_img.eq(43))
       .or(nlcd_landcover_img.eq(90));
 
+    const nlcd_not_water = nlcd_landcover_img.neq(11);
+    diff = diff.updateMask(nlcd_not_water);
+    Map.addLayer(
+      diff,
+      ndviRamp,
+      "All-Lands NDVI Change",
+      false,
+      null,
+      null,
+      `NDVI change magnitude between ${urlParams.preDate1} - ${urlParams.preDate2} and ${urlParams.postDate1} - ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
+    );
     diff = diff.updateMask(nlcd_wild).clip(geoBounds);
 
     Map.addLayer(

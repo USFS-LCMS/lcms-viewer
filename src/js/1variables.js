@@ -33,7 +33,8 @@ function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
   if (showSpinner) {
     setTimeout(() => Map.showSpinner(), 100);
   }
-
+  // const expectedCode =
+  // urlParams.expectedCode = rand_from_seed(new Date().getDate());
   let res = $.ajax({
     type: "POST",
     url: store_api,
@@ -59,8 +60,10 @@ function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
     data: JSON.stringify({ id: id }),
     contentType: "application/json; charset=utf-8",
   });
+  console.log(res);
   if (res.statusText === "OK") {
-    let params = JSON.parse(res.responseText);
+    // let params = JSON.parse(res.responseText);
+    let params = res.responseJSON;
     console.log("Retrieved params:");
     console.log(params);
 
@@ -166,6 +169,11 @@ function encodeJSON(json) {
   outURL = outURL.slice(0, outURL.length - 1);
   return outURL;
 }
+function rand_from_seed(x, iterations) {
+  iterations = iterations || 100;
+  for (var i = 0; i < iterations; i++) x = (x ^ (x << 1) ^ (x >> 1)) % 10000;
+  return x;
+}
 function parseUrlSearch() {
   let urlParamsStr = window.location.search;
   if (urlParamsStr !== "") {
@@ -180,15 +188,15 @@ function parseUrlSearch() {
     });
   }
   if (urlParams.id !== undefined) {
-    if (urlParams.id.indexOf("-") > -1) {
-      retrieveParams(urlParams.id);
-      delete urlParams.id;
-    } else {
-      window.open("https://tinyurl.com/" + urlParams.id, "_self");
-      if (typeof Storage !== "undefined") {
-        localStorage.setItem("cachedID", urlParams.id);
-      }
-    }
+    // if (urlParams.id.indexOf("-") > -1) {
+    retrieveParams(urlParams.id);
+    delete urlParams.id;
+    // } else {
+    //   window.open("https://tinyurl.com/" + urlParams.id, "_self");
+    //   if (typeof Storage !== "undefined") {
+    //     localStorage.setItem("cachedID", urlParams.id);
+    //   }
+    // }
   } else {
     if (typeof Storage !== "undefined") {
       const id = localStorage.getItem("cachedID");
@@ -807,11 +815,16 @@ function smartToFixed(v) {
   if (Number.isInteger(v) || !isNumber(v)) {
     return v;
   } else {
+    if (typeof v === "string") {
+      v = v.indexOf(".") > -1 ? parseFloat(v) : parseInt(v);
+      if (Number.isInteger(v)) {
+        return v;
+      }
+    }
     let currentDecimalL = v.toString().split(".")[1].length;
     let maxToFixedL = Math.ceil(currentDecimalL * chartDecimalProportion);
     let toFixedL = Math.max(chartPrecision, maxToFixedL);
     let out = parseFloat(v.toFixed(toFixedL));
-    // console.log(`${v}-${currentDecimalL}-${maxToFixedL}-${toFixedL}-${out}`)
     return out;
   }
 }
