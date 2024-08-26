@@ -29,12 +29,12 @@ function updatePageUrl() {
 }
 let fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
+// const tiny_json_url = "http://localhost:3002";
 function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
   if (showSpinner) {
     setTimeout(() => Map.showSpinner(), 100);
   }
-  // const expectedCode =
-  // urlParams.expectedCode = rand_from_seed(new Date().getDate());
+  urlParams.expectedCode = getCode();
   let res = $.ajax({
     type: "POST",
     url: store_api,
@@ -47,6 +47,7 @@ function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
     console.log(id);
     fullShareURL = `${baseUrl()}?id=${id}`;
     setUrl(fullShareURL);
+    copyToClipBoard(fullShareURL);
   }
   if (showSpinner) {
     setTimeout(() => Map.hideSpinner(), 100);
@@ -124,7 +125,18 @@ function TweetThis(
     }
   );
 }
-
+function copyToClipBoard(text) {
+  const $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val(text).select();
+  document.execCommand("copy");
+  $temp.remove();
+  showMessage(
+    "Copied to clipboard",
+    `<p>The following text was copied to your clipboard:</p>
+    <p style='font-weight:bold;'>${text}</p>`
+  );
+}
 function copyText(element, messageBoxId) {
   const $temp = $("<input>");
   $("body").append($temp);
@@ -173,6 +185,11 @@ function rand_from_seed(x, iterations) {
   iterations = iterations || 100;
   for (var i = 0; i < iterations; i++) x = (x ^ (x << 1) ^ (x >> 1)) % 10000;
   return x;
+}
+function getCode(dt) {
+  dt = dt !== undefined ? new Date(dt) : new Date();
+  const d = dt.toISOString().split("T")[0].replaceAll("-", "");
+  return rand_from_seed(d);
 }
 function parseUrlSearch() {
   let urlParamsStr = window.location.search;
