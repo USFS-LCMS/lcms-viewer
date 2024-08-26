@@ -63,7 +63,6 @@ function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
   });
   console.log(res);
   if (res.statusText === "OK") {
-    // let params = JSON.parse(res.responseText);
     let params = res.responseJSON;
     console.log("Retrieved params:");
     console.log(params);
@@ -205,15 +204,15 @@ function parseUrlSearch() {
     });
   }
   if (urlParams.id !== undefined) {
-    // if (urlParams.id.indexOf("-") > -1) {
-    retrieveParams(urlParams.id);
-    delete urlParams.id;
-    // } else {
-    //   window.open("https://tinyurl.com/" + urlParams.id, "_self");
-    //   if (typeof Storage !== "undefined") {
-    //     localStorage.setItem("cachedID", urlParams.id);
-    //   }
-    // }
+    if (urlParams.id.indexOf("-") > -1) {
+      retrieveParams(urlParams.id);
+      delete urlParams.id;
+    } else {
+      window.open("https://tinyurl.com/" + urlParams.id, "_self");
+      if (typeof Storage !== "undefined") {
+        localStorage.setItem("cachedID", urlParams.id);
+      }
+    }
   } else {
     if (typeof Storage !== "undefined") {
       const id = localStorage.getItem("cachedID");
