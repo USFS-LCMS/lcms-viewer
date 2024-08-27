@@ -515,17 +515,7 @@ function getIDAndParams(
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
 }
-function googleMapPolygonToGEEPolygon(googleMapPolygon) {
-  let path = googleMapPolygon.getPath().getArray();
-  path = path.map(function (p) {
-    return [p.lng(), p.lat()];
-  });
-  const geePolygon = ee.FeatureCollection([
-    ee.Feature(ee.Geometry.Polygon(path)),
-  ]);
 
-  return geePolygon;
-}
 function exportImages() {
   let exportCRST = $("#export-crs").val() || exportCRS;
   console.log(exportCRST);

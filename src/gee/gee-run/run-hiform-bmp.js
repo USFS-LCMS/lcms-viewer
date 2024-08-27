@@ -482,20 +482,20 @@ function hiform_bmp_process() {
 
     Map.addExport(
       mod_change_vectors,
-      `Moderate_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      `Moderate_NDVI_Change_Polygons ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       null,
       true
     );
 
     Map.addExport(
       severe_change_vectors,
-      `Severe_NDVI_Change ${urlParams.selectedCounty}-${urlParams.selectedState} `,
+      `Severe_NDVI_Change_Polygons ${urlParams.selectedCounty}-${urlParams.selectedState} `,
       null,
       true
     );
     Map.addExport(
       diff.select(["NDVI"]).multiply(10000).int16(),
-      `Forest NDVI Change Raw ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      `Forest NDVI Change Values ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       10,
       false,
       {}
@@ -507,7 +507,7 @@ function hiform_bmp_process() {
         .clamp(-127, 127)
         .toInt8()
         .sldStyle(sld_intervals_ndvi),
-      `Forest NDVI Change Colorized ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      `Forest NDVI Change Photo ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       10,
       false,
       {},
@@ -516,7 +516,7 @@ function hiform_bmp_process() {
 
     Map.addExport(
       post.select(["red", "green", "blue", "nir"]).int16(),
-      `Post_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      `Post_Image_Composite ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       10,
       false,
       {}

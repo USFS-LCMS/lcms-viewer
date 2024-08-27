@@ -3716,6 +3716,7 @@ if (mode === "lcms-dashboard") {
     if (dashboardAreaSelectionMode === "View-Extent") {
       clearAllSelectedDashboardFeatures();
       startDashboardViewExtentSelect();
+      map.setOptions({ draggableCursor: "" });
       try {
         dragBox.stopListening();
       } catch (err) {}
@@ -3727,6 +3728,7 @@ if (mode === "lcms-dashboard") {
         dragBox.addOnStopFunction(dashboardDragboxLayerSelect);
         dragBox.addOnStartFunction(clearAllSelectedDashboardFeatures);
       }
+      map.setOptions({ draggableCursor: "pointer" });
       stopDashboardViewExtentSelect();
       stopDashboardClickLayerSelect();
       clearAllSelectedDashboardFeatures();
@@ -3735,6 +3737,7 @@ if (mode === "lcms-dashboard") {
       stopDashboardViewExtentSelect();
       clearAllSelectedDashboardFeatures();
       startDashboardClickLayerSelect();
+      map.setOptions({ draggableCursor: "pointer" });
       try {
         dragBox.stopListening();
       } catch (err) {}

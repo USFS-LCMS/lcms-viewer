@@ -3194,8 +3194,8 @@ function addDragBox() {
   const dragBox = {};
   dragBox.polygon = new google.maps.Polygon({
     strokeColor: "#FF0",
-    fillColor: "#0FF",
-    fillOpacity: 0.0,
+    fillColor: "#0DD",
+    fillOpacity: 0,
     strokeOpacity: 1,
     strokeWeight: 1.5,
     zIndex: 999,
@@ -3302,9 +3302,22 @@ function addDragBox() {
     dragBox.listeners.mousemove.map((e) => google.maps.event.removeListener(e));
     dragBox.listeners = { click: [], mousemove: [] };
   };
+  dragBox.getEEBox = function () {
+    return googleMapPolygonToGEEPolygon(dragBox.polygon);
+  };
   return dragBox;
 }
+function googleMapPolygonToGEEPolygon(googleMapPolygon) {
+  let path = googleMapPolygon.getPath().getArray();
+  path = path.map(function (p) {
+    return [p.lng(), p.lat()];
+  });
+  const geePolygon = ee.FeatureCollection([
+    ee.Feature(ee.Geometry.Polygon(path)),
+  ]);
 
+  return geePolygon;
+}
 ////////////////////////////////////////////////////////////////
 //Setup study areas and run functions
 function dropdownUpdateStudyArea(whichOne) {
