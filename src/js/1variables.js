@@ -29,7 +29,6 @@ function updatePageUrl() {
 }
 let fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
-// const tiny_json_url = "http://localhost:3002";
 function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
   if (showSpinner) {
     setTimeout(() => Map.showSpinner(), 100);
@@ -182,7 +181,7 @@ function encodeJSON(json) {
 }
 function rand_from_seed(x, iterations) {
   iterations = iterations || 100;
-  for (var i = 0; i < iterations; i++) x = (x ^ (x << 1) ^ (x >> 1)) % 10000;
+  for (let i = 0; i < iterations; i++) x = (x ^ (x << 1) ^ (x >> 1)) % 10000;
   return x;
 }
 function getCode(dt) {

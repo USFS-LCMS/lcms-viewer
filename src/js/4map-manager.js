@@ -44,29 +44,6 @@ function range(start, stop, step) {
   return result;
 }
 ///////////////////////////////////////////////////////////////////
-//Convert lng, lat to nad 83 code
-function llToNAD83(x, y) {
-  const vertex = [x, y];
-  const smRadius = 6378136.98;
-  const smRange = smRadius * Math.PI * 2.0;
-  const smLonToX = smRange / 360.0;
-  const smRadiansOverDegrees = Math.PI / 180.0;
-
-  // compute x-map-unit
-  vertex[0] *= smLonToX;
-
-  // compute y-map-unit
-  if (y > 86.0) {
-    vertex[1] = smRange;
-  } else if (y < -86.0) {
-    vertex[1] = -smRange;
-  } else {
-    y *= smRadiansOverDegrees;
-    y = Math.log(Math.tan(y) + 1.0 / Math.cos(y), Math.E);
-    vertex[1] = y * smRadius;
-  }
-  return { x: vertex[0], y: vertex[1] };
-}
 ///////////////////////////////////////////////////////////////////
 //Make an object out of to lists of keys and values
 //From:https://stackoverflow.com/questions/12199051/merge-two-arrays-of-keys-and-values-to-an-object-using-underscore answer 6
@@ -1971,6 +1948,16 @@ function point2LatLng(x, y) {
   return out;
 }
 //////////////////////////////////////////////////////
+function Xcoord4326To3857(x) {
+  x = (x * 20037508.34) / 180;
+
+  return x;
+}
+function Ycoord4326To3857(y) {
+  var y = Math.log(Math.tan(((90 + y) * Math.PI) / 360)) / (Math.PI / 180);
+  y = (y * 20037508.34) / 180;
+  return y;
+}
 //Wrapper function to get a dynamic map service
 function getGroundOverlay(baseUrl, minZoom, ending) {
   if (map.getZoom() >= minZoom) {
@@ -1980,40 +1967,14 @@ function getGroundOverlay(baseUrl, minZoom, ending) {
     const mapHeight = $("#map").height();
     const mapWidth = $("#map").width();
 
-    const bounds = map.getBounds();
-    const keys = Object.keys(bounds);
-    const keysX = Object.keys(bounds[keys[0]]);
-    const keysY = Object.keys(bounds[keys[1]]);
+    const bounds = map.getBounds().toJSON();
 
-    eeBoundsPoly = ee.Geometry.Rectangle([
-      bounds[keys[1]][keysX[0]],
-      bounds[keys[0]][keysY[0]],
-      bounds[keys[1]][keysX[1]],
-      bounds[keys[0]][keysY[1]],
-    ]);
+    const south = Ycoord4326To3857(bounds.south);
+    const north = Ycoord4326To3857(bounds.north);
+    const east = Xcoord4326To3857(bounds.east);
+    const west = Xcoord4326To3857(bounds.west);
 
-    const ulx = bounds[keys[1]][keysX[0]];
-    const lrx = bounds[keys[1]][keysX[1]];
-    const ulxy = [ulx, bounds[keys[0]][keysY[0]]];
-    const lrxy = [lrx, bounds[keys[0]][keysY[1]]];
-    const ulxyMercator = llToNAD83(ulxy[0], ulxy[1]);
-    const lrxyMercator = llToNAD83(lrxy[0], lrxy[1]);
-
-    const url =
-      baseUrl +
-      ulxyMercator.x.toString() +
-      "%2C" +
-      lrxyMercator.y.toString() +
-      "%2C" +
-      lrxyMercator.x.toString() +
-      "%2C" +
-      ulxyMercator.y.toString() +
-      "&bboxSR=102100&imageSR=102100&size=" +
-      mapWidth.toString() +
-      "%2C" +
-      mapHeight.toString() +
-      "&f=image" +
-      ending;
+    const url = `${baseUrl}${east}%2C${north}%2C${west}%2C${south}&bboxSR=102100&imageSR=102100&size=${mapWidth}%2C${mapHeight}&f=image${ending}`;
 
     return url;
   } else {

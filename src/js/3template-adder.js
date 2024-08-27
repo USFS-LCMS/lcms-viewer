@@ -465,6 +465,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "dashboardAreaSelectionMode",
     urlParams.dashboardAreaSelectionMode
   );
+
   //////////////////////////////////// Add summaryArea to question dict in future////////////////////////////////////////////
   window.questionDict = {
     fire: {
@@ -2453,12 +2454,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     const link = document.createElement("a");
     const tutorial_name = "HiForm_BMP_Tool_Users_Guide.pdf";
     link.href =
-      "https://hiform.org/sites/default/files/project_files/2024-08/" +
+      "https://hiform.org/projects/hiform-timber-harvest-bmp-tool" +
       tutorial_name;
     link.target = "_blank";
     link.click();
     ga("send", "event", mode + "-download", "tutorial-download", tutorial_name);
-    showSurveyModal("downloadedTutorial");
   }
   addCollapse(
     "sidebar-left",
@@ -2468,7 +2468,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     '<i role="img" class="fa fa-mouse-pointer mr-1" aria-hidden="true"></i>',
     true,
     null,
-    "Select are of interest for the Hi-Form BMP Tool"
+    "Select an area of interest for the Hi-Form BMP Tool"
   );
 
   $("#select-aoi-pane").append(`<div id="select-aoi-div"></div>
