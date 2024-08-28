@@ -2452,10 +2452,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   canExport = true;
   function downloadHiFormTutorial() {
     const link = document.createElement("a");
-    const tutorial_name = "HiForm_BMP_Tool_Users_Guide.pdf";
-    link.href =
-      "https://hiform.org/projects/hiform-timber-harvest-bmp-tool" +
-      tutorial_name;
+    const tutorial_name = "HiForm_BMP_Tool_Users_Guide";
+    link.href = "https://hiform.org/projects/hiform-timber-harvest-bmp-tool";
     link.target = "_blank";
     link.click();
     ga("send", "event", mode + "-download", "tutorial-download", tutorial_name);
