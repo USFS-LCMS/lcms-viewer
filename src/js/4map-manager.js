@@ -1954,7 +1954,7 @@ function Xcoord4326To3857(x) {
   return x;
 }
 function Ycoord4326To3857(y) {
-  var y = Math.log(Math.tan(((90 + y) * Math.PI) / 360)) / (Math.PI / 180);
+  y = Math.log(Math.tan(((90 + y) * Math.PI) / 360)) / (Math.PI / 180);
   y = (y * 20037508.34) / 180;
   return y;
 }
@@ -1974,7 +1974,7 @@ function getGroundOverlay(baseUrl, minZoom, ending) {
     const east = Xcoord4326To3857(bounds.east);
     const west = Xcoord4326To3857(bounds.west);
 
-    const url = `${baseUrl}${east}%2C${north}%2C${west}%2C${south}&bboxSR=102100&imageSR=102100&size=${mapWidth}%2C${mapHeight}&f=image${ending}`;
+    const url = `${baseUrl}${west}%2C${south}%2C${east}%2C${north}&bboxSR=3857&imageSR=3857&size=${mapWidth}%2C${mapHeight}${ending}`;
 
     return url;
   } else {
@@ -2155,6 +2155,14 @@ function mp() {
       queryItem
     );
   };
+  this.selectLayerAdded = false;
+  this.hideSelectLayerAreaCharting = function () {
+    $("#select-area-interactive-chart-label").hide();
+  };
+  this.hideSelectLayerAreaCharting();
+  this.showSelectLayerAreaCharting = function () {
+    $("#select-area-interactive-chart-label").show();
+  };
   this.addSelectLayer = function (
     item,
     viz,
@@ -2166,6 +2174,8 @@ function mp() {
     whichLayerList,
     queryItem
   ) {
+    this.selectLayerAdded = true;
+    this.showSelectLayerAreaCharting();
     addSelectLayerToMap(
       item,
       viz,
@@ -2190,6 +2200,8 @@ function mp() {
     queryItem
   ) {
     viz.serialized = true;
+    this.selectLayerAdded = true;
+    this.showSelectLayerAreaCharting();
     addSelectLayerToMap(
       item,
       viz,

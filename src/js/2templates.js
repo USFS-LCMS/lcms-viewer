@@ -4119,16 +4119,33 @@ function addLayer(layer) {
         };
         xhr.send();
       }
-
-      checkImageExists(overlayURL, function () {
+      if (overlayURL.indexOf("images/blank.png") === -1) {
+        $("#" + containerID).attr("title", layer.helpBoxMessage);
+        checkImageExists(overlayURL, function () {
+          layer.percent = 100;
+          $("#" + spinnerID + "2").hide();
+          updateProgress();
+          groundOverlayOn = true;
+          $("#" + layer.legendDivID).show();
+          layer.layer.setOpacity(layer.opacity);
+          layer.rangeOpacity = layer.opacity;
+        });
+      } else {
         layer.percent = 100;
-        $("#" + spinnerID + "2").hide();
         updateProgress();
+        $("#" + spinnerID + "2").hide();
+
         groundOverlayOn = true;
-        $("#" + layer.legendDivID).show();
-        layer.layer.setOpacity(layer.opacity);
-        layer.rangeOpacity = layer.opacity;
-      });
+        $("#" + layer.legendDivID).hide();
+        $("#" + containerID).css(
+          "background",
+          `-webkit-linear-gradient(left, #ffb38a, #ffb38a 100%, transparent 100%, transparent 100%)`
+        );
+        $("#" + containerID).attr(
+          "title",
+          `Cannot view layer at this zoom level. Zoom in to view. | ${layer.helpBoxMessage}`
+        );
+      }
     }
     function updateGroundOverlay() {
       if (layer.layer !== null && layer.layer !== undefined) {

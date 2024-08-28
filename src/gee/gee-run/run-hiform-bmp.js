@@ -144,7 +144,7 @@ function runHiForm() {
       {
         baseURL:
           "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
-        minZoom: 2,
+        minZoom: 9,
       },
       {
         baseURL:
@@ -165,8 +165,9 @@ function runHiForm() {
     "related-layer-list"
   );
 
+  //apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_CONUS_Annual_Landcover/ImageServer
   //Initial Set Up
-  handleAoiSelectionType(selectOption);
+  https: handleAoiSelectionType(selectOption);
 
   if (
     urlParams.selectedState !== undefined &&
