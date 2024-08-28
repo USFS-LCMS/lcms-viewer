@@ -1201,7 +1201,7 @@ function runAncillary() {
 
   // Bring in wayback
 
-  turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers
+  Map.turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers
   let wayback = new esri_wayback();
   wayback.addWaybackUIContainer();
   wayback.initialize();

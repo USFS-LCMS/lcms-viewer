@@ -281,7 +281,7 @@ function setFrameOpacity(frame, opacity) {
     value: opacity,
   });
 }
-let turnOffLayersWhenTimeLapseIsOn = true;
+
 //Function to show a specific frame
 function selectFrame(id, fromYearSlider, advanceOne) {
   if (id === null || id === undefined) {
@@ -296,7 +296,7 @@ function selectFrame(id, fromYearSlider, advanceOne) {
   timeLapseID = id;
 
   if (timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady) {
-    if (turnOffLayersWhenTimeLapseIsOn) {
+    if (Map.turnOffLayersWhenTimeLapseIsOn) {
       turnOffLayers();
     }
 
@@ -2417,6 +2417,8 @@ function mp() {
   this.hideSpinner = function () {
     $("#summary-spinner").hide();
   };
+
+  this.turnOffLayersWhenTimeLapseIsOn = true;
 }
 
 const Map2 = new mp();

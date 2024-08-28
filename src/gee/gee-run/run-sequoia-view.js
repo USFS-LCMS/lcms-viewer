@@ -31,7 +31,11 @@ function runSequoia() {
   const gil = getImagesLib;
 
   // Pull in date params
-  const preStartYear = urlParams.preStartYear, preEndYear = urlParams.preEndYear, postYear = urlParams.postYear, startJulian = urlParams.startJulian, endJulian = urlParams.endJulian;
+  const preStartYear = urlParams.preStartYear,
+    preEndYear = urlParams.preEndYear,
+    postYear = urlParams.postYear,
+    startJulian = urlParams.startJulian,
+    endJulian = urlParams.endJulian;
 
   // Format julian days to MM/dd syntax
   startJulianFormatted = formatDTJulian(Date.fromDayofYear(startJulian)); //ee.Date.parse('YYYY-DDD',`2003-${startJulian}`).format('MM/dd').getInfo()
@@ -47,7 +51,7 @@ function runSequoia() {
   );
 
   getNAIP(null, true);
-  turnOffLayersWhenTimeLapseIsOn = false;
+  Map.turnOffLayersWhenTimeLapseIsOn = false;
 
   // Bring in the monitoring sites
   const monitoring_sites = ee.FeatureCollection(
@@ -124,7 +128,9 @@ function runSequoia() {
   const preS2s = s2s.filter(
     ee.Filter.calendarRange(preStartYear, preEndYear, "year")
   );
-  const postS2s = s2s.filter(ee.Filter.calendarRange(postYear, postYear, "year"));
+  const postS2s = s2s.filter(
+    ee.Filter.calendarRange(postYear, postYear, "year")
+  );
 
   // Compute median composites and their difference
   const preComp = preS2s.median();

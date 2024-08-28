@@ -15,7 +15,7 @@ function runMTBS() {
     `${startYear}_${endYear}`
   );
   getNAIP(null, true);
-  turnOffLayersWhenTimeLapseIsOn = false;
+  Map.turnOffLayersWhenTimeLapseIsOn = false;
   const mtbsAndNLCD = getMTBSAndNLCD("anc", "layer-list", true);
 
   const nlcdLCObj = mtbsAndNLCD.NLCD;

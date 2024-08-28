@@ -219,8 +219,9 @@ function areaChartCls() {
       obj.xTickDateFormat = params.xTickDateFormat || null;
       obj.chartDecimalProportion = params.chartDecimalProportion;
       obj.chartPrecision = params.chartPrecision;
-      obj.scale = params.scale || scale;
-      obj.transform = params.transform || transform;
+      obj.scale = params.scale !== undefined ? params.scale : scale;
+      obj.transform =
+        params.transform !== undefined ? params.transform : transform;
       obj.crs = params.crs || crs;
       obj.autoScale = params.autoScale || true; // Whether to set the reducer resolution to a larger number below a specified zoom (next param)
       obj.minZoomSpecifiedScale = params.minZoomSpecifiedScale || 11; // Above this zoom level, it won't change the scale/transform of teh reducer

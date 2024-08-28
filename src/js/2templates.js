@@ -512,7 +512,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
-<a  class = 'intro-modal-links' onclick = 'downloadHiFormTutorial()' title="Click to launch tutorial that explains how to utilize the HiForm-BMP tool">USERS' GUIDE</a>
+<a  class = 'intro-modal-links' onclick = 'downloadHiFormTutorial()' title="Click to launch a webpage that explains more about the HiForm-BMP Tool">USER'S GUIDE</a>
   
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: william.m.christie@usda.gov" >HELPDESK/FEEDBACK</a> 
 `,
@@ -1035,8 +1035,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                               <img class = 'support-icons' alt = 'Information icon' src = './src/assets/images/information--v2.png'> 
                           </div>
                           <div class = 'col-lg-10'>
-                          <a class="intro-modal-links" style = 'display:block;' onclick="startTour()" id="tutorialLink" title="Click to launch a tutorial that explains how to use the HiForm-BMP Tool">Online <b>Tour</b></a>
-                          <a  class = 'intro-modal-links' style = 'display:block;'  onclick = 'downloadHiFormTutorial()' title="Click to launch tutorial that explains how to utilize the HiForm-BMP tool">Users' Guide PDF</a>
+                          <a class="intro-modal-links" style = 'display:block;' onclick="startTour()" id="tutorialLink" title="Click to launch the webpage that explains more about the HiForm-BMP Tool">Online <b>Tour</b></a>
+                          <a  class = 'intro-modal-links' style = 'display:block;'  onclick = 'downloadHiFormTutorial()' title="Click to launch a webpage that explains more about the HiForm-BMP Tool">User's Guide PDF</a>
                           </div>
                       </div>
                       <hr>
@@ -3289,7 +3289,7 @@ function addLayer(layer) {
   function turnOn() {
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
-      if (turnOffLayersWhenTimeLapseIsOn) {
+      if (Map.turnOffLayersWhenTimeLapseIsOn) {
         turnOffTimeLapseCheckboxes();
       }
 
