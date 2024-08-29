@@ -231,8 +231,7 @@ const staticTemplates = {
                         
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
-                    <a href="home.html" target="_blank" title = 'Click to visit the LCMS Homepage'>
-                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;margin-top:0px'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
                     </a>
                     <div class="vl title-banner-icon"></div>
                     <img id='title-banner-icon-right' class = 'title-banner-icon'  >
@@ -512,7 +511,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
-<a  class = 'intro-modal-links' onclick = 'downloadHiFormTutorial()' title="Click to launch a webpage that explains more about the HiForm-BMP Tool">USER'S GUIDE</a>
+<a  class = 'intro-modal-links' onclick = 'downloadHiFormTutorial()' title="Click to launch a webpage that explains more about the HiForm-BMP Tool">USER GUIDE</a>
   
 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: william.m.christie@usda.gov" >HELPDESK/FEEDBACK</a> 
 `,
@@ -1036,7 +1035,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                           </div>
                           <div class = 'col-lg-10'>
                           <a class="intro-modal-links" style = 'display:block;' onclick="startTour()" id="tutorialLink" title="Click to launch the webpage that explains more about the HiForm-BMP Tool">Online <b>Tour</b></a>
-                          <a  class = 'intro-modal-links' style = 'display:block;'  onclick = 'downloadHiFormTutorial()' title="Click to launch a webpage that explains more about the HiForm-BMP Tool">User's Guide PDF</a>
+                          <a  class = 'intro-modal-links' style = 'display:block;'  onclick = 'downloadHiFormTutorial()' title="Click to launch a webpage that explains more about the HiForm-BMP Tool">User Guide PDF</a>
                           </div>
                       </div>
                       <hr>

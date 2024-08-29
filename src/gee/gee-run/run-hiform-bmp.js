@@ -128,35 +128,38 @@ function runHiForm() {
     "related-layer-list"
   );
 
-  const nwiLegendDict = {
-    "Freshwater- Forested and Shrub wetland": "008836",
-    "Freshwater Emergent wetland": "7fc31c",
-    "Freshwater pond": "688cc0",
-    "Estuarine and Marine wetland": "66c2a5",
-    Riverine: "0190bf",
-    Lakes: "13007c",
-    "Estuarine and Marine Deepwater": "007c88",
-    "Other Freshwater wetland": "b28653",
-  };
-
-  Map.addLayer(
-    [
-      {
-        baseURL:
-          "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
-        minZoom: 9,
-      },
-      {
-        baseURL:
-          "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
-        minZoom: 11,
-      },
+  const nwi_obj_info = {
+    Wetland_Class_class_names: [
+      "Freshwater Forested/Shrub Wetland",
+      "Freshwater Emergent Wetland",
+      "Freshwater Pond",
+      "Estuarine and Marine Wetland",
+      "Riverine",
+      "Lake",
+      "Estuarine and Marine Deepwater",
+      "Other",
     ],
-    {
-      layerType: "dynamicMapService",
-      addToClassLegend: true,
-      classLegendDict: nwiLegendDict,
-    },
+    Wetland_Class_class_palette: [
+      "008837",
+      "7FC31C",
+      "688CC0",
+      "66C2A5",
+      "0190BF",
+      "13007C",
+      "007C88",
+      "B28653",
+    ],
+    Wetland_Class_class_values: [1, 2, 3, 4, 5, 6, 7, 8],
+    bandNames: ["Wetland_Class"],
+    study_area: "CONUS",
+  };
+  const nwi = ee
+    .ImageCollection("projects/lcms-292214/assets/Ancillary/NWI")
+    .mosaic()
+    .set(nwi_obj_info);
+  Map.addLayer(
+    nwi,
+    { autoViz: true, eeObjInfo: nwi_obj_info },
     "National Wetland Inventory",
     false,
     null,
@@ -164,6 +167,42 @@ function runHiForm() {
     "Fish and Wildlife Service National Wetland Inventory Data",
     "related-layer-list"
   );
+  // const nwiLegendDict = {
+  //   "Freshwater- Forested and Shrub wetland": "008836",
+  //   "Freshwater Emergent wetland": "7fc31c",
+  //   "Freshwater pond": "688cc0",
+  //   "Estuarine and Marine wetland": "66c2a5",
+  //   Riverine: "0190bf",
+  //   Lakes: "13007c",
+  //   "Estuarine and Marine Deepwater": "007c88",
+  //   "Other Freshwater wetland": "b28653",
+  // };
+
+  // Map.addLayer(
+  //   [
+  //     {
+  //       baseURL:
+  //         "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
+  //       minZoom: 9,
+  //     },
+  //     {
+  //       baseURL:
+  //         "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
+  //       minZoom: 11,
+  //     },
+  //   ],
+  //   {
+  //     layerType: "dynamicMapService",
+  //     addToClassLegend: true,
+  //     classLegendDict: nwiLegendDict,
+  //   },
+  //   "National Wetland Inventory",
+  //   false,
+  //   null,
+  //   null,
+  //   "Fish and Wildlife Service National Wetland Inventory Data",
+  //   "related-layer-list"
+  // );
 
   //apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_CONUS_Annual_Landcover/ImageServer
   //Initial Set Up

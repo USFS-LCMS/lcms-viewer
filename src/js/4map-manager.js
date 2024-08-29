@@ -4088,8 +4088,8 @@ function initialize() {
         }
         // Add drag listeners
         if (Map.canReorderLayers) {
-          ["layer-list", "reference-layer-list"].map((l) =>
-            addLayerSortListener(`#${l}`)
+          ["layer-list", "reference-layer-list", "related-layer-list"].map(
+            (l) => addLayerSortListener(`#${l}`)
           );
         }
       }
