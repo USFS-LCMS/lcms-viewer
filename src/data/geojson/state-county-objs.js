@@ -301,10 +301,7 @@ const availableStates = allStates
   .filter((s) => region8_fps.indexOf(s.STATEFP) > -1)
   .map((s) => s.NAME)
   .sort();
-const availableStatesAbrv = allStates
-  // .filter((s) => region8_fps.indexOf(s.STATEFP) > -1)
-  .map((s) => s.STUSPS)
-  .sort();
+
 const allCounties = [
   {
     COUNTYFP: "510",
