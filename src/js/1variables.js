@@ -29,8 +29,9 @@ function updatePageUrl() {
 }
 let fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
-function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
-  if (showSpinner) {
+function storeParams(showSpinner = true, showPopup = true) {
+  store_api = `${tiny_json_url}/store`;
+  if (showSpinner === true) {
     setTimeout(() => Map.showSpinner(), 100);
   }
   urlParams.expectedCode = getCode();
@@ -46,7 +47,7 @@ function storeParams(showSpinner = true, store_api = `${tiny_json_url}/store`) {
     console.log(id);
     fullShareURL = `${baseUrl()}?id=${id}`;
     setUrl(fullShareURL);
-    copyToClipBoard(fullShareURL);
+    copyToClipBoard(fullShareURL, showPopup);
   }
   if (showSpinner) {
     setTimeout(() => Map.hideSpinner(), 100);
@@ -123,17 +124,19 @@ function TweetThis(
     }
   );
 }
-function copyToClipBoard(text) {
+function copyToClipBoard(text, showPopup = true) {
   const $temp = $("<input>");
   $("body").append($temp);
   $temp.val(text).select();
   document.execCommand("copy");
   $temp.remove();
-  showMessage(
-    "Copied to clipboard",
-    `<p>The following text was copied to your clipboard:</p>
-    <p style='font-weight:bold;'>${text}</p>`
-  );
+  if (showPopup) {
+    showMessage(
+      "Copied to clipboard",
+      `<p>The following text was copied to your clipboard:</p>
+      <p style='font-weight:bold;'>${text}</p>`
+    );
+  }
 }
 function copyText(element, messageBoxId) {
   const $temp = $("<input>");

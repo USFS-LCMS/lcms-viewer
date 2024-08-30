@@ -128,6 +128,7 @@ function startDashboardClickLayerSelect() {
     $("#loading-spinner-logo").show();
     updateProgress(".progressbar", 0);
     $("#loading-progress-div").show();
+    $("#dashboard-results-list>div>.panel-heading").addClass("progress-pulse");
 
     visibleDashboardLayers.map((layer) => {
       const ft = ee
@@ -150,6 +151,9 @@ function startDashboardClickLayerSelect() {
         updateProgress(".progressbar", pLoaded);
         if (pLoaded === 100) {
           $("#loading-spinner-logo").hide();
+          $("#dashboard-results-list>div>.panel-heading").removeClass(
+            "progress-pulse"
+          );
           $("#dashboard-download-button").prop("disabled", false);
         }
       });
@@ -181,6 +185,7 @@ function clearAllSelectedDashboardFeatures() {
   } catch (err) {}
 
   $("#loading-progress-div").hide();
+  $("#dashboard-results-list>div>.panel-heading").removeClass("progress-pulse");
 }
 function stopDashboardClickLayerSelect() {
   google.maps.event.clearListeners(map, "click");
@@ -209,6 +214,7 @@ function dashboardBoxSelect() {
     $("#summary-area-selection-radio").css("pointer-events", "none");
     $("#loading-spinner-logo").addClass("fa-spin");
     $("#loading-spinner-logo").show();
+    $("#dashboard-results-list>div>.panel-heading").addClass("progress-pulse");
     updateProgress(".progressbar", 0);
     $("#loading-progress-div").show();
     const boundsFilter = ee.Filter.bounds(geeBox, 500);
@@ -248,6 +254,9 @@ function dashboardBoxSelect() {
                 if (pLoaded === 100) {
                   $("#dashboard-download-button").prop("disabled", false);
                   $("#loading-spinner-logo").hide();
+                  $("#dashboard-results-list>div>.panel-heading").removeClass(
+                    "progress-pulse"
+                  );
                   $("#summary-area-selection-radio").css(
                     "pointer-events",
                     "auto"
@@ -1442,7 +1451,7 @@ function makeDashboardReport() {
   });
   const dashboardReport = new report();
   dashboardReport.addReportHeader();
-  storeParams();
+  storeParams(false, false);
   // TweetThis((preURL = ""), (postURL = ""), (openInNewTab = false), (showMessageBox = false), (onlyURL = true));
   setTimeout(() => {
     dashboardReport.addText(`Resources`, 18);

@@ -585,7 +585,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
     </div>
     <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
-                            <a class="intro-modal-links" onclick="downloadAnyMethods('./literature/Bloom_Mapper_v3_Methods_2023.pdf')" title="Open Bloom Mapper data creation methods documentation">METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadAnyMethods('./src/assets/literature/Bloom_Mapper_v3_Methods_2023.pdf')" title="Open Bloom Mapper data creation methods documentation">METHODS</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >HELPDESK/FEEDBACK</a> 
                         </div>
 
@@ -854,9 +854,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                             </ul>
                                           </li>
                                         </ul>`,
-  TreeMapGEEClippingDiv: `<div class='hl'></div><h5 class='pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h5>
-                           `,
-  TreeMapDownloadDiv: `<h5 id = 'treemap-conus-download-header' class='pt-2'>CONUS Datasets</h5>
+  TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h4>`,
+  TreeMapDownloadDiv: `<h4 id = 'treemap-conus-download-header' class='pt-2'>CONUS Datasets</h4>
                       <ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
@@ -1463,7 +1462,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                <a class="intro-modal-links" onclick="downloadAnyMethods('./literature/Bloom_Mapper_v3_Methods_2023.pdf')" title="Open Bloom Mapper data creation methods documentation">Bloom Mapper V3 METHODS</a>
+                                <a class="intro-modal-links" onclick="downloadAnyMethods('./src/assets/literature/Bloom_Mapper_v3_Methods_2023.pdf')" title="Open Bloom Mapper data creation methods documentation">Bloom Mapper V3 METHODS</a>
                                 </li>
                             </div>
                         </div>
