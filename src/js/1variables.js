@@ -30,7 +30,7 @@ function updatePageUrl() {
 let fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
 function storeParams(showSpinner = true, showPopup = true) {
-  store_api = `${tiny_json_url}/store`;
+  const store_api = `${tiny_json_url}/store`;
   if (showSpinner === true) {
     setTimeout(() => Map.showSpinner(), 100);
   }

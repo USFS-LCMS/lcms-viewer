@@ -196,20 +196,18 @@ function runDashboard() {
           )
         );
       }
-      // if (name === "Counties") {
-      //   summariesT = summariesT.map((f) =>
-      //     f.set(
-      //       summaryAreaObj.unique_fieldname,
-      //       ee
-      //         .String(f.get("NAME"))
-      //         .cat(", ")
-      //         .cat(fipsDict.get(ee.String(f.get("STATEFP"))))
-      //     )
-      //   );
-      // }
-      // if(name === 'FACTS Fuel Treatments'){
-      //   summariesT=summariesT.map(f=>f.set(summaryAreaObj.unique_fieldname,ee.String(f.get('ACTIVITY_2')).cat(' - ').cat(ee.String(f.get('FACTS_ID'))).cat(' - ').cat(ee.Date(f.get('ACT_CREATE')).format('YYYY-MM-dd'))))
-      // }
+      if (name === "Counties") {
+        summariesT = summariesT.map((f) =>
+          f.set(
+            summaryAreaObj.unique_fieldname,
+            ee
+              .String(f.get("NAME"))
+              .cat(", ")
+              .cat(fipsDict.get(ee.String(f.get("STATEFP"))))
+          )
+        );
+      }
+
       Map.addLayer(
         summariesT,
         {
