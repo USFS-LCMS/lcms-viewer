@@ -118,7 +118,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "sidebar-left",
     "layer-list-collapse-label",
     "layer-list-collapse-div",
-    "LCMS DATA",
+    "LCMS DATA SUITE",
     `<img class='panel-title-svg-sm'alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
     true,
     null,
@@ -175,9 +175,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (["year", "prob"].indexOf(urlParams.summaryMethod) === -1) {
     urlParams.summaryMethod = "year";
   }
-
+  if (["show", "hide"].indexOf(urlParams.causeOfChangeMode) === -1) {
+    urlParams.causeOfChangeMode = "show";
+  }
   const tAnalysisMode = urlParams.analysisMode;
   const tAddLCMSTimeLapsesOn = urlParams.addLCMSTimeLapsesOn;
+  const tCauseOfChangeMode = urlParams.causeOfChangeMode;
   if (mode === "LCMS") {
     addRadio(
       "parameters-collapse-div",
@@ -210,8 +213,22 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "toggleAdvancedOn",
     "Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"
   );
-
+  $("#parameters-collapse-div").append(`<hr>`);
+  addRadio(
+    "parameters-collapse-div",
+    "cause-of-change-mask-mode-radio",
+    "Cause of Change: Stable color",
+    "Gray",
+    "Transparent",
+    "urlParams.causeOfChangeMode",
+    "show",
+    "hide",
+    null,
+    null,
+    "Choose whether to show Cause of Change Stable and Non-processing area classes as gray or transparent on the map."
+  );
   urlParams.analysisMode = tAnalysisMode;
+  urlParams.causeOfChangeMode = tCauseOfChangeMode;
   $("#parameters-collapse-div").append(`<hr>`);
 
   addDualRangeSlider(
@@ -359,6 +376,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   }
   if (tSummaryMethod === "prob") {
     $("#summaryMethod-radio-second_toggle_label").click();
+  }
+  if (tCauseOfChangeMode === "hide") {
+    $("#cause-of-change-mask-mode-radio-second_toggle_label").click();
   }
 } else if (mode === "lcms-dashboard") {
   $("#title-banner").fitText(1.7);
@@ -1915,7 +1935,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
     <hr>
     <label>Provide name for storm (optional):</label>
-    <input title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm!" style='width:80%;'><hr>`);
+    <input title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm" style='width:80%;'><hr>`);
   addRangeSlider(
     "parameters-collapse-div",
     "Refinement iterations",

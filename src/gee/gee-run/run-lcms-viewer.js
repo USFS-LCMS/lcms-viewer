@@ -16,7 +16,7 @@ function runGTAC() {
     const addLayerFun =
       urlParams.addLCMSTimeLapsesOn === "yes" ? Map.addTimeLapse : Map.addLayer;
     const timeLapseEnding =
-      urlParams.addLCMSTimeLapsesOn === "yes" ? " Time Lapse" : "";
+      urlParams.addLCMSTimeLapsesOn === "yes" ? " Time-Lapse" : "";
 
     ga(
       "send",
@@ -241,9 +241,9 @@ function runGTAC() {
     }; //eeObjInfo(lcmsRun.forProps, "ImageCollection").getInfo();
     // console.log(lcmsRun.props);
 
-    //Bring in time lapses
+    //Bring in time-lapses
 
-    //Mask out stable and non processing area mask for change time lapse
+    //Mask out stable and non processing area mask for change time-lapse
     lcmsRun.tlChange = lcmsRun.lcms.select(["Change"]).map(function (img) {
       return img.updateMask(img.gte(2).and(img.lt(5))).copyProperties(img);
     });
@@ -254,14 +254,20 @@ function runGTAC() {
       lcmsRun.props.bandNames = ["Change"];
       Map.addTimeLapse(
         lcmsRun.tlChange,
-        { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years },
-        "Change Time Lapse",
+        {
+          autoViz: true,
+          eeObjInfo: lcmsRun.props,
+          years: lcmsRun.years,
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
+        },
+        "Change Time-Lapse",
         true
       );
       // lcmsRun.props.bandNames = ["Land_Cover"];
-      // Map.addTimeLapse(lcmsRun.tlLC, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Cover Time Lapse", false);
+      // Map.addTimeLapse(lcmsRun.tlLC, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Cover Time-Lapse", false);
       // lcmsRun.props.bandNames = ["Land_Use"];
-      // Map.addTimeLapse(lcmsRun.tlLU, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Use Time Lapse", false);
+      // Map.addTimeLapse(lcmsRun.tlLU, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Use Time-Lapse", false);
     }
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
     ["Land_Use", "Land_Cover"].map((b) => {
@@ -286,7 +292,9 @@ function runGTAC() {
               startYear + lcmsRun.thematicChangeYearBuffer
             }.`,
             autoViz: true,
-
+            labelClasses: "layer-label-lcms",
+            labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
+            test: 1,
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
@@ -310,7 +318,8 @@ function runGTAC() {
               endYear - lcmsRun.thematicChangeYearBuffer
             } to ${endYear}.`,
             autoViz: true,
-
+            labelClasses: "layer-label-lcms",
+            labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
@@ -328,7 +337,8 @@ function runGTAC() {
             title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${endYear}.`,
             autoViz: true,
             queryParams: { palette: ["00897b"] },
-
+            labelClasses: "layer-label-lcms",
+            labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
@@ -339,6 +349,82 @@ function runGTAC() {
         );
       }
     });
+
+    if (urlParams.addTCC2021 === true || urlParams.beta === true) {
+      let minTCCYear = 2008;
+      let maxTCCYear = 2021;
+
+      minTCCYear = startYear > minTCCYear ? startYear : minTCCYear;
+      maxTCCYear = endYear < maxTCCYear ? endYear : maxTCCYear;
+      window.nlcdTCCYrs = range(minTCCYear, maxTCCYear + 1);
+
+      window.nlcdTCC2021 = ee
+        .ImageCollection(
+          "projects/nlcd-tcc/assets/CONUS-TCC/Final-products/2021-4"
+        )
+        .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
+      areaChart.addLayer(
+        nlcdTCC2021.select([0, 2]),
+        {
+          palette: "080,0F0",
+          xAxisLabels: nlcdTCCYrs,
+          eeObjInfo: {
+            bandNames: [
+              "Science_Percent_Tree_Canopy_Cover",
+              "NLCD_Percent_Tree_Canopy_Cover",
+            ],
+
+            size: nlcdTCCYrs.length,
+          },
+        },
+        "NLCD TCC"
+      );
+
+      let tccMin = 1;
+      let tccMax = 80;
+      let tccPalette = "FFF,080";
+      let tcclegendLabelLeftAfter = "% TCC";
+      let tcclegendLabelRightAfter = "% TCC";
+      let tccNameEnding = "Time-Lapse";
+      let tccLayer = nlcdTCC2021.select([0, 2]).map((img) => img.selfMask());
+      if (urlParams.addLCMSTimeLapsesOn === "no") {
+        // tccMin = 0;
+        // tccMax = 10;
+        tccLayer = nlcdTCC2021.select([0, 2]);
+        // tcclegendLabelLeftAfter = "% TCC StdDev";
+        // tcclegendLabelRightAfter = "% TCC StdDev";
+        tccNameEnding = "Mean";
+        // tccPa
+      }
+      addLayerFun(
+        tccLayer,
+        {
+          min: tccMin,
+          max: tccMax,
+          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
+          palette: tccPalette,
+          selfMask: true,
+          legendLabelLeftAfter: tcclegendLabelLeftAfter,
+          legendLabelRightAfter: tcclegendLabelRightAfter,
+          xAxisLabels: nlcdTCCYrs,
+          reducer: ee.Reducer.mean(),
+          eeObjInfo: {
+            bandNames: [
+              "Science_Percent_Tree_Canopy_Cover",
+              "NLCD_Percent_Tree_Canopy_Cover",
+            ],
+
+            size: nlcdTCCYrs.length,
+          },
+          years: nlcdTCCYrs,
+          queryParams: { palette: ["080", "0F0"] },
+
+          labelClasses: "layer-label-tcc",
+          labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
+        },
+        `TCC ${tccNameEnding}`
+      );
+    }
     let change_attribution_bn = "Cause_of_Change";
     let lcmsAttr = ee
       .ImageCollection(
@@ -405,12 +491,15 @@ function runGTAC() {
 
     lcmsAttr = lcmsAttr.map((img) => {
       let out = img.where(img.eq(19).or(img.eq(0)), 20);
-      return out
-        .where(img.eq(1), 19)
-        .subtract(1)
-        .set(cocObjInfo)
-        .copyProperties(img, ["system:time_start"]);
+      out = out.where(img.eq(1), 19).subtract(1);
+      return out.set(cocObjInfo).copyProperties(img, ["system:time_start"]);
     });
+    if (urlParams.causeOfChangeMode === "hide") {
+      lcmsAttr = lcmsAttr.map((img) => {
+        img = img.updateMask(img.lt(18));
+        return img;
+      });
+    }
 
     addLayerFun(
       lcmsAttr,
@@ -421,6 +510,8 @@ function runGTAC() {
         eeObjInfo: cocObjInfo,
         reducer: ee.Reducer.min(),
         years: lcmsRun.COCYears,
+        labelClasses: "layer-label-lcms",
+        labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
       },
       `Cause of Change (beta) ${timeLapseEnding}`,
       false
@@ -463,6 +554,8 @@ function runGTAC() {
         min: startYear,
         max: endYear,
         palette: declineYearPalette,
+        labelClasses: "layer-label-lcms",
+        labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
       },
       "Fast Loss Year"
     );
@@ -478,6 +571,8 @@ function runGTAC() {
           min: lcmsRun.minFastLossProb,
           max: 0.5,
           palette: declineProbPalette,
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
         },
         "Fast Loss Probability",
         false
@@ -492,6 +587,8 @@ function runGTAC() {
           palette: declineDurPalette,
           legendLabelLeft: "Year count =",
           legendLabelRight: "Year count >=",
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
         },
         "Fast Loss Duration",
         false
@@ -505,6 +602,8 @@ function runGTAC() {
         min: startYear,
         max: endYear,
         palette: declineYearPalette,
+        labelClasses: "layer-label-lcms",
+        labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
       },
       "Slow Loss Year"
     );
@@ -520,6 +619,8 @@ function runGTAC() {
           min: lcmsRun.minSlowLossProb,
           max: 0.5,
           palette: declineProbPalette,
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
         },
         "Slow Loss Probability",
         false
@@ -534,6 +635,8 @@ function runGTAC() {
           palette: declineDurPalette,
           legendLabelLeft: "Year count =",
           legendLabelRight: "Year count >=",
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
         },
         "Slow Loss Duration",
         false
@@ -548,6 +651,8 @@ function runGTAC() {
         min: startYear,
         max: endYear,
         palette: gainYearPaletteA,
+        labelClasses: "layer-label-lcms",
+        labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
       },
       "Gain Year",
       false
@@ -561,6 +666,8 @@ function runGTAC() {
           min: lcmsRun.minGainProb,
           max: 0.8,
           palette: recoveryProbPalette,
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
         },
         "Gain Probability",
         false
@@ -576,6 +683,8 @@ function runGTAC() {
           palette: recoveryDurPalette,
           legendLabelLeft: "Year count =",
           legendLabelRight: "Year count >=",
+          labelClasses: "layer-label-lcms",
+          labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
         },
         "Gain Duration",
         false
@@ -607,7 +716,7 @@ function runGTAC() {
         );
       })
     );
-    // Map.addTimeLapse(lcmsRun.composites.limit(5),{min:500,max:5000,bands:'swir1,nir,red'},'Composite Time Lapse');
+    // Map.addTimeLapse(lcmsRun.composites.limit(5),{min:500,max:5000,bands:'swir1,nir,red'},'Composite Time-Lapse');
 
     //Set up CCDC
     lcmsRun.ccdcIndicesSelector = [
@@ -864,6 +973,8 @@ function runGTAC() {
           visible: cocVisibility,
           eeObjInfo: cocObjInfo,
           xAxisLabels: lcmsRun.COCYears,
+          shouldUnmask: true,
+          unmaskValue: 18,
         },
         "Cause of Change (beta) Annual",
         false
@@ -877,83 +988,13 @@ function runGTAC() {
           eeObjInfo: cocObjInfo,
           xAxisLabels: lcmsRun.COCYears,
           sankeyMinPercentage: 1,
+          shouldUnmask: true,
+          unmaskValue: 18,
         },
         "Cause of Change (beta) Transition",
         false
       );
       if (urlParams.addTCC2021 === true || urlParams.beta === true) {
-        let minTCCYear = 2008;
-        let maxTCCYear = 2021;
-
-        minTCCYear = startYear > minTCCYear ? startYear : minTCCYear;
-        maxTCCYear = endYear < maxTCCYear ? endYear : maxTCCYear;
-        let nlcdTCCYrs = range(minTCCYear, maxTCCYear + 1);
-
-        let nlcdTCC2021 = ee
-          .ImageCollection(
-            "projects/nlcd-tcc/assets/CONUS-TCC/Final-products/2021-4"
-          )
-          .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
-        areaChart.addLayer(
-          nlcdTCC2021.select([0, 2]),
-          {
-            palette: "080,0F0",
-            xAxisLabels: nlcdTCCYrs,
-            eeObjInfo: {
-              bandNames: [
-                "Science_Percent_Tree_Canopy_Cover",
-                "NLCD_Percent_Tree_Canopy_Cover",
-              ],
-
-              size: nlcdTCCYrs.length,
-            },
-          },
-          "NLCD TCC"
-        );
-
-        let tccMin = 1;
-        let tccMax = 80;
-        let tccPalette = "FFF,080";
-        let tcclegendLabelLeftAfter = "% TCC";
-        let tcclegendLabelRightAfter = "% TCC";
-        let tccNameEnding = "Time Lapse";
-        let tccLayer = nlcdTCC2021.select([0, 2]).map((img) => img.selfMask());
-        if (urlParams.addLCMSTimeLapsesOn === "no") {
-          // tccMin = 0;
-          // tccMax = 10;
-          tccLayer = nlcdTCC2021.select([0, 2]);
-          // tcclegendLabelLeftAfter = "% TCC StdDev";
-          // tcclegendLabelRightAfter = "% TCC StdDev";
-          tccNameEnding = "Mean";
-          // tccPa
-        }
-        addLayerFun(
-          tccLayer,
-          {
-            min: tccMin,
-            max: tccMax,
-            bands: ["NLCD_Percent_Tree_Canopy_Cover"],
-            palette: tccPalette,
-            selfMask: true,
-            legendLabelLeftAfter: tcclegendLabelLeftAfter,
-            legendLabelRightAfter: tcclegendLabelRightAfter,
-            xAxisLabels: nlcdTCCYrs,
-            reducer: ee.Reducer.mean(),
-            eeObjInfo: {
-              bandNames: [
-                "Science_Percent_Tree_Canopy_Cover",
-                "NLCD_Percent_Tree_Canopy_Cover",
-              ],
-
-              size: nlcdTCCYrs.length,
-            },
-            years: nlcdTCCYrs,
-            queryParams: { palette: ["080", "0F0"] },
-          },
-          `TCC ${tccNameEnding}`
-        );
-        // }
-
         nlcdTCC2021 = nlcdTCC2021.select([0]);
         const lcms = ee
           .ImageCollection(studyAreaDict[studyAreaName].final_collections[1])
@@ -1010,6 +1051,8 @@ function runGTAC() {
 
             legendLabelLeftAfter: "% TCC",
             legendLabelRightAfter: "% TCC",
+            labelClasses: "layer-label-tcc",
+            labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
           },
           "TCC Slow Loss Mag",
           false
@@ -1024,6 +1067,8 @@ function runGTAC() {
             palette: "D00,F5DEB3",
             legendLabelLeftAfter: "% TCC",
             legendLabelRightAfter: "% TCC",
+            labelClasses: "layer-label-tcc",
+            labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
           },
           "TCC Fast Loss Mag",
           false
@@ -1037,6 +1082,8 @@ function runGTAC() {
             palette: "F5DEB3,006400",
             legendLabelLeftAfter: "% TCC",
             legendLabelRightAfter: "% TCC",
+            labelClasses: "layer-label-tcc",
+            labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
           },
           "TCC Gain Mag",
           false

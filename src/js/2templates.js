@@ -1584,7 +1584,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
   mapDefinedAreaChartDiv: `<div  id="map-defined" ></div>`,
   userDefinedAreaChartDiv: `<div  id="user-defined" >
                                             <label>Provide name for area selected for charting (optional):</label>
-                                            <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                            <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-defined-area-name" class="form-control my-1" id="user-defined-area-name" placeholder="Name your charting area" style='width:80%;'>
                                             <hr>
                                             <div>Total area selected: <i id = "user-defined-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                             <div id = 'user-defined-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
@@ -1628,7 +1628,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
   selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                         <hr>
                                         <label>Provide name for area selected for charting (optional):</label>
-                                        <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area!" style='width:80%;'>
+                                        <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
                                         <hr>
                                         <div id = 'simplify-error-range-container'></div>
                                         <hr>
@@ -2977,10 +2977,11 @@ function addLegendContainer(legendContainerID, containerID, show, toolTip) {
 function addClassLegendContainer(
   classLegendContainerID,
   legendContainerID,
-  classLegendTitle
+  classLegendTitle,
+  obj
 ) {
   $("#" + legendContainerID).append(`<div class='my-legend'>
-										<div class = 'legend-title'>${classLegendTitle}</div>
+										<div class = 'legend-title ${obj.labelClasses}'>${obj.labelIconHTML} ${classLegendTitle}</div>
 										<div class='legend-scale'>
 									  		<ul class='legend-labels' id = '${classLegendContainerID}'></ul>
 										</div>
@@ -2997,7 +2998,8 @@ function addClassLegendEntry(classLegendContainerID, obj) {
 function addColorRampLegendEntry(legendContainerID, obj) {
   $("#" + legendContainerID)
     .append(`<li class = 'legend-colorRamp' title= '${obj.helpBoxMessage}'>
-							            <div class = 'legend-title'>${obj.name}</div>
+                          
+							            <div class = 'legend-title ${obj.labelClasses}'>${obj.labelIconHTML} ${obj.name}</div>
 							            <div class = 'colorRamp'style='${obj.colorRamp};'></div>
 							            <div>
 							                <span class = 'leftLabel'>${obj.min}</span>
@@ -3102,8 +3104,9 @@ function addLayer(layer) {
     isDraggable = "not-draggable-layer";
   }
   //Set up layer control container
+  // console.log(layer.viz);
   $("#" + layer.whichLayerList)
-    .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container ${isDraggable}'  title= '${layer.helpBoxMessage}'>
+    .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container ${isDraggable} '  title= '${layer.helpBoxMessage}'>
 								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
@@ -3111,7 +3114,8 @@ function addLayer(layer) {
 								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
 								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
                                             <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser eraser" style="display:none;"></i>
-								            <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span'>${layer.name}</span>
+                            ${layer.viz.labelIconHTML}
+								            <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span ${layer.viz.labelClasses}'>${layer.name}</span>
 								       </li>`);
   //Set up opacity slider
   $("#" + opacityID).slider({

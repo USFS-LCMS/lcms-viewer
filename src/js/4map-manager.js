@@ -694,6 +694,8 @@ function addTimeLapseToMap(
     }
     viz.serialized = false;
   }
+  viz.labelClasses = viz.labelClasses || "";
+  viz.labelIconHTML = viz.labelIconHTML || "";
 
   if (viz.canAreaChart === undefined || viz.canAreaChart === null) {
     viz.canAreaChart = false;
@@ -891,8 +893,10 @@ function addTimeLapseToMap(
                                   <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
                                   <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
                                   <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
-
-                                  <span  id = '${legendDivID}-name-span'  class = 'layer-span'>${name}</span>
+                                  ${viz.labelIconHTML}
+                                  <span  id = '${legendDivID}-name-span'  class = 'layer-span ${
+    viz.labelClasses
+  }'>${name}</span>
 
                                   <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-3 pt-3' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
@@ -1395,6 +1399,8 @@ function addToMap(
       );
     }
   }
+  viz.labelClasses = viz.labelClasses || "";
+  viz.labelIconHTML = viz.labelIconHTML || "";
 
   const currentGEERunID = geeRunID;
   if (whichLayerList === null || whichLayerList === undefined) {
@@ -1483,6 +1489,7 @@ function addToMap(
     if (viz.strokeColor.indexOf("#") == -1) {
       viz.strokeColor = "#" + viz.strokeColor;
     }
+
     if (viz.addToClassLegend === undefined || viz.addToClassLegend === null) {
       viz.addToClassLegend = true;
     }
@@ -1655,6 +1662,9 @@ function addToMap(
       legend.name = name;
     }
 
+    legend.labelClasses = viz.labelClasses;
+    legend.labelIconHTML = viz.labelIconHTML;
+
     legend.helpBoxMessage = helpBox;
     let palette;
     if (viz.palette != null) {
@@ -1750,10 +1760,14 @@ function addToMap(
     } else {
       legendClassContainerName = name;
     }
+    const legendObj = {};
+    legendObj.labelClasses = viz.labelClasses;
+    legendObj.labelIconHTML = viz.labelIconHTML;
     addClassLegendContainer(
       classLegendContainerID,
       legendDivID,
-      legendClassContainerName
+      legendClassContainerName,
+      legendObj
     );
     if (
       viz.layerType !== "geeVector" &&
