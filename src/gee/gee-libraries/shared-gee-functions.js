@@ -264,6 +264,76 @@ function getIDSCollection() {
     console.log(err);
   }
 }
+
+function getIDSCollectionAddToMap() {
+  const idsCollections = getIDSCollection();
+
+  if (idsCollections !== undefined) {
+    const idsYr = idsCollections.featureCollection
+      .reduceToImage(["SURVEY_YEA"], ee.Reducer.max())
+      .set("bounds", clientBoundsDict.CONUS);
+    const idsCount = idsCollections.featureCollection
+      .reduceToImage(["SURVEY_YEA"], ee.Reducer.count())
+      .selfMask()
+      .set("bounds", clientBoundsDict.CONUS);
+    Map.addLayer(
+      idsCount,
+      {
+        min: 1,
+        max: Math.ceil((idsEndYear - idsStartYear) / 2) + 1,
+        palette: declineYearPalette,
+      },
+      "IDS Survey Count",
+      false,
+      null,
+      null,
+      "Number of times an area was included in the IDS survey (" +
+        idsStartYear.toString() +
+        "-" +
+        idsEndYear.toString() +
+        ")",
+    );
+    Map.addLayer(
+      idsYr,
+      {
+        min: startYear,
+        max: endYear,
+        palette: declineYearPalette,
+      },
+      "IDS Most Recent Year Surveyed",
+      false,
+      null,
+      null,
+      "Most recent year an area was included in the IDS survey (" +
+        idsStartYear.toString() +
+        "-" +
+        idsEndYear.toString() +
+        ")",
+    );
+    Map.addLayer(
+      idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
+      { strokeColor: "0FF" },
+      "IDS Polygons",
+      false,
+      null,
+      null,
+      "Polygons from the IDS survey (" +
+        idsStartYear.toString() +
+        "-" +
+        idsEndYear.toString() +
+        ")",
+    );
+  
+  }
+
+  if (idsCollections !== undefined) {
+    return [
+      idsCollections.imageCollection,
+      idsCollections.featureCollection,
+    ];
+  }
+}
+
 function getAspectObj() {
   const dem = ee.Image("USGS/SRTMGL1_003");
   const aspect = ee.Terrain.aspect(dem).int16();

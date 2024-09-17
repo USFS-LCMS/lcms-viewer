@@ -625,20 +625,106 @@ function runAncillary() {
   //   Map.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
   // });
 
-  //Add NAIP to viewer
-  // var naipYears = ee.List.sequence(2007,2017).getInfo();
-  // var naip = ee.ImageCollection("USDA/NAIP/DOQQ").select([0,1,2],['R','G','B']);
-  // naipYears.map(function(yr){
-  //   var naipT = naip.filter(ee.Filter.calendarRange(yr,yr,'year'));
-  //  Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false,'','FFF','The National Agriculture Imagery Program (NAIP) acquired aerial imagery during the '+yr.toString()+' agricultural growing season in the continental U.S.');
-  //  Map.addLayer(naipT.mosaic(),{'min':25,'max':225,'addToLegend':false},'NAIP ' + yr.toString(),false, 0.5);
-  // });
 
   // MTBS
   /////////////////////////////////////////////////////
 
-  const mtbsIDS = getMTBSandIDS("anc", "layer-list");
-  let mtbs = mtbsIDS[0];
+  // original mtbs
+
+  //const mtbsIDS = getMTBSandIDS("anc", "layer-list");
+  //let mtbs = mtbsIDS[0];
+
+  // add burn perimeters
+  // Add MTBS Burn Perimeters
+  ///////////////////////////////////////////
+
+  // copied from run-mtbs-viewer.js
+
+  const mtbsAndNLCD = getMTBSAndNLCD("anc", null, false);
+
+  //const nlcdLCObj = mtbsAndNLCD.NLCD;
+  mtbsC = mtbsAndNLCD.MTBS.collection;
+
+  let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  const inFields = [
+    "Incid_Name",
+    "Incid_Type",
+    "Event_ID",
+    "irwinID",
+    "Ignition Date",
+    "BurnBndAc",
+    "Asmnt_Type",
+  ];
+  const outFields = [
+    "Incident Name",
+    "Incident Type",
+    "MTBS Event ID",
+    "IRWIN ID",
+    "Ignition Date",
+    "Acres",
+    "Assessment Type",
+  ];
+  perims = perims.map(function (f) {
+    const d = ee.Date(f.get("Ig_Date"));
+    const formatted = d.format("YYYY-MM-dd");
+    return f.set({
+      Year: d.get("year"),
+      "Ignition Date": formatted,
+    });
+  });
+
+  perims = perims.select(inFields, outFields);
+  
+  perims = perims.set("bounds", clientBoundsDict.All);
+  
+  Map.addLayer(
+    perims,
+    {
+      strokeColor: "00F",
+    },
+    "MTBS Burn Perimeters",
+    false,
+    null,
+    null,
+    "Delineated perimeters of MTBS mapped fires. Areas can have multiple mapped fires."
+  );
+
+  // var years = ee.List.sequence(startYear,mtbs)
+  const mtbs_dict = ee.Dictionary(mtbsC.get("chartTableDict"))
+  
+  // const chartTableDict = ee
+  //   .Dictionary(nlcdLCObj.collection.get("chartTableDict"))
+  //   .combine(mtbsC.get("chartTableDict"))
+  //   .getInfo();
+
+  // const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(
+  //   setSameDate
+  // );
+  // const forCharting = joinCollections(mtbsC, nlcdLCFilled, false);
+  // const timeLapseSeverityViz = JSON.parse(
+  //   JSON.stringify(mtbsAndNLCD.MTBSSeverityViz)
+  // );
+  // timeLapseSeverityViz.years = yearsCli;
+  // Map.addTimeLapse(
+  //   mtbsC,
+  //   timeLapseSeverityViz,
+  //   "MTBS Burn Severity Time Lapse",
+  //   false
+  // );
+
+  // populateAreaChartDropdown();
+  // populatePixelChartDropdown();
+
+  // getSelectLayers();
+
+
+  // IDS
+  ////////////////////////////////////////////////////
+  
+  IDS = getIDSCollectionAddToMap()
+
+  let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
+
 
   // NWI
   /////////////////////////////////////////////////
@@ -872,8 +958,7 @@ function runAncillary() {
     1: "severe drought", // -3.99--3   == -4
     0: "extreme drought",
   };
-  let idsCollection = mtbsIDS[1].select([1, 0], ["IDS Type", "IDS DCA"]);
-
+  
   //PRVI layers
   ///////////////////////////////////
 
@@ -1131,7 +1216,7 @@ function runAncillary() {
   idsCollection = batchFillCollection(idsCollection, years).map(setSameDate);
   nlcdLC = batchFillCollection(nlcdLC, years).map(setSameDate);
   // nlcdLCMS = batchFillCollection(nlcdLCMS,years)
-  mtbs = batchFillCollection(mtbs, years).map(setSameDate);
+  //mtbs = batchFillCollection(mtbs, years).map(setSameDate);
   cdl = batchFillCollection(cdl, years).map(setSameDate);
   nlcdTCC = batchFillCollection(nlcdTCC, years).map(setSameDate);
   nlcdImpv = batchFillCollection(nlcdImpv, years).map(setSameDate);
@@ -1147,13 +1232,18 @@ function runAncillary() {
   // prvi_lc_collection = batchFillCollection(prvi_lc_collection,years).map(setSameDate);
   // prvi_winds = batchFillCollection(prvi_winds.select([0,1,2]),years).map(setSameDate);
   // prUSVI_ch_2018 = batchFillCollection(ee.ImageCollection([prUSVI_ch_2018]),years).map(setSameDate);
+  // let forCharting = joinCollections(
+  //   mtbs.select([0], ["MTBS Burn Severity"]),
+  //   annualPDSI.select([0], ["PDSI"]),
+  //   false
+  // ); 
   let forCharting = joinCollections(
-    mtbs.select([0], ["MTBS Burn Severity"]),
-    annualPDSI.select([0], ["PDSI"]),
+    annualPDSI.select([0], ["PDSI"]),idsCollection,
     false
-  ); //cdl.select([0],['Cropland Data']),false);
+  );
+  //cdl.select([0],['Cropland Data']),false);
   // forCharting  = joinCollections(forCharting,annualPDSI.select([0],['PDSI']), false);
-  forCharting = joinCollections(forCharting, idsCollection, false);
+  //forCharting = joinCollections(forCharting, idsCollection, false);
   forCharting = joinCollections(
     forCharting,
     nlcdLC.select([0], ["NLCD Landcover"]),
@@ -1177,6 +1267,8 @@ function runAncillary() {
 
   // console.log(forCharting.first().bandNames().getInfo())
 
+  forCharting = joinCollections(forCharting, mtbsC, false)
+
   const chartTableDict = {
     "IDS Type": damage_codes,
     "IDS DCA": dca_codes,
@@ -1187,6 +1279,7 @@ function runAncillary() {
     PDSI: pdsiDict,
     "PRVI Landcover": prvi_lc_lookup,
     NWI: nwi_dict,
+    "MTBS Perims": mtbs_dict
   };
 
   forCharting = forCharting.set("chartTableDict", chartTableDict);
