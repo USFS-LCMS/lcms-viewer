@@ -625,6 +625,12 @@ function runAncillary() {
   //   Map.addLayer(nlcdTCCYr,{'min':0,'max':90,'palette':'000,0F0',opacity:0.75},'NLCD Tree Canopy Cover ' + yr.toString(),false);
   // });
 
+  // IDS
+  ////////////////////////////////////////////////////
+  
+  IDS = getIDSCollectionAddToMap()
+
+  let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
 
   // MTBS
   /////////////////////////////////////////////////////
@@ -692,40 +698,6 @@ function runAncillary() {
   // var years = ee.List.sequence(startYear,mtbs)
   const mtbs_dict = ee.Dictionary(mtbsC.get("chartTableDict"))
   
-  // const chartTableDict = ee
-  //   .Dictionary(nlcdLCObj.collection.get("chartTableDict"))
-  //   .combine(mtbsC.get("chartTableDict"))
-  //   .getInfo();
-
-  // const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(
-  //   setSameDate
-  // );
-  // const forCharting = joinCollections(mtbsC, nlcdLCFilled, false);
-  // const timeLapseSeverityViz = JSON.parse(
-  //   JSON.stringify(mtbsAndNLCD.MTBSSeverityViz)
-  // );
-  // timeLapseSeverityViz.years = yearsCli;
-  // Map.addTimeLapse(
-  //   mtbsC,
-  //   timeLapseSeverityViz,
-  //   "MTBS Burn Severity Time Lapse",
-  //   false
-  // );
-
-  // populateAreaChartDropdown();
-  // populatePixelChartDropdown();
-
-  // getSelectLayers();
-
-
-  // IDS
-  ////////////////////////////////////////////////////
-  
-  IDS = getIDSCollectionAddToMap()
-
-  let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
-
-
   // NWI
   /////////////////////////////////////////////////
 
