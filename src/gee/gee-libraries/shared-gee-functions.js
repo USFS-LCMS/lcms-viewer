@@ -1101,10 +1101,10 @@ function setupDropdownTreeDownloads(studyAreaName) {
         const dropdownID = id + "-d";
         $("#" + id).empty();
         $("#" + id).append(`
-              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}" class = 'download-selection-label'>Select products to download:</label>
                               <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
                               <br>
-                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                               <hr>`);
 
         if (m === "annual") {

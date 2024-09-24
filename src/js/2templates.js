@@ -246,14 +246,14 @@ const staticTemplates = {
 		            </li>`,
   placesSearchDiv: `<section id = 'search-share-div' class="input-group  text-center search-bar" '>
 			            <div role='list' class="input-group-prepend">
-                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
-	    					<button onclick = 'storeParams()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="share-button"><i class="fa fa-share-alt teal "></i></button>
+                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box " id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
+	    					<button onclick = 'storeParams()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box" id="share-button"><i class="fa fa-share-alt teal "></i></button>
                             <buttom class="input-group-text bg-white search-box" id="search-icon"><i class="fa fa-search text-black "></i></buttom>
 	  					</div>
 			            <input id = 'pac-input' class="form-control bg-white search-box" title = 'Search for places on the map' type="text" placeholder="Search Places">
                         <div class="input-group-prepend">
-                            <button onclick = 'backView()' title = 'Click to go back a view' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="back-view-button"><i class="fa fa-chevron-left teal "></i></button>
-                            <button onclick = 'forwardView()' title = 'Click to go forward a view' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
+                            <button onclick = 'backView()' title = 'Click to go back a view' class=" btn input-group-text bg-white search-box " id="back-view-button"><i  class="fa fa-chevron-left teal "></i></button>
+                            <button onclick = 'forwardView()' title = 'Click to go forward a view'  class=" btn input-group-text bg-white search-box " id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
                         </div>
                     </section>
                     <p class = 'mt-0 mb-1 text-center white' style = 'display:none;font-size:1.25rem;font-weight:bold' id = 'time-lapse-year-label'></p>`,
@@ -870,7 +870,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     </ul>`,
   TreeMapSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
                       </div>
-                      <hr><div  class = 'py-2 pl-3 pr-1'>
+                      <hr>
+                      <div  class = 'py-2 pl-3 pr-1'>
                                 <header class = 'row'>
                                     <h3 class = ' text-capitalize'>TreeMap Resources</h3>
                                 </header>
@@ -1131,7 +1132,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 </section>`,
   supportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
                 </div>
-                <hr><div  class = 'py-2 pl-3 pr-1'>
+                <hr>
+                <div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1285,7 +1287,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         			</div>`,
   supportDivDashboard: `<div id = 'toggle-show-splash-screen-radio-container'>
                         </div>
-                        <hr><div  class = 'py-2 pl-3 pr-1'>
+                        <hr>
+                        <div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1439,7 +1442,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         			</div>`,
   supportDivAlgal: `<div id = 'toggle-show-splash-screen-radio-container'>
                     </div>
-                    <hr><div  class = 'py-2 pl-3 pr-1'>
+                    <hr>
+                    <div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open ${mode} tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
                         </header>
@@ -1978,11 +1982,7 @@ function showTip(title, message) {
   }
   $("#dontShowTipAgainCheckbox").change(function () {
     localStorage["showToolTipModal-" + mode] = !this.checked;
-    if (localStorage["showToolTipModal-" + mode] === "false") {
-      $("#tooltip-radio-second_toggle_label").click();
-    } else if (localStorage["showToolTipModal-" + mode] === "true") {
-      $("#tooltip-radio-first_toggle_label").click();
-    }
+    $("#tooltip-radio-label").click();
   });
 }
 // function to force a second opportunity for new users to open tutorial for sequoia viewer:
@@ -2726,11 +2726,11 @@ function addCollapse(
     show = "";
     collapsed = "collapsed";
   }
-  const collapseTitleDiv = `<header title="${toolTip}" class="panel-heading px-3 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
+  const collapseTitleDiv = `<header title="${toolTip}" class="panel-heading" role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	<h2 class="p-0 m-0 panel-title  ${collapsed}" data-toggle="collapse"  href="#${collapseID}" id="${collapseLabelID}-label" aria-expanded="${show}" aria-controls="${collapseID}"> <a class = 'collapse-title' role='img'>
 	${collapseLabelIcon} ${collapseLabel} </a></h2><span id="${collapseLabelID}-message"</span></header>`;
 
-  const collapseDiv = `<section id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-5 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></section>`;
+  const collapseDiv = `<section id="${collapseID}" class="panel-collapse collapse panel-body ${show}" role="tabpanel" aria-labelledby="${collapseLabelID}"></section>`;
   if (mode === "append") {
     $("#" + containerID).append(
       `<div role="listitem" id="${collapseLabelID}-${collapseID}"></div>`
@@ -2763,12 +2763,12 @@ function addSubCollapse(
   }
 
   const collapseTitleDiv = `<div >
-                                <div   class="panel-heading px-0 py-2 " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
+                                <div   class="sub-panel-heading " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	                           <h5 class="sub-panel-title ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}" > <a class = 'collapse-title' >${collapseLabelIcon} ${collapseLabel} </a></h5>
                                 </div>
                             </div`;
 
-  const collapseDiv = `<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} px-1 py-0" role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
+  const collapseDiv = `<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} " role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
   $("#" + containerID).append(collapseTitleDiv);
   $("#" + containerID).append(collapseDiv);
 }
@@ -2803,12 +2803,12 @@ function addAccordianCard(
   }
   $("#" + accordianContainerID).append(`
     <div>
-      <div class=" px-0 py-2 sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
+      <div class="sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
         aria-expanded="false" aria-controls="${accordianCardBodyID}" onclick = '${onclick}'>
       <a class = 'collapse-title' title="${toolTip}"  >
-        ${accordianCardHeaderContent} </a>
+        ${accordianCardHeaderContent}</a>
       </div>
-      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} super-panel-collapse panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
+      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} super-panel-collapse panel-collapse collapse panel-body   ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
         data-parent="#${accordianContainerID}">
         <div title="${toolTip}">${accordianCardBodyContent}</div>
       </div>
@@ -2846,12 +2846,12 @@ function addSubAccordianCard(
   }
   $("#" + accordianContainerID).append(`
     <div>
-      <div class=" px-0 py-2 sub-sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
+      <div class="sub-sub-panel-title ${collapsed}" id="${accordianCardHeaderID}" data-toggle="collapse" data-target="#${accordianCardBodyID}"
         aria-expanded="false" aria-controls="${accordianCardBodyID}" onclick = '${onclick}'>
       <a class = 'collapse-title' title="${toolTip}"  >
         ${accordianCardHeaderContent} </a>
       </div>
-      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} toggle-collapse panel-collapse collapse panel-body pl-3 py-0  ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
+      <div id="${accordianCardBodyID}" class="panel-collapse-${panelCollapseI} toggle-collapse panel-collapse collapse panel-body   ${show} bg-black" aria-labelledby="${accordianCardHeaderID}"
         data-parent="#${accordianContainerID}">
         <div title="${toolTip}">${accordianCardBodyContent}</div>
       </div>
@@ -2970,7 +2970,7 @@ function addLegendContainer(legendContainerID, containerID, show, toolTip) {
     show = "none";
   }
   $("#" + containerID)
-    .prepend(`<div class = 'py-1 row' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+    .prepend(`<div class = 'py-1 row mx-0' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
 								</div>`);
 }
 
@@ -3110,12 +3110,15 @@ function addLayer(layer) {
 								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
-								            <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" title='Waiting for layer service from Google Earth Engine'></i>
-								            <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
-								            <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
-                                            <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser eraser" style="display:none;"></i>
-                            ${layer.viz.labelIconHTML}
-								            <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span ${layer.viz.labelClasses}'>${layer.name}</span>
+                            
+                              <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" title='Waiting for layer service from Google Earth Engine'></i>
+                              <div class='layer-label-container'>
+                              <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
+                              <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
+                                              <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser eraser" style="display:none;"></i>
+                              ${layer.viz.labelIconHTML}
+                              <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span ${layer.viz.labelClasses}'>${layer.name}</span>
+                            </div>
 								       </li>`);
   //Set up opacity slider
   $("#" + opacityID).slider({

@@ -351,6 +351,10 @@ function runGTAC() {
     });
 
     if (urlParams.addTCC2021 === true || urlParams.beta === true) {
+      window.tccLayerStyling = {
+        labelClasses: "layer-label-tcc",
+        labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer_tcc.svg">`,
+      };
       let minTCCYear = 2008;
       let maxTCCYear = 2021;
 
@@ -419,8 +423,8 @@ function runGTAC() {
           years: nlcdTCCYrs,
           queryParams: { palette: ["080", "0F0"] },
 
-          labelClasses: "layer-label-tcc",
-          labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
+          labelClasses: tccLayerStyling.labelClasses,
+          labelIconHTML: tccLayerStyling.labelIconHTML,
         },
         `TCC ${tccNameEnding}`
       );
@@ -1051,8 +1055,8 @@ function runGTAC() {
 
             legendLabelLeftAfter: "% TCC",
             legendLabelRightAfter: "% TCC",
-            labelClasses: "layer-label-tcc",
-            labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
+            labelClasses: tccLayerStyling.labelClasses,
+            labelIconHTML: tccLayerStyling.labelIconHTML,
           },
           "TCC Slow Loss Mag",
           false
@@ -1067,8 +1071,8 @@ function runGTAC() {
             palette: "D00,F5DEB3",
             legendLabelLeftAfter: "% TCC",
             legendLabelRightAfter: "% TCC",
-            labelClasses: "layer-label-tcc",
-            labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
+            labelClasses: tccLayerStyling.labelClasses,
+            labelIconHTML: tccLayerStyling.labelIconHTML,
           },
           "TCC Fast Loss Mag",
           false
@@ -1082,8 +1086,8 @@ function runGTAC() {
             palette: "F5DEB3,006400",
             legendLabelLeftAfter: "% TCC",
             legendLabelRightAfter: "% TCC",
-            labelClasses: "layer-label-tcc",
-            labelIconHTML: `<i class="fa fa-leaf layer-label-tcc"></i>`,
+            labelClasses: tccLayerStyling.labelClasses,
+            labelIconHTML: tccLayerStyling.labelIconHTML,
           },
           "TCC Gain Mag",
           false

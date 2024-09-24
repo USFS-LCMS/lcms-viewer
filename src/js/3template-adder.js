@@ -1535,7 +1535,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     "MAP DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layer icon" src="./src/assets/images/layer_icon.png">`,
+    `<img style = 'width:1.15rem;' class='image-icon mr-1' alt="Layer icon" src="./src/assets/images/layer_icon.png">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -3119,9 +3119,9 @@ addLegendCollapse();
 /////////////////////////////////////////////////////////////////
 //Construct tool options for different modes
 addAccordianContainer("tools-collapse-div", "tools-accordian");
-$("#tools-accordian").append(
-  `<h5 class = 'pt-2' style = 'border-top: 0.0em solid black;'>Measuring Tools</h5>`
-);
+$("#tools-collapse-div").append(`<div id = 'splash-toggle-container'></div>`);
+$("#tools-collapse-div").append(`<div id = 'tips-toggle-container'></div>`);
+$("#tools-accordian").append(`<h5>Measuring Tools</h5>`);
 addSubAccordianCard(
   "tools-accordian",
   "measure-distance-label",
@@ -3197,9 +3197,7 @@ addColorPicker(
   areaPolygonOptions.strokeColor
 );
 
-$("#tools-accordian").append(
-  `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Pixel Tools</h5>`
-);
+$("#tools-accordian").append(`<h5>Pixel Tools</h5>`);
 addSubAccordianCard(
   "tools-accordian",
   "query-label",
@@ -3210,32 +3208,40 @@ addSubAccordianCard(
   `toggleTool(toolFunctions.pixel.query)`,
   staticTemplates.queryTipHover
 );
-if ($("#toggle-show-splash-screen-radio-container").length === 1) {
-  //Sync tooltip toggle
-  let tShowSplash = true;
-  if (
-    localStorage["showIntroModal-" + mode] !== null &&
-    localStorage["showIntroModal-" + mode] !== undefined
-  ) {
-    tShowSplash = localStorage["showIntroModal-" + mode];
-  }
-  addRadio(
-    "toggle-show-splash-screen-radio-container",
-    "showIntroModal-radio",
-    "Show Splash Screen",
-    "Yes",
-    "No",
-    "localStorage['showIntroModal-'+mode]",
-    "true",
-    "false",
-    null,
-    null,
-    "Whether to show splash screen when this page reloads."
-  );
-  if (tShowSplash === "false") {
-    $("#showIntroModal-radio-second_toggle_label").click();
-  }
+// if ($("#toggle-show-splash-screen-radio-container").length === 1) {
+//Sync tooltip toggle
+let tShowSplash = true;
+if (
+  localStorage["showIntroModal-" + mode] !== null &&
+  localStorage["showIntroModal-" + mode] !== undefined
+) {
+  tShowSplash = localStorage["showIntroModal-" + mode];
 }
+
+function toggleShowSplash() {
+  setTimeout(() => {
+    console.log("toggle show splash");
+    if (
+      $("#show-splash-radio-label").first().attr("aria-expanded") === "true"
+    ) {
+      console.log("showing tooltips");
+      localStorage["showIntroModal-" + mode] = "true";
+    } else {
+      localStorage["showIntroModal-" + mode] = "false";
+    }
+  }, 500);
+}
+addSubAccordianCard(
+  "splash-toggle-container", //"toggle-show-splash-screen-radio-container",
+  "show-splash-radio-label",
+  "show-splash-radio-div",
+  "Show Splash Screen",
+  ``,
+  localStorage["showIntroModal-" + mode],
+  "toggleShowSplash()",
+  "Whether to show splash screen when this page reloads."
+);
+// }
 if (
   ["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1
 ) {
@@ -3275,9 +3281,7 @@ if (
   mode === "LAMDA" ||
   (mode === "TreeMap" && urlParams.canAreaChart)
 ) {
-  $("#tools-accordian").append(
-    `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
-  );
+  $("#tools-accordian").append(`<h5>Area Tools</h5>`);
   addSubCollapse(
     "tools-accordian",
     "area-chart-params-label",
@@ -3358,6 +3362,7 @@ if (
     "toggleTool(toolFunctions.area.selectInteractive)",
     staticTemplates.selectAreaInteractiveChartTipHover
   );
+
   addRangeSlider(
     "upload-reduction-factor-container",
     "Vertex Reduction Factor",
@@ -3404,7 +3409,7 @@ if (
     "Click to clear all selected polygons"
   );
 }
-$("#tools-accordian").append(`<div class="hl"></div>`);
+
 //Sync tooltip toggle
 let tShowToolTipModal = true;
 if (
@@ -3413,26 +3418,33 @@ if (
 ) {
   tShowToolTipModal = localStorage["showToolTipModal-" + mode];
 }
-addRadio(
-  "tools-accordian",
-  "tooltip-radio",
+
+function toggleTooltip() {
+  setTimeout(() => {
+    console.log("toggle tooltip");
+    if ($("#tooltip-radio-label").first().attr("aria-expanded") === "true") {
+      console.log("showing tooltips");
+      localStorage["showToolTipModal-" + mode] = "true";
+    } else {
+      localStorage["showToolTipModal-" + mode] = "false";
+    }
+  }, 500);
+}
+addSubAccordianCard(
+  "tips-toggle-container",
+  "tooltip-radio-label",
+  "tooltip-radio-div",
   "Show tool tips",
-  "Yes",
-  "No",
-  "localStorage['showToolTipModal-'+mode]",
-  "true",
-  "false",
-  null,
-  null,
+  ``,
+  localStorage["showToolTipModal-" + mode],
+  "toggleTooltip()",
   "Whether to show tool tips to help explain how to use the tools."
 );
-if (tShowToolTipModal === "false") {
-  $("#tooltip-radio-second_toggle_label").click();
-}
+
 // Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
 if (mode === "sequoia-view") {
   $("#tools-accordian").append(
-    `<h5 class = 'pt-2' style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
+    `<h5  style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
   );
 
   addSubAccordianCard(

@@ -862,7 +862,7 @@ function addTimeLapseToMap(
   //Set up container for time lapse
   $("#" + whichLayerList).append(`
                                 <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container not-draggable-layer'>
-                                  <div class = 'time-lapse-layer-range-container' >
+                                  <div class = 'time-lapse-layer-range-container ' >
                                     <div title = 'Opacity' id='${legendDivID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>
                                       <div id='${legendDivID}-opacity-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
                                         <div style = 'display:none;' id='${legendDivID}-opacity-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
@@ -891,14 +891,19 @@ function addTimeLapseToMap(
                                   </div>
                                   <input  id="${legendDivID}-toggle-checkbox" onchange = 'timeLapseCheckbox("${legendDivID}")' type="checkbox" ${checked}/>
                                   <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
-                                  <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
+
+                                  
+                                  
+                                  
                                   <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
+                                  <div class = 'layer-label-container'>
+                                  <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
                                   ${viz.labelIconHTML}
                                   <span  id = '${legendDivID}-name-span'  class = 'layer-span ${
     viz.labelClasses
   }'>${name}</span>
 
-                                  <div id = "${legendDivID}-icon-bar" class = 'icon-bar pl-3 pt-3' style = 'display:none;'>
+                                  <div id = "${legendDivID}-icon-bar" class = 'timelapse-icon-bar' style = 'display:none;'>
                                     <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
                                     <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
                                     <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
@@ -909,7 +914,7 @@ function addTimeLapseToMap(
                                     <button class = 'btn cumulativeToggler' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="./src/assets/images/cumulative_icon.png"></button>
                                     <div id = "${legendDivID}-message-div" class = 'pt-2'></div>
                                   </div>
-
+                                  <div>
                                 </li>
                                 
                                 <div id = '${legendDivID}-collapse-div' style = 'display:none;'></div>`);
@@ -3975,11 +3980,7 @@ function initialize() {
 
       $("#dontShowAgainCheckbox").change(function () {
         localStorage["showIntroModal-" + mode] = !this.checked;
-        if (localStorage["showIntroModal-" + mode] === "false") {
-          $("#showIntroModal-radio-second_toggle_label").click();
-        } else if (localStorage["showIntroModal-" + mode] === "true") {
-          $("#showIntroModal-radio-first_toggle_label").click();
-        }
+        $("#show-splash-radio-label").click();
       });
     }, 500);
   }

@@ -99,7 +99,7 @@ body {
   }
 }
 
-/*///////////////////////////////////////////////////////*/
+/*/ //////////////////////////////////////////////////////*/
 .custom-hidden {
   display: none;
 }
@@ -301,7 +301,7 @@ body {
 
 hr {
   border: 0;
-  border-top: 1px solid var(--deep-brown-100);
+  border-top: 0px solid var(--deep-brown-100);
 }
 
 .text-black {
@@ -321,7 +321,7 @@ table {
 
 /*///////////////////////////////////////////////////////*/
 
-/*/////////////////////*/
+/*/ ////////////////////*/
 
 /* Add styling here you wish to add for screens with a width of 600px and wider */
 
@@ -367,7 +367,14 @@ table {
 .form-control {
   height: 1.5em;
 }
-
+.input-group-prepend > .search-box {
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+#forward-view-button {
+  border-radius: 0px 3px 3px 0px;
+}
 .json-input-text-box {
   resize: vertical;
   max-height: 10rem;
@@ -377,7 +384,7 @@ kbd {
   border: 1px solid #999;
 }
 
-/*///////////////////////////////////////////////////////////*/
+/*/ //////////////////////////////////////////////////////////*/
 /*misc styling*/
 ul,
 li {
@@ -453,7 +460,7 @@ button {
 
 .hl {
   background-color: var(--deep-brown-20);
-  height: 1px;
+  height: 0px;
   width: 100%;
   vertical-align: middle;
   display: inline-block;
@@ -1023,6 +1030,10 @@ td {
 .layer-container {
   margin-bottom: 1px;
 }
+.layer-label-container {
+  display: inline;
+  padding-left: 0.5rem;
+}
 .layer-label-lcms {
   color: #cc4c02 !important;
 }
@@ -1030,6 +1041,11 @@ td {
 .layer-label-tcc {
   color: #080 !important;
 }
+/* .layer-label-lcms,
+.layer-label-tcc {
+  text-shadow: -1px 0 var(--deep-brown-100), 0 1px var(--deep-brown-100),
+    1px 0 var(--deep-brown-100), 0 -1px var(--deep-brown-100);
+} */
 .layer-list {
   padding-bottom: 1px;
   padding-top: 1px;
@@ -1049,13 +1065,16 @@ td {
 }
 
 /* .btn>i.fa{font-size: 0.95rem;} */
-.icon-bar > button.btn {
+.timelapse-icon-bar > button.btn {
   padding-left: 0.3rem;
   padding-right: 0.3rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
-
+.timelapse-icon-bar {
+  padding-left: 2rem;
+  padding-top: 0.75rem;
+}
 .simple-time-lapse-layer-range {
   /*height: 0.1rem;*/
 
@@ -1198,10 +1217,23 @@ ul {
 
 .param-title {
   font-weight: bold;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   margin-bottom: 0rem;
 }
-
+#parameters-collapse-div,
+#select-aoi-pane,
+#pre-post-dates-div,
+#support-collapse-div,
+#download-collapse-div {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+#layer-list-collapse-div,
+#reference-layer-list-collapse-div,
+#legend-collapse-div {
+  padding-left: 1rem;
+  padding-right: 1.5rem;
+}
 /*///////////////////////////////////////////////////////*/
 /*Scroll bar styling*/
 ::-webkit-scrollbar {
@@ -1255,6 +1287,10 @@ ul {
   /* border-bottom: 0.04em solid var(--deep-brown-10); */
   background-color: var(--transparent);
   color: var(--white) !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .bg-white,
@@ -1264,17 +1300,18 @@ ul {
   color: #000 !important;
   outline: none !important;
 }
-
+.panel-collapse .panel-body {
+  padding-left: 3rem;
+  padding-right: 2rem;
+}
 .bg-download-select {
   background-color: var(--deep-brown-10) !important;
   margin: 0px !important;
   color: var(--teal-100) !important;
   outline: none !important;
 }
-
-.bg-download-select::selection {
-  color: red;
-  background: yellow;
+.download-selection-label {
+  display: flex;
 }
 
 .panel-title {
@@ -1305,7 +1342,7 @@ ul {
   width: 2rem;
   height: 2rem;
   margin-right: 0rem;
-  margin-left: -0.5rem;
+  margin-left: -0.55rem;
   margin-top: -0.75rem;
   margin-bottom: -0.5rem;
 }
@@ -1367,13 +1404,19 @@ ul {
   font-weight: bold !important;
   /*background-color:var(--deep-brown-20);*/
   font-size: 1.1em;
-  border-top: 0.1em solid var(--deep-brown-30);
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  padding-left: 1rem;
+  /* border-top: 0.1em solid var(--deep-brown-30); */
 }
 
 .collapse-title {
   color: var(--white);
 }
-
+.sub-sub-panel-title > a.collapse-title,
+.sub-panel-title > a.collapse-title {
+  padding-left: 0.5rem;
+}
 .sub-sub-panel-title:hover,
 .sub-panel-title:hover,
 .collapse-title:hover,
@@ -1387,10 +1430,32 @@ a:hover {
   cursor: pointer;
 }
 
+.accordion > h5:first-child {
+  padding-left: 3rem;
+  padding-top: 1rem;
+  font-weight: bold;
+}
+.accordion > h5:not(:first-child) {
+  padding-left: 2rem;
+  padding-top: 1rem;
+  font-weight: bold;
+  border-top: 0.1rem solid var(--deep-brown-100);
+  margin-left: 1rem;
+  margin-right: 1.5rem;
+}
+#splash-toggle-container {
+  /* padding-left: 1rem; */
+  padding-top: 0.5rem;
+  font-weight: bold;
+  border-top: 0.15rem solid var(--deep-brown-100);
+}
+
 .panel-title:hover {
   color: var(--teal-100) !important;
 }
-
+/* .sub-sub-panel-title {
+  padding-left: 1rem !important;
+} */
 .card {
   border-radius: 0px !important;
   background-color: var(--white) !important;
@@ -1769,9 +1834,17 @@ ul,
 }
 
 #downloadTree {
-  color: #00897b;
+  color: var(--deep-brown-100);
 }
-
+.caret.caret-down {
+  font-weight: bold;
+}
+.download-btn {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+}
 .carousel-img {
   width: 100%;
   max-width: 600px;
