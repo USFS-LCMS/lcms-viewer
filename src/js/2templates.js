@@ -833,7 +833,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2022.8)</span>
+                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2023.9)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
@@ -851,6 +851,30 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                               <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
                                                 <ul class="nested" id = 'PRUSVI-land_use-annual-downloads'></ul>
                                               </li>
+                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
+                                              <ul class="nested" id = 'PRUSVI-qa_bits-annual-downloads'></ul>
+                                            </ul>
+                                          </li>
+                                          <li><span class="caret caret-down">Hawaii (v2023.9)</span>
+                                            <ul class="nested active">
+                                              <li><span class="caret">Change</span>
+                                                <ul class="nested">
+                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
+                                                    <ul class="nested" id = 'HI-change-summary-downloads'></ul>
+                                                  </li>
+                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
+                                                    <ul class="nested" id = 'HI-change-annual-downloads'></ul>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
+                                                <ul class="nested" id = 'HI-land_cover-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
+                                                <ul class="nested" id = 'HI-land_use-annual-downloads'></ul>
+                                              </li>
+                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
+                                              <ul class="nested" id = 'HI-qa_bits-annual-downloads'></ul>
                                             </ul>
                                           </li>
                                         </ul>`,
@@ -1174,11 +1198,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (CONUS and SEAK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9</a>
                                 </li>
-                                <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (PRUSVI)</a>
-                                </li>   
+
                             </div>
                         </div>
                         <hr>
