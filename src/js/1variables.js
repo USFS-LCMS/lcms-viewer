@@ -371,7 +371,7 @@ const studyAreaDict = {
     ],
     lt_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Base-Learners/LandTrendr-Collection",
-      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection",
+      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection_1984-2023",
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],
