@@ -103,12 +103,13 @@ for sa in sa_dict.keys():
     nwi = nwi.reduceToImage(["WETLAND_TY"], ee.Reducer.first()).rename(["Wetland_Class"])
     nwi = nwi.set(dict).set({"study_area": sa}).byte()
 
-    Map.addLayer(sa_bounds, {}, f"{sa} bounds")
+    Map.addLayer(sa_bounds, {"styleParams": {"lineType": "dashed", "color": "80F"}}, f"{sa} bounds")
     # print(nwi.getInfo())
     Map.addLayer(nwi, {"autoViz": True}, sa)
 
     # print(crs, transform)
     out_name = f"NWI_{sa}_{scale}m"
-    gil.exportToAssetWrapper(nwi, out_name, output_collection + "/" + out_name, {".default": "mode"}, sa_bounds, None, crs, transform, overwrite=False)
+    # gil.exportToAssetWrapper(nwi, out_name, output_collection + "/" + out_name, {".default": "mode"}, sa_bounds, None, crs, transform, overwrite=False)
+
 Map.turnOnInspector()
 Map.view()

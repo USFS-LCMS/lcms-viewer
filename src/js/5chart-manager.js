@@ -387,7 +387,7 @@ const getQueryImages = function (lng, lat) {
             return q.queryDict[v] || v.toString();
           }
         });
-        console.log(allYLabels);
+        // console.log(allYLabels);
         let yLabelMaxLinesT = yLabelMaxLines;
         let brokenLabels;
         function breakLabels() {

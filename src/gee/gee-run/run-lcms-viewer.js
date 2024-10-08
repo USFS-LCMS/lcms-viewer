@@ -1043,7 +1043,7 @@ function runGTAC() {
       if (urlParams.addTCC2021 === true || urlParams.beta === true) {
         nlcdTCC2021 = nlcdTCC2021.select([0]);
         const lcms = ee
-          .ImageCollection(studyAreaDict[studyAreaName].final_collections[1])
+          .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
           .filter('study_area=="CONUS"');
         const props = lcmsRun.props; // lcms.first().toDictionary().getInfo();
         const change = lcms.select(["Change"]);
