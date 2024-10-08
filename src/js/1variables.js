@@ -362,7 +362,7 @@ const studyAreaDict = {
         color: "c2b34a",
       },
     },
-    final_collections: ["USFS/GTAC/LCMS/v2022-8", "USFS/GTAC/LCMS/v2023-9"],
+    final_collections: ["USFS/GTAC/LCMS/v2023-9"],
     composite_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection",

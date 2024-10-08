@@ -959,7 +959,7 @@ function runGTAC() {
       areaChart.clearLayers();
 
       // ["Change", "Land_Cover", "Land_Use"]
-      ["Land_Cover", "Land_Use"].map((bn) => {
+      ["Change", "Land_Cover", "Land_Use"].map((bn) => {
         let bnTitle = bn.replace("_", " ");
         lcmsRun.props.bandNames = [bn];
         let visibility;
@@ -974,7 +974,7 @@ function runGTAC() {
             xAxisLabels: lcmsRun.years,
           },
           bnTitle + " Annual",
-          false
+          true
         );
         areaChart.addLayer(
           lcmsRun.lcms.select([bn]),
@@ -988,10 +988,10 @@ function runGTAC() {
             chartLabelMaxWidth: 10000,
           },
           bnTitle + " Transition",
-          true
+          false
         );
       });
-      Map.turnOnAutoAreaCharting();
+      // Map.turnOnAutoAreaCharting();
       let cocVisibility = [
         true,
         true,
