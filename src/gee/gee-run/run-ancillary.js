@@ -450,19 +450,20 @@ function runAncillary() {
 
   // Hawaii Wetland data
   ///////////////////////////////////////////////
-  let nwi_hi = ee.FeatureCollection(
-    "projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands"
-  );
-  nwi_hi = nwi_hi.map(function (f) {
-    return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
-  });
-  const props = nwi_hi.aggregate_histogram("WETLAND_TY_NO").keys();
-  const props_nos = ee.List.sequence(1, props.length());
-  nwi_hi = nwi_hi.remap(props, props_nos, "WETLAND_TY_NO");
-  let nwi_hi_rast = nwi_hi
-    .reduceToImage(["WETLAND_TY_NO"], ee.Reducer.first())
-    .rename(["NWI"])
-    .set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis());
+  // Replaced by CONUS + AK + HI (minus DC and PRUSVI) collection
+  // let nwi_hi = ee.FeatureCollection(
+  //   "projects/lcms-292214/assets/R5/Hawaii/Ancillary/HI_wetlands"
+  // );
+  // nwi_hi = nwi_hi.map(function (f) {
+  //   return f.set("WETLAND_TY_NO", f.get("WETLAND_TY"));
+  // });
+  // const props = nwi_hi.aggregate_histogram("WETLAND_TY_NO").keys();
+  // const props_nos = ee.List.sequence(1, props.length());
+  // nwi_hi = nwi_hi.remap(props, props_nos, "WETLAND_TY_NO");
+  // let nwi_hi_rast = nwi_hi
+  //   .reduceToImage(["WETLAND_TY_NO"], ee.Reducer.first())
+  //   .rename(["NWI"])
+  //   .set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis());
   //Map.addLayer(nwi_hi_rast, {  min: 1, max: 7, palette: nwi_palette, classLegendDict: nwiLegendDict, queryDict: nwi_dict }, "HI NWI", false);
 
   // Standard Ancillary Data Layers - CONUS
@@ -627,8 +628,8 @@ function runAncillary() {
 
   // IDS
   ////////////////////////////////////////////////////
-  
-  IDS = getIDSCollectionAddToMap()
+
+  IDS = getIDSCollectionAddToMap();
 
   let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
 
@@ -680,9 +681,9 @@ function runAncillary() {
   });
 
   perims = perims.select(inFields, outFields);
-  
+
   perims = perims.set("bounds", clientBoundsDict.All);
-  
+
   Map.addLayer(
     perims,
     {
@@ -696,77 +697,118 @@ function runAncillary() {
   );
 
   // var years = ee.List.sequence(startYear,mtbs)
-  const mtbs_dict = ee.Dictionary(mtbsC.get("chartTableDict"))
-  
+  const mtbs_dict = ee.Dictionary(mtbsC.get("chartTableDict"));
+
   // NWI
   /////////////////////////////////////////////////
 
-  const nwiLegendDict = {
-    "Freshwater- Forested and Shrub wetland": "008836",
-    "Freshwater Emergent wetland": "7fc31c",
-    "Freshwater pond": "688cc0",
-    "Estuarine and Marine wetland": "66c2a5",
-    Riverine: "0190bf",
-    Lakes: "13007c",
-    "Estuarine and Marine Deepwater": "007c88",
-    "Other Freshwater wetland": "b28653",
-  };
+  // const nwiLegendDict = {
+  //   "Freshwater- Forested and Shrub wetland": "008836",
+  //   "Freshwater Emergent wetland": "7fc31c",
+  //   "Freshwater pond": "688cc0",
+  //   "Estuarine and Marine wetland": "66c2a5",
+  //   Riverine: "0190bf",
+  //   Lakes: "13007c",
+  //   "Estuarine and Marine Deepwater": "007c88",
+  //   "Other Freshwater wetland": "b28653",
+  // };
 
-  // var nwi_dict = ee.Dictionary.fromLists(props_nos.map((n)=>ee.Number(n).byte().format()),props).getInfo();
-  const nwi_dict = {
-    1: "Estuarine and Marine Deepwater",
-    2: "Estuarine and Marine Wetland",
-    3: "Freshwater Emergent Wetland",
-    4: "Freshwater Forested/Shrub Wetland",
-    5: "Freshwater Pond",
-    6: "Lake",
-    7: "Riverine",
-  };
-  const nwi_palette = [
-    "007c88",
-    "66c2a5",
-    "7fc31c",
-    "008836",
-    "688cc0",
-    "13007c",
-    "0190bf",
-  ];
+  // // var nwi_dict = ee.Dictionary.fromLists(props_nos.map((n)=>ee.Number(n).byte().format()),props).getInfo();
+  // const nwi_dict = {
+  //   1: "Estuarine and Marine Deepwater",
+  //   2: "Estuarine and Marine Wetland",
+  //   3: "Freshwater Emergent Wetland",
+  //   4: "Freshwater Forested/Shrub Wetland",
+  //   5: "Freshwater Pond",
+  //   6: "Lake",
+  //   7: "Riverine",
+  // };
+  // const nwi_palette = [
+  //   "007c88",
+  //   "66c2a5",
+  //   "7fc31c",
+  //   "008836",
+  //   "688cc0",
+  //   "13007c",
+  //   "0190bf",
+  // ];
 
-  Map.addLayer(
-    nwi_hi_rast,
-    {
-      min: 1,
-      max: 7,
-      palette: nwi_palette,
-      classLegendDict: nwiLegendDict,
-      queryDict: nwi_dict,
-    },
-    "HI NWI",
-    false
-  );
+  // Map.addLayer(
+  //   nwi_hi_rast,
+  //   {
+  //     min: 1,
+  //     max: 7,
+  //     palette: nwi_palette,
+  //     classLegendDict: nwiLegendDict,
+  //     queryDict: nwi_dict,
+  //   },
+  //   "HI NWI",
+  //   false
+  // );
 
-  Map.addLayer(
-    [
-      {
-        baseURL:
-          "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
-        minZoom: 2,
-      },
-      {
-        baseURL:
-          "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
-        minZoom: 11,
-      },
+  // Map.addLayer(
+  //   [
+  //     {
+  //       baseURL:
+  //         "https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=",
+  //       minZoom: 2,
+  //     },
+  //     {
+  //       baseURL:
+  //         "https://fwsprimary.wim.usgs.gov/server/rest/services/Test/Wetlands_gdb_split/MapServer/export?dpi=96&transparent=true&format=png8&bbox=",
+  //       minZoom: 11,
+  //     },
+  //   ],
+  //   {
+  //     layerType: "dynamicMapService",
+  //     addToClassLegend: true,
+  //     classLegendDict: nwiLegendDict,
+  //   },
+  //   "NWI",
+  //   false
+  // );
+  const nwi_obj_info = {
+    NWI_class_names: [
+      "Freshwater Forested/Shrub Wetland",
+      "Freshwater Emergent Wetland",
+      "Freshwater Pond",
+      "Estuarine and Marine Wetland",
+      "Riverine",
+      "Lake",
+      "Estuarine and Marine Deepwater",
+      "Other",
     ],
-    {
-      layerType: "dynamicMapService",
-      addToClassLegend: true,
-      classLegendDict: nwiLegendDict,
-    },
-    "NWI",
-    false
+    NWI_class_palette: [
+      "008837",
+      "7FC31C",
+      "688CC0",
+      "66C2A5",
+      "0190BF",
+      "13007C",
+      "007C88",
+      "B28653",
+    ],
+    NWI_class_values: [1, 2, 3, 4, 5, 6, 7, 8],
+    bandNames: ["NWI"],
+  };
+  const nwi_lookup = toDict(
+    nwi_obj_info.NWI_class_values,
+    nwi_obj_info.NWI_class_names
   );
-
+  let nwi = ee
+    .ImageCollection("projects/lcms-292214/assets/Ancillary/NWI")
+    .mosaic()
+    .set(nwi_obj_info)
+    .rename("NWI");
+  Map.addLayer(
+    nwi,
+    { autoViz: true, eeObjInfo: nwi_obj_info },
+    "NWI",
+    false,
+    null,
+    null,
+    "Fish and Wildlife Service National Wetland Inventory Data"
+  );
   // addDynamicToMap('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands_Raster/ImageServer/exportImage?f=image&bbox=',
   //                 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export?dpi=96&transparent=true&format=png8&bbox=',
   //                 8,11,
@@ -930,7 +972,7 @@ function runAncillary() {
     1: "severe drought", // -3.99--3   == -4
     0: "extreme drought",
   };
-  
+
   //PRVI layers
   ///////////////////////////////////
 
@@ -1193,8 +1235,15 @@ function runAncillary() {
   nlcdTCC = batchFillCollection(nlcdTCC, years).map(setSameDate);
   nlcdImpv = batchFillCollection(nlcdImpv, years).map(setSameDate);
 
-  nwi_hi_rast = batchFillCollection(
-    ee.ImageCollection([nwi_hi_rast]),
+  // nwi_hi_rast = batchFillCollection(
+  //   ee.ImageCollection([nwi_hi_rast]),
+  //   years
+  // ).map(setSameDate);
+
+  nwi = batchFillCollection(
+    ee.ImageCollection([
+      nwi.set("system:time_start", ee.Date.fromYMD(2019, 6, 1).millis()),
+    ]),
     years
   ).map(setSameDate);
 
@@ -1208,9 +1257,10 @@ function runAncillary() {
   //   mtbs.select([0], ["MTBS Burn Severity"]),
   //   annualPDSI.select([0], ["PDSI"]),
   //   false
-  // ); 
+  // );
   let forCharting = joinCollections(
-    annualPDSI.select([0], ["PDSI"]),idsCollection,
+    annualPDSI.select([0], ["PDSI"]),
+    idsCollection,
     false
   );
   //cdl.select([0],['Cropland Data']),false);
@@ -1235,11 +1285,11 @@ function runAncillary() {
   // forCharting  = joinCollections(forCharting,prvi_lc_collection.select([0],['PRVI Landcover']), false);
   // forCharting  = joinCollections(forCharting,prvi_winds, false);
   // forCharting  = joinCollections(forCharting,prUSVI_ch_2018, false);
-  forCharting = joinCollections(forCharting, nwi_hi_rast, false);
+  forCharting = joinCollections(forCharting, nwi, false);
 
   // console.log(forCharting.first().bandNames().getInfo())
 
-  forCharting = joinCollections(forCharting, mtbsC, false)
+  forCharting = joinCollections(forCharting, mtbsC, false);
 
   const chartTableDict = {
     "IDS Type": damage_codes,
@@ -1250,8 +1300,8 @@ function runAncillary() {
     "Cropland Data": cdlQueryDict,
     PDSI: pdsiDict,
     "PRVI Landcover": prvi_lc_lookup,
-    NWI: nwi_dict,
-    "MTBS Perims": mtbs_dict
+    NWI: nwi_lookup,
+    "MTBS Perims": mtbs_dict,
   };
 
   forCharting = forCharting.set("chartTableDict", chartTableDict);

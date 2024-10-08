@@ -95,6 +95,46 @@ function runGTAC() {
       console.log(err);
     }
 
+    const nwi_obj_info = {
+      Wetland_Class_class_names: [
+        "Freshwater Forested/Shrub Wetland",
+        "Freshwater Emergent Wetland",
+        "Freshwater Pond",
+        "Estuarine and Marine Wetland",
+        "Riverine",
+        "Lake",
+        "Estuarine and Marine Deepwater",
+        "Other",
+      ],
+      Wetland_Class_class_palette: [
+        "008837",
+        "7FC31C",
+        "688CC0",
+        "66C2A5",
+        "0190BF",
+        "13007C",
+        "007C88",
+        "B28653",
+      ],
+      Wetland_Class_class_values: [1, 2, 3, 4, 5, 6, 7, 8],
+      bandNames: ["Wetland_Class"],
+      study_area: "CONUS",
+    };
+    const nwi = ee
+      .ImageCollection("projects/lcms-292214/assets/Ancillary/NWI")
+      .mosaic()
+      .set(nwi_obj_info);
+    Map.addLayer(
+      nwi,
+      { autoViz: true, eeObjInfo: nwi_obj_info },
+      "National Wetland Inventory",
+      false,
+      null,
+      null,
+      "Fish and Wildlife Service National Wetland Inventory Data",
+      "reference-layer-list"
+    );
+
     //Set up some params
     startYear = parseInt(urlParams.startYear);
     endYear = parseInt(urlParams.endYear);
@@ -918,6 +958,7 @@ function runGTAC() {
     } else {
       areaChart.clearLayers();
 
+      // ["Change", "Land_Cover", "Land_Use"]
       ["Change", "Land_Cover", "Land_Use"].map((bn) => {
         let bnTitle = bn.replace("_", " ");
         lcmsRun.props.bandNames = [bn];
@@ -944,12 +985,13 @@ function runGTAC() {
             visible: visibility,
             xAxisLabels: lcmsRun.years,
             sankeyMinPercentage: 1,
+            chartLabelMaxWidth: 10000,
           },
           bnTitle + " Transition",
           false
         );
       });
-
+      // Map.turnOnAutoAreaCharting();
       let cocVisibility = [
         true,
         true,
@@ -1838,24 +1880,97 @@ function runDynamic() {
 //   //   Map.turnOnAutoAreaCharting();
 // }
 // runGTAC = function () {
-//   var ls = getImagesLib.getProcessedLandsatScenes(
-//     ee.Geometry.Point([-111, 41]),
-//     2024,
-//     2024,
-//     150,
-//     250,
-//     "SR"
+//   let g = ee.FeatureCollection([
+//     ee.Feature(
+//       ee.Geometry.Polygon(
+//         [
+//           [
+//             [-108.647265625, 40.96720543432847],
+//             [-108.647265625, 38.740972056860564],
+//             [-105.658984375, 38.740972056860564],
+//             [-105.658984375, 40.96720543432847],
+//           ],
+//         ],
+//         null,
+//         false
+//       ),
+//       {
+//         test: 1,
+//         test2: 2,
+//         "system:index": "0",
+//       }
+//     ),
+//   ]);
+//   let c = ee.FeatureCollection([
+//     ee.Feature(ee.Geometry.Point([-111.6383210849765, 40.95922517540228]), {
+//       test1: 1,
+//       test2: 2,
+//       "system:index": "0",
+//     }),
+//     ee.Feature(ee.Geometry.Point([-111.63831873804361, 40.95922441582453]), {
+//       test1: 1,
+//       test2: 2,
+//       "system:index": "1",
+//     }),
+//     ee.Feature(ee.Geometry.Point([-111.63831572055847, 40.9592249222097]), {
+//       test1: 1,
+//       test2: 2,
+//       "system:index": "2",
+//     }),
+//     ee.Feature(ee.Geometry.Point([-111.63832041442424, 40.95922340305422]), {
+//       test1: 1,
+//       test2: 2,
+//       "system:index": "3",
+//     }),
+//     ee.Feature(ee.Geometry.Point([-111.63829828619987, 40.959219605165345]), {
+//       test1: 1,
+//       test2: 2,
+//       "system:index": "4",
+//     }),
+//   ]);
+
+//   Map.addLayer(
+//     g,
+//     {
+//       styleParams: {
+//         color: "0FF",
+//         pointSize: 5,
+//         pointShape: "o",
+//         width: 2,
+//         fillColor: "FF00FF88",
+//         lineType: "dashed",
+//       },
+//     },
+//     "Polygon Style"
 //   );
-//   Map.addLayer(ls.median(), getImagesLib.vizParamsTrue, "SR");
-//   var ls = getImagesLib.getProcessedLandsatScenes(
-//     ee.Geometry.Point([-111, 41]),
-//     2024,
-//     2024,
-//     150,
-//     250,
-//     "TOA"
+//   Map.addLayer(
+//     g,
+//     {
+//       styleParams: {
+//         color: "0FF",
+//         pointSize: 5,
+//         pointShape: "o",
+//         width: 2,
+//         fillColor: "FF00FF88",
+//         lineType: "dashed",
+//       },
+//     },
+//     "Polygon Old"
 //   );
-//   Map.addLayer(ls.median(), getImagesLib.vizParamsTrue, "TOA");
-//   console.log(ls.size().getInfo());
+
+//   Map.addLayer(
+//     c,
+//     {
+//       styleParams: {
+//         color: "8F0F",
+//         fillColor: "FF0F",
+//         lineType: "dashed",
+//         pointSize: 30,
+//         width: 5,
+//       },
+//     },
+//     "Pt"
+//   );
+
 //   Map.turnOnInspector();
 // };

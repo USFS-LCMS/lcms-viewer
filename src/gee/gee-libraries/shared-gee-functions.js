@@ -291,7 +291,7 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")",
+        ")"
     );
     Map.addLayer(
       idsYr,
@@ -308,11 +308,11 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")",
+        ")"
     );
     Map.addLayer(
       idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
-      { strokeColor: "0FF" },
+      { styleParams: { color: "0FF", lineType: "dashed" } },
       "IDS Polygons",
       false,
       null,
@@ -321,16 +321,12 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")",
+        ")"
     );
-  
   }
 
   if (idsCollections !== undefined) {
-    return [
-      idsCollections.imageCollection,
-      idsCollections.featureCollection,
-    ];
+    return [idsCollections.imageCollection, idsCollections.featureCollection];
   }
 }
 
@@ -905,7 +901,7 @@ function getMTBSandIDS(studyAreaName, whichLayerList) {
     );
     Map.addLayer(
       idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
-      { strokeColor: "0FF" },
+      { styleParams: { color: "0FF", lineType: "dashed" } },
       "IDS Polygons",
       false,
       null,

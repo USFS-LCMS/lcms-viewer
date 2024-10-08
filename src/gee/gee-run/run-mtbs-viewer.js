@@ -85,7 +85,11 @@ function runMTBS() {
   Map.addLayer(
     perims,
     {
-      strokeColor: "00F",
+      styleParams: {
+        color: "00F",
+        width: 2,
+        lineType: "dashed",
+      },
     },
     "MTBS Burn Perimeters",
     true,
