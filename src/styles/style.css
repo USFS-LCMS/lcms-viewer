@@ -1230,6 +1230,7 @@ ul {
 }
 #layer-list-collapse-div,
 #reference-layer-list-collapse-div,
+#related-layer-list,
 #legend-collapse-div {
   padding-left: 1rem;
   padding-right: 1.5rem;
@@ -1339,10 +1340,10 @@ ul {
 }
 
 .panel-title-svg-sm {
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   margin-right: 0rem;
-  margin-left: -0.55rem;
+  margin-left: -0.35rem;
   margin-top: -0.75rem;
   margin-bottom: -0.5rem;
 }
@@ -1445,6 +1446,7 @@ a:hover {
 }
 #splash-toggle-container {
   /* padding-left: 1rem; */
+  margin-top: 0.5rem;
   padding-top: 0.5rem;
   font-weight: bold;
   border-top: 0.15rem solid var(--deep-brown-100);

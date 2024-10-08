@@ -1460,6 +1460,11 @@ function addToMap(
       item = ee.FeatureCollection([item]);
       viz.eeObjInfo.layerType = "FeatureCollection";
       eeType = "FeatureCollection";
+    } else if (eeType === "Geometry") {
+      item = ee.FeatureCollection([ee.Feature(item)]);
+      viz.eeObjInfo.layerType = "FeatureCollection";
+      // viz.canQuery = false;
+      eeType = "FeatureCollection";
     }
     viz.eeObjectType = eeType;
     viz.layerType = typeLookup[eeType];
@@ -1499,25 +1504,44 @@ function addToMap(
       viz.addToClassLegend = true;
     }
   } else if (viz.layerType === "geeVectorImage") {
-    if (viz.strokeOpacity === undefined || viz.strokeOpacity === null) {
-      viz.strokeOpacity = 1;
+    if (viz.styleParams !== undefined && viz.styleParams !== null) {
+      viz.styleParams.color = viz.styleParams.color || getColor();
+      viz.styleParams.fillColor = viz.styleParams.fillColor || "22222200";
+      viz.styleParams.width = viz.styleParams.width || 2;
+      viz.styleParams.lineType = viz.styleParams.lineType || "solid";
+      viz.styleParams.pointSize = viz.styleParams.pointSize || 3;
+      viz.styleParams.pointShape = viz.styleParams.pointShape || "circle";
+
+      viz.styleParams.color = qcHex(viz.styleParams.color);
+      viz.styleParams.fillColor = qcHex(viz.styleParams.fillColor);
+
+      viz.fillColor = viz.styleParams.fillColor;
+      viz.strokeColor = viz.styleParams.color;
+      viz.strokeWeight = viz.styleParams.width;
+      viz.lineType = viz.styleParams.lineType;
+    } else {
+      viz.fillOpacity = 0;
+      if (viz.fillColor === undefined || viz.fillColor === null) {
+        viz.fillColor = "222222";
+      }
+      if (viz.strokeColor === undefined || viz.strokeColor === null) {
+        viz.strokeColor = getColor();
+      }
+      if (viz.strokeWeight === undefined || viz.strokeWeight === null) {
+        viz.strokeWeight = 2;
+      }
+      if (viz.strokeOpacity === undefined || viz.strokeOpacity === null) {
+        viz.strokeOpacity = 1;
+      }
     }
-    viz.fillOpacity = 0;
-    if (viz.fillColor === undefined || viz.fillColor === null) {
-      viz.fillColor = "222222";
-    }
-    if (viz.strokeColor === undefined || viz.strokeColor === null) {
-      viz.strokeColor = getColor();
-    }
-    if (viz.strokeWeight === undefined || viz.strokeWeight === null) {
-      viz.strokeWeight = 2;
-    }
+
     if (viz.fillColor.indexOf("#") == -1) {
       viz.fillColor = "#" + viz.fillColor;
     }
     if (viz.strokeColor.indexOf("#") == -1) {
       viz.strokeColor = "#" + viz.strokeColor;
     }
+
     if (viz.addToClassLegend === undefined || viz.addToClassLegend === null) {
       viz.addToClassLegend = true;
       viz.addToLegend = false;
@@ -1790,6 +1814,7 @@ function addToMap(
         legend.classStrokeColor = "999";
         legend.classStrokeWeight = 1;
         legend.className = lk;
+        legend.lineType = "solid";
         addClassLegendEntry(classLegendContainerID, legend);
       });
     } else {
@@ -1819,11 +1844,16 @@ function addToMap(
       }
 
       legend.classColor =
-        fillColor + Math.floor((viz.fillOpacity / 2) * 255).toString(16);
+        viz.fillOpacity === undefined
+          ? fillColor
+          : fillColor + Math.floor((viz.fillOpacity / 2) * 255).toString(16);
       legend.classStrokeColor =
-        strokeColor + Math.floor(viz.strokeOpacity * 255).toString(16);
-      legend.classStrokeWeight = viz.strokeWeight + 1;
+        viz.strokeOpacity === undefined
+          ? strokeColor
+          : strokeColor + Math.floor(viz.strokeOpacity * 255).toString(16);
+      legend.classStrokeWeight = viz.strokeWeight;
       legend.className = "";
+      legend.lineType = viz.lineType || "solid";
 
       addClassLegendEntry(classLegendContainerID, legend);
     }
@@ -2613,21 +2643,32 @@ function rgbToHex(r, g, b) {
   }
   return "#" + ("00000" + ((r << 16) | (g << 8) | b).toString(16)).slice(-6);
 }
-//Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-function hexToRgb(hex) {
+
+function qcHex(hex) {
   if (hex.indexOf("#") === 0) {
     hex = hex.slice(1);
   }
   // convert 3-digit hex to 6-digits.
   if (hex.length === 3) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + "FF";
+  } else if (hex.length === 4) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+  } else if (hex.length === 6) {
+    hex = `${hex}FF`;
   }
-  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return hex;
+}
+//Taken from: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+function hexToRgb(hex) {
+  let result;
+  hex = qcHex(hex);
+  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16),
+        a: parseInt(result[4], 16),
       }
     : null;
 }

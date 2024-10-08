@@ -1166,7 +1166,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -1177,7 +1177,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "download-collapse-label",
       "download-collapse-div",
       "DOWNLOAD DATA",
-      `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+      `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
       false,
       ``,
       "Download " + mode + " products for further analysis"
@@ -1535,7 +1535,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     "MAP DATA",
-    `<img style = 'width:1.15rem;' class='image-icon mr-1' alt="Layer icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -1549,7 +1549,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -1559,7 +1559,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "download-collapse-label",
     "download-collapse-div",
     "DOWNLOAD DATA",
-    `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
     false,
     ``,
     "Download " + mode + " products for further analysis"
@@ -1578,7 +1578,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "support-collapse-label",
     "support-collapse-div",
     "SUPPORT & FEEDBACK",
-    `<i role="img" class="fa fa-question-circle mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
     true,
     ``,
     ""
@@ -1674,7 +1674,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "reference-layer-list-collapse-label",
     "reference-layer-list-collapse-div",
     "REFERENCE DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     false,
     null,
     "Additional relevant layers to view on map intended to provide context for " +
@@ -1687,7 +1687,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -1707,7 +1707,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     mode + " DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -1721,7 +1721,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -1768,7 +1768,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     mode + " DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -1782,7 +1782,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -1843,7 +1843,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     mode + " DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -1857,7 +1857,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -1870,7 +1870,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     mode + " DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -1883,7 +1883,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -2077,7 +2077,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     mode + " DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -2090,7 +2090,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -2100,7 +2100,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "download-collapse-label",
     "download-collapse-div",
     "DOWNLOAD DATA",
-    `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
     false,
     ``,
     "Download " + mode + " products for further analysis"
@@ -2115,7 +2115,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     "TreeMap DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -2125,7 +2125,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -2135,7 +2135,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "download-collapse-label",
     "download-collapse-div",
     "DOWNLOAD DATA",
-    `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
     false,
     ``,
     "Download " + mode + " products for further analysis"
@@ -2397,7 +2397,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     "MAP LAYERS",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -2422,7 +2422,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -2452,7 +2452,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       "download-collapse-label",
       "download-collapse-div",
       "DOWNLOAD DATA",
-      `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+      `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
       false,
       ``,
       "Download " + mode + " products for further analysis"
@@ -3021,7 +3021,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "related-layers-label",
     "related-layers-div",
     "BMP Related Layers",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     false,
     null,
     "View related layers for HiForm BMP"
@@ -3035,7 +3035,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"
@@ -3044,8 +3044,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "sidebar-left",
     "download-collapse-label",
     "download-collapse-div",
-    "Download Data",
-    `<i role="img" class="fa fa-cloud-download mr-1" aria-hidden="true"></i>`,
+    "DOWNLOAD DATA",
+    `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
     false,
     null,
     "Download HiForm BMP results"
@@ -3070,7 +3070,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "layer-list-collapse-label",
     "layer-list-collapse-div",
     "ANCILLARY DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     true,
     null,
     mode + " DATA layers to view on map"
@@ -3081,7 +3081,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "reference-layer-list-collapse-label",
     "reference-layer-list-collapse-div",
     "PLOT DATA",
-    `<img style = 'width:1.1em;' class='image-icon mr-1' alt="Layers icon" src="./src/assets/images/layer_icon.png">`,
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
     false,
     null,
     "Additional relevant layers to view on map intended to provide context for " +
@@ -3094,7 +3094,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "tools-collapse-label",
     "tools-collapse-div",
     "TOOLS",
-    `<i role="img" class="fa fa-gear mr-1" aria-hidden="true"></i>`,
+    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
     false,
     "",
     "Tools to measure and chart data provided on the map"

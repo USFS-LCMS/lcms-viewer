@@ -482,7 +482,7 @@ const getQueryImages = function (lng, lat) {
       $("#" + containerID).append(
         `<tr><th>${q.name}</th><th>Attribute Table</th></tr>`
       );
-      console.log(value);
+
       infoKeys.map(function (name) {
         const valueT = smartToFixed(value[name]);
         $("#" + containerID).append(
@@ -629,9 +629,11 @@ const getQueryImages = function (lng, lat) {
       } else if (q.type === "geeVectorImage" || q.type === "geeVector") {
         let features;
         try {
-          features = q.queryItem.filterBounds(clickPt);
+          features = q.queryItem.filterBounds(clickPt.buffer(plotRadius));
         } catch (err) {
-          features = ee.FeatureCollection([q.queryItem]).filterBounds(clickPt);
+          features = ee
+            .FeatureCollection([q.queryItem])
+            .filterBounds(clickPt.buffer(plotRadius));
         }
         features.evaluate(function (values) {
           keyI++;

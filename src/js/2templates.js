@@ -2728,7 +2728,7 @@ function addCollapse(
   }
   const collapseTitleDiv = `<header title="${toolTip}" class="panel-heading" role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	<h2 class="p-0 m-0 panel-title  ${collapsed}" data-toggle="collapse"  href="#${collapseID}" id="${collapseLabelID}-label" aria-expanded="${show}" aria-controls="${collapseID}"> <a class = 'collapse-title' role='img'>
-	${collapseLabelIcon} ${collapseLabel} </a></h2><span id="${collapseLabelID}-message"</span></header>`;
+	${collapseLabelIcon}<div style='width:0.25rem;display:inline-flex'></div>${collapseLabel}</a></h2><span id="${collapseLabelID}-message"</span></header>`;
 
   const collapseDiv = `<section id="${collapseID}" class="panel-collapse collapse panel-body ${show}" role="tabpanel" aria-labelledby="${collapseLabelID}"></section>`;
   if (mode === "append") {
@@ -2989,7 +2989,7 @@ function addClassLegendContainer(
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='border: ${obj.classStrokeWeight}px solid #${
+    `<li><span style='border: ${obj.classStrokeWeight}px ${obj.lineType} #${
       obj.classStrokeColor
     };background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
   );
@@ -3524,7 +3524,11 @@ function addLayer(layer) {
           layer.viz.asyncBounds = layer.item.bounds(100, "EPSG:4326");
         }
 
-        layer.item = ee.Image().paint(layer.item, null, layer.viz.strokeWeight);
+        layer.item =
+          layer.viz.styleParams !== undefined
+            ? layer.item.style(layer.viz.styleParams)
+            : ee.Image().paint(layer.item, null, layer.viz.strokeWeight);
+
         layer.viz.palette = layer.viz.strokeColor;
       }
       //Add functionality for select layers to be clicked and selected
@@ -3937,7 +3941,7 @@ function addLayer(layer) {
       } else {
         layer.usedViz = layer.viz;
       }
-
+      layer.usedViz = layer.viz.styleParams !== undefined ? {} : layer.usedViz;
       let mapItem =
         layer.viz.bands !== undefined
           ? ee.Image(layer.item).select(layer.viz.bands)
