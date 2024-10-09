@@ -221,6 +221,7 @@ function cancelSingleTask(task) {
 }
 cancelAllTasks = function () {
   $("#summary-spinner").show();
+  $("#export-count-div").empty();
   let tasksCancelled = 0;
   let tasksCancelledList = "\nNames:";
   ee.data.getTaskList((taskList) => {
@@ -251,20 +252,21 @@ cancelAllTasks = function () {
       mode + "-cancel-all-tasks",
       tasksCancelled.length.toString()
     );
+
     trackExports();
   });
 };
 
 function cancelTask(description) {
+  $(`#${description}-export-tracking-row`).slideUp();
   ee.data.getTaskList((tasks) => {
     let task = tasks.tasks.filter((t) => t.description === description)[0];
-
-    cancelSingleTask(task);
-    $(`#${description}-export-tracking-row`).slideUp();
 
     let exportCount = parseInt($("#export-count").html());
     exportCount--;
     $("#export-count").text(exportCount.toString());
+    cancelSingleTask(task);
+
     if (exportCount === 0) {
       $("#export-spinner").hide();
       $("#export-count-div").html(``);

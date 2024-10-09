@@ -103,7 +103,7 @@ for sa in sa_dict.keys():
     nwi = nwi.reduceToImage(["WETLAND_TY"], ee.Reducer.first()).rename(["Wetland_Class"])
     nwi = nwi.set(dict).set({"study_area": sa}).byte()
 
-    Map.addLayer(sa_bounds, {"styleParams": {"lineType": "dashed", "color": "80F"}}, f"{sa} bounds")
+    Map.addLayer(ee.Feature(sa_bounds), {"styleParams": {"lineType": "dashed", "color": "F0F"}}, f"{sa} bounds")
     # print(nwi.getInfo())
     Map.addLayer(nwi, {"autoViz": True}, sa)
 

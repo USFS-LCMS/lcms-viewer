@@ -194,10 +194,10 @@ const staticTemplates = {
                                                               ${authErrorMessageContact}
     `,
   exportContainer: `<div class = 'py-2' id = 'export-list-container'>
-                        <h5>Choose which data to export:</h5>
+                        <h5 class = 'ml-4'>Choose which data to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
-                        <div class = 'pl-3'>
+                        <div class = 'pl-4'>
                             <h5 title="Provide a projection crs and draw an area for image exports">Image export parameters</h5>
                             <form id = 'export-crs-input-container' class="form-inline" title = 'Provide projection. Web mercator: "EPSG:4326", USGS Albers: "EPSG:5070", WGS 84 UTM Northern Hemisphere: "EPSG:326" + zone number (e.g. zone 17 would be EPSG:32617), NAD 83 UTM Northern Hemisphere: "EPSG:269" + zone number (e.g. zone 17 would be EPSG:26917) '>
                               <label for="export-crs">Projection: </label>
@@ -223,11 +223,11 @@ const staticTemplates = {
                             
                         </div>
                         
-                        <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
+                        <span style = 'display:none;' class="fa-stack fa-2x ml-4 py-0" id='export-spinner' title="">
                             <img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
                             <strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
                         </span>
-                        <div id = 'export-count-div' ></div> 
+                        <div class = 'pl-4' id = 'export-count-div' ></div> 
                         
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
@@ -878,9 +878,9 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                             </ul>
                                           </li>
                                         </ul>`,
-  TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h4>`,
-  TreeMapDownloadDiv: `<h4 id = 'treemap-conus-download-header' class='pt-2'>CONUS Datasets</h4>
-                      <ul id="downloadTree" class="pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
+  TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='ml-4 pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h4>`,
+  TreeMapDownloadDiv: `<h4 id = 'treemap-conus-download-header' class='ml-4 pt-2'>CONUS Datasets</h4>
+                      <ul id="downloadTree" class="ml-4 pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
                                             <li><span class="caret" title="Download individual attributes of TreeMap.">Individual Attributes</span>
@@ -892,9 +892,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                           </ul>
                                         </li>
                                     </ul>`,
-  TreeMapSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
-                      </div>
-                      <hr>
+  TreeMapSupportDiv: `
                       <div  class = 'py-2 pl-3 pr-1'>
                                 <header class = 'row'>
                                     <h3 class = ' text-capitalize'>TreeMap Resources</h3>
@@ -1019,9 +1017,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     </div>
                                 </section>
                       </div>`,
-  sequoiaSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
-                        </div>
-                        <hr>
+  sequoiaSupportDiv: `
                         <div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open Giant Sequoia Viewer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
@@ -1035,9 +1031,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                         </div>
                         <hr>`,
-  hiformSupportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
-                      </div>
-                      <hr>
+  hiformSupportDiv: `
                       <header class = 'row ' title = 'HiForm-BMP should be used appropriately'>
                           <h3 class = ' text-capitalize'>Disclaimer</h3>
                       </header>
@@ -1154,9 +1148,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                       
                                     </div>
                                 </section>`,
-  supportDiv: `<div id = 'toggle-show-splash-screen-radio-container'>
-                </div>
-                <hr>
+  supportDiv: `
                 <div  class = 'py-2 pl-3 pr-1'>
                         <header class = 'row ' title = 'Open LCMS Data Explorer tutorial'>
                             <h3 class = ' text-capitalize'>Tutorial</h3>
@@ -2246,12 +2238,12 @@ function addHiFormResetButton(containerID) {
 function addHiFormExport(containerDiv) {
   $("#" + containerDiv)
     .append(`<div class = 'py-2' id = 'export-list-container'>
-                        <h5>Choose which data to export:</h5>
+                        <h5 class = 'ml-4'>Choose which data to export:</h5>
                         <div class = 'py-2' id="export-list"></div>
                         <hr>
                         <div >
                             
-                            <div class = 'pt-1 pb-3' >
+                            <div class = 'ml-4 pt-1 pb-3' >
                                 <div id = 'export-button-div'>
                                     <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
                                     <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'><i class="pr-1 fa fa-close" aria-hidden="true"></i>Cancel All Exports</button>

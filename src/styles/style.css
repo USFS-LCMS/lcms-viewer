@@ -1034,6 +1034,14 @@ td {
   display: inline;
   padding-left: 0.5rem;
 }
+.export-name-input {
+  display: inline;
+  margin-left: 0.5rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  /* border-top-left-radius: 3px !important; */
+  /* border-bottom-left-radius: 3px !important; */
+}
 .layer-label-lcms {
   color: #cc4c02 !important;
 }
@@ -1224,14 +1232,15 @@ ul {
 #select-aoi-pane,
 #pre-post-dates-div,
 #support-collapse-div,
-#download-collapse-div {
+#download-collapse-div-lcms {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
 }
 #layer-list-collapse-div,
 #reference-layer-list-collapse-div,
 #related-layer-list,
-#legend-collapse-div {
+#legend-collapse-div,
+#download-collapse-div {
   padding-left: 1rem;
   padding-right: 1.5rem;
 }

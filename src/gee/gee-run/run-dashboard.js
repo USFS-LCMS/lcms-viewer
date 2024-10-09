@@ -211,11 +211,15 @@ function runDashboard() {
       Map.addLayer(
         summariesT,
         {
-          strokeColor: summaryAreaObj.color,
+          styleParams: {
+            color: summaryAreaObj.color,
+            width: 1.5,
+            fillColor: "0000",
+          },
           dashboardSummaryLayer: true,
           dashboardFieldName: summaryAreaObj.unique_fieldname,
           dashboardSummaryMode: "hybrid",
-          strokeWeight: 1.5,
+          // strokeWeight: 1.5,
           title: summaryAreaObj.title,
         },
         name,
