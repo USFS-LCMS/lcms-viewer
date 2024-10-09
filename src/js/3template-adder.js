@@ -149,7 +149,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addCollapse(
     "sidebar-left",
     "download-collapse-label",
-    "download-collapse-div",
+    "download-collapse-div-lcms",
     "DOWNLOAD DATA",
     `<img class='panel-title-svg-lg'  alt="Downloads icon" src="./src/assets/Icons_svg/dowload_ffffff.svg">`,
     false,
@@ -363,7 +363,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         });
       }
     }
-    $("#download-collapse-div").append(
+    $("#download-collapse-div-lcms").append(
       staticTemplates.lcmsProductionDownloadDiv
     );
   } else {
@@ -3055,15 +3055,15 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
   addCollapse(
     "sidebar-left",
-    "hiform-support-label",
-    "hiform-support-div",
-    "Support",
-    '<i role="img" class="fa fa-question-circle  mr-1" aria-hidden="true"></i>',
+    "support-collapse-label",
+    "support-collapse-div",
+    "SUPPORT",
+    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
     false,
-    null,
+    ``,
     "Access HiForm BMP Support Resources"
   );
-  $("#hiform-support-div").append(staticTemplates.hiformSupportDiv);
+  $("#support-collapse-div").append(staticTemplates.hiformSupportDiv);
 } else {
   addCollapse(
     "sidebar-left",

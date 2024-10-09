@@ -1150,8 +1150,19 @@ function setupDropdownTreeDownloads(studyAreaName) {
     },
     PRUSVI: {
       startYear: 1985,
-      endYear: 2022,
-      version: "2022-8",
+      endYear: 2023,
+      version: "2023-9",
+      products: {
+        Change: ["annual", "summary"],
+        Land_Cover: ["annual"],
+        Land_Use: ["annual"],
+      },
+      summary_products: ["Fast_Loss", "Gain"],
+    },
+    HI: {
+      startYear: 1985,
+      endYear: 2023,
+      version: "2023-9",
       products: {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],

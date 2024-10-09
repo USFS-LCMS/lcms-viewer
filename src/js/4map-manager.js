@@ -1505,8 +1505,8 @@ function addToMap(
     }
   } else if (viz.layerType === "geeVectorImage") {
     if (viz.styleParams !== undefined && viz.styleParams !== null) {
-      viz.styleParams.color = viz.styleParams.color || getColor();
-      viz.styleParams.fillColor = viz.styleParams.fillColor || "22222200";
+      viz.styleParams.color = viz.styleParams.color || "000";
+      viz.styleParams.fillColor = viz.styleParams.fillColor || "000A";
       viz.styleParams.width = viz.styleParams.width || 2;
       viz.styleParams.lineType = viz.styleParams.lineType || "solid";
       viz.styleParams.pointSize = viz.styleParams.pointSize || 3;

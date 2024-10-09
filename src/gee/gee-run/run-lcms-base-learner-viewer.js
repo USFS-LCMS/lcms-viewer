@@ -36,7 +36,11 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  const vizYears = range(startYear, endYear, 5);
+  let timeLapseFreq = 5;
+  if (urlParams.advanced) {
+    timeLapseFreq = 1;
+  }
+  const vizYears = range(startYear, endYear, timeLapseFreq);
   if (vizYears[vizYears.length - 2] !== endYear) {
     vizYears.push(endYear);
   }
@@ -138,7 +142,9 @@ function runBaseLearner() {
 
   // ////////////////////////////////////////////////////////////////////////////////////////
 
-  const ccdcIndices = Object.keys(whichIndices2).filter((i) => whichIndices2[i]);
+  const ccdcIndices = Object.keys(whichIndices2).filter(
+    (i) => whichIndices2[i]
+  );
   const ccdcOriginalIndices = Object.keys(whichIndices2).filter(
     (i) => whichIndices2[i]
   );

@@ -1195,7 +1195,7 @@ if (
       [
         `Track Exports`,
         `<ul>
-          <li>All previous and current exports are shown here.</li>
+          <li>All previous and current exports are shown here (possibly hidden if no exports are available).</li>
           <li>From left to right, each export's name, total run time, type, and download button is provided.</li>
           <li>Any successfully completed export within the past 10 days, from your instance of HiForm-BMP, is provided here. You can re-download the output using the <i class="fa fa-cloud-download teal"></i> button on the right of each task.</li>
           <li>Currently active exports are shown with a pulsing teal color.</li>
@@ -1214,11 +1214,11 @@ if (
       [
         `Other resources`,
         `Here you will find additional HiForm BMP documentation, credits/acknowledgments, contacts, and how to cite this page.`,
-        "#hiform-support-label",
+        "#support-collapse-label",
         "right-end",
         [0, 1],
         "support-tour-modal",
-        "#hiform-support-label-label",
+        "#support-collapse-label-label",
       ],
     ];
 

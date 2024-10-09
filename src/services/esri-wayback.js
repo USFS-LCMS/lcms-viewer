@@ -104,15 +104,15 @@ function esri_wayback() {
         const k = Object.keys(sortedWayBackLayers)[timeLapseFrame];
 
         // Attempt to pseudo replicate the inverse zoom levels - this is a bit off in some places
-        const zOffset = 21;
-        const metadataMinZoom = 4;
+        const zOffset = 23;
+        const metadataMinZoom = 6;
         const metadataMaxZoom = 13;
         let z =
           zOffset - map.zoom >= metadataMinZoom
             ? zOffset - map.zoom
             : metadataMinZoom;
         z = z >= metadataMaxZoom ? metadataMaxZoom : z;
-
+        console.log(z);
         // Template metadata REST call
         // Currently handles point, but could handle the map bounds with bbox tweak if needed
         const metadataQueryTemplate = `${sortedWayBackMetadataLayers[k]}/${z}/query?f=json&where=1%3D1&outFields=SRC_DATE2%2CNICE_DESC%2CSRC_DESC%2CSAMP_RES%2CSRC_ACC&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A${clickLng}%2C%22y%22%3A${clickLat}%7D&returnGeometry=false&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects`;
@@ -151,6 +151,15 @@ function esri_wayback() {
                 $("#wayback-metadata-loading-spinner").removeClass("fa-spin");
                 $("#wayback-metadata-loading").hide();
               });
+            } else {
+              $("#wayback-metadata").append(`
+              <ul  style = 'margin-bottom: 0px;'>
+              <li>Metadata empty</li>
+              </ul>`);
+
+              // Hide spinners
+              $("#wayback-metadata-loading-spinner").removeClass("fa-spin");
+              $("#wayback-metadata-loading").hide();
             }
           },
           error: function (request, status, errorThrown) {
