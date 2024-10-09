@@ -1343,11 +1343,8 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (CONUS and SEAK)</a>
-                                </li>
-                                <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2022-8")' title = 'Open in-depth LCMS v2022.8 methods documentation'>Version 2022.8 (PRUSVI)</a>
-                                </li>   
+                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9</a>
+                                </li>  
                             </div>
                         </div>
                         <hr>
