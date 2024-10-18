@@ -1,3 +1,124 @@
+const lcmsLandCoverLookup = [
+  [1, "005e00", "1", "Vegetated"],
+  [2, "d3bf9b", "2", "Non-Vegetated"],
+  [3, "1b1716", "3", "Non-Processing Area Mask"],
+  [1, "005e00", "1.1", "Tree"],
+  [2, "ffff00", "1.2", "Non-Tree"],
+  [3, "d3bf9b", "2.1", "Non-Vegetated"],
+  [4, "1b1716", "3.1", "Non-Processing Area Mask"],
+  [1, "005e00", "1.1.1", "Tree"],
+  [2, "e68a00", "1.2.1", "Shrubs"],
+  [3, "ffff00", "1.2.2", "Grass/Forb/Herb"],
+  [4, "d3bf9b", "2.1.1", "Barren or Impervious"],
+  [5, "ffffff", "2.1.2", "Snow or Ice"],
+  [6, "4780f3", "2.1.3", "Water"],
+  [7, "1b1716", "3.1.1", "Non-Processing Area Mask"],
+  [1, "005e00", "1.1.1.1", "Tree"],
+  [2, "008000", "1.1.1.2", "Tall Shrubs & Trees Mix (SEAK Only)"],
+  [3, "00cc00", "1.1.1.3", "Shrubs & Trees Mix"],
+  [4, "b3ff1a", "1.1.1.4", "Grass/Forb/Herb & Trees Mix"],
+  [5, "99ff99", "1.1.1.5", "Barren & Trees Mix"],
+  [6, "b30088", "1.2.1.1", "Tall Shrubs (SEAK Only)"],
+  [7, "e68a00", "1.2.1.2", "Shrubs"],
+  [8, "ffad33", "1.2.1.3", "Grass/Forb/Herb & Shrubs Mix"],
+  [9, "ffe0b3", "1.2.1.4", "Barren & Shrubs Mix"],
+  [10, "ffff00", "1.2.2.1", "Grass/Forb/Herb"],
+  [11, "aa7700", "1.2.2.2", "Barren & Grass/Forb/Herb Mix"],
+  [12, "d3bf9b", "2.1.1.1", "Barren or Impervious"],
+  [13, "ffffff", "2.1.2.1", "Snow or Ice"],
+  [14, "4780f3", "2.1.3.1", "Water"],
+  [15, "1b1716", "3.1.1.1", "Non-Processing Area Mask"],
+];
+
+const lcmsChangeLookup = [
+  [1, "3d4551", "1", "Stable"],
+  [2, "d54309", "2", "Loss"],
+  [3, "1b1716", "3", "Non-Processing Area Mask"],
+  [1, "3d4551", "1.1", "Stable"],
+  [2, "00a398", "1.2", "Gain"],
+  [3, "d54309", "2.1", "Loss"],
+  [4, "1b1716", "3.1", "Non-Processing Area Mask"],
+  [1, "3d4551", "1.1.1", "Stable"],
+  [4, "00a398", "1.2.1", "Gain"],
+  [2, "f39268", "2.1.1", "Slow Loss"],
+  [3, "d54309", "2.1.2", "Fast Loss"],
+  [5, "1b1716", "3.1.1", "Non-Processing Area Mask"],
+];
+
+const lcmsLandUseLookup = [
+  [1, "f88db9", "1", "Anthropogenic"],
+  [2, "1b9d0c", "2", "Non-Anthropogenic"],
+  [3, "1b1716", "3", "Non-Processing Area Mask"],
+  [1, "efff6b", "1.1", "Agriculture"],
+  [2, "ff2ff8", "1.2", "Developed"],
+  [3, "1b9d0c", "2.1", "Forest"],
+  [4, "a1a1a1", "2.2", "Other"],
+  [5, "c2b34a", "2.3", "Rangeland or Pasture"],
+  [6, "1b1716", "3.1", "Non-Processing Area Mask"],
+  [1, "efff6b", "1.1.1", "Agriculture"],
+  [2, "ff2ff8", "1.2.1", "Developed"],
+  [3, "1b9d0c", "2.1.1", "Forest"],
+  [4, "97ffff", "2.2.1", "Non-Forest Wetland"],
+  [5, "a1a1a1", "2.2.2", "Other"],
+  [6, "c2b34a", "2.3.1", "Rangeland or Pasture"],
+  [7, "1b1716", "3.1.1", "Non-Processing Area Mask"],
+];
+
+all_lookup = {};
+all_lookup["Land_Cover"] = {};
+all_lookup["Change"] = {};
+all_lookup["Land_Use"] = {};
+lcmsLandCoverLookup.map(
+  (r) => (all_lookup["Land_Cover"][r[2]] = [r[0], r[1], r[3]])
+);
+lcmsLandUseLookup.map(
+  (r) => (all_lookup["Land_Use"][r[2]] = [r[0], r[1], r[3]])
+);
+lcmsChangeLookup.map((r) => (all_lookup["Change"][r[2]] = [r[0], r[1], r[3]]));
+console.log(all_lookup);
+// # Get a lookup of MapBiomas names, values, and palette to set as properties for a given band
+function getLookup(bandName, codes = Object.keys(all_lookup["Land_Cover"])) {
+  out = {};
+  out[`${bandName}_class_names`] = codes.map((c) => all_lookup[bandName][c][2]);
+  out[`${bandName}_class_palette`] = codes.map(
+    (c) => all_lookup[bandName][c][1]
+  );
+  out[`${bandName}_class_values`] = codes.map(
+    (c) => all_lookup[bandName][c][0]
+  );
+  return out;
+}
+
+// # Method to collapse to a given level (1-4), and return the remap values as well as corresponding visualization properties
+function getLevelNRemap(level, bandName = "Land_Cover") {
+  const names = Object.keys(all_lookup[bandName]);
+  const max_level = quantile(
+    names.map((n) => n.split(".").length),
+    1
+  );
+
+  highest_level = names.filter((n) => n.split(".").length == max_level);
+  the_level = names.filter((n) => n.split(".").length == level);
+
+  let fromList = [];
+  let toList = [];
+
+  highest_level.map((code) => {
+    fromList.push(all_lookup[bandName][code][0]);
+    toList.push(
+      all_lookup[bandName][code.split(".").slice(0, level).join(".")][0]
+    );
+  });
+
+  const out_lookup = getLookup(bandName, the_level);
+
+  return {
+    remap_from: fromList,
+    remap_to: toList,
+    viz_dict: out_lookup,
+  };
+}
+// console.log(getLevelNRemap(1, (bandName = "Land_Cover")));
 function runGTAC() {
   if (urlParams.dynamic) {
     runDynamic();
@@ -175,18 +296,9 @@ function runGTAC() {
       });
     };
 
-    lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
-    lcmsRun.lcms = ee.ImageCollection(
-      ee
-        .FeatureCollection(
-          lcmsRun.lcms.map((f) =>
-            ee
-              .ImageCollection(f)
-              .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
-          )
-        )
-        .flatten()
-    );
+    lcmsRun.lcms = ee
+      .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
+      .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]);
 
     lcmsRun.lcms = lcmsRun.lcms.filter(
       ee.Filter.calendarRange(startYear, endYear, "year")
@@ -207,85 +319,146 @@ function runGTAC() {
     lcmsRun.lcms = ee.ImageCollection(lcmsRun.lcms);
 
     //Get properties image
+
     lcmsRun.forProps = lcmsRun.lcms.filter(
       ee.Filter.notNull(["Change_class_names"])
     );
-    lcmsRun.props = {
-      Change_class_names: [
-        "Stable",
-        "Slow Loss",
-        "Fast Loss",
-        "Gain",
-        "Non-Processing Area Mask",
-      ],
-      Change_class_palette: ["3d4551", "f39268", "d54309", "00a398", "1b1716"],
-      Change_class_values: [1, 2, 3, 4, 5],
-      Land_Cover_class_names: [
-        "Trees",
-        "Tall Shrubs & Trees Mix (SEAK Only)",
-        "Shrubs & Trees Mix",
-        "Grass/Forb/Herb & Trees Mix",
-        "Barren & Trees Mix",
-        "Tall Shrubs (SEAK Only)",
-        "Shrubs",
-        "Grass/Forb/Herb & Shrubs Mix",
-        "Barren & Shrubs Mix",
-        "Grass/Forb/Herb",
-        "Barren & Grass/Forb/Herb Mix",
-        "Barren or Impervious",
-        "Snow or Ice",
-        "Water",
-        "Non-Processing Area Mask",
-      ],
-      Land_Cover_class_palette: [
-        "005e00",
-        "008000",
-        "00cc00",
-        "b3ff1a",
-        "99ff99",
-        "b30088",
-        "e68a00",
-        "ffad33",
-        "ffe0b3",
-        "ffff00",
-        "aa7700",
-        "d3bf9b",
-        "ffffff",
-        "4780f3",
-        "1b1716",
-      ],
-      Land_Cover_class_values: [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-      ],
-      Land_Use_class_names: [
-        "Agriculture",
-        "Developed",
-        "Forest",
-        "Non-Forest Wetland",
-        "Other",
-        "Rangeland or Pasture",
-        "Non-Processing Area Mask",
-      ],
-      Land_Use_class_palette: [
-        "efff6b",
-        "ff2ff8",
-        "1b9d0c",
-        "97ffff",
-        "a1a1a1",
-        "c2b34a",
-        "1b1716",
-      ],
-      Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
-      bandNames: ["Land_Cover"],
-      size: lcmsRun.years.length,
-    }; //eeObjInfo(lcmsRun.forProps, "ImageCollection").getInfo();
+
+    const lcLevelInfo = getLevelNRemap(
+      landCoverLevel,
+      (bandName = "Land_Cover")
+    );
+    const luLevelInfo = getLevelNRemap(landUseLevel, (bandName = "Land_Use"));
+    const cLevelInfo = getLevelNRemap(changeLevel, (bandName = "Change"));
+
+    lcmsRun.props = Object.assign(
+      {},
+      luLevelInfo.viz_dict,
+      lcLevelInfo.viz_dict,
+      cLevelInfo.viz_dict
+    );
+    lcmsRun.props.size = lcmsRun.years.length;
+
+    lcmsRun.lcms = lcmsRun.lcms.map((img) =>
+      img
+        .addBands(
+          img
+            .remap(
+              lcLevelInfo.remap_from,
+              lcLevelInfo.remap_to,
+              null,
+              "Land_Cover"
+            )
+            .rename(["Land_Cover"]),
+          null,
+          true
+        )
+        .addBands(
+          img
+            .remap(
+              luLevelInfo.remap_from,
+              luLevelInfo.remap_to,
+              null,
+              "Land_Use"
+            )
+            .rename(["Land_Use"]),
+          null,
+          true
+        )
+        .addBands(
+          img
+            .remap(cLevelInfo.remap_from, cLevelInfo.remap_to, null, "Change")
+            .rename(["Change"]),
+          null,
+          true
+        )
+        .set(lcmsRun.props)
+    );
+
+    // console.log(lcmsRun.lcms.first().getInfo());
+    // lcmsRun.props = {
+    //   Change_class_names: [
+    //     "Stable",
+    //     "Slow Loss",
+    //     "Fast Loss",
+    //     "Gain",
+    //     "Non-Processing Area Mask",
+    //   ],
+    //   Change_class_palette: ["3d4551", "f39268", "d54309", "00a398", "1b1716"],
+    //   Change_class_values: [1, 2, 3, 4, 5],
+    //   Land_Cover_class_names: [
+    //     "Trees",
+    //     "Tall Shrubs & Trees Mix (SEAK Only)",
+    //     "Shrubs & Trees Mix",
+    //     "Grass/Forb/Herb & Trees Mix",
+    //     "Barren & Trees Mix",
+    //     "Tall Shrubs (SEAK Only)",
+    //     "Shrubs",
+    //     "Grass/Forb/Herb & Shrubs Mix",
+    //     "Barren & Shrubs Mix",
+    //     "Grass/Forb/Herb",
+    //     "Barren & Grass/Forb/Herb Mix",
+    //     "Barren or Impervious",
+    //     "Snow or Ice",
+    //     "Water",
+    //     "Non-Processing Area Mask",
+    //   ],
+    //   Land_Cover_class_palette: [
+    //     "005e00",
+    //     "008000",
+    //     "00cc00",
+    //     "b3ff1a",
+    //     "99ff99",
+    //     "b30088",
+    //     "e68a00",
+    //     "ffad33",
+    //     "ffe0b3",
+    //     "ffff00",
+    //     "aa7700",
+    //     "d3bf9b",
+    //     "ffffff",
+    //     "4780f3",
+    //     "1b1716",
+    //   ],
+    //   Land_Cover_class_values: [
+    //     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    //   ],
+    //   Land_Use_class_names: [
+    //     "Agriculture",
+    //     "Developed",
+    //     "Forest",
+    //     "Non-Forest Wetland",
+    //     "Other",
+    //     "Rangeland or Pasture",
+    //     "Non-Processing Area Mask",
+    //   ],
+    //   Land_Use_class_palette: [
+    //     "efff6b",
+    //     "ff2ff8",
+    //     "1b9d0c",
+    //     "97ffff",
+    //     "a1a1a1",
+    //     "c2b34a",
+    //     "1b1716",
+    //   ],
+    //   Land_Use_class_values: [1, 2, 3, 4, 5, 6, 7],
+    //   bandNames: ["Land_Cover"],
+    //   size: lcmsRun.years.length,
+    // };
+    //eeObjInfo(lcmsRun.forProps, "ImageCollection").getInfo();
     // console.log(lcmsRun.props);
 
     //Bring in time-lapses
 
     //Mask out stable and non processing area mask for change time-lapse
+    const changeClassValues = lcmsRun.props["Change_class_values"];
+    const changeClassMin = changeClassValues[0];
+    const changeClassMax = changeClassValues[changeClassValues.length - 1];
+
     lcmsRun.tlChange = lcmsRun.lcms.select(["Change"]).map(function (img) {
-      return img.updateMask(img.gte(2).and(img.lt(5))).copyProperties(img);
+      return img
+        .updateMask(img.gt(changeClassMin).and(img.lt(changeClassMax)))
+        .copyProperties(img);
     });
     // lcmsRun.tlLC = lcmsRun.lcms.select(["Land_Cover"]); //.map(function(img){return img.updateMask(img.lt(15)).copyProperties(img)});
     // lcmsRun.tlLU = lcmsRun.lcms.select(["Land_Use"]); //.map(function(img){return img.updateMask(img.lt(7)).copyProperties(img)});

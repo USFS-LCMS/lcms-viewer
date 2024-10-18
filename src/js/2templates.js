@@ -2334,7 +2334,7 @@ function addMultiRadio(
   eval(`if(window.${variable} === undefined){window.${variable} = ''};`);
   Object.keys(optionList).map(function (k) {
     const kID = k.replace(/[^A-Za-z0-9]/g, "-");
-    const radioCheckboxID = kID + "-checkbox";
+    const radioCheckboxID = `${kID}-checkbox-${variable}`;
     const radioLabelID = radioCheckboxID + "-label";
     if (optionList[k] === "true") {
       optionList[k] = true;

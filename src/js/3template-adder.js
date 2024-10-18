@@ -246,7 +246,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Years of LCMS data to include for land cover, land use, loss, and gain"
   );
 
-  $("#parameters-collapse-div").append(`<hr>
+  $("#parameters-collapse-div").append(`
                                           <div id='threshold-container' style="display:none;width:100%"></div>
                                           <div id='advanced-radio-container' style="display: none;"></div>`);
 
@@ -338,6 +338,49 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
   urlParams.summaryMethod = tSummaryMethod;
 
+  urlParams.landCoverLevels = urlParams.landCoverLevels || {
+    1: false,
+    2: false,
+    3: false,
+    4: true,
+  };
+  urlParams.changeLevels = urlParams.changeLevels || {
+    1: false,
+    2: false,
+    3: true,
+  };
+  urlParams.landUseLevels = urlParams.landUseLevels || {
+    1: false,
+    2: false,
+    3: true,
+  };
+  addMultiRadio(
+    "parameters-collapse-div",
+    "change-levels-radio",
+    "Change Classification Level",
+    "changeLevel",
+    urlParams.changeLevels,
+    "Choose what level to show for Change. Lower levels will bin classes together. Level 2 is a great starting point."
+  );
+
+  addMultiRadio(
+    "parameters-collapse-div",
+    "land-cover-levels-radio",
+    "Land Cover Classification Level",
+    "landCoverLevel",
+    urlParams.landCoverLevels,
+    "Choose what level to show for Land Cover. Lower levels will bin classes together. Level 3 is a great starting point."
+  );
+
+  addMultiRadio(
+    "parameters-collapse-div",
+    "land-use-levels-radio",
+    "Land Use Classification Level",
+    "landUseLevel",
+    urlParams.landUseLevels,
+    "Choose what level to show for Land Use. Lower levels will bin classes together. Level 2 is a great starting point."
+  );
+  $("#land-use-levels-radio").css("padding-bottom", "0.75rem");
   $("#advanced-radio-container").append(`<hr>`);
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 
