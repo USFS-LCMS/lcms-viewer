@@ -1156,6 +1156,7 @@ function setupDropdownTreeDownloads(studyAreaName) {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],
         Land_Use: ["annual"],
+        QA_Bits: ["annual"],
       },
       summary_products: ["Fast_Loss", "Gain"],
     },
@@ -1167,8 +1168,9 @@ function setupDropdownTreeDownloads(studyAreaName) {
         Change: ["annual", "summary"],
         Land_Cover: ["annual"],
         Land_Use: ["annual"],
+        QA_Bits: ["annual"],
       },
-      summary_products: ["Fast_Loss", "Gain"],
+      summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
     },
   };
   Object.keys(study_areas).map((sa) => {
@@ -1189,25 +1191,44 @@ function setupDropdownTreeDownloads(studyAreaName) {
             study_areas[sa].startYear,
             study_areas[sa].endYear + 1
           );
-          years.map((yr) => {
-            const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
-            const name = url.substr(url.lastIndexOf("v20") + 8);
-            $("#" + dropdownID).append(
-              `<option  value = "${url}">${name}</option>`
-            );
-          });
-
+          if (sa != "HI"){
+            years.map((yr) => {
+              const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
+              const name = url.substr(url.lastIndexOf("v20") + 8);
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+             );
+            });
+          } else if (sa == "HI") {
+            years.map((yr) => {
+              const url = `${serverLocation}/LCMS_HAWAII_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
+              const name = url.substr(url.lastIndexOf("v20") + 8);
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+             );
+            });
+          };
           //https://data.fs.usda.gov/geodata/LCMS/LCMS_PRUSVI_v2020-6_Land_Use_Annual_2011.zip
         } else if (m === "summary") {
-          study_areas[sa].summary_products.map((summary_product) => {
-            const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
-            const name = url.substr(url.lastIndexOf("v20") + 8);
-            $("#" + dropdownID).append(
-              `<option  value = "${url}">${name}</option>`
-            );
+            if (sa != "HI") {
+              study_areas[sa].summary_products.map((summary_product) => {
+                const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
+                const name = url.substr(url.lastIndexOf("v20") + 8);
+                $("#" + dropdownID).append(
+                  `<option  value = "${url}">${name}</option>`
+                );
+                });
+            } else if (sa == "HI") {
+              study_areas[sa].summary_products.map((summary_product) => {
+                const url = `${serverLocation}/LCMS_HAWAII_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
+                const name = url.substr(url.lastIndexOf("v20") + 8);
+                $("#" + dropdownID).append(
+                  `<option  value = "${url}">${name}</option>`
+                );
+                });
+            };
             //https://data.fs.usda.gov/geodata/LCMS/LCMS_SEAK_v2022-8_Change_Fast_Loss_Summary_1985_2022.zip
-          });
-        }
+          };
       });
     });
   });
