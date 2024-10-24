@@ -369,7 +369,15 @@ const getQueryImages = function (lng, lat) {
         });
       }
     } else if (q.type === "geeImageCollection") {
-      let yAxisLabels = { tickfont: { size: yLabelFontSize } };
+      let yAxisLabels = {
+        tickfont: { size: yLabelFontSize },
+        title: {
+          text: q.queryParams.yLabel,
+          font: {
+            size: 12,
+          },
+        },
+      };
 
       if (q.queryDict !== undefined && q.queryDict !== null) {
         // Configure best way of showing given labels for queried pixel

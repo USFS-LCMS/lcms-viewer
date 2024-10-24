@@ -1866,18 +1866,39 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.year == null || urlParams.year == undefined) {
     urlParams.year = endYear;
   }
+  urlParams.startYear = urlParams.startYear || endYear;
+  urlParams.endYear = urlParams.endYear || endYear;
 
-  addRangeSlider(
+  addDualRangeSlider(
     "parameters-collapse-div",
-    "Year",
-    "urlParams.year",
+    "Year Range",
+    "urlParams.startYear",
+    "urlParams.endYear",
     startYear,
     endYear,
-    urlParams.year,
+    urlParams.startYear,
+    urlParams.endYear,
     1,
     "year-slider",
     "",
-    "Year of LAMDA products to show"
+    "Years of LAMDA products to show"
+  );
+
+  urlParams.startJulian = urlParams.startJulian || 30;
+  urlParams.endJulian = urlParams.endJulian || currentDayOfYear;
+  addDualRangeSlider(
+    "parameters-collapse-div",
+    "Choose date range:",
+    "urlParams.startJulian",
+    "urlParams.endJulian",
+    1,
+    365,
+    urlParams.startJulian,
+    urlParams.endJulian,
+    1,
+    "julian-day-slider",
+    "julian",
+    "Days of year of " + mode + " data to include on map and for charting"
   );
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 

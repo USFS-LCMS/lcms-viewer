@@ -860,7 +860,7 @@ function addTimeLapseToMap(
     "Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.";
 
   //Set up container for time lapse
-  $("#" + whichLayerList).append(`
+  $("#" + whichLayerList).prepend(`
                                 <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container not-draggable-layer'>
                                   <div class = 'time-lapse-layer-range-container ' >
                                     <div title = 'Opacity' id='${legendDivID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>

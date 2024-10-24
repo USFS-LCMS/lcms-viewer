@@ -260,18 +260,12 @@ body {
 }
 
 .time-lapse-slider-handle-label {
-  /*width: 3em;*/
-  /*height: 1.6em;*/
-  /*top: 50%;*/
-  padding-top: 1.1em;
-  margin-left: -2.2em;
-  /*margin-top: .8em;*/
-  /*margin-left: -.7em;*/
-  font-size: 0.7em;
-  width: 5em;
+  padding-top: 1rem;
+  margin-left: -1.7rem;
+  font-size: 0.7rem;
+  width: 4rem;
   color: var(--teal-100) !important;
   text-align: center;
-  /*line-height: 1.6em;*/
 }
 
 .info-page {
