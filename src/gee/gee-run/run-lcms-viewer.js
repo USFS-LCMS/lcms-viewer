@@ -1129,8 +1129,6 @@ function runGTAC() {
       }
       populateAreaChartDropdown();
     } else {
-      areaChart.clearLayers();
-
       // ["Change", "Land_Cover", "Land_Use"]
       ["Change", "Land_Cover", "Land_Use"].map((bn) => {
         let bnTitle = bn.replace("_", " ");
