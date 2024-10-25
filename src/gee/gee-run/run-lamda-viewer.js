@@ -461,8 +461,8 @@ runLAMDA2 = function () {
   addToMapFunction(z_r, zRViz, "Z Raw", false);
   addToMapFunction(z_p, zPViz, "Z Persistence", false);
 
-  Map.turnOnInspector();
-  // Map.turnOnAutoAreaCharting();
+  // Map.turnOnInspector();
+  Map.turnOnAutoAreaCharting();
 };
 
 let runLAMDA = runLAMDA2;

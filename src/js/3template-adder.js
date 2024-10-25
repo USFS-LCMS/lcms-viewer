@@ -3475,13 +3475,14 @@ if (
 }
 
 //Sync tooltip toggle
-let tShowToolTipModal = true;
 if (
-  localStorage["showToolTipModal-" + mode] !== null &&
-  localStorage["showToolTipModal-" + mode] !== undefined
+  localStorage["showToolTipModal-" + mode] == undefined ||
+  localStorage["showToolTipModal-" + mode] == "undefined"
 ) {
-  tShowToolTipModal = localStorage["showToolTipModal-" + mode];
+  localStorage["showToolTipModal-" + mode] = "true";
 }
+
+tShowToolTipModal = localStorage["showToolTipModal-" + mode];
 
 function toggleTooltip() {
   setTimeout(() => {
@@ -3505,6 +3506,7 @@ addSubAccordianCard(
   "Whether to show tool tips to help explain how to use the tools."
 );
 
+// $("#tooltip-radio-label").click();
 // Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
 if (mode === "sequoia-view") {
   $("#tools-accordian").append(

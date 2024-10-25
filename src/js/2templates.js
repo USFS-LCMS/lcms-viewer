@@ -1964,12 +1964,6 @@ function smartShowMessage(title, message, modalID = "error-modal") {
 //Show a basic tip BS modal
 function showTip(title, message) {
   if (
-    localStorage["showToolTipModal-" + mode] == undefined ||
-    localStorage["showToolTipModal-" + mode] == "undefined"
-  ) {
-    localStorage["showToolTipModal-" + mode] = "true";
-  }
-  if (
     localStorage["showToolTipModal-" + mode] === "true" &&
     walkThroughAdded == false
   ) {
