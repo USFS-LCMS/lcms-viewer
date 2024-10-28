@@ -1510,11 +1510,14 @@ function areaChartCls() {
   // If checkbox layer selection is used, instantiate it with this function to populate the checkboxes
   this.populateChartLayerSelect = function () {
     this.chartLayerSelectFromMapLayers = false;
-    let selectedObj = {};
+    this.areaChartSelectedObj = this.areaChartSelectedObj || {};
     let labels = [];
     Object.keys(this.areaChartObj).map((k) => {
       let obj = this.areaChartObj[k];
-      selectedObj[obj.id] = obj.shouldChart;
+      this.areaChartSelectedObj[obj.id] =
+        this.areaChartSelectedObj[obj.id] !== undefined
+          ? this.areaChartSelectedObj[obj.id]
+          : obj.shouldChart;
       labels.push(obj.name);
     });
 
@@ -1523,7 +1526,7 @@ function areaChartCls() {
       this.layerSelectID,
       "Area Chart Layers",
       "checkboxSelectedChartLayers",
-      selectedObj,
+      this.areaChartSelectedObj,
       labels,
       "Choose which layers to include in area summary charts",
       "prepend"

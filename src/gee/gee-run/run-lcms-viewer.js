@@ -118,6 +118,14 @@ function getLevelNRemap(level, bandName = "Land_Cover") {
     viz_dict: out_lookup,
   };
 }
+
+const propsHighest = Object.assign(
+  {},
+  getLevelNRemap(3, (bandName = "Land_Use")).viz_dict,
+  getLevelNRemap(4, (bandName = "Land_Cover")).viz_dict,
+  getLevelNRemap(3, (bandName = "Change")).viz_dict
+);
+
 // console.log(getLevelNRemap(1, (bandName = "Land_Cover")));
 function runGTAC() {
   if (urlParams.dynamic) {
@@ -337,9 +345,10 @@ function runGTAC() {
       lcLevelInfo.viz_dict,
       cLevelInfo.viz_dict
     );
+
     lcmsRun.props.size = lcmsRun.years.length;
 
-    lcmsRun.lcms = lcmsRun.lcms.map((img) =>
+    lcmsRun.lcmsRemapped = lcmsRun.lcms.map((img) =>
       img
         .addBands(
           img
@@ -452,14 +461,20 @@ function runGTAC() {
 
     //Mask out stable and non processing area mask for change time-lapse
     const changeClassValues = lcmsRun.props["Change_class_values"];
+    changeVisibility = changeClassValues.map((v) => true);
+    changeVisibility[0] = false;
+    changeVisibility[changeVisibility.length - 1] = false;
+    console.log(changeVisibility);
     const changeClassMin = changeClassValues[0];
     const changeClassMax = changeClassValues[changeClassValues.length - 1];
 
-    lcmsRun.tlChange = lcmsRun.lcms.select(["Change"]).map(function (img) {
-      return img
-        .updateMask(img.gt(changeClassMin).and(img.lt(changeClassMax)))
-        .copyProperties(img);
-    });
+    lcmsRun.tlChange = lcmsRun.lcmsRemapped
+      .select(["Change"])
+      .map(function (img) {
+        return img
+          .updateMask(img.gt(changeClassMin).and(img.lt(changeClassMax)))
+          .copyProperties(img);
+      });
     // lcmsRun.tlLC = lcmsRun.lcms.select(["Land_Cover"]); //.map(function(img){return img.updateMask(img.lt(15)).copyProperties(img)});
     // lcmsRun.tlLU = lcmsRun.lcms.select(["Land_Use"]); //.map(function(img){return img.updateMask(img.lt(7)).copyProperties(img)});
 
@@ -491,7 +506,7 @@ function runGTAC() {
         urlParams.addLCMSTimeLapsesOn === "no"
       ) {
         Map.addLayer(
-          lcmsRun.lcms
+          lcmsRun.lcmsRemapped
             .select([b])
             .filter(
               ee.Filter.calendarRange(
@@ -517,7 +532,7 @@ function runGTAC() {
         );
 
         Map.addLayer(
-          lcmsRun.lcms
+          lcmsRun.lcmsRemapped
             .select([b])
             .filter(
               ee.Filter.calendarRange(
@@ -545,7 +560,7 @@ function runGTAC() {
         // Map.addLayer(luChangeObj.change.set('bounds',clientBoundary),luChangeObj.viz,luLayerName + ' Change' ,false);
       } else {
         addLayerFun(
-          lcmsRun.lcms.select([b]),
+          lcmsRun.lcmsRemapped.select([b]),
           {
             title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${endYear}.`,
             autoViz: true,
@@ -1049,7 +1064,7 @@ function runGTAC() {
         bn = ee.String(bn).split("_");
         return bn.get(bn.length().subtract(1));
       });
-      const colors = lcmsRun.props[`${bn}_class_palette`];
+      const colors = propsHighest[`${bn}_class_palette`];
       chartC = chartC.select(fromBns, toBns);
       pixelChartCollections[bn] = {
         label: `LCMS ${bnTitle} Time Series`,
@@ -1135,10 +1150,10 @@ function runGTAC() {
         lcmsRun.props.bandNames = [bn];
         let visibility;
         if (bn === "Change") {
-          visibility = [false, true, true, true, false];
+          visibility = changeVisibility;
         }
         areaChart.addLayer(
-          lcmsRun.lcms.select([bn]),
+          lcmsRun.lcmsRemapped.select([bn]),
           {
             eeObjInfo: lcmsRun.props,
             visible: visibility,
@@ -1148,7 +1163,7 @@ function runGTAC() {
           true
         );
         areaChart.addLayer(
-          lcmsRun.lcms.select([bn]),
+          lcmsRun.lcmsRemapped.select([bn]),
           {
             sankey_years: [startYear, endYear],
             sankey: true,
@@ -1565,7 +1580,7 @@ function runDynamic() {
   //   "LCMS Land Cover",
   //   true
   // );
-  let changeVisibility = [false, true, true, true, false];
+  // let changeVisibility = [false, true, true, true, false];
   // Map.addLayer(
   //   lcmsRun.lcms.select(["Change"]), //(), //.set(lcmsRun.props),
   //   {

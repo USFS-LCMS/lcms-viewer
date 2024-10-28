@@ -2588,6 +2588,9 @@ function reRun() {
   try {
     clearDownloadDropdown();
   } catch (err) {}
+  try {
+    areaChart.clearLayers();
+  } catch (err) {}
   google.maps.event.clearListeners(mapDiv, "click");
 
   //Rerun the GEE code

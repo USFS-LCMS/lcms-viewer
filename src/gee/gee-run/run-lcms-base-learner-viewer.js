@@ -36,10 +36,8 @@ function runBaseLearner() {
   );
   let compViz = copyObj(gil.vizParamsFalse);
   compViz.reducer = ee.Reducer.median();
-  let timeLapseFreq = 5;
-  if (urlParams.advanced) {
-    timeLapseFreq = 1;
-  }
+  let timeLapseFreq = urlParams.advanced ? 1 : 5;
+
   const vizYears = range(startYear, endYear, timeLapseFreq);
   if (vizYears[vizYears.length - 2] !== endYear) {
     vizYears.push(endYear);
