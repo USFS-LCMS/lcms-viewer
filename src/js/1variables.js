@@ -378,7 +378,7 @@ const studyAreaDict = {
     ccdc_collections: [
       "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection_TOA",
       "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2022",
-      "projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020",
+      "projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat",
       "projects/lcms-292214/assets/R5/Hawaii/Base-Learners/CCDC-Collection",
     ],
   },
