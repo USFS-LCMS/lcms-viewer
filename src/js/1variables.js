@@ -367,7 +367,7 @@ const studyAreaDict = {
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Composites/Composite-Collection",
-      "projects/lcms-292214/assets/R5/Hawaii/Composites/Composite-Collection",
+      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Composites/Composite-Collection1988-2023",
     ],
     lt_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Base-Learners/LandTrendr-Collection",
@@ -376,10 +376,14 @@ const studyAreaDict = {
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],
     ccdc_collections: [
-      "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection_TOA",
       "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2022",
-      "projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat-1984-2020",
+      "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection_TOA",
+      "projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat",
       "projects/lcms-292214/assets/R5/Hawaii/Base-Learners/CCDC-Collection",
+    ],
+    ccdc_addon_collections:[
+      "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Feathered-Collection",
+      "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection-2013-2023",
     ],
   },
 };
