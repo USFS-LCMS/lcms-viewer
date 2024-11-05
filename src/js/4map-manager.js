@@ -259,7 +259,7 @@ function addSelectLayerToMap(
 //Functions to manage time lapses
 let intervalPeriod = 666.6666666666666;
 let timeLapseID;
-let timeLapseFrame = 0;
+urlParams.timeLapseFrame = urlParams.timeLapseFrame || 0;
 let cumulativeMode = urlParams.cumulativeMode;
 function pauseTimeLapse(id) {
   if (id === null || id === undefined) {
@@ -302,41 +302,41 @@ function selectFrame(id, fromYearSlider, advanceOne) {
 
     turnOnTimeLapseLayers();
     const slidersT = timeLapseObj[timeLapseID].sliders;
-    if (timeLapseFrame > slidersT.length - 1) {
-      timeLapseFrame = 0;
-    } else if (timeLapseFrame < 0) {
-      timeLapseFrame = slidersT.length - 1;
+    if (urlParams.timeLapseFrame > slidersT.length - 1) {
+      urlParams.timeLapseFrame = 0;
+    } else if (urlParams.timeLapseFrame < 0) {
+      urlParams.timeLapseFrame = slidersT.length - 1;
     }
     if (timeLapseObj[timeLapseID].layerType !== "tileMapService") {
-      if (!eval(cumulativeMode) || timeLapseFrame === 0) {
+      if (!eval(cumulativeMode) || urlParams.timeLapseFrame === 0) {
         slidersT.map(function (s) {
           try {
             setFrameOpacity(s, 0);
           } catch (err) {}
         });
       } else {
-        slidersT.slice(0, timeLapseFrame).map(function (s) {
+        slidersT.slice(0, urlParams.timeLapseFrame).map(function (s) {
           try {
             setFrameOpacity(s, timeLapseObj[timeLapseID].opacity);
           } catch (err) {}
         });
       }
     }
-    const frame = slidersT[timeLapseFrame];
+    const frame = slidersT[urlParams.timeLapseFrame];
     try {
       if (timeLapseObj[timeLapseID].layerType === "tileMapService") {
         $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
         timeLapseObj[timeLapseID].lastTurnOn =
-          timeLapseObj[timeLapseID].layerVisibleIDs[timeLapseFrame];
+          timeLapseObj[timeLapseID].layerVisibleIDs[urlParams.timeLapseFrame];
         $("#" + timeLapseObj[timeLapseID].lastTurnOn).click();
       }
       setFrameOpacity(frame, timeLapseObj[timeLapseID].opacity);
       if (!fromYearSlider) {
         Object.keys(timeLapseObj).map(function (k) {
           const s = $("#" + k + "-year-slider").slider();
-          s.slider("option", "value", timeLapseFrame);
+          s.slider("option", "value", urlParams.timeLapseFrame);
           $("#" + k + "-year-slider-handle-label").text(
-            timeLapseObj[k].yearLookup[timeLapseFrame]
+            timeLapseObj[k].yearLookup[urlParams.timeLapseFrame]
           );
         });
       }
@@ -344,12 +344,14 @@ function selectFrame(id, fromYearSlider, advanceOne) {
     $("#" + timeLapseID + "-year-label").show();
     $("#time-lapse-year-label").show();
     $("#time-lapse-year-label").html(
-      `Time lapse date: ${timeLapseObj[timeLapseID].yearLookup[timeLapseFrame]}`
+      `Time lapse date: ${
+        timeLapseObj[timeLapseID].yearLookup[urlParams.timeLapseFrame]
+      }`
     );
   }
 }
 function advanceOneFrame() {
-  timeLapseFrame++;
+  urlParams.timeLapseFrame++;
   selectFrame();
 }
 function pauseButtonFunction(id) {
@@ -391,7 +393,7 @@ function backOneFrame(id) {
   if (timeLapseObj[timeLapseID].isReady) {
     clearAllFrames();
     pauseTimeLapse();
-    timeLapseFrame--;
+    urlParams.timeLapseFrame--;
     selectFrame();
     alignTimeLapseCheckboxes();
   }
@@ -1110,7 +1112,7 @@ function addTimeLapseToMap(
     slide: function (e, ui) {
       const i = ui.value;
       const yr = viz.yearLookup[i];
-      timeLapseFrame = i;
+      urlParams.timeLapseFrame = i;
       Object.keys(timeLapseObj).map(function (k) {
         const s = $("#" + k + "-year-slider").slider();
         s.slider("option", "value", ui.value);
@@ -2557,7 +2559,7 @@ function reRun() {
   dashboardObj = {};
   intervalPeriod = 666.6666666;
   timeLapseID = null;
-  timeLapseFrame = 0;
+  urlParams.timeLapseFrame = 0;
   cumulativeMode = urlParams.cumulativeMode;
   NEXT_LAYER_ID = 1;
   clearSelectedAreas();

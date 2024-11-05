@@ -1094,7 +1094,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 } else if (mode === "lcms-base-learner") {
   canExport = false;
   startYear = 1984;
-  endYear = 2023;
+  endYear = 2024;
   const minYear = startYear;
   const maxYear = endYear;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {

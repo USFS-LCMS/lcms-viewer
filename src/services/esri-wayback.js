@@ -101,7 +101,7 @@ function esri_wayback() {
         // Find the map center and what date the frame is
         const clickLat = map.center.lat();
         const clickLng = map.center.lng();
-        const k = Object.keys(sortedWayBackLayers)[timeLapseFrame];
+        const k = Object.keys(sortedWayBackLayers)[urlParams.timeLapseFrame];
 
         // Attempt to pseudo replicate the inverse zoom levels - this is a bit off in some places
         const zOffset = 23;
