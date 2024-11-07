@@ -375,15 +375,19 @@ const studyAreaDict = {
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],
-    ccdc_collections: [
-      "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2022",
-      "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection_TOA",
+    ccdc_single_collections: [
       "projects/lcms-292214/assets/R8/PR_USVI/Base-Learners/CCDC-Landsat",
       "projects/lcms-292214/assets/R5/Hawaii/Base-Learners/CCDC-Collection",
     ],
-    ccdc_addon_collections:[
-      "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Feathered-Collection",
-      "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection-2013-2023",
+    ccdc_paired_collections: [
+      [
+        "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Collection-1984-2022",
+        "projects/lcms-292214/assets/CONUS-LCMS/Base-Learners/CCDC-Feathered-Collection",
+      ],
+      [
+        "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Collection_TOA",
+        "projects/lcms-292214/assets/R10/AK/Base-Learners/CCDC-Feathered-Collection",
+      ],
     ],
   },
 };

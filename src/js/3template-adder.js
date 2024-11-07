@@ -1128,7 +1128,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
     false,
     null,
-    "Adjust parameters used to filter and sort LCMS products"
+    "Adjust parameters used to filter and sort LCMS base leare products"
   );
 
   addDualRangeSlider(
@@ -1145,13 +1145,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Years of LCMS data to include for land cover, land use, loss, and gain"
   );
-  addCheckboxes(
-    "parameters-collapse-div",
-    "index-choice-checkboxes",
-    "Choose which indices to analyze",
-    "whichIndices2",
-    urlParams.whichIndices2
-  );
 
   addSubCollapse(
     "parameters-collapse-div",
@@ -1162,7 +1155,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     false,
     ""
   );
-
+  addCheckboxes(
+    "lt-params-div",
+    "index-choice-checkboxes",
+    "Choose which LandTrendr indices to analyze",
+    "whichIndices2",
+    urlParams.whichIndices2
+  );
   addRangeSlider(
     "lt-params-div",
     "Loss Magnitude Threshold",

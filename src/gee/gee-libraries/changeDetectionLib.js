@@ -28,7 +28,7 @@ if (getImagesLib === undefined || getImagesLib === null) {
 ///////////////////////////////////////////////////////////////////////////////
 var lossYearPalette = "ffffe5,fff7bc,fee391,fec44f,fe9929,ec7014,cc4c02";
 var lossMagPalette = "D00,F5DEB3";
-var gainYearPalette = "AFDEA8,80C476,308023,145B09";
+var gainYearPalette = "c5ee93,00a398";
 var gainMagPalette = "F5DEB3,006400";
 var changeDurationPalette = "BD1600,E2F400,0C2780";
 exports.lossYearPalette = lossYearPalette;
@@ -763,47 +763,64 @@ function addLossGainToMap(
   };
   range(1, howManyToPull + 1).map(function (i) {
     var lossStackI = lossGainStack.select([".*_loss_.*_" + i.toString()]);
+    var lossStackYrMaskI = lossStackI
+      .select([".*_loss_yr.*"])
+      .gte(startYear)
+      .and(lossStackI.select([".*_loss_yr.*"]).lte(endYear));
+    lossStackI = lossStackI.updateMask(lossStackYrMaskI);
+
     var gainStackI = lossGainStack.select([".*_gain_.*_" + i.toString()]);
+
+    var gainStackYrMaskI = gainStackI
+      .select([".*_gain_yr.*"])
+      .gte(startYear)
+      .and(gainStackI.select([".*_gain_yr.*"]).lte(endYear));
+    gainStackI = gainStackI.updateMask(gainStackYrMaskI);
+
     var showLossYear = false;
     if (i == 1) {
       showLossYear = true;
+    }
+    var iString = i.toString() + " ";
+    if (howManyToPull === 1) {
+      iString = "";
     }
     console.log(getObjType(lossStackI));
     Map.addLayer(
       lossStackI.select([".*_loss_yr.*"]),
       vizParamsLossYear,
-      i.toString() + " " + indexName + " Loss Year",
+      "LandTrendr " + iString + indexName + " Loss Year",
       showLossYear
     );
     Map.addLayer(
       lossStackI.select([".*_loss_mag.*"]),
       vizParamsLossMag,
-      i.toString() + " " + indexName + " Loss Magnitude",
+      "LandTrendr " + iString + indexName + " Loss Magnitude",
       false
     );
     Map.addLayer(
       lossStackI.select([".*_loss_dur.*"]),
       vizParamsDuration,
-      i.toString() + " " + indexName + " Loss Duration",
+      "LandTrendr " + iString + indexName + " Loss Duration",
       false
     );
 
     Map.addLayer(
       gainStackI.select([".*_gain_yr.*"]),
       vizParamsGainYear,
-      i.toString() + " " + indexName + " Gain Year",
+      "LandTrendr " + iString + indexName + " Gain Year",
       false
     );
     Map.addLayer(
       gainStackI.select([".*_gain_mag.*"]),
       vizParamsGainMag,
-      i.toString() + " " + indexName + " Gain Magnitude",
+      "LandTrendr " + iString + indexName + " Gain Magnitude",
       false
     );
     Map.addLayer(
       gainStackI.select([".*_gain_dur.*"]),
       vizParamsDuration,
-      i.toString() + " " + indexName + " Gain Duration",
+      "LandTrendr " + iString + indexName + " Gain Duration",
       false
     );
   });
@@ -3090,16 +3107,73 @@ function simpleCCDCPredictionAnnualized(img, timeBandName, whichBands) {
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 //Wrapper function for predicting CCDC across a set of time images
-function predictCCDC(ccdcImg, timeImgs, fillGaps, whichHarmonics) {
-  //,fillGapBetweenSegments,addRMSE,rmseImg,nRMSEs){
-  var timeBandName = ee.Image(timeImgs.first()).select([0]).bandNames().get(0);
-  // Add the segment-appropriate coefficients to each time image
-  timeImgs = timeImgs.map(function (img) {
-    return getCCDCSegCoeffs(img, ccdcImg, fillGaps);
-  });
+// function predictCCDC(ccdcImg, timeImgs, fillGaps, whichHarmonics) {
+//   //,fillGapBetweenSegments,addRMSE,rmseImg,nRMSEs){
+//   var timeBandName = ee.Image(timeImgs.first()).select([0]).bandNames().get(0);
+//   // Add the segment-appropriate coefficients to each time image
+//   timeImgs = timeImgs.map(function (img) {
+//     return getCCDCSegCoeffs(img, ccdcImg, fillGaps);
+//   });
 
-  //Predict across each time image
-  return simpleCCDCPredictionWrapper(timeImgs, timeBandName, whichHarmonics);
+//   //Predict across each time image
+//   return simpleCCDCPredictionWrapper(timeImgs, timeBandName, whichHarmonics);
+// }
+function predictCCDC(
+  ccdcImg,
+  timeImgs,
+  fillGaps,
+  whichHarmonics,
+  featherStartYr,
+  featherEndYr
+) {
+  /*
+    Takes one or two raw CCDC `ee.Image` array outputs, and returns a time-series `ee.ImageCollection` with harmonic coefficients and fitted values
+
+    Args:
+        ccdcImg (list[ee.Image, ee.Image] | ee.Image): A raw CCDC `ee.Image` array or list of two raw CCDC `ee.Image` arrays. If a list of 2 images is provided, feathering will automatically be performed.
+        timeImgs (ee.ImageCollection): An `ee.ImageCollection` of time images usually from functions such as `simpleGetTimeImageCollection`.
+        fillGaps (bool, optional): Whether to fill gaps between segments. If false, outputs can have blank values mid time-series. Defaults to True.
+        whichHarmonics (list[int], optional): Which harmonics to include in fitted outputs forreturned time-series. Defaults to [1,2,3].
+        featherStartYear (int, optional): If a list of 2 images is provided as `ccdcImg`, this is the first year of the window used for feathering the two time-series together. Defaults to 2015.
+        featherEndYear (int, optional): If a list of 2 images is provided as `ccdcImg`, this is the last year (inclusive) of the window used for feathering the two time-series together. Defaults to 2021.
+
+
+    Returns:
+        ee.ImageCollection: A collection of CCDC coefficients and fitted values.
+
+    */
+
+  fillGaps = fillGaps != undefined ? fillGaps : true;
+  whichHarmonics = whichHarmonics || [1, 2, 3];
+  featherStartYr = featherStartYr || 2015;
+  featherEndYr = featherEndYr || 2021;
+
+  var timeBandName = ee.Image(timeImgs.first()).select([0]).bandNames().get(0);
+
+  if (ccdcImg instanceof ee.Image) {
+    ccdcCoeffsCombined = timeImgs.map(function (img) {
+      return getCCDCSegCoeffs(img, ccdcImg, fillGaps);
+    });
+  } else {
+    ccdcCoeffs1 = timeImgs.map(function (img) {
+      return getCCDCSegCoeffs(img, ccdcImg[0], fillGaps);
+    });
+    ccdcCoeffs2 = timeImgs.map(function (img) {
+      return getCCDCSegCoeffs(img, ccdcImg[1], fillGaps);
+    });
+
+    ccdcCoeffsCombined = batchFeatherCCDCImgs(
+      ccdcCoeffs1,
+      ccdcCoeffs2,
+      featherStartYr,
+      featherEndYr
+    );
+  }
+  return simpleCCDCPredictionWrapper(
+    ccdcCoeffsCombined,
+    timeBandName,
+    whichHarmonics
+  );
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 //Function for getting a set of time images
@@ -3108,17 +3182,58 @@ function predictCCDC(ccdcImg, timeImgs, fillGaps, whichHarmonics) {
 // For LCMS, this is Sept. 1. So any change that occurs before Sept 1 in that year will be counted in that year, and Sept. 1 and after
 // will be counted in the following year.
 ////////////////////////////////////////////////////////////////////////////////////////
-function simpleGetTimeImageCollection(startYear, endYear, step) {
-  var yearImages = ee.ImageCollection(
-    ee.List.sequence(startYear, endYear, step).map(function (n) {
-      n = ee.Number(n);
-      var img = ee.Image(n).float().rename(["year"]);
-      var y = n.int16();
-      var fraction = n.subtract(y);
-      var d = ee.Date.fromYMD(y, 1, 1).advance(fraction, "year").millis();
-      return img.set("system:time_start", d);
-    })
-  );
+// function simpleGetTimeImageCollection(startYear, endYear, step) {
+//   var yearImages = ee.ImageCollection(
+//     ee.List.sequence(startYear, endYear, step).map(function (n) {
+//       n = ee.Number(n);
+//       var img = ee.Image(n).float().rename(["year"]);
+//       var y = n.int16();
+//       var fraction = n.subtract(y);
+//       var d = ee.Date.fromYMD(y, 1, 1).advance(fraction, "year").millis();
+//       return img.set("system:time_start", d);
+//     })
+//   );
+//   return yearImages;
+// }
+// Rework of above function to be impler and less buggy for small steps
+// This method ensures the startJulian is the start for each year, regardless of step interval
+function simpleGetTimeImageCollection(
+  startYear,
+  endYear,
+  startJulian,
+  endJulian,
+  step
+) {
+  startJulian = startJulian || 1;
+  endJulian = endJulian || 365;
+  step = step || 0.1;
+  var startDayFraction = startJulian / 365;
+  var endDayFraction = endJulian / 365;
+  var years = ee.List.sequence(startYear, endYear);
+  dates = ee
+    .List(
+      years.map(function (yr) {
+        return ee.List.sequence(
+          ee.Number(yr).add(startDayFraction),
+          ee.Number(yr).add(endDayFraction),
+          step
+        );
+      })
+    )
+    .flatten();
+
+  function getYrImage(n) {
+    n = ee.Number(n);
+    var img = ee.Image(n).float().rename(["year"]);
+    var y = n.int16();
+    var fraction = n.subtract(y);
+    var d = ee.Date.fromYMD(y, 1, 1)
+      .advance(fraction, "year")
+      .advance(-1, "day")
+      .millis();
+    return img.set("system:time_start", d);
+  }
+  yearImages = ee.ImageCollection(dates.map(getYrImage));
   return yearImages;
 }
 function getTimeImageCollection(
@@ -3226,18 +3341,26 @@ function getTimeImageCollectionFromComposites(
 //Function for getting change years and magnitudes for a specified band from CCDC outputs
 //Only change from the breaks is extracted
 //As of now, if a segment has a high slope value, this method will not extract that
-function ccdcChangeDetection(ccdcImg, bandName) {
+function ccdcChangeDetection(ccdcImg, bandName, startYear, endYear) {
   var magKeys = [".*_magnitude"];
   var tBreakKeys = ["tBreak"];
   var changeProbKeys = ["changeProb"];
   var changeProbThresh = 1;
+  var changeBands = [bandName + "_magnitude", "tBreak", "changeProb"];
+
+  if (!(ccdcImg instanceof ee.Image)) {
+    ccdcImg = ccdcImg[0]
+      .select(changeBands)
+      .arrayCat(ccdcImg[1].select(changeBands), 0);
+  }
+
   //Pull out pieces from CCDC output
   var magnitudes = ccdcImg.select(magKeys);
   var breaks = ccdcImg.select(tBreakKeys);
 
   // Map.addLayer(breaks.arrayLength(0),{min:1,max:10});
   var changeProbs = ccdcImg.select(changeProbKeys);
-  print(changeProbs, "changeProbs");
+
   var changeMask = changeProbs.gte(changeProbThresh);
   magnitudes = magnitudes.select(bandName + ".*");
 
@@ -3329,6 +3452,33 @@ function ccdcChangeDetection(ccdcImg, bandName) {
   mostRecentGainMag = mostRecentGainMag.updateMask(
     mostRecentGainMag.gt(0).and(mostRecentGainMask)
   );
+  if (startYear !== undefined && endYear !== undefined) {
+    var mostRecentLossYearMask = mostRecentLossYear
+      .gte(startYear)
+      .and(mostRecentLossYear.lt(endYear + 1));
+
+    var mostRecentGainYearMask = mostRecentGainYear
+      .gte(startYear)
+      .and(mostRecentGainYear.lt(endYear + 1));
+
+    var highestMagLossYearMask = highestMagLossYear
+      .gte(startYear)
+      .and(highestMagLossYear.lt(endYear + 1));
+
+    var highestMagGainYearMask = highestMagGainYear
+      .gte(startYear)
+      .and(highestMagGainYear.lt(endYear + 1));
+
+    mostRecentLossYear = mostRecentLossYear.updateMask(mostRecentLossYearMask);
+    mostRecentGainYear = mostRecentGainYear.updateMask(mostRecentGainYearMask);
+    highestMagLossYear = highestMagLossYear.updateMask(highestMagLossYearMask);
+    highestMagGainYear = highestMagGainYear.updateMask(highestMagGainYearMask);
+
+    mostRecentLossMag = mostRecentLossMag.updateMask(mostRecentLossYearMask);
+    mostRecentGainMag = mostRecentGainMag.updateMask(mostRecentGainYearMask);
+    highestMagLossMag = highestMagLossMag.updateMask(highestMagLossYearMask);
+    highestMagGainMag = highestMagGainMag.updateMask(highestMagGainYearMask);
+  }
 
   return {
     mostRecent: {
@@ -3341,6 +3491,96 @@ function ccdcChangeDetection(ccdcImg, bandName) {
     },
   };
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Function to feather two CCDC collections together based on overlapping data time periods and weights
+// The feather years are the overlapping years between the two CCDC collections that are used in weighting
+function featherCCDCImgs(
+  joinedCCDCImg,
+  ccdcBnds,
+  coeffs1_bns,
+  coeffs2_bns,
+  featherStartYr,
+  featherEndYr
+) {
+  var yr = ee.Number.parse(joinedCCDCImg.date().format("YYYY.DDD"));
+
+  // Find difference between end and start feather years for weighting in feathering
+  var diff = ee.Number(featherEndYr).subtract(featherStartYr).float();
+
+  // Weights that are used to feather ccdc collections together
+  // The clamp ensures weights are constrained to range of feather years
+  var weight = yr
+    .subtract(featherStartYr)
+    .divide(diff)
+    .clamp(0, 1)
+    .multiply(-1)
+    .add(1);
+  var c1 = joinedCCDCImg.select(coeffs1_bns);
+  var c2 = joinedCCDCImg.select(coeffs2_bns);
+
+  var m1 = c1.mask();
+  var m2 = c2.mask();
+
+  var w1 = m1.multiply(weight);
+  var w2 = m2.multiply(ee.Number(1).subtract(weight));
+
+  c1 = c1.unmask(0).multiply(w1);
+  c2 = c2.unmask(0).multiply(w2);
+  var avg = c1.add(c2).divide(w1.add(w2)).mask(m1.or(m2));
+  avg = avg.set("weight", weight);
+  return avg
+    .rename(ccdcBnds)
+    .copyProperties(joinedCCDCImg, ["system:time_start"]);
+}
+////////////////////////////////////////////////////////////////////////////////////////
+// Wrapper function to join annualized CCDC images from two different CCDC collections, and iterate across images and apply featherCCDCImgs function
+// The feather years are the overlapping years between the two CCDC collections that are used in weighting
+function batchFeatherCCDCImgs(
+  ccdcAnnualizedCol1,
+  ccdcAnnualizedCol2,
+  featherStartYr,
+  featherEndYr
+) {
+  // Get coeffs band info and rename bands for joined Collection
+  var coeffs1 = ccdcAnnualizedCol1.select(["year", ".*_coefs_.*"]);
+  var coeffs2 = ccdcAnnualizedCol2.select(["year", ".*_coefs_.*"]);
+
+  var bns = coeffs1.first().bandNames();
+
+  coeffs1_bns = bns.map(function (bn) {
+    return ee.String(bn).cat("_1");
+  });
+  coeffs2_bns = bns.map(function (bn) {
+    return ee.String(bn).cat("_2");
+  });
+
+  coeffs1 = coeffs1.select(bns, coeffs1_bns);
+  coeffs2 = coeffs2.select(bns, coeffs2_bns);
+
+  // Join CCDC images together for feathering
+  // var coeffs_joined = joinCollections(coeffs1, coeffs2);
+  var coeffs_joined = coeffs1.linkCollection(
+    coeffs2,
+    coeffs2_bns,
+    null,
+    "system:time_start"
+  );
+  // Apply featherCCDCImgs across images
+  var ccdcCol_coeffs_avg = coeffs_joined.map(function (img) {
+    return featherCCDCImgs(
+      img,
+      bns,
+      coeffs1_bns,
+      coeffs2_bns,
+      featherStartYr,
+      featherEndYr
+    );
+  });
+  return ccdcCol_coeffs_avg;
+}
+////////////////////////////////////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////////////////////////
 //-------------------- END CCDC Helper Function -------------------//
 ///////////////////////////////////////////////////////////////////////////////
@@ -3413,3 +3653,5 @@ exports.simpleGetTimeImageCollection = simpleGetTimeImageCollection;
 exports.getTimeImageCollectionFromComposites =
   getTimeImageCollectionFromComposites;
 exports.ccdcChangeDetection = ccdcChangeDetection;
+exports.featherCCDCImgs = featherCCDCImgs;
+exports.batchFeatherCCDCImgs = batchFeatherCCDCImgs;

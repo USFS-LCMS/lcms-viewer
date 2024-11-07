@@ -43,7 +43,8 @@ function runBaseLearner() {
     vizYears.push(endYear);
   }
   compViz.years = vizYears;
-  Map.addTimeLapse(composites, compViz, "Raw Composites", false);
+  addTimeLapseFun = Map.addTimeLapse;
+  addTimeLapseFun(composites, compViz, "Raw Composites", false);
 
   const lt = ee.ImageCollection(
     ee
@@ -56,7 +57,7 @@ function runBaseLearner() {
   );
   // Map.addLayer(lt.filter(ee.Filter.eq("band", "NBR")).max().select([0]), {}, "Raw LandTrendr");
   const maxSegs = lt.first().toDictionary().get("maxSegments").getInfo();
-  console.log(maxSegs);
+
   // Convert stacked outputs into collection of fitted, magnitude, slope, duration, etc values for each year
   // Divide by 10000 (0.0001) so values are back to original values (0-1 or -1-1)
   let lt_fit = cdl.batchSimpleLTFit(
@@ -91,7 +92,7 @@ function runBaseLearner() {
   // .first();
 
   // Visualize as you would a composite
-  Map.addTimeLapse(lt_fit, ltSynthViz, "LT Synthetic Composite", false);
+  addTimeLapseFun(lt_fit, ltSynthViz, "LandTrendr Synthetic Composite", false);
 
   // Iterate across each band to look for areas of change
   if (bandNames === null || bandNames === undefined) {
@@ -172,31 +173,59 @@ function runBaseLearner() {
   const fraction = 0.6657534246575343;
   // var tEndExtrapolationPeriod = 1; //Period in years to extrapolate if needed
 
-  let ccdcImg = ee
+  const ccdcBns = [
+    "tStart",
+    "tEnd",
+    "tBreak",
+    "changeProb",
+    "red.*",
+    "nir.*",
+    "swir1.*",
+    "swir2.*",
+    "NDVI.*",
+    "NBR.*",
+  ];
+
+  let ccdcImg0 = ee
     .ImageCollection(
       ee
         .FeatureCollection(
-          studyAreaDict[studyAreaName].ccdc_collections.map((f) =>
+          studyAreaDict[studyAreaName].ccdc_single_collections.map((f) =>
             ee.ImageCollection(f)
           )
         )
         .flatten()
     )
-    .select([
-      "tStart",
-      "tEnd",
-      "tBreak",
-      "changeProb",
-      "red.*",
-      "nir.*",
-      "swir1.*",
-      "swir2.*",
-      "NDVI.*",
-      "NBR.*",
-    ]);
-  const f = ee.Image(ccdcImg.first());
-  ccdcImg = ee.Image(ccdcImg.mosaic().copyProperties(f)); //;
+    .select(ccdcBns);
 
+  let ccdcImg1 = ee
+    .ImageCollection(
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].ccdc_paired_collections.map((f) =>
+            ee.ImageCollection(f[0])
+          )
+        )
+        .flatten()
+    )
+    .select(ccdcBns);
+  let ccdcImg2 = ee
+    .ImageCollection(
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].ccdc_paired_collections.map((f) =>
+            ee.ImageCollection(f[1])
+          )
+        )
+        .flatten()
+    )
+    .select(ccdcBns);
+
+  const f = ee.Image(ccdcImg1.first());
+  ccdcImg0 = ee.Image(ccdcImg0.mosaic().copyProperties(f));
+  ccdcImg1 = ee.Image(ccdcImg1.mosaic().copyProperties(f));
+  ccdcImg2 = ee.Image(ccdcImg2.mosaic().copyProperties(f));
+  ccdcImg01 = ee.ImageCollection([ccdcImg0, ccdcImg1]).mosaic();
   // #Specify which harmonics to use when predicting the CCDC model
   // #CCDC exports the first 3 harmonics (1 cycle/yr, 2 cycles/yr, and 3 cycles/yr)
   // #If you only want to see yearly patterns, specify [1]
@@ -204,30 +233,26 @@ function runBaseLearner() {
   const whichHarmonics = [1, 2, 3];
 
   // Whether to fill gaps between segments' end year and the subsequent start year to the break date
-  const fillGaps = false;
+  const fillGaps = true;
 
   // #Specify which band to use for loss and gain.
   // #This is most important for the loss and gain magnitude since the year of change will be the same for all years
   const changeDetectionBandName = "NDVI";
 
   // # Choose whether to show the most recent ('mostRecent') or highest magnitude ('highestMag') CCDC break
-  const sortingMethod = "mostRecent";
+  const sortingMethod = "highestMag";
   // ####################################################################################################
   // #Pull out some info about the ccdc image
   const startJulian = 1;
   const endJulian = 365;
-
+  const annualJulian = 245;
   // #Add the raw array image
-  Map.addLayer(
-    ccdcImg,
-    { opacity: 0, layerType: "geeImage" },
-    "Raw CCDC Output",
-    false
-  );
+  Map.addLayer(ccdcImg01, { opacity: 0 }, "CCDC Raw Output 1984-2022", false);
+  Map.addLayer(ccdcImg2, { opacity: 0 }, "CCDC Raw Output 2014-2024", false);
 
   // #Apply the CCDC harmonic model across a time series
   // #First get a time series of time images
-  const yearImages = changeDetectionLib.getTimeImageCollection(
+  const denseTimeImages = changeDetectionLib.simpleGetTimeImageCollection(
     startYear,
     endYear,
     startJulian,
@@ -237,35 +262,34 @@ function runBaseLearner() {
 
   // #Then predict the CCDC models
   const ccdcFitted = changeDetectionLib.predictCCDC(
-    ccdcImg,
-    yearImages,
+    [ccdcImg01, ccdcImg2],
+    denseTimeImages,
     fillGaps,
     whichHarmonics
   );
+
   const ccdcSynthViz = copyObj(getImagesLib.vizParamsFalse);
   ccdcSynthViz.bands = getImagesLib.vizParamsFalse.bands
     .split(",")
     .map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
   ccdcSynthViz.years = vizYears;
-  let annualImages = changeDetectionLib.getTimeImageCollection(
+  let annualTimeImages = changeDetectionLib.simpleGetTimeImageCollection(
     startYear,
-    endYear + 1,
-    startJulian,
-    endJulian,
+    endYear,
+    annualJulian,
+    annualJulian,
     1
   );
-  annualImages = annualImages.map((img) =>
-    setSameDate(img.add(fraction).copyProperties(img, ["system:time_start"]))
-  ); //.map(setSameDate);
+  annualTimeImages = annualTimeImages.map(setSameDate);
   // #Then predict the CCDC models
   const annualPredictedCCDC = changeDetectionLib.predictCCDC(
-    ccdcImg,
-    annualImages,
+    [ccdcImg01, ccdcImg2],
+    annualTimeImages,
     fillGaps,
     whichHarmonics
   );
-  Map.addTimeLapse(
+  addTimeLapseFun(
     annualPredictedCCDC.select([".*_fitted"]),
     ccdcSynthViz,
     `CCDC Synthetic Composite`,
@@ -273,50 +297,72 @@ function runBaseLearner() {
   );
 
   // #Extract the change years and magnitude
-  changeObj = changeDetectionLib.ccdcChangeDetection(
-    ccdcImg,
-    changeDetectionBandName
+  changeObjPaired = changeDetectionLib.ccdcChangeDetection(
+    [ccdcImg1, ccdcImg2],
+    changeDetectionBandName,
+    startYear,
+    endYear
   );
+  changeObjSingle = changeDetectionLib.ccdcChangeDetection(
+    ccdcImg0,
+    changeDetectionBandName,
+    startYear,
+    endYear
+  );
+  let ccdcLossYear = ee
+    .ImageCollection([
+      changeObjPaired[sortingMethod]["loss"]["year"],
+      changeObjSingle[sortingMethod]["loss"]["year"],
+    ])
+    .mosaic();
+  let ccdcLossMag = ee.ImageCollection([
+    changeObjPaired[sortingMethod]["loss"]["mag"],
+    changeObjSingle[sortingMethod]["loss"]["mag"],
+  ]);
+  let ccdcGainYear = ee.ImageCollection([
+    changeObjPaired[sortingMethod]["gain"]["year"],
+    changeObjSingle[sortingMethod]["gain"]["year"],
+  ]);
+  let ccdcGainMag = ee.ImageCollection([
+    changeObjPaired[sortingMethod]["gain"]["mag"],
+    changeObjSingle[sortingMethod]["gain"]["mag"],
+  ]);
 
   Map.addLayer(
-    changeObj[sortingMethod]["loss"]["year"],
+    ccdcLossYear,
     {
       min: startYear,
       max: endYear,
       palette: changeDetectionLib.lossYearPalette,
-      layerType: "geeImage",
     },
     "CCDC Loss Year"
   );
   Map.addLayer(
-    changeObj[sortingMethod]["loss"]["mag"],
+    ccdcLossMag,
     {
       min: -0.5,
       max: -0.1,
       palette: changeDetectionLib.lossMagPalette,
-      layerType: "geeImage",
     },
     "CCDC Loss Mag",
     false
   );
   Map.addLayer(
-    changeObj[sortingMethod]["gain"]["year"],
+    ccdcGainYear,
     {
       min: startYear,
       max: endYear,
       palette: changeDetectionLib.gainYearPalette,
-      layerType: "geeImage",
     },
     "CCDC Gain Year",
     false
   );
   Map.addLayer(
-    changeObj[sortingMethod]["gain"]["mag"],
+    ccdcGainMag,
     {
       min: 0.05,
       max: 0.2,
       palette: changeDetectionLib.gainMagPalette,
-      layerType: "geeImage",
     },
     "CCDC Gain Mag",
     false
@@ -673,5 +719,7 @@ function runBaseLearner() {
   // populateAreaChartDropdown();
   // getLCMSVariables();
   // getSelectLayers(true);
-  Map.turnOnTimeSeriesCharting();
+  Map.turnOnInspector();
+  Map.turnOffLayersWhenTimeLapseIsOn = false;
+  // Map.turnOnTimeSeriesCharting();
 }
