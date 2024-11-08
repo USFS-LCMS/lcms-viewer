@@ -959,29 +959,62 @@ function runGTAC() {
       lcmsRun.whichIndex + "_.*",
       "NDVI_.*",
     ];
-    lcmsRun.ccdc = ee.ImageCollection(
+    lcmsRun.ccdcImg0 = ee.ImageCollection(
       ee
         .FeatureCollection(
-          studyAreaDict[studyAreaName].ccdc_collections.map((f) =>
+          studyAreaDict[studyAreaName].ccdc_single_collections.map((f) =>
             ee.ImageCollection(f).select(lcmsRun.ccdcIndicesSelector)
           )
         )
         .flatten()
     );
+    lcmsRun.ccdcImg1 = ee.ImageCollection(
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].ccdc_paired_collections.map((f) =>
+            ee.ImageCollection(f[0]).select(lcmsRun.ccdcIndicesSelector)
+          )
+        )
+        .flatten()
+    );
+    lcmsRun.ccdcImg2 = ee.ImageCollection(
+      ee
+        .FeatureCollection(
+          studyAreaDict[studyAreaName].ccdc_paired_collections.map((f) =>
+            ee.ImageCollection(f[1]).select(lcmsRun.ccdcIndicesSelector)
+          )
+        )
+        .flatten()
+    );
 
-    const f = ee.Image(lcmsRun.ccdc.first());
-    const ccdcImg = ee.Image(lcmsRun.ccdc.mosaic().copyProperties(f));
+    const f = ee.Image(lcmsRun.ccdcImg1.first());
+    lcmsRun.ccdcImg0 = ee.Image(lcmsRun.ccdcImg0.mosaic().copyProperties(f));
+    lcmsRun.ccdcImg1 = ee.Image(lcmsRun.ccdcImg1.mosaic().copyProperties(f));
+    lcmsRun.ccdcImg2 = ee.Image(lcmsRun.ccdcImg2.mosaic().copyProperties(f));
+    lcmsRun.ccdcImg01 = ee.Image(
+      ee
+        .ImageCollection([lcmsRun.ccdcImg0, lcmsRun.ccdcImg1])
+        .mosaic()
+        .copyProperties(f)
+    );
     // printEE(ccdcImg.bandNames())
     const whichHarmonics = [1, 2, 3];
     const fillGaps = true;
-    const fraction = 0.6657534246575343;
-    const annualImages = changeDetectionLib.simpleGetTimeImageCollection(
-      ee.Number(startYear + fraction),
-      ee.Number(endYear + 1 + fraction),
+
+    lcmsRun.annualTimeImages = changeDetectionLib.simpleGetTimeImageCollection(
+      startYear,
+      endYear,
+      245,
+      245,
       1
     );
     lcmsRun.fittedCCDC = changeDetectionLib
-      .predictCCDC(ccdcImg, annualImages, fillGaps, whichHarmonics)
+      .predictCCDC(
+        [lcmsRun.ccdcImg01, lcmsRun.ccdcImg2],
+        lcmsRun.annualTimeImages,
+        fillGaps,
+        whichHarmonics
+      )
       .select(
         [lcmsRun.whichIndex + "_CCDC_fitted"],
         ["CCDC Fitted " + lcmsRun.whichIndex]

@@ -225,7 +225,9 @@ function runBaseLearner() {
   ccdcImg0 = ee.Image(ccdcImg0.mosaic().copyProperties(f));
   ccdcImg1 = ee.Image(ccdcImg1.mosaic().copyProperties(f));
   ccdcImg2 = ee.Image(ccdcImg2.mosaic().copyProperties(f));
-  ccdcImg01 = ee.ImageCollection([ccdcImg0, ccdcImg1]).mosaic();
+  ccdcImg01 = ee.Image(
+    ee.ImageCollection([ccdcImg0, ccdcImg1]).mosaic().copyProperties(f)
+  );
   // #Specify which harmonics to use when predicting the CCDC model
   // #CCDC exports the first 3 harmonics (1 cycle/yr, 2 cycles/yr, and 3 cycles/yr)
   // #If you only want to see yearly patterns, specify [1]
