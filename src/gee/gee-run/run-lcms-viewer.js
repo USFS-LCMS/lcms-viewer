@@ -997,6 +997,12 @@ function runGTAC() {
         .mosaic()
         .copyProperties(f)
     );
+    lcmsRun.ccdcImg02 = ee.Image(
+      ee
+        .ImageCollection([lcmsRun.ccdcImg0, lcmsRun.ccdcImg2])
+        .mosaic()
+        .copyProperties(f)
+    );
     // printEE(ccdcImg.bandNames())
     const whichHarmonics = [1, 2, 3];
     const fillGaps = true;
@@ -1010,7 +1016,7 @@ function runGTAC() {
     );
     lcmsRun.fittedCCDC = changeDetectionLib
       .predictCCDC(
-        [lcmsRun.ccdcImg01, lcmsRun.ccdcImg2],
+        [lcmsRun.ccdcImg01, lcmsRun.ccdcImg02],
         lcmsRun.annualTimeImages,
         fillGaps,
         whichHarmonics

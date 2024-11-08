@@ -228,6 +228,9 @@ function runBaseLearner() {
   ccdcImg01 = ee.Image(
     ee.ImageCollection([ccdcImg0, ccdcImg1]).mosaic().copyProperties(f)
   );
+  ccdcImg02 = ee.Image(
+    ee.ImageCollection([ccdcImg0, ccdcImg2]).mosaic().copyProperties(f)
+  );
   // #Specify which harmonics to use when predicting the CCDC model
   // #CCDC exports the first 3 harmonics (1 cycle/yr, 2 cycles/yr, and 3 cycles/yr)
   // #If you only want to see yearly patterns, specify [1]
@@ -286,11 +289,12 @@ function runBaseLearner() {
   annualTimeImages = annualTimeImages.map(setSameDate);
   // #Then predict the CCDC models
   const annualPredictedCCDC = changeDetectionLib.predictCCDC(
-    [ccdcImg01, ccdcImg2],
+    [ccdcImg01, ccdcImg02],
     annualTimeImages,
     fillGaps,
     whichHarmonics
   );
+
   addTimeLapseFun(
     annualPredictedCCDC.select([".*_fitted"]),
     ccdcSynthViz,
