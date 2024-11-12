@@ -1840,7 +1840,7 @@ function updateAreaColor(jscolor) {
   areaPolygonOptions.strokeColor = "#" + jscolor;
   Object.keys(areaPolygonObj).map(function (k) {
     areaPolygonObj[k].setOptions(areaPolygonOptions);
-    console.log(areaPolygonObj[k]);
+    // console.log(areaPolygonObj[k]);
   });
 }
 function addColorPicker(containerID, pickerID, updateFunction, value) {
@@ -1947,9 +1947,13 @@ function appendMessage2(title, message, modalID) {
   if (modalID === undefined || modalID === null) {
     modalID = "error-modal";
   }
+  let titleLine =
+    title != null && title !== "" && title !== undefined
+      ? `<h4>${title}</h4>`
+      : "";
   $("#" + modalID + "-body").append(`<div class='hl bg-dark'></div>
                                     <div>
-                                    <h4>${title}</h4>
+                                    ${titleLine}
                                       ${message}
                                     </div`);
 }

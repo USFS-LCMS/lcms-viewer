@@ -169,11 +169,12 @@ function resetExportArea(e) {
 }
 let exportActiveTools = [];
 let exportAreaHammer;
+
 function selectExportArea() {
   try {
     deleteExportArea();
   } catch (err) {}
-
+  exportAreaDrawingActive = true;
   window.addEventListener("keydown", deleteLastExportVertex);
   window.addEventListener("keydown", resetExportArea);
   map.setOptions({ draggableCursor: "crosshair" });
@@ -204,10 +205,10 @@ function selectExportArea() {
     window.removeEventListener("keydown", resetExportArea);
     google.maps.event.clearListeners(mapDiv, "dblclick");
     google.maps.event.clearListeners(mapDiv, "click");
-    map.setOptions({ draggableCursor: "" });
-    map.setOptions({ cursor: "" });
+    setMapCursor();
     exportAreaHammer.destroy();
     $("#select-export-area-btn").removeClass("btn-on");
+    exportAreaDrawingActive = false;
   });
 }
 //Function to look for running ee tasks and request cancellation
@@ -221,11 +222,12 @@ function cancelSingleTask(task) {
 }
 cancelAllTasks = function () {
   $("#summary-spinner").show();
-  $("#export-count-div").empty();
+  // $("#export-count-div").empty();
+  $("#export-count-div>.tracking-list>.export-tracking-running").remove();
   let tasksCancelled = 0;
   let tasksCancelledList = "\nNames:";
   ee.data.getTaskList((taskList) => {
-    taskList = taskList.tasks;
+    taskList = taskList.tasks || [];
     taskList.map(function (task) {
       if (
         (task.state === "RUNNING" || task.state === "READY") &&

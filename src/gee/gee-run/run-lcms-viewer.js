@@ -464,7 +464,7 @@ function runGTAC() {
     changeVisibility = changeClassValues.map((v) => true);
     changeVisibility[0] = false;
     changeVisibility[changeVisibility.length - 1] = false;
-    console.log(changeVisibility);
+    // console.log(changeVisibility);
     const changeClassMin = changeClassValues[0];
     const changeClassMax = changeClassValues[changeClassValues.length - 1];
 

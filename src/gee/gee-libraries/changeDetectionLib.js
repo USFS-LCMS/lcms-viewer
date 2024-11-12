@@ -785,7 +785,6 @@ function addLossGainToMap(
     if (howManyToPull === 1) {
       iString = "";
     }
-    console.log(getObjType(lossStackI));
     Map.addLayer(
       lossStackI.select([".*_loss_yr.*"]),
       vizParamsLossYear,

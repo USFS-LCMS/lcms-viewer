@@ -4186,7 +4186,6 @@ function initialize() {
     }
 
     ga("send", "event", mode + "-gee-auth-error", "failure", "failure");
-    showMessage("Map Loading Error", staticTemplates["authErrorMessage"]);
 
     if (
       mode === "geeViz" &&
@@ -4195,22 +4194,48 @@ function initialize() {
       urlParams.accessToken !== "null" &&
       urlParams.accessToken !== "None"
     ) {
-      urlParams.geeAuthProxyURL = "https://rcr-ee-proxy-2.herokuapp.com";
-      authProxyAPIURL = urlParams.geeAuthProxyURL;
-      urlParams.projectID = undefined;
-      projectID = urlParams.projectID;
-      console.log(projectID);
-      geeAPIURL = "https://earthengine.googleapis.com";
-      if (initCount < 5) {
-        showMessage(
-          "Map Loading Error",
-          `<p style = 'margin-bottom:1rem;'>Switching to use standard credentials to access GEE. This may produce errors in accessing assets that are not shared publically.</p>${staticTemplates.loadingModal[mode]}<hr>Error Message: ${failure}`
+      const formatSeconds = (s) => new Date(s).toISOString().substr(11, 8);
+      let authTokenAge = formatSeconds(
+        new Date() - new Date(urlParams.accessTokenCreationTime)
+      );
+      showMessage("geeViz Loading Error", `Error Message: <i>${failure}</i>`);
+      console.log(failure.toString());
+      if (
+        failure.toString().indexOf("invalid authentication credentials") > -1
+      ) {
+        appendMessage2(
+          "<hr>Access Token Error",
+          `There seems to be an issue with the access token.<br>
+          The access token used is ${authTokenAge} old.<br>
+        This token should be valid for about an hour or so
+        If the access token is invalid, most likely it's expired. First, try rerunning the geeViz code to create a new token.`
         );
-
-        setTimeout(() => {
-          eeInit();
-        }, 1000);
       }
+      if (urlParams.projectID === "None") {
+        appendMessage2(
+          "<hr>Project ID Needed",
+          'Your Google Cloud Platform project ID is "None". This can happen with some legacy accounts. Sometimes this can cause issues authenticating to GEE. Try to force set the project ID using <i>ee.Initialize(project="SomeProjectID")</i> prior to importing any geeViz modules.'
+        );
+      }
+      if (failure.toString().indexOf("not found or deleted") > -1) {
+        appendMessage2(
+          "<hr>Cannot Find Project",
+          `It appears the Google Cloud Platform project ID you provided (<i>${urlParams.projectID}</i>) cannot be found. Please initialize to GEE using a different project ID using <i>ee.Initialize(project="SomeProjectID")</i> prior to initializing geeViz.`
+        );
+      }
+      if (
+        failure
+          .toString()
+          .indexOf("Caller does not have required permission to use project") >
+        -1
+      ) {
+        appendMessage2(
+          "<hr>Cannot access Project",
+          `It appears the Google Cloud Platform project ID you provided (<i>${urlParams.projectID}</i>) cannot be accessed. Please initialize to GEE using a different project ID using <i>ee.Initialize(project="SomeProjectID")</i> or re-authenticate to this project using <i>ee.Authenticate(force=True)</i> prior to initializing geeViz.`
+        );
+      }
+    } else {
+      showMessage("Map Loading Error", staticTemplates["authErrorMessage"]);
     }
   }
   let initCount = 1;

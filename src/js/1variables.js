@@ -510,6 +510,7 @@ const clientBoundsDict = {
 /*Initialize a bunch of variables*/
 let toExport;
 let exportArea;
+let exportAreaDrawingActive = false;
 let taskCount = 0; //Keeping track of the number of export tasks each session submitted
 let canAddToMap = true; //Set whether addToMap function can add to the map
 let canExport = false; //Set whether exports are allowed

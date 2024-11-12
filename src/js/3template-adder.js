@@ -1953,34 +1953,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 } else if (mode === "STORM") {
   canExport = true;
-  function refineFeatures(features, interpProps) {
-    const left = features.slice(0, features.length - 1);
-    const right = features.slice(1, features.length);
-    let f = [left[0]];
-    left.forEach(function (fl, i) {
-      const fr = right[i];
-      const coordsL = fl.geometry.coordinates;
-      const coordsR = fr.geometry.coordinates;
-
-      const fm = JSON.parse(JSON.stringify(fl));
-      fm.geometry.coordinates = [
-        (coordsL[0] + coordsR[0]) / 2.0,
-        (coordsL[1] + coordsR[1]) / 2.0,
-      ];
-
-      interpProps.map(function (prop) {
-        let lProp = fl.properties[prop];
-        let rProp = fr.properties[prop];
-        let m = (rProp + lProp) / 2.0;
-        fm.properties[prop] = m;
-      });
-      f.push([fm, fr]);
-    });
-    f = f.flat();
-    // console.log(f);
-    // console.log(left);
-    return f;
-  }
 
   addCollapse(
     "sidebar-left",
@@ -2050,90 +2022,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#parameters-collapse-div").append(`<hr>
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'ingestStormTrack()' title = 'Click to ingest storm track and map damage'>Ingest Storm Track</button>
       <button class = 'btn' style = 'margin-bottom: 0.5em!important;' onclick = 'reRun()' title = 'Click to remove existing layers and exports'>Clear All Layers/Exports</button><br>`);
-  function ingestStormTrack() {
-    if (jQuery("#stormTrackUpload")[0].files.length > 0) {
-      const fr = new FileReader();
-      fr.onload = function () {
-        let rows = fr.result.split("\n");
-        rows = rows.filter((row) => row.split("\t").length > 5);
-        rows = rows.map(function (row) {
-          row = row.split("\t");
-          const out = {};
-          out.type = "Feature";
-          out.geometry = {};
-          out.geometry.type = "Point";
-          out.geometry.coordinates = [parseFloat(row[3]), parseFloat(row[2])];
-
-          out.properties = {};
-          out.properties.lat = parseFloat(row[2]);
-          out.properties.lon = parseFloat(row[3]);
-          out.properties.wspd = parseFloat(row[4]);
-          out.properties.pres = parseFloat(row[5]);
-          out.properties.category = row[6];
-          out.properties.date = new Date(row[0] + " " + row[1]).getTime();
-          out.properties.year = new Date(row[0] + " " + row[1]).getFullYear();
-          return out;
-        });
-
-        let iterations = refinementIterations;
-        const initialN = rows.length;
-        while (iterations > 0 && rows.length * 2 < 1500) {
-          console.log("Refining");
-          console.log(refinementIterations);
-          rows = refineFeatures(rows, [
-            "lat",
-            "lon",
-            "wspd",
-            "pres",
-            "date",
-            "year",
-          ]);
-          console.log(rows.length);
-          iterations--;
-        }
-        setTimeout(function () {
-          showMessage(
-            "Track ingestion finished",
-            "Refined " +
-              (refinementIterations - iterations).toString() +
-              "/" +
-              refinementIterations.toString() +
-              " iterations.<br>Total number of raw track points is: " +
-              initialN.toString() +
-              "<br>Total number of refined track points is: " +
-              rows.length.toString()
-          );
-        }, 1000);
-
-        const rowsLeft = rows.slice(0, rows.length - 1);
-        const rowsRight = rows.slice(1);
-        let zipped = range(0, rowsLeft.length).map(function (i) {
-          const out = {};
-          out.type = "Feature";
-          out.geometry = rowsLeft[i].geometry;
-
-          out.properties = {};
-
-          out.properties.current = rowsLeft[i].properties;
-          out.properties.future = rowsRight[i].properties;
-
-          return out;
-        });
-
-        $("#summary-spinner").slideUp();
-
-        createHurricaneDamageWrapper(ee.FeatureCollection(zipped));
-      };
-
-      fr.readAsText(jQuery("#stormTrackUpload")[0].files[0]);
-    } else {
-      $("#summary-spinner").hide();
-      showMessage(
-        "No storm track provided",
-        'Please download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a> . Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table above.'
-      );
-    }
-  }
 
   addCollapse(
     "sidebar-left",
@@ -3294,16 +3182,18 @@ function toggleShowSplash() {
     }
   }, 500);
 }
-addSubAccordianCard(
-  "splash-toggle-container", //"toggle-show-splash-screen-radio-container",
-  "show-splash-radio-label",
-  "show-splash-radio-div",
-  "Show Splash Screen",
-  ``,
-  localStorage["showIntroModal-" + mode],
-  "toggleShowSplash()",
-  "Whether to show splash screen when this page reloads."
-);
+if (mode !== "geeViz") {
+  addSubAccordianCard(
+    "splash-toggle-container", //"toggle-show-splash-screen-radio-container",
+    "show-splash-radio-label",
+    "show-splash-radio-div",
+    "Show Splash Screen",
+    ``,
+    localStorage["showIntroModal-" + mode],
+    "toggleShowSplash()",
+    "Whether to show splash screen when this page reloads."
+  );
+}
 // }
 if (
   ["Bloom-Mapper", "TreeMap", "sequoia-view", "HiForm-BMP"].indexOf(mode) === -1

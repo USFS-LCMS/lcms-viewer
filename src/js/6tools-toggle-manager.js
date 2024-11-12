@@ -1,3 +1,20 @@
+const mode_query_key = `Pixel Tools-Query ${mode} Time Series`;
+const toolCursorLookup = {
+  "Measuring Tools-Area Measuring": "crosshair",
+  "Measuring Tools-Distance Measuring": "crosshair",
+  "Pixel Tools-Query Visible Map Layers": "help",
+  "Area Tools-Map Extent Area Tool": "",
+  "Area Tools-User Defined Area Tool": "crosshair",
+  "Area Tools-Upload an Area": "",
+  "Area Tools-Select an Area on map": "pointer",
+};
+toolCursorLookup[mode_query_key] = "help";
+function setMapCursor() {
+  map.setOptions({
+    draggableCursor: toolCursorLookup[getActiveTools()[0]] || "",
+  });
+}
+
 function stopAllTools() {
   areaChart.stopAutoCharting();
   stopArea();

@@ -1737,22 +1737,24 @@ function startQuery() {
   map.setOptions({ cursor: "help" });
   mapHammer = new Hammer(document.getElementById("map"));
   mapHammer.on("doubletap", function (e) {
-    $("#summary-spinner").slideDown();
-    map.setOptions({ draggableCursor: "progress" });
-    map.setOptions({ cursor: "progress" });
+    if (exportAreaDrawingActive == false) {
+      $("#summary-spinner").slideDown();
+      map.setOptions({ draggableCursor: "progress" });
+      map.setOptions({ cursor: "progress" });
 
-    print("Map was double clicked");
-    const x = e.center.x;
-    const y = e.center.y;
-    center = point2LatLng(x, y);
+      print("Map was double clicked");
+      const x = e.center.x;
+      const y = e.center.y;
+      center = point2LatLng(x, y);
 
-    const pt = ee.Geometry.Point([center.lng(), center.lat()]);
-    const plotBounds = pt.buffer(plotRadius).bounds();
-    addClickMarker(plotBounds);
+      const pt = ee.Geometry.Point([center.lng(), center.lat()]);
+      const plotBounds = pt.buffer(plotRadius).bounds();
+      addClickMarker(plotBounds);
 
-    marker.setMap(map);
+      marker.setMap(map);
 
-    getQueryImages(center.lng(), center.lat());
+      getQueryImages(center.lng(), center.lat());
+    }
   });
 }
 function stopQuery() {
