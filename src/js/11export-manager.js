@@ -136,8 +136,7 @@ function interval2(func, wait, times) {
 function deleteExportArea() {
   window.removeEventListener("keydown", deleteLastExportVertex);
   window.removeEventListener("keydown", resetExportArea);
-  map.setOptions({ draggableCursor: "" });
-  map.setOptions({ cursor: "" });
+  setMapCursor();
   try {
     exportAreaHammer.destroy();
   } catch (err) {
