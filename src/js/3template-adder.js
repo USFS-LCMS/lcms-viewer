@@ -3232,7 +3232,7 @@ if (
   mode === "LCMS" ||
   mode === "geeViz" ||
   mode === "LAMDA" ||
-  (mode === "TreeMap" && urlParams.canAreaChart)
+  mode === "TreeMap"
 ) {
   $("#tools-accordian").append(`<h5>Area Tools</h5>`);
   addSubCollapse(

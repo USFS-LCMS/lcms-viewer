@@ -1,8 +1,6 @@
 ///////////////////////////////////////////////////////
 // Function to add Treemap attributes to map
 function runTreeMap() {
-  urlParams.canAreaChart =
-    urlParams.canAreaChart === undefined ? false : urlParams.canAreaChart;
   // All attributes collection
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
@@ -268,6 +266,7 @@ function runTreeMap() {
     let colors = [];
     let palette = [];
 
+    // Map.setQueryPrecision(0.1, 3);
     range(viz["min"], viz["max"] + 1).map((i) => {
       if (uniqueValues.indexOf(i) > -1) {
         const valueNameT = uniqueNames[uniqueValues.indexOf(i)];
@@ -293,14 +292,15 @@ function runTreeMap() {
     viz["palette"] = palette;
     viz["classLegendDict"] = dict(zip(uniqueNames, colors));
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-    viz["canAreaChart"] = urlParams.canAreaChart;
+    viz["canAreaChart"] = true;
     viz["areaChartParams"] = {
-      barChartMaxClasses: 15,
+      barChartMaxClasses: 20,
       // chartLabelMaxLength: 25,
       chartDecimalProportion: 0.005,
       chartPrecision: 3,
-      chartLabelMaxWidth: 13,
-      chartLabelFontSize: 9,
+      chartLabelMaxWidth: 400,
+      chartLabelFontSize: 10,
+      minZoomSpecifiedScale: 7,
     };
     return [attrImg, viz, attr[2]];
   }
@@ -441,6 +441,7 @@ function runTreeMap() {
             .concat(continuousAttrs.map(getContinuousAttr))
         )
     );
+  // const metaArray = thematicAttrs.map(getThematicAttr_Colors);
   // console.log(metaArray);
   // Sort the meta array by the second index of each subarray
   metaArray.sort(function (a, b) {
@@ -525,14 +526,10 @@ function runTreeMap() {
   );
   queryWindowMode = "sidePane";
 
-  if (urlParams.canAreaChart) {
-    getLCMSVariables();
-    getSelectLayers(true);
+  getLCMSVariables();
+  getSelectLayers(true);
 
-    Map.turnOnAutoAreaCharting();
-  } else {
-    Map.turnOnInspector();
-  }
+  Map.turnOnAutoAreaCharting();
 
   $(".export-res-input").hide();
   $(".export-res-input-label").hide();

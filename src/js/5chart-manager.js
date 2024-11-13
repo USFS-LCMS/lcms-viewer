@@ -600,7 +600,7 @@ const getQueryImages = function (lng, lat) {
                   : undefined;
               return {
                 x: xColumn,
-                y: arrayColumn(yColumns, i).map(smartToFixed),
+                y: arrayColumn(yColumns, i).map((n) => smartToFixed(n)),
                 mode: "lines+markers",
                 name: c.slice(0, 50).chunk(15).join("<br>"),
                 line: { color: color, width: 1 },
@@ -2776,6 +2776,8 @@ function startPixelChartCollection() {
           return v.slice(startColumn);
         })
         .sort(sortFunction);
+
+      values = arraySmartToFixed(values);
       if (chartIncludeDate) {
         values = values.map(function (v) {
           const d = v[0];
@@ -2802,6 +2804,7 @@ function startPixelChartCollection() {
       }
 
       values.unshift(header);
+
       $("#summary-spinner").slideUp();
       map.setOptions({ draggableCursor: "help" });
       ga("send", "event", mode, "pixelChart", whichPixelChartCollection);

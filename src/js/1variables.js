@@ -838,7 +838,11 @@ Number.prototype.repeat = function (n = 2) {
 /////////////////////////////////////////////////////
 // Function that tries to find the best way of limiting precision for floating point numbers
 // Will limit to the maximum of chartDecimalProportion the length of decimals or whatever chartPrecision is set to
-function smartToFixed(v) {
+function smartToFixed(
+  v,
+  chartDecimalProportionT = chartDecimalProportion,
+  chartPrecisionT = chartPrecision
+) {
   if (Number.isInteger(v) || !isNumber(v)) {
     return v;
   } else {
@@ -849,8 +853,8 @@ function smartToFixed(v) {
       }
     }
     let currentDecimalL = v.toString().split(".")[1].length;
-    let maxToFixedL = Math.ceil(currentDecimalL * chartDecimalProportion);
-    let toFixedL = Math.max(chartPrecision, maxToFixedL);
+    let maxToFixedL = Math.ceil(currentDecimalL * chartDecimalProportionT);
+    let toFixedL = Math.max(chartPrecisionT, maxToFixedL);
     let out = parseFloat(v.toFixed(toFixedL));
     return out;
   }
@@ -861,20 +865,35 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function arraySmartToFixed(array, precision = chartPrecision) {
+function arraySmartToFixed(
+  array,
+  chartDecimalProportionT = chartDecimalProportion,
+  chartPrecisionT = chartPrecision
+) {
   const roundedArray = [];
 
   array.forEach(function round(elem) {
     if (isNumber(elem)) {
-      roundedArray.push(smartToFixed(elem));
+      roundedArray.push(
+        smartToFixed(elem, chartDecimalProportionT, chartPrecisionT)
+      );
+    } else if (elem === null) {
+      roundedArray.push(elem);
     } else if (elem.constructor === Array) {
-      roundedArray.push(arraySmartToFixed(elem, precision));
+      roundedArray.push(
+        arraySmartToFixed(elem, chartDecimalProportionT, chartPrecisionT)
+      );
     } else {
       roundedArray.push(elem);
     }
   });
 
   return roundedArray;
+}
+////////////////////////////////////////////
+// Taken from: https://stackoverflow.com/questions/17428587/transposing-a-2d-array-in-javascript
+function transpose(matrix) {
+  return matrix[0].map((col, i) => matrix.map((row) => row[i]));
 }
 ////////////////////////////////////////////
 Number.prototype.round = function (n = 2) {

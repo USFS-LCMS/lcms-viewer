@@ -136,7 +136,7 @@ function interval2(func, wait, times) {
 function deleteExportArea() {
   window.removeEventListener("keydown", deleteLastExportVertex);
   window.removeEventListener("keydown", resetExportArea);
-  setMapCursor();
+
   try {
     exportAreaHammer.destroy();
   } catch (err) {
@@ -146,6 +146,7 @@ function deleteExportArea() {
   exportArea.setMap(null);
   exportArea = new google.maps.Polyline(exportAreaPolylineOptions);
   $("#select-export-area-btn").removeClass("btn-on");
+  setMapCursor();
 }
 function undoExportArea() {
   exportArea.getPath().pop(1);

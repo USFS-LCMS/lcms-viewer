@@ -57,6 +57,8 @@ function areaChartCls() {
   this.sankeyTransitionPeriodYearBuffer = 0;
   this.currentSankeyLinkColors = [];
   this.sankeyChartIDs = [];
+  this.chartDecimalProportion = chartDecimalProportion;
+  this.chartPrecision = chartPrecision;
   $("body").append();
 
   //////////////////////////////////////////////////////////////////////////
@@ -297,12 +299,13 @@ function areaChartCls() {
             : obj.item.size().getInfo();
       }
 
+      obj.hovermode = params.hovermode || "closest";
       obj.dateFormat = params.dateFormat || "YYYY";
       obj.chartTitleFontSize = params.chartTitleFontSize || 10;
       obj.chartLabelFontSize = params.chartLabelFontSize || 10;
       obj.chartAxisTitleFontSize = params.chartAxisTitleFontSize || 10;
-      obj.chartLabelMaxWidth = params.chartLabelMaxWidth || 16;
-      obj.chartLabelMaxLength = params.chartLabelMaxLength || 50;
+      obj.chartLabelMaxWidth = params.chartLabelMaxWidth || 40;
+      obj.chartLabelMaxLength = params.chartLabelMaxLength || 100;
       obj.chartWidth = params.chartWidth;
       obj.chartHeight = params.chartHeight;
       obj.xTickDateFormat = params.xTickDateFormat || null;
@@ -549,7 +552,9 @@ function areaChartCls() {
     let coordJSON = map.getBounds().toJSON();
     return coordOrder
       .map((k) => coordJSON[k])
-      .map(smartToFixed)
+      .map((n) =>
+        smartToFixed(n, this.chartDecimalProportion, this.chartPrecision)
+      )
       .join(joinStr);
   };
   //////////////////////////////////////////////////////////////////////////
@@ -604,7 +609,9 @@ function areaChartCls() {
   // Wrapper to chart the current map extent
   this.chartMapExtent = function (name = "") {
     let mapCoords = Object.values(map.getBounds().toJSON())
-      .map(smartToFixed)
+      .map((n) =>
+        smartToFixed(n, this.chartDecimalProportion, this.chartPrecision)
+      )
       .join(",");
     this.clearCharts();
     this.chartArea(eeBoundsPoly, `${name} (${mapCoords})`);
@@ -715,31 +722,45 @@ function areaChartCls() {
   this.makeChart = function (table, name, colors, visible, selectedObj) {
     let outFilename = `${selectedObj.name} ${name}`;
     let chartTitle = `${selectedObj.name}<br>${name}`;
-    if (
-      selectedObj.chartDecimalProportion !== undefined &&
-      selectedObj.chartDecimalProportion !== null
-    ) {
-      chartDecimalProportion = selectedObj.chartDecimalProportion;
-    }
-    if (
-      selectedObj.chartPrecision !== undefined &&
-      selectedObj.chartPrecision !== null
-    ) {
-      chartPrecision = selectedObj.chartPrecision;
-    }
+    let yAxisLabel =
+      selectedObj.yAxisLabel || chartFormatDict[areaChartFormat].label;
     let csvTable = [table[0].map((s) => s.replace(/[^A-Za-z0-9]/g, "-"))];
     if (selectedObj.layerType === "ImageCollection") {
       csvTable = csvTable.concat(
         table
           .slice(1)
           .map((r) =>
-            r.slice(0, 1).concat(r.slice(1).map((n) => smartToFixed(n)))
+            r
+              .slice(0, 1)
+              .concat(
+                r
+                  .slice(1)
+                  .map((n) =>
+                    smartToFixed(
+                      n,
+                      selectedObj.chartDecimalProportion,
+                      selectedObj.chartPrecision
+                    )
+                  )
+              )
           )
       );
     } else {
       csvTable = csvTable.concat(
-        table.slice(1).map((r) => r.map((n) => smartToFixed(n)))
+        table
+          .slice(1)
+          .map((r) =>
+            r.map((n) =>
+              smartToFixed(
+                n,
+                selectedObj.chartDecimalProportion,
+                selectedObj.chartPrecision
+              )
+            )
+          )
       );
+      csvTable = transpose(csvTable);
+      csvTable.unshift(["Class Name", yAxisLabel]);
     }
 
     selectedObj.tableExportData["line"] = csvTable
@@ -747,8 +768,7 @@ function areaChartCls() {
       .join("\n");
     // Set up table
 
-    let yAxisLabel =
-      selectedObj.yAxisLabel || chartFormatDict[areaChartFormat].label;
+    let yAxisLabelT, xAxisLabelT, margin;
     if (selectedObj.layerType === "ImageCollection") {
       let xColumn = arrayColumn(table, 0).slice(1);
       let iOffset = selectedObj.layerType === "ImageCollection" ? 1 : 0;
@@ -759,9 +779,16 @@ function areaChartCls() {
 
       var data = yColumns.map((i) => {
         let c = colors !== undefined ? colors[i - iOffset] : null;
+        const yT = arrayColumn(table, i).map((n) =>
+          smartToFixed(
+            n,
+            selectedObj.chartDecimalProportion,
+            selectedObj.chartPrecision
+          )
+        );
         return {
           x: xColumn,
-          y: arrayColumn(table, i).map(smartToFixed),
+          y: yT,
 
           stackgroup: selectedObj.stackedAreaChart,
           mode: "lines+markers",
@@ -774,6 +801,15 @@ function areaChartCls() {
           marker: { size: 3 },
         };
       });
+      xAxisLabelT = selectedObj.xAxisLabel;
+      yAxisLabelT = yAxisLabel;
+      margin = {
+        l: 35,
+        r: 25,
+        b: 50,
+        t: 50,
+        pad: 5,
+      };
     } else {
       colors = colors || [randomColor()];
       colors =
@@ -799,43 +835,81 @@ function areaChartCls() {
         z = z.filter((r) => r[1] > min);
         table = [];
         table.push(z.map((r) => r[0]));
-        table.push(z.map((r) => r[1]));
+        table.push(
+          z.map((r) => {
+            return smartToFixed(
+              r[1],
+              selectedObj.chartDecimalProportion,
+              selectedObj.chartPrecision
+            );
+          })
+        );
+        // table.push(z.map((r) => r[2]));
         colors = z.map((r) => r[2]);
       }
-      console.log(table);
-      console.log(colors);
+
+      let maxLabelLen = table[0].map((n) => n.length).max();
+      console.log(maxLabelLen);
+      let totalLabelLen = table[0].length;
+      let orientation = "v";
+      let yIndex = 1;
+      let xIndex = 0;
+      if (maxLabelLen > totalLabelLen && maxLabelLen > 6) {
+        orientation = "h";
+        yIndex = 0;
+        xIndex = 1;
+      }
       var data = [
         {
-          x: table[0],
-          y: table[1],
+          y: table[yIndex],
+          x: table[xIndex],
           stackgroup: selectedObj.stackedAreaChart,
           type: "bar",
+          orientation: orientation,
           name: selectedObj.name,
           marker: {
             color: colors,
           },
         },
       ];
+      if (orientation === "h") {
+        yAxisLabelT = selectedObj.xAxisLabel;
+        xAxisLabelT = yAxisLabel;
+        margin = {
+          l: 150,
+          r: 15,
+          b: 40,
+          t: 50,
+          pad: 5,
+        };
+      } else {
+        xAxisLabelT = selectedObj.xAxisLabel;
+        yAxisLabelT = yAxisLabel;
+        margin = {
+          l: 35,
+          r: 25,
+          b: 50,
+          t: 50,
+          pad: 5,
+        };
+      }
     }
 
     const plotLayout = {
+      hovermode: selectedObj.hovermode,
+      // hoverLabel: { font_family: "Roboto", bgcolor: "red" },
       plot_bgcolor: this.plot_bgcolor,
       paper_bgcolor: this.plot_bgcolor,
       font: {
         family: this.plot_font,
         size: selectedObj.chartTitleFontSize,
       },
+      automargin: true,
       legend: {
         font: { size: selectedObj.chartLabelFontSize },
       },
 
-      margin: {
-        l: 35,
-        r: 25,
-        b: 50,
-        t: 50,
-        pad: 0,
-      },
+      margin: margin,
       width: this.chartWidth,
       height: this.chartHeight,
       title: {
@@ -843,21 +917,23 @@ function areaChartCls() {
       },
       xaxis: {
         tickangle: 45,
+        automargin: true,
         showgrid: selectedObj.showGrid,
         rangeslider: selectedObj.rangeSlider,
         tickformat: selectedObj.xTickDateFormat,
         tickfont: { size: selectedObj.chartLabelFontSize },
         title: {
-          text: selectedObj.xAxisLabel,
+          text: xAxisLabelT,
           font: {
             size: selectedObj.chartAxisTitleFontSize,
           },
         },
       },
       yaxis: {
+        automargin: true,
         tickfont: { size: selectedObj.chartLabelFontSize },
         title: {
-          text: yAxisLabel,
+          text: yAxisLabelT,
           font: {
             size: selectedObj.chartAxisTitleFontSize,
           },
@@ -1165,7 +1241,13 @@ function areaChartCls() {
                         mult =
                           chartFormatDict[areaChartFormat].mult * scaleMult;
                       }
-                      let values = rawValues.map((v) => smartToFixed(v * mult));
+                      let values = rawValues.map((v) =>
+                        smartToFixed(
+                          v * mult,
+                          selectedObj.chartDecimalProportion,
+                          selectedObj.chartPrecision
+                        )
+                      );
                       let classes = Object.keys(countsTransitionPeriod).map(
                         (cls) => cls.split("0990").map((n) => parseInt(n))
                       );

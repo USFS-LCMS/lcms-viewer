@@ -1183,7 +1183,6 @@ function runGTAC() {
       }
       populateAreaChartDropdown();
     } else {
-      // ["Change", "Land_Cover", "Land_Use"]
       ["Change", "Land_Cover", "Land_Use"].map((bn) => {
         let bnTitle = bn.replace("_", " ");
         lcmsRun.props.bandNames = [bn];
