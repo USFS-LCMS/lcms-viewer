@@ -129,6 +129,14 @@ const conus1 = {
   path: "./src/data/geojson/CONUS_plots_new_g_albers_30m_box.json",
   plotIDField: "PLOT_ID",
 };
+
+const conus2024 = {
+  name: "CONUS 2024 Reinterp",
+  path: "./src/data/geojson/CONUS_2024_reinterp_plots_30m_box.json",
+  plotIDField: "PLOTID"
+
+}
+
 const coastalAK = {
   name: "Coastal AK 2020",
   path: "./src/data/geojson/CoastalAK_sample_NEW_g_albers_30m_box.json",
@@ -187,6 +195,7 @@ const Hawaii2024 = {
 };
 
 let plotsGeoJSONs = [
+  conus2024,
   interiorAKPractice,
   interiorAK,
   Hawaii2024,
