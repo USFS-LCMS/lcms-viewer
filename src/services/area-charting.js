@@ -182,7 +182,7 @@ function areaChartCls() {
     obj.id =
       params.id ||
       obj.name.replaceAll(" ", "-") + "-" + this.areaChartID.toString();
-    obj.id = obj.id.replace(/[^A-Za-z0-9]/g, "-");
+    obj.id = obj.id.replace(/[^A-Za-z0-9-]/g, "-");
     params.layerType =
       params.layerType ||
       getImagesLib.getObjType(eeLayer, "area chart add layer");
@@ -724,7 +724,7 @@ function areaChartCls() {
     let chartTitle = `${selectedObj.name}<br>${name}`;
     let yAxisLabel =
       selectedObj.yAxisLabel || chartFormatDict[areaChartFormat].label;
-    let csvTable = [table[0].map((s) => s.replace(/[^A-Za-z0-9]/g, "-"))];
+    let csvTable = [table[0].map((s) => s.replace(/[^A-Za-z0-9 -]/g, "-"))];
     if (selectedObj.layerType === "ImageCollection") {
       csvTable = csvTable.concat(
         table
@@ -811,9 +811,10 @@ function areaChartCls() {
         pad: 5,
       };
     } else {
-      colors = colors || [randomColor()];
+      colors = colors || [null];
       colors =
-        colors.indexOf(null) > -1 ? colors.map((c) => randomColor()) : colors;
+        colors.indexOf(null) > -1 ? table[0].map((c) => randomColor()) : colors;
+
       table[0] = table[0].map((n) =>
         n
           .slice(0, selectedObj.chartLabelMaxLength)
@@ -849,16 +850,16 @@ function areaChartCls() {
       }
 
       let maxLabelLen = table[0].map((n) => n.length).max();
-      console.log(maxLabelLen);
       let totalLabelLen = table[0].length;
       let orientation = "v";
       let yIndex = 1;
       let xIndex = 0;
-      if (maxLabelLen > totalLabelLen && maxLabelLen > 6) {
+      if (maxLabelLen > totalLabelLen || maxLabelLen > 6) {
         orientation = "h";
         yIndex = 0;
         xIndex = 1;
       }
+
       var data = [
         {
           y: table[yIndex],
@@ -876,9 +877,9 @@ function areaChartCls() {
         yAxisLabelT = selectedObj.xAxisLabel;
         xAxisLabelT = yAxisLabel;
         margin = {
-          l: 150,
+          // l: 150,
           r: 15,
-          b: 40,
+          // b: 40,
           t: 50,
           pad: 5,
         };
@@ -904,7 +905,7 @@ function areaChartCls() {
         family: this.plot_font,
         size: selectedObj.chartTitleFontSize,
       },
-      automargin: true,
+
       legend: {
         font: { size: selectedObj.chartLabelFontSize },
       },
@@ -917,7 +918,7 @@ function areaChartCls() {
       },
       xaxis: {
         tickangle: 45,
-        automargin: true,
+        // automargin: false,
         showgrid: selectedObj.showGrid,
         rangeslider: selectedObj.rangeSlider,
         tickformat: selectedObj.xTickDateFormat,
@@ -930,7 +931,8 @@ function areaChartCls() {
         },
       },
       yaxis: {
-        automargin: true,
+        // automargin: false,
+        automargin: "left+bottom",
         tickfont: { size: selectedObj.chartLabelFontSize },
         title: {
           text: yAxisLabelT,
@@ -1291,7 +1293,10 @@ function areaChartCls() {
                             let tp = transitionPeriod.split("---")[1];
                             let tps = tp.split("-");
                             tp = tps[0] === tps[1] ? tps[0] : tp;
-                            return `${nm.replace(/[^A-Za-z0-9]/g, "-")} ${tp} `;
+                            return `${nm.replace(
+                              /[^A-Za-z0-9 -]/g,
+                              "-"
+                            )} ${tp} `;
                           })
                         )
                       );
@@ -1300,7 +1305,7 @@ function areaChartCls() {
                         let tps = tp.split("-");
                         tp = tps[0] === tps[1] ? tps[0] : tp;
                         let line = [
-                          `${nm1.replace(/[^A-Za-z0-9]/g, "-")} ${tp}`,
+                          `${nm1.replace(/[^A-Za-z0-9 -]/g, "-")} ${tp}`,
                         ];
                         selectedObj.class_names[bn].map((nm2) => {
                           let v = countLookup[`${nm1}---${nm2}`];
@@ -1403,7 +1408,7 @@ function areaChartCls() {
                 if (selectedObj.isThematic === true) {
                   selectedObj.class_namesT = {};
                   selectedObj.bandNames.map((bn) => {
-                    let bnL = bn.replace(/[^A-Za-z0-9]/g, "-");
+                    let bnL = bn.replace(/[^A-Za-z0-9 -]/g, "-");
                     let nameStart = `${bnL}-`;
                     let class_namesT;
                     if (selectedObj.class_names !== null) {
@@ -1448,7 +1453,7 @@ function areaChartCls() {
                       nameStart = "";
                     }
                     class_namesT.map((cn) => {
-                      cd = cn.replace(/[^A-Za-z0-9]/g, "-");
+                      // cd = cn.replace(/[^A-Za-z0-9 -]/g, "-");
                       header.push(`${nameStart}${cn}`);
                     });
                     class_paletteT.map((color) => {
@@ -1479,6 +1484,7 @@ function areaChartCls() {
                   });
                 } else {
                   colors = selectedObj.palette;
+
                   visible =
                     selectedObj.visible === undefined
                       ? selectedObj.bandNames.map((bn) => true)
@@ -1486,7 +1492,7 @@ function areaChartCls() {
                           v === true ? v : "legendonly"
                         );
                   selectedObj.bandNames.map((bn) =>
-                    header.push(bn.replace(/[^A-Za-z0-9]/g, "-"))
+                    header.push(bn.replace(/[^A-Za-z0-9 -]/g, " "))
                   );
                 }
                 let outTable = [header];

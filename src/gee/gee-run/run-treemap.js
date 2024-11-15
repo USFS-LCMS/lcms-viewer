@@ -7,6 +7,7 @@ function runTreeMap() {
   const attrC = ee.ImageCollection(
     "projects/treemap-386222/assets/Final_Outputs/TreeMap_2016"
   );
+  const attrStack = ee.Image("USFS/GTAC/TreeMap/v2016/TreeMap2016");
 
   // All attributes available
   // This list is currently only used for reference to creat the thematic and continuous lists below
@@ -24,7 +25,7 @@ function runTreeMap() {
     "FORTYPCD",
     "GSSTK",
     "QMD_RMRS",
-    "SDIPCT_RMR",
+    "SDIPCT_RMRS",
     "STANDHT",
     "STDSZCD",
     "TPA_DEAD",
@@ -68,6 +69,92 @@ function runTreeMap() {
 
   // Continuous have the syntax: [attribute name, palette, lower stretch percentile, upper stretch percentile, descriptive name]
   // Attributes appear in legend in reverse order from how they appear here
+  const chartPaletteDict = {
+    live1: "#5AE0B0",
+    live2: "#68A18C",
+    dead1: "#E05334",
+    dead2: "#C15D53",
+    other1: "#5EE159",
+    other2: "#5A8CE0",
+    other3: "#E0AF4A",
+  };
+  const chartLayerDict = {
+    Total_Volume_Attributes: {
+      bandNames: {
+        VOLCFNET_L: "Volume, Live - cubic ft",
+        VOLCFNET_D: "Volume, Standing Dead - cubic ft",
+        VOLBFNET_L: "Volume, Live - sawlog-board-ft",
+      },
+      palette: [
+        chartPaletteDict.live1,
+        chartPaletteDict.dead1,
+        chartPaletteDict.live2,
+      ],
+      visible: false,
+      scalar: 0.222395,
+    },
+    Total_Trees_Attributes: {
+      bandNames: {
+        TPA_DEAD: "Dead Trees Total",
+        TPA_LIVE: "Live Trees Total",
+      },
+      palette: [chartPaletteDict.dead1, chartPaletteDict.live1],
+      visible: false,
+      scalar: 0.222395,
+    },
+    Total_Dry_Biomass_Attributes: {
+      bandNames: {
+        DRYBIO_D: "Dry Standing Dead Tree Biomass, Above Ground - tons",
+        DRYBIO_L: "Dry Standing Live Tree Biomass, Above Ground - tons",
+      },
+      palette: [chartPaletteDict.dead1, chartPaletteDict.live1],
+      visible: false,
+      scalar: 0.222395,
+    },
+    Total_Carbon_Attributes: {
+      bandNames: {
+        CARBON_D: "Carbon, Standing Dead - tons",
+        CARBON_DWN: "Carbon, Down Dead - tons",
+        CARBON_L: "Carbon, Live Above Ground - tons",
+      },
+      palette: [
+        chartPaletteDict.dead1,
+        chartPaletteDict.dead2,
+        chartPaletteDict.live1,
+      ],
+      visible: true,
+      scalar: 0.222395,
+    },
+    Stand_Density_Attributes: {
+      bandNames: {
+        QMD_RMRS: "Stand Quadratic Mean Diameter - in",
+        SDIPCT_RMRS: "Stand Density Index - percent of maximum",
+      },
+      palette: [chartPaletteDict.other1, chartPaletteDict.other2],
+      visible: false,
+    },
+    Live_Tree_Attributes: {
+      bandNames: {
+        STANDHT: "Height of Dominant Trees - ft",
+        BALIVE: "Live Tree Basal Area - square ft",
+      },
+      palette: [chartPaletteDict.other1, chartPaletteDict.live1],
+      visible: true,
+    },
+    Percent_Attributes: {
+      bandNames: {
+        GSSTK: "Growing-Stock Stocking - percent",
+        ALSTK: "All-Live-Tree Stocking - percent",
+        CANOPYPCT: "Live Canopy Cover - percent",
+      },
+      palette: [
+        chartPaletteDict.other1,
+        chartPaletteDict.live1,
+        chartPaletteDict.live2,
+      ],
+      visible: true,
+    },
+  };
   const continuousAttrs = [
     // volume
     [
@@ -167,11 +254,11 @@ function runTreeMap() {
       "Rocky Mountain Research Station. The quadratic mean diameter, or the diameter of the tree of average basal area, on the condition. Based on live trees ≥1.0 inch d.b.h./d.r.c. Only collected by certain FIA work units.",
     ],
     [
-      "SDIPCT_RMR",
+      "SDIPCT_RMRS",
       palettes.crameri.bamako[25],
       0.05,
       0.95,
-      "SDIPCT_RMR: Stand Density Index (percent of maximum)",
+      "SDIPCT_RMRS: Stand Density Index (percent of maximum)",
       "Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.",
     ],
 
@@ -238,7 +325,7 @@ function runTreeMap() {
   // Function to get a thematic attribute image service
   function getThematicAttr_Colors(attr) {
     // Pull the attribute image
-    let attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    let attrImg = attrStack.select(attr[0]); //attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and names from the attribute table
     const numbers = treeMapLookup[attr[0]];
@@ -254,61 +341,66 @@ function runTreeMap() {
 
     // Set up visualization parameters
     const viz = {};
+    viz.autoViz = true;
+    // // First set up a dictionary so when user queries pixel, the name is returned instead of the value
+    // viz["queryDict"] = dict(zippedValuesNames);
 
-    // First set up a dictionary so when user queries pixel, the name is returned instead of the value
-    viz["queryDict"] = dict(zippedValuesNames);
-
-    // Set the min and max value for the renderer
-    viz["min"] = uniqueValues[0];
-    viz["max"] = uniqueValues[uniqueValues.length - 1];
+    // // Set the min and max value for the renderer
+    // viz["min"] = uniqueValues[0];
+    // viz["max"] = uniqueValues[uniqueValues.length - 1];
 
     // Get all the unique colors for the legend and colors with blanks as black in the palette
     let colors = [];
     let palette = [];
 
     // Map.setQueryPrecision(0.1, 3);
-    range(viz["min"], viz["max"] + 1).map((i) => {
-      if (uniqueValues.indexOf(i) > -1) {
-        const valueNameT = uniqueNames[uniqueValues.indexOf(i)];
-        const nameIndex = forestTypeLookup.names.indexOf(valueNameT);
-        c = forestTypeLookup.palette[nameIndex]; // refers to forest type palette .json brought in in html
+    range(uniqueValues[0], uniqueValues[uniqueValues.length - 1] + 1).map(
+      (i) => {
+        if (uniqueValues.indexOf(i) > -1) {
+          const valueNameT = uniqueNames[uniqueValues.indexOf(i)];
+          const nameIndex = forestTypeLookup.names.indexOf(valueNameT);
+          c = forestTypeLookup.palette[nameIndex]; // refers to forest type palette .json brought in in html
 
-        // If the hex color starts with a #, remove the #
-        if (c[0] === "#") {
-          c = c.slice(1);
+          // If the hex color starts with a #, remove the #
+          if (c[0] === "#") {
+            c = c.slice(1);
+          }
+          colors.push(c);
+          palette.push(c);
+        } else {
+          palette.push("000");
         }
-        colors.push(c);
-        palette.push(c);
-      } else {
-        palette.push("000");
       }
-    });
+    );
     let props = {};
     props[`${attr[0]}_class_values`] = uniqueValues;
     props[`${attr[0]}_class_names`] = uniqueNames;
     props[`${attr[0]}_class_palette`] = colors;
+    props.bandNames = [attr[0]];
+    viz.eeObjInfo = props;
     attrImg = attrImg.set(props);
     // Specify the palette and the legend dictionary with the unique names and colors
-    viz["palette"] = palette;
-    viz["classLegendDict"] = dict(zip(uniqueNames, colors));
+    // viz["palette"] = palette;
+    // viz["classLegendDict"] = dict(zip(uniqueNames, colors));
     viz["title"] = `${attr[2]} || ${attr[3]}`;
-    viz["canAreaChart"] = true;
-    viz["areaChartParams"] = {
+    // viz["canAreaChart"] = true;
+    const areaChartParams = {
       barChartMaxClasses: 20,
       // chartLabelMaxLength: 25,
+      eeObjInfo: props,
       chartDecimalProportion: 0.005,
       chartPrecision: 3,
       chartLabelMaxWidth: 400,
       chartLabelFontSize: 10,
       minZoomSpecifiedScale: 7,
     };
-    return [attrImg, viz, attr[2]];
+    return [attrImg, viz, attr[2], areaChartParams];
   }
 
   // Function to get a continuous attribute image service
   function getContinuousAttr(attr) {
     // Pull the attribute image
-    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrStack.select(attr[0]); // attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
     const numbers = treeMapLookup[attr[0]];
@@ -332,7 +424,7 @@ function runTreeMap() {
   // function to apply unique values to Ordinal attribute
   function getOrdinalAttr(attr) {
     // Pull the attribute image
-    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    let attrImg = attrStack.select(attr[0]); // attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
     const numbers = treeMapLookup[attr[0]];
@@ -342,23 +434,28 @@ function runTreeMap() {
     uniqueValues = uniqueValues.filter((n) => n !== -99);
 
     // Set up renderer
-    const viz = {};
-
-    // Compute the nth percentile for the min max
-    viz["min"] = parseInt(quantile(uniqueValues, attr[2]));
-    viz["max"] = parseInt(quantile(uniqueValues, attr[3]));
-    viz["palette"] = attr[1];
-
-    // set up legend - for values and palette
-    // Remove '000000' values from palette
-    const removed_nulls_palette = removeItemAll(
-      JSON.parse(JSON.stringify(attr[1])),
-      "000000"
-    );
-    viz["classLegendDict"] = dict(zip(uniqueValues, removed_nulls_palette));
+    const viz = { autoViz: true };
     viz["title"] = `${attr[4]} || ${attr[5]}`;
+    let props = {};
+    props[`${attr[0]}_class_values`] = uniqueValues;
+    props[`${attr[0]}_class_names`] = uniqueValues;
+    props[`${attr[0]}_class_palette`] = attr[1];
+    props.bandNames = [attr[0]];
+    viz.eeObjInfo = props;
+    viz.includeClassValues = false;
+    attrImg = attrImg.set(props);
 
-    return [attrImg, viz, attr[4]];
+    const areaChartParams = {
+      barChartMaxClasses: 20,
+      // chartLabelMaxLength: 25,
+      eeObjInfo: props,
+      chartDecimalProportion: 0.005,
+      chartPrecision: 3,
+      chartLabelMaxWidth: 400,
+      chartLabelFontSize: 10,
+      minZoomSpecifiedScale: 7,
+    };
+    return [attrImg, viz, attr[4], areaChartParams];
   }
 
   // Removes all items of a given value from an array
@@ -377,7 +474,7 @@ function runTreeMap() {
   // function to apply to show percentage attributes as a range from 0-100
   function getPercentAttr(attr) {
     // Pull the attribute image
-    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrStack.select(attr[0]); // attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
     const numbers = treeMapLookup[attr[0]];
@@ -401,7 +498,7 @@ function runTreeMap() {
   // Function to get a continuous attribute image service and use standard deviation as the min/max
   function getContinuousAttrSD(attr) {
     // Pull the attribute image
-    const attrImg = attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
+    const attrImg = attrStack.select(attr[0]); // attrC.filter(ee.Filter.eq("attribute", attr[0])).first();
 
     // Get the numbers and unique numbers for that attribute
     const numbers = treeMapLookup[attr[0]];
@@ -442,6 +539,7 @@ function runTreeMap() {
         )
     );
   // const metaArray = thematicAttrs.map(getThematicAttr_Colors);
+  // const metaArray = percentAttrs.map(getPercentAttr);
   // console.log(metaArray);
   // Sort the meta array by the second index of each subarray
   metaArray.sort(function (a, b) {
@@ -476,6 +574,9 @@ function runTreeMap() {
       {},
       -32768
     );
+    if (layer.length === 4 && typeof layer[3] === "object") {
+      areaChart.addLayer(layer[0], layer[3], layer[2].split(": ")[1], visible);
+    }
   }
   ////
 
@@ -504,7 +605,43 @@ function runTreeMap() {
   rawQueryDict = makeTreeMapQueryLookup();
 
   // Bring in raw TreeMap layer and add it to the map
-  rawTreeMap = attrC.filter(ee.Filter.eq("attribute", "Value")).first(); //ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
+  rawTreeMap = attrStack.select("Value"); // attrC.filter(ee.Filter.eq("attribute", "Value")).first(); //ee.Image('projects/lcms-292214/assets/CONUS-Ancillary-Data/TreeMap_RDS_2016');
+  Object.keys(chartLayerDict).map((k) => {
+    const chartLayerTObj = chartLayerDict[k];
+    const attrsBandNames = Object.keys(chartLayerDict[k].bandNames);
+    const attrsLongNames = Object.values(chartLayerDict[k].bandNames);
+    const reducer =
+      chartLayerTObj.scalar === undefined
+        ? ee.Reducer.mean()
+        : ee.Reducer.sum();
+    const reducerString =
+      chartLayerTObj.scalar === undefined ? "Mean" : "Total";
+    const scalar =
+      chartLayerTObj.scalar === undefined ? 1 : chartLayerTObj.scalar;
+    // console.log(`${k}-${scalar}`);
+    let attrStackT = attrStack
+      .select(attrsBandNames, attrsLongNames)
+      .multiply(scalar);
+    areaChart.addLayer(
+      attrStackT,
+      {
+        palette: chartLayerTObj.palette,
+        eeObjInfo: {
+          bandNames: attrsLongNames,
+        },
+        chartDecimalProportion: 0.005,
+        chartPrecision: 3,
+        chartLabelMaxWidth: 400,
+        chartLabelFontSize: 10,
+        minZoomSpecifiedScale: 0,
+        reducer: reducer,
+        reducerString: reducerString,
+      },
+      k.replaceAll("_", " "),
+      chartLayerTObj.visible
+    );
+    // console.log(attrStackT.bandNames().getInfo());
+  });
 
   Map.addLayer(
     rawTreeMap.randomVisualizer(),
@@ -528,7 +665,7 @@ function runTreeMap() {
 
   getLCMSVariables();
   getSelectLayers(true);
-
+  areaChart.populateChartLayerSelect();
   Map.turnOnAutoAreaCharting();
 
   $(".export-res-input").hide();

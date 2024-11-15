@@ -785,7 +785,8 @@ function addTimeLapseToMap(
       viz.bands,
       viz.class_values,
       viz.class_names,
-      viz.class_palette
+      viz.class_palette,
+      viz.includeClassValues
     );
 
     viz.classLegendDict = dicts.classLegendDict;
@@ -1351,12 +1352,24 @@ function addClassVizDicts(viz) {
 
 /////////////////////////////////////////////////////
 //Function to add lookup dictionaries to map viz object
-function getLookupDicts(bandName, class_values, class_names, class_palette) {
+function getLookupDicts(
+  bandName,
+  class_values,
+  class_names,
+  class_palette,
+  includeClassValues
+) {
   let values = class_values[bandName];
   let palette = class_palette[bandName];
   let names = class_names[bandName];
-
-  let value_name = zip(values, names).map((v) => v.join("- "));
+  includeClassValues =
+    includeClassValues == true || includeClassValues == undefined
+      ? true
+      : false;
+  let value_name =
+    includeClassValues == true
+      ? zip(values, names).map((v) => v.join("- "))
+      : names;
 
   legendDict = toObj(value_name, palette);
   queryDict = toObj(values, names);
@@ -1667,7 +1680,8 @@ function addToMap(
       viz.bands,
       viz.class_values,
       viz.class_names,
-      viz.class_palette
+      viz.class_palette,
+      viz.includeClassValues
     );
 
     viz.classLegendDict = dicts.classLegendDict;

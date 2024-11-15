@@ -1430,7 +1430,7 @@ function getSelectLayers(short) {
 
   Map.addSelectLayer(
     counties,
-    { strokeColor: "08F" },
+    { strokeColor: "08F", selectLayerNameProperty: "NAME" },
     "US Counties",
     false,
     null,
@@ -1440,7 +1440,7 @@ function getSelectLayers(short) {
 
   Map.addSelectLayer(
     msas,
-    { strokeColor: "88F" },
+    { strokeColor: "88F", selectLayerNameProperty: "NAME10" },
     "US Census Urban Areas",
     false,
     null,
@@ -1450,7 +1450,7 @@ function getSelectLayers(short) {
 
   Map.addSelectLayer(
     nps,
-    { strokeColor: "F0F" },
+    { strokeColor: "F0F", selectLayerNameProperty: "PARKNAME" },
     "National Parks",
     false,
     null,
@@ -1459,7 +1459,7 @@ function getSelectLayers(short) {
   );
   Map.addSelectLayer(
     b,
-    { strokeColor: "00F" },
+    { strokeColor: "00F", selectLayerNameProperty: "FORESTNAME" },
     "National Forests",
     false,
     null,
@@ -1469,7 +1469,7 @@ function getSelectLayers(short) {
 
   Map.addSelectLayer(
     district_boundaries,
-    { strokeColor: "80F" },
+    { strokeColor: "80F", selectLayerNameProperty: "name" },
     "National Forest Districts",
     false,
     null,
