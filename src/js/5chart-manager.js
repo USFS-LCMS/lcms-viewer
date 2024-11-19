@@ -281,7 +281,7 @@ const getQueryImages = function (lng, lat) {
     infowindow.setMap(null);
     $("#legendDiv").css("max-width", "");
     // $("#legendDiv").css("max-height", "80%");
-    // resizePanes();
+    resizePanes();
     $("#chart-collapse-label-chart-collapse-div").show();
     $("#chart-collapse-div").empty();
     $("#chart-collapse-div").append(queryContent);

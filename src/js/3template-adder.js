@@ -3470,6 +3470,7 @@ if (canExport) {
                                             `);
   }
 }
+
 function resizeViewerPanes() {
   console.log("resized");
   if (mode !== "lcms-dashboard") {
