@@ -388,7 +388,6 @@ if (
       },
 
       classes: "class-1 class-2",
-      scrollTo: { behavior: "smooth", block: "center" },
       scrollTo: true,
     },
   });

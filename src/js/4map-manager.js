@@ -2221,6 +2221,7 @@ function mp() {
     );
   };
   this.selectLayerAdded = false;
+  this.toolFunctionActivated = false;
   this.hideSelectLayerAreaCharting = function () {
     $("#select-area-interactive-chart-label").hide();
   };
@@ -2400,6 +2401,7 @@ function mp() {
   this.turnOnAutoAreaCharting = function () {
     let activeTools = getActiveTools();
     if (activeTools.indexOf("Area Tools-Map Extent Area Tool") == -1) {
+      this.toolFunctionActivated = true;
       $("#map-defined-area-chart-label").click();
     }
   };
@@ -4144,7 +4146,10 @@ function initialize() {
           let runStartTime = new Date();
           run();
           urlParams.activeTool = urlParams.activeTool || undefined;
-          if (urlParams.activeTool !== undefined) {
+          if (
+            urlParams.activeTool !== undefined &&
+            Map.toolFunctionActivated == false
+          ) {
             $(toolFunctionsFlat[urlParams.activeTool]).click();
           }
           let runEndTime = new Date();

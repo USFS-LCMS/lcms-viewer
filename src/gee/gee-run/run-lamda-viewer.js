@@ -258,7 +258,7 @@ function runLAMDA1() {
   makeTS(json.items);
 }
 
-runLAMDA2 = function () {
+function runLAMDA2() {
   let yrStr =
     urlParams.startYear === urlParams.endYear
       ? urlParams.startYear
@@ -462,8 +462,10 @@ runLAMDA2 = function () {
   addToMapFunction(z_p, zPViz, "Z Persistence", false);
 
   // Map.turnOnInspector();
-  Map.turnOnAutoAreaCharting();
-};
+  // Map.turnOnAutoAreaCharting();
+  // urlParams.activeTool = "Area_Map";
+  urlParams.activeTool = urlParams.activeTool || "Area_Map";
+}
 
 let runLAMDA = runLAMDA2;
 if (urlParams.legacy === true) {

@@ -629,7 +629,7 @@ function runAncillary() {
   // IDS
   ////////////////////////////////////////////////////
 
-  IDS = getIDSCollectionAddToMap();
+  let IDS = getIDSCollectionAddToMap();
 
   let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
 
@@ -650,7 +650,7 @@ function runAncillary() {
   const mtbsAndNLCD = getMTBSAndNLCD("anc", null, false);
 
   //const nlcdLCObj = mtbsAndNLCD.NLCD;
-  mtbsC = mtbsAndNLCD.MTBS.collection;
+  let mtbsC = mtbsAndNLCD.MTBS.collection;
 
   let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
   const inFields = [

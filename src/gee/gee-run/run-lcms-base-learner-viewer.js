@@ -43,7 +43,7 @@ function runBaseLearner() {
     vizYears.push(endYear);
   }
   compViz.years = vizYears;
-  addTimeLapseFun = Map.addTimeLapse;
+  let addTimeLapseFun = Map.addTimeLapse;
   addTimeLapseFun(composites, compViz, "Raw Composites", false);
 
   const lt = ee.ImageCollection(
@@ -225,10 +225,10 @@ function runBaseLearner() {
   ccdcImg0 = ee.Image(ccdcImg0.mosaic().copyProperties(f));
   ccdcImg1 = ee.Image(ccdcImg1.mosaic().copyProperties(f));
   ccdcImg2 = ee.Image(ccdcImg2.mosaic().copyProperties(f));
-  ccdcImg01 = ee.Image(
+  let ccdcImg01 = ee.Image(
     ee.ImageCollection([ccdcImg0, ccdcImg1]).mosaic().copyProperties(f)
   );
-  ccdcImg02 = ee.Image(
+  let ccdcImg02 = ee.Image(
     ee.ImageCollection([ccdcImg0, ccdcImg2]).mosaic().copyProperties(f)
   );
   // #Specify which harmonics to use when predicting the CCDC model
@@ -303,13 +303,13 @@ function runBaseLearner() {
   );
 
   // #Extract the change years and magnitude
-  changeObjPaired = changeDetectionLib.ccdcChangeDetection(
+  let changeObjPaired = changeDetectionLib.ccdcChangeDetection(
     [ccdcImg1, ccdcImg2],
     changeDetectionBandName,
     startYear,
     endYear
   );
-  changeObjSingle = changeDetectionLib.ccdcChangeDetection(
+  let changeObjSingle = changeDetectionLib.ccdcChangeDetection(
     ccdcImg0,
     changeDetectionBandName,
     startYear,

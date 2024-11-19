@@ -64,7 +64,7 @@ const lcmsLandUseLookup = [
   [7, "1b1716", "3.1.1", "Non-Processing Area Mask"],
 ];
 
-all_lookup = {};
+const all_lookup = {};
 all_lookup["Land_Cover"] = {};
 all_lookup["Change"] = {};
 all_lookup["Land_Use"] = {};
@@ -78,7 +78,7 @@ lcmsChangeLookup.map((r) => (all_lookup["Change"][r[2]] = [r[0], r[1], r[3]]));
 console.log(all_lookup);
 // # Get a lookup of MapBiomas names, values, and palette to set as properties for a given band
 function getLookup(bandName, codes = Object.keys(all_lookup["Land_Cover"])) {
-  out = {};
+  const out = {};
   out[`${bandName}_class_names`] = codes.map((c) => all_lookup[bandName][c][2]);
   out[`${bandName}_class_palette`] = codes.map(
     (c) => all_lookup[bandName][c][1]
@@ -97,8 +97,8 @@ function getLevelNRemap(level, bandName = "Land_Cover") {
     1
   );
 
-  highest_level = names.filter((n) => n.split(".").length == max_level);
-  the_level = names.filter((n) => n.split(".").length == level);
+  let highest_level = names.filter((n) => n.split(".").length == max_level);
+  let the_level = names.filter((n) => n.split(".").length == level);
 
   let fromList = [];
   let toList = [];
@@ -461,7 +461,7 @@ function runGTAC() {
 
     //Mask out stable and non processing area mask for change time-lapse
     const changeClassValues = lcmsRun.props["Change_class_values"];
-    changeVisibility = changeClassValues.map((v) => true);
+    let changeVisibility = changeClassValues.map((v) => true);
     changeVisibility[0] = false;
     changeVisibility[changeVisibility.length - 1] = false;
     // console.log(changeVisibility);
