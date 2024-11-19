@@ -36,8 +36,8 @@ function stopAllTools() {
     });
   });
   updateToolStatusBar();
-  urlParams.activeTool = undefined;
 }
+
 const toolFunctions = {
   measuring: {
     area: {
@@ -50,7 +50,7 @@ const toolFunctions = {
     },
     distance: {
       on: 'stopAllTools();startDistance();showTip("DISTANCE MEASURING",staticTemplates.distanceTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       clickSelector: "#measure-area-label",
       name: "Distance_Measuring",
@@ -60,7 +60,7 @@ const toolFunctions = {
   pixel: {
     query: {
       on: 'stopAllTools();startQuery();showTip("QUERY VISIBLE MAP LAYERS",staticTemplates.queryTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       clickSelector: "#query-label",
       name: "Pixel_Query",
@@ -68,7 +68,7 @@ const toolFunctions = {
     },
     chart: {
       on: 'stopAllTools();startPixelChartCollection();showTip("QUERY "+mode+" TIME SERIES",staticTemplates.pixelChartTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       clickSelector: "#pixel-chart-label",
       name: "Pixel_TS_Query",
@@ -78,7 +78,7 @@ const toolFunctions = {
   area: {
     mapBounds: {
       on: 'stopAllTools();areaChart.areaChartingToolName="map";areaChart.startAutoCharting();showTip("SUMMARIZE BY MAP BOUNDS AREA",staticTemplates.mapDefinedAreaChartTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       clickSelector: "#map-defined-area-chart-label",
       name: "Area_Map",
@@ -86,7 +86,7 @@ const toolFunctions = {
     },
     userDefined: {
       on: 'stopAllTools();areaChart.areaChartingToolName="user";areaChart.setupChartProgress();areaChartingTabSelect("#user-defined");showTip("SUMMARIZE BY USER-DEFINED AREA",staticTemplates.userDefinedAreaChartTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       clickSelector: "#user-defined-area-chart-label",
       name: "Area_User",
@@ -94,7 +94,7 @@ const toolFunctions = {
     },
     shpDefined: {
       on: 'stopAllTools();areaChart.areaChartingToolName="shp";areaChart.setupChartProgress();areaChartingTabSelect("#shp-defined");showTip("SUMMARIZE BY UPLOADED AREA",staticTemplates.uploadAreaChartTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       clickSelector: "#upload-area-chart-label",
       name: "Area_Upload",
@@ -102,7 +102,7 @@ const toolFunctions = {
     },
     selectDropdown: {
       on: 'stopAllTools();areaChartingTabSelect("#pre-defined");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaDropdownChartTip);',
-      off: "stopAllTools()",
+      off: "stopAllTools();",
       state: false,
       name: "Area_Select_Dropdown",
       title: "Area Tools-Select an Area from Dropdown",
@@ -182,12 +182,13 @@ function updateToolStatusBar() {
 function toggleTool(tool) {
   if (tool.state) {
     eval(tool.off);
+    urlParams.activeTool = undefined;
   } else {
     eval(tool.on);
     tool.state = true;
+    urlParams.activeTool = tool.name;
   }
   updateToolStatusBar();
-  urlParams.activeTool = tool.name;
 }
 
 updateToolStatusBar();
