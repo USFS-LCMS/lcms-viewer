@@ -3256,12 +3256,17 @@ if (
     "Choose which " + mode + " time series to summarize."
   );
   $("#area-chart-params-div").append(`<hr>`);
+  urlParams.chartUnits = urlParams.chartUnits || {
+    Percentage: true,
+    Acres: false,
+    Hectares: false,
+  };
   addMultiRadio(
     "area-chart-params-div",
     "area-summary-format",
     "Area Units",
     "areaChartFormat",
-    { Percentage: true, Acres: false, Hectares: false }
+    urlParams.chartUnits
   );
   if (mode === "LCMS" || mode === "geeViz") {
     activeStartYear = urlParams.startYear;

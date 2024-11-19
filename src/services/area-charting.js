@@ -51,7 +51,6 @@ function areaChartCls() {
   this.plot_bgcolor = "#D6D1CA";
   this.plot_font = "Roboto Condensed, sans-serif";
   this.areaChartingOn = false;
-  this.areaChartingToolName;
   this.autoChartingOn = false;
   this.firstRun = true;
   this.chartHWRatio = 0.7;
@@ -560,10 +559,12 @@ function areaChartCls() {
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to start area charting whenever the map moves
+  // Introduces a delay so the map is idle for 2 seconds before it starts charting
   this.startAutoCharting = function (idleDelay = 2000) {
     this.setupChartProgress();
     let idleEventID = 0;
     this.mapCoordsStr = this.getMapExtentCoordsStr();
+
     this.listeners.push(
       google.maps.event.addListener(map, "idle", () => {
         let nowCoords = this.getMapExtentCoordsStr();
@@ -575,10 +576,12 @@ function areaChartCls() {
           idleEventID++;
           let idleEventIDT = idleEventID;
           setTimeout(() => {
-            if (idleEventID === idleEventIDT) {
-              this.chartMapExtent();
+            if (idleEventID === idleEventIDT && this.autoChartingOn === true) {
+              this.chartMapExtent("", true);
+            } else if (this.autoChartingOn === false) {
+              console.log("Auto charting turned off - will not chart");
             } else {
-              console.log("not idle long enough");
+              console.log("Not idle long enough");
               console.log(idleEventID, idleEventIDT);
             }
           }, idleDelay);
@@ -588,7 +591,7 @@ function areaChartCls() {
       })
     );
     this.autoChartingOn = true;
-    this.chartMapExtent();
+    this.chartMapExtent("", true);
   };
   //////////////////////////////////////////////////////////////////////////
   // Function to stop auto charting - cleans up outputs, listeners, and ui elements
@@ -608,14 +611,14 @@ function areaChartCls() {
   };
   //////////////////////////////////////////////////////////////////////////
   // Wrapper to chart the current map extent
-  this.chartMapExtent = function (name = "") {
+  this.chartMapExtent = function (name = "", originAuto) {
     let mapCoords = Object.values(map.getBounds().toJSON())
       .map((n) =>
         smartToFixed(n, this.chartDecimalProportion, this.chartPrecision)
       )
       .join(",");
     this.clearCharts();
-    this.chartArea(eeBoundsPoly, `${name} (${mapCoords})`);
+    this.chartArea(eeBoundsPoly, `${name} (${mapCoords})`, originAuto);
   };
   //////////////////////////////////////////////////////////////////////////
   // Returns the ui elements for downloading png and csv outputs
@@ -982,7 +985,7 @@ function areaChartCls() {
         $("#query-spinner").append(`
         <div id="areaChart-progress-container" >
         <span style="display: flex;">
-        <img id="query-spinner-img" class="fa-spin progress-spinner"  src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
+        <img id="query-spinner-img" class="progress-spinner"  src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
           0.8
         )}" alt="GEE logo image">
         
@@ -1019,7 +1022,7 @@ function areaChartCls() {
   // Primary function to handle charting a given area
   // Handles preparing ee image and collection objects for both line and sankey charts, gets the zonal
   // summaries, and manipulates the numbers for charting
-  this.chartArea = function (area, name = "") {
+  this.chartArea = function (area, name = "", originAuto = false) {
     // Get selected objects either from visible map layers or checkboxes
     let selectedChartLayers;
     if (this.chartLayerSelectFromMapLayers) {
@@ -1056,7 +1059,7 @@ function areaChartCls() {
     );
 
     this.makeChartID++;
-    let areaChartingToolName = this.areaChartingToolName;
+
     this.outstandingChartRequests[this.makeChartID] = 0;
     this.maxOutStandingChartRequests[this.makeChartID] = 0;
     if (selectedChartObjs.length === 0) {
@@ -1183,10 +1186,9 @@ function areaChartCls() {
                 } else {
                   if (
                     this.areaChartingOn === true &&
-                    makeChartID === this.makeChartID
+                    makeChartID === this.makeChartID &&
+                    originAuto === this.autoChartingOn
                   ) {
-                    console.log(areaChartingToolName);
-                    console.log(this.areaChartingToolName);
                     let transitionPeriodI = 1;
 
                     let sankey_dict = {
@@ -1393,7 +1395,11 @@ function areaChartCls() {
             4
           )
           .evaluate((counts, failure) => {
-            if (this.areaChartingOn && makeChartID === this.makeChartID) {
+            if (
+              this.areaChartingOn === true &&
+              makeChartID === this.makeChartID &&
+              originAuto === this.autoChartingOn
+            ) {
               if (failure !== undefined) {
                 showMessage(
                   "Area Charting Error",
@@ -1625,14 +1631,14 @@ function areaChartCls() {
 
     $("#" + this.layerSelectID).change(() => {
       if (this.autoChartingOn) {
-        this.chartMapExtent();
+        this.chartMapExtent("", true);
       }
     });
 
     $("#area-summary-format").change(() => {
       console.log("change");
       if (this.autoChartingOn) {
-        this.chartMapExtent();
+        this.chartMapExtent("", true);
       }
     });
   };

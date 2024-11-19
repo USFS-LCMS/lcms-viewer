@@ -181,12 +181,12 @@ function updateToolStatusBar() {
 
 function toggleTool(tool) {
   if (tool.state) {
-    eval(tool.off);
     urlParams.activeTool = undefined;
+    eval(tool.off);
   } else {
+    urlParams.activeTool = tool.name;
     eval(tool.on);
     tool.state = true;
-    urlParams.activeTool = tool.name;
   }
   updateToolStatusBar();
 }
