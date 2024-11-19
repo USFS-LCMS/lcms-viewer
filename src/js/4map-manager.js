@@ -3372,155 +3372,155 @@ function googleMapPolygonToGEEPolygon(googleMapPolygon) {
 
   return geePolygon;
 }
-////////////////////////////////////////////////////////////////
-//Setup study areas and run functions
-function dropdownUpdateStudyArea(whichOne) {
-  $("#summary-spinner").show();
-  resetStudyArea(whichOne);
-  const coords = studyAreaDict[whichOne].center;
-  centerMap(coords[1], coords[0], coords[2]);
-  if (mode === "Ancillary") {
-    run = runAncillary;
-  } else if (mode === "LT") {
-    run = runLT;
-  } else if (
-    mode === "LCMS" ||
-    (mode === "LCMS-pilot" && studyAreaDict[longStudyAreaName].isPilot == false)
-  ) {
-    run = runGTAC;
-    run = function () {};
-  } else if (mode === "LCMS-pilot") {
-    run = runUSFS;
-  } else if (mode === "STORM") {
-    run = runStorm;
-  } else if (mode === "LAMDA") {
-    run = runLAMDA;
-  } else if (mode === "TreeMap") {
-    run = runTreeMap;
-  } else if (mode === "lcms-base-learner") {
-    run = runBaseLearner;
-  } else if (mode === "sequoia-view") {
-    run = runSequoia;
-  } else if (mode === "HiForm-BMP") {
-    run = runHiForm;
-  } else if (studyAreaName === "CONUS") {
-    run = runCONUS;
-  } else {
-    run = runUSFS;
-  }
+// ////////////////////////////////////////////////////////////////
+// //Setup study areas and run functions
+// function dropdownUpdateStudyArea(whichOne) {
+//   $("#summary-spinner").show();
+//   resetStudyArea(whichOne);
+//   const coords = studyAreaDict[whichOne].center;
+//   centerMap(coords[1], coords[0], coords[2]);
+//   if (mode === "Ancillary") {
+//     run = runAncillary;
+//   } else if (mode === "LT") {
+//     run = runLT;
+//   } else if (
+//     mode === "LCMS" ||
+//     (mode === "LCMS-pilot" && studyAreaDict[longStudyAreaName].isPilot == false)
+//   ) {
+//     run = runGTAC;
+//     run = function () {};
+//   } else if (mode === "LCMS-pilot") {
+//     run = runUSFS;
+//   } else if (mode === "STORM") {
+//     run = runStorm;
+//   } else if (mode === "LAMDA") {
+//     run = runLAMDA;
+//   } else if (mode === "TreeMap") {
+//     run = runTreeMap;
+//   } else if (mode === "lcms-base-learner") {
+//     run = runBaseLearner;
+//   } else if (mode === "sequoia-view") {
+//     run = runSequoia;
+//   } else if (mode === "HiForm-BMP") {
+//     run = runHiForm;
+//   } else if (studyAreaName === "CONUS") {
+//     run = runCONUS;
+//   } else {
+//     run = runUSFS;
+//   }
 
-  reRun();
-}
-//Function to set study area
-const resetStudyArea = function (whichOne) {
-  localStorage.setItem("cachedStudyAreaName", whichOne);
-  urlParams.studyAreaName = whichOne;
-  $("#studyAreaDropdown").val(whichOne);
-  $("#study-area-label").text(whichOne);
-  console.log("changing study area");
-  console.log(whichOne);
-  lowerThresholdDecline = studyAreaDict[whichOne].lossThresh;
-  if (
-    studyAreaDict[whichOne].lossSlowThresh !== undefined &&
-    studyAreaDict[whichOne].lossSlowThresh !== null
-  ) {
-    lowerThresholdSlowLoss = studyAreaDict[whichOne].lossSlowThresh;
-  } else {
-    lowerThresholdSlowLoss = lowerThresholdDecline;
-  }
-  if (
-    studyAreaDict[whichOne].lossFastThresh !== undefined &&
-    studyAreaDict[whichOne].lossFastThresh !== null
-  ) {
-    lowerThresholdFastLoss = studyAreaDict[whichOne].lossFastThresh;
-  } else {
-    lowerThresholdFastLoss = lowerThresholdDecline;
-  }
+//   reRun();
+// }
+// //Function to set study area
+// const resetStudyArea = function (whichOne) {
+//   localStorage.setItem("cachedStudyAreaName", whichOne);
+//   urlParams.studyAreaName = whichOne;
+//   $("#studyAreaDropdown").val(whichOne);
+//   $("#study-area-label").text(whichOne);
+//   console.log("changing study area");
+//   console.log(whichOne);
+//   lowerThresholdDecline = studyAreaDict[whichOne].lossThresh;
+//   if (
+//     studyAreaDict[whichOne].lossSlowThresh !== undefined &&
+//     studyAreaDict[whichOne].lossSlowThresh !== null
+//   ) {
+//     lowerThresholdSlowLoss = studyAreaDict[whichOne].lossSlowThresh;
+//   } else {
+//     lowerThresholdSlowLoss = lowerThresholdDecline;
+//   }
+//   if (
+//     studyAreaDict[whichOne].lossFastThresh !== undefined &&
+//     studyAreaDict[whichOne].lossFastThresh !== null
+//   ) {
+//     lowerThresholdFastLoss = studyAreaDict[whichOne].lossFastThresh;
+//   } else {
+//     lowerThresholdFastLoss = lowerThresholdDecline;
+//   }
 
-  upperThresholdDecline = 1;
-  upperThresholdSlowLoss = 1;
-  upperThresholdFastLoss = 1;
-  lowerThresholdRecovery = studyAreaDict[whichOne].gainThresh;
-  upperThresholdRecovery = 1;
+//   upperThresholdDecline = 1;
+//   upperThresholdSlowLoss = 1;
+//   upperThresholdFastLoss = 1;
+//   lowerThresholdRecovery = studyAreaDict[whichOne].gainThresh;
+//   upperThresholdRecovery = 1;
 
-  startYear = studyAreaDict[whichOne].startYear;
-  endYear = studyAreaDict[whichOne].endYear;
+//   startYear = studyAreaDict[whichOne].startYear;
+//   endYear = studyAreaDict[whichOne].endYear;
 
-  setUpRangeSlider(
-    "lowerThresholdDecline",
-    0,
-    1,
-    lowerThresholdDecline,
-    0.05,
-    "decline-threshold-slider",
-    "null"
-  );
-  setUpRangeSlider(
-    "lowerThresholdRecovery",
-    0,
-    1,
-    lowerThresholdRecovery,
-    0.05,
-    "recovery-threshold-slider",
-    "null"
-  );
+//   setUpRangeSlider(
+//     "lowerThresholdDecline",
+//     0,
+//     1,
+//     lowerThresholdDecline,
+//     0.05,
+//     "decline-threshold-slider",
+//     "null"
+//   );
+//   setUpRangeSlider(
+//     "lowerThresholdRecovery",
+//     0,
+//     1,
+//     lowerThresholdRecovery,
+//     0.05,
+//     "recovery-threshold-slider",
+//     "null"
+//   );
 
-  setUpRangeSlider(
-    "lowerThresholdSlowLoss",
-    0,
-    1,
-    lowerThresholdSlowLoss,
-    0.05,
-    "slow-loss-threshold-slider",
-    "null"
-  );
-  setUpRangeSlider(
-    "lowerThresholdFastLoss",
-    0,
-    1,
-    lowerThresholdFastLoss,
-    0.05,
-    "fast-loss-threshold-slider",
-    "null"
-  );
+//   setUpRangeSlider(
+//     "lowerThresholdSlowLoss",
+//     0,
+//     1,
+//     lowerThresholdSlowLoss,
+//     0.05,
+//     "slow-loss-threshold-slider",
+//     "null"
+//   );
+//   setUpRangeSlider(
+//     "lowerThresholdFastLoss",
+//     0,
+//     1,
+//     lowerThresholdFastLoss,
+//     0.05,
+//     "fast-loss-threshold-slider",
+//     "null"
+//   );
 
-  setUpDualRangeSlider(
-    "urlParams.startYear",
-    "urlParams.endYear",
-    minYear,
-    maxYear,
-    urlParams.startYear,
-    urlParams.endYear,
-    1,
-    "analysis-year-slider",
-    "analysis-year-slider-update",
-    "null"
-  );
+//   setUpDualRangeSlider(
+//     "urlParams.startYear",
+//     "urlParams.endYear",
+//     minYear,
+//     maxYear,
+//     urlParams.startYear,
+//     urlParams.endYear,
+//     1,
+//     "analysis-year-slider",
+//     "analysis-year-slider-update",
+//     "null"
+//   );
 
-  const coords = studyAreaDict[whichOne].center;
-  studyAreaName = studyAreaDict[whichOne].name;
-  if (studyAreaName === "CONUS") {
-    run = runCONUS;
-  } else if (
-    mode === "LCMS" ||
-    (mode === "LCMS-pilot" && studyAreaDict[longStudyAreaName].isPilot == false)
-  ) {
-    run = runGTAC;
-  } else {
-    run = runUSFS;
-  }
-  if (studyAreaDict[whichOne].addFastSlow) {
-    $("#fast-slow-threshold-container").show();
-  } else {
-    $("#fast-slow-threshold-container").hide();
-  }
-  if (studyAreaDict[whichOne].addGainThresh) {
-    $("#recovery-threshold-slider-container").show();
-  } else {
-    $("#recovery-threshold-slider-container").hide();
-  }
-  $("#export-crs").val(studyAreaDict[whichOne].crs);
-};
+//   const coords = studyAreaDict[whichOne].center;
+//   studyAreaName = studyAreaDict[whichOne].name;
+//   if (studyAreaName === "CONUS") {
+//     run = runCONUS;
+//   } else if (
+//     mode === "LCMS" ||
+//     (mode === "LCMS-pilot" && studyAreaDict[longStudyAreaName].isPilot == false)
+//   ) {
+//     run = runGTAC;
+//   } else {
+//     run = runUSFS;
+//   }
+//   if (studyAreaDict[whichOne].addFastSlow) {
+//     $("#fast-slow-threshold-container").show();
+//   } else {
+//     $("#fast-slow-threshold-container").hide();
+//   }
+//   if (studyAreaDict[whichOne].addGainThresh) {
+//     $("#recovery-threshold-slider-container").show();
+//   } else {
+//     $("#recovery-threshold-slider-container").hide();
+//   }
+//   $("#export-crs").val(studyAreaDict[whichOne].crs);
+// };
 ///////////////////////////////////////////////////////////
 //Taken from https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
 function initSearchBox() {
@@ -4143,6 +4143,10 @@ function initialize() {
         try {
           let runStartTime = new Date();
           run();
+          urlParams.activeTool = urlParams.activeTool || undefined;
+          if (urlParams.activeTool !== undefined) {
+            $(toolFunctionsFlat[urlParams.activeTool]).click();
+          }
           let runEndTime = new Date();
           let runTime = (runEndTime - runStartTime) / 1000;
           console.log(`Run time: ${runTime} seconds`);

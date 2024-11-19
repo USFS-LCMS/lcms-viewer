@@ -513,8 +513,8 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
   const mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1";
 
   let mtbsEndYear = endYear;
-  if (endYear > 2022) {
-    mtbsEndYear = 2022;
+  if (endYear > 2024) {
+    mtbsEndYear = 2024;
   }
 
   const mtbsYears = ee.List.sequence(1984, mtbsEndYear);

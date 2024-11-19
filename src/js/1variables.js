@@ -61,7 +61,7 @@ function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
     data: JSON.stringify({ id: id }),
     contentType: "application/json; charset=utf-8",
   });
-  console.log(res);
+
   if (res.statusText === "OK") {
     let params = res.responseJSON;
     console.log("Retrieved params:");

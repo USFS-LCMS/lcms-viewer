@@ -51,6 +51,7 @@ function areaChartCls() {
   this.plot_bgcolor = "#D6D1CA";
   this.plot_font = "Roboto Condensed, sans-serif";
   this.areaChartingOn = false;
+  this.areaChartingToolName;
   this.autoChartingOn = false;
   this.firstRun = true;
   this.chartHWRatio = 0.7;
@@ -898,7 +899,6 @@ function areaChartCls() {
 
     const plotLayout = {
       hovermode: selectedObj.hovermode,
-      // hoverLabel: { font_family: "Roboto", bgcolor: "red" },
       plot_bgcolor: this.plot_bgcolor,
       paper_bgcolor: this.plot_bgcolor,
       font: {
@@ -1056,6 +1056,7 @@ function areaChartCls() {
     );
 
     this.makeChartID++;
+    let areaChartingToolName = this.areaChartingToolName;
     this.outstandingChartRequests[this.makeChartID] = 0;
     this.maxOutStandingChartRequests[this.makeChartID] = 0;
     if (selectedChartObjs.length === 0) {
@@ -1182,8 +1183,10 @@ function areaChartCls() {
                 } else {
                   if (
                     this.areaChartingOn === true &&
-                    this.makeChartID === this.makeChartID
+                    makeChartID === this.makeChartID
                   ) {
+                    console.log(areaChartingToolName);
+                    console.log(this.areaChartingToolName);
                     let transitionPeriodI = 1;
 
                     let sankey_dict = {
@@ -1598,13 +1601,13 @@ function areaChartCls() {
   // If checkbox layer selection is used, instantiate it with this function to populate the checkboxes
   this.populateChartLayerSelect = function () {
     this.chartLayerSelectFromMapLayers = false;
-    this.areaChartSelectedObj = this.areaChartSelectedObj || {};
+    urlParams.areaChartSelectedObj = urlParams.areaChartSelectedObj || {};
     let labels = [];
     Object.keys(this.areaChartObj).map((k) => {
       let obj = this.areaChartObj[k];
-      this.areaChartSelectedObj[obj.id] =
-        this.areaChartSelectedObj[obj.id] !== undefined
-          ? this.areaChartSelectedObj[obj.id]
+      urlParams.areaChartSelectedObj[obj.id] =
+        urlParams.areaChartSelectedObj[obj.id] !== undefined
+          ? urlParams.areaChartSelectedObj[obj.id]
           : obj.shouldChart;
       labels.push(obj.name);
     });
@@ -1614,7 +1617,7 @@ function areaChartCls() {
       this.layerSelectID,
       "Area Chart Layers",
       "checkboxSelectedChartLayers",
-      this.areaChartSelectedObj,
+      urlParams.areaChartSelectedObj,
       labels,
       "Choose which layers to include in area summary charts",
       "prepend"

@@ -389,6 +389,7 @@ if (
 
       classes: "class-1 class-2",
       scrollTo: { behavior: "smooth", block: "center" },
+      scrollTo: true,
     },
   });
 
@@ -793,8 +794,162 @@ if (
         "#tools-collapse-label-label",
       ],
       [
+        `TOOLS -> Measuring Tools -> Distance Measuring`,
+        `<ul>
+          <li>Activate the "Distance Measuring" tool.</li>
+          <li>Once activated, click on the map to draw a line to measure distance.</li>
+          <li>The drawn vertices can be moved by clicking and dragging. You can also adjust the midpoint of a drawn line by moving the faint grey point in the middle of a line.</li>
+          <li>Press <kbd>ctrl+z</kbd> to undo the most recent point. Double-click, press <kbd>Delete</kbd>, or press <kbd>Backspace</kbd> to clear the line and start over.</li>
+          <li>There are also buttons available under the tool in the left sidebar to undo and restart drawing.</li>
+          <li>Units can be toggled between imperial and metric using the toggle switch.</li>
+          <li>If the color of the line is hard to see, it can be changed with the color picker paintbrush under the tool in the left sidebar.</li>
+        </ul>`,
+        "#measure-distance-label",
+        "right",
+        [0, 2],
+        "distance-measuring-tool-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+
+      [
+        `TOOLS -> Measuring Tools -> Area Measuring`,
+        `<ul>
+          <li>Activate the "Area Measuring" tool</li>
+          <li>Once activated, click on the map to draw polygons to measure area.</li>
+          <li>Click on the map to measure an area, double-click to complete the polygon. <kbd>ctrl+z</kbd> will undo the most recently placed point, pressing <kbd>Delete</kbd> or <kbd>Backspace</kbd> will delete the entire polygon. The polygon can be adjusted by clicking and dragging mid-points and vertices.</li>
+          <li>Buttons are available under the tool in the left sidebar to undo and restart drawing as well.</li>
+          <li>Units can be toggled between imperial and metric using the toggle switch.</li>
+          <li>If the color of the line is hard to see, it can be changed with the color picker paintbrush under the tool in the left sidebar.</li>
+          <li>Multiple areas can be measured simultaneously by continuing to click after a polygon has been completed.</li>
+        </ul>`,
+        "#measure-area-label",
+        "right",
+        [0, 2],
+        "area-measuring-tool-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+      [
+        `TOOLS -> Pixel Tools -> Query Visible Map Layers`,
+        `<ul>
+          <li>Activate the "Query Visible Map Layers" tool.</li>
+          <li>Once activated, anywhere you double-click will query the value of any visible layer.</li>
+          <li>The values will appear in the <i>QUERY OUTPUTS</i> panel on the right.</li>
+          <li>It can take some time to query all visible layers as the query is done on-the-fly within Google Earth Engine.</li>
+          <li>To query the map again, double-click once more.</li>
+        </ul>`,
+        "#query-label",
+        "right",
+        [0, 2],
+        "pixel-query-tool-tour-modal",
+        "#query-label",
+      ],
+
+      [
+        `TOOLS -> Area Tools`,
+        `<ul>
+      
+          <li>You can summarize various layers using the <i>Area Tools</i>.</li>
+          <li>Methods include summarizing by current map extent, a custom drawn area of interest, uploaded shapefile, kml, kmz, or geojson, or a pre-defined set of areas selected on the map.</li>
+          <li>Any layer available for charting will then be charted.</li>
+          
+        </ul>`,
+        "#area-tools-title",
+        "right",
+        [0, 2],
+        "area-tool-tour-modal",
+        "#tools-collapse-label-label",
+      ],
+      [
+        `TOOLS -> Area Tools -> Area Tools Parameters`,
+        `<ul>
+          <li>Under this menu, you can select which layers to chart and the area units to use for any thematic (variables with discrete classes) variables.</li>
+          <li>Any change in selected layers and/or units will automatically update charts.</li>
+        </ul>`,
+        "#area-chart-params-label>h5",
+        "right",
+        [0, 2],
+        "area-tool-params-tour-modal",
+        "#area-chart-params-label>h5",
+      ],
+
+      [
+        `TOOLS -> Area Tools -> Map Extent Area`,
+        `<ul>
+      
+          <li>Activate the "Map Extent Area" tool.</li>
+          <li>Once activated, any time you move and/or change the zoom level on the map, that extent will be summarized for any of the selected layers above.</li>
+          <li>The charts will appear in the <i>QUERY OUTPUTS</i> panel on the right.</li>
+          <li>It can take some time to summarize all selected layers as the zonal summary is done on-the-fly within Google Earth Engine.</li>
+       
+        </ul>`,
+        "#map-defined-area-chart-label",
+        "right",
+        [0, 2],
+        "area-map-extent-tool-tour-modal",
+        "#map-defined-area-chart-label",
+      ],
+      [
+        `TOOLS -> Area Tools -> User-Defined Area`,
+        `<ul>
+      
+          <li>Activate the "User-Defined Area" tool.</li>
+          <li>Once activated, you can draw a custom area on the map, and optionally provide a name for your area.</li>
+          <li>When finished drawing an area, click on the <button class="btn" style="margin-bottom: 0.5em!important;" title="Click to summarize across drawn polygons">Chart Selected Areas</button> button</li>
+          <li>The charts will then appear in the <i>QUERY OUTPUTS</i> panel on the right.</li>
+          <li>It can take some time to summarize all selected layers, as the zonal summary is done on-the-fly within Google Earth Engine.</li>
+       
+        </ul>`,
+        "#user-defined-area-chart-label",
+        "right",
+        [0, 2],
+        "area-user-defined-tool-tour-modal",
+        "#user-defined-area-chart-label",
+      ],
+      [
+        `TOOLS -> Area Tools -> Upload an Area`,
+        `<ul>
+          <li>Activate the "Upload an Area" tool.</li>
+          <li>Once activated, click on the <kbd>Choose File</kbd> button to choose a file (zipped shapefile, geojson, kml, or kmz) to upload.</li>
+          <li>A shapefile must have all of its associated files zipped into a .zip file.  Any file with a .geojson, .kml, or .kmz extension is also accepted.</li>
+          <li>Extremely large files will fail to upload and/or chart.</li>
+          <li>Large shapefiles (vectors > ~5000 vertices or file size > ~50 mb) will likely fail. If this occurs, try increasing the "Vertex Reduction Factor" (maintains every nth vertex. E.g. if set to 3, every third vertex will remain). If this still fails, please contact us to summarize across a large vector.</li>
+          <li>Once the file is selected, click on the <button class="btn" style="margin-bottom: 0.5em!important;"  title="Click to summarize across chosen .zip shapefile, .kmz, .kml, or .geojson.">Chart across chosen file</button> button to ingest chosen file and create chart.</li>
+          <li>Sometimes it can take some time upload the chosen file and summarize the area as it is done on-demand within Google Earth Engine.</li>
+          <li>Selecting a very large area may not successfully run.</li>
+        </ul>`,
+        "#upload-area-chart-label",
+        "right",
+        [0, 2],
+        "area-upload-area-tool-tour-modal",
+        "#upload-area-chart-label",
+      ],
+      [
+        `TOOLS -> Area Tools -> Select an Area on Map`,
+        `<ul>
+          <li>Activate the "Select an Area on Map" tool.</li>
+          <li>This tool allows the summarizaton of ${mode} products across a selection of pre-defined areas.</li>
+          <li>After activating the tool, select a layer and it will be displayed on the map interface.</li>
+          <li>After the layer is loaded and displayed, it can be selected by clicking on it on the map.</li>
+          <li>If the selected location intersects multiple polygons, multiple areas will be selected.</li>
+          <li>The name of selected areas will appear in a list below the layers under "Selected area names:".</li>
+          <li>Clicking on an area again or pressing the undo or trash button will deselect any selected areas.</li>
+          <li>Every time an area is selected, background processing is being performed. Clicking on many areas at once may slow down the tool.</li>
+          <li>A name for the selected area can be provided in the <input title="Provide a name for your chart. A default one will be provided if left blank." type="user-defined-area-name" class="form-control my-1" placeholder="Name your charting area" style="width:80%;"> input box. If no name is provided, the tool will automatically generate one.</li>
+          <li>The "Simplify Area - Max Error" slider can be used to simplify areas that are selected by allowing for a specified maximum error in meters. This allows larger and/or more complicated areas to be summarized. This simplification is performed as an area is selected. The selected areas added to the map reflect the simplification. You will notice the differences are usually quite minimal. If an area failed to run, clear the current selection, increase the value on the slider, and reselect the area(s).</li>
+          <li>Once all areas you would like to include are selected, press the <kbd>Chart Selected Areas</kbd> button at the bottom of the tool to summarize those areas and create a chart.</li>
+          <li>Selecting a very large area may not successfully run.</li>
+          <li>It can take some time to summarize all selected layers, as the zonal summary is done on-the-fly within Google Earth Engine.</li>
+          
+        </ul>`,
+        "#select-area-interactive-chart-label",
+        "right",
+        [0, 2],
+        "area-select-on-map-tool-tour-modal",
+        "#select-area-interactive-chart-label",
+      ],
+      [
         `Query Outputs`,
-        `When the <i>Query Visible Map Layers</i> tool is on (on by default when the page is loaded), the value(s) of the location you double-click on will be shown here.`,
+        `When any of the <i>Pixel Tools or Area Tools</i> are on (on by default when the page is loaded), the outputs will be shown here.`,
         "#chart-collapse-label",
         "right-end",
         [0, 2],
@@ -1047,7 +1202,7 @@ if (
         "right",
         [0, 2],
         "advanced-params-tour-modal",
-        "#advanced-params-label",
+        "#advanced-params-label>h5",
       ],
       [
         "Run HiForm BMP",

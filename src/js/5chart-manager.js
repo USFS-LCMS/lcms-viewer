@@ -260,7 +260,7 @@ const getQueryImages = function (lng, lat) {
   const nameEnd =
     " Queried Values for Lng " + lng.toFixed(3) + " Lat " + lat.toFixed(3);
   const queryContent = `<div>
-							<h6 style = 'font-weight:bold;padding-top:0.5rem;'>Queried values for<br>lng: ${lng
+							<h6 class = 'query-output-header-title'>Queried values for<br>lng: ${lng
                 .toFixed(3)
                 .toString()} lat: ${lat.toFixed(3).toString()}</h6>
 							<li id = 'query-list-container'></li>
@@ -280,7 +280,8 @@ const getQueryImages = function (lng, lat) {
     infowindow.setContent("");
     infowindow.setMap(null);
     $("#legendDiv").css("max-width", "");
-    $("#legendDiv").css("max-height", "80%");
+    // $("#legendDiv").css("max-height", "80%");
+    resizePanes();
     $("#chart-collapse-label-chart-collapse-div").show();
     $("#chart-collapse-div").empty();
     $("#chart-collapse-div").append(queryContent);

@@ -1608,7 +1608,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 } else if (mode === "MTBS") {
   startYear = 1984;
-  endYear = 2022;
+  endYear = 2024;
   if (urlParams.startYear == null || urlParams.startYear == undefined) {
     urlParams.startYear = startYear;
   }
@@ -3234,7 +3234,7 @@ if (
   mode === "LAMDA" ||
   mode === "TreeMap"
 ) {
-  $("#tools-accordian").append(`<h5>Area Tools</h5>`);
+  $("#tools-accordian").append(`<h5 id = 'area-tools-title'>Area Tools</h5>`);
   addSubCollapse(
     "tools-accordian",
     "area-chart-params-label",
@@ -3399,7 +3399,7 @@ addSubAccordianCard(
 // Add functionality to Sequoia mode for user to upload a shapefile, geoJSON, etc
 if (mode === "sequoia-view") {
   $("#tools-accordian").append(
-    `<h5  style = 'border-top: 0.1em solid black;'>Area Tools</h5>`
+    `<h5  style = 'border-top: 0.1em solid black;' id = 'area-tools-title'>Area Tools</h5>`
   );
 
   addSubAccordianCard(
@@ -3487,13 +3487,11 @@ function resizeViewerPanes() {
     "max-height",
     $("body").height() - $(".bottombar").height()
   );
-  // moveCollapse('plot-collapse');
   if (walkThroughAdded) {
     moveCollapse("walk-through-collapse");
   }
 
   adjustTitleBanner();
-  // addLegendCollapse();
 }
 
 function resizeDashboardPanes() {

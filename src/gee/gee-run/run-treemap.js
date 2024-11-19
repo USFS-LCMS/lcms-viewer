@@ -633,7 +633,7 @@ function runTreeMap() {
         chartPrecision: 3,
         chartLabelMaxWidth: 400,
         chartLabelFontSize: 10,
-        minZoomSpecifiedScale: 0,
+        minZoomSpecifiedScale: 4,
         reducer: reducer,
         reducerString: reducerString,
       },
@@ -666,8 +666,9 @@ function runTreeMap() {
   getLCMSVariables();
   getSelectLayers(true);
   areaChart.populateChartLayerSelect();
-  Map.turnOnAutoAreaCharting();
-
+  // Map.turnOnAutoAreaCharting();
+  // Map.turnOnInspector();
+  urlParams.activeTool = urlParams.activeTool || "Pixel_Query";
   $(".export-res-input").hide();
   $(".export-res-input-label").hide();
 }

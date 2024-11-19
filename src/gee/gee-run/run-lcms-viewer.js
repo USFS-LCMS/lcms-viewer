@@ -1372,6 +1372,7 @@ function runGTAC() {
     // $("#user-defined-area-chart-label").click();
     getSelectLayers(true);
     populatePixelChartDropdown();
+
     // Map.turnOnInspector();
 
     // $('#query-label').click()
