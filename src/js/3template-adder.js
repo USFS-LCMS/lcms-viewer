@@ -3579,6 +3579,15 @@ function resizeDashboardPanes() {
     }%`
   );
 }
+
+let resizePanes;
+if (mode !== "lcms-dashboard") {
+  resizePanes = resizeViewerPanes;
+} else {
+  resizePanes = resizeDashboardPanes;
+}
+$(window).resize(() => resizePanes());
+
 if (mode === "lcms-dashboard") {
   $("body").append(staticTemplates.dashboardResultsToggler);
   $(".dashboard-results-toggler").css(

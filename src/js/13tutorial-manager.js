@@ -281,14 +281,6 @@ walkThroughDict = {
   },
 };
 
-let resizePanes;
-if (mode !== "lcms-dashboard") {
-  resizePanes = resizeViewerPanes;
-} else {
-  resizePanes = resizeDashboardPanes;
-}
-$(window).resize(() => resizePanes());
-
 function toggleWalkThroughCollapse() {
   if (walkThroughAdded) {
     removeWalkThroughCollapse();
