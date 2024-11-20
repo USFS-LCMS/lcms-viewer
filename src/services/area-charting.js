@@ -669,7 +669,7 @@ function areaChartCls() {
 
       link: sankey_dict,
     };
-    console.log(data);
+    // console.log(data);
     data = [data];
 
     const plotLayout = {

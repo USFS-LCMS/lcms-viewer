@@ -2612,7 +2612,6 @@ function reRun() {
   //Rerun the GEE code
   setTimeout(function () {
     run();
-
     if (mode !== "lcms-dashboard") {
       $(".modal").modal("hide");
       $(".modal-backdrop").remove();
@@ -2620,6 +2619,10 @@ function reRun() {
 
     setupAreaLayerSelection();
     smartAddLabelOverlay();
+
+    if (areaChart.autoChartingOn === true) {
+      areaChart.chartMapExtent("", true);
+    }
   }, 1500);
 }
 ////////////////////////////////////////////////////////////////////////
@@ -3695,10 +3698,12 @@ function removeLabelOverlay() {
   labelOverlayAdded = false;
 }
 function smartAddLabelOverlay() {
-  if (map.mapTypeId === "satellite") {
-    removeLabelOverlay();
-  } else {
-    addLabelOverlay();
+  if (urlParams.addLabelOverlay !== false) {
+    if (map.mapTypeId === "satellite") {
+      removeLabelOverlay();
+    } else {
+      addLabelOverlay();
+    }
   }
 }
 function toggleLabelOverlay() {

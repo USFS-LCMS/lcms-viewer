@@ -4349,7 +4349,7 @@ function addLayerSortListener(
 }
 //////////////////////////////////////////////////
 // Transition charting input UI setup
-function getTransitionRowData() {
+function getTransitionRowData(verbose) {
   const periods = [];
   const errorList = [];
   let periodsValid = true;
@@ -4410,12 +4410,14 @@ function getTransitionRowData() {
     rowI++;
   });
   if (errorList.length > 0) {
-    let errorMessage =
-      "The following errors were found:<br>" +
-      unique(errorList)
-        .map((e) => errorDict[e])
-        .join("<br>");
-    showMessage("Invalid Transition Periods Provided", errorMessage);
+    if (verbose !== false) {
+      let errorMessage =
+        "The following errors were found:<br>" +
+        unique(errorList)
+          .map((e) => errorDict[e])
+          .join("<br>");
+      showMessage("Invalid Transition Periods Provided", errorMessage);
+    }
     periodsValid = false;
   }
   if (periodsValid) {
@@ -4460,12 +4462,21 @@ function setupTransitionPeriodUI(containerID = "transition-periods-container") {
   </div>
   
 `);
-  addTransitionRow();
-  addTransitionRow();
+  if (
+    urlParams.transitionChartingYears !== undefined &&
+    urlParams.transitionChartingYears !== null
+  ) {
+    urlParams.transitionChartingYears.map((yrs) =>
+      addTransitionRow(yrs[0], yrs[1], true)
+    );
+  } else {
+    addTransitionRow();
+    addTransitionRow();
+  }
 }
 let transitionRowI = 0;
 
-function addRow(containerID, rowID, yr1, yr2, isBookend = false) {
+function addRow(containerID, rowID, yr1, yr2, simpleAppend = false) {
   let rows = $(`#${containerID} tr`);
   const row = `<tr id='${rowID}'>
 
@@ -4476,7 +4487,7 @@ function addRow(containerID, rowID, yr1, yr2, isBookend = false) {
   <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr2}'  placeholder='Enter Year' class="form-control"/>
   </td>
   </tr>`;
-  if (rows.length < 2) {
+  if (rows.length < 2 || simpleAppend) {
     $(`#${containerID}`).append(row);
   } else {
     rows.eq(-1).before(row);
@@ -4491,22 +4502,21 @@ function removeRow(rowID) {
   console.log(rowID);
   $(`#${rowID}`).remove();
 }
-function addTransitionRow() {
-  let startYear = "",
-    endYear = "";
+function addTransitionRow(startYear, endYear, simpleAppend = false) {
   const nRows = $(`#added-transition-rows tr`).length;
   if (nRows === 0) {
-    startYear = activeStartYear;
-    endYear = activeStartYear + 2;
+    startYear = startYear || activeStartYear;
+    endYear = endYear || activeStartYear + 2;
   } else if (nRows === 1) {
-    startYear = activeEndYear - 2;
-    endYear = activeEndYear;
+    startYear = startYear || activeEndYear - 2;
+    endYear = endYear || activeEndYear;
   }
   addRow(
     "added-transition-rows",
     `transition-row-${transitionRowI}`,
     startYear,
-    endYear
+    endYear,
+    simpleAppend
   );
   $("#added-transition-rows").sortable();
   transitionRowI++;

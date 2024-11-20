@@ -34,6 +34,7 @@ function storeParams(showSpinner = true, showPopup = true) {
   if (showSpinner === true) {
     setTimeout(() => Map.showSpinner(), 100);
   }
+  urlParams.transitionChartingYears = getTransitionRowData(false);
   urlParams.expectedCode = getCode();
   let res = $.ajax({
     type: "POST",
