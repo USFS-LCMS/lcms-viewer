@@ -1237,8 +1237,9 @@ function setupDropdownTreeDownloads(studyAreaName) {
 function setupDropdownTreeMapDownloads() {
   const att_serverLocation =
     "https://data.fs.usda.gov/geodata/rastergateway/treemap";
-  const rds_serverLocation = "https://s3-us-west-2.amazonaws.com/fs.usda.rds";
-
+  // const rds_serverLocation = "https://s3-us-west-2.amazonaws.com/fs.usda.rds";
+  const rds_serverLocation =
+    "https://usfs-public.box.com/shared/static/yz7h8b8v92scoqfwukjyulokaevzo6v6.zip";
   const attributes = [
     "ALSTK",
     "BALIVE",
@@ -1296,9 +1297,9 @@ function setupDropdownTreeMapDownloads() {
                       <br>
                       <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                       <hr>`);
-    const url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
+    // const url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
     $("#" + dropdownID).append(
-      `<option  value = "${url}">TreeMap${ver}</option>`
+      `<option  value = "${rds_serverLocation}">TreeMap${ver}</option>`
     );
   });
 }
