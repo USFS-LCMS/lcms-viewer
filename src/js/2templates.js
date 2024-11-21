@@ -2777,7 +2777,7 @@ function addSubCollapse(
                                 </div>
                             </div`;
 
-  const collapseDiv = `<div id="${collapseID}" class="panel-collapse collapse panel-body ${show} " role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
+  const collapseDiv = `<div id="${collapseID}" class=" collapse  sub-panel-collapse ${show} " role="tabpanel" aria-labelledby="${collapseLabelID}"></div>`;
   $("#" + containerID).append(collapseTitleDiv);
   $("#" + containerID).append(collapseDiv);
 }

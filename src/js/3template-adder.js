@@ -109,7 +109,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    `<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,
+    `<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>`,
     false,
     null,
     "Adjust parameters used to filter and sort LCMS products"
@@ -354,6 +354,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     2: false,
     3: true,
   };
+  $("#parameters-collapse-div").append(
+    "<br><h5 title = 'LCMS classes can be binned to produce coarser classes with higher map accuracy. By default, LCMS is delivered with the most detailed class level (highest level). You can choose lower levels here to meet different mapping needs. For example, if you only care to show where all the vegetation cover loss is, regardless of its type, choosing Change Classification Level 2 may better suit your needs.'>LCMS Classification Level Selection</h5>"
+  );
   addMultiRadio(
     "parameters-collapse-div",
     "change-levels-radio",
@@ -475,7 +478,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    `<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>`,
+    `<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>`,
     false,
     null,
     "Adjust parameters used to filter and sort LCMS products as well as change how summary areas are selected"
@@ -1125,7 +1128,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
     "Adjust parameters used to filter and sort LCMS base leare products"
@@ -1253,7 +1256,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
     "Adjust parameters used to filter and sort " + mode + " products"
@@ -1640,7 +1643,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
     "Adjust parameters used to filter and sort MTBS products"
@@ -1775,7 +1778,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
     "Adjust parameters used to filter and sort LCMS products"
@@ -1848,7 +1851,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
     "Adjust parameters used to filter and sort LAMDA products"
@@ -1959,7 +1962,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     true,
     null,
     "Adjust parameters used to prepare storm outputs"
@@ -2113,7 +2116,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-label",
     "parameters-collapse-div",
     "PARAMETERS",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     true,
     null,
     "Adjust parameters used to prepare change analysis window"
@@ -2606,7 +2609,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "pre-post-dates-label",
     "pre-post-dates-div",
     "Define 'post' and 'pre' date ranges",
-    '<i role="img" class="fa fa-sliders mr-1" aria-hidden="true"></i>',
+    '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     true,
     null,
     "Select post and pre date ranges for the Hi-Form BMP Tool"

@@ -1184,7 +1184,7 @@ function setupDropdownTreeDownloads(studyAreaName) {
                               <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
                               <br>
                               <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
-                              <hr>`);
+                              `);
 
         if (m === "annual") {
           const years = range(

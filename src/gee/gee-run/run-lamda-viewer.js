@@ -11,7 +11,7 @@ function runLAMDA1() {
   };
   const year = parseInt(urlParams.endYear);
   $("#layer-list-collapse-label-label:first-child").html(
-    "LAMDA Data: " + year.toString()
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg"> LAMDA Data: ${year}`
   );
 
   const bucketName = "lamda-products";
@@ -264,7 +264,7 @@ function runLAMDA2() {
       ? urlParams.startYear
       : `${urlParams.startYear}-${urlParams.endYear}`;
   $("#layer-list-collapse-label-label:first-child").html(
-    `LAMDA Data: ${yrStr}`
+    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg"> LAMDA Data: ${yrStr}`
   );
 
   Map.setQueryTransform([240, 0, -2361915, 0, -240, 3177735]);

@@ -611,7 +611,7 @@ function areaChartCls() {
   };
   //////////////////////////////////////////////////////////////////////////
   // Wrapper to chart the current map extent
-  this.chartMapExtent = function (name = "", originAuto) {
+  this.chartMapExtent = function (name = "", originAuto = false) {
     let mapCoords = Object.values(map.getBounds().toJSON())
       .map((n) =>
         smartToFixed(n, this.chartDecimalProportion, this.chartPrecision)

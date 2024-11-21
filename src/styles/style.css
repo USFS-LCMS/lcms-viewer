@@ -98,7 +98,44 @@ body {
     font-size: 10px !important;
   }
 }
-
+@media (min-width: 1200px) {
+  .custom-col-xl {
+    -ms-flex: 0 0 10%;
+    flex: 0 0 10%;
+    max-width: 10%;
+  }
+}
+@media (min-width: 992px) {
+  .custom-col-lg {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+@media (min-width: 768px) {
+  .custom-col-md {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+@media (min-width: 576px) {
+  .custom-col-sm {
+    -ms-flex: 0 0 41.666667%;
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+  }
+}
+.custom-col-xl,
+.custom-col-lg,
+.custom-col-md,
+.custom-col-sm {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
 /*/ //////////////////////////////////////////////////////*/
 .custom-hidden {
   display: none;
@@ -159,7 +196,7 @@ body {
 .bg-black,
 .btn {
   background-color: var(--black) !important;
-  margin: 0px !important;
+  margin: 0px;
   color: var(--white) !important;
   outline: none !important;
   vertical-align: middle !important;
@@ -1312,10 +1349,13 @@ ul {
   color: #000 !important;
   outline: none !important;
 }
-.panel-collapse .panel-body {
+
+.panel-collapse .panel-body,
+.sub-panel-collapse {
   padding-left: 3rem;
   padding-right: 2rem;
 }
+
 .bg-download-select {
   background-color: var(--deep-brown-10) !important;
   margin: 0px !important;
@@ -1368,7 +1408,9 @@ ul {
 }
 
 .sub-panel-title {
-  padding-top: 0.8em;
+  padding-top: 0.8rem;
+  margin-bottom: 0rem;
+  padding-left: 0.9rem;
 }
 
 .sub-panel-title > a:after {
@@ -1418,10 +1460,12 @@ ul {
   font-size: 1.1em;
   padding-top: 0.35rem;
   padding-bottom: 0.35rem;
-  padding-left: 1rem;
+
   /* border-top: 0.1em solid var(--deep-brown-30); */
 }
-
+.sub-sub-panel-title {
+  padding-left: 1rem;
+}
 .collapse-title {
   color: var(--white);
 }
@@ -1441,7 +1485,12 @@ a:hover {
   font-weight: 1000 !important;
   cursor: pointer;
 }
-
+#parameters-collapse-div > div > .sub-panel-heading {
+  margin-left: -2.5rem;
+}
+#parameters-collapse-div > .sub-panel-collapse {
+  padding-left: 0.5rem;
+}
 .accordion > h5:first-child {
   padding-left: 3rem;
   padding-top: 1rem;
