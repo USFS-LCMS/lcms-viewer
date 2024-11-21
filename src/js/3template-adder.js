@@ -3249,7 +3249,7 @@ if (
   );
   $("#area-chart-params-label").prop(
     "title",
-    "Click here to select which LCMS products to chart, and change which area units are used. "
+    "Click here to select which layers to chart, and change which area units are used. "
   );
   addDropdown(
     "area-chart-params-div",
@@ -3281,7 +3281,7 @@ if (
 
   $("#area-summary-format").prop(
     "title",
-    "Choose how to summarize area- as a percentage of the area, acres, or hectares."
+    "Choose how to summarize area for thematic layers- as a percentage of the area, acres, or hectares."
   );
   addSubAccordianCard(
     "tools-accordian",

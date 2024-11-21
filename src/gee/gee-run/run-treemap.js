@@ -342,6 +342,7 @@ function runTreeMap() {
     // Set up visualization parameters
     const viz = {};
     viz.autoViz = true;
+    viz.includeClassValues = false;
     // // First set up a dictionary so when user queries pixel, the name is returned instead of the value
     // viz["queryDict"] = dict(zippedValuesNames);
 
@@ -353,7 +354,7 @@ function runTreeMap() {
     let colors = [];
     let palette = [];
 
-    // Map.setQueryPrecision(0.1, 3);
+    Map.setQueryPrecision(0.1, 3);
     range(uniqueValues[0], uniqueValues[uniqueValues.length - 1] + 1).map(
       (i) => {
         if (uniqueValues.indexOf(i) > -1) {
@@ -392,7 +393,7 @@ function runTreeMap() {
       chartPrecision: 3,
       chartLabelMaxWidth: 400,
       chartLabelFontSize: 10,
-      minZoomSpecifiedScale: 7,
+      minZoomSpecifiedScale: 4,
     };
     return [attrImg, viz, attr[2], areaChartParams];
   }
@@ -453,7 +454,7 @@ function runTreeMap() {
       chartPrecision: 3,
       chartLabelMaxWidth: 400,
       chartLabelFontSize: 10,
-      minZoomSpecifiedScale: 7,
+      minZoomSpecifiedScale: 4,
     };
     return [attrImg, viz, attr[4], areaChartParams];
   }

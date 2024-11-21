@@ -829,29 +829,30 @@ function areaChartCls() {
       if (selectedObj.shouldUnmask) {
         table[0] = table[0].slice();
       }
+
+      let z = zip(table[0], table[1]);
+      z = cbind(z, colors);
       if (table[0].length > selectedObj.barChartMaxClasses) {
         let totalClases = table[0].length;
         let pctlCut = 1 - selectedObj.barChartMaxClasses / totalClases;
         let values = copyArray(table[1]);
         let min = quantile(values, pctlCut);
-        let z = zip(table[0], table[1]);
-        z = cbind(z, colors);
 
         z = z.filter((r) => r[1] > min);
-        table = [];
-        table.push(z.map((r) => r[0]));
-        table.push(
-          z.map((r) => {
-            return smartToFixed(
-              r[1],
-              selectedObj.chartDecimalProportion,
-              selectedObj.chartPrecision
-            );
-          })
-        );
-        // table.push(z.map((r) => r[2]));
-        colors = z.map((r) => r[2]);
       }
+      table = [];
+      table.push(z.map((r) => r[0]));
+      table.push(
+        z.map((r) =>
+          smartToFixed(
+            r[1],
+            selectedObj.chartDecimalProportion,
+            selectedObj.chartPrecision
+          )
+        )
+      );
+
+      colors = z.map((r) => r[2]);
 
       let maxLabelLen = table[0].map((n) => n.length).max();
       let totalLabelLen = table[0].length;
@@ -1017,6 +1018,18 @@ function areaChartCls() {
     $("#chart-collapse-label-chart-collapse-div").hide();
     this.firstRun = true;
     this.areaChartingOn = false;
+  };
+  this.autoHideAreaTools = function () {
+    if (Object.keys(this.areaChartObj).length === 0) {
+      hideAreaTools();
+    }
+  };
+  this.hideAreaTools = function () {
+    $("#area-tools-title").hide();
+    $("#area-chart-params-label").hide();
+    $("#user-defined-area-chart-label").hide();
+    $("#upload-area-chart-label").hide();
+    $("#select-area-interactive-chart-label").hide();
   };
   //////////////////////////////////////////////////////////////////////////
   // Primary function to handle charting a given area
