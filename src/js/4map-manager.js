@@ -4159,6 +4159,17 @@ function initialize() {
           let runTime = (runEndTime - runStartTime) / 1000;
           console.log(`Run time: ${runTime} seconds`);
           loaded = true;
+
+          if (
+            mode === "geeViz" &&
+            Object.keys(areaChart.areaChartObj).length === 0
+          ) {
+            $("#area-tools-title").hide();
+            $("#area-chart-params-label").hide();
+            $("#user-defined-area-chart-label").hide();
+            $("#upload-area-chart-label").hide();
+            $("#select-area-interactive-chart-label").hide();
+          }
         } catch (err) {
           geeRunError = err;
           console.log(err);
