@@ -87,6 +87,7 @@ function runMTBS() {
     {
       styleParams: {
         color: "00F",
+        fillColor: "0000",
         width: 2,
         lineType: "dashed",
       },
