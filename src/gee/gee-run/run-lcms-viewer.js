@@ -2,8 +2,8 @@ const lcmsLandCoverLookup = [
   [1, "005e00", "1", "Vegetated"],
   [2, "d3bf9b", "2", "Non-Vegetated"],
   [3, "1b1716", "3", "Non-Processing Area Mask"],
-  [1, "005e00", "1.1", "Tree"],
-  [2, "ffff00", "1.2", "Non-Tree"],
+  [1, "005e00", "1.1", "Tree Vegetated"],
+  [2, "ffff00", "1.2", "Non-Tree Vegetated"],
   [3, "d3bf9b", "2.1", "Non-Vegetated"],
   [4, "1b1716", "3.1", "Non-Processing Area Mask"],
   [1, "005e00", "1.1.1", "Tree"],
@@ -488,6 +488,7 @@ function runGTAC() {
           years: lcmsRun.years,
           labelClasses: "layer-label-lcms",
           labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
+          includeClassValues: false,
         },
         "Change Time-Lapse",
         true
@@ -526,6 +527,7 @@ function runGTAC() {
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
+            includeClassValues: false,
           },
           `${tTitle} Start`,
           false
@@ -551,6 +553,7 @@ function runGTAC() {
             reducer: ee.Reducer.mode(),
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
+            includeClassValues: false,
           },
           `${tTitle} End`,
           false
@@ -571,6 +574,7 @@ function runGTAC() {
             eeObjInfo: lcmsRun.props,
             bounds: clientBoundary,
             years: lcmsRun.years,
+            includeClassValues: false,
           },
           `${tTitle} ${timeLapseEnding}`,
           false

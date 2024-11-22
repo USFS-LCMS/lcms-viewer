@@ -341,8 +341,8 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.landCoverLevels = urlParams.landCoverLevels || {
     1: false,
     2: false,
-    3: false,
-    4: true,
+    3: true,
+    4: false,
   };
   urlParams.changeLevels = urlParams.changeLevels || {
     1: false,
