@@ -257,7 +257,9 @@ require([
   }
 
   function load() {
-    ["PuertoRico_USVI", "Southeast_Alaska", "CONUS"].map(function (nm) {
+    ["Hawaii", "PuertoRico_USVI", "Southeast_Alaska", "CONUS"].map(function (
+      nm
+    ) {
       addImageryLayer(
         `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,
         `LCMS Land Cover (${nm})`,
