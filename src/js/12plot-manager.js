@@ -132,7 +132,7 @@ const conus1 = {
 
 const conus2024 = {
   name: "CONUS 2024 Reinterp",
-  path: "./src/data/geojson/CONUS_2024_reinterp_plots_30m_box.json",
+  path: "./src/data/geojson/CONUS_2024_plots_to_reinterp_g_30m_box.json",
   plotIDField: "PLOTID"
 
 }
