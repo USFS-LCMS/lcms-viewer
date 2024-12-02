@@ -1021,7 +1021,7 @@ function areaChartCls() {
   };
   this.autoHideAreaTools = function () {
     if (Object.keys(this.areaChartObj).length === 0) {
-      hideAreaTools();
+      this.hideAreaTools();
     }
   };
   this.hideAreaTools = function () {
