@@ -133,10 +133,8 @@ const conus1 = {
 const conus2024 = {
   name: "CONUS 2024 Reinterp",
   path: "./src/data/geojson/CONUS_2024_plots_to_reinterp_g_30m_box.json",
-  plotIDField: "PLOTID"
-
-}
-
+  plotIDField: "PLOTID",
+};
 const coastalAK = {
   name: "Coastal AK 2020",
   path: "./src/data/geojson/CoastalAK_sample_NEW_g_albers_30m_box.json",
@@ -202,4 +200,5 @@ let plotsGeoJSONs = [
   hiFinal,
   CONUSpractice,
   coastalAKPractice,
+  conus2024,
 ];
