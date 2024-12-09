@@ -4060,7 +4060,7 @@ function initialize() {
     //Set up the correct GEE run function
     geeAuthenticated = true;
     showSplash();
-    ee.data.setWorkloadTag(`${mode}---viewer-exports`.toLowerCase());
+    ee.data.setDefaultWorkloadTag(`${mode}---viewer-exports`.toLowerCase());
     if (geeAuthenticated) {
       $("#main-container").append(staticTemplates.introModal[mode]);
     }
