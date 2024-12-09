@@ -514,7 +514,7 @@ function getIDAndParams(
     fileFormat: fileFormat,
     formatOptions: { noData: noDataValue },
   };
-  console.log(params);
+  // console.log(params);
   //Set up a task and update the spinner
   taskId = ee.data.newTaskId(1);
   return { taskID: taskId, params: params };
@@ -522,7 +522,7 @@ function getIDAndParams(
 
 function exportImages() {
   let exportCRST = $("#export-crs").val() || exportCRS;
-  console.log(exportCRST);
+  // console.log(exportCRST);
 
   let now = new Date().toISOString();
   let date = now.slice(2, 10);

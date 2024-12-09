@@ -2374,7 +2374,7 @@ function addJSONInputTextBox(
   $("#" + containerID).append(`
     <hr>
     <label>${label}</label>
-    <textarea title='${title}' class="form-control json-input-text-box" id="${inputID}"oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
+    <textarea title='${title}' class="form-control json-input-text-box" id="${inputID}" oninput="auto_grow(this)" style='width:90%;'>${JSON.stringify(
     value
   )}</textarea>`);
 

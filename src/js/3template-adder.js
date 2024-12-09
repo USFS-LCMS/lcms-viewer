@@ -1969,13 +1969,23 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#parameters-collapse-div").append(`
-    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table. Then upload that table below. <a href="./src/data/geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
-    <input class = 'file-input my-1' type="file" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
+    <label>Download storm track from <a href="https://www.wunderground.com/hurricane" target="_blank">here</a>. Copy and paste the storm track coordinates into a text editor. Save the table with a .txt extension. Then upload that table below. <a href="./src/data/geojson/michael.txt" download="michael.txt" >Download test data here.</a></label>
+    <input class = 'file-input my-1' type="file" accept=".txt,.TXT" id="stormTrackUpload" name="upload"  style="display: inline-block;" title = "Download storm track from https://www.wunderground.com/hurricane">
     <hr>
     <label>Provide name for storm (optional):</label>
     <input title = 'Provide a name for the storm. The name of the provided storm track file will be used if left blank.'  type="user-selected-area-name" class="form-control" id="storm-name"  placeholder="Name your storm" style='width:80%;'><hr>`);
-  addRangeSlider(
+
+  addSubCollapse(
     "parameters-collapse-div",
+    "advanced-params-label",
+    "advanced-params-div",
+    "Advanced Parameters",
+    "",
+    false,
+    ""
+  );
+  addRangeSlider(
+    "advanced-params-div",
     "Refinement iterations",
     "refinementIterations",
     0,
@@ -1987,7 +1997,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Specify number of iterations to perform a linear interpolation of provided track. A higher number is needed for tracks with fewer real observations"
   );
   addRangeSlider(
-    "parameters-collapse-div",
+    "advanced-params-div",
     "Max distance (km)",
     "maxDistance",
     50,
@@ -1999,7 +2009,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Specify max distance in km from storm track to include in output"
   );
   addRangeSlider(
-    "parameters-collapse-div",
+    "advanced-params-div",
     "Min wind (mph)",
     "minWind",
     0,
@@ -2011,15 +2021,25 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Specify min wind speed in mph to include in output"
   );
 
-  $("#parameters-collapse-div").append(`
+  $("#advanced-params-div").append(`
+        <hr>
+        <label style = 'width:90%'>Tree height is needed to help model the risk of a tree snapping. Ideally, the tree height is representative of the tree height just prior to the storm. By default, we use LandFire Tree Height - 100. Some available images are: 
+          <div style="word-wrap: break-word;">
+            "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/lf_evh_us_prvi_2020_2016"
+            "projects/gtac-hazarddisaster/assets/landfire_CONUS_PRVI_2023_tree_ht"
+          </div>
+        </label>
+       
+        <label>Tree Height Image</label>
+        <textarea   title = 'Provide an image with relevant tree height in meters.'   class="form-control json-input-text-box" id="tree-height-image"   oninput="auto_grow(this)" style='width:90%;height:5rem;'>ee.Image("projects/gtac-hazarddisaster/assets/landfire_CONUS_PRVI_2023_tree_ht")</textarea>
         <hr>
         <label style = 'width:90%'>The MOD of Rupture is intended to indicate how much force it takes to snap a tree. A single value can be provided by providing a constant image (e.g. ee.Image(1)) and a simple lookup to convert that image to a desired MOD of Rupture (e.g. {1:8500}). If different MOD of Rupture values are needed for different tree types, you can provide an EE image that may have tree classes or land cover classes that can then be cross-walked to a MOD of Rupture image with different values for different tree/land cover classes (e.g. ee.Image( "USGS/NLCD_RELEASES/2016_REL/2016" ).select([ 0 ]) with a lookup of {41:8500,42:2000,43:5000,90:4000}</label>
         <hr>
         <label>MOD of Rupture Image</label>
-        <textarea   title = 'Provide an image with relevant land cover/tree classes. Provide a constant raster (ee.Image(1)) if you would like to use a constant'   class="form-control" id="mod-image"   oninput="auto_grow(this)" style='width:90%;'>ee.Image("USGS/NLCD_RELEASES/2016_REL/2016").select([0])</textarea>
+        <textarea   title = 'Provide an image with relevant land cover/tree classes. Provide a constant raster (ee.Image(1)) if you would like to use a constant'   class="form-control json-input-text-box" id="mod-image"   oninput="auto_grow(this)" style='width:90%;'>ee.Image("USGS/NLCD_RELEASES/2016_REL/2016").select([0])</textarea>
         <hr>
         <label>MOD of Rupture Lookup</label>
-        <textarea   title = 'Provide a lookup table to remap each class of the image provided above with a MOD of Rupture value.'  type="user-selected-area-name" class="form-control" id="mod-lookup" oninput="auto_grow(this)" style='width:90%;'>{41:8500, 42:2000, 43:5000, 90:4000}</textarea>
+        <textarea   title = 'Provide a lookup table to remap each class of the image provided above with a MOD of Rupture value.'  type="user-selected-area-name" class="form-control json-input-text-box" id="mod-lookup" oninput="auto_grow(this)" style='width:90%;'>{41:8500, 42:2000, 43:5000, 90:4000}</textarea>
        `);
 
   $("#parameters-collapse-div").append(`<hr>
@@ -2151,7 +2171,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       min: 0.1,
       max: [0.5, 0.6, 0.6],
       bands: "swir2,nir,red",
-      layerType: "geeImage",
       gamma: 1.6,
     };
   }
@@ -2159,7 +2178,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.diffVizParams = {
       min: -0.05,
       max: 0.05,
-      layerType: "geeImage",
       bands: ["brightness", "greenness", "wetness"],
     };
   }
@@ -2255,23 +2273,23 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     urlParams.lcmsTreeMaskClasses
   );
 
-  if (
-    urlParams.cloudMaskMethod === null ||
-    urlParams.cloudMaskMethod === undefined
-  ) {
-    urlParams.cloudMaskMethod = {
-      "S2Cloudless-TDOM": false,
-      "CloudScore+": true,
-    };
-  }
-  addMultiRadio(
-    "advanced-params-div",
-    "cloud-mask-method-radio",
-    "Cloud Masking Method",
-    "cloudMaskMethod",
-    urlParams.cloudMaskMethod,
-    "Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024"
-  );
+  // if (
+  //   urlParams.cloudMaskMethod === null ||
+  //   urlParams.cloudMaskMethod === undefined
+  // ) {
+  //   urlParams.cloudMaskMethod = {
+  //     "S2Cloudless-TDOM": false,
+  //     "CloudScore+": true,
+  //   };
+  // }
+  // addMultiRadio(
+  //   "advanced-params-div",
+  //   "cloud-mask-method-radio",
+  //   "Cloud Masking Method",
+  //   "cloudMaskMethod",
+  //   urlParams.cloudMaskMethod,
+  //   "Choose which cloud and cloud shadow masking method to use. S2 Cloudless and TDOM work well, but TDOM is a bit computationally intensive. cloudScore+ masks clouds and cloud shadows better, but will not be fully available for all Sentinel-2 data until around spring of 2024"
+  // );
 
   addJSONInputTextBox(
     "advanced-params-div",
@@ -2525,7 +2543,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
       .filter(ee.Filter.eq("NAME", selectedCounty));
     selectedLayerId = Map.addLayer(
       selectedFeature,
-      { strokeColor: "0BFFFF", layerType: "geeVectorImage", canQuery: false },
+      { strokeColor: "0BFFFF", canQuery: false },
       `${selectedCounty}, ${stateAbr}`,
       true,
       null,
@@ -2569,7 +2587,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
           selectedFeature,
           {
             strokeColor: "0BFFFF",
-            layerType: "geeVectorImage",
             canQuery: false,
           },
           `${countyName}, ${stateAbr}`,

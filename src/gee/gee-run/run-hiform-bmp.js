@@ -254,18 +254,22 @@ function hiform_bmp_process() {
     urlParams.postDate2
   );
 
-  let pre = superSimpleGetS2(
+  let pre = getImagesLib.superSimpleGetS2(
     geoBounds,
     urlParams.preDate1,
     advanceDate(urlParams.preDate2, 1),
+    1,
+    365,
     correctionTypeOption,
     true
   );
 
-  let post = superSimpleGetS2(
+  let post = getImagesLib.superSimpleGetS2(
     geoBounds,
     urlParams.postDate1,
     advanceDate(urlParams.postDate2, 1),
+    1,
+    365,
     correctionTypeOption,
     true
   );
@@ -320,18 +324,22 @@ function hiform_bmp_process() {
       null,
       `Post date used in composite from ${urlParams.postDate1} to ${urlParams.postDate2} across ${urlParams.selectedCounty}, ${urlParams.selectedState}`
     );
-    let preWClouds = superSimpleGetS2(
+    let preWClouds = getImagesLib.superSimpleGetS2(
       geoBounds,
       urlParams.preDate1,
       advanceDate(urlParams.preDate2, 1),
+      1,
+      365,
       correctionTypeOption,
       false
     );
 
-    let postWClouds = superSimpleGetS2(
+    let postWClouds = getImagesLib.superSimpleGetS2(
       geoBounds,
       urlParams.postDate1,
       advanceDate(urlParams.postDate2, 1),
+      1,
+      365,
       correctionTypeOption,
       false
     );

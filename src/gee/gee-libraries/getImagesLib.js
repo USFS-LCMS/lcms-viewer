@@ -1223,6 +1223,74 @@ function getS1(
 //See default arguments below
 //Required arguments: studyArea,startDate,endDate,startJulian,endJulian
 //Can be called on with parameters as an object or ordered set of parameters
+
+var s2CollectionDict = {
+  TOA: "COPERNICUS/S2_HARMONIZED",
+  SR: "COPERNICUS/S2_SR_HARMONIZED",
+};
+
+var sensorBandDict = {
+  SR: [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B8A",
+    "B9",
+    "B11",
+    "B12",
+  ],
+  TOA: [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B8A",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+  ],
+};
+var sensorBandNameDict = {
+  SR: [
+    "cb",
+    "blue",
+    "green",
+    "red",
+    "re1",
+    "re2",
+    "re3",
+    "nir",
+    "nir2",
+    "waterVapor",
+    "swir1",
+    "swir2",
+  ],
+  TOA: [
+    "cb",
+    "blue",
+    "green",
+    "red",
+    "re1",
+    "re2",
+    "re3",
+    "nir",
+    "nir2",
+    "waterVapor",
+    "cirrus",
+    "swir1",
+    "swir2",
+  ],
+};
 function getS2() {
   var defaultArgs = {
     studyArea: null,
@@ -1240,74 +1308,6 @@ function getS2() {
 
   var args = prepArgumentsObject(arguments, defaultArgs);
   args.toaOrSR = args.toaOrSR.toUpperCase();
-
-  var s2CollectionDict = {
-    TOA: "COPERNICUS/S2_HARMONIZED",
-    SR: "COPERNICUS/S2_SR_HARMONIZED",
-  };
-
-  var sensorBandDict = {
-    SR: [
-      "B1",
-      "B2",
-      "B3",
-      "B4",
-      "B5",
-      "B6",
-      "B7",
-      "B8",
-      "B8A",
-      "B9",
-      "B11",
-      "B12",
-    ],
-    TOA: [
-      "B1",
-      "B2",
-      "B3",
-      "B4",
-      "B5",
-      "B6",
-      "B7",
-      "B8",
-      "B8A",
-      "B9",
-      "B10",
-      "B11",
-      "B12",
-    ],
-  };
-  var sensorBandNameDict = {
-    SR: [
-      "cb",
-      "blue",
-      "green",
-      "red",
-      "re1",
-      "re2",
-      "re3",
-      "nir",
-      "nir2",
-      "waterVapor",
-      "swir1",
-      "swir2",
-    ],
-    TOA: [
-      "cb",
-      "blue",
-      "green",
-      "red",
-      "re1",
-      "re2",
-      "re3",
-      "nir",
-      "nir2",
-      "waterVapor",
-      "cirrus",
-      "swir1",
-      "swir2",
-    ],
-  };
 
   // Specify S2 continuous bands if resampling is set to something other than near
   var s2_continuous_bands = sensorBandNameDict[args.toaOrSR];
@@ -4472,7 +4472,72 @@ function getProcessedSentinel2Scenes() {
 
   return s2s.set(args);
 }
+/////////////////////////////////////////////////////////////////////
+function superSimpleGetS2() {
+  /*
+  This function retrieves Sentinel-2 satellite imagery from Earth Engine for a specified study area and date range.
+  It applies the cloudScore+ algorithm unless told otherwise.
 
+  Args:
+      studyArea (ee.Geometry): An Earth Engine geometry object representing the area of interest.
+      startDate (ee.Date, datetime.datetime, or str): The start date for the image collection in YYYY-MM-DD format.
+      endDate (ee.Date, datetime.datetime, or str): The end date for the image collection in YYYY-MM-DD format.
+      startJulian (int, optional): The start Julian day of the desired data. Defaults to 1.
+      endJulian (int, optional): The end Julian day of the desired data. Defaults to 365.
+      toaOrSR (str, optional): Specifies whether to retrieve data in Top-Of-Atmosphere (TOA) reflectance or Surface Reflectance (SR). Defaults to "TOA".
+      applyCloudScorePlus (bool, optional): Determines whether to apply cloud filtering based on the Cloud Score Plus product. Defaults to True.
+      cloudScorePlusThresh (float, optional): Sets the threshold for cloud cover percentage based on Cloud Score Plus. Images with cloud cover exceeding this threshold will be masked out if `applyCloudScorePlus` is True. A higher value will mask out more pixels (call them cloud/cloud-shadow). Defaults to 0.6.
+      cloudScorePlusScore (str, optional): One of "cs" - Tends to mask out more. Commits ephemeral water, but doesn't omit cloud shadows as much or "cs_cdf" - Tends to mask out less, notably fewer water bodies and shadows. This can result in omitting cloud shadows, but not committing ephemeral water as a cloud shadow. Specifies the band name within the Cloud Score Plus product containing the cloud cover information. Defaults to "cs".
+
+  Returns:
+      ee.ImageCollection: A collection of cloud and cloud-shadow-free Sentinel-2 satellite images filtered by the specified criteria.
+
+
+  
+  */
+  var defaultArgs = {
+    studyArea: null,
+    startDate: null,
+    endDate: null,
+    startJulian: 1,
+    endJulian: 365,
+    toaOrSR: "TOA",
+    applyCloudScorePlus: true,
+    cloudScorePlusThresh: 0.6,
+    cloudScorePlusScore: "cs",
+  };
+  var args = prepArgumentsObject(arguments, defaultArgs);
+
+  args.toaOrSR = args.toaOrSR.toUpperCase();
+  args.startDate = ee.Date(args.startDate);
+  args.endDate = ee.Date(args.endDate);
+
+  s2s = ee
+    .ImageCollection(s2CollectionDict[args.toaOrSR])
+    .filterDate(args.startDate, args.endDate.advance(1, "day"))
+    .filter(ee.Filter.calendarRange(args.startJulian, args.endJulian))
+    .filterBounds(args.studyArea);
+
+  s2s = s2s.select(
+    sensorBandDict[args.toaOrSR],
+    sensorBandNameDict[args.toaOrSR]
+  );
+
+  cloudScorePlus = ee
+    .ImageCollection("GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED")
+    .select([args.cloudScorePlusScore], ["cloudScorePlus"]);
+
+  s2s = s2s.linkCollection(cloudScorePlus, ["cloudScorePlus"]);
+
+  if (args.applyCloudScorePlus === true) {
+    s2s = s2s.map(function (img) {
+      return img.updateMask(
+        img.select(["cloudScorePlus"]).gte(args.cloudScorePlusThresh)
+      );
+    });
+  }
+  return s2s;
+}
 /////////////////////////////////////////////////////////////////////
 //Wrapper function for getting Landsat imagery
 function getSentinel2Wrapper() {
@@ -5898,6 +5963,7 @@ exports.simpleAddTCAngles = simpleAddTCAngles;
 exports.exportCompositeCollection = exportCompositeCollection;
 
 exports.getProcessedLandsatScenes = getProcessedLandsatScenes;
+exports.superSimpleGetS2 = superSimpleGetS2;
 exports.getProcessedSentinel2Scenes = getProcessedSentinel2Scenes;
 exports.getProcessedLandsatAndSentinel2Scenes =
   getProcessedLandsatAndSentinel2Scenes;

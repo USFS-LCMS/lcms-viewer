@@ -107,21 +107,49 @@ function runSequoia() {
     );
   }
 
-  let tdomBuffer = 1;
-  if (urlParams.cloudMaskMethod["CloudScore+"]) {
-    tdomBuffer = 0;
-  }
+  // let tdomBuffer = 1;
+  // if (urlParams.cloudMaskMethod["CloudScore+"]) {
+  //   tdomBuffer = 0;
+  // }
   // Get S2 images for union of date periods
-  const s2s = getImagesLib.getProcessedSentinel2Scenes({
+  // const s2s = getImagesLib.getProcessedSentinel2Scenes({
+  //   studyArea: studyArea,
+  //   startYear: preStartYear - tdomBuffer,
+  //   endYear: postYear + tdomBuffer,
+  //   startJulian: startJulian,
+  //   endJulian: endJulian,
+  //   convertToDailyMosaics: false,
+  //   applyTDOM: urlParams.cloudMaskMethod["S2Cloudless-TDOM"],
+  //   applyCloudScorePlus: urlParams.cloudMaskMethod["CloudScore+"],
+  //   applyCloudProbability: urlParams.cloudMaskMethod["S2Cloudless-TDOM"],
+  // });
+  let startDate = ee.Date(`${preStartYear}-01-01`);
+  // .advance(startJulian - 1, "day");
+  let endDate = ee.Date(`${postYear}-12-31`);
+  // .advance(endJulian - 1, "day");
+  let s2s = getImagesLib.superSimpleGetS2({
     studyArea: studyArea,
-    startYear: preStartYear - tdomBuffer,
-    endYear: postYear + tdomBuffer,
+    startDate: startDate,
+    endDate: endDate,
     startJulian: startJulian,
     endJulian: endJulian,
-    convertToDailyMosaics: false,
-    applyTDOM: urlParams.cloudMaskMethod["S2Cloudless-TDOM"],
-    applyCloudScorePlus: urlParams.cloudMaskMethod["CloudScore+"],
-    applyCloudProbability: urlParams.cloudMaskMethod["S2Cloudless-TDOM"],
+    toaOrSR: "TOA",
+    applyCloudScorePlus: true,
+    cloudScorePlusThresh: 0.6,
+    cloudScorePlusScore: "cs",
+  });
+
+  s2s = s2s.map(function (img) {
+    const d = img.date();
+    img = img
+      .select(["blue", "green", "red", "nir", "swir1", "swir2"])
+      .divide(10000);
+    img = getImagesLib.simpleAddIndices(img);
+    img = getImagesLib.getTasseledCap(img);
+    img = getImagesLib
+      .simpleAddTCAngles(img)
+      .set("system:time_start", d.millis());
+    return img;
   });
 
   // Filter out pre and post images
