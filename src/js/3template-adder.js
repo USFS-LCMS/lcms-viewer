@@ -2024,14 +2024,14 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   $("#advanced-params-div").append(`
         <hr>
         <label style = 'width:90%'>Tree height is needed to help model the risk of a tree snapping. Ideally, the tree height is representative of the tree height just prior to the storm. By default, we use LandFire Tree Height - 100. Some available images are: 
-          <div style="word-wrap: break-word;">
-            "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/lf_evh_us_prvi_2020_2016"
-            "projects/gtac-hazarddisaster/assets/landfire_CONUS_PRVI_2023_tree_ht"
-          </div>
+          <ul class = 'selectable-text-list' >
+            <li>ee.Image("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/LANDFIRE/lf_evh_us_prvi_2020_2016")</li>
+            <li>ee.Image("projects/gtac-hazarddisaster/assets/landfire_CONUS_PRVI_2023_tree_ht").add(100)</li>
+          </ul>
         </label>
        
         <label>Tree Height Image</label>
-        <textarea   title = 'Provide an image with relevant tree height in meters.'   class="form-control json-input-text-box" id="tree-height-image"   oninput="auto_grow(this)" style='width:90%;height:5rem;'>ee.Image("projects/gtac-hazarddisaster/assets/landfire_CONUS_PRVI_2023_tree_ht")</textarea>
+        <textarea   title = 'Provide an image with relevant tree height in meters.'   class="form-control json-input-text-box" id="tree-height-image"   oninput="auto_grow(this)" style='width:90%;height:5rem;'>ee.Image("projects/gtac-hazarddisaster/assets/landfire_CONUS_PRVI_2023_tree_ht").add(100)</textarea>
         <hr>
         <label style = 'width:90%'>The MOD of Rupture is intended to indicate how much force it takes to snap a tree. A single value can be provided by providing a constant image (e.g. ee.Image(1)) and a simple lookup to convert that image to a desired MOD of Rupture (e.g. {1:8500}). If different MOD of Rupture values are needed for different tree types, you can provide an EE image that may have tree classes or land cover classes that can then be cross-walked to a MOD of Rupture image with different values for different tree/land cover classes (e.g. ee.Image( "USGS/NLCD_RELEASES/2016_REL/2016" ).select([ 0 ]) with a lookup of {41:8500,42:2000,43:5000,90:4000}</label>
         <hr>

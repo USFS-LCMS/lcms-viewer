@@ -1643,7 +1643,12 @@ textarea {
   min-height: 4rem;
   max-height: 10rem;
 }
-
+.selectable-text-list {
+  word-wrap: break-word;
+  user-select: text;
+  padding-left: 1rem;
+  color: var(--deep-brown-100);
+}
 .checkboxList {
   padding-left: 0.2rem;
 }
