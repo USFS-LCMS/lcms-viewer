@@ -21,7 +21,7 @@ function levelSymbology() {
     [4, "b3ff1a", "1.1.1.4", "Grass/Forb/Herb & Tree Mix"],
     [5, "99ff99", "1.1.1.5", "Barren & Tree Mix"],
     [6, "b30088", "1.2.1.1", "Tall Shrub (SEAK Only)"],
-    [7, "e68a00", "1.2.1.2", "Shrubs"],
+    [7, "e68a00", "1.2.1.2", "Shrub"],
     [8, "ffad33", "1.2.1.3", "Grass/Forb/Herb & Shrub Mix"],
     [9, "ffe0b3", "1.2.1.4", "Barren & Shrub Mix"],
     [10, "ffff00", "1.2.2.1", "Grass/Forb/Herb"],
