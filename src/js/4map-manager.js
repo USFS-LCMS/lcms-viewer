@@ -2555,6 +2555,9 @@ function reRun() {
     showMessage("Loading Updated Layers", staticTemplates.loadingModal[mode]);
   }
 
+  // Retain transition rows
+  urlParams.transitionChartingYears = getTransitionRowData(false);
+
   setGEERunID();
 
   //Clean out current map, legend, etc

@@ -110,7 +110,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "parameters-collapse-div",
     "PARAMETERS",
     `<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>`,
-    false,
+    true,
     null,
     "Adjust parameters used to filter and sort LCMS products"
   );
@@ -384,6 +384,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Choose what level to show for Land Use. Lower levels will bin classes together. Level 2 is a great starting point."
   );
   $("#land-use-levels-radio").css("padding-bottom", "0.75rem");
+
+  if (urlParams.levelColorPickers === true) {
+    $("#parameters-collapse-div").append(
+      '<div id = "level-collapse-container" style="margin-left:-2.75rem;margin-bottom:1rem;"></div>'
+    );
+  }
   $("#advanced-radio-container").append(`<hr>`);
   $("#parameters-collapse-div").append(staticTemplates.reRunButton);
 

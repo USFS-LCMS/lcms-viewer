@@ -1487,6 +1487,7 @@ a:hover {
 }
 #parameters-collapse-div > div > .sub-panel-heading {
   margin-left: -2.5rem;
+  margin-bottom: 1rem;
 }
 #parameters-collapse-div > .sub-panel-collapse {
   padding-left: 0.5rem;
@@ -1571,6 +1572,22 @@ a:hover {
   width: 2.1em;
   border: 0.1em solid black;
   vertical-align: middle !important;
+}
+
+.class-color-pickers {
+  max-width: 7rem;
+  height: 1.15rem;
+  background-color: var(--deep-brown-10);
+
+  border: 0px;
+}
+
+.class-color-pickers-table {
+  border-bottom: 1px solid black !important;
+  font-size: 0.85rem;
+}
+.class-color-pickers-table > thead {
+  text-align: center;
 }
 
 /* .drawing-mode-selector{} */

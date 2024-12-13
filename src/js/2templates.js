@@ -1824,33 +1824,95 @@ function getRadio(id, label, name1, name2, variable, value1, value2) {
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Provide color picker and allow updating of drawn polygons
+jscolor.presets.default = {
+  // Defaults for all pickers on page
+  position: "right",
+  previewSize: 24,
+  //width: 140,
+  //height: 140,
+  //paletteCols: 8,
+  //hideOnPaletteClick: true,
+  palette: [
+    "#000000",
+    "#7d7d7d",
+    "#870014",
+    "#ec1c23",
+    "#ff7e26",
+    "#fef100",
+    "#22b14b",
+    "#00a1e7",
+    "#3f47cc",
+    "#a349a4",
+    "#ffffff",
+    "#c3c3c3",
+    "#b87957",
+    "#feaec9",
+    "#ffc80d",
+    "#eee3af",
+    "#b5e61d",
+    "#99d9ea",
+    "#7092be",
+    "#c8bfe7",
+
+    "005e00",
+    "008000",
+    "00cc00",
+    "b3ff1a",
+    "99ff99",
+    "b30088",
+    "e68a00",
+    "ffad33",
+    "ffe0b3",
+    "ffff00",
+    "aa7700",
+    "d3bf9b",
+    "ffffff",
+    "4780f3",
+
+    "efff6b",
+    "ff2ff8",
+    "1b9d0c",
+    "97ffff",
+    "a1a1a1",
+    "c2b34a",
+
+    "3d4551",
+    "00a398",
+    "f39268",
+    "d54309",
+    "1b1716",
+  ],
+};
 function updateDistanceColor(jscolor) {
-  distancePolylineOptions.strokeColor = "#" + jscolor;
+  jscolor = jscolor[0] === "#" ? jscolor : "#" + jscolor;
+  distancePolylineOptions.strokeColor = jscolor;
   if (distancePolyline !== undefined) {
     distancePolyline.setOptions(distancePolylineOptions);
   }
 }
 function updateUDPColor(jscolor) {
-  udpOptions.strokeColor = "#" + jscolor;
+  jscolor = jscolor[0] === "#" ? jscolor : "#" + jscolor;
+  udpOptions.strokeColor = jscolor;
   Object.keys(udpPolygonObj).map(function (k) {
     udpPolygonObj[k].setOptions(udpOptions);
   });
 }
 function updateAreaColor(jscolor) {
-  areaPolygonOptions.strokeColor = "#" + jscolor;
+  jscolor = jscolor[0] === "#" ? jscolor : "#" + jscolor;
+  console.log(jscolor);
+  areaPolygonOptions.strokeColor = jscolor;
   Object.keys(areaPolygonObj).map(function (k) {
     areaPolygonObj[k].setOptions(areaPolygonOptions);
-    // console.log(areaPolygonObj[k]);
   });
 }
 function addColorPicker(containerID, pickerID, updateFunction, value) {
   if (value === undefined || value === null) {
-    value = "FFFF00";
+    value = "00FF88";
   }
-  $("#" + containerID)
-    .append(`<button id = '${pickerID}' data-toggle="tooltip" title="If needed, change the color of shape you are drawing"
-							    class=" fa fa-paint-brush text-dark color-button jscolor {valueElement:null,value:'${value}',onFineChange:'${updateFunction}(this)'} "
-							    ></button>`);
+
+  $("#" + containerID).append(
+    `<button class="fa fa-paint-brush text-dark color-button" data-jscolor="{backgroundColor:'#372e2c', width:150, value:'#${value}', onInput: '${updateFunction}(this.toHEXString())'}"></button>`
+  );
 }
 
 //Functions to add and change content of BS modals
@@ -2760,9 +2822,11 @@ function addSubCollapse(
   collapseLabel,
   collapseLabelIcon,
   show,
-  onclick
+  onclick,
+  title
 ) {
   let collapsed;
+  title = title || "";
   if (show === true || show === "true" || show === "show") {
     show = "show";
     collapsed = "";
@@ -2771,7 +2835,7 @@ function addSubCollapse(
     collapsed = "collapsed";
   }
 
-  const collapseTitleDiv = `<div >
+  const collapseTitleDiv = `<div title = "${title}">
                                 <div   class="sub-panel-heading " role="tab" id="${collapseLabelID}" onclick = '${onclick}'>
 	                           <h5 class="sub-panel-title ${collapsed}" data-toggle="collapse"  href="#${collapseID}" aria-expanded="false" aria-controls="${collapseID}" > <a class = 'collapse-title' >${collapseLabelIcon} ${collapseLabel} </a></h5>
                                 </div>
