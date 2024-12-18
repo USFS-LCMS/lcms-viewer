@@ -424,6 +424,13 @@ if (
       if (event.ctrlKey) {
         console.log("Right or ctrl mouse clicked");
         console.log(step[2]);
+        ga(
+          "send",
+          "event",
+          `${mode}-shepherd-tour-started`,
+          "ctrl-click",
+          step[2]
+        );
         tour.show(step[5]);
       }
     });
@@ -451,6 +458,8 @@ if (
     $(".modal-backdrop").remove();
     if (!tour.isActive()) {
       tour.start();
+      console.log("here");
+      ga("send", "event", `${mode}-shepherd-tour-started`, "splash-screen");
     }
   }
   if (mode === "lcms-dashboard") {

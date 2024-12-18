@@ -34,6 +34,7 @@ function storeParams(showSpinner = true, showPopup = true) {
   if (showSpinner === true) {
     setTimeout(() => Map.showSpinner(), 100);
   }
+
   urlParams.transitionChartingYears = getTransitionRowData(false);
   urlParams.mode = mode;
   urlParams.sourceURL = baseUrl();
@@ -48,7 +49,9 @@ function storeParams(showSpinner = true, showPopup = true) {
   if (res.statusText === "OK") {
     let id = res.responseText;
     console.log(id);
+
     fullShareURL = `${baseUrl()}?id=${id}`;
+    ga("send", "event", mode + "-share", fullShareURL, id);
     setUrl(fullShareURL);
     copyToClipBoard(fullShareURL, showPopup);
   }
