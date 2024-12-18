@@ -36,6 +36,7 @@ function storeParams(showSpinner = true, showPopup = true) {
   }
   urlParams.transitionChartingYears = getTransitionRowData(false);
   urlParams.mode = mode;
+  urlParams.sourceURL = baseUrl();
   urlParams.expectedCode = getCode();
   let res = $.ajax({
     type: "POST",
@@ -193,6 +194,12 @@ function getCode(dt) {
   dt = dt !== undefined ? new Date(dt) : new Date();
   const d = dt.toISOString().split("T")[0].replaceAll("-", "");
   return rand_from_seed(d);
+}
+function getCode2(dt) {
+  dt = dt !== undefined ? new Date(dt) : new Date();
+  return `${parseInt(
+    dt.toISOString().split("T")[0].replaceAll("-", "")
+  ).toString(32)}`;
 }
 function parseUrlSearch() {
   let urlParamsStr = window.location.search;
