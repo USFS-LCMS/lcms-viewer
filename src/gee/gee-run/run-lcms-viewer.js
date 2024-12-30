@@ -2080,3 +2080,13 @@ function runDynamic() {
 
 //   Map.turnOnInspector();
 // };
+
+// runGTAC = function () {
+//   let img = ee.Image(1).rename("t");
+//   img = img.set({
+//     t_class_names: ["trees", "water"],
+//     t_class_values: [1, 2],
+//     t_class_palette: ["008800", "000088"],
+//   });
+//   Map.addLayer(img, { autoViz: true });
+// };

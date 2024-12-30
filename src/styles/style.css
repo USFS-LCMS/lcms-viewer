@@ -10,7 +10,7 @@
 
   --foo: true;
 
-  --deep-brown-10: #d6d1ca;
+  --deep-brown-10: #edeae3; /*original: #edeae3*/
   --deep-brown-20: #bfb7b0;
   --deep-brown-30: #aca199;
   --deep-brown-50: #968b83;
@@ -400,8 +400,9 @@ table {
 }
 .input-group-prepend > .search-box {
   padding-top: 0.5rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  /* width: 2rem; */
+  /* padding-left: 0.5rem; */
+  /* padding-right: 0.5rem; */
 }
 #forward-view-button {
   border-radius: 0px 3px 3px 0px;
@@ -753,7 +754,14 @@ div.dataTables_info {
 .pac-container {
   background-color: var(--deep-brown-20);
 }
-
+.input-group-text,
+.form-control {
+  border: none;
+}
+.share-and-location-buttons {
+  width: 1.8rem;
+  margin-left: 2rem;
+}
 .hr {
   height: 1px;
   border: none;
@@ -983,13 +991,12 @@ td {
   z-index: 2;
 }
 
-.legend div span {
+/* .legend div span {
   display: inline-block;
   height: 0.9em;
   margin-right: 0.3em;
   width: 0.9em;
-  font-size: 0.9em;
-}
+} */
 
 .legend-title {
   text-align: left;
@@ -998,39 +1005,37 @@ td {
   font-size: 0.9rem;
 }
 
-.my-legend .legend-scale ul {
+.legend .legend-row-container ul {
   margin: 0;
-  margin-bottovm: 0.3em;
   padding: 0;
   float: left;
   list-style: none;
 }
 
-.my-legend .legend-scale ul li {
-  font-size: 80%;
-  list-style: none;
+.legend .legend-row-container ul li {
+  font-size: 0.75rem;
   margin-left: 0;
-  line-height: 1em;
-  margin-bottom: 0.3em;
+  line-height: 0.75rem;
+  margin-bottom: 0.25rem;
 }
 
-.my-legend ul.legend-labels li span {
+.legend ul.legend-labels li span {
   display: block;
   float: left;
-  height: 1em;
-  width: 2em;
-  margin-right: 0.3em;
+  height: 0.75rem;
+  width: 1.5rem;
+  margin-right: 0.3rem;
   margin-left: 0;
   border: 1px solid #999;
 }
 
-.my-legend .legend-source {
+.legend .legend-source {
   font-size: 70%;
   color: #999;
   clear: both;
 }
 
-.my-legend a {
+.legend a {
   color: #777;
 }
 

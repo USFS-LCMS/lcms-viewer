@@ -1,98 +1,149 @@
 function levelSymbology() {
   this.colorUIAdded = false;
-  this.lcmsLandCoverLookup = [
-    [1, "005e00", "1", "Vegetated"],
-    [2, "d3bf9b", "2", "Non-Vegetated"],
-    [3, "1b1716", "3", "Non-Processing Area Mask"],
-    [1, "005e00", "1.1", "Tree Vegetated"],
-    [2, "ffff00", "1.2", "Non-Tree Vegetated"],
-    [3, "d3bf9b", "2.1", "Non-Vegetated"],
-    [4, "1b1716", "3.1", "Non-Processing Area Mask"],
-    [1, "005e00", "1.1.1", "Tree"],
-    [2, "e68a00", "1.2.1", "Shrub"],
-    [3, "ffff00", "1.2.2", "Grass/Forb/Herb"],
-    [4, "d3bf9b", "2.1.1", "Barren or Impervious"],
-    [5, "ffffff", "2.1.2", "Snow or Ice"],
-    [6, "4780f3", "2.1.3", "Water"],
-    [7, "1b1716", "3.1.1", "Non-Processing Area Mask"],
-    [1, "005e00", "1.1.1.1", "Tree"],
-    [2, "008000", "1.1.1.2", "Tall Shrub & Tree Mix (SEAK Only)"],
-    [3, "00cc00", "1.1.1.3", "Shrub & Tree Mix"],
-    [4, "b3ff1a", "1.1.1.4", "Grass/Forb/Herb & Tree Mix"],
-    [5, "99ff99", "1.1.1.5", "Barren & Tree Mix"],
-    [6, "b30088", "1.2.1.1", "Tall Shrub (SEAK Only)"],
-    [7, "e68a00", "1.2.1.2", "Shrub"],
-    [8, "ffad33", "1.2.1.3", "Grass/Forb/Herb & Shrub Mix"],
-    [9, "ffe0b3", "1.2.1.4", "Barren & Shrub Mix"],
-    [10, "ffff00", "1.2.2.1", "Grass/Forb/Herb"],
-    [11, "aa7700", "1.2.2.2", "Barren & Grass/Forb/Herb Mix"],
-    [12, "d3bf9b", "2.1.1.1", "Barren or Impervious"],
-    [13, "ffffff", "2.1.2.1", "Snow or Ice"],
-    [14, "4780f3", "2.1.3.1", "Water"],
-    [15, "1b1716", "3.1.1.1", "Non-Processing Area Mask"],
-  ];
+  this.originalDefaultProductLevelLookups = {
+    Land_Cover: {
+      1: [1, "005E00", "Vegetated"],
+      2: [2, "D3BF9B", "Non-Vegetated"],
+      3: [3, "1B1716", "Non-Processing Area Mask"],
+      1.1: [1, "005E00", "Tree Vegetated"],
+      1.2: [2, "FFFF00", "Non-Tree Vegetated"],
+      2.1: [3, "D3BF9B", "Non-Vegetated"],
+      3.1: [4, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1": [1, "005E00", "Tree"],
+      "1.2.1": [2, "E68A00", "Shrub"],
+      "1.2.2": [3, "FFFF00", "Grass/Forb/Herb"],
+      "2.1.1": [4, "D3BF9B", "Barren or Impervious"],
+      "2.1.2": [5, "FFFFFF", "Snow or Ice"],
+      "2.1.3": [6, "4780F3", "Water"],
+      "3.1.1": [7, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1.1": [1, "005E00", "Tree"],
+      "1.1.1.2": [2, "008000", "Tall Shrub & Tree Mix (SEAK Only)"],
+      "1.1.1.3": [3, "00CC00", "Shrub & Tree Mix"],
+      "1.1.1.4": [4, "B3FF1A", "Grass/Forb/Herb & Tree Mix"],
+      "1.1.1.5": [5, "99FF99", "Barren & Tree Mix"],
+      "1.2.1.1": [6, "B30088", "Tall Shrub (SEAK Only)"],
+      "1.2.1.2": [7, "E68A00", "Shrub"],
+      "1.2.1.3": [8, "FFAD33", "Grass/Forb/Herb & Shrub Mix"],
+      "1.2.1.4": [9, "FFE0B3", "Barren & Shrub Mix"],
+      "1.2.2.1": [10, "FFFF00", "Grass/Forb/Herb"],
+      "1.2.2.2": [11, "AA7700", "Barren & Grass/Forb/Herb Mix"],
+      "2.1.1.1": [12, "D3BF9B", "Barren or Impervious"],
+      "2.1.2.1": [13, "FFFFFF", "Snow or Ice"],
+      "2.1.3.1": [14, "4780F3", "Water"],
+      "3.1.1.1": [15, "1B1716", "Non-Processing Area Mask"],
+    },
+    Change: {
+      1: [1, "3D4551", "Stable"],
+      2: [2, "D54309", "Loss"],
+      3: [3, "1B1716", "Non-Processing Area Mask"],
+      1.1: [1, "3D4551", "Stable"],
+      1.2: [2, "00A398", "Gain"],
+      2.1: [3, "D54309", "Loss"],
+      3.1: [4, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1": [1, "3D4551", "Stable"],
+      "1.2.1": [4, "00A398", "Gain"],
+      "2.1.1": [2, "F39268", "Slow Loss"],
+      "2.1.2": [3, "D54309", "Fast Loss"],
+      "3.1.1": [5, "1B1716", "Non-Processing Area Mask"],
+    },
+    Land_Use: {
+      1: [1, "F88DB9", "Anthropogenic"],
+      2: [2, "1B9D0C", "Non-Anthropogenic"],
+      3: [3, "1B1716", "Non-Processing Area Mask"],
+      1.1: [1, "EFFF6B", "Agriculture"],
+      1.2: [2, "FF2FF8", "Developed"],
+      2.1: [3, "1B9D0C", "Forest"],
+      2.2: [4, "A1A1A1", "Other"],
+      2.3: [5, "C2B34A", "Rangeland or Pasture"],
+      3.1: [6, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1": [1, "EFFF6B", "Agriculture"],
+      "1.2.1": [2, "FF2FF8", "Developed"],
+      "2.1.1": [3, "1B9D0C", "Forest"],
+      "2.2.1": [4, "97FFFF", "Non-Forest Wetland"],
+      "2.2.2": [5, "A1A1A1", "Other"],
+      "2.3.1": [6, "C2B34A", "Rangeland or Pasture"],
+      "3.1.1": [7, "1B1716", "Non-Processing Area Mask"],
+    },
+  };
 
-  this.lcmsChangeLookup = [
-    [1, "3d4551", "1", "Stable"],
-    [2, "d54309", "2", "Loss"],
-    [3, "1b1716", "3", "Non-Processing Area Mask"],
-    [1, "3d4551", "1.1", "Stable"],
-    [2, "00a398", "1.2", "Gain"],
-    [3, "d54309", "2.1", "Loss"],
-    [4, "1b1716", "3.1", "Non-Processing Area Mask"],
-    [1, "3d4551", "1.1.1", "Stable"],
-    [4, "00a398", "1.2.1", "Gain"],
-    [2, "f39268", "2.1.1", "Slow Loss"],
-    [3, "d54309", "2.1.2", "Fast Loss"],
-    [5, "1b1716", "3.1.1", "Non-Processing Area Mask"],
-  ];
-
-  this.lcmsLandUseLookup = [
-    [1, "f88db9", "1", "Anthropogenic"],
-    [2, "1b9d0c", "2", "Non-Anthropogenic"],
-    [3, "1b1716", "3", "Non-Processing Area Mask"],
-    [1, "efff6b", "1.1", "Agriculture"],
-    [2, "ff2ff8", "1.2", "Developed"],
-    [3, "1b9d0c", "2.1", "Forest"],
-    [4, "a1a1a1", "2.2", "Other"],
-    [5, "c2b34a", "2.3", "Rangeland or Pasture"],
-    [6, "1b1716", "3.1", "Non-Processing Area Mask"],
-    [1, "efff6b", "1.1.1", "Agriculture"],
-    [2, "ff2ff8", "1.2.1", "Developed"],
-    [3, "1b9d0c", "2.1.1", "Forest"],
-    [4, "97ffff", "2.2.1", "Non-Forest Wetland"],
-    [5, "a1a1a1", "2.2.2", "Other"],
-    [6, "c2b34a", "2.3.1", "Rangeland or Pasture"],
-    [7, "1b1716", "3.1.1", "Non-Processing Area Mask"],
-  ];
+  this.newDefaultProductLevelLookups = {
+    Land_Cover: {
+      1: [1, "61BB46", "Vegetated"],
+      2: [2, "58646E", "Non-Vegetated"],
+      3: [3, "1B1716", "Non-Processing Area Mask"],
+      1.1: [1, "004E2B", "Tree Vegetated"],
+      1.2: [2, "8DA463", "Non-Tree Vegetated"],
+      2.1: [3, "D4D4D3", "Non-Vegetated"],
+      3.1: [4, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1": [1, "004E2B", "Tree"],
+      "1.2.1": [2, "F89A1C", "Shrub"],
+      "1.2.2": [3, "E5E98A", "Grass/Forb/Herb"],
+      "2.1.1": [4, "D4D4D3", "Barren or Impervious"],
+      "2.1.2": [5, "E4F5FD", "Snow or Ice"],
+      "2.1.3": [6, "00B6F0", "Water"],
+      "3.1.1": [7, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1.1": [1, "004E2B", "Tree"],
+      "1.1.1.2": [2, "009344", "Tall Shrub & Tree Mix (SEAK Only)"],
+      "1.1.1.3": [3, "61BB46", "Shrub & Tree Mix"],
+      "1.1.1.4": [4, "E5E98A", "Grass/Forb/Herb & Tree Mix"],
+      "1.1.1.5": [5, "8B8560", "Barren & Tree Mix"],
+      "1.2.1.1": [6, "CAFD4B", "Tall Shrub (SEAK Only)"],
+      "1.2.1.2": [7, "F89A1C", "Shrubs"],
+      "1.2.1.3": [8, "8FA55F", "Grass/Forb/Herb & Shrub Mix"],
+      "1.2.1.4": [9, "BEBB8E", "Barren & Shrub Mix"],
+      "1.2.2.1": [10, "FFFF00", "Grass/Forb/Herb"],
+      "1.2.2.2": [11, "DDB925", "Barren & Grass/Forb/Herb Mix"],
+      "2.1.1.1": [12, "D4D4D3", "Barren or Impervious"],
+      "2.1.2.1": [13, "E4F5FD", "Snow or Ice"],
+      "2.1.3.1": [14, "00B6F0", "Water"],
+      "3.1.1.1": [15, "1B1716", "Non-Processing Area Mask"],
+    },
+    Change: {
+      1: [1, "3D4551", "Stable"],
+      2: [2, "D54309", "Loss"],
+      3: [3, "1B1716", "Non-Processing Area Mask"],
+      1.1: [1, "3D4551", "Stable"],
+      1.2: [2, "00A398", "Gain"],
+      2.1: [3, "D54309", "Loss"],
+      3.1: [4, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1": [1, "3D4551", "Stable"],
+      "1.2.1": [4, "00A398", "Gain"],
+      "2.1.1": [2, "F39268", "Slow Loss"],
+      "2.1.2": [3, "D54309", "Fast Loss"],
+      "3.1.1": [5, "1B1716", "Non-Processing Area Mask"],
+    },
+    Land_Use: {
+      1: [1, "FF9EAB", "Anthropogenic"],
+      2: [2, "004E2B", "Non-Anthropogenic"],
+      3: [3, "1B1716", "Non-Processing Area Mask"],
+      1.1: [1, "FBFF97", "Agriculture"],
+      1.2: [2, "E6558B", "Developed"],
+      2.1: [3, "004E2B", "Forest"],
+      2.2: [4, "D4D4D3", "Other"],
+      2.3: [5, "A6976A", "Rangeland or Pasture"],
+      3.1: [6, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1": [1, "FBFF97", "Agriculture"],
+      "1.2.1": [2, "E6558B", "Developed"],
+      "2.1.1": [3, "004E2B", "Forest"],
+      "2.2.1": [4, "36C5B2", "Non-Forest Wetland"],
+      "2.2.2": [5, "D4D4D3", "Other"],
+      "2.3.1": [6, "A6976A", "Rangeland or Pasture"],
+      "3.1.1": [7, "1B1716", "Non-Processing Area Mask"],
+    },
+  };
   this.products = ["Land_Cover", "Land_Use", "Change"];
-  this.initializeLookup = function () {
-    if (urlParams.productLevelLookups === undefined) {
-      urlParams.productLevelLookups = {};
-      urlParams.productLevelLookups["Land_Cover"] = {};
-      urlParams.productLevelLookups["Change"] = {};
-      urlParams.productLevelLookups["Land_Use"] = {};
-      this.lcmsLandCoverLookup.map(
-        (r) =>
-          (urlParams.productLevelLookups["Land_Cover"][r[2]] = [
-            r[0],
-            r[1],
-            r[3],
-          ])
-      );
-      this.lcmsLandUseLookup.map(
-        (r) =>
-          (urlParams.productLevelLookups["Land_Use"][r[2]] = [r[0], r[1], r[3]])
-      );
-      this.lcmsChangeLookup.map(
-        (r) =>
-          (urlParams.productLevelLookups["Change"][r[2]] = [r[0], r[1], r[3]])
-      );
+
+  if (urlParams.productLevelLookups === undefined) {
+    if (
+      urlParams.originalColors !== undefined &&
+      urlParams.originalColors === true
+    ) {
+      urlParams.productLevelLookups = this.originalDefaultProductLevelLookups;
+    } else {
+      urlParams.productLevelLookups = this.newDefaultProductLevelLookups;
     }
-  };
-  this.printIt = function (message) {
-    console.log(message);
-  };
+  }
+
   this.setupUI = function () {
     $("#level-collapse-container").empty();
 
@@ -211,8 +262,6 @@ function levelSymbology() {
     });
   };
   this.initialize = function () {
-    this.initializeLookup();
-
     this.propsHighest = Object.assign(
       {},
       this.getLevelNRemap(3, (bandName = "Land_Use")).viz_dict,

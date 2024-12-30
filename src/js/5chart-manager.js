@@ -437,8 +437,8 @@ const getQueryImages = function (lng, lat) {
         chartWidthC = 550;
       }
       const plotLayout = {
-        plot_bgcolor: "#D6D1CA",
-        paper_bgcolor: "#D6D1CA",
+        plot_bgcolor: "#edeae3",
+        paper_bgcolor: "#edeae3",
         font: {
           family: "Roboto Condensed, sans-serif",
         },

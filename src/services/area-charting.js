@@ -48,7 +48,7 @@ function areaChartCls() {
   this.layerSelectID = "area-chart-layer-select";
   this.listeners = [];
 
-  this.plot_bgcolor = "#D6D1CA";
+  this.plot_bgcolor = "#edeae3";
   this.plot_font = "Roboto Condensed, sans-serif";
   this.areaChartingOn = false;
   this.autoChartingOn = false;

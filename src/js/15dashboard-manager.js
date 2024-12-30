@@ -569,8 +569,8 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
         t: 30,
         pad: 50,
       },
-      paper_bgcolor: "#D6D1CA",
-      plot_bgcolor: "#D6D1CA",
+      paper_bgcolor: "#edeae3",
+      plot_bgcolor: "#edeae3",
       autosize: false,
       height: plotHeight,
       width: plotWidth,
@@ -723,7 +723,7 @@ function makeDashboardCharts(layer, whichOne, annualOrTransition) {
           },
         },
         chartArea: {
-          backgroundColor: "#D6D1CA",
+          backgroundColor: "#edeae3",
         },
         scales: {
           yAxes: [

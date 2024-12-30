@@ -157,15 +157,15 @@ h5 {
 #downloadTree {
   color: var(--solid-black);
 }
-.my-legend ul.legend-labels li span {
+.legend ul.legend-labels li span {
   width: 1rem;
 }
-.my-legend ul.legend-labels li p {
+.legend ul.legend-labels li p {
   font-size: 0.75rem;
   margin-top: 1px;
   margin-bottom: 1px;
 }
-.my-legend {
+.legend {
   /* margin-left: -2.5rem; */
   margin-top: 0.25rem;
   position: absolute;

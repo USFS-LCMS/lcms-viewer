@@ -1827,7 +1827,7 @@ function addToMap(
         legend.helpBoxMessage = helpBox;
 
         legend.classColor = viz.classLegendDict[lk];
-        legend.classStrokeColor = "999";
+        legend.classStrokeColor = "968b83";
         legend.classStrokeWeight = 1;
         legend.className = lk;
         legend.lineType = "solid";

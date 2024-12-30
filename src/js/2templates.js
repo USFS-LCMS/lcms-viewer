@@ -246,9 +246,9 @@ const staticTemplates = {
 		            </li>`,
   placesSearchDiv: `<section id = 'search-share-div' class="input-group  text-center search-bar" '>
 			            <div role='list' class="input-group-prepend">
-                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box " id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
-	    					<button onclick = 'storeParams()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box" id="share-button"><i class="fa fa-share-alt teal "></i></button>
-                            <buttom class="input-group-text bg-white search-box" id="search-icon"><i class="fa fa-search text-black "></i></buttom>
+                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box share-and-location-buttons " id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
+	    					<button onclick = 'storeParams()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box share-and-location-buttons" id="share-button"><i class="fa fa-share-alt teal "></i></button>
+                            <buttom class="input-group-text bg-white search-box " id="search-icon"><i class="fa fa-search text-black "></i></buttom>
 	  					</div>
 			            <input id = 'pac-input' class="form-control bg-white search-box" title = 'Search for places on the map' type="text" placeholder="Search Places">
                         <div class="input-group-prepend">
@@ -3053,18 +3053,18 @@ function addClassLegendContainer(
   classLegendTitle,
   obj
 ) {
-  $("#" + legendContainerID).append(`<div class='my-legend'>
+  $("#" + legendContainerID).append(`<div class='legend'>
 										<div class = 'legend-title ${obj.labelClasses}'>${obj.labelIconHTML} ${classLegendTitle}</div>
-										<div class='legend-scale'>
+										<div class='legend-row-container'>
 									  		<ul class='legend-labels' id = '${classLegendContainerID}'></ul>
 										</div>
 									</div>`);
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='border: ${obj.classStrokeWeight}px ${obj.lineType} #${
-      obj.classStrokeColor
-    };background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
+    `<li><span style='background:${addColorHash(obj.classColor)};'></span>${
+      obj.className
+    }</li>`
   );
 }
 
