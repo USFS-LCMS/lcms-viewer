@@ -793,6 +793,11 @@ function cacheUserDefinedAreaChartingAOI() {
     }
   });
   urlParams.userDefinedAreaChartingAOI = cachedArea;
+  if ($("#user-defined-area-name").val() !== "") {
+    urlParams.userDefinedAreaChartingAOIName = $(
+      "#user-defined-area-name"
+    ).val();
+  }
 }
 function retrieveCachedUserDefinedAreaChartingAOI() {
   if (urlParams.userDefinedAreaChartingAOI) {
@@ -936,6 +941,7 @@ function chartUserDefinedArea() {
         "Please draw polygons on map. Double-click to finish drawing polygon. Once all polygons have been drawn, click the <kbd>Chart Selected Areas</kbd> button to create chart."
       );
     } else {
+      cacheUserDefinedAreaChartingAOI();
       userArea = ee.FeatureCollection(userArea);
       let udpName = $("#user-defined-area-name").val();
       if (udpName === "") {

@@ -3328,6 +3328,9 @@ if (
     `toggleTool(toolFunctions.area.userDefined)`,
     staticTemplates.userDefinedAreaChartTipHover
   );
+  if (urlParams.userDefinedAreaChartingAOIName) {
+    $("#user-defined-area-name").val(urlParams.userDefinedAreaChartingAOIName);
+  }
   addSubAccordianCard(
     "tools-accordian",
     "upload-area-chart-label",
