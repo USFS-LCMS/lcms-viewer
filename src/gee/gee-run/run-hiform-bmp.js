@@ -524,6 +524,14 @@ function hiform_bmp_process() {
       {},
       0
     );
+    Map.addExport(
+      diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
+      `Forest NDVI Change For Colormap ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+      10,
+      false,
+      {},
+      0
+    );
 
     Map.addExport(
       post.select(["red", "green", "blue", "nir"]).int16(),

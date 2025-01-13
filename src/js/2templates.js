@@ -178,7 +178,7 @@ const staticTemplates = {
   mainContainer: `<main aria-label="Main container to contain all elements" class = 'container main-container' id = 'main-container'></main>`,
   sidebarLeftToggler: `<img  title = 'Click to toggle sidebar visibility' class='sidebar-toggler' src='./src/assets/images/menu-hamburger_ffffff.svg' onclick = 'toggleSidebar()' >`,
   sidebarLeftContainer: `
-						<nav onclick = "$('#study-area-list').hide();" class = ' col-sm-6 col-md-4 col-lg-3  sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
+						<nav onclick = "$('#study-area-list').hide();" class = ' col-sm-6 col-md-4 col-xl-3  sidebar  p-0 m-0 flexcroll  ' id = 'sidebar-left-container'>
 
 					        <header id = 'sidebar-left-header'>
                                 
@@ -244,19 +244,16 @@ const staticTemplates = {
 		                <div class="dropdown-menu" id="study-area-list">  
 		                </div>
 		            </li>`,
-  placesSearchDiv: `<section id = 'search-share-div' class="input-group  text-center search-bar" '>
-			            <div role='list' class="input-group-prepend">
-                            <button onclick = 'getLocation()' title = 'Click to center map at your location' class=" btn input-group-text bg-white search-box share-and-location-buttons " id="get-location-button"><i class="fa fa-map-marker text-black "></i></button>
-	    					<button onclick = 'storeParams()' title = 'Click to share your current view' class=" btn input-group-text bg-white search-box share-and-location-buttons" id="share-button"><i class="fa fa-share-alt teal "></i></button>
-                            <buttom class="input-group-text bg-white search-box " id="search-icon"><i class="fa fa-search text-black "></i></buttom>
-	  					</div>
-			            <input id = 'pac-input' class="form-control bg-white search-box" title = 'Search for places on the map' type="text" placeholder="Search Places">
-                        <div class="input-group-prepend">
-                            <button onclick = 'backView()' title = 'Click to go back a view' class=" btn input-group-text bg-white search-box " id="back-view-button"><i  class="fa fa-chevron-left teal "></i></button>
-                            <button onclick = 'forwardView()' title = 'Click to go forward a view'  class=" btn input-group-text bg-white search-box " id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
-                        </div>
-                    </section>
-                    <p class = 'mt-0 mb-1 text-center white' style = 'display:none;font-size:1.25rem;font-weight:bold' id = 'time-lapse-year-label'></p>`,
+  placesSearchDiv: `
+  <section class="btn-group  search-bar" >
+    <button type="button" onclick = 'getLocation()'  class="btn"><i class="fa fa-map-marker text-black "></i></button>
+    <button type="button" onclick = 'storeParams()' class="btn" id="share-button"><i class="fa fa-share-alt teal "></i></button>
+    <button type="button" class="btn "><i class="fa fa-search text-black "></i></button>
+    <input id = 'pac-input' align="left" class="btn" title = 'Search for places on the map' type="text" placeholder="Search Places">
+    <button onclick = 'backView()' title = 'Click to go back a view' class=" btn" id="back-view-button"><i  class="fa fa-chevron-left teal "></i></button>
+                              <button onclick = 'forwardView()' title = 'Click to go forward a view'  class=" btn" id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
+  </section>`,
+
   introModal: {
     LCMS: getIntroModal(
       "./src/assets/images/lcms-icon.png",
@@ -879,7 +876,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                           </li>
                                         </ul>`,
   TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='ml-4 pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h4>`,
-  TreeMapDownloadDiv: `<h4 id = 'treemap-conus-download-header' class='ml-4 pt-2'>CONUS Datasets</h4>
+  TreeMapDownloadDiv: `<p class = 'pt-2'>There are two ways to download TreeMap data within this application. The first is to download the entire CONUS dataset for any attribute or the original Research Dataset (TreeMap_ID in the layers, RDS in the dropdown menu). The second is to draw a custom area of interest on the map and select individual attributes or the original TreeMap_ID to download. 
+  
+  If you only need a small area (about < 100,000 acres), a custom download is likley best. If you need a larger area, simply downloading the CONUS datasets and clipping as you need is the best option. 
+  
+  If you do choose to download a custom area over a large area, the export from Google Earth Engine will break up the exported image after about 500,000 acres or so. You will then end up with multiple files to download and mosaic. </p>
+                    <h4 id = 'treemap-conus-download-header' class='ml-4 pt-2'>CONUS Datasets</h4>
                       <ul id="downloadTree" class="ml-4 pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
@@ -2303,7 +2305,7 @@ function addHiFormExport(containerDiv) {
                         <hr>
                         <div >
                             
-                            <div class = 'ml-4 pt-1 pb-3' >
+                            <div class = 'ml-4 pt-1' >
                                 <div id = 'export-button-div'>
                                     <button class = 'btn' onclick = 'exportImages()' title = 'Click to export selected data from GEE'><i class="pr-1 fa fa-cloud-download" aria-hidden="true"></i>Export</button>
                                     <button class = 'btn' onclick = 'cancelAllTasks()' title = 'Click to cancel all active exports'><i class="pr-1 fa fa-close" aria-hidden="true"></i>Cancel All Exports</button>
@@ -4500,14 +4502,13 @@ function setupTransitionPeriodUI(containerID = "transition-periods-container") {
           <table class="table " id="transition-period-table">
               <thead>
                   <tr>
-                      
-                      <th class="text-center">
-                          First Year
-                      </th>
-                      <th class="text-center">
-                          Last Year
-                      </th>
-                      
+                    <th class="text-center"></th>
+                    <th class="text-center">
+                        First Year
+                    </th>
+                    <th class="text-center">
+                        Last Year
+                    </th>
                   </tr>
               </thead>
               
@@ -4516,7 +4517,7 @@ function setupTransitionPeriodUI(containerID = "transition-periods-container") {
      
           </table>
 
-  <div class="input-group-prepend pl-2">
+  <div class="input-group-prepend ">
                           <button title = 'Click to add a transition period' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="add-transition-row" onclick="addTransitionRow()"><i class="fa fa-plus teal " ></i></button>
 
                           <button title = 'Click to remove a transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="remove-transition-row" onclick="removeLastTransitionRow()"><i class="fa fa-minus teal "></i></button>
@@ -4543,7 +4544,7 @@ let transitionRowI = 0;
 function addRow(containerID, rowID, yr1, yr2, simpleAppend = false) {
   let rows = $(`#${containerID} tr`);
   const row = `<tr id='${rowID}'>
-
+  <td title = 'Click to drag each row to re-order'><i class="fa fa-sort teal "></i></td>
   <td>
   <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr1}' placeholder='Enter Year' class="form-control"/>
   </td>
@@ -4558,7 +4559,7 @@ function addRow(containerID, rowID, yr1, yr2, simpleAppend = false) {
   }
 
   $(`#${rowID}`).append(`<td>
-    <button title = 'Click to remove this transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="removeRow('${rowID}')" id="${rowID}-remove-transition-row"><i class="fa fa-close teal "></i></button>
+  <button title = 'Click to remove this transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" onclick="removeRow('${rowID}')" id="${rowID}-remove-transition-row"><i class="fa fa-close teal "></i></button>
   </td>`);
 }
 

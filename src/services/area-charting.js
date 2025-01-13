@@ -48,7 +48,7 @@ function areaChartCls() {
   this.layerSelectID = "area-chart-layer-select";
   this.listeners = [];
 
-  this.plot_bgcolor = "#edeae3";
+  this.plot_bgcolor = "#d6d1ca";
   this.plot_font = "Roboto Condensed, sans-serif";
   this.areaChartingOn = false;
   this.autoChartingOn = false;
@@ -550,6 +550,7 @@ function areaChartCls() {
     coordOrder = ["west", "north", "east", "south"]
   ) {
     let coordJSON = map.getBounds().toJSON();
+
     return coordOrder
       .map((k) => coordJSON[k])
       .map((n) =>

@@ -3955,6 +3955,12 @@ function initialize() {
       }
     }
   });
+  function handlePrimeMeridian(coordJSON) {
+    if (coordJSON.west > coordJSON.east) {
+      coordJSON.east = 360 + coordJSON.east;
+    }
+    return coordJSON;
+  }
   function trackViewChange() {
     zoom = map.getZoom();
     const mapCenter = map.getCenter();
@@ -3966,7 +3972,8 @@ function initialize() {
 
     trackView();
 
-    const coords = Object.values(map.getBounds().toJSON());
+    let coords = handlePrimeMeridian(map.getBounds().toJSON());
+    coords = Object.values(coords);
     updateMousePositionAndZoom(mouseLng, mouseLat, zoom, lastElevation);
     try {
       eeBoundsPoly = ee.Geometry.Rectangle(
@@ -4241,7 +4248,7 @@ function initialize() {
           "<hr>Access Token Error",
           `There seems to be an issue with the access token.<br>
           The access token used is ${authTokenAge} old.<br>
-        This token should be valid for about an hour or so
+        This token should be valid for about an hour or so.
         If the access token is invalid, most likely it's expired. First, try rerunning the geeViz code to create a new token.`
         );
       }
