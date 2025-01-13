@@ -775,88 +775,73 @@ function restartUserDefinedAreaCarting(e) {
     e.key == "d" ||
     e.key == "Backspace"
   ) {
+    urlParams.userDefinedAreaChartingAOI = null;
     areaChartingTabSelect(whichAreaDrawingMethod);
     areaChart.clearCharts();
     updateUserDefinedAreaArea();
   }
 }
+function cacheUserDefinedAreaChartingAOI() {
+  let cachedArea = {};
+  Object.keys(udpPolygonObj).map((k) => {
+    let t = udpPolygonObj[k]
+      .getPath()
+      .getArray()
+      .map((c) => [c.lng().round(6), c.lat().round(6)]);
+    if (t.length > 0) {
+      cachedArea[k] = t;
+    }
+  });
+  urlParams.userDefinedAreaChartingAOI = cachedArea;
+}
+function retrieveCachedUserDefinedAreaChartingAOI() {
+  if (urlParams.userDefinedAreaChartingAOI) {
+    Object.keys(urlParams.userDefinedAreaChartingAOI).map((k) => {
+      let coords = urlParams.userDefinedAreaChartingAOI[k].map((c) => {
+        return { lng: c[0], lat: c[1] };
+      });
+
+      udpPolygonObj[k] = new google.maps.Polygon(udpOptions);
+      udpPolygonObj[k].setPath(coords);
+      udpPolygonObj[k].setMap(map);
+      udpPolygonObj[k].setEditable(false);
+      udpPolygonObj[k].setDraggable(false);
+      udpPolygonNumber = parseInt(k);
+    });
+    updateUserDefinedAreaArea();
+  }
+}
 function undoUserDefinedAreaCharting(e) {
   if (e === undefined || (e.key == "z" && e.ctrlKey)) {
-    try {
-      udpPolygonObj[udpPolygonNumber].getPath().pop(1);
-    } catch (err) {
+    if (udpPolygonObj[udpPolygonNumber].getPath().getArray().length === 0) {
       udpPolygonNumber--;
       if (udpPolygonNumber < 1) {
         udpPolygonNumber = 1;
+        restartUserDefinedAreaCarting();
         showMessage("Error!", "No more vertices to undo");
       }
-      udpPolygonObj[udpPolygonNumber].getPath().pop(1);
     }
+    udpPolygonObj[udpPolygonNumber].getPath().pop(1);
+
     updateUserDefinedAreaArea();
   }
 }
 function startUserDefinedAreaCharting() {
-  map.setOptions({ draggableCursor: "crosshair" });
-  map.setOptions({ disableDoubleClickZoom: true });
-  google.maps.event.clearListeners(mapDiv, "dblclick");
-  google.maps.event.clearListeners(mapDiv, "click");
-  window.addEventListener("keydown", restartUserDefinedAreaCarting);
-  window.addEventListener("keydown", undoUserDefinedAreaCharting);
-  try {
-    udp.setMap(null);
-  } catch (err) {}
-  udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
-
-  udpPolygonObj[udpPolygonNumber].setMap(map);
-  google.maps.event.addListener(
-    udpPolygonObj[udpPolygonNumber],
-    "click",
-    updateUserDefinedAreaArea
-  );
-  google.maps.event.addListener(
-    udpPolygonObj[udpPolygonNumber],
-    "mouseup",
-    updateUserDefinedAreaArea
-  );
-  google.maps.event.addListener(
-    udpPolygonObj[udpPolygonNumber],
-    "dragend",
-    updateUserDefinedAreaArea
-  );
-
-  mapHammer = new Hammer(document.getElementById("map"));
-  mapHammer.on("tap", function (event) {
-    const path = udpPolygonObj[udpPolygonNumber].getPath();
-    const x = event.center.x;
-    const y = event.center.y;
-    clickLngLat = point2LatLng(x, y);
-    path.push(clickLngLat);
-    updateUserDefinedAreaArea();
-  });
-
-  mapHammer.on("doubletap", function () {
-    const path = udpPolygonObj[udpPolygonNumber].getPath();
-    udpPolygonObj[udpPolygonNumber].setMap(null);
-    udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
-    udpPolygonObj[udpPolygonNumber].setPath(path);
-    udpPolygonObj[udpPolygonNumber].setMap(map);
-    google.maps.event.addListener(
-      udpPolygonObj[udpPolygonNumber],
-      "click",
-      updateUserDefinedAreaArea
-    );
-    google.maps.event.addListener(
-      udpPolygonObj[udpPolygonNumber],
-      "mouseup",
-      updateUserDefinedAreaArea
-    );
-    google.maps.event.addListener(
-      udpPolygonObj[udpPolygonNumber],
-      "dragend",
-      updateUserDefinedAreaArea
-    );
-    udpPolygonNumber++;
+  if (urlParams.userDefinedAreaChartingAOI) {
+    retrieveCachedUserDefinedAreaChartingAOI();
+    chartUserDefinedArea();
+  } else {
+    map.setOptions({ draggableCursor: "crosshair" });
+    map.setOptions({ disableDoubleClickZoom: true });
+    google.maps.event.clearListeners(mapDiv, "dblclick");
+    google.maps.event.clearListeners(mapDiv, "click");
+    window.addEventListener("keydown", restartUserDefinedAreaCarting);
+    window.addEventListener("keydown", undoUserDefinedAreaCharting);
+    try {
+      udp.setMap(null);
+    } catch (err) {}
     udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
+
     udpPolygonObj[udpPolygonNumber].setMap(map);
     google.maps.event.addListener(
       udpPolygonObj[udpPolygonNumber],
@@ -874,8 +859,60 @@ function startUserDefinedAreaCharting() {
       updateUserDefinedAreaArea
     );
 
-    updateUserDefinedAreaArea();
-  });
+    mapHammer = new Hammer(document.getElementById("map"));
+    mapHammer.on("tap", function (event) {
+      const path = udpPolygonObj[udpPolygonNumber].getPath();
+      const x = event.center.x;
+      const y = event.center.y;
+      clickLngLat = point2LatLng(x, y);
+      path.push(clickLngLat);
+      updateUserDefinedAreaArea();
+    });
+
+    mapHammer.on("doubletap", function () {
+      const path = udpPolygonObj[udpPolygonNumber].getPath();
+      udpPolygonObj[udpPolygonNumber].setMap(null);
+      udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
+      udpPolygonObj[udpPolygonNumber].setPath(path);
+      udpPolygonObj[udpPolygonNumber].setMap(map);
+      cacheUserDefinedAreaChartingAOI();
+      google.maps.event.addListener(
+        udpPolygonObj[udpPolygonNumber],
+        "click",
+        updateUserDefinedAreaArea
+      );
+      google.maps.event.addListener(
+        udpPolygonObj[udpPolygonNumber],
+        "mouseup",
+        updateUserDefinedAreaArea
+      );
+      google.maps.event.addListener(
+        udpPolygonObj[udpPolygonNumber],
+        "dragend",
+        updateUserDefinedAreaArea
+      );
+      udpPolygonNumber++;
+      udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
+      udpPolygonObj[udpPolygonNumber].setMap(map);
+      google.maps.event.addListener(
+        udpPolygonObj[udpPolygonNumber],
+        "click",
+        updateUserDefinedAreaArea
+      );
+      google.maps.event.addListener(
+        udpPolygonObj[udpPolygonNumber],
+        "mouseup",
+        updateUserDefinedAreaArea
+      );
+      google.maps.event.addListener(
+        udpPolygonObj[udpPolygonNumber],
+        "dragend",
+        updateUserDefinedAreaArea
+      );
+
+      updateUserDefinedAreaArea();
+    });
+  }
 }
 function chartUserDefinedArea() {
   try {
