@@ -210,6 +210,7 @@ const staticTemplates = {
                                 <button id = 'select-export-area-btn' class = 'btn' onclick = 'selectExportArea()' title = 'Needed for image exports. Draw polygon by clicking on map. Double-click to complete polygon, press ctrl+z to undo most recent point, press Delete or Backspace to start over.'><i class="pr-1 fa fa-pencil" aria-hidden="true"></i> Draw area to download</button>
                                 <a href="#" onclick = 'undoExportArea()' title = 'Click to undo last drawn point (ctrl z)'><i class="btn fa fa-undo"></i></a>
                                 <a href="#" onclick = 'deleteExportArea()' title = 'Click to clear current drawing'><i class="btn fa fa-trash"></i></a>
+                                <div id = 'user-defined-export-feature-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                             </div>
                             <hr>  
                             <div class = 'pt-1 pb-3' >
@@ -875,20 +876,24 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                             </ul>
                                           </li>
                                         </ul>`,
-  TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='ml-4 pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>Data Clipping</h4>`,
-  TreeMapDownloadDiv: `<p class = 'pt-2'>There are two ways to download TreeMap data within this application. The first is to download the entire CONUS dataset for any attribute or the original Research Dataset (TreeMap_ID in the layers, RDS in the dropdown menu). The second is to draw a custom area of interest on the map and select individual attributes or the original TreeMap_ID to download. 
+  TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='ml-4 pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>2) Custom Area of Interest Download</h4>`,
+  TreeMapDownloadDiv: `<p class = 'pt-2'>There are two ways to download TreeMap data within this application: 
+  <ul>
+  <li>1) Download the entire CONUS-wide dataset for any attribute or the original Research Dataset (TreeMap_ID in the layers, RDS (TreeMap_ID) in the dropdown menu).</li>
+  <li>2) Draw a custom area of interest on the map and select individual attributes or the original TreeMap_ID to download. Note: The custom area of interest download option lacks ISO metadata and standard symbology you will find in the CONUS-wide downloads.</li>
+  </ul>
   
-  If you only need a small area (about < 100,000 acres), a custom download is likley best. If you need a larger area, simply downloading the CONUS datasets and clipping as you need is the best option. 
+  If you only need a small area (about < 5,000,000 acres / 2,000,000 hectares), a custom download is likely best. If you need a larger area, simply downloading the CONUS-wide datasets and clipping as you need is the best option. 
   
   If you do choose to download a custom area over a large area, the export from Google Earth Engine will break up the exported image after about 500,000 acres or so. You will then end up with multiple files to download and mosaic. </p>
-                    <h4 id = 'treemap-conus-download-header' class='ml-4 pt-2'>CONUS Datasets</h4>
+                    <h4 id = 'treemap-conus-download-header' class='ml-4 pt-2'>1) CONUS-wide Download</h4>
                       <ul id="downloadTree" class="ml-4 pl-0 mb-0" title="Click through available TreeMap products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
                                         <li class="pl-0"><span class="caret caret-down">2016</span>
                                           <ul class="nested active">
-                                            <li><span class="caret" title="Download individual attributes of TreeMap.">Individual Attributes</span>
+                                            <li><span class="caret" title="Download CONUS-wide individual attributes of TreeMap.">Individual Attributes</span>
                                               <ul class="nested" id="TreeMap2016-attribute-downloads"></ul>
                                             </li>
-                                            <li><span class="caret" title="Download the full TreeMap RDS.">RDS</span>
+                                            <li><span class="caret" title="Download CONUS-wide full TreeMap RDS (TreeMap_ID).">RDS (TreeMap_ID)</span>
                                               <ul class="nested" id="TreeMap2016-rds-downloads"></ul>
                                             </li>
                                           </ul>

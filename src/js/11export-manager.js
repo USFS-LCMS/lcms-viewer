@@ -147,9 +147,11 @@ function deleteExportArea() {
   exportArea = new google.maps.Polyline(exportAreaPolylineOptions);
   $("#select-export-area-btn").removeClass("btn-on");
   setMapCursor();
+  updateExportAreaArea();
 }
 function undoExportArea() {
   exportArea.getPath().pop(1);
+  updateExportAreaArea();
 }
 function deleteLastExportVertex(e) {
   if (e.key == "z" && e.ctrlKey) {
@@ -169,8 +171,34 @@ function resetExportArea(e) {
 }
 let exportActiveTools = [];
 let exportAreaHammer;
+let exportAreaArea = 0;
+let exportAreaTooBigWarningShown = false;
+function updateExportAreaArea() {
+  exportAreaArea =
+    exportArea === undefined
+      ? 0
+      : google.maps.geometry.spherical.computeArea(exportArea.getPath());
 
+  $("#user-defined-export-feature-area").html(
+    (exportAreaArea * 0.0001).formatNumber() +
+      " hectares / " +
+      (exportAreaArea * 0.000247105).formatNumber() +
+      " acres"
+  );
+  if (
+    exportAreaArea * 0.000247105 > 10000000 &&
+    exportAreaTooBigWarningShown === false
+  ) {
+    showMessage(
+      "Warning!",
+      `You have selected an area for export greater than 10,000,000 acres. Downloading areas this large will likely result in multiple download tiles you will then need to mosaic.`
+    );
+    exportAreaTooBigWarningShown = true;
+  }
+}
 function selectExportArea() {
+  exportAreaTooBigWarningShown = false;
+  updateExportAreaArea();
   try {
     deleteExportArea();
   } catch (err) {}
@@ -192,6 +220,7 @@ function selectExportArea() {
     const y = event.center.y;
     clickLngLat = point2LatLng(x, y);
     path.push(clickLngLat);
+    updateExportAreaArea();
   });
   $("#select-export-area-btn").addClass("btn-on");
 
@@ -201,6 +230,7 @@ function selectExportArea() {
     exportArea = new google.maps.Polygon(exportAreaPolygonOptions);
     exportArea.setPath(path);
     exportArea.setMap(map);
+    updateExportAreaArea();
     window.removeEventListener("keydown", deleteLastExportVertex);
     window.removeEventListener("keydown", resetExportArea);
     google.maps.event.clearListeners(mapDiv, "dblclick");

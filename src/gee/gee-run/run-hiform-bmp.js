@@ -504,12 +504,20 @@ function hiform_bmp_process() {
       null,
       true
     );
+    // Map.addExport(
+    //   diff.select(["NDVI"]).multiply(10000).int16(),
+    //   `Forest NDVI Change Values ${urlParams.selectedCounty}-${urlParams.selectedState}`,
+    //   10,
+    //   false,
+    //   {}
+    // );
     Map.addExport(
-      diff.select(["NDVI"]).multiply(10000).int16(),
+      diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
       `Forest NDVI Change Values ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       10,
       false,
-      {}
+      {},
+      -128
     );
     Map.addExport(
       diff
@@ -519,14 +527,6 @@ function hiform_bmp_process() {
         .toInt8()
         .sldStyle(sld_intervals_ndvi),
       `Forest NDVI Change Photo ${urlParams.selectedCounty}-${urlParams.selectedState}`,
-      10,
-      false,
-      {},
-      0
-    );
-    Map.addExport(
-      diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
-      `Forest NDVI Change For Colormap ${urlParams.selectedCounty}-${urlParams.selectedState}`,
       10,
       false,
       {},
