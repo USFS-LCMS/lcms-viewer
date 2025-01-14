@@ -510,7 +510,7 @@ function hiform_bmp_process() {
     //   10,
     //   false,
     //   {}
-    // );
+    // );;
     Map.addExport(
       diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
       `Forest NDVI Change Values ${urlParams.selectedCounty}-${urlParams.selectedState}`,
