@@ -240,7 +240,7 @@ function levelSymbology() {
     });
 
     const out_lookup = this.getLookup(bandName, the_level);
-
+    //
     return {
       remap_from: fromList,
       remap_to: toList,
