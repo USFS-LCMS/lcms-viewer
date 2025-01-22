@@ -3398,7 +3398,9 @@ if (
     "Click to clear all selected polygons"
   );
 }
-
+if (urlParams.userSelectedAreaChartingAOIName) {
+  $("#user-selected-area-name").val(urlParams.userSelectedAreaChartingAOIName);
+}
 //Sync tooltip toggle
 if (
   localStorage["showToolTipModal-" + mode] == undefined ||

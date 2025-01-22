@@ -30,6 +30,7 @@ function clearSelectedAreas() {
   selectionTracker.seletedFeatureLayerIndices.reverse().map(function (index) {
     map.overlayMapTypes.setAt(index, null);
   });
+  urlParams.userSelectedAreaChartingAOIs = [];
   setupAreaLayerSelection();
   updateSelectedAreasNameList();
   updateSelectedAreaArea();
@@ -40,6 +41,11 @@ function removeLastSelectArea() {
     0,
     selectionTracker.selectedFeatures.length - 1
   );
+  urlParams.userSelectedAreaChartingAOIs =
+    urlParams.userSelectedAreaChartingAOIs.slice(
+      0,
+      urlParams.userSelectedAreaChartingAOIs.length - 1
+    );
   updateSelectedAreasNameList();
   updateSelectedAreaArea();
   const lastIndex =
@@ -95,14 +101,66 @@ function updateSelectedAreaArea() {
   });
 }
 
+function chartCacheduserSelectedAreaChartingAOIs() {
+  if (
+    urlParams.userSelectedAreaChartingAOIs !== undefined &&
+    urlParams.userSelectedAreaChartingAOIs !== null &&
+    urlParams.userSelectedAreaChartingAOIs.length > 0
+  ) {
+    urlParams.userSelectedAreaChartingAOIs.map((l) => {
+      let selectedFeaturesT = selectedFeaturesJSON[l[0]].eeObject.filter(
+        ee.Filter.inList("system:index", l[1])
+      );
+      addSelectedFeaturesToMapWrapper(selectedFeaturesT, l[2], l[0]);
+    });
+    updateSelectedAreasNameList();
+    updateSelectedAreaArea();
+    if (getActiveTools()[0] === "Area Tools-Select an Area on map") {
+      chartSelectedAreas(false);
+    }
+  }
+}
+function addSelectedFeaturesToMapWrapper(selectedFeaturesT, nms, k) {
+  if (simplifyMaxError !== 0) {
+    selectedFeaturesT = ee.FeatureCollection(
+      selectedFeaturesT.map(function (f) {
+        return ee.Feature(f).simplify(simplifyMaxError, crs);
+      })
+    );
+  }
+  selectionTracker.selectedFeatures.push(selectedFeaturesT);
+
+  let layerName =
+    "Selected " +
+    selectedFeaturesJSON[k].layerName +
+    " " +
+    nms.join("-").replaceAll("&", "-");
+  if (simplifyMaxError !== 0) {
+    layerName =
+      "Simplified (" + simplifyMaxError.toString() + "m)- " + layerName;
+  }
+  Map2.addLayer(
+    selectedFeaturesT,
+    { layerType: "geeVectorImage", isSelectedLayer: true },
+    layerName,
+    true,
+    null,
+    null,
+    null,
+    "area-charting-selected-layer-list"
+  );
+}
 function setupAreaLayerSelection() {
   google.maps.event.clearListeners(map, "click");
   selectionTracker.selectedFeatures = [];
   selectionTracker.selectedNames = [];
   selectionTracker.seletedFeatureLayerIndices = [];
+  urlParams.userSelectedAreaChartingAOIs =
+    urlParams.userSelectedAreaChartingAOIs || [];
+
   $("#selected-features-list").empty();
   $("#area-charting-selected-layer-list").empty();
-
+  chartCacheduserSelectedAreaChartingAOIs();
   map.addListener("click", function (event) {
     if (getActiveTools().indexOf("Area Tools-Select an Area on map") > -1) {
       const coords = [event.latLng.lng(), event.latLng.lat()];
@@ -112,46 +170,24 @@ function setupAreaLayerSelection() {
           let selectedFeaturesT = selectedFeaturesJSON[k].eeObject.filterBounds(
             ee.Geometry.Point(coords)
           );
-
+          const selectedFeaturesIDs = ee.List(
+            selectedFeaturesT.aggregate_array("system:index")
+          );
           const namesList = ee.List(selectedFeaturesT.aggregate_array("name"));
-
-          namesList.evaluate(function (nms, failure) {
+          const namesAndIDs = ee.List([selectedFeaturesIDs, namesList, k]);
+          namesAndIDs.evaluate(function (nmsIDs, failure) {
             if (failure !== undefined) {
               showMessage("Error", failure);
             } else {
+              let nms = nmsIDs[1];
+              let IDs = nmsIDs[0];
+              let k = nmsIDs[2];
+
               if (nms.length > 0) {
                 console.log("names " + nms);
-                if (simplifyMaxError !== 0) {
-                  selectedFeaturesT = ee.FeatureCollection(
-                    selectedFeaturesT.map(function (f) {
-                      return ee.Feature(f).simplify(simplifyMaxError, crs);
-                    })
-                  );
-                }
-                selectionTracker.selectedFeatures.push(selectedFeaturesT);
-
-                let layerName =
-                  "Selected " +
-                  selectedFeaturesJSON[k].layerName +
-                  " " +
-                  nms.join("-").replaceAll("&", "-");
-                if (simplifyMaxError !== 0) {
-                  layerName =
-                    "Simplified (" +
-                    simplifyMaxError.toString() +
-                    "m)- " +
-                    layerName;
-                }
-                Map2.addLayer(
-                  selectedFeaturesT,
-                  { layerType: "geeVectorImage", isSelectedLayer: true },
-                  layerName,
-                  true,
-                  null,
-                  null,
-                  null,
-                  "area-charting-selected-layer-list"
-                );
+                urlParams.userSelectedAreaChartingAOIs.push([k, IDs, nms]);
+                unique(urlParams.userSelectedAreaChartingAOIs);
+                addSelectedFeaturesToMapWrapper(selectedFeaturesT, nms, k);
               }
               updateSelectedAreasNameList();
               updateSelectedAreaArea();
@@ -202,7 +238,25 @@ function turnOnSelectGeoJSON() {
     });
   });
 }
-function chartSelectedAreas() {
+$("#user-selected-area-name").on("input", (e) => {
+  if ($("#user-selected-area-name").val() === "") {
+    delete urlParams.userSelectedAreaChartingAOIName;
+  } else {
+    urlParams.userSelectedAreaChartingAOIName = $(
+      "#user-selected-area-name"
+    ).val();
+  }
+});
+$("#user-defined-area-name").on("input", (e) => {
+  if ($("#user-defined-area-name").val() === "") {
+    delete urlParams.userDefinedAreaChartingAOIName;
+  } else {
+    urlParams.userDefinedAreaChartingAOIName = $(
+      "#user-defined-area-name"
+    ).val();
+  }
+});
+function chartSelectedAreas(fromButton = true) {
   const selectedFeatures = ee
     .FeatureCollection(selectionTracker.selectedFeatures)
     .flatten();
@@ -214,9 +268,11 @@ function chartSelectedAreas() {
       showMessage("Error", failure);
     } else if (size !== 0) {
       let title = $("#user-selected-area-name").val();
+
       if (title === "") {
         title = selectionTracker.selectedNames.join(" - ");
       }
+
       Map.centerObject(selectedFeatures, false);
 
       if (Object.keys(areaChart.areaChartObj).length > 0) {
@@ -233,7 +289,7 @@ function chartSelectedAreas() {
           true
         );
       }
-    } else {
+    } else if (fromButton === true) {
       showMessage(
         "Error!",
         "Please select area to chart. Turn on any of the layers and click on polygons to select them.  Then hit the <kbd>Chart Selected Areas</kbd> button."
@@ -769,12 +825,7 @@ function areaChartingTabSelect(target) {
 }
 
 function restartUserDefinedAreaCarting(e) {
-  if (
-    e === undefined ||
-    e.key == "Delete" ||
-    e.key == "d" ||
-    e.key == "Backspace"
-  ) {
+  if (e === undefined || e.key == "Delete" || e.key == "Backspace") {
     urlParams.userDefinedAreaChartingAOI = null;
     areaChartingTabSelect(whichAreaDrawingMethod);
     areaChart.clearCharts();
@@ -793,11 +844,6 @@ function cacheUserDefinedAreaChartingAOI() {
     }
   });
   urlParams.userDefinedAreaChartingAOI = cachedArea;
-  if ($("#user-defined-area-name").val() !== "") {
-    urlParams.userDefinedAreaChartingAOIName = $(
-      "#user-defined-area-name"
-    ).val();
-  }
 }
 function retrieveCachedUserDefinedAreaChartingAOI() {
   if (urlParams.userDefinedAreaChartingAOI) {
@@ -809,12 +855,24 @@ function retrieveCachedUserDefinedAreaChartingAOI() {
       udpPolygonObj[k] = new google.maps.Polygon(udpOptions);
       udpPolygonObj[k].setPath(coords);
       udpPolygonObj[k].setMap(map);
-      udpPolygonObj[k].setEditable(false);
-      udpPolygonObj[k].setDraggable(false);
-      udpPolygonNumber = parseInt(k);
+      // udpPolygonObj[k].setEditable(true);
+      // udpPolygonObj[k].setDraggable(false);
+      udpPolygonNumber = parseInt(k) + 1;
     });
     updateUserDefinedAreaArea();
   }
+}
+function polyConvert(n, mode = "polyline") {
+  const path = udpPolygonObj[n].getPath();
+  udpPolygonObj[n].setMap(null);
+  if (mode === "polyline") {
+    udpPolygonObj[n] = new google.maps.Polyline(udpOptions);
+  } else {
+    udpPolygonObj[n] = new google.maps.Polygon(udpOptions);
+  }
+
+  udpPolygonObj[n].setPath(path);
+  udpPolygonObj[n].setMap(map);
 }
 function undoUserDefinedAreaCharting(e) {
   if (e === undefined || (e.key == "z" && e.ctrlKey)) {
@@ -826,6 +884,7 @@ function undoUserDefinedAreaCharting(e) {
         showMessage("Error!", "No more vertices to undo");
       }
     }
+    polyConvert(udpPolygonNumber, "polyline");
     udpPolygonObj[udpPolygonNumber].getPath().pop(1);
 
     updateUserDefinedAreaArea();
@@ -835,18 +894,68 @@ function startUserDefinedAreaCharting() {
   if (urlParams.userDefinedAreaChartingAOI) {
     retrieveCachedUserDefinedAreaChartingAOI();
     chartUserDefinedArea();
-  } else {
-    map.setOptions({ draggableCursor: "crosshair" });
-    map.setOptions({ disableDoubleClickZoom: true });
-    google.maps.event.clearListeners(mapDiv, "dblclick");
-    google.maps.event.clearListeners(mapDiv, "click");
-    window.addEventListener("keydown", restartUserDefinedAreaCarting);
-    window.addEventListener("keydown", undoUserDefinedAreaCharting);
-    try {
-      udp.setMap(null);
-    } catch (err) {}
-    udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
+  }
+  //  else {
+  map.setOptions({ draggableCursor: "crosshair" });
+  map.setOptions({ disableDoubleClickZoom: true });
+  google.maps.event.clearListeners(mapDiv, "dblclick");
+  google.maps.event.clearListeners(mapDiv, "click");
+  window.addEventListener("keydown", restartUserDefinedAreaCarting);
+  window.addEventListener("keydown", undoUserDefinedAreaCharting);
+  try {
+    udp.setMap(null);
+  } catch (err) {}
+  udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
 
+  udpPolygonObj[udpPolygonNumber].setMap(map);
+  google.maps.event.addListener(
+    udpPolygonObj[udpPolygonNumber],
+    "click",
+    updateUserDefinedAreaArea
+  );
+  google.maps.event.addListener(
+    udpPolygonObj[udpPolygonNumber],
+    "mouseup",
+    updateUserDefinedAreaArea
+  );
+  google.maps.event.addListener(
+    udpPolygonObj[udpPolygonNumber],
+    "dragend",
+    updateUserDefinedAreaArea
+  );
+
+  mapHammer = new Hammer(document.getElementById("map"));
+  mapHammer.on("tap", function (event) {
+    const path = udpPolygonObj[udpPolygonNumber].getPath();
+    const x = event.center.x;
+    const y = event.center.y;
+    clickLngLat = point2LatLng(x, y);
+    path.push(clickLngLat);
+    updateUserDefinedAreaArea();
+    cacheUserDefinedAreaChartingAOI();
+  });
+
+  mapHammer.on("doubletap", function () {
+    polyConvert(udpPolygonNumber, "polygon");
+
+    cacheUserDefinedAreaChartingAOI();
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "click",
+      updateUserDefinedAreaArea
+    );
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "mouseup",
+      updateUserDefinedAreaArea
+    );
+    google.maps.event.addListener(
+      udpPolygonObj[udpPolygonNumber],
+      "dragend",
+      updateUserDefinedAreaArea
+    );
+    udpPolygonNumber++;
+    udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
     udpPolygonObj[udpPolygonNumber].setMap(map);
     google.maps.event.addListener(
       udpPolygonObj[udpPolygonNumber],
@@ -864,60 +973,9 @@ function startUserDefinedAreaCharting() {
       updateUserDefinedAreaArea
     );
 
-    mapHammer = new Hammer(document.getElementById("map"));
-    mapHammer.on("tap", function (event) {
-      const path = udpPolygonObj[udpPolygonNumber].getPath();
-      const x = event.center.x;
-      const y = event.center.y;
-      clickLngLat = point2LatLng(x, y);
-      path.push(clickLngLat);
-      updateUserDefinedAreaArea();
-    });
-
-    mapHammer.on("doubletap", function () {
-      const path = udpPolygonObj[udpPolygonNumber].getPath();
-      udpPolygonObj[udpPolygonNumber].setMap(null);
-      udpPolygonObj[udpPolygonNumber] = new google.maps.Polygon(udpOptions);
-      udpPolygonObj[udpPolygonNumber].setPath(path);
-      udpPolygonObj[udpPolygonNumber].setMap(map);
-      cacheUserDefinedAreaChartingAOI();
-      google.maps.event.addListener(
-        udpPolygonObj[udpPolygonNumber],
-        "click",
-        updateUserDefinedAreaArea
-      );
-      google.maps.event.addListener(
-        udpPolygonObj[udpPolygonNumber],
-        "mouseup",
-        updateUserDefinedAreaArea
-      );
-      google.maps.event.addListener(
-        udpPolygonObj[udpPolygonNumber],
-        "dragend",
-        updateUserDefinedAreaArea
-      );
-      udpPolygonNumber++;
-      udpPolygonObj[udpPolygonNumber] = new google.maps.Polyline(udpOptions);
-      udpPolygonObj[udpPolygonNumber].setMap(map);
-      google.maps.event.addListener(
-        udpPolygonObj[udpPolygonNumber],
-        "click",
-        updateUserDefinedAreaArea
-      );
-      google.maps.event.addListener(
-        udpPolygonObj[udpPolygonNumber],
-        "mouseup",
-        updateUserDefinedAreaArea
-      );
-      google.maps.event.addListener(
-        udpPolygonObj[udpPolygonNumber],
-        "dragend",
-        updateUserDefinedAreaArea
-      );
-
-      updateUserDefinedAreaArea();
-    });
-  }
+    updateUserDefinedAreaArea();
+  });
+  // }
 }
 function chartUserDefinedArea() {
   try {

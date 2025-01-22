@@ -108,7 +108,7 @@ const toolFunctions = {
       title: "Area Tools-Select an Area from Dropdown",
     },
     selectInteractive: {
-      on: 'stopAllTools();areaChart.areaChartingToolName="select";areaChart.setupChartProgress();turnOffVectorLayers();turnOnSelectedLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);',
+      on: 'stopAllTools();areaChart.areaChartingToolName="select";areaChart.setupChartProgress();turnOffVectorLayers();turnOnSelectedLayers();turnOnSelectGeoJSON();areaChartingTabSelect("#user-selected");showTip("SUMMARIZE BY PRE-DEFINED AREA",staticTemplates.selectAreaInteractiveChartTip);', //chartSelectedAreas(false);console.log("here")',
       off: "stopAllTools();turnOffSelectLayers();",
       state: false,
       clickSelector: "#select-area-interactive-chart-label",

@@ -542,7 +542,11 @@ let uri,
   mtbsSummaryMethod;
 
 const selectedFeaturesJSON = {};
-const selectionTracker = {};
+const selectionTracker = {
+  selectedFeatures: {},
+  selectedNames: [],
+  seletedFeatureLayerIndices: [],
+};
 
 let selectionUNID = 1;
 
