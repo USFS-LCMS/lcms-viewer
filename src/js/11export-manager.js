@@ -198,10 +198,13 @@ function updateExportAreaArea() {
     exportAreaArea * 0.000247105 > 10000000 &&
     exportAreaTooBigWarningShown === false
   ) {
-    showMessage(
-      "Warning!",
-      `You have selected an area for export greater than 10,000,000 acres. Downloading areas this large will likely result in multiple download tiles you will then need to mosaic.`
-    );
+    const m =
+      mode === "TreeMap"
+        ? `You have selected an area for export greater than 10,000,000 acres. Downloading areas this large will likely result in multiple download tiles you will then need to mosaic.
+        <br>
+        Please consider the "1) CONUS-wide Download" option.`
+        : `You have selected an area for export greater than 10,000,000 acres. Downloading areas this large will likely result in multiple download tiles you will then need to mosaic.`;
+    showMessage("Warning!", m);
     exportAreaTooBigWarningShown = true;
   }
 }
