@@ -511,16 +511,16 @@ function hiform_bmp_process() {
     //   false,
     //   {}
     // );;
-    Map.addLayer(
-      diff.select(["NDVI"]).multiply(10000).int16(),
-      { min: -1200, max: 1200, palette: "F00,0F0" },
-      "NDVI 16"
-    );
-    Map.addLayer(
-      diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
-      { min: -127, max: 127, palette: "F00,0F0" },
-      "NDVI 8"
-    );
+    // Map.addLayer(
+    //   diff.select(["NDVI"]).multiply(10000).int16(),
+    //   { min: -1200, max: 1200, palette: "F00,0F0" },
+    //   "NDVI 16"
+    // );
+    // Map.addLayer(
+    //   diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
+    //   { min: -12, max: 12, palette: "F00,0F0" },
+    //   "NDVI 8"
+    // );
     Map.addExport(
       diff.select(["NDVI"]).multiply(100).clamp(-127, 127).toInt8(),
       `Forest NDVI Change Values ${urlParams.selectedCounty}-${urlParams.selectedState}`,

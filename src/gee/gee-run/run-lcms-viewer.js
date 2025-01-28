@@ -2082,11 +2082,10 @@ function runDynamic() {
 // };
 
 // runGTAC = function () {
-//   let img = ee.Image(1).rename("t");
-//   img = img.set({
-//     t_class_names: ["trees", "water"],
-//     t_class_values: [1, 2],
-//     t_class_palette: ["008800", "000088"],
-//   });
-//   Map.addLayer(img, { autoViz: true });
+//   let lcms = ee
+//     .ImageCollection("USFS/GTAC/LCMS/v2023-9")
+//     .filter("study_area=='CONUS'")
+//     .limit(10);
+
+//   Map.addTimeLapse(lcms, { autoViz: true });
 // };

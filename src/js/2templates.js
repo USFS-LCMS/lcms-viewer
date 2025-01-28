@@ -2980,7 +2980,7 @@ function addLegendCollapse() {
     `<div id='query-spinner' style = 'display:inline;'>QUERY OUTPUTS 
     </div>
     `,
-    '<i class="fa fa-list  mx-0" aria-hidden="true"></i>',
+    '<i class="fa fa-list  mr-1" aria-hidden="true"></i>',
     true,
     ``,
     "Query Visible Map Layers outputs will appear here"

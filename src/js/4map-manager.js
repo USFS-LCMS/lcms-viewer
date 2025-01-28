@@ -266,6 +266,7 @@ function pauseTimeLapse(id) {
     id = timeLapseID;
   }
   timeLapseID = id;
+
   if (timeLapseObj[timeLapseID].isReady) {
     pauseAll();
     clearActiveButtons();
@@ -360,12 +361,14 @@ function pauseButtonFunction(id) {
   }
 
   timeLapseID = id;
+
   if (timeLapseID !== undefined && timeLapseObj[timeLapseID].isReady) {
     clearAllFrames();
     pauseTimeLapse();
     selectFrame();
     alignTimeLapseCheckboxes();
     timeLapseObj[timeLapseID].state = "paused";
+    urlParams.timeLapseMode = timeLapseObj[timeLapseID].state;
   }
 }
 function pauseAll() {
@@ -417,6 +420,7 @@ function clearAllFrames() {
     $("#" + k + "-pause-button").removeClass("time-lapse-active");
     $("#" + k + "-play-button").removeClass("time-lapse-active");
     timeLapseObj[k].state = "inactive";
+
     slidersT.map(function (s) {
       try {
         setFrameOpacity(s, 0);
@@ -432,6 +436,7 @@ function setSpeed(id, speed) {
     playTimeLapse(id);
   }
 }
+urlParams.timeLapseMode = urlParams.timeLapseMode || "paused";
 function playTimeLapse(id) {
   if (id === null || id === undefined) {
     id = timeLapseID;
@@ -442,6 +447,7 @@ function playTimeLapse(id) {
     clearAllFrames();
     pauseAll();
     timeLapseObj[timeLapseID].state = "play";
+    urlParams.timeLapseMode = timeLapseObj[timeLapseID].state;
     selectFrame(null, null, false);
     if (
       timeLapseObj[id].intervalValue === null ||
@@ -582,6 +588,9 @@ function alignTimeLapseCheckboxes() {
         $("#" + k + "-time-lapse-layer-range-container").slideDown();
         $("#" + k + "-icon-bar").slideDown();
         $("#" + k + "-collapse-label").addClass("time-lapse-label-container");
+        // if (urlParams.timeLapseMode === "play") {
+        //   playTimeLapse();
+        // }
       } else {
         $("#" + k + "-collapse-label").css(
           "background",
@@ -603,10 +612,14 @@ function alignTimeLapseCheckboxes() {
 function timeLapseCheckbox(id) {
   const tObj = timeLapseObj[id];
   const v = tObj.visible;
-
+  console.log(v);
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
-    pauseButtonFunction(id);
+    if (urlParams.timeLapseMode === "paused") {
+      pauseButtonFunction(id);
+    } else {
+      playTimeLapse(id);
+    }
   } else {
     stopTimeLapse(id);
   }
@@ -2386,64 +2399,84 @@ function mp() {
     document.title = title;
   };
   this.turnOnInspector = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Pixel Tools-Query Visible Map Layers") == -1) {
-      $("#query-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Pixel Tools-Query Visible Map Layers") == -1) {
+        $("#query-label").click();
+      }
+    }, 100);
   };
   this.turnOffInspector = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Pixel Tools-Query Visible Map Layers") > -1) {
-      $("#query-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Pixel Tools-Query Visible Map Layers") > -1) {
+        $("#query-label").click();
+      }
+    }, 100);
   };
   this.turnOnAutoAreaCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Area Tools-Map Extent Area Tool") == -1) {
-      $("#map-defined-area-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Area Tools-Map Extent Area Tool") == -1) {
+        $("#map-defined-area-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOffAutoAreaCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Area Tools-Map Extent Area Tool") > -1) {
-      $("#map-defined-area-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Area Tools-Map Extent Area Tool") > -1) {
+        $("#map-defined-area-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOnUserDefinedAreaCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Area Tools-User Defined Area Tool") == -1) {
-      $("#user-defined-area-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Area Tools-User Defined Area Tool") == -1) {
+        $("#user-defined-area-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOffUserDefinedAreaCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Area Tools-User Defined Area Tool") > -1) {
-      $("#user-defined-area-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Area Tools-User Defined Area Tool") > -1) {
+        $("#user-defined-area-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOnSelectionAreaCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Area Tools-Select an Area on map") == -1) {
-      $("#select-area-interactive-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Area Tools-Select an Area on map") == -1) {
+        $("#select-area-interactive-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOffSelectionAreaCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf("Area Tools-Select an Area on map") > -1) {
-      $("#select-area-interactive-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf("Area Tools-Select an Area on map") > -1) {
+        $("#select-area-interactive-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOnTimeSeriesCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf(`Pixel Tools-Query ${mode} Time Series`) == -1) {
-      $("#pixel-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf(`Pixel Tools-Query ${mode} Time Series`) == -1) {
+        $("#pixel-chart-label").click();
+      }
+    }, 100);
   };
   this.turnOffTimeSeriesCharting = function () {
-    let activeTools = getActiveTools();
-    if (activeTools.indexOf(`Pixel Tools-Query ${mode} Time Series`) > -1) {
-      $("#pixel-chart-label").click();
-    }
+    setTimeout(() => {
+      let activeTools = getActiveTools();
+      if (activeTools.indexOf(`Pixel Tools-Query ${mode} Time Series`) > -1) {
+        $("#pixel-chart-label").click();
+      }
+    }, 100);
   };
   this.setQueryCRS = function (newCrs) {
     crs = newCrs;

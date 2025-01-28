@@ -34,21 +34,30 @@ function downloadFiles(id) {
     );
 
     let message = '<ul class = "my-1">';
+    let ji = 0;
     json.map(function (item) {
       message += `<li class = "m-0"><a class = 'intro-modal-links' href = "${item.mediaLink}" target = "_blank">${item.name}</a></li>`;
+      if (
+        mode === "HiForm-BMP" &&
+        item.name.indexOf("Forest_NDVI_Change_Values_") > -1
+      ) {
+        message += `<li title = "Click to download color map for the Forest_NDVI_Change_Values output" class = "m-0"><a class = 'intro-modal-links' href = "./src/assets/palettes/HiForm_ColorMap_v072320.clr" target = "_blank">Color Map for ${item.name} </a></li>`;
+        json.splice(ji + 1, 0, {
+          mediaLink: "./src/assets/palettes/HiForm_ColorMap_v072320.clr",
+          name: "HiForm_ColorMap_v072320.clr",
+        });
+      }
+      ji++;
     });
     message += "</ul>";
+    let completeMessage = `${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`;
     setTimeout(() => {
       if ($("#export-complete-message").hasClass("show")) {
-        appendMessage2(
-          "",
-          `${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
-          "export-complete-message"
-        );
+        appendMessage2("", completeMessage, "export-complete-message");
       } else {
         showMessage(
           "Export Finished",
-          `${id} has successfully exported!<br>The following files are available to download. If you have a popup blocker, you may need to manually download the files by clicking on the links below:<br>${message}`,
+          completeMessage,
           "export-complete-message"
         );
       }

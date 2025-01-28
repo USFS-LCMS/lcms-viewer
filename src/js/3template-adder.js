@@ -49,6 +49,16 @@ if (
     "./src/assets/images/mtbs-logo.png"
   );
   $("#title-banner-icon-right").attr("alt", "MTBS icon");
+} else if (mode === "geeViz") {
+  $("#title-banner-icon-right").remove();
+  $("#title-banner-icon-left").attr(
+    "src",
+    "./src/assets/images/geeViz-logo-light.png"
+  );
+  // $(".title-banner-icon")[1].remove();
+  $("#title-banner-icon-left").css("margin-right", "0.25rem");
+  $("#title-banner-icon-left").css("margin-left", "0.25rem");
+  $(".title-banner-icon").css("margin-right", "0.5rem");
 } else {
   $("#title-banner-icon-right").hide();
 }
