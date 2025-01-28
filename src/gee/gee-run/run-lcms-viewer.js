@@ -474,7 +474,7 @@ function runGTAC() {
       window.nlcdTCC2021 = ee
         .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
         .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
-
+      const studyAreas = ["CONUS", "AK", "PRUSVI", "HI"];
       areaChart.addLayer(
         nlcdTCC2021.select([0, 2]),
         {
@@ -486,7 +486,7 @@ function runGTAC() {
               "NLCD_Percent_Tree_Canopy_Cover",
             ],
 
-            size: nlcdTCCYrs.length,
+            size: nlcdTCCYrs.length * studyAreas.length,
           },
         },
         "NLCD TCC"
