@@ -472,10 +472,9 @@ function runGTAC() {
       window.nlcdTCCYrs = range(minTCCYear, maxTCCYear + 1);
 
       window.nlcdTCC2021 = ee
-        .ImageCollection(
-          "projects/nlcd-tcc/assets/CONUS-TCC/Final-products/2021-4"
-        )
+        .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
         .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
+
       areaChart.addLayer(
         nlcdTCC2021.select([0, 2]),
         {
@@ -1147,46 +1146,49 @@ function runGTAC() {
       );
       if (urlParams.addTCC2021 === true || urlParams.beta === true) {
         nlcdTCC2021 = nlcdTCC2021.select([0]);
-        const lcms = ee
-          .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
-          .filter('study_area=="CONUS"');
-        const props = lcmsRun.props; // lcms.first().toDictionary().getInfo();
-        const change = lcms.select(["Change"]);
-        const changeNames = props["Change_class_names"];
-        const changeValues = props["Change_class_values"];
-        const changeDict = Object.fromEntries(zip(changeValues, changeNames));
-        const lcmsTCC = joinCollections(change, nlcdTCC2021);
 
-        // .aggregate_histogram("year")
-        // .keys()
-        // .getInfo()
-        // .map((n) => parseInt(n));
+        const lcms = ee.ImageCollection(
+          studyAreaDict[studyAreaName].final_collections[0]
+        );
+
+        const change = lcms.select(["Change"]);
+
+        let changeNames = [
+          "Stable",
+          "Slow Loss",
+          "Fast Loss",
+          "Gain",
+          "Non-Processing Area Mask",
+        ];
+        let changeValues = [1, 2, 3, 4, 5];
 
         let tccDiff = [];
         for (let i = 0; i < nlcdTCCYrs.length - 1; i++) {
           const yr1 = nlcdTCCYrs[i];
           const yr2 = nlcdTCCYrs[i + 1];
           const nlcdTCC2021Pre = ee.Image(
-            lcmsTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first()
+            nlcdTCC2021
+              .filter(ee.Filter.calendarRange(yr1, yr1, "year"))
+              .mosaic()
           );
           const nlcdTCC2021Post = ee.Image(
-            lcmsTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first()
+            nlcdTCC2021
+              .filter(ee.Filter.calendarRange(yr2, yr2, "year"))
+              .mosaic()
           );
-          const diff = nlcdTCC2021Post
-            .select(["Science_Percent_Tree_Canopy_Cover"])
-            .subtract(
-              nlcdTCC2021Pre.select(["Science_Percent_Tree_Canopy_Cover"])
-            )
-            .int16();
+          const changePost = change
+            .filter(ee.Filter.calendarRange(yr2, yr2, "year"))
+            .mosaic();
+          const diff = nlcdTCC2021Post.subtract(nlcdTCC2021Pre).int16();
           const diffStack = ee
             .ImageCollection(
-              changeValues.slice(1, 4).map((cv) => {
-                const cb = nlcdTCC2021Post.select(["Change"]).eq(cv);
+              changeValues.slice(1, changeValues.length - 1).map((cv) => {
+                const cb = changePost.eq(cv);
                 return diff.updateMask(cb);
               })
             )
             .toBands()
-            .rename(Object.values(changeDict).slice(1, 4));
+            .rename(changeNames.slice(1, changeNames.length - 1));
           tccDiff.push(diffStack);
         }
         tccDiff = ee.ImageCollection(tccDiff);
