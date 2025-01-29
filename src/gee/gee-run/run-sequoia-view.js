@@ -20,7 +20,7 @@ function runSequoia() {
   $("#table-collapse-div").empty();
   $("#table-collapse-div").append(`<div id="sequoia-mon-loading-div" style="">
     <p>
-      <img style="width:2rem;" class="image-icon fa-spin mr-1" alt="Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
+      <img style="width:2rem;" class="image-icon fa-spin mr-1" alt="Google Earth Engine logo spinner" src="./src/assets/images/gee-logo-light.png">
       Summarizing Giant Sequoia Monitoring Sites
      </p>
     </div>`);

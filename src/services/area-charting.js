@@ -987,7 +987,7 @@ function areaChartCls() {
         $("#query-spinner").append(`
         <div id="areaChart-progress-container" >
         <span style="display: flex;">
-        <img id="query-spinner-img" class="progress-spinner"  src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
+        <img id="query-spinner-img" class="progress-spinner"  src="./src/assets/images/gee-logo-light.png" height="${convertRemToPixels(
           0.8
         )}" alt="GEE logo image">
         

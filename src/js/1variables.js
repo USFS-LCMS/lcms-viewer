@@ -29,6 +29,10 @@ function updatePageUrl() {
 }
 let fullShareURL;
 const tiny_json_url = "https://tiny-json-4539853f6a69.herokuapp.com";
+const spinner_src =
+  mode === "geeViz"
+    ? "./src/assets/images/geeviz-logo-light.png"
+    : "./src/assets/images/gee-logo-light.png";
 function storeParams(showSpinner = true, showPopup = true) {
   const store_api = `${tiny_json_url}/store`;
   if (showSpinner === true) {

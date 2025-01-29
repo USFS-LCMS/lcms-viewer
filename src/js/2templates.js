@@ -156,7 +156,7 @@ function getIntroModal(
                         ${bottomText}
                         <div class = 'mt-3' id = 'intro-modal-loading-div'>
                             <p >
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
+                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/gee-logo-light.png">
                                 ${loadingText}. 
                              </p>
                         </div>
@@ -186,7 +186,7 @@ const staticTemplates = {
                             
 					        <div role="list" id = 'sidebar-left'></div>
 					    </nav>`,
-  geeSpinner: `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="./src/assets/images/GEE_logo_transparent.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
+  geeSpinner: `<div id='summary-spinner' style='position:absolute;right:40%; bottom:40%;width:8rem;height:8rem;z-index:10000000;display:none;'><img  alt= "Google Earth Engine logo spinner" title="Background processing is occurring in Google Earth Engine" class="fa fa-spin" src="./src/assets/images/gee-logo-light.png"  style='width:100%;height:100%'><span id = 'summary-spinner-message'></span></div>`,
   lcmsSpinner: `<div id='lcms-spinner' style='position:absolute;right:40%; bottom:40%;width:10rem;height:8rem;z-index:10000000;display:none;'><img  alt= "LCMS logo spinner" title="Background processing is occurring" class="fa fa-spin" src="./src/assets/images/lcms-icon.png"  style='width:100%;height:100%'><span id = 'lcms-spinner-message'></span></div>`,
   authErrorMessage: `<p>---  Error --- Map Loading Error ---</p>
                                                               <p>Map data did not load correctly and cannot be used at this time. We apologize for this inconvenience and are working to resolve this issue.</p>
@@ -225,7 +225,7 @@ const staticTemplates = {
                         </div>
                         
                         <span style = 'display:none;' class="fa-stack fa-2x ml-4 py-0" id='export-spinner' title="">
-                            <img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+                            <img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/gee-logo-light.png" alt="" style='width:4rem;height:4rem;'>
                             <strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
                         </span>
                         <div class = 'pl-4' id = 'export-count-div' ></div> 
@@ -368,7 +368,7 @@ const staticTemplates = {
                         <div class = 'modal-footer' id = 'introModal-footer'>
                         <div class = ' ml-0' id = 'intro-modal-loading-div'>
                             <p>
-                              <img style="width:1.8em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
+                              <img style="width:1.25rem;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                                 Creating map services within Google Earth Engine. 
                              </p>
                         </div>
@@ -655,7 +655,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 
                         <p style = 'margin-top:1rem;'>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
                 <p style='font-weight:bold;margin-top:1rem;' title='Creating map services within Google Earth Engine. This can take some time. Thank you for your patience!'>
-                  <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
+                  <img style="width:1.5rem;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                     ${word} ${whatIsLoading}. This can take some time.
                   
                  </p>
@@ -663,10 +663,10 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
     },
     geeViz: `
                 <p>
-                  <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
+                  <img style="width:1.25rem;" class="image-icon fa-spin mr-1 mb-1" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                     Creating map services within Google Earth Engine. 
                   <br>
-                   <img style="width:2.1em;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="./src/assets/images/GEE_logo_transparent.png">
+                   <img style="width:1.25rem;" class="image-icon fa-spin mr-1 mb-1" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                     This can take some time. Thank you for your patience!
                    <div id = 'loading-number-box'></div>
                  </p>
@@ -747,7 +747,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         `,
   dashboardProgressDiv: `<div id = 'dashboard-progress-container' class='ml-3'>
         <span  style = 'display: flex;'>
-        <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./src/assets/images/GEE_logo_transparent.png" height="${convertRemToPixels(
+        <img id = 'loading-spinner-logo' class = 'fa-spin progress-spinner' style='display:none;' src="./src/assets/images/gee-logo-light.png" height="${convertRemToPixels(
           0.8
         )}"  alt="GEE logo image">
         
@@ -984,7 +984,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 <section class = 'row'>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://earthengine.google.com/" target="_blank">
-                                            <img src="./src/assets/images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                            <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                             
                                         </a>
                                     </div>
@@ -1112,7 +1112,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <img src="./src/assets/images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
                             </div>
@@ -1266,7 +1266,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <img src="./src/assets/images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
                             </div>
@@ -1418,7 +1418,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <img src="./src/assets/images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
                             </div>
@@ -1541,7 +1541,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <img src="./src/assets/images/GEE_logo_transparent.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
+                                    <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
                             </div>
@@ -2317,7 +2317,7 @@ function addHiFormExport(containerDiv) {
                                 </div>
                                 <hr>
                                 <span style = 'display:none;' class="fa-stack fa-2x py-0" id='export-spinner' title="">
-						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/GEE_logo_transparent.png" alt="" style='width:4rem;height:4rem;'>
+						    		<img alt= "Google Earth Engine logo spinner" class="fa fa-spin fa-stack-2x" src="./src/assets/images/gee-logo-light.png" alt="" style='width:4rem;height:4rem;'>
 						   			<strong id = 'export-count'  class="fa-stack-1x" style = 'padding-top: 0.1rem;cursor:pointer;'></strong>
 								</span>
                                 <div id = 'export-count-div' ></div>
@@ -3185,17 +3185,21 @@ function addLayer(layer) {
   }
   //Set up layer control container
   // console.log(layer.viz);
+
   $("#" + layer.whichLayerList)
     .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container ${isDraggable} '  title= '${layer.helpBoxMessage}'>
 								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
 								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
                             
-                              <i id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner" title='Waiting for layer service from Google Earth Engine'></i>
+                          
+                              <img id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner initial-loading-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}" title='Waiting for layer service from Google Earth Engine'>
                               <div class='layer-label-container'>
-                              <i id = "${spinnerID}2" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
+                             
+                              <img id = "${spinnerID}2" style = 'display:none;' class="fa fa-spinner fa-spin layer-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}" title='Waiting for map tiles from Google Earth Engine'>
                               <i id = "${spinnerID}3" style = 'display:none;' class="fa fa-cog fa-spin layer-spinner" title='Waiting for map tiles from Google Earth Engine'></i>
                                               <i title = 'Click to clear all selected features from this layer' id='${eraserID}' class="fa fa-eraser eraser" style="display:none;"></i>
+                              
                               ${layer.viz.labelIconHTML}
                               <span id = '${spanID}' aria-labelledby="${containerID}" class = 'layer-span ${layer.viz.labelClasses}'>${layer.name}</span>
                             </div>

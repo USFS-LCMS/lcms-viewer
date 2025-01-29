@@ -908,12 +908,13 @@ function addTimeLapseToMap(
                                   <input  id="${legendDivID}-toggle-checkbox" onchange = 'timeLapseCheckbox("${legendDivID}")' type="checkbox" ${checked}/>
                                   <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
 
-                                  
-                                  
-                                  
-                                  <i id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner"></i>
+                           
+                                  <img id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner initial-loading-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}" title='Waiting for layer service from Google Earth Engine'>
+
                                   <div class = 'layer-label-container'>
-                                  <i style = 'display:none;' id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' class="text-dark fa fa-gear fa-spin layer-spinner"></i>
+                                  
+                                  
+                                  <img id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' style = 'display:none;' class="fa fa-spinner fa-spin layer-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                                   ${viz.labelIconHTML}
                                   <span  id = '${legendDivID}-name-span'  class = 'layer-span ${
     viz.labelClasses
