@@ -73,44 +73,73 @@ function levelSymbology() {
       3: [3, "1B1716", "Non-Processing Area Mask"],
       1.1: [1, "004E2B", "Tree Vegetated"],
       1.2: [2, "8DA463", "Non-Tree Vegetated"],
-      2.1: [3, "D4D4D3", "Non-Vegetated"],
+      2.1: [3, "893F54", "Non-Vegetated"],
       3.1: [4, "1B1716", "Non-Processing Area Mask"],
       "1.1.1": [1, "004E2B", "Tree"],
       "1.2.1": [2, "F89A1C", "Shrub"],
       "1.2.2": [3, "E5E98A", "Grass/Forb/Herb"],
-      "2.1.1": [4, "D4D4D3", "Barren or Impervious"],
+      "2.1.1": [4, "893F54", "Barren or Impervious"],
       "2.1.2": [5, "E4F5FD", "Snow or Ice"],
       "2.1.3": [6, "00B6F0", "Water"],
       "3.1.1": [7, "1B1716", "Non-Processing Area Mask"],
       "1.1.1.1": [1, "004E2B", "Tree"],
       "1.1.1.2": [2, "009344", "Tall Shrub & Tree Mix (SEAK Only)"],
       "1.1.1.3": [3, "61BB46", "Shrub & Tree Mix"],
-      "1.1.1.4": [4, "E5E98A", "Grass/Forb/Herb & Tree Mix"],
+      "1.1.1.4": [4, "ACBB67", "Grass/Forb/Herb & Tree Mix"],
       "1.1.1.5": [5, "8B8560", "Barren & Tree Mix"],
       "1.2.1.1": [6, "CAFD4B", "Tall Shrub (SEAK Only)"],
       "1.2.1.2": [7, "F89A1C", "Shrub"],
       "1.2.1.3": [8, "8FA55F", "Grass/Forb/Herb & Shrub Mix"],
       "1.2.1.4": [9, "BEBB8E", "Barren & Shrub Mix"],
-      "1.2.2.1": [10, "FFFF00", "Grass/Forb/Herb"],
+      "1.2.2.1": [10, "E5E98A", "Grass/Forb/Herb"],
       "1.2.2.2": [11, "DDB925", "Barren & Grass/Forb/Herb Mix"],
-      "2.1.1.1": [12, "D4D4D3", "Barren or Impervious"],
+      "2.1.1.1": [12, "893F54", "Barren or Impervious"],
       "2.1.2.1": [13, "E4F5FD", "Snow or Ice"],
       "2.1.3.1": [14, "00B6F0", "Water"],
       "3.1.1.1": [15, "1B1716", "Non-Processing Area Mask"],
     },
     Change: {
-      1: [1, "3D4551", "Stable"],
-      2: [2, "D54309", "Loss"],
+      1: [2, "3D4551", "Stable"],
+      2: [1, "D54309", "Disturbance"],
       3: [3, "1B1716", "Non-Processing Area Mask"],
-      1.1: [1, "3D4551", "Stable"],
-      1.2: [2, "00A398", "Gain"],
-      2.1: [3, "D54309", "Loss"],
+
+      1.1: [4, "3D4551", "Stable"],
+      1.2: [2, "00A398", "Vegetation Growth"],
+      2.1: [1, "D54309", "Disturbance"],
       3.1: [4, "1B1716", "Non-Processing Area Mask"],
-      "1.1.1": [1, "3D4551", "Stable"],
-      "1.2.1": [4, "00A398", "Gain"],
-      "2.1.1": [2, "F39268", "Slow Loss"],
-      "2.1.2": [3, "D54309", "Fast Loss"],
+
+      "1.1.1": [4, "3D4551", "Stable"],
+      "1.2.1": [3, "00A398", "Vegetation Growth"],
+      "2.1.1": [2, "F39268", "Insect, Disease or Drought Stress"],
+      "2.1.2": [1, "D54309", "Abrupt Disturbance"],
       "3.1.1": [5, "1B1716", "Non-Processing Area Mask"],
+
+      "1.1.1.1": [10, "3D4551", "Stable"],
+      "1.2.1.1": [9, "00A398", "Vegetation Growth"],
+      "2.1.1.1": [8, "F39268", "Insect, Disease or Drought Stress"],
+      "2.1.2.1": [1, "D54309", "Fire"],
+      "2.1.2.2": [2, "D55555", "Tree Removal"],
+      "2.1.2.3": [3, "D5A8CB", "Wind"],
+      "2.1.2.4": [4, "2C58A9", "Water Inundation"],
+      "2.1.2.5": [5, "D5C33C", "Water Desiccation"],
+      "2.1.2.6": [6, "D5C08B", "Mechanical Land Transformation"],
+      "2.1.2.7": [7, "C291D5", "Other Vegetation Loss"],
+      "3.1.1.1": [11, "1B1716", "Non-Processing Area Mask"],
+
+      "1.1.1.1.1": [13, "3D4551", "Stable"],
+      "1.2.1.1.1": [12, "00A398", "Vegetation Growth"],
+      "2.1.1.1.1": [10, "F39268", "Insect, Disease or Drought Stress"],
+      "2.1.1.1.2": [11, "F3C165", "Defolation or Southern Pine Beetle"],
+      "2.1.2.1.1": [1, "D54309", "Wildfire"],
+      "2.1.2.1.2": [2, "FFCCB4", "Prescribed Fire"],
+      "2.1.2.2.1": [3, "D55555", "Tree Removal"],
+      "2.1.2.3.1": [4, "D5A8CB", "Hurricane"],
+      "2.1.2.3.2": [5, "D54599", "Tornado or Wind"],
+      "2.1.2.4.1": [6, "2C58A9", "Water Inundation"],
+      "2.1.2.5.1": [7, "D5C33C", "Water Desiccation"],
+      "2.1.2.6.1": [8, "D5C08B", "Mechanical Land Transformation"],
+      "2.1.2.7.1": [9, "C291D5", "Other Vegetation Loss"],
+      "3.1.1.1.1": [14, "1B1716", "Non-Processing Area Mask"],
     },
     Land_Use: {
       1: [1, "FF9EAB", "Anthropogenic"],
@@ -150,7 +179,7 @@ function levelSymbology() {
     this.products.map((k) => {
       const productTitle = k.replaceAll("_", " ");
       const level_collapse_div_id = `${k}-level-color-pickers-div`;
-      const collapseVisible = k === "Land_Cover";
+      const collapseVisible = k === "Change";
       addSubCollapse(
         `level-collapse-container`,
         `${k}-level-color-pickers-label`,
@@ -249,7 +278,7 @@ function levelSymbology() {
   };
 
   this.update_colors = function () {
-    console.log("updating colors");
+    // console.log("updating colors");
     // const t_lookup = urlParams.productLevelLookups;
     $(".class-color-pickers").each(function () {
       const id = $(this).attr("id");

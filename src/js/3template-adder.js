@@ -53,7 +53,7 @@ if (
   $("#title-banner-icon-right").remove();
   $("#title-banner-icon-left").attr(
     "src",
-    "./src/assets/images/geeViz-logo-light.png"
+    "./src/assets/images/geeviz-logo-light.png"
   );
   // $(".title-banner-icon")[1].remove();
   $("#title-banner-icon-left").css("margin-right", "0.25rem");
@@ -358,7 +358,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.changeLevels = urlParams.changeLevels || {
     1: false,
     2: false,
-    3: true,
+    3: false,
+    4: false,
+    5: true,
   };
   urlParams.landUseLevels = urlParams.landUseLevels || {
     1: false,
