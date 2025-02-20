@@ -3188,9 +3188,9 @@ function addLayer(layer) {
 
   $("#" + layer.whichLayerList)
     .prepend(`<li id = '${containerID}' aria-label="Map layer controls container for ${layer.name}" class = 'layer-container ${isDraggable} '  title= '${layer.helpBoxMessage}'>
-								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range'></div>
+								           <div id="${opacityID}" aria-labelledby="${containerID}" aria-label="Opacity range slider for ${layer.name}" class = 'simple-layer-opacity-range' title = 'Slide to change the opacity (transparency) of this layer.\nLayer description: ${layer.helpBoxMessage}'></div>
 								           <input  role="option" id="${visibleID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" type="checkbox" ${checked}  />
-								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}"></label>
+								            <label class = 'layer-checkbox' id="${visibleLabelID}" aria-label="Layer visibility toggle checkbox for ${layer.name}" style = 'margin-bottom:0px;display:none;'  for="${visibleID}" title = 'Click to turn layer on or off.\nLayer description: ${layer.helpBoxMessage}' ></label>
                             
                           
                               <img id = "${spinnerID}" class="fa fa-spinner fa-spin layer-spinner initial-loading-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}" title='Waiting for layer service from Google Earth Engine'>
