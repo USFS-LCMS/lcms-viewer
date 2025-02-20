@@ -200,6 +200,7 @@ function rand_from_seed(x, iterations) {
 function getCode(dt) {
   dt = dt !== undefined ? new Date(dt) : new Date();
   const d = dt.toISOString().split("T")[0].replaceAll("-", "");
+  console.log(d);
   return rand_from_seed(d);
 }
 function getCode2(dt) {

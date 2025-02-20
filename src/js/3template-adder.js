@@ -236,7 +236,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "hide",
     null,
     null,
-    "Choose whether to show Cause of Change Stable and Non-processing area classes as gray or transparent on the map."
+    "Choose whether to show the Change Stable and Non-processing area classes as gray or transparent on the map."
   );
   urlParams.analysisMode = tAnalysisMode;
   urlParams.causeOfChangeMode = tCauseOfChangeMode;

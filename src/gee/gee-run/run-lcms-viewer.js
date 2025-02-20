@@ -289,40 +289,44 @@ function runGTAC() {
       size: lcmsRun.COCYears.length,
     };
     cocObjInfo.Cause_of_Change_class_values;
-    // "1.1.1.1.1": [13, "3D4551", "Stable"],
-    // "1.2.1.1.1": [12, "00A398", "Vegetation Growth"],
-    // "2.1.1.1.1": [10, "F39268", "Insect, Disease or Drought Stress"],
-    // "2.1.1.1.2": [11, "F3C165", "Defolation or Southern Pine Beetle"],
-    // "2.1.2.1.1": [5, "D54309", "Wildfire"],
-    // "2.1.2.1.2": [6, "FFCCB4", "Prescribed Fire"],
-    // "2.1.2.2.1": [7, "D55555", "Tree Removal"],
-    // "2.1.2.3.1": [1, "D5A8CB", "Hurricane"],
-    // "2.1.2.3.2": [2, "D54599", "Tornado or Wind"],
-    // "2.1.2.4.1": [3, "2C58A9", "Water Inundation"],
-    // "2.1.2.5.1": [4, "D5C33C", "Water Desiccation"],
-    // "2.1.2.6.1": [8, "D5C08B", "Mechanical Land Transformation"],
-    // "2.1.2.7.1": [9, "C291D5", "Other Vegetation Loss"],
-    // "3.1.1.1.1": [14, "1B1716", "Non-Processing Area Mask"],
+    // "1.1.1.1.1": [1, "D5ACAC", "Hurricane"],
+    //   "1.1.1.1.2": [2, "D54599", "Wind"],
+    //   "1.1.1.1.3": [3, "D545DD", "Tornado"],
+    //   "1.1.1.2.1": [4, "2C58A9", "Inundation"],
+    //   "1.1.1.3.1": [5, "D5C33C", "Desiccation"],
+    //   "1.1.1.4.1": [6, "D54309", "Wildfire"],
+    //   "1.1.1.4.2": [7, "FFCCB4", "Prescribed Fire"],
+    //   "1.1.1.5.1": [8, "D55555", "Tree Removal"],
+    //   "1.1.1.6.1": [9, "D5C08B", "Mechanical Land Transformation"],
+    //   "1.1.1.7.1": [10, "C291D5", "Other Vegetation Loss"],
+
+    //   "1.1.2.1.1": [11, "F39268", "Insect, Disease or Drought Stress"],
+    //   "1.1.2.1.2": [12, "F3C165", "Defoliation"],
+    //   "1.1.2.1.3": [13, "F3C199", "Southern Pine Beetle"],
+    //   "2.1.1.1.1": [14, "00A398", "Vegetation Growth"],
+    //   "2.2.1.1.1": [15, "3D4551", "Stable"],
+
+    //   "3.1.1.1.1": [16, "1B1716", "Non-Processing Area Mask"],
     let cocCrosswalk = [
-      13, // "Stable -> Stable",
-      5, // "Wildfire -> Wildfire",
-      6, // "Prescribed Burn -> Prescribed Fire",
-      7, // "Large Timber Harvest -> Tree Removal", //"Timber Harvest or other tree loss disturbance agent > 1.5 hectare",
-      7, // "Small Timber Harvest -> Tree Removal", //"Timber Harvest or other tree loss disturbance agent < 1.5 hectare",
-      9, // "Large Timber Harvest Protected -> Other Vegetation Loss", //"Timber Harvest or other tree loss disturbance agent > 1.5 hectare in protected lands",
-      9, // "Small Timber Harvest Protected -> Other Vegetation Loss", //"Timber Harvest or other tree loss disturbance agent < 1.5 hectare in protected lands",
-      9, // ??? "Low Magnitude Tree Loss -> Other Vegetation Loss",
+      15, // "Stable -> Stable",
+      6, // "Wildfire -> Wildfire",
+      7, // "Prescribed Burn -> Prescribed Fire",
+      8, // "Large Timber Harvest -> Tree Removal", //"Timber Harvest or other tree loss disturbance agent > 1.5 hectare",
+      8, // "Small Timber Harvest -> Tree Removal", //"Timber Harvest or other tree loss disturbance agent < 1.5 hectare",
+      10, // "Large Timber Harvest Protected -> Other Vegetation Loss", //"Timber Harvest or other tree loss disturbance agent > 1.5 hectare in protected lands",
+      10, // "Small Timber Harvest Protected -> Other Vegetation Loss", //"Timber Harvest or other tree loss disturbance agent < 1.5 hectare in protected lands",
+      10, // ??? "Low Magnitude Tree Loss -> Other Vegetation Loss",
       1, // "Tropical Cyclone -> Hurricane",
       2, // "Wind -> Tornado or Wind",
-      3, // "Desiccation -> Water Desiccation",
+      5, // "Desiccation -> Water Desiccation",
       4, // "Inundation -> Water Inundation",
-      10, // ??? "Drought Stress -> Insect, Disease or Drought Stress", //, Timber Harvest or other disturbance agent",
-      8, // ??? "Non-tree Fast Loss -> Mechanical Land Transformation", //"Other Fast Disturbance Agent in non-treed landscape",
-      10, // "Low Mag Stress -> Insect, Disease or Drought Stress", //Insect, Disease or Climate Stress low magnitude loss",
-      10, // "Hi Mag Stress -> Insect, Disease or Drought Stress", //"Insect, Disease or Climate Stress high magnitude loss",
-      10, // ??? "Non-tree Slow Loss -> Insect, Disease or Drought Stress", //"Other Slow Loss in non-treed landscape",
-      12, // "Gain -> Vegetation Growth",
-      14, // "Non-processing area -> Non-Processing Area Mask",
+      11, // ??? "Drought Stress -> Insect, Disease or Drought Stress", //, Timber Harvest or other disturbance agent",
+      9, // ??? "Non-tree Fast Loss -> Mechanical Land Transformation", //"Other Fast Disturbance Agent in non-treed landscape",
+      11, // "Low Mag Stress -> Insect, Disease or Drought Stress", //Insect, Disease or Climate Stress low magnitude loss",
+      11, // "Hi Mag Stress -> Insect, Disease or Drought Stress", //"Insect, Disease or Climate Stress high magnitude loss",
+      11, // ??? "Non-tree Slow Loss -> Insect, Disease or Drought Stress", //"Other Slow Loss in non-treed landscape",
+      14, // "Gain -> Vegetation Growth",
+      16, // "Non-processing area -> Non-Processing Area Mask",
     ];
 
     lcmsAttr = lcmsAttr.map((img) => {
@@ -343,12 +347,13 @@ function runGTAC() {
     //   out = out.where(img.eq(1), 19).subtract(1);
     //   return out.set(cocObjInfo).copyProperties(img, ["system:time_start"]);
     // });
-    // if (urlParams.causeOfChangeMode === "hide") {
-    //   lcmsAttr = lcmsAttr.map((img) => {
-    //     img = img.updateMask(img.lt(18));
-    //     return img;
-    //   });
-    // }
+    const lcmsAttrCopy = lcmsAttr;
+    if (urlParams.causeOfChangeMode === "hide") {
+      lcmsAttr = lcmsAttr.map((img) => {
+        img = img.updateMask(img.lt(15));
+        return img;
+      });
+    }
 
     // addLayerFun(
     //   lcmsAttr,
@@ -413,19 +418,19 @@ function runGTAC() {
     //Mask out stable and non processing area mask for change time-lapse
     const changeClassValues = lcmsRun.props["Change_class_values"];
     let changeVisibility = changeClassValues.map((v) => true);
-    changeVisibility[0] = false;
+    changeVisibility[changeVisibility.length - 2] = false;
     changeVisibility[changeVisibility.length - 1] = false;
     // console.log(changeVisibility);
-    const changeClassMin = changeClassValues[0];
-    const changeClassMax = changeClassValues[changeClassValues.length - 1];
+    // const changeClassMin = changeClassValues[0];
+    // const changeClassMax = changeClassValues[changeClassValues.length - 1];
 
-    lcmsRun.tlChange = lcmsRun.lcmsRemapped
-      .select(["Change"])
-      .map(function (img) {
-        return img
-          .updateMask(img.gt(changeClassMin).and(img.lt(changeClassMax)))
-          .copyProperties(img);
-      });
+    // lcmsRun.tlChange = lcmsRun.lcmsRemapped
+    //   .select(["Change"])
+    //   .map(function (img) {
+    //     return img
+    //       .updateMask(img.gt(changeClassMin).and(img.lt(changeClassMax)))
+    //       .copyProperties(img);
+    //   });
     // lcmsRun.tlLC = lcmsRun.lcms.select(["Land_Cover"]); //.map(function(img){return img.updateMask(img.lt(15)).copyProperties(img)});
     // lcmsRun.tlLU = lcmsRun.lcms.select(["Land_Use"]); //.map(function(img){return img.updateMask(img.lt(7)).copyProperties(img)});
 
@@ -454,6 +459,9 @@ function runGTAC() {
       let tTitle = b.replaceAll("_", " ");
       lcmsRun.props.bandNames = [b];
       const reducer = b === "Change" ? ee.Reducer.min() : ee.Reducer.mode();
+      const reducerName =
+        b === "Change" ? "Lowest Change class thematic value" : "Most common";
+      const visibilityT = b === "Change" ? true : false;
       if (
         analysisMode === "advanced" &&
         urlParams.addLCMSTimeLapsesOn === "no"
@@ -469,7 +477,7 @@ function runGTAC() {
               )
             ),
           {
-            title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${
+            title: `${reducerName} ${tTitle.toLowerCase()} class from ${startYear} to ${
               startYear + lcmsRun.thematicChangeYearBuffer
             }.`,
             autoViz: true,
@@ -482,7 +490,7 @@ function runGTAC() {
             includeClassValues: false,
           },
           `${tTitle} Start`,
-          false
+          visibilityT
         );
 
         Map.addLayer(
@@ -496,7 +504,7 @@ function runGTAC() {
               )
             ),
           {
-            title: `Most common ${tTitle.toLowerCase()} class from ${
+            title: `${reducerName} ${tTitle.toLowerCase()} class from ${
               endYear - lcmsRun.thematicChangeYearBuffer
             } to ${endYear}.`,
             autoViz: true,
@@ -508,7 +516,7 @@ function runGTAC() {
             includeClassValues: false,
           },
           `${tTitle} End`,
-          false
+          visibilityT
         );
 
         // Map.addLayer(lcChangeObj.change.set('bounds',clientBoundary),lcChangeObj.viz,lcLayerName + ' Change' ,false);
@@ -517,7 +525,7 @@ function runGTAC() {
         addLayerFun(
           lcmsRun.lcmsRemapped.select([b]),
           {
-            title: `Most common ${tTitle.toLowerCase()} class from ${startYear} to ${endYear}.`,
+            title: `${reducerName} ${tTitle.toLowerCase()} class from ${startYear} to ${endYear}.`,
             autoViz: true,
             queryParams: { palette: ["00897b"] },
             labelClasses: "layer-label-lcms",
@@ -529,7 +537,7 @@ function runGTAC() {
             includeClassValues: false,
           },
           `${tTitle} ${timeLapseEnding}`,
-          false
+          visibilityT
         );
       }
     });
@@ -653,7 +661,8 @@ function runGTAC() {
         labelClasses: "layer-label-lcms",
         labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
       },
-      "Fast Loss Year"
+      "Fast Loss Year",
+      false
     );
 
     if (analysisMode === "advanced") {
@@ -701,7 +710,8 @@ function runGTAC() {
         labelClasses: "layer-label-lcms",
         labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
       },
-      "Slow Loss Year"
+      "Slow Loss Year",
+      false
     );
 
     if (analysisMode === "advanced") {
@@ -1051,11 +1061,15 @@ function runGTAC() {
         let bnTitle = bn.replace("_", " ");
         lcmsRun.props.bandNames = [bn];
         let visibility;
+        let tc;
         if (bn === "Change") {
           visibility = changeVisibility;
+          tc = lcmsAttrCopy.select([bn]);
+        } else {
+          tc = lcmsRun.lcmsRemapped.select([bn]);
         }
         areaChart.addLayer(
-          lcmsRun.lcmsRemapped.select([bn]),
+          tc,
           {
             eeObjInfo: lcmsRun.props,
             visible: visibility,
@@ -1065,7 +1079,7 @@ function runGTAC() {
           true
         );
         areaChart.addLayer(
-          lcmsRun.lcmsRemapped.select([bn]),
+          tc,
           {
             sankey_years: [startYear, endYear],
             sankey: true,
@@ -1080,27 +1094,27 @@ function runGTAC() {
         );
       });
       // Map.turnOnAutoAreaCharting();
-      let cocVisibility = [
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        false,
-      ];
+      // let cocVisibility = [
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   true,
+      //   false,
+      //   false,
+      // ];
       // areaChart.addLayer(
       //   lcmsAttr,
       //   {
