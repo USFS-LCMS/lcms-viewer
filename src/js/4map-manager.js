@@ -612,7 +612,6 @@ function alignTimeLapseCheckboxes() {
 function timeLapseCheckbox(id) {
   const tObj = timeLapseObj[id];
   const v = tObj.visible;
-  console.log(v);
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
     if (urlParams.timeLapseMode === "paused") {
@@ -767,8 +766,7 @@ function addTimeLapseToMap(
   }
   let checked = "";
 
-  let legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
-  legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
+  const legendDivID = getLayerID(name);
 
   if (
     urlParams.layerProps[legendDivID] === undefined ||
@@ -1398,7 +1396,18 @@ const typeLookup = {
 };
 const reverseTypeLookup = {};
 Object.keys(typeLookup).map((k) => (reverseTypeLookup[typeLookup[k]] = k));
-
+///////////////////////////////////////////////////
+// Function to get a unique layer id based on a given name
+function getLayerID(name) {
+  name = name.replaceAll(" ", "-");
+  name = name.replace(/[^A-Za-z0-9]/g, "-");
+  if (allLayerNames.indexOf(name) > -1) {
+    name = `${name}-${NEXT_LAYER_ID}`;
+  }
+  allLayerNames.push(name);
+  return name;
+}
+///////////////////////////////////////////////////
 function addToMap(
   item,
   viz,
@@ -1583,10 +1592,7 @@ function addToMap(
     viz.palette = viz.palette.split(",");
   }
 
-  //Handle legend
-  let legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
-  legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
-
+  const legendDivID = getLayerID(name);
   // Handle layer visibility caching
   if (viz.isTimeLapse === false) {
     if (
@@ -2162,8 +2168,7 @@ function addFeatureView(
     }
   );
 
-  let legendDivID = name.replaceAll(" ", "-") + "-" + NEXT_LAYER_ID.toString();
-  legendDivID = legendDivID.replace(/[^A-Za-z0-9]/g, "-");
+  const legendDivID = getLayerID(name);
 
   NEXT_LAYER_ID++;
   featureViewObj[legendDivID] = {
@@ -2615,6 +2620,7 @@ function reRun() {
   NEXT_LAYER_ID = 1;
   clearSelectedAreas();
   selectedFeaturesGeoJSON = {};
+  allLayerNames = [];
   [
     "layer-list",
     "reference-layer-list",

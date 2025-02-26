@@ -455,7 +455,7 @@ function runGTAC() {
     //   // Map.addTimeLapse(lcmsRun.tlLU, { autoViz: true, eeObjInfo: lcmsRun.props, years: lcmsRun.years }, "LCMS Land Use Time-Lapse", false);
     // }
     //Bring in two periods of land cover and land use if advanced, otherwise just bring in a single mode
-    ["Change", "Land_Use", "Land_Cover"].map((b) => {
+    ["Land_Use", "Land_Cover", "Change"].map((b) => {
       let tTitle = b.replaceAll("_", " ");
       lcmsRun.props.bandNames = [b];
       const reducer = b === "Change" ? ee.Reducer.min() : ee.Reducer.mode();
@@ -536,7 +536,7 @@ function runGTAC() {
             years: lcmsRun.years,
             includeClassValues: false,
           },
-          `${tTitle} ${timeLapseEnding}`,
+          `${tTitle}${timeLapseEnding}`,
           visibilityT
         );
       }

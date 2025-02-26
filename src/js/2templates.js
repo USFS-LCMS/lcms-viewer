@@ -3598,7 +3598,7 @@ function addLayer(layer) {
           turnOnAll();
         });
       }
-      layer.queryItem = layer.item;
+      layer.queryItem = layer.viz.queryItem || layer.item;
       if (layer.layerType === "geeVectorImage") {
         try {
           layer.viz.asyncBounds = layer.item
