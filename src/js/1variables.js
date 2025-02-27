@@ -63,6 +63,7 @@ function storeParams(showSpinner = true, showPopup = true) {
     setTimeout(() => Map.hideSpinner(), 100);
   }
 }
+
 function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
   let res = $.ajax({
     type: "POST",

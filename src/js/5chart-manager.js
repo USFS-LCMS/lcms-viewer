@@ -108,10 +108,10 @@ function chartCacheduserSelectedAreaChartingAOIs() {
     urlParams.userSelectedAreaChartingAOIs.length > 0
   ) {
     urlParams.userSelectedAreaChartingAOIs.map((l) => {
-      let selectedFeaturesT = selectedFeaturesJSON[l[0]].eeObject.filter(
-        ee.Filter.inList("system:index", l[1])
+      let selectedFeaturesT = selectedFeaturesJSON[l.layerName].eeObject.filter(
+        ee.Filter.inList("system:index", l.ids)
       );
-      addSelectedFeaturesToMapWrapper(selectedFeaturesT, l[2], l[0]);
+      addSelectedFeaturesToMapWrapper(selectedFeaturesT, l.names, l.layerName);
     });
     updateSelectedAreasNameList();
     updateSelectedAreaArea();
@@ -185,7 +185,11 @@ function setupAreaLayerSelection() {
 
               if (nms.length > 0) {
                 console.log("names " + nms);
-                urlParams.userSelectedAreaChartingAOIs.push([k, IDs, nms]);
+                urlParams.userSelectedAreaChartingAOIs.push({
+                  layerName: k,
+                  ids: IDs,
+                  names: nms,
+                });
                 unique(urlParams.userSelectedAreaChartingAOIs);
                 addSelectedFeaturesToMapWrapper(selectedFeaturesT, nms, k);
               }

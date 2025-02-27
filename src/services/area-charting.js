@@ -35,6 +35,7 @@ function downloadPlotlyAreaChartWrapper(areaObjID, bn, filename) {
 function areaChartCls() {
   this.setupTransitionPeriodUI = setupTransitionPeriodUI;
   this.setupTransitionPeriodUI();
+  this.areaChartNameList = [];
   this.areaChartID = 1;
   this.makeChartID = 0;
   this.outstandingAddLayers = 0;
@@ -178,10 +179,13 @@ function areaChartCls() {
 
     $("#area-collection-dropdown-container").hide();
     let obj = {};
-    obj.name = name || `Area-Layer-${this.areaChartID}`;
-    obj.id =
-      params.id ||
-      obj.name.replaceAll(" ", "-") + "-" + this.areaChartID.toString();
+
+    obj.name = name || `Area-Layer`;
+    if (this.areaChartNameList.indexOf(obj.name) > -1) {
+      obj.name = `${obj.name}-${this.areaChartID}`;
+    }
+    this.areaChartNameList.push(obj.name);
+    obj.id = params.id || obj.name.replaceAll(" ", "-");
     obj.id = obj.id.replace(/[^A-Za-z0-9-]/g, "-");
     params.layerType =
       params.layerType ||
