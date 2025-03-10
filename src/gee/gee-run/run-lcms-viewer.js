@@ -1064,10 +1064,11 @@ function runGTAC() {
         let tc;
         if (bn === "Change") {
           visibility = changeVisibility;
-          tc = lcmsAttrCopy.select([bn]);
-        } else {
-          tc = lcmsRun.lcmsRemapped.select([bn]);
+          // tc = lcmsAttrCopy.select([bn]);
         }
+        // else {
+        tc = lcmsRun.lcmsRemapped.select([bn]);
+        // }
         areaChart.addLayer(
           tc,
           {
