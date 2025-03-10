@@ -55,6 +55,7 @@ if (
     "src",
     "./src/assets/images/geeviz-logo-light.png"
   );
+  $("#title-banner-icon-left").attr("alt", "geeViz Logo");
   // $(".title-banner-icon")[1].remove();
   $("#title-banner-icon-left").css("margin-right", "0.25rem");
   $("#title-banner-icon-left").css("margin-left", "0.25rem");

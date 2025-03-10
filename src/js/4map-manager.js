@@ -4330,7 +4330,7 @@ function initialize() {
         loadGEELibraries();
       },
       (failure) => {
-        eeInitFailureCallback(failure);
+        eeInitFailureCallback("failure");
       },
       null,
       projectID

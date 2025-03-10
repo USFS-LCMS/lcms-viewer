@@ -93,6 +93,21 @@ function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
   }
 }
 
+function getToken(
+  url = "https://rcr-ee-services-31345e8ea076.herokuapp.com/token"
+  // url = "http://localhost:5000/token"
+) {
+  let res = $.ajax({
+    type: "GET",
+    async: false,
+    url: url,
+    data: { whichToken: mode.toLowerCase() },
+    contentType: "application/json; charset=utf-8",
+  });
+  if (res.statusText === "OK") {
+    return res.responseText;
+  }
+}
 function TweetThis(
   preURL = "",
   postURL = "",
@@ -763,6 +778,7 @@ const zoomDict = {
   1: "591,657,551",
 };
 
+const useAccessToken = mode !== "geeViz" ? true : false;
 // See https://github.com/google/earthengine-api/blob/327fd96cf4fefda30c8a0d5da62d18c1d6844ea5/javascript/src/ee.js#L76 for param info for initializing to GEE
 // Allow GEE to be initialized either using a server-side proxy or an access token
 if (
@@ -773,6 +789,9 @@ if (
 }
 let authProxyAPIURL = urlParams.geeAuthProxyURL;
 let geeAPIURL = "https://earthengine.googleapis.com";
+if (useAccessToken === true) {
+  urlParams.accessToken = urlParams.accessToken || getToken();
+}
 
 if (
   urlParams.accessToken !== null &&

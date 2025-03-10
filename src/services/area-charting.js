@@ -154,6 +154,7 @@ function areaChartCls() {
     this.clearChartLayerSelect();
     this.areaChartObj = {};
     this.areaChartID = 1;
+    this.areaChartNameList = [];
     // this.makeChartID = 0;
     this.clearCharts();
   };
