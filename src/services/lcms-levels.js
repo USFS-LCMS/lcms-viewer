@@ -118,33 +118,31 @@ function levelSymbology() {
       "1.1.1.2": [2, "2C58A9", "Inundation"],
       "1.1.1.3": [3, "D5C33C", "Desiccation"],
       "1.1.1.4": [4, "D54309", "Fire"],
-      "1.1.1.5": [5, "D55555", "Tree Removal"],
-      "1.1.1.6": [6, "D5C08B", "Mechanical Land Transformation"],
+      "1.1.1.5": [5, "D5C08B", "Mechanical Land Transformation"],
+      "1.1.1.6": [6, "D55555", "Tree Removal"],
       "1.1.1.7": [7, "C291D5", "Other Vegetation Loss"],
-      "1.1.2.1": [8, "F39268", "Insect, Disease or Drought Stress"],
+      "1.1.2.1": [8, "F39268", "Insect, Disease, or Drought Stress"],
       "2.1.1.1": [9, "00A398", "Vegetation Growth"],
       "2.2.1.1": [10, "3D4551", "Stable"],
       "3.1.1.1": [11, "1B1716", "Non-Processing Area Mask"],
 
-      "1.1.1.1.1": [1, "D5ACAC", "Hurricane"],
-      "1.1.1.1.2": [2, "D54599", "Wind"],
-      "1.1.1.1.3": [3, "D545DD", "Tornado"],
-      "1.1.1.2.1": [4, "2C58A9", "Inundation"],
-      "1.1.1.3.1": [5, "D5C33C", "Desiccation"],
-      "1.1.1.4.1": [6, "D54309", "Wildfire"],
-      "1.1.1.4.2": [7, "FFCCB4", "Prescribed Fire"],
-      "1.1.1.5.1": [8, "D55555", "Tree Removal"],
-      "1.1.1.6.1": [9, "D5C08B", "Mechanical Land Transformation"],
-      "1.1.1.7.1": [10, "C291D5", "Other Vegetation Loss"],
-
-      "1.1.2.1.1": [11, "F39268", "Insect, Disease or Drought Stress"],
-      "1.1.2.1.2": [12, "F3C165", "Defoliation"],
-      "1.1.2.1.3": [13, "F3C199", "Southern Pine Beetle"],
-      "2.1.1.1.1": [14, "00A398", "Vegetation Growth"],
-      "2.2.1.1.1": [15, "3D4551", "Stable"],
-
-      "3.1.1.1.1": [16, "1B1716", "Non-Processing Area Mask"],
+      "1.1.1.1.1": [1, "D54599", "Wind"],
+      "1.1.1.1.2": [2, "D5ACAC", "Hurricane"],
+      "1.1.1.2.1": [3, "2C58A9", "Inundation"],
+      "1.1.1.3.1": [4, "D5C33C", "Desiccation"],
+      "1.1.1.4.1": [5, "FFCCB4", "Prescribed Fire"],
+      "1.1.1.4.2": [6, "D54309", "Wildfire"],
+      "1.1.1.5.1": [7, "D5C08B", "Mechanical Land Transformation"],
+      "1.1.1.6.1": [8, "D55555", "Tree Removal"],
+      "1.1.2.1.1": [9, "F3C165", "Defoliation"],
+      "1.1.2.1.2": [10, "F3C199", "Southern Pine Beetle"],
+      "1.1.2.1.3": [11, "F39268", "Insect, Disease, or Drought Stress"],
+      "1.1.1.7.1": [12, "C291D5", "Other Loss"],
+      "2.1.1.1.1": [13, "00A398", "Vegetation Growth"],
+      "2.2.1.1.1": [14, "3D4551", "Stable"],
+      "3.1.1.1.1": [15, "1B1716", "Non-Processing Area Mask"],
     },
+
     Land_Use: {
       1: [1, "FF9EAB", "Anthropogenic"],
       2: [2, "004E2B", "Non-Anthropogenic"],
@@ -200,6 +198,7 @@ function levelSymbology() {
                           <thead >
                           <tr>
                           <th>Level</th>
+                          <th>Value</th>
                           <th>Name</th>
                             <th>Color</th>
                           </tr>
@@ -219,6 +218,7 @@ function levelSymbology() {
 
         $(`#${k}-color-list`).append(`<tr ${rowStyle}>
             <td style='border-right:1px solid black;'>${level}</td>
+            <td style = 'padding-left:0.25rem;'>${l[0]}</td>
             <td style = 'padding-left:0.25rem;'>${l[2]}</td>
             <td>
             <input  class = 'class-color-pickers' id="${tempKey}" data-jscolor="{backgroundColor:'#372e2c',value:'#${l[1]}',onChange: 'levelObj.update_colors()'}">
