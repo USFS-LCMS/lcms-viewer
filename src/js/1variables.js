@@ -778,7 +778,7 @@ const zoomDict = {
   1: "591,657,551",
 };
 
-const useAccessToken = mode !== "geeViz" ? true : false;
+const getAccessToken = mode !== "geeViz" ? true : false;
 // See https://github.com/google/earthengine-api/blob/327fd96cf4fefda30c8a0d5da62d18c1d6844ea5/javascript/src/ee.js#L76 for param info for initializing to GEE
 // Allow GEE to be initialized either using a server-side proxy or an access token
 if (
@@ -789,8 +789,8 @@ if (
 }
 let authProxyAPIURL = urlParams.geeAuthProxyURL;
 let geeAPIURL = "https://earthengine.googleapis.com";
-if (useAccessToken === true) {
-  urlParams.accessToken = urlParams.accessToken || getToken();
+if (getAccessToken === true) {
+  urlParams.accessToken = getToken();
 }
 
 if (
