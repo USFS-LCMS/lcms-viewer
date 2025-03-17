@@ -320,7 +320,7 @@ function runGTAC() {
       3, // "Inundation -> Water Inundation",
       11, // ??? "Drought Stress -> Insect, Disease or Drought Stress", //, Timber Harvest or other disturbance agent",
       7, // ??? "Non-tree Fast Loss -> Mechanical Land Transformation", //"Other Fast Disturbance Agent in non-treed landscape",
-      9, // "Low Mag Stress -> Defoliation", //Insect, Disease or Climate Stress low magnitude loss",
+      11, // "Low Mag Stress -> Defoliation" can also be 11 (Insect, Disease, or Drought Stress), //Insect, Disease or Climate Stress low magnitude loss",
       11, // "Hi Mag Stress -> Insect, Disease or Drought Stress", //"Insect, Disease or Climate Stress high magnitude loss",
       11, // ??? "Non-tree Slow Loss -> Insect, Disease or Drought Stress", //"Other Slow Loss in non-treed landscape",
       13, // "Gain -> Vegetation Growth",
