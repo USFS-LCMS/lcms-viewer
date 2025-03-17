@@ -791,8 +791,9 @@ let authProxyAPIURL = urlParams.geeAuthProxyURL;
 let geeAPIURL = "https://earthengine.googleapis.com";
 if (getAccessToken === true) {
   urlParams.accessToken = getToken();
+} else if (mode !== "geeViz") {
+  delete urlParams.accessToken;
 }
-
 if (
   urlParams.accessToken !== null &&
   urlParams.accessToken !== undefined &&
