@@ -4,3 +4,4 @@
 *.exe
 .vscode
 *.geojson
+.vs/
