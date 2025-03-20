@@ -93,10 +93,7 @@ function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
   }
 }
 
-function getToken(
-  url = "https://rcr-ee-services-31345e8ea076.herokuapp.com/token"
-  // url = "http://localhost:5000/token"
-) {
+function getToken(url = "http://localhost:5000/token") {
   let res = $.ajax({
     type: "GET",
     async: false,
