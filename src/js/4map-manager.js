@@ -3945,14 +3945,17 @@ function initialize() {
   function getElevation(center) {
     mouseLat = center.lat().toFixed(4).toString();
     mouseLng = center.lng().toFixed(4).toString();
+
     try {
       const elevation = ee
-        .Image("USGS/SRTMGL1_003")
+        .ImageCollection("projects/sat-io/open-datasets/GLO-30")
+        .mosaic()
+        .int16()
         .reduceRegion(
           ee.Reducer.first(),
           ee.Geometry.Point([center.lng(), center.lat()])
         )
-        .get("elevation");
+        .get("b1");
       elevation.evaluate(function (thisElevation) {
         if (thisElevation !== undefined && thisElevation !== null) {
           thisElevationFt = parseInt(thisElevation * 3.28084);

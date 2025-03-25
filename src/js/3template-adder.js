@@ -229,7 +229,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addRadio(
     "parameters-collapse-div",
     "cause-of-change-mask-mode-radio",
-    "Cause of Change: Stable color",
+    "Change: Stable color",
     "Gray",
     "Transparent",
     "urlParams.causeOfChangeMode",
@@ -365,8 +365,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   };
   urlParams.landUseLevels = urlParams.landUseLevels || {
     1: false,
-    2: false,
-    3: true,
+    2: true,
   };
   $("#parameters-collapse-div").append(
     "<br><h5 title = 'LCMS classes can be binned to produce coarser classes with higher map accuracy. By default, LCMS is delivered with the most detailed class level (highest level). You can choose lower levels here to meet different mapping needs. For example, if you only care to show where all the vegetation cover loss is, regardless of its type, choosing Change Classification Level 2 may better suit your needs.'>LCMS Classification Level Selection</h5>"
