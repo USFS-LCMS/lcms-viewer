@@ -44,7 +44,7 @@ function getLCMSVariables() {
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Region_Boundaries"
   );
   window.b = ee.FeatureCollection(
-    "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2023-9/S_USA_AdministrativeForest"
   );
   window.nps = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries"
@@ -1322,7 +1322,9 @@ function getSelectLayers(short) {
   const huc12 = ee.FeatureCollection("USGS/WBD/2017/HUC12");
   const wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
   const wilderness = wdpa.filter(ee.Filter.eq("DESIG", "Wilderness"));
-  const counties = ee.FeatureCollection("TIGER/2018/Counties");
+  const counties = ee.FeatureCollection(
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/tl_2024_us_county_wNames"
+  );
   const tiles = ee.FeatureCollection("users/jdreynolds33/Zones_New");
   const bia = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017"
@@ -1341,15 +1343,13 @@ function getSelectLayers(short) {
   ecoregions = ecoregions.select(["SECTION"], ["NAME"]);
   const ecoregionsEPAL4 = ee.FeatureCollection("EPA/Ecoregions/2013/L4");
   let district_boundaries = ee.FeatureCollection(
-    "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2023-9/S_USA_RangerDistrict"
   );
   district_boundaries = district_boundaries.select(["DISTRICTNA"], ["name"]);
   const msas = ee.FeatureCollection(
-    "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_Urban_Areas_2018"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/TIGER_Urban_Areas_2024"
   );
-  const msas2 = ee.FeatureCollection(
-    "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019"
-  );
+
   if (short === null || short === undefined || short === false) {
     Map.addSelectLayer(
       bia,
@@ -1431,22 +1431,22 @@ function getSelectLayers(short) {
 
   Map.addSelectLayer(
     counties,
-    { strokeColor: "08F", selectLayerNameProperty: "NAME" },
+    { strokeColor: "08F", selectLayerNameProperty: "FULL_NAME" },
     "US Counties",
     false,
     null,
     null,
-    "US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart"
+    "TIGER, 2024, U.S. Counties (https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip). Turn on layer and click on any county to include in chart"
   );
 
   Map.addSelectLayer(
     msas,
-    { strokeColor: "88F", selectLayerNameProperty: "NAME10" },
+    { strokeColor: "88F", selectLayerNameProperty: "NAME20" },
     "US Census Urban Areas",
     false,
     null,
     null,
-    "TIGER, 2018, U.S. Urban Areas (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart"
+    "TIGER, 2024, U.S. Urban Areas (https://www2.census.gov/geo/tiger/TIGER2024/UAC20/tl_2024_us_uac20.zip). Turn on layer and click on any urban area to include in chart"
   );
 
   Map.addSelectLayer(
@@ -1456,7 +1456,7 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "National Park boundaries. Turn on layer and click on any Park wanted to include in chart"
+    "National Park boundaries. Turn on layer and click on any Park to include in chart"
   );
   Map.addSelectLayer(
     b,
@@ -1465,7 +1465,7 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart"
+    "National Forest boundaries. Turn on layer and click on any Forest to include in chart"
   );
 
   Map.addSelectLayer(
@@ -1475,7 +1475,7 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "National Forest District boundaries. Turn on layer and click on any Forest wanted to include in chart"
+    "National Forest District boundaries. Turn on layer and click on any District to include in chart"
   );
   Map.addSelectLayer(
     perims,
@@ -1492,7 +1492,7 @@ function getSelectLayers(short) {
       startYear.toString() +
       "-" +
       endYear.toString() +
-      ". Turn on layer and click on any fire wanted to include in chart"
+      ". Turn on layer and click on any fire to include in chart"
   );
 }
 

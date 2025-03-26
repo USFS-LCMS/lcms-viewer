@@ -294,7 +294,7 @@ function runGTAC() {
       lcLevelInfo.viz_dict,
       cLevelInfo.viz_dict
     );
-    console.log(lcmsRun.props);
+    // console.log(lcmsRun.props);
 
     lcmsRun.props.size = lcmsRun.years.length;
 
@@ -704,6 +704,8 @@ function runGTAC() {
     let tcclegendLabelRightAfter = "% TCC";
     let tccNameEnding = "Time-Lapse";
     let tccLayer = nlcdTCC.select([0, 2]); //.map((img) => img.selfMask());
+    let tccDescription =
+      "Annual Tree Canopy Cover (TCC). Each pixel represents the percent of that pixel that is covered by tree canopy.";
     if (urlParams.addLCMSTimeLapsesOn === "no") {
       // tccMin = 0;
       // tccMax = 10;
@@ -711,6 +713,9 @@ function runGTAC() {
       // tcclegendLabelLeftAfter = "% TCC StdDev";
       // tcclegendLabelRightAfter = "% TCC StdDev";
       tccNameEnding = "Mean";
+      tccDescription =
+        "Average Tree Canopy Cover (map). Each pixel represents the percent of that pixel that is covered by tree canopy. Pixel and Area Tools will show full time series of data.";
+
       // tccPa
     }
     addLayerFun(
@@ -725,6 +730,7 @@ function runGTAC() {
         legendLabelRightAfter: tcclegendLabelRightAfter,
         xAxisLabels: nlcdTCCYrs,
         reducer: ee.Reducer.mean(),
+        title: tccDescription,
         eeObjInfo: {
           bandNames: [
             "Science_Percent_Tree_Canopy_Cover",
@@ -739,7 +745,7 @@ function runGTAC() {
         labelClasses: tccLayerStyling.labelClasses,
         labelIconHTML: tccLayerStyling.labelIconHTML,
       },
-      `TCC ${tccNameEnding} asdf`,
+      `TCC ${tccNameEnding}`,
       false
     );
     // }
@@ -1277,7 +1283,8 @@ function runGTAC() {
         min: -70,
         max: -5,
         palette: ["A10018", "D54309", "FAFA4B", "F39268"], //, "C291D5"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
-
+        title:
+          "Total of all declines in Tree Canopy Cover (TCC) that fall within LCMS disturbance or regrowth areas",
         legendLabelLeftAfter: "% TCC",
         legendLabelRightAfter: "% TCC",
         labelClasses: tccLayerStyling.labelClasses,
@@ -1294,7 +1301,8 @@ function runGTAC() {
         max: 30,
         opacity: 0.5,
         palette: ["888", "4BAAB3", "00A398", "00EEDE"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
-
+        title:
+          "Total of all increases in Tree Canopy Cover (TCC) that fall within LCMS disturbance or regrowth areas",
         legendLabelLeftAfter: "% TCC",
         legendLabelRightAfter: "% TCC",
         labelClasses: tccLayerStyling.labelClasses,
