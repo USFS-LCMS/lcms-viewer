@@ -127,7 +127,7 @@ function levelSymbology() {
       "3.1.1.1": [11, "1B1716", "Non-Processing Area Mask"],
 
       "1.1.1.1.1": [1, "FF09F3", "Wind"],
-      "1.1.1.1.2": [2, "541AC2", "Hurricane"],
+      "1.1.1.1.2": [2, "541AFF", "Hurricane"],
       "1.1.1.7.2": [3, "E4F5FD", "Snow or Ice Transition"],
       "1.1.1.2.1": [4, "CC982E", "Desiccation"],
       "1.1.1.3.1": [5, "0ADAFF", "Inundation"],

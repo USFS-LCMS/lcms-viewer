@@ -294,6 +294,7 @@ function runGTAC() {
       lcLevelInfo.viz_dict,
       cLevelInfo.viz_dict
     );
+    console.log(lcmsRun.props);
 
     lcmsRun.props.size = lcmsRun.years.length;
 
@@ -702,11 +703,11 @@ function runGTAC() {
     let tcclegendLabelLeftAfter = "% TCC";
     let tcclegendLabelRightAfter = "% TCC";
     let tccNameEnding = "Time-Lapse";
-    let tccLayer = nlcdTCC.select([0, 2]).map((img) => img.selfMask());
+    let tccLayer = nlcdTCC.select([0, 2]); //.map((img) => img.selfMask());
     if (urlParams.addLCMSTimeLapsesOn === "no") {
       // tccMin = 0;
       // tccMax = 10;
-      tccLayer = nlcdTCC.select([0, 2]);
+      // tccLayer = nlcdTCC.select([0, 2]);
       // tcclegendLabelLeftAfter = "% TCC StdDev";
       // tcclegendLabelRightAfter = "% TCC StdDev";
       tccNameEnding = "Mean";
@@ -738,7 +739,7 @@ function runGTAC() {
         labelClasses: tccLayerStyling.labelClasses,
         labelIconHTML: tccLayerStyling.labelIconHTML,
       },
-      `TCC ${tccNameEnding}`,
+      `TCC ${tccNameEnding} asdf`,
       false
     );
     // }
@@ -1268,7 +1269,7 @@ function runGTAC() {
     const tccLoss = tccDiff.map((img) =>
       img.updateMask(img.lte(0)).copyProperties(img, ["system:time_start"])
     );
-    Map.turnOnInspector();
+
     Map.addLayer(
       tccLoss,
       {
@@ -1291,6 +1292,7 @@ function runGTAC() {
         reducer: ee.Reducer.sum(),
         min: 0,
         max: 30,
+        opacity: 0.5,
         palette: ["888", "4BAAB3", "00A398", "00EEDE"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
 
         legendLabelLeftAfter: "% TCC",
@@ -1299,7 +1301,7 @@ function runGTAC() {
         labelIconHTML: tccLayerStyling.labelIconHTML,
       },
       "TCC Growth Magnitude",
-      false
+      true
     );
 
     // Map.addLayer(
