@@ -1054,13 +1054,10 @@ function areaChartCls() {
           let objT = o.viz.areaChartParams;
 
           if (objT.line && objT.sankey) {
-            selectedChartLayers.push([`${o.legendDivID}-----line`, o.visible]);
-            selectedChartLayers.push([
-              `${o.legendDivID}-----sankey`,
-              o.visible,
-            ]);
+            selectedChartLayers.push([`${o.layerUNID}-----line`, o.visible]);
+            selectedChartLayers.push([`${o.layerUNID}-----sankey`, o.visible]);
           } else {
-            selectedChartLayers.push([o.legendDivID, o.visible]);
+            selectedChartLayers.push([o.layerUNID, o.visible]);
           }
         });
 

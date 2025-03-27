@@ -934,7 +934,7 @@ function updateDashboardHighlights(limit = 10) {
                 }
                 let clsID = cls.replaceAll("/", "-");
                 clsID = clsID.replaceAll(" ", "-");
-                let navID = `${f.legendDivID}----${k}----${clsID}`;
+                let navID = `${f.layerUNID}----${k}----${clsID}`;
                 let isActive = "";
                 if (isFirst) {
                   isActive = " show active";

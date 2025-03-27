@@ -587,18 +587,18 @@ function alignTimeLapseCheckboxes() {
         checked = true;
         $("#" + k + "-time-lapse-layer-range-container").slideDown();
         $("#" + k + "-icon-bar").slideDown();
-        $("#" + k + "-collapse-label").addClass("time-lapse-label-container");
+        $("#" + k + "-layer-container").addClass("time-lapse-label-container");
         // if (urlParams.timeLapseMode === "play") {
         //   playTimeLapse();
         // }
       } else {
-        $("#" + k + "-collapse-label").css(
+        $("#" + k + "-layer-container").css(
           "background",
           `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
         );
         $("#" + k + "-time-lapse-layer-range-container").slideUp();
         $("#" + k + "-icon-bar").slideUp();
-        $("#" + k + "-collapse-label").removeClass(
+        $("#" + k + "-layer-container").removeClass(
           "time-lapse-label-container"
         );
         $("#" + k + "-loading-spinner").hide();
@@ -766,17 +766,17 @@ function addTimeLapseToMap(
   }
   let checked = "";
 
-  const legendDivID = getLayerID(name);
+  const layerUNID = getLayerID(name);
 
   if (
-    urlParams.layerProps[legendDivID] === undefined ||
-    urlParams.layerProps[legendDivID] === null
+    urlParams.layerProps[layerUNID] === undefined ||
+    urlParams.layerProps[layerUNID] === null
   ) {
-    urlParams.layerProps[legendDivID] = {};
-    urlParams.layerProps[legendDivID].visible = false;
-    urlParams.layerProps[legendDivID].opacity = viz.opacity || 1;
+    urlParams.layerProps[layerUNID] = {};
+    urlParams.layerProps[layerUNID].visible = false;
+    urlParams.layerProps[layerUNID].opacity = viz.opacity || 1;
   } else {
-    viz.opacity = urlParams.layerProps[legendDivID].opacity || 1;
+    viz.opacity = urlParams.layerProps[layerUNID].opacity || 1;
   }
   //AutoViz if specified
   if (viz.autoViz) {
@@ -810,7 +810,7 @@ function addTimeLapseToMap(
   viz.canQuery = false;
   viz.isSelectLayer = false;
   viz.isTimeLapse = true;
-  viz.timeLapseID = legendDivID;
+  viz.timeLapseID = layerUNID;
   viz.layerType =
     viz.layerType !== "tileMapService" ? "geeImage" : viz.layerType;
 
@@ -822,7 +822,7 @@ function addTimeLapseToMap(
     viz.dateField = "system:time_start";
   }
 
-  timeLapseObj[legendDivID] = {};
+  timeLapseObj[layerUNID] = {};
   if (whichLayerList === null || whichLayerList === undefined) {
     whichLayerList = "layer-list";
   }
@@ -855,47 +855,47 @@ function addTimeLapseToMap(
   //Set up time laps object entry
   viz.yearsI = range(0, viz.years.length);
   viz.yearLookup = dictFromKeyValues(viz.yearsI, viz.years);
-  timeLapseObj[legendDivID].years = viz.years;
-  timeLapseObj[legendDivID].yearsI = viz.yearsI;
-  timeLapseObj[legendDivID].layerType = viz.layerType;
-  timeLapseObj[legendDivID].yearLookup = viz.years;
-  timeLapseObj[legendDivID].frames = range(0, viz.years.length - 1);
-  timeLapseObj[legendDivID].nFrames = viz.years.length;
-  timeLapseObj[legendDivID].loadingLayerIDs = [];
-  timeLapseObj[legendDivID].loadingTilesLayerIDs = [];
-  timeLapseObj[legendDivID].layerVisibleIDs = [];
-  timeLapseObj[legendDivID].sliders = [];
-  timeLapseObj[legendDivID].intervalValue = null;
-  timeLapseObj[legendDivID].isReady = false;
-  timeLapseObj[legendDivID].visible = visible;
-  timeLapseObj[legendDivID].state = "inactive";
-  timeLapseObj[legendDivID].opacity = viz.opacity * 100;
+  timeLapseObj[layerUNID].years = viz.years;
+  timeLapseObj[layerUNID].yearsI = viz.yearsI;
+  timeLapseObj[layerUNID].layerType = viz.layerType;
+  timeLapseObj[layerUNID].yearLookup = viz.years;
+  timeLapseObj[layerUNID].frames = range(0, viz.years.length - 1);
+  timeLapseObj[layerUNID].nFrames = viz.years.length;
+  timeLapseObj[layerUNID].loadingLayerIDs = [];
+  timeLapseObj[layerUNID].loadingTilesLayerIDs = [];
+  timeLapseObj[layerUNID].layerVisibleIDs = [];
+  timeLapseObj[layerUNID].sliders = [];
+  timeLapseObj[layerUNID].intervalValue = null;
+  timeLapseObj[layerUNID].isReady = false;
+  timeLapseObj[layerUNID].visible = visible;
+  timeLapseObj[layerUNID].state = "inactive";
+  timeLapseObj[layerUNID].opacity = viz.opacity * 100;
   const layerContainerTitle =
     "Time lapse layers load multiple map layers throughout time. Once loaded, you can play the time lapse as an animation, or advance through single years using the buttons and sliders provided.  The layers can be displayed as a single year or as a cumulative mosaic of all preceding years using the right-most button.";
 
   //Set up container for time lapse
   $("#" + whichLayerList).prepend(`
-                                <li   title = '${layerContainerTitle}' id = '${legendDivID}-collapse-label' class = 'layer-container not-draggable-layer'>
+                                <li   title = '${layerContainerTitle}' id = '${layerUNID}-layer-container' class = 'layer-container not-draggable-layer'>
                                   <div class = 'time-lapse-layer-range-container ' >
-                                    <div title = 'Opacity' id='${legendDivID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>
-                                      <div id='${legendDivID}-opacity-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                        <div style = 'display:none;' id='${legendDivID}-opacity-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
-    timeLapseObj[legendDivID].opacity / 100
+                                    <div title = 'Opacity' id='${layerUNID}-opacity-slider' class = 'simple-time-lapse-layer-range-first'>
+                                      <div id='${layerUNID}-opacity-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                        <div style = 'display:none;' id='${layerUNID}-opacity-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
+    timeLapseObj[layerUNID].opacity / 100
   }</div>
                                       </div>
                                     </div>
-                                    <div id='${legendDivID}-time-lapse-layer-range-container' style = 'display:none;'>
-                                      <div title = 'Frame Date' id='${legendDivID}-year-slider' class = 'simple-time-lapse-layer-range-first'>
-                                        <div id='${legendDivID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                          <div id='${legendDivID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
+                                    <div id='${layerUNID}-time-lapse-layer-range-container' style = 'display:none;'>
+                                      <div title = 'Frame Date' id='${layerUNID}-year-slider' class = 'simple-time-lapse-layer-range-first'>
+                                        <div id='${layerUNID}-year-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                          <div id='${layerUNID}-year-slider-handle-label' class = 'time-lapse-slider-handle-label'>${
     viz.years[0]
   }</div>
                                         </div>
                                       </div>
                                     
-                                      <div title = 'Frame Rate' id='${legendDivID}-speed-slider' class = 'simple-time-lapse-layer-range'>
-                                        <div id='${legendDivID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
-                                          <div id='${legendDivID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${(
+                                      <div title = 'Frame Rate' id='${layerUNID}-speed-slider' class = 'simple-time-lapse-layer-range'>
+                                        <div id='${layerUNID}-speed-slider-handle' class=" time-lapse-slider-handle ui-slider-handle">
+                                          <div id='${layerUNID}-speed-slider-handle-label' class = 'time-lapse-slider-handle-label'>${(
     1 /
     (intervalPeriod / 1000)
   ).toFixed(1)}fps</div>
@@ -903,48 +903,48 @@ function addTimeLapseToMap(
                                       </div>
                                     </div>
                                   </div>
-                                  <input  id="${legendDivID}-toggle-checkbox" onchange = 'timeLapseCheckbox("${legendDivID}")' type="checkbox" ${checked}/>
-                                  <label  title = 'Activate/deactivate time lapse' id="${legendDivID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${legendDivID}-toggle-checkbox"></label>
+                                  <input  id="${layerUNID}-toggle-checkbox" onchange = 'timeLapseCheckbox("${layerUNID}")' type="checkbox" ${checked}/>
+                                  <label  title = 'Activate/deactivate time lapse' id="${layerUNID}-toggle-checkbox-label" style = 'margin-bottom:0px;display:none;'  for="${layerUNID}-toggle-checkbox"></label>
 
                            
-                                  <img id = '${legendDivID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner initial-loading-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}" title='Waiting for layer service from Google Earth Engine'>
+                                  <img id = '${layerUNID}-loading-spinner' title = '${name} time lapse layers loading' class="text-dark fa fa-spinner fa-spin layer-spinner initial-loading-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}" title='Waiting for layer service from Google Earth Engine'>
 
                                   <div class = 'layer-label-container'>
                                   
                                   
-                                  <img id = '${legendDivID}-loading-gear' title = '${name} time lapse tiles loading' style = 'display:none;' class="fa fa-spinner fa-spin layer-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
+                                  <img id = '${layerUNID}-loading-gear' title = '${name} time lapse tiles loading' style = 'display:none;' class="fa fa-spinner fa-spin layer-spinner" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                                   ${viz.labelIconHTML}
-                                  <span  id = '${legendDivID}-name-span'  class = 'layer-span ${
+                                  <span  id = '${layerUNID}-name-span'  class = 'layer-span ${
     viz.labelClasses
   }'>${name}</span>
 
-                                  <div id = "${legendDivID}-icon-bar" class = 'timelapse-icon-bar' style = 'display:none;'>
-                                    <button class = 'btn' title = 'Back one frame' id = '${legendDivID}-backward-button' onclick = 'backOneFrame("${legendDivID}")'><i class="fa fa-backward fa-xs"></i></button>
-                                    <button class = 'btn' title = 'Pause animation' id = '${legendDivID}-pause-button' onclick = 'pauseButtonFunction("${legendDivID}")'><i class="fa fa-pause"></i></button>
-                                    <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${legendDivID}-stop-button' onclick = 'stopTimeLapse("${legendDivID}")'><i class="fa fa-stop"></i></button>
-                                    <button class = 'btn' title = 'Play animation' id = '${legendDivID}-play-button'  onclick = 'playTimeLapse("${legendDivID}")'><i class="fa fa-play"></i></button>
-                                    <button class = 'btn' title = 'Forward one frame' id = '${legendDivID}-forward-button' onclick = 'forwardOneFrame("${legendDivID}")'><i class="fa fa-forward"></i></button>
-                                    <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${legendDivID}-refresh-tiles-button' onclick = 'jitterZoom(true)'><i class="fa fa-refresh"></i></button>
-                                    <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${legendDivID}-toggle-frames-button' onclick = 'toggleFrames("${legendDivID}")'><i class="fa fa-eye"></i></button>
+                                  <div id = "${layerUNID}-icon-bar" class = 'timelapse-icon-bar' style = 'display:none;'>
+                                    <button class = 'btn' title = 'Back one frame' id = '${layerUNID}-backward-button' onclick = 'backOneFrame("${layerUNID}")'><i class="fa fa-backward fa-xs"></i></button>
+                                    <button class = 'btn' title = 'Pause animation' id = '${layerUNID}-pause-button' onclick = 'pauseButtonFunction("${layerUNID}")'><i class="fa fa-pause"></i></button>
+                                    <button style = 'display:none;' class = 'btn time-lapse-active' title = 'Clear animation' id = '${layerUNID}-stop-button' onclick = 'stopTimeLapse("${layerUNID}")'><i class="fa fa-stop"></i></button>
+                                    <button class = 'btn' title = 'Play animation' id = '${layerUNID}-play-button'  onclick = 'playTimeLapse("${layerUNID}")'><i class="fa fa-play"></i></button>
+                                    <button class = 'btn' title = 'Forward one frame' id = '${layerUNID}-forward-button' onclick = 'forwardOneFrame("${layerUNID}")'><i class="fa fa-forward"></i></button>
+                                    <button style = '' class = 'btn' title = 'Refresh layers if tiles failed to load' id = '${layerUNID}-refresh-tiles-button' onclick = 'jitterZoom(true)'><i class="fa fa-refresh"></i></button>
+                                    <button style = 'display:none;' class = 'btn' title = 'Toggle frame visiblity' id = '${layerUNID}-toggle-frames-button' onclick = 'toggleFrames("${layerUNID}")'><i class="fa fa-eye"></i></button>
                                     <button class = 'btn cumulativeToggler' onclick = 'toggleCumulativeMode()' title = 'Click to toggle whether to show a single year or all years in the past along with current year'><img style = 'width:1.4em;filter: invert(100%) brightness(500%)'  src="./src/assets/images/cumulative_icon.png"></button>
-                                    <div id = "${legendDivID}-message-div" class = 'pt-2'></div>
+                                    <div id = "${layerUNID}-message-div" class = 'pt-2'></div>
                                   </div>
                                   <div>
                                 </li>
                                 
-                                <div id = '${legendDivID}-collapse-div' style = 'display:none;'></div>`);
+                                <div id = '${layerUNID}-collapse-div' style = 'display:none;'></div>`);
 
   //Add legend
   $("#time-lapse-legend-list").append(
-    `<div id="legend-${legendDivID}-collapse-div"></div>`
+    `<div id="legend-${layerUNID}-collapse-div"></div>`
   );
-  onclick = 'timeLapseCheckbox("${legendDivID}")';
+  onclick = 'timeLapseCheckbox("${layerUNID}")';
   const prevent = false;
   const delay = 200;
-  $("#" + legendDivID + "-name-span").click(function () {
+  $("#" + layerUNID + "-name-span").click(function () {
     setTimeout(function () {
       if (!prevent) {
-        timeLapseCheckbox(legendDivID);
+        timeLapseCheckbox(layerUNID);
       }
     }, delay);
   });
@@ -969,7 +969,7 @@ function addTimeLapseToMap(
         label,
         fontColor,
         helpBox,
-        legendDivID + "-collapse-div",
+        layerUNID + "-collapse-div",
         queryItem
       );
     });
@@ -1032,7 +1032,7 @@ function addTimeLapseToMap(
         label,
         fontColor,
         helpBox,
-        legendDivID + "-collapse-div",
+        layerUNID + "-collapse-div",
         queryItem
       );
     });
@@ -1044,7 +1044,7 @@ function addTimeLapseToMap(
     }
     if (viz.canAreaChart) {
       let vizTT = copyObj(viz);
-      vizTT = setupAreaChartParams(vizTT, legendDivID);
+      vizTT = setupAreaChartParams(vizTT, layerUNID);
       // All a 1:2 layer to area chart object if both line and sankey are specified
       if (vizTT.areaChartParams.sankey && vizTT.areaChartParams.line) {
         let areaChartParamsLine = copyObj(vizTT.areaChartParams);
@@ -1062,23 +1062,23 @@ function addTimeLapseToMap(
       } else {
         areaChart.addLayer(item, vizTT.areaChartParams, name, visible);
       }
-      timeLapseObj[legendDivID].viz = vizTT;
-      timeLapseObj[legendDivID].legendDivID = legendDivID;
+      timeLapseObj[layerUNID].viz = vizTT;
+      timeLapseObj[layerUNID].layerUNID = layerUNID;
     } else {
-      timeLapseObj[legendDivID].viz = viz;
-      timeLapseObj[legendDivID].legendDivID = legendDivID;
+      timeLapseObj[layerUNID].viz = viz;
+      timeLapseObj[layerUNID].layerUNID = layerUNID;
     }
   }
   //If its a tile map service, don't wait
   if (viz.layerType === "tileMapService") {
-    timeLapseObj[legendDivID].isReady = true;
-    $("#" + legendDivID + "-toggle-checkbox-label").show();
-    $("#" + legendDivID + "-loading-spinner").hide();
+    timeLapseObj[layerUNID].isReady = true;
+    $("#" + layerUNID + "-toggle-checkbox-label").show();
+    $("#" + layerUNID + "-loading-spinner").hide();
   }
 
   // Set up query collection
-  queryObj[legendDivID] = {
-    visible: timeLapseObj[legendDivID].visible,
+  queryObj[layerUNID] = {
+    visible: timeLapseObj[layerUNID].visible,
     queryItem: item,
     queryDict: viz.queryDict,
     queryParams: viz.queryParams || {},
@@ -1088,20 +1088,20 @@ function addTimeLapseToMap(
   };
 
   //Get all the individual layers' sliders
-  timeLapseObj[legendDivID].sliders = timeLapseObj[legendDivID].sliders;
+  timeLapseObj[layerUNID].sliders = timeLapseObj[layerUNID].sliders;
 
   //Handle the sliders for that time lapse
   //Start with the opacity slider
   //Controls the opacity of all layers within that time lapse
-  $("#" + legendDivID + "-opacity-slider").slider({
+  $("#" + layerUNID + "-opacity-slider").slider({
     min: 0,
     max: 1,
     step: 0.05,
-    value: timeLapseObj[legendDivID].opacity / 100,
+    value: timeLapseObj[layerUNID].opacity / 100,
     slide: function (e, ui) {
       const opacity = ui.value;
-      urlParams.layerProps[legendDivID].opacity = opacity;
-      const k = legendDivID;
+      urlParams.layerProps[layerUNID].opacity = opacity;
+      const k = layerUNID;
       const s = $("#" + k + "-opacity-slider").slider();
       s.slider("option", "value", ui.value);
       $("#" + k + "-opacity-slider-handle-label").text(opacity);
@@ -1111,13 +1111,13 @@ function addTimeLapseToMap(
     },
   });
   function setTimeLapseRangeSliderThumbOpacity(opacity) {
-    $(`#${legendDivID}-opacity-slider`).css(
+    $(`#${layerUNID}-opacity-slider`).css(
       "background-color",
       `rgba(55, 46, 44,${opacity})!important`
     );
   }
   //The year slider
-  $("#" + legendDivID + "-year-slider").slider({
+  $("#" + layerUNID + "-year-slider").slider({
     min: viz.yearsI[0],
     max: viz.yearsI[viz.yearsI.length - 1],
     step: 1,
@@ -1131,16 +1131,16 @@ function addTimeLapseToMap(
         s.slider("option", "value", ui.value);
         $("#" + k + "-year-slider-handle-label").text(yr);
       });
-      if (timeLapseObj[legendDivID].isReady) {
+      if (timeLapseObj[layerUNID].isReady) {
         clearAllFrames();
-        pauseTimeLapse(legendDivID);
-        selectFrame(legendDivID, true, false);
+        pauseTimeLapse(layerUNID);
+        selectFrame(layerUNID, true, false);
         alignTimeLapseCheckboxes();
       }
     },
   });
   //The speed slider
-  $("#" + legendDivID + "-speed-slider").slider({
+  $("#" + layerUNID + "-speed-slider").slider({
     min: 0.5,
     max: 3.0,
     step: 0.5,
@@ -1154,8 +1154,8 @@ function addTimeLapseToMap(
           `${ui.value.toFixed(1)}fps`
         );
       });
-      if (timeLapseObj[legendDivID].isReady) {
-        setSpeed(legendDivID, speed);
+      if (timeLapseObj[layerUNID].isReady) {
+        setSpeed(layerUNID, speed);
       }
     },
   });
@@ -1262,12 +1262,12 @@ function addExport(eeImage, name, res, Export, metadataParams, noDataValue) {
 }
 /////////////////////////////////////////////////////
 // Function to set up area charting params given viz params from addLayer
-function setupAreaChartParams(viz, legendDivID) {
+function setupAreaChartParams(viz, layerUNID) {
   viz.areaChartParams = viz.areaChartParams || {};
   viz.areaChartParams.sankey = viz.areaChartParams.sankey || false;
   viz.areaChartParams.line =
     viz.areaChartParams.line || viz.areaChartParams.sankey == false;
-  viz.areaChartParams.id = legendDivID;
+  viz.areaChartParams.id = layerUNID;
   viz.areaChartParams.dateFormat =
     viz.areaChartParams.dateFormat || viz.dateFormat || "YYYY";
   if (
@@ -1592,26 +1592,26 @@ function addToMap(
     viz.palette = viz.palette.split(",");
   }
 
-  const legendDivID = getLayerID(name);
+  const layerUNID = getLayerID(name);
   // Handle layer visibility caching
   if (viz.isTimeLapse === false) {
     if (
-      urlParams.layerProps[legendDivID] === undefined ||
-      urlParams.layerProps[legendDivID] === null
+      urlParams.layerProps[layerUNID] === undefined ||
+      urlParams.layerProps[layerUNID] === null
     ) {
-      urlParams.layerProps[legendDivID] = {};
-      urlParams.layerProps[legendDivID].visible =
+      urlParams.layerProps[layerUNID] = {};
+      urlParams.layerProps[layerUNID].visible =
         visible === undefined ? true : visible;
-      urlParams.layerProps[legendDivID].opacity = viz.opacity || 1;
+      urlParams.layerProps[layerUNID].opacity = viz.opacity || 1;
     } else {
-      visible = urlParams.layerProps[legendDivID].visible;
-      viz.opacity = urlParams.layerProps[legendDivID].opacity;
+      visible = urlParams.layerProps[layerUNID].visible;
+      viz.opacity = urlParams.layerProps[layerUNID].opacity;
     }
   }
 
   // Handle area charting
   if (viz.canAreaChart) {
-    viz = setupAreaChartParams(viz, legendDivID);
+    viz = setupAreaChartParams(viz, layerUNID);
 
     // All a 1:2 layer to area chart object if both line and sankey are specified
     if (viz.areaChartParams.sankey && viz.areaChartParams.line) {
@@ -1639,12 +1639,12 @@ function addToMap(
   }
 
   const layerObjKeys = Object.keys(layerObj);
-  const nameIndex = layerObjKeys.indexOf(legendDivID);
+  const nameIndex = layerObjKeys.indexOf(layerUNID);
   if (nameIndex != -1) {
-    visible = layerObj[legendDivID].visible;
-    viz.opacity = layerObj[legendDivID].opacity;
+    visible = layerObj[layerUNID].visible;
+    viz.opacity = layerObj[layerUNID].opacity;
     if (viz.layerType === "geeVector" || viz.layerType === "geoJSONVector") {
-      viz.strokeOpacity = layerObj[legendDivID].opacity;
+      viz.strokeOpacity = layerObj[layerUNID].opacity;
       viz.fillOpacity = viz.strokeOpacity / viz.opacityRatio;
     }
   }
@@ -1670,7 +1670,7 @@ function addToMap(
   layer.label = label;
   layer.fontColor = fontColor;
   layer.helpBox = helpBox;
-  layer.legendDivID = legendDivID;
+  layer.layerUNID = layerUNID;
   if (queryItem === null || queryItem === undefined) {
     queryItem = item;
   }
@@ -1717,7 +1717,7 @@ function addToMap(
       viz.addToClassLegend === false) &&
     (viz.classLegendDict == undefined || viz.classLegendDict == null)
   ) {
-    addLegendContainer(legendDivID, "legend-" + whichLayerList, false, helpBox);
+    addLegendContainer(layerUNID, "legend-" + whichLayerList, false, helpBox);
 
     const legend = {};
 
@@ -1811,14 +1811,14 @@ function addToMap(
     } else {
       legend.fontColor = "color:#DDD;";
     }
-    addColorRampLegendEntry(legendDivID, legend);
+    addColorRampLegendEntry(layerUNID, legend);
   } else if (
     viz != null &&
     ((viz.classLegendDict !== undefined && viz.classLegendDict !== null) ||
       viz.addToClassLegend === true)
   ) {
-    addLegendContainer(legendDivID, "legend-" + whichLayerList, false, helpBox);
-    const classLegendContainerID = legendDivID + "-class-container";
+    addLegendContainer(layerUNID, "legend-" + whichLayerList, false, helpBox);
+    const classLegendContainerID = layerUNID + "-class-container";
     let legendClassContainerName;
     if (viz.legendTitle !== null && viz.legendTitle !== undefined) {
       legendClassContainerName = viz.legendTitle;
@@ -1830,7 +1830,7 @@ function addToMap(
     legendObj.labelIconHTML = viz.labelIconHTML;
     addClassLegendContainer(
       classLegendContainerID,
-      legendDivID,
+      layerUNID,
       legendClassContainerName,
       legendObj
     );
@@ -2168,10 +2168,10 @@ function addFeatureView(
     }
   );
 
-  const legendDivID = getLayerID(name);
+  const layerUNID = getLayerID(name);
 
   NEXT_LAYER_ID++;
-  featureViewObj[legendDivID] = {
+  featureViewObj[layerUNID] = {
     name: name,
     assetId: assetId,
   };
@@ -4234,7 +4234,7 @@ function initialize() {
         // Add drag listeners
         if (Map.canReorderLayers) {
           ["layer-list", "reference-layer-list", "related-layer-list"].map(
-            (l) => addLayerSortListener(`#${l}`)
+            (l) => addLayerSortListener(l)
           );
         }
       }

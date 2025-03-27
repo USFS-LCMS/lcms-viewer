@@ -3050,7 +3050,7 @@ function addLegendContainer(legendContainerID, containerID, show, toolTip) {
     show = "none";
   }
   $("#" + containerID)
-    .prepend(`<div class = 'py-1 row mx-0' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}'>
+    .prepend(`<div class = 'py-1 row mx-0' title= '${toolTip}' style = 'display:${show};' id = '${legendContainerID}-legend-container'>
 								</div>`);
 }
 
@@ -3060,7 +3060,7 @@ function addClassLegendContainer(
   classLegendTitle,
   obj
 ) {
-  $("#" + legendContainerID).append(`<div class='legend'>
+  $("#" + legendContainerID + "-legend-container").append(`<div class='legend'>
 										<div class = 'legend-title ${obj.labelClasses}'>${obj.labelIconHTML} ${classLegendTitle}</div>
 										<div class='legend-row-container'>
 									  		<ul class='legend-labels' id = '${classLegendContainerID}'></ul>
@@ -3069,14 +3069,14 @@ function addClassLegendContainer(
 }
 function addClassLegendEntry(classLegendContainerID, obj) {
   $("#" + classLegendContainerID).append(
-    `<li><span style='background:${addColorHash(obj.classColor)};'></span>${
-      obj.className
-    }</li>`
+    `<li><span style='border: ${obj.classStrokeWeight}px ${obj.lineType} #${
+      obj.classStrokeColor
+    };background:${addColorHash(obj.classColor)};'></span>${obj.className}</li>`
   );
 }
 
 function addColorRampLegendEntry(legendContainerID, obj) {
-  $("#" + legendContainerID)
+  $("#" + legendContainerID + "-legend-container")
     .append(`<li class = 'legend-colorRamp' title= '${obj.helpBoxMessage}'>
                           
 							            <div class = 'legend-title ${obj.labelClasses}'>${obj.labelIconHTML} ${obj.name}</div>
@@ -3148,17 +3148,17 @@ function updateGEETileLayersDownloading() {
 function addLayer(layer) {
   //Initialize a bunch of variables
   layer.loadError = false;
-  const id = layer.legendDivID;
+  const id = layer.layerUNID;
   layer.id = id;
-  const queryID = id + "-" + layer.ID;
-  const containerID = id + "-container-" + layer.ID;
-  const opacityID = id + "-opacity-" + layer.ID;
-  const visibleID = id + "-visible-" + layer.ID;
-  const spanID = id + "-span-" + layer.ID;
-  const visibleLabelID = visibleID + "-label-" + layer.ID;
-  const spinnerID = id + "-spinner-" + layer.ID;
-  const eraserID = `${id}-eraser-${layer.ID}`;
-  const selectionID = id + "-selection-list-" + layer.ID;
+  const queryID = id;
+  const containerID = id + "-layer-container";
+  const opacityID = id + "-opacity";
+  const visibleID = id + "-visible";
+  const spanID = id + "-span";
+  const visibleLabelID = visibleID + "-label";
+  const spinnerID = id + "-spinner";
+  const eraserID = `${id}-eraser`;
+  const selectionID = id + "-selection-list";
   let checked = "";
   let isDraggable = "draggable-layer";
   layerObj[id] = layer;
@@ -3321,7 +3321,7 @@ function addLayer(layer) {
       layer.rangeOpacity = 0;
       setRangeSliderThumbOpacity();
       updateProgress();
-      $("#" + layer.legendDivID).hide();
+      $("#" + layer.layerUNID + "-legend-container").hide();
     } else if (
       layer.layerType !== "geeVector" &&
       layer.layerType !== "geoJSONVector"
@@ -3330,7 +3330,7 @@ function addLayer(layer) {
       layer.map.overlayMapTypes.setAt(layer.layerId, null);
       layer.percent = 0;
       updateProgress();
-      $("#" + layer.legendDivID).hide();
+      $("#" + layer.layerUNID + "-legend-container").hide();
       layer.rangeOpacity = 0;
       if (
         layer.layerType !== "tileMapService" &&
@@ -3344,7 +3344,7 @@ function addLayer(layer) {
 
       layer.percent = 0;
       updateProgress();
-      $("#" + layer.legendDivID).hide();
+      $("#" + layer.layerUNID + "-legend-container").hide();
       layer.layer.setMap(null);
       layer.rangeOpacity = 0;
       $("#" + spinnerID + "2").hide();
@@ -3393,7 +3393,8 @@ function addLayer(layer) {
     ) {
       layer.visible = true;
       layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
-      $("#" + layer.legendDivID).show();
+
+      $("#" + layer.layerUNID + "-legend-container").show();
       layer.rangeOpacity = layer.opacity;
       if (layer.isTileMapService) {
         layer.percent = 100;
@@ -3413,7 +3414,8 @@ function addLayer(layer) {
       layer.visible = true;
       layer.percent = 100;
       updateProgress();
-      $("#" + layer.legendDivID).show();
+
+      $("#" + layer.layerUNID + "-legend-container").show();
       layer.layer.setMap(layer.map);
       layer.rangeOpacity = layer.opacity;
       if (layer.layerType === "geeVector" && layer.canQuery) {
@@ -3694,7 +3696,7 @@ function addLayer(layer) {
             100
         );
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+        $("#" + layer.viz.timeLapseID + "-layer-container").css(
           "background",
           `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
         );
@@ -3704,7 +3706,7 @@ function addLayer(layer) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          $("#" + layer.viz.timeLapseID + "-layer-container").css(
             "background",
             `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
           );
@@ -3820,7 +3822,7 @@ function addLayer(layer) {
               // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', propTiles+'%').attr('aria-valuenow', propTiles).html(propTiles+'% tiles loaded');
               $("#" + layer.viz.timeLapseID + "-loading-gear").show();
 
-              $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+              $("#" + layer.viz.timeLapseID + "-layer-container").css(
                 "background",
                 `-webkit-linear-gradient(90deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
               );
@@ -3834,13 +3836,13 @@ function addLayer(layer) {
           });
           if (layer.visible) {
             layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
-            $("#" + layer.legendDivID).show();
+            $("#" + layer.layerUNID + "-legend-container").show();
             layer.rangeOpacity = layer.opacity;
 
             layer.layer.setOpacity(layer.opacity);
           } else {
             layer.map.overlayMapTypes.setAt(layer.layerId, null);
-            $("#" + layer.legendDivID).hide();
+            $("#" + layer.layerUNID + "-legend-container").hide();
             layer.rangeOpacity = 0;
           }
           setRangeSliderThumbOpacity();
@@ -3873,7 +3875,7 @@ function addLayer(layer) {
             timeLapseObj[layer.viz.timeLapseID].nFrames) *
         100;
 
-      $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+      $("#" + layer.viz.timeLapseID + "-layer-container").css(
         "background",
         `-webkit-linear-gradient(0deg, #FFF, #FFF ${propTiles}%, transparent ${propTiles}%, transparent 100%)`
       );
@@ -3902,7 +3904,7 @@ function addLayer(layer) {
             100
         );
         // $('#'+layer.viz.timeLapseID+'-loading-progress').css('width', prop+'%').attr('aria-valuenow', prop).html(prop+'% frames loaded');
-        $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+        $("#" + layer.viz.timeLapseID + "-layer-container").css(
           "background",
           `-webkit-linear-gradient(left, #FFF, #FFF ${prop}%, transparent ${prop}%, transparent 100%)`
         );
@@ -3912,7 +3914,7 @@ function addLayer(layer) {
           $("#" + layer.viz.timeLapseID + "-loading-spinner").hide();
           $("#" + layer.viz.timeLapseID + "-year-label").hide();
           // $('#'+layer.viz.timeLapseID+'-loading-progress-container').hide();
-          $("#" + layer.viz.timeLapseID + "-collapse-label").css(
+          $("#" + layer.viz.timeLapseID + "-layer-container").css(
             "background",
             `-webkit-linear-gradient(left, #FFF, #FFF ${0}%, transparent ${0}%, transparent 100%)`
           );
@@ -3983,7 +3985,7 @@ function addLayer(layer) {
             layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
             layer.rangeOpacity = layer.opacity;
             layer.layer.setOpacity(layer.opacity);
-            $("#" + layer.legendDivID).show();
+            $("#" + layer.layerUNID + "-legend-container").show();
           } else {
             layer.rangeOpacity = 0;
             layer.map.overlayMapTypes.setAt(layer.layerId, null);
@@ -4123,11 +4125,11 @@ function addLayer(layer) {
           layer.rangeOpacity = layer.viz.strokeOpacity;
           layer.percent = 100;
           updateProgress();
-          $("#" + layer.legendDivID).show();
+          $("#" + layer.layerUNID + "-legend-container").show();
         } else {
           layer.rangeOpacity = 0;
           layer.percent = 0;
-          $("#" + layer.legendDivID).hide();
+          $("#" + layer.layerUNID + "-legend-container").hide();
         }
         setRangeSliderThumbOpacity();
       }
@@ -4219,7 +4221,7 @@ function addLayer(layer) {
           $("#" + spinnerID + "2").hide();
           updateProgress();
           groundOverlayOn = true;
-          $("#" + layer.legendDivID).show();
+          $("#" + layer.layerUNID + "-legend-container").show();
           layer.layer.setOpacity(layer.opacity);
           layer.rangeOpacity = layer.opacity;
         });
@@ -4229,7 +4231,7 @@ function addLayer(layer) {
         $("#" + spinnerID + "2").hide();
 
         groundOverlayOn = true;
-        $("#" + layer.legendDivID).hide();
+        $("#" + layer.layerUNID + "-legend-container").hide();
         $("#" + containerID).css(
           "background",
           `-webkit-linear-gradient(left, #ffb38a, #ffb38a 100%, transparent 100%, transparent 100%)`
@@ -4354,73 +4356,148 @@ function addLayer(layer) {
 
 //////////////////////////////////////////////////
 // Function to listen allow for layer order changes and then update the map accordingly
-function addLayerSortListener(
-  containerSelector,
-  layerSelector = ".layer-container.draggable-layer",
-  layerSplitString = "-container-"
+urlParams.layerOrders = urlParams.layerOrders || {};
+const defaultLayerOrders = {};
+function updateMapLayerOrder(
+  containerID,
+  layerSplitString = "-layer-container"
 ) {
+  // Find the corresponding map layer ids and sort them
+
+  let layerIDs = urlParams.layerOrders[containerID];
+  let allLayerIDs = Object.keys(layerObj);
+  layerIDs = layerIDs.filter((id) => allLayerIDs.indexOf(id) > -1);
+  // console.log(layerIDs);
+  // .map(
+  //   (id) => id.split(layerSplitString)[0]
+  // );
+  let currentLayerIDs = layerIDs
+    .map((layerID) => layerObj[layerID].layerId)
+    .sort((a, b) => a - b);
+  // console.log(currentLayerIDs);
+
+  // Iterate across each layer, clear it off the map, and update its layerId (index of its position in the layer list)
+  layerIDs.forEach((layerContainerID, i) => {
+    let layer = layerObj[layerContainerID];
+
+    // First clear out current layer
+    // layer.map.overlayMapTypes.setAt(layer.layerId, null);
+
+    // if (layer.layerType == "geeVector" || layer.layerType == "geoJSONVector") {
+    // layer.layer.setMap(null);
+    // }
+    // Update the layer id
+    layerObj[layerContainerID].layerId = currentLayerIDs[i];
+  });
+
+  // Add it back on the map if its visible
+  layerIDs.forEach((layerContainerID, i) => {
+    let layer = layerObj[layerContainerID];
+    if (layer.visible) {
+      // console.log(`Adding ${layer.name} to the map ${layer.opacity}`);
+      if (
+        layer.layerType !== "geeVector" &&
+        layer.layerType !== "geoJSONVector"
+      ) {
+        layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
+      } else {
+        layer.map.overlayMapTypes.setAt(layer.layerId, null);
+        layer.layer.setMap(layer.map);
+      }
+
+      // layer.layer.setOpacity(layer.opacity);
+    } else {
+      if (
+        layer.layerType !== "geeVector" &&
+        layer.layerType !== "geoJSONVector"
+      ) {
+        layer.map.overlayMapTypes.setAt(layer.layerId, null);
+      } else {
+        layer.layer.setMap(null);
+      }
+    }
+  });
+}
+//Re order layer UI elements based on stored order
+function sortLayerUIElements(containerID) {
+  const newOrder = copyArray(urlParams.layerOrders[containerID]).reverse();
+  const $list = $("#" + containerID);
+
+  newOrder.forEach((id) => {
+    const $item = $("#" + id + "-layer-container");
+    $list.append($item); // Append the element to the end of the list, effectively moving it
+  });
+}
+
+function sortLayerLegendElements(containerID) {
+  const newOrder = copyArray(urlParams.layerOrders[containerID]).reverse();
+  const $list = $("#legend-" + containerID);
+  newOrder.forEach((id) => {
+    const $item = $("#" + id + "-legend-container");
+    $list.append($item); // Append the element to the end of the list, effectively moving it
+  });
+}
+
+function getLayerIDOrder(
+  containerID,
+  layerSelector = ".layer-container",
+  layerSplitString = "-layer-container"
+) {
+  // Get the new order of layers
+  let layerContainerIDs = $.map(
+    $(`#${containerID}>${layerSelector}`),
+    (n) => n.id.split(layerSplitString)[0]
+  );
+
+  // Reverse them since map layers are bottom-up
+  layerContainerIDs = layerContainerIDs.reverse();
+
+  return layerContainerIDs;
+}
+function initializeLayerSortOrder(containerID, layerSplitString) {
+  if (urlParams.layerOrders != {} && urlParams.layerOrders[containerID]) {
+    console.log(`Applying updates to: ${containerID}`);
+    sortLayerUIElements(containerID);
+    sortLayerLegendElements(containerID);
+    updateMapLayerOrder(containerID, layerSplitString);
+  }
+}
+function setDefaultLayerOrder(layerSplitString = "-layer-container") {
+  urlParams.layerOrders = copyObj(defaultLayerOrders);
+  Object.keys(urlParams.layerOrders).map((k) =>
+    initializeLayerSortOrder(k, layerSplitString)
+  );
+}
+
+function addLayerSortListener(
+  containerID,
+  draggableLayerSelector = ".layer-container.draggable-layer",
+  allLayerSelector = ".layer-container",
+  layerSplitString = "-layer-container"
+) {
+  // Set default order
+  defaultLayerOrders[containerID] = getLayerIDOrder(
+    containerID,
+    allLayerSelector,
+    layerSplitString
+  );
   // Set up sortable layer list
-  $(containerSelector).sortable({ items: `>${layerSelector}` });
+  $("#" + containerID).sortable({ items: `>${draggableLayerSelector}` });
 
   // Listen for sort stopping and then sort map layers accordingly
-  $(containerSelector).on("sortstop", (e, ui) => {
-    // Get the new order of layers
-    let layerContainerIDs = $.map(
-      $(`${containerSelector}>${layerSelector}`),
-      (n) => n.id.split(layerSplitString)[0]
+  $("#" + containerID).on("sortstop", (e, ui) => {
+    const layerContainerIDs = getLayerIDOrder(
+      containerID,
+      allLayerSelector,
+      layerSplitString
     );
-
-    // Reverse them since map layers are bottom-up
-    layerContainerIDs = layerContainerIDs.reverse();
-    // console.log(layerContainerIDs);
-    // Find the corresponding map layer ids and sort them
-    let currentLayerIDs = layerContainerIDs
-      .map((layerContainerID) => layerObj[layerContainerID].layerId)
-      .sort((a, b) => a - b);
-    // console.log(currentLayerIDs);
-
-    // Iterate across each layer, clear it off the map, and update its layerId (index of its position in the layer list)
-    layerContainerIDs.forEach((layerContainerID, i) => {
-      let layer = layerObj[layerContainerID];
-
-      // First clear out current layer
-      // layer.map.overlayMapTypes.setAt(layer.layerId, null);
-
-      // if (layer.layerType == "geeVector" || layer.layerType == "geoJSONVector") {
-      // layer.layer.setMap(null);
-      // }
-      // Update the layer id
-      layerObj[layerContainerID].layerId = currentLayerIDs[i];
-    });
-
-    // Add it back on the map if its visible
-    layerContainerIDs.forEach((layerContainerID, i) => {
-      let layer = layerObj[layerContainerID];
-      if (layer.visible) {
-        // console.log(`Adding ${layer.name} to the map ${layer.opacity}`);
-        if (
-          layer.layerType !== "geeVector" &&
-          layer.layerType !== "geoJSONVector"
-        ) {
-          layer.map.overlayMapTypes.setAt(layer.layerId, layer.layer);
-        } else {
-          layer.map.overlayMapTypes.setAt(layer.layerId, null);
-          layer.layer.setMap(layer.map);
-        }
-
-        // layer.layer.setOpacity(layer.opacity);
-      } else {
-        if (
-          layer.layerType !== "geeVector" &&
-          layer.layerType !== "geoJSONVector"
-        ) {
-          layer.map.overlayMapTypes.setAt(layer.layerId, null);
-        } else {
-          layer.layer.setMap(null);
-        }
-      }
-    });
+    console.log(layerContainerIDs);
+    urlParams.layerOrders[containerID] = layerContainerIDs;
+    updateMapLayerOrder(containerID, layerSplitString);
+    sortLayerLegendElements(containerID);
   });
+
+  initializeLayerSortOrder(containerID, layerSplitString);
 }
 //////////////////////////////////////////////////
 // Transition charting input UI setup
