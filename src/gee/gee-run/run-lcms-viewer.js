@@ -177,22 +177,8 @@ function runGTAC() {
 
     lcmsRun.lcms = ee
       .ImageCollection(studyAreaDict[studyAreaName].final_collections[0])
-      .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"])
-      .map((img) =>
-        img.addBands(
-          img
-            .select(["Change"])
-            .remap(
-              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-              [1, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-              null,
-              "Change"
-            )
-            .rename(["Change"]),
-          null,
-          true
-        )
-      );
+      .select(["Change", "Land_Cover", "Land_Use", ".*Probability.*"]);
+
     lcmsRun.lcms;
     const newBns = lcmsRun.lcms.first().bandNames();
 

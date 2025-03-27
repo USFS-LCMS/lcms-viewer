@@ -2666,6 +2666,13 @@ function reRun() {
     if (areaChart.autoChartingOn === true) {
       areaChart.chartMapExtent("", true);
     }
+
+    // Add drag listeners
+    if (Map.canReorderLayers) {
+      ["layer-list", "reference-layer-list", "related-layer-list"].map((l) =>
+        initializeLayerSortOrder(l)
+      );
+    }
   }, 1500);
 }
 ////////////////////////////////////////////////////////////////////////

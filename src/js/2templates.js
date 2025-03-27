@@ -4454,7 +4454,10 @@ function getLayerIDOrder(
 
   return layerContainerIDs;
 }
-function initializeLayerSortOrder(containerID, layerSplitString) {
+function initializeLayerSortOrder(
+  containerID,
+  layerSplitString = "-layer-container"
+) {
   if (urlParams.layerOrders != {} && urlParams.layerOrders[containerID]) {
     console.log(`Applying updates to: ${containerID}`);
     sortLayerUIElements(containerID);
