@@ -44,7 +44,7 @@ function getLCMSVariables() {
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Region_Boundaries"
   );
   window.b = ee.FeatureCollection(
-    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2023-9/S_USA_AdministrativeForest"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/S_USA-AdministrativeForest_3-26-25"
   );
   window.nps = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries"
@@ -1343,7 +1343,7 @@ function getSelectLayers(short) {
   ecoregions = ecoregions.select(["SECTION"], ["NAME"]);
   const ecoregionsEPAL4 = ee.FeatureCollection("EPA/Ecoregions/2013/L4");
   let district_boundaries = ee.FeatureCollection(
-    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2023-9/S_USA_RangerDistrict"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/S_USA-RangerDistrict_3-26-25"
   );
   district_boundaries = district_boundaries.select(["DISTRICTNA"], ["name"]);
   const msas = ee.FeatureCollection(
