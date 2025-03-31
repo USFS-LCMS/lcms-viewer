@@ -611,6 +611,7 @@ function alignTimeLapseCheckboxes() {
 }
 function timeLapseCheckbox(id) {
   const tObj = timeLapseObj[id];
+  console.log(tObj);
   const v = tObj.visible;
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
@@ -622,7 +623,7 @@ function timeLapseCheckbox(id) {
   } else {
     stopTimeLapse(id);
   }
-  if (areaChart.autoChartingOn && tObj.viz.canAreaChart) {
+  if (areaChart.autoChartingOn && tObj.viz && tObj.viz.canAreaChart) {
     areaChart.chartMapExtent();
   }
   alignTimeLapseCheckboxes();

@@ -4,7 +4,7 @@
 // Recursively get all wayback services that are part of the Wayback group
 // https://www.arcgis.com/home/group.html?id=0f3189e1d1414edfad860b697b7d8311
 function esri_wayback() {
-  function getServices(start = 1, results = []) {
+  function getServices(start = 1, results = [], callback) {
     let allTemplateQuery = `https://www.arcgis.com/sharing/rest/content/groups/0f3189e1d1414edfad860b697b7d8311/search?q=%20%20-type%3A%22Code%20Attachment%22%20-type%3A%22Featured%20Items%22%20-type%3A%22Symbol%20Set%22%20-type%3A%22Color%20Set%22%20-type%3A%22Windows%20Viewer%20Add%20In%22%20-type%3A%22Windows%20Viewer%20Configuration%22%20-type%3A%22Map%20Area%22%20-typekeywords%3A%22MapAreaPackage%22%20-type%3A%22Indoors%20Map%20Configuration%22%20-typekeywords%3A%22SMX%22&num=100&start=${start}&sortField=&sortOrder=asc&f=json`;
     var out = $.ajax({
       type: "GET",
@@ -12,13 +12,19 @@ function esri_wayback() {
       success: function (json) {
         results = results.concat(json.results);
         if (json.nextStart !== -1) {
-          getServices(json.nextStart, results);
+          getServices(json.nextStart, results, callback);
         } else {
           parseWayback(results);
+          if (callback !== undefined && callback !== null) {
+            callback();
+          }
         }
       },
       error: function (request, status, errorThrown) {
         console.log(status);
+        if (callback !== undefined && callback !== null) {
+          callback();
+        }
       },
     });
   }
@@ -60,7 +66,7 @@ function esri_wayback() {
       null,
       "wayback-layer-list"
     );
-
+    $("#WayBack-icon-bar>button.cumulativeToggler").hide();
     // Parse the metadata feature services and sort them
     const wayBackMetadataLayers = {};
     metadata.map((obj) => {
@@ -206,11 +212,11 @@ function esri_wayback() {
     });
   }
   // Wrapper for setting up Wayback
-  this.initialize = function () {
+  this.initialize = function (callback) {
     // Function to parse the services that are part of the Wayback group
 
     // Start the whole thing
-    getServices(1, []);
+    getServices(1, [], callback);
   };
 
   // Function to add UI container for Wayback timelapse and metadata

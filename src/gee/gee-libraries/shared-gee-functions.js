@@ -1500,3 +1500,78 @@ function addNDVI(pre) {
   const ndvi = pre.normalizedDifference(["nir", "red"]).rename("NDVI");
   return pre.addBands(ndvi);
 }
+
+function getAnnualNLCD() {
+  // Use the GEE built-in properties for symbology by setting the properties as follows
+  const landCoverVizProps = {
+    LC_class_values: [
+      11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 52, 71, 81, 82, 90, 95,
+    ],
+    LC_class_palette: [
+      "466b9f",
+      "d1def8",
+      "dec5c5",
+      "d99282",
+      "eb0000",
+      "ab0000",
+      "b3ac9f",
+      "68ab5f",
+      "1c5f2c",
+      "b5c58f",
+      "ccb879",
+      "dfdfc2",
+      "dcd939",
+      "ab6c28",
+      "b8d9eb",
+      "6c9fb8",
+    ],
+    LC_class_names: [
+      "Open Water",
+      "Perennial Ice/Snow",
+      "Developed, Open Space",
+      "Developed, Low Intensity",
+      "Developed, Medium Intensity",
+      "Developed, High Intensity",
+      "Barren Land",
+      "Deciduous Forest",
+      "Evergreen Forest",
+      "Mixed Forest",
+      "Shrub/Scrub",
+      "Grassland/Herbaceous",
+      "Pasture/Hay",
+      "Cultivated Crops",
+      "Woody Wetlands",
+      "Emergent Herbaceous Wetlands",
+    ],
+  };
+  nlcd_landcover = ee.ImageCollection(
+    "projects/sat-io/open-datasets/USGS/ANNUAL_NLCD/LANDCOVER"
+  );
+  lc_vizParams = {
+    reducer: ee.Reducer.mode(),
+    autoViz: true,
+    // canAreaChart: True,
+    // areaChartParams: { line: True, sankey: True, sankeyMinPercentage: 0.1 },
+  };
+
+  nlcd_landcover = nlcd_landcover.map((img) =>
+    img.rename("LC").set(landCoverVizProps)
+  );
+  let minNLCDYear = 1985;
+  let maxNLCDYear = 2023;
+  minNLCDYear =
+    urlParams.startYear >= minNLCDYear ? urlParams.startYear : minNLCDYear;
+  maxNLCDYear =
+    urlParams.endYear <= maxNLCDYear ? urlParams.endYear : maxNLCDYear;
+  console.log(`${minNLCDYear}-${maxNLCDYear}`);
+  Map.addTimeLapse(
+    nlcd_landcover,
+    { autoViz: true, years: range(minNLCDYear, maxNLCDYear + 1) },
+    "Annual NLCD",
+    false,
+    null,
+    null,
+    "NLCD landcover classes ",
+    "reference-layer-list"
+  );
+}
