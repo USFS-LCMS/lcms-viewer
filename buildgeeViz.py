@@ -2,6 +2,7 @@
 import glob, os, shutil, sys, json
 import uglipyjs
 from jsmin import jsmin
+from pathlib import Path
 
 sys.stdin.reconfigure(encoding="utf-8")
 sys.stdout.reconfigure(encoding="utf-8")
@@ -18,11 +19,15 @@ which_ones = [
     "services/area-charting.js",
     "js/6tools-toggle-manager.js",
 ]  # ,'7gee-lib-manager.js']
-lcmsViewerFolder = r"Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer\src"
 
 
-geeViewFolder = r"A:\GEE\gee_py_modules_package\geeViz\geeView"
-js_folder = lcmsViewerFolder  # os.path.join(lcmsViewerFolder, "src\js")
+current_path = Path(os.path.dirname(__file__))
+
+lcmsViewerFolder = os.path.join(current_path,'src')
+geeViewFolder = os.path.join(current_path.parent,r"geeViz\geeView")
+print(current_path,geeViewFolder)
+
+# js_folder = lcmsViewerFolder  # os.path.join(lcmsViewerFolder, "src\js")
 combined_filename = os.path.join(geeViewFolder, r"src\js\lcms-viewer.min.js")
 combined_min_filename = os.path.join(geeViewFolder, r"src\js\lcms-viewer.min.js")
 
@@ -31,13 +36,13 @@ in_css = os.path.join(lcmsViewerFolder, r"styles\style.css")
 out_css = os.path.join(geeViewFolder, r"src\styles\style.min.css")
 
 # Handle js libraries
-js_lib_folder_in = r"Z:\Projects\06_LCMS_4_NFS\Scripts\landscape-change-data-explorer\src\gee\gee-libraries"
+js_lib_folder_in = os.path.join(lcmsViewerFolder,r"gee\gee-libraries")
 js_lib_folder_out = os.path.join(geeViewFolder, r"src\gee\gee-libraries")
 if not os.path.exists(js_lib_folder_out):
     os.makedirs(js_lib_folder_out)
 which_js_libs = ["getImagesLib.js", "changeDetectionLib.js"]
 
-
+print(lcmsViewerFolder,js_lib_folder_in,js_lib_folder_out)
 ##############################################
 def combine_scripts():
 
@@ -80,11 +85,5 @@ def combine_scripts():
 
 combine_scripts()
 
-# o = open(combined_filename,'r')#, encoding="utf-8")
-# js = o.read()#json.load(o)
-# o.close()
-# uglipyjs.compile_with_map(js)
-# # uglipyjs.compile(js)
-# print(js)
-# open(combined_filename,'r').read()
-shutil.copy(in_css, out_css)
+
+# shutil.copy(in_css, out_css)
