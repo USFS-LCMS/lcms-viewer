@@ -1078,6 +1078,7 @@ function addTimeLapseToMap(
   }
 
   // Set up query collection
+  
   queryObj[layerUNID] = {
     visible: timeLapseObj[layerUNID].visible,
     queryItem: item,

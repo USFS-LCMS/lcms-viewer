@@ -488,9 +488,11 @@ function areaChartCls() {
 
       obj.isThematic =
         obj.reducerString === "frequencyHistogram" ? true : obj.isThematic;
+      
+      
       obj.yAxisLabel =
-        obj.yAxisLabel || obj.reducerString === "frequencyHistogram"
-          ? undefined
+        params.yAxisLabel || obj.yAxisLabel || obj.reducerString === "frequencyHistogram"
+          ? params.yAxisLabel 
           : obj.reducerString.toTitle();
 
       this.areaChartObj[obj.id] = obj;
