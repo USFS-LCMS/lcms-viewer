@@ -2572,7 +2572,7 @@ function setGEERunID() {
 function reRun() {
   // $('#summary-spinner').show();
   if (staticTemplates.loadingModal[mode] === undefined) {
-    if (mode === "MTBS") {
+      if (mode === "MTBS" || mode === "RAVG") {
       showMessage(
         "",
         staticTemplates.loadingModal["all"]("mtbs-logo.png", "Updating")
@@ -4054,7 +4054,7 @@ function initialize() {
         $("#introModal").modal().show();
       } else {
         if (staticTemplates.loadingModal[mode] === undefined) {
-          if (mode === "MTBS") {
+          if (mode === "MTBS" || mode === "RAVG") {
             showMessage(
               "",
               staticTemplates.loadingModal["all"]("mtbs-logo.png", "Creating")
@@ -4169,6 +4169,8 @@ function initialize() {
       run = runSequoia;
     } else if (mode === "HiForm-BMP") {
       run = runHiForm;
+    } else if (mode === "RAVG") {
+        run = runRAVG;
     } else if (studyAreaName === "CONUS") {
       longStudyAreaName = cachedStudyAreaName;
       run = runCONUS;

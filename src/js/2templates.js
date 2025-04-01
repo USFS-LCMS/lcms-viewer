@@ -98,6 +98,12 @@ const titles = {
     rightWords: "BMP Tool",
     title: "HiForm Timber Harvest BMP Tool",
   },
+  "RAVG": {
+    leftWords: "RAVG",
+    centerWords: "Data",
+    rightWords: "Explorer",
+    title: "RAVG Data Explorer",
+  }
 };
 ///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {
