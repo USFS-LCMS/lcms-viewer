@@ -6,5 +6,4 @@
 *.geojson
 .vs/
 node_modules/
-package.json
 package-lock.json
