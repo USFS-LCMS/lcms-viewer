@@ -359,9 +359,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.changeLevels = urlParams.changeLevels || {
     1: false,
     2: false,
-    3: false,
-    4: false,
-    5: true,
+    3: true,
   };
   urlParams.landUseLevels = urlParams.landUseLevels || {
     1: false,

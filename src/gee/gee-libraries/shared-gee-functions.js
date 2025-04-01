@@ -1544,10 +1544,10 @@ function getAnnualNLCD() {
       "Emergent Herbaceous Wetlands",
     ],
   };
-  nlcd_landcover = ee.ImageCollection(
+  let nlcd_landcover = ee.ImageCollection(
     "projects/sat-io/open-datasets/USGS/ANNUAL_NLCD/LANDCOVER"
   );
-  lc_vizParams = {
+  const lc_vizParams = {
     reducer: ee.Reducer.mode(),
     autoViz: true,
     // canAreaChart: True,

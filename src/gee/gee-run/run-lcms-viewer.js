@@ -1293,7 +1293,7 @@ function runGTAC() {
 
     // if (urlParams.beta === true || analysisMode === "advanced") {
     nlcdTCC = nlcdTCC.select([0]);
-    const changeTCCRemap = levelObj.getLevelNRemap(2, "Change");
+    const changeTCCRemap = levelObj.getLevelNRemap(1, "Change");
 
     lcmsRun.lcmsTCCRemapped = lcmsRun.lcms.map((img) => {
       return img
