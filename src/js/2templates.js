@@ -640,7 +640,47 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
 
 `
-    ),
+      ),
+      RAVG: getIntroModal(
+          "./src/assets/images/mtbs-logo.png",
+          "Welcome to the RAVG Data Explorer!",
+          `<p class='my-2'>This tool is intended to allow for interactive exploration of the Rapid Assessment of Vegetation Condition after Wildfire (RAVG) data record.
+            </p>
+            <p class='my-2'>
+            Rapid Assessment of Vegetation Condition after Wildfire (RAVG) is a mapping program that provides a suite of standard geospatial products based on an initial assessment of post-fire vegetation conditions following large wildfires on National Forest System lands and selected fires on Department of the Interior lands. A modified analysis is used in the extended assessment time frame..
+    </p>
+    <p class='my-2'>
+    RAVG data for select fires on Department of the Interior (DOI) lands are produced by the USGS Earth Resources Observation and Sciences (EROS) Center.
+    </p>
+    `,
+          `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='RAVG is jointly produced by the USDA Forest Service and USGS'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+        <br>
+        <img class = 'logo' style = 'margin-left:0.3rem;height:2.5rem;' alt="USGS icon" src="./src/assets/images/USGS_logo_green.svg">
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.""><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          <li title = "The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.""><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
+          </li>
+          <li title = "This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.""><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+        </ul>
+        
+    </div>
+
+</div>`,
+          `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<div class ='my-3'>
+   <a  class = 'intro-modal-links' onclick = 'toggleWalkThroughCollapse()' title="Run interactive walk-through of the features of the RAVG Data Explorer">Run Walk-Through</a>
+
+    <a class = "intro-modal-links" title = "Contact us" href="https://www.mtbs.gov/contact" target="_blank"  >CONTACT</a> 
+</div>
+
+`
+      )
   },
   loadingModal: {
     all: function (
