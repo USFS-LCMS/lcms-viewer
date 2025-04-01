@@ -193,7 +193,7 @@ function levelSymbology() {
       Object.keys(urlParams.productLevelLookups[k]).map((k2) => {
         const l = urlParams.productLevelLookups[k][k2];
         const tempKey = `${k}---${k2}---picker`;
-        const level = k2.split(".").length;
+        const level = k2.split("-").length;
         let rowStyle = "";
         if (lastLevel !== level) {
           rowStyle = "style = 'border-top:1px solid black;'";
