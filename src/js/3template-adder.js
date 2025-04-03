@@ -3092,7 +3092,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
         false,
         null,
-        "Adjust parameters used to filter and sort MTBS products"
+        "Adjust parameters used to filter and sort RAVG products"
     );
 
     const mtbsZoomToDict = {
@@ -3105,13 +3105,13 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
 
     addMultiRadio(
         "parameters-collapse-div",
-        "mtbs-zoom-to-radio",
-        "Zoom to MTBS Mapping Area",
+        "ravg-zoom-to-radio",
+        "Zoom to RAVG Mapping Area",
         "mtbsMappingArea",
         mtbsZoomToDict
     );
-    $("#mtbs-zoom-to-radio").prop("title", "Zoom to MTBS region");
-    $("#mtbs-zoom-to-radio").change(function () {
+    $("#ravg-zoom-to-radio").prop("title", "Zoom to RAVG region");
+    $("#ravg-zoom-to-radio").change(function () {
         console.log(mtbsMappingArea);
         synchronousCenterObject(clientBoundsDict[mtbsMappingArea]);
     });
@@ -3129,12 +3129,12 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         1,
         "analysis-year-slider",
         "null",
-        "Years of MTBS data to include"
+        "Years of RAVG data to include"
     );
     addMultiRadio(
         "parameters-collapse-div",
-        "mtbs-summary-method-radio",
-        "How to summarize MTBS data",
+        "ravg-summary-method-radio",
+        "How to summarize RAVG data",
         "mtbsSummaryMethod",
         {
             "Highest-Severity": true,
@@ -3143,9 +3143,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         }
     );
 
-    $("#mtbs-summary-method-radio").prop(
+    $("#ravg-summary-method-radio").prop(
         "title",
-        'Select how to summarize MTBS raster data in areas with multiple fires.  Each summary method is applied on a pixel basis. "Highest-Severity" will show the severity and fire year corresponding to the highest severity. "Most-Recent" will show the severity and fire year corresponding to the most recently mapped fire. "Oldest" will show the severity and fire year corresponding to the oldest mapped fire.'
+        'Select how to summarize RAVG raster data in areas with multiple fires.  Each summary method is applied on a pixel basis. "Highest-Severity" will show the severity and fire year corresponding to the highest severity. "Most-Recent" will show the severity and fire year corresponding to the most recently mapped fire. "Oldest" will show the severity and fire year corresponding to the oldest mapped fire.'
     );
     $("#parameters-collapse-div").append(`<hr>`);
     $("#parameters-collapse-div").append(staticTemplates.reRunButton);
