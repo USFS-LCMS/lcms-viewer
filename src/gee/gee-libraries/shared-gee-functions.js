@@ -569,7 +569,7 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     Moderate: "ffff00",
     High: "ff0000",
     "Increased Greenness": "7fff00",
-    "Non-Processing Area Mask": "ffffff",
+    "Non-Processing Area Mask": "ffffff"
   };
 
   mtbsQueryClassDict = {};
@@ -687,10 +687,17 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
         .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
         .mosaic();
       let mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
-        const name = nlcdObj.queryDict[k];
+          const name = nlcdObj.queryDict[k];
         const out = mtbsMaxSeverity
           .updateMask(nlcdT.eq(ee.Number.parse(k)))
-          .set("nlcd_landcover_class", name);
+              .set("nlcd_landcover_class", name);
+
+          //console.log("year");
+          //console.log(nlcdYear);
+          //console.log("out");
+          //console.log(out);
+          //console.log("name");
+          //console.log(name);
         return out;
       });
       mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
@@ -1493,7 +1500,7 @@ function getSelectLayers(short) {
       "-" +
       endYear.toString() +
       ". Turn on layer and click on any fire wanted to include in chart"
-  );
+    );
 }
 
 function addNDVI(pre) {

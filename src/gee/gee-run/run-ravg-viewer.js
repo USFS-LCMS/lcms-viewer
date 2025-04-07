@@ -1,7 +1,84 @@
-let ravgCollection;
+//let ravgCollection;
+
+//I think I want to just have the gee functionality for retreiving the RAVG layers here,
+//rather than in the shared - gee - functions since it's not clear they would be relevant anywhere else.
+
+
+
+function getRAVGBurnPerimeters(startYear, endYear) {
+    let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+
+    const inRAVGFields = [
+        "FIRE_NAME",
+        "EVENT_ID",
+        "FIRE_YEAR",
+        "ACRES",
+        "Pre-Image Year"
+    ];
+
+    const outRAVGFields = [
+        "Fire Name",
+        "RAVG Event ID",
+        "Fire Year",
+        "Acres",
+        "Pre-Image Year"
+    ];
+
+    let label = "RAVG Burn Perimeters";
+    let tooltip = "Delineated perimeters of each RAVG mapped fire from " +
+        startYear.toString() +
+        "-" +
+        endYear.toString() +
+        ". ";
+
+    perimsRAVG = perimsRAVG.map(function (f) {
+        const d = ee.Date(f.get("PREIMGYMD"));
+        const formatted = d.format("YYYY-MM-dd");
+        return f.set({
+            Year: d.get("year"),
+            "Pre-Image Year": formatted,
+        });
+    });
+
+    //perimsRAVG = perimsRAVG.filter(ee.Filter.gte("Year", startYear)); //these don't work
+    //perimsRAVG = perimsRAVG.filter(ee.Filter.lte("Year", endYear)); //these don't work
+    perimsRAVG = perimsRAVG.select(inRAVGFields, outRAVGFields);
+    perimsRAVG = perimsRAVG.set("bounds", clientBoundsDict.All);
+
+    //add layer to map in RAVG DATA section
+    Map.addLayer(
+        perimsRAVG,
+        {
+            styleParams: {
+                color: "00F",
+                fillColor: "0000",
+                width: 2,
+                lineType: "dashed",
+            },
+        },
+        label,
+        true,
+        null,
+        null,
+        tooltip + "Areas can have multiple mapped fires."
+    );
+
+    //add layer to map in TOOLS -> Select an Area on Map section
+    Map.addSelectLayer(
+        perimsRAVG,
+        {
+            strokeColor: "00F",
+            selectLayerNameProperty: "FIRE_NAME",
+        },
+        label,
+        false,
+        null,
+        null,
+        tooltip + "Turn on layer and click on any fire wanted to include in chart"
+    );
+}
 
 function runRAVG() {
-    console.log("starting runRAVG");
 
     startYear = parseInt(urlParams.startYear); 
     endYear = parseInt(urlParams.endYear);
@@ -9,91 +86,29 @@ function runRAVG() {
     chartMTBSByNLCD = true;
     chartMTBSByAspect = true;
 
-    //shared gee function
-    getLCMSVariables();
-
-    /* 
+    /*
     shutting this down for now...
     ga("send", "event", "mtbs-viewer-run", "year_range", `${startYear}_${endYear}`);
     */
 
-    //shared gee function
+    //initializes a bunch of global variables.
+    getLCMSVariables();
+
+    //adds NAIP Time Lapse layer under REFERENCE DATA
     getNAIP(null, true);
+
     Map.turnOffLayersWhenTimeLapseIsOn = false;
 
-    //shared gee function, probably need something similar for RAVG assets. This references ImageCollections in EE
     const mtbsAndNLCD = getMTBSAndNLCD("anc", "layer-list", true);
-
     const nlcdLCObj = mtbsAndNLCD.NLCD;
-    ravgCollection = mtbsAndNLCD.MTBS.collection;
-
+    const ravgCollection = mtbsAndNLCD.MTBS.collection;
     const yearsCli = range(startYear, endYear + 1);
-
-    //feature collection from EE
-    let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-
-    const inFields = [
-    "Incid_Name",
-    "Incid_Type",
-    "Event_ID",
-    "irwinID",
-    "Ignition Date",
-    "BurnBndAc",
-    "Asmnt_Type",
-    ];
-
-    const outFields = [
-    "Incident Name",
-    "Incident Type",
-    "MTBS Event ID",
-    "IRWIN ID",
-    "Ignition Date",
-    "Acres",
-    "Assessment Type",
-    ];
-
-    perims = perims.map(function (f) {
-        const d = ee.Date(f.get("Ig_Date"));
-        const formatted = d.format("YYYY-MM-dd");
-        return f.set({
-            Year: d.get("year"),
-            "Ignition Date": formatted,
-        });
-    });
-
-    perims = perims.filter(ee.Filter.gte("Year", startYear));
-    perims = perims.filter(ee.Filter.lte("Year", endYear));
-    perims = perims.select(inFields, outFields);
-    perims = perims.set("bounds", clientBoundsDict.All);
-
-    Map.addLayer(
-        perims,
-        {
-            styleParams: {
-            color: "00F",
-            fillColor: "0000",
-            width: 2,
-            lineType: "dashed",
-            },
-        },
-        "MTBS Burn Perimeters",
-        true,
-        null,
-        null,
-        "Delineated perimeters of each MTBS mapped fire from " +
-            startYear.toString() +
-            "-" +
-            endYear.toString() +
-            ". Areas can have multiple mapped fires."
-    );
-
     const chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict"))
                              .combine(ravgCollection.get("chartTableDict"))
                              .getInfo();
     const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
     const forCharting = joinCollections(ravgCollection, nlcdLCFilled, false);
     const timeLapseSeverityViz = JSON.parse(JSON.stringify(mtbsAndNLCD.MTBSSeverityViz));
-
     timeLapseSeverityViz.years = yearsCli;
 
     Map.addTimeLapse(
@@ -112,7 +127,6 @@ function runRAVG() {
 
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
-    getSelectLayers();
-
+    getSelectLayers(); //enables Tools -> Select and Area on Map 
+    getRAVGBurnPerimeters(startYear, endYear);
 }
-
