@@ -69,7 +69,8 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
     );
 }
 
-function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
+function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
+
     if (showSeverity === null || showSeverity === undefined) {
         showSeverity = false;
     }
@@ -77,30 +78,27 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
         mtbsSummaryMethod = "Highest-Severity";
     }
 
-    let ravgEndYear = endYear;
-
+    const chartRAVG = true;
+    const chartRAVGByNLCD = true;
+    const chartRAVGByAspect = true;
+    const ravgAsset = "projects/gtac-ravg/assets/RAVG_annual_mosaics/" + layer + "_annual_mosaics";
+    const ravgEndYear = endYear;
     const ravgYears = ee.List.sequence(2012, ravgEndYear);
 
-    const ravg_ba7_path = "projects/gtac-ravg/assets/RAVG_annual_mosaics/BA7_annual_mosaics";
+    let severityLayer = ee.ImageCollection(ravgAsset);
 
-    let ravgBA7 = ee.ImageCollection(ravg_ba7_path);
-
-    ravgBA7 = ravgYears.map(function (yr) {
-        const ravgYr = ravgBA7
+    severityLayer = ravgYears.map(function (yr) {
+        const ravgYr = severityLayer
             .filter(ee.Filter.calendarRange(yr, yr, "year"))
             .mosaic();
         return ravgYr.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
     });
-
-    ravgBA7 = ee.ImageCollection.fromImages(ravgBA7);
-
-    ravgBA7 = ravgBA7.filter(ee.Filter.calendarRange(startYear, ravgEndYear, "year"));
-
-    ravgBA7 = ravgBA7.map(function (img) {
+    severityLayer = ee.ImageCollection.fromImages(severityLayer);
+    severityLayer = severityLayer.filter(ee.Filter.calendarRange(startYear, ravgEndYear, "year"));
+    severityLayer = severityLayer.map(function (img) {
         return img.select([0], ["burnSeverity"]).byte();
     });
-
-    ravgBA7 = ravgBA7.map(function (img) {
+    severityLayer = severityLayer.map(function (img) {
         const severityRemapped = img
             .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
             .rename(["burnSeverityRemap"]);
@@ -119,18 +117,16 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
             .addBands(burnYear)
             .int16();
     });
+    severityLayer = ee.ImageCollection(severityLayer);
 
-    ravgBA7 = ee.ImageCollection(ravgBA7);
-
-    const ravgBA7SummaryDict = {
+    const severityLayerSummaryDict = {
         "Highest-Severity": "burnSeverityRemap",
         "Most-Recent": "burnYear",
         Oldest: "burnYearNegative",
     };
-    const ravgBA7Summarized = ravgBA7.qualityMosaic(ravgBA7SummaryDict[mtbsSummaryMethod]);
-    const ravgBA7Count = ravgBA7.select([2]).count();
-
-    const ravgBA7ClassDict = {
+    const severityLayerSummarized = severityLayer.qualityMosaic(severityLayerSummaryDict[mtbsSummaryMethod]);
+    const severityLayerCount = severityLayer.select([2]).count();
+    const severityLayerClassDict = {
         "Unburned to Low": "006400",
         Low: "7fffd4",
         Moderate: "ffff00",
@@ -139,33 +135,33 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
         "Non-Processing Area Mask": "ffffff"
     };
 
-    let ravgBA7QueryClassDict = {};
+    let severityLayerQueryClassDict = {};
     let keyI = 1;
-    Object.keys(ravgBA7ClassDict).map(function (k) {
-        ravgBA7QueryClassDict[keyI] = k;
+    Object.keys(severityLayerClassDict).map(function (k) {
+        severityLayerQueryClassDict[keyI] = k;
         keyI++;
     });
 
     if (chartRAVG === true) {
         let mtbsStack = formatAreaChartCollection(
-            ravgBA7.select([0]),
-            Object.keys(ravgBA7QueryClassDict),
-            Object.values(ravgBA7QueryClassDict),
+            severityLayer.select([0]),
+            Object.keys(severityLayerQueryClassDict),
+            Object.values(severityLayerQueryClassDict),
             true
         );
-        areaChartCollections["ravg_ba7"] = {
+        areaChartCollections["ravg_" + layer.toLowerCase()] = {
             collection: mtbsStack,
-            colors: Object.values(ravgBA7ClassDict),
-            label: "RAVG BA7 Burn Severity by Year",
+            colors: Object.values(severityLayerClassDict),
+            label: "RAVG " + layer + " Burn Severity by Year",
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: "year",
-            tooltip: "Chart the RAVG BA7 burn severity by year",
+            tooltip: "Chart the RAVG " + layer + " burn severity by year",
         };
-        areaChartCollections["ravg_ba7_burn_mosaic"] = {
+        areaChartCollections["ravg_" + layer.toLowerCase() + "_burn_mosaic"] = {
             collection: ee.ImageCollection([
-                ravgBA7
+                severityLayer
                     .select([2])
                     .mosaic()
                     .unmask(0)
@@ -180,7 +176,7 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
             ]),
             colors: ["#CC5500"],
             label:
-                "RAVG BA7 Burned Area Total " +
+                "RAVG " + layer + " Burned Area Total " +
                 startYear.toString() +
                 "-" +
                 endYear.toString(),
@@ -194,22 +190,22 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
                 "-" +
                 endYear.toString(),
         };
-        areaChartCollections["ravg_burn_severity_ba7_mosaic"] = {
+        areaChartCollections["ravg_burn_severity_" + layer.toLowerCase() + "_mosaic"] = {
             collection: ee.ImageCollection([
                 mtbsStack
                     .max()
                     .unmask(0)
                     .set(
                         "Burned",
-                        "BA7 Burn Severity Total " +
+                        layer + " Burn Severity Total " +
                         startYear.toString() +
                         "-" +
                         endYear.toString()
                     ),
             ]),
-            colors: Object.values(ravgBA7ClassDict),
+            colors: Object.values(severityLayerClassDict),
             label:
-                "RAVG BA7 Burn Severity Total " +
+                "RAVG " + layer + " Burn Severity Total " +
                 startYear.toString() +
                 "-" +
                 endYear.toString(),
@@ -218,14 +214,14 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
             chartType: "bar",
             xAxisProperty: "Burned",
             tooltip:
-                "Chart the union of BA7 burn severity " +
+                "Chart the union of " + layer + " burn severity " +
                 startYear.toString() +
                 "-" +
                 endYear.toString() +
                 ". The maximum severity is used when fires overlap. ",
         };
     }
-    let ravgBA7MaxSeverity = ravgBA7.select([0]).max();
+    let severityLayerMaxSeverity = severityLayer.select([0]).max();
     let nlcdObj;
     if (chartRAVGByNLCD) {
         nlcdObj = getNLCDObj();
@@ -255,7 +251,7 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
                 .mosaic();
             let mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
                 const name = nlcdObj.queryDict[k];
-                const out = ravgBA7MaxSeverity
+                const out = severityLayerMaxSeverity
                     .updateMask(nlcdT.eq(ee.Number.parse(k)))
                     .set("nlcd_landcover_class", name);
                 return out;
@@ -263,26 +259,25 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
             mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
             let mtbsByNLCDStack = formatAreaChartCollection(
                 mtbsByNLCD,
-                Object.keys(ravgBA7QueryClassDict),
-                Object.values(ravgBA7QueryClassDict),
+                Object.keys(severityLayerQueryClassDict),
+                Object.values(severityLayerQueryClassDict),
                 true
             );
 
-            areaChartCollections["ravgBA7NLCD" + nlcdYear.toString()] = {
+            areaChartCollections["ravg" + layer + "NLCD" + nlcdYear.toString()] = {
                 collection: mtbsByNLCDStack,
-                colors: Object.values(ravgBA7ClassDict),
-                label: "RAVG BA7 Burn Severity by NLCD Class " + nlcdYear.toString(),
+                colors: Object.values(severityLayerClassDict),
+                label: "RAVG " + layer + " Burn Severity by NLCD Class " + nlcdYear.toString(),
                 stacked: true,
                 steppedLine: false,
                 chartType: "bar",
                 xAxisProperty: "nlcd_landcover_class",
                 xAxisLabel: "NLCD " + nlcdYear.toString() + " Class",
                 tooltip:
-                    "Chart RAVG BA7 burn severity by each NLCD " +
+                    "Chart RAVG " + layer + " burn severity by each NLCD " +
                     nlcdYear.toString() +
                     " landcover class",
             };
-            // }
         });
     }
     if (chartRAVGByAspect) {
@@ -291,7 +286,7 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
         const aspectLookupDict = aspectObj.lookupDict.getInfo();
         let mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
             const name = aspectLookupDict[k];
-            const out = ravgBA7MaxSeverity
+            const out = severityLayerMaxSeverity
                 .updateMask(aspectBinned.eq(ee.Number.parse(k)))
                 .set("Aspect_Bin", name);
             return out;
@@ -299,40 +294,40 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
         mtbsByAspect = ee.ImageCollection(mtbsByAspect);
         const mtbsByAspectStack = formatAreaChartCollection(
             mtbsByAspect,
-            Object.keys(ravgBA7QueryClassDict),
-            Object.values(ravgBA7QueryClassDict),
+            Object.keys(severityLayerQueryClassDict),
+            Object.values(severityLayerQueryClassDict),
             true
         );
 
-        areaChartCollections["mtbsAspect"] = {
+        areaChartCollections["ravg" + layer + "Aspect"] = {
             collection: mtbsByAspectStack,
-            colors: Object.values(ravgBA7ClassDict),
-            label: "RAVG BA7 Burn Severity by Aspect",
+            colors: Object.values(severityLayerClassDict),
+            label: "RAVG " + layer + " Burn Severity by Aspect",
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: "Aspect_Bin",
             xAxisLabel: "Aspect Bin",
-            tooltip: "Chart RAVG BA7 burn severity by aspect quadrants.",
+            tooltip: "Chart RAVG " + layer + " burn severity by aspect quadrants.",
         };
     }
 
     const severityViz = {
-        queryDict: ravgBA7QueryClassDict,
+        queryDict: severityLayerQueryClassDict,
         min: 1,
         max: 6,
         palette: "006400,7fffd4,ffff00,ff0000,7fff00,ffffff",
         addToClassLegend: true,
-        classLegendDict: ravgBA7ClassDict,
+        classLegendDict: severityLayerClassDict,
     };
     Map.addLayer(
-        ravgBA7Summarized.select([0]).set("bounds", clientBoundsDict.All),
+        severityLayerSummarized.select([0]).set("bounds", clientBoundsDict.All),
         severityViz,
-        "RAVG BA7 Burn Severity",
+        "RAVG " + layer + " Burn Severity",
         showSeverity,
         null,
         null,
-        "RAVG BA7 " +
+        "RAVG " + layer + " " +
         mtbsSummaryMethod +
         " burn severity mosaic from " +
         startYear.toString() +
@@ -341,17 +336,17 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
         whichLayerList
     );
     Map.addLayer(
-        ravgBA7Summarized.select([4]).set("bounds", clientBoundsDict.All),
+        severityLayerSummarized.select([4]).set("bounds", clientBoundsDict.All),
         {
             min: startYear,
             max: endYear,
             palette: declineYearPalette,
         },
-        "RAVG BA7 Burn Year",
+        "RAVG " + layer + " Burn Year",
         false,
         null,
         null,
-        "RAVG BA7 " +
+        "RAVG " + layer + " " +
         mtbsSummaryMethod +
         " burn year from " +
         startYear.toString() +
@@ -360,7 +355,7 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
         whichLayerList
     );
     Map.addLayer(
-        ravgBA7Count.set("bounds", clientBoundsDict.All),
+        severityLayerCount.set("bounds", clientBoundsDict.All),
         {
             min: 1,
             max: 5,
@@ -368,11 +363,11 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
             legendLabelLeft: "Count =",
             legendLabelRight: "Count >=",
         },
-        "RAVG BA7 Burn Count",
+        "RAVG " + layer + " Burn Count",
         false,
         null,
         null,
-        "RAVG BA7 number of burns mapped for a given area from " +
+        "RAVG " + layer + " number of burns mapped for a given area from " +
         startYear.toString() +
         "-" +
         ravgEndYear.toString() +
@@ -381,391 +376,42 @@ function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
     );
 
     const chartTableDict = {
-        "Burn Severity - BA7": ravgBA7QueryClassDict,
+        "Burn Severity": severityLayerQueryClassDict,
     };
     return {
         NLCD: nlcdObj,
-        RAVGBA7: {
-            collection: ravgBA7
+        severityLayer: {
+            collection: severityLayer
                 .set("bounds", clientBoundsDict.All)
-                .select([0], ["Burn Severity - BA7"])
+                .select([0], [layer + " Burn Severity"])
                 .set("chartTableDict", chartTableDict),
         },
-        RAVGBA7SeverityViz: severityViz,
+        severityViz: severityViz,
     };
 }
 
-function getRAVGCC5AndNLCD(whichLayerList, showSeverity) {
-    if (showSeverity === null || showSeverity === undefined) {
-        showSeverity = false;
-    }
-    if (mtbsSummaryMethod === null || mtbsSummaryMethod === undefined) {
-        mtbsSummaryMethod = "Highest-Severity";
-    }
-
-    const ravg_cc5_path = "projects/gtac-ravg/assets/RAVG_annual_mosaics/CC5_annual_mosaics";
-    let ravgEndYear = endYear;
-    const ravgYears = ee.List.sequence(2012, ravgEndYear);
-    let ravgCC5 = ee.ImageCollection(ravg_cc5_path);
-    ravgCC5 = ravgYears.map(function (yr) {
-        const ravgYr = ravgCC5
-            .filter(ee.Filter.calendarRange(yr, yr, "year"))
-            .mosaic();
-        return ravgYr.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
-    });
-    ravgCC5 = ee.ImageCollection.fromImages(ravgCC5);
-
-    ravgCC5 = ravgCC5.filter(ee.Filter.calendarRange(startYear, ravgEndYear, "year"));
-
-    ravgCC5 = ravgCC5.map(function (img) {
-        return img.select([0], ["burnSeverity"]).byte();
-    });
-
-    ravgCC5 = ravgCC5.map(function (img) {
-        const severityRemapped = img
-            .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
-            .rename(["burnSeverityRemap"]);
-        let burned = img
-            .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
-            .rename(["burnedNotBurned"]);
-        burned = burned.selfMask();
-        const burnYear = ee
-            .Image(ee.Date(img.get("system:time_start")).get("year"))
-            .updateMask(severityRemapped.mask())
-            .rename("burnYear");
-        return img
-            .addBands(severityRemapped)
-            .addBands(burned)
-            .addBands(burned.multiply(-1).rename(["burnYearNegative"]))
-            .addBands(burnYear)
-            .int16();
-    });
-
-    ravgCC5 = ee.ImageCollection(ravgCC5);
-
-    const ravgCC5SummaryDict = {
-        "Highest-Severity": "burnSeverityRemap",
-        "Most-Recent": "burnYear",
-        Oldest: "burnYearNegative",
-    };
-    const ravgCC5Summarized = ravgCC5.qualityMosaic(ravgCC5SummaryDict[mtbsSummaryMethod]);
-    const ravgCC5Count = ravgCC5.select([2]).count();
-
-    const ravgCC5ClassDict = {
-        "Unburned to Low": "006400",
-        Low: "7fffd4",
-        Moderate: "ffff00",
-        High: "ff0000",
-        "Increased Greenness": "7fff00",
-        "Non-Processing Area Mask": "ffffff"
-    };
-
-    let ravgCC5QueryClassDict = {};
-    let keyI = 1;
-    Object.keys(ravgCC5ClassDict).map(function (k) {
-        ravgCC5QueryClassDict[keyI] = k;
-        keyI++;
-    });
-
-    if (chartRAVG === true) {
-        let mtbsStack = formatAreaChartCollection(
-            ravgCC5.select([0]),
-            Object.keys(ravgCC5QueryClassDict),
-            Object.values(ravgCC5QueryClassDict),
-            true
-        );
-        areaChartCollections["ravg_cc5"] = {
-            collection: mtbsStack,
-            colors: Object.values(ravgCC5ClassDict),
-            label: "RAVG CC5 Burn Severity by Year",
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "year",
-            tooltip: "Chart the RAVG CC5 burn severity by year",
-        };
-        areaChartCollections["ravg_cc5_burn_mosaic"] = {
-            collection: ee.ImageCollection([
-                ravgCC5
-                    .select([2])
-                    .mosaic()
-                    .unmask(0)
-                    .rename(["Burned"])
-                    .set(
-                        "Burned",
-                        "All Mapped Burned Area (Total of Low, Moderate, and High Severity) " +
-                        startYear.toString() +
-                        "-" +
-                        endYear.toString()
-                    ),
-            ]),
-            colors: ["#CC5500"],
-            label:
-                "RAVG CC5 Burned Area Total " +
-                startYear.toString() +
-                "-" +
-                endYear.toString(),
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "Burned",
-            tooltip:
-                "Chart the union of all burned areas (areas with low, moderate, or high severity) " +
-                startYear.toString() +
-                "-" +
-                endYear.toString(),
-        };
-        areaChartCollections["ravg_burn_severity_cc5_mosaic"] = {
-            collection: ee.ImageCollection([
-                mtbsStack
-                    .max()
-                    .unmask(0)
-                    .set(
-                        "Burned",
-                        "CC5 Burn Severity Total " +
-                        startYear.toString() +
-                        "-" +
-                        endYear.toString()
-                    ),
-            ]),
-            colors: Object.values(ravgCC5ClassDict),
-            label:
-                "RAVG CC5 Burn Severity Total " +
-                startYear.toString() +
-                "-" +
-                endYear.toString(),
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "Burned",
-            tooltip:
-                "Chart the union of CC5 burn severity " +
-                startYear.toString() +
-                "-" +
-                endYear.toString() +
-                ". The maximum severity is used when fires overlap. ",
-        };
-    }
-    let ravgCC5MaxSeverity = ravgCC5.select([0]).max();
-    let nlcdObj;
-    if (chartRAVGByNLCD) {
-        nlcdObj = getNLCDObj();
-
-        Map.addTimeLapse(
-            nlcdObj.collection,
-            {
-                min: nlcdObj.min,
-                max: nlcdObj.max,
-                palette: Object.values(nlcdObj.vizDict),
-                addToClassLegend: true,
-                classLegendDict: nlcdObj.legendDictReverse,
-                queryDict: nlcdObj.queryDict,
-                years: nlcdObj.years,
-            },
-            "NLCD Land Cover Time Lapse",
-            false,
-            null,
-            null,
-            "NLCD landcover classes ",
-            "reference-layer-list"
-        );
-
-        nlcdObj.years.map(function (nlcdYear) {
-            const nlcdT = nlcdObj.collection
-                .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
-                .mosaic();
-            let mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
-                const name = nlcdObj.queryDict[k];
-                const out = ravgCC5MaxSeverity
-                    .updateMask(nlcdT.eq(ee.Number.parse(k)))
-                    .set("nlcd_landcover_class", name);
-                return out;
-            });
-            mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
-            let mtbsByNLCDStack = formatAreaChartCollection(
-                mtbsByNLCD,
-                Object.keys(ravgCC5QueryClassDict),
-                Object.values(ravgCC5QueryClassDict),
-                true
-            );
-
-            areaChartCollections["ravgCC5NLCD" + nlcdYear.toString()] = {
-                collection: mtbsByNLCDStack,
-                colors: Object.values(ravgCC5ClassDict),
-                label: "RAVG CC5 Burn Severity by NLCD Class " + nlcdYear.toString(),
-                stacked: true,
-                steppedLine: false,
-                chartType: "bar",
-                xAxisProperty: "nlcd_landcover_class",
-                xAxisLabel: "NLCD " + nlcdYear.toString() + " Class",
-                tooltip:
-                    "Chart RAVG CC5 burn severity by each NLCD " +
-                    nlcdYear.toString() +
-                    " landcover class",
-            };
-            // }
-        });
-    }
-    if (chartRAVGByAspect) {
-        const aspectObj = getAspectObj();
-        const aspectBinned = aspectObj.image;
-        const aspectLookupDict = aspectObj.lookupDict.getInfo();
-        let mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
-            const name = aspectLookupDict[k];
-            const out = ravgCC5MaxSeverity
-                .updateMask(aspectBinned.eq(ee.Number.parse(k)))
-                .set("Aspect_Bin", name);
-            return out;
-        });
-        mtbsByAspect = ee.ImageCollection(mtbsByAspect);
-        const mtbsByAspectStack = formatAreaChartCollection(
-            mtbsByAspect,
-            Object.keys(ravgCC5QueryClassDict),
-            Object.values(ravgCC5QueryClassDict),
-            true
-        );
-
-        areaChartCollections["mtbsAspect"] = {
-            collection: mtbsByAspectStack,
-            colors: Object.values(ravgCC5ClassDict),
-            label: "RAVG CC5 Burn Severity by Aspect",
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "Aspect_Bin",
-            xAxisLabel: "Aspect Bin",
-            tooltip: "Chart RAVG CC5 burn severity by aspect quadrants.",
-        };
-    }
-
-    const severityViz = {
-        queryDict: ravgCC5QueryClassDict,
-        min: 1,
-        max: 6,
-        palette: "006400,7fffd4,ffff00,ff0000,7fff00,ffffff",
-        addToClassLegend: true,
-        classLegendDict: ravgCC5ClassDict,
-    };
-    Map.addLayer(
-        ravgCC5Summarized.select([0]).set("bounds", clientBoundsDict.All),
-        severityViz,
-        "RAVG CC5 Burn Severity",
-        showSeverity,
-        null,
-        null,
-        "RAVG CC5 " +
-        mtbsSummaryMethod +
-        " burn severity mosaic from " +
-        startYear.toString() +
-        "-" +
-        ravgEndYear.toString(),
-        whichLayerList
-    );
-    Map.addLayer(
-        ravgCC5Summarized.select([4]).set("bounds", clientBoundsDict.All),
-        {
-            min: startYear,
-            max: endYear,
-            palette: declineYearPalette,
-        },
-        "RAVG CC5 Burn Year",
-        false,
-        null,
-        null,
-        "RAVG CC5 " +
-        mtbsSummaryMethod +
-        " burn year from " +
-        startYear.toString() +
-        "-" +
-        ravgEndYear.toString(),
-        whichLayerList
-    );
-    Map.addLayer(
-        ravgCC5Count.set("bounds", clientBoundsDict.All),
-        {
-            min: 1,
-            max: 5,
-            palette: declineDurPalette.split(",").reverse().join(","),
-            legendLabelLeft: "Count =",
-            legendLabelRight: "Count >=",
-        },
-        "RAVG CC5 Burn Count",
-        false,
-        null,
-        null,
-        "RAVG CC5 number of burns mapped for a given area from " +
-        startYear.toString() +
-        "-" +
-        ravgEndYear.toString() +
-        " with a burn severity class of low, moderate, or high",
-        whichLayerList
-    );
-
-    const chartTableDict = {
-        "Burn Severity - CC5": ravgCC5QueryClassDict,
-    };
-    return {
-        NLCD: nlcdObj,
-        RAVGCC5: {
-            collection: ravgCC5
-                .set("bounds", clientBoundsDict.All)
-                .select([0], ["Burn Severity - CC5"])
-                .set("chartTableDict", chartTableDict),
-        },
-        RAVGCC5SeverityViz: severityViz,
-    };
-}
-
-function getRAVGBA7Layer() {
-    const ravgBA7AndNLCD = getRAVGBA7AndNLCD("layer-list", true);
-    const nlcdLCObj = ravgBA7AndNLCD.NLCD;
-    const ravgBA7Collection = ravgBA7AndNLCD.RAVGBA7.collection;
+function getRAVGSeverityLayer(layer) {
+    const ravgSeverityLayerAndNLCD = getRAVGSeverityLayerAndNLCD(layer, "layer-list", true);
+    const nlcdLCObj = ravgSeverityLayerAndNLCD.NLCD;
+    const ravgSeverityLayerCollection = ravgSeverityLayerAndNLCD.severityLayer.collection;
     const yearsCli = range(startYear, endYear + 1);
     const chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict"))
-        .combine(ravgBA7Collection.get("chartTableDict"))
+        .combine(ravgSeverityLayerCollection.get("chartTableDict"))
         .getInfo();
     const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
-    const forCharting = joinCollections(ravgBA7Collection, nlcdLCFilled, false);
-    const timeLapseSeverityViz = JSON.parse(JSON.stringify(ravgBA7AndNLCD.RAVGBA7SeverityViz));
+    const forCharting = joinCollections(ravgSeverityLayerCollection, nlcdLCFilled, false);
+    const timeLapseSeverityViz = JSON.parse(JSON.stringify(ravgSeverityLayerAndNLCD.severityViz));
     timeLapseSeverityViz.years = yearsCli;
 
     Map.addTimeLapse(
-        ravgBA7Collection,
+        ravgSeverityLayerCollection,
         timeLapseSeverityViz,
-        "RAVG BA7 Burn Severity Time Lapse",
+        "RAVG " + layer + " Burn Severity Time Lapse",
         false
     );
 
-    pixelChartCollections["ravg_ba7"] = {
-        label: "RAVG BA7 Time Series",
-        collection: forCharting,
-        chartTableDict: chartTableDict,
-        legends: chartTableDict,
-    };
-}
-
-function getRAVGCC5Layer() {
-    const ravgCC5AndNLCD = getRAVGCC5AndNLCD("layer-list", true);
-    const nlcdLCObj = ravgCC5AndNLCD.NLCD;
-    const CC5Collection = ravgCC5AndNLCD.RAVGCC5.collection;
-    const yearsCli = range(startYear, endYear + 1);
-    const chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict"))
-        .combine(CC5Collection.get("chartTableDict"))
-        .getInfo();
-    const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
-    const forCharting = joinCollections(CC5Collection, nlcdLCFilled, false);
-    const timeLapseSeverityViz = JSON.parse(JSON.stringify(ravgCC5AndNLCD.RAVGCC5SeverityViz));
-    timeLapseSeverityViz.years = yearsCli;
-
-    Map.addTimeLapse(
-        CC5Collection,
-        timeLapseSeverityViz,
-        "RAVG CC5 Burn Severity Time Lapse",
-        false
-    );
-
-    pixelChartCollections["ravg_cc5"] = {
-        label: "RAVG CC5 Time Series",
+    pixelChartCollections["ravg_" + layer.toLowerCase()] = {
+        label: "RAVG " + layer + " Time Series",
         collection: forCharting,
         chartTableDict: chartTableDict,
         legends: chartTableDict,
@@ -777,25 +423,18 @@ function runRAVG() {
     startYear = 2012
     endYear = 2023;
 
-    chartRAVG = true;
-    chartRAVGByNLCD = true;
-    chartRAVGByAspect = true;
+    Map.turnOffLayersWhenTimeLapseIsOn = false;
 
     /*
     shutting this down for now...
     ga("send", "event", "mtbs-viewer-run", "year_range", `${startYear}_${endYear}`);
     */
 
-    //initializes a bunch of global variables.
     getLCMSVariables();
-
-    //adds NAIP Time Lapse layer under REFERENCE DATA
     getNAIP(null, true);
-
-    Map.turnOffLayersWhenTimeLapseIsOn = false;
-
-    getRAVGBA7Layer();
-    getRAVGCC5Layer();
+    getRAVGSeverityLayer("CBI4");
+    getRAVGSeverityLayer("CC5");
+    getRAVGSeverityLayer("BA7");
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     getSelectLayers(); //enables Tools -> Select and Area on Map 
