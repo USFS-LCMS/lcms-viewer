@@ -1,5 +1,5 @@
 function getRAVGBurnPerimeterLayer(startYear, endYear) {
-    let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+    let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
 
     const inRAVGFields = [
         "FIRE_NAME",
@@ -143,14 +143,14 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
     });
 
     if (chartRAVG === true) {
-        let mtbsStack = formatAreaChartCollection(
+        let severityLayerStack = formatAreaChartCollection(
             severityLayer.select([0]),
             Object.keys(severityLayerQueryClassDict),
             Object.values(severityLayerQueryClassDict),
             true
         );
         areaChartCollections["ravg_" + layer.toLowerCase()] = {
-            collection: mtbsStack,
+            collection: severityLayerStack,
             colors: Object.values(severityLayerClassDict),
             label: "RAVG " + layer + " Burn Severity by Year",
             stacked: true,
@@ -192,7 +192,7 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
         };
         areaChartCollections["ravg_burn_severity_" + layer.toLowerCase() + "_mosaic"] = {
             collection: ee.ImageCollection([
-                mtbsStack
+                severityLayerStack
                     .max()
                     .unmask(0)
                     .set(
@@ -249,23 +249,23 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
             const nlcdT = nlcdObj.collection
                 .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
                 .mosaic();
-            let mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
+            let severityLayerByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
                 const name = nlcdObj.queryDict[k];
                 const out = severityLayerMaxSeverity
                     .updateMask(nlcdT.eq(ee.Number.parse(k)))
                     .set("nlcd_" + layer + "_landcover_class", name);
                 return out;
             });
-            mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
-            let mtbsByNLCDStack = formatAreaChartCollection(
-                mtbsByNLCD,
+            severityLayerByNLCD = ee.ImageCollection(severityLayerByNLCD);
+            let severityLayerByNLCDStack = formatAreaChartCollection(
+                severityLayerByNLCD,
                 Object.keys(severityLayerQueryClassDict),
                 Object.values(severityLayerQueryClassDict),
                 true
             );
 
             areaChartCollections["ravg" + layer + "NLCD" + nlcdYear.toString()] = {
-                collection: mtbsByNLCDStack,
+                collection: severityLayerByNLCDStack,
                 colors: Object.values(severityLayerClassDict),
                 label: "RAVG " + layer + " Burn Severity by NLCD Class " + nlcdYear.toString(),
                 stacked: true,
@@ -418,6 +418,51 @@ function getRAVGSeverityLayer(layer) {
     };
 }
 
+function getEVTRefLayer(layer, year) {
+
+    let evtLayer = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/" + layer);
+    let evtLayerQueryClassDict = {};
+    let keyI = 1;
+
+    const evtLayerClassDict = {
+        "Non - tree(Grassland / Shrubland / Agricultural / Non - vegetation": "#f7f1c6",
+        "Pinyon - Juniper Woodland": "#b3d1c8",
+        "Deciduous Open Tree Canopy": "#75b4c5",
+        "Evergreen Closed Tree Canopy" : "#3597c2",
+        "Evergreen Open Tree Canopy" : "#2e7ba1",
+        "Mixed Evergreen - Deciduous Open Tree Canopy" : "#285e81",
+        "Deciduous Closed Tree Canopy" : "#233e66",
+        "Mixed Evergreen - Deciduous Closed Tree Canopy" : "#1e1950",
+    };
+
+    Object.keys(evtLayerClassDict).map(function (k) {
+        evtLayerQueryClassDict[keyI] = k;
+        keyI++;
+    });
+
+    const evtViz = {
+        queryDict: evtLayerQueryClassDict,
+        min: 1,
+        max: 8,
+        palette: "#f7f1c6,#b3d1c8,#75b4c5,#3597c2,#2e7ba1,#285e81,#233e66,#1e1950",
+        addToClassLegend: true,
+        classLegendDict: evtLayerClassDict,
+    };
+
+    Map.addLayer(
+        evtLayer, evtViz, "EVT " + year + " Layer", true, null, null, "EVT " + year + " Layer", "reference-layer-list"
+    );
+}
+
+function getEVTRefLayers() {
+    getEVTRefLayer("RAVG_VegCode_LF2020_EVT220", "2020");
+    getEVTRefLayer("RAVG_VegCode_LF2016_EVT200", "2016");
+    getEVTRefLayer("RAVG_VegCode_LF2016_EVT200", "2016");
+    getEVTRefLayer("RAVG_VegCode_LF2014_EVT140", "2014");
+    getEVTRefLayer("RAVG_VegCode_LF2012_EVT130", "2012");
+    getEVTRefLayer("RAVG_VegCode_LF2001_EVT105", "2001");
+}
+
 function runRAVG() {
 
     startYear = 2012
@@ -435,6 +480,7 @@ function runRAVG() {
     getRAVGSeverityLayer("CBI4");
     getRAVGSeverityLayer("CC5");
     getRAVGSeverityLayer("BA7");
+    getEVTRefLayers();
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     getSelectLayers(); //enables Tools -> Select and Area on Map 
