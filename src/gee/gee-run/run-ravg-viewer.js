@@ -69,7 +69,7 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
     );
 }
 
-function getRAVGBA7AndNLCD(studyAreaName, whichLayerList, showSeverity) {
+function getRAVGBA7AndNLCD(whichLayerList, showSeverity) {
     if (showSeverity === null || showSeverity === undefined) {
         showSeverity = false;
     }
@@ -77,16 +77,21 @@ function getRAVGBA7AndNLCD(studyAreaName, whichLayerList, showSeverity) {
         mtbsSummaryMethod = "Highest-Severity";
     }
 
-    const ravg_ba7_path = "projects/gtac-ravg/assets/RAVG_annual_mosaics/BA7_annual_mosaics";
     let ravgEndYear = endYear;
+
     const ravgYears = ee.List.sequence(2012, ravgEndYear);
-    ravgBA7 = ee.ImageCollection(ravg_ba7_path);
+
+    const ravg_ba7_path = "projects/gtac-ravg/assets/RAVG_annual_mosaics/BA7_annual_mosaics";
+
+    let ravgBA7 = ee.ImageCollection(ravg_ba7_path);
+
     ravgBA7 = ravgYears.map(function (yr) {
         const ravgYr = ravgBA7
             .filter(ee.Filter.calendarRange(yr, yr, "year"))
             .mosaic();
         return ravgYr.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
     });
+
     ravgBA7 = ee.ImageCollection.fromImages(ravgBA7);
 
     ravgBA7 = ravgBA7.filter(ee.Filter.calendarRange(startYear, ravgEndYear, "year"));
@@ -390,8 +395,329 @@ function getRAVGBA7AndNLCD(studyAreaName, whichLayerList, showSeverity) {
     };
 }
 
+function getRAVGCC5AndNLCD(whichLayerList, showSeverity) {
+    if (showSeverity === null || showSeverity === undefined) {
+        showSeverity = false;
+    }
+    if (mtbsSummaryMethod === null || mtbsSummaryMethod === undefined) {
+        mtbsSummaryMethod = "Highest-Severity";
+    }
+
+    const ravg_cc5_path = "projects/gtac-ravg/assets/RAVG_annual_mosaics/CC5_annual_mosaics";
+    let ravgEndYear = endYear;
+    const ravgYears = ee.List.sequence(2012, ravgEndYear);
+    let ravgCC5 = ee.ImageCollection(ravg_cc5_path);
+    ravgCC5 = ravgYears.map(function (yr) {
+        const ravgYr = ravgCC5
+            .filter(ee.Filter.calendarRange(yr, yr, "year"))
+            .mosaic();
+        return ravgYr.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+    });
+    ravgCC5 = ee.ImageCollection.fromImages(ravgCC5);
+
+    ravgCC5 = ravgCC5.filter(ee.Filter.calendarRange(startYear, ravgEndYear, "year"));
+
+    ravgCC5 = ravgCC5.map(function (img) {
+        return img.select([0], ["burnSeverity"]).byte();
+    });
+
+    ravgCC5 = ravgCC5.map(function (img) {
+        const severityRemapped = img
+            .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
+            .rename(["burnSeverityRemap"]);
+        let burned = img
+            .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
+            .rename(["burnedNotBurned"]);
+        burned = burned.selfMask();
+        const burnYear = ee
+            .Image(ee.Date(img.get("system:time_start")).get("year"))
+            .updateMask(severityRemapped.mask())
+            .rename("burnYear");
+        return img
+            .addBands(severityRemapped)
+            .addBands(burned)
+            .addBands(burned.multiply(-1).rename(["burnYearNegative"]))
+            .addBands(burnYear)
+            .int16();
+    });
+
+    ravgCC5 = ee.ImageCollection(ravgCC5);
+
+    const ravgCC5SummaryDict = {
+        "Highest-Severity": "burnSeverityRemap",
+        "Most-Recent": "burnYear",
+        Oldest: "burnYearNegative",
+    };
+    const ravgCC5Summarized = ravgCC5.qualityMosaic(ravgCC5SummaryDict[mtbsSummaryMethod]);
+    const ravgCC5Count = ravgCC5.select([2]).count();
+
+    const ravgCC5ClassDict = {
+        "Unburned to Low": "006400",
+        Low: "7fffd4",
+        Moderate: "ffff00",
+        High: "ff0000",
+        "Increased Greenness": "7fff00",
+        "Non-Processing Area Mask": "ffffff"
+    };
+
+    let ravgCC5QueryClassDict = {};
+    let keyI = 1;
+    Object.keys(ravgCC5ClassDict).map(function (k) {
+        ravgCC5QueryClassDict[keyI] = k;
+        keyI++;
+    });
+
+    if (chartRAVG === true) {
+        let mtbsStack = formatAreaChartCollection(
+            ravgCC5.select([0]),
+            Object.keys(ravgCC5QueryClassDict),
+            Object.values(ravgCC5QueryClassDict),
+            true
+        );
+        areaChartCollections["ravg_cc5"] = {
+            collection: mtbsStack,
+            colors: Object.values(ravgCC5ClassDict),
+            label: "RAVG CC5 Burn Severity by Year",
+            stacked: true,
+            steppedLine: false,
+            chartType: "bar",
+            xAxisProperty: "year",
+            tooltip: "Chart the RAVG CC5 burn severity by year",
+        };
+        areaChartCollections["ravg_cc5_burn_mosaic"] = {
+            collection: ee.ImageCollection([
+                ravgCC5
+                    .select([2])
+                    .mosaic()
+                    .unmask(0)
+                    .rename(["Burned"])
+                    .set(
+                        "Burned",
+                        "All Mapped Burned Area (Total of Low, Moderate, and High Severity) " +
+                        startYear.toString() +
+                        "-" +
+                        endYear.toString()
+                    ),
+            ]),
+            colors: ["#CC5500"],
+            label:
+                "RAVG CC5 Burned Area Total " +
+                startYear.toString() +
+                "-" +
+                endYear.toString(),
+            stacked: true,
+            steppedLine: false,
+            chartType: "bar",
+            xAxisProperty: "Burned",
+            tooltip:
+                "Chart the union of all burned areas (areas with low, moderate, or high severity) " +
+                startYear.toString() +
+                "-" +
+                endYear.toString(),
+        };
+        areaChartCollections["ravg_burn_severity_cc5_mosaic"] = {
+            collection: ee.ImageCollection([
+                mtbsStack
+                    .max()
+                    .unmask(0)
+                    .set(
+                        "Burned",
+                        "CC5 Burn Severity Total " +
+                        startYear.toString() +
+                        "-" +
+                        endYear.toString()
+                    ),
+            ]),
+            colors: Object.values(ravgCC5ClassDict),
+            label:
+                "RAVG CC5 Burn Severity Total " +
+                startYear.toString() +
+                "-" +
+                endYear.toString(),
+            stacked: true,
+            steppedLine: false,
+            chartType: "bar",
+            xAxisProperty: "Burned",
+            tooltip:
+                "Chart the union of CC5 burn severity " +
+                startYear.toString() +
+                "-" +
+                endYear.toString() +
+                ". The maximum severity is used when fires overlap. ",
+        };
+    }
+    let ravgCC5MaxSeverity = ravgCC5.select([0]).max();
+    let nlcdObj;
+    if (chartRAVGByNLCD) {
+        nlcdObj = getNLCDObj();
+
+        Map.addTimeLapse(
+            nlcdObj.collection,
+            {
+                min: nlcdObj.min,
+                max: nlcdObj.max,
+                palette: Object.values(nlcdObj.vizDict),
+                addToClassLegend: true,
+                classLegendDict: nlcdObj.legendDictReverse,
+                queryDict: nlcdObj.queryDict,
+                years: nlcdObj.years,
+            },
+            "NLCD Land Cover Time Lapse",
+            false,
+            null,
+            null,
+            "NLCD landcover classes ",
+            "reference-layer-list"
+        );
+
+        nlcdObj.years.map(function (nlcdYear) {
+            const nlcdT = nlcdObj.collection
+                .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
+                .mosaic();
+            let mtbsByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
+                const name = nlcdObj.queryDict[k];
+                const out = ravgCC5MaxSeverity
+                    .updateMask(nlcdT.eq(ee.Number.parse(k)))
+                    .set("nlcd_landcover_class", name);
+                return out;
+            });
+            mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
+            let mtbsByNLCDStack = formatAreaChartCollection(
+                mtbsByNLCD,
+                Object.keys(ravgCC5QueryClassDict),
+                Object.values(ravgCC5QueryClassDict),
+                true
+            );
+
+            areaChartCollections["ravgCC5NLCD" + nlcdYear.toString()] = {
+                collection: mtbsByNLCDStack,
+                colors: Object.values(ravgCC5ClassDict),
+                label: "RAVG CC5 Burn Severity by NLCD Class " + nlcdYear.toString(),
+                stacked: true,
+                steppedLine: false,
+                chartType: "bar",
+                xAxisProperty: "nlcd_landcover_class",
+                xAxisLabel: "NLCD " + nlcdYear.toString() + " Class",
+                tooltip:
+                    "Chart RAVG CC5 burn severity by each NLCD " +
+                    nlcdYear.toString() +
+                    " landcover class",
+            };
+            // }
+        });
+    }
+    if (chartRAVGByAspect) {
+        const aspectObj = getAspectObj();
+        const aspectBinned = aspectObj.image;
+        const aspectLookupDict = aspectObj.lookupDict.getInfo();
+        let mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
+            const name = aspectLookupDict[k];
+            const out = ravgCC5MaxSeverity
+                .updateMask(aspectBinned.eq(ee.Number.parse(k)))
+                .set("Aspect_Bin", name);
+            return out;
+        });
+        mtbsByAspect = ee.ImageCollection(mtbsByAspect);
+        const mtbsByAspectStack = formatAreaChartCollection(
+            mtbsByAspect,
+            Object.keys(ravgCC5QueryClassDict),
+            Object.values(ravgCC5QueryClassDict),
+            true
+        );
+
+        areaChartCollections["mtbsAspect"] = {
+            collection: mtbsByAspectStack,
+            colors: Object.values(ravgCC5ClassDict),
+            label: "RAVG CC5 Burn Severity by Aspect",
+            stacked: true,
+            steppedLine: false,
+            chartType: "bar",
+            xAxisProperty: "Aspect_Bin",
+            xAxisLabel: "Aspect Bin",
+            tooltip: "Chart RAVG CC5 burn severity by aspect quadrants.",
+        };
+    }
+
+    const severityViz = {
+        queryDict: ravgCC5QueryClassDict,
+        min: 1,
+        max: 6,
+        palette: "006400,7fffd4,ffff00,ff0000,7fff00,ffffff",
+        addToClassLegend: true,
+        classLegendDict: ravgCC5ClassDict,
+    };
+    Map.addLayer(
+        ravgCC5Summarized.select([0]).set("bounds", clientBoundsDict.All),
+        severityViz,
+        "RAVG CC5 Burn Severity",
+        showSeverity,
+        null,
+        null,
+        "RAVG CC5 " +
+        mtbsSummaryMethod +
+        " burn severity mosaic from " +
+        startYear.toString() +
+        "-" +
+        ravgEndYear.toString(),
+        whichLayerList
+    );
+    Map.addLayer(
+        ravgCC5Summarized.select([4]).set("bounds", clientBoundsDict.All),
+        {
+            min: startYear,
+            max: endYear,
+            palette: declineYearPalette,
+        },
+        "RAVG CC5 Burn Year",
+        false,
+        null,
+        null,
+        "RAVG CC5 " +
+        mtbsSummaryMethod +
+        " burn year from " +
+        startYear.toString() +
+        "-" +
+        ravgEndYear.toString(),
+        whichLayerList
+    );
+    Map.addLayer(
+        ravgCC5Count.set("bounds", clientBoundsDict.All),
+        {
+            min: 1,
+            max: 5,
+            palette: declineDurPalette.split(",").reverse().join(","),
+            legendLabelLeft: "Count =",
+            legendLabelRight: "Count >=",
+        },
+        "RAVG CC5 Burn Count",
+        false,
+        null,
+        null,
+        "RAVG CC5 number of burns mapped for a given area from " +
+        startYear.toString() +
+        "-" +
+        ravgEndYear.toString() +
+        " with a burn severity class of low, moderate, or high",
+        whichLayerList
+    );
+
+    const chartTableDict = {
+        "Burn Severity - CC5": ravgCC5QueryClassDict,
+    };
+    return {
+        NLCD: nlcdObj,
+        RAVGCC5: {
+            collection: ravgCC5
+                .set("bounds", clientBoundsDict.All)
+                .select([0], ["Burn Severity - CC5"])
+                .set("chartTableDict", chartTableDict),
+        },
+        RAVGCC5SeverityViz: severityViz,
+    };
+}
+
 function getRAVGBA7Layer() {
-    const ravgBA7AndNLCD = getRAVGBA7AndNLCD("anc", "layer-list", true);
+    const ravgBA7AndNLCD = getRAVGBA7AndNLCD("layer-list", true);
     const nlcdLCObj = ravgBA7AndNLCD.NLCD;
     const ravgBA7Collection = ravgBA7AndNLCD.RAVGBA7.collection;
     const yearsCli = range(startYear, endYear + 1);
@@ -412,6 +738,34 @@ function getRAVGBA7Layer() {
 
     pixelChartCollections["ravg_ba7"] = {
         label: "RAVG BA7 Time Series",
+        collection: forCharting,
+        chartTableDict: chartTableDict,
+        legends: chartTableDict,
+    };
+}
+
+function getRAVGCC5Layer() {
+    const ravgCC5AndNLCD = getRAVGCC5AndNLCD("layer-list", true);
+    const nlcdLCObj = ravgCC5AndNLCD.NLCD;
+    const CC5Collection = ravgCC5AndNLCD.RAVGCC5.collection;
+    const yearsCli = range(startYear, endYear + 1);
+    const chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict"))
+        .combine(CC5Collection.get("chartTableDict"))
+        .getInfo();
+    const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
+    const forCharting = joinCollections(CC5Collection, nlcdLCFilled, false);
+    const timeLapseSeverityViz = JSON.parse(JSON.stringify(ravgCC5AndNLCD.RAVGCC5SeverityViz));
+    timeLapseSeverityViz.years = yearsCli;
+
+    Map.addTimeLapse(
+        CC5Collection,
+        timeLapseSeverityViz,
+        "RAVG CC5 Burn Severity Time Lapse",
+        false
+    );
+
+    pixelChartCollections["ravg_cc5"] = {
+        label: "RAVG CC5 Time Series",
         collection: forCharting,
         chartTableDict: chartTableDict,
         legends: chartTableDict,
@@ -441,6 +795,7 @@ function runRAVG() {
     Map.turnOffLayersWhenTimeLapseIsOn = false;
 
     getRAVGBA7Layer();
+    getRAVGCC5Layer();
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     getSelectLayers(); //enables Tools -> Select and Area on Map 
