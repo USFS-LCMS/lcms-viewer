@@ -237,7 +237,7 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
                 queryDict: nlcdObj.queryDict,
                 years: nlcdObj.years,
             },
-            "NLCD Land Cover Time Lapse",
+            "NLCD " + layer + " Land Cover Time Lapse",
             false,
             null,
             null,
@@ -253,7 +253,7 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
                 const name = nlcdObj.queryDict[k];
                 const out = severityLayerMaxSeverity
                     .updateMask(nlcdT.eq(ee.Number.parse(k)))
-                    .set("nlcd_landcover_class", name);
+                    .set("nlcd_" + layer + "_landcover_class", name);
                 return out;
             });
             mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
@@ -271,7 +271,7 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
                 stacked: true,
                 steppedLine: false,
                 chartType: "bar",
-                xAxisProperty: "nlcd_landcover_class",
+                xAxisProperty: "nlcd_" + layer + "_landcover_class",
                 xAxisLabel: "NLCD " + nlcdYear.toString() + " Class",
                 tooltip:
                     "Chart RAVG " + layer + " burn severity by each NLCD " +
