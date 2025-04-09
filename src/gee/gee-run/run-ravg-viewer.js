@@ -418,10 +418,13 @@ function getRAVGSeverityLayer(layer) {
     };
 }
 
-function buildEVTBinaryLayer(imageLayer, year) {
-    let imageBand = imageLayer.select("b1");
-    let binaryImage = imageBand.expression('(b(0) == 1) ? 1 : 2', { 'b': imageBand });
 
+function buildEVTBinaryLayer(imageLayer, year) {
+
+    let imageBand = imageLayer.select("b1");
+    let binaryImage = imageBand.expression('(b(0) == 1) ? 0 : 1', { 'b': imageBand });
+    let imageMask = imageBand.mask();
+    let maskedBinaryImage = binaryImage.updateMask(imageMask);
     let evtBinaryLayerQueryClassDict = {};
     let keyI = 1;
 
@@ -437,15 +440,15 @@ function buildEVTBinaryLayer(imageLayer, year) {
 
     const evtBinaryViz = {
         queryDict: evtBinaryLayerQueryClassDict,
-        min: 1,
-        max: 2,
+        min: 0,
+        max: 1,
         palette: "#f7f1c6,#285e81",
         addToClassLegend: true,
         classLegendDict: evtBinaryLayerClassDict,
     };
 
     Map.addLayer(
-        binaryImage, evtBinaryViz, "EVT " + year + " Tree/Non-tree", false, null, null, "EVT " + year + " Tree/Non-tree", "reference-layer-list"
+        maskedBinaryImage, evtBinaryViz, "EVT " + year + " Tree/Non-tree", false, null, null, "EVT " + year + " Tree/Non-tree", "reference-layer-list"
     );
 
 }
