@@ -457,7 +457,6 @@ function getEVTRefLayer(layer, year) {
 function getEVTRefLayers() {
     getEVTRefLayer("RAVG_VegCode_LF2020_EVT220", "2020");
     getEVTRefLayer("RAVG_VegCode_LF2016_EVT200", "2016");
-    getEVTRefLayer("RAVG_VegCode_LF2016_EVT200", "2016");
     getEVTRefLayer("RAVG_VegCode_LF2014_EVT140", "2014");
     getEVTRefLayer("RAVG_VegCode_LF2012_EVT130", "2012");
     getEVTRefLayer("RAVG_VegCode_LF2001_EVT105", "2001");
