@@ -513,10 +513,10 @@ function runRAVG() {
 
     getLCMSVariables();
     getNAIP(null, true);
+    getEVTRefLayers();
     getRAVGSeverityLayer("CBI4");
     getRAVGSeverityLayer("CC5");
     getRAVGSeverityLayer("BA7");
-    getEVTRefLayers();
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     getSelectLayers(); //enables Tools -> Select and Area on Map 
