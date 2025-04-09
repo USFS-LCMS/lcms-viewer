@@ -1,3 +1,104 @@
+function mapSeverityLayerToRefLayer(layer, years, imgCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
+
+    years.map(function (year) {
+        const className = refType.toLowerCase() + "_" + year + "_" + layer + "_landcover_class";
+        const evtT = imgCollection
+            .filter(ee.Filter.calendarRange(year, year, "year"))
+            .mosaic();
+        let severityLayerByEVT = Object.keys(refLayerQueryClassDict).map(function (k) {
+            const name = refLayerQueryClassDict[k];
+            const out = severityLayerMaxSeverity
+                .updateMask(evtT.eq(ee.Number.parse(k)))
+                .set(className, name);
+            return out;
+        });
+        severityLayerByEVT = ee.ImageCollection(severityLayerByEVT);
+        let severityLayerByEVTStack = formatAreaChartCollection(
+            severityLayerByEVT,
+            Object.keys(severityLayerQueryClassDict),
+            Object.values(severityLayerQueryClassDict),
+            true
+        );
+
+        areaChartCollections["ravg" + layer + refType + year.toString()] = {
+            collection: severityLayerByEVTStack,
+            colors: Object.values(severityLayerClassDict),
+            label: "RAVG " + layer + " Burn Severity by " + refType + " Class " + year.toString(),
+            stacked: true,
+            steppedLine: false,
+            chartType: "bar",
+            xAxisProperty: className,
+            xAxisLabel: refType + " " + year.toString() + " Class",
+            tooltip:
+                "Chart RAVG " + layer + " burn severity by each " + refType + " " +
+                year.toString() +
+                " landcover class",
+        };
+    });
+
+}
+
+function getSeverityLayerByEVT(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict) {
+
+    const evt1 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2020_EVT220").set("system:time_start", ee.Date.fromYMD(2020, 6, 1).millis());
+    const evt2 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2016_EVT200").set("system:time_start", ee.Date.fromYMD(2016, 6, 1).millis());
+    const evt3 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2014_EVT140").set("system:time_start", ee.Date.fromYMD(2014, 6, 1).millis());
+    const evt4 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2012_EVT130").set("system:time_start", ee.Date.fromYMD(2012, 6, 1).millis());
+    const evt5 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2001_EVT105").set("system:time_start", ee.Date.fromYMD(2001, 6, 1).millis());
+    const evtArray = [evt1, evt2, evt3, evt4, evt5];
+    const evtList = ee.List(evtArray);
+    const evtYears = [2001, 2012, 2014, 2016, 2020];
+    const evtLayerClassDict = {
+        "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
+        "Pinyon - Juniper Woodland": "#b3d1c8",
+        "Deciduous Open Tree Canopy": "#75b4c5",
+        "Evergreen Closed Tree Canopy": "#3597c2",
+        "Evergreen Open Tree Canopy": "#2e7ba1",
+        "Mixed Evergreen - Deciduous Open Tree Canopy": "#285e81",
+        "Deciduous Closed Tree Canopy": "#233e66",
+        "Mixed Evergreen - Deciduous Closed Tree Canopy": "#1e1950",
+    };
+
+    let evtCollection = ee.ImageCollection(evtList).sort("system:time_start");
+    let evtLayerQueryClassDict = {};
+    let keyI = 1;
+
+    Object.keys(evtLayerClassDict).map(function (k) {
+        evtLayerQueryClassDict[keyI] = k;
+        keyI++;
+    });
+
+    const chartTableDict = {
+        "EVT Landcover": evtLayerQueryClassDict,
+    };
+
+    evtCollection = evtCollection
+        .set("bounds", clientBoundsDict.All)
+        .set("chartTableDict", chartTableDict);
+
+    Map.addTimeLapse(
+        evtCollection,
+        {
+            bands: ["b1"],
+            min: 1,
+            max: 8,
+            palette: ["#f7f1c6", "#b3d1c8", "#75b4c5", "#3597c2", "#2e7ba1", "#285e81", "#233e66", "#1e1950"],
+            addToClassLegend: true,
+            classLegendDict: evtLayerClassDict,
+            queryDict: evtLayerQueryClassDict,
+            years: evtYears
+        },
+        "EVT " + layer + " Land Cover Time Lapse",
+        false,
+        null,
+        null,
+        "EVT landcover classes ",
+        "reference-layer-list"
+    );
+
+    mapSeverityLayerToRefLayer(layer, evtYears, evtCollection, evtLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, "EVT")
+}
+
 function getRAVGBurnPerimeterLayer(startYear, endYear) {
     let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
 
@@ -69,7 +170,7 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
     );
 }
 
-function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
+function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
 
     if (showSeverity === null || showSeverity === undefined) {
         showSeverity = false;
@@ -81,6 +182,7 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
     const chartRAVG = true;
     const chartRAVGByNLCD = true;
     const chartRAVGByAspect = true;
+    const chartRAVGByEVTs = true;
     const ravgAsset = "projects/gtac-ravg/assets/RAVG_annual_mosaics/" + layer + "_annual_mosaics";
     const ravgEndYear = endYear;
     const ravgYears = ee.List.sequence(2012, ravgEndYear);
@@ -245,62 +347,39 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
             "reference-layer-list"
         );
 
-        nlcdObj.years.map(function (nlcdYear) {
-            const nlcdT = nlcdObj.collection
-                .filter(ee.Filter.calendarRange(nlcdYear, nlcdYear, "year"))
-                .mosaic();
-            let severityLayerByNLCD = Object.keys(nlcdObj.queryDict).map(function (k) {
-                const name = nlcdObj.queryDict[k];
-                const out = severityLayerMaxSeverity
-                    .updateMask(nlcdT.eq(ee.Number.parse(k)))
-                    .set("nlcd_" + layer + "_landcover_class", name);
-                return out;
-            });
-            severityLayerByNLCD = ee.ImageCollection(severityLayerByNLCD);
-            let severityLayerByNLCDStack = formatAreaChartCollection(
-                severityLayerByNLCD,
-                Object.keys(severityLayerQueryClassDict),
-                Object.values(severityLayerQueryClassDict),
-                true
-            );
+        mapSeverityLayerToRefLayer(
+            layer,
+            nlcdObj.years,
+            nlcdObj.collection,
+            nlcdObj.queryDict,
+            severityLayerMaxSeverity,
+            severityLayerQueryClassDict,
+            severityLayerClassDict,
+            "NLCD"
+        );
 
-            areaChartCollections["ravg" + layer + "NLCD" + nlcdYear.toString()] = {
-                collection: severityLayerByNLCDStack,
-                colors: Object.values(severityLayerClassDict),
-                label: "RAVG " + layer + " Burn Severity by NLCD Class " + nlcdYear.toString(),
-                stacked: true,
-                steppedLine: false,
-                chartType: "bar",
-                xAxisProperty: "nlcd_" + layer + "_landcover_class",
-                xAxisLabel: "NLCD " + nlcdYear.toString() + " Class",
-                tooltip:
-                    "Chart RAVG " + layer + " burn severity by each NLCD " +
-                    nlcdYear.toString() +
-                    " landcover class",
-            };
-        });
     }
     if (chartRAVGByAspect) {
         const aspectObj = getAspectObj();
         const aspectBinned = aspectObj.image;
         const aspectLookupDict = aspectObj.lookupDict.getInfo();
-        let mtbsByAspect = Object.keys(aspectLookupDict).map(function (k) {
+        let ravgByAspect = Object.keys(aspectLookupDict).map(function (k) {
             const name = aspectLookupDict[k];
             const out = severityLayerMaxSeverity
                 .updateMask(aspectBinned.eq(ee.Number.parse(k)))
                 .set("Aspect_Bin", name);
             return out;
         });
-        mtbsByAspect = ee.ImageCollection(mtbsByAspect);
-        const mtbsByAspectStack = formatAreaChartCollection(
-            mtbsByAspect,
+        ravgByAspect = ee.ImageCollection(ravgByAspect);
+        const ravgByAspectStack = formatAreaChartCollection(
+            ravgByAspect,
             Object.keys(severityLayerQueryClassDict),
             Object.values(severityLayerQueryClassDict),
             true
         );
 
         areaChartCollections["ravg" + layer + "Aspect"] = {
-            collection: mtbsByAspectStack,
+            collection: ravgByAspectStack,
             colors: Object.values(severityLayerClassDict),
             label: "RAVG " + layer + " Burn Severity by Aspect",
             stacked: true,
@@ -310,6 +389,11 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
             xAxisLabel: "Aspect Bin",
             tooltip: "Chart RAVG " + layer + " burn severity by aspect quadrants.",
         };
+    }
+
+    //get severityLayer by EVTs
+    if (chartRAVGByEVTs) {
+        getSeverityLayerByEVT(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict);
     }
 
     const severityViz = {
@@ -391,16 +475,16 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
 }
 
 function getRAVGSeverityLayer(layer) {
-    const ravgSeverityLayerAndNLCD = getRAVGSeverityLayerAndNLCD(layer, "layer-list", false);
-    const nlcdLCObj = ravgSeverityLayerAndNLCD.NLCD;
-    const ravgSeverityLayerCollection = ravgSeverityLayerAndNLCD.severityLayer.collection;
+    const ravgSeverityLayerAndRefLayers = getRAVGSeverityLayerAndRefLayers(layer, "layer-list", false);
+    const nlcdLCObj = ravgSeverityLayerAndRefLayers.NLCD;
+    const ravgSeverityLayerCollection = ravgSeverityLayerAndRefLayers.severityLayer.collection;
     const yearsCli = range(startYear, endYear + 1);
     const chartTableDict = ee.Dictionary(nlcdLCObj.collection.get("chartTableDict"))
         .combine(ravgSeverityLayerCollection.get("chartTableDict"))
         .getInfo();
     const nlcdLCFilled = batchFillCollection(nlcdLCObj.collection, yearsCli).map(setSameDate);
     const forCharting = joinCollections(ravgSeverityLayerCollection, nlcdLCFilled, false);
-    const timeLapseSeverityViz = JSON.parse(JSON.stringify(ravgSeverityLayerAndNLCD.severityViz));
+    const timeLapseSeverityViz = JSON.parse(JSON.stringify(ravgSeverityLayerAndRefLayers.severityViz));
     timeLapseSeverityViz.years = yearsCli;
 
     Map.addTimeLapse(
