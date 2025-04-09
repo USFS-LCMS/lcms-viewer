@@ -391,7 +391,7 @@ function getRAVGSeverityLayerAndNLCD(layer, whichLayerList, showSeverity) {
 }
 
 function getRAVGSeverityLayer(layer) {
-    const ravgSeverityLayerAndNLCD = getRAVGSeverityLayerAndNLCD(layer, "layer-list", true);
+    const ravgSeverityLayerAndNLCD = getRAVGSeverityLayerAndNLCD(layer, "layer-list", false);
     const nlcdLCObj = ravgSeverityLayerAndNLCD.NLCD;
     const ravgSeverityLayerCollection = ravgSeverityLayerAndNLCD.severityLayer.collection;
     const yearsCli = range(startYear, endYear + 1);
@@ -418,6 +418,38 @@ function getRAVGSeverityLayer(layer) {
     };
 }
 
+function buildEVTBinaryLayer(imageLayer, year) {
+    let imageBand = imageLayer.select("b1");
+    let binaryImage = imageBand.expression('(b(0) == 1) ? 1 : 2', { 'b': imageBand });
+
+    let evtBinaryLayerQueryClassDict = {};
+    let keyI = 1;
+
+    const evtBinaryLayerClassDict = {
+        "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
+        "Tree": "#285e81",
+    };
+
+    Object.keys(evtBinaryLayerClassDict).map(function (k) {
+        evtBinaryLayerQueryClassDict[keyI] = k;
+        keyI++;
+    });
+
+    const evtBinaryViz = {
+        queryDict: evtBinaryLayerQueryClassDict,
+        min: 1,
+        max: 2,
+        palette: "#f7f1c6,#285e81",
+        addToClassLegend: true,
+        classLegendDict: evtBinaryLayerClassDict,
+    };
+
+    Map.addLayer(
+        binaryImage, evtBinaryViz, "EVT " + year + " Tree/Non-tree", false, null, null, "EVT " + year + " Tree/Non-tree", "reference-layer-list"
+    );
+
+}
+
 function getEVTRefLayer(layer, year) {
 
     let evtLayer = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/" + layer);
@@ -425,7 +457,7 @@ function getEVTRefLayer(layer, year) {
     let keyI = 1;
 
     const evtLayerClassDict = {
-        "Non - tree(Grassland / Shrubland / Agricultural / Non - vegetation": "#f7f1c6",
+        "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
         "Pinyon - Juniper Woodland": "#b3d1c8",
         "Deciduous Open Tree Canopy": "#75b4c5",
         "Evergreen Closed Tree Canopy" : "#3597c2",
@@ -450,8 +482,10 @@ function getEVTRefLayer(layer, year) {
     };
 
     Map.addLayer(
-        evtLayer, evtViz, "EVT " + year + " Layer", true, null, null, "EVT " + year + " Layer", "reference-layer-list"
+        evtLayer, evtViz, "EVT " + year + " Vegetation Classes", false, null, null, "EVT " + year + " Vegetation Classes", "reference-layer-list"
     );
+
+    buildEVTBinaryLayer(evtLayer, year);
 }
 
 function getEVTRefLayers() {
