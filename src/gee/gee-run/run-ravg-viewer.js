@@ -405,21 +405,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         classLegendDict: severityLayerClassDict,
     };
     Map.addLayer(
-        severityLayerSummarized.select([0]).set("bounds", clientBoundsDict.All),
-        severityViz,
-        "RAVG " + layer + " Burn Severity",
-        showSeverity,
-        null,
-        null,
-        "RAVG " + layer + " " +
-        mtbsSummaryMethod +
-        " burn severity mosaic from " +
-        startYear.toString() +
-        "-" +
-        ravgEndYear.toString(),
-        whichLayerList
-    );
-    Map.addLayer(
         severityLayerSummarized.select([4]).set("bounds", clientBoundsDict.All),
         {
             min: startYear,
@@ -456,6 +441,21 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         "-" +
         ravgEndYear.toString() +
         " with a burn severity class of low, moderate, or high",
+        whichLayerList
+    );
+    Map.addLayer(
+        severityLayerSummarized.select([0]).set("bounds", clientBoundsDict.All),
+        severityViz,
+        "RAVG " + layer + " Burn Severity",
+        showSeverity,
+        null,
+        null,
+        "RAVG " + layer + " " +
+        mtbsSummaryMethod +
+        " burn severity mosaic from " +
+        startYear.toString() +
+        "-" +
+        ravgEndYear.toString(),
         whichLayerList
     );
 
