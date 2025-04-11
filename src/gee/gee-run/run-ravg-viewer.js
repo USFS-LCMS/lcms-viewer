@@ -557,7 +557,8 @@ function getRAVGSeverityLayer(layer, evtCollections) {
 }
 
 function getEVTVegClassLayer(imgLayer, year) {
-    
+
+    //order of timelapse
     const evtYears = [2001, 2012, 2014, 2016, 2020];
     const vegClassLabel = "EVT " + year.toString()  + " Vegetation Classes";
     const vegClassLayerClassDict = {
@@ -583,7 +584,7 @@ function getEVTVegClassLayer(imgLayer, year) {
         bands: ["b1"],
         min: 1,
         max: 8,
-        palette: ["#f7f1c6", "#b3d1c8", "#75b4c5", "#3597c2", "#2e7ba1", "#285e81", "#233e66", "#1e1950"],
+        palette: Object.values(vegClassLayerClassDict),
         addToClassLegend: true,
         classLegendDict: vegClassLayerClassDict,
         queryDict: vegClassLayerQueryClassDict,
@@ -609,6 +610,7 @@ function convertVegClassesToBinary(imgLayer, year) {
 
 function getEVTBinaryLayer(imgLayer, year) {
 
+    //order of timelapse
     const evtYears = [2001, 2012, 2014, 2016, 2020];
     const binaryLabel = "EVT " + year + " Tree/Non-tree";
     const evtBinaryLayerClassDict = {
@@ -629,7 +631,7 @@ function getEVTBinaryLayer(imgLayer, year) {
         queryDict: evtBinaryLayerQueryClassDict,
         min: 0,
         max: 1,
-        palette: ["#f7f1c6","#285e81"],
+        palette: Object.values(evtBinaryLayerClassDict),
         addToClassLegend: true,
         classLegendDict: evtBinaryLayerClassDict,
         years: evtYears
