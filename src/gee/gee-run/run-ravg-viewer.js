@@ -374,24 +374,24 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     if (chartRAVGByNLCD) {
         nlcdObj = getNLCDObj();
 
-        Map.addTimeLapse(
-            nlcdObj.collection,
-            {
-                min: nlcdObj.min,
-                max: nlcdObj.max,
-                palette: Object.values(nlcdObj.vizDict),
-                addToClassLegend: true,
-                classLegendDict: nlcdObj.legendDictReverse,
-                queryDict: nlcdObj.queryDict,
-                years: nlcdObj.years,
-            },
-            "NLCD " + layer + " Land Cover Time Lapse",
-            false,
-            null,
-            null,
-            "NLCD landcover classes ",
-            "reference-layer-list"
-        );
+        //Map.addTimeLapse(
+        //    nlcdObj.collection,
+        //    {
+        //        min: nlcdObj.min,
+        //        max: nlcdObj.max,
+        //        palette: Object.values(nlcdObj.vizDict),
+        //        addToClassLegend: true,
+        //        classLegendDict: nlcdObj.legendDictReverse,
+        //        queryDict: nlcdObj.queryDict,
+        //        years: nlcdObj.years,
+        //    },
+        //    "NLCD " + layer + " Land Cover Time Lapse",
+        //    false,
+        //    null,
+        //    null,
+        //    "NLCD landcover classes ",
+        //    "reference-layer-list"
+        //);
 
         setSeverityLayerPerRefLayerChart(
             layer,
@@ -403,8 +403,8 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
             severityLayerClassDict,
             "NLCD"
         );
-
     }
+
     if (chartRAVGByAspect) {
         const aspectObj = getAspectObj();
         const aspectBinned = aspectObj.image;
@@ -662,6 +662,27 @@ function getEVTBinaryLayer(imgLayer, year) {
         label: binaryLabel
     }
 }
+function getNLCDRefLayer() {
+    let nlcdObj = getNLCDObj();
+    Map.addTimeLapse(
+        nlcdObj.collection,
+        {
+            min: nlcdObj.min,
+            max: nlcdObj.max,
+            palette: Object.values(nlcdObj.vizDict),
+            addToClassLegend: true,
+            classLegendDict: nlcdObj.legendDictReverse,
+            queryDict: nlcdObj.queryDict,
+            years: nlcdObj.years,
+        },
+        "NLCD Land Cover Time Lapse",
+        false,
+        null,
+        null,
+        "NLCD landcover classes ",
+        "reference-layer-list"
+    );
+}
 
 function runRAVG() {
 
@@ -677,6 +698,7 @@ function runRAVG() {
 
     getLCMSVariables();
     getNAIP(null, true);
+    getNLCDRefLayer();
     let evtCollections = getEVTLayers();
     getRAVGSeverityLayer("CBI4", evtCollections);
     getRAVGSeverityLayer("CC5", evtCollections);
