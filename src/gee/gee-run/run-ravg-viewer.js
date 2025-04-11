@@ -1,9 +1,9 @@
-function mapSeverityLayerToRefLayer(layer, years, imgCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
+function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
 
     years.map(function (year) {
         const className = refType.toLowerCase() + "_" + year + "_" + layer + "_landcover_class";
         const evtT = imgCollection
-            .filter(ee.Filter.calendarRange(year, year, "year"))
+            .filter(ee.Filter.calendarRange(Number(year), Number(year), "year"))
             .mosaic();
         let severityLayerByEVT = Object.keys(refLayerQueryClassDict).map(function (k) {
             const name = refLayerQueryClassDict[k];
@@ -20,83 +20,129 @@ function mapSeverityLayerToRefLayer(layer, years, imgCollection, refLayerQueryCl
             true
         );
 
-        areaChartCollections["ravg" + layer + refType + year.toString()] = {
+        areaChartCollections["ravg" + layer + refType + year] = {
             collection: severityLayerByEVTStack,
             colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity by " + refType + " Class " + year.toString(),
+            label: "RAVG " + layer + " Burn Severity by " + refType + " Class " + year,
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: className,
-            xAxisLabel: refType + " " + year.toString() + " Class",
+            xAxisLabel: refType + " " + year + " Class",
             tooltip:
                 "Chart RAVG " + layer + " burn severity by each " + refType + " " +
-                year.toString() +
+                year +
                 " landcover class",
         };
     });
 
 }
 
-function getSeverityLayerByEVT(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict) {
 
-    const evt1 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2020_EVT220").set("system:time_start", ee.Date.fromYMD(2020, 6, 1).millis());
-    const evt2 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2016_EVT200").set("system:time_start", ee.Date.fromYMD(2016, 6, 1).millis());
-    const evt3 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2014_EVT140").set("system:time_start", ee.Date.fromYMD(2014, 6, 1).millis());
-    const evt4 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2012_EVT130").set("system:time_start", ee.Date.fromYMD(2012, 6, 1).millis());
-    const evt5 = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/RAVG_VegCode_LF2001_EVT105").set("system:time_start", ee.Date.fromYMD(2001, 6, 1).millis());
-    const evtArray = [evt1, evt2, evt3, evt4, evt5];
-    const evtList = ee.List(evtArray);
-    const evtYears = [2001, 2012, 2014, 2016, 2020];
-    const evtLayerClassDict = {
-        "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
-        "Pinyon - Juniper Woodland": "#b3d1c8",
-        "Deciduous Open Tree Canopy": "#75b4c5",
-        "Evergreen Closed Tree Canopy": "#3597c2",
-        "Evergreen Open Tree Canopy": "#2e7ba1",
-        "Mixed Evergreen - Deciduous Open Tree Canopy": "#285e81",
-        "Deciduous Closed Tree Canopy": "#233e66",
-        "Mixed Evergreen - Deciduous Closed Tree Canopy": "#1e1950",
-    };
+function getImageCollectionFromImages(images) {
+    const imageList = ee.List(images);
+    return ee.ImageCollection(imageList).sort("system:time_start");
+}
 
-    let evtCollection = ee.ImageCollection(evtList).sort("system:time_start");
-    let evtLayerQueryClassDict = {};
-    let keyI = 1;
+/**
+ * Loads EVT Veg Class Image asset layers and converts to Binary Tree/non-tree layer. 
+ * Adds both versions to Map as both individual layers and as collections for TimeLapses.
+ */
+function getEVTLayers() {
 
-    Object.keys(evtLayerClassDict).map(function (k) {
-        evtLayerQueryClassDict[keyI] = k;
-        keyI++;
-    });
+    const evts = {
+        2020: "RAVG_VegCode_LF2020_EVT220",
+        2016: "RAVG_VegCode_LF2016_EVT200",
+        2014: "RAVG_VegCode_LF2014_EVT140",
+        2012: "RAVG_VegCode_LF2012_EVT130",
+        2001: "RAVG_VegCode_LF2001_EVT105"
+    }
+    const placement = "reference-layer-list";
+    const assetDirectory = "projects/gtac-ravg/assets/RAVG_veg_class/";
 
-    const chartTableDict = {
-        "EVT Landcover": evtLayerQueryClassDict,
-    };
+    let vegClassImages = [];
+    let vegClassVisualParams;
+    let vegClassDict;
+    let binaryImages = [];
+    let binaryVisualParams;
+    let binaryClassDict;
 
-    evtCollection = evtCollection
-        .set("bounds", clientBoundsDict.All)
-        .set("chartTableDict", chartTableDict);
+    for (let year in evts) {
 
+        let vcImage = ee.Image(assetDirectory + evts[year]).set("system:time_start", ee.Date.fromYMD(Number(year), 6, 1).millis());
+        let vcObj = getEVTVegClassLayer(vcImage, year);
+        let vcVisualParams = vcObj.visualParams;
+        let vcLabel = vcObj.label;
+
+        //add individual veg class evt layer
+        Map.addLayer(vcImage, vcVisualParams, vcLabel, false, null, null, vcLabel, placement);
+
+        if (vegClassVisualParams == undefined) {
+            vegClassVisualParams = vcVisualParams;
+            vegClassDict = vcObj.classDict;
+            vegClassChartTableDict = vcObj;
+        }
+
+        let bObj = getEVTBinaryLayer(vcImage, year);
+        let bImage = bObj.imageLayer;
+        let bVisualParams = bObj.visualParams;
+        let bLabel = bObj.label;
+
+        //add individual binary evt layer
+        Map.addLayer(bImage, bVisualParams, bLabel, false, null, null, bLabel, placement);
+
+        if (binaryVisualParams == undefined) {
+            binaryVisualParams = bVisualParams;
+            binaryClassDict = bObj.classDict;
+        }
+
+        vegClassImages.push(vcImage);
+        binaryImages.push(bImage);
+
+    }
+
+    //convert sets of images to ImageCollections for timelapses
+    let vegClassCollection = getImageCollectionFromImages(vegClassImages).set("bounds", clientBoundsDict.All).set("chartTableDict", { "EVT Veg Class Landcover": vegClassVisualParams.queryDict });
+    let binaryLayerCollection = getImageCollectionFromImages(binaryImages).set("bounds", clientBoundsDict.All).set("chartTableDict", { "EVT Binary Landcover": binaryVisualParams.queryDict });
+
+    //set veg-class timelapse
     Map.addTimeLapse(
-        evtCollection,
-        {
-            bands: ["b1"],
-            min: 1,
-            max: 8,
-            palette: ["#f7f1c6", "#b3d1c8", "#75b4c5", "#3597c2", "#2e7ba1", "#285e81", "#233e66", "#1e1950"],
-            addToClassLegend: true,
-            classLegendDict: evtLayerClassDict,
-            queryDict: evtLayerQueryClassDict,
-            years: evtYears
-        },
-        "EVT " + layer + " Land Cover Time Lapse",
+        vegClassCollection,
+        vegClassVisualParams,
+        "EVT Vegetation Class Land Cover Time Lapse",
         false,
         null,
         null,
-        "EVT landcover classes ",
-        "reference-layer-list"
+        "EVT Vegetation Land Cover Classes",
+        placement
     );
 
-    mapSeverityLayerToRefLayer(layer, evtYears, evtCollection, evtLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, "EVT")
+    //set binary timelapse
+    Map.addTimeLapse(
+        binaryLayerCollection,
+        binaryVisualParams,
+        "EVT Tree/Non-tree Land Cover Time Lapse",
+        false,
+        null,
+        null,
+        "EVT Tree/Non-tree Land Cover Classes",
+        placement
+    );
+
+    return {
+        vegClass: {
+            collection: vegClassCollection,
+            visualParams: vegClassVisualParams,
+            classDict: vegClassDict,
+            years: Object.keys(evts)
+        },
+        binary: {
+            collection: binaryLayerCollection,
+            visualParams: binaryVisualParams,
+            classDict: binaryClassDict,
+            years: Object.keys(evts)
+        }
+    }
 }
 
 function getRAVGBurnPerimeterLayer(startYear, endYear) {
@@ -182,7 +228,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     const chartRAVG = true;
     const chartRAVGByNLCD = true;
     const chartRAVGByAspect = true;
-    const chartRAVGByEVTs = true;
+    //const chartRAVGByEVTs = true;
     const ravgAsset = "projects/gtac-ravg/assets/RAVG_annual_mosaics/" + layer + "_annual_mosaics";
     const ravgEndYear = endYear;
     const ravgYears = ee.List.sequence(2012, ravgEndYear);
@@ -347,7 +393,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
             "reference-layer-list"
         );
 
-        mapSeverityLayerToRefLayer(
+        setSeverityLayerPerRefLayerChart(
             layer,
             nlcdObj.years,
             nlcdObj.collection,
@@ -392,9 +438,9 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     }
 
     //get severityLayer by EVTs
-    if (chartRAVGByEVTs) {
-        getSeverityLayerByEVT(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict);
-    }
+    //if (chartRAVGByEVTs) {
+    //    getSeverityLayerByEVTGroup(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict);
+    //}
 
     const severityViz = {
         queryDict: severityLayerQueryClassDict,
@@ -462,6 +508,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     const chartTableDict = {
         "Burn Severity": severityLayerQueryClassDict,
     };
+    
     return {
         NLCD: nlcdObj,
         severityLayer: {
@@ -470,11 +517,12 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
                 .select([0], [layer + " Burn Severity"])
                 .set("chartTableDict", chartTableDict),
         },
-        severityViz: severityViz,
+        severityViz: severityViz
     };
 }
 
-function getRAVGSeverityLayer(layer) {
+function getRAVGSeverityLayer(layer, evtCollections) {
+
     const ravgSeverityLayerAndRefLayers = getRAVGSeverityLayerAndRefLayers(layer, "layer-list", false);
     const nlcdLCObj = ravgSeverityLayerAndRefLayers.NLCD;
     const ravgSeverityLayerCollection = ravgSeverityLayerAndRefLayers.severityLayer.collection;
@@ -500,22 +548,97 @@ function getRAVGSeverityLayer(layer) {
         chartTableDict: chartTableDict,
         legends: chartTableDict,
     };
+
+    let maxSeverity = ravgSeverityLayerAndRefLayers.severityLayer.collection.select([0]).max();
+    let severityLayerQueryDict = ravgSeverityLayerAndRefLayers.severityViz.queryDict;
+    let severityLayerLegendDict = ravgSeverityLayerAndRefLayers.severityViz.classLegendDict;
+
+    setSeverityLayerPerRefLayerChart(
+        layer,
+        evtCollections.vegClass.years,
+        evtCollections.vegClass.collection,
+        evtCollections.vegClass.visualParams.queryDict,
+        maxSeverity,
+        severityLayerQueryDict,
+        severityLayerLegendDict,
+        "EVT-Vegetation-Class"
+    );
+
+    setSeverityLayerPerRefLayerChart(
+        layer,
+        evtCollections.binary.years,
+        evtCollections.binary.collection,
+        evtCollections.binary.visualParams.queryDict,
+        maxSeverity,
+        severityLayerQueryDict,
+        severityLayerLegendDict,
+        "EVT-Binary-Class"
+    );
 }
 
+function getEVTVegClassLayer(imgLayer, year) {
+    
+    const evtYears = [2001, 2012, 2014, 2016, 2020];
+    const vegClassLabel = "EVT " + year.toString()  + " Vegetation Classes";
+    const vegClassLayerClassDict = {
+        "Non - tree": "#f7f1c6",
+        "Pinyon - Juniper Woodland": "#b3d1c8",
+        "Deciduous Open Tree Canopy": "#75b4c5",
+        "Evergreen Closed Tree Canopy": "#3597c2",
+        "Evergreen Open Tree Canopy": "#2e7ba1",
+        "Mixed Evergreen - Deciduous Open Tree Canopy": "#285e81",
+        "Deciduous Closed Tree Canopy": "#233e66",
+        "Mixed Evergreen - Deciduous Closed Tree Canopy": "#1e1950",
+    };
 
-function buildEVTBinaryLayer(imageLayer, year) {
-
-    let imageBand = imageLayer.select("b1");
-    let binaryImage = imageBand.expression('(b(0) == 1) ? 0 : 1', { 'b': imageBand });
-    let imageMask = imageBand.mask();
-    let maskedBinaryImage = binaryImage.updateMask(imageMask);
-    let evtBinaryLayerQueryClassDict = {};
+    let vegClassLayerQueryClassDict = {};
     let keyI = 1;
 
+    Object.keys(vegClassLayerClassDict).map(function (k) {
+        vegClassLayerQueryClassDict[keyI] = k;
+        keyI++;
+    });
+
+    let vegClassVisualParams = {
+        bands: ["b1"],
+        min: 1,
+        max: 8,
+        palette: ["#f7f1c6", "#b3d1c8", "#75b4c5", "#3597c2", "#2e7ba1", "#285e81", "#233e66", "#1e1950"],
+        addToClassLegend: true,
+        classLegendDict: vegClassLayerClassDict,
+        queryDict: vegClassLayerQueryClassDict,
+        years: evtYears
+    };
+
+    return {
+        imageLayer: imgLayer,
+        visualParams: vegClassVisualParams,
+        classDict: vegClassLayerClassDict,
+        label: vegClassLabel
+    }
+}
+
+function convertVegClassesToBinary(imgLayer, year) {
+
+    let imageBand = imgLayer.select("b1");
+    let binaryImage = imageBand.expression('(b(0) == 1) ? 0 : 1', { 'b': imageBand });
+    let imageMask = imageBand.mask();
+
+    return binaryImage.updateMask(imageMask).set("system:time_start", ee.Date.fromYMD(Number(year), 6, 1).millis());;
+}
+
+function getEVTBinaryLayer(imgLayer, year) {
+
+    const evtYears = [2001, 2012, 2014, 2016, 2020];
+    const binaryLabel = "EVT " + year + " Tree/Non-tree";
     const evtBinaryLayerClassDict = {
         "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
         "Tree": "#285e81",
     };
+
+    let maskedBinaryImage = convertVegClassesToBinary(imgLayer, year)
+    let evtBinaryLayerQueryClassDict = {};
+    let keyI = 1;
 
     Object.keys(evtBinaryLayerClassDict).map(function (k) {
         evtBinaryLayerQueryClassDict[keyI] = k;
@@ -526,61 +649,18 @@ function buildEVTBinaryLayer(imageLayer, year) {
         queryDict: evtBinaryLayerQueryClassDict,
         min: 0,
         max: 1,
-        palette: "#f7f1c6,#285e81",
+        palette: ["#f7f1c6","#285e81"],
         addToClassLegend: true,
         classLegendDict: evtBinaryLayerClassDict,
+        years: evtYears
     };
 
-    Map.addLayer(
-        maskedBinaryImage, evtBinaryViz, "EVT " + year + " Tree/Non-tree", false, null, null, "EVT " + year + " Tree/Non-tree", "reference-layer-list"
-    );
-
-}
-
-function getEVTRefLayer(layer, year) {
-
-    let evtLayer = ee.Image("projects/gtac-ravg/assets/RAVG_veg_class/" + layer);
-    let evtLayerQueryClassDict = {};
-    let keyI = 1;
-
-    const evtLayerClassDict = {
-        "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
-        "Pinyon - Juniper Woodland": "#b3d1c8",
-        "Deciduous Open Tree Canopy": "#75b4c5",
-        "Evergreen Closed Tree Canopy" : "#3597c2",
-        "Evergreen Open Tree Canopy" : "#2e7ba1",
-        "Mixed Evergreen - Deciduous Open Tree Canopy" : "#285e81",
-        "Deciduous Closed Tree Canopy" : "#233e66",
-        "Mixed Evergreen - Deciduous Closed Tree Canopy" : "#1e1950",
-    };
-
-    Object.keys(evtLayerClassDict).map(function (k) {
-        evtLayerQueryClassDict[keyI] = k;
-        keyI++;
-    });
-
-    const evtViz = {
-        queryDict: evtLayerQueryClassDict,
-        min: 1,
-        max: 8,
-        palette: "#f7f1c6,#b3d1c8,#75b4c5,#3597c2,#2e7ba1,#285e81,#233e66,#1e1950",
-        addToClassLegend: true,
-        classLegendDict: evtLayerClassDict,
-    };
-
-    Map.addLayer(
-        evtLayer, evtViz, "EVT " + year + " Vegetation Classes", false, null, null, "EVT " + year + " Vegetation Classes", "reference-layer-list"
-    );
-
-    buildEVTBinaryLayer(evtLayer, year);
-}
-
-function getEVTRefLayers() {
-    getEVTRefLayer("RAVG_VegCode_LF2020_EVT220", "2020");
-    getEVTRefLayer("RAVG_VegCode_LF2016_EVT200", "2016");
-    getEVTRefLayer("RAVG_VegCode_LF2014_EVT140", "2014");
-    getEVTRefLayer("RAVG_VegCode_LF2012_EVT130", "2012");
-    getEVTRefLayer("RAVG_VegCode_LF2001_EVT105", "2001");
+    return {
+        imageLayer: maskedBinaryImage,
+        visualParams: evtBinaryViz,
+        classDict: evtBinaryLayerClassDict,
+        label: binaryLabel
+    }
 }
 
 function runRAVG() {
@@ -597,10 +677,10 @@ function runRAVG() {
 
     getLCMSVariables();
     getNAIP(null, true);
-    getEVTRefLayers();
-    getRAVGSeverityLayer("CBI4");
-    getRAVGSeverityLayer("CC5");
-    getRAVGSeverityLayer("BA7");
+    let evtCollections = getEVTLayers();
+    getRAVGSeverityLayer("CBI4", evtCollections);
+    getRAVGSeverityLayer("CC5", evtCollections);
+    getRAVGSeverityLayer("BA7", evtCollections);
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     getSelectLayers(); //enables Tools -> Select and Area on Map 
