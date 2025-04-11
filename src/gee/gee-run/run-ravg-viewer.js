@@ -541,7 +541,7 @@ function getRAVGSeverityLayer(layer, evtCollections) {
         maxSeverity,
         severityLayerQueryDict,
         severityLayerLegendDict,
-        "EVT-Vegetation-Class"
+        "EVT-Vegetation"
     );
 
     setSeverityLayerPerRefLayerChart(
@@ -552,7 +552,7 @@ function getRAVGSeverityLayer(layer, evtCollections) {
         maxSeverity,
         severityLayerQueryDict,
         severityLayerLegendDict,
-        "EVT-Binary-Class"
+        "EVT-Binary"
     );
 }
 
@@ -602,7 +602,7 @@ function getEVTVegClassLayer(imgLayer, year) {
 function convertVegClassesToBinary(imgLayer, year) {
 
     let imageBand = imgLayer.select("b1");
-    let binaryImage = imageBand.expression('(b(0) == 1) ? 0 : 1', { 'b': imageBand });
+    let binaryImage = imageBand.expression('(b(0) == 1) ? 1 : 2', { 'b': imageBand });
     let imageMask = imageBand.mask();
 
     return binaryImage.updateMask(imageMask).set("system:time_start", ee.Date.fromYMD(Number(year), 6, 1).millis());;
@@ -629,8 +629,8 @@ function getEVTBinaryLayer(imgLayer, year) {
 
     const evtBinaryViz = {
         queryDict: evtBinaryLayerQueryClassDict,
-        min: 0,
-        max: 1,
+        min: 1,
+        max: 2,
         palette: Object.values(evtBinaryLayerClassDict),
         addToClassLegend: true,
         classLegendDict: evtBinaryLayerClassDict,
