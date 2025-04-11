@@ -564,12 +564,12 @@ function getEVTVegClassLayer(imgLayer, year) {
     const vegClassLayerClassDict = {
         "Non - tree": "#f7f1c6",
         "Pinyon - Juniper Woodland": "#b3d1c8",
-        "Deciduous Open Tree Canopy": "#75b4c5",
-        "Evergreen Closed Tree Canopy": "#3597c2",
+        "Deciduous Open Tree Canopy (OTC)": "#75b4c5",
+        "Evergreen Closed Tree Canopy (CTC)": "#3597c2",
         "Evergreen Open Tree Canopy": "#2e7ba1",
-        "Mixed Evergreen - Deciduous Open Tree Canopy": "#285e81",
+        "Mixed Evergreen - Deciduous OTC": "#285e81",
         "Deciduous Closed Tree Canopy": "#233e66",
-        "Mixed Evergreen - Deciduous Closed Tree Canopy": "#1e1950",
+        "Mixed Evergreen - Deciduous CTC": "#1e1950",
     };
 
     let vegClassLayerQueryClassDict = {};
