@@ -228,7 +228,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     const chartRAVG = true;
     const chartRAVGByNLCD = true;
     const chartRAVGByAspect = true;
-    //const chartRAVGByEVTs = true;
     const ravgAsset = "projects/gtac-ravg/assets/RAVG_annual_mosaics/" + layer + "_annual_mosaics";
     const ravgEndYear = endYear;
     const ravgYears = ee.List.sequence(2012, ravgEndYear);
@@ -373,25 +372,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     let nlcdObj;
     if (chartRAVGByNLCD) {
         nlcdObj = getNLCDObj();
-
-        //Map.addTimeLapse(
-        //    nlcdObj.collection,
-        //    {
-        //        min: nlcdObj.min,
-        //        max: nlcdObj.max,
-        //        palette: Object.values(nlcdObj.vizDict),
-        //        addToClassLegend: true,
-        //        classLegendDict: nlcdObj.legendDictReverse,
-        //        queryDict: nlcdObj.queryDict,
-        //        years: nlcdObj.years,
-        //    },
-        //    "NLCD " + layer + " Land Cover Time Lapse",
-        //    false,
-        //    null,
-        //    null,
-        //    "NLCD landcover classes ",
-        //    "reference-layer-list"
-        //);
 
         setSeverityLayerPerRefLayerChart(
             layer,
