@@ -273,14 +273,42 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     };
     const severityLayerSummarized = severityLayer.qualityMosaic(severityLayerSummaryDict[mtbsSummaryMethod]);
     const severityLayerCount = severityLayer.select([2]).count();
-    const severityLayerClassDict = {
-        "Unburned to Low": "006400",
-        Low: "7fffd4",
-        Moderate: "ffff00",
-        High: "ff0000",
-        "Increased Greenness": "7fff00",
-        "Non-Processing Area Mask": "ffffff"
-    };
+
+    let severityLayerClassDict;
+    let maxVal;
+
+    if (layer == "BA7") {
+        severityLayerClassDict = {
+            "0%": "008080",
+            "< 10%": "20A8A8",
+            "< 25%": "52CCCC",
+            "< 50%": "FFE820",
+            "< 75%": "FF8020",
+            "< 90%": "FF2020",
+            "<= 100%": "A80000",
+            "Masked/Unmappable": "FFFFFF"
+        };
+        maxVal = 8;
+    } else if (layer == "CC5") {
+        severityLayerClassDict = {
+            "0%": "008080",
+            "< 25%": "52CCCC",
+            "< 50%": "FFE820",
+            "< 75%": "FF8020",
+            "<= 100%": "A80000",
+            "Masked/Unmappable": "FFFFFF"
+        };
+        maxVal = 6;
+    } else if (layer == "CBI4") {
+        severityLayerClassDict = {
+            "Unchanged (< 0.1)": "008080",
+            "Low Severity (< 1.25)": "52CCCC",
+            "Moderate Severity (< 2.25)": "FFE820",
+            "High Severity (<= 3.0)": "A80000",
+            "Masked/Unmappable": "FFFFFF"
+        };
+        maxVal = 5;
+    }
 
     let severityLayerQueryClassDict = {};
     let keyI = 1;
@@ -417,16 +445,12 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         };
     }
 
-    //get severityLayer by EVTs
-    //if (chartRAVGByEVTs) {
-    //    getSeverityLayerByEVTGroup(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict);
-    //}
-
     const severityViz = {
         queryDict: severityLayerQueryClassDict,
         min: 1,
-        max: 6,
-        palette: "006400,7fffd4,ffff00,ff0000,7fff00,ffffff",
+        //max: 6,
+        max: maxVal,
+        palette: Object.values(severityLayerClassDict),
         addToClassLegend: true,
         classLegendDict: severityLayerClassDict,
     };
