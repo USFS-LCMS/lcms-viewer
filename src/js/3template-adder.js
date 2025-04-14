@@ -1703,16 +1703,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Years of MTBS data to include"
   );
+  urlParams.summaryMethod = urlParams.summaryMethod || {
+    "Highest-Severity": true,
+    "Most-Recent": false,
+    Oldest: false,
+  };
   addMultiRadio(
     "parameters-collapse-div",
     "mtbs-summary-method-radio",
     "How to summarize MTBS data",
     "mtbsSummaryMethod",
-    {
-      "Highest-Severity": true,
-      "Most-Recent": false,
-      Oldest: false,
-    }
+    urlParams.summaryMethod
   );
 
   $("#mtbs-summary-method-radio").prop(
@@ -3306,7 +3307,7 @@ if (
     "areaChartFormat",
     urlParams.chartUnits
   );
-  if (mode === "LCMS" || mode === "geeViz") {
+  if (mode === "LCMS" || mode === "geeViz" || mode === "MTBS") {
     activeStartYear = urlParams.startYear;
     activeEndYear = urlParams.endYear;
     $("#area-chart-params-div").append(

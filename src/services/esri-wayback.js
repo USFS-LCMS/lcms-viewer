@@ -58,7 +58,7 @@ function esri_wayback() {
     // Add the tile serviecs as a time lapse
     Map.addTimeLapse(
       sortedWayBackLayers,
-      { layerType: "tileMapService", addToLegend: false },
+      { layerType: "tileMapService", addToLegend: false, canQuery: false },
       "WayBack",
       null,
       null,
@@ -118,7 +118,6 @@ function esri_wayback() {
             ? zOffset - map.zoom
             : metadataMinZoom;
         z = z >= metadataMaxZoom ? metadataMaxZoom : z;
-        console.log(z);
         // Template metadata REST call
         // Currently handles point, but could handle the map bounds with bbox tweak if needed
         const metadataQueryTemplate = `${sortedWayBackMetadataLayers[k]}/${z}/query?f=json&where=1%3D1&outFields=SRC_DATE2%2CNICE_DESC%2CSRC_DESC%2CSAMP_RES%2CSRC_ACC&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A${clickLng}%2C%22y%22%3A${clickLat}%7D&returnGeometry=false&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects`;

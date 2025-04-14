@@ -90,7 +90,12 @@ function runGTAC() {
       "reference-layer-list"
     );
     try {
-      getMTBSandIDS();
+      // getMTBSandIDS();
+      let IDS = getIDSCollectionAddToMap();
+
+      let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
+
+      getMTBS(true, false, "reference-layer-list", false);
     } catch (err) {
       console.log(err);
     }

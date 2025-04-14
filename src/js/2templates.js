@@ -232,7 +232,7 @@ const staticTemplates = {
                         
                     </div>`,
   topBanner: ` <div id = 'title-banner' class = 'white  title-banner '>
-                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;'  alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
+                    <img id='title-banner-icon-left' class = 'title-banner-icon' style = 'height:1.7rem;'  alt="U.S. Department of Agriculture Forest Service icon" src="./src/assets/images/logos_usda-fs.svg" >
                     </a>
                     <div class="vl title-banner-icon"></div>
                     <img id='title-banner-icon-right' class = 'title-banner-icon'  >
@@ -265,31 +265,31 @@ const staticTemplates = {
                                     <div class ='my-3'> For an overview of LCMS and to find links to other LCMS Explorers, visit the
                                       <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
                                     </div>
-                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the USDA Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel 2 data availability, cloud-based computing power, and big data analysis methods.
+                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the U.S. Department of Agriculture Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel-2 data availability, cloud-based computing power, and big data analysis methods.
 
                             </p>
                             `,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-                            <div style ='float:left;' title='LCMS is produced by the USDA Forest Service'>
-                                <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+                            <div style ='float:left;' title='LCMS is produced by the U.S. Department of Agriculture Forest Service'>
+                                <img class = 'logo' alt="U.S. Department of Agriculture Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
                                 
                             </div>
                             <div style ='float:left;'>
                                 <ul class="intro-list">
-                                  <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+                                  <li title = "The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at FSIC-GO."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">FSIC-GO</a> Field Services and Innovation Center-Geospatial Office
                                   </li>
-                                  <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+                                  <li title = 'RedCastle Resources is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at FSIC-GO.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources
                                   </li>
                                   <li title = 'The Rocky Mountain Research Station provides the scientific foundation LCMS is built upon. They have been instrumental in developing and publishing the original LCMS methodology and continue to provide ongoing research and development to further improve LCMS methods.'><a class="intro-modal-links" href="https://www.fs.usda.gov/rmrs/tools/landscape-change-monitoring-system-lcms" target="_blank">RMRS</a> Rocky Mountain Research Station
                                   </li>
-                                  <li title = 'LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+                                  <li title = 'LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
                                   </li>
                                 </ul>
                                 
                             </div>
                         
                         </div>`,
-      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
@@ -302,7 +302,7 @@ const staticTemplates = {
     "lcms-base-learner": getIntroModal(
       "./src/assets/images/lcms-icon.png",
       "Welcome to the Landscape Change Monitoring System (LCMS) Base-Learner Explorer!",
-      `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
+      `<div class ='my-3'> LCMS is a landscape change detection program developed by the U.S. Department of Agriculture Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
                                         <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
                                     </div> 
                                     <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
@@ -310,7 +310,7 @@ const staticTemplates = {
                                     </p>`,
       `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
-                            <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+                            <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                                 <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
                                 <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
@@ -320,14 +320,14 @@ const staticTemplates = {
     "lcms-dashboard": getIntroModal(
       "./src/assets/images/lcms-icon.png",
       "Welcome to the Landscape Change Monitoring System (LCMS) Data Dashboard!",
-      `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
+      `<div class ='my-3'> LCMS is a landscape change detection program developed by the U.S. Department of Agriculture Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
                                         <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
                                     </div>
                                     <p>The LCMS Dashboard application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
       `<p>Pre-calculated summary areas are available for generating custom reports.</p>
                                     <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
-      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
@@ -339,7 +339,7 @@ const staticTemplates = {
     IDS: getIntroModal(
       "./src/assets/images/lcms-icon.png",
       "Welcome to the Landscape Change Monitoring System (LCMS) Insect and Disease Detection Survey (IDS) Explorer!",
-      `<div class ='my-3'> LCMS is a landscape change detection program developed by the USDA Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
+      `<div class ='my-3'> LCMS is a landscape change detection program developed by the U.S. Department of Agriculture Forest Service. For an overview of LCMS and to find links to other LCMS Explorers, visit the
                 <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
             </div>
             <p> The Insect and Disease Explorer (IDS) application is designed to provide a visualization of the LCMS outputs alongside outputs from the U.S. Department of Agriculture, Forest Service Forest Health Protection's <a class='intro-modal-links' href='https://www.fs.usda.gov/foresthealth/applied-sciences/mapping-reporting/detection-surveys.shtml' title = 'IDS homepage' target="_blank">Insect and Disease Detection Survey (IDS)</a>outputs.</p>
@@ -347,7 +347,7 @@ const staticTemplates = {
            <p>LCMS Change and IDS polygon data can be viewed simultaneously for each coincident year. These data can also be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd> and <kbd>Area Tools</kbd>
            </p>`,
       `
-    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
     <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
     <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
@@ -393,7 +393,7 @@ const staticTemplates = {
            <p class="pb-2 ">All Landsat image processing and LandTrendr algorithm application is being performed on-the-fly. This can take some time to run. If you try to run this tool across a very large extent (zoom level < 9), it may not run.</p>
        </li>`,
       `
-    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
     <a class="intro-modal-links" href="https://emapr.github.io/LT-GEE/" target="_blank" title="Open additional LandTrendr resources">LandTrendr Guide</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
@@ -421,25 +421,25 @@ const staticTemplates = {
     </p>
     `,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='MTBS is jointly produced by the USDA Forest Service and USGS'>
-        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+    <div style ='float:left;display:block' title='MTBS is jointly produced by the U.S. Department of Agriculture Forest Service and USGS'>
+        <img class = 'logo' alt="U.S. Department of Agriculture Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
         <br>
         <img class = 'logo' style = 'margin-left:0.3rem;height:2.5rem;' alt="USGS icon" src="./src/assets/images/USGS_logo_green.svg">
     </div>
     <div style ='float:left;'>
         <ul class="intro-list">
-          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.""><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          <li title = "The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at FSIC-GO.""><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">FSIC-GO</a> Field Services and Innovation Center-Geospatial Office
           </li>
           <li title = "The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.""><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
           </li>
-          <li title = "This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.""><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          <li title = "This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google.""><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
         </ul>
         
     </div>
 
 </div>`,
-      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 <div class ='my-3'>
    <a  class = 'intro-modal-links' onclick = 'toggleWalkThroughCollapse()' title="Run interactive walk-through of the features of the MTBS Data Explorer">Run Walk-Through</a>
 
@@ -452,11 +452,11 @@ const staticTemplates = {
       "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
       "Welcome to the Landscape Automated Monitoring and Detection Algorithm (LAMDA) Data Explorer!",
       `<li>
-           <p class="pb-2 ">LAMDA is a near real-time landscape-scale change detection program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide a visualization of LAMDA outputs.</p>
+           <p class="pb-2 ">LAMDA is a near real-time landscape-scale change detection program developed by the U.S. Department of Agriculture Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide a visualization of LAMDA outputs.</p>
        </li>
        `,
       `
-    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+    <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
     <a class = "intro-modal-links" title = "Publication outlining the methods used to derive these products" href = "https://www.mdpi.com/2072-4292/10/8/1184" target="_blank" >LAMDA Methods Publication</a>
     <a class="intro-modal-links" href="./lamda-downloads.html" target="_blank" title="LAMDA product download page">Download LAMDA Data</a>
@@ -475,11 +475,11 @@ const staticTemplates = {
       "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
       "Welcome to the Giant Sequoia Viewer!",
       `<li>
-<p class="pb-2 ">This near real-time program developed by the USDA Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide first cut alarm of potentially declining named Giant Sequoias and the ability to view available remote sensing image data.</p>
+<p class="pb-2 ">This near real-time program developed by the U.S. Department of Agriculture Forest Service to serve as a 'hot spot' indicator for areas where finer resolution data may be used for further investigation and to serve as an indicator of severe changes over forested regions. This application is designed to provide first cut alarm of potentially declining named Giant Sequoias and the ability to view available remote sensing image data.</p>
 </li>
 `,
       `
-<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 <!-- <h5>For access please contact Sequoia Viewer project coordinator.</h5> -->
 <div class ='my-3'>
 <h6><b>First time users</b>, please click below to take a tutorial on how to use the Giant Sequoia Viewer's features:</h6>
@@ -505,7 +505,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 </li>
 `,
       `
-<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 
 <div class ='my-3'>
 <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the ${mode}'s features">TOUR</a>
@@ -523,25 +523,25 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 
                             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='This tool is produced by the USDA Forest Service'>
-        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+    <div style ='float:left;display:block' title='This tool is produced by the U.S. Department of Agriculture Forest Service'>
+        <img class = 'logo' alt="U.S. Department of Agriculture Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
     </div>
     <div style ='float:left;'>
         <ul class="intro-list">
-          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          <li title = "The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">FSIC-GO</a> Field Services and Innovation Center-Geospatial Office
           </li>
           <li title = 'The U.S. Department of Agriculture Forest Service, Southern Research Station provided the original methods for this data explorer.'><a class="intro-modal-links" href="https://www.srs.fs.usda.gov/" target="_blank">SRS</a> Southern Research Station
                                   </li>
-            <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+            <li title = 'RedCastle Resources is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources
             </li>
-          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
         </ul>
         
     </div>
 
 </div>`,
-      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 
 <div class ='my-3'>
     <a class = "intro-modal-links" title = "Report highlighting a project that used this tool" href = "https://apps.fs.usda.gov/gtac/publications/2022/tree-structure-damage-impact-predictive-trees-dip-modeling-phase-ii" target="_blank" >PROJECT REPORT</a>
@@ -562,21 +562,21 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
             This prototype tool provides an interactive map with the ability to view lakes with potential cyanobacteria or algae blooms. These outputs have been created as a collaborative effort between field experts throughout Wyoming and the Geospatial Technology and Applications Center. Current methods are being tested for preliminary review. These products are not conclusive and are intended for review purposes only. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between GTAC and WY U.S. Department of Agriculture, Forest Service partners'>
-        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+    <div style ='float:left;display:block' title='Bloom mapper is a joint effort between FSIC-GO and WY U.S. Department of Agriculture, Forest Service partners'>
+        <img class = 'logo' alt="U.S. Department of Agriculture Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
         
        
         
     </div>
     <div style ='float:left;'>
         <ul class="intro-list">
-          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          <li title = "The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at FSIC-GO."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">FSIC-GO</a> Field Services and Innovation Center-Geospatial Office
           </li>
           
          
-            <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+            <li title = 'RedCastle Resources is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources
             </li>
-          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
         </ul>
         
@@ -588,7 +588,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </div>
 
 </div>`,
-      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 
 `
     ),
@@ -599,21 +599,21 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
             This prototype tool provides an interactive map with the ability to view the 2016 TreeMap attributes. Source Data: Riley, Karin L.; Grenfell, Isaac C.; Finney, Mark A.; Shaw, John D. (2023). TreeMap 2016: A tree-level model of the forests of the conterminous United States circa 2016. Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2021-0074. Accessed 2023-03-13. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
-    <div style ='float:left;display:block' title='TreeMap Explorer is a joint effort between GTAC and USDA Forest Service Research'>
-        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+    <div style ='float:left;display:block' title='TreeMap Explorer is a joint effort between FSIC-GO and U.S. Department of Agriculture Forest Service Research'>
+        <img class = 'logo' alt="U.S. Department of Agriculture Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
         
        
         
     </div>
     <div style ='float:left;'>
         <ul class="intro-list">
-          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          <li title = "The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at FSIC-GO."><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">FSIC-GO</a> Field Services and Innovation Center-Geospatial Office
           </li>
           
          
-            <li title = 'RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources Inc.
+            <li title = 'RedCastle Resources is the on-site contractor that has provided the technical expertise for adapting the original workflow from the SRS and developing this Viewer.'><a class="intro-modal-links" href="https://www.redcastleresources.com/" target="_blank">RCR</a> RedCastle Resources
             </li>
-          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          <li title = 'This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google.'><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
           </li>
           <li title = 'TreeMap 2016 Research Dataset source data.'><a class="intro-modal-links" href="https://data.nal.usda.gov/dataset/treemap-2016-tree-level-model-forests-conterminous-united-states-circa-2016" target="_blank">RDS</a> Original TreeMap 2016 Research Dataset
           </li>
@@ -631,7 +631,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </div>
 
 </div>`,
-      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+      `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 
 `
     ),
@@ -653,7 +653,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
 
                             
 
-                        <p style = 'margin-top:1rem;'>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+                        <p style = 'margin-top:1rem;'>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                 <p style='font-weight:bold;margin-top:1rem;' title='Creating map services within Google Earth Engine. This can take some time. Thank you for your patience!'>
                   <img style="width:1.5rem;" class="image-icon fa-spin mr-1" alt= "Google Earth Engine logo spinner" src="${spinner_src}">
                     ${word} ${whatIsLoading}. This can take some time.
@@ -693,7 +693,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <img src="./src/assets/images/GEE.png"   class = 'image-icon-bar' alt="Powered by Google Earth Engine"  href="#" title="Click to learn more about Google Earth Engine">
                         </a>
                         <a href="https://www.fs.usda.gov/" target="_blank">
-                            <img src="./src/assets/images/usfslogo.png" class = 'image-icon-bar'  href="#"  alt= "USDA Forest Service logo" title="Click to learn more about the US Forest Service">
+                            <img src="./src/assets/images/usfslogo.png" class = 'image-icon-bar'  href="#"  alt= "U.S. Department of Agriculture Forest Service logo" title="Click to learn more about the US Forest Service">
                         </a>
                         <a href="http://www.usda.gov" target="_blank">
                             <img src="./src/assets/images/usdalogo.png" class = 'image-icon-bar'  href="#"   alt= "USDA logo" title="Click to learn more about the USDA">
@@ -956,12 +956,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 <section class = 'row'>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                        <img src="./src/assets/images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC).">
+                                        <img src="./src/assets/images/usfslogo.png" class = 'support-icons' href="#" alt = "Field Services and Innovation Center-Geospatial Office logo" title="Click to learn more about the Field Services and Innovation Center-Geospatial Office (FSIC-GO).">
                                         </a>
                                     </div>
                                     <div class = 'col-lg-10'>
                                         <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                            <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. Operational TreeMap production and support takes place at GTAC.</p>
+                                            <p class = 'support-text'>The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. Operational TreeMap production and support takes place at FSIC-GO.</p>
                                         </a>
                                     </div>
                                 </section>
@@ -969,12 +969,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                 <section class = 'row '>
                                     <div class = 'col-lg-2 p-0 m-0'>
                                         <a href="https://www.redcastleresources.com/" target="_blank">
-                                            <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                            <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Resources Logo"  href="#"   title="Click to learn more about RedCastle Resources"> 
                                         </a>
                                     </div>
                                     <div class = 'col-lg-10'>
                                         <a href="https://www.redcastleresources.com/" target="_blank">
-                                            <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor at GTAC that has provided technical expertise for TreeMap's future operational production, documentation, delivery at the Raster Gateway, Google Earth Engine asset setup, and this <i>TreeMap Explorer</i>.</p>
+                                            <p class = 'support-text'>RedCastle Resources is the on-site contractor at FSIC-GO that has provided technical expertise for TreeMap's future operational production, documentation, delivery at the Raster Gateway, Google Earth Engine asset setup, and this <i>TreeMap Explorer</i>.</p>
                                         </a>
                                     </div>
                                 </section>
@@ -990,7 +990,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     </div>
                                     <div class = 'col-lg-10'>
                                         <a href="https://earthengine.google.com/" target="_blank">
-                                            <p class = 'support-text'>TreeMap utilizes Google Earth Engine for visualization through an enterprise agreement between the USDA Forest Service and Google.</p>
+                                            <p class = 'support-text'>TreeMap utilizes Google Earth Engine for visualization through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google.</p>
                                         </a>
                                     </div>
                                 </section>
@@ -1085,12 +1085,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                <img src="./src/assets/images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' href="#" alt = "U.S. Department of Agriculture Forest Service logo" title="Click to learn more about the Field Services and Innovation Center-Geospatial Office (FSIC-GO)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational support for this tool takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational support for this tool takes place at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1098,12 +1098,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Resources Logo"  href="#"   title="Click to learn more about RedCastle Resources"> 
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for the adaptation of the original HiForm-BMP workflow to this interface and delivery at GTAC.</p>
+                                    <p class = 'support-text'>RedCastle Resources is the on-site contractor that has provided the technical expertise for the adaptation of the original HiForm-BMP workflow to this interface and delivery at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1118,7 +1118,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>HiForm-BMP utilizes Google Earth Engine for its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google.</p>
+                                    <p class = 'support-text'>HiForm-BMP utilizes Google Earth Engine for its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google.</p>
                                 </a>
                             </div>
                         </section>
@@ -1226,12 +1226,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                <img src="./src/assets/images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' href="#" alt = "U.S. Department of Agriculture Forest Service logo" title="Click to learn more about the Field Services and Innovation Center-Geospatial Office (FSIC-GO)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1239,12 +1239,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Resources Logo"  href="#"   title="Click to learn more about RedCastle Resources"> 
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
+                                    <p class = 'support-text'>RedCastle Resources is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1272,7 +1272,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
                                 </a>
                             </div>
                         </section>
@@ -1378,12 +1378,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                <img src="./src/assets/images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons' href="#" alt = "U.S. Department of Agriculture Forest Service logo" title="Click to learn more about the Field Services and Innovation Center-Geospatial Office (FSIC-GO)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All operational LCMS production and support takes place at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1391,12 +1391,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Resources Logo"  href="#"   title="Click to learn more about RedCastle Resources"> 
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at GTAC.</p>
+                                    <p class = 'support-text'>RedCastle Resources is the on-site contractor that has provided the technical expertise for LCMS' operational production, documentation, and delivery at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1424,7 +1424,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
                                 </a>
                             </div>
                         </section>
@@ -1496,12 +1496,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                <img src="./src/assets/images/GTAC_Logo.png" class = 'support-icons' alt="GTAC Logo"  href="#" alt = "Geospatial Technology and Applications Center logo" title="Click to learn more about the Geospatial Technology and Applications Center (GTAC)">
+                                <img src="./src/assets/images/usfslogo.png" class = 'support-icons'   href="#" alt = "U.S. Department of Agriculture Forest Service logo" title="Click to learn more about the Field Services and Innovation Center-Geospatial Office (FSIC-GO)">
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">
-                                    <p class = 'support-text'>The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All production and support for this tool takes place at GTAC.</p>
+                                    <p class = 'support-text'>The Field Services and Innovation Center-Geospatial Office (FSIC-GO) provides leadership in geospatial science implementation in the U.S. Department of Agriculture Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. All production and support for this tool takes place at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1509,12 +1509,12 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <section class = 'row '>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Inc. Logo"  href="#"   title="Click to learn more about RedCastle Resources Inc."> 
+                                    <img src="./src/assets/images/RCR-logo.jpg"  class = 'support-icons' alt="RedCastle Resources Logo"  href="#"   title="Click to learn more about RedCastle Resources"> 
                                 </a>
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://www.redcastleresources.com/" target="_blank">
-                                    <p class = 'support-text'>RedCastle Resources Inc. is the on-site contractor that has provided the technical expertise for ${mode}'s methods development, documentation, and visualization (this viewer) at GTAC.</p>
+                                    <p class = 'support-text'>RedCastle Resources is the on-site contractor that has provided the technical expertise for ${mode}'s methods development, documentation, and visualization (this viewer) at FSIC-GO.</p>
                                 </a>
                             </div>
                         </section>
@@ -1532,7 +1532,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 <a href="" target="_blank">
                                     <p class = 'support-text'>
-                                    U.S. Department of Agriculture, Forest Service units in Regions 2 and 4 in Wyoming collaborated to help GTAC develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
+                                    U.S. Department of Agriculture, Forest Service units in Regions 2 and 4 in Wyoming collaborated to help FSIC-GO develop and train this tool based on actual bloom data collected by the Wyoming Department of Environmental Quality, Water Quality Division, Watershed Protection Program as part of their state-wide monitoring efforts to document the occurrence of Harmful Cyanobacterial Blooms. Thousands of lakes over ~1 acre exist on Forest system lands in Wyoming. This tool is critical in helping Forest staff focus efforts to address this public safety concern.</p>
                                 </a>
                             </div>
                         </section>
@@ -1547,7 +1547,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>${mode} utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the USDA Forest Service and Google. In its current form, ${mode} would not be possible without Google Earth Engine.</p>
+                                    <p class = 'support-text'>${mode} utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, ${mode} would not be possible without Google Earth Engine.</p>
                                 </a>
                             </div>
                         </section>
@@ -1669,13 +1669,13 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
   selectAreaInteractiveChartTip:
     "Select from pre-defined areas on map to summarize products across.",
   shareButtons: `<!-- Email -->
-                        <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=USDA Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
+                        <a title = 'Share via E-mail' onclick = 'TweetThis("mailto:?Subject=U.S. Department of Agriculture Forest Service Landscape Change Monitoring System&amp;Body=I%20saw%20this%20and%20thought%20you%20might%20be%20interested.%20 ","",true)'>
                             <img class = 'image-icon-bar' src="./src/assets/images/email.png" alt="Email" />
                         </a>
-                        <a title = 'Share on Reddit' onclick = 'TweetThis("http://reddit.com/submit?url=","&amp;title=USDA Forest Service Landscape Change Monitoring System",true)' >
+                        <a title = 'Share on Reddit' onclick = 'TweetThis("http://reddit.com/submit?url=","&amp;title=U.S. Department of Agriculture Forest Service Landscape Change Monitoring System",true)' >
                             <img class = 'image-icon-bar' src="./src/assets/images/reddit.png" alt="Reddit" />
                         </a>
-                        <a title = 'Share on Twitter' onclick = 'TweetThis("https://twitter.com/share?url=","&amp;text=USDA Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS",true)' >
+                        <a title = 'Share on Twitter' onclick = 'TweetThis("https://twitter.com/share?url=","&amp;text=U.S. Department of Agriculture Forest Service Landscape Change Monitoring System&amp;hashtags=USFSLCMS",true)' >
                             <img class = 'image-icon-bar' src="./src/assets/images/twitter.png" alt="Twitter" />
                         </a>
                         <a  title = 'Share on Facebook' onclick = 'TweetThis("http://www.facebook.com/sharer.php?u=","",true)' >
@@ -4494,7 +4494,7 @@ function addLayerSortListener(
       allLayerSelector,
       layerSplitString
     );
-    console.log(layerContainerIDs);
+
     urlParams.layerOrders[containerID] = layerContainerIDs;
     updateMapLayerOrder(containerID, layerSplitString);
     sortLayerLegendElements(containerID);

@@ -471,98 +471,100 @@ function runAncillary() {
 
   // NCLD
   /////////////
-  let nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
+  // let nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
 
-  let nlcdLCMS = ee.ImageCollection("users/yang/CONUS_NLCD2016");
+  // let nlcdLCMS = ee.ImageCollection("users/yang/CONUS_NLCD2016");
 
-  function getYear(img) {
-    const yr = img.id().split("_").get(-1);
-    img = img.set(
-      "system:time_start",
-      ee.Date.fromYMD(ee.Number.parse(yr), 6, 1).millis()
-    );
-    return img;
-  }
-  nlcdLCMS = nlcdLCMS.map(getYear);
+  // function getYear(img) {
+  //   const yr = img.id().split("_").get(-1);
+  //   img = img.set(
+  //     "system:time_start",
+  //     ee.Date.fromYMD(ee.Number.parse(yr), 6, 1).millis()
+  //   );
+  //   return img;
+  // }
+  // nlcdLCMS = nlcdLCMS.map(getYear);
 
-  const nlcdLCMax = 95; //parseInt(nlcd.get('system:visualization_0_max').getInfo());
-  const nlcdLCMin = 0; //parseInt(nlcd.get('system:visualization_0_min').getInfo());
-  const nlcdLCPalette = [
-    "466b9f",
-    "d1def8",
-    "dec5c5",
-    "d99282",
-    "eb0000",
-    "ab0000",
-    "b3ac9f",
-    "68ab5f",
-    "1c5f2c",
-    "b5c58f",
-    "af963c",
-    "ccb879",
-    "dfdfc2",
-    "d1d182",
-    "a3cc51",
-    "82ba9e",
-    "dcd939",
-    "ab6c28",
-    "b8d9eb",
-    "6c9fb8",
-  ]; //nlcd.get('system:visualization_0_palette').getInfo().split(',');
+  // const nlcdLCMax = 95; //parseInt(nlcd.get('system:visualization_0_max').getInfo());
+  // const nlcdLCMin = 0; //parseInt(nlcd.get('system:visualization_0_min').getInfo());
+  // const nlcdLCPalette = [
+  //   "466b9f",
+  //   "d1def8",
+  //   "dec5c5",
+  //   "d99282",
+  //   "eb0000",
+  //   "ab0000",
+  //   "b3ac9f",
+  //   "68ab5f",
+  //   "1c5f2c",
+  //   "b5c58f",
+  //   "af963c",
+  //   "ccb879",
+  //   "dfdfc2",
+  //   "d1d182",
+  //   "a3cc51",
+  //   "82ba9e",
+  //   "dcd939",
+  //   "ab6c28",
+  //   "b8d9eb",
+  //   "6c9fb8",
+  // ]; //nlcd.get('system:visualization_0_palette').getInfo().split(',');
 
-  const nlcdClassCodes = [
-    11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90,
-    95,
-  ];
-  const nlcdClassNames = [
-    "Open Water",
-    "Perennial Ice/Snow",
-    "Developed, Open Space",
-    "Developed, Low Intensity",
-    "Developed, Medium Intensity",
-    "Developed High Intensity",
-    "Barren Land (Rock/Sand/Clay)",
-    "Deciduous Forest",
-    "Evergreen Forest",
-    "Mixed Forest",
-    "Dwarf Scrub",
-    "Shrub/Scrub",
-    "Grassland/Herbaceous",
-    "Sedge/Herbaceous",
-    "Lichens",
-    "Moss",
-    "Pasture/Hay",
-    "Cultivated Crops",
-    "Woody Wetlands",
-    "Emergent Herbaceous Wetlands",
-  ];
-  const nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
-  const nlcdLCVizDict = {};
-  const nlcdLCQueryDict = {};
-  const nlcdLegendDict = {};
+  // const nlcdClassCodes = [
+  //   11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 51, 52, 71, 72, 73, 74, 81, 82, 90,
+  //   95,
+  // ];
+  // const nlcdClassNames = [
+  //   "Open Water",
+  //   "Perennial Ice/Snow",
+  //   "Developed, Open Space",
+  //   "Developed, Low Intensity",
+  //   "Developed, Medium Intensity",
+  //   "Developed High Intensity",
+  //   "Barren Land (Rock/Sand/Clay)",
+  //   "Deciduous Forest",
+  //   "Evergreen Forest",
+  //   "Mixed Forest",
+  //   "Dwarf Scrub",
+  //   "Shrub/Scrub",
+  //   "Grassland/Herbaceous",
+  //   "Sedge/Herbaceous",
+  //   "Lichens",
+  //   "Moss",
+  //   "Pasture/Hay",
+  //   "Cultivated Crops",
+  //   "Woody Wetlands",
+  //   "Emergent Herbaceous Wetlands",
+  // ];
+  // const nlcdFullClassCodes = range(nlcdLCMin, nlcdLCMax + 1);
+  // const nlcdLCVizDict = {};
+  // const nlcdLCQueryDict = {};
+  // const nlcdLegendDict = {};
 
-  let ii = 0;
-  nlcdFullClassCodes.map(function (i) {
-    const index = nlcdClassCodes.indexOf(i);
-    if (index !== -1) {
-      nlcdLCQueryDict[i] = nlcdClassNames[ii];
-      nlcdLCVizDict[i] = nlcdLCPalette[ii];
-      nlcdLegendDict[nlcdClassNames[ii]] = nlcdLCPalette[ii];
-      ii++;
-    } else {
-      nlcdLCVizDict[i] = "000";
-    }
-  });
-  const nlcdLegendDictReverse = {};
-  Object.keys(nlcdLegendDict)
-    .reverse()
-    .map(function (k) {
-      nlcdLegendDictReverse[k] = nlcdLegendDict[k];
-    });
+  // let ii = 0;
+  // nlcdFullClassCodes.map(function (i) {
+  //   const index = nlcdClassCodes.indexOf(i);
+  //   if (index !== -1) {
+  //     nlcdLCQueryDict[i] = nlcdClassNames[ii];
+  //     nlcdLCVizDict[i] = nlcdLCPalette[ii];
+  //     nlcdLegendDict[nlcdClassNames[ii]] = nlcdLCPalette[ii];
+  //     ii++;
+  //   } else {
+  //     nlcdLCVizDict[i] = "000";
+  //   }
+  // });
+  // const nlcdLegendDictReverse = {};
+  // Object.keys(nlcdLegendDict)
+  //   .reverse()
+  //   .map(function (k) {
+  //     nlcdLegendDictReverse[k] = nlcdLegendDict[k];
+  //   });
 
-  nlcd = nlcd.map(function (img) {
-    return img.set("bns", img.bandNames());
-  });
+  // nlcd = nlcd.map(function (img) {
+  //   return img.set("bns", img.bandNames());
+  // });
+  const nlcdObj = getAnnualNLCD(false, false, "layer-list", false);
+  let nlcd = nlcdObj.imageCollectionLandCover;
   function annualMosaicCollection(c) {
     const years = c
       .toList(10000, 0)
@@ -580,8 +582,8 @@ function runAncillary() {
     );
   }
   let nlcdLC = nlcd
-    .filter(ee.Filter.listContains("bns", "landcover"))
-    .select(["landcover"]);
+    // .filter(ee.Filter.listContains("bns", "landcover"))
+    .select([0], ["landcover"]);
   nlcdLC = annualMosaicCollection(nlcdLC);
   const nlcdLCYears = nlcdLC
     .toList(10000, 0)
@@ -590,9 +592,7 @@ function runAncillary() {
     })
     .distinct();
 
-  let nlcdImpv = nlcd
-    .filter(ee.Filter.listContains("bns", "impervious"))
-    .select(["impervious"]);
+  let nlcdImpv = nlcdObj.imageCollectionImpervious.select([0], ["impervious"]);
   nlcdImpv = annualMosaicCollection(nlcdImpv);
   const nlcdImpvYears = nlcdImpv
     .toList(10000, 0)
@@ -601,16 +601,16 @@ function runAncillary() {
     })
     .distinct();
 
-  let nlcdTCC = nlcd
-    .filter(ee.Filter.listContains("bns", "percent_tree_cover"))
-    .select(["percent_tree_cover"]);
-  nlcdTCC = annualMosaicCollection(nlcdTCC);
-  const nlcdTCCYears = nlcdTCC
-    .toList(10000, 0)
-    .map(function (img) {
-      return ee.Date(ee.Image(img).get("system:time_start")).get("year");
-    })
-    .distinct();
+  // let nlcdTCC = nlcd
+  //   .filter(ee.Filter.listContains("bns", "percent_tree_cover"))
+  //   .select(["percent_tree_cover"]);
+  // nlcdTCC = annualMosaicCollection(nlcdTCC);
+  // const nlcdTCCYears = nlcdTCC
+  //   .toList(10000, 0)
+  //   .map(function (img) {
+  //     return ee.Date(ee.Image(img).get("system:time_start")).get("year");
+  //   })
+  //   .distinct();
 
   // nlcdLCYears.getInfo().map(function(yr){
   //   var nlcdLCYr = nlcdLC.filter(ee.Filter.calendarRange(yr,yr,'year')).mosaic();
@@ -647,57 +647,57 @@ function runAncillary() {
 
   // copied from run-mtbs-viewer.js
 
-  const mtbsAndNLCD = getMTBSAndNLCD("anc", null, false);
-
+  // const mtbsAndNLCD = getMTBSAndNLCD("anc", null, false);
+  const mtbsObj = getMTBS(true, false, "layer-list", false);
   //const nlcdLCObj = mtbsAndNLCD.NLCD;
-  let mtbsC = mtbsAndNLCD.MTBS.collection;
+  let mtbsC = mtbsObj.imageCollection.select([0], ["MTBS Burn Severity"]);
 
-  let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  const inFields = [
-    "Incid_Name",
-    "Incid_Type",
-    "Event_ID",
-    "irwinID",
-    "Ignition Date",
-    "BurnBndAc",
-    "Asmnt_Type",
-  ];
-  const outFields = [
-    "Incident Name",
-    "Incident Type",
-    "MTBS Event ID",
-    "IRWIN ID",
-    "Ignition Date",
-    "Acres",
-    "Assessment Type",
-  ];
-  perims = perims.map(function (f) {
-    const d = ee.Date(f.get("Ig_Date"));
-    const formatted = d.format("YYYY-MM-dd");
-    return f.set({
-      Year: d.get("year"),
-      "Ignition Date": formatted,
-    });
-  });
+  // let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  // const inFields = [
+  //   "Incid_Name",
+  //   "Incid_Type",
+  //   "Event_ID",
+  //   "irwinID",
+  //   "Ignition Date",
+  //   "BurnBndAc",
+  //   "Asmnt_Type",
+  // ];
+  // const outFields = [
+  //   "Incident Name",
+  //   "Incident Type",
+  //   "MTBS Event ID",
+  //   "IRWIN ID",
+  //   "Ignition Date",
+  //   "Acres",
+  //   "Assessment Type",
+  // ];
+  // perims = perims.map(function (f) {
+  //   const d = ee.Date(f.get("Ig_Date"));
+  //   const formatted = d.format("YYYY-MM-dd");
+  //   return f.set({
+  //     Year: d.get("year"),
+  //     "Ignition Date": formatted,
+  //   });
+  // });
 
-  perims = perims.select(inFields, outFields);
+  // perims = perims.select(inFields, outFields);
 
-  perims = perims.set("bounds", clientBoundsDict.All);
+  // perims = perims.set("bounds", clientBoundsDict.All);
 
-  Map.addLayer(
-    perims,
-    {
-      strokeColor: "00F",
-    },
-    "MTBS Burn Perimeters",
-    false,
-    null,
-    null,
-    "Delineated perimeters of MTBS mapped fires. Areas can have multiple mapped fires."
-  );
+  // Map.addLayer(
+  //   perims,
+  //   {
+  //     strokeColor: "00F",
+  //   },
+  //   "MTBS Burn Perimeters",
+  //   false,
+  //   null,
+  //   null,
+  //   "Delineated perimeters of MTBS mapped fires. Areas can have multiple mapped fires."
+  // );
 
   // var years = ee.List.sequence(startYear,mtbs)
-  const mtbs_dict = ee.Dictionary(mtbsC.get("chartTableDict"));
+  // const mtbs_dict = ee.Dictionary(mtbsC.get("chartTableDict"));
 
   // NWI
   /////////////////////////////////////////////////
@@ -930,7 +930,7 @@ function runAncillary() {
   // Terra-Climate
   ////////////////////////////////////////////////////////////
   const pdsiStartYear = 1984;
-  const pdsiEndYear = 2023;
+  const pdsiEndYear = 2024;
   const terra = ee
     .ImageCollection("IDAHO_EPSCOR/TERRACLIMATE")
     .filter(ee.Filter.calendarRange(pdsiStartYear - 1, pdsiEndYear, "year"));
@@ -1232,7 +1232,7 @@ function runAncillary() {
   // nlcdLCMS = batchFillCollection(nlcdLCMS,years)
   //mtbs = batchFillCollection(mtbs, years).map(setSameDate);
   cdl = batchFillCollection(cdl, years).map(setSameDate);
-  nlcdTCC = batchFillCollection(nlcdTCC, years).map(setSameDate);
+  // nlcdTCC = batchFillCollection(nlcdTCC, years).map(setSameDate);
   nlcdImpv = batchFillCollection(nlcdImpv, years).map(setSameDate);
 
   // nwi_hi_rast = batchFillCollection(
@@ -1272,11 +1272,11 @@ function runAncillary() {
     false
   );
   // forCharting  = joinCollections(forCharting,nlcdLCMS.select([0],['NLCD LCMS Landcover']), false);
-  forCharting = joinCollections(
-    forCharting,
-    nlcdTCC.select([0], ["NLCD % Tree Canopy Cover"]),
-    false
-  );
+  // forCharting = joinCollections(
+  //   forCharting,
+  //   nlcdTCC.select([0], ["NLCD % Tree Canopy Cover"]),
+  //   false
+  // );
   forCharting = joinCollections(
     forCharting,
     nlcdImpv.select([0], ["NLCD % Impervious"]),
@@ -1294,14 +1294,14 @@ function runAncillary() {
   const chartTableDict = {
     "IDS Type": damage_codes,
     "IDS DCA": dca_codes,
-    "MTBS Burn Severity": mtbsQueryClassDict,
-    "NLCD Landcover": nlcdLCQueryDict,
-    "NLCD LCMS Landcover": nlcdLCQueryDict,
+    "MTBS Burn Severity": mtbsObj.queryDict,
+    "NLCD Landcover": nlcdObj.queryDict,
+    // "NLCD LCMS Landcover": nlcdLCQueryDict,
     "Cropland Data": cdlQueryDict,
     PDSI: pdsiDict,
     "PRVI Landcover": prvi_lc_lookup,
     NWI: nwi_lookup,
-    "MTBS Perims": mtbs_dict,
+    // "MTBS Perims": mtbs_dict,
   };
 
   forCharting = forCharting.set("chartTableDict", chartTableDict);

@@ -135,133 +135,15 @@ function runMTBSOld() {
   // $('#tools-collapse-label-label').click();
 }
 function setupMTBS() {
-  startYear = parseInt(urlParams.startYear);
-  endYear = parseInt(urlParams.endYear);
-  const yearsCli = range(startYear, endYear + 1);
   getLCMSVariables();
 
   getNAIP(null, true);
-
-  const mtbsSeverityObjInfo = {
-    Severity_class_names: [
-      "Background",
-      "Unburned to Low",
-      "Low",
-      "Moderate",
-      "High",
-      "Increased Greenness",
-      "Non-Mapping Area",
-    ],
-    Severity_class_palette: [
-      "000000",
-      "006400",
-      "7fffd4",
-      "ffff00",
-      "ff0000",
-      "7fff00",
-      "ffffff",
-    ],
-    Severity_class_values: [0, 1, 2, 3, 4, 5, 6],
-    bandNames: ["Severity"],
-    layerType: "ImageCollection",
-    size: yearsCli.length,
-  };
-  ga(
-    "send",
-    "event",
-    "mtbs-viewer-run",
-    "year_range",
-    `${startYear}_${endYear}`
-  );
-
-  let mtbsSeverity = ee.ImageCollection(
-    "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1"
-  );
-  mtbsSeverity = ee.ImageCollection(
-    yearsCli.map((yr) => {
-      return mtbsSeverity
-        .filter(ee.Filter.calendarRange(yr, yr, "year"))
-        .mosaic()
-        .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
-        .set(mtbsSeverityObjInfo);
-    })
-  );
-
   getAnnualNLCD();
-  Map.addLayer(
-    mtbsSeverity,
-    { autoViz: true, eeObjInfo: mtbsSeverityObjInfo },
-    "MTBS Burn Severity"
-  );
+  getMTBS();
 
-  let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
-  const inFields = [
-    "Incid_Name",
-    "Incid_Type",
-    "Event_ID",
-    "irwinID",
-    "Ignition Date",
-    "BurnBndAc",
-    "Asmnt_Type",
-  ];
-  const outFields = [
-    "Incident Name",
-    "Incident Type",
-    "MTBS Event ID",
-    "IRWIN ID",
-    "Ignition Date",
-    "Acres",
-    "Assessment Type",
-  ];
-  perims = perims.map(function (f) {
-    const d = ee.Date(f.get("Ig_Date"));
-    const formatted = d.format("YYYY-MM-dd");
-    return f.set({
-      Year: d.get("year"),
-      "Ignition Date": formatted,
-    });
-  });
-
-  perims = perims.filter(ee.Filter.gte("Year", startYear));
-  perims = perims.filter(ee.Filter.lte("Year", endYear));
-
-  perims = perims.select(inFields, outFields);
-  perims = perims.set("bounds", clientBoundsDict.All);
-  Map.addLayer(
-    perims,
-    {
-      styleParams: {
-        color: "00F",
-        fillColor: "0000",
-        width: 2,
-        lineType: "dashed",
-      },
-    },
-    "MTBS Burn Perimeters",
-    true,
-    null,
-    null,
-    "Delineated perimeters of each MTBS mapped fire from " +
-      startYear.toString() +
-      "-" +
-      endYear.toString() +
-      ". Areas can have multiple mapped fires."
-  );
-
-  areaChart.addLayer(
-    mtbsSeverity,
-    {
-      eeObjInfo: mtbsSeverityObjInfo,
-      visible: [false, true, true, true, true, true, false],
-      xAxisLabels: yearsCli,
-      shouldUnmask: true,
-    },
-    "MTBS Annual Severity",
-    true
-  );
   getSelectLayers();
   areaChart.populateChartLayerSelect();
-  // areaChart.setupTransitionPeriodUI();
+  areaChart.setupTransitionPeriodUI();
   Map.turnOnAutoAreaCharting();
 }
 function runMTBS() {

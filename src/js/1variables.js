@@ -559,8 +559,7 @@ let uri,
   chartOptions,
   infowindow,
   queryGeoJSON,
-  marker,
-  mtbsSummaryMethod;
+  marker;
 
 const selectedFeaturesJSON = {};
 const selectionTracker = {

@@ -229,7 +229,7 @@ function runDashboard() {
   }
 
   let lcmsRun = {};
-  lcmsRun.lcms = studyAreaDict[studyAreaName].final_collections;
+  lcmsRun.lcms = studyAreaDict[studyAreaName].older_final_collections;
   lcmsRun.lcms = ee.ImageCollection(
     ee
       .FeatureCollection(

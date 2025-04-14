@@ -527,9 +527,9 @@ function turnOnTimeLapseLayers(id) {
         timeLapseObj[id].layerVisibleIDs.map(function (i) {
           $("#" + i).click();
         });
+        queryObj[id].visible = timeLapseObj[id].visible;
       }
     }
-    queryObj[id].visible = timeLapseObj[id].visible;
   }
 }
 function turnOffTimeLapseLayers(id) {
@@ -543,9 +543,9 @@ function turnOffTimeLapseLayers(id) {
         timeLapseObj[id].layerVisibleIDs.map(function (i) {
           $("#" + i).click();
         });
+        queryObj[id].visible = timeLapseObj[id].visible;
       }
     }
-    queryObj[id].visible = timeLapseObj[id].visible;
   }
 }
 //Function to handle tiles getting stuck when requested from GEE
@@ -611,7 +611,7 @@ function alignTimeLapseCheckboxes() {
 }
 function timeLapseCheckbox(id) {
   const tObj = timeLapseObj[id];
-  console.log(tObj);
+  // console.log(tObj);
   const v = tObj.visible;
   ga("send", "event", "time-lapse-toggle", id, v);
   if (!v) {
@@ -1075,19 +1075,17 @@ function addTimeLapseToMap(
     timeLapseObj[layerUNID].isReady = true;
     $("#" + layerUNID + "-toggle-checkbox-label").show();
     $("#" + layerUNID + "-loading-spinner").hide();
+  } else {
+    queryObj[layerUNID] = {
+      visible: timeLapseObj[layerUNID].visible,
+      queryItem: viz.queryItem || item,
+      queryDict: viz.queryDict,
+      queryParams: viz.queryParams || {},
+      type: "geeImageCollection",
+      name: name,
+      queryDateFormat: viz.queryDateFormat,
+    };
   }
-
-  // Set up query collection
-  
-  queryObj[layerUNID] = {
-    visible: timeLapseObj[layerUNID].visible,
-    queryItem: item,
-    queryDict: viz.queryDict,
-    queryParams: viz.queryParams || {},
-    type: "geeImageCollection",
-    name: name,
-    queryDateFormat: viz.queryDateFormat,
-  };
 
   //Get all the individual layers' sliders
   timeLapseObj[layerUNID].sliders = timeLapseObj[layerUNID].sliders;
@@ -1630,6 +1628,7 @@ function addToMap(
 
       areaChart.addLayer(item, areaChartParamsSankey, name, visible);
     } else {
+      console.log(viz.areaChartParams);
       areaChart.addLayer(item, viz.areaChartParams, name, visible);
     }
   }
@@ -1674,7 +1673,7 @@ function addToMap(
   layer.helpBox = helpBox;
   layer.layerUNID = layerUNID;
   if (queryItem === null || queryItem === undefined) {
-    queryItem = item;
+    queryItem = viz.queryItem || item;
   }
   if (viz.canQuery === null || viz.canQuery === undefined) {
     viz.canQuery = true;
@@ -2631,6 +2630,7 @@ function reRun() {
     "time-lapse-legend-list",
     "related-layer-list",
     "county-selection-layer-list",
+    "wayback-layer-list",
   ].map(function (l) {
     $("#" + l).empty();
     $("#legend-" + l).empty();
