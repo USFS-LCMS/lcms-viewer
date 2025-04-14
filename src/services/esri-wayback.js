@@ -59,7 +59,7 @@ function esri_wayback() {
     Map.addTimeLapse(
       sortedWayBackLayers,
       { layerType: "tileMapService", addToLegend: false, canQuery: false },
-      "WayBack",
+      "ESRI WayBack",
       null,
       null,
       null,

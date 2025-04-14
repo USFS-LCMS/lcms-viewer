@@ -144,7 +144,7 @@ function setupMTBS() {
   getSelectLayers();
   areaChart.populateChartLayerSelect();
   areaChart.setupTransitionPeriodUI();
-  Map.turnOnAutoAreaCharting();
+  // Map.turnOnAutoAreaCharting();
 }
 function runMTBS() {
   Map.turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers

@@ -265,7 +265,7 @@ function getIDSCollection() {
   }
 }
 
-function getIDSCollectionAddToMap() {
+function getIDSCollectionAddToMap(whichLayerList = "layer-list") {
   const idsCollections = getIDSCollection();
 
   if (idsCollections !== undefined) {
@@ -291,7 +291,8 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")"
+        ")",
+      whichLayerList
     );
     Map.addLayer(
       idsYr,
@@ -308,7 +309,8 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")"
+        ")",
+      whichLayerList
     );
     Map.addLayer(
       idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
@@ -321,7 +323,8 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")"
+        ")",
+      whichLayerList
     );
   }
 
@@ -1645,6 +1648,12 @@ function getMTBS(
 ) {
   startYear = parseInt(urlParams.startYear) || 1984;
   endYear = parseInt(urlParams.endYear) || 2024;
+
+  window.mtbsLayerStyling = {
+    labelClasses: "layer-label-mtbs",
+    labelIconHTML: `<img class="panel-title-svg-xsm" alt="MTBS icon" src="./src/assets/images/mtbs-logo.png">`,
+  };
+
   const yearsCli = range(startYear, endYear + 1);
   const mtbsSeverityObjInfo = {
     Severity_class_names: [
@@ -1762,6 +1771,8 @@ function getMTBS(
         queryItem: mtbsSeverity.select(["Severity"]),
         eeObjInfo: mtbsSeverityObjInfo,
         includeClassValues: false,
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
       },
       "MTBS Burn Severity",
       visible,
@@ -1781,6 +1792,8 @@ function getMTBS(
         min: startYear,
         max: endYear,
         palette: declineYearPalette,
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
       },
       "MTBS Burn Year",
       false,
@@ -1802,6 +1815,8 @@ function getMTBS(
         palette: declineDurPalette.split(",").reverse().join(","),
         legendLabelLeft: "Count =",
         legendLabelRight: "Count >=",
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
       },
       "MTBS Burn Count",
       false,
@@ -1818,11 +1833,13 @@ function getMTBS(
       perims,
       {
         styleParams: {
-          color: "00F",
+          color: "00D",
           fillColor: "0000",
-          width: 2,
+          width: 1.5,
           lineType: "dashed",
         },
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
       },
       "MTBS Burn Perimeters",
       visible,

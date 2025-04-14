@@ -91,7 +91,7 @@ function runGTAC() {
     );
     try {
       // getMTBSandIDS();
-      let IDS = getIDSCollectionAddToMap();
+      let IDS = getIDSCollectionAddToMap("reference-layer-list");
 
       let idsCollection = IDS[0].select([1, 0], ["IDS Type", "IDS DCA"]);
 
@@ -417,6 +417,276 @@ function runGTAC() {
       });
     }
 
+    // if (urlParams.beta === true || analysisMode === "advanced") {
+    window.tccLayerStyling = {
+      labelClasses: "layer-label-tcc",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="NLCD TCC icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer_tcc.svg">`,
+    };
+    let minTCCYear = 1985;
+    let maxTCCYear = 2023;
+
+    minTCCYear = startYear > minTCCYear ? startYear : minTCCYear;
+    maxTCCYear = endYear < maxTCCYear ? endYear : maxTCCYear;
+    window.nlcdTCCYrs = range(minTCCYear, maxTCCYear + 1);
+
+    const nlcdTCC2023 = ee
+      .ImageCollection("projects/nlcd-tcc/assets/Final_Outputs/2023-5")
+      .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
+    const nlcdTCC2021 = ee
+      .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
+      .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"))
+      .filter(ee.Filter.inList("study_area", ["AK", "HAWAII", "PRUSVI"]));
+    const tccBns = nlcdTCC2023.first().bandNames();
+    const tccDummy = nlcdTCC2023.first();
+
+    window.nlcdTCC = ee.ImageCollection(
+      ee.List.sequence(minTCCYear, maxTCCYear, 1).map((yr) =>
+        ee
+          .ImageCollection(
+            ee
+              .FeatureCollection([
+                fillEmptyCollections(
+                  nlcdTCC2023.filter(ee.Filter.calendarRange(yr, yr, "year")),
+                  tccDummy
+                ),
+                fillEmptyCollections(
+                  nlcdTCC2021.filter(ee.Filter.calendarRange(yr, yr, "year")),
+                  tccDummy
+                ),
+              ])
+              .flatten()
+          )
+          .mosaic()
+          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
+      )
+    );
+
+    const studyAreas = ["CONUS"];
+    areaChart.addLayer(
+      nlcdTCC.select([0, 2]),
+      {
+        palette: "080,0D0",
+        xAxisLabels: nlcdTCCYrs,
+        eeObjInfo: {
+          bandNames: [
+            "Science_Percent_Tree_Canopy_Cover",
+            "NLCD_Percent_Tree_Canopy_Cover",
+          ],
+
+          size: nlcdTCCYrs.length * studyAreas.length,
+        },
+      },
+      "NLCD TCC"
+    );
+
+    let tccMin = 1;
+    let tccMax = 80;
+    let tccPalette = "FFF,080";
+    let tcclegendLabelLeftAfter = "% TCC";
+    let tcclegendLabelRightAfter = "% TCC";
+    let tccNameEnding = " Time-Lapse";
+    let tccLayer = nlcdTCC.select([0, 2]); //.map((img) => img.selfMask());
+    let tccDescription = `Annual Tree Canopy Cover from ${minTCCYear} to ${maxTCCYear}. Each value indicates the percentage of the pixel covered by tree canopy.`;
+    if (urlParams.addLCMSTimeLapsesOn === "no") {
+      tccNameEnding = "";
+      tccDescription = `Average Tree Canopy Cover from ${minTCCYear} to ${maxTCCYear} (map). Each value indicates the percentage of the pixel covered by tree canopy. Pixel and Area Tools will show full time series of data from ${minTCCYear} to ${maxTCCYear}.`;
+    }
+    if (analysisMode === "advanced" && urlParams.addLCMSTimeLapsesOn === "no") {
+      addLayerFun(
+        tccLayer.filter(
+          ee.Filter.calendarRange(
+            minTCCYear,
+            minTCCYear + lcmsRun.thematicChangeYearBuffer,
+            "year"
+          )
+        ),
+        {
+          min: tccMin,
+          max: tccMax,
+          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
+          palette: tccPalette,
+          selfMask: true,
+          legendLabelLeftAfter: tcclegendLabelLeftAfter,
+          legendLabelRightAfter: tcclegendLabelRightAfter,
+          xAxisLabels: nlcdTCCYrs,
+          reducer: ee.Reducer.mean(),
+          title: `Average Tree Canopy Cover from ${minTCCYear} to ${
+            minTCCYear + lcmsRun.thematicChangeYearBuffer
+          } (map). Each value indicates the percentage of the pixel covered by tree canopy. Pixel Tools -> Query Visible Map Layers will show data from ${minTCCYear} to ${
+            minTCCYear + lcmsRun.thematicChangeYearBuffer
+          } while Pixel Tools -> Query LCMS Time Series and all Area Tools will show full time series of data from ${minTCCYear} to ${maxTCCYear}.`,
+          eeObjInfo: {
+            bandNames: [
+              "Science_Percent_Tree_Canopy_Cover",
+              "NLCD_Percent_Tree_Canopy_Cover",
+            ],
+
+            size: nlcdTCCYrs.length,
+          },
+          years: nlcdTCCYrs,
+          queryParams: { palette: ["080", "0D0"] },
+
+          labelClasses: tccLayerStyling.labelClasses,
+          labelIconHTML: tccLayerStyling.labelIconHTML,
+        },
+        `TCC Start`,
+        false
+      );
+
+      addLayerFun(
+        tccLayer.filter(
+          ee.Filter.calendarRange(
+            maxTCCYear - lcmsRun.thematicChangeYearBuffer,
+            maxTCCYear,
+            "year"
+          )
+        ),
+        {
+          min: tccMin,
+          max: tccMax,
+          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
+          palette: tccPalette,
+          selfMask: true,
+          legendLabelLeftAfter: tcclegendLabelLeftAfter,
+          legendLabelRightAfter: tcclegendLabelRightAfter,
+          xAxisLabels: nlcdTCCYrs,
+          reducer: ee.Reducer.mean(),
+          title: `Average Tree Canopy Cover from ${
+            maxTCCYear - lcmsRun.thematicChangeYearBuffer
+          } to ${maxTCCYear} (map). Each value indicates the percentage of the pixel covered by tree canopy. Pixel Tools -> Query Visible Map Layers will show data from ${
+            maxTCCYear - lcmsRun.thematicChangeYearBuffer
+          } to ${maxTCCYear} while Pixel Tools -> Query LCMS Time Series and all Area Tools will show full time series of data from ${minTCCYear} to ${maxTCCYear}.`,
+          eeObjInfo: {
+            bandNames: [
+              "Science_Percent_Tree_Canopy_Cover",
+              "NLCD_Percent_Tree_Canopy_Cover",
+            ],
+
+            size: nlcdTCCYrs.length,
+          },
+          years: nlcdTCCYrs,
+          queryParams: { palette: ["080", "0D0"] },
+
+          labelClasses: tccLayerStyling.labelClasses,
+          labelIconHTML: tccLayerStyling.labelIconHTML,
+        },
+        `TCC End`,
+        false
+      );
+    } else {
+      addLayerFun(
+        tccLayer,
+        {
+          min: tccMin,
+          max: tccMax,
+          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
+          palette: tccPalette,
+          selfMask: true,
+          legendLabelLeftAfter: tcclegendLabelLeftAfter,
+          legendLabelRightAfter: tcclegendLabelRightAfter,
+          xAxisLabels: nlcdTCCYrs,
+          reducer: ee.Reducer.mean(),
+          title: tccDescription,
+          eeObjInfo: {
+            bandNames: [
+              "Science_Percent_Tree_Canopy_Cover",
+              "NLCD_Percent_Tree_Canopy_Cover",
+            ],
+
+            size: nlcdTCCYrs.length,
+          },
+          years: nlcdTCCYrs,
+          queryParams: { palette: ["080", "0D0"] },
+
+          labelClasses: tccLayerStyling.labelClasses,
+          labelIconHTML: tccLayerStyling.labelIconHTML,
+        },
+        `TCC${tccNameEnding}`,
+        false
+      );
+    }
+
+    // if (urlParams.beta === true || analysisMode === "advanced") {
+    nlcdTCC = nlcdTCC.select([0]);
+    const changeTCCRemap = levelObj.getLevelNRemap(1, "Change");
+
+    lcmsRun.lcmsTCCRemapped = lcmsRun.lcms.map((img) => {
+      return img
+        .select(["Change"])
+        .remap(
+          changeTCCRemap.remap_from,
+          changeTCCRemap.remap_to,
+          null,
+          "Change"
+        )
+        .rename(["Change"]);
+    });
+
+    let changeNames = changeTCCRemap.viz_dict.Change_class_names;
+    let changeValues = changeTCCRemap.viz_dict.Change_class_values;
+
+    let tccGain = [];
+    let tccLoss = [];
+    for (let i = 0; i < nlcdTCCYrs.length - 1; i++) {
+      const yr1 = nlcdTCCYrs[i];
+      const yr2 = nlcdTCCYrs[i + 1];
+      // console.log(`${yr1}-${yr2}`);
+      const nlcdTCCPre = ee.Image(
+        nlcdTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first()
+      );
+      const nlcdTCCPost = ee.Image(
+        nlcdTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first()
+      );
+      const changePost = lcmsRun.lcmsTCCRemapped
+        .filter(ee.Filter.calendarRange(yr2, yr2, "year"))
+        .first();
+
+      const diff = nlcdTCCPost
+        .subtract(nlcdTCCPre)
+        .set("system:time_start", ee.Date.fromYMD(yr2, 6, 1).millis());
+
+      tccGain.push(diff.updateMask(changePost.eq(2)));
+      tccLoss.push(diff.updateMask(changePost.eq(1)));
+    }
+    tccGain = ee.ImageCollection(tccGain);
+    tccLoss = ee.ImageCollection(tccLoss);
+
+    Map.addLayer(
+      tccLoss,
+      {
+        reducer: ee.Reducer.sum(),
+        min: -70,
+        max: -1,
+        palette: ["A10018", "D54309", "FAFA4B", "F39268"], //, "C291D5"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
+        title:
+          "Total of all decreases in Tree Canopy Cover (TCC) that fall within LCMS disturbance or vegetation growth areas",
+        legendLabelLeftAfter: "% TCC",
+        legendLabelRightAfter: "% TCC",
+        labelClasses: tccLayerStyling.labelClasses,
+        labelIconHTML: tccLayerStyling.labelIconHTML,
+      },
+      "TCC Decrease",
+      false
+    );
+    Map.addLayer(
+      tccGain,
+      {
+        reducer: ee.Reducer.sum(),
+        min: 1,
+        max: 30,
+        opacity: 1,
+        selfMask: true,
+        palette: ["888", "4BAAB3", "00A398", "00EEDE"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
+        title:
+          "Total of all increases in Tree Canopy Cover (TCC) that fall within LCMS disturbance or vegetation growth areas",
+        legendLabelLeftAfter: "% TCC",
+        legendLabelRightAfter: "% TCC",
+        labelClasses: tccLayerStyling.labelClasses,
+        labelIconHTML: tccLayerStyling.labelIconHTML,
+      },
+      "TCC Increase",
+      false
+    );
     // addLayerFun(
     //   lcmsAttr,
     //   {
@@ -630,194 +900,6 @@ function runGTAC() {
       }
     });
 
-    // if (urlParams.beta === true || analysisMode === "advanced") {
-    window.tccLayerStyling = {
-      labelClasses: "layer-label-tcc",
-      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer_tcc.svg">`,
-    };
-    let minTCCYear = 1985;
-    let maxTCCYear = 2023;
-
-    minTCCYear = startYear > minTCCYear ? startYear : minTCCYear;
-    maxTCCYear = endYear < maxTCCYear ? endYear : maxTCCYear;
-    window.nlcdTCCYrs = range(minTCCYear, maxTCCYear + 1);
-
-    const nlcdTCC2023 = ee
-      .ImageCollection("projects/nlcd-tcc/assets/Final_Outputs/2023-5")
-      .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"));
-    const nlcdTCC2021 = ee
-      .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
-      .filter(ee.Filter.calendarRange(minTCCYear, maxTCCYear, "year"))
-      .filter(ee.Filter.inList("study_area", ["AK", "HAWAII", "PRUSVI"]));
-    const tccBns = nlcdTCC2023.first().bandNames();
-    const tccDummy = nlcdTCC2023.first();
-
-    window.nlcdTCC = ee.ImageCollection(
-      ee.List.sequence(minTCCYear, maxTCCYear, 1).map((yr) =>
-        ee
-          .ImageCollection(
-            ee
-              .FeatureCollection([
-                fillEmptyCollections(
-                  nlcdTCC2023.filter(ee.Filter.calendarRange(yr, yr, "year")),
-                  tccDummy
-                ),
-                fillEmptyCollections(
-                  nlcdTCC2021.filter(ee.Filter.calendarRange(yr, yr, "year")),
-                  tccDummy
-                ),
-              ])
-              .flatten()
-          )
-          .mosaic()
-          .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis())
-      )
-    );
-
-    const studyAreas = ["CONUS"];
-    areaChart.addLayer(
-      nlcdTCC.select([0, 2]),
-      {
-        palette: "080,0D0",
-        xAxisLabels: nlcdTCCYrs,
-        eeObjInfo: {
-          bandNames: [
-            "Science_Percent_Tree_Canopy_Cover",
-            "NLCD_Percent_Tree_Canopy_Cover",
-          ],
-
-          size: nlcdTCCYrs.length * studyAreas.length,
-        },
-      },
-      "NLCD TCC"
-    );
-
-    let tccMin = 1;
-    let tccMax = 80;
-    let tccPalette = "FFF,080";
-    let tcclegendLabelLeftAfter = "% TCC";
-    let tcclegendLabelRightAfter = "% TCC";
-    let tccNameEnding = " Time-Lapse";
-    let tccLayer = nlcdTCC.select([0, 2]); //.map((img) => img.selfMask());
-    let tccDescription = `Annual Tree Canopy Cover from ${minTCCYear} to ${maxTCCYear}. Each value indicates the percentage of the pixel covered by tree canopy.`;
-    if (urlParams.addLCMSTimeLapsesOn === "no") {
-      tccNameEnding = "";
-      tccDescription = `Average Tree Canopy Cover from ${minTCCYear} to ${maxTCCYear} (map). Each value indicates the percentage of the pixel covered by tree canopy. Pixel and Area Tools will show full time series of data from ${minTCCYear} to ${maxTCCYear}.`;
-    }
-    if (analysisMode === "advanced" && urlParams.addLCMSTimeLapsesOn === "no") {
-      addLayerFun(
-        tccLayer.filter(
-          ee.Filter.calendarRange(
-            minTCCYear,
-            minTCCYear + lcmsRun.thematicChangeYearBuffer,
-            "year"
-          )
-        ),
-        {
-          min: tccMin,
-          max: tccMax,
-          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
-          palette: tccPalette,
-          selfMask: true,
-          legendLabelLeftAfter: tcclegendLabelLeftAfter,
-          legendLabelRightAfter: tcclegendLabelRightAfter,
-          xAxisLabels: nlcdTCCYrs,
-          reducer: ee.Reducer.mean(),
-          title: `Average Tree Canopy Cover from ${minTCCYear} to ${
-            minTCCYear + lcmsRun.thematicChangeYearBuffer
-          } (map). Each value indicates the percentage of the pixel covered by tree canopy. Pixel Tools -> Query Visible Map Layers will show data from ${minTCCYear} to ${
-            minTCCYear + lcmsRun.thematicChangeYearBuffer
-          } while Pixel Tools -> Query LCMS Time Series and all Area Tools will show full time series of data from ${minTCCYear} to ${maxTCCYear}.`,
-          eeObjInfo: {
-            bandNames: [
-              "Science_Percent_Tree_Canopy_Cover",
-              "NLCD_Percent_Tree_Canopy_Cover",
-            ],
-
-            size: nlcdTCCYrs.length,
-          },
-          years: nlcdTCCYrs,
-          queryParams: { palette: ["080", "0D0"] },
-
-          labelClasses: tccLayerStyling.labelClasses,
-          labelIconHTML: tccLayerStyling.labelIconHTML,
-        },
-        `TCC Start`,
-        false
-      );
-
-      addLayerFun(
-        tccLayer.filter(
-          ee.Filter.calendarRange(
-            maxTCCYear - lcmsRun.thematicChangeYearBuffer,
-            maxTCCYear,
-            "year"
-          )
-        ),
-        {
-          min: tccMin,
-          max: tccMax,
-          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
-          palette: tccPalette,
-          selfMask: true,
-          legendLabelLeftAfter: tcclegendLabelLeftAfter,
-          legendLabelRightAfter: tcclegendLabelRightAfter,
-          xAxisLabels: nlcdTCCYrs,
-          reducer: ee.Reducer.mean(),
-          title: `Average Tree Canopy Cover from ${
-            maxTCCYear - lcmsRun.thematicChangeYearBuffer
-          } to ${maxTCCYear} (map). Each value indicates the percentage of the pixel covered by tree canopy. Pixel Tools -> Query Visible Map Layers will show data from ${
-            maxTCCYear - lcmsRun.thematicChangeYearBuffer
-          } to ${maxTCCYear} while Pixel Tools -> Query LCMS Time Series and all Area Tools will show full time series of data from ${minTCCYear} to ${maxTCCYear}.`,
-          eeObjInfo: {
-            bandNames: [
-              "Science_Percent_Tree_Canopy_Cover",
-              "NLCD_Percent_Tree_Canopy_Cover",
-            ],
-
-            size: nlcdTCCYrs.length,
-          },
-          years: nlcdTCCYrs,
-          queryParams: { palette: ["080", "0D0"] },
-
-          labelClasses: tccLayerStyling.labelClasses,
-          labelIconHTML: tccLayerStyling.labelIconHTML,
-        },
-        `TCC End`,
-        false
-      );
-    } else {
-      addLayerFun(
-        tccLayer,
-        {
-          min: tccMin,
-          max: tccMax,
-          bands: ["NLCD_Percent_Tree_Canopy_Cover"],
-          palette: tccPalette,
-          selfMask: true,
-          legendLabelLeftAfter: tcclegendLabelLeftAfter,
-          legendLabelRightAfter: tcclegendLabelRightAfter,
-          xAxisLabels: nlcdTCCYrs,
-          reducer: ee.Reducer.mean(),
-          title: tccDescription,
-          eeObjInfo: {
-            bandNames: [
-              "Science_Percent_Tree_Canopy_Cover",
-              "NLCD_Percent_Tree_Canopy_Cover",
-            ],
-
-            size: nlcdTCCYrs.length,
-          },
-          years: nlcdTCCYrs,
-          queryParams: { palette: ["080", "0D0"] },
-
-          labelClasses: tccLayerStyling.labelClasses,
-          labelIconHTML: tccLayerStyling.labelIconHTML,
-        },
-        `TCC${tccNameEnding}`,
-        false
-      );
-    }
     // }
 
     // lcmsRun.slowLoss = lcmsRunFuns.getMaskedWYr(
@@ -1295,88 +1377,6 @@ function runGTAC() {
         false
       );
     });
-
-    // if (urlParams.beta === true || analysisMode === "advanced") {
-    nlcdTCC = nlcdTCC.select([0]);
-    const changeTCCRemap = levelObj.getLevelNRemap(1, "Change");
-
-    lcmsRun.lcmsTCCRemapped = lcmsRun.lcms.map((img) => {
-      return img
-        .select(["Change"])
-        .remap(
-          changeTCCRemap.remap_from,
-          changeTCCRemap.remap_to,
-          null,
-          "Change"
-        )
-        .rename(["Change"]);
-    });
-
-    let changeNames = changeTCCRemap.viz_dict.Change_class_names;
-    let changeValues = changeTCCRemap.viz_dict.Change_class_values;
-
-    let tccGain = [];
-    let tccLoss = [];
-    for (let i = 0; i < nlcdTCCYrs.length - 1; i++) {
-      const yr1 = nlcdTCCYrs[i];
-      const yr2 = nlcdTCCYrs[i + 1];
-      // console.log(`${yr1}-${yr2}`);
-      const nlcdTCCPre = ee.Image(
-        nlcdTCC.filter(ee.Filter.calendarRange(yr1, yr1, "year")).first()
-      );
-      const nlcdTCCPost = ee.Image(
-        nlcdTCC.filter(ee.Filter.calendarRange(yr2, yr2, "year")).first()
-      );
-      const changePost = lcmsRun.lcmsTCCRemapped
-        .filter(ee.Filter.calendarRange(yr2, yr2, "year"))
-        .first();
-
-      const diff = nlcdTCCPost
-        .subtract(nlcdTCCPre)
-        .set("system:time_start", ee.Date.fromYMD(yr2, 6, 1).millis());
-
-      tccGain.push(diff.updateMask(changePost.eq(2)));
-      tccLoss.push(diff.updateMask(changePost.eq(1)));
-    }
-    tccGain = ee.ImageCollection(tccGain);
-    tccLoss = ee.ImageCollection(tccLoss);
-
-    Map.addLayer(
-      tccLoss,
-      {
-        reducer: ee.Reducer.sum(),
-        min: -70,
-        max: -1,
-        palette: ["A10018", "D54309", "FAFA4B", "F39268"], //, "C291D5"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
-        title:
-          "Total of all decreases in Tree Canopy Cover (TCC) that fall within LCMS disturbance or vegetation growth areas",
-        legendLabelLeftAfter: "% TCC",
-        legendLabelRightAfter: "% TCC",
-        labelClasses: tccLayerStyling.labelClasses,
-        labelIconHTML: tccLayerStyling.labelIconHTML,
-      },
-      "TCC Decrease",
-      true
-    );
-    Map.addLayer(
-      tccGain,
-      {
-        reducer: ee.Reducer.sum(),
-        min: 1,
-        max: 30,
-        opacity: 0.5,
-        selfMask: true,
-        palette: ["888", "4BAAB3", "00A398", "00EEDE"], //copyArray(palettes.misc.coolwarm[7]).reverse(), //"D00,F5DEB3,006400",
-        title:
-          "Total of all increases in Tree Canopy Cover (TCC) that fall within LCMS disturbance or vegetation growth areas",
-        legendLabelLeftAfter: "% TCC",
-        legendLabelRightAfter: "% TCC",
-        labelClasses: tccLayerStyling.labelClasses,
-        labelIconHTML: tccLayerStyling.labelIconHTML,
-      },
-      "TCC Increase",
-      true
-    );
 
     // Map.addLayer(
     //   tccLoss.select(["Abrupt Disturbance"]),

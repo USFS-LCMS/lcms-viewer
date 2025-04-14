@@ -1104,6 +1104,9 @@ td {
 .layer-label-tcc {
   color: #080 !important;
 }
+.layer-label-mtbs {
+  color: #BB3b02 !important;
+}
 /* .layer-label-lcms,
 .layer-label-tcc {
   text-shadow: -1px 0 var(--deep-brown-100), 0 1px var(--deep-brown-100),
