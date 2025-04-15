@@ -12,13 +12,20 @@
   <!-- Jquery -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"
     integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js" integrity="sha384-YwCdhNQ2IwiYajqT/nGCj0FiU5SR4oIkzYP3ffzNWtu39GKBddP0M0waDU7Zwco0" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" integrity="sha384-rHEtTzUO+F6AxgVJs86ZaDoE9sm0tDz/xaSt1ohRCJoeu4gkMIUvcA4cnm60Em/k" crossorigin="anonymous">
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"
+    integrity="sha384-YwCdhNQ2IwiYajqT/nGCj0FiU5SR4oIkzYP3ffzNWtu39GKBddP0M0waDU7Zwco0"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"
+    integrity="sha384-rHEtTzUO+F6AxgVJs86ZaDoE9sm0tDz/xaSt1ohRCJoeu4gkMIUvcA4cnm60Em/k" crossorigin="anonymous">
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" integrity="sha384-MI32KR77SgI9QAPUs+6R7leEOwtop70UsjEtFEezfKnMjXWx15NENsZpfDgq8m8S" crossorigin="anonymous">
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
+    integrity="sha384-MI32KR77SgI9QAPUs+6R7leEOwtop70UsjEtFEezfKnMjXWx15NENsZpfDgq8m8S" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+    crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./src/styles/style.css">
   <link rel="stylesheet" href="./src/styles/style-lcms-homepage.css">
   <script>
@@ -27,7 +34,7 @@
   </script>
   <script type="text/javascript" src="./src/js/0analytics.js"></script>
   <script type="text/javascript" src="./src/js/16lcms-webpage.js"></script>
-  
+
 </head>
 
 <body data-spy="scroll">
@@ -80,7 +87,8 @@
             </b>
           </p>
           <p>
-            <b>Who:</b> LCMS is produced by the U.S. Department of Agriculture Forest Service Field Services and Innovation Center Geospatial Office (FSIC GO).
+            <b>Who:</b> LCMS is produced by the U.S. Department of Agriculture Forest Service Field Services and
+            Innovation Center Geospatial Office (FSIC GO).
           </p>
           <p style="margin-bottom:0px;">
             <b>What:</b> Annual data layers of
@@ -101,24 +109,28 @@
         </div>
         <div class="col-sm-8">
           <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S."
-            src="./src/assets/images/CONUS_v2023-9_Change_Loss_1000.png" />
-          <div class='legend-container'>
-            <div class="legend-colorRamp"
-              title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
-              <div class="legend-title">Fast & Slow Loss Year</div>
-              <div>
-                <div class="colorRamp"
-                  style="background-image:linear-gradient( #ffffe5,#fff7bc,#fee391,#fec44f,#fe9929,#ec7014,#cc4c02);">
-                  <div class="colorRamp-labels">
-                    <div class="top-colorRamp-label">1985</div>
-                    <div class="bottom-colorRamp-label">2023</div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+            src="./src/assets/images/CONUS_v2024-10_Change.png" />
+          <div class=" legend large-legend ">
+            <ul class="legend-labels" id="Change-class-container">
+              <li><span style="background:#FF09F3;"></span>Wind</li>
+              <li><span style="background:#541AFF;"></span>Hurricane</li>
+              <li><span style="background:#E4F5FD;"></span>Snow or Ice Transition</li>
+              <li><span style="background:#CC982E;"></span>Desiccation</li>
+              <li><span style="background:#0ADAFF;"></span>Inundation</li>
+              <li><span style="background:#A10018;"></span>Prescribed Fire</li>
+              <li><span style="background:#D54309;"></span>Wildfire</li>
+              <li><span style="background:#FAFA4B;"></span>Mechanical Land Transformation</li>
+              <li><span style="background:#AFDE1C;"></span>Tree Removal</li>
+              <li><span style="background:#FFC80D;"></span>Defoliation</li>
+              <li><span style="background:#A64C28;"></span>Southern Pine Beetle</li>
+              <li><span style="background:#F39268;"></span>Insect, Disease, or Drought Stress
+              </li>
+              <li><span style="background:#C291D5;"></span>Other Loss</li>
+              <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
+            </ul>
           </div>
         </div>
+
       </div>
     </div>
     <div id="applications" class="container-fluid bg-white info-page">
@@ -128,37 +140,26 @@
           <div class="col-md-6 conus-pane">
             <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
-            <img style='width:95%' alt="Map of LCMS Change Loss and Gain output across the U.S."
-              src="./src/assets/images/CONUS_v2023-9_Change_Loss_Gain_1000.png" />
-            <div class='legend-container'>
-              <div class="legend-colorRamp"
-                title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
-                <div class="legend-title">Fast & Slow Loss Year</div>
-                <div>
-                  <div class="colorRamp"
-                    style="background-image:linear-gradient( #ffffe5,#fff7bc,#fee391,#fec44f,#fe9929,#ec7014,#cc4c02);">
-                    <div class="colorRamp-labels">
-                      <div class="top-colorRamp-label">1985</div>
-                      <div class="bottom-colorRamp-label">2023</div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-              <div class='hl'></div>
-              <div class="legend-colorRamp"
-                title="Year of most recent vegetation cover loss from a long-term trend event such as drought, tree mortality from insects or disease, etc. from 1985 to 2023.">
-                <div class="legend-title">Gain Year</div>
-                <div>
-                  <div class="colorRamp" style="background-image:linear-gradient(#c5ee93,#00a398);">
-                    <div class="colorRamp-labels">
-                      <div class="top-colorRamp-label">1985</div>
-                      <div class="bottom-colorRamp-label">2023</div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+            <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S."
+              src="./src/assets/images/CONUS_v2024-10_Change.png" />
+            <div class=" legend large-legend ">
+              <ul class="legend-labels" id="Change-class-container">
+                <li><span style="background:#FF09F3;"></span>Wind</li>
+                <li><span style="background:#541AFF;"></span>Hurricane</li>
+                <li><span style="background:#E4F5FD;"></span>Snow or Ice Transition</li>
+                <li><span style="background:#CC982E;"></span>Desiccation</li>
+                <li><span style="background:#0ADAFF;"></span>Inundation</li>
+                <li><span style="background:#A10018;"></span>Prescribed Fire</li>
+                <li><span style="background:#D54309;"></span>Wildfire</li>
+                <li><span style="background:#FAFA4B;"></span>Mechanical Land Transformation</li>
+                <li><span style="background:#AFDE1C;"></span>Tree Removal</li>
+                <li><span style="background:#FFC80D;"></span>Defoliation</li>
+                <li><span style="background:#A64C28;"></span>Southern Pine Beetle</li>
+                <li><span style="background:#F39268;"></span>Insect, Disease, or Drought Stress
+                </li>
+                <li><span style="background:#C291D5;"></span>Other Loss</li>
+                <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
+              </ul>
             </div>
           </div>
           <div class="col-md-3 application-examples">
@@ -215,23 +216,36 @@
             <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
             <img style='width:100%' alt="Map of LCMS Land Cover output across the U.S."
-              src="./src/assets/images/CONUS_v2023-9_Land_Cover.png" />
+              src="./src/assets/images/CONUS_v2024-10_Land_Cover3.png" />
             <div class=" legend large-legend ">
               <ul class="legend-labels">
-                <li><span style="background:#005e00;"></span>Trees</li>
-                <li><span style="background:#008000;"></span>Tall Shrubs- Trees</li>
-                <li><span style="background:#00cc00;"></span>Shrubs-Trees</li>
-                <li><span style="background:#b3ff1a;"></span>Grass- Trees</li>
-                <li><span style="background:#99ff99;"></span>Barren- Trees</li>
-                <li><span style="background:#b30088;"></span>Tall Shrubs</li>
-                <li><span style="background:#e68a00;"></span>Shrubs</li>
-                <li><span style="background:#ffad33;"></span>Grass- Shrubs</li>
-                <li><span style="background:#ffe0b3;"></span>Barren- Shrubs</li>
-                <li><span style="background:#ffff00;"></span>Grass</li>
-                <li><span style="background:#aa7700;"></span>Barren- Grass</li>
-                <li><span style="background:#d3bf9b;"></span>Barren or Impervious</li>
-                <li><span style="background:#ffffff;"></span>Snow or Ice</li>
-                <li><span style="background:#4780f3;"></span>Water</li>
+                <li><span style="background:#004E2B;"></span>Tree</li>
+                <li><span style="background:#F89A1C;"></span>Shrub</li>
+                <li><span style="background:#E5E98A;"></span>Grass</li>
+                <li><span style="background:#893F54;"></span>Barren or Impervious</li>
+                <li><span style="background:#E4F5FD;"></span>Snow or Ice</li>
+                <li><span style="background:#00B6F0;"></span>Water</li>
+              </ul>
+            </div>
+            <hr>
+            <img style='width:100%' alt="Map of LCMS Land Cover output across the U.S."
+              src="./src/assets/images/CONUS_v2024-10_Land_Cover.png" />
+            <div class=" legend large-legend ">
+              <ul class="legend-labels" id="Land-Cover-class-container">
+                <li><span style="background:#004E2B;"></span>Tree</li>
+                <li><span style="background:#009344;"></span>Tall Shrub &amp; Tree Mix (AK Only)</li>
+                <li><span style="background:#61BB46;"></span>Shrub &amp; Tree Mix</li>
+                <li><span style="background:#ACBB67;"></span>Grass/Forb/Herb &amp; Tree Mix</li>
+                <li><span style="background:#8B8560;"></span>Barren &amp; Tree Mix</li>
+                <li><span style="background:#CAFD4B;"></span>Tall Shrub (AK Only)</li>
+                <li><span style="background:#F89A1C;"></span>Shrub</li>
+                <li><span style="background:#8FA55F;"></span>Grass/Forb/Herb &amp; Shrub Mix</li>
+                <li><span style="background:#BEBB8E;"></span>Barren &amp; Shrub Mix</li>
+                <li><span style="background:#E5E98A;"></span>Grass/Forb/Herb</li>
+                <li><span style="background:#DDB925;"></span>Barren &amp; Grass/Forb/Herb Mix</li>
+                <li><span style="background:#893F54;"></span>Barren or Impervious</li>
+                <li><span style="background:#E4F5FD;"></span>Snow or Ice</li>
+                <li><span style="background:#00B6F0;"></span>Water</li>
               </ul>
             </div>
           </div>
@@ -254,16 +268,14 @@
             <p>Intended human use of the land that represents economic and cultural activities practiced at a given
               place</p>
             <img style='width:100%' alt="Map of LCMS Land Use output across the U.S."
-              src="./src/assets/images/CONUS_v2023-9_Land_Use.png">
+              src="./src/assets/images/CONUS_v2024-10_Land_Use.png">
             <div class=" legend large-legend">
               <ul class="legend-labels">
-                <li><span style="background:#efff6b;"></span>Agriculture</li>
-                <li><span style="background:#ff2ff8;"></span>Developed</li>
-                <li><span style="background:#1b9d0c;"></span>Forest</li>
-                <li><span style="background:#97ffff;"></span>Non-Forest Wetland</li>
-                <li><span style="background:#a1a1a1;"></span>Other</li>
-                <li><span style="background:#c2b34a;"></span>Rangeland</li>
-
+                <li><span style="background:#FBFF97;"></span>Agriculture</li>
+                <li><span style="background:#E6558B;"></span>Developed</li>
+                <li><span style="background:#004E2B;"></span>Forest</li>
+                <li><span style="background:#9DBAC5;"></span>Other</li>
+                <li><span style="background:#A6976A;"></span>Rangeland</li>
               </ul>
             </div>
           </div>
@@ -464,7 +476,7 @@
         <div id='main-container'>
           <ul id="downloadTree" class="pl-0 mb-0"
             title="Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
-            <li class="pl-0 col-lg-3", style="margin-top:1rem">
+            <li class="pl-0 col-lg-3" , style="margin-top:1rem">
               <span class="caret caret-down">Conterminous United States</span>
               <ul class="nested active">
                 <li>
@@ -862,8 +874,7 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('CONUS-land_use-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('CONUS-land_use-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
@@ -959,15 +970,14 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('CONUS-qa_bits-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('CONUS-qa_bits-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
-               
+
               </ul>
             </li>
-            <li class='col-lg-3', style='margin-top:1rem'>
+            <li class='col-lg-3' , style='margin-top:1rem'>
               <span class="caret caret-down">Southeastern Alaska</span>
               <ul class="nested active">
                 <li>
@@ -1365,8 +1375,7 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('SEAK-land_use-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('SEAK-land_use-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
@@ -1462,15 +1471,14 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('SEAK-qa_bits-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('SEAK-qa_bits-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
-               
+
               </ul>
             </li>
-            <li class='col-lg-3', style='margin-top:1rem'>
+            <li class='col-lg-3' , style='margin-top:1rem'>
               <span class="caret caret-down">Puerto Rico and U.S. Virgin Islands</span>
               <ul class="nested active">
                 <li>
@@ -2004,15 +2012,14 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('PRUSVI-qa_bits-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('PRUSVI-qa_bits-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
-               
+
               </ul>
             </li>
-            <li class='col-lg-3', style='margin-top:1rem'>
+            <li class='col-lg-3' , style='margin-top:1rem'>
               <span class="caret caret-down">Hawaii</span>
               <ul class="nested active">
                 <li>
@@ -2040,8 +2047,7 @@
                         <br>
                         <button
                           title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                          class="btn"
-                          onclick="downloadSelectedAreas('HI-change-summary-downloads-d')">Download</button>
+                          class="btn" onclick="downloadSelectedAreas('HI-change-summary-downloads-d')">Download</button>
                         <hr>
                       </ul>
                     </li>
@@ -2176,8 +2182,7 @@
                         <br>
                         <button
                           title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                          class="btn"
-                          onclick="downloadSelectedAreas('HI-change-annual-downloads-d')">Download</button>
+                          class="btn" onclick="downloadSelectedAreas('HI-change-annual-downloads-d')">Download</button>
                         <hr>
                       </ul>
                     </li>
@@ -2315,8 +2320,7 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('HI-land_cover-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('HI-land_cover-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
@@ -2452,8 +2456,7 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('HI-land_use-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('HI-land_use-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
@@ -2549,27 +2552,26 @@
                     <br>
                     <button
                       title="Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided"
-                      class="btn"
-                      onclick="downloadSelectedAreas('HI-qa_bits-annual-downloads-d')">Download</button>
+                      class="btn" onclick="downloadSelectedAreas('HI-qa_bits-annual-downloads-d')">Download</button>
                     <hr>
                   </ul>
                 </li>
-                
+
               </ul>
             </li>
           </ul>
         </div>
-       
-        
-           
-         
-        
+
+
+
+
+
       </div>
-      
-     
+
+
       <!-- <div class="row" style>Image Services</div> -->
     </div>
-    
+
     <div id="background" class="container-fluid bg-white info-page">
       <div class='row home-section' style="margin-bottom: 1rem;">
         <h2>ABOUT</h2>
@@ -2586,11 +2588,13 @@
             analysis methods.</p>
           <br>
           <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The LCMS
-            Production Team and Science Team review methods frequently to ensure the LCMS mapping process is based on the
+            Production Team and Science Team review methods frequently to ensure the LCMS mapping process is based on
+            the
             best available science. All LCMS map products are recreated annually from 1985 to the most recent full
             growing season. LCMS mapping areas include all the United States and its territories. The current
-            operational set of outputs covers the conterminous United States (CONUS), southeastern Alaska (SEAK), 
-            Puerto Rico and U.S. Virgin Islands (PRUSVI), and Hawaii (HI). Future mapping efforts will extend to Interior Alaska. </p>
+            operational set of outputs covers the conterminous United States (CONUS), southeastern Alaska (SEAK),
+            Puerto Rico and U.S. Virgin Islands (PRUSVI), and Hawaii (HI). Future mapping efforts will extend to
+            Interior Alaska. </p>
           <h3>Literature</h3>
           <li>
             <ul href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link" target='_blank'>Healey
