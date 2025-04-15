@@ -172,11 +172,9 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         ". ";
 
     perimsRAVG = perimsRAVG.map(function (f) {
-        const d = ee.Date(f.get("PREIMGYMD"));
-        const formatted = d.format("YYYY-MM-dd");
+        const preImageYear = ee.String(f.get("PREIMGYMD")).slice(0,4);
         return f.set({
-            Year: d.get("year"),
-            "Pre-Image Year": formatted,
+            "Pre-Image Year": preImageYear,
         });
     });
 
