@@ -693,6 +693,137 @@ function getNLCDRefLayer() {
     );
 }
 
+function getRAVGSelectionLayers() {
+   
+    Map.addSelectLayer(
+        ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017"),
+        { strokeColor: "0F0" },
+        "BIA Boundaries",
+        false,
+        null,
+        null,
+        "BIA boundaries. Turn on layer and click on any area wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        ee.FeatureCollection("USGS/WBD/2017/HUC12"),
+        { strokeColor: "00F" },
+        "HUC 12",
+        false,
+        null,
+        null,
+        "HUC 12 watershed boundaries. Turn on layer and click on any HUC 12 wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions").select(["SECTION"], ["NAME"]),
+        { strokeColor: "8F8" },
+        "Baileys Ecoregions Sections",
+        false,
+        null,
+        null,
+        "Baileys ecoregion sections. Turn on layer and click on any ecoregion wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/Baileys_Ecoregions_Subsections").select(["MAP_UNIT_N"],["NAME"],true),
+        { strokeColor: "8F0" },
+        "Baileys Ecoregions Subsections",
+        false,
+        null,
+        null,
+        "Baileys ecoregions subsections. Turn on layer and click on any ecoregion wanted to include in chart"
+    );
+    Map.addSelectLayer(
+        ee.FeatureCollection("EPA/Ecoregions/2013/L3"),
+        { strokeColor: "8F8" },
+        "Level 3 EPA Ecoregions",
+        false,
+        null,
+        null,
+        "Omernik and Griffith 2014 Level 3 EPA Ecoregions. Turn on layer and click on any ecoregion wanted to include in chart"
+    );
+    Map.addSelectLayer(
+        ee.FeatureCollection("EPA/Ecoregions/2013/L4"),
+        { strokeColor: "8FD" },
+        "Level 4 EPA Ecoregions",
+        false,
+        null,
+        null,
+        "Omernik and Griffith 2014 Level 4 EPA Ecoregions. Turn on layer and click on any ecoregion wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        otherLands,
+        { strokeColor: "DD0" },
+        "Other Designated Lands",
+        false,
+        null,
+        null,
+        "A boundary within which National Forest System land parcels have managment or use limits placed on them by legal authority. Examples are: National Recreation Area, National Monument, and National Game Refuge. Turn on layer and click on any Park wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        ee.FeatureCollection("TIGER/2018/States"),
+        { strokeColor: "AD0" },
+        "US States and Territories",
+        false,
+        null,
+        null,
+        "2018 TIGER state and territory boundaries for the United States. Turn on layer and click on any state/territory wanted to include in chart"
+    );
+    
+    Map.addSelectLayer(
+        ee.FeatureCollection("TIGER/2018/Counties"),
+        { strokeColor: "08F", selectLayerNameProperty: "NAME" },
+        "US Counties",
+        false,
+        null,
+        null,
+        "US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        ee.FeatureCollection("projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_Urban_Areas_2018"),
+        { strokeColor: "88F", selectLayerNameProperty: "NAME10" },
+        "US Census Urban Areas",
+        false,
+        null,
+        null,
+        "TIGER, 2018, U.S. Urban Areas (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        nps,
+        { strokeColor: "F0F", selectLayerNameProperty: "PARKNAME" },
+        "National Parks",
+        false,
+        null,
+        null,
+        "National Park boundaries. Turn on layer and click on any Park wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        b,
+        { strokeColor: "00F", selectLayerNameProperty: "FORESTNAME" },
+        "National Forests",
+        false,
+        null,
+        null,
+        "National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart"
+    );
+
+    Map.addSelectLayer(
+        ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries").select(["DISTRICTNA"], ["name"]),
+        { strokeColor: "80F", selectLayerNameProperty: "name" },
+        "National Forest Districts",
+        false,
+        null,
+        null,
+        "National Forest District boundaries. Turn on layer and click on any Forest wanted to include in chart"
+    );
+}
+
 function runRAVG() {
 
     startYear = 2012
@@ -714,6 +845,6 @@ function runRAVG() {
     getRAVGSeverityLayer("BA7", evtCollections);
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
-    getSelectLayers(); //enables Tools -> Select and Area on Map 
+    getRAVGSelectionLayers();
     getRAVGBurnPerimeterLayer(startYear, endYear);
 }
