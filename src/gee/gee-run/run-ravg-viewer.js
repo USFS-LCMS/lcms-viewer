@@ -252,6 +252,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         let burned = img
             .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
             .rename(["burnedNotBurned"]);
+
         burned = burned.selfMask();
         const burnYear = ee
             .Image(ee.Date(img.get("system:time_start")).get("year"))
@@ -301,10 +302,10 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         maxVal = 6;
     } else if (layer == "CBI4") {
         severityLayerClassDict = {
-            "Unchanged (< 0.1)": "008080",
-            "Low Severity (< 1.25)": "52CCCC",
-            "Moderate Severity (< 2.25)": "FFE820",
-            "High Severity (<= 3.0)": "A80000",
+            "Unchanged": "008080",
+            "Low Severity": "52CCCC",
+            "Moderate Severity": "FFE820",
+            "High Severity": "A80000",
             "Masked/Unmappable": "FFFFFF"
         };
         maxVal = 5;
@@ -324,6 +325,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
             Object.values(severityLayerQueryClassDict),
             true
         );
+
         areaChartCollections["ravg_" + layer.toLowerCase()] = {
             collection: severityLayerStack,
             colors: Object.values(severityLayerClassDict),
@@ -454,6 +456,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         addToClassLegend: true,
         classLegendDict: severityLayerClassDict,
     };
+
     Map.addLayer(
         severityLayerSummarized.select([4]).set("bounds", clientBoundsDict.All),
         {
@@ -473,6 +476,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         ravgEndYear.toString(),
         whichLayerList
     );
+
     Map.addLayer(
         severityLayerCount.set("bounds", clientBoundsDict.All),
         {
@@ -493,6 +497,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         " with a burn severity class of low, moderate, or high",
         whichLayerList
     );
+
     Map.addLayer(
         severityLayerSummarized.select([0]).set("bounds", clientBoundsDict.All),
         severityViz,
