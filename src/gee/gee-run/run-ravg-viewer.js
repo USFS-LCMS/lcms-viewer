@@ -643,7 +643,7 @@ function getEVTBinaryLayer(imgLayer, year) {
     const evtYears = [2001, 2012, 2014, 2016, 2020];
     const binaryLabel = "EVT " + year + " Tree/Non-tree";
     const evtBinaryLayerClassDict = {
-        "Non - tree (Grassland / Shrubland / Agricultural / Non - vegetation)": "#f7f1c6",
+        "Non-tree": "#f7f1c6",
         "Tree": "#285e81",
     };
 
