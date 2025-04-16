@@ -38,6 +38,16 @@ function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQ
 
 }
 
+function getQueryClassDict(ref) {
+    let out = {};
+    let keyI = 1;
+    Object.keys(ref).map(function (k) {
+        out[keyI] = k;
+        keyI++;
+    });
+    return out;
+}
+
 
 function getImageCollectionFromImages(images) {
     const imageList = ee.List(images);
@@ -308,12 +318,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         maxVal = 5;
     }
 
-    let severityLayerQueryClassDict = {};
-    let keyI = 1;
-    Object.keys(severityLayerClassDict).map(function (k) {
-        severityLayerQueryClassDict[keyI] = k;
-        keyI++;
-    });
+    const severityLayerQueryClassDict = getQueryClassDict(severityLayerClassDict);
 
     if (chartRAVG === true) {
         let severityLayerStack = formatAreaChartCollection(
@@ -453,27 +458,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         classLegendDict: severityLayerClassDict,
     };
 
-    ////minimize this into a single layer that includes BA7, CC5 and CBI4 layers
-    //Map.addLayer(
-    //    severityLayerSummarized.select([4]).set("bounds", clientBoundsDict.All),
-    //    {
-    //        min: startYear,
-    //        max: endYear,
-    //        palette: declineYearPalette,
-    //    },
-    //    "RAVG " + layer + " Burn Year",
-    //    false,
-    //    null,
-    //    null,
-    //    "RAVG " + layer + " " +
-    //    mtbsSummaryMethod +
-    //    " burn year from " +
-    //    startYear.toString() +
-    //    "-" +
-    //    ravgEndYear.toString(),
-    //    whichLayerList
-    //);
-
     Map.addLayer(
         severityLayerSummarized.select([0]).set("bounds", clientBoundsDict.All),
         severityViz,
@@ -570,7 +554,6 @@ function getRAVGSeverityLayer(layer, evtCollections) {
 
 function getEVTVegClassLayer(imgLayer, year) {
 
-    //order of timelapse
     const evtYears = [2001, 2012, 2014, 2016, 2020];
     const vegClassLabel = "EVT " + year.toString()  + " Vegetation Classes";
     const vegClassLayerClassDict = {
@@ -584,15 +567,9 @@ function getEVTVegClassLayer(imgLayer, year) {
         "Mixed Evergreen - Deciduous CTC": "#1e1950",
     };
 
-    let vegClassLayerQueryClassDict = {};
-    let keyI = 1;
+    const vegClassLayerQueryClassDict = getQueryClassDict(vegClassLayerClassDict);
 
-    Object.keys(vegClassLayerClassDict).map(function (k) {
-        vegClassLayerQueryClassDict[keyI] = k;
-        keyI++;
-    });
-
-    let vegClassVisualParams = {
+    const vegClassVisualParams = {
         bands: ["b1"],
         min: 1,
         max: 8,
@@ -622,7 +599,6 @@ function convertVegClassesToBinary(imgLayer, year) {
 
 function getEVTBinaryLayer(imgLayer, year) {
 
-    //order of timelapse
     const evtYears = [2001, 2012, 2014, 2016, 2020];
     const binaryLabel = "EVT " + year + " Tree/Non-tree";
     const evtBinaryLayerClassDict = {
@@ -630,14 +606,8 @@ function getEVTBinaryLayer(imgLayer, year) {
         "Tree": "#285e81",
     };
 
-    let maskedBinaryImage = convertVegClassesToBinary(imgLayer, year)
-    let evtBinaryLayerQueryClassDict = {};
-    let keyI = 1;
-
-    Object.keys(evtBinaryLayerClassDict).map(function (k) {
-        evtBinaryLayerQueryClassDict[keyI] = k;
-        keyI++;
-    });
+    const maskedBinaryImage = convertVegClassesToBinary(imgLayer, year)
+    const evtBinaryLayerQueryClassDict = getQueryClassDict(evtBinaryLayerClassDict);
 
     const evtBinaryViz = {
         queryDict: evtBinaryLayerQueryClassDict,
@@ -812,9 +782,9 @@ function getRAVGSelectionLayers() {
 function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
 
     //counts based on the 'burnedNotBurned' band ()
-    let cbi4Count = cbi4.select([2]).count().rename("cbi4_count");
-    let cc5Count = cc5.select([2]).count().rename("cc5_count");
-    let ba7Count = ba7.select([2]).count().rename("ba7_count");
+    let cbi4Count = cbi4.select("burnedNotBurned").count().rename("cbi4_count");
+    let cc5Count = cc5.select("burnedNotBurned").count().rename("cc5_count");
+    let ba7Count = ba7.select("burnedNotBurned").count().rename("ba7_count");
     let combinedCount = cbi4Count.addBands(cc5Count).addBands(ba7Count);
     let maxReduced = combinedCount.reduce(ee.Reducer.max()).rename("max_values");
 
@@ -823,16 +793,10 @@ function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
         2: "#ee6b6e",
         3: "#ff2c2c",
         4: "#c30010",
-        5: "#530000"
+        "5 +": "#530000"
     };
 
-    let layerQueryClassDict = {};
-    let keyI = 1;
-
-    Object.keys(countDict).map(function (k) {
-        layerQueryClassDict[keyI] = k;
-        keyI++;
-    });
+    const layerQueryClassDict = getQueryClassDict(countDict);
 
     Map.addLayer(
         maxReduced.set("bounds", clientBoundsDict.All),
@@ -841,8 +805,6 @@ function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
             min: 1,
             max: 5,
             palette: Object.values(countDict),
-            legendLabelLeft: "Count =",
-            legendLabelRight: "Count >=",
             classLegendDict: countDict,
             queryDict: layerQueryClassDict
         },
@@ -853,42 +815,67 @@ function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
         "RAVG number of burns mapped for a given area from " +
         startYear.toString() +
         "-" +
-        endYear.toString() +
-        " with a burn severity class of low, moderate, or high",
+        endYear.toString(),
         "layer-list"
     );
 
 }
 
-function getRAVGBurnYearLayer(startYear, endYear, cbi4, cc5, ba7) {
-    //console.log("checking data type...");
-    //console.log(cbi4 instanceof ee.Image);
-    //let cbi4Image = cbi4.rename("cbi4_layer");
-    //let cc5Image = cc5.rename("cc5_layer");
-    //let ba7Image = ba7.rename("ba7_layer");
-    //let combined = cbi4Image.addBands(cc5Image).addBands(ba7Image);
-    console.log(cbi4 instanceof ee.ImageCollection);
+function getRAVGBurnYearLayer(startYear, endYear) {
+  
+    let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
+    let perimsRAVGYears = perimsRAVG.map(function (f) {
+        let yearStr = ee.String(f.get("FIRE_YEAR"));
+        let yearNum = ee.Number.parse(yearStr);
+        return f.set("FIRE_YEAR_NUM", yearNum);
+    });
 
-    let combined = cbi4.merge(cc5).merge(ba7);
-
-    Map.addLayer(
-        combined.select([4]).set("bounds", clientBoundsDict.All),
-        {
-            min: startYear,
-            max: endYear,
-            palette: declineYearPalette,
-        },
-        "RAVG Burn Year",
-        false,
-        null,
-        null,
-        "RAVG " +
-        mtbsSummaryMethod +
-        " burn year from " +
+    let tooltip = "Delineated perimeters of each RAVG mapped fire from " +
         startYear.toString() +
         "-" +
-        endYear.toString(),
-        "layer-list"
+        endYear.toString() +
+        ". ";
+
+    let emptyImg = ee.Image().byte();
+    let yearImg = emptyImg.paint({
+        featureCollection: perimsRAVGYears,
+        color: "FIRE_YEAR_NUM"
+    });
+
+    const yearDict = {
+        2012: "#fddbc7",
+        2013: "#f0f9c1",
+        2014: "#e1f2ac",
+        2015: "#ccebc5",
+        2016: "#a8ddb5",
+        2017: "#7fcbbb",
+        2018: "#5baec1",
+        2019: "#41b6c4",
+        2020: "#2c9ec2",
+        2021: "#1d85c0",
+        2022: "#225ea8",
+        2023: "#081d58",
+    };
+
+    const queryClassDict = getQueryClassDict(yearDict);
+
+    const burnYearViz = {
+        min: 2012,
+        max: 2023,
+        palette: Object.values(yearDict),
+        queryDict: queryClassDict,
+        addToClassLegend: true,
+        classLegendDict: yearDict,
+    };
+
+    Map.addLayer(
+        yearImg,
+        burnYearViz,
+        "RAVG Burn Year",
+        false, 
+        null,
+        null,
+        tooltip
     );
 }
 
@@ -912,7 +899,7 @@ function runRAVG() {
     let cc5 = getRAVGSeverityLayer("CC5", evtCollections);
     let ba7 = getRAVGSeverityLayer("BA7", evtCollections);
     getRAVGBurnCountLayer(startYear, endYear, cbi4.originalCollection, cc5.originalCollection, ba7.originalCollection);
-    //getRAVGBurnYearLayer(startYear, endYear, cbi4.summarized, cc5.summarized, ba7.summarized);
+    getRAVGBurnYearLayer(startYear, endYear, cbi4.summarized, cc5.summarized, ba7.summarized);
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     getRAVGSelectionLayers();
