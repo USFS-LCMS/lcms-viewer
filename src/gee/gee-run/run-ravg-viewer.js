@@ -271,7 +271,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         Oldest: "burnYearNegative",
     };
     const severityLayerSummarized = severityLayer.qualityMosaic(severityLayerSummaryDict[mtbsSummaryMethod]);
-    const severityLayerCountTest = severityLayer.select([2]).count();
 
     let severityLayerClassDict;
     let maxVal;
@@ -448,7 +447,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     const severityViz = {
         queryDict: severityLayerQueryClassDict,
         min: 1,
-        //max: 6,
         max: maxVal,
         palette: Object.values(severityLayerClassDict),
         addToClassLegend: true,
@@ -475,29 +473,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     //    ravgEndYear.toString(),
     //    whichLayerList
     //);
-
-    Map.addLayer(
-        //counts based on the 'burnedNotBurned' band ()
-        severityLayerCountTest.set("bounds", clientBoundsDict.All),
-        {
-            min: 1,
-            max: 5,
-            palette: declineDurPalette.split(",").reverse().join(","),
-            legendLabelLeft: "Count =",
-            legendLabelRight: "Count >=",
-        },
-        "RAVG " + layer + "Burn Count",
-        false,
-        null,
-        null,
-        "RAVG number of burns mapped for a given area from " +
-        startYear.toString() +
-        "-" +
-        endYear.toString() +
-        " with a burn severity class of low, moderate, or high",
-        "layer-list"
-    );
-
 
     Map.addLayer(
         severityLayerSummarized.select([0]).set("bounds", clientBoundsDict.All),
@@ -836,119 +811,40 @@ function getRAVGSelectionLayers() {
 
 function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
 
-    //get the burnNotBurn band from each of the three severity layers
-
-    //console.log(cbi4.select([2]).getInfo());
-    //let cbi4Binary = cbi4.select([2]).rename("cbi4BurnedNotBurned");
-    //let cbi4Binary = cbi4.select("burnedNotBurned");
-    //let cc5Binary = cc5.select("burnedNotBurned");
-    //let ba7Binary = ba7.select("burnedNotBurned");
-
-    //let merged = cbi4Binary.merge(cc5Binary).merge(ba7Binary);
-    //let maxImage = merged.max();
-
-    //console.log(maxImage.getInfo());
-
-    //combines the three severity layer ImageCollections into one ImageCollection. Results in the sum of all of the burn values, rather than the max
-    //let combined = cbi4.merge(cc5).merge(ba7);
-
-    //Map.addLayer(
-    //    //counts based on the 'burnedNotBurned' band ()
-    //    combined.select([2]).count().set("bounds", clientBoundsDict.All),
-    //    {
-    //        min: 1,
-    //        max: 5,
-    //        palette: declineDurPalette.split(",").reverse().join(","),
-    //        legendLabelLeft: "Count =",
-    //        legendLabelRight: "Count >=",
-    //    },
-    //    "RAVG Burn Count",
-    //    false,
-    //    null,
-    //    null,
-    //    "RAVG number of burns mapped for a given area from " +
-    //    startYear.toString() +
-    //    "-" +
-    //    endYear.toString() +
-    //    " with a burn severity class of low, moderate, or high",
-    //    "layer-list"
-    //);
-
-    //attempt 2 : results in 1 instead of the max
-    //Map.addLayer(
-    //    //counts based on the 'burnedNotBurned' band ()
-    //    maxImage.set("bounds", clientBoundsDict.All),
-    //    {
-    //        bands: ["burnedNotBurned"],
-    //        min: 1,
-    //        max: 5,
-    //        palette: declineDurPalette.split(",").reverse().join(","),
-    //        legendLabelLeft: "Count =",
-    //        legendLabelRight: "Count >=",
-    //    },
-    //    "RAVG Burn Count",
-    //    false,
-    //    null,
-    //    null,
-    //    "RAVG number of burns mapped for a given area from " +
-    //    startYear.toString() +
-    //    "-" +
-    //    endYear.toString() +
-    //    " with a burn severity class of low, moderate, or high",
-    //    "layer-list"
-    //);
-
-    //let combined = cbi4.merge(cc5).merge(ba7);
-
-    //Map.addLayer(
-    //    //counts based on the 'burnedNotBurned' band ()
-    //    combined.select([2]).max().set("bounds", clientBoundsDict.All),
-    //    {
-    //        bands: ["burnedNotBurned"],
-    //        min: 1,
-    //        max: 5,
-    //        palette: declineDurPalette.split(",").reverse().join(","),
-    //        legendLabelLeft: "Count =",
-    //        legendLabelRight: "Count >=",
-    //    },
-    //    "RAVG Burn Count",
-    //    false,
-    //    null,
-    //    null,
-    //    "RAVG number of burns mapped for a given area from " +
-    //    startYear.toString() +
-    //    "-" +
-    //    endYear.toString() +
-    //    " with a burn severity class of low, moderate, or high",
-    //    "layer-list"
-    //); //this works with 'combined' but is the sum of all of the burn values, rather than the max
-
-
-    //attempt 4
-    //for each input severity layer, need to use `severityLayer.select([2]).count();` to get the  burn count, and then you can compare those with max(),
-    //but this can be misleading because there can be pixels that burned in two separate fires and therefore are being registered by two different severity types,
-    //in which case the count should be 2, rather than 1, which would be the max value if you were comparing severity types, since 1 would be the value in both relevant severity types.
+    //counts based on the 'burnedNotBurned' band ()
     let cbi4Count = cbi4.select([2]).count().rename("cbi4_count");
     let cc5Count = cc5.select([2]).count().rename("cc5_count");
     let ba7Count = ba7.select([2]).count().rename("ba7_count");
-
-
-
-    console.log(ba7Count instanceof ee.Image);
-
     let combinedCount = cbi4Count.addBands(cc5Count).addBands(ba7Count);
     let maxReduced = combinedCount.reduce(ee.Reducer.max()).rename("max_values");
 
+    const countDict = {
+        1: "#ffcbd1",
+        2: "#ee6b6e",
+        3: "#ff2c2c",
+        4: "#c30010",
+        5: "#530000"
+    };
+
+    let layerQueryClassDict = {};
+    let keyI = 1;
+
+    Object.keys(countDict).map(function (k) {
+        layerQueryClassDict[keyI] = k;
+        keyI++;
+    });
+
     Map.addLayer(
-        //counts based on the 'burnedNotBurned' band ()
         maxReduced.set("bounds", clientBoundsDict.All),
         {
             bands: ["max_values"],
             min: 1,
             max: 5,
-            palette: declineDurPalette.split(",").reverse().join(","),
+            palette: Object.values(countDict),
             legendLabelLeft: "Count =",
             legendLabelRight: "Count >=",
+            classLegendDict: countDict,
+            queryDict: layerQueryClassDict
         },
         "RAVG Burn Count",
         false,
