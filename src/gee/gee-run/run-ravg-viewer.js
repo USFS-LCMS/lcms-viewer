@@ -23,14 +23,14 @@ function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQ
         areaChartCollections["ravg" + layer + refType + year] = {
             collection: severityLayerByEVTStack,
             colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity by " + refType + " Class " + year,
+            label: "RAVG " + layer + " Burn Severity per " + year + " " + refType + " Class",
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: className,
-            xAxisLabel: refType + " " + year + " Class",
+            xAxisLabel: "RAVG " + layer + " Burn Severity Class decomposition per " + year + " " + refType + " Class",
             tooltip:
-                "Chart RAVG " + layer + " burn severity by each " + refType + " " +
+                "Chart RAVG " + layer + " burn severity per each " + refType + " " +
                 year +
                 " landcover class",
         };
@@ -353,12 +353,12 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         areaChartCollections["ravg_" + layer.toLowerCase()] = {
             collection: severityLayerStack,
             colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity by Year",
+            label: "RAVG " + layer + " Burn Severity per Year",
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: "year",
-            tooltip: "Chart the RAVG " + layer + " burn severity by year",
+            tooltip: "Chart the RAVG " + layer + " burn severity per year",
         };
         areaChartCollections["ravg_" + layer.toLowerCase() + "_burn_mosaic"] = {
             collection: ee.ImageCollection([
@@ -461,13 +461,13 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         areaChartCollections["ravg" + layer + "Aspect"] = {
             collection: ravgByAspectStack,
             colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity by Aspect",
+            label: "RAVG " + layer + " Burn Severity per Aspect",
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: "Aspect_Bin",
             xAxisLabel: "Aspect Bin",
-            tooltip: "Chart RAVG " + layer + " burn severity by aspect quadrants.",
+            tooltip: "Chart RAVG " + layer + " burn severity per aspect quadrants.",
         };
     }
 
