@@ -217,7 +217,7 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         perimsRAVG,
         {
             strokeColor: "00F",
-            selectLayerNameProperty: "FIRE_NAME",
+            selectLayerNameProperty: "Fire Name",
         },
         label,
         false,
