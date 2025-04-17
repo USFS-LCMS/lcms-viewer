@@ -93,6 +93,18 @@ function retrieveParams(id, retrieve_api = `${tiny_json_url}/retrieve`) {
   }
 }
 
+function getToken(url = "http://localhost:5000/token") {
+  let res = $.ajax({
+    type: "GET",
+    async: false,
+    url: url,
+    data: { whichToken: mode.toLowerCase() },
+    contentType: "application/json; charset=utf-8",
+  });
+  if (res.statusText === "OK") {
+    return res.responseText;
+  }
+}
 function TweetThis(
   preURL = "",
   postURL = "",
@@ -269,9 +281,9 @@ function constructUrlSearch(maxLen = 5000) {
 /*Load global variables*/
 let cachedSettingskey = "settings";
 let startYear = 1985;
-let endYear = 2023;
+let endYear = 2024;
 let activeStartYear = 1985,
-  activeEndYear = 2023;
+  activeEndYear = 2024;
 let startJulian = 153;
 let endJulian = 274;
 let layerObj = null;
@@ -297,7 +309,7 @@ const studyAreaDict = {
     center: [37.5334105816903, -105.6787109375, 5],
     crs: "EPSG:5070",
     startYear: 1985,
-    endYear: 2023,
+    endYear: 2024,
     conusSA: "projects/lcms-292214/assets/CONUS-Ancillary-Data/conus",
     conusLossThresh: 0.23,
     conusFastLossThresh: 0.29,
@@ -380,7 +392,10 @@ const studyAreaDict = {
         color: "c2b34a",
       },
     },
-    final_collections: ["USFS/GTAC/LCMS/v2023-9"],
+    final_collections: [
+      "projects/lcms-292214/assets/Final_Outputs/2024-10/LCMS",
+    ],
+    older_final_collections: ["USFS/GTAC/LCMS/v2023-9"],
     composite_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection",
@@ -544,8 +559,7 @@ let uri,
   chartOptions,
   infowindow,
   queryGeoJSON,
-  marker,
-  mtbsSummaryMethod;
+  marker;
 
 const selectedFeaturesJSON = {};
 const selectionTracker = {
@@ -763,6 +777,7 @@ const zoomDict = {
   1: "591,657,551",
 };
 
+const getAccessToken = false; //mode !== "geeViz" ? true : false;
 // See https://github.com/google/earthengine-api/blob/327fd96cf4fefda30c8a0d5da62d18c1d6844ea5/javascript/src/ee.js#L76 for param info for initializing to GEE
 // Allow GEE to be initialized either using a server-side proxy or an access token
 if (
@@ -773,7 +788,11 @@ if (
 }
 let authProxyAPIURL = urlParams.geeAuthProxyURL;
 let geeAPIURL = "https://earthengine.googleapis.com";
-
+if (getAccessToken === true) {
+  urlParams.accessToken = getToken();
+} else if (mode !== "geeViz") {
+  delete urlParams.accessToken;
+}
 if (
   urlParams.accessToken !== null &&
   urlParams.accessToken !== undefined &&

@@ -1,5 +1,5 @@
 let mtbsC;
-function runMTBS() {
+function runMTBSOld() {
   startYear = parseInt(urlParams.startYear);
   endYear = parseInt(urlParams.endYear);
   chartMTBS = true;
@@ -22,18 +22,7 @@ function runMTBS() {
   mtbsC = mtbsAndNLCD.MTBS.collection;
 
   const yearsCli = range(startYear, endYear + 1);
-  // ee.List.sequence(0,1000,1000).getInfo().map(function(start){
-  //   var stop = start + 999;
-  //   var nameEnd = start.toString()+'_'+stop.toString();
-  //   fetch('./geojson/mtbs_perims_'+nameEnd+'.json')
-  //   .then((resp) => resp.json()) // Transform the data into json
-  //     .then(function(json) {
 
-  //       // console.log(json)
-  //   Map.addLayer(json,{layerType:'geoJSONVector',strokeColor:'#F00',clickQuery:true},'MTBS Perims '+nameEnd,true)
-  //     // Create and append the li's to the ul
-  //   })
-  // })
   let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
   const inFields = [
     "Incid_Name",
@@ -144,4 +133,23 @@ function runMTBS() {
   // Map.addSelectLayer(huc4,{strokeColor:'00F'},'Select Which HUC 4',false,null,null,'HUC 4 selection');
   // $('#select-area-interactive-chart-label').click();
   // $('#tools-collapse-label-label').click();
+}
+function setupMTBS() {
+  getLCMSVariables();
+
+  getNAIP(null, true);
+  getAnnualNLCD();
+  getMTBS();
+
+  getSelectLayers();
+  areaChart.populateChartLayerSelect();
+  areaChart.setupTransitionPeriodUI();
+  // Map.turnOnAutoAreaCharting();
+}
+function runMTBS() {
+  Map.turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers
+  let wayback = new esri_wayback();
+
+  wayback.addWaybackUIContainer("#reference-layer-list-collapse-div");
+  wayback.initialize(setupMTBS);
 }

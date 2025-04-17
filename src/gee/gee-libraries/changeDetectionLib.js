@@ -708,7 +708,9 @@ function addLossGainToMap(
   gainMagMin,
   gainMagMax,
   indexName,
-  howManyToPull
+  howManyToPull,
+  labelClasses,
+  labelIconHTML
 ) {
   lossMagMin = lossMagMin || -8000;
   lossMagMax = lossMagMax || -2000;
@@ -733,12 +735,16 @@ function addLossGainToMap(
     min: startYear,
     max: endYear,
     palette: lossYearPalette,
+    labelIconHTML: labelIconHTML,
+    labelClasses: labelClasses,
     // layerType: "geeImage",
   };
   var vizParamsLossMag = {
     min: lossMagMin,
     max: lossMagMax,
     palette: lossMagPalette,
+    labelIconHTML: labelIconHTML,
+    labelClasses: labelClasses,
     // layerType: "geeImage",
   };
 
@@ -746,12 +752,16 @@ function addLossGainToMap(
     min: startYear,
     max: endYear,
     palette: gainYearPalette,
+    labelIconHTML: labelIconHTML,
+    labelClasses: labelClasses,
     // layerType: "geeImage",
   };
   var vizParamsGainMag = {
     min: gainMagMin,
     max: gainMagMax,
     palette: gainMagPalette,
+    labelIconHTML: labelIconHTML,
+    labelClasses: labelClasses,
     // layerType: "geeImage",
   };
 
@@ -759,6 +769,8 @@ function addLossGainToMap(
     min: 1,
     max: 5,
     palette: changeDurationPalette,
+    labelIconHTML: labelIconHTML,
+    labelClasses: labelClasses,
     layerType: "geeImage",
   };
   range(1, howManyToPull + 1).map(function (i) {

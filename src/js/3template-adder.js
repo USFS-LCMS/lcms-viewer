@@ -55,6 +55,7 @@ if (
     "src",
     "./src/assets/images/geeviz-logo-light.png"
   );
+  $("#title-banner-icon-left").attr("alt", "geeViz Logo");
   // $(".title-banner-icon")[1].remove();
   $("#title-banner-icon-left").css("margin-right", "0.25rem");
   $("#title-banner-icon-left").css("margin-left", "0.25rem");
@@ -228,7 +229,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   addRadio(
     "parameters-collapse-div",
     "cause-of-change-mask-mode-radio",
-    "Cause of Change: Stable color",
+    "Change: Stable color",
     "Gray",
     "Transparent",
     "urlParams.causeOfChangeMode",
@@ -358,14 +359,11 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   urlParams.changeLevels = urlParams.changeLevels || {
     1: false,
     2: false,
-    3: false,
-    4: false,
-    5: true,
+    3: true,
   };
   urlParams.landUseLevels = urlParams.landUseLevels || {
     1: false,
-    2: false,
-    3: true,
+    2: true,
   };
   $("#parameters-collapse-div").append(
     "<br><h5 title = 'LCMS classes can be binned to produce coarser classes with higher map accuracy. By default, LCMS is delivered with the most detailed class level (highest level). You can choose lower levels here to meet different mapping needs. For example, if you only care to show where all the vegetation cover loss is, regardless of its type, choosing Change Classification Level 2 may better suit your needs.'>LCMS Classification Level Selection</h5>"
@@ -1705,16 +1703,17 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "null",
     "Years of MTBS data to include"
   );
+  urlParams.summaryMethod = urlParams.summaryMethod || {
+    "Highest-Severity": true,
+    "Most-Recent": false,
+    Oldest: false,
+  };
   addMultiRadio(
     "parameters-collapse-div",
     "mtbs-summary-method-radio",
     "How to summarize MTBS data",
     "mtbsSummaryMethod",
-    {
-      "Highest-Severity": true,
-      "Most-Recent": false,
-      Oldest: false,
-    }
+    urlParams.summaryMethod
   );
 
   $("#mtbs-summary-method-radio").prop(
@@ -3446,7 +3445,7 @@ if (
     "areaChartFormat",
     urlParams.chartUnits
   );
-  if (mode === "LCMS" || mode === "geeViz") {
+  if (mode === "LCMS" || mode === "geeViz" || mode === "MTBS") {
     activeStartYear = urlParams.startYear;
     activeEndYear = urlParams.endYear;
     $("#area-chart-params-div").append(

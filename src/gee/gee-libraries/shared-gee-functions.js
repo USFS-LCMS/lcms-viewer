@@ -44,7 +44,7 @@ function getLCMSVariables() {
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Region_Boundaries"
   );
   window.b = ee.FeatureCollection(
-    "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_Boundaries"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/S_USA-AdministrativeForest_3-26-25"
   );
   window.nps = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/NPS_Boundaries"
@@ -265,7 +265,7 @@ function getIDSCollection() {
   }
 }
 
-function getIDSCollectionAddToMap() {
+function getIDSCollectionAddToMap(whichLayerList = "layer-list") {
   const idsCollections = getIDSCollection();
 
   if (idsCollections !== undefined) {
@@ -291,7 +291,8 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")"
+        ")",
+      whichLayerList
     );
     Map.addLayer(
       idsYr,
@@ -308,7 +309,8 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")"
+        ")",
+      whichLayerList
     );
     Map.addLayer(
       idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
@@ -321,7 +323,8 @@ function getIDSCollectionAddToMap() {
         idsStartYear.toString() +
         "-" +
         idsEndYear.toString() +
-        ")"
+        ")",
+      whichLayerList
     );
   }
 
@@ -506,9 +509,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
   if (showSeverity === null || showSeverity === undefined) {
     showSeverity = false;
   }
-  if (mtbsSummaryMethod === null || mtbsSummaryMethod === undefined) {
-    mtbsSummaryMethod = "Highest-Severity";
-  }
 
   const mtbs_path = "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1";
 
@@ -560,6 +560,7 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     "Most-Recent": "burnYear",
     Oldest: "burnYearNegative",
   };
+  window.mtbsSummaryMethod = window.mtbsSummaryMethod || "Highest-Severity";
   const mtbsSummarized = mtbs.qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod]);
   const mtbsCount = mtbs.select([2]).count();
 
@@ -691,13 +692,6 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
         const out = mtbsMaxSeverity
           .updateMask(nlcdT.eq(ee.Number.parse(k)))
               .set("nlcd_landcover_class", name);
-
-          //console.log("year");
-          //console.log(nlcdYear);
-          //console.log("out");
-          //console.log(out);
-          //console.log("name");
-          //console.log(name);
         return out;
       });
       mtbsByNLCD = ee.ImageCollection(mtbsByNLCD);
@@ -834,105 +828,105 @@ function getMTBSAndNLCD(studyAreaName, whichLayerList, showSeverity) {
     MTBSSeverityViz: severityViz,
   };
 }
-function getMTBSandIDS(studyAreaName, whichLayerList) {
-  if (whichLayerList === null || whichLayerList === undefined) {
-    whichLayerList = "reference-layer-list";
-  }
-  const idsCollections = getIDSCollection();
-  const mtbs_path = "projects/USFS/DAS/MTBS/BurnSeverityMosaics";
-  const nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
-  const nlcd_tcc = ee
-    .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
-    .select([0, 2])
-    .map((img) => img.selfMask());
+// function getMTBSandIDS(studyAreaName, whichLayerList) {
+//   if (whichLayerList === null || whichLayerList === undefined) {
+//     whichLayerList = "reference-layer-list";
+//   }
+//   const idsCollections = getIDSCollection();
+//   const mtbs_path = "projects/USFS/DAS/MTBS/BurnSeverityMosaics";
+//   const nlcd = ee.ImageCollection("USGS/NLCD_RELEASES/2016_REL");
+//   const nlcd_tcc = ee
+//     .ImageCollection("USGS/NLCD_RELEASES/2021_REL/TCC/v2021-4")
+//     .select([0, 2])
+//     .map((img) => img.selfMask());
 
-  Map.addLayer(
-    nlcd_tcc,
-    {
-      bands: "NLCD_Percent_Tree_Canopy_Cover",
-      min: 1,
-      max: 90,
-      palette: "white,green",
-    },
-    "NLCD Tree Canopy Cover",
-    false,
-    null,
-    null,
-    "NLCD Tree Canopy Cover v2021-4",
-    whichLayerList
-  );
+//   Map.addLayer(
+//     nlcd_tcc,
+//     {
+//       bands: "NLCD_Percent_Tree_Canopy_Cover",
+//       min: 1,
+//       max: 90,
+//       palette: "white,green",
+//     },
+//     "NLCD Tree Canopy Cover",
+//     false,
+//     null,
+//     null,
+//     "NLCD Tree Canopy Cover v2021-4",
+//     whichLayerList
+//   );
 
-  if (idsCollections !== undefined) {
-    const idsYr = idsCollections.featureCollection
-      .reduceToImage(["SURVEY_YEA"], ee.Reducer.max())
-      .set("bounds", clientBoundsDict.CONUS);
-    const idsCount = idsCollections.featureCollection
-      .reduceToImage(["SURVEY_YEA"], ee.Reducer.count())
-      .selfMask()
-      .set("bounds", clientBoundsDict.CONUS);
-    Map.addLayer(
-      idsCount,
-      {
-        min: 1,
-        max: Math.ceil((idsEndYear - idsStartYear) / 2) + 1,
-        palette: declineYearPalette,
-      },
-      "IDS Survey Count",
-      false,
-      null,
-      null,
-      "Number of times an area was included in the IDS survey (" +
-        idsStartYear.toString() +
-        "-" +
-        idsEndYear.toString() +
-        ")",
-      whichLayerList
-    );
-    Map.addLayer(
-      idsYr,
-      {
-        min: startYear,
-        max: endYear,
-        palette: declineYearPalette,
-      },
-      "IDS Most Recent Year Surveyed",
-      false,
-      null,
-      null,
-      "Most recent year an area was included in the IDS survey (" +
-        idsStartYear.toString() +
-        "-" +
-        idsEndYear.toString() +
-        ")",
-      whichLayerList
-    );
-    Map.addLayer(
-      idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
-      { styleParams: { color: "0FF", lineType: "dashed" } },
-      "IDS Polygons",
-      false,
-      null,
-      null,
-      "Polygons from the IDS survey (" +
-        idsStartYear.toString() +
-        "-" +
-        idsEndYear.toString() +
-        ")",
-      whichLayerList
-    );
-  }
+//   if (idsCollections !== undefined) {
+//     const idsYr = idsCollections.featureCollection
+//       .reduceToImage(["SURVEY_YEA"], ee.Reducer.max())
+//       .set("bounds", clientBoundsDict.CONUS);
+//     const idsCount = idsCollections.featureCollection
+//       .reduceToImage(["SURVEY_YEA"], ee.Reducer.count())
+//       .selfMask()
+//       .set("bounds", clientBoundsDict.CONUS);
+//     Map.addLayer(
+//       idsCount,
+//       {
+//         min: 1,
+//         max: Math.ceil((idsEndYear - idsStartYear) / 2) + 1,
+//         palette: declineYearPalette,
+//       },
+//       "IDS Survey Count",
+//       false,
+//       null,
+//       null,
+//       "Number of times an area was included in the IDS survey (" +
+//         idsStartYear.toString() +
+//         "-" +
+//         idsEndYear.toString() +
+//         ")",
+//       whichLayerList
+//     );
+//     Map.addLayer(
+//       idsYr,
+//       {
+//         min: startYear,
+//         max: endYear,
+//         palette: declineYearPalette,
+//       },
+//       "IDS Most Recent Year Surveyed",
+//       false,
+//       null,
+//       null,
+//       "Most recent year an area was included in the IDS survey (" +
+//         idsStartYear.toString() +
+//         "-" +
+//         idsEndYear.toString() +
+//         ")",
+//       whichLayerList
+//     );
+//     Map.addLayer(
+//       idsCollections.featureCollection.set("bounds", clientBoundsDict.CONUS),
+//       { styleParams: { color: "0FF", lineType: "dashed" } },
+//       "IDS Polygons",
+//       false,
+//       null,
+//       null,
+//       "Polygons from the IDS survey (" +
+//         idsStartYear.toString() +
+//         "-" +
+//         idsEndYear.toString() +
+//         ")",
+//       whichLayerList
+//     );
+//   }
 
-  const mtbs = getMTBSAndNLCD(studyAreaName, whichLayerList).MTBS.collection;
-  if (idsCollections !== undefined) {
-    return [
-      mtbs,
-      idsCollections.imageCollection,
-      idsCollections.featureCollection,
-    ];
-  } else {
-    return [mtbs, undefined, undefined];
-  }
-}
+//   const mtbs = getMTBSAndNLCD(studyAreaName, whichLayerList).MTBS.collection;
+//   if (idsCollections !== undefined) {
+//     return [
+//       mtbs,
+//       idsCollections.imageCollection,
+//       idsCollections.featureCollection,
+//     ];
+//   } else {
+//     return [mtbs, undefined, undefined];
+//   }
+// }
 function getNAIP(whichLayerList, timeLapse) {
   whichLayerList = whichLayerList || "reference-layer-list";
   timeLapse = timeLapse !== null && timeLapse !== undefined ? timeLapse : false;
@@ -941,21 +935,21 @@ function getNAIP(whichLayerList, timeLapse) {
     .select([0, 1, 2], ["R", "G", "B"]);
   let naipYears;
   if (timeLapse === true) {
-    naipYears = range(2003, 2022 + 1);
-    Map.addTimeLapse(
-      naip,
-      { addToLegend: false, min: 25, max: 225, years: naipYears, mosaic: true },
-      "NAIP Time Lapse",
-      false,
-      null,
-      null,
-      "The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the " +
-        naipYears[0].toString() +
-        " to the " +
-        naipYears[1].toString() +
-        " agricultural growing season in the continental U.S.",
-      whichLayerList
-    );
+    naipYears = range(2003, 2024 + 1);
+    // Map.addTimeLapse(
+    //   naip,
+    //   { addToLegend: false, min: 25, max: 225, years: naipYears, mosaic: true },
+    //   "NAIP Time Lapse",
+    //   false,
+    //   null,
+    //   null,
+    //   "The National Agriculture Imagery Program (NAIP) acquired aerial imagery from the " +
+    //     naipYears[0].toString() +
+    //     " to the " +
+    //     naipYears[1].toString() +
+    //     " agricultural growing season in the continental U.S.",
+    //   whichLayerList
+    // );
   } else {
     naipYears = [
       [2003, 2007],
@@ -1329,7 +1323,9 @@ function getSelectLayers(short) {
   const huc12 = ee.FeatureCollection("USGS/WBD/2017/HUC12");
   const wdpa = ee.FeatureCollection("WCMC/WDPA/current/polygons");
   const wilderness = wdpa.filter(ee.Filter.eq("DESIG", "Wilderness"));
-  const counties = ee.FeatureCollection("TIGER/2018/Counties");
+  const counties = ee.FeatureCollection(
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/tl_2024_us_county_wNames"
+  );
   const tiles = ee.FeatureCollection("users/jdreynolds33/Zones_New");
   const bia = ee.FeatureCollection(
     "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017"
@@ -1348,15 +1344,13 @@ function getSelectLayers(short) {
   ecoregions = ecoregions.select(["SECTION"], ["NAME"]);
   const ecoregionsEPAL4 = ee.FeatureCollection("EPA/Ecoregions/2013/L4");
   let district_boundaries = ee.FeatureCollection(
-    "projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/S_USA-RangerDistrict_3-26-25"
   );
   district_boundaries = district_boundaries.select(["DISTRICTNA"], ["name"]);
   const msas = ee.FeatureCollection(
-    "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_Urban_Areas_2018"
+    "projects/lcms-292214/assets/Dashboard-Data/Dashboard-Input-Summary-Areas/2024-10/TIGER_Urban_Areas_2024"
   );
-  const msas2 = ee.FeatureCollection(
-    "projects/lcms-292214/assets/CONUS-Ancillary-Data/TIGER_MSA_2019"
-  );
+
   if (short === null || short === undefined || short === false) {
     Map.addSelectLayer(
       bia,
@@ -1438,22 +1432,22 @@ function getSelectLayers(short) {
 
   Map.addSelectLayer(
     counties,
-    { strokeColor: "08F", selectLayerNameProperty: "NAME" },
+    { strokeColor: "08F", selectLayerNameProperty: "FULL_NAME" },
     "US Counties",
     false,
     null,
     null,
-    "US Counties from 2018 TIGER data. Turn on layer and click on any county wanted to include in chart"
+    "TIGER, 2024, U.S. Counties (https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip). Turn on layer and click on any county to include in chart"
   );
 
   Map.addSelectLayer(
     msas,
-    { strokeColor: "88F", selectLayerNameProperty: "NAME10" },
+    { strokeColor: "88F", selectLayerNameProperty: "NAME20" },
     "US Census Urban Areas",
     false,
     null,
     null,
-    "TIGER, 2018, U.S. Urban Areas (https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_ua10_500k.zip). Turn on layer and click on any county wanted to include in chart"
+    "TIGER, 2024, U.S. Urban Areas (https://www2.census.gov/geo/tiger/TIGER2024/UAC20/tl_2024_us_uac20.zip). Turn on layer and click on any urban area to include in chart"
   );
 
   Map.addSelectLayer(
@@ -1463,7 +1457,7 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "National Park boundaries. Turn on layer and click on any Park wanted to include in chart"
+    "National Park boundaries. Turn on layer and click on any Park to include in chart"
   );
   Map.addSelectLayer(
     b,
@@ -1472,7 +1466,7 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "National Forest boundaries. Turn on layer and click on any Forest wanted to include in chart"
+    "National Forest boundaries. Turn on layer and click on any Forest to include in chart"
   );
 
   Map.addSelectLayer(
@@ -1482,7 +1476,7 @@ function getSelectLayers(short) {
     false,
     null,
     null,
-    "National Forest District boundaries. Turn on layer and click on any Forest wanted to include in chart"
+    "National Forest District boundaries. Turn on layer and click on any District to include in chart"
   );
   Map.addSelectLayer(
     perims,
@@ -1499,11 +1493,404 @@ function getSelectLayers(short) {
       startYear.toString() +
       "-" +
       endYear.toString() +
-      ". Turn on layer and click on any fire wanted to include in chart"
-    );
+      ". Turn on layer and click on any fire to include in chart"
+  );
 }
 
 function addNDVI(pre) {
   const ndvi = pre.normalizedDifference(["nir", "red"]).rename("NDVI");
   return pre.addBands(ndvi);
+}
+
+function getAnnualNLCD(
+  addToMap = true,
+  addToAreaCharting = true,
+  whichLayerList = "layer-list",
+  visible = true
+) {
+  let minNLCDYear = 1985;
+  let maxNLCDYear = 2023;
+  let startYear = urlParams.startYear || minNLCDYear;
+  let endYear = urlParams.endYear || maxNLCDYear;
+  minNLCDYear = startYear >= minNLCDYear ? startYear : minNLCDYear;
+  maxNLCDYear = endYear <= maxNLCDYear ? endYear : maxNLCDYear;
+  const nlcdYearsCli = range(minNLCDYear, maxNLCDYear + 1);
+  const landCoverVizProps = {
+    LC_class_values: [
+      11, 12, 21, 22, 23, 24, 31, 41, 42, 43, 52, 71, 81, 82, 90, 95,
+    ],
+    LC_class_palette: [
+      "466b9f",
+      "d1def8",
+      "dec5c5",
+      "d99282",
+      "eb0000",
+      "ab0000",
+      "b3ac9f",
+      "68ab5f",
+      "1c5f2c",
+      "b5c58f",
+      "ccb879",
+      "dfdfc2",
+      "dcd939",
+      "ab6c28",
+      "b8d9eb",
+      "6c9fb8",
+    ],
+    LC_class_names: [
+      "Open Water",
+      "Perennial Ice/Snow",
+      "Developed, Open Space",
+      "Developed, Low Intensity",
+      "Developed, Medium Intensity",
+      "Developed, High Intensity",
+      "Barren Land",
+      "Deciduous Forest",
+      "Evergreen Forest",
+      "Mixed Forest",
+      "Shrub/Scrub",
+      "Grassland/Herbaceous",
+      "Pasture/Hay",
+      "Cultivated Crops",
+      "Woody Wetlands",
+      "Emergent Herbaceous Wetlands",
+    ],
+    bandNames: ["LC"],
+    layerType: "ImageCollection",
+    size: nlcdYearsCli.length,
+  };
+  const queryDict = toObj(
+    landCoverVizProps.LC_class_values,
+    landCoverVizProps.LC_class_names
+  );
+  // const combinedVizProps = {
+  //   LC_class_values: landCoverVizProps.LC_class_values,
+  //   LC_class_palette: landCoverVizProps.LC_class_palette,
+  //   LC_class_names: landCoverVizProps.LC_class_names,
+  //   bandNames: ["LC", "Severity"],
+  //   layerType: landCoverVizProps.layerType,
+  //   size: landCoverVizProps.size,
+  //   Severity_class_names: mtbsSeverityObjInfo.Severity_class_names,
+  //   Severity_class_palette: mtbsSeverityObjInfo.Severity_class_palette,
+  //   Severity_class_values: mtbsSeverityObjInfo.Severity_class_values,
+  // };
+  let nlcd_landcover = ee.ImageCollection(
+    "projects/sat-io/open-datasets/USGS/ANNUAL_NLCD/LANDCOVER"
+  );
+  let nlcd_fractional_impervious_surface = ee.ImageCollection(
+    "projects/sat-io/open-datasets/USGS/ANNUAL_NLCD/FRACTIONAL_IMPERVIOUS_SURFACE"
+  );
+  const lc_vizParams = {
+    reducer: ee.Reducer.mode(),
+    autoViz: true,
+    // canAreaChart: True,
+    // areaChartParams: { line: True, sankey: True, sankeyMinPercentage: 0.1 },
+  };
+
+  nlcd_landcover = nlcd_landcover.map((img) => {
+    let out = img.rename("LC").set(landCoverVizProps);
+    const yr = out.date().get("year");
+    out = out.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+    return out;
+  });
+  if (addToMap) {
+    Map.addLayer(
+      nlcd_landcover,
+      {
+        autoViz: true,
+        years: nlcdYearsCli,
+        eeObjInfo: landCoverVizProps,
+        includeClassValues: false,
+      },
+      "Annual NLCD",
+      false,
+      null,
+      null,
+      "NLCD landcover classes ",
+      "reference-layer-list"
+    );
+  }
+  if (addToAreaCharting) {
+    areaChart.addLayer(
+      nlcd_landcover,
+      {
+        eeObjInfo: landCoverVizProps,
+        line: true,
+        xAxisLabels: nlcdYearsCli,
+      },
+      "NLCD Annual",
+      true
+    );
+    areaChart.addLayer(
+      nlcd_landcover,
+      {
+        eeObjInfo: landCoverVizProps,
+        xAxisLabels: nlcdYearsCli,
+        sankey: true,
+      },
+      "NLCD Tranition",
+      false
+    );
+  }
+  return {
+    imageCollectionLandCover: nlcd_landcover,
+    imageCollectionImpervious: nlcd_fractional_impervious_surface,
+    years: nlcdYearsCli,
+    info: landCoverVizProps,
+    queryDict: queryDict,
+  };
+}
+function getMTBS(
+  addToMap = true,
+  addToAreaCharting = true,
+  whichLayerList = "layer-list",
+  visible = true
+) {
+  startYear = parseInt(urlParams.startYear) || 1984;
+  endYear = parseInt(urlParams.endYear) || 2024;
+
+  window.mtbsLayerStyling = {
+    labelClasses: "layer-label-mtbs",
+    labelIconHTML: `<img class="panel-title-svg-xsm" alt="MTBS icon" src="./src/assets/images/mtbs-logo.png">`,
+  };
+
+  const yearsCli = range(startYear, endYear + 1);
+  const mtbsSeverityObjInfo = {
+    Severity_class_names: [
+      "Non-Mapping Area",
+      "Increased Greenness",
+      "Unburned to Low",
+      "Low",
+      "Moderate",
+      "High",
+    ],
+    Severity_class_palette: [
+      "ffffff",
+      "7fff00",
+      "006400",
+      "7fffd4",
+      "ffff00",
+      "ff0000",
+    ],
+    Severity_class_values: [1, 2, 3, 4, 5, 6],
+    bandNames: ["Severity"],
+    layerType: "ImageCollection",
+    size: yearsCli.length,
+  };
+  const queryDict = toObj(
+    mtbsSeverityObjInfo.Severity_class_values,
+    mtbsSeverityObjInfo.Severity_class_names
+  );
+  let mtbsSeverity = ee.ImageCollection(
+    "USFS/GTAC/MTBS/annual_burn_severity_mosaics/v1"
+  );
+  mtbsSeverity = ee.ImageCollection(
+    yearsCli.map((yr) => {
+      let mtbsSeverityYr = mtbsSeverity
+        .filter(ee.Filter.calendarRange(yr, yr, "year"))
+        .mosaic()
+        .set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
+
+      return mtbsSeverityYr;
+    })
+  );
+
+  mtbsSeverity = mtbsSeverity.map(function (img) {
+    const severityRemapped = img
+      .remap([1, 2, 3, 4, 5, 6], [3, 4, 5, 6, 2, 1])
+      .rename(["Severity"]);
+    let burned = img
+      .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
+      .rename(["burnedNotBurned"]);
+    burned = burned.selfMask();
+    const burnYear = ee
+      .Image(img.date().get("year"))
+      .updateMask(severityRemapped.mask())
+      .rename("burnYear");
+    return severityRemapped
+      .addBands(burned)
+      .addBands(burned.multiply(-1).rename(["burnYearNegative"]))
+      .addBands(burnYear)
+      .int16()
+      .copyProperties(img, ["system:time_start"])
+      .set(mtbsSeverityObjInfo);
+  });
+  const mtbsSummaryDict = {
+    "Highest-Severity": "Severity",
+    "Most-Recent": "burnYear",
+    Oldest: "burnYearNegative",
+  };
+  window.mtbsSummaryMethod = window.mtbsSummaryMethod || "Highest-Severity";
+  const mtbsSummarized = mtbsSeverity
+    .qualityMosaic(mtbsSummaryDict[mtbsSummaryMethod])
+    .set(mtbsSeverityObjInfo);
+  const mtbsCount = mtbsSeverity.select([1]).count();
+
+  //
+  // Use the GEE built-in properties for symbology by setting the properties as follows
+
+  let perims = ee.FeatureCollection("USFS/GTAC/MTBS/burned_area_boundaries/v1"); //ee.FeatureCollection('projects/USFS/DAS/MTBS/mtbs_perims_DD');
+  const inFields = [
+    "Incid_Name",
+    "Incid_Type",
+    "Event_ID",
+    "irwinID",
+    "Ignition Date",
+    "BurnBndAc",
+    "Asmnt_Type",
+  ];
+  const outFields = [
+    "Incident Name",
+    "Incident Type",
+    "MTBS Event ID",
+    "IRWIN ID",
+    "Ignition Date",
+    "Acres",
+    "Assessment Type",
+  ];
+  perims = perims.map(function (f) {
+    const d = ee.Date(f.get("Ig_Date"));
+    const formatted = d.format("YYYY-MM-dd");
+    return f.set({
+      Year: d.get("year"),
+      "Ignition Date": formatted,
+    });
+  });
+
+  perims = perims.filter(ee.Filter.gte("Year", startYear));
+  perims = perims.filter(ee.Filter.lte("Year", endYear));
+
+  perims = perims.select(inFields, outFields);
+  perims = perims.set("bounds", clientBoundsDict.All);
+
+  if (addToMap) {
+    Map.addLayer(
+      ee.ImageCollection([mtbsSummarized.select(["Severity"])]),
+      {
+        autoViz: true,
+        queryItem: mtbsSeverity.select(["Severity"]),
+        eeObjInfo: mtbsSeverityObjInfo,
+        includeClassValues: false,
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
+      },
+      "MTBS Burn Severity",
+      visible,
+      null,
+      null,
+      "MTBS " +
+        mtbsSummaryMethod +
+        " burn severity mosaic from " +
+        startYear.toString() +
+        "-" +
+        endYear.toString(),
+      whichLayerList
+    );
+    Map.addLayer(
+      mtbsSummarized.select([3]).set("bounds", clientBoundsDict.All),
+      {
+        min: startYear,
+        max: endYear,
+        palette: declineYearPalette,
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
+      },
+      "MTBS Burn Year",
+      false,
+      null,
+      null,
+      "MTBS " +
+        mtbsSummaryMethod +
+        " burn year from " +
+        startYear.toString() +
+        "-" +
+        endYear.toString(),
+      whichLayerList
+    );
+    Map.addLayer(
+      mtbsCount.set("bounds", clientBoundsDict.All),
+      {
+        min: 1,
+        max: 5,
+        palette: declineDurPalette.split(",").reverse().join(","),
+        legendLabelLeft: "Count =",
+        legendLabelRight: "Count >=",
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
+      },
+      "MTBS Burn Count",
+      false,
+      null,
+      null,
+      "MTBS number of burns mapped for a given area from " +
+        startYear.toString() +
+        "-" +
+        endYear.toString() +
+        " with a burn serverity class of low, moderate, or high",
+      whichLayerList
+    );
+    Map.addLayer(
+      perims,
+      {
+        styleParams: {
+          color: "00D",
+          fillColor: "0000",
+          width: 1.5,
+          lineType: "dashed",
+        },
+        labelClasses: mtbsLayerStyling.labelClasses,
+        labelIconHTML: mtbsLayerStyling.labelIconHTML,
+      },
+      "MTBS Burn Perimeters",
+      visible,
+      null,
+      null,
+      "Delineated perimeters of each MTBS mapped fire from " +
+        startYear.toString() +
+        "-" +
+        endYear.toString() +
+        ". Areas can have multiple mapped fires.",
+      whichLayerList
+    );
+  }
+
+  if (addToAreaCharting) {
+    areaChart.addLayer(
+      mtbsSeverity,
+      {
+        eeObjInfo: mtbsSeverityObjInfo,
+        visible: [false, false, true, true, true, true],
+        xAxisLabels: yearsCli,
+        shouldUnmask: true,
+        chartType: "stacked-bar",
+      },
+      "MTBS Annual Severity",
+      true
+    );
+  }
+  // let mtbsNLCD = mtbsSeverity.linkCollection(
+  //   nlcd_landcover,
+  //   ["LC"],
+  //   null,
+  //   "system:time_start"
+  // );
+  // mtbsNLCD = mtbsNLCD.map((img) => img.set(combinedVizProps));
+  // console.log(mtbsNLCD.getInfo());
+  // areaChart.addLayer(
+  //   mtbsNLCD,
+  //   {
+  //     eeObjInfo: combinedVizProps,
+  //     xAxisLabels: yearsCli,
+  //     shouldUnmask: true,
+  //     chartType: "stacked-bar",
+  //   },
+  //   "MTBS Severity + NLCD Annual",
+  //   true
+  // );
+  return {
+    imageCollection: mtbsSeverity,
+    perims: perims,
+    info: mtbsSeverityObjInfo,
+    queryDict: queryDict,
+  }; //return the image collection and the severity image for use in other functions
 }

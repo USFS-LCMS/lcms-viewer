@@ -139,7 +139,7 @@ function addSelectedFeaturesToMapWrapper(selectedFeaturesT, nms, k) {
     layerName =
       "Simplified (" + simplifyMaxError.toString() + "m)- " + layerName;
   }
-  Map2.addLayer(
+  Map.addLayer(
     selectedFeaturesT,
     { layerType: "geeVectorImage", isSelectedLayer: true },
     layerName,

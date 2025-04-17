@@ -154,6 +154,7 @@ function areaChartCls() {
     this.clearChartLayerSelect();
     this.areaChartObj = {};
     this.areaChartID = 1;
+    this.areaChartNameList = [];
     // this.makeChartID = 0;
     this.clearCharts();
   };
@@ -280,8 +281,15 @@ function areaChartCls() {
         obj.palette = obj.palette.split(",");
       }
       obj.palette_lookup = params.palette_lookup;
-      obj.chartType = params.chartType || "line";
-      obj.stackedAreaChart = params.stackedAreaChart == true ? 0 : undefined;
+      obj.chartType = params.chartType || "line"; // "line", "stacked-line", "bar", "stacked-bar"
+
+      obj.stackedLineChart =
+        obj.chartType.indexOf("stack") > -1 ? 0 : undefined;
+      obj.stackedBarChart =
+        obj.chartType.indexOf("bar") > -1 ? "bar" : undefined;
+
+      obj.barMode = obj.chartType.indexOf("stack") > -1 ? "stack" : undefined;
+
       obj.steppedLine = params.steppedLine == true ? true : false;
       obj.label = obj.name;
       obj.shouldUnmask = params.shouldUnmask == true ? true : false;
@@ -487,9 +495,12 @@ function areaChartCls() {
 
       obj.isThematic =
         obj.reducerString === "frequencyHistogram" ? true : obj.isThematic;
+
       obj.yAxisLabel =
-        obj.yAxisLabel || obj.reducerString === "frequencyHistogram"
-          ? undefined
+        params.yAxisLabel ||
+        obj.yAxisLabel ||
+        obj.reducerString === "frequencyHistogram"
+          ? params.yAxisLabel
           : obj.reducerString.toTitle();
 
       this.areaChartObj[obj.id] = obj;
@@ -799,7 +810,8 @@ function areaChartCls() {
           x: xColumn,
           y: yT,
 
-          stackgroup: selectedObj.stackedAreaChart,
+          stackgroup: selectedObj.stackedLineChart,
+          type: selectedObj.stackedBarChart,
           mode: "lines+markers",
           visible: visible[i - 1],
           name: header[i]
@@ -807,7 +819,7 @@ function areaChartCls() {
             .chunk(selectedObj.chartLabelMaxWidth)
             .join("<br>"),
           line: { color: c, width: 1 },
-          marker: { size: 3 },
+          marker: { color: c, size: 3 },
         };
       });
       xAxisLabelT = selectedObj.xAxisLabel;
@@ -874,7 +886,7 @@ function areaChartCls() {
         {
           y: table[yIndex],
           x: table[xIndex],
-          stackgroup: selectedObj.stackedAreaChart,
+          stackgroup: selectedObj.stackedLineChart,
           type: "bar",
           orientation: orientation,
           name: selectedObj.name,
@@ -910,6 +922,7 @@ function areaChartCls() {
       hovermode: selectedObj.hovermode,
       plot_bgcolor: this.plot_bgcolor,
       paper_bgcolor: this.plot_bgcolor,
+      barmode: selectedObj.barMode,
       font: {
         family: this.plot_font,
         size: selectedObj.chartTitleFontSize,
@@ -951,6 +964,7 @@ function areaChartCls() {
         },
       },
     };
+
     const buttonOptions = {
       toImageButtonOptions: {
         filename: outFilename,
@@ -1053,13 +1067,10 @@ function areaChartCls() {
           let objT = o.viz.areaChartParams;
 
           if (objT.line && objT.sankey) {
-            selectedChartLayers.push([`${o.legendDivID}-----line`, o.visible]);
-            selectedChartLayers.push([
-              `${o.legendDivID}-----sankey`,
-              o.visible,
-            ]);
+            selectedChartLayers.push([`${o.layerUNID}-----line`, o.visible]);
+            selectedChartLayers.push([`${o.layerUNID}-----sankey`, o.visible]);
           } else {
-            selectedChartLayers.push([o.legendDivID, o.visible]);
+            selectedChartLayers.push([o.layerUNID, o.visible]);
           }
         });
 

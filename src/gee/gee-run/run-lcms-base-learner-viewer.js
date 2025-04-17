@@ -35,6 +35,8 @@ function runBaseLearner() {
     })
   );
   let compViz = copyObj(gil.vizParamsFalse);
+  compViz.labelClasses = "layer-label-lcms";
+  compViz.labelIconHTML = `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`;
   compViz.reducer = ee.Reducer.median();
   let timeLapseFreq = urlParams.advanced ? 1 : 5;
 
@@ -77,6 +79,8 @@ function runBaseLearner() {
     .split(",")
     .map((bn) => `${bn}_LT_fitted`);
   ltSynthViz.reducer = ee.Reducer.median();
+  ltSynthViz.labelClasses = "layer-label-lcms";
+  ltSynthViz.labelIconHTML = `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`;
   // Vizualize image collection for charting (opacity set to 0 so it will chart but not be visible)
   // Map.addLayer(lt_fit.select(["NBR_LT_fitted"]), {}, "LT Fit TS", false);
 
@@ -133,7 +137,9 @@ function runBaseLearner() {
       gainMagThresh,
       gainMagThresh + 0.7,
       bandName,
-      howManyToPull
+      howManyToPull,
+      "layer-label-lcms",
+      `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`
     );
   });
 
@@ -252,8 +258,26 @@ function runBaseLearner() {
   const endJulian = 365;
   const annualJulian = 245;
   // #Add the raw array image
-  Map.addLayer(ccdcImg01, { opacity: 0 }, "CCDC Raw Output 1984-2022", false);
-  Map.addLayer(ccdcImg2, { opacity: 0 }, "CCDC Raw Output 2014-2024", false);
+  Map.addLayer(
+    ccdcImg01,
+    {
+      opacity: 0,
+      labelClasses: "layer-label-lcms",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
+    },
+    "CCDC Raw Output 1984-2022",
+    false
+  );
+  Map.addLayer(
+    ccdcImg2,
+    {
+      opacity: 0,
+      labelClasses: "layer-label-lcms",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
+    },
+    "CCDC Raw Output 2014-2024",
+    false
+  );
 
   // #Apply the CCDC harmonic model across a time series
   // #First get a time series of time images
@@ -279,6 +303,9 @@ function runBaseLearner() {
     .map((bn) => `${bn}_CCDC_fitted`);
   ccdcSynthViz.reducer = ee.Reducer.median();
   ccdcSynthViz.years = vizYears;
+  ccdcSynthViz.labelClasses = "layer-label-lcms";
+  ccdcSynthViz.labelIconHTML = `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`;
+
   let annualTimeImages = changeDetectionLib.simpleGetTimeImageCollection(
     startYear,
     endYear,
@@ -340,6 +367,8 @@ function runBaseLearner() {
       min: startYear,
       max: endYear,
       palette: changeDetectionLib.lossYearPalette,
+      labelClasses: "layer-label-lcms",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
     },
     "CCDC Loss Year"
   );
@@ -349,6 +378,8 @@ function runBaseLearner() {
       min: -0.5,
       max: -0.1,
       palette: changeDetectionLib.lossMagPalette,
+      labelClasses: "layer-label-lcms",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
     },
     "CCDC Loss Mag",
     false
@@ -359,6 +390,8 @@ function runBaseLearner() {
       min: startYear,
       max: endYear,
       palette: changeDetectionLib.gainYearPalette,
+      labelClasses: "layer-label-lcms",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
     },
     "CCDC Gain Year",
     false
@@ -369,6 +402,8 @@ function runBaseLearner() {
       min: 0.05,
       max: 0.2,
       palette: changeDetectionLib.gainMagPalette,
+      labelClasses: "layer-label-lcms",
+      labelIconHTML: `<img class="panel-title-svg-xsm" alt="LCMS icon" src="./src/assets/Icons_svg/logo_icon_lcms-data-viewer.svg">`,
     },
     "CCDC Gain Mag",
     false

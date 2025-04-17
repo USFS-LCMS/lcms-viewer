@@ -1,4 +1,4 @@
-# GTAC Landscape Change Data Explorer
+# Forest Service Field Services and Innovation Center Geospatial Office (FSIC GO) Landscape Change Data Explorer
 
 > A suite of websites to visualize landscape change
 
