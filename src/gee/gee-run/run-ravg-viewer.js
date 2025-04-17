@@ -254,12 +254,39 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         return img.select([0], ["burnSeverity"]).byte();
     });
     severityLayer = severityLayer.map(function (img) {
-        const severityRemapped = img
-            .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
-            .rename(["burnSeverityRemap"]);
-        let burned = img
-            .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
-            .rename(["burnedNotBurned"]);
+        let severityRemapped;
+        let burned;
+
+        if (layer == "BA7") {
+            severityRemapped = img
+                .remap([1, 2, 3, 4, 5, 6, 7, 9], [1, 2, 3, 4, 5, 6, 7, 9])
+                .rename(["burnSeverityRemap"]);
+            burned = img
+                .remap([1, 2, 3, 4, 5, 6, 7, 9], [0, 1, 1, 1, 1, 1, 1, 0])
+                .rename(["burnedNotBurned"]);
+        } else if (layer == "CC5") {
+            severityRemapped = img
+                .remap([1, 2, 3, 4, 5, 9], [1, 2, 3, 4, 5, 9])
+                .rename(["burnSeverityRemap"]);
+            burned = img
+                .remap([1, 2, 3, 4, 5, 9], [0, 1, 1, 1, 1, 0])
+                .rename(["burnedNotBurned"]);
+        } else if (layer == "CBI4") {
+            severityRemapped = img
+                .remap([1, 2, 3, 4, 9], [1, 2, 3, 4, 9])
+                .rename(["burnSeverityRemap"]);
+            burned = img
+                .remap([1, 2, 3, 4, 9], [0, 1, 1, 1, 0])
+                .rename(["burnedNotBurned"]);
+        }
+
+        //const severityRemapped = img
+        //    .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
+        //    .rename(["burnSeverityRemap"]);
+        //let burned = img
+        //    .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
+        //    .rename(["burnedNotBurned"]);
+
 
         burned = burned.selfMask();
         const burnYear = ee
