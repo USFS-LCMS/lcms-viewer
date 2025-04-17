@@ -163,7 +163,8 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         "EVENT_ID",
         "FIRE_YEAR",
         "ACRES",
-        "Pre-Image Year"
+        "Pre-Image Year",
+        "ASMNT_TYPE"
     ];
 
     const outRAVGFields = [
@@ -171,7 +172,9 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         "RAVG Event ID",
         "Fire Year",
         "Acres",
-        "Pre-Image Year"
+        "Pre-Image Year",
+        "Assessment Type"
+
     ];
 
     let label = "RAVG Burn Perimeters";
@@ -280,14 +283,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
                 .rename(["burnedNotBurned"]);
         }
 
-        //const severityRemapped = img
-        //    .remap([1, 2, 3, 4, 5, 6], [1, 3, 4, 5, 2, 1])
-        //    .rename(["burnSeverityRemap"]);
-        //let burned = img
-        //    .remap([1, 2, 3, 4, 5, 6], [0, 1, 1, 1, 0, 0])
-        //    .rename(["burnedNotBurned"]);
-
-
         burned = burned.selfMask();
         const burnYear = ee
             .Image(ee.Date(img.get("system:time_start")).get("year"))
@@ -315,7 +310,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     if (layer == "BA7") {
         severityLayerClassDict = {
             "0%": "008080",
-            "< 10%": "20A8A8",
+            "0-10%": "20A8A8",
             "< 25%": "52CCCC",
             "< 50%": "FFE820",
             "< 75%": "FF8020",
