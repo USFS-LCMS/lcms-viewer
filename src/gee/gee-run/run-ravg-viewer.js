@@ -311,21 +311,21 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         severityLayerClassDict = {
             "0%": "008080",
             "0-10%": "20A8A8",
-            "< 25%": "52CCCC",
-            "< 50%": "FFE820",
-            "< 75%": "FF8020",
-            "< 90%": "FF2020",
-            "<= 100%": "A80000",
+            "10-<25%": "52CCCC",
+            "25-<50%": "FFE820",
+            "50-<75%": "FF8020",
+            "75-<90%": "FF2020",
+            "90-100%": "A80000",
             "Masked/Unmappable": "FFFFFF"
         };
         maxVal = 8;
     } else if (layer == "CC5") {
         severityLayerClassDict = {
             "0%": "008080",
-            "< 25%": "52CCCC",
-            "< 50%": "FFE820",
-            "< 75%": "FF8020",
-            "<= 100%": "A80000",
+            "0-<25%": "52CCCC",
+            "25-<50%": "FFE820",
+            "50-<75%": "FF8020",
+            "75-100%": "A80000",
             "Masked/Unmappable": "FFFFFF"
         };
         maxVal = 6;
