@@ -7,3 +7,4 @@
 .vs/
 node_modules/
 package-lock.json
+/src/RAVG_supporting_scripts

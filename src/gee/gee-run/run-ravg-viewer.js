@@ -1,5 +1,6 @@
 function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
 
+    //This might give the user too much control over the data that they are using, so this should 
     years.map(function (year) {
         const className = refType.toLowerCase() + "_" + year + "_" + layer + "_landcover_class";
         const evtT = imgCollection
@@ -20,20 +21,20 @@ function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQ
             true
         );
 
-        areaChartCollections["ravg" + layer + refType + year] = {
-            collection: severityLayerByEVTStack,
-            colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity per " + year + " " + refType + " Class",
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: className,
-            xAxisLabel: "RAVG " + layer + " Burn Severity Class decomposition per " + year + " " + refType + " Class",
-            tooltip:
-                "Chart RAVG " + layer + " burn severity per each " + refType + " " +
-                year +
-                " landcover class",
-        };
+        //areaChartCollections["ravg" + layer + refType + year] = {
+        //    collection: severityLayerByEVTStack,
+        //    colors: Object.values(severityLayerClassDict),
+        //    label: "RAVG " + layer + " Burn Severity per " + year + " " + refType + " Class",
+        //    stacked: true,
+        //    steppedLine: false,
+        //    chartType: "bar",
+        //    xAxisProperty: className,
+        //    xAxisLabel: "RAVG " + layer + " Burn Severity Class decomposition per " + year + " " + refType + " Class",
+        //    tooltip:
+        //        "Chart RAVG " + layer + " burn severity per each " + refType + " " +
+        //        year +
+        //        " landcover class",
+        //};
     });
 
 }
@@ -155,26 +156,44 @@ function getEVTLayers() {
     }
 }
 
+function dateFromIG_DATE(timsetamp) {
+    let timestampNumber = ee.Number.parse(timsetamp);
+    let dateObj = ee.Date(timestampNumber);
+    return dateObj.format('YYYY-MM-dd', 'UTC');
+}
+
+function yearSlice(str) {
+    return str.slice(-8, -4);
+}
+
+function yearFromPRE_ID(id) {
+    if (id.index("_") !== -1) {
+        let split = ee.String(id.split("_").get(0));
+        return yearSlice(split);
+    } else {
+        return yearSlice(id);
+    }
+}
+
 function getRAVGBurnPerimeterLayer(startYear, endYear) {
     let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
 
     const inRAVGFields = [
-        "FIRE_NAME",
+        "INCID_NAME",
         "EVENT_ID",
-        "FIRE_YEAR",
-        "ACRES",
-        "Pre-Image Year",
+        "IG_DATE",
+        "BURNBNDAC",
+        "PRE_ID", ,
         "ASMNT_TYPE"
     ];
 
     const outRAVGFields = [
         "Fire Name",
         "RAVG Event ID",
-        "Fire Year",
+        "Ignition Date",
         "Acres",
         "Pre-Image Year",
         "Assessment Type"
-
     ];
 
     let label = "RAVG Burn Perimeters";
@@ -185,16 +204,17 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         ". ";
 
     perimsRAVG = perimsRAVG.map(function (f) {
-        const preImageYear = ee.String(f.get("PREIMGYMD")).slice(0,4);
+        const preImageYear = yearFromPRE_ID(ee.String(f.get("PRE_ID")));
+        const igDate = dateFromIG_DATE(ee.String(f.get("IG_DATE")));
         return f.set({
-            "Pre-Image Year": preImageYear,
+            "PRE_ID": preImageYear,
+            "IG_DATE": igDate
         });
     });
 
     perimsRAVG = perimsRAVG.select(inRAVGFields, outRAVGFields);
     perimsRAVG = perimsRAVG.set("bounds", clientBoundsDict.All);
 
-    //add layer to map in RAVG DATA section
     Map.addLayer(
         perimsRAVG,
         {
@@ -212,12 +232,12 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         tooltip + "Areas can have multiple mapped fires."
     );
 
-    //add layer to map in TOOLS -> Select an Area on Map section
     Map.addSelectLayer(
         perimsRAVG,
         {
             strokeColor: "00F",
             selectLayerNameProperty: "Fire Name",
+            selectLayerIgnitionYearProperty: "Ignition Date"
         },
         label,
         false,
@@ -353,13 +373,14 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         areaChartCollections["ravg_" + layer.toLowerCase()] = {
             collection: severityLayerStack,
             colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity per Year",
+            label: "RAVG " + layer + " Burn Severity",
             stacked: true,
             steppedLine: false,
             chartType: "bar",
             xAxisProperty: "year",
-            tooltip: "Chart the RAVG " + layer + " burn severity per year",
+            tooltip: "Chart the RAVG " + layer + " burn severity"
         };
+
         areaChartCollections["ravg_" + layer.toLowerCase() + "_burn_mosaic"] = {
             collection: ee.ImageCollection([
                 severityLayer
@@ -391,6 +412,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
                 "-" +
                 endYear.toString(),
         };
+
         areaChartCollections["ravg_burn_severity_" + layer.toLowerCase() + "_mosaic"] = {
             collection: ee.ImageCollection([
                 severityLayerStack
