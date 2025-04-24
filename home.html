@@ -78,26 +78,34 @@
   </nav>
   <main role="main">
     <div id="intro" class="container-fluid bg-dark info-page" aria-labelledby="intro-nav">
-      <div class="row home-section">
-        <div class='col-sm-4 intro-text'>
-          <p>
-            <b>
-              <i> Landscape Change Monitoring System (LCMS) is a remote sensing-based system for mapping and monitoring
-                landscape change across the United States. </i>
-            </b>
-          </p>
+
+      <div class='row intro-text' style="margin-top:1rem;">
+        <p>
+          <b>
+            <i> Landscape Change Monitoring System (LCMS) is a remote sensing-based system for mapping and
+              monitoring
+              landscape change across the United States. </i>
+          </b>
+        </p>
+      </div>
+      <div class="row intro-text">
+        <div class="col-sm-5">
           <p>
             <b>Who:</b> LCMS is produced by the U.S. Department of Agriculture Forest Service Field Services and
             Innovation Center Geospatial Office (FSIC GO).
           </p>
+        </div>
+        <div class="col-sm-3">
           <p style="margin-bottom:0px;">
             <b>What:</b> Annual data layers of
           <ul style="margin-top:0px">
-            <li>Vegetation cover Change</li>
+            <li>Cause of vegetation cover Change</li>
             <li>Land Cover</li>
             <li>Land Use</li>
           </ul>
           </p>
+        </div>
+        <div class="col-sm-3">
           <p>
             <b>When:</b> 1985 to 2024
           </p>
@@ -105,32 +113,46 @@
             <b>Where:</b> Conterminous U.S. (CONUS), Alaska (AK), Puerto Rico and U.S. Virgin Islands
             (PRUSVI), and Hawaii (HI)
           </p>
-
         </div>
-        <div class="col-sm-8">
-          <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S."
+      </div>
+      <div class="row">
+        <div class='col-sm-3'>
+          <img style='width:100%;' alt="Map of LCMS Change across Alaska"
+            src="./src/assets/images/AK_v2024-10_Change.png" />
+          <img style='width:100%;' alt="Map of LCMS Change across Puerto Rico and the U.S. Virgin Islands"
+            src="./src/assets/images/PRUSVI_v2024-10_Change.png" />
+          <img style='width:100%;' alt="Map of LCMS Change across the Conterminous U.S."
+            src="./src/assets/images/HAWAII_v2024-10_Change.png" />
+        </div>
+        <div class='col-sm-9'>
+          <img style='width:100%;' alt="Map of LCMS Change across the Conterminous U.S."
             src="./src/assets/images/CONUS_v2024-10_Change.png" />
-          <div class=" legend large-legend ">
-            <ul class="legend-labels" id="Change-class-container">
-              <li><span style="background:#FF09F3;"></span>Wind</li>
-              <li><span style="background:#541AFF;"></span>Hurricane</li>
-              <li><span style="background:#E4F5FD;"></span>Snow or Ice Transition</li>
-              <li><span style="background:#CC982E;"></span>Desiccation</li>
-              <li><span style="background:#0ADAFF;"></span>Inundation</li>
-              <li><span style="background:#A10018;"></span>Prescribed Fire</li>
-              <li><span style="background:#D54309;"></span>Wildfire</li>
-              <li><span style="background:#FAFA4B;"></span>Mechanical Land Transformation</li>
-              <li><span style="background:#AFDE1C;"></span>Tree Removal</li>
-              <li><span style="background:#FFC80D;"></span>Defoliation</li>
-              <li><span style="background:#A64C28;"></span>Southern Pine Beetle</li>
-              <li><span style="background:#F39268;"></span>Insect, Disease, or Drought Stress
-              </li>
-              <li><span style="background:#C291D5;"></span>Other Loss</li>
-              <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
-            </ul>
-          </div>
         </div>
+      </div>
 
+
+
+
+      <div class="row ">
+        <div class=" legend large-legend " style="margin:0.75rem;">
+          <ul class="legend-labels" id="Change-class-container">
+            <li><span style="background:#FF09F3;"></span>Wind</li>
+            <li><span style="background:#541AFF;"></span>Hurricane</li>
+            <li><span style="background:#E4F5FD;"></span>Snow or Ice Transition</li>
+            <li><span style="background:#CC982E;"></span>Desiccation</li>
+            <li><span style="background:#0ADAFF;"></span>Inundation</li>
+            <li><span style="background:#A10018;"></span>Prescribed Fire</li>
+            <li><span style="background:#D54309;"></span>Wildfire</li>
+            <li><span style="background:#FAFA4B;"></span>Mechanical Land Transformation</li>
+            <li><span style="background:#AFDE1C;"></span>Tree Removal</li>
+            <li><span style="background:#FFC80D;"></span>Defoliation</li>
+            <li><span style="background:#A64C28;"></span>Southern Pine Beetle</li>
+            <li><span style="background:#F39268;"></span>Insect, Disease, or Drought Stress
+            </li>
+            <li><span style="background:#C291D5;"></span>Other Loss</li>
+            <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
+          </ul>
+        </div>
       </div>
     </div>
     <div id="applications" class="container-fluid bg-white info-page">
@@ -140,8 +162,21 @@
           <div class="col-md-6 conus-pane">
             <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
-            <img style='width:100%; margin-top:3rem;' alt="Map of LCMS Change Loss output across the U.S."
-              src="./src/assets/images/CONUS_v2024-10_Change.png" />
+            <div class="row">
+              <div class='col-sm-3'>
+                <img style='width:100%;' alt="Map of LCMS Change output across Alaska"
+                  src="./src/assets/images/AK_v2024-10_Change.png" />
+                <img style='width:100%;' alt="Map of LCMS Change output across Puerto Rico and the U.S. Virgin Islands"
+                  src="./src/assets/images/PRUSVI_v2024-10_Change.png" />
+                <img style='width:100%;' alt="Map of LCMS Change output across Hawaii"
+                  src="./src/assets/images/HAWAII_v2024-10_Change.png" />
+              </div>
+              <div class='col-sm-9'>
+                <img style='width:100%;' alt="Map of LCMS Change output across the U.S."
+                  src="./src/assets/images/CONUS_v2024-10_Change.png" />
+              </div>
+            </div>
+
             <div class=" legend large-legend ">
               <ul class="legend-labels" id="Change-class-container">
                 <li><span style="background:#FF09F3;"></span>Wind</li>
@@ -206,7 +241,8 @@
                 </ul>
               </div>
             </div>
-            <p>Vegetation change largely caused by timber harvest and wildfire in the Willamette National Forest, Oreg.
+            <p>Vegetation change largely caused by timber harvest and wildfire in the Willamette National Forest,
+              Oreg.
             </p>
           </div>
         </div>
@@ -217,8 +253,21 @@
             <p>Surface components of the land that are present and visible</p>
 
             <hr>
-            <img style='width:100%' alt="Map of LCMS Land Cover output across the U.S."
-              src="./src/assets/images/CONUS_v2024-10_Land_Cover.png" />
+            <div class="row">
+              <div class='col-sm-3'>
+                <img style='width:100%;' alt="Map of LCMS Land Cover output across Alaska"
+                  src="./src/assets/images/AK_v2024-10_Land_Cover.png" />
+                <img style='width:100%;'
+                  alt="Map of LCMS Land Cover output across Puerto Rico and the U.S. Virgin Islands"
+                  src="./src/assets/images/PRUSVI_v2024-10_Land_Cover.png" />
+                <img style='width:100%;' alt="Map of LCMS Land Cover output across Hawaii"
+                  src="./src/assets/images/HAWAII_v2024-10_Land_Cover.png" />
+              </div>
+              <div class='col-sm-9'>
+                <img style='width:100%;' alt="Map of LCMS Land Cover output across the U.S."
+                  src="./src/assets/images/CONUS_v2024-10_Land_Cover.png" />
+              </div>
+            </div>
             <div class=" legend large-legend ">
               <ul class="legend-labels" id="Land-Cover-class-container">
                 <li><span style="background:#004E2B;"></span>Tree</li>
@@ -256,8 +305,21 @@
             <h3>Monitor annual land use changes</h3>
             <p>Intended human use of the land that represents economic and cultural activities practiced at a given
               place</p>
-            <img style='width:100%' alt="Map of LCMS Land Use output across the U.S."
-              src="./src/assets/images/CONUS_v2024-10_Land_Use.png">
+            <div class="row">
+              <div class='col-sm-3'>
+                <img style='width:100%;' alt="Map of LCMS Land Use output across Alaska"
+                  src="./src/assets/images/AK_v2024-10_Land_Use.png" />
+                <img style='width:100%;'
+                  alt="Map of LCMS Land Use output across Puerto Rico and the U.S. Virgin Islands"
+                  src="./src/assets/images/PRUSVI_v2024-10_Land_Use.png" />
+                <img style='width:100%;' alt="Map of LCMS Land Use output across Hawaii"
+                  src="./src/assets/images/HAWAII_v2024-10_Land_Use.png" />
+              </div>
+              <div class='col-sm-9'>
+                <img style='width:100%;' alt="Map of LCMS Land Use output across the U.S."
+                  src="./src/assets/images/CONUS_v2024-10_Land_Use.png" />
+              </div>
+            </div>
             <div class=" legend large-legend">
               <ul class="legend-labels">
                 <li><span style="background:#FBFF97;"></span>Agriculture</li>
@@ -321,7 +383,8 @@
             </ul>
             <a title="Click on link to open LCMS methods document"
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2024-10_Methods.pdf" class="homepage-link"
-              target="_blank">For additional information about LCMS change classes see the LCMS methods document</a>
+              target="_blank">For additional information about LCMS change classes see the LCMS
+              methods document</a>
           </div>
           <div class="col-sm-3">
             <img width='100%' alt="Example map of LCMS Loss over California"
@@ -360,7 +423,8 @@
             </div>
             <a title="Click on link to open LCMS methods document"
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2024-10_Methods.pdf" class="homepage-link"
-              target="_blank">For additional information about LCMS land cover classes see the LCMS methods document</a>
+              target="_blank">For additional information about LCMS land cover classes see the
+              LCMS methods document</a>
           </div>
           <div class="col-sm-3">
             <img width='100%' alt="Example area showing LCMS land cover changing over the Great Salt Lake"
@@ -391,7 +455,8 @@
             </div>
             <a title="Click on link to open LCMS methods document"
               href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2024-10_Methods.pdf" class="homepage-link"
-              target="_blank">For additional information about LCMS land use classes see the LCMS methods document</a>
+              target="_blank">For additional information about LCMS land use classes see the
+              LCMS methods document</a>
           </div>
           <div class="col-sm-3">
             <img width='100%' alt="Example area showing LCMS land use changing over Denver"
@@ -438,7 +503,8 @@
               The <a href="./lcms-base-learner.html" target="_blank"><b>USFS LCMS Base Learner Explorer</b></a> allows
               users to interactively view the raw input data and temporal
               segmentation results that are used to generate final LCMS products. This tool is especially useful for
-              researchers and analysts interested in understanding the underlying data sources used to create LCMS model
+              researchers and analysts interested in understanding the underlying data sources used to create LCMS
+              model
               outputs. Users can:
             </p>
             <ul>
@@ -500,7 +566,8 @@
             <img class='img-responsive' alt="LCMS Base Learner Explorer example image"
               src="./src/assets/images/base-learner-explorer-map-example.PNG">
             <p class="homepage-link">Explore the raw input data used to create the final LCMS products. This app is
-              useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods used
+              useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods
+              used
               in LCMS.</p>
           </a>
         </div>
@@ -2627,17 +2694,22 @@
         <h2>ABOUT</h2>
         <div class="col-sm-6">
           <p>Knowing where, when, and what factors create change across landscapes is critical to making sound land
-            management decisions. To support land managers and scientists with this need, an interagency effort between
+            management decisions. To support land managers and scientists with this need, an interagency effort
+            between
             leading remote sensing scientists and application specialists in the U.S. Department of Agriculture Forest
-            Service, U.S. Geological Survey, NASA, and numerous universities have collaborated to develop and produce a
+            Service, U.S. Geological Survey, NASA, and numerous universities have collaborated to develop and produce
+            a
             Landscape Change Monitoring System (LCMS). </p>
           <br>
-          <p>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States.
-            LCMS provides a “best available” map of landscape change that leverages advances in time series-based change
+          <p>LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United
+            States.
+            LCMS provides a “best available” map of landscape change that leverages advances in time series-based
+            change
             detection techniques, Landsat and Sentinel data availability, cloud-based computing power, and big data
             analysis methods.</p>
           <br>
-          <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The LCMS
+          <p>The LCMS Science Team initially developed LCMS methods (Cohen et al., 2018; Healey et al., 2018). The
+            LCMS
             Production Team and Science Team review methods frequently to ensure the LCMS mapping process is based on
             the
             best available science. All LCMS map products are recreated annually from 1985 to the most recent full
@@ -2647,13 +2719,16 @@
             Interior Alaska. </p>
           <h3>Literature</h3>
           <li>
-            <ul href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link" target='_blank'>Healey
+            <ul href='./literature/Healey_et_al_2018_RSE_LCMS_Approach.pdf' class="homepage-link" target='_blank'>
+              Healey
               et al 2018
             </ul>
-            <ul href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen et
+            <ul href='./literature/Cohen_et_al_2017_LCMS_Algorithms.pdf' class="homepage-link" target='_blank'>Cohen
+              et
               al 2017
             </ul>
-            <ul href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link" target='_blank'>Cohen
+            <ul href='./literature/Cohen_et_al_2018_Landtrendr_Ensemble.pdf' class="homepage-link" target='_blank'>
+              Cohen
               et al 2018
             </ul>
           </li>
