@@ -1,16 +1,21 @@
-function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
+function chartSeverityAcrossReference(severityLayer, refYears, refImageCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
 
-    //This might give the user too much control over the data that they are using, so this should 
-    years.map(function (year) {
-        const className = refType.toLowerCase() + "_" + year + "_" + layer + "_landcover_class";
-        const evtT = imgCollection
+    //puts all of the ref sub-layer into a single layer and charts based on that.
+    let mergedCollection;
+    const className = refType.toLowerCase() + "_" + severityLayer + "_landcover_class";
+    const label = "RAVG " + severityLayer + " Burn Severity per " + refType + " Class";
+
+    refYears.map(function (year) {
+        const refT = refImageCollection
             .filter(ee.Filter.calendarRange(Number(year), Number(year), "year"))
             .mosaic();
         let severityLayerByEVT = Object.keys(refLayerQueryClassDict).map(function (k) {
             const name = refLayerQueryClassDict[k];
             const out = severityLayerMaxSeverity
-                .updateMask(evtT.eq(ee.Number.parse(k)))
-                .set(className, name);
+                .updateMask(refT.eq(ee.Number.parse(k)))
+                .set(className, name)
+                .set("ref_year", year)
+                .set("ref_type", refType);
             return out;
         });
         severityLayerByEVT = ee.ImageCollection(severityLayerByEVT);
@@ -21,21 +26,24 @@ function setSeverityLayerPerRefLayerChart(layer, years, imgCollection, refLayerQ
             true
         );
 
-        //areaChartCollections["ravg" + layer + refType + year] = {
-        //    collection: severityLayerByEVTStack,
-        //    colors: Object.values(severityLayerClassDict),
-        //    label: "RAVG " + layer + " Burn Severity per " + year + " " + refType + " Class",
-        //    stacked: true,
-        //    steppedLine: false,
-        //    chartType: "bar",
-        //    xAxisProperty: className,
-        //    xAxisLabel: "RAVG " + layer + " Burn Severity Class decomposition per " + year + " " + refType + " Class",
-        //    tooltip:
-        //        "Chart RAVG " + layer + " burn severity per each " + refType + " " +
-        //        year +
-        //        " landcover class",
-        //};
+        if (mergedCollection === undefined) {
+            mergedCollection = severityLayerByEVTStack;
+        } else {
+            mergedCollection = mergedCollection.merge(severityLayerByEVTStack);
+        }
     });
+
+    areaChartCollections["ravg" + severityLayer + refType] = {
+        collection: mergedCollection,
+        colors: Object.values(severityLayerClassDict),
+        label: label,
+        stacked: true,
+        steppedLine: false,
+        chartType: "bar",
+        xAxisProperty: className,
+        xAxisLabel: label,
+        tooltip: "Chart RAVG " + severityLayer + " burn severity per " + refType + " landcover class",
+    };
 
 }
 
@@ -175,13 +183,15 @@ function yearFromPRE_ID(id) {
     }
 }
 
-function getRAVGBurnPerimeterLayer(startYear, endYear) {
-    let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
+function getRAVGBurnPerimeterLayer() {
+
+    let perimeterLayer = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
 
     const inRAVGFields = [
         "INCID_NAME",
         "EVENT_ID",
         "IG_DATE",
+        "Fire Year",
         "BURNBNDAC",
         "PRE_ID", ,
         "ASMNT_TYPE"
@@ -191,29 +201,39 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         "Fire Name",
         "RAVG Event ID",
         "Ignition Date",
+        "Fire Year",
         "Acres",
         "Pre-Image Year",
         "Assessment Type"
     ];
 
+    perimeterLayer = perimeterLayer.map(function (f) {
+        const preImageYear = yearFromPRE_ID(ee.String(f.get("PRE_ID")));
+        const igDate = dateFromIG_DATE(ee.String(f.get("IG_DATE")));
+        const igYear = igDate.slice(0, 4);
+        return f.set({
+            "PRE_ID": preImageYear,
+            "IG_DATE": igDate,
+            "Fire Year": igYear
+        });
+    });
+
+    perimeterLayer = perimeterLayer.select(inRAVGFields, outRAVGFields);
+    perimeterLayer = perimeterLayer.set("bounds", clientBoundsDict.All);
+
+    return perimeterLayer;
+}
+
+
+function setRAVGBurnPerimeterLayer(startYear, endYear) {
+    
+    let perimsRAVG = getRAVGBurnPerimeterLayer();
     let label = "RAVG Burn Perimeters";
     let tooltip = "Delineated perimeters of each RAVG mapped fire from " +
         startYear.toString() +
         "-" +
         endYear.toString() +
         ". ";
-
-    perimsRAVG = perimsRAVG.map(function (f) {
-        const preImageYear = yearFromPRE_ID(ee.String(f.get("PRE_ID")));
-        const igDate = dateFromIG_DATE(ee.String(f.get("IG_DATE")));
-        return f.set({
-            "PRE_ID": preImageYear,
-            "IG_DATE": igDate
-        });
-    });
-
-    perimsRAVG = perimsRAVG.select(inRAVGFields, outRAVGFields);
-    perimsRAVG = perimsRAVG.set("bounds", clientBoundsDict.All);
 
     Map.addLayer(
         perimsRAVG,
@@ -237,7 +257,7 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         {
             strokeColor: "00F",
             selectLayerNameProperty: "Fire Name",
-            selectLayerIgnitionYearProperty: "Ignition Date"
+            selectLayerIgnitionYearProperty: "Fire Year"
         },
         label,
         false,
@@ -245,6 +265,10 @@ function getRAVGBurnPerimeterLayer(startYear, endYear) {
         null,
         tooltip + "Turn on layer and click on any fire wanted to include in chart"
     );
+}
+
+function setSeverityLayerCharts() {
+
 }
 
 function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
@@ -449,7 +473,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     if (chartRAVGByNLCD) {
         nlcdObj = getNLCDObj();
 
-        setSeverityLayerPerRefLayerChart(
+        chartSeverityAcrossReference(
             layer,
             nlcdObj.years,
             nlcdObj.collection,
@@ -536,9 +560,9 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
     };
 }
 
-function getRAVGSeverityLayer(layer, evtCollections) {
+function getRAVGSeverityLayer(severityLayer, evtCollections) {
 
-    const ravgSeverityLayerAndRefLayers = getRAVGSeverityLayerAndRefLayers(layer, "layer-list", false);
+    const ravgSeverityLayerAndRefLayers = getRAVGSeverityLayerAndRefLayers(severityLayer, "layer-list", false);
     const nlcdLCObj = ravgSeverityLayerAndRefLayers.NLCD;
     const ravgSeverityLayerCollection = ravgSeverityLayerAndRefLayers.severityLayer.collection;
     const yearsCli = range(startYear, endYear + 1);
@@ -553,12 +577,12 @@ function getRAVGSeverityLayer(layer, evtCollections) {
     Map.addTimeLapse(
         ravgSeverityLayerCollection,
         timeLapseSeverityViz,
-        "RAVG " + layer + " Burn Severity Time Lapse",
+        "RAVG " + severityLayer + " Burn Severity Time Lapse",
         false
     );
 
-    pixelChartCollections["ravg_" + layer.toLowerCase()] = {
-        label: "RAVG " + layer + " Time Series",
+    pixelChartCollections["ravg_" + severityLayer.toLowerCase()] = {
+        label: "RAVG " + severityLayer + " Time Series",
         collection: forCharting,
         chartTableDict: chartTableDict,
         legends: chartTableDict,
@@ -568,8 +592,8 @@ function getRAVGSeverityLayer(layer, evtCollections) {
     let severityLayerQueryDict = ravgSeverityLayerAndRefLayers.severityViz.queryDict;
     let severityLayerLegendDict = ravgSeverityLayerAndRefLayers.severityViz.classLegendDict;
 
-    setSeverityLayerPerRefLayerChart(
-        layer,
+    chartSeverityAcrossReference(
+        severityLayer,
         evtCollections.vegClass.years,
         evtCollections.vegClass.collection,
         evtCollections.vegClass.visualParams.queryDict,
@@ -579,8 +603,8 @@ function getRAVGSeverityLayer(layer, evtCollections) {
         "EVT-Vegetation"
     );
 
-    setSeverityLayerPerRefLayerChart(
-        layer,
+    chartSeverityAcrossReference(
+        severityLayer,
         evtCollections.binary.years,
         evtCollections.binary.collection,
         evtCollections.binary.visualParams.queryDict,
@@ -692,7 +716,7 @@ function getNLCDRefLayer() {
     );
 }
 
-function getRAVGSelectionLayers() {
+function setRAVGSelectionLayers() {
    
     Map.addSelectLayer(
         ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/bia_bounds_2017"),
@@ -823,7 +847,7 @@ function getRAVGSelectionLayers() {
     );
 }
 
-function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
+function setRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
 
     //counts based on the 'burnedNotBurned' band ()
     let cbi4Count = cbi4.select("burnedNotBurned").count().rename("cbi4_count");
@@ -865,11 +889,11 @@ function getRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
 
 }
 
-function getRAVGBurnYearLayer(startYear, endYear) {
-  
-    let perimsRAVG = ee.FeatureCollection("projects/gtac-ravg/assets/RAVG_perimeters/RAVG_perims");
+function setRAVGBurnYearLayer(startYear, endYear) {
+
+    let perimsRAVG = getRAVGBurnPerimeterLayer();
     let perimsRAVGYears = perimsRAVG.map(function (f) {
-        let yearStr = ee.String(f.get("FIRE_YEAR"));
+        let yearStr = ee.String(f.get("Fire Year"));
         let yearNum = ee.Number.parse(yearStr);
         return f.set("FIRE_YEAR_NUM", yearNum);
     });
@@ -942,10 +966,10 @@ function runRAVG() {
     let cbi4 = getRAVGSeverityLayer("CBI4", evtCollections);
     let cc5 = getRAVGSeverityLayer("CC5", evtCollections);
     let ba7 = getRAVGSeverityLayer("BA7", evtCollections);
-    getRAVGBurnCountLayer(startYear, endYear, cbi4.originalCollection, cc5.originalCollection, ba7.originalCollection);
-    getRAVGBurnYearLayer(startYear, endYear, cbi4.summarized, cc5.summarized, ba7.summarized);
+    setRAVGBurnCountLayer(startYear, endYear, cbi4.originalCollection, cc5.originalCollection, ba7.originalCollection);
+    setRAVGBurnYearLayer(startYear, endYear, cbi4.summarized, cc5.summarized, ba7.summarized);
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
-    getRAVGSelectionLayers();
-    getRAVGBurnPerimeterLayer(startYear, endYear);
+    setRAVGSelectionLayers();
+    setRAVGBurnPerimeterLayer(startYear, endYear);
 }
