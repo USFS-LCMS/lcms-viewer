@@ -267,8 +267,120 @@ function setRAVGBurnPerimeterLayer(startYear, endYear) {
     );
 }
 
-function setSeverityLayerCharts() {
+function setSeverityLayerCharts(layer, severityLayer, severityLayerQueryClassDict, severityLayerClassDict, startYear, endYear) {
+    let severityLayerStack = formatAreaChartCollection(
+        severityLayer.select([0]),
+        Object.keys(severityLayerQueryClassDict),
+        Object.values(severityLayerQueryClassDict),
+        true
+    );
 
+    areaChartCollections["ravg_" + layer.toLowerCase()] = {
+        collection: severityLayerStack,
+        colors: Object.values(severityLayerClassDict),
+        label: "RAVG " + layer + " Burn Severity",
+        stacked: true,
+        steppedLine: false,
+        chartType: "bar",
+        xAxisProperty: "year",
+        tooltip: "Chart the RAVG " + layer + " burn severity"
+    };
+
+    areaChartCollections["ravg_" + layer.toLowerCase() + "_burn_mosaic"] = {
+        collection: ee.ImageCollection([
+            severityLayer
+                .select([2])
+                .mosaic()
+                .unmask(0)
+                .rename(["Burned"])
+                .set(
+                    "Burned",
+                    "All Mapped Burned Area (Total of Low, Moderate, and High Severity) " +
+                    startYear.toString() +
+                    "-" +
+                    endYear.toString()
+                ),
+        ]),
+        colors: ["#CC5500"],
+        label:
+            "RAVG " + layer + " Burned Area Total " +
+            startYear.toString() +
+            "-" +
+            endYear.toString(),
+        stacked: true,
+        steppedLine: false,
+        chartType: "bar",
+        xAxisProperty: "Burned",
+        tooltip:
+            "Chart the union of all burned areas (areas with low, moderate, or high severity) " +
+            startYear.toString() +
+            "-" +
+            endYear.toString(),
+    };
+
+    areaChartCollections["ravg_burn_severity_" + layer.toLowerCase() + "_mosaic"] = {
+        collection: ee.ImageCollection([
+            severityLayerStack
+                .max()
+                .unmask(0)
+                .set(
+                    "Burned",
+                    layer + " Burn Severity Total " +
+                    startYear.toString() +
+                    "-" +
+                    endYear.toString()
+                ),
+        ]),
+        colors: Object.values(severityLayerClassDict),
+        label:
+            "RAVG " + layer + " Burn Severity Total " +
+            startYear.toString() +
+            "-" +
+            endYear.toString(),
+        stacked: true,
+        steppedLine: false,
+        chartType: "bar",
+        xAxisProperty: "Burned",
+        tooltip:
+            "Chart the union of " + layer + " burn severity " +
+            startYear.toString() +
+            "-" +
+            endYear.toString() +
+            ". The maximum severity is used when fires overlap. ",
+    };
+}
+
+function setAspectChart(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict) {
+
+    const aspectObj = getAspectObj();
+    const aspectBinned = aspectObj.image;
+    const aspectLookupDict = aspectObj.lookupDict.getInfo();
+    let ravgByAspect = Object.keys(aspectLookupDict).map(function (k) {
+        const name = aspectLookupDict[k];
+        const out = severityLayerMaxSeverity
+            .updateMask(aspectBinned.eq(ee.Number.parse(k)))
+            .set("Aspect_Bin", name);
+        return out;
+    });
+    ravgByAspect = ee.ImageCollection(ravgByAspect);
+    const ravgByAspectStack = formatAreaChartCollection(
+        ravgByAspect,
+        Object.keys(severityLayerQueryClassDict),
+        Object.values(severityLayerQueryClassDict),
+        true
+    );
+
+    areaChartCollections["ravg" + layer + "Aspect"] = {
+        collection: ravgByAspectStack,
+        colors: Object.values(severityLayerClassDict),
+        label: "RAVG " + layer + " Burn Severity per Aspect",
+        stacked: true,
+        steppedLine: false,
+        chartType: "bar",
+        xAxisProperty: "Aspect_Bin",
+        xAxisLabel: "Aspect Bin",
+        tooltip: "Chart RAVG " + layer + " burn severity per aspect quadrants.",
+    };
 }
 
 function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
@@ -280,9 +392,6 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         mtbsSummaryMethod = "Highest-Severity";
     }
 
-    const chartRAVG = true;
-    const chartRAVGByNLCD = true;
-    const chartRAVGByAspect = true;
     const ravgAsset = "projects/gtac-ravg/assets/RAVG_annual_mosaics/" + layer + "_annual_mosaics";
     const ravgEndYear = endYear;
     const ravgYears = ee.List.sequence(2012, ravgEndYear);
@@ -386,136 +495,23 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
 
     const severityLayerQueryClassDict = getQueryClassDict(severityLayerClassDict);
 
-    if (chartRAVG === true) {
-        let severityLayerStack = formatAreaChartCollection(
-            severityLayer.select([0]),
-            Object.keys(severityLayerQueryClassDict),
-            Object.values(severityLayerQueryClassDict),
-            true
-        );
+    setSeverityLayerCharts(layer, severityLayer, severityLayerQueryClassDict, severityLayerClassDict, startYear, endYear);
 
-        areaChartCollections["ravg_" + layer.toLowerCase()] = {
-            collection: severityLayerStack,
-            colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity",
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "year",
-            tooltip: "Chart the RAVG " + layer + " burn severity"
-        };
-
-        areaChartCollections["ravg_" + layer.toLowerCase() + "_burn_mosaic"] = {
-            collection: ee.ImageCollection([
-                severityLayer
-                    .select([2])
-                    .mosaic()
-                    .unmask(0)
-                    .rename(["Burned"])
-                    .set(
-                        "Burned",
-                        "All Mapped Burned Area (Total of Low, Moderate, and High Severity) " +
-                        startYear.toString() +
-                        "-" +
-                        endYear.toString()
-                    ),
-            ]),
-            colors: ["#CC5500"],
-            label:
-                "RAVG " + layer + " Burned Area Total " +
-                startYear.toString() +
-                "-" +
-                endYear.toString(),
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "Burned",
-            tooltip:
-                "Chart the union of all burned areas (areas with low, moderate, or high severity) " +
-                startYear.toString() +
-                "-" +
-                endYear.toString(),
-        };
-
-        areaChartCollections["ravg_burn_severity_" + layer.toLowerCase() + "_mosaic"] = {
-            collection: ee.ImageCollection([
-                severityLayerStack
-                    .max()
-                    .unmask(0)
-                    .set(
-                        "Burned",
-                        layer + " Burn Severity Total " +
-                        startYear.toString() +
-                        "-" +
-                        endYear.toString()
-                    ),
-            ]),
-            colors: Object.values(severityLayerClassDict),
-            label:
-                "RAVG " + layer + " Burn Severity Total " +
-                startYear.toString() +
-                "-" +
-                endYear.toString(),
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "Burned",
-            tooltip:
-                "Chart the union of " + layer + " burn severity " +
-                startYear.toString() +
-                "-" +
-                endYear.toString() +
-                ". The maximum severity is used when fires overlap. ",
-        };
-    }
     let severityLayerMaxSeverity = severityLayer.select([0]).max();
-    let nlcdObj;
-    if (chartRAVGByNLCD) {
-        nlcdObj = getNLCDObj();
+    let nlcdObj = getNLCDObj();
 
-        chartSeverityAcrossReference(
-            layer,
-            nlcdObj.years,
-            nlcdObj.collection,
-            nlcdObj.queryDict,
-            severityLayerMaxSeverity,
-            severityLayerQueryClassDict,
-            severityLayerClassDict,
-            "NLCD"
-        );
-    }
+    chartSeverityAcrossReference(
+        layer,
+        nlcdObj.years,
+        nlcdObj.collection,
+        nlcdObj.queryDict,
+        severityLayerMaxSeverity,
+        severityLayerQueryClassDict,
+        severityLayerClassDict,
+        "NLCD"
+    );
 
-    if (chartRAVGByAspect) {
-        const aspectObj = getAspectObj();
-        const aspectBinned = aspectObj.image;
-        const aspectLookupDict = aspectObj.lookupDict.getInfo();
-        let ravgByAspect = Object.keys(aspectLookupDict).map(function (k) {
-            const name = aspectLookupDict[k];
-            const out = severityLayerMaxSeverity
-                .updateMask(aspectBinned.eq(ee.Number.parse(k)))
-                .set("Aspect_Bin", name);
-            return out;
-        });
-        ravgByAspect = ee.ImageCollection(ravgByAspect);
-        const ravgByAspectStack = formatAreaChartCollection(
-            ravgByAspect,
-            Object.keys(severityLayerQueryClassDict),
-            Object.values(severityLayerQueryClassDict),
-            true
-        );
-
-        areaChartCollections["ravg" + layer + "Aspect"] = {
-            collection: ravgByAspectStack,
-            colors: Object.values(severityLayerClassDict),
-            label: "RAVG " + layer + " Burn Severity per Aspect",
-            stacked: true,
-            steppedLine: false,
-            chartType: "bar",
-            xAxisProperty: "Aspect_Bin",
-            xAxisLabel: "Aspect Bin",
-            tooltip: "Chart RAVG " + layer + " burn severity per aspect quadrants.",
-        };
-    }
+    setAspectChart(layer, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict);
 
     const severityViz = {
         queryDict: severityLayerQueryClassDict,
