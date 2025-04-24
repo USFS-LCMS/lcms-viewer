@@ -41,6 +41,9 @@ function storeParams(showSpinner = true, showPopup = true) {
 
   urlParams.transitionChartingYears = getTransitionRowData(false);
   urlParams.mode = mode;
+  if (urlParams.levelColorPickers !== true) {
+    delete urlParams.productLevelLookups;
+  }
   urlParams.sourceURL = baseUrl();
   urlParams.expectedCode = getCode();
   let res = $.ajax({

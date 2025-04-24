@@ -94,7 +94,12 @@ td {
 .liClass {
   list-style: none;
 }
-
+.explorer-example-img{
+  padding:1rem;
+}
+.description-li{
+  list-style-type: disc;
+}
 .liClass::before {
   /* Unicode for a bullet */
   content: "\2022";
@@ -233,8 +238,8 @@ nav {
 }
 
 .home-section {
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   margin-bottom: 1rem;
 }
 .gtac-address > p {

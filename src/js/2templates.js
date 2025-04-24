@@ -292,7 +292,7 @@ const staticTemplates = {
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -308,11 +308,11 @@ const staticTemplates = {
                                     <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
       `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd>
                                     </p>`,
-      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                                <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+                                <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                                 <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                                 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                             </div>`
@@ -325,12 +325,12 @@ const staticTemplates = {
                                     </div>
                                     <p>The LCMS Dashboard application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
       `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>`,
@@ -349,7 +349,7 @@ const staticTemplates = {
       `
     <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
-    <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+    <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
     <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
 </div>`,
@@ -721,7 +721,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
         <div class="tab-content" id="highlights-table-divs"></div>
         <div id ='highlights-disclaimer-div' >
-        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
     </p></div>
     </div>`,
   dashboardHighlightsDiv: `<div id='dashboard-highlights-container' class='dashboard-highlights bg-black col-sm-7 col-md-4 col-xl-3'>
@@ -741,7 +741,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         `,
@@ -785,13 +785,10 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
   lcmsProductionDownloadDiv: `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2023.9)</span>
+                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2024.10)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'CONUS-change-summary-downloads'></ul>
-                                                  </li>
                                                   <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
                                                     <ul class="nested" id = 'CONUS-change-annual-downloads'></ul>
                                                   </li>
@@ -808,26 +805,23 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                               </li>
                                             </ul>
                                           </li>
-                                          <li><span class="caret caret-down">Southeastern Alaska (v2023.9)</span>
+                                          <li><span class="caret caret-down">Alaska (v2024.10)</span>
                                             <ul class="nested active">
                                               <li><span class="caret">Change</span>
                                                 <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'SEAK-change-summary-downloads'></ul>
-                                                  </li>
                                                   <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'SEAK-change-annual-downloads'></ul>
+                                                    <ul class="nested" id = 'AK-change-annual-downloads'></ul>
                                                   </li>
                                                 </ul>
                                               </li>
                                               <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'SEAK-land_cover-annual-downloads'></ul>
+                                                <ul class="nested" id = 'AK-land_cover-annual-downloads'></ul>
                                               </li>
                                               <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'SEAK-land_use-annual-downloads'></ul>
+                                                <ul class="nested" id = 'AK-land_use-annual-downloads'></ul>
                                               </li>
                                               <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                                <ul class="nested" id = 'SEAK-qa_bits-annual-downloads'></ul>
+                                                <ul class="nested" id = 'AK-qa_bits-annual-downloads'></ul>
                                               </li>
                                             </ul>
                                           </li>
@@ -1197,7 +1191,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10</a>
                                 </li>
 
                             </div>
@@ -1350,7 +1344,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10</a>
                                 </li>  
                             </div>
                         </div>
@@ -4583,39 +4577,44 @@ function getTransitionRowData(verbose) {
 }
 function setupTransitionPeriodUI(containerID = "transition-periods-container") {
   $(`#${containerID}`).empty();
+  // Add the transition periods UI for the charting tool
   $(`#${containerID}`).append(`
-  <hr>
-  <div class="row pb-2" title='Select Periods for Transition Area Charting. Please ensure each period does not completely overlap with the one preceeding it.'>
-      <div style='padding-left:0.5rem;padding-right:0.5rem;width:100%;'>
-  <p style='font-size:1.25rem;' >Transition Charting Periods</p>
-          <table class="table " id="transition-period-table">
-              <thead>
-                  <tr>
-                    <th class="text-center"></th>
-                    <th class="text-center">
-                        First Year
-                    </th>
-                    <th class="text-center">
-                        Last Year
-                    </th>
-                  </tr>
-              </thead>
-              
-      <tbody id='added-transition-rows'></tbody>
-      
-     
-          </table>
-
-  <div class="input-group-prepend ">
-                          <button title = 'Click to add a transition period' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="add-transition-row" onclick="addTransitionRow()"><i class="fa fa-plus teal " ></i></button>
-
-                          <button title = 'Click to remove a transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="remove-transition-row" onclick="removeLastTransitionRow()"><i class="fa fa-minus teal "></i></button>
-                      </div>
+    <hr>
+    <div class="row pb-2" title="Define periods for transition area charting. Each row is a period (start year to end year). Periods should not overlap. The most common value for each period will be used in the Sankey chart. Add or remove rows as needed.">
+      <div style="padding: 0 0.5rem; width: 100%;">
+        <p style="font-size:1.25rem; font-weight: 500;">Transition Charting Periods</p>
+        <table class="table" id="transition-period-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="text-center">Period Start Year</th>
+              <th class="text-center">Period End Year</th>
+            </tr>
+          </thead>
+          <tbody id="added-transition-rows"></tbody>
+        </table>
+        <div class="input-group-prepend">
+          <button
+            title="Add a new transition period row"
+            class="btn input-group-text bg-white search-box pr-1 pl-2"
+            id="add-transition-row"
+            onclick="addTransitionRow()"
+          >
+            <i class="fa fa-plus teal"></i>
+          </button>
+          <button
+            title="Remove the last transition period row"
+            style="border-radius: 0px 3px 3px 0px"
+            class="btn input-group-text bg-white search-box pr-1 pl-2"
+            id="remove-transition-row"
+            onclick="removeLastTransitionRow()"
+          >
+            <i class="fa fa-minus teal"></i>
+          </button>
+        </div>
       </div>
-  
-  </div>
-  
-`);
+    </div>
+  `);
   if (
     urlParams.transitionChartingYears !== undefined &&
     urlParams.transitionChartingYears !== null
@@ -4632,15 +4631,32 @@ let transitionRowI = 0;
 
 function addRow(containerID, rowID, yr1, yr2, simpleAppend = false) {
   let rows = $(`#${containerID} tr`);
-  const row = `<tr id='${rowID}'>
-  <td title = 'Click to drag each row to re-order'><i class="fa fa-sort teal "></i></td>
-  <td>
-  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr1}' placeholder='Enter Year' class="form-control"/>
-  </td>
-  <td>
-  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr2}'  placeholder='Enter Year' class="form-control"/>
-  </td>
-  </tr>`;
+  const row = `
+    <tr id='${rowID}'>
+      <td title='Drag this row to reorder'><i class="fa fa-sort teal"></i></td>
+      <td>
+        <input 
+          type="number" 
+          min="${activeStartYear}" 
+          max="${activeEndYear}" 
+          title="Enter a year within the valid range (${activeStartYear} - ${activeEndYear})" 
+          value="${yr1}" 
+          placeholder="Enter Year" 
+          class="form-control"
+        />
+      </td>
+      <td>
+        <input 
+          type="number" 
+          min="${activeStartYear}" 
+          max="${activeEndYear}" 
+          title="Enter a year within the valid range (${activeStartYear} - ${activeEndYear})" 
+          value="${yr2}" 
+          placeholder="Enter Year" 
+          class="form-control"
+        />
+      </td>
+    </tr>`;
   if (rows.length < 2 || simpleAppend) {
     $(`#${containerID}`).append(row);
   } else {

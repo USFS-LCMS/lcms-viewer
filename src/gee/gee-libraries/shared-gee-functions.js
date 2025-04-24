@@ -1125,29 +1125,27 @@ function setupDropdownTreeDownloads(studyAreaName) {
   const serverLocation = "https://data.fs.usda.gov/geodata/LCMS";
 
   const study_areas = {
-    SEAK: {
+    AK: {
       startYear: 1985,
-      endYear: 2023,
-      version: "2023-9",
+      endYear: 2024,
+      version: "2024-10",
       products: {
-        Change: ["annual", "summary"],
+        Change: ["annual"],
         Land_Cover: ["annual"],
         Land_Use: ["annual"],
         QA_Bits: ["annual"],
       },
-      summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
     },
     CONUS: {
       startYear: 1985,
-      endYear: 2023,
-      version: "2023-9",
+      endYear: 2024,
+      version: "2024-10",
       products: {
-        Change: ["annual", "summary"],
+        Change: ["annual"],
         Land_Cover: ["annual"],
         Land_Use: ["annual"],
         QA_Bits: ["annual"],
       },
-      summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
     },
     PRUSVI: {
       startYear: 1985,
@@ -1195,7 +1193,7 @@ function setupDropdownTreeDownloads(studyAreaName) {
           if (sa != "HI") {
             years.map((yr) => {
               const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
-              const name = url.substr(url.lastIndexOf("v20") + 8);
+              const name = `${product} Annual ${yr}`;
               $("#" + dropdownID).append(
                 `<option  value = "${url}">${name}</option>`
               );
@@ -1203,7 +1201,7 @@ function setupDropdownTreeDownloads(studyAreaName) {
           } else if (sa == "HI") {
             years.map((yr) => {
               const url = `${serverLocation}/LCMS_HAWAII_v${study_areas[sa].version}_${product}_Annual_${yr}.zip`;
-              const name = url.substr(url.lastIndexOf("v20") + 8);
+              const name = `${product} Annual ${yr}`;
               $("#" + dropdownID).append(
                 `<option  value = "${url}">${name}</option>`
               );
@@ -1214,7 +1212,7 @@ function setupDropdownTreeDownloads(studyAreaName) {
           if (sa != "HI") {
             study_areas[sa].summary_products.map((summary_product) => {
               const url = `${serverLocation}/LCMS_${sa}_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
-              const name = url.substr(url.lastIndexOf("v20") + 8);
+              const name = `${product} ${summary_product} Summary ${study_areas[sa].startYear}-${study_areas[sa].endYear}`;
               $("#" + dropdownID).append(
                 `<option  value = "${url}">${name}</option>`
               );
@@ -1222,7 +1220,7 @@ function setupDropdownTreeDownloads(studyAreaName) {
           } else if (sa == "HI") {
             study_areas[sa].summary_products.map((summary_product) => {
               const url = `${serverLocation}/LCMS_HAWAII_v${study_areas[sa].version}_${product}_${summary_product}_Summary_${study_areas[sa].startYear}_${study_areas[sa].endYear}.zip`;
-              const name = url.substr(url.lastIndexOf("v20") + 8);
+              const name = `${product} ${summary_product} Summary ${study_areas[sa].startYear}-${study_areas[sa].endYear}`;
               $("#" + dropdownID).append(
                 `<option  value = "${url}">${name}</option>`
               );

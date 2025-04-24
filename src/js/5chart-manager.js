@@ -111,6 +111,7 @@ function chartCacheduserSelectedAreaChartingAOIs() {
       let selectedFeaturesT = selectedFeaturesJSON[l.layerName].eeObject.filter(
         ee.Filter.inList("system:index", l.ids)
       );
+
       addSelectedFeaturesToMapWrapper(selectedFeaturesT, l.names, l.layerName);
     });
     updateSelectedAreasNameList();
