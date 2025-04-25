@@ -534,7 +534,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
 
 function getRAVGSeverityLayer(severityLayer, evtCollections) {
 
-    const ravgSeverityLayerAndRefLayers = getRAVGSeverityLayerAndRefLayers(severityLayer, "layer-list", false);
+    const ravgSeverityLayerAndRefLayers = getRAVGSeverityLayerAndRefLayers(severityLayer, "layer-list", (severityLayer == "BA7") ? true : false);
     const nlcdLCObj = ravgSeverityLayerAndRefLayers.NLCD;
     const ravgSeverityLayerCollection = ravgSeverityLayerAndRefLayers.severityLayer.collection;
     const yearsCli = range(startYear, endYear + 1);
