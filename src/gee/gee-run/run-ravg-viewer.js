@@ -936,3 +936,9 @@ function runRAVG() {
     setRAVGSelectionLayers();
     setRAVGBurnPerimeterLayer();
 }
+
+module.exports = {
+    getQueryClassDict,
+    yearSlice,
+    getEVTVegClassLayer
+}
