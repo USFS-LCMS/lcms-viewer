@@ -40,12 +40,12 @@
 <body data-spy="scroll">
   <nav class="navbar navbar-inverse   navbar-fixed-top navbar-expand-sm">
     <div class="navbar-header">
-      <span class="  teal-study-area-label ">
+      <span class="teal-study-area-label ">
         <span class="navbar-toggler-icon fa fa-bars nav-toggler" onclick="toggleNavbar()" style="display:none"></span>
-        <img style="height:2.1rem;margin-left: -0.3rem;margin-bottom:0.4rem" alt='USDA Forest Service Logo'
+        <img style="height:2.5rem;margin-left: -0.3rem;margin-bottom:0.4rem" alt='USDA Forest Service Logo'
           src="./src/assets/images/logos_usda-fs.svg">
         <div class="vl-home"></div>
-        <img style="height:1.8rem;margin-bottom:0.4rem" alt='Landscape Change Monitoring System logo'
+        <img style="height:2.25rem;margin-bottom:0.4rem" alt='Landscape Change Monitoring System logo'
           src="./src/assets/images/logo_icon_lcms-data-viewer.svg"> LANDSCAPE <span
           style="font-weight:1000;font-family: 'Roboto Black', sans-serif;"> CHANGE</span> MONITORING SYSTEM
       </span>
@@ -79,7 +79,7 @@
   <main role="main">
     <div id="intro" class="container-fluid bg-dark info-page" aria-labelledby="intro-nav">
 
-      <div class='row intro-text' style="margin-top:1rem;">
+      <div class='row intro-text' style="margin-top:1rem;margin-left:1rem;">
         <p>
           <b>
             <i> Landscape Change Monitoring System (LCMS) is a remote sensing-based system for mapping and
@@ -117,16 +117,57 @@
       </div>
       <div class="row">
         <div class='col-sm-3'>
-          <img style='width:100%;' alt="Map of LCMS Change across Alaska"
-            src="./src/assets/images/AK_v2024-10_Change.png" />
-          <img style='width:100%;' alt="Map of LCMS Change across Puerto Rico and the U.S. Virgin Islands"
-            src="./src/assets/images/PRUSVI_v2024-10_Change.png" />
-          <img style='width:100%;' alt="Map of LCMS Change across the Conterminous U.S."
-            src="./src/assets/images/HAWAII_v2024-10_Change.png" />
+          <div>
+            <p class="sa-label">Alaska</p>
+            <img style='width:100%;' alt="Map of LCMS Change across Alaska"
+              src="./src/assets/images/AK_v2024-10_Change.png" />
+          </div>
+          <hr>
+          <div>
+            <p class="sa-label">Puerto Rico and U.S. Virgin Islands</p>
+            <img style='width:100%;' alt="Map of LCMS Change across Puerto Rico and the U.S. Virgin Islands"
+              src="./src/assets/images/PRUSVI_v2024-10_Change.png" />
+          </div>
+          <hr>
+          <div>
+            <p class="sa-label">Hawaii</p>
+            <img style='width:100%;' alt="Map of LCMS Change across the Conterminous U.S."
+              src="./src/assets/images/HAWAII_v2024-10_Change.png" />
+          </div>
         </div>
         <div class='col-sm-9'>
+          <p class="sa-label">Conterminous U.S.</p>
           <img style='width:100%;' alt="Map of LCMS Change across the Conterminous U.S."
             src="./src/assets/images/CONUS_v2024-10_Change.png" />
+          <div class=" legend large-legend">Conterminous U.S. and Alaska (v2024.10)
+            <ul class="legend-labels" id="Change-class-container">
+              <li><span style="background:#FF09F3;"></span>Wind</li>
+              <li><span style="background:#541AFF;"></span>Hurricane</li>
+              <li><span style="background:#E4F5FD;"></span>Snow or Ice Transition</li>
+              <li><span style="background:#CC982E;"></span>Desiccation</li>
+              <li><span style="background:#0ADAFF;"></span>Inundation</li>
+              <li><span style="background:#A10018;"></span>Prescribed Fire</li>
+              <li><span style="background:#D54309;"></span>Wildfire</li>
+              <li><span style="background:#FAFA4B;"></span>Mechanical Land Transformation</li>
+              <li><span style="background:#AFDE1C;"></span>Tree Removal</li>
+              <li><span style="background:#FFC80D;"></span>Defoliation</li>
+              <li><span style="background:#A64C28;"></span>Southern Pine Beetle</li>
+              <li><span style="background:#F39268;"></span>Insect, Disease, or Drought Stress
+              </li>
+              <li><span style="background:#C291D5;"></span>Other Loss</li>
+              <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
+            </ul>
+          </div>
+
+          <div class=" legend large-legend">Puerto Rico and U.S. Virgin Islands and Hawaii (v2023.9)
+            <ul class="legend-labels" id="Change-class-container">
+
+              <li><span style="background:#F39268;"></span>Slow Loss
+              </li>
+              <li><span style="background:#D54309;"></span>Fast Loss</li>
+              <li><span style="background:#00A398;"></span>Gain</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -134,31 +175,14 @@
 
 
       <div class="row ">
-        <div class=" legend large-legend " style="margin:0.75rem;">
-          <ul class="legend-labels" id="Change-class-container">
-            <li><span style="background:#FF09F3;"></span>Wind</li>
-            <li><span style="background:#541AFF;"></span>Hurricane</li>
-            <li><span style="background:#E4F5FD;"></span>Snow or Ice Transition</li>
-            <li><span style="background:#CC982E;"></span>Desiccation</li>
-            <li><span style="background:#0ADAFF;"></span>Inundation</li>
-            <li><span style="background:#A10018;"></span>Prescribed Fire</li>
-            <li><span style="background:#D54309;"></span>Wildfire</li>
-            <li><span style="background:#FAFA4B;"></span>Mechanical Land Transformation</li>
-            <li><span style="background:#AFDE1C;"></span>Tree Removal</li>
-            <li><span style="background:#FFC80D;"></span>Defoliation</li>
-            <li><span style="background:#A64C28;"></span>Southern Pine Beetle</li>
-            <li><span style="background:#F39268;"></span>Insect, Disease, or Drought Stress
-            </li>
-            <li><span style="background:#C291D5;"></span>Other Loss</li>
-            <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
-          </ul>
-        </div>
+
       </div>
     </div>
-    <div id="applications" class="container-fluid bg-white info-page">
+    <hr>
+    <div id="applications" class="container-fluid info-page bg-dark">
       <div class="home-section">
         <h2>APPLICATIONS</h2>
-        <div class='row bg-dark'>
+        <div class='row '>
           <div class="col-md-6 conus-pane">
             <h3>Monitor annual change</h3>
             <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
@@ -177,7 +201,7 @@
               </div>
             </div>
 
-            <div class=" legend large-legend ">
+            <div class=" legend large-legend">Conterminous U.S. and Alaska (v2024.10)
               <ul class="legend-labels" id="Change-class-container">
                 <li><span style="background:#FF09F3;"></span>Wind</li>
                 <li><span style="background:#541AFF;"></span>Hurricane</li>
@@ -194,6 +218,15 @@
                 </li>
                 <li><span style="background:#C291D5;"></span>Other Loss</li>
                 <li><span style="background:#00A398;"></span>Vegetation Successional Growth</li>
+              </ul>
+            </div>
+
+            <div class=" legend large-legend">Puerto Rico and U.S. Virgin Islands and Hawaii (v2023.9)
+              <ul class="legend-labels" id="Change-class-container">
+                <li><span style="background:#F39268;"></span>Slow Loss
+                </li>
+                <li><span style="background:#D54309;"></span>Fast Loss</li>
+                <li><span style="background:#00A398;"></span>Gain</li>
               </ul>
             </div>
           </div>
@@ -248,11 +281,11 @@
         </div>
         <hr>
         <div class='row bg-dark'>
-          <div class="col-md-6 conus-pane">
+          <div class="col-md-8 conus-pane">
             <h3>Monitor annual land cover changes</h3>
             <p>Surface components of the land that are present and visible</p>
 
-            <hr>
+
             <div class="row">
               <div class='col-sm-3'>
                 <img style='width:100%;' alt="Map of LCMS Land Cover output across Alaska"
@@ -288,12 +321,12 @@
             </div>
           </div>
 
-          <div class="col-md-3 application-examples">
+          <div class="col-md-2 application-examples">
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over Lake Mead"
               src="./src/assets/images/Lake_Mead-Land_Cover_wYears.gif">
             <p>Change in Lake Mead water level, Nev. caused by water consumption & decadal drought</p>
           </div>
-          <div class="col-md-3 application-examples">
+          <div class="col-md-2 application-examples">
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over the Columbia Glacier"
               src="./src/assets/images/Columbia_Glacier-Land_Cover_wYears.gif">
             <p>Change in extent of the Columbia Glacier, Alaska</p>
@@ -347,35 +380,37 @@
         </div>
       </div>
     </div>
-    <div id="products" class="container-fluid bg-white info-page">
+    <hr>
+    <div id="products" class="container-fluid bg-dark info-page">
       <div class="home-section">
         <h2>DATA DESCRIPTIONS</h2>
 
-        <div class="row bg-dark data-descriptions-row data-descriptions-header" id="data-descriptions-header-row">
-          <div class="col-sm-2 teal80"> Name </div>
-          <div class="col-sm-7 teal80"> Description </div>
-          <div class="col-sm-3 teal80"> Example </div>
-        </div>
-        <div class="row bg-dark py-2 data-descriptions-row">
-          <div class="col-sm-2">
-            <p class="data-description-classes">Change</p>
-          </div>
-          <div class="col-sm-7">
+
+        <div class="row  py-2 data-descriptions-row">
+
+          <h3 class="data-description-classes">Change</h3>
+
+          <div class="col-sm-5">
             <b>Change classes represent the most recent state of vegetation cover change</b>
-            <ul class='list-group'>
-              <li class="list-group-item bg-dark">Fast Loss: <smalltext>Vegetation cover loss caused by short-duration
+            <ul>
+              <li class="description-li">Fast Loss: <smalltext>Vegetation cover loss caused by short-duration
                   events. For example, a fire or
                   harvest that causes rapid vegetation cover change.</smalltext>
               </li>
-              <li class="list-group-item bg-dark">Slow Loss: <smalltext>Vegetation cover loss caused by long-duration
+
+              <li class="description-li">Fast Loss: <smalltext>Vegetation cover loss caused by short-duration
+                  events. For example, a fire or
+                  harvest that causes rapid vegetation cover change.</smalltext>
+              </li>
+              <li class="description-li">Slow Loss: <smalltext>Vegetation cover loss caused by long-duration
                   events. For example, mountain pine
                   beetle-caused mortality in Rocky Mountain forests.</smallte xt>
               </li>
-              <li class="list-group-item bg-dark">Gain: <smalltext>Vegetation cover growth after a loss of vegetation
+              <li class="description-li">Gain: <smalltext>Vegetation cover growth after a loss of vegetation
                   cover. For example, new growth of
                   tree saplings following a fire or harvest.</smalltext>
               </li>
-              <li class="list-group-item bg-dark">Stable: <smalltext>Where no significant change is evident in the
+              <li class="description-li">Stable: <smalltext>Where no significant change is evident in the
                   spectral response and the trend is
                   essentially flat. Agricultural systems and wetlands are commonly highly variable spectrally through
                   time, and are thus considered stable but ephemeral.</smalltext>
@@ -391,33 +426,32 @@
               src="./src/assets/images/Fountain_Wildfire-Change_wYears.gif">
           </div>
         </div>
-        <div class="row bg-dark py-2 data-descriptions-row">
-          <div class="col-sm-2">
-            <p class="data-description-classes">Land Cover</p>
-          </div>
-          <div class="col-sm-7">
+        <div class="row  py-2 data-descriptions-row">
+          <h3 class="data-description-classes">Land Cover</h3>
+
+          <div class="col-sm-5">
             <b>Land cover classes represent the vegetation or other biophysical attributes of the land surface</b>
             <div class="row data-descriptions-classes-row">
               <div class="col-sm-6">
-                <ul class='list-group'>
-                  <li class="list-group-item bg-dark">Trees </li>
-                  <li class="list-group-item bg-dark">Tall Shrubs-Trees (Alaska only) </li>
-                  <li class="list-group-item bg-dark">Shrubs-Trees </li>
-                  <li class="list-group-item bg-dark">Grass-Trees </li>
-                  <li class="list-group-item bg-dark">Barren-Trees </li>
-                  <li class="list-group-item bg-dark">Tall-Shrub (Alaska only) </li>
-                  <li class="list-group-item bg-dark">Shrubs </li>
+                <ul>
+                  <li class="description-li">Trees </li>
+                  <li class="description-li">Tall Shrubs-Trees (Alaska only) </li>
+                  <li class="description-li">Shrubs-Trees </li>
+                  <li class="description-li">Grass-Trees </li>
+                  <li class="description-li">Barren-Trees </li>
+                  <li class="description-li">Tall-Shrub (Alaska only) </li>
+                  <li class="description-li">Shrubs </li>
                 </ul>
               </div>
               <div class="col-sm-6">
-                <ul class='list-group'>
-                  <li class="list-group-item bg-dark">Grass-Shrubs </li>
-                  <li class="list-group-item bg-dark">Barren-Shrubs
-                  <li class="list-group-item bg-dark">Grass </li>
-                  <li class="list-group-item bg-dark">Barren-Grass </li>
-                  <li class="list-group-item bg-dark">Barren-Impervious </li>
-                  <li class="list-group-item bg-dark">Snow or ice </li>
-                  <li class="list-group-item bg-dark">Water </li>
+                <ul>
+                  <li class="description-li">Grass-Shrubs </li>
+                  <li class="description-li">Barren-Shrubs
+                  <li class="description-li">Grass </li>
+                  <li class="description-li">Barren-Grass </li>
+                  <li class="description-li">Barren-Impervious </li>
+                  <li class="description-li">Snow or ice </li>
+                  <li class="description-li">Water </li>
                 </ul>
               </div>
             </div>
@@ -431,25 +465,25 @@
               src="./src/assets/images/Great_Salt_Lake-Land_Cover_wYears.gif">
           </div>
         </div>
-        <div class="row bg-dark py-2 data-descriptions-row">
-          <div class="col-sm-2">
-            <p class="data-description-classes">Land Use</p>
-          </div>
-          <div class="col-sm-7">
+        <div class="row  py-2 data-descriptions-row">
+
+          <h3 class="data-description-classes">Land Use</h3>
+
+          <div class="col-sm-5">
             <b>Land use classes represent how biophysical attributes are intended to be used by humans</b>
             <div class="row data-descriptions-classes-row">
               <div class="col-sm-6">
-                <ul class='list-group'>
-                  <li class="list-group-item bg-dark">Agriculture </li>
-                  <li class="list-group-item bg-dark">Developed </li>
-                  <li class="list-group-item bg-dark">Forest </li>
+                <ul>
+                  <li class="description-li">Agriculture </li>
+                  <li class="description-li">Developed </li>
+                  <li class="description-li">Forest </li>
                 </ul>
               </div>
               <div class="col-sm-6">
-                <ul class='list-group'>
-                  <li class="list-group-item bg-dark">Non-forest Wetland </li>
-                  <li class="list-group-item bg-dark">Other </li>
-                  <li class="list-group-item bg-dark">Rangeland or Pasture </li>
+                <ul>
+                  <li class="description-li">Non-forest Wetland </li>
+                  <li class="description-li">Other </li>
+                  <li class="description-li">Rangeland or Pasture </li>
                 </ul>
               </div>
             </div>
@@ -465,7 +499,8 @@
         </div>
       </div>
     </div>
-    <div id="data-explorer" class="container-fluid bg-white info-page ">
+    <hr>
+    <div id="data-explorer" class="container-fluid bg-dark info-page ">
       <div class="row home-section">
         <h2>Explore LCMS Data</h2>
         <h3>Several web mapping applications are available to explore, summarize, and produce reports of how our
@@ -490,7 +525,6 @@
               <li class="description-li">Download data for further analysis or reporting.</li>
             </ul>
           </div>
-
           <div class="col-lg-4 bg-dark explorer-example-img"><a href="./" target="_blank"><img class='img-responsive '
                 alt="LCMS Data Explorer example image" src="./src/assets/images/data-explorer-map-example.PNG"></a>
           </div>
@@ -498,9 +532,37 @@
         <hr>
         <div class="row">
           <div class="col-lg-5">
+            <strong style="font-size:1.5rem;">LCMS Dashboard</strong>
+            <p>
+              The <a href="./dashboard.html" target="_blank"><b>LCMS Dashboard</b></a> The LCMS Dashboard is
+              designed to provide the ability to quickly summarize and generate reports of how our landscapes are
+              changing. Users can:
+            </p>
+            <ul>
+              <li class="description-li"><b>Select a summary
+                  area</b> by selecting State/County or choose the Forest Service hierarchy to browse through Forest
+                Service Regions, Forests, and Ranger Districts</li>
+              <li class="description-li"><b>Define the analysis
+                  years</b> using the year slider. </li>
+              <li class="description-li"><b>Browse the LCMS
+                  products</b> available in the Tabs. The three LCMS products are <i>Vegetation Change</i>, <i>Land
+                  Cover</i>, and <i>Land Use</i>. The selected LCMS product will be visible on the map with a change
+                slider to compare the first and last year selected.</li>
+              <li class="description-li">Export a pdf report</li>
+            </ul>
+          </div>
+
+          <div class="col-lg-4 bg-dark explorer-example-img"><a href="./dashboard.html" target="_blank"><img
+                class='img-responsive mt-4' alt="LCMS Data Explorer example image"
+                src="./src/assets/images/dashboard-map-example.PNG"></a>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-5">
             <strong style="font-size:1.5rem;">LCMS Base Learner Explorer</strong>
             <p>
-              The <a href="./lcms-base-learner.html" target="_blank"><b>USFS LCMS Base Learner Explorer</b></a> allows
+              The <a href="./lcms-base-learner.html" target="_blank"><b>LCMS Base Learner Explorer</b></a> allows
               users to interactively view the raw input data and temporal
               segmentation results that are used to generate final LCMS products. This tool is especially useful for
               researchers and analysts interested in understanding the underlying data sources used to create LCMS
@@ -514,9 +576,7 @@
               <li class="description-li">Visualize synthetic composite time-lapses</li>
               <li class="description-li">Download base learner and segmentation tabular and chart data for further
                 analysis.</li>
-
             </ul>
-
           </div>
 
           <div class="col-lg-4 bg-dark explorer-example-img"><a href="./lcms-base-learner.html" target="_blank"><img
@@ -524,69 +584,61 @@
                 src="./src/assets/images/base-learner-explorer-map-example.PNG"></a>
           </div>
         </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-5">
+            <strong style="font-size:1.5rem;">LCMS In-Motion</strong>
+            <p>
+              The <a href="./lcms-in-motion.html" target="_blank"><b>LCMS In-Motion</b></a> provides interactive
+              animations and visualizations of landscape change over time using LCMS products. Users can:
+            </p>
+            <ul>
+              <li class="description-li">View time-lapse animations of LCMS data for selected areas.</li>
+              <li class="description-li">Explore how land cover, land use, and change classes evolve year by year.</li>
 
+              <li class="description-li">Export animations for presentations or reports.</li>
+            </ul>
+          </div>
 
-      </div>
-
-      <div class='row home-section bg-dark'>
-        <div class="col-md-4" title='Click to open LCMS Data Explorer'>
-          <p>Data Explorer</p>
-          <a href="./index.html" target="_blank">
-            <img class='img-responsive' alt="LCMS Data Explorer example image"
-              src="./src/assets/images/data-explorer-map-example.PNG">
-            <p class="homepage-link">Become familiar with LCMS data and explore landscape changes in a highly
-              interactive environment</p>
-          </a>
+          <div class="col-lg-4 bg-dark explorer-example-img"><a href="./lcms-in-motion.html" target="_blank"><img
+                class='img-responsive mt-4' alt="LCMS In-Motion example image"
+                src="./src/assets/images/lcms-in-motion-map-example.PNG"></a>
+          </div>
         </div>
-        <div class="col-md-4" title='Click to open LCMS Data Dashboard'>
-          <p>Data Dashboard</p>
-          <a href="./dashboard.html" target="_blank">
-            <img class='img-responsive' alt="LCMS Dashboard example image"
-              src="./src/assets/images/dashboard-map-example.PNG">
-            <p class="homepage-link">See summaries of how landscapes are changing and generate reports</p>
-          </a>
-        </div>
-        <div class="col-md-4" title='Click to open LCMS in Motion'>
-          <p>LCMS in Motion</p>
-          <a href="./lcms-in-motion.html" target="_blank">
-            <img class='img-responsive' alt="LCMS-in-Motion example image"
-              src="./src/assets/images/lcms-in-motion-map-example.PNG">
-            <p class="homepage-link">Discover our changing landscape through animation</p>
-          </a>
-        </div>
-      </div>
-      <hr>
-      <div class='row home-section'>
+        <hr>
         <h3>Additional LCMS data exploration tools</h3>
-      </div>
-      <div class='row home-section bg-dark'>
-        <div class="col-md-3" title='Click to open LCMS Base Learner Explorer'>
-          <p>Base Learner Explorer</p>
-          <a href="./lcms-base-learner.html" target="_blank">
-            <img class='img-responsive' alt="LCMS Base Learner Explorer example image"
-              src="./src/assets/images/base-learner-explorer-map-example.PNG">
-            <p class="homepage-link">Explore the raw input data used to create the final LCMS products. This app is
-              useful to gain insight into the strengths and weaknesses of two popular temporal segmentation methods
-              used
-              in LCMS.</p>
-          </a>
-        </div>
-        <div class="col-md-3" title='Click to open LCMS Insects and Disease Survey (IDS) Explorer'>
-          <p>Insects and Disease Explorer</p>
-          <a href="./IDS.html" target="_blank">
-            <img class='img-responsive' alt="LCMS IDS Explorer example image"
-              src="./src/assets/images/ids-explorer-map-example.PNG">
-            <p class="homepage-link">Explore how LCMS relates to the Forest Service Insects and Disease Survey (IDS)
-              dataset.</p>
-          </a>
+        <div class="row">
+          <div class="col-lg-5">
+            <strong style="font-size:1.5rem;">LCMS IDS Explorer</strong>
+            <p>
+              The <a href="./ids.html" target="_blank"><b>LCMS IDS Explorer</b></a> allows users to compare LCMS-mapped
+              vegetation change with the USDA Forest Service Insect and Disease Survey (IDS) dataset. This tool is
+              designed to help users:
+            </p>
+            <ul>
+              <li class="description-li">Visualize spatial overlap and differences between LCMS change products and IDS
+                aerial survey data.</li>
+              <li class="description-li">Explore patterns of insect and disease impacts alongside LCMS disturbance and
+                recovery classes.</li>
+              <li class="description-li">Interactively select areas and years to compare mapped results.</li>
+              <li class="description-li">Download summary data for further analysis.</li>
+            </ul>
+          </div>
+
+          <div class="col-lg-4 bg-dark explorer-example-img"><a href="./ids.html" target="_blank"><img
+                class='img-responsive mt-4' alt="LCMS IDS Explorer example image"
+                src="./src/assets/images/ids-explorer-map-example.PNG"></a>
+          </div>
         </div>
       </div>
     </div>
-    <div id="download" class="container-fluid bg-white info-page ">
+
+    <hr>
+    <div id="download" class="container-fluid bg-dark info-page ">
       <div class="row home-section">
         <h2>DOWNLOAD</h2>
         <h3>Click on the folders to download annual LCMS data</h3>
-        <div id='main-container'>
+        <div id='main-container' class="container-fluid bg-dark">
           <ul id="downloadTree" class="pl-0 mb-0"
             title="Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.">
             <li class="pl-0 col-lg-4" , style="margin-top:1rem">
@@ -2688,8 +2740,8 @@
 
       <!-- <div class="row" style>Image Services</div> -->
     </div>
-
-    <div id="background" class="container-fluid bg-white info-page">
+    <hr>
+    <div id="background" class="container-fluid bg-dark info-page">
       <div class='row home-section' style="margin-bottom: 1rem;">
         <h2>ABOUT</h2>
         <div class="col-sm-6">
@@ -2770,33 +2822,31 @@
         </div>
       </div>
     </div>
+    <hr>
     <div id="contact" class="container-fluid bg-dark">
+
+
       <div class='row home-section'>
-        <h2>CONTACT</h2>
-        <div class="col-sm-6">
-          <div class="gtac-address">
-            <a href="https://www.fs.usda.gov/about-agency/gtac" class='homepage-link' target="_blank"
-              title="LCMS is produced by the Forest Service Field Services and Innovation Center Geospatial Office (FSIC GO).">
-              Forest Service Field Services and Innovation Center Geospatial Office (FSIC GO) </a>
-            <p>125 S State St, Suite 7105</p>
-            <p>Salt Lake City, Utah 84138</p>
-          </div>
+
+        <div class='col-sm-2'>
           <a class='homepage-link' href="mailto: sm.fs.lcms@usda.gov" title="Email us with any questions"> Contact Us
           </a>
-
         </div>
-        <div class="col-sm-6">
-
-          <li><a href="https://www.usda.gov/privacy-policy/" class='homepage-link' target="_blank">
-              Privacy Policy</a>
-          </li>
+        <div class='col-sm-2'>
+          <a href="https://www.usda.gov/privacy-policy/" class='homepage-link' target="_blank">
+            Privacy Policy</a>
+        </div>
+        <div class='col-sm-2'>
           <li> <a href="https://www.usda.gov/accessibility-statement/" class='homepage-link' target="_blank">
               Accessibility Statement</a>
           </li>
-          <li> <a href="https://www.fs.usda.gov/about-agency/disclaimers-important-notices" class='homepage-link'
-              target="_blank">
-              Disclaimers</a>
-          </li>
+        </div>
+        <div class='col-sm-2'>
+          <a href="https://www.fs.usda.gov/about-agency/disclaimers-important-notices" class='homepage-link'
+            target="_blank">
+            Disclaimers</a>
+        </div>
+        <div class='col-sm-3'>
 
           <a href="https://earthengine.google.com/" target="_blank">
             <img src="./src/assets/images/gee-logo-light.png" class='home-image-icon-bar'
@@ -2817,9 +2867,7 @@
               href="#" title="Click to learn more about the U.S. Forest Service">
           </a>
         </div>
-        <div class="col-sm-4">
 
-        </div>
       </div>
     </div>
   </main>
