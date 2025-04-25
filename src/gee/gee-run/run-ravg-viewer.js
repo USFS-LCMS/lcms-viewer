@@ -1,3 +1,9 @@
+function ravgYearRange() {
+    const startYear = 2012;
+    const endYear = 2023;
+    return startYear.toString() + "-" + endYear.toString();
+}
+
 function chartSeverityAcrossReference(severityLayer, refYears, refImageCollection, refLayerQueryClassDict, severityLayerMaxSeverity, severityLayerQueryClassDict, severityLayerClassDict, refType) {
 
     //puts all of the ref sub-layer into a single layer and charts based on that.
@@ -225,15 +231,11 @@ function getRAVGBurnPerimeterLayer() {
 }
 
 
-function setRAVGBurnPerimeterLayer(startYear, endYear) {
+function setRAVGBurnPerimeterLayer() {
     
     let perimsRAVG = getRAVGBurnPerimeterLayer();
     let label = "RAVG Burn Perimeters";
-    let tooltip = "Delineated perimeters of each RAVG mapped fire from " +
-        startYear.toString() +
-        "-" +
-        endYear.toString() +
-        ". ";
+    let tooltip = "Delineated perimeters of each RAVG mapped fire from " + ravgYearRange() + ". ";
 
     Map.addLayer(
         perimsRAVG,
@@ -295,27 +297,17 @@ function setSeverityLayerCharts(layer, severityLayer, severityLayerQueryClassDic
                 .rename(["Burned"])
                 .set(
                     "Burned",
-                    "All Mapped Burned Area (Total of Low, Moderate, and High Severity) " +
-                    startYear.toString() +
-                    "-" +
-                    endYear.toString()
+                    "All Mapped Burned Area (Total of Low, Moderate, and High Severity) " + ravgYearRange()
                 ),
         ]),
         colors: ["#CC5500"],
         label:
-            "RAVG " + layer + " Burned Area Total " +
-            startYear.toString() +
-            "-" +
-            endYear.toString(),
+            "RAVG " + layer + " Burned Area Total " + ravgYearRange(),
         stacked: true,
         steppedLine: false,
         chartType: "bar",
         xAxisProperty: "Burned",
-        tooltip:
-            "Chart the union of all burned areas (areas with low, moderate, or high severity) " +
-            startYear.toString() +
-            "-" +
-            endYear.toString(),
+        tooltip: "Chart the union of all burned areas (areas with low, moderate, or high severity) " + ravgYearRange()
     };
 
     areaChartCollections["ravg_burn_severity_" + layer.toLowerCase() + "_mosaic"] = {
@@ -325,28 +317,17 @@ function setSeverityLayerCharts(layer, severityLayer, severityLayerQueryClassDic
                 .unmask(0)
                 .set(
                     "Burned",
-                    layer + " Burn Severity Total " +
-                    startYear.toString() +
-                    "-" +
-                    endYear.toString()
+                    layer + " Burn Severity Total " + ravgYearRange()
                 ),
         ]),
         colors: Object.values(severityLayerClassDict),
         label:
-            "RAVG " + layer + " Burn Severity Total " +
-            startYear.toString() +
-            "-" +
-            endYear.toString(),
+            "RAVG " + layer + " Burn Severity Total " + ravgYearRange(),
         stacked: true,
         steppedLine: false,
         chartType: "bar",
         xAxisProperty: "Burned",
-        tooltip:
-            "Chart the union of " + layer + " burn severity " +
-            startYear.toString() +
-            "-" +
-            endYear.toString() +
-            ". The maximum severity is used when fires overlap. ",
+        tooltip: "Chart the union of " + layer + " burn severity " + ravgYearRange() + ". The maximum severity is used when fires overlap. "
     };
 }
 
@@ -529,12 +510,7 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
         showSeverity,
         null,
         null,
-        "RAVG " + layer + " " +
-        mtbsSummaryMethod +
-        " burn severity mosaic from " +
-        startYear.toString() +
-        "-" +
-        ravgEndYear.toString(),
+        "RAVG " + layer + " " + mtbsSummaryMethod + " burn severity mosaic from " + ravgYearRange(),
         whichLayerList
     );
 
@@ -607,7 +583,7 @@ function getRAVGSeverityLayer(severityLayer, evtCollections) {
         maxSeverity,
         severityLayerQueryDict,
         severityLayerLegendDict,
-        "EVT-Binary"
+        "EVT-Tree/Non-Tree"
     );
 
     return {
@@ -843,7 +819,7 @@ function setRAVGSelectionLayers() {
     );
 }
 
-function setRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
+function setRAVGBurnCountLayer(cbi4, cc5, ba7) {
 
     //counts based on the 'burnedNotBurned' band ()
     let cbi4Count = cbi4.select("burnedNotBurned").count().rename("cbi4_count");
@@ -876,16 +852,13 @@ function setRAVGBurnCountLayer(startYear, endYear, cbi4, cc5, ba7) {
         false,
         null,
         null,
-        "RAVG number of burns mapped for a given area from " +
-        startYear.toString() +
-        "-" +
-        endYear.toString(),
+        "RAVG number of burns mapped for a given area from " + ravgYearRange(),
         "layer-list"
     );
 
 }
 
-function setRAVGBurnYearLayer(startYear, endYear) {
+function setRAVGBurnYearLayer() {
 
     let perimsRAVG = getRAVGBurnPerimeterLayer();
     let perimsRAVGYears = perimsRAVG.map(function (f) {
@@ -893,13 +866,7 @@ function setRAVGBurnYearLayer(startYear, endYear) {
         let yearNum = ee.Number.parse(yearStr);
         return f.set("FIRE_YEAR_NUM", yearNum);
     });
-
-    let tooltip = "Delineated perimeters of each RAVG mapped fire from " +
-        startYear.toString() +
-        "-" +
-        endYear.toString() +
-        ". ";
-
+    let tooltip = "Delineated perimeters of each RAVG mapped fire from " + ravgYearRange() + ". ";
     let emptyImg = ee.Image().byte();
     let yearImg = emptyImg.paint({
         featureCollection: perimsRAVGYears,
@@ -962,10 +929,10 @@ function runRAVG() {
     let cbi4 = getRAVGSeverityLayer("CBI4", evtCollections);
     let cc5 = getRAVGSeverityLayer("CC5", evtCollections);
     let ba7 = getRAVGSeverityLayer("BA7", evtCollections);
-    setRAVGBurnCountLayer(startYear, endYear, cbi4.originalCollection, cc5.originalCollection, ba7.originalCollection);
-    setRAVGBurnYearLayer(startYear, endYear, cbi4.summarized, cc5.summarized, ba7.summarized);
+    setRAVGBurnCountLayer(cbi4.originalCollection, cc5.originalCollection, ba7.originalCollection);
+    setRAVGBurnYearLayer(cbi4.summarized, cc5.summarized, ba7.summarized);
     populateAreaChartDropdown(); //enables the charting panel to pop-up when the Chart Selected Areas is selected.
     populatePixelChartDropdown();
     setRAVGSelectionLayers();
-    setRAVGBurnPerimeterLayer(startYear, endYear);
+    setRAVGBurnPerimeterLayer();
 }
