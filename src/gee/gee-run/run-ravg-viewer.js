@@ -937,8 +937,10 @@ function runRAVG() {
     setRAVGBurnPerimeterLayer();
 }
 
-module.exports = {
-    getQueryClassDict,
-    yearSlice,
-    getEVTVegClassLayer
+if (typeof module === 'object' && typeof module.exports === 'object') {
+    module.exports = {
+        getQueryClassDict,
+        yearSlice,
+        getEVTVegClassLayer
+    }
 }
