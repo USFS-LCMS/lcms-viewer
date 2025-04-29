@@ -3682,18 +3682,27 @@ function addLayer(layer) {
                 if (name === undefined) {
                   name = "system:index";
                 }
-              }
+                }
               selectedFeaturesJSON[layer.name].fieldName = name;
               selectedFeaturesJSON[layer.name].eeObject =
                 layer.queryItem.select([name], ["name"]);
             });
         } else {
           selectedFeaturesJSON[layer.name].fieldName =
-            layer.viz.selectLayerNamePropertyname;
-          selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
-            [layer.viz.selectLayerNameProperty],
-            ["name"]
-          );
+                layer.viz.selectLayerNamePropertyname;
+
+            //adds ignition year to the relevant properties of the eeObject, if it exists.
+            if (layer.viz.selectLayerIgnitionYearProperty !== undefined) {
+                selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+                    [layer.viz.selectLayerNameProperty, layer.viz.selectLayerIgnitionYearProperty],
+                    ["name", "fire_year"]
+                );
+            } else {
+                selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+                    [layer.viz.selectLayerNameProperty],
+                    ["name"]
+                );
+            }
         }
       }
       if (layer.viz.isSelectedLayer) {
@@ -3758,7 +3767,6 @@ function addLayer(layer) {
           );
 
           if (timeLapseObj[layer.viz.timeLapseID].userChosenVisible === true) {
-            console.log("here");
             $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").click();
           }
 
