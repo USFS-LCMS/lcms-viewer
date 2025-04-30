@@ -399,21 +399,21 @@ function getRAVGSeverityLayerAndRefLayers(layer, whichLayerList, showSeverity) {
                 .remap([1, 2, 3, 4, 5, 6, 7, 9], [1, 2, 3, 4, 5, 6, 7, 9])
                 .rename(["burnSeverityRemap"]);
             burned = img
-                .remap([1, 2, 3, 4, 5, 6, 7, 9], [1, 1, 1, 1, 1, 1, 1, 0])
+                .remap([1, 2, 3, 4, 5, 6, 7, 9], [1, 1, 1, 1, 1, 1, 1, 1])
                 .rename(["burnedNotBurned"]);
         } else if (layer == "CC5") {
             severityRemapped = img
                 .remap([1, 2, 3, 4, 5, 9], [1, 2, 3, 4, 5, 9])
                 .rename(["burnSeverityRemap"]);
             burned = img
-                .remap([1, 2, 3, 4, 5, 9], [1, 1, 1, 1, 1, 0])
+                .remap([1, 2, 3, 4, 5, 9], [1, 1, 1, 1, 1, 1])
                 .rename(["burnedNotBurned"]);
         } else if (layer == "CBI4") {
             severityRemapped = img
                 .remap([1, 2, 3, 4, 9], [1, 2, 3, 4, 9])
                 .rename(["burnSeverityRemap"]);
             burned = img
-                .remap([1, 2, 3, 4, 9], [1, 1, 1, 1, 0])
+                .remap([1, 2, 3, 4, 9], [1, 1, 1, 1, 1])
                 .rename(["burnedNotBurned"]);
         }
 
