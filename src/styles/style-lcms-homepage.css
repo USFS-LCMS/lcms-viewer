@@ -256,7 +256,15 @@ nav {
 .container-fluid {
   padding-left: 0rem;
   padding-right: 0rem;
+  padding-top: 0rem !important;
 }
+/* .container-fluid >div{
+  border:var(--deep-brown-10) 1px solid;
+  border-radius: 1rem;
+  margin-left:1rem;
+  padding-top:0.5rem;
+  margin-top: .5rem;
+} */
 
 .home-section {
   margin-left: 2rem;
