@@ -1490,7 +1490,7 @@ function makeAreaChart(area, name, userDefined) {
         let areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
 
         if (mode === "RAVG") {
-            areaChartCollection = filterRAVGCollection(fireYears, areaChartCollection, fireSummary, area);
+            areaChartCollection = getFilteredRAVGCollection(fireYears, areaChartCollection, fireSummary, area);
         }
 
         let xAxisProperty =
