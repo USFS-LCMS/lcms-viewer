@@ -258,13 +258,11 @@ nav {
   padding-right: 0rem;
   padding-top: 0rem !important;
 }
-/* .container-fluid >div{
-  border:var(--deep-brown-10) 1px solid;
-  border-radius: 1rem;
-  margin-left:1rem;
-  padding-top:0.5rem;
-  margin-top: .5rem;
-} */
+.container-top-intro {
+  padding-left: 0rem;
+  padding-right: 0rem;
+  padding-top: 0rem; /* !important;*/
+}
 
 .home-section {
   margin-left: 2rem;
@@ -346,7 +344,6 @@ hr {
 .intro-text {
   font-size: 1.25rem;
   padding:1rem;
-  
 
 }
 .intro-text > p {
@@ -369,7 +366,6 @@ hr {
   border-radius: 1rem;
   margin-left:1rem;
   padding-top:0.5rem;
-  margin-top: .5rem;
 }
 .intro-text li {
   list-style: square;
