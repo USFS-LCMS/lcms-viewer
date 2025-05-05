@@ -56,11 +56,11 @@
           <a class='teal-hover ' id='intro-nav' aria-label="Link to introduction section" href="#intro">INTRODUCTION</a>
         </li>
         <li title='How can LCMS data be used?'>
-          <a class='teal-hover' id='applications-nav' href="#applications">APPLICATIONS</a>
+          <a class='teal-hover' id='applications-nav' href="#applications">DATA DESCRIPTIONS</a>
         </li>
-        <li title='What are LCMS map outputs?'>
+        <!-- <li title='What are LCMS map outputs?'>
           <a class='teal-hover' id='applications-nav' href="#products">DATA DESCRIPTIONS</a>
-        </li>
+        </li> -->
         <li title='How to visualize and explore LCMS data'>
           <a class='teal-hover' id='map-nav' href="#data-explorer">EXPLORERS</a>
         </li>
@@ -190,13 +190,14 @@
       </div>
     </div>
     <hr>
+    <hr>
     <div id="applications" class="container-fluid info-page bg-dark">
       <div class="home-section">
-        <h2 style="color:#00bfa5;">APPLICATIONS</h2>
+        <h2 style="color:#00bfa5;">DATA DESCRIPTIONS</h2>
         <div class='row '>
           <div class="col-md-6 conus-pane">
-            <h3>Monitor annual change</h3>
-            <p>Vegetation cover changes caused by short and long-duration disturbance events</p>
+            <h3>Change</h3>
+            <p>Monitor annual vegetation cover changes caused by short and long-duration disturbance events, as well as water desiccation or inundation and snow/ice transition.</p>
             <div class="row">
               <div class='col-sm-3'>
                 <img style='width:100%;' alt="Map of LCMS Change output across Alaska"
@@ -245,22 +246,6 @@
             <div style="position:relative">
               <img style='width:100%;' alt="Example area showing LCMS Change over Colorado"
                 src="./src/assets/images/Northern_Colorado_Change_wYears.gif">
-              <!-- <div class="legend"> -->
-              <!-- <ul class="legend-labels"> -->
-              <!-- <li> -->
-              <!-- <span style="background:#f39268;"></span> -->
-              <!-- <p>Slow Loss</p> -->
-              <!-- </li> -->
-              <!-- <li> -->
-              <!-- <span style="background:#d54309;"></span> -->
-              <!-- <p>Fast Loss</p> -->
-              <!-- </li> -->
-              <!-- <li> -->
-              <!-- <span style="background:#00a398;"></span> -->
-              <!-- <p>Gain</p> -->
-              <!-- </li> -->
-              <!-- </ul> -->
-              <!-- </div> -->
             </div>
             <p>Changes from insects, disease, and wildfire, Colo.</p>
           </div>
@@ -268,22 +253,6 @@
             <div style="position:relative">
               <img style='width:100%;' alt="Example area showing LCMS Change over Oregon"
                 src="./src/assets/images/Oregon_Wildfire_Change_wYears.gif">
-              <!-- <div class="legend">
-                <ul class="legend-labels">
-                  <li>
-                    <span style="background:#f39268;"></span>
-                    <p>Slow Loss</p>
-                  </li>
-                  <li>
-                    <span style="background:#d54309;"></span>
-                    <p>Fast Loss</p>
-                  </li>
-                  <li>
-                    <span style="background:#00a398;"></span>
-                    <p>Gain</p>
-                  </li>
-                </ul>
-              </div> -->
             </div>
             <p>Vegetation change largely caused by timber harvest and wildfire in the Willamette National Forest,
               Oreg.
@@ -292,10 +261,9 @@
         </div>
         <hr>
         <div class='row bg-dark'>
-          <div class="col-md-8 conus-pane">
-            <h3>Monitor annual land cover changes</h3>
-            <p>Surface components of the land that are present and visible</p>
-
+          <div class="col-md-6 conus-pane">
+            <h3>Land Cover</h3>
+            <p>Monitor annual changes to types of surface components of the land that are present and visible including vegetation and other biophysical attributes of the land surface.</p>
 
             <div class="row">
               <div class='col-sm-3'>
@@ -332,23 +300,23 @@
             </div>
           </div>
 
-          <div class="col-md-2 application-examples">
+          <div class="col-md-3 application-examples">
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over Lake Mead"
               src="./src/assets/images/Lake_Mead_Land_Cover_wYears.gif">
             <p>Change in Lake Mead water level, Nev. caused by water consumption & decadal drought</p>
           </div>
-          <div class="col-md-2 application-examples">
+          <div class="col-md-3 application-examples">
             <img style='width:100%;' alt="Example area showing LCMS land cover changing over the Columbia Glacier"
-              src="./src/assets/images/Columbia_Glacier-Land_Cover_wYears.gif">
+              src="./src/assets/images/Columbia_Glacier_Land_Cover_wYears.gif">
             <p>Change in extent of the Columbia Glacier, Alaska</p>
           </div>
         </div>
         <hr>
         <div class='row bg-dark'>
           <div class="col-md-6 conus-pane">
-            <h3>Monitor annual land use changes</h3>
-            <p>Intended human use of the land that represents economic and cultural activities practiced at a given
-              place</p>
+            <h3>Land Use</h3>
+            <p>Monitor annual changes in the intended human use of the land, which represents economic and cultural activities practiced at a given
+              place.</p>
             <div class="row">
               <div class='col-sm-3'>
                 <img style='width:100%;' alt="Map of LCMS Land Use output across Alaska"
@@ -373,8 +341,13 @@
                 <li><span style="background:#A6976A;"></span>Rangeland</li>
               </ul>
             </div>
+            <br>
+            <br>
+            <a title="Click on link to open LCMS methods document"
+              href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2024-10_Methods.pdf" class="homepage-link"
+              target="_blank">For additional information about LCMS change, land cover, or land use classes see the LCMS
+              methods document.</a>
           </div>
-
 
           <div class="col-md-3 application-examples">
 
@@ -391,8 +364,8 @@
         </div>
       </div>
     </div>
-    <hr>
-    <div id="products" class="container-fluid bg-dark info-page">
+
+    <!-- <div id="products" class="container-fluid bg-dark info-page">
       <div class="home-section">
         <h2 style="color:#00bfa5;">DATA DESCRIPTIONS</h2>
 
@@ -510,11 +483,12 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
+    <hr>
     <hr>
     <div id="data-explorer" class="container-fluid bg-dark info-page ">
       <div class="row home-section">
-        <h2 style="color:#00bfa5;">Explore LCMS Data</h2>
+        <h2 style="color:#00bfa5;">EXPLORE LCMS DATA</h2>
         <h3>Several web mapping applications are available to explore, summarize, and produce reports of how our
           landscape is changing.</h3>
         <hr>
@@ -645,6 +619,7 @@
       </div>
     </div>
 
+    <hr>
     <hr>
     <div id="download" class="container-fluid bg-dark info-page ">
       <div class="row home-section">
@@ -2753,6 +2728,7 @@
       <!-- <div class="row" style>Image Services</div> -->
     </div>
     <hr>
+    <hr>
     <div id="background" class="container-fluid bg-dark info-page">
       <div class='row home-section' style="margin-bottom: 1rem;">
         <h2 style="color:#00bfa5;">ABOUT</h2>
@@ -2814,8 +2790,8 @@
         </div>
         <div class='col-sm-4 '>
           <div style="position:relative">
-            <img src="./src/assets/images/Northern_Colorado_Change_wYears.gif"
-              alt="Example map of LCMS Loss over Colorado" class='img-responsive '></img>
+            <img src="./src/assets/images/Fountain_Wildfire_Change_wYears.gif"
+              alt="Example map of LCMS Change over California including the Fountain Fire" class='img-responsive '></img>
             <!-- <div class="legend">
               <ul class="legend-labels">
                 <li>
