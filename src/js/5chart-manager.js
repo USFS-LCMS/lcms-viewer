@@ -261,26 +261,6 @@ $("#user-defined-area-name").on("input", (e) => {
   }
 });
 
-/**
- * Adds fire years to chart title coinciding with each selected fire name.
- * @param {any} selectedFeatures
- * @returns
- */
-function addFireYearsToTitle(selectedFeatures) {
-    let selectedNamesWithYears = [];
-    for (let i = 0; i < selectionTracker.selectedNames.length; i++) {
-        let filter = ee.Filter.eq("name", selectionTracker.selectedNames[i]);
-        let feature = selectedFeatures.filter(filter).first();
-        let year = feature.get("fire_year").getInfo();
-        if (year !== undefined && year !== null) {
-            selectedNamesWithYears.push(selectionTracker.selectedNames[i] + " (" + year + ")");
-        } else {
-            selectedNamesWithYears.push(selectionTracker.selectedNames[i]);
-        }
-    }
-    return selectedNamesWithYears;
-}
-
 function chartSelectedAreas(fromButton = true) {
 
   const selectedFeatures = ee
@@ -297,8 +277,7 @@ function chartSelectedAreas(fromButton = true) {
 
         if (title === "") {
             if (mode === "RAVG") {
-                let selectedNamesWithYears = addFireYearsToTitle(selectedFeatures);
-                title = selectedNamesWithYears.join(" - ");
+                title = addFireYearsToTitle(selectedFeatures).join(" - ");
             } else {
                 title = selectionTracker.selectedNames.join(" - ");
             }
@@ -1184,216 +1163,15 @@ function cancelMakeAreaChart() {
     $("#summary-spinner").slideUp();
 }
 
-/**
- * Retrieves the reference layer version coinciding with a particular fire year.
- * @param {any} fireYear
- * @param {any} refCrosswalk
- * @returns
- */
-function getRelevantRefLayerVersion(fireYear, refCrosswalk) {
-    let refVersion; 
-    for (key in refCrosswalk) {
-        if (refCrosswalk[key].includes(Number(fireYear))) {
-            refVersion = key;
-        }
-    }
-    return refVersion;
-}
-
-/**
- * Filters the given severity layer ImageCollection by given set of fire years.
- * @param {any} years
- * @param {any} collection
- * @returns
- */
-function filterCollectionByFireYears(years, collection) {
-    let collectionPerFireYears;
-    years.map(function (year) {
-        let filteredByYear = ee.Filter.calendarRange(Number(year), Number(year), "year");
-        let filteredCollectionByYear = collection.filter(filteredByYear);
-        if (collectionPerFireYears == undefined) {
-            collectionPerFireYears = filteredCollectionByYear;
-        } else {
-            collectionPerFireYears = collectionPerFireYears.merge(filteredCollectionByYear);
-        }
-    });
-    return collectionPerFireYears;
-}
-
-/**
- * Creates a composite of input ImagaeClass collection per land-cover class. 
- * @param {any} allFires
- * @returns
- */
-function compositeByLandcoverClasses(allFires) {
-    let landcoverCrosswalkFromCollection = {
-        "ravgCBI4EVT-Vegetation": "evt-vegetation_CBI4_landcover_class",
-        "ravgCC5EVT-Vegetation": "evt-vegetation_CC5_landcover_class",
-        "ravgBA7EVT-Vegetation": "evt-vegetation_BA7_landcover_class",
-        "ravgCBI4EVT-Tree/Non-Tree": "evt-tree/non-tree_CBI4_landcover_class",
-        "ravgCC5EVT-Tree/Non-Tree": "evt-tree/non-tree_CC5_landcover_class",
-        "ravgBA7EVT-Tree/Non-Tree": "evt-tree/non-tree_BA7_landcover_class"
-    }
-    if (whichAreaChartCollection in landcoverCrosswalkFromCollection) {
-        let propertyToGroupBy = landcoverCrosswalkFromCollection[whichAreaChartCollection];
-        let disinctLandCoverClasses = ee.List(allFires.aggregate_array(propertyToGroupBy)).distinct();
-        let landCoverComposites = disinctLandCoverClasses.map(function (landCoverValue) {
-            landCoverValue = ee.String(landCoverValue);
-            let singleLandCoverCollectionComposite = allFires.filter(ee.Filter.eq(propertyToGroupBy, landCoverValue)).mosaic();
-            return singleLandCoverCollectionComposite.set(propertyToGroupBy, landCoverValue);
-        });
-        return ee.ImageCollection(landCoverComposites);
-    } else {
-        return allFires;
-    }
-}
-
-/**
- * Updates the x-axis label per the EVT versions being use per the user's selection.
- * @param {any} evtVersions
- */
-function updateChartLabelWithRefLayerVersions(evtVersions) {
-    let evtVersionsStr = evtVersions.join(", ");
-    let versionOrVersions = (evtVersions.length > 1) ? " versions)" : " version)";
-    if (areaChartCollections[whichAreaChartCollection].xAxisLabel.includes("(")) {
-        const splitLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel.split("(");
-        const rebuiltLabel = splitLabel[0] + "(" + evtVersionsStr + versionOrVersions;
-        areaChartCollections[whichAreaChartCollection].xAxisLabel = rebuiltLabel;
-    } else {
-        areaChartCollections[whichAreaChartCollection].xAxisLabel = areaChartCollections[whichAreaChartCollection].xAxisLabel + " (" + evtVersionsStr + versionOrVersions;
-    }
-}
-
-/**
- * Converts fire years property to Numeric.
- * @param {any} selectedFeatures
- */
-function convertFireYearsToNumber(selectedFeatures) {
-    return selectedFeatures.map(function (feature) {
-        let prop = "fire_year";
-        return ee.Algorithms.If(
-            feature.propertyNames().contains(prop),
-            ee.Feature(feature).set(
-                prop,
-                ee.Number.parse(ee.String(feature.get(prop)))
-            ),
-            feature
-        )
-    });
-}
-
-/**
- * Filters collection based on certain conditions.
- * @param {any} years
- * @param {any} collection
- * @returns
- */
-function filterCollection(fireYears, collection) {
-    let filteredCollection = collection;
-    fireYears = unique(fireYears).sort();
-    if ((fireYears !== undefined) && (["ravg_cbi4", "ravg_cc5", "ravg_ba7"].includes(whichAreaChartCollection))) {
-        /*** regular ravg severity layer summary use cases. ***/
-        let filteredCollectionByFireYears = filterCollectionByFireYears(fireYears, collection);
-        if (filteredCollectionByFireYears !== undefined) {
-            filteredCollection = filteredCollectionByFireYears;
-        }
-    } else if ((fireYears !== undefined) && (["ravgCBI4EVT-Vegetation", "ravgCC5EVT-Vegetation", "ravgBA7EVT-Vegetation", "ravgCBI4EVT-Tree/Non-Tree", "ravgCC5EVT-Tree/Non-Tree", "ravgBA7EVT-Tree/Non-Tree"].includes(whichAreaChartCollection))) {
-        /*** ravg severity x evt summary use cases ***/
-        let evtCrosswalk = {
-            2001: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013],
-            2012: [2014, 2015],
-            2014: [2016, 2017],
-            2016: [2018, 2019, 2020],
-            2020: [2021, 2022, 2023, 2024]
-        }
-        let evtVersions = [];
-
-        //converts the fire years per the user's selection into the list of proper EVT versions
-        fireYears.map(function (year) {
-            let evtVersion = getRelevantRefLayerVersion(year, evtCrosswalk);
-            evtVersions.push(evtVersion);
-        });
-        evtVersions = unique(evtVersions);
-        let severityLayerImagesPerSelection;
-
-        //collects the appropriate severity layer images per the user's selection based on the EVT version.
-        evtVersions.map(function (version) {
-            let filterByEVT = ee.Filter.eq("ref_year", ee.String(version));
-            let filteredCollectionByEVT = collection.filter(filterByEVT);
-            if (severityLayerImagesPerSelection == undefined) {
-                severityLayerImagesPerSelection = filteredCollectionByEVT;
-            } else {
-                severityLayerImagesPerSelection = severityLayerImagesPerSelection.merge(filteredCollectionByEVT);
-            }
-        });
-        if (severityLayerImagesPerSelection !== undefined) {
-            if (evtVersions.length > 0) {
-                updateChartLabelWithRefLayerVersions(evtVersions);
-            }
-            let selectedFeatures = convertFireYearsToNumber(ee.FeatureCollection(selectionTracker.selectedFeatures).flatten());
-
-            //determines the different EVT referent years being processed here per the user's selection.
-            let evtRefYears = severityLayerImagesPerSelection.aggregate_array("ref_year").distinct().getInfo();
-            let geeEvtCrosswalk = ee.Dictionary(evtCrosswalk);
-            let finalClippedSeverityLayerImageCollection;
-
-            //1. iterates for each reference year
-            //2. get the fire years that are appropriate from the crosswalk
-            //3. from the selected features, get the sub-list of features that have fire-years that are in the list of appropriate fire years. this will create a feature collection
-            //4. get the geometry
-            //5. get a sub-list of the EVT-specific images with the appropriate ref_year, this creates an imagecollection
-            //6. for all of the images in the evt-specific images, clip the image with the geometry from the selected features coinciding with the correct fire-years.
-            evtRefYears.map(function (refYear) {
-                let refYearStr = ee.String(refYear);
-                let fireYearsToFilterBy = ee.List(geeEvtCrosswalk.get(refYear));
-
-                //sub-collection of the selected features with a certain reference layer year derived by the fire/burn year. This is where your geometry comes from which can be used to clip the images.
-                let selectedFeaturesPerEVTYear = selectedFeatures.filter(ee.Filter.inList("fire_year", fireYearsToFilterBy));
-
-                //get the geometry
-                let selectedFeaturesPerEVTYearGeometry = selectedFeaturesPerEVTYear.geometry();
-                
-                //sub-collection of severityLayerImagesPerSelection (these are the individual image years that you want to clip)
-                let severityLayerImagesBySingleEVTYear = severityLayerImagesPerSelection.filter(ee.Filter.eq("ref_year", refYearStr)); 
-
-                //for each of the severity layer images per each single EVT year, clip the image, and put into a new collection
-                let clippedSeverityLayerImagesBySingleEVTYearCollection = severityLayerImagesBySingleEVTYear.map(function (imgToClip) {
-                    //this is a single ee.Image. You need to put this into an ee.ImageCollection as the final output.
-                    return imgToClip.clip(selectedFeaturesPerEVTYearGeometry);
-                });
-
-                //merge the clipped severity layer images per evt year together
-                if (finalClippedSeverityLayerImageCollection == undefined) {
-                    finalClippedSeverityLayerImageCollection = clippedSeverityLayerImagesBySingleEVTYearCollection;
-                } else {
-                    finalClippedSeverityLayerImageCollection = finalClippedSeverityLayerImageCollection.merge(clippedSeverityLayerImagesBySingleEVTYearCollection);
-                }
-            }); 
-
-            //given multiple fires selected with different EVT versions contributing to the decomposition of the severity layer x land-cover class, group them by land-cover class into a single summary.
-            filteredCollection = compositeByLandcoverClasses(finalClippedSeverityLayerImageCollection);
-        }
-    }
-    return filteredCollection;
-}
-
-/**
- * Determines if the chart is for a fire-only summary which is unique to the RAVG requirements.
- * @param area
- * @returns
- */
-function isFireSummary(area) {
-    let filter = ee.Filter.notNull(["fire_year"]);
-    let numberWithFireYearProperty = area.filter(filter);
-    return numberWithFireYearProperty.size().getInfo() == area.size().getInfo();
-}
-
 function makeAreaChart(area, name, userDefined) {
+
     let fireYears;
+    let fireSummary;
+
     if (mode == "RAVG") {
         fireYears = area.aggregate_array("fire_year").getInfo();
+        fireSummary = isRAVGFireSummary(area, "fire_year");
     }
-    let fireSummary = isFireSummary(area);
 
     let maxError = 500;
     currentChartID++;
@@ -1711,8 +1489,8 @@ function makeAreaChart(area, name, userDefined) {
 
         let areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
 
-        if (mode === "RAVG" && fireYears !== undefined && fireSummary) {
-            areaChartCollection = filterCollection(fireYears, areaChartCollection);
+        if (mode === "RAVG") {
+            areaChartCollection = filterRAVGCollection(fireYears, areaChartCollection, fireSummary, area);
         }
 
         let xAxisProperty =
