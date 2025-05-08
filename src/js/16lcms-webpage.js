@@ -1,3 +1,67 @@
+//Taken from: https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+String.prototype.toTitle = function () {
+  return this.replace(/(^|\s)\S/g, function (t) {
+    return t.toUpperCase();
+  });
+};
+///////////////////////////////////////////////////////////////////
+//Function to compute range list on client side
+function range(start, stop, step) {
+  start = parseInt(start);
+  stop = parseInt(stop);
+  if (typeof stop == "undefined") {
+    // one param defined
+    stop = start;
+    start = 0;
+  }
+  if (typeof step == "undefined") {
+    step = 1;
+  }
+  if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+    return [];
+  }
+  const result = [];
+  for (let i = start; step > 0 ? i < stop : i > stop; i += step) {
+    result.push(i);
+  }
+  return result;
+}
+/////////////////////////////////////////////////////
+//Taken from: https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
+String.prototype.replaceAll = function (str1, str2, ignore) {
+  return this.replace(
+    new RegExp(
+      str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
+      ignore ? "gi" : "g"
+    ),
+    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
+  );
+};
+/////////////////////////////////////////////////////
+// Introduce Python-like string formatting to JS
+// "a{0}bcd{1}ef".formatUnicorn("FOO", "BAR"); // yields "aFOObcdBARef"
+// "Hello, {name}, are you feeling {adjective}?".formatUnicorn({name:"Gabriel", adjective: "OK"});
+// Taken from: https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
+String.prototype.formatUnicorn =
+  String.prototype.formatUnicorn ||
+  function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+      var t = typeof arguments[0];
+      var key;
+      var args =
+        "string" === t || "number" === t
+          ? Array.prototype.slice.call(arguments)
+          : arguments[0];
+
+      for (key in args) {
+        str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+      }
+    }
+
+    return str;
+  };
 function addModal(containerID, modalID, bodyOnly) {
   if (bodyOnly === null || bodyOnly === undefined) {
     bodyOnly = false;
@@ -105,7 +169,189 @@ function populateLCMSDownloads() {
     });
   }
 }
+function setupDropdownTreeDownloads(
+  containerID = "download-collapse-div-lcms"
+) {
+  const programTree = {
+    LCMS: {
+      CONUS: {
+        longName: "Conterminous U.S.",
+        startYear: 1985,
+        endYear: 2024,
+        version: "2024-10",
+        products: {
+          Change: ["annual"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+      },
+      AK: {
+        longName: "Alaska",
+        startYear: 1985,
+        endYear: 2024,
+        version: "2024-10",
+        products: {
+          Change: ["annual"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+      },
 
+      PRUSVI: {
+        longName: "Puerto Rico - US Virgin Islands",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-9",
+        products: {
+          Change: ["annual", "summary"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+        summary_products: ["Fast_Loss", "Gain"],
+      },
+      HI: {
+        longName: "Hawaii",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-9",
+        products: {
+          Change: ["annual", "summary"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+        summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
+      },
+    },
+  };
+
+  const programInfo = {
+    LCMS: {
+      pathFormat: {
+        annual: `https://data.fs.usda.gov/geodata/LCMS/LCMS_{sa}_v{version}_{product}_Annual_{yr}.zip`,
+        summary: `https://data.fs.usda.gov/geodata/LCMS/LCMS_{sa}_v{version}_{product}_{summary_product}_Summary_{startYear}_{endYear}.zip`,
+      },
+    },
+    NLCD_TCC: {
+      pathFormat: {
+        annual: `https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/docs/v{version}/{product}_{sa}_{yr}_v{version}_wgs84.zip`,
+      },
+      productTitles: {
+        nlcd_tcc: "NLCD TCC",
+        science_tcc: "Science TCC",
+        science_se: "Science SE",
+      },
+    },
+  };
+
+  // Initialize container
+  $("#" + containerID).append(
+    `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS and NLCD TCC products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'></ul`
+  );
+  $("#downloadTree").empty();
+  Object.keys(programTree).map((program) => {
+    const study_areas = programTree[program];
+    const programTreeID = `caret-tree-${program}`;
+
+    $("#downloadTree").append(`<ul class="nested active" >
+      
+        <li class = 'pl-0'>
+          <span class="caret top-folder caret-down">${program.replaceAll(
+            "_",
+            " "
+          )} Data</span>
+          <ul id = "${programTreeID}" class="nested active"></ul>
+        </ul>`);
+    Object.keys(study_areas).map((sa) => {
+      const saObj = programTree[program][sa];
+      const saTreeID = `caret-tree-${program}-${sa}`;
+      $("#" + programTreeID).append(`<li><span class="caret top-folder">${
+        saObj.longName
+      } (v${saObj.version.replaceAll("-", ".")})</span>
+                                            <ul id = "${saTreeID}" class="nested"></ul></li>`);
+      Object.keys(study_areas[sa].products).map((product) => {
+        const productTreeID = `caret-tree-${program}-${sa}-${product}`;
+        const productTitle = programInfo[program].productTitles
+          ? programInfo[program].productTitles[product]
+          : product;
+
+        $("#" + saTreeID).append(`<li><span class="caret">${productTitle
+          .replaceAll("_", " ")
+          .toTitle()}</span>
+                                            <ul id = "${productTreeID}" class="nested "></ul></li>`);
+        study_areas[sa].products[product].map((m) => {
+          const dropdownID = `${program}-${sa}-${product}-${m}`;
+
+          $("#" + productTreeID).append(`
+              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}" class = 'download-selection-label'>Select products to download:</label>
+                              <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                              <br>
+                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                              `);
+          if (m === "annual") {
+            // Handle NLCD TCC v2021.4 start year irregularity
+            let startYear = study_areas[sa].startYear;
+            startYear =
+              program === "NLCD_TCC" && product === "nlcd_tcc"
+                ? 2011
+                : startYear;
+
+            const years = range(startYear, study_areas[sa].endYear + 1);
+
+            years.map((yr) => {
+              let url = programInfo[program].pathFormat[m].formatUnicorn({
+                sa: sa,
+                version: study_areas[sa].version,
+                product: product,
+                yr: yr,
+              });
+
+              // Handle irregularities here
+              url = url.replaceAll("_HI_", "_HAWAII_");
+              url =
+                program === "NLCD_TCC" && study_areas[sa].version === "2021-4"
+                  ? url.replaceAll("_wgs84", "")
+                  : url;
+
+              const name = `${productTitle.replaceAll("_", " ")} ${m} ${yr}`;
+
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+              );
+            });
+          } else if (m === "summary") {
+            study_areas[sa].summary_products.map((summary_product) => {
+              let url = programInfo[program].pathFormat[m].formatUnicorn({
+                sa: sa,
+                version: study_areas[sa].version,
+                product: product,
+                summary_product: summary_product,
+                startYear: study_areas[sa].startYear,
+                endYear: study_areas[sa].endYear,
+              });
+
+              // Handle irregularities here
+              url = url.replaceAll("_HI_", "_HAWAII_");
+
+              const name = `${productTitle.replaceAll(
+                "_",
+                " "
+              )} ${summary_product} Summary ${study_areas[sa].startYear}-${
+                study_areas[sa].endYear
+              }`;
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+              );
+            });
+          }
+        });
+      });
+    });
+  });
+}
 function downloadByUrl(url) {
   console.log("downloading");
   console.log(url);
@@ -138,6 +384,7 @@ function downloadByUrl(url) {
 
 function downloadSelectedAreas(id) {
   var urls = $("#" + id).val();
+  console.log(urls);
   if (urls !== "") {
     var downloadNames = urls.map(downloadByUrl);
     var message = '<li class = "m-0">';
@@ -153,7 +400,7 @@ function downloadSelectedAreas(id) {
         "</ul></li>"
     );
 
-    showSurveyModal("downloadedLCMSTif", true);
+    // showSurveyModal("downloadedLCMSTif", true);
   }
 }
 
@@ -194,12 +441,22 @@ function openLCMSSurvey(fromWhere) {
   link.click();
   ga("send", "event", "survey-open", fromWhere);
 }
-
+function convertRemToPixels(rem) {
+  return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
 function resizePanes() {
   console.log("resized");
   if (window.innerWidth >= 768) {
     $(".nav-toggler").hide();
-    $(".info-page").css("padding-top", $("nav").height());
+    $(".info-page").css(
+      "padding-top",
+      $("nav").height() + convertRemToPixels(1.5)
+    );
+    // $("hr.section").css(
+    //   "margin-top",
+    //   $("nav").height() + convertRemToPixels(1.5)
+    // );
+    $("hr.section").css("margin-bottom", -$("nav").height());
     $("#data-descriptions-header-row").show();
 
     $(".navbar-header").css({
@@ -220,6 +477,7 @@ function toggleNavbar() {
   $("#navbar").slideToggle(200);
 }
 $(document).ready(function () {
+  setupDropdownTreeDownloads("download-container");
   populateLCMSDownloads();
   resizePanes();
   $(".caret").attr("role", "img");
