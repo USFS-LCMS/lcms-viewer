@@ -395,9 +395,7 @@ const studyAreaDict = {
         color: "c2b34a",
       },
     },
-    final_collections: [
-      "projects/lcms-292214/assets/Final_Outputs/2024-10/LCMS",
-    ],
+    final_collections: ["USFS/GTAC/LCMS/v2024-10"],
     older_final_collections: ["USFS/GTAC/LCMS/v2023-9"],
     composite_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
@@ -861,6 +859,31 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
     typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
+/////////////////////////////////////////////////////
+// Introduce Python-like string formatting to JS
+// "a{0}bcd{1}ef".formatUnicorn("FOO", "BAR"); // yields "aFOObcdBARef"
+// "Hello, {name}, are you feeling {adjective}?".formatUnicorn({name:"Gabriel", adjective: "OK"});
+// Taken from: https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
+String.prototype.formatUnicorn =
+  String.prototype.formatUnicorn ||
+  function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+      var t = typeof arguments[0];
+      var key;
+      var args =
+        "string" === t || "number" === t
+          ? Array.prototype.slice.call(arguments)
+          : arguments[0];
+
+      for (key in args) {
+        str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+      }
+    }
+
+    return str;
+  };
 /////////////////////////////////////////////////////
 // Taken from: https://stackoverflow.com/questions/586182/how-to-insert-an-item-into-an-array-at-a-specific-index-javascript
 Array.prototype.insert = function (index) {

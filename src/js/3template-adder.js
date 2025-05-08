@@ -427,9 +427,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
         });
       }
     }
-    $("#download-collapse-div-lcms").append(
-      staticTemplates.lcmsProductionDownloadDiv
-    );
+    // $("#download-collapse-div-lcms").append(
+    //   staticTemplates.lcmsProductionDownloadDiv
+    // );
   } else {
     $("#download-collapse-div").append(staticTemplates.downloadDiv);
   }

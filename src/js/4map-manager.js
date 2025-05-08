@@ -4193,7 +4193,7 @@ function initialize() {
 
     //Bring in downloads if needed
     if (mode === "LCMS") {
-      setupDropdownTreeDownloads(studyAreaName);
+      setupDropdownTreeDownloads();
       populateLCMSDownloads();
     }
     if (mode === "TreeMap") {
@@ -4274,7 +4274,7 @@ function initialize() {
   function eeInitFailureCallback(failure) {
     console.log(`Failed to authenticate to GEE: ${failure}`);
     if (mode === "LCMS") {
-      setupDropdownTreeDownloads(studyAreaName);
+      setupDropdownTreeDownloads();
       populateLCMSDownloads();
     }
 

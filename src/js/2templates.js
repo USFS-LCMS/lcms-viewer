@@ -784,92 +784,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
-  lcmsProductionDownloadDiv: `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2024.10)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'CONUS-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'CONUS-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'CONUS-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                                <ul class="nested" id = 'CONUS-qa_bits-annual-downloads'></ul>
-                                              </li>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Alaska (v2024.10)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'AK-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'AK-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'AK-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                                <ul class="nested" id = 'AK-qa_bits-annual-downloads'></ul>
-                                              </li>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2023.9)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'PRUSVI-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'PRUSVI-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'PRUSVI-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'PRUSVI-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                              <ul class="nested" id = 'PRUSVI-qa_bits-annual-downloads'></ul>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Hawaii (v2023.9)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'HI-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'HI-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'HI-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'HI-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                              <ul class="nested" id = 'HI-qa_bits-annual-downloads'></ul>
-                                            </ul>
-                                          </li>
-                                        </ul>`,
+
   TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='ml-4 pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>2) Custom Area of Interest Download</h4>`,
   TreeMapDownloadDiv: `<p class = 'pt-2'>There are two ways to download TreeMap data within this application: 
   <ul>
@@ -2112,6 +2027,307 @@ function addRadio(
     if (offFunction !== undefined && offFunction !== null) {
       eval(`${offFunction}()`);
     }
+  });
+}
+
+function setupDropdownTreeDownloads(
+  containerID = "download-collapse-div-lcms"
+) {
+  const programTree = {
+    LCMS: {
+      CONUS: {
+        longName: "Conterminous U.S.",
+        startYear: 1985,
+        endYear: 2024,
+        version: "2024-10",
+        products: {
+          Change: ["annual"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+      },
+      AK: {
+        longName: "Alaska",
+        startYear: 1985,
+        endYear: 2024,
+        version: "2024-10",
+        products: {
+          Change: ["annual"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+      },
+
+      PRUSVI: {
+        longName: "Puerto Rico - US Virgin Islands",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-9",
+        products: {
+          Change: ["annual", "summary"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+        summary_products: ["Fast_Loss", "Gain"],
+      },
+      HI: {
+        longName: "Hawaii",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-9",
+        products: {
+          Change: ["annual", "summary"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+        summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
+      },
+    },
+    NLCD_TCC: {
+      CONUS: {
+        longName: "Conterminous U.S.",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-5",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+      SEAK: {
+        longName: "Southeastern Alaska",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+
+      PRUSVI: {
+        longName: "Puerto Rico - US Virgin Islands",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+      HI: {
+        longName: "Hawaii",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+    },
+  };
+
+  const programInfo = {
+    LCMS: {
+      pathFormat: {
+        annual: `https://data.fs.usda.gov/geodata/LCMS/LCMS_{sa}_v{version}_{product}_Annual_{yr}.zip`,
+        summary: `https://data.fs.usda.gov/geodata/LCMS/LCMS_{sa}_v{version}_{product}_{summary_product}_Summary_{startYear}_{endYear}.zip`,
+      },
+    },
+    NLCD_TCC: {
+      pathFormat: {
+        annual: `https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/docs/v{version}/{product}_{sa}_{yr}_v{version}_wgs84.zip`,
+      },
+      productTitles: {
+        nlcd_tcc: "NLCD TCC",
+        science_tcc: "Science TCC",
+        science_se: "Science SE",
+      },
+    },
+  };
+
+  // Initialize container
+  $("#" + containerID).append(
+    `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS and NLCD TCC products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'></ul`
+  );
+  $("#downloadTree").empty();
+  Object.keys(programTree).map((program) => {
+    const study_areas = programTree[program];
+    const programTreeID = `caret-tree-${program}`;
+
+    $("#downloadTree").append(`<ul class="nested active" >
+      
+        <li class = 'pl-0'>
+          <span class="caret caret-down">${program.replaceAll(
+            "_",
+            " "
+          )} Data</span>
+          <ul id = "${programTreeID}" class="nested active"></ul>
+        </ul>`);
+    Object.keys(study_areas).map((sa) => {
+      const saObj = programTree[program][sa];
+      const saTreeID = `caret-tree-${program}-${sa}`;
+      $("#" + programTreeID).append(`<li><span class="caret">${
+        saObj.longName
+      } (v${saObj.version.replaceAll("-", ".")})</span>
+                                            <ul id = "${saTreeID}" class="nested"></ul></li>`);
+      Object.keys(study_areas[sa].products).map((product) => {
+        const productTreeID = `caret-tree-${program}-${sa}-${product}`;
+        const productTitle = programInfo[program].productTitles
+          ? programInfo[program].productTitles[product]
+          : product;
+
+        $("#" + saTreeID).append(`<li><span class="caret">${productTitle
+          .replaceAll("_", " ")
+          .toTitle()}</span>
+                                            <ul id = "${productTreeID}" class="nested "></ul></li>`);
+        study_areas[sa].products[product].map((m) => {
+          const dropdownID = `${program}-${sa}-${product}-${m}`;
+
+          $("#" + productTreeID).append(`
+              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}" class = 'download-selection-label'>Select products to download:</label>
+                              <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                              <br>
+                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                              `);
+          if (m === "annual") {
+            // Handle NLCD TCC v2021.4 start year irregularity
+            let startYear = study_areas[sa].startYear;
+            startYear =
+              program === "NLCD_TCC" && product === "nlcd_tcc"
+                ? 2011
+                : startYear;
+
+            const years = range(startYear, study_areas[sa].endYear + 1);
+
+            years.map((yr) => {
+              let url = programInfo[program].pathFormat[m].formatUnicorn({
+                sa: sa,
+                version: study_areas[sa].version,
+                product: product,
+                yr: yr,
+              });
+
+              // Handle irregularities here
+              url = url.replaceAll("_HI_", "_HAWAII_");
+              url =
+                program === "NLCD_TCC" && study_areas[sa].version === "2021-4"
+                  ? url.replaceAll("_wgs84", "")
+                  : url;
+
+              const name = `${productTitle.replaceAll("_", " ")} ${m} ${yr}`;
+
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+              );
+            });
+          } else if (m === "summary") {
+            study_areas[sa].summary_products.map((summary_product) => {
+              let url = programInfo[program].pathFormat[m].formatUnicorn({
+                sa: sa,
+                version: study_areas[sa].version,
+                product: product,
+                summary_product: summary_product,
+                startYear: study_areas[sa].startYear,
+                endYear: study_areas[sa].endYear,
+              });
+
+              // Handle irregularities here
+              url = url.replaceAll("_HI_", "_HAWAII_");
+
+              const name = `${productTitle.replaceAll(
+                "_",
+                " "
+              )} ${summary_product} Summary ${study_areas[sa].startYear}-${
+                study_areas[sa].endYear
+              }`;
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+              );
+            });
+          }
+        });
+      });
+    });
+  });
+}
+
+function setupDropdownTreeMapDownloads() {
+  const att_serverLocation =
+    "https://data.fs.usda.gov/geodata/rastergateway/treemap";
+  // const rds_serverLocation = "https://s3-us-west-2.amazonaws.com/fs.usda.rds";
+  const rds_serverLocation =
+    "https://usfs-public.box.com/shared/static/yz7h8b8v92scoqfwukjyulokaevzo6v6.zip";
+  const attributes = [
+    "ALSTK",
+    "BALIVE",
+    "CANOPYPCT",
+    "CARBON_D",
+    "CARBON_DWN",
+    "CARBON_L",
+    "DRYBIO_D",
+    "DRYBIO_L",
+    "FLDSZCD",
+    "FLDTYPCD",
+    "FORTYPCD",
+    "GSSTK",
+    "QMD_RMRS",
+    "SDIPCT_RMRS",
+    "STANDHT",
+    "STDSZCD",
+    "TPA_DEAD",
+    "TPA_LIVE",
+    "VOLBFNET_L",
+    "VOLCFNET_D",
+    "VOLCFNET_L",
+  ];
+
+  const rds_dict = { 2016: "RDS-2021-0074" };
+
+  const tm_versions = ["2016"];
+
+  tm_versions.map((ver) => {
+    const id = `TreeMap${ver}-attribute-downloads`;
+    const dropdownID = id + "-d";
+    $("#" + id).empty();
+    $("#" + id).append(`
+      <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+                      <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                      <br>
+                      <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                      <hr>`);
+    attributes.map((att) => {
+      const url = `${att_serverLocation}/docs/TreeMap${ver}_${att}.zip`;
+      $("#" + dropdownID).append(
+        `<option  value = "${url}">TreeMap${ver}_${att}</option>`
+      );
+    });
+  });
+
+  tm_versions.map((ver) => {
+    const id = `TreeMap${ver}-rds-downloads`;
+    const dropdownID = id + "-d";
+    $("#" + id).empty();
+    $("#" + id).append(`
+      <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+                      <br>
+                      <select id = "${dropdownID}" size="8" style="height: 3rem;" class=" bg-download-select" multiple ></select>
+                      <br>
+                      <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                      <hr>`);
+    // const url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
+    $("#" + dropdownID).append(
+      `<option  value = "${rds_serverLocation}">TreeMap${ver}</option>`
+    );
   });
 }
 
