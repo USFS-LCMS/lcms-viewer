@@ -162,11 +162,11 @@ function updateToolStatusBar() {
       const title = toolFunctions[t][tt]["title"];
       if (state) {
         $("#current-tool-selection").append(`${title}`);
-        somethingShown = true;
+          somethingShown = true;
       }
     });
   });
-  if (!somethingShown) {
+    if (!somethingShown) {
     $("#current-tool-selection").append(`No active tools`);
   } else {
     ga(
@@ -180,9 +180,13 @@ function updateToolStatusBar() {
 }
 
 function toggleTool(tool) {
-  if (tool.state) {
+    if (mode === "RAVG") {
+        clearSelectedAreas();
+        restartUserDefinedAreaCarting();
+    }
+    if (tool.state) {
     urlParams.activeTool = undefined;
-    eval(tool.off);
+      eval(tool.off);
   } else {
     urlParams.activeTool = tool.name;
     eval(tool.on);

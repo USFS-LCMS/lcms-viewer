@@ -223,7 +223,7 @@ function turnOffLayers() {
 }
 
 function turnOffSelectLayers() {
-  $(".vector-layer-checkbox").trigger("turnOffAllSelectLayers");
+    $(".vector-layer-checkbox").trigger("turnOffAllSelectLayers");
 }
 function turnOnSelectedLayers() {
   $(".vector-layer-checkbox").trigger("turnOnAllSelectedLayers");
@@ -1167,8 +1167,7 @@ function makeAreaChart(area, name, userDefined) {
 
     let fireYears;
     let fireSummary;
-
-    if (mode == "RAVG") {
+    if (mode === "RAVG") {
         fireYears = area.aggregate_array("fire_year").getInfo();
         fireSummary = isRAVGFireSummary(area, "fire_year");
     }
@@ -1187,6 +1186,25 @@ function makeAreaChart(area, name, userDefined) {
     area = area.set("source", "LCMS_data_explorer");
     0;
     centerObject(area);
+
+    let originalAOI;
+    if (mode === "RAVG") {
+        if (toolFunctions.area.selectInteractive.state && fireYears.length > 0) {
+            let perimeterFilter = ee.Filter.notNull(["fire_year"]);
+            area = area.filter(perimeterFilter);
+        } else if (toolFunctions.area.userDefined.state) {
+            let perimeterLayer = getRAVGBurnPerimeterLayer();
+            originalAOI = area;
+            let perimetersWithinAOI = perimeterLayer.filterBounds(area); 
+            let boundPerimeters = perimetersWithinAOI.map(function (perim) {
+                return area.map(function (aoi) {
+                    return perim.intersection(aoi);
+                });
+            }).flatten();
+            area = boundPerimeters;
+        }
+    }
+
     area = area.geometry();
 
     if (areaChartCollections[whichAreaChartCollection].type === "transition") {
@@ -1490,7 +1508,8 @@ function makeAreaChart(area, name, userDefined) {
         let areaChartCollection = areaChartCollections[whichAreaChartCollection].collection;
 
         if (mode === "RAVG") {
-            areaChartCollection = getFilteredRAVGCollection(fireYears, areaChartCollection, fireSummary, area);
+            let ravgArea = (originalAOI === undefined) ? area : originalAOI;
+            areaChartCollection = getFilteredRAVGCollection(fireYears, areaChartCollection, fireSummary, ravgArea);
         }
 
         let xAxisProperty =
