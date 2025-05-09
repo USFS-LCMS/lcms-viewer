@@ -251,7 +251,7 @@ function addSelectLayerToMap(
     label,
     fontColor,
     helpBox,
-    "area-charting-select-layer-list",
+    (whichLayerList == undefined) ? "area-charting-select-layer-list" : whichLayerList,
     queryItem
   );
 }
@@ -2272,7 +2272,7 @@ function mp() {
       whichLayerList,
       queryItem
     );
-  };
+    };
   this.addSerializedSelectLayer = function (
     item,
     viz,
