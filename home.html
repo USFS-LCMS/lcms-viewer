@@ -11,7 +11,8 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="./src/styles/style.css">
   <link rel="stylesheet" href="./src/styles/style-lcms-homepage.css">
 
@@ -487,9 +488,9 @@
         <hr>
         <div class="row">
           <div class="col-lg-5">
-            <strong style="font-size:1.5rem;">LCMS Data Explorer</strong>
+            <strong class='explorer-title'>LCMS Data Explorer</strong>
             <p>
-              The <a href="./" target="_blank"><b>LCMS Data Explorer</b></a> is designed to
+              The <a class='homepage-link' href="./" target="_blank">LCMS Data Explorer</a> is designed to
               make LCMS data accessible and actionable for a wide range
               of users, from land managers and scientists to the general public. Users can:
             </p>
@@ -511,9 +512,9 @@
         <hr>
         <div class="row">
           <div class="col-lg-5">
-            <strong style="font-size:1.5rem;">LCMS Dashboard</strong>
+            <strong class='explorer-title'>LCMS Dashboard</strong>
             <p>
-              The <a href="./dashboard.html" target="_blank"><b>LCMS Dashboard</b></a> is
+              The <a class='homepage-link' href="./dashboard.html" target="_blank">LCMS Dashboard</a> is
               designed to provide the ability to quickly summarize and generate reports of how our landscapes are
               changing. Users can:
             </p>
@@ -539,9 +540,10 @@
         <hr>
         <div class="row">
           <div class="col-lg-5">
-            <strong style="font-size:1.5rem;">LCMS Base Learner Explorer</strong>
+            <strong class='explorer-title'>LCMS Base Learner Explorer</strong>
             <p>
-              The <a href="./lcms-base-learner.html" target="_blank"><b>LCMS Base Learner Explorer</b></a> allows
+              The <a class='homepage-link' href="./lcms-base-learner.html" target="_blank">LCMS Base Learner
+                Explorer</a> allows
               users to interactively view the raw input data and temporal
               segmentation results that are used to generate final LCMS products. This tool is especially useful for
               researchers and analysts interested in understanding the underlying data sources used to create LCMS
@@ -566,9 +568,10 @@
         <hr>
         <div class="row">
           <div class="col-lg-5">
-            <strong style="font-size:1.5rem;">LCMS In-Motion</strong>
+            <strong class='explorer-title'>LCMS In-Motion</strong>
             <p>
-              The <a href="./lcms-in-motion.html" target="_blank"><b>LCMS In-Motion</b></a> provides interactive
+              The <a class='homepage-link' href="./lcms-in-motion.html" target="_blank">LCMS In-Motion</a> provides
+              interactive
               animations and visualizations of landscape change over time using LCMS products. Users can:
             </p>
             <ul>
@@ -588,9 +591,10 @@
         <h3>Additional LCMS data exploration tools</h3>
         <div class="row">
           <div class="col-lg-5">
-            <strong style="font-size:1.5rem;">LCMS IDS Explorer</strong>
+            <strong class='explorer-title'>LCMS IDS Explorer</strong>
             <p>
-              The <a href="./ids.html" target="_blank"><b>LCMS IDS Explorer</b></a> allows users to compare LCMS-mapped
+              The <a class='homepage-link' href="./ids.html" target="_blank">LCMS IDS Explorer</a> allows users to
+              compare LCMS-mapped
               vegetation change with the USDA Forest Service Insect and Disease Survey (IDS) dataset. This tool is
               designed to help users:
             </p>
@@ -675,12 +679,21 @@
             </ul>
           </li>
           <hr>
-          <h3>LCMS Methods</h3>
+          <h3 id="methods">LCMS Methods</h3>
           <li>
             <ul>
               <a title="Click on link to open the v2024-10 methods document for all study areas"
                 href="https://data.fs.usda.gov/geodata/rastergateway/LCMS/LCMS_v2024-10_Methods.pdf"
                 class="homepage-link" target="_blank">LCMS v2024-10 methods document</a>
+            </ul>
+          </li>
+          <hr>
+          <h3 id="methods">LCMS Levels Guidance</h3>
+          <li>
+            <ul>
+              <a title="Click on link to open the v2024-10 guidance about leveraging different classificaion levels and their respective accuracy"
+                href="./src/assets/tutorials/LCMS_v2024-10_Levels_Info.html" class="homepage-link" target="_blank">LCMS
+                v2024-10 Classification Levels Guidance</a>
             </ul>
           </li>
           <hr>
@@ -762,9 +775,14 @@
 
       </div>
     </div>
+
+
+
   </main>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

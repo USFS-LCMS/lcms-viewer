@@ -1,0 +1,3557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LCMS Levels Guidance</title>
+    <style>
+        /* Basic Styling for Readability */
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #1b1716;
+            color: #1b1716;
+        }
+
+        .container {
+            max-width: 80%;
+            margin: 20px auto;
+            /* Center the content */
+            padding: 20px;
+            background-color: #bfb7b0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            background-color: #1b1716;
+            color: #bfb7b0;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        li {
+            display: inline;
+            font-weight: bold;
+            margin-right: 1rem;
+
+        }
+
+        li>a {
+            color: #00bfa5;
+            text-decoration: none;
+        }
+
+        .title {
+            font-size: 2em;
+            color: #bfb7b0;
+            float: left
+        }
+
+        th,
+        td {
+            border: none;
+            padding: 5px;
+            text-align: left;
+        }
+
+        td {
+            border-top: 1px solid #1b1716;
+        }
+
+
+        table {
+            border: none;
+            border-spacing: 0px;
+        }
+
+        th {
+
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <strong class='title'>LCMS Levels Guidance</strong>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#tables">Classification Levels</a></li>
+            <li><a href="#accuracy">Accuracy Results</a></li>
+        </ul>
+    </header>
+
+    <div class="container">
+        <!-- Introduction Section -->
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                LCMS employs a number of cross-walking methods to combine classes in
+                different ways to meet the need for varying levels of thematic detail.
+                In general, products with higher numbers of classes exhibit lower
+                levels of accuracy. Users should use the level that best matches their
+                error tolerance and need for thematic detail.
+            </p>
+            <p>
+                This document will provide guidance for crosswalking the delivered
+                LCMS products to these standard Levels. Each level will also have a
+                respective accuracy report provided.
+            </p>
+        </section>
+
+        <hr>
+        <!-- Tables Section -->
+        <section id="tables">
+            <h2>Levels Tables</h2>
+            <p>
+                Below are tables illustrating the relationship between the levels and
+                how they are binned
+            </p>
+
+            <h3>Change</h3>
+            <style type="text/css">
+                #T_3ee46_row0_col0,
+                #T_3ee46_row1_col0,
+                #T_3ee46_row2_col0,
+                #T_3ee46_row3_col0,
+                #T_3ee46_row4_col0,
+                #T_3ee46_row5_col0,
+                #T_3ee46_row5_col1,
+                #T_3ee46_row6_col0,
+                #T_3ee46_row6_col1,
+                #T_3ee46_row6_col2,
+                #T_3ee46_row7_col0,
+                #T_3ee46_row8_col0,
+                #T_3ee46_row9_col0,
+                #T_3ee46_row10_col0,
+                #T_3ee46_row11_col0,
+                #T_3ee46_row12_col0 {
+                    background-color: #D54309;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row0_col1,
+                #T_3ee46_row0_col2,
+                #T_3ee46_row1_col1 {
+                    background-color: #FF09F3;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row1_col2 {
+                    background-color: #541AFF;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row2_col1,
+                #T_3ee46_row12_col1,
+                #T_3ee46_row12_col2 {
+                    background-color: #C291D5;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row2_col2 {
+                    background-color: #E4F5FD;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row3_col1,
+                #T_3ee46_row3_col2 {
+                    background-color: #CC982E;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row4_col1,
+                #T_3ee46_row4_col2 {
+                    background-color: #0ADAFF;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row5_col2 {
+                    background-color: #A10018;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row7_col1,
+                #T_3ee46_row7_col2 {
+                    background-color: #FAFA4B;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row8_col1,
+                #T_3ee46_row8_col2 {
+                    background-color: #AFDE1C;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row9_col1,
+                #T_3ee46_row10_col1,
+                #T_3ee46_row11_col1,
+                #T_3ee46_row11_col2 {
+                    background-color: #F39268;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row9_col2 {
+                    background-color: #FFC80D;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row10_col2 {
+                    background-color: #A64C28;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row13_col0,
+                #T_3ee46_row13_col1,
+                #T_3ee46_row13_col2 {
+                    background-color: #00A398;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row14_col0,
+                #T_3ee46_row14_col1,
+                #T_3ee46_row14_col2 {
+                    background-color: #3D4551;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_3ee46_row15_col0,
+                #T_3ee46_row15_col1,
+                #T_3ee46_row15_col2 {
+                    background-color: #1B1716;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+            </style>
+            <table id="T_3ee46">
+                <thead>
+                    <tr>
+                        <th class="blank level0">&nbsp;</th>
+                        <th id="T_3ee46_level0_col0" class="col_heading level0 col0">Level 1</th>
+                        <th id="T_3ee46_level0_col1" class="col_heading level0 col1">Level 2</th>
+                        <th id="T_3ee46_level0_col2" class="col_heading level0 col2">Level 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th id="T_3ee46_level0_row0" class="row_heading level0 row0">1</th>
+                        <td id="T_3ee46_row0_col0" class="data row0 col0">Disturbance</td>
+                        <td id="T_3ee46_row0_col1" class="data row0 col1">Wind</td>
+                        <td id="T_3ee46_row0_col2" class="data row0 col2">Wind</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row1" class="row_heading level0 row1">2</th>
+                        <td id="T_3ee46_row1_col0" class="data row1 col0">Disturbance</td>
+                        <td id="T_3ee46_row1_col1" class="data row1 col1">Wind</td>
+                        <td id="T_3ee46_row1_col2" class="data row1 col2">Hurricane</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row2" class="row_heading level0 row2">3</th>
+                        <td id="T_3ee46_row2_col0" class="data row2 col0">Disturbance</td>
+                        <td id="T_3ee46_row2_col1" class="data row2 col1">Other Loss</td>
+                        <td id="T_3ee46_row2_col2" class="data row2 col2">Snow or Ice Transition</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row3" class="row_heading level0 row3">4</th>
+                        <td id="T_3ee46_row3_col0" class="data row3 col0">Disturbance</td>
+                        <td id="T_3ee46_row3_col1" class="data row3 col1">Desiccation</td>
+                        <td id="T_3ee46_row3_col2" class="data row3 col2">Desiccation</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row4" class="row_heading level0 row4">5</th>
+                        <td id="T_3ee46_row4_col0" class="data row4 col0">Disturbance</td>
+                        <td id="T_3ee46_row4_col1" class="data row4 col1">Inundation</td>
+                        <td id="T_3ee46_row4_col2" class="data row4 col2">Inundation</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row5" class="row_heading level0 row5">6</th>
+                        <td id="T_3ee46_row5_col0" class="data row5 col0">Disturbance</td>
+                        <td id="T_3ee46_row5_col1" class="data row5 col1">Fire</td>
+                        <td id="T_3ee46_row5_col2" class="data row5 col2">Prescribed Fire</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row6" class="row_heading level0 row6">7</th>
+                        <td id="T_3ee46_row6_col0" class="data row6 col0">Disturbance</td>
+                        <td id="T_3ee46_row6_col1" class="data row6 col1">Fire</td>
+                        <td id="T_3ee46_row6_col2" class="data row6 col2">Wildfire</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row7" class="row_heading level0 row7">8</th>
+                        <td id="T_3ee46_row7_col0" class="data row7 col0">Disturbance</td>
+                        <td id="T_3ee46_row7_col1" class="data row7 col1">Mechanical Land Transformation</td>
+                        <td id="T_3ee46_row7_col2" class="data row7 col2">Mechanical Land Transformation</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row8" class="row_heading level0 row8">9</th>
+                        <td id="T_3ee46_row8_col0" class="data row8 col0">Disturbance</td>
+                        <td id="T_3ee46_row8_col1" class="data row8 col1">Tree Removal</td>
+                        <td id="T_3ee46_row8_col2" class="data row8 col2">Tree Removal</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row9" class="row_heading level0 row9">10</th>
+                        <td id="T_3ee46_row9_col0" class="data row9 col0">Disturbance</td>
+                        <td id="T_3ee46_row9_col1" class="data row9 col1">Insect, Disease, or Drought Stress</td>
+                        <td id="T_3ee46_row9_col2" class="data row9 col2">Defoliation</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row10" class="row_heading level0 row10">11</th>
+                        <td id="T_3ee46_row10_col0" class="data row10 col0">Disturbance</td>
+                        <td id="T_3ee46_row10_col1" class="data row10 col1">Insect, Disease, or Drought Stress</td>
+                        <td id="T_3ee46_row10_col2" class="data row10 col2">Southern Pine Beetle</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row11" class="row_heading level0 row11">12</th>
+                        <td id="T_3ee46_row11_col0" class="data row11 col0">Disturbance</td>
+                        <td id="T_3ee46_row11_col1" class="data row11 col1">Insect, Disease, or Drought Stress</td>
+                        <td id="T_3ee46_row11_col2" class="data row11 col2">Insect, Disease, or Drought Stress</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row12" class="row_heading level0 row12">13</th>
+                        <td id="T_3ee46_row12_col0" class="data row12 col0">Disturbance</td>
+                        <td id="T_3ee46_row12_col1" class="data row12 col1">Other Loss</td>
+                        <td id="T_3ee46_row12_col2" class="data row12 col2">Other Loss</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row13" class="row_heading level0 row13">14</th>
+                        <td id="T_3ee46_row13_col0" class="data row13 col0">Vegetation Successional Growth</td>
+                        <td id="T_3ee46_row13_col1" class="data row13 col1">Vegetation Successional Growth</td>
+                        <td id="T_3ee46_row13_col2" class="data row13 col2">Vegetation Successional Growth</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row14" class="row_heading level0 row14">15</th>
+                        <td id="T_3ee46_row14_col0" class="data row14 col0">Stable</td>
+                        <td id="T_3ee46_row14_col1" class="data row14 col1">Stable</td>
+                        <td id="T_3ee46_row14_col2" class="data row14 col2">Stable</td>
+                    </tr>
+                    <tr>
+                        <th id="T_3ee46_level0_row15" class="row_heading level0 row15">16</th>
+                        <td id="T_3ee46_row15_col0" class="data row15 col0">Non-Processing Area Mask</td>
+                        <td id="T_3ee46_row15_col1" class="data row15 col1">Non-Processing Area Mask</td>
+                        <td id="T_3ee46_row15_col2" class="data row15 col2">Non-Processing Area Mask</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Land Cover</h3>
+            <style type="text/css">
+                #T_fed98_row0_col0,
+                #T_fed98_row1_col0,
+                #T_fed98_row2_col0,
+                #T_fed98_row2_col3,
+                #T_fed98_row3_col0,
+                #T_fed98_row4_col0,
+                #T_fed98_row5_col0,
+                #T_fed98_row6_col0,
+                #T_fed98_row7_col0,
+                #T_fed98_row8_col0,
+                #T_fed98_row9_col0,
+                #T_fed98_row10_col0 {
+                    background-color: #61BB46;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row0_col1,
+                #T_fed98_row0_col2,
+                #T_fed98_row0_col3,
+                #T_fed98_row1_col1,
+                #T_fed98_row1_col2,
+                #T_fed98_row2_col1,
+                #T_fed98_row2_col2,
+                #T_fed98_row3_col1,
+                #T_fed98_row3_col2,
+                #T_fed98_row4_col1,
+                #T_fed98_row4_col2 {
+                    background-color: #004E2B;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row1_col3 {
+                    background-color: #009344;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row3_col3 {
+                    background-color: #ACBB67;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row4_col3 {
+                    background-color: #8B8560;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row5_col1,
+                #T_fed98_row6_col1,
+                #T_fed98_row7_col1,
+                #T_fed98_row8_col1,
+                #T_fed98_row9_col1,
+                #T_fed98_row10_col1 {
+                    background-color: #8DA463;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row5_col2,
+                #T_fed98_row6_col2,
+                #T_fed98_row6_col3,
+                #T_fed98_row7_col2,
+                #T_fed98_row8_col2 {
+                    background-color: #F89A1C;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row5_col3 {
+                    background-color: #CAFD4B;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row7_col3 {
+                    background-color: #8FA55F;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row8_col3 {
+                    background-color: #BEBB8E;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row9_col2,
+                #T_fed98_row9_col3,
+                #T_fed98_row10_col2 {
+                    background-color: #E5E98A;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row10_col3 {
+                    background-color: #DDB925;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row11_col0,
+                #T_fed98_row11_col1,
+                #T_fed98_row12_col0,
+                #T_fed98_row12_col1,
+                #T_fed98_row13_col0,
+                #T_fed98_row13_col1 {
+                    background-color: #58646E;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row11_col2,
+                #T_fed98_row11_col3 {
+                    background-color: #893F54;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row12_col2,
+                #T_fed98_row12_col3 {
+                    background-color: #E4F5FD;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row13_col2,
+                #T_fed98_row13_col3 {
+                    background-color: #00B6F0;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_fed98_row14_col0,
+                #T_fed98_row14_col1,
+                #T_fed98_row14_col2,
+                #T_fed98_row14_col3 {
+                    background-color: #1B1716;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+            </style>
+            <table id="T_fed98">
+                <thead>
+                    <tr>
+                        <th class="blank level0">&nbsp;</th>
+                        <th id="T_fed98_level0_col0" class="col_heading level0 col0">Level 1</th>
+                        <th id="T_fed98_level0_col1" class="col_heading level0 col1">Level 2</th>
+                        <th id="T_fed98_level0_col2" class="col_heading level0 col2">Level 3</th>
+                        <th id="T_fed98_level0_col3" class="col_heading level0 col3">Level 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th id="T_fed98_level0_row0" class="row_heading level0 row0">1</th>
+                        <td id="T_fed98_row0_col0" class="data row0 col0">Vegetated</td>
+                        <td id="T_fed98_row0_col1" class="data row0 col1">Tree Vegetated</td>
+                        <td id="T_fed98_row0_col2" class="data row0 col2">Tree</td>
+                        <td id="T_fed98_row0_col3" class="data row0 col3">Tree</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row1" class="row_heading level0 row1">2</th>
+                        <td id="T_fed98_row1_col0" class="data row1 col0">Vegetated</td>
+                        <td id="T_fed98_row1_col1" class="data row1 col1">Tree Vegetated</td>
+                        <td id="T_fed98_row1_col2" class="data row1 col2">Tree</td>
+                        <td id="T_fed98_row1_col3" class="data row1 col3">Tall Shrub & Tree Mix (AK Only)</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row2" class="row_heading level0 row2">3</th>
+                        <td id="T_fed98_row2_col0" class="data row2 col0">Vegetated</td>
+                        <td id="T_fed98_row2_col1" class="data row2 col1">Tree Vegetated</td>
+                        <td id="T_fed98_row2_col2" class="data row2 col2">Tree</td>
+                        <td id="T_fed98_row2_col3" class="data row2 col3">Shrub & Tree Mix</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row3" class="row_heading level0 row3">4</th>
+                        <td id="T_fed98_row3_col0" class="data row3 col0">Vegetated</td>
+                        <td id="T_fed98_row3_col1" class="data row3 col1">Tree Vegetated</td>
+                        <td id="T_fed98_row3_col2" class="data row3 col2">Tree</td>
+                        <td id="T_fed98_row3_col3" class="data row3 col3">Grass/Forb/Herb & Tree Mix</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row4" class="row_heading level0 row4">5</th>
+                        <td id="T_fed98_row4_col0" class="data row4 col0">Vegetated</td>
+                        <td id="T_fed98_row4_col1" class="data row4 col1">Tree Vegetated</td>
+                        <td id="T_fed98_row4_col2" class="data row4 col2">Tree</td>
+                        <td id="T_fed98_row4_col3" class="data row4 col3">Barren & Tree Mix</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row5" class="row_heading level0 row5">6</th>
+                        <td id="T_fed98_row5_col0" class="data row5 col0">Vegetated</td>
+                        <td id="T_fed98_row5_col1" class="data row5 col1">Non-Tree Vegetated</td>
+                        <td id="T_fed98_row5_col2" class="data row5 col2">Shrub</td>
+                        <td id="T_fed98_row5_col3" class="data row5 col3">Tall Shrub (AK Only)</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row6" class="row_heading level0 row6">7</th>
+                        <td id="T_fed98_row6_col0" class="data row6 col0">Vegetated</td>
+                        <td id="T_fed98_row6_col1" class="data row6 col1">Non-Tree Vegetated</td>
+                        <td id="T_fed98_row6_col2" class="data row6 col2">Shrub</td>
+                        <td id="T_fed98_row6_col3" class="data row6 col3">Shrub</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row7" class="row_heading level0 row7">8</th>
+                        <td id="T_fed98_row7_col0" class="data row7 col0">Vegetated</td>
+                        <td id="T_fed98_row7_col1" class="data row7 col1">Non-Tree Vegetated</td>
+                        <td id="T_fed98_row7_col2" class="data row7 col2">Shrub</td>
+                        <td id="T_fed98_row7_col3" class="data row7 col3">Grass/Forb/Herb & Shrub Mix</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row8" class="row_heading level0 row8">9</th>
+                        <td id="T_fed98_row8_col0" class="data row8 col0">Vegetated</td>
+                        <td id="T_fed98_row8_col1" class="data row8 col1">Non-Tree Vegetated</td>
+                        <td id="T_fed98_row8_col2" class="data row8 col2">Shrub</td>
+                        <td id="T_fed98_row8_col3" class="data row8 col3">Barren & Shrub Mix</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row9" class="row_heading level0 row9">10</th>
+                        <td id="T_fed98_row9_col0" class="data row9 col0">Vegetated</td>
+                        <td id="T_fed98_row9_col1" class="data row9 col1">Non-Tree Vegetated</td>
+                        <td id="T_fed98_row9_col2" class="data row9 col2">Grass/Forb/Herb</td>
+                        <td id="T_fed98_row9_col3" class="data row9 col3">Grass/Forb/Herb</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row10" class="row_heading level0 row10">11</th>
+                        <td id="T_fed98_row10_col0" class="data row10 col0">Vegetated</td>
+                        <td id="T_fed98_row10_col1" class="data row10 col1">Non-Tree Vegetated</td>
+                        <td id="T_fed98_row10_col2" class="data row10 col2">Grass/Forb/Herb</td>
+                        <td id="T_fed98_row10_col3" class="data row10 col3">Barren & Grass/Forb/Herb Mix</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row11" class="row_heading level0 row11">12</th>
+                        <td id="T_fed98_row11_col0" class="data row11 col0">Non-Vegetated</td>
+                        <td id="T_fed98_row11_col1" class="data row11 col1">Non-Vegetated</td>
+                        <td id="T_fed98_row11_col2" class="data row11 col2">Barren or Impervious</td>
+                        <td id="T_fed98_row11_col3" class="data row11 col3">Barren or Impervious</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row12" class="row_heading level0 row12">13</th>
+                        <td id="T_fed98_row12_col0" class="data row12 col0">Non-Vegetated</td>
+                        <td id="T_fed98_row12_col1" class="data row12 col1">Non-Vegetated</td>
+                        <td id="T_fed98_row12_col2" class="data row12 col2">Snow or Ice</td>
+                        <td id="T_fed98_row12_col3" class="data row12 col3">Snow or Ice</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row13" class="row_heading level0 row13">14</th>
+                        <td id="T_fed98_row13_col0" class="data row13 col0">Non-Vegetated</td>
+                        <td id="T_fed98_row13_col1" class="data row13 col1">Non-Vegetated</td>
+                        <td id="T_fed98_row13_col2" class="data row13 col2">Water</td>
+                        <td id="T_fed98_row13_col3" class="data row13 col3">Water</td>
+                    </tr>
+                    <tr>
+                        <th id="T_fed98_level0_row14" class="row_heading level0 row14">15</th>
+                        <td id="T_fed98_row14_col0" class="data row14 col0">Non-Processing Area Mask</td>
+                        <td id="T_fed98_row14_col1" class="data row14 col1">Non-Processing Area Mask</td>
+                        <td id="T_fed98_row14_col2" class="data row14 col2">Non-Processing Area Mask</td>
+                        <td id="T_fed98_row14_col3" class="data row14 col3">Non-Processing Area Mask</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Land Use</h3>
+            <style type="text/css">
+                #T_ce339_row0_col0,
+                #T_ce339_row1_col0 {
+                    background-color: #FF9EAB;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_ce339_row0_col1 {
+                    background-color: #FBFF97;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_ce339_row1_col1 {
+                    background-color: #E6558B;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_ce339_row2_col0,
+                #T_ce339_row2_col1,
+                #T_ce339_row3_col0,
+                #T_ce339_row4_col0 {
+                    background-color: #004E2B;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_ce339_row3_col1 {
+                    background-color: #9DBAC5;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_ce339_row4_col1 {
+                    background-color: #A6976A;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+
+                #T_ce339_row5_col0,
+                #T_ce339_row5_col1 {
+                    background-color: #1B1716;
+                    color: #1b1716;
+                    border-top: 1px solid #1b1716;
+                    text-shadow: 1px 1px 0 #bfb7b0, -1px 1px 0 #bfb7b0, -1px -1px 0 #bfb7b0, 1px -1px 0 #bfb7b0;
+                }
+            </style>
+            <table id="T_ce339">
+                <thead>
+                    <tr>
+                        <th class="blank level0">&nbsp;</th>
+                        <th id="T_ce339_level0_col0" class="col_heading level0 col0">Level 1</th>
+                        <th id="T_ce339_level0_col1" class="col_heading level0 col1">Level 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th id="T_ce339_level0_row0" class="row_heading level0 row0">1</th>
+                        <td id="T_ce339_row0_col0" class="data row0 col0">Anthropogenic</td>
+                        <td id="T_ce339_row0_col1" class="data row0 col1">Agriculture</td>
+                    </tr>
+                    <tr>
+                        <th id="T_ce339_level0_row1" class="row_heading level0 row1">2</th>
+                        <td id="T_ce339_row1_col0" class="data row1 col0">Anthropogenic</td>
+                        <td id="T_ce339_row1_col1" class="data row1 col1">Developed</td>
+                    </tr>
+                    <tr>
+                        <th id="T_ce339_level0_row2" class="row_heading level0 row2">3</th>
+                        <td id="T_ce339_row2_col0" class="data row2 col0">Non-Anthropogenic</td>
+                        <td id="T_ce339_row2_col1" class="data row2 col1">Forest</td>
+                    </tr>
+                    <tr>
+                        <th id="T_ce339_level0_row3" class="row_heading level0 row3">4</th>
+                        <td id="T_ce339_row3_col0" class="data row3 col0">Non-Anthropogenic</td>
+                        <td id="T_ce339_row3_col1" class="data row3 col1">Other</td>
+                    </tr>
+                    <tr>
+                        <th id="T_ce339_level0_row4" class="row_heading level0 row4">5</th>
+                        <td id="T_ce339_row4_col0" class="data row4 col0">Non-Anthropogenic</td>
+                        <td id="T_ce339_row4_col1" class="data row4 col1">Rangeland or Pasture</td>
+                    </tr>
+                    <tr>
+                        <th id="T_ce339_level0_row5" class="row_heading level0 row5">6</th>
+                        <td id="T_ce339_row5_col0" class="data row5 col0">Non-Processing Area Mask</td>
+                        <td id="T_ce339_row5_col1" class="data row5 col1">Non-Processing Area Mask</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+            <!-- Crosswalk guidance -->
+            <hr>
+            <section id='crosswalk'>
+                <h2>Recommended Crosswalk</h2>
+                <p>For the best results, we recommend using the following crosswalks when converting between different
+                    levels.</p>
+                <h3>Change</h3>
+                <strong>Level 2:</strong>
+                <p>Remap From: <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]</code></p>
+                <p>Remap To: <code>[1, 1, 8, 2, 3, 4, 4, 5, 6, 7, 7, 7, 8, 9, 10, 11]</code></p>
+                <p>Visualization JSON:
+                    <code>{'Change_class_names': ['Wind', 'Desiccation', 'Inundation', 'Fire', 'Mechanical Land Transformation', 'Tree Removal', 'Insect, Disease, or Drought Stress', 'Other Loss', 'Vegetation Successional Growth', 'Stable', 'Non-Processing Area Mask'], 'Change_class_palette': ['FF09F3', 'CC982E', '0ADAFF', 'D54309', 'FAFA4B', 'AFDE1C', 'F39268', 'C291D5', '00A398', '3D4551', '1B1716'], 'Change_class_values': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}</code>
+                </p><br>
+                <strong>Level 1:</strong>
+                <p>Remap From: <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]</code></p>
+                <p>Remap To: <code>[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4]</code></p>
+                <p>Visualization JSON:
+                    <code>{'Change_class_names': ['Disturbance', 'Vegetation Successional Growth', 'Stable', 'Non-Processing Area Mask'], 'Change_class_palette': ['D54309', '00A398', '3D4551', '1B1716'], 'Change_class_values': [1, 2, 3, 4]}</code>
+                </p><br>
+                <hr>
+                <h3>Land Cover</h3>
+                <strong>Level 3:</strong>
+                <p>Remap From: <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</code></p>
+                <p>Remap To: <code>[1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 5, 6, 7]</code></p>
+                <p>Visualization JSON:
+                    <code>{'Land_Cover_class_names': ['Tree', 'Shrub', 'Grass/Forb/Herb', 'Barren or Impervious', 'Snow or Ice', 'Water', 'Non-Processing Area Mask'], 'Land_Cover_class_palette': ['004E2B', 'F89A1C', 'E5E98A', '893F54', 'E4F5FD', '00B6F0', '1B1716'], 'Land_Cover_class_values': [1, 2, 3, 4, 5, 6, 7]}</code>
+                </p><br>
+                <strong>Level 2:</strong>
+                <p>Remap From: <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</code></p>
+                <p>Remap To: <code>[1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4]</code></p>
+                <p>Visualization JSON:
+                    <code>{'Land_Cover_class_names': ['Tree Vegetated', 'Non-Tree Vegetated', 'Non-Vegetated', 'Non-Processing Area Mask'], 'Land_Cover_class_palette': ['004E2B', '8DA463', '893F54', '1B1716'], 'Land_Cover_class_values': [1, 2, 3, 4]}</code>
+                </p><br>
+                <strong>Level 1:</strong>
+                <p>Remap From: <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</code></p>
+                <p>Remap To: <code>[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3]</code></p>
+                <p>Visualization JSON:
+                    <code>{'Land_Cover_class_names': ['Vegetated', 'Non-Vegetated', 'Non-Processing Area Mask'], 'Land_Cover_class_palette': ['61BB46', '58646E', '1B1716'], 'Land_Cover_class_values': [1, 2, 3]}</code>
+                </p><br>
+                <hr>
+                <h3>Land Use</h3>
+                <strong>Level 1:</strong>
+                <p>Remap From: <code>[1, 2, 3, 4, 5, 6]</code></p>
+                <p>Remap To: <code>[1, 1, 2, 2, 2, 3]</code></p>
+                <p>Visualization JSON:
+                    <code>{'Land_Use_class_names': ['Anthropogenic', 'Non-Anthropogenic', 'Non-Processing Area Mask'], 'Land_Use_class_palette': ['FF9EAB', '004E2B', '1B1716'], 'Land_Use_class_values': [1, 2, 3]}</code>
+                </p><br>
+                <hr>
+            </section>
+            <section id='accuracy'>
+                <h2>Accuracy Results</h2>
+                <h3>LCMS v2024-10 AK Change Level 1 Accuracy </h3>
+                <p>Overall Accuracy: 97.03 +/- 0.07<br>
+                    Balanced Accuracy: 64.97 +/- 1.44<br>
+                    Kappa: 0.54<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Stable: 98.42<br>
+                    Loss: 56.39<br>
+                    Gain: 55.47<br>
+                    <br>
+                    Users Error: <br>
+                    Stable: 0.05<br>
+                    Loss: 2.71<br>
+                    Gain: 1.26<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Stable: 98.54<br>
+                    Loss: 36.81<br>
+                    Gain: 59.57<br>
+                    <br>
+                    Producers Error: <br>
+                    Stable: 0.05<br>
+                    Loss: 2.13<br>
+                    Gain: 1.29<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Stable: 55984<br>
+                    Loss: 551<br>
+                    Gain: 1478<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Stable</td>
+                            <td>Loss</td>
+                            <td>Gain</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Stable</td>
+                            <td>55267.98</td>
+                            <td>311.86</td>
+                            <td>577.52</td>
+                            <td>98.42</td>
+                            <td>0.05</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Loss</td>
+                            <td>141.70</td>
+                            <td>189.50</td>
+                            <td>4.85</td>
+                            <td>56.39</td>
+                            <td>2.71</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Gain</td>
+                            <td>675.35</td>
+                            <td>13.51</td>
+                            <td>858.07</td>
+                            <td>55.47</td>
+                            <td>1.26</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>98.54</td>
+                            <td>36.81</td>
+                            <td>59.57</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.05</td>
+                            <td>2.13</td>
+                            <td>1.29</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Change Level 1 Accuracy </h3>
+                <p>Overall Accuracy: 89.50 +/- 0.05<br>
+                    Balanced Accuracy: 67.10 +/- 0.36<br>
+                    Kappa: 0.50<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Stable: 94.41<br>
+                    Loss: 50.61<br>
+                    Gain: 54.14<br>
+                    <br>
+                    Users Error: <br>
+                    Stable: 0.04<br>
+                    Loss: 0.56<br>
+                    Gain: 0.27<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Stable: 93.92<br>
+                    Loss: 50.53<br>
+                    Gain: 56.86<br>
+                    <br>
+                    Producers Error: <br>
+                    Stable: 0.04<br>
+                    Loss: 0.56<br>
+                    Gain: 0.28<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Stable: 310309<br>
+                    Loss: 8060<br>
+                    Gain: 31879<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Stable</td>
+                            <td>Loss</td>
+                            <td>Gain</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Stable</td>
+                            <td>290830.28</td>
+                            <td>3505.11</td>
+                            <td>13718.17</td>
+                            <td>94.41</td>
+                            <td>0.04</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Loss</td>
+                            <td>3707.68</td>
+                            <td>4037.60</td>
+                            <td>232.48</td>
+                            <td>50.61</td>
+                            <td>0.56</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Gain</td>
+                            <td>15131.31</td>
+                            <td>448.36</td>
+                            <td>18390.79</td>
+                            <td>54.14</td>
+                            <td>0.27</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>93.92</td>
+                            <td>50.53</td>
+                            <td>56.86</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.04</td>
+                            <td>0.56</td>
+                            <td>0.28</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Change Level 2 Accuracy </h3>
+                <p>Overall Accuracy: 96.80 +/- 0.07<br>
+                    Balanced Accuracy: 23.97 +/- 6.33<br>
+                    Kappa: 0.41<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Desiccation: Too few samples to assess accuracy<br>
+                    Fire: 82.76<br>
+                    Veg-Growth: 51.33<br>
+                    Harvest: 64.81<br>
+                    Insect-Disease-Drought: 6.28<br>
+                    Inundation: Too few samples to assess accuracy<br>
+                    Mechanical: Too few samples to assess accuracy<br>
+                    Other: 0.51<br>
+                    Stable: 98.48<br>
+                    Wind: Too few samples to assess accuracy<br>
+                    <br>
+                    Users Error: <br>
+                    Desiccation: Too few samples to assess accuracy<br>
+                    Fire: 4.42<br>
+                    Veg-Growth: 1.47<br>
+                    Harvest: 15.30<br>
+                    Insect-Disease-Drought: 4.74<br>
+                    Inundation: Too few samples to assess accuracy<br>
+                    Mechanical: Too few samples to assess accuracy<br>
+                    Other: 0.41<br>
+                    Stable: 0.05<br>
+                    Wind: Too few samples to assess accuracy<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Desiccation: Too few samples to assess accuracy<br>
+                    Fire: 53.08<br>
+                    Veg-Growth: 55.37<br>
+                    Harvest: 16.90<br>
+                    Insect-Disease-Drought: 5.24<br>
+                    Inundation: Too few samples to assess accuracy<br>
+                    Mechanical: Too few samples to assess accuracy<br>
+                    Other: 0.55<br>
+                    Stable: 98.29<br>
+                    Wind: Too few samples to assess accuracy<br>
+                    <br>
+                    Producers Error: <br>
+                    Desiccation: Too few samples to assess accuracy<br>
+                    Fire: 4.68<br>
+                    Veg-Growth: 1.52<br>
+                    Harvest: 6.13<br>
+                    Insect-Disease-Drought: 3.98<br>
+                    Inundation: Too few samples to assess accuracy<br>
+                    Mechanical: Too few samples to assess accuracy<br>
+                    Other: 0.44<br>
+                    Stable: 0.05<br>
+                    Wind: Too few samples to assess accuracy<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Desiccation: 2 (Too few samples to assess accuracy)<br>
+                    Fire: 147<br>
+                    Veg-Growth: 1477<br>
+                    Harvest: 101<br>
+                    Insect-Disease-Drought: 85<br>
+                    Inundation: 9 (Too few samples to assess accuracy)<br>
+                    Mechanical: 23 (Too few samples to assess accuracy)<br>
+                    Other: 185<br>
+                    Stable: 55984<br>
+                    Wind: 0<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Desiccation</td>
+                            <td>Fire</td>
+                            <td>Veg-Growth</td>
+                            <td>Harvest</td>
+                            <td>Insect-Disease-Drought</td>
+                            <td>Inundation</td>
+                            <td>Mechanical</td>
+                            <td>Other</td>
+                            <td>Stable</td>
+                            <td>Wind</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Desiccation</td>
+                            <td>0.0</td>
+                            <td>0.00</td>
+                            <td>0.84</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>1.10</td>
+                            <td>36.78</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Fire</td>
+                            <td>0.0</td>
+                            <td>60.40</td>
+                            <td>4.94</td>
+                            <td>0.15</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>7.49</td>
+                            <td>0.0</td>
+                            <td>82.76</td>
+                            <td>4.42</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Veg-Growth</td>
+                            <td>0.0</td>
+                            <td>2.49</td>
+                            <td>593.27</td>
+                            <td>4.45</td>
+                            <td>2.81</td>
+                            <td>0.00</td>
+                            <td>0.26</td>
+                            <td>0.61</td>
+                            <td>551.88</td>
+                            <td>0.0</td>
+                            <td>51.33</td>
+                            <td>1.47</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Harvest</td>
+                            <td>0.0</td>
+                            <td>2.97</td>
+                            <td>0.00</td>
+                            <td>6.32</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.26</td>
+                            <td>0.07</td>
+                            <td>0.13</td>
+                            <td>0.0</td>
+                            <td>64.81</td>
+                            <td>15.3</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Insect-Disease-Drought</td>
+                            <td>0.0</td>
+                            <td>0.00</td>
+                            <td>0.57</td>
+                            <td>2.82</td>
+                            <td>1.64</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>21.17</td>
+                            <td>0.0</td>
+                            <td>6.28</td>
+                            <td>4.74</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Inundation</td>
+                            <td>0.0</td>
+                            <td>0.00</td>
+                            <td>0.84</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>44.00</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Mechanical</td>
+                            <td>0.0</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.29</td>
+                            <td>0.00</td>
+                            <td>0.97</td>
+                            <td>0.0</td>
+                            <td>23.08</td>
+                            <td>37.48</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Other</td>
+                            <td>0.0</td>
+                            <td>0.00</td>
+                            <td>1.48</td>
+                            <td>1.13</td>
+                            <td>0.52</td>
+                            <td>0.07</td>
+                            <td>0.16</td>
+                            <td>1.58</td>
+                            <td>304.04</td>
+                            <td>0.0</td>
+                            <td>0.51</td>
+                            <td>0.41</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Stable</td>
+                            <td>2.2</td>
+                            <td>47.94</td>
+                            <td>469.51</td>
+                            <td>22.43</td>
+                            <td>26.41</td>
+                            <td>4.95</td>
+                            <td>1.87</td>
+                            <td>284.34</td>
+                            <td>55522.07</td>
+                            <td>0.0</td>
+                            <td>98.48</td>
+                            <td>0.05</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Wind</td>
+                            <td>0.0</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.07</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>0.0</td>
+                            <td>53.08</td>
+                            <td>55.37</td>
+                            <td>16.90</td>
+                            <td>5.24</td>
+                            <td>0.00</td>
+                            <td>10.24</td>
+                            <td>0.55</td>
+                            <td>98.29</td>
+                            <td>0.0</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.0</td>
+                            <td>4.68</td>
+                            <td>1.52</td>
+                            <td>6.13</td>
+                            <td>3.98</td>
+                            <td>0.00</td>
+                            <td>17.97</td>
+                            <td>0.44</td>
+                            <td>0.05</td>
+                            <td>0.0</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Change Level 2 Accuracy </h3>
+                <p>Overall Accuracy: 92.48 +/- 0.05<br>
+                    Balanced Accuracy: 29.42 +/- 2.97<br>
+                    Kappa: 0.40<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Desiccation: 17.92<br>
+                    Fire: 71.90<br>
+                    Veg-Growth: 49.87<br>
+                    Harvest: 85.22<br>
+                    Insect-Disease-Drought: 20.98<br>
+                    Inundation: 14.41<br>
+                    Mechanical: 25.44<br>
+                    Other: 0.92<br>
+                    Stable: 95.73<br>
+                    Wind: 2.29<br>
+                    <br>
+                    Users Error: <br>
+                    Desiccation: 3.09<br>
+                    Fire: 3.70<br>
+                    Veg-Growth: 0.38<br>
+                    Harvest: 1.93<br>
+                    Insect-Disease-Drought: 1.27<br>
+                    Inundation: 3.27<br>
+                    Mechanical: 4.05<br>
+                    Other: 0.21<br>
+                    Stable: 0.04<br>
+                    Wind: 2.37<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Desiccation: 39.80<br>
+                    Fire: 36.87<br>
+                    Veg-Growth: 42.79<br>
+                    Harvest: 17.00<br>
+                    Insect-Disease-Drought: 17.30<br>
+                    Inundation: 23.39<br>
+                    Mechanical: 6.11<br>
+                    Other: 11.03<br>
+                    Stable: 96.58<br>
+                    Wind: 3.33<br>
+                    <br>
+                    Producers Error: <br>
+                    Desiccation: 5.89<br>
+                    Fire: 2.84<br>
+                    Veg-Growth: 0.35<br>
+                    Harvest: 0.91<br>
+                    Insect-Disease-Drought: 1.07<br>
+                    Inundation: 5.01<br>
+                    Mechanical: 1.09<br>
+                    Other: 2.35<br>
+                    Stable: 0.03<br>
+                    Wind: 3.43<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Desiccation: 134<br>
+                    Fire: 398<br>
+                    Veg-Growth: 31326<br>
+                    Harvest: 3381<br>
+                    Insect-Disease-Drought: 2634<br>
+                    Inundation: 132<br>
+                    Mechanical: 777<br>
+                    Other: 299<br>
+                    Stable: 301757<br>
+                    Wind: 49<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Desiccation</td>
+                            <td>Fire</td>
+                            <td>Veg-Growth</td>
+                            <td>Harvest</td>
+                            <td>Insect-Disease-Drought</td>
+                            <td>Inundation</td>
+                            <td>Mechanical</td>
+                            <td>Other</td>
+                            <td>Stable</td>
+                            <td>Wind</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Desiccation</td>
+                            <td>27.53</td>
+                            <td>0.00</td>
+                            <td>1.27</td>
+                            <td>0.00</td>
+                            <td>1.09</td>
+                            <td>0.00</td>
+                            <td>0.55</td>
+                            <td>0.00</td>
+                            <td>123.22</td>
+                            <td>0.00</td>
+                            <td>17.92</td>
+                            <td>3.09</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Fire</td>
+                            <td>0.00</td>
+                            <td>106.21</td>
+                            <td>21.51</td>
+                            <td>2.41</td>
+                            <td>1.12</td>
+                            <td>0.00</td>
+                            <td>0.17</td>
+                            <td>0.03</td>
+                            <td>16.27</td>
+                            <td>0.00</td>
+                            <td>71.9</td>
+                            <td>3.7</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Veg-Growth</td>
+                            <td>2.43</td>
+                            <td>12.31</td>
+                            <td>8552.50</td>
+                            <td>133.78</td>
+                            <td>27.20</td>
+                            <td>3.53</td>
+                            <td>30.72</td>
+                            <td>3.35</td>
+                            <td>8382.84</td>
+                            <td>1.66</td>
+                            <td>49.87</td>
+                            <td>0.38</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Harvest</td>
+                            <td>0.00</td>
+                            <td>5.44</td>
+                            <td>2.44</td>
+                            <td>288.19</td>
+                            <td>0.91</td>
+                            <td>3.19</td>
+                            <td>5.87</td>
+                            <td>0.34</td>
+                            <td>28.89</td>
+                            <td>2.90</td>
+                            <td>85.22</td>
+                            <td>1.93</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Insect-Disease-Drought</td>
+                            <td>0.00</td>
+                            <td>17.16</td>
+                            <td>69.02</td>
+                            <td>19.06</td>
+                            <td>214.34</td>
+                            <td>0.00</td>
+                            <td>0.33</td>
+                            <td>3.81</td>
+                            <td>697.87</td>
+                            <td>0.03</td>
+                            <td>20.98</td>
+                            <td>1.27</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Inundation</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.18</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>16.67</td>
+                            <td>0.55</td>
+                            <td>0.00</td>
+                            <td>98.27</td>
+                            <td>0.00</td>
+                            <td>14.41</td>
+                            <td>3.27</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Mechanical</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.55</td>
+                            <td>6.75</td>
+                            <td>0.55</td>
+                            <td>0.18</td>
+                            <td>29.48</td>
+                            <td>0.00</td>
+                            <td>78.19</td>
+                            <td>0.17</td>
+                            <td>25.44</td>
+                            <td>4.05</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Other</td>
+                            <td>5.19</td>
+                            <td>7.10</td>
+                            <td>43.65</td>
+                            <td>569.10</td>
+                            <td>33.55</td>
+                            <td>3.99</td>
+                            <td>58.99</td>
+                            <td>19.65</td>
+                            <td>1385.65</td>
+                            <td>5.29</td>
+                            <td>0.92</td>
+                            <td>0.21</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Stable</td>
+                            <td>34.02</td>
+                            <td>139.87</td>
+                            <td>11295.43</td>
+                            <td>661.69</td>
+                            <td>958.81</td>
+                            <td>42.94</td>
+                            <td>353.18</td>
+                            <td>150.92</td>
+                            <td>305791.03</td>
+                            <td>16.41</td>
+                            <td>95.73</td>
+                            <td>0.04</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Wind</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.34</td>
+                            <td>14.18</td>
+                            <td>1.25</td>
+                            <td>0.77</td>
+                            <td>2.44</td>
+                            <td>0.00</td>
+                            <td>19.99</td>
+                            <td>0.91</td>
+                            <td>2.29</td>
+                            <td>2.37</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>39.80</td>
+                            <td>36.87</td>
+                            <td>42.79</td>
+                            <td>17.00</td>
+                            <td>17.30</td>
+                            <td>23.39</td>
+                            <td>6.11</td>
+                            <td>11.03</td>
+                            <td>96.58</td>
+                            <td>3.33</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>5.89</td>
+                            <td>2.84</td>
+                            <td>0.35</td>
+                            <td>0.91</td>
+                            <td>1.07</td>
+                            <td>5.01</td>
+                            <td>1.09</td>
+                            <td>2.35</td>
+                            <td>0.03</td>
+                            <td>3.43</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Land Cover Level 1 Accuracy </h3>
+                <p>Overall Accuracy: 95.35 +/- 0.09<br>
+                    Balanced Accuracy: 95.10 +/- 0.15<br>
+                    Kappa: 0.88<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    VEG: 98.17<br>
+                    NON-VEG: 87.67<br>
+                    <br>
+                    Users Error: <br>
+                    VEG: 0.07<br>
+                    NON-VEG: 0.26<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    VEG: 95.60<br>
+                    NON-VEG: 94.60<br>
+                    <br>
+                    Producers Error: <br>
+                    VEG: 0.10<br>
+                    NON-VEG: 0.19<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    VEG: 48503<br>
+                    NON-VEG: 9510<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>VEG</td>
+                            <td>NON-VEG</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>VEG</td>
+                            <td>41696.31</td>
+                            <td>779.23</td>
+                            <td>98.17</td>
+                            <td>0.07</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NON-VEG</td>
+                            <td>1919.01</td>
+                            <td>13645.78</td>
+                            <td>87.67</td>
+                            <td>0.26</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>95.60</td>
+                            <td>94.60</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.10</td>
+                            <td>0.19</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Land Cover Level 1 Accuracy </h3>
+                <p>Overall Accuracy: 95.71 +/- 0.03<br>
+                    Balanced Accuracy: 81.89 +/- 0.25<br>
+                    Kappa: 0.59<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    VEG: 98.15<br>
+                    NON-VEG: 57.39<br>
+                    <br>
+                    Users Error: <br>
+                    VEG: 0.02<br>
+                    NON-VEG: 0.34<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    VEG: 97.30<br>
+                    NON-VEG: 66.48<br>
+                    <br>
+                    Producers Error: <br>
+                    VEG: 0.03<br>
+                    NON-VEG: 0.35<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    VEG: 317873<br>
+                    NON-VEG: 32375<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>VEG</td>
+                            <td>NON-VEG</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>VEG</td>
+                            <td>322919.24</td>
+                            <td>6077.77</td>
+                            <td>98.15</td>
+                            <td>0.02</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NON-VEG</td>
+                            <td>8949.47</td>
+                            <td>12055.29</td>
+                            <td>57.39</td>
+                            <td>0.34</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>97.30</td>
+                            <td>66.48</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.03</td>
+                            <td>0.35</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Land Cover Level 2 Accuracy </h3>
+                <p>Overall Accuracy: 83.79 +/- 0.15<br>
+                    Balanced Accuracy: 85.39 +/- 0.24<br>
+                    Kappa: 0.75<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    TREE_VEG: 79.43<br>
+                    NON-TREE_VEG: 85.38<br>
+                    NON-VEG: 87.67<br>
+                    <br>
+                    Users Error: <br>
+                    TREE_VEG: 0.28<br>
+                    NON-TREE_VEG: 0.24<br>
+                    NON-VEG: 0.26<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    TREE_VEG: 86.68<br>
+                    NON-TREE_VEG: 74.89<br>
+                    NON-VEG: 94.60<br>
+                    <br>
+                    Producers Error: <br>
+                    TREE_VEG: 0.24<br>
+                    NON-TREE_VEG: 0.28<br>
+                    NON-VEG: 0.19<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    TREE_VEG: 25183<br>
+                    NON-TREE_VEG: 23320<br>
+                    NON-VEG: 9510<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TREE VEG</td>
+                            <td>NON-TREE VEG</td>
+                            <td>NON-VEG</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>TREE VEG</td>
+                            <td>17089.42</td>
+                            <td>4218.15</td>
+                            <td>206.29</td>
+                            <td>79.43</td>
+                            <td>0.28</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NON-TREE VEG</td>
+                            <td>2491.10</td>
+                            <td>17897.63</td>
+                            <td>572.94</td>
+                            <td>85.38</td>
+                            <td>0.24</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NON-VEG</td>
+                            <td>136.05</td>
+                            <td>1782.95</td>
+                            <td>13645.78</td>
+                            <td>87.67</td>
+                            <td>0.26</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>86.68</td>
+                            <td>74.89</td>
+                            <td>94.60</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.24</td>
+                            <td>0.28</td>
+                            <td>0.19</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Land Cover Level 2 Accuracy </h3>
+                <p>Overall Accuracy: 87.20 +/- 0.06<br>
+                    Balanced Accuracy: 80.74 +/- 0.21<br>
+                    Kappa: 0.76<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    TREE_VEG: 90.47<br>
+                    NON-TREE_VEG: 88.22<br>
+                    NON-VEG: 57.39<br>
+                    <br>
+                    Users Error: <br>
+                    TREE_VEG: 0.08<br>
+                    NON-TREE_VEG: 0.07<br>
+                    NON-VEG: 0.34<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    TREE_VEG: 85.22<br>
+                    NON-TREE_VEG: 90.53<br>
+                    NON-VEG: 66.48<br>
+                    <br>
+                    Producers Error: <br>
+                    TREE_VEG: 0.10<br>
+                    NON-TREE_VEG: 0.07<br>
+                    NON-VEG: 0.35<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    TREE_VEG: 202848<br>
+                    NON-TREE_VEG: 115025<br>
+                    NON-VEG: 32375<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TREE VEG</td>
+                            <td>NON-TREE VEG</td>
+                            <td>NON-VEG</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>TREE VEG</td>
+                            <td>116843.92</td>
+                            <td>10762.01</td>
+                            <td>1549.40</td>
+                            <td>90.47</td>
+                            <td>0.08</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NON-TREE VEG</td>
+                            <td>19003.98</td>
+                            <td>176309.33</td>
+                            <td>4528.37</td>
+                            <td>88.22</td>
+                            <td>0.07</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NON-VEG</td>
+                            <td>1264.05</td>
+                            <td>7685.42</td>
+                            <td>12055.29</td>
+                            <td>57.39</td>
+                            <td>0.34</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>85.22</td>
+                            <td>90.53</td>
+                            <td>66.48</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.10</td>
+                            <td>0.07</td>
+                            <td>0.35</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Land Cover Level 3 Accuracy </h3>
+                <p>Overall Accuracy: 72.05 +/- 0.19<br>
+                    Balanced Accuracy: 76.38 +/- 0.43<br>
+                    Kappa: 0.64<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    TREES: 79.43<br>
+                    SHRUBS: 72.71<br>
+                    GRASS: 43.40<br>
+                    BARREN: 67.68<br>
+                    SNOW: 90.59<br>
+                    WATER: 96.83<br>
+                    <br>
+                    Users Error: <br>
+                    TREES: 0.28<br>
+                    SHRUBS: 0.47<br>
+                    GRASS: 0.45<br>
+                    BARREN: 0.62<br>
+                    SNOW: 0.36<br>
+                    WATER: 0.31<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    TREES: 86.68<br>
+                    SHRUBS: 42.51<br>
+                    GRASS: 61.02<br>
+                    BARREN: 81.79<br>
+                    SNOW: 96.68<br>
+                    WATER: 89.60<br>
+                    <br>
+                    Producers Error: <br>
+                    TREES: 0.24<br>
+                    SHRUBS: 0.40<br>
+                    GRASS: 0.53<br>
+                    BARREN: 0.56<br>
+                    SNOW: 0.23<br>
+                    WATER: 0.52<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    TREES: 25183<br>
+                    SHRUBS: 14860<br>
+                    GRASS: 8460<br>
+                    BARREN: 4587<br>
+                    SNOW: 2828<br>
+                    WATER: 2095<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TREES</td>
+                            <td>SHRUBS</td>
+                            <td>GRASS</td>
+                            <td>BARREN</td>
+                            <td>SNOW</td>
+                            <td>WATER</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>TREES</td>
+                            <td>17089.42</td>
+                            <td>3059.00</td>
+                            <td>1159.14</td>
+                            <td>145.11</td>
+                            <td>0.00</td>
+                            <td>61.18</td>
+                            <td>79.43</td>
+                            <td>0.28</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SHRUBS</td>
+                            <td>1282.76</td>
+                            <td>6541.98</td>
+                            <td>1099.74</td>
+                            <td>73.43</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>72.71</td>
+                            <td>0.47</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS</td>
+                            <td>1208.34</td>
+                            <td>5064.13</td>
+                            <td>5191.78</td>
+                            <td>252.73</td>
+                            <td>0.00</td>
+                            <td>246.78</td>
+                            <td>43.4</td>
+                            <td>0.45</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN</td>
+                            <td>135.83</td>
+                            <td>725.69</td>
+                            <td>741.32</td>
+                            <td>3871.29</td>
+                            <td>188.61</td>
+                            <td>57.42</td>
+                            <td>67.68</td>
+                            <td>0.62</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SNOW</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>264.89</td>
+                            <td>355.61</td>
+                            <td>5974.48</td>
+                            <td>0.00</td>
+                            <td>90.59</td>
+                            <td>0.36</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>WATER</td>
+                            <td>0.22</td>
+                            <td>0.00</td>
+                            <td>51.06</td>
+                            <td>35.03</td>
+                            <td>16.85</td>
+                            <td>3146.50</td>
+                            <td>96.83</td>
+                            <td>0.31</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>86.68</td>
+                            <td>42.51</td>
+                            <td>61.02</td>
+                            <td>81.79</td>
+                            <td>96.68</td>
+                            <td>89.60</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.24</td>
+                            <td>0.40</td>
+                            <td>0.53</td>
+                            <td>0.56</td>
+                            <td>0.23</td>
+                            <td>0.52</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Land Cover Level 3 Accuracy </h3>
+                <p>Overall Accuracy: 79.11 +/- 0.07<br>
+                    Balanced Accuracy: 71.77 +/- 3.20<br>
+                    Kappa: 0.70<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    TREES: 90.47<br>
+                    SHRUBS: 74.22<br>
+                    GRASS: 74.10<br>
+                    BARREN: 40.03<br>
+                    SNOW: 82.65<br>
+                    WATER: 93.95<br>
+                    <br>
+                    Users Error: <br>
+                    TREES: 0.08<br>
+                    SHRUBS: 0.17<br>
+                    GRASS: 0.12<br>
+                    BARREN: 0.41<br>
+                    SNOW: 7.02<br>
+                    WATER: 0.30<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    TREES: 85.22<br>
+                    SHRUBS: 60.53<br>
+                    GRASS: 86.90<br>
+                    BARREN: 54.69<br>
+                    SNOW: 62.30<br>
+                    WATER: 81.00<br>
+                    <br>
+                    Producers Error: <br>
+                    TREES: 0.10<br>
+                    SHRUBS: 0.17<br>
+                    GRASS: 0.10<br>
+                    BARREN: 0.48<br>
+                    SNOW: 7.80<br>
+                    WATER: 0.46<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    TREES: 202848<br>
+                    SHRUBS: 36067<br>
+                    GRASS: 78958<br>
+                    BARREN: 21543<br>
+                    SNOW: 840<br>
+                    WATER: 9992<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TREES</td>
+                            <td>SHRUBS</td>
+                            <td>GRASS</td>
+                            <td>BARREN</td>
+                            <td>SNOW</td>
+                            <td>WATER</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>TREES</td>
+                            <td>116843.92</td>
+                            <td>5987.33</td>
+                            <td>4774.68</td>
+                            <td>921.50</td>
+                            <td>0.35</td>
+                            <td>627.55</td>
+                            <td>90.47</td>
+                            <td>0.08</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SHRUBS</td>
+                            <td>6578.43</td>
+                            <td>48374.23</td>
+                            <td>8398.92</td>
+                            <td>1828.75</td>
+                            <td>0.00</td>
+                            <td>0.87</td>
+                            <td>74.22</td>
+                            <td>0.17</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS</td>
+                            <td>12425.55</td>
+                            <td>19746.46</td>
+                            <td>99789.72</td>
+                            <td>2040.16</td>
+                            <td>0.00</td>
+                            <td>658.59</td>
+                            <td>74.1</td>
+                            <td>0.12</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN</td>
+                            <td>1161.78</td>
+                            <td>5792.38</td>
+                            <td>1645.11</td>
+                            <td>5833.12</td>
+                            <td>14.20</td>
+                            <td>124.02</td>
+                            <td>40.03</td>
+                            <td>0.41</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SNOW</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>5.05</td>
+                            <td>24.04</td>
+                            <td>0.00</td>
+                            <td>82.65</td>
+                            <td>7.02</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>WATER</td>
+                            <td>102.28</td>
+                            <td>19.28</td>
+                            <td>228.65</td>
+                            <td>37.54</td>
+                            <td>0.00</td>
+                            <td>6017.32</td>
+                            <td>93.95</td>
+                            <td>0.3</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>85.22</td>
+                            <td>60.53</td>
+                            <td>86.90</td>
+                            <td>54.69</td>
+                            <td>62.30</td>
+                            <td>81.00</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.10</td>
+                            <td>0.17</td>
+                            <td>0.10</td>
+                            <td>0.48</td>
+                            <td>7.80</td>
+                            <td>0.46</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Land Cover Level 4 Accuracy </h3>
+                <p>Overall Accuracy: 64.45 +/- 0.20<br>
+                    Balanced Accuracy: 35.76 +/- 0.35<br>
+                    Kappa: 0.57<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    TREES: 71.86<br>
+                    TS-TREES: 0.00<br>
+                    SHRUBS-TRE: 0.88<br>
+                    GRASS-TREE: 1.81<br>
+                    BARREN-TRE: nan<br>
+                    TS: 57.69<br>
+                    SHRUBS: 25.66<br>
+                    GRASS-SHRU: nan<br>
+                    BARREN-SHR: nan<br>
+                    GRASS: 42.29<br>
+                    BARREN-GRA: 2.56<br>
+                    BARREN-IMP: 67.68<br>
+                    SNOW: 90.59<br>
+                    WATER: 96.83<br>
+                    <br>
+                    Users Error: <br>
+                    TREES: 0.31<br>
+                    TS-TREES: 0.00<br>
+                    SHRUBS-TRE: 1.34<br>
+                    GRASS-TREE: 0.66<br>
+                    BARREN-TRE: nan<br>
+                    TS: 0.64<br>
+                    SHRUBS: 0.80<br>
+                    GRASS-SHRU: nan<br>
+                    BARREN-SHR: nan<br>
+                    GRASS: 0.45<br>
+                    BARREN-GRA: 2.41<br>
+                    BARREN-IMP: 0.62<br>
+                    SNOW: 0.36<br>
+                    WATER: 0.31<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    TREES: 91.85<br>
+                    TS-TREES: 0.00<br>
+                    SHRUBS-TRE: 0.03<br>
+                    GRASS-TREE: 0.74<br>
+                    BARREN-TRE: 0.00<br>
+                    TS: 63.39<br>
+                    SHRUBS: 12.88<br>
+                    GRASS-SHRU: 0.00<br>
+                    BARREN-SHR: 0.00<br>
+                    GRASS: 63.47<br>
+                    BARREN-GRA: 0.20<br>
+                    BARREN-IMP: 81.79<br>
+                    SNOW: 96.68<br>
+                    WATER: 89.60<br>
+                    <br>
+                    Producers Error: <br>
+                    TREES: 0.21<br>
+                    TS-TREES: 0.00<br>
+                    SHRUBS-TRE: 0.04<br>
+                    GRASS-TREE: 0.27<br>
+                    BARREN-TRE: 0.00<br>
+                    TS: 0.65<br>
+                    SHRUBS: 0.43<br>
+                    GRASS-SHRU: 0.00<br>
+                    BARREN-SHR: 0.00<br>
+                    GRASS: 0.54<br>
+                    BARREN-GRA: 0.19<br>
+                    BARREN-IMP: 0.56<br>
+                    SNOW: 0.23<br>
+                    WATER: 0.52<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    TREES: 21599<br>
+                    TS-TREES: 472<br>
+                    SHRUBS-TRE: 1787<br>
+                    GRASS-TREE: 1121<br>
+                    BARREN-TRE: 204<br>
+                    TS: 5407<br>
+                    SHRUBS: 5641<br>
+                    GRASS-SHRU: 3541<br>
+                    BARREN-SHR: 271<br>
+                    GRASS: 7843<br>
+                    BARREN-GRA: 617<br>
+                    BARREN-IMP: 4587<br>
+                    SNOW: 2828<br>
+                    WATER: 2095<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TREES</td>
+                            <td>TS-TREES</td>
+                            <td>SHRUBS-TRE</td>
+                            <td>GRASS-TREE</td>
+                            <td>BARREN-TRE</td>
+                            <td>TS</td>
+                            <td>SHRUBS</td>
+                            <td>GRASS-SHRU</td>
+                            <td>BARREN-SHR</td>
+                            <td>GRASS</td>
+                            <td>BARREN-GRA</td>
+                            <td>BARREN-IMP</td>
+                            <td>SNOW</td>
+                            <td>WATER</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>TREES</td>
+                            <td>15129.01</td>
+                            <td>270.36</td>
+                            <td>1080.63</td>
+                            <td>537.81</td>
+                            <td>54.68</td>
+                            <td>1286.84</td>
+                            <td>1218.91</td>
+                            <td>294.46</td>
+                            <td>50.72</td>
+                            <td>932.56</td>
+                            <td>0.87</td>
+                            <td>136.69</td>
+                            <td>0.00</td>
+                            <td>61.18</td>
+                            <td>71.86</td>
+                            <td>0.31</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>TS-TREES</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>1.24</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SHRUBS-TRE</td>
+                            <td>9.10</td>
+                            <td>0.00</td>
+                            <td>0.43</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>7.23</td>
+                            <td>31.41</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.43</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.88</td>
+                            <td>1.34</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS-TREE</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>7.41</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>107.91</td>
+                            <td>29.38</td>
+                            <td>30.91</td>
+                            <td>222.40</td>
+                            <td>3.30</td>
+                            <td>7.99</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>1.81</td>
+                            <td>0.66</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-TRE</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>NaN</td>
+                            <td>NaN</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>TS</td>
+                            <td>343.92</td>
+                            <td>167.11</td>
+                            <td>201.49</td>
+                            <td>67.29</td>
+                            <td>28.44</td>
+                            <td>3469.31</td>
+                            <td>1212.16</td>
+                            <td>103.87</td>
+                            <td>29.68</td>
+                            <td>386.46</td>
+                            <td>0.00</td>
+                            <td>3.67</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>57.69</td>
+                            <td>0.64</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SHRUBS</td>
+                            <td>191.29</td>
+                            <td>49.96</td>
+                            <td>128.03</td>
+                            <td>100.90</td>
+                            <td>4.34</td>
+                            <td>466.73</td>
+                            <td>765.97</td>
+                            <td>405.57</td>
+                            <td>88.70</td>
+                            <td>704.70</td>
+                            <td>8.58</td>
+                            <td>69.76</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>25.66</td>
+                            <td>0.8</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS-SHRU</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>NaN</td>
+                            <td>NaN</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-SHR</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>NaN</td>
+                            <td>NaN</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS</td>
+                            <td>681.15</td>
+                            <td>25.27</td>
+                            <td>223.49</td>
+                            <td>271.98</td>
+                            <td>6.45</td>
+                            <td>219.03</td>
+                            <td>2356.03</td>
+                            <td>2439.96</td>
+                            <td>7.25</td>
+                            <td>5041.63</td>
+                            <td>149.05</td>
+                            <td>252.73</td>
+                            <td>0.00</td>
+                            <td>246.78</td>
+                            <td>42.29</td>
+                            <td>0.45</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-GRA</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>41.86</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>1.10</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>2.56</td>
+                            <td>2.41</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-IMP</td>
+                            <td>116.05</td>
+                            <td>0.00</td>
+                            <td>5.64</td>
+                            <td>10.69</td>
+                            <td>3.44</td>
+                            <td>22.91</td>
+                            <td>256.67</td>
+                            <td>367.86</td>
+                            <td>78.25</td>
+                            <td>364.84</td>
+                            <td>376.48</td>
+                            <td>3871.29</td>
+                            <td>188.61</td>
+                            <td>57.42</td>
+                            <td>67.68</td>
+                            <td>0.62</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SNOW</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>239.51</td>
+                            <td>25.38</td>
+                            <td>355.61</td>
+                            <td>5974.48</td>
+                            <td>0.00</td>
+                            <td>90.59</td>
+                            <td>0.36</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>WATER</td>
+                            <td>0.22</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>51.06</td>
+                            <td>0.00</td>
+                            <td>35.03</td>
+                            <td>16.85</td>
+                            <td>3146.50</td>
+                            <td>96.83</td>
+                            <td>0.31</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>91.85</td>
+                            <td>0.00</td>
+                            <td>0.03</td>
+                            <td>0.74</td>
+                            <td>0.00</td>
+                            <td>63.39</td>
+                            <td>12.88</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>63.47</td>
+                            <td>0.20</td>
+                            <td>81.79</td>
+                            <td>96.68</td>
+                            <td>89.60</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.21</td>
+                            <td>0.00</td>
+                            <td>0.04</td>
+                            <td>0.27</td>
+                            <td>0.00</td>
+                            <td>0.65</td>
+                            <td>0.43</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.54</td>
+                            <td>0.19</td>
+                            <td>0.56</td>
+                            <td>0.23</td>
+                            <td>0.52</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Land Cover Level 4 Accuracy </h3>
+                <p>Overall Accuracy: 67.18 +/- 0.08<br>
+                    Balanced Accuracy: 40.41 +/- 2.27<br>
+                    Kappa: 0.57<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    TREES: 82.35<br>
+                    TS-TREES: Not Modeled<br>
+                    SHRUBS-TRE: 10.68<br>
+                    GRASS-TREE: 35.26<br>
+                    BARREN-TRE: 26.15<br>
+                    TS: Not Modeled<br>
+                    SHRUBS: 39.11<br>
+                    GRASS-SHRU: 38.32<br>
+                    BARREN-SHR: 34.34<br>
+                    GRASS: 73.74<br>
+                    BARREN-GRA: 1.58<br>
+                    BARREN-IMP: 40.03<br>
+                    SNOW: 82.65<br>
+                    WATER: 93.95<br>
+                    <br>
+                    Users Error: <br>
+                    TREES: 0.11<br>
+                    TS-TREES: Not Modeled<br>
+                    SHRUBS-TRE: 1.04<br>
+                    GRASS-TREE: 0.42<br>
+                    BARREN-TRE: 3.65<br>
+                    TS: Not Modeled<br>
+                    SHRUBS: 0.40<br>
+                    GRASS-SHRU: 0.24<br>
+                    BARREN-SHR: 0.50<br>
+                    GRASS: 0.12<br>
+                    BARREN-GRA: 0.66<br>
+                    BARREN-IMP: 0.41<br>
+                    SNOW: 7.02<br>
+                    WATER: 0.30<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    TREES: 93.59<br>
+                    TS-TREES: Not Modeled<br>
+                    SHRUBS-TRE: 1.50<br>
+                    GRASS-TREE: 16.97<br>
+                    BARREN-TRE: 1.63<br>
+                    TS: Not Modeled<br>
+                    SHRUBS: 21.32<br>
+                    GRASS-SHRU: 40.25<br>
+                    BARREN-SHR: 23.13<br>
+                    GRASS: 88.40<br>
+                    BARREN-GRA: 0.20<br>
+                    BARREN-IMP: 54.69<br>
+                    SNOW: 62.30<br>
+                    WATER: 81.00<br>
+                    <br>
+                    Producers Error: <br>
+                    TREES: 0.08<br>
+                    TS-TREES: Not Modeled<br>
+                    SHRUBS-TRE: 0.15<br>
+                    GRASS-TREE: 0.23<br>
+                    BARREN-TRE: 0.26<br>
+                    TS: Not Modeled<br>
+                    SHRUBS: 0.25<br>
+                    GRASS-SHRU: 0.25<br>
+                    BARREN-SHR: 0.37<br>
+                    GRASS: 0.10<br>
+                    BARREN-GRA: 0.08<br>
+                    BARREN-IMP: 0.48<br>
+                    SNOW: 7.80<br>
+                    WATER: 0.46<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    TREES: 163335<br>
+                    TS-TREES: Not Modeled<br>
+                    SHRUBS-TRE: 10900<br>
+                    GRASS-TREE: 26494<br>
+                    BARREN-TRE: 2119<br>
+                    TS: Not Modeled<br>
+                    SHRUBS: 13095<br>
+                    GRASS-SHRU: 15831<br>
+                    BARREN-SHR: 7141<br>
+                    GRASS: 75723<br>
+                    BARREN-GRA: 3235<br>
+                    BARREN-IMP: 21543<br>
+                    SNOW: 840<br>
+                    WATER: 9992<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TREES</td>
+                            <td>SHRUBS-TRE</td>
+                            <td>GRASS-TREE</td>
+                            <td>BARREN-TRE</td>
+                            <td>SHRUBS</td>
+                            <td>GRASS-SHRU</td>
+                            <td>BARREN-SHR</td>
+                            <td>GRASS</td>
+                            <td>BARREN-GRA</td>
+                            <td>BARREN-IMP</td>
+                            <td>SNOW</td>
+                            <td>WATER</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>TREES</td>
+                            <td>94704.14</td>
+                            <td>3394.83</td>
+                            <td>9587.66</td>
+                            <td>489.02</td>
+                            <td>1399.95</td>
+                            <td>1184.25</td>
+                            <td>31.53</td>
+                            <td>2759.18</td>
+                            <td>65.99</td>
+                            <td>810.22</td>
+                            <td>0.35</td>
+                            <td>581.85</td>
+                            <td>82.35</td>
+                            <td>0.11</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SHRUBS-TRE</td>
+                            <td>310.94</td>
+                            <td>94.82</td>
+                            <td>109.76</td>
+                            <td>4.04</td>
+                            <td>203.43</td>
+                            <td>110.39</td>
+                            <td>16.06</td>
+                            <td>36.90</td>
+                            <td>0.00</td>
+                            <td>1.16</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>10.68</td>
+                            <td>1.04</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS-TREE</td>
+                            <td>2242.73</td>
+                            <td>835.58</td>
+                            <td>4624.44</td>
+                            <td>403.40</td>
+                            <td>1090.87</td>
+                            <td>1355.59</td>
+                            <td>495.61</td>
+                            <td>1824.39</td>
+                            <td>88.04</td>
+                            <td>110.13</td>
+                            <td>0.00</td>
+                            <td>43.29</td>
+                            <td>35.26</td>
+                            <td>0.42</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-TRE</td>
+                            <td>0.37</td>
+                            <td>0.00</td>
+                            <td>4.33</td>
+                            <td>37.86</td>
+                            <td>34.66</td>
+                            <td>21.66</td>
+                            <td>43.32</td>
+                            <td>0.18</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>2.42</td>
+                            <td>26.15</td>
+                            <td>3.65</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SHRUBS</td>
+                            <td>283.42</td>
+                            <td>387.61</td>
+                            <td>1152.19</td>
+                            <td>138.42</td>
+                            <td>5829.34</td>
+                            <td>4009.42</td>
+                            <td>1372.74</td>
+                            <td>1453.63</td>
+                            <td>36.62</td>
+                            <td>241.95</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>39.11</td>
+                            <td>0.4</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS-SHRU</td>
+                            <td>180.41</td>
+                            <td>623.53</td>
+                            <td>2576.79</td>
+                            <td>381.75</td>
+                            <td>10259.01</td>
+                            <td>15876.80</td>
+                            <td>4533.47</td>
+                            <td>5328.32</td>
+                            <td>945.74</td>
+                            <td>720.78</td>
+                            <td>0.00</td>
+                            <td>0.87</td>
+                            <td>38.32</td>
+                            <td>0.24</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-SHR</td>
+                            <td>17.33</td>
+                            <td>134.30</td>
+                            <td>430.97</td>
+                            <td>271.72</td>
+                            <td>1282.94</td>
+                            <td>2172.26</td>
+                            <td>3038.24</td>
+                            <td>368.78</td>
+                            <td>265.83</td>
+                            <td>866.01</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>34.34</td>
+                            <td>0.5</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>GRASS</td>
+                            <td>2959.94</td>
+                            <td>843.68</td>
+                            <td>8473.98</td>
+                            <td>147.96</td>
+                            <td>6105.01</td>
+                            <td>12325.28</td>
+                            <td>971.54</td>
+                            <td>99037.43</td>
+                            <td>746.62</td>
+                            <td>2031.15</td>
+                            <td>0.00</td>
+                            <td>658.59</td>
+                            <td>73.74</td>
+                            <td>0.12</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-GRA</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>104.34</td>
+                            <td>121.30</td>
+                            <td>118.98</td>
+                            <td>0.00</td>
+                            <td>5.66</td>
+                            <td>9.01</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>1.58</td>
+                            <td>0.66</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>BARREN-IMP</td>
+                            <td>403.66</td>
+                            <td>17.83</td>
+                            <td>293.72</td>
+                            <td>446.57</td>
+                            <td>1029.34</td>
+                            <td>2257.78</td>
+                            <td>2505.26</td>
+                            <td>999.90</td>
+                            <td>645.21</td>
+                            <td>5833.12</td>
+                            <td>14.20</td>
+                            <td>124.02</td>
+                            <td>40.03</td>
+                            <td>0.41</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>SNOW</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>5.05</td>
+                            <td>24.04</td>
+                            <td>0.00</td>
+                            <td>82.65</td>
+                            <td>7.02</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>WATER</td>
+                            <td>90.94</td>
+                            <td>3.64</td>
+                            <td>2.79</td>
+                            <td>4.91</td>
+                            <td>1.98</td>
+                            <td>11.28</td>
+                            <td>6.03</td>
+                            <td>226.13</td>
+                            <td>2.52</td>
+                            <td>37.54</td>
+                            <td>0.00</td>
+                            <td>6017.32</td>
+                            <td>93.95</td>
+                            <td>0.3</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>93.59</td>
+                            <td>1.50</td>
+                            <td>16.97</td>
+                            <td>1.63</td>
+                            <td>21.32</td>
+                            <td>40.25</td>
+                            <td>23.13</td>
+                            <td>88.40</td>
+                            <td>0.20</td>
+                            <td>54.69</td>
+                            <td>62.30</td>
+                            <td>81.00</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.08</td>
+                            <td>0.15</td>
+                            <td>0.23</td>
+                            <td>0.26</td>
+                            <td>0.25</td>
+                            <td>0.25</td>
+                            <td>0.37</td>
+                            <td>0.10</td>
+                            <td>0.08</td>
+                            <td>0.48</td>
+                            <td>7.80</td>
+                            <td>0.46</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Land Use Level 1 Accuracy </h3>
+                <p>Overall Accuracy: 99.83 +/- 0.02<br>
+                    Balanced Accuracy: 72.71 +/- 2.79<br>
+                    Kappa: 0.59<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Anthro: 85.26<br>
+                    Non-Anthro: 99.85<br>
+                    <br>
+                    Users Error: <br>
+                    Anthro: 3.84<br>
+                    Non-Anthro: 0.02<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Anthro: 45.44<br>
+                    Non-Anthro: 99.98<br>
+                    <br>
+                    Producers Error: <br>
+                    Anthro: 3.94<br>
+                    Non-Anthro: 0.01<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Anthro: 2226<br>
+                    Non-Anthro: 55787<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Anthro</td>
+                            <td>Non-Anthro</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Anthro</td>
+                            <td>72.53</td>
+                            <td>12.53</td>
+                            <td>85.26</td>
+                            <td>3.84</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Non-Anthro</td>
+                            <td>87.10</td>
+                            <td>57868.17</td>
+                            <td>99.85</td>
+                            <td>0.02</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>45.44</td>
+                            <td>99.98</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>3.94</td>
+                            <td>0.01</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Land Use Level 1 Accuracy </h3>
+                <p>Overall Accuracy: 90.70 +/- 0.05<br>
+                    Balanced Accuracy: 88.25 +/- 0.09<br>
+                    Kappa: 0.76<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Anthro: 81.52<br>
+                    Non-Anthro: 94.02<br>
+                    <br>
+                    Users Error: <br>
+                    Anthro: 0.13<br>
+                    Non-Anthro: 0.05<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Anthro: 83.13<br>
+                    Non-Anthro: 93.37<br>
+                    <br>
+                    Producers Error: <br>
+                    Anthro: 0.12<br>
+                    Non-Anthro: 0.05<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Anthro: 74206<br>
+                    Non-Anthro: 276042<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Anthro</td>
+                            <td>Non-Anthro</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Anthro</td>
+                            <td>75736.91</td>
+                            <td>17168.65</td>
+                            <td>81.52</td>
+                            <td>0.13</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Non-Anthro</td>
+                            <td>15364.43</td>
+                            <td>241731.78</td>
+                            <td>94.02</td>
+                            <td>0.05</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>83.13</td>
+                            <td>93.37</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.12</td>
+                            <td>0.05</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 AK Land Use Level 2 Accuracy </h3>
+                <p>Overall Accuracy: 84.93 +/- 0.15<br>
+                    Balanced Accuracy: 73.97 +/- 3.73<br>
+                    Kappa: 0.77<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Agriculture: 75.75<br>
+                    Developed: 91.97<br>
+                    Forest: 83.08<br>
+                    Other: 92.37<br>
+                    Rangeland: 81.96<br>
+                    <br>
+                    Users Error: <br>
+                    Agriculture: 7.09<br>
+                    Developed: 3.83<br>
+                    Forest: 0.27<br>
+                    Other: 0.22<br>
+                    Rangeland: 0.25<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Agriculture: 75.62<br>
+                    Developed: 37.70<br>
+                    Forest: 84.70<br>
+                    Other: 89.00<br>
+                    Rangeland: 82.82<br>
+                    <br>
+                    Producers Error: <br>
+                    Agriculture: 7.09<br>
+                    Developed: 4.37<br>
+                    Forest: 0.26<br>
+                    Other: 0.26<br>
+                    Rangeland: 0.24<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Agriculture: 1076<br>
+                    Developed: 1150<br>
+                    Forest: 24106<br>
+                    Other: 9535<br>
+                    Rangeland: 22146<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Agriculture</td>
+                            <td>Developed</td>
+                            <td>Forest</td>
+                            <td>Other</td>
+                            <td>Rangeland</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Agriculture</td>
+                            <td>27.72</td>
+                            <td>0.00</td>
+                            <td>6.07</td>
+                            <td>0.00</td>
+                            <td>2.80</td>
+                            <td>75.75</td>
+                            <td>7.09</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Developed</td>
+                            <td>0.00</td>
+                            <td>46.36</td>
+                            <td>1.59</td>
+                            <td>2.33</td>
+                            <td>0.13</td>
+                            <td>91.97</td>
+                            <td>3.83</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Forest</td>
+                            <td>0.82</td>
+                            <td>35.29</td>
+                            <td>16054.33</td>
+                            <td>157.39</td>
+                            <td>3077.25</td>
+                            <td>83.08</td>
+                            <td>0.27</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Other</td>
+                            <td>0.00</td>
+                            <td>4.70</td>
+                            <td>69.24</td>
+                            <td>13358.38</td>
+                            <td>1029.99</td>
+                            <td>92.37</td>
+                            <td>0.22</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Rangeland</td>
+                            <td>8.11</td>
+                            <td>36.62</td>
+                            <td>2823.23</td>
+                            <td>1490.92</td>
+                            <td>19807.05</td>
+                            <td>81.96</td>
+                            <td>0.25</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>75.62</td>
+                            <td>37.70</td>
+                            <td>84.70</td>
+                            <td>89.00</td>
+                            <td>82.82</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>7.09</td>
+                            <td>4.37</td>
+                            <td>0.26</td>
+                            <td>0.26</td>
+                            <td>0.24</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <h3>LCMS v2024-10 CONUS Land Use Level 2 Accuracy </h3>
+                <p>Overall Accuracy: 83.93 +/- 0.06<br>
+                    Balanced Accuracy: 73.95 +/- 0.27<br>
+                    Kappa: 0.77<br>
+                    <br>
+                    Users Accuracy (100%-Commission Error): <br>
+                    Agriculture: 77.46<br>
+                    Developed: 88.87<br>
+                    Forest: 88.93<br>
+                    Other: 81.72<br>
+                    Rangeland: 83.35<br>
+                    <br>
+                    Users Error: <br>
+                    Agriculture: 0.14<br>
+                    Developed: 0.38<br>
+                    Forest: 0.09<br>
+                    Other: 0.39<br>
+                    Rangeland: 0.11<br>
+                    <br>
+                    Producers Accuracy (100%-Omission Error): <br>
+                    Agriculture: 89.19<br>
+                    Developed: 37.31<br>
+                    Forest: 91.07<br>
+                    Other: 70.93<br>
+                    Rangeland: 81.25<br>
+                    <br>
+                    Producers Error: <br>
+                    Agriculture: 0.11<br>
+                    Developed: 0.38<br>
+                    Forest: 0.08<br>
+                    Other: 0.43<br>
+                    Rangeland: 0.11<br>
+                    <br>
+                    Number of Samples in each class: <br>
+                    Agriculture: 48074<br>
+                    Developed: 26132<br>
+                    Forest: 187755<br>
+                    Other: 22717<br>
+                    Rangeland: 65570<br>
+                    <br>
+                </p>
+                <table border="1" class="dataframe">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Observed</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Agriculture</td>
+                            <td>Developed</td>
+                            <td>Forest</td>
+                            <td>Other</td>
+                            <td>Rangeland</td>
+                            <td>Users Acc</td>
+                            <td>Users SE</td>
+                        </tr>
+                        <tr>
+                            <td>Predicted</td>
+                            <td>Agriculture</td>
+                            <td>66628.46</td>
+                            <td>2838.15</td>
+                            <td>1894.62</td>
+                            <td>107.21</td>
+                            <td>14552.31</td>
+                            <td>77.46</td>
+                            <td>0.14</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Developed</td>
+                            <td>151.83</td>
+                            <td>6118.47</td>
+                            <td>339.82</td>
+                            <td>8.57</td>
+                            <td>266.11</td>
+                            <td>88.87</td>
+                            <td>0.38</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Forest</td>
+                            <td>1267.45</td>
+                            <td>3505.47</td>
+                            <td>109449.70</td>
+                            <td>922.98</td>
+                            <td>7922.11</td>
+                            <td>88.93</td>
+                            <td>0.09</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Other</td>
+                            <td>17.59</td>
+                            <td>216.15</td>
+                            <td>320.55</td>
+                            <td>7840.21</td>
+                            <td>1199.69</td>
+                            <td>81.72</td>
+                            <td>0.39</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Rangeland</td>
+                            <td>6639.14</td>
+                            <td>3718.64</td>
+                            <td>8181.59</td>
+                            <td>2174.25</td>
+                            <td>103720.71</td>
+                            <td>83.35</td>
+                            <td>0.11</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers Acc</td>
+                            <td>89.19</td>
+                            <td>37.31</td>
+                            <td>91.07</td>
+                            <td>70.93</td>
+                            <td>81.25</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Producers SE</td>
+                            <td>0.11</td>
+                            <td>0.38</td>
+                            <td>0.08</td>
+                            <td>0.43</td>
+                            <td>0.11</td>
+                            <td></td>
+                            <td>None</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+            </section>
+
+
+    </div>
+    <!-- End of container -->
+</body>
+
+</html>

@@ -75,11 +75,11 @@ function addModal(containerID, modalID, bodyOnly) {
   $("#" + modalID).remove();
   if (bodyOnly) {
     $("#" + containerID)
-      .append(`<div id = "${modalID}" class="modal fade " role="dialog">
+      .append(`<div id = "${modalID}" class="modal fade " role="dialog" tabindex="-1">
               <div class="modal-dialog modal-md ">
               <div class="modal-content modal-content-not-full-screen-styling">
                   <div style = ' border-bottom: 0 none;'class="modal-header pb-0" id ="${modalID}-header">
-                  <button style = 'float:right;' id = 'close-modal-button' type="button" class="close text-dark" data-dismiss="modal">&times;</button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
               <div id ="${modalID}-body" class="modal-body " ></div>
               </div>
@@ -90,7 +90,7 @@ function addModal(containerID, modalID, bodyOnly) {
           <div id = "${modalID}" class="modal fade " role="dialog">
               <div class="modal-dialog modal-lg ">
               <div class="modal-content bg-black">
-              <button type="button" class="close p-2 ml-auto" data-dismiss="modal">&times;</button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   <div class="modal-header py-0" id ="${modalID}-header"></div>
               <div id ="${modalID}-body" class="modal-body " style = 'background:#DDD;' ></div>
                   <div class="modal-footer" id ="${modalID}-footer"></div>
@@ -135,16 +135,23 @@ function showMessage(title, message, modalID, show) {
   if (modalID === undefined || modalID === null) {
     modalID = "error-modal";
   }
-
+  console.log(modalID);
   clearModal(modalID);
   addModal("main-container", modalID, true);
   if (title !== "" && title !== undefined && title !== null) {
     addModalTitle(modalID, title);
   }
+  let button = `<button id='${modalID}-launch-button' type="button" class="btn btn-primary hide" data-bs-toggle="modal" style="display:none;"
+      data-bs-target="#${modalID}">
+      Show Info
+    </button>`;
 
   $("#" + modalID + "-body").append(message);
   if (show) {
-    $("#" + modalID).modal();
+    // $("#" + modalID).modal();
+    $("body").append(button);
+    $(`#${modalID}-launch-button`).click();
+    $(`#${modalID}-launch-button`).remove();
   }
 }
 
@@ -226,6 +233,53 @@ function setupDropdownTreeDownloads(
         summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
       },
     },
+    NLCD_TCC: {
+      CONUS: {
+        longName: "Conterminous U.S.",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-5",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+      SEAK: {
+        longName: "Southeastern Alaska",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+
+      PRUSVI: {
+        longName: "Puerto Rico - US Virgin Islands",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+      HI: {
+        longName: "Hawaii",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+    },
   };
 
   const programInfo = {
@@ -264,7 +318,8 @@ function setupDropdownTreeDownloads(
             " "
           )} Data</span>
           <ul id = "${programTreeID}" class="nested active"></ul>
-        </ul>`);
+        
+        </li>`);
     Object.keys(study_areas).map((sa) => {
       const saObj = programTree[program][sa];
       const saTreeID = `caret-tree-${program}-${sa}`;

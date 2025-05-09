@@ -246,14 +246,15 @@ const staticTemplates = {
 		                </div>
 		            </li>`,
   placesSearchDiv: `
-  <section class="btn-group  search-bar" >
+  <section class="btn-group  search-bar" id="search-share-div">
     <button type="button" onclick = 'getLocation()'  class="btn"><i class="fa fa-map-marker text-black "></i></button>
     <button type="button" onclick = 'storeParams()' class="btn" id="share-button"><i class="fa fa-share-alt teal "></i></button>
     <button type="button" class="btn "><i class="fa fa-search text-black "></i></button>
     <input id = 'pac-input' align="left" class="btn" title = 'Search for places on the map' type="text" placeholder="Search Places">
     <button onclick = 'backView()' title = 'Click to go back a view' class=" btn" id="back-view-button"><i  class="fa fa-chevron-left teal "></i></button>
                               <button onclick = 'forwardView()' title = 'Click to go forward a view'  class=" btn" id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
-  </section>`,
+  </section>
+  <p class="text-center white time-lapse-year-label" " id="time-lapse-year-label"></p>`,
 
   introModal: {
     LCMS: getIntroModal(
@@ -1106,7 +1107,10 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10 (CONUS and AK)</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (PRUSVI and HI)</a>
                                 </li>
 
                             </div>
@@ -1178,11 +1182,16 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
+                               
+                                <a href="https://geeviz.org/" target="_blank">
+                                    <img src="./src/assets/images/geeviz-logo-light.png"  class = 'support-icons mt-2' alt="GeeViz Logo"  href="#"   title="Click to learn more about GeeViz">
+                                    
+                                </a>
                             </div>
                             <div class = 'col-lg-10'>
-                                <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
-                                </a>
+                                
+                                  <p class = 'support-text'>LCMS utilizes <a class="links" href="https://earthengine.google.com/" target="_blank"><i>Google Earth Engine</i></a> and the companion Python package <a class="links" href="https://geeviz.org/" target="_blank"><i>GeeViz</i></a> for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                              
                             </div>
                         </section>
                         <hr>
@@ -1192,7 +1201,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2025). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -2172,7 +2181,7 @@ function setupDropdownTreeDownloads(
             " "
           )} Data</span>
           <ul id = "${programTreeID}" class="nested active"></ul>
-        </ul>`);
+        </li>`);
     Object.keys(study_areas).map((sa) => {
       const saObj = programTree[program][sa];
       const saTreeID = `caret-tree-${program}-${sa}`;

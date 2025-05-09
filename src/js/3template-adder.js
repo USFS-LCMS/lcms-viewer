@@ -258,9 +258,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Years of LCMS data to include for land cover, land use, loss, and gain"
   );
 
-  $("#parameters-collapse-div").append(`
-                                          <div id='threshold-container' style="display:none;width:100%"></div>
-                                          <div id='advanced-radio-container' style="display: none;"></div>`);
+  // $("#parameters-collapse-div").append(`
+  //                                         <div id='threshold-container' style="display:none;width:100%"></div>
+  //                                         <div id='advanced-radio-container' style="display: none;"></div>`);
 
   if (mode === "LCMS-pilot") {
     addRangeSlider(
@@ -334,21 +334,21 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     );
     $("#advanced-radio-container").append(`<hr>`);
   }
-  const tSummaryMethod = urlParams.summaryMethod;
-  addRadio(
-    "advanced-radio-container",
-    "summaryMethod-radio",
-    "Summary method:",
-    "Most recent year",
-    "Highest prob",
-    "urlParams.summaryMethod",
-    "year",
-    "prob",
-    null,
-    null,
-    "How to choose which value for disturbance and growth to display.  Choose the value with the highest model confidence or from the most recent year above the threshold."
-  );
-  urlParams.summaryMethod = tSummaryMethod;
+  // const tSummaryMethod = urlParams.summaryMethod;
+  // addRadio(
+  //   "advanced-radio-container",
+  //   "summaryMethod-radio",
+  //   "Summary method:",
+  //   "Most recent year",
+  //   "Highest prob",
+  //   "urlParams.summaryMethod",
+  //   "year",
+  //   "prob",
+  //   null,
+  //   null,
+  //   "How to choose which value for disturbance and growth to display.  Choose the value with the highest model confidence or from the most recent year above the threshold."
+  // );
+  // urlParams.summaryMethod = tSummaryMethod;
 
   urlParams.landCoverLevels = urlParams.landCoverLevels || {
     1: false,
@@ -366,7 +366,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     2: true,
   };
   $("#parameters-collapse-div").append(
-    "<br><h5 title = 'LCMS classes can be binned to produce coarser classes with higher map accuracy. By default, LCMS is delivered with the most detailed class level (highest level). You can choose lower levels here to meet different mapping needs. For example, if you only care to show where all the vegetation cover loss is, regardless of its type, choosing Change Classification Level 2 may better suit your needs.'>LCMS Classification Level Selection</h5>"
+    "<div title = 'LCMS classes can be binned to produce coarser classes with higher map accuracy. By default, LCMS is delivered with the most detailed class level (highest level). You can choose lower levels here to meet different mapping needs. For example, if you only care to show where all the vegetation cover loss is, regardless of its type, choosing Change Classification Level 2 may better suit your needs.' class = 'param-title'>LCMS Classification Level Selection</div>"
   );
   addMultiRadio(
     "parameters-collapse-div",
@@ -438,9 +438,9 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (tAnalysisMode === "advanced") {
     $("#analysis-mode-radio-second_toggle_label").click();
   }
-  if (tSummaryMethod === "prob") {
-    $("#summaryMethod-radio-second_toggle_label").click();
-  }
+  // if (tSummaryMethod === "prob") {
+  //   $("#summaryMethod-radio-second_toggle_label").click();
+  // }
   if (tCauseOfChangeMode === "hide") {
     $("#cause-of-change-mask-mode-radio-second_toggle_label").click();
   }

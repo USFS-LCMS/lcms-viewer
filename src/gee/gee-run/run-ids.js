@@ -16,9 +16,9 @@ function runIDS() {
     )
     .select(["Change", "Change_Raw.*"]);
 
-  const years = ee.List.sequence(idsMinYear, idsMaxYear);
+  const years = range(idsMinYear, idsMaxYear + 1);
 
-  lcmsC = years.map(function (yr) {
+  lcmsC = ee.List(years).map(function (yr) {
     const t = lcmsC.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
     return t.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });

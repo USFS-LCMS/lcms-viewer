@@ -304,7 +304,12 @@ body {
   color: var(--teal-100) !important;
   text-align: center;
 }
-
+.time-lapse-year-label{
+  font-size: 1.25rem; 
+  font-weight: bold;
+  margin-top:0px;
+  margin-bottom:0.25rem;
+}
 .info-page {
   color: var(--deep-brown-20) !important;
   /* padding-top:3rem; */
@@ -1308,6 +1313,7 @@ ul {
 ::-webkit-scrollbar {
   width: 0.7rem;
   height: 0.7rem;
+  cursor:pointer;
 }
 
 ::-webkit-scrollbar-track {
