@@ -467,6 +467,7 @@ button {
 
 .sidebar {
   overflow-y: auto;
+  overflow-x:hidden;
   max-height: calc(100% - 1.7rem);
   background-color: var(--black) !important;
   z-index: 3;
