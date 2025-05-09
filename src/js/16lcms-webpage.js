@@ -452,10 +452,7 @@ function resizePanes() {
       "padding-top",
       $("nav").height() + convertRemToPixels(1.5)
     );
-    // $("hr.section").css(
-    //   "margin-top",
-    //   $("nav").height() + convertRemToPixels(1.5)
-    // );
+
     $("hr.section").css("margin-bottom", -$("nav").height());
     $("#data-descriptions-header-row").show();
 
@@ -464,8 +461,12 @@ function resizePanes() {
       "padding-top": "0.2rem;",
     });
   } else {
-    $(".nav-toggler").show();
-    $(".info-page").css("padding-top", $(".navbar-header").height());
+    // $(".nav-toggler").show();
+    $(".info-page").css(
+      "padding-top",
+      $(".navbar-header").height() + convertRemToPixels(2)
+    );
+    $("hr.section").css("margin-bottom", -$(".navbar-header").height());
     $("#data-descriptions-header-row").hide();
     $(".navbar-header").css({
       "font-size": "1.65rem",
