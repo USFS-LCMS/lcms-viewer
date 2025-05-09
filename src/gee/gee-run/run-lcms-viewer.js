@@ -41,7 +41,7 @@ function runGTAC() {
       summaryMethod
     );
     // setupDownloads(studyAreaName);
-    const clientBoundary = clientBoundsDict.CONUS_SEAK;
+    const clientBoundary = clientBoundsDict.All;
 
     const lcmsRun = {};
     const lcmsRunFuns = {};

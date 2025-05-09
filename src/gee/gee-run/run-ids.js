@@ -10,15 +10,16 @@ function runIDS() {
   );
   getLCMSVariables();
   let lcmsC = studyAreaDict[studyAreaName].final_collections;
+
   lcmsC = ee
     .ImageCollection(
       ee.FeatureCollection(lcmsC.map((f) => ee.ImageCollection(f))).flatten()
     )
     .select(["Change", "Change_Raw.*"]);
+  let props = lcmsC.first().toDictionary();
+  const years = range(idsMinYear, idsMaxYear + 1);
 
-  const years = ee.List.sequence(idsMinYear, idsMaxYear);
-
-  lcmsC = years.map(function (yr) {
+  lcmsC = ee.List(years).map(function (yr) {
     const t = lcmsC.filter(ee.Filter.calendarRange(yr, yr, "year")).mosaic();
     return t.set("system:time_start", ee.Date.fromYMD(yr, 6, 1).millis());
   });
@@ -60,16 +61,11 @@ function runIDS() {
       let lcmsT = lcmsC
         .filter(ee.Filter.calendarRange(yr, yr, "year"))
         .first()
-        .select(["Change"]);
+        .select(["Change"])
+        .set(props);
 
-      lcmsT = lcmsT.updateMask(lcmsT.gte(2).and(lcmsT.lte(4)));
-      lcmsT = lcmsT
-        .visualize({
-          min: 2,
-          max: 4,
-          palette: changePalette,
-        })
-        .unmask(256);
+      lcmsT = lcmsT.updateMask(lcmsT.lt(14));
+      lcmsT = lcmsT.visualize().unmask(256);
       let out = idsT.where(lcmsT.neq(256).and(idsT.eq(256)), lcmsT);
       out = ee.Image(out.updateMask(out.neq(256))).byte();
 
@@ -122,7 +118,7 @@ function runIDS() {
   Map.addTimeLapse(
     idsLCMS,
     {
-      years: years.getInfo(),
+      years: years,
       addToClassLegend: true,
       classLegendDict: classLegendDict,
       min: 0,

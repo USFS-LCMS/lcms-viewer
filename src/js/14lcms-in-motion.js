@@ -257,51 +257,51 @@ require([
   }
 
   function load() {
-    ["Hawaii", "PuertoRico_USVI", "Southeast_Alaska", "CONUS"].map(function (
-      nm
-    ) {
-      addImageryLayer(
-        `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,
-        `LCMS Land Cover (${nm})`,
-        false,
-        true
-      );
-      addImageryLayer(
-        `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,
-        `LCMS Land Use (${nm})`,
-        false,
-        true
-      );
-      if (nm === "PuertoRico_USVI") {
-        addImageryLayer(
-          `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,
-          `LCMS Fast Loss Year (${nm})`,
-          true
-        );
-        addImageryLayer(
-          `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,
-          `LCMS Gain Year (${nm})`,
-          false
-        );
-      } else {
-        addImageryLayer(
-          `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,
-          `LCMS Fast Loss Year (${nm})`,
-          true
-        );
-        addImageryLayer(
-          `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,
-          `LCMS Slow Loss Year (${nm})`,
-          false
-        );
-        addImageryLayer(
-          `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,
-          `LCMS Gain Year (${nm})`,
-          false
-        );
-      }
-    });
-    checkTimeLapseVisible();
+    // ["Hawaii", "PuertoRico_USVI", "Southeast_Alaska", "CONUS"].map(function (
+    //   nm
+    // ) {
+    //   addImageryLayer(
+    //     `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landcover/ImageServer`,
+    //     `LCMS Land Cover (${nm})`,
+    //     false,
+    //     true
+    //   );
+    //   addImageryLayer(
+    //     `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Annual_Landuse/ImageServer`,
+    //     `LCMS Land Use (${nm})`,
+    //     false,
+    //     true
+    //   );
+    //   if (nm === "PuertoRico_USVI") {
+    //     addImageryLayer(
+    //       `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Fast_Loss/ImageServer`,
+    //       `LCMS Fast Loss Year (${nm})`,
+    //       true
+    //     );
+    //     addImageryLayer(
+    //       `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Highest_Prob_Gain/ImageServer`,
+    //       `LCMS Gain Year (${nm})`,
+    //       false
+    //     );
+    //   } else {
+    //     addImageryLayer(
+    //       `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Fast_Loss/ImageServer`,
+    //       `LCMS Fast Loss Year (${nm})`,
+    //       true
+    //     );
+    //     addImageryLayer(
+    //       `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Slow_Loss/ImageServer`,
+    //       `LCMS Slow Loss Year (${nm})`,
+    //       false
+    //     );
+    //     addImageryLayer(
+    //       `https://apps.fs.usda.gov/fsgisx01/rest/services/RDW_LandscapeAndWildlife/LCMS_${nm}_Year_Of_Highest_Prob_Gain/ImageServer`,
+    //       `LCMS Gain Year (${nm})`,
+    //       false
+    //     );
+    //   }
+    // });
+    // checkTimeLapseVisible();
 
     if (gcpWorking) {
       addGifAreas(

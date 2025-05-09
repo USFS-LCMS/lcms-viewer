@@ -148,8 +148,9 @@ function setupMTBS() {
 }
 function runMTBS() {
   Map.turnOffLayersWhenTimeLapseIsOn = false; // Makes it so time lapses are shown with other layers
-  let wayback = new esri_wayback();
+  setupMTBS();
+  // let wayback = new esri_wayback();
 
-  wayback.addWaybackUIContainer("#reference-layer-list-collapse-div");
-  wayback.initialize(setupMTBS);
+  // wayback.addWaybackUIContainer("#reference-layer-list-collapse-div");
+  // wayback.initialize(setupMTBS);
 }

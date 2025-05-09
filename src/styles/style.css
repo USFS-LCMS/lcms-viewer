@@ -304,7 +304,12 @@ body {
   color: var(--teal-100) !important;
   text-align: center;
 }
-
+.time-lapse-year-label{
+  font-size: 1.25rem; 
+  font-weight: bold;
+  margin-top:0px;
+  margin-bottom:0.25rem;
+}
 .info-page {
   color: var(--deep-brown-20) !important;
   /* padding-top:3rem; */
@@ -462,6 +467,7 @@ button {
 
 .sidebar {
   overflow-y: auto;
+  overflow-x:hidden;
   max-height: calc(100% - 1.7rem);
   background-color: var(--black) !important;
   z-index: 3;
@@ -494,7 +500,7 @@ button {
 
 .vl-home {
   border-left: 1px solid var(--deep-brown-20);
-  height: 1.5rem;
+  height: 2.5rem;
   vertical-align: middle;
   display: inline-block;
   margin-left: 0.1rem;
@@ -1313,6 +1319,7 @@ ul {
 ::-webkit-scrollbar {
   width: 0.7rem;
   height: 0.7rem;
+  cursor:pointer;
 }
 
 ::-webkit-scrollbar-track {

@@ -252,14 +252,15 @@ const staticTemplates = {
 		                </div>
 		            </li>`,
   placesSearchDiv: `
-  <section class="btn-group  search-bar" >
+  <section class="btn-group  search-bar" id="search-share-div">
     <button type="button" onclick = 'getLocation()'  class="btn"><i class="fa fa-map-marker text-black "></i></button>
     <button type="button" onclick = 'storeParams()' class="btn" id="share-button"><i class="fa fa-share-alt teal "></i></button>
     <button type="button" class="btn "><i class="fa fa-search text-black "></i></button>
     <input id = 'pac-input' align="left" class="btn" title = 'Search for places on the map' type="text" placeholder="Search Places">
     <button onclick = 'backView()' title = 'Click to go back a view' class=" btn" id="back-view-button"><i  class="fa fa-chevron-left teal "></i></button>
                               <button onclick = 'forwardView()' title = 'Click to go forward a view'  class=" btn" id="forward-view-button"><i class="fa fa-chevron-right teal "></i></button>
-  </section>`,
+  </section>
+  <p class="text-center white time-lapse-year-label" " id="time-lapse-year-label"></p>`,
 
   introModal: {
     LCMS: getIntroModal(
@@ -298,7 +299,7 @@ const staticTemplates = {
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -314,11 +315,11 @@ const staticTemplates = {
                                     <p>The Base Learner application is designed to provide a visualization of the change detection algorithm outputs that are used to produce LCMS products.</p>`,
       `<p>In addition to the map layers, LandTrendr and CCDC outputs can be compared through charting under the <kbd>Tools</kbd> -> <kbd>Pixel Tools</kbd>
                                     </p>`,
-      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
+      `<p>Please review this <a class = 'support-text' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>methods document</a> for more information about how these datasets are used to create LCMS products.   
                             </p>
                             <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
-                                <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+                                <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                                 <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                                 <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                             </div>`
@@ -331,12 +332,12 @@ const staticTemplates = {
                                     </div>
                                     <p>The LCMS Dashboard application is designed to provide the ability to quickly visualize and generate reports of how our landscapes are changing.</p>`,
       `<p>Pre-calculated summary areas are available for generating custom reports.</p>
-                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+                                    <p>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
                                     </p>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                             <div class ='my-3'>
                             <a class="intro-modal-links" onclick="startTour()" title="Click to take a tour of the LCMS Dashboard's features">DASHBOARD TOUR</a>
-                            <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>`,
@@ -355,7 +356,7 @@ const staticTemplates = {
       `
     <p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
     <div class ='my-3'>
-    <a class="intro-modal-links" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a>
+    <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
     <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
     <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
 </div>`,
@@ -767,7 +768,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
         <div class="tab-content" id="highlights-table-divs"></div>
         <div id ='highlights-disclaimer-div' >
-        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+        <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
     </p></div>
     </div>`,
   dashboardHighlightsDiv: `<div id='dashboard-highlights-container' class='dashboard-highlights bg-black col-sm-7 col-md-4 col-xl-3'>
@@ -787,7 +788,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
         <div id='highlights-tables-container'>
             <ul class="nav nav-tabs px-2 highlights-table-tabs"  role="tablist" id='highlights-table-tabs'></ul>
             <div class="tab-content" id="highlights-table-divs"></div>
-            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2023-9')" title="Open in-depth LCMS v2023.9 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
+            <p class = 'highlights-disclaimer'>Disclaimer: All summary numbers are based on modeled LCMS outputs. These tables are useful for understanding broad patterns of change on our landscape. Known as model-based inference, error margins are difficult to compute directly from the summary pixel counts. Currently, error margins are calculated from the LCMS reference sample for each year from each summary area, plus a 210km buffer. This assumes the statistical properties of the model-based and reference sample-based estimates are similar. Since this assumption is difficult to uphold, this method is still under scientific review. For details on valid statistical conclusions and understanding map error, please refer to the <a class="teal" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a> document or reach out to the <a class = "teal" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK</a>.
             </p>
         </div>
         `,
@@ -830,98 +831,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         <label  title = 'Choose from dropdown below to download LCMS products. There can be a small delay before a download will begin, especially over slower networks.' for="downloadDropdown">Select product to download:</label>
     					<select class="form-control" id = "downloadDropdown" onchange = "downloadSelectedArea()""></select>
     				 </div>`,
-  lcmsProductionDownloadDiv: `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'>
-                                          <li class = 'pl-0'><span class="caret caret-down">Conterminous United States (v2023.9)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'CONUS-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'CONUS-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'CONUS-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'CONUS-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                                <ul class="nested" id = 'CONUS-qa_bits-annual-downloads'></ul>
-                                              </li>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Southeastern Alaska (v2023.9)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Slow Loss, Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'SEAK-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'SEAK-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'SEAK-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'SEAK-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                                <ul class="nested" id = 'SEAK-qa_bits-annual-downloads'></ul>
-                                              </li>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Puerto Rico - US Virgin Islands (v2023.9)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'PRUSVI-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'PRUSVI-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'PRUSVI-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'PRUSVI-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                              <ul class="nested" id = 'PRUSVI-qa_bits-annual-downloads'></ul>
-                                            </ul>
-                                          </li>
-                                          <li><span class="caret caret-down">Hawaii (v2023.9)</span>
-                                            <ul class="nested active">
-                                              <li><span class="caret">Change</span>
-                                                <ul class="nested">
-                                                  <li><span class="caret" title = 'Single layer summaries of what year change was mapped by LCMS serve as the foundational LCMS product that is easiest to work with in your local GIS. These are the same as the Fast Loss, and Gain Year layers in the viewer.'>Summary</span>
-                                                    <ul class="nested" id = 'HI-change-summary-downloads'></ul>
-                                                  </li>
-                                                  <li><span class="caret" title = 'Annual change layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the change time lapse.'>Annual</span>
-                                                    <ul class="nested" id = 'HI-change-annual-downloads'></ul>
-                                                  </li>
-                                                </ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land cover layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land cover time lapse.'>Land Cover</span>
-                                                <ul class="nested" id = 'HI-land_cover-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual land use layers provide a more flexible product that can suite more customized data analysis. These are the same as the layers shown in the land use time lapse.'>Land Use</span>
-                                                <ul class="nested" id = 'HI-land_use-annual-downloads'></ul>
-                                              </li>
-                                              <li><span class="caret" title = 'Annual QA-bits depict ancillary information about the origin of the data used to produce LCMS products.'>QA Bits</span>
-                                              <ul class="nested" id = 'HI-qa_bits-annual-downloads'></ul>
-                                            </ul>
-                                          </li>
-                                        </ul>`,
+
   TreeMapGEEClippingDiv: `<div class='hl'></div><h4 class='ml-4 pt-2' id = 'data-clipping-header' title = 'Choose layers to clip and download'>2) Custom Area of Interest Download</h4>`,
   TreeMapDownloadDiv: `<p class = 'pt-2'>There are two ways to download TreeMap data within this application: 
   <ul>
@@ -1243,7 +1153,10 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10 (CONUS and AK)</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (PRUSVI and HI)</a>
                                 </li>
 
                             </div>
@@ -1315,11 +1228,16 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     <img src="./src/assets/images/gee-logo-light.png"  class = 'support-icons' alt="Google Earth Engine Logo"  href="#"   title="Click to learn more about Google Earth Engine">
                                     
                                 </a>
+                               
+                                <a href="https://geeviz.org/" target="_blank">
+                                    <img src="./src/assets/images/geeviz-logo-light.png"  class = 'support-icons mt-2' alt="GeeViz Logo"  href="#"   title="Click to learn more about GeeViz">
+                                    
+                                </a>
                             </div>
                             <div class = 'col-lg-10'>
-                                <a href="https://earthengine.google.com/" target="_blank">
-                                    <p class = 'support-text'>LCMS utilizes Google Earth Engine for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
-                                </a>
+                                
+                                  <p class = 'support-text'>LCMS utilizes <a class="links" href="https://earthengine.google.com/" target="_blank"><i>Google Earth Engine</i></a> and the companion Python package <a class="links" href="https://geeviz.org/" target="_blank"><i>GeeViz</i></a> for most of its data acqusition, processing, and visualization, through an enterprise agreement between the U.S. Department of Agriculture Forest Service and Google. In its current form, LCMS would not be possible without Google Earth Engine.</p>
+                              
                             </div>
                         </section>
                         <hr>
@@ -1329,7 +1247,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10  support-text'>
                                     Suggested citation: 
-                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
+                                    <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2025). Landscape Change Monitoring System Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer (Accessed: ${new Date().toStringFormat()}).
                                     </p>
                                     <span>
                                         <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1396,7 +1314,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <div class = 'col-lg-10'>
                                 Click to open in-depth methods document:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2023-9")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10</a>
                                 </li>  
                             </div>
                         </div>
@@ -2185,6 +2103,307 @@ function addRadio(
     if (offFunction !== undefined && offFunction !== null) {
       eval(`${offFunction}()`);
     }
+  });
+}
+
+function setupDropdownTreeDownloads(
+  containerID = "download-collapse-div-lcms"
+) {
+  const programTree = {
+    LCMS: {
+      CONUS: {
+        longName: "Conterminous U.S.",
+        startYear: 1985,
+        endYear: 2024,
+        version: "2024-10",
+        products: {
+          Change: ["annual"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+      },
+      AK: {
+        longName: "Alaska",
+        startYear: 1985,
+        endYear: 2024,
+        version: "2024-10",
+        products: {
+          Change: ["annual"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+      },
+
+      PRUSVI: {
+        longName: "Puerto Rico - US Virgin Islands",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-9",
+        products: {
+          Change: ["annual", "summary"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+        summary_products: ["Fast_Loss", "Gain"],
+      },
+      HI: {
+        longName: "Hawaii",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-9",
+        products: {
+          Change: ["annual", "summary"],
+          Land_Cover: ["annual"],
+          Land_Use: ["annual"],
+          QA_Bits: ["annual"],
+        },
+        summary_products: ["Fast_Loss", "Slow_Loss", "Gain"],
+      },
+    },
+    NLCD_TCC: {
+      CONUS: {
+        longName: "Conterminous U.S.",
+        startYear: 1985,
+        endYear: 2023,
+        version: "2023-5",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+      SEAK: {
+        longName: "Southeastern Alaska",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+
+      PRUSVI: {
+        longName: "Puerto Rico - US Virgin Islands",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+      HI: {
+        longName: "Hawaii",
+        startYear: 2008,
+        endYear: 2021,
+        version: "2021-4",
+        products: {
+          science_tcc: ["annual"],
+          science_se: ["annual"],
+          nlcd_tcc: ["annual"],
+        },
+      },
+    },
+  };
+
+  const programInfo = {
+    LCMS: {
+      pathFormat: {
+        annual: `https://data.fs.usda.gov/geodata/LCMS/LCMS_{sa}_v{version}_{product}_Annual_{yr}.zip`,
+        summary: `https://data.fs.usda.gov/geodata/LCMS/LCMS_{sa}_v{version}_{product}_{summary_product}_Summary_{startYear}_{endYear}.zip`,
+      },
+    },
+    NLCD_TCC: {
+      pathFormat: {
+        annual: `https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/docs/v{version}/{product}_{sa}_{yr}_v{version}_wgs84.zip`,
+      },
+      productTitles: {
+        nlcd_tcc: "NLCD TCC",
+        science_tcc: "Science TCC",
+        science_se: "Science SE",
+      },
+    },
+  };
+
+  // Initialize container
+  $("#" + containerID).append(
+    `<ul id="downloadTree" class = 'pl-0 mb-0' title = 'Click through available LCMS and NLCD TCC products. Select which outputs to download, and then click the download button. Hold ctrl key to select multiples or shift to select blocks.'></ul`
+  );
+  $("#downloadTree").empty();
+  Object.keys(programTree).map((program) => {
+    const study_areas = programTree[program];
+    const programTreeID = `caret-tree-${program}`;
+
+    $("#downloadTree").append(`<ul class="nested active" >
+      
+        <li class = 'pl-0'>
+          <span class="caret caret-down">${program.replaceAll(
+            "_",
+            " "
+          )} Data</span>
+          <ul id = "${programTreeID}" class="nested active"></ul>
+        </li>`);
+    Object.keys(study_areas).map((sa) => {
+      const saObj = programTree[program][sa];
+      const saTreeID = `caret-tree-${program}-${sa}`;
+      $("#" + programTreeID).append(`<li><span class="caret">${
+        saObj.longName
+      } (v${saObj.version.replaceAll("-", ".")})</span>
+                                            <ul id = "${saTreeID}" class="nested"></ul></li>`);
+      Object.keys(study_areas[sa].products).map((product) => {
+        const productTreeID = `caret-tree-${program}-${sa}-${product}`;
+        const productTitle = programInfo[program].productTitles
+          ? programInfo[program].productTitles[product]
+          : product;
+
+        $("#" + saTreeID).append(`<li><span class="caret">${productTitle
+          .replaceAll("_", " ")
+          .toTitle()}</span>
+                                            <ul id = "${productTreeID}" class="nested "></ul></li>`);
+        study_areas[sa].products[product].map((m) => {
+          const dropdownID = `${program}-${sa}-${product}-${m}`;
+
+          $("#" + productTreeID).append(`
+              <label  title = 'Choose from list below to download LCMS products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}" class = 'download-selection-label'>Select products to download:</label>
+                              <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                              <br>
+                              <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                              `);
+          if (m === "annual") {
+            // Handle NLCD TCC v2021.4 start year irregularity
+            let startYear = study_areas[sa].startYear;
+            startYear =
+              program === "NLCD_TCC" && product === "nlcd_tcc"
+                ? 2011
+                : startYear;
+
+            const years = range(startYear, study_areas[sa].endYear + 1);
+
+            years.map((yr) => {
+              let url = programInfo[program].pathFormat[m].formatUnicorn({
+                sa: sa,
+                version: study_areas[sa].version,
+                product: product,
+                yr: yr,
+              });
+
+              // Handle irregularities here
+              url = url.replaceAll("_HI_", "_HAWAII_");
+              url =
+                program === "NLCD_TCC" && study_areas[sa].version === "2021-4"
+                  ? url.replaceAll("_wgs84", "")
+                  : url;
+
+              const name = `${productTitle.replaceAll("_", " ")} ${m} ${yr}`;
+
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+              );
+            });
+          } else if (m === "summary") {
+            study_areas[sa].summary_products.map((summary_product) => {
+              let url = programInfo[program].pathFormat[m].formatUnicorn({
+                sa: sa,
+                version: study_areas[sa].version,
+                product: product,
+                summary_product: summary_product,
+                startYear: study_areas[sa].startYear,
+                endYear: study_areas[sa].endYear,
+              });
+
+              // Handle irregularities here
+              url = url.replaceAll("_HI_", "_HAWAII_");
+
+              const name = `${productTitle.replaceAll(
+                "_",
+                " "
+              )} ${summary_product} Summary ${study_areas[sa].startYear}-${
+                study_areas[sa].endYear
+              }`;
+              $("#" + dropdownID).append(
+                `<option  value = "${url}">${name}</option>`
+              );
+            });
+          }
+        });
+      });
+    });
+  });
+}
+
+function setupDropdownTreeMapDownloads() {
+  const att_serverLocation =
+    "https://data.fs.usda.gov/geodata/rastergateway/treemap";
+  // const rds_serverLocation = "https://s3-us-west-2.amazonaws.com/fs.usda.rds";
+  const rds_serverLocation =
+    "https://usfs-public.box.com/shared/static/yz7h8b8v92scoqfwukjyulokaevzo6v6.zip";
+  const attributes = [
+    "ALSTK",
+    "BALIVE",
+    "CANOPYPCT",
+    "CARBON_D",
+    "CARBON_DWN",
+    "CARBON_L",
+    "DRYBIO_D",
+    "DRYBIO_L",
+    "FLDSZCD",
+    "FLDTYPCD",
+    "FORTYPCD",
+    "GSSTK",
+    "QMD_RMRS",
+    "SDIPCT_RMRS",
+    "STANDHT",
+    "STDSZCD",
+    "TPA_DEAD",
+    "TPA_LIVE",
+    "VOLBFNET_L",
+    "VOLCFNET_D",
+    "VOLCFNET_L",
+  ];
+
+  const rds_dict = { 2016: "RDS-2021-0074" };
+
+  const tm_versions = ["2016"];
+
+  tm_versions.map((ver) => {
+    const id = `TreeMap${ver}-attribute-downloads`;
+    const dropdownID = id + "-d";
+    $("#" + id).empty();
+    $("#" + id).append(`
+      <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+                      <select id = "${dropdownID}" size="8" style="height: 100%;" class=" bg-download-select" multiple ></select>
+                      <br>
+                      <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                      <hr>`);
+    attributes.map((att) => {
+      const url = `${att_serverLocation}/docs/TreeMap${ver}_${att}.zip`;
+      $("#" + dropdownID).append(
+        `<option  value = "${url}">TreeMap${ver}_${att}</option>`
+      );
+    });
+  });
+
+  tm_versions.map((ver) => {
+    const id = `TreeMap${ver}-rds-downloads`;
+    const dropdownID = id + "-d";
+    $("#" + id).empty();
+    $("#" + id).append(`
+      <label  title = 'Choose from list below to download TreeMap products. Hold ctrl key to select multiples or shift to select blocks. There can be a small delay before a download will begin, especially over slower networks.' for="${dropdownID}">Select products to download:</label>
+                      <br>
+                      <select id = "${dropdownID}" size="8" style="height: 3rem;" class=" bg-download-select" multiple ></select>
+                      <br>
+                      <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
+                      <hr>`);
+    // const url = `${rds_serverLocation}/${rds_dict[ver]}/${rds_dict[ver]}_Data.zip`;
+    $("#" + dropdownID).append(
+      `<option  value = "${rds_serverLocation}">TreeMap${ver}</option>`
+    );
   });
 }
 
@@ -4664,39 +4883,44 @@ function getTransitionRowData(verbose) {
 }
 function setupTransitionPeriodUI(containerID = "transition-periods-container") {
   $(`#${containerID}`).empty();
+  // Add the transition periods UI for the charting tool
   $(`#${containerID}`).append(`
-  <hr>
-  <div class="row pb-2" title='Select Periods for Transition Area Charting. Please ensure each period does not completely overlap with the one preceeding it.'>
-      <div style='padding-left:0.5rem;padding-right:0.5rem;width:100%;'>
-  <p style='font-size:1.25rem;' >Transition Charting Periods</p>
-          <table class="table " id="transition-period-table">
-              <thead>
-                  <tr>
-                    <th class="text-center"></th>
-                    <th class="text-center">
-                        First Year
-                    </th>
-                    <th class="text-center">
-                        Last Year
-                    </th>
-                  </tr>
-              </thead>
-              
-      <tbody id='added-transition-rows'></tbody>
-      
-     
-          </table>
-
-  <div class="input-group-prepend ">
-                          <button title = 'Click to add a transition period' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="add-transition-row" onclick="addTransitionRow()"><i class="fa fa-plus teal " ></i></button>
-
-                          <button title = 'Click to remove a transition period' style = 'border-radius: 0px 3px 3px 0px' class=" btn input-group-text bg-white search-box pr-1 pl-2" id="remove-transition-row" onclick="removeLastTransitionRow()"><i class="fa fa-minus teal "></i></button>
-                      </div>
+    <hr>
+    <div class="row pb-2" title="Define periods for transition area charting. Each row is a period (start year to end year). Periods should not overlap. The most common value for each period will be used in the Sankey chart. Add or remove rows as needed.">
+      <div style="padding: 0 0.5rem; width: 100%;">
+        <p style="font-size:1.25rem; font-weight: 500;">Transition Charting Periods</p>
+        <table class="table" id="transition-period-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="text-center">Period Start Year</th>
+              <th class="text-center">Period End Year</th>
+            </tr>
+          </thead>
+          <tbody id="added-transition-rows"></tbody>
+        </table>
+        <div class="input-group-prepend">
+          <button
+            title="Add a new transition period row"
+            class="btn input-group-text bg-white search-box pr-1 pl-2"
+            id="add-transition-row"
+            onclick="addTransitionRow()"
+          >
+            <i class="fa fa-plus teal"></i>
+          </button>
+          <button
+            title="Remove the last transition period row"
+            style="border-radius: 0px 3px 3px 0px"
+            class="btn input-group-text bg-white search-box pr-1 pl-2"
+            id="remove-transition-row"
+            onclick="removeLastTransitionRow()"
+          >
+            <i class="fa fa-minus teal"></i>
+          </button>
+        </div>
       </div>
-  
-  </div>
-  
-`);
+    </div>
+  `);
   if (
     urlParams.transitionChartingYears !== undefined &&
     urlParams.transitionChartingYears !== null
@@ -4713,15 +4937,32 @@ let transitionRowI = 0;
 
 function addRow(containerID, rowID, yr1, yr2, simpleAppend = false) {
   let rows = $(`#${containerID} tr`);
-  const row = `<tr id='${rowID}'>
-  <td title = 'Click to drag each row to re-order'><i class="fa fa-sort teal "></i></td>
-  <td>
-  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr1}' placeholder='Enter Year' class="form-control"/>
-  </td>
-  <td>
-  <input type="number" min=${activeStartYear} max=${activeEndYear} title='Enter year between the year ranges above and below this row' value='${yr2}'  placeholder='Enter Year' class="form-control"/>
-  </td>
-  </tr>`;
+  const row = `
+    <tr id='${rowID}'>
+      <td title='Drag this row to reorder'><i class="fa fa-sort teal"></i></td>
+      <td>
+        <input 
+          type="number" 
+          min="${activeStartYear}" 
+          max="${activeEndYear}" 
+          title="Enter a year within the valid range (${activeStartYear} - ${activeEndYear})" 
+          value="${yr1}" 
+          placeholder="Enter Year" 
+          class="form-control"
+        />
+      </td>
+      <td>
+        <input 
+          type="number" 
+          min="${activeStartYear}" 
+          max="${activeEndYear}" 
+          title="Enter a year within the valid range (${activeStartYear} - ${activeEndYear})" 
+          value="${yr2}" 
+          placeholder="Enter Year" 
+          class="form-control"
+        />
+      </td>
+    </tr>`;
   if (rows.length < 2 || simpleAppend) {
     $(`#${containerID}`).append(row);
   } else {
