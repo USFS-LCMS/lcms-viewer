@@ -3489,18 +3489,18 @@ if (
     false,
     "toggleTool(toolFunctions.area.shpDefined)",
     staticTemplates.uploadAreaChartTipHover
-  );
-  addSubAccordianCard(
-    "tools-accordian",
-    "select-area-interactive-chart-label",
-    "select-area-interactive-chart-div",
-    "Select an Area on Map",
-    staticTemplates.selectAreaInteractiveChartDiv,
-    false,
-    "toggleTool(toolFunctions.area.selectInteractive)",
-    staticTemplates.selectAreaInteractiveChartTipHover
-  );
-
+    );
+    addSubAccordianCard(
+        "tools-accordian",
+        "select-area-interactive-chart-label",
+        "select-area-interactive-chart-div",
+        "Select an Area on Map",
+        (mode === "RAVG") ? staticTemplates.selectAreaInteractiveLeftJoinChartDiv : staticTemplates.selectAreaInteractiveChartDiv,
+        false,
+        "toggleTool(toolFunctions.area.selectInteractive)",
+        staticTemplates.selectAreaInteractiveChartTipHover
+    );
+   
   addRangeSlider(
     "upload-reduction-factor-container",
     "Vertex Reduction Factor",

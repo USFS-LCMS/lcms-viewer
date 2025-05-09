@@ -1693,7 +1693,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <hr>`,
   selectAreaDropdownChartTip:
     "Select from pre-defined areas to summarize products across.",
-  selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
+    selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                         <hr>
                                         <label>Provide name for area selected for charting (optional):</label>
                                         <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
@@ -1710,8 +1710,29 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                         <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                         <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                         <div id = 'select-features-edit-toolbar'></div>
-                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
-                                        `,
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
+    selectAreaInteractiveLeftJoinChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
+                                        <hr>
+                                        <label>Provide name for area selected for charting (optional):</label>
+                                        <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
+                                        <hr>
+                                        <div id = 'simplify-error-range-container'></div>
+                                        <hr>
+                                        <div id="area-charting-select-left-operand-layer-list"></div>
+                                        <hr>
+                                        <span>INTERSECTED BY:</span>
+                                        <hr>
+                                        <div id="area-charting-select-layer-list"></div>
+                                        <hr>
+                                        <div>Selected areas:</div>
+                                        <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
+                                        <li class = 'selected-features-list' id = 'selected-features-list'></li>
+                                        <div id="area-charting-selected-layer-list"></div>
+                                        <hr>
+                                        <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                        <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
+                                        <div id = 'select-features-edit-toolbar'></div>
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
   selectAreaInteractiveChartTip:
     "Select from pre-defined areas on map to summarize products across.",
   shareButtons: `<!-- Email -->
@@ -3355,7 +3376,7 @@ function addLayer(layer) {
     // getGEEMapService();
   }
   //Function to handle turning off of different types of layers
-  function turnOff() {
+    function turnOff() {
     ga("send", "event", "layer-off", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       urlParams.layerProps[id].visible = false;
@@ -3421,7 +3442,11 @@ function addLayer(layer) {
     }
   }
   //Function to handle turning on different layer types
-  function turnOn() {
+    function turnOn() {
+        if (mode==="RAVG") {
+            turnOffSelectLayers();
+            clearSelectedAreas();
+        }
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       if (Map.turnOffLayersWhenTimeLapseIsOn) {
@@ -3501,10 +3526,12 @@ function addLayer(layer) {
       }
     }
   }
-  function turnOffAll() {
-    if (layer.visible) {
-      $("#" + visibleID).click();
-    }
+    function turnOffAll() {
+        if (layer.name !== "RAVG Burn Perimeters") {
+            if (layer.visible) {
+                $("#" + visibleID).click();
+            }
+        } 
   }
   function turnOnAll() {
     if (!layer.visible) {
@@ -3634,7 +3661,7 @@ function addLayer(layer) {
 
         $("#" + visibleLabelID).addClass("select-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
-          turnOffAll();
+            turnOffAll();
         });
         $(".vector-layer-checkbox").on("turnOnAllSelectLayers", function () {
           turnOnAll();
@@ -3708,7 +3735,7 @@ function addLayer(layer) {
       if (layer.viz.isSelectedLayer) {
         $("#" + visibleLabelID).addClass("selected-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
-          turnOffAll();
+            turnOffAll();
         });
         $(".vector-layer-checkbox").on("turnOnAllSelectLayers", function () {
           turnOnAll();
@@ -4405,7 +4432,7 @@ function addLayer(layer) {
         });
       }
     }
-  }
+    }
 }
 
 //////////////////////////////////////////////////
