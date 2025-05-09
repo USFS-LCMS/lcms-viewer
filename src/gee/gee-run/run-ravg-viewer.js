@@ -51,6 +51,46 @@ function chartSeverityAcrossReference(severityLayer, refYears, refImageCollectio
         tooltip: "Chart RAVG " + severityLayer + " burn severity per " + refType + " landcover class",
     };
 
+    
+
+    //todo: update with new charting strategy, and then apply to all others, and then figure out how to break up the charting per fire. 
+
+    //const mtbsSeverityObjInfo = {
+    //    Severity_class_names: [
+    //        "Non-Mapping Area",
+    //        "Increased Greenness",
+    //        "Unburned to Low",
+    //        "Low",
+    //        "Moderate",
+    //        "High",
+    //    ],
+    //    Severity_class_palette: [
+    //        "ffffff",
+    //        "7fff00",
+    //        "006400",
+    //        "7fffd4",
+    //        "ffff00",
+    //        "ff0000",
+    //    ],
+    //    Severity_class_values: [1, 2, 3, 4, 5, 6],
+    //    bandNames: ["Severity"],
+    //    layerType: "ImageCollection",
+    //    size: yearsCli.length,
+    //};
+
+    //areaChart.addLayer(
+    //    mergedCollection,
+    //    {
+    //        eeObjInfo: mtbsSeverityObjInfo,
+    //        visible: [false, false, true, true, true, true],
+    //        xAxisLabels: label,
+    //        shouldUnmask: true,
+    //        chartType: "stacked-bar",
+    //    },
+    //    label,
+    //    true
+    //);
+
 }
 
 function getQueryClassDict(ref) {
@@ -262,11 +302,13 @@ function setRAVGBurnPerimeterLayer() {
             selectLayerIgnitionYearProperty: "Fire Year"
         },
         label,
-        false,
+        true,
         null,
         null,
-        tooltip + "Turn on layer and click on any fire wanted to include in chart"
+        tooltip + "Turn on layer and click on any fire wanted to include in chart",
+        "area-charting-select-left-operand-layer-list"
     );
+
 }
 
 function setSeverityLayerCharts(layer, severityLayer, severityLayerQueryClassDict, severityLayerClassDict, startYear, endYear) {
@@ -276,6 +318,9 @@ function setSeverityLayerCharts(layer, severityLayer, severityLayerQueryClassDic
         Object.values(severityLayerQueryClassDict),
         true
     );
+
+
+    //todo: update with new charting strategy, 
 
     areaChartCollections["ravg_" + layer.toLowerCase()] = {
         collection: severityLayerStack,
@@ -350,6 +395,8 @@ function setAspectChart(layer, severityLayerMaxSeverity, severityLayerQueryClass
         Object.values(severityLayerQueryClassDict),
         true
     );
+
+    //todo: update with new charting strategy, 
 
     areaChartCollections["ravg" + layer + "Aspect"] = {
         collection: ravgByAspectStack,
@@ -810,7 +857,7 @@ function setRAVGSelectionLayers() {
 
     Map.addSelectLayer(
         ee.FeatureCollection("projects/USFS/LCMS-NFS/CONUS-Ancillary-Data/FS_District_Boundaries").select(["DISTRICTNA"], ["name"]),
-        { strokeColor: "80F", selectLayerNameProperty: "name" },
+        { strokeColor: "80F", selectLayerNameProperty: "name"},
         "National Forest Districts",
         false,
         null,
@@ -1028,17 +1075,17 @@ function convertFireYearsToNumber(selectedFeatures, property) {
     });
 }
 
-function filterRAVGCollection(fireYears, collection, selection, attribute) {
+function filterRAVGCollection(fireYears, imageCollection, featureSelection, attribute) {
 
-    let filteredCollection = collection;
+    let filteredImageCollection = imageCollection;
 
     fireYears = unique(fireYears).sort();
 
     if ((fireYears !== undefined) && (["ravg_cbi4", "ravg_cc5", "ravg_ba7"].includes(whichAreaChartCollection))) {
         /*** regular ravg severity layer summary use cases. ***/
-        let filteredCollectionByFireYears = filterCollectionByFireYears(fireYears, collection);
+        let filteredCollectionByFireYears = filterCollectionByFireYears(fireYears, imageCollection);
         if (filteredCollectionByFireYears !== undefined) {
-            filteredCollection = filteredCollectionByFireYears;
+            filteredImageCollection = filteredCollectionByFireYears;
         }
     } else if ((fireYears !== undefined) && (["ravgCBI4EVT-Vegetation", "ravgCC5EVT-Vegetation", "ravgBA7EVT-Vegetation", "ravgCBI4EVT-Tree/Non-Tree", "ravgCC5EVT-Tree/Non-Tree", "ravgBA7EVT-Tree/Non-Tree"].includes(whichAreaChartCollection))) {
         /*** ravg severity x evt summary use cases ***/
@@ -1051,7 +1098,7 @@ function filterRAVGCollection(fireYears, collection, selection, attribute) {
         }
         let evtVersions = [];
 
-        //converts the fire years per the user's selection into the list of proper EVT versions
+        //converts the fire years per the user's featureSelection into the list of proper EVT versions
         fireYears.map(function (year) {
             let evtVersion = getRelevantRefLayerVersion(year, evtCrosswalk);
             evtVersions.push(evtVersion);
@@ -1059,10 +1106,10 @@ function filterRAVGCollection(fireYears, collection, selection, attribute) {
         evtVersions = unique(evtVersions);
         let severityLayerImagesPerSelection;
 
-        //collects the appropriate severity layer images per the user's selection based on the EVT version.
+        //collects the appropriate severity layer images per the user's featureSelection based on the EVT version.
         evtVersions.map(function (version) {
             let filterByEVT = ee.Filter.eq("ref_year", ee.String(version));
-            let filteredCollectionByEVT = collection.filter(filterByEVT);
+            let filteredCollectionByEVT = imageCollection.filter(filterByEVT);
             if (severityLayerImagesPerSelection == undefined) {
                 severityLayerImagesPerSelection = filteredCollectionByEVT;
             } else {
@@ -1075,7 +1122,7 @@ function filterRAVGCollection(fireYears, collection, selection, attribute) {
                 updateChartLabelWithRefLayerVersions(evtVersions);
             }
 
-            let selectedFeatures = convertFireYearsToNumber(selection, attribute);
+            let selectedFeatures = convertFireYearsToNumber(featureSelection, attribute);
             let evtRefYears = severityLayerImagesPerSelection.aggregate_array("ref_year").distinct().getInfo();
             let geeEvtCrosswalk = ee.Dictionary(evtCrosswalk);
             let finalClippedSeverityLayerImageCollection;
@@ -1100,11 +1147,12 @@ function filterRAVGCollection(fireYears, collection, selection, attribute) {
                     finalClippedSeverityLayerImageCollection = finalClippedSeverityLayerImageCollection.merge(clippedSeverityLayerImagesBySingleEVTYearCollection);
                 }
             });
-            filteredCollection = compositeByLandcoverClasses(finalClippedSeverityLayerImageCollection);
+            filteredImageCollection = compositeByLandcoverClasses(finalClippedSeverityLayerImageCollection);
         }
+        
     }
 
-    return filteredCollection;
+    return filteredImageCollection;
 }
 
 
@@ -1115,20 +1163,28 @@ function filterRAVGCollection(fireYears, collection, selection, attribute) {
  * @returns
  */
 function getFilteredRAVGCollection(fireYears, collection, fireSummary, area) {
+
     let filteredCollection = collection;
-    if (toolFunctions.area.selectInteractive.state && fireSummary) {
+    if (toolFunctions.area.selectInteractive.state) {
 
-        let selection = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
+        let featureSelection = ee.FeatureCollection(selectionTracker.selectedFeatures).flatten();
 
-        filteredCollection = filterRAVGCollection(fireYears, filteredCollection, selection, "fire_year");
-    } else if (toolFunctions.area.userDefined.state) {
+        //filter featureSelection for fireSelection
+        if (!fireSummary) {
+            featureSelection = featureSelection.filter(ee.Filter.notNull(["fire_year"]));
+        }
         
-        let perimeterLayer = getRAVGBurnPerimeterLayer()
-        let selection = perimeterLayer.filterBounds(area);
+        //filter the image collection based on the selected fires
+        filteredCollection = filterRAVGCollection(fireYears, filteredCollection, featureSelection, "fire_year");
+
+    } else if (toolFunctions.area.userDefined.state) {
+
+        let perimeterLayer = getRAVGBurnPerimeterLayer();
+        let featuresWithinSelection = perimeterLayer.filterBounds(area);
         let attribute = "Fire Year";
 
-        fireYears = selection.aggregate_array(attribute).getInfo();
-        filteredCollection = filterRAVGCollection(fireYears, filteredCollection, selection, attribute);
+        fireYears = featuresWithinSelection.aggregate_array(attribute).getInfo();
+        filteredCollection = filterRAVGCollection(fireYears, filteredCollection, featuresWithinSelection, attribute);
     }
     return filteredCollection;
 }
