@@ -267,7 +267,7 @@ const staticTemplates = {
                                       <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
                                     </div>
                             LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the U.S. Department of Agriculture Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel-2 data availability, cloud-based computing power, and big data analysis methods. </p>
-                            Tree Canopy Cover (TCC) Data can also be viewed here. TCC datasets map and monitor the percentage of area covered by tree canopy over time using spectral data collected during the growing season. TCC and LCMS share a common goal of mapping vegetation change across the United States since 1985. Using these products together leverages their shared methodology, resulting in complementary advantages for analysis and visualizations. 
+                            Tree Canopy Cover (TCC) data can also be viewed here. TCC datasets map and monitor the percentage of area covered by tree canopy over time using spectral data collected during the growing season. TCC and LCMS share a common goal of mapping vegetation change across the United States since 1985. Using these products together leverages their shared methodology, resulting in complementary advantages for analysis and visualizations. 
                             </p>
                             `,
       `<div style='display:inline-block;margin-top:0.5rem;'>
