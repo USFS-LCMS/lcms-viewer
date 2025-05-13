@@ -300,6 +300,7 @@ const staticTemplates = {
                         <div class ='my-3'>
                            <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadTCCMethods('v2023-5')" title="Open in-depth TCC v2023.5 methods documentation">TCC METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -1143,20 +1144,23 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </div>
                     </div>
                     <hr>
-                         <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
-                            <h3 class = ' text-capitalize'>LCMS Methods</h3>
+                         <header class = 'row ' title = 'Open in-depth LCMS and TCC methods documentation'>
+                            <h3 class = ' text-capitalize'>LCMS and TCC Methods</h3>
                         </header>
-                        <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                        <div class = 'row ' title = 'Open in-depth LCMS and TCC methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
-                                Click to open in-depth methods document:
+                                Click to open in-depth methods documents:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10 (CONUS and AK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>LCMS Version 2024.10 (CONUS and AK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (PRUSVI and HI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2023.9 methods documentation'>LCMS Version 2023.9 (PRUSVI and HI)</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' onclick = 'downloadTCCMethods("v2023-5")' title = 'Open in-depth TCC v2023.5 methods documentation'>TCC Version 2023.5</a>
                                 </li>
 
                             </div>

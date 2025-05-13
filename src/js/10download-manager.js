@@ -124,3 +124,14 @@ function downloadAnyMethods(path) {
   link.click();
   ga("send", "event", mode + "_methods-download", path);
 }
+function downloadTCCMethods(version) {
+  const link = document.createElement("a");
+  const methods_name = "TCC_" + version + "_Methods.pdf";
+
+  link.href =
+    "https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/docs/" + methods_name;
+  link.target = "_blank";
+  link.click();
+  ga("send", "event", mode + "-download", "methods-download", methods_name);
+  showSurveyModal("downloadedMethodsDoc");
+}
