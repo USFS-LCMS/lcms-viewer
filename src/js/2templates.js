@@ -98,6 +98,12 @@ const titles = {
     rightWords: "BMP Tool",
     title: "HiForm Timber Harvest BMP Tool",
   },
+  "RAVG": {
+    leftWords: "RAVG",
+    centerWords: "Data",
+    rightWords: "Explorer",
+    title: "RAVG Data Explorer",
+  }
 };
 ///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {
@@ -635,7 +641,47 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 
 `
-    ),
+      ),
+      RAVG: getIntroModal(
+          "./src/assets/images/mtbs-logo.png",
+          "Welcome to the RAVG Data Explorer!",
+          `<p class='my-2'>This tool is intended to allow for interactive exploration of the Rapid Assessment of Vegetation Condition after Wildfire (RAVG) data record.
+            </p>
+            <p class='my-2'>
+            Rapid Assessment of Vegetation Condition after Wildfire (RAVG) is a mapping program that provides a suite of standard geospatial products based on an initial assessment of post-fire vegetation conditions following large wildfires on National Forest System lands and selected fires on Department of the Interior lands. A modified analysis is used in the extended assessment time frame..
+    </p>
+    <p class='my-2'>
+    RAVG data for select fires on Department of the Interior (DOI) lands are produced by the USGS Earth Resources Observation and Sciences (EROS) Center.
+    </p>
+    `,
+          `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='RAVG is jointly produced by the USDA Forest Service and USGS'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+        <br>
+        <img class = 'logo' style = 'margin-left:0.3rem;height:2.5rem;' alt="USGS icon" src="./src/assets/images/USGS_logo_green.svg">
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.""><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          <li title = "The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.""><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
+          </li>
+          <li title = "This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.""><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+        </ul>
+        
+    </div>
+
+</div>`,
+          `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<div class ='my-3'>
+   <a  class = 'intro-modal-links' onclick = 'toggleWalkThroughCollapse()' title="Run interactive walk-through of the features of the RAVG Data Explorer">Run Walk-Through</a>
+
+    <a class = "intro-modal-links" title = "Contact us" href="https://www.mtbs.gov/contact" target="_blank"  >CONTACT</a> 
+</div>
+
+`
+      )
   },
   loadingModal: {
     all: function (
@@ -1565,7 +1611,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <hr>`,
   selectAreaDropdownChartTip:
     "Select from pre-defined areas to summarize products across.",
-  selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
+    selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                         <hr>
                                         <label>Provide name for area selected for charting (optional):</label>
                                         <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
@@ -1582,8 +1628,29 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                         <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                         <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                         <div id = 'select-features-edit-toolbar'></div>
-                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
-                                        `,
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
+    selectAreaInteractiveLeftJoinChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
+                                        <hr>
+                                        <label>Provide name for area selected for charting (optional):</label>
+                                        <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
+                                        <hr>
+                                        <div id = 'simplify-error-range-container'></div>
+                                        <hr>
+                                        <div id="area-charting-select-left-operand-layer-list"></div>
+                                        <hr>
+                                        <span>INTERSECTED BY:</span>
+                                        <hr>
+                                        <div id="area-charting-select-layer-list"></div>
+                                        <hr>
+                                        <div>Selected areas:</div>
+                                        <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
+                                        <li class = 'selected-features-list' id = 'selected-features-list'></li>
+                                        <div id="area-charting-selected-layer-list"></div>
+                                        <hr>
+                                        <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                        <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
+                                        <div id = 'select-features-edit-toolbar'></div>
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
   selectAreaInteractiveChartTip:
     "Select from pre-defined areas on map to summarize products across.",
   shareButtons: `<!-- Email -->
@@ -3528,7 +3595,7 @@ function addLayer(layer) {
     // getGEEMapService();
   }
   //Function to handle turning off of different types of layers
-  function turnOff() {
+    function turnOff() {
     ga("send", "event", "layer-off", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       urlParams.layerProps[id].visible = false;
@@ -3594,7 +3661,11 @@ function addLayer(layer) {
     }
   }
   //Function to handle turning on different layer types
-  function turnOn() {
+    function turnOn() {
+        if (mode==="RAVG") {
+            turnOffSelectLayers();
+            clearSelectedAreas();
+        }
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       if (Map.turnOffLayersWhenTimeLapseIsOn) {
@@ -3674,10 +3745,12 @@ function addLayer(layer) {
       }
     }
   }
-  function turnOffAll() {
-    if (layer.visible) {
-      $("#" + visibleID).click();
-    }
+    function turnOffAll() {
+        if (layer.name !== "RAVG Burn Perimeters") {
+            if (layer.visible) {
+                $("#" + visibleID).click();
+            }
+        } 
   }
   function turnOnAll() {
     if (!layer.visible) {
@@ -3807,7 +3880,7 @@ function addLayer(layer) {
 
         $("#" + visibleLabelID).addClass("select-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
-          turnOffAll();
+            turnOffAll();
         });
         $(".vector-layer-checkbox").on("turnOnAllSelectLayers", function () {
           turnOnAll();
@@ -3855,24 +3928,33 @@ function addLayer(layer) {
                 if (name === undefined) {
                   name = "system:index";
                 }
-              }
+                }
               selectedFeaturesJSON[layer.name].fieldName = name;
               selectedFeaturesJSON[layer.name].eeObject =
                 layer.queryItem.select([name], ["name"]);
             });
         } else {
           selectedFeaturesJSON[layer.name].fieldName =
-            layer.viz.selectLayerNamePropertyname;
-          selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
-            [layer.viz.selectLayerNameProperty],
-            ["name"]
-          );
+                layer.viz.selectLayerNamePropertyname;
+
+            //adds ignition year to the relevant properties of the eeObject, if it exists.
+            if (layer.viz.selectLayerIgnitionYearProperty !== undefined) {
+                selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+                    [layer.viz.selectLayerNameProperty, layer.viz.selectLayerIgnitionYearProperty],
+                    ["name", "fire_year"]
+                );
+            } else {
+                selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+                    [layer.viz.selectLayerNameProperty],
+                    ["name"]
+                );
+            }
         }
       }
       if (layer.viz.isSelectedLayer) {
         $("#" + visibleLabelID).addClass("selected-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
-          turnOffAll();
+            turnOffAll();
         });
         $(".vector-layer-checkbox").on("turnOnAllSelectLayers", function () {
           turnOnAll();
@@ -3931,7 +4013,6 @@ function addLayer(layer) {
           );
 
           if (timeLapseObj[layer.viz.timeLapseID].userChosenVisible === true) {
-            console.log("here");
             $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").click();
           }
 
@@ -4570,7 +4651,7 @@ function addLayer(layer) {
         });
       }
     }
-  }
+    }
 }
 
 //////////////////////////////////////////////////

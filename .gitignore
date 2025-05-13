@@ -4,3 +4,6 @@
 *.exe
 .vscode
 *.geojson
+.vs/
+node_modules/
+package-lock.json
