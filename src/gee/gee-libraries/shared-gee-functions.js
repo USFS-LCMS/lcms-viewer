@@ -209,9 +209,10 @@ function setSameDate(img, month = 6, day = 1) {
 
 // --------Add MTBS and IDS Layers-------------------------------
 let idsStartYear = 1997;
-let idsEndYear = 2023;
+let idsEndYear = 2024;
 let idsMinYear = 1997;
-let idsMaxYear = 2023;
+let idsMaxYear = 2024;
+
 function getIDSCollection() {
   if (startYear > idsMinYear && startYear <= idsMaxYear) {
     idsStartYear = startYear;
