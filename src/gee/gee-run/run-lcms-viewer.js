@@ -476,7 +476,7 @@ function runGTAC() {
           size: nlcdTCCYrs.length * studyAreas.length,
         },
       },
-      "NLCD TCC"
+      "Tree Canopy Cover"
     );
 
     let tccMin = 1;
