@@ -845,7 +845,7 @@ function runGTAC() {
             bounds: clientBoundary,
             includeClassValues: false,
           },
-          `${tTitle} Start`,
+          `${tTitle} Start (${startYear}-${startYear+lcmsRun.thematicChangeYearBuffer})`,
           visibilityT
         );
 
@@ -873,7 +873,7 @@ function runGTAC() {
             bounds: clientBoundary,
             includeClassValues: false,
           },
-          `${tTitle} End`,
+          `${tTitle} End (${endYear - lcmsRun.thematicChangeYearBuffer}-${endYear})`,
           visibilityT
         );
 
