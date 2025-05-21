@@ -223,7 +223,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "advanced",
     "toggleAdvancedOff",
     "toggleAdvancedOn",
-    "Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"
+    "Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides the option to compare the start and end periods of the selected analysis year range; a minimum 6 year range is required to make the most of Advanced mode."
   );
   $("#parameters-collapse-div").append(`<hr>`);
   addRadio(
@@ -255,7 +255,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "analysis-year-slider",
     "null",
-    "Years of LCMS data to include for land cover, land use, loss, and gain"
+    "Years of LCMS data to include for land cover, land use, and change"
   );
 
   // $("#parameters-collapse-div").append(`
@@ -811,7 +811,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "analysis-year-slider",
     "null",
-    "Years of LCMS data to include for land cover, land use, loss, and gain",
+    "Years of LCMS data to include for land cover, land use, and change",
     null,
     () => {
       updateDashboardCharts();
@@ -1149,7 +1149,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
-    "Adjust parameters used to filter and sort LCMS base leare products"
+    "Adjust parameters used to filter and sort LCMS base learner products"
   );
 
   addDualRangeSlider(
