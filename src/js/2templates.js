@@ -298,7 +298,7 @@ const staticTemplates = {
                         </div>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
-                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
+                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to use the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                             <a class="intro-modal-links" onclick="downloadTCCMethods('v2023-5')" title="Open in-depth TCC v2023.5 methods documentation">TCC METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
@@ -1123,7 +1123,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a id = 'tutorial-download' class = 'links' onclick = 'downloadTutorial()'>
-                                Click to launch a tutorial that explains how to utilize the Data Explorer</a>
+                                Click to launch a tutorial that explains how to use the Data Explorer</a>
                             </div>
                         </div>
                         <hr>
