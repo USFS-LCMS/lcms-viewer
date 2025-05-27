@@ -2280,12 +2280,13 @@ function setupDropdownTreeDownloads(
                               <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                               `);
           if (m === "annual") {
-            // Handle NLCD TCC v2021.4 start year irregularity
+            // Handle NLCD TCC v2021.4 start year irregularity for all SA but CONUS
             let startYear = study_areas[sa].startYear;
-            startYear =
-              program === "NLCD_TCC" && product === "nlcd_tcc"
-                ? 2011
-                : startYear;
+            if (study_areas[sa].longName !== 'Conterminous U.S.'){
+              startYear =
+                program === "NLCD_TCC" && product === "nlcd_tcc"
+                  ? 2011
+                  : startYear;}
 
             const years = range(startYear, study_areas[sa].endYear + 1);
 
