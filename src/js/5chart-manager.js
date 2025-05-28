@@ -134,7 +134,7 @@ function addSelectedFeaturesToMapWrapper(selectedFeaturesT, nms, k) {
   let layerName =
     "Selected " +
     selectedFeaturesJSON[k].layerName +
-    " " +
+    ": " +
     nms.join("-").replaceAll("&", "-");
   if (simplifyMaxError !== 0) {
     layerName =
