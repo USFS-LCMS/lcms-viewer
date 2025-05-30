@@ -298,7 +298,7 @@ const staticTemplates = {
                         </div>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
-                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
+                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to use the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
                             <a class="intro-modal-links" onclick="downloadTCCMethods('v2023-5')" title="Open in-depth TCC v2023.5 methods documentation">TCC METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
@@ -604,7 +604,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
       "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
       "Welcome to the TreeMap Explorer!",
       `<p class='my-2'>
-            This prototype tool provides an interactive map with the ability to view the 2016 TreeMap attributes. Source Data: Riley, Karin L.; Grenfell, Isaac C.; Finney, Mark A.; Shaw, John D. (2023). TreeMap 2016: A tree-level model of the forests of the conterminous United States circa 2016. Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2021-0074. Accessed 2023-03-13. 
+            This prototype tool provides an interactive map with the ability to view the 2016, 2020 and 2022 TreeMap attributes. Source Data: Riley, Karin L.; Grenfell, Isaac C.; Finney, Mark A.; Shaw, John D. (2023). TreeMap 2016: A tree-level model of the forests of the conterminous United States circa 2016. Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2021-0074. Accessed 2023-03-13. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
     <div style ='float:left;display:block' title='TreeMap Explorer is a joint effort between FSIC-GO and U.S. Department of Agriculture Forest Service Research'>
@@ -958,7 +958,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     </div>
                                     <div class = 'col-lg-10  support-text'>
                                             Suggested citation: 
-                                            <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). TreeMap Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/treemap.html (Accessed: ${new Date().toStringFormat()}).
+                                            <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2025). TreeMap Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/treemap.html (Accessed: ${new Date().toStringFormat()}).
                                             </p>
                                             <span>
                                                 <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1123,7 +1123,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a id = 'tutorial-download' class = 'links' onclick = 'downloadTutorial()'>
-                                Click to launch a tutorial that explains how to utilize the Data Explorer</a>
+                                Click to launch a tutorial that explains how to use the Data Explorer</a>
                             </div>
                         </div>
                         <hr>
@@ -2280,12 +2280,13 @@ function setupDropdownTreeDownloads(
                               <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                               `);
           if (m === "annual") {
-            // Handle NLCD TCC v2021.4 start year irregularity
+            // Handle NLCD TCC v2021.4 start year irregularity for all SA but CONUS
             let startYear = study_areas[sa].startYear;
-            startYear =
-              program === "NLCD_TCC" && product === "nlcd_tcc"
-                ? 2011
-                : startYear;
+            if (study_areas[sa].longName !== 'Conterminous U.S.'){
+              startYear =
+                program === "NLCD_TCC" && product === "nlcd_tcc"
+                  ? 2011
+                  : startYear;}
 
             const years = range(startYear, study_areas[sa].endYear + 1);
 
