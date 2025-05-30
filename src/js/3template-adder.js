@@ -1636,25 +1636,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.endYear == null || urlParams.endYear == undefined) {
     urlParams.endYear = endYear;
   }
-  addCollapse(
-    "sidebar-left",
-    "support-collapse-label",
-    "support-collapse-div",
-    "SUPPORT & FEEDBACK",
-    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
-    true,
-    ``,
-    ""
-  );
-  $("#support-collapse-div").append(staticTemplates.walkThroughButton);
-  $("#support-collapse-div").append(`<hr>`);
-  $("#support-collapse-div").append(
-    `<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a class = 'intro-modal-links' href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`
-  );
-  $("#support-collapse-div").append(`<hr>`);
-  $("#support-collapse-div").append(
-    `<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
-  );
 
   addCollapse(
     "sidebar-left",
@@ -1765,31 +1746,28 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#introModal-body").append(staticTemplates.walkThroughButton);
-} else if (mode === "TEST" || mode === "IDS") {
+
+  // Move SUPPORT & FEEDBACK to the end
   addCollapse(
     "sidebar-left",
-    "layer-list-collapse-label",
-    "layer-list-collapse-div",
-    mode + " DATA",
-    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
+    "support-collapse-label",
+    "support-collapse-div",
+    "SUPPORT & FEEDBACK",
+    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
     true,
-    null,
-    mode + " DATA layers to view on map"
+    ``,
+    ""
   );
-  $("#layer-list-collapse-div").append(
-    `<ul id="layer-list" class = "layer-list"></ul>`
+  $("#support-collapse-div").append(staticTemplates.walkThroughButton);
+  $("#support-collapse-div").append(`<hr>`);
+  $("#support-collapse-div").append(
+    `<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a class = 'intro-modal-links' href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`
+  );
+  $("#support-collapse-div").append(`<hr>`);
+  $("#support-collapse-div").append(
+    `<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
   );
 
-  addCollapse(
-    "sidebar-left",
-    "tools-collapse-label",
-    "tools-collapse-div",
-    "TOOLS",
-    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
-    false,
-    "",
-    "Tools to measure and chart data provided on the map"
-  );
 } else if (mode === "Bloom-Mapper") {
   window.algalRunID = 1;
   addCollapse(

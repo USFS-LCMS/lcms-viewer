@@ -10,7 +10,9 @@
 
 Ian Housman- ian.housman@usda.gov
 
-Leah Campbell- leah.campbell@usda.gov
+Elizabeth Hardwick- elizabeth.hardwick@usda.gov
+
+Joshua Heyer- joshua.heyer@usda.gov
 
 ## Using
 

@@ -86,8 +86,7 @@ walkThroughDict = {
     message: `<h5 class = 'list-group-title'>REFERENCE DATA</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">The REFERENCE DATA layers are related geospatial data that can help provide context for the ${mode} data products.</li>
-                                      <li class="list-group-item">They include <a class="intro-modal-links" href = "https://www.mrlc.gov/data" target = '_blank'>NLCD land cover data</a> and 
-                                                                <a class="intro-modal-links" href = "https://naip-usdaonline.hub.arcgis.com/" target = '_blank'>NAIP data</a>.</li>
+                                      <li class="list-group-item">They include <a class="intro-modal-links" href = "https://www.mrlc.gov/data" target = '_blank'>NLCD land cover data</a>.</li>
                                       <li class="list-group-item">Turning these layers on/off and adjusting the opacity is the same as for the ${mode} DATA layers.</li>
                                     </ul>`,
   },
@@ -177,9 +176,10 @@ walkThroughDict = {
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">Area tools allow ${mode} products to be summarized across areas.</li>
                                       <li class="list-group-item">Areas can be drawn on the map, provided as a zipped shapefile or .geojson, or selected from pre-defined sets of areas.</li>
-                                      <li class="list-group-item">There are two parameters that can be changed using the Area Tools Parameters sub-menu.</li>
-                                      <li class="list-group-item">The first is which ${mode} product will be summarized. The dropdown menu under "Choose which ${mode} product to summarize" can be changed to chart different ${mode} products.</li>
+                                      <li class="list-group-item">There are three parameters that can be changed using the Area Tools Parameters sub-menu.</li>
+                                      <li class="list-group-item">The first is which Area Chart Layers will be summarized.</li>
                                       <li class="list-group-item">The second parameter is a set of radio buttons under "Area Units." Areas can be summarized as a percentage of the area, acres, or hectares depending on your needs.</li>
+                                      <li class="list-group-item">The third parameter is the transition charting periods. Different periods of time can be defined for area charting, but should not overlap. The most common value for each period is used in the Sankey chart.</li>
                                       <li class="list-group-item">If any of these parameters are changed, the chart will need to be re-drawn to take effect.</li>
                                     </ul>`,
   },
@@ -269,7 +269,7 @@ walkThroughDict = {
     message: `<h5 class = 'list-group-title'>PARAMETERS</h5>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">There are a number of parameters that can be modified to enhance the utility of data in the MTBS Data Explorer.</li>
-                                      <li class="list-group-item">The first is a set of radio buttons that enable zooming to different areas where ${mode} products are available. Click on any area radio button to zoom to it's extent.</li>
+                                      <li class="list-group-item">The first is a set of radio buttons that enable zooming to different mapping areas where ${mode} products are available. Click on any area radio button to zoom to the extent of a mapping area, such as CONUS.</li>
                                       <li class="list-group-item">The second parameter is the analysis year range. ${mode} data can be filtered by adjusting the dual slider to the desired date range.</li>
                                       <li class="list-group-item">The third parameter is how the MTBS raster data are summarized.</li>
                                       <li class="list-group-item">The "MTBS Burn Severity" and "MTBS Burn Year" layers can only display a single severity value and year respectively. This parameter provides a method for choosing which value to show when multiple fires overlap.</li>
