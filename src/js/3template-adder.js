@@ -223,7 +223,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "advanced",
     "toggleAdvancedOff",
     "toggleAdvancedOn",
-    "Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides additional LCMS products and parameter options"
+    "Standard mode provides the core LCMS products based on carefully selected parameters. Advanced mode provides the option to compare the start and end periods of the selected analysis year range; a minimum 6 year range is required to make the most of Advanced mode."
   );
   $("#parameters-collapse-div").append(`<hr>`);
   addRadio(
@@ -255,7 +255,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "analysis-year-slider",
     "null",
-    "Years of LCMS data to include for land cover, land use, loss, and gain"
+    "Years of LCMS data to include for land cover, land use, and change"
   );
 
   // $("#parameters-collapse-div").append(`
@@ -811,7 +811,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     1,
     "analysis-year-slider",
     "null",
-    "Years of LCMS data to include for land cover, land use, loss, and gain",
+    "Years of LCMS data to include for land cover, land use, and change",
     null,
     () => {
       updateDashboardCharts();
@@ -1149,7 +1149,7 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
     false,
     null,
-    "Adjust parameters used to filter and sort LCMS base leare products"
+    "Adjust parameters used to filter and sort LCMS base learner products"
   );
 
   addDualRangeSlider(
@@ -1636,25 +1636,6 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   if (urlParams.endYear == null || urlParams.endYear == undefined) {
     urlParams.endYear = endYear;
   }
-  addCollapse(
-    "sidebar-left",
-    "support-collapse-label",
-    "support-collapse-div",
-    "SUPPORT & FEEDBACK",
-    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
-    true,
-    ``,
-    ""
-  );
-  $("#support-collapse-div").append(staticTemplates.walkThroughButton);
-  $("#support-collapse-div").append(`<hr>`);
-  $("#support-collapse-div").append(
-    `<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a class = 'intro-modal-links' href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`
-  );
-  $("#support-collapse-div").append(`<hr>`);
-  $("#support-collapse-div").append(
-    `<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
-  );
 
   addCollapse(
     "sidebar-left",
@@ -1765,31 +1746,28 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
   );
 
   $("#introModal-body").append(staticTemplates.walkThroughButton);
-} else if (mode === "TEST" || mode === "IDS") {
+
+  // Move SUPPORT & FEEDBACK to the end
   addCollapse(
     "sidebar-left",
-    "layer-list-collapse-label",
-    "layer-list-collapse-div",
-    mode + " DATA",
-    `<img class="panel-title-svg-lg" alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
+    "support-collapse-label",
+    "support-collapse-div",
+    "SUPPORT & FEEDBACK",
+    `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
     true,
-    null,
-    mode + " DATA layers to view on map"
+    ``,
+    ""
   );
-  $("#layer-list-collapse-div").append(
-    `<ul id="layer-list" class = "layer-list"></ul>`
+  $("#support-collapse-div").append(staticTemplates.walkThroughButton);
+  $("#support-collapse-div").append(`<hr>`);
+  $("#support-collapse-div").append(
+    `<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a class = 'intro-modal-links' href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`
+  );
+  $("#support-collapse-div").append(`<hr>`);
+  $("#support-collapse-div").append(
+    `<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
   );
 
-  addCollapse(
-    "sidebar-left",
-    "tools-collapse-label",
-    "tools-collapse-div",
-    "TOOLS",
-    `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
-    false,
-    "",
-    "Tools to measure and chart data provided on the map"
-  );
 } else if (mode === "Bloom-Mapper") {
   window.algalRunID = 1;
   addCollapse(
@@ -3054,6 +3032,143 @@ if (mode === "LCMS-pilot" || mode === "LCMS") {
     "Access HiForm BMP Support Resources"
   );
   $("#support-collapse-div").append(staticTemplates.hiformSupportDiv);
+} else if (mode === "RAVG") {
+    startYear = 1984;
+    endYear = 2024;
+    if (urlParams.startYear == null || urlParams.startYear == undefined) {
+        urlParams.startYear = startYear;
+    }
+    if (urlParams.endYear == null || urlParams.endYear == undefined) {
+        urlParams.endYear = endYear;
+    }
+    addCollapse(
+        "sidebar-left",
+        "support-collapse-label",
+        "support-collapse-div",
+        "SUPPORT & FEEDBACK",
+        `<img class='panel-title-svg-lg'  alt="Support icon" src="./src/assets/Icons_svg/support_ffffff.svg">`,
+        true,
+        ``,
+        ""
+    );
+    $("#support-collapse-div").append(staticTemplates.walkThroughButton);
+    $("#support-collapse-div").append(`<hr>`);
+    $("#support-collapse-div").append(
+        `<p>MTBS burned area boundaries and severity within the Data Explorer and MTBS web map services are updated regularly, but alignment of their update schedule may vary. Please visit the <a class = 'intro-modal-links' href="https://mtbs.gov/direct-download?tab=map-services&target=mtbs-data-explorer" target="_blank" > map services</a> section at MTBS.gov to verify the publication dates when making comparisons between the MTBS data available within these products/services.</p>`
+    );
+    $("#support-collapse-div").append(`<hr>`);
+    $("#support-collapse-div").append(
+        `<p style = "margin-bottom:0px;">If you have any issues with this tool or have suggestions on how it could be improved, please <a class = 'intro-modal-links' href="https://www.mtbs.gov/contact" target="_blank" > contact us</a>.</p>`
+    );
+
+    addCollapse(
+        "sidebar-left",
+        "parameters-collapse-label",
+        "parameters-collapse-div",
+        "PARAMETERS",
+        '<i role="img" class="fa fa-sliders mr-2" aria-hidden="true"></i>',
+        false,
+        null,
+        "Adjust parameters used to filter and sort RAVG products"
+    );
+
+    const mtbsZoomToDict = {
+        All: true,
+        CONUS: false,
+        Alaska: false,
+        Hawaii: false,
+        "Puerto-Rico": false,
+    };
+
+    addMultiRadio(
+        "parameters-collapse-div",
+        "ravg-zoom-to-radio",
+        "Zoom to RAVG Mapping Area",
+        "mtbsMappingArea",
+        mtbsZoomToDict
+    );
+    $("#ravg-zoom-to-radio").prop("title", "Zoom to RAVG region");
+    $("#ravg-zoom-to-radio").change(function () {
+        console.log(mtbsMappingArea);
+        synchronousCenterObject(clientBoundsDict[mtbsMappingArea]);
+    });
+    $("#parameters-collapse-div").append(`<hr>`);
+
+    addDualRangeSlider(
+        "parameters-collapse-div",
+        "Choose analysis year range:",
+        "urlParams.startYear",
+        "urlParams.endYear",
+        startYear,
+        endYear,
+        urlParams.startYear,
+        urlParams.endYear,
+        1,
+        "analysis-year-slider",
+        "null",
+        "Years of RAVG data to include"
+    );
+    addMultiRadio(
+        "parameters-collapse-div",
+        "ravg-summary-method-radio",
+        "How to summarize RAVG data",
+        "mtbsSummaryMethod",
+        {
+            "Highest-Severity": true,
+            "Most-Recent": false,
+            Oldest: false,
+        }
+    );
+
+    $("#ravg-summary-method-radio").prop(
+        "title",
+        'Select how to summarize RAVG raster data in areas with multiple fires.  Each summary method is applied on a pixel basis. "Highest-Severity" will show the severity and fire year corresponding to the highest severity. "Most-Recent" will show the severity and fire year corresponding to the most recently mapped fire. "Oldest" will show the severity and fire year corresponding to the oldest mapped fire.'
+    );
+    $("#parameters-collapse-div").append(`<hr>`);
+    $("#parameters-collapse-div").append(staticTemplates.reRunButton);
+
+    addCollapse(
+        "sidebar-left",
+        "layer-list-collapse-label",
+        "layer-list-collapse-div",
+        mode + " DATA",
+        `<img style = 'height: 1.5rem;margin-top: -0.3rem;margin-left: -0.3rem;' class='image-icon mr-1' alt="MTBS logo" src="./src/assets/images/mtbs-logo.png">`,
+        true,
+        null,
+        mode + " DATA layers to view on map"
+    );
+    addCollapse(
+        "sidebar-left",
+        "reference-layer-list-collapse-label",
+        "reference-layer-list-collapse-div",
+        "REFERENCE DATA",
+        `<img class='panel-title-svg-lg'  alt="Layers icon" src="./src/assets/Icons_svg/data-layers_ffffff.svg">`,
+        false,
+        null,
+        "Additional relevant layers to view on map intended to provide context for " +
+        mode +
+        " DATA"
+    );
+
+    addCollapse(
+        "sidebar-left",
+        "tools-collapse-label",
+        "tools-collapse-div",
+        "TOOLS",
+        `<img class='panel-title-svg-lg'  alt="Tools icon" src="./src/assets/Icons_svg/tools_ffffff.svg">`,
+        false,
+        "",
+        "Tools to measure and chart data provided on the map"
+    );
+
+    $("#layer-list-collapse-div").append(
+        `<ul id="layer-list" class = "layer-list"></ul>`
+    );
+    $("#reference-layer-list-collapse-div").append(
+        `<ul id="reference-layer-list" class = "layer-list"></ul>`
+    );
+
+    $("#introModal-body").append(staticTemplates.walkThroughButton);
 } else {
   addCollapse(
     "sidebar-left",
@@ -3271,7 +3386,8 @@ if (
   mode === "LCMS" ||
   mode === "geeViz" ||
   mode === "LAMDA" ||
-  mode === "TreeMap"
+  mode === "TreeMap" ||
+  mode === "RAVG"
 ) {
   $("#tools-accordian").append(`<h5 id = 'area-tools-title'>Area Tools</h5>`);
   addSubCollapse(
@@ -3351,18 +3467,18 @@ if (
     false,
     "toggleTool(toolFunctions.area.shpDefined)",
     staticTemplates.uploadAreaChartTipHover
-  );
-  addSubAccordianCard(
-    "tools-accordian",
-    "select-area-interactive-chart-label",
-    "select-area-interactive-chart-div",
-    "Select an Area on Map",
-    staticTemplates.selectAreaInteractiveChartDiv,
-    false,
-    "toggleTool(toolFunctions.area.selectInteractive)",
-    staticTemplates.selectAreaInteractiveChartTipHover
-  );
-
+    );
+    addSubAccordianCard(
+        "tools-accordian",
+        "select-area-interactive-chart-label",
+        "select-area-interactive-chart-div",
+        "Select an Area on Map",
+        (mode === "RAVG") ? staticTemplates.selectAreaInteractiveLeftJoinChartDiv : staticTemplates.selectAreaInteractiveChartDiv,
+        false,
+        "toggleTool(toolFunctions.area.selectInteractive)",
+        staticTemplates.selectAreaInteractiveChartTipHover
+    );
+   
   addRangeSlider(
     "upload-reduction-factor-container",
     "Vertex Reduction Factor",
@@ -3476,7 +3592,6 @@ if (mode === "MTBS" || mode === "Ancillary") {
 }
 //Handle exporting if chosen
 if (canExport) {
-  // console.log('here')
   if (mode !== "HiForm-BMP") {
     $("#download-collapse-div").append(staticTemplates.exportContainer);
   }

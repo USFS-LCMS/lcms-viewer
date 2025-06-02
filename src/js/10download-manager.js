@@ -98,7 +98,7 @@ function openLCMSSurvey(fromWhere) {
 }
 function downloadTutorial() {
   const link = document.createElement("a");
-  const tutorial_name = "LCMS_v2023-9_Data_Explorer_Overview.pdf";
+  const tutorial_name = "LCMS_v2024-10_Data_Explorer_Overview.pdf";
   link.href = "./src/assets/tutorials/" + tutorial_name;
   link.target = "_blank";
   link.click();
@@ -123,4 +123,15 @@ function downloadAnyMethods(path) {
   link.target = "_blank";
   link.click();
   ga("send", "event", mode + "_methods-download", path);
+}
+function downloadTCCMethods(version) {
+  const link = document.createElement("a");
+  const methods_name = "TCC_" + version + "_Methods.pdf";
+
+  link.href =
+    "https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/docs/" + methods_name;
+  link.target = "_blank";
+  link.click();
+  ga("send", "event", mode + "-download", "methods-download", methods_name);
+  showSurveyModal("downloadedMethodsDoc");
 }

@@ -1047,10 +1047,15 @@ td {
   border: 1px solid #999;
 }
 
+ul[id^="RAVG-Burn-Perimeters"][id$="class-container"] li span{
+    /*legend style for RAVG Burn Perimeters layer*/
+    border: 3px solid #00F;
+}
+
 .legend .legend-source {
-  font-size: 70%;
-  color: #999;
-  clear: both;
+    font-size: 70%;
+    color: #999;
+    clear: both;
 }
 
 .legend a {

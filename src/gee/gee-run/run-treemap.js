@@ -5,12 +5,21 @@ function runTreeMap() {
   // Each attribute is an individual image
   // This collection is set up with a time property for future ability to have a time series of TreeMap outputs
   const attrC = ee.ImageCollection(
-    "projects/treemap-386222/assets/Final_Outputs/TreeMap_2016"
+    "projects/treemap-386222/assets/Final_Outputs/2016/TreeMap_2016"
+    //"projects/treemap-386222/assets/Final_Outputs/2020/TreeMap_2020"
+    //"projects/treemap-386222/assets/Final_Outputs/2022/TreeMap_2022"
   );
   const attrStack = ee.Image("USFS/GTAC/TreeMap/v2016/TreeMap2016");
+                    //ee.Image("USFS/GTAC/TreeMap/v2020/TreeMap2020")
+                    //ee.Image("USFS/GTAC/TreeMap/v2022/TreeMap2022")
+                    //ee.Image(projects/treemap-386222/assets/Final_Outputs/2020/TreeMap2020)
+                    //ee.Image(projects/treemap-386222/assets/Final_Outputs/2022/TreeMap2022)
+
 
   // All attributes available
-  // This list is currently only used for reference to creat the thematic and continuous lists below
+  // This list is currently only used for reference to create the thematic and continuous lists below
+
+  //2016
   const attrs = [
     "ALSTK",
     "BALIVE",
@@ -34,6 +43,31 @@ function runTreeMap() {
     "VOLCFNET_D",
     "VOLCFNET_L",
   ];
+
+  // 2020 and 2022 (what about TREEMAP_ID? )
+  //const attrs = [
+  //  "ALSTK",
+  //  "BALIVE",
+  //  "CANOPYPCT",
+  //  "CARBON_D",
+  //  "CARBON_DOWN_DEAD",
+  //  "CARBON_L",
+  //  "DRYBIO_D",
+  //  "DRYBIO_L",
+  //  "FLDSZCD",
+  //  "FLDTYPCD",
+  //  "FORTYPCD",
+  //  "GSSTK",
+  //  "QMD",
+  //  "SDIsum",
+  //  "STANDHT",
+  //  "STDSZCD",
+  //  "TPA_DEAD",
+  //  "TPA_LIVE",
+  //  "VOLBFNET_L",
+  //  "VOLCFNET_D",
+  //  "VOLCFNET_L",
+  //];
 
   // Set the first layer to visible
   var visible = true;
@@ -218,7 +252,7 @@ function runTreeMap() {
       "Dry Live Tree Biomass, Above Ground. Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1))",
     ],
 
-    // carbon
+    // carbon 
     [
       "CARBON_D",
       palettes.crameri.lajolla[25],
@@ -227,14 +261,23 @@ function runTreeMap() {
       "CARBON_D: Carbon, Standing Dead (tons/acre)",
       "Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) / 2 /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=2) AND ((TREE.DIA)>=5) AND ((TREE.STANDING_DEAD_CD)=1))",
     ],
+    
     [
-      "CARBON_DWN",
+      "CARBON_DWN", // Only 2016
       palettes.crameri.lajolla[25],
       0.05,
       0.95,
       "CARBON_DWN: Carbon, Down Dead (tons/acre)",
       "Carbon (tons per acre) of woody material >3 inches in diameter on the ground, and stumps and their roots >3 inches in diameter. Estimated from models based on geographic area, forest type, and live tree carbon density (Smith and Heath 2008).",
     ],
+    //[
+    //  "CARBON_DOWN_DEAD", // 2020 and 2022
+    //  palettes.crameri.lajolla[25],
+    //  0.05,
+    //  0.95,
+    //  "CARBON_DWN: Carbon, Down Dead (tons/acre)",
+    //  "Carbon (tons per acre) of woody material >3 inches in diameter on the ground, and stumps and their roots >3 inches in diameter. Estimated from models based on geographic area, forest type, and live tree carbon density (Smith and Heath 2008).",
+    //],
     [
       "CARBON_L",
       palettes.crameri.lajolla[10],
@@ -244,7 +287,7 @@ function runTreeMap() {
       "Calculated via the following FIA query: Sum (DRYBIO_BOLE, DRYBIO_TOP, DRYBIO_STUMP, DRYBIO_SAPLING, DRYBIO_WDLD_SPP) / 2 /2000*TPA_UNADJ WHERE (((COND.COND_STATUS_CD)=1) AND ((TREE.STATUSCD)=1))",
     ],
 
-    // stand density
+    // stand density 2016
     [
       "QMD_RMRS",
       palettes.crameri.bamako[25],
@@ -261,6 +304,24 @@ function runTreeMap() {
       "SDIPCT_RMRS: Stand Density Index (percent of maximum)",
       "Rocky Mountain Research Station. A relative measure of stand density for live trees (≥1.0 inch d.b.h./d.r.c.) on the condition, expressed as a percentage of the maximum stand density index (SDI). Only collected by certain FIA work units.",
     ],
+
+    // stand density 2020 and 2022
+    //[
+    //  "QMD",
+    //  palettes.crameri.bamako[25],
+    //  0.05, //update?
+    //  0.95, //update?
+    //  "QMD: Stand quadratic mean diameter (in)",
+    //  "The quadratic mean diameter (QMD), or the diameter of the tree of average basal area, on the condition. Based on live trees greater than or equal to 1.0 inch d.b.h./d.r.c.",
+    //],
+    //[
+    //  "SDIsum",
+    //  palettes.crameri.bamako[25],
+    //  0.05, //update?
+    //  0.95, //update?
+    //  "SDIsum: Sum of Stand Density Index",
+    //  "Stand density index (SDI). A relative measure of stand density for live trees (greater than or equal to 1.0 inch d.b.h./d.r.c.) on the condition. Unitless.",
+    //],
 
     // live tree variables
     [

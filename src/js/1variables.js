@@ -401,11 +401,11 @@ const studyAreaDict = {
       "projects/lcms-tcc-shared/assets/CONUS/Composites/Composite-Collection-yesL7",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Composites/Composite-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Composites/Composite-Collection",
-      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Composites/Composite-Collection1988-2023",
+      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Composites/Composite-Collection",
     ],
     lt_collections: [
       "projects/lcms-tcc-shared/assets/CONUS/Base-Learners/LandTrendr-Collection",
-      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection_1984-2023",
+      "projects/lcms-tcc-shared/assets/OCONUS/Hawaii/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R8/PR_USVI/Base-Learners/LandTrendr-Collection",
       "projects/lcms-tcc-shared/assets/OCONUS/R10/AK/Base-Learners/LandTrendr-Collection",
     ],

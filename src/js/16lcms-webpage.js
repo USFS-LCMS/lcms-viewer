@@ -349,10 +349,12 @@ function setupDropdownTreeDownloads(
           if (m === "annual") {
             // Handle NLCD TCC v2021.4 start year irregularity
             let startYear = study_areas[sa].startYear;
+            if (study_areas[sa].longName !== 'Conterminous U.S.'){
             startYear =
               program === "NLCD_TCC" && product === "nlcd_tcc"
                 ? 2011
                 : startYear;
+              }
 
             const years = range(startYear, study_areas[sa].endYear + 1);
 

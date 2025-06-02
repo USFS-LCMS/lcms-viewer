@@ -98,6 +98,12 @@ const titles = {
     rightWords: "BMP Tool",
     title: "HiForm Timber Harvest BMP Tool",
   },
+  "RAVG": {
+    leftWords: "RAVG",
+    centerWords: "Data",
+    rightWords: "Explorer",
+    title: "RAVG Data Explorer",
+  }
 };
 ///////////////////////////////////////////////////////////////////////
 let specificAuthErrorMessages = {
@@ -266,8 +272,8 @@ const staticTemplates = {
                                     <div class ='my-3'> For an overview of LCMS and to find links to other LCMS Explorers, visit the
                                       <a class="intro-modal-links" href="home.html" target="_blank">LCMS Homepage.</a>
                                     </div>
-                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the U.S. Department of Agriculture Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel-2 data availability, cloud-based computing power, and big data analysis methods.
-
+                            LCMS is a remote sensing-based system for mapping and monitoring landscape change across the United States produced by the U.S. Department of Agriculture Forest Service. LCMS provides a "best available" map of landscape change that leverages advances in time series-based change detection techniques, Landsat and Sentinel-2 data availability, cloud-based computing power, and big data analysis methods. </p>
+                            Tree Canopy Cover (TCC) data can also be viewed here. TCC datasets map and monitor the percentage of area covered by tree canopy over time using spectral data collected during the growing season. TCC and LCMS share a common goal of mapping vegetation change across the United States since 1985. Using these products together leverages their shared methodology, resulting in complementary advantages for analysis and visualizations. 
                             </p>
                             `,
       `<div style='display:inline-block;margin-top:0.5rem;'>
@@ -292,8 +298,9 @@ const staticTemplates = {
                         </div>`,
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
                         <div class ='my-3'>
-                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to utilize the Data Explorer">TUTORIAL</a>
+                           <a  class = 'intro-modal-links' onclick = 'downloadTutorial()' title="Click to launch tutorial that explains how to use the Data Explorer">TUTORIAL</a>
                             <a class="intro-modal-links" onclick="downloadMethods('v2024-10')" title="Open in-depth LCMS v2024.10 methods documentation">LCMS METHODS</a>
+                            <a class="intro-modal-links" onclick="downloadTCCMethods('v2023-5')" title="Open in-depth TCC v2023.5 methods documentation">TCC METHODS</a>
                             <a  class = 'intro-modal-links'  onclick = 'openLCMSSurvey("splashScreen")' title="Click to help us learn how you use LCMS and how we can make it better">LCMS USER SURVEY</a>
                             <a class = "intro-modal-links" title = "Send us an E-mail" href = "mailto: sm.fs.lcms@usda.gov" >LCMS HELPDESK/FEEDBACK</a> 
                         </div>
@@ -597,7 +604,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
       "./src/assets/Icons_svg/logo_gtac_color-wt.svg",
       "Welcome to the TreeMap Explorer!",
       `<p class='my-2'>
-            This prototype tool provides an interactive map with the ability to view the 2016 TreeMap attributes. Source Data: Riley, Karin L.; Grenfell, Isaac C.; Finney, Mark A.; Shaw, John D. (2023). TreeMap 2016: A tree-level model of the forests of the conterminous United States circa 2016. Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2021-0074. Accessed 2023-03-13. 
+            This prototype tool provides an interactive map with the ability to view the 2016, 2020 and 2022 TreeMap attributes. Source Data: Riley, Karin L.; Grenfell, Isaac C.; Finney, Mark A.; Shaw, John D. (2023). TreeMap 2016: A tree-level model of the forests of the conterminous United States circa 2016. Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2021-0074. Accessed 2023-03-13. 
             </p>`,
       `<div style='display:inline-block;margin-top:0.5rem;'>
     <div style ='float:left;display:block' title='TreeMap Explorer is a joint effort between FSIC-GO and U.S. Department of Agriculture Forest Service Research'>
@@ -635,7 +642,47 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
       `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a U.S. Department of Agriculture Forest Service enterprise agreement with Google.</p>
 
 `
-    ),
+      ),
+      RAVG: getIntroModal(
+          "./src/assets/images/mtbs-logo.png",
+          "Welcome to the RAVG Data Explorer!",
+          `<p class='my-2'>This tool is intended to allow for interactive exploration of the Rapid Assessment of Vegetation Condition after Wildfire (RAVG) data record.
+            </p>
+            <p class='my-2'>
+            Rapid Assessment of Vegetation Condition after Wildfire (RAVG) is a mapping program that provides a suite of standard geospatial products based on an initial assessment of post-fire vegetation conditions following large wildfires on National Forest System lands and selected fires on Department of the Interior lands. A modified analysis is used in the extended assessment time frame..
+    </p>
+    <p class='my-2'>
+    RAVG data for select fires on Department of the Interior (DOI) lands are produced by the USGS Earth Resources Observation and Sciences (EROS) Center.
+    </p>
+    `,
+          `<div style='display:inline-block;margin-top:0.5rem;'>
+    <div style ='float:left;display:block' title='RAVG is jointly produced by the USDA Forest Service and USGS'>
+        <img class = 'logo' alt="USDA Forest Service icon" src="./src/assets/images/logos_usda-fs_bn-dk-01.svg">
+        <br>
+        <img class = 'logo' style = 'margin-left:0.3rem;height:2.5rem;' alt="USGS icon" src="./src/assets/images/USGS_logo_green.svg">
+    </div>
+    <div style ='float:left;'>
+        <ul class="intro-list">
+          <li title = "The Geospatial Technology and Applications Center (GTAC) provides leadership in geospatial science implementation in the USDA Forest Service by delivering vital services, data products, tools, training, and innovation to solve today's land and resource management challenges. This Explorer was developed at GTAC.""><a class="intro-modal-links" href="https://www.fs.usda.gov/about-agency/gtac" target="_blank">GTAC</a> Geospatial Technology and Applications Center
+          </li>
+          <li title = "The Earth Resources Observation and Science (EROS) Center studies land change and produce land change data products used by researchers, resource managers, and policy makers across the nation and around the world. They also operate the Landsat satellite program with NASA, and maintain the largest civilian collection of images of the Earth's land surface in existence, including tens of millions of satellite images.""><a class="intro-modal-links" href="https://www.usgs.gov/centers/eros" target="_blank">EROS</a> Earth Resources Observation and Science Center
+          </li>
+          <li title = "This site utilizes Google Earth Engine for most of its data acqusition, processing, and visualization through an enterprise agreement between the USDA Forest Service and Google.""><a class="intro-modal-links" href="https://earthengine.google.com/" target="_blank">GEE</a> Google Earth Engine
+          </li>
+        </ul>
+        
+    </div>
+
+</div>`,
+          `<p>Google Earth Engine data acquisition, processing, and visualization is possible by a USDA Forest Service enterprise agreement with Google.</p>
+<div class ='my-3'>
+   <a  class = 'intro-modal-links' onclick = 'toggleWalkThroughCollapse()' title="Run interactive walk-through of the features of the RAVG Data Explorer">Run Walk-Through</a>
+
+    <a class = "intro-modal-links" title = "Contact us" href="https://www.mtbs.gov/contact" target="_blank"  >CONTACT</a> 
+</div>
+
+`
+      )
   },
   loadingModal: {
     all: function (
@@ -911,7 +958,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                     </div>
                                     <div class = 'col-lg-10  support-text'>
                                             Suggested citation: 
-                                            <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2024). TreeMap Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/treemap.html (Accessed: ${new Date().toStringFormat()}).
+                                            <p class = 'support-text' onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")' id = 'suggested-citation-text' title='Click to copy suggested citation to clipboard'>Forest Service, U.S. Department of Agriculture (2025). TreeMap Data Explorer [Online]. Available at: https://apps.fs.usda.gov/lcms-viewer/treemap.html (Accessed: ${new Date().toStringFormat()}).
                                             </p>
                                             <span>
                                                 <button onclick = 'copyText("suggested-citation-text","copiedCitationMessageBox")'' title = 'Click to copy suggested citation to clipboard' class="py-0 pr-1 fa fa-copy btn input-group-text bg-white" >
@@ -1076,7 +1123,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             </div>
                             <div class = 'col-lg-10'>
                                 <a id = 'tutorial-download' class = 'links' onclick = 'downloadTutorial()'>
-                                Click to launch a tutorial that explains how to utilize the Data Explorer</a>
+                                Click to launch a tutorial that explains how to use the Data Explorer</a>
                             </div>
                         </div>
                         <hr>
@@ -1097,20 +1144,23 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                         </div>
                     </div>
                     <hr>
-                         <header class = 'row ' title = 'Open in-depth LCMS methods documentation'>
-                            <h3 class = ' text-capitalize'>LCMS Methods</h3>
+                         <header class = 'row ' title = 'Open in-depth LCMS and TCC methods documentation'>
+                            <h3 class = ' text-capitalize'>LCMS and TCC Methods</h3>
                         </header>
-                        <div class = 'row ' title = 'Open in-depth LCMS methods documentation'>
+                        <div class = 'row ' title = 'Open in-depth LCMS and TCC methods documentation'>
                             <div class = 'col-lg-2 p-0 m-0'>
                                 <img class = 'support-icons' alt = 'Methods icon' src = './src/assets/images/methods-icon.png'> 
                             </div>
                             <div class = 'col-lg-10'>
-                                Click to open in-depth methods document:
+                                Click to open in-depth methods documents:
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>Version 2024.10 (CONUS and AK)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2024.10 methods documentation'>LCMS Version 2024.10 (CONUS and AK)</a>
                                 </li>
                                 <li>
-                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2023.9 methods documentation'>Version 2023.9 (PRUSVI and HI)</a>
+                                    <a class = 'links' onclick = 'downloadMethods("v2024-10")' title = 'Open in-depth LCMS v2023.9 methods documentation'>LCMS Version 2023.9 (PRUSVI and HI)</a>
+                                </li>
+                                <li>
+                                    <a class = 'links' onclick = 'downloadTCCMethods("v2023-5")' title = 'Open in-depth TCC v2023.5 methods documentation'>TCC Version 2023.5</a>
                                 </li>
 
                             </div>
@@ -1565,7 +1615,7 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                             <hr>`,
   selectAreaDropdownChartTip:
     "Select from pre-defined areas to summarize products across.",
-  selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
+    selectAreaInteractiveChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
                                         <hr>
                                         <label>Provide name for area selected for charting (optional):</label>
                                         <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
@@ -1582,8 +1632,29 @@ This tool was built using workflow components developed for the <i>HiForm</i> (â
                                         <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
                                         <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
                                         <div id = 'select-features-edit-toolbar'></div>
-                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>
-                                        `,
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
+    selectAreaInteractiveLeftJoinChartDiv: `<div>Choose from layers below and click on map to select areas to include in chart</div>
+                                        <hr>
+                                        <label>Provide name for area selected for charting (optional):</label>
+                                        <input title = 'Provide a name for your chart. A default one will be provided if left blank.'  type="user-selected-area-name" class="form-control" id="user-selected-area-name" placeholder="Name your charting area" style='width:80%;'>
+                                        <hr>
+                                        <div id = 'simplify-error-range-container'></div>
+                                        <hr>
+                                        <div id="area-charting-select-left-operand-layer-list"></div>
+                                        <hr>
+                                        <span>INTERSECTED BY:</span>
+                                        <hr>
+                                        <div id="area-charting-select-layer-list"></div>
+                                        <hr>
+                                        <div>Selected areas:</div>
+                                        <i id = "select-features-list-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark"></i>
+                                        <li class = 'selected-features-list' id = 'selected-features-list'></li>
+                                        <div id="area-charting-selected-layer-list"></div>
+                                        <hr>
+                                        <div>Total area selected: <i id = "select-features-area-spinner" style = 'display:none;' class="fa fa-spinner fa-spin text-dark pl-1"></i></div>
+                                        <div id = 'selected-features-area' class = 'select-layer-name'>0 hectares / 0 acres</div>
+                                        <div id = 'select-features-edit-toolbar'></div>
+                                        <button class = 'btn' onclick = 'chartSelectedAreas()'>Chart Selected Areas</button>`,
   selectAreaInteractiveChartTip:
     "Select from pre-defined areas on map to summarize products across.",
   shareButtons: `<!-- Email -->
@@ -2209,12 +2280,13 @@ function setupDropdownTreeDownloads(
                               <button title = 'Click on this button to start downloads. If you have a popup blocker, you will need the manually click on the download links provided' class = 'btn download-btn' onclick = 'downloadSelectedAreas("${dropdownID}")'>Download</button>
                               `);
           if (m === "annual") {
-            // Handle NLCD TCC v2021.4 start year irregularity
+            // Handle NLCD TCC v2021.4 start year irregularity for all SA but CONUS
             let startYear = study_areas[sa].startYear;
-            startYear =
-              program === "NLCD_TCC" && product === "nlcd_tcc"
-                ? 2011
-                : startYear;
+            if (study_areas[sa].longName !== 'Conterminous U.S.'){
+              startYear =
+                program === "NLCD_TCC" && product === "nlcd_tcc"
+                  ? 2011
+                  : startYear;}
 
             const years = range(startYear, study_areas[sa].endYear + 1);
 
@@ -3528,7 +3600,7 @@ function addLayer(layer) {
     // getGEEMapService();
   }
   //Function to handle turning off of different types of layers
-  function turnOff() {
+    function turnOff() {
     ga("send", "event", "layer-off", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       urlParams.layerProps[id].visible = false;
@@ -3594,7 +3666,11 @@ function addLayer(layer) {
     }
   }
   //Function to handle turning on different layer types
-  function turnOn() {
+    function turnOn() {
+        if (mode==="RAVG") {
+            turnOffSelectLayers();
+            clearSelectedAreas();
+        }
     ga("send", "event", "layer-on", layer.layerType, layer.name);
     if (!layer.viz.isTimeLapse) {
       if (Map.turnOffLayersWhenTimeLapseIsOn) {
@@ -3674,10 +3750,12 @@ function addLayer(layer) {
       }
     }
   }
-  function turnOffAll() {
-    if (layer.visible) {
-      $("#" + visibleID).click();
-    }
+    function turnOffAll() {
+        if (layer.name !== "RAVG Burn Perimeters") {
+            if (layer.visible) {
+                $("#" + visibleID).click();
+            }
+        } 
   }
   function turnOnAll() {
     if (!layer.visible) {
@@ -3807,7 +3885,7 @@ function addLayer(layer) {
 
         $("#" + visibleLabelID).addClass("select-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
-          turnOffAll();
+            turnOffAll();
         });
         $(".vector-layer-checkbox").on("turnOnAllSelectLayers", function () {
           turnOnAll();
@@ -3855,24 +3933,33 @@ function addLayer(layer) {
                 if (name === undefined) {
                   name = "system:index";
                 }
-              }
+                }
               selectedFeaturesJSON[layer.name].fieldName = name;
               selectedFeaturesJSON[layer.name].eeObject =
                 layer.queryItem.select([name], ["name"]);
             });
         } else {
           selectedFeaturesJSON[layer.name].fieldName =
-            layer.viz.selectLayerNamePropertyname;
-          selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
-            [layer.viz.selectLayerNameProperty],
-            ["name"]
-          );
+                layer.viz.selectLayerNamePropertyname;
+
+            //adds ignition year to the relevant properties of the eeObject, if it exists.
+            if (layer.viz.selectLayerIgnitionYearProperty !== undefined) {
+                selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+                    [layer.viz.selectLayerNameProperty, layer.viz.selectLayerIgnitionYearProperty],
+                    ["name", "fire_year"]
+                );
+            } else {
+                selectedFeaturesJSON[layer.name].eeObject = layer.queryItem.select(
+                    [layer.viz.selectLayerNameProperty],
+                    ["name"]
+                );
+            }
         }
       }
       if (layer.viz.isSelectedLayer) {
         $("#" + visibleLabelID).addClass("selected-layer-checkbox");
         $(".vector-layer-checkbox").on("turnOffAllSelectLayers", function () {
-          turnOffAll();
+            turnOffAll();
         });
         $(".vector-layer-checkbox").on("turnOnAllSelectLayers", function () {
           turnOnAll();
@@ -3931,7 +4018,6 @@ function addLayer(layer) {
           );
 
           if (timeLapseObj[layer.viz.timeLapseID].userChosenVisible === true) {
-            console.log("here");
             $("#" + layer.viz.timeLapseID + "-toggle-checkbox-label").click();
           }
 
@@ -4570,7 +4656,7 @@ function addLayer(layer) {
         });
       }
     }
-  }
+    }
 }
 
 //////////////////////////////////////////////////
